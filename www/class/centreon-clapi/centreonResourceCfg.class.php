@@ -380,7 +380,7 @@ class CentreonResourceCfg extends CentreonObject
                     $value = CentreonUtils::convertLineBreak($value);
                     echo $this->action . $this->delim
                         . "setparam" . $this->delim
-                        . $element[$this->object->getUniqueLabelField()] . $this->delim
+                        . $element[$this->object->getPrimaryKey()] . $this->delim
                         . $parameter . $this->delim
                         . $value . "\n";
                 }

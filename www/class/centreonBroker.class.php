@@ -35,7 +35,6 @@
 
 class CentreonBroker
 {
-    private $name;
     private $db;
 
     /*
@@ -47,82 +46,40 @@ class CentreonBroker
     public function __construct($db)
     {
         $this->db = $db;
-        $this->setBrokerName();
     }
 
     /**
-     * Get Broker engine name
-     */
-    private function setBrokerName()
-    {
-            $this->name = 'broker';
-    }
-
-    /*
-	 * return broker engine
-	 */
-    public function getBroker()
-    {
-        return "broker";
-    }
-        
-    /**
-     * Execute script
-     *
-     * @param string $script
-     * @param string $action
-     * @return void
-     */
-    protected function execLocalScript($script, $action)
-    {
-      shell_exec("sudo service $script $action");
-    }
-        
-    /**
-     * Get Init script
-     *
-     * @param string $sql;
-     * @return string
-     */
-    protected function getInitScript($sql)
-    {
-        $res = $this->db->query($sql);
-        $row = $res->fetchRow();
-        $scriptName = "";
-        if (isset($row['value']) && trim($row['value']) != '') {
-            $scriptName = trim($row['value']);
-        }
-        return $scriptName;
-    }
-        
-    /**
-     * Do action
+     * Reload centreon broker process
      *
      * @param string $action
      * @return void
      */
-    protected function doAction($action)
+    public function reload()
     {
-        if ($this->name == 'broker') {
-            $initScript = $this->getInitScript("SELECT `value` FROM options WHERE `key` = 'broker_correlator_script'");
-            if ($initScript) {
-                $this->execLocalScript($initScript, $action);
-            }
+        if ($command = $this->getReloadCommand()) {
+            shell_exec("sudo $command");
         }
     }
-        
+
     /**
-     * Magic method
+     * Get command to reload centreon broker
      *
-     * @param string $name
-     * @param array $params
-     * @throws Exception
+     * @return string|null the command
      */
-    public function __call($name, $params)
+    private function getReloadCommand(): ?string
     {
-        if (!preg_match('/reload|restart|stop|start/', $name)) {
-            throw new Exception('Unknown method: '.$name);
+        $command = null;
+
+        $result = $this->db->query(
+            'SELECT broker_reload_command
+            FROM nagios_server
+            ORDER BY localhost DESC'
+        );
+
+        if ($row = $result->fetch()) {
+            $command = $row['broker_reload_command'];
         }
-        $this->doAction($name);
+
+        return $command;
     }
 }

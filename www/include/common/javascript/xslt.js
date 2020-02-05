@@ -266,34 +266,44 @@ function Transformation() {
                             }
                             xsltDoc = xsltRequest.responseXML;
                             xmlDoc = xmlRequest.responseXML;
+                            var targetNode = document.getElementById(target);
                             if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {            
                                 document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
                             } else {
                                 var resultDoc;
-                                                var processor = new XSLTProcessor();
-                                                document.getElementById(target).innerHTML = '';
-                                                processor.importStylesheet(xsltDoc);
-                                                resultDoc = processor.transformToFragment(xmlDoc, document);    					
-                                                document.getElementById(target).appendChild(resultDoc);
+                                var processor = new XSLTProcessor();
+                                if (targetNode) {
+                                    // remove child nodes from DOM
+                                    while (targetNode.firstChild) {
+                                        targetNode.removeChild(targetNode.firstChild);
+                                    }
+                                    targetNode.innerHTML = '';
+                                }
+                                processor.importStylesheet(xsltDoc);
+                                resultDoc = processor.transformToFragment(xmlDoc, document);
+                                targetNode.appendChild(resultDoc);
+                                resultDoc = null;
+                                processor = null;
                             }
                             if (callback) {
                                 callback(t);
+                                callback = null;
                             }
+
+                            targetNode = null;
+                            target = null;
+                            
                             transformed = true;
                             if (typeof _clear == 'function') {
                                 _clear("centreonMsg");
                             }
-                            xsltRequest.onreadystatechange = new Function;
+
+                            xsltRequest.onreadystatechange = null;
                             xsltRequest = null;
-                            xmlRequest.onreadystatechange = new Function;
+                            xmlRequest.onreadystatechange = null;
                             xmlRequest = null;
-                            resultDoc = null;
                             xsltDoc = null;
                             xmlDoc = null;
-                            callback = null;
-                            delete xmlRequest;
-                            delete xsltRequest;
-                            processor = null;
                     }
 
 		}

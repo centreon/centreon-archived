@@ -64,10 +64,13 @@ use strict;
 use warnings;
 use Sys::Syslog qw(:standard :macros);
 use IO::Handle;
+use Encode;
 
-my %severities = (1 => LOG_INFO,
-                  2 => LOG_ERR,
-                  4 => LOG_DEBUG);
+my %severities = (
+    1 => LOG_INFO,
+    2 => LOG_ERR,
+    4 => LOG_DEBUG
+);
 
 sub new {
     my $class = shift;
@@ -189,16 +192,25 @@ sub get_date {
                    $year+1900, $mon+1, $mday, $hour, $min, $sec);
 }
 
-sub writeLog($$$%) {
-    my ($self, $severity, $msg, %options) = @_;
-    my $withdate = (defined $options{withdate}) ? $options{withdate} : 1;
-    $msg = ($self->{withpid} == 1) ? "$$ - $msg " : $msg;
-    my $newmsg = ($withdate) 
-      ? $self->get_date . " - $msg" : $msg;
+sub writeLog {
+    my ($self, %options) = @_;
 
-    if (($self->{severity} & $severity) == 0) {
+    my $withdate = (defined $options{withdate}) ? $options{withdate} : 1;
+    my $withseverity = (defined $options{withseverity}) ? $options{withseverity} : 1;
+    
+    my $msg = $options{message};
+    $msg = ($self->{withpid} == 1) ? "$$ - $msg " : $msg;
+    my $newmsg = ($withseverity) 
+      ? $options{severity_str} . " - $msg" : $msg;
+    $newmsg = ($withdate) 
+      ? $self->get_date . " - $newmsg" : $newmsg;
+    
+
+    if (($self->{severity} & $options{severity}) == 0) {
         return;
     }
+
+    $newmsg = encode('UTF-8', $newmsg);
     if ($self->{log_mode} == 0) {
         print "$newmsg\n";
     } elsif ($self->{log_mode} == 1) {
@@ -206,20 +218,26 @@ sub writeLog($$$%) {
             print { $self->{filehandler} } "$newmsg\n";
         }
     } elsif ($self->{log_mode} == 2) {
-        syslog($severities{$severity}, $msg);
+        syslog($severities{$options{severity}}, $msg);
     }
 }
 
 sub writeLogDebug {
-    shift->writeLog(4, @_);
+    my ($self, $msg) = @_;
+    
+    $self->writeLog(severity => 4, severity_str => 'DEBUG', message => $msg);
 }
 
 sub writeLogInfo {
-    shift->writeLog(2, @_);
+    my ($self, $msg) = @_;
+    
+    $self->writeLog(severity => 2, severity_str => 'INFO', message => $msg);
 }
 
 sub writeLogError {
-    shift->writeLog(1, @_);
+    my ($self, $msg) = @_;
+    
+    $self->writeLog(severity => 1, severity_str => 'ERROR', message => $msg);
 }
 
 sub DESTROY {

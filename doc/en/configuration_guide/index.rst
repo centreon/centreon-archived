@@ -7,7 +7,7 @@ This chapter will allow you to know all the configuration mechanisms of your sup
 Do forget to think about setting up a global strategy of the configuration in order to make able to have global actions configurations. For that, mechanisms are in place in Centreon to simplify your life such as :ref:`guest models and services <hosttemplates>`.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    actions
    hosts
@@ -18,10 +18,8 @@ Do forget to think about setting up a global strategy of the configuration in or
    groups
    category
    models
-   imp/index
    advanced_configuration/index
-   poller/index
+   process_description/index
    deploy
-   knowledge_base/index
 
 Once setup is finished, supervision will allow you to get informations on the health status of your IT systems. For having more information regarding the operation interface, please refer to the exploitation guide.

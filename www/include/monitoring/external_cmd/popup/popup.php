@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2018 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,19 +33,15 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
+// using bootstrap.php to load the paths and the DB configurations
+require_once __DIR__ . '/../../../../../bootstrap.php';
 require_once _CENTREON_PATH_ . 'vendor/autoload.php';
-$smartyDir = _CENTREON_PATH_ . 'vendor/smarty/smarty/';
-require_once $smartyDir . 'libs/Smarty.class.php';
-
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-$pearDB = new CentreonDB();
+$pearDB = $dependencyInjector['configuration_db'];
 
 session_start();
 session_write_close();
@@ -55,20 +51,23 @@ $centreon = $_SESSION['centreon'];
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
-if (!isset($centreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
+if (!isset($centreon) ||
+    !isset($_GET['o']) ||
+    !isset($_GET['cmd']) ||
+    !isset($_GET['p'])
+) {
     exit();
 }
-$sid = session_id();
-if (isset($sid)) {
-    $res = $pearDB->query("SELECT * FROM session WHERE session_id = '" . $sid . "'");
-    if (!$session = $res->fetchRow()) {
+if (isset(session_id())) {
+    $res = $pearDB->prepare("SELECT * FROM `session` WHERE `session_id` = :sid");
+    $res->bindValue(':sid', session_id(), PDO::PARAM_STR);
+    $res->execute();
+    if (!$session = $res->fetch()) {
         exit();
     }
 } else {
     exit;
 }
-
-define('SMARTY_DIR', _CENTREON_PATH_ . 'GPL_LIB/Smarty/libs/');
 
 $o = htmlentities($_GET['o'], ENT_QUOTES, "UTF-8");
 $p = htmlentities($_GET['p'], ENT_QUOTES, "UTF-8");

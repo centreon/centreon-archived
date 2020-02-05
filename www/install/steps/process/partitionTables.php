@@ -76,7 +76,10 @@ try {
             $centreonDb
         );
         $mysqlTable = $config->getTable($table);
-        $partEngine->createParts($mysqlTable, $database);
+
+        // past partitions do not need to be created
+        // it optimizes the time for partition process
+        $partEngine->createParts($mysqlTable, $database, false);
     }
 } catch (\Exception $e) {
     $return['msg'] = preg_replace('/\n/', "", $e->getMessage());

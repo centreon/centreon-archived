@@ -7,7 +7,6 @@ Feature: Edit a service
         Given I am logged in a Centreon server
         And a service is configured
 
-    @critical
     Scenario: Change the properties of a service
         When I change the properties of a service
         Then the properties are updated

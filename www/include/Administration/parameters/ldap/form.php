@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,23 +38,23 @@ if (!isset($oreon)) {
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once __DIR__ . '/DB-Func.php';
 
 $attrsText = array("size" => "40");
 $attrsText2 = array("size" => "5");
 $attrsTextarea = array("rows" => "4", "cols" => "60");
 $attrsAdvSelect = null;
 
-$arId = 0;
-if (isset($_REQUEST['ar_id'])) {
-    $arId = $_REQUEST['ar_id'];
-}
+$arId = filter_var(
+    $_POST['ar_id'] ?? $_GET['ar_id'] ?? 0,
+    FILTER_VALIDATE_INT
+);
 
 /**
  * Ldap form
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p . "&o=" . $o);
 $form->addElement('header', 'title', _("Modify General Options"));
-
 
 /**
  * Ldap info
@@ -83,7 +82,7 @@ $ldapUseDns[] = $form->createElement(
     null,
     _("Yes"),
     '1',
-    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);")
+    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false);")
 );
 $ldapUseDns[] = $form->createElement(
     'radio',
@@ -91,43 +90,89 @@ $ldapUseDns[] = $form->createElement(
     null,
     _("No"),
     '0',
-    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true, false);")
+    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);")
 );
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
-$ldapDnsUseSsl[] = $form->createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');
-$ldapDnsUseSsl[] = $form->createElement('radio', 'ldap_dns_use_ssl', null, _("No"), '0');
-$form->addGroup($ldapDnsUseSsl, 'ldap_dns_use_ssl', _("Use SSL connection"), '&nbsp;');
-$ldapDnsUseTls[] = $form->createElement('radio', 'ldap_dns_use_tls', null, _("Yes"), '1');
-$ldapDnsUseTls[] = $form->createElement('radio', 'ldap_dns_use_tls', null, _("No"), '0');
-$form->addGroup($ldapDnsUseTls, 'ldap_dns_use_tls', _("Use TLS connection"), '&nbsp;');
 $form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
 
 $form->addElement('text', 'ldap_search_limit', _('LDAP search size limit'), $attrsText2);
 $form->addElement('text', 'ldap_search_timeout', _('LDAP search timeout'), $attrsText2);
 
-$query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = '0'";
-$res = $pearDB->query($query);
-$tmplList = array();
-while ($row = $res->fetchRow()) {
-    $tmplList[$row['contact_id']] = $row['contact_name'];
+/**
+ * LDAP's scanning options sub menu
+ */
+$form->addElement('header', 'ldapScanOption', _("Synchronization Options"));
+// option to disable the auto-scan of the LDAP - by default auto-scan is enabled
+$ldapAutoScan[] = $form->createElement(
+    'radio',
+    'ldap_auto_sync',
+    null,
+    _("Yes"),
+    '1',
+    array('id' => 'ldap_auto_sync_y', 'onclick' => "toggleParamSync(false);")
+);
+$ldapAutoScan[] = $form->createElement(
+    'radio',
+    'ldap_auto_sync',
+    null,
+    _("No"),
+    '0',
+    array('id' => 'ldap_auto_sync_n', 'onclick' => "toggleParamSync(true);")
+);
+$form->addGroup($ldapAutoScan, 'ldap_auto_sync', _("Enable LDAP synchronization on login"), '&nbsp;');
+// default interval before re-scanning the whole LDAP. By default, a duration of one hour is set
+$form->addElement('text', 'ldap_sync_interval', _('LDAP synchronization interval (in hours)'), $attrsText2);
+$form->addRule('ldap_sync_interval', _("Compulsory field"), 'required');
+// A minimum value of 1 hour is required and it should be an integer
+$form->registerRule('minimalValue', 'callback', 'minimalValue');
+$form->addRule('ldap_sync_interval', _("An integer with a minimum value of 1 is required"), 'minimalValue');
+
+/**
+ * list of contact template available
+ */
+$res = $pearDB->query(
+    "SELECT contact_id, contact_name FROM contact WHERE contact_register = '0'"
+);
+$LdapContactTplList = array();
+while ($row = $res->fetch()) {
+    $LdapContactTplList[$row['contact_id']] = $row['contact_name'];
 }
 $res->closeCursor();
+$form->addElement(
+    'select',
+    'ldap_contact_tmpl',
+    _('Contact template'),
+    $LdapContactTplList,
+    array('id' => 'ldap_contact_tmpl')
+);
+$form->addRule('ldap_contact_tmpl', _("Compulsory Field"), 'required');
 
-$form->addElement('select', 'ldap_contact_tmpl', _('Contact template'), $tmplList, array('id' => 'ldap_contact_tmpl'));
+/**
+ * Default contactgroup for imported contact
+ */
+$cgAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list';
+$cgDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+    . '&action=defaultValues&target=contact&field=ldap_default_cg&id=' . $arId;
+$attrContactGroup = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $cgAvRoute,
+    'defaultDatasetRoute' => $cgDeRoute,
+    'multiple' => false,
+    'linkedObject' => 'centreonContactgroup'
+);
+$form->addElement('select2', 'ldap_default_cg', _('Default contactgroup'), array(), $attrContactGroup);
 
 $form->addElement('header', 'ldapinfo', _("LDAP Information"));
-
 $form->addElement('header', 'ldapserver', _('LDAP Servers'));
-
 $form->addElement('text', 'bind_dn', _("Bind user"), array("size" => "40", "autocomplete" => "off"));
-$form->addElement('password', 'bind_pass', _("Bind password"), array("size" => "40", "autocomplete" => "off"));
-$form->addElement('select', 'protocol_version', _("Protocol version"), array('2' => 2, '3' => 3));
+$form->addElement('password', 'bind_pass', _("Bind password"), array("size" => "40", "autocomplete" => "new-password"));
+$form->addElement('select', 'protocol_version', _("Protocol version"), array('3' => 3, '2' => 2));
 $form->addElement(
     'select',
     'ldap_template',
     _("Template"),
-    array('0' => "", 'Posix' => _("Posix"), 'Active Directory' => _("Active Directory")),
+    array('0' => "", 'Active Directory' => _("Active Directory"), 'Okta' => _("Okta"), 'Posix' => _("Posix")),
     array('id' => 'ldap_template', 'onchange' => 'applyTemplate(this.value);')
 );
 $form->addElement('text', 'user_base_search', _("Search user base DN"), $attrsText);
@@ -160,7 +205,8 @@ $tpl = initSmartyTpl($path . 'ldap/', $tpl);
 
 $ldapAdmin = new CentreonLdapAdmin($pearDB);
 
-$defaultOpt = array('ldap_auth_enable' => '0',
+$defaultOpt = array(
+    'ldap_auth_enable' => '0',
     'ldap_store_password' => '1',
     'ldap_auto_import' => '0',
     'ldap_srv_dns' => '0',
@@ -169,22 +215,30 @@ $defaultOpt = array('ldap_auth_enable' => '0',
     'ldap_dns_use_ssl' => '0',
     'ldap_dns_use_tls' => '0',
     'ldap_contact_tmpl' => '0',
+    'ldap_default_cg' => '0',
     'ldap_search_limit' => '60',
+    'ldap_auto_sync' => '1', // synchronization on user's login is enabled by default
+    'ldap_sync_interval' => '1', // minimal value of the interval between two LDAP synchronizations
     'ldap_search_timeout' => '60');
-$gopt = array();
 
+$gopt = array();
 if ($arId) {
     $gopt = $ldapAdmin->getGeneralOptions($arId);
-    $res = $pearDB->query("SELECT `ar_name`, `ar_description`, `ar_enable`
-                            FROM `auth_ressource`
-                            WHERE ar_id = " . $pearDB->escape($arId));
-    while ($row = $res->fetchRow()) {
+    $res = $pearDB->prepare(
+        "SELECT `ar_name`, `ar_description`, `ar_enable`, `ar_sync_base_date`
+        FROM `auth_ressource`
+        WHERE ar_id = :arId"
+    );
+    $res->bindValue('arId', $arId, PDO::PARAM_INT);
+    $res->execute();
+    while ($row = $res->fetch()) {
         $gopt['ar_name'] = $row['ar_name'];
         $gopt['ar_description'] = $row['ar_description'];
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
+        $gopt['ar_sync_base_date'] = $row['ar_sync_base_date'];
     }
     unset($res);
-    
+
     /*
      * Preset values of ldap servers
      */
@@ -246,21 +300,25 @@ $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc 
 $DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $nbOfInitialRows = 0;
-if ($arId) {
-    $query = "SELECT count(*) as nb FROM auth_ressource_host WHERE auth_ressource_id = " . $pearDB->escape($arId);
-    $res = $pearDB->query($query);
-    $row = $res->fetchRow();
-    $nbOfInitialRows = $row['nb'];
-}
-
 $maxHostId = 1;
 if ($arId) {
-    $query = "SELECT MAX(ldap_host_id) as cnt 
-              FROM auth_ressource_host 
-              WHERE auth_ressource_id = " . $pearDB->escape($arId);
-    $res = $pearDB->query($query);
+    $res = $pearDB->prepare(
+        "SELECT COUNT(*) as nb FROM auth_ressource_host WHERE auth_ressource_id = :arId"
+    );
+    $res->bindValue(':arId', (int)$arId, \PDO::PARAM_INT);
+    $res->execute();
+    $row = $res->fetch();
+    $nbOfInitialRows = $row['nb'];
+
+    $res = $pearDB->prepare(
+        "SELECT MAX(ldap_host_id) as cnt 
+        FROM auth_ressource_host 
+        WHERE auth_ressource_id = :arId"
+    );
+    $res->bindValue(':arId', (int)$arId, \PDO::PARAM_INT);
+    $res->execute();
     if ($res->rowCount()) {
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $maxHostId = $row['cnt'];
     }
 }
@@ -274,9 +332,9 @@ if ($form->validate()) {
     $values = $form->getSubmitValues();
 
     /*
-     * Test is filter string is validate
+     * Test if filter string is valid
      */
-    if (false === CentreonLDAP::validateFilterPattern($values['user_filter'])) {
+    if (!CentreonLDAP::validateFilterPattern($values['user_filter'])) {
         $filterValid = false;
     }
 
@@ -293,6 +351,30 @@ if ($form->validate()) {
             $values['ldap_contact_tmpl'] = "";
         }
 
+        if (!isset($values['ldap_default_cg'])) {
+            $values['ldap_default_cg'] = "";
+        }
+
+        // setting a reference time to calculate the expected synchronization
+        $currentTime = time();
+        $values['ar_sync_base_date'] = $currentTime;
+
+        // updating the next expected auto-sync at login if the admin has changed the sync options or it never occurred
+        if ($gopt['ldap_auto_sync'] === $values['ldap_auto_sync']['ldap_auto_sync']
+            && !empty($gopt['ar_sync_base_date'])
+            && ($gopt['ar_sync_base_date'] + ($values['ldap_sync_interval'] * 3600)) > $currentTime
+            && $currentTime > $gopt['ar_sync_base_date']
+        ) {
+            // distinguishing the enabled and disabled cases
+            if ($values['ldap_auto_sync']['ldap_auto_sync'] == 0
+                || ($values['ldap_auto_sync']['ldap_auto_sync'] == 1
+                    && $gopt['ldap_sync_interval'] == $values['ldap_sync_interval'])
+            ) {
+                // synchronization parameters have not changed, the reference time shouldn't be updated
+                $values['ar_sync_base_date'] = $gopt['ar_sync_base_date'];
+            }
+        }
+
         $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);
         $o = "w";
         $valid = true;
@@ -302,6 +384,8 @@ if ($form->validate()) {
         } else {
             $tpl->assign("hideDnsOptions", 0);
         }
+
+        $tpl->assign("hideSyncInterval", (int)$values['ldap_auto_sync']['ldap_auto_sync'] ?? 0);
         $form->freeze();
     }
 }

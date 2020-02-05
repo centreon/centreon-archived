@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ###################################################
 # Centreon                      Octobre 2015
@@ -51,6 +51,7 @@ SAVE_LAST_FILE="backup.last"
 DO_ARCHIVE=1
 INIT_SCRIPT="" # try to find it
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
+MNTOPTIONS="-o nouuid"
 
 ###
 # Check MySQL launch
@@ -236,7 +237,7 @@ $INIT_SCRIPT start
 ###
 output_log "Mount LVM snapshot"
 mkdir -p "$SNAPSHOT_MOUNT"
-mount /dev/$vg_name/dbbackup "$SNAPSHOT_MOUNT"
+mount $MNTOPTIONS /dev/$vg_name/dbbackup "$SNAPSHOT_MOUNT"
 if [ $? -eq 0 ]; then
     output_log "Device mounted successfully"
 else
@@ -253,12 +254,13 @@ concat_datadir=$(echo "$datadir" | sed "s#^${mount_point}##")
 ar_exclude_file=""
 last_save_time=$(cat "$SAVE_LAST_DIR/$SAVE_LAST_FILE")
 
-if [ $OPT_PARTIAL -eq 1 ] ; then
+if [ $OPT_PARTIAL -eq 1 ] && [ -n "$last_save_time" ] ; then
+    minutes=$((($save_timestamp - $last_save_time) / 60))
     for table in $PARTITION_NAME ; do
     	tmp_dir=$(dirname "$table")
     	tmp_name=$(basename "$table")
     	tmp_path=$(echo "$SNAPSHOT_MOUNT/$concat_datadir/$tmp_dir" | sed "s#/\+#/#g")
-    	for tmp_file in $(find "$tmp_path" -name "$tmp_name*" -type f); do
+     	for tmp_file in $(find "$tmp_path" -name "$tmp_name*" -mmin +$minutes -type f); do 
     		ar_exclude_file="$ar_exclude_file \"$tmp_file\""
     	done
     done

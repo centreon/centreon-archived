@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,15 +40,34 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 
 $SearchTool = null;
-$search = '';
-if (isset($_POST['searchGT']) && $_POST['searchGT']) {
+$queryValues = array();
+$search = null;
+
+if (isset($_POST['searchGT'])) {
     $search = $_POST['searchGT'];
-    $SearchTool = " WHERE name LIKE '%" . $search . "%'";
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchGT'])) {
+    $search = $_GET['searchGT'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
 
-$res = $pearDB->query("SELECT COUNT(*) FROM giv_graphs_template" . $SearchTool);
-$tmp = $res->fetchRow();
-$rows = $tmp["COUNT(*)"];
+if ($search) {
+    $SearchTool = " WHERE name LIKE :search";
+    $queryValues['search'] = '%' . $search . '%';
+}
+
+$rq = 'SELECT SQL_CALC_FOUND_ROWS graph_id, name, default_tpl1, vertical_label, base, split_component FROM ' .
+    'giv_graphs_template gg ' . $SearchTool . ' ORDER BY name LIMIT ' . $num * $limit . ', ' . $limit;
+$stmt = $pearDB->prepare($rq);
+foreach ($queryValues as $key => $value) {
+    $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+}
+
+$stmt->execute();
+
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -68,20 +87,19 @@ $tpl->assign("headerMenu_base", _("Base"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 #List
-$rq = "SELECT graph_id, name, default_tpl1, vertical_label, base, split_component " .
-    "FROM giv_graphs_template gg $SearchTool ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
-$res = $pearDB->query($rq);
-
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+//Different style between each lines
 $style = "one";
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+//Fill a tab with a mutlidimensionnal Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $graph = $res->fetchRow(); $i++) {
+for ($i = 0; $graph = $stmt->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $graph['graph_id'] . "]");
     $moptions = "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" .
@@ -91,7 +109,7 @@ for ($i = 0; $graph = $res->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $graph["name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&graph_id=" . $graph['graph_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&graph_id=" . $graph['graph_id'],
         "RowMenu_desc" => $graph["vertical_label"],
         "RowMenu_base" => $graph["base"],
         "RowMenu_split_component" => $graph["split_component"] ? _("Yes") : _("No"),
@@ -106,7 +124,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*
@@ -167,7 +185,7 @@ $o2 = $form->getElement('o2');
 $o2->setValue(null);
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchGT', $search);
+$tpl->assign('searchGT', htmlentities($search));
 
 /*
  * Apply a template definition

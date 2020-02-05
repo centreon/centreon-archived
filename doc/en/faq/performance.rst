@@ -1,8 +1,8 @@
 .. _performance:
 
-===========
-Performance
-===========
+=============================
+Centreon platform performance
+=============================
 
 This is a guide on improving Centreon's performance
 
@@ -79,14 +79,16 @@ Centreon storage database schema can be view here :
 RRDCacheD
 *********
 
-RRDCacheD is a process to reduce disk I/O during the update of performance's graphs and status' graphs.
-The RRDCacheD process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording 
-one by one the data from the collect.
+RRDCacheD is a process to reduce disk I/O during the update of performance's graphs and status' graphs. The RRDCacheD
+process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording one by one the data from
+the collect.
 
 Installation
 ============
 
-The RRDCacheD process is available in **rrdtool** package and already installed on your server.
+Execute the following command: ::
+
+    # yum install rrdtool-cached
 
 Configuration
 =============
@@ -94,22 +96,21 @@ Configuration
 Main settings
 *************
 
-Edit the **/etc/sysconfig/rrdcached** file and complete informaiton::
+Edit the **/etc/sysconfig/rrdcached** file and complete information::
 
     # Settings for rrdcached
     OPTIONS="-m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b   /var/rrdtool/rrdcached -w 3600 -z 3600 -f 7200"
-    RRDC_USER=rrdcach
+    RRDC_USER=rrdcached
 
 .. note::
-    The order of setting is pretty important. If **-m 664** is define before **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** option then rights will be inccorrect on socket.
+    The order of setting is pretty important. If **-m 664** is define before **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** option then rights will be incorrect on socket.
 
 Options are following one:
-
 
 +--------+-----------------------------------------------------------------------------------+
 | Option | Description                                                                       |
 +========+===================================================================================+
-| -w     | Data are written every x seconds on disk (3600s in example reopresent 1h)         |
+| -w     | Data are written every x seconds on disk (3600s in example represent 1h)          |
 +--------+-----------------------------------------------------------------------------------+
 | -z     | Should be less than **-w** option. RRDCacheD uses a range value from [0:-z] to do |
 |        | not write in RRDs in same time.                                                   |
@@ -118,44 +119,74 @@ Options are following one:
 +--------+-----------------------------------------------------------------------------------+
 
 .. note::
-    Please modify values with you needs.
+    Please modify values with your needs.
+
+Creating the service startup file
+*********************************
+
+Replace the default **/usr/lib/systemd/system/rrdcached.service** init script: ::
+
+    # cp /usr/share/centreon/examples/rrdcached.systemd /usr/lib/systemd/system/rrdcached.service
+
+Execute following commands: ::
+
+    mkdir -p /var/rrdtool
+    useradd rrdcached -d '/var/rrdtool/rrdcached' -G centreon-broker,centreon -m
+    chmod 775 -R /var/rrdtool
 
 Groups configuration
 ********************
 
-Create groups using commands::
+Create groups using commands: ::
 
-    # usermod -a -g rrdcached centreon-broker
-    # usermod -a -g rrdcached apache
-    # usermod -a -g centreon rrdcached
-    # usermod -a -g centreon-broker rrdcached
+    # usermod -a -G rrdcached centreon-broker
+    # usermod -a -G rrdcached apache
+    # usermod -a -G centreon rrdcached
+    # usermod -a -G centreon-broker rrdcached
 
-Restart Apache process::
+Restart process: ::
 
-    # /etc/init.d/httpd restart
+    # systemctl daemon-reload
+    # systemctl enable rrdcached
+    # systemctl start rrdcached
 
-Start RRDCacheD processus::
+Check the status of the process: ::
 
-    # /etc/init.d/rrdcached start
+    # systemctl status rrdcached
+    ● rrdcached.service - Data caching daemon for rrdtool
+       Loaded: loaded (/etc/systemd/system/rrdcached.service; disabled; vendor preset: disabled)
+       Active: active (running) since ven. 2018-10-26 10:14:08 UTC; 39min ago
+         Docs: man:rrdcached(1)
+     Main PID: 28811 (rrdcached)
+       CGroup: /system.slice/rrdcached.service
+               └─28811 /usr/bin/rrdcached -m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b /var/rrdtool/rrdcached -w 7200 -f 14400 -z 3600 -p /var/rrdtool/rrdcached/rrdcached.pid
+    
+    oct. 26 10:14:08 demo-front rrdcached[28811]: starting up
+    oct. 26 10:14:08 demo-front systemd[1]: Started Data caching daemon for rrdtool.
+    oct. 26 10:14:08 demo-front rrdcached[28811]: listening for connections
+    oct. 26 10:14:08 demo-front systemd[1]: Starting Data caching daemon for rrdtool...
 
 Centreon web configuration
 **************************
 
-Go to **Administration -> Options -> RRDTool** menu, enable processus and set unix socket path:
+Go to **Configuration > Pollers > Broker configuration** menu, select the broker inserting data into RRD files then in
+the **Output** tab enable process and set unix socket path:
+
+* Enable RRDCached: unix
+* RRDCacheD listening socket/port: /var/rrdtool/rrdcached/rrdcached.sock
+
+Enable process and set unix socket path:
 
 .. image:: /images/faq/rrdcached_config.png
     :align: center
 
 .. warning::
-    Instread of configuration was made into **Administration** you need to generate and export configuration of central server and restart cbd process to apply changes.
+    Instead of configuration was made into **Administration** you need to generate and export configuration of central
+    server and restart cbd process to apply changes.
 
 .. image:: /images/faq/rrd_file_generator.png
     :align: center
 
-Centreon web interface
-**********************
-
-RRDCacheD don't update performence's graphs in real time. If a blanc range aapear on right of performence's graphs it means that cache are not yet written to disk.
-
 .. warning::
-    If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible to get data unless rebuild all graphs from Centreon web.
+    If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible
+    to get data unless rebuild all graphs from Centreon web.

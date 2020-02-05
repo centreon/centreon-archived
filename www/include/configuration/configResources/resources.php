@@ -40,18 +40,6 @@ if (!isset($oreon)) {
     exit();
 }
 
-isset($_GET["resource_id"]) ? $resourceG = $_GET["resource_id"] : $resourceG = null;
-isset($_POST["resource_id"]) ? $resourceP = $_POST["resource_id"] : $resourceP = null;
-$resourceG ? $resource_id = $resourceG : $resource_id = $resourceP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
 /*
  * Path to the configuration dir
  */
@@ -62,6 +50,43 @@ $path = "./include/configuration/configResources/";
  */
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+define('MACRO_ADD', 'a');
+define('MACRO_DELETE', 'd');
+define('MACRO_DISABLE', 'u');
+define('MACRO_DUPLICATE', 'm');
+define('MACRO_ENABLE', 's');
+define('MACRO_MODIFY', 'c');
+define('MACRO_WATCH', 'w');
+
+$action = filter_var(
+    $_POST['o1'] ?? $_POST['o2'] ?? null,
+    FILTER_VALIDATE_REGEXP,
+    array(
+        "options" => array("regexp"=>"/([a|c|d|m|s|u|w]{1})/")
+    )
+);
+if ($action !== false) {
+    $o = $action;
+}
+
+// If resource_id is not correctly typed, value will be set to false
+$resourceId = filter_var(
+    $_GET["resource_id"] ?? $_POST["resource_id"] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+// If one data are not correctly typed in array, it will be set to false
+$selectIds = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? array(),
+    FILTER_VALIDATE_INT
+);
+
+// If one data are not correctly typed in array, it will be set to false
+$duplicateNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? array(),
+    FILTER_VALIDATE_INT
+);
 
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
@@ -82,50 +107,61 @@ if ($serverString != "''" && !empty($serverString)) {
 }
 
 switch ($o) {
-    case "a":
+    case MACRO_ADD:
         /*
          * Add a Resource
          */
         require_once($path . "formResources.php");
         break;
-    case "w":
+    case MACRO_WATCH:
         /*
          * Watch a Resource
          */
         require_once($path . "formResources.php");
         break;
-    case "c":
+    case MACRO_MODIFY:
         /*
          * Modify a Resource
          */
         require_once($path . "formResources.php");
         break;
-    case "s":
+    case MACRO_ENABLE:
         /*
          * Activate a Resource
          */
-        enableResourceInDB($resource_id);
+        if ($resourceId !== false) {
+            enableResourceInDB($resourceId);
+        }
         require_once($path . "listResources.php");
         break;
-    case "u":
+    case MACRO_DISABLE:
         /*
          * Desactivate a Resource
          */
-        disableResourceInDB($resource_id);
+        if ($resourceId !== false) {
+            disableResourceInDB($resourceId);
+        }
         require_once($path . "listResources.php");
         break;
-    case "m":
+    case MACRO_DUPLICATE:
         /*
-         * Duplicate n Resources
+         * Duplicate n resources only if data sent are correctly typed
          */
-        multipleResourceInDB(isset($select) ? $select : array(), $dupNbr);
+        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+            multipleResourceInDB(
+                $selectIds,
+                $duplicateNbr
+            );
+        }
         require_once($path . "listResources.php");
         break;
-    case "d":
+    case MACRO_DELETE:
         /*
-         * Delete n Resources
+         * Delete n resources only if data sent are correctly typed
          */
-        deleteResourceInDB(isset($select) ? $select : array());
+        if (!in_array(false, $selectIds)) {
+            deleteResourceInDB($selectIds);
+        }
         require_once($path . "listResources.php");
         break;
     default:

@@ -18,12 +18,14 @@ Logiciels
 Système d'exploitation
 ======================
 
-Si vous souhaitez **utiliser Centreon ISO v3.x, le système d'exploitation sera CentOS en version v6**.
+Centreon propose un fichier ISO incluant la distribution CentOS 7 et tous les
+paquets nécessaires à l'installation.
 
-Si vous préférez utiliser **Red Hat OS** vous devez installer une **version v6 ou v7** du système puis y 
-installer les rpms disponible dans nos dépôts de téléchargement.
+Si vous préférez utiliser **Red Hat OS** vous devez installer une **version 7**
+du système puis y installer les rpms disponible dans nos dépôts de téléchargement.
 
-Enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
+Les utilisateurs Open Source, sans contrat de support, peuvent utiliser une autre distribution GNU/Linux.
+L'installation de la plate-forme sera plus complexe à partir des fichiers sources de chaque composant.
 sera plus complexe à partir des fichiers sources de chaque composant.
 
 .. note::
@@ -34,13 +36,13 @@ SGBD
 
 **Centreon vous recommande d'utiliser MariaDB** plutôt que le moteur MySQL.
 
-+----------+-----------+
-| Logiciel | Version   |
-+==========+===========+
-| MariaDB  | >= 10.1.x |
-+----------+-----------+
-| MySQL    | >= 5.6.x  |
-+----------+-----------+
++----------+------------+
+| Logiciel | Version    |
++==========+============+
+| MariaDB  | = 10.2.x   |
++----------+------------+
+| MySQL    | = 5.6.x    |
++----------+------------+
 
 Dépendances logicielles
 =======================
@@ -50,15 +52,15 @@ Le tableau suivant décrit les dépendances logicielles :
 +----------+------------------+
 | Logiciel | Version          |
 +==========+==================+
-| Apache   | 2.2 & 2.4        |
+| Apache   | 2.4              |
 +----------+------------------+
 | GnuTLS   | >= 2.0           |
 +----------+------------------+
-| Net-SNMP | 5.5              |
+| Net-SNMP | 5.7              |
 +----------+------------------+
-| openssl  | >= 1.0.1e        |
+| openssl  | >= 1.0.1k        |
 +----------+------------------+
-| PHP      | >= 5.3.0 & < 5.5 |
+| PHP      | 7.2              |
 +----------+------------------+
 | Qt       | >= 4.7.4         |
 +----------+------------------+
@@ -71,26 +73,36 @@ Le tableau suivant décrit les dépendances logicielles :
 Sélectionner votre architecture
 *******************************
 
-Le tableau suivant présente les prérequis pour une installation de Centreon v3.x :
+.. note::
+    Centreon propose un :download:`classeur </files/Centreon_platform_sizing.xlsx>`
+    permettant de calculer le dimensionnement de votre plate-forme.
 
-+----------------------+-------------------------+---------------------------+----------------+---------------+
-|  Nombre de services  |  Nombre d'hôtes estimé  |  Nombre de collecteurs    |  Central       |  Collecteur   |
-+======================+=========================+===========================+================+===============+
-|           < 500      |           50            |        1 central          |  1 vCPU / 1 GB |               |
-+----------------------+-------------------------+---------------------------+----------------+---------------+
-|       500 - 2000     |         50 - 200        |        1 central          |  2 vCPU / 2 GB |               |
-+----------------------+-------------------------+---------------------------+----------------+---------------+
-|      2000 - 10000    |        200 - 1000       | 1 central + 1 collecteur  |  4 vCPU / 4 GB | 1 vCPU / 2 GB |
-+----------------------+-------------------------+---------------------------+----------------+---------------+
-|     10000 - 20000    |       1000 - 2000       | 1 central + 1 collecteur  |  4 vCPU / 8 GB | 2 vCPU / 2 GB |
-+----------------------+-------------------------+---------------------------+----------------+---------------+
-|     20000 - 50000    |       2000 - 5000       | 1 central + 2 collecteurs |  4 vCPU / 8 GB | 4 vCPU / 2 GB |
-+----------------------+-------------------------+---------------------------+----------------+---------------+
-|     50000 - 100000   |       5000 - 10000      | 1 central + 3 collecteurs |  4 vCPU / 8 GB | 4 vCPU / 2 GB |
-+----------------------+-------------------------+---------------------------+----------------+---------------+
+Le tableau suivant présente les prérequis pour une installation de Centreon :
+
++----------------------+-------------------------+----------------------------+----------------+---------------+
+|  Nombre de services  |  Nombre d'hôtes estimé  |  Nombre de collecteurs     |  Central       |  Collecteur   |
++======================+=========================+============================+================+===============+
+|           < 500      |           50            |        1 central           |  1 vCPU / 1 GB |               |
++----------------------+-------------------------+----------------------------+----------------+---------------+
+|       500 - 2000     |         50 - 200        |        1 central           |  2 vCPU / 2 GB |               |
++----------------------+-------------------------+----------------------------+----------------+---------------+
+|      2000 - 7000     |        200 - 700        | 1 central + 1 collecteur   |  4 vCPU / 4 GB | 2 vCPU / 4 GB |
++----------------------+-------------------------+----------------------------+----------------+---------------+
+|      7000 - 14000    |        700 - 1400       | 1 central + 2 collecteurs  |  4 vCPU / 8 GB | 2 vCPU / 4 GB |
++----------------------+-------------------------+----------------------------+----------------+---------------+
+|     14000 - 21000    |       1400 - 2100       | 1 central + 3 collecteurs  |  4 vCPU / 8 GB | 4 vCPU / 4 GB |
++----------------------+-------------------------+----------------------------+----------------+---------------+
+|     21000 - 28000    |       2100 - 2800       | 1 central + 4 collecteurs  |  4 vCPU / 8 GB | 4 vCPU / 4 GB |
++----------------------+-------------------------+----------------------------+----------------+---------------+
+|          ...         |           ...           |             ...            |      ...       |      ...      |
++----------------------+-------------------------+----------------------------+----------------+---------------+
 
 .. note::
-    Les vCPU doivent avoir une fréquence avoisinant les 3 GHz
+    Un collecteur peut superviser en moyenne 7000 services actifs.
+    Les vCPU doivent avoir une fréquence avoisinant les 3 GHz. Le nombre de
+    vCPU par collecteur dépend principalement de la complexité des contrôles.
+    Si vous utilisez des connecteurs ou réalisez de nombreux appels vers des
+    applications tierces, ajoutez des vCPU supplémentaires.
 
 Ces informations sont à mettre en corrélation avec vos besoins techniques liés au découpage géographique ou topologiques
 de votre système. Pour voir ce qu'il est possible de faire avec centreon à ce sujet, reportez vous au chapitre :ref:`Architectures possibles <architectures>`.
@@ -100,6 +112,10 @@ de votre système. Pour voir ce qu'il est possible de faire avec centreon à ce 
 *****************************
 Définition de l'espace disque
 *****************************
+
+.. note::
+    Centreon propose un :download:`classeur </files/Centreon_platform_sizing.xlsx>`
+    permettant de calculer le dimensionnement de votre plate-forme.
 
 L'espace disque utilisé pour supporter les données issues de la collecte dépend
 de plusieurs critères :
@@ -114,21 +130,23 @@ Le tableau suivant propose une idée de la volumétrie de votre plate-forme :
 * La période de rétention programmée est de 6 mois
 * Deux courbes sont présentes par graphique de performance
 
-+------------------------+----------------+-------------------+
-|  Nombre de services    | /var/lib/mysql | /var/lib/centreon |
-+========================+================+===================+
-|        < 500           |     10 GB      |      2.5 GB       |
-+------------------------+----------------+-------------------+
-|       500 - 2000       |     42 GB      |       10 GB       |
-+------------------------+----------------+-------------------+
-|      2000 - 10000      |    210 GB      |       50 GB       |
-+------------------------+----------------+-------------------+
-|      10000 - 20000     |    420 GB      |      100 GB       |
-+------------------------+----------------+-------------------+
-|      20000 - 50000     |    1.1 TB      |      250 GB       |
-+------------------------+----------------+-------------------+
-|     50000 - 100000     |      2,3 TB    |        1 TB       |
-+------------------------+----------------+-------------------+
++--------------------+------------------------+---------------------------+
+| Nombre de services | /var/lib/mysql (in GB) | /var/lib/centreon (in GB) |
++====================+========================+===========================+
+| 500                | 10                     | 2.5                       |
++--------------------+------------------------+---------------------------+
+| 2000               | 42                     | 10                        |
++--------------------+------------------------+---------------------------+
+| 10 000             | 93                     | 27                        |
++--------------------+------------------------+---------------------------+
+| 20 000             | 186                    | 54                        |
++--------------------+------------------------+---------------------------+
+| 50 000             | 465                    | 135                       |
++--------------------+------------------------+---------------------------+
+| 100 000            | 930                    | 270                       |
++--------------------+------------------------+---------------------------+
+| ...                | ...                    | ...                       |
++--------------------+------------------------+---------------------------+
 
 *************************
 Définition des partitions
@@ -211,23 +229,25 @@ Utilisateurs et groupes
 
 Description des logiciels et utilisateurs liés :
 
-+-----------------+----------------+-----------------+-----------------------+
-| Logiciel        | Service        | Utilisateur     | Commentaire           |
-+=================+================+=================+=======================+
-| Apache          | httpd          | apache          | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| MySQL (MariaDB) | mysqld (mysql) | mysql           | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon        | centcore       | centreon        | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon        | centreontrapd  | centreon        | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Broker | cbwd           | centreon-broker | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Broker | cbd            | centreon-broker | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Engine | centengine     | centreon-engine | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
++-----------------+------------------+-----------------+-----------------------+
+| Logiciel        | Service          | Utilisateur     | Commentaire           |
++=================+==================+=================+=======================+
+| Apache          | httpd24-httpd    | apache          | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| PHP-FPM         | rh-php72-php-fpm | apache          | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| MySQL (MariaDB) | mysqld (mysql)   | mysql           | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon        | centcore         | centreon        | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon        | centreontrapd    | centreon        | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Broker | cbwd             | centreon-broker | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Broker | cbd              | centreon-broker | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Engine | centengine       | centreon-engine | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
 
 Description des logiciels optionnels et utilisateurs liés :
 

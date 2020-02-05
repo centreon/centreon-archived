@@ -43,7 +43,7 @@ use centreon::common::db;
 use centreon::common::lock;
 
 use vars qw($centreon_config);
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo $instance_mode);
 
 $SIG{__DIE__} = sub {
     return unless defined $^S and $^S == 0; # Ignore errors in eval
@@ -62,7 +62,8 @@ sub new {
        centstorage_db_conn => 0,
        severity => "info",
        noconfig => 0,
-       noroot => 0
+       noroot => 0,
+       instance_mode => "central"
       );
     my $self = {%defaults, %options};
 
@@ -114,6 +115,7 @@ sub init {
            password => $self->{centreon_config}->{db_passwd},
            logger => $self->{logger});
     }
+    $self->{instance_mode} = $instance_mode;
 }
 
 sub DESTROY {

@@ -19,6 +19,8 @@ This template of host allows to deploy the following services:
 * Memory
 * Swap
 
+You need to install these plugins, using the :ref:`**Centreon plugin packs**<basic_plugins>`.
+
 First :ref:`connect<centreon_login>` to your Centreon web interface with an administrator account or an account which allow to manage monitored object.
 
 Go to the **Configuration > Hosts > Hosts** menu and click on **Add** button:
@@ -46,7 +48,7 @@ The host is now defined in Centreon web interface but the monitoring engine does
 
 You have now to :ref:`generate the configuration, export it and send it to the monitoring engine<deployconfiguration>`.
 
-You can see result in **Monitoring > Status Details > Hosts** menu:
+You can see result in **Monitoring > Status Details > Services** menu:
 
 .. image:: /_static/images/quick_start/add_template_monitoring.png
     :align: center

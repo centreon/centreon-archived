@@ -120,7 +120,7 @@ Order     Description
 
 2         Service description
 
-3         Paramater that you want to update
+3         Parameter that you want to update
 
 4         New parameter value
 ========= ============================================================
@@ -143,7 +143,7 @@ check_period                     Name of the check period
 check_command                    Name of the check command
 
 check_command_arguments          Arguments that go along with the check command,
-                                 prepend each argument with the '!' characteri
+                                 prepend each argument with the '!' character
 
 max_check_attempts		 Maximum number of attempt before a HARD state is declared
 

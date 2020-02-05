@@ -40,17 +40,29 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 
 $searchStr = '';
-$search = '';
-if (isset($_POST['searchACLG']) && $_POST['searchACLG']) {
+$search = null;
+
+if (isset($_POST['searchACLG'])) {
     $search = $_POST['searchACLG'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchACLG'])) {
+    $search = $_GET['searchACLG'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
     $searchStr .= "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR acl_group_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$rq = "SELECT COUNT(*) FROM acl_groups $searchStr ORDER BY acl_group_name";
+
+$rq = "SELECT SQL_CALC_FOUND_ROWS acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups " .
+    $searchStr . "ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
 $dbResult = $pearDB->query($rq);
-$tmp = $dbResult->fetchRow();
-$rows = $tmp["COUNT(*)"];
-$dbResult->closeCursor();
+
+$search = tidySearchKey($search, $advanced_search);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -60,9 +72,7 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/*
- * start header menu
- */
+//start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_contacts", _("Contacts"));
@@ -70,16 +80,6 @@ $tpl->assign("headerMenu_contactgroups", _("Contact Groups"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-$searchStr = "";
-if (isset($search) && $search) {
-    $searchStr .= "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR acl_group_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq = "SELECT acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups $searchStr " .
-    "ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
-$dbResult = $pearDB->query($rq);
-
-$search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
@@ -128,9 +128,15 @@ for ($i = 0; $group = $dbResult->fetchRow(); $i++) {
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => $group["acl_group_name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&acl_group_id=" . $group['acl_group_id'],
-        "RowMenu_desc" => myDecode($group["acl_group_alias"]),
+        "RowMenu_name" => CentreonUtils::escapeAll(
+            $group["acl_group_name"],
+            CentreonUtils::ESCAPE_ALL
+        ),
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&acl_group_id=" . $group['acl_group_id'],
+        "RowMenu_desc" => CentreonUtils::escapeAll(
+            $group["acl_group_alias"],
+            CentreonUtils::ESCAPE_ALL
+        ),
         "RowMenu_contacts" => $ctNbr["nbr"],
         "RowMenu_contactgroups" => $cgNbr["nbr"],
         "RowMenu_status" => $group["acl_group_activate"] ? _("Enabled") : _("Disabled"),
@@ -147,18 +153,18 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*
  * Toolbar select lgd_more_actions
  */
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {

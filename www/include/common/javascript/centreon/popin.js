@@ -141,6 +141,7 @@
       left = (left < 0) ? 0 : left;
 
       this.$elem.css({
+        position: 'fixed',
         top: top + "px",
         left: left + "px"
       });

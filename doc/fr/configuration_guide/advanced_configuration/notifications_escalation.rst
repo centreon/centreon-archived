@@ -26,7 +26,7 @@ Configuration
 
 Pour ajouter une escalade de notification :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Notifications** ==> **Escalades**
+#. Rendez-vous dans le menu **Configuration > Notifications > Escalades**
 #. Cliquez sur **Ajouter**
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/04notificationsescalation.png

@@ -34,7 +34,7 @@
  *
  */
 
-class Broker extends AbstractObjectXML
+class Broker extends AbstractObjectJSON
 {
     protected $engine = null;
     protected $broker = null;
@@ -51,7 +51,6 @@ class Broker extends AbstractObjectXML
         command_file,
         cache_directory,
         stats_activate,
-        correlation_activate,
         daemon
     ';
     protected $attributes_select_parameters = '
@@ -69,7 +68,8 @@ class Broker extends AbstractObjectXML
         id,
         name,
         centreonbroker_module_path,
-        centreonbroker_cfg_path
+        centreonbroker_cfg_path,
+        centreonbroker_logs_path
     ';
     protected $exclude_parameters = array(
         'blockId'
@@ -88,15 +88,16 @@ class Broker extends AbstractObjectXML
         global $pearDB;
 
         if (!is_null($this->cacheExternalValue)) {
-            return ;
+            return;
         }
-        
+
         $this->cacheExternalValue = array();
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-            CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
-                WHERE cf.external IS NOT NULL 
-                   AND cf.cb_field_id = ctfr.cb_field_id
-                   AND ctfr.cb_type_id = cttr.cb_type_id
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external
+            FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
+            WHERE cf.external IS NOT NULL
+            AND cf.cb_field_id = ctfr.cb_field_id
+            AND ctfr.cb_type_id = cttr.cb_type_id
         ");
         $stmt->execute();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
@@ -107,10 +108,10 @@ class Broker extends AbstractObjectXML
     private function generate($poller_id, $localhost)
     {
         $this->getExternalValues();
-        
+
         if (is_null($this->stmt_broker)) {
-            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
-              $this->attributes_select
+            $this->stmt_broker = $this->backend_instance->db->prepare("
+            SELECT $this->attributes_select
             FROM cfg_centreonbroker
             WHERE ns_nagios_server = :poller_id
             AND config_activate = '1'
@@ -130,57 +131,57 @@ class Broker extends AbstractObjectXML
             ");
         }
 
-        $watchdog = array();
+        $watchdog = [];
 
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $this->generate_filename = $row['config_filename'];
-            $object = array();
-            $flow_count = 0;
+            $object = [];
 
             $config_name = $row['config_name'];
             $cache_directory = $row['cache_directory'];
             $stats_activate = $row['stats_activate'];
-            $correlation_activate = $row['correlation_activate'];
 
-            # Base parameters
-            $object['broker_id'] = $row['config_id'];
+            // Base parameters
+            $object['broker_id'] = (int) $row['config_id'];
             $object['broker_name'] = $row['config_name'];
-            $object['poller_id'] = $this->engine['id'];
+            $object['poller_id'] = (int) $this->engine['id'];
             $object['poller_name'] = $this->engine['name'];
-            $object['module_directory'] = $this->engine['broker_modules_path'];
-            $object['log_timestamp'] = $row['config_write_timestamp'];
-            $object['log_thread_id'] = $row['config_write_thread_id'];
-            $object['event_queue_max_size'] = $row['event_queue_max_size'];
-            $object['command_file'] = $row['command_file'];
-            $object['cache_directory'] = $cache_directory;
+            $object['module_directory'] = (string) $this->engine['broker_modules_path'];
+            $object['log_timestamp'] = filter_var($row['config_write_timestamp'], FILTER_VALIDATE_BOOLEAN);
+            $object['log_thread_id'] = filter_var($row['config_write_thread_id'], FILTER_VALIDATE_BOOLEAN);
+            $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
+            $object['command_file'] = (string) $row['command_file'];
+            $object['cache_directory'] = (string) $cache_directory;
 
             if ($row['daemon'] == '1') {
-                $watchdog[] = array(
-                    'cbd' => array(
-                        'name' => $row['config_name'],
-                        'configuration_file' => $this->engine['broker_cfg_path'] . '/' . $row['config_filename'],
-                        'run' => 1,
-                        'reload' => 1
-                    )
-                );
+                $watchdog['cbd'][] = [
+                    'name' => $row['config_name'],
+                    'configuration_file' => $this->engine['broker_cfg_path'] . '/' . $row['config_filename'],
+                    'run' => true,
+                    'reload' => true,
+                ];
             }
 
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
-            # Flow parameters
+            // Flow parameters
             foreach ($resultParameters as $key => $value) {
                 // We search the BlockId
                 $blockId = 0;
+                $configGroupdId = null;
                 for ($i = count($value); $i > 0; $i--) {
                     if (isset($value[$i]['config_key']) && $value[$i]['config_key'] == 'blockId') {
                         $blockId = $value[$i]['config_value'];
+                        $configGroupId = $value[$i]['config_group_id'];
                         break;
                     }
                 }
 
+                $subValuesToCastInArray = [];
+                $rrdCacheOption = 'disable';
                 foreach ($value as $subvalue) {
                     if (!isset($subvalue['fieldIndex']) ||
                         $subvalue['fieldIndex'] == "" ||
@@ -195,51 +196,90 @@ class Broker extends AbstractObjectXML
                             )
                         ) {
                             continue;
-                        } elseif ($subvalue['config_key'] == 'category') {
-                            $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
+                        } elseif ($subvalue['config_key'] === 'category') {
+                            $object[$key][$subvalue['config_group_id']]['filters'][$subvalue['config_key']][] =
                                 $subvalue['config_value'];
                         } else {
-                            $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                            if ($subvalue['config_key'] === 'rrd_cached_option') {
+                                $rrdCacheOption = $subvalue['config_value'];
+                                continue;
+                            }
+
+                            if ($subvalue['config_key'] === 'rrd_cached') {
+                                if ($rrdCacheOption === 'tcp') {
+                                    $object[$key][$subvalue['config_group_id']]['port'] = $subvalue['config_value'];
+                                } elseif ($rrdCacheOption === 'unix') {
+                                    $object[$key][$subvalue['config_group_id']]['path'] = $subvalue['config_value'];
+                                }
+                                continue;
+                            }
+
+                            $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                 $subvalue['config_value'];
-                            
+
                             // We override with external values
                             if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
-                                $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                                $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                     $this->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
                             }
                             // Let broker insert in index data in pollers
                             if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
                                 && !$localhost) {
-                                $object[$subvalue['config_group_id']][$key]['insert_in_index_data'] = 'yes';
+                                $object[$key][$subvalue['config_group_id']]['insert_in_index_data'] = 'yes';
                             }
                         }
                     } else {
                         $res = explode('__', $subvalue['config_key'], 3);
-                        $object[$subvalue['config_group_id']][$key][$subvalue['fieldIndex']][$res[0]][$res[1]] =
+                        $object[$key][$subvalue['config_group_id']][$res[0]][(int)$subvalue['fieldIndex']][$res[1]] =
                             $subvalue['config_value'];
+                        $subValuesToCastInArray[$subvalue['config_group_id']][] = $res[0];
                     }
-                    $flow_count++;
+                }
+
+                // Check if we need to add values from external
+                foreach ($this->cacheExternalValue as $key2 => $value2) {
+                    if (preg_match('/^(.+)_' . $blockId . '$/', $key2, $matches)) {
+                        if (!isset($object[$configGroupId][$key][$matches[1]])) {
+                            $object[$key][$configGroupId][$matches[1]] =
+                                $this->getInfoDb($value2);
+                        }
+                    }
+                }
+
+                // cast into arrays instead of objects with integer as key
+                $object[$key] = array_values($object[$key]);
+                foreach ($subValuesToCastInArray as $configGroupId => $subValues) {
+                    foreach ($subValues as $subValue) {
+                        $object[$key][$configGroupId][$subValue] =
+                            array_values($object[$key][$configGroupId][$subValue]);
+                    }
                 }
             }
 
-            # Stats parameters
+            // Stats parameters
             if ($stats_activate == '1') {
-                $object[$flow_count]['stats'] = array(
-                    'type' => 'stats',
-                    'name' => $config_name . '-stats',
-                    'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
-                );
+                $object['stats'] = [
+                    [
+                        'type' => 'stats',
+                        'name' => $config_name . '-stats',
+                        'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
+                    ],
+                ];
             }
 
-            # Generate file
-            $this->generateFile($object, true, 'centreonBroker');
+            // Generate file
+            $this->generateFile($object);
             $this->writeFile($this->backend_instance->getPath());
         }
-        $watchdog[] = array(
-            'log' => '/var/log/centreon-broker/watchdog.log'
-        );
-        $this->generate_filename = 'watchdog.xml';
-        $this->generateFile($watchdog, true, 'centreonbroker');
+
+        // Manage path of cbd watchdog log
+        $watchdogLogsPath = trim($this->engine['broker_logs_path']) === '' ?
+            '/var/log/centreon-broker/watchdog.log' :
+            trim($this->engine['broker_logs_path']) . '/watchdog.log';
+        $watchdog['log'] = $watchdogLogsPath;
+
+        $this->generate_filename = 'watchdog.json';
+        $this->generateFile($watchdog);
         $this->writeFile($this->backend_instance->getPath());
     }
 
@@ -260,6 +300,7 @@ class Broker extends AbstractObjectXML
             $this->engine['name'] = $row['name'];
             $this->engine['broker_modules_path'] = $row['centreonbroker_module_path'];
             $this->engine['broker_cfg_path'] = $row['centreonbroker_cfg_path'];
+            $this->engine['broker_logs_path'] = $row['centreonbroker_logs_path'];
         } catch (Exception $e) {
             throw new Exception('Exception received : ' . $e->getMessage() . "\n");
         }
@@ -269,7 +310,7 @@ class Broker extends AbstractObjectXML
     {
         $this->generate($poller['id'], $poller['localhost']);
     }
-    
+
     private function getInfoDb($string)
     {
         /*
@@ -332,15 +373,15 @@ class Broker extends AbstractObjectXML
                 $db = $this->backend_instance->db_cs;
                 break;
         }
-        
+
         $stmt = $db->prepare($query);
         $stmt->execute();
-        
+
         $infos = array();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $val = $row[$s_column];
             if (!is_null($s_rpn)) {
-                $val = $this->rpnCalc($s_rpn, $val);
+                $val = (string) $this->rpnCalc($s_rpn, $val);
             }
             $infos[] = $val;
         }
@@ -351,7 +392,7 @@ class Broker extends AbstractObjectXML
         }
         return $infos;
     }
-    
+
     private function rpnCalc($rpn, $val)
     {
         if (!is_numeric($val)) {
@@ -367,7 +408,7 @@ class Broker extends AbstractObjectXML
             return $val;
         }
     }
-    
+
     private function rpnOperation($result, $item)
     {
         if (in_array($item, array('+', '-', '*', '/'))) {

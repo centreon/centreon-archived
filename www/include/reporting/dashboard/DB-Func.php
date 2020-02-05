@@ -92,8 +92,8 @@ function getLogInDbForHost($host_id, $start_date, $end_date, $reportTimePeriod)
         "WHERE `host_id` = " . $host_id . " AND `date_start` >=  " . $start_date . " AND `date_end` <= " . $end_date .
         " " . "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (" . $days_of_week . ") " .
         "GROUP BY `host_id` ";
-    $DBRESULT = $pearDBO->query($rq);
-    if ($row = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDBO->query($rq);
+    if ($row = $dbResult->fetch()) {
         $hostStats = $row;
     }
 
@@ -282,7 +282,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
-        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }
@@ -303,8 +303,8 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
         "AND date_start >= " . $start_date . " AND date_end <= " . $end_date . " " .
         "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") " .
         "GROUP BY las.service_id ";
-    $DBRESULT = $pearDBO->query($rq);
-    while ($row = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDBO->query($rq);
+    while ($row = $dbResult->fetch()) {
         if (isset($hostServiceStats[$row["service_id"]])) {
             $hostServiceStats[$row["service_id"]] = $row;
         }
@@ -420,10 +420,12 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
-        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }
+
+    // Use "like" instead of "=" to avoid mysql bug on partitioned tables
     $rq = "SELECT DISTINCT las.service_id, sum(OKTimeScheduled) as OK_T, sum(OKnbEvent) as OK_A, "
         . "sum(WARNINGTimeScheduled)  as WARNING_T, sum(WARNINGnbEvent) as WARNING_A, "
         . "sum(UNKNOWNTimeScheduled) as UNKNOWN_T, sum(UNKNOWNnbEvent) as UNKNOWN_A, "
@@ -432,14 +434,14 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
         . "sum(MaintenanceTime) as MAINTENANCE_T "
         . "FROM log_archive_service las "
         . "WHERE las.host_id = " . $host_id . " "
-        . $aclCondition . 
+        . $aclCondition .
         " AND las.service_id = " . $service_id . " AND `date_start` >= " . $start_date .
         " AND date_end <= " . $end_date . " "
         . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") "
         . "GROUP BY las.service_id";
-    $DBRESULT = $pearDBO->query($rq);
+    $dbResult = $pearDBO->query($rq);
 
-    if ($row = $DBRESULT->fetchRow()) {
+    if ($row = $dbResult->fetch()) {
         $serviceStats = $row;
     }
     $timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
@@ -639,8 +641,8 @@ function getreportingTimePeriod()
 
     $reportingTimePeriod = array();
     $query = "SELECT * FROM `contact_param` WHERE cp_contact_id is null";
-    $DBRESULT = $pearDB->query($query);
-    while ($res = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($query);
+    while ($res = $dbResult->fetch()) {
         if ($res["cp_key"] == "report_hour_start") {
             $reportingTimePeriod["report_hour_start"] = $res["cp_value"];
         }
@@ -709,8 +711,8 @@ function getHostNameFromId($host_id)
 {
     global $pearDB;
     $req = "SELECT  `host_name` FROM `host` WHERE `host_id` = " . $host_id;
-    $DBRESULT = $pearDB->query($req);
-    if ($row = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($req);
+    if ($row = $dbResult->fetch()) {
         return ($row["host_name"]);
     }
     return "undefined";
@@ -720,8 +722,8 @@ function getHostgroupNameFromId($hostgroup_id)
 {
     global $pearDB;
     $req = "SELECT  `hg_name` FROM `hostgroup` WHERE `hg_id` = " . $hostgroup_id;
-    $DBRESULT = $pearDB->query($req);
-    if ($row = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($req);
+    if ($row = $dbResult->fetch()) {
         return ($row["hg_name"]);
     }
     return "undefined";
@@ -731,8 +733,8 @@ function getServiceDescriptionFromId($service_id)
 {
     global $pearDB;
     $req = "SELECT  `service_description` FROM `service` WHERE `service_id` = " . $service_id;
-    $DBRESULT = $pearDB->query($req);
-    if ($row = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($req);
+    if ($row = $dbResult->fetch()) {
         return ($row["service_description"]);
     }
     return "undefined";
@@ -742,11 +744,11 @@ function getServiceGroupNameFromId($sg_id)
 {
     global $pearDB;
     $req = "SELECT  `sg_name` FROM `servicegroup` WHERE `sg_id` = " . $sg_id;
-    $DBRESULT = $pearDB->query($req);
+    $dbResult = $pearDB->query($req);
     unset($req);
-    if ($row = $DBRESULT->fetchRow()) {
+    if ($row = $dbResult->fetch()) {
         return ($row["sg_name"]);
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     return "undefined";
 }

@@ -67,9 +67,9 @@ class LdapContext extends CentreonContext
             'group_name' => 'ldap',
             'group_alias' => 'ldap',
             'contactgroups' => array(
-                'linux (LDAP : openldap)',
-                'windows (LDAP : openldap)',
-                'networking (LDAP : openldap)'
+                'linux (LDAP : OpenLDAP)',
+                'windows (LDAP : OpenLDAP)',
+                'networking (LDAP : OpenLDAP)'
             )
         );
 

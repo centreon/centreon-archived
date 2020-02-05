@@ -11,7 +11,7 @@ Prérequis
 =========
 
 Avant toute chose vous devez avoir une plate-forme Centreon installée et prête à 
-l'emploi. Se référer à la documentation :ref:`d'installation de Centreon<firststepsces3>`.
+l'emploi. Se référer à la documentation :ref:`d'installation de Centreon<installisoel7>`.
 
 Installation
 ============
@@ -69,7 +69,7 @@ Pour exécuter le script lancer la commande :
 
 ::
 
-  $ perl nagios_reader_to_centreon_clapi.pl --config /usr/local/nagios/etc/nagios.cfg > /tmp/centreon_clapi_import_commands.txt
+  $ perl nagios_reader_to_centreon_clapi.pl --config /usr/local/nagios/etc/ > /tmp/centreon_clapi_import_commands.txt
 
 Exportez le fichier **/tmp/centreon_clapi_import_commands.txt** sur votre serveur Centreon.
 

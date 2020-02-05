@@ -35,40 +35,57 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Module\License;
+use CentreonLegacy\Core\Utils\Utils;
+use CentreonLegacy\ServiceProvider;
+
 class Information
 {
     /**
-     *
      * @var \CentreonLegacy\Core\Module\License
      */
     protected $licenseObj;
     
     /**
-     *
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
+    protected $services;
     
     /**
-     *
      * @var \CentreonLegacy\Core\Utils\Utils
      */
     protected $utils;
 
     /**
+     * @var array
+     */
+    protected $cachedModulesList = [];
+
+    /**
+     * @var bool
+     */
+    protected $hasModulesForUpgrade = false;
+
+    /**
+     * @var bool
+     */
+    protected $hasModulesForInstallation = false;
+
+    /**
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Module\License $licenseObj
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
     public function __construct(
-        \Pimple\Container $dependencyInjector,
-        \CentreonLegacy\Core\Module\License $licenseObj,
-        \CentreonLegacy\Core\Utils\Utils $utils
+        ContainerInterface $services,
+        License $licenseObj = null,
+        Utils $utils = null
     ) {
-        $this->dependencyInjector = $dependencyInjector;
-        $this->licenseObj = $licenseObj;
-        $this->utils = $utils;
+        $this->services = $services;
+        $this->licenseObj = $licenseObj ?? $services->get(ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE);
+        $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
     }
 
     /**
@@ -94,7 +111,7 @@ class Information
         $query = 'SELECT name ' .
             'FROM modules_informations ' .
             'WHERE id = :id';
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':id', $moduleId, \PDO::PARAM_INT);
 
@@ -112,12 +129,12 @@ class Information
      * Get list of installed modules
      * @return array
      */
-    private function getInstalledList()
+    public function getInstalledList()
     {
         $query = 'SELECT * ' .
             'FROM modules_informations ';
 
-        $result = $this->dependencyInjector['configuration_db']->query($query);
+        $result = $this->services->get('configuration_db')->query($query);
 
         $modules = $result->fetchAll();
 
@@ -139,7 +156,7 @@ class Information
         $query = 'SELECT * ' .
             'FROM modules_informations ' .
             'WHERE name = :name';
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':name', $moduleName, \PDO::PARAM_STR);
 
@@ -157,13 +174,13 @@ class Information
         $list = array();
 
         $modulesPath = $this->getModulePath();
-        $modules = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($modulesPath);
+        $modules = $this->services->get('finder')->directories()->depth('== 0')->in($modulesPath);
 
         foreach ($modules as $module) {
             $moduleName = $module->getBasename();
             $modulePath = $modulesPath . $moduleName;
 
-            if (!$this->dependencyInjector['filesystem']->exists($modulePath . '/conf.php')) {
+            if (!$this->services->get('filesystem')->exists($modulePath . '/conf.php')) {
                 continue;
             }
 
@@ -199,15 +216,19 @@ class Information
             $modules[$name]['upgradeable'] = false;
             $modules[$name]['installed_version'] = _('N/A');
             $modules[$name]['available_version'] = $modules[$name]['mod_release'];
+
             unset($modules[$name]['release']);
+
             if (isset($installedModules[$name]['mod_release'])) {
                 $modules[$name]['id'] = $installedModules[$name]['id'];
                 $modules[$name]['is_installed'] = true;
                 $modules[$name]['installed_version'] = $installedModules[$name]['mod_release'];
-                $modules[$name]['upgradeable'] = $this->isUpgradeable(
+                $moduleIsUpgradeable = $this->isUpgradeable(
                     $modules[$name]['available_version'],
                     $modules[$name]['installed_version']
                 );
+                $modules[$name]['upgradeable'] = $moduleIsUpgradeable;
+                $this->hasModulesForUpgrade = $moduleIsUpgradeable ?: $this->hasModulesForUpgrade;
             }
         }
 
@@ -218,6 +239,9 @@ class Information
                 $modules[$name]['source_available'] = false;
             }
         }
+
+        $this->hasModulesForInstallation = count($availableModules) > count($installedModules);
+        $this->cachedModulesList = $modules;
 
         return $modules;
     }
@@ -249,5 +273,33 @@ class Information
     public function getModulePath($moduleName = '')
     {
         return $this->utils->buildPath('/modules/' . $moduleName) . '/';
+    }
+
+    public function hasModulesForUpgrade()
+    {
+        return $this->hasModulesForUpgrade;
+    }
+
+    public function getUpgradeableList()
+    {
+        $list = empty($this->cachedModulesList) ? $this->getList() : $this->cachedModulesList;
+
+        return array_filter($list, function ($widget) {
+            return $widget['upgradeable'];
+        });
+    }
+
+    public function hasModulesForInstallation()
+    {
+        return $this->hasModulesForInstallation;
+    }
+
+    public function getInstallableList()
+    {
+        $list = empty($this->cachedModulesList) ? $this->getList() : $this->cachedModulesList;
+
+        return array_filter($list, function ($widget) {
+            return !$widget['is_installed'];
+        });
     }
 }

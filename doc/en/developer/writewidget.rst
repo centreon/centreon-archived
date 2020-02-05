@@ -86,15 +86,15 @@ website         URL of your project
 
 description*    Short description of your widget
 
-version*        Version of your widget. Increment this number whenever you 
+version*        Version of your widget. Increment this number whenever you
                 publish a new version.
 
 keywords        A few key words that describe your widget
 
-screenshot      Screenshot that shows the best side of your widget. Screenshot 
+screenshot      Screenshot that shows the best side of your widget. Screenshot
                 should be placed within your widget directory.
 
-thumbnail       Logo of your project. Best size is 100px x 25px. Thumbnail 
+thumbnail       Logo of your project. Best size is 100px x 25px. Thumbnail
                 shoud be placed within your widget directory.
 
 url*            Path of the main page of your widget
@@ -112,25 +112,25 @@ Tag attributes          Description
 ======================  ========================================================
 label*                  Label of the parameter
 
-name*                   Name of the parameter that will be used for retrieving 
+name*                   Name of the parameter that will be used for retrieving
                         its value
 
 defaultValue*           Default Value of the parameter
 
-requirePermission       Value can be "1" or "0". When set to 1, this parameter 
+requirePermission       Value can be "1" or "0". When set to 1, this parameter
                         will not be shown to unauthorized users.
 
-type*                   Parameter type, must be one of the following: 
+type*                   Parameter type, must be one of the following:
                         text,boolean,date,list,range,compare,host,hostgroup,
                         hostTemplate,servicegroup,serviceTemplate
 
-min*                    For range type only. It refers to the minimum value 
+min*                    For range type only. It refers to the minimum value
                         of the range parameter
 
-max*                    For range type only. It refers to the maximum value 
+max*                    For range type only. It refers to the maximum value
                         of the range parameter
 
-step*                   For range type only. It refers to the step value of 
+step*                   For range type only. It refers to the step value of
                         the range parameter
 ======================  ========================================================
 
@@ -144,17 +144,17 @@ text                    Renders a text input element
 
 boolean                 Renders a checkbox
 
-date                    Renders two text input elements. One for the date of 
+date                    Renders two text input elements. One for the date of
                         start, the other one for the date of end.
 
-list                    Renders a selectbox. The selectbox will be populated 
+list                    Renders a selectbox. The selectbox will be populated
                         with the option tags which have to be defined within the
                         preference tag.
 
 range                   Renders a selectbox which will be populated with values
                         depending on the min, max and step definitions.
 
-compare                 Renders a selectbox and a text input. Selectbox will 
+compare                 Renders a selectbox and a text input. Selectbox will
                         contain SQL operands such as::
 
                           > : greater than
@@ -170,13 +170,13 @@ host                    Renders a selectbox populated with a list of hosts.
 
 hostgroup               Renders a selectbox populated with a list of hostgroups.
 
-hostTemplate            Renders a selectbox populated with a list of host 
+hostTemplate            Renders a selectbox populated with a list of host
                         templates.
 
-servicegroup            Renders a selectbox populated with a list of 
+servicegroup            Renders a selectbox populated with a list of
                         servicegroups.
 
-serviceTemplate         Renders a selectbox populated with a list of service 
+serviceTemplate         Renders a selectbox populated with a list of service
                         templates.
 ======================  ========================================================
 
@@ -189,20 +189,20 @@ The preference window would look like this as a result:
 Code
 ****
 
-All langages are separated in differents files, one file for each langage. The file "configs.xml" call the php's file and the php's file call html's file etc...
+All languages are separated in differents files, one file for each language. The file "configs.xml" call the php's file and the php's file call html's file etc...
 
 We use Smarty, it's an engine and template'php compiler (http://smarty.net).
 
 
 To use Smarty you need to :
 
-.. source-code:: php
+.. code-block:: php
 
 	require_once $centreon_path . 'GPL_LIB/Smarty/libs/Smarty.class.php';
 
 1.configuration of smarty:
 
-.. source-code:: php
+.. code-block:: php
 
 	$path = $centreon_path . "www/widgets/Dummy/src/";
 	$template = new Smarty();
@@ -210,7 +210,7 @@ To use Smarty you need to :
 
 2.creating php template to be use in html:
 
-.. source-code:: php
+.. code-block:: php
 
  	$template->assign('widgetId', $widgetId);
 	$template->assign('autoRefresh', $autoRefresh);
@@ -218,14 +218,14 @@ To use Smarty you need to :
 
 3.affectation of html's file to execute:
 
-.. source-code:: php
+.. code-block:: php
 
 	$template->display('dummy.ihtml');
 
 
 To call template php's variable in the html look dummy.ihtml
 
-To do request in database: 
+To do request in database:
 
 initialization of databases's centreon, centreon storage and recovering preferences:
 
@@ -250,4 +250,3 @@ initialization of databases's centreon, centreon storage and recovering preferen
 	}
 
 then request in database with class' methods.
-

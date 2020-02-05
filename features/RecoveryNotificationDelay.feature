@@ -22,9 +22,9 @@ Feature: Recovery notification delay
     Scenario: Host recovery notification enabled after delay
         Given a host configured with recovery notification delay
         And the host is not UP
-	And the host recovers before the recovery notification delay
+        And the host recovers before the recovery notification delay
         When the host receives a new check result after the recovery notification delay
-	Then a recovery notification is sent
+        Then a recovery notification is sent
 
     Scenario: Service recovery notification enabled after delay
         Given a service configured with recovery notification delay

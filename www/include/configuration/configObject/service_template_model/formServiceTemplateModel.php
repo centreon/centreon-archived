@@ -231,7 +231,7 @@ $attrHosttemplates = array(
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */ 
+ */
 unset($_POST['o']);
 #
 ## Form begin
@@ -983,6 +983,8 @@ if ($form->validate() && $from_list_menu == false) {
 if ($valid) {
     require_once($path . "listServiceTemplateModel.php");
 } else {
+    $dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
+    $inheritanceMode = $dbResult->fetch();
     # Apply a template definition
     require_once _CENTREON_PATH_ . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
@@ -993,6 +995,7 @@ if ($valid) {
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
     $tpl->assign('v', $oreon->user->get_version());
+    $tpl->assign('inheritance', $inheritanceMode['value']);
 
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));

@@ -10,15 +10,21 @@
 # SVN: $Id$
 
 # debug ?
-#set -x 
+#set -x
 
 echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
 
-###### check space ton tmp dir
+###### check space of tmp dir
 check_tmp_disk_space
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir
+if [ "$?" -eq 1 ] ; then
+  if [ "$silent_install" -eq 1 ] ; then
+    purge_centreon_tmp_dir "silent"
+  else
+    purge_centreon_tmp_dir
+  fi
+fi
 
 ###### Require
 #################################
@@ -32,7 +38,6 @@ locate_centreon_installdir
 locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_bindir
-locate_centreon_datadir
 locate_centreon_generationdir
 locate_centreon_varlib
 
@@ -46,10 +51,25 @@ locate_php_bin
 locate_pear
 locate_perl
 
+## Check PHP version
+check_php_version
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+
+## Check composer dependencies (if vendor directory exists)
+check_composer_dependencies
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+
+## Check frontend application (if www/static directory exists)
+check_frontend_application
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+
 ## Config apache
 check_httpd_directory
 check_user_apache
 check_group_apache
+
+## Config PHP FPM
+check_php_fpm_directory
 
 ## Ask for centreon user
 check_centreon_group
@@ -89,8 +109,11 @@ configureSUDO "$INSTALL_DIR_CENTREON/examples"
 ## Config Apache
 configureApache "$INSTALL_DIR_CENTREON/examples"
 
+## Ask for fpm-php service
+configure_php_fpm "$INSTALL_DIR_CENTREON/examples"
+
 ## Create temps folder and copy all src into
-copyInTempFile 2>>$LOG_FILE 
+copyInTempFile 2>>$LOG_FILE
 
 ## InstallCentreon
 
@@ -101,6 +124,14 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     "$CENTREON_LOG" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_LOG"
 
+# change right on successful installations files
+log "INFO" "$(gettext "Change right on") $CENTREON_VARLIB/installs"
+$INSTALL_DIR/cinstall $cinstall_opts \
+    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+    "$CENTREON_VARLIB/installs" >> "$LOG_FILE" 2>&1
+chmod -R g+rwxs $CENTREON_VARLIB/installs
+check_result $? "$(gettext "Change right on") $CENTREON_VARLIB/installs"
+
 # change right on centreon etc
 log "INFO" "$(gettext "Change right on") $CENTREON_ETC"
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -110,11 +141,32 @@ check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
+cp -Rf $TMP_DIR/src/api $TMP_DIR/final
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 cp -Rf $TMP_DIR/src/config $TMP_DIR/final
+mv $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/src/config/centreon.config.php
+cp -f $TMP_DIR/src/container.php $TMP_DIR/final
 cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
 cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
+cp -f $TMP_DIR/src/package.json $TMP_DIR/final
+cp -f $TMP_DIR/src/package-lock.json $TMP_DIR/final
+cp -f $TMP_DIR/src/.env $TMP_DIR/final
+cp -Rf $TMP_DIR/src/src $TMP_DIR/final
+
+## Prepare and copy composer module
+OLDPATH=$(pwd)
+cd $TMP_DIR/src/
+log "INFO" "$(gettext "Copying composer dependencies...")"
+cp -Rf vendor $TMP_DIR/final/
+cd "${OLDPATH}"
+
+## Build frontend app
+OLDPATH=$(pwd)
+cd $TMP_DIR/src/
+log "INFO" "$(gettext "Copying frontend application...")"
+cp -Rf www/index.html www/static www/.htaccess $TMP_DIR/final/www/
+cd "${OLDPATH}"
 
 ## Create temporary directory
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
@@ -149,9 +201,9 @@ check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
 log "INFO" "$( gettext "Copying www/install/insertBaseConf.sql in final directory")"
 cp $TMP_DIR/work/www/install/insertBaseConf.sql \
     $TMP_DIR/final/www/install/insertBaseConf.sql >> "$LOG_FILE" 2>&1
-    
+
 ### Chagne Macro for sql update file
-macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREON_ENGINE_CONNECTORS@"
+macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREON_ENGINE_CONNECTORS@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "Update*.sql" "file_sql_temp"
 
 log "INFO" "$(gettext "Apply macros")"
@@ -162,7 +214,7 @@ ${CAT} "$file_sql_temp" | while read file ; do
     [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
         mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
     ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-        -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+        -e 's|@CENTREON_CACHEDIR@|'"$CENTREON_CACHEDIR"'|g' \
         -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
         -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
         -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -170,14 +222,14 @@ ${CAT} "$file_sql_temp" | while read file ; do
         $TMP_DIR/src/$file > $TMP_DIR/work/$file
         [ $? -ne 0 ] && flg_error=1
     log "MACRO" "$(gettext "Copy in final dir") : $file"
-    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
+    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
 done
 check_result $flg_error "$(gettext "Change macros for sql update files")"
 
 ### Step 2.0: Change right on Centreon WebFront
 
 ## use this step to change macros on php file...
-macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.php" "file_php_temp"
 
 log "INFO" "$(gettext "Apply macros")"
@@ -188,7 +240,7 @@ ${CAT} "$file_php_temp" | while read file ; do
     [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
         mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
     ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-        -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+        -e 's|@CENTREON_CACHEDIR@|'"$CENTREON_CACHEDIR"'|g' \
         -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
         -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
         -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
@@ -196,12 +248,12 @@ ${CAT} "$file_php_temp" | while read file ; do
         $TMP_DIR/src/$file > $TMP_DIR/work/$file
         [ $? -ne 0 ] && flg_error=1
     log "MACRO" "$(gettext "Copy in final dir") : $file"
-    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
+    cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
 
-macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
-find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php" "file_php_config_temp"
+macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php*" "file_php_config_temp"
 
 log "INFO" "$(gettext "Apply macros")"
 
@@ -211,7 +263,7 @@ ${CAT} "$file_php_config_temp" | while read file ; do
         [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
         ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-                -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+                -e 's|@CENTREON_CACHEDIR@|'"$CENTREON_CACHEDIR"'|g' \
                 -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
@@ -226,7 +278,7 @@ check_result $flg_error "$(gettext "Change macros for php config file")"
 ### Step 2.1 : replace macro for perl binary
 
 ## use this step to change macros on perl file...
-macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
 find_macros_in_dir "$macros" "$TMP_DIR/src" "bin/" "*" "file_perl_temp"
 
 log "INFO" "$(gettext "Apply macros")"
@@ -237,7 +289,7 @@ ${CAT} "$file_perl_temp" | while read file ; do
         [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
         ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-                -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+                -e 's|@CENTREON_CACHEDIR@|'"$CENTREON_CACHEDIR"'|g' \
                 -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
@@ -250,7 +302,7 @@ done
 check_result $flg_error "$(gettext "Change macros for perl binary")"
 
 ### Step 3: Change right on monitoringengine_etcdir
-log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC" 
+log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 flg_error=0
 $INSTALL_DIR/cinstall $cinstall_opts \
     -g "$MONITORINGENGINE_GROUP" -d 775 \
@@ -263,7 +315,7 @@ find "$MONITORINGENGINE_ETC" -type f -print | \
 find "$MONITORINGENGINE_ETC" -type f -print | \
     xargs -I '{}' ${CHOWN} "$MONITORINGENGINE_USER":"$MONITORINGENGINE_GROUP" '{}' >> "$LOG_FILE" 2>&1
 [ $? -ne 0 ] && flg_error=1
-check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC" 
+check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 
 ### Change right to broker_etcdir
 log "INFO" "$(gettext "Change right on ") $BROKER_ETC"
@@ -288,7 +340,7 @@ if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
     find "$BROKER_ETC" -type f -print | \
         xargs -I '{}' ${CHOWN} "$BROKER_USER":"$BROKER_GROUP" '{}' >> "$LOG_FILE" 2>&1
     [ $? -ne 0 ] && flg_error=1
-    check_result $flg_error "$(gettext "Change right on") $BROKER_ETC" 
+    check_result $flg_error "$(gettext "Change right on") $BROKER_ETC"
 fi
 
 if [ "$upgrade" = "1" ]; then
@@ -309,7 +361,17 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     $TMP_DIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 
-echo_info "$(gettext "Change right for install directory")"
+cp -f $TMP_DIR/final/www/.htaccess $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/.htaccess
+$CHMOD 644 $INSTALL_DIR_CENTREON/www/.htaccess
+
+cp -Rf $TMP_DIR/final/src $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
+
+cp -Rf $TMP_DIR/final/api $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/api
+
+log "INFO" "$(gettext "Change right for install directory")"
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/install/
 check_result $? "$(gettext "Change right for install directory")"
 
@@ -326,62 +388,55 @@ check_result $? "$(gettext "Change right for install directory")"
 cp -f $TMP_DIR/final/bootstrap.php $INSTALL_DIR_CENTREON/bootstrap.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
 
+cp -f $TMP_DIR/final/.env $INSTALL_DIR_CENTREON/.env >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env
+
+cp -f $TMP_DIR/final/container.php $INSTALL_DIR_CENTREON/container.php >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/container.php
+
+cp -Rf $TMP_DIR/final/vendor $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/vendor
+
 cp -f $TMP_DIR/final/composer.json $INSTALL_DIR_CENTREON/composer.json >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/composer.json
+
+cp -f $TMP_DIR/final/package.json $INSTALL_DIR_CENTREON/package.json >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/package.json
+
+cp -f $TMP_DIR/final/package-lock.json $INSTALL_DIR_CENTREON/package-lock.json >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/package-lock.json
 
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
         $INSTALL_DIR_CENTREON/config >> "$LOG_FILE" 2>&1
 cp -Rf $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
-
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/config
 
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
-    $CENTREON_GENDIR/filesGeneration/engine >> "$LOG_FILE" 2>&1
+    $CENTREON_CACHEDIR/config >> "$LOG_FILE" 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
-    $CENTREON_GENDIR/filesGeneration/broker >> "$LOG_FILE" 2>&1
-
-# setgid flag
-chmod -R g+rwxs $CENTREON_GENDIR/filesGeneration/
-
-# By default, CentWeb use a filesGeneration directory in install dir.
-# I create a symlink to continue in a same process
-[ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \
-    ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
-
-$INSTALL_DIR/cinstall $cinstall_opts \
-    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 -v \
-    $CENTREON_GENDIR/filesUpload/images >> "$LOG_FILE" 2>&1
-# By default, CentWeb use a filesGeneration directory in install dir.
-# I create a symlink to continue in a same process
-[ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
-    ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
-
-# Add new directory for save installation directories
+    $CENTREON_CACHEDIR/config/engine >> "$LOG_FILE" 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
-    $CENTREON_GENDIR/installDir >> "$LOG_FILE" 2>&1
-chmod -R g+rwxs $CENTREON_GENDIR/installDir
-[ ! -h $INSTALL_DIR_CENTREON/installDir -a ! -d $INSTALL_DIR_CENTREON/installDir ] && \
-    ln -s $CENTREON_GENDIR/installDir $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
+    $CENTREON_CACHEDIR/config/broker >> "$LOG_FILE" 2>&1
+$INSTALL_DIR/cinstall $cinstall_opts \
+    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+    $CENTREON_CACHEDIR/config/export >> "$LOG_FILE" 2>&1
+$INSTALL_DIR/cinstall $cinstall_opts \
+    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+    $CENTREON_CACHEDIR/symfony >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
-    $TMP_DIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
+    $TMP_DIR/final/GPL_LIB/* $INSTALL_DIR_CENTREON/GPL_LIB/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install libraries")"
 
 log "INFO" "$(gettext "Add right for Smarty cache and compile")"
 $CHMOD -R g+w $INSTALL_DIR_CENTREON/GPL_LIB/SmartyCache
 check_result $? "$(gettext "Write right to Smarty Cache")"
-
-log "INFO" "$(gettext "Copying libinstall")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-  -d 755 -m 755 \
-  $TMP_DIR/final/libinstall $INSTALL_DIR_CENTREON/libinstall >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Copying libinstall")"
 
 ## Cron stuff
 ## need to add stuff for Unix system... (freeBSD...)
@@ -434,7 +489,7 @@ cp -f $TMP_DIR/work/cron/centreon-backup.pl \
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
-    $TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
+    $TMP_DIR/final/cron/* $INSTALL_DIR_CENTREON/cron/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
 log "INFO" "$(gettext "Change right for eventReportBuilder")"
@@ -621,11 +676,39 @@ check_result $? "$(gettext "Install clapi binary")"
 
 # Install libraries for Centreon CLAPI
 $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-    $TMP_DIR/src/lib/Zend/ \
-    $INSTALL_DIR_CENTREON/lib/Zend/ >> $LOG_FILE 2>&1
-$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
     $TMP_DIR/src/lib/Centreon/ \
     $INSTALL_DIR_CENTREON/lib/Centreon/ >> $LOG_FILE 2>&1
+
+## Prepare to install all pear modules needed.
+# use check_pear.php script
+echo -e "\n$line"
+echo -e "$(gettext "Pear Modules")"
+echo -e "$line"
+pear_module="0"
+first=1
+while [ "$pear_module" -eq 0 ] ; do
+    check_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+    if [ "$?" -ne 0 ] ; then
+            if [ "${PEAR_AUTOINST:-0}" -eq 0 ]; then
+                if [ "$first" -eq 0 ] ; then
+                    echo_info "$(gettext "Unable to upgrade PEAR modules. You seem to have a connection problem.")"
+                fi
+                yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
+                [ "$?" -eq 0 ] && PEAR_AUTOINST=1
+            fi
+        if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
+            upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+                install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+                PEAR_AUTOINST=0
+                first=0
+            else
+            pear_module="1"
+            fi
+    else
+        echo_success "$(gettext "All PEAR modules")" "$ok"
+        pear_module="1"
+    fi
+done
 
 ## Create configfile for web install
 createConfFile

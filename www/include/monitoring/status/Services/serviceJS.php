@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2010 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -191,7 +191,7 @@ if (isset($_GET["acknowledge"])) {
         }
     }
 
-    function initM(_time_reload, _sid, _o) {
+    function initM(_time_reload, _o) {
 
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
@@ -230,11 +230,14 @@ if (isset($_GET["acknowledge"])) {
         }
         _time =<?php echo $time; ?>;
         if (_on) {
-            goM(_time_reload, _sid, _o);
+            goM(_time_reload, _o);
         }
     }
 
-    function goM(_time_reload, _sid, _o) {
+    function goM(_time_reload, _o) {
+        if (_on == 0) {
+            return;
+        }
         _lock = 1;
         var proc = new Transformation();
 
@@ -249,7 +252,7 @@ if (isset($_GET["acknowledge"])) {
         var statusService = jQuery.trim(jQuery('#statusService').val());
         var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
 
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         proc.setXml(
             _addrXML + "?" + '&search=' + _search + '&search_host=' + _host_search +
             '&search_output=' + _output_search + '&num=' + _num + '&limit=' + _limit + '&sort_type=' + _sort_type +
@@ -264,7 +267,10 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
-        _timeoutID = cycleVisibilityChange('goM("' + _time_reload + '","' + _sid + '","' + _o + '")', _time_reload);
+        if (_timeoutID) { // Kill next execution if in queue
+            clearTimeout(_timeoutID);
+        }
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
 
@@ -381,9 +387,10 @@ if (isset($_GET["acknowledge"])) {
             if (searchElement.find('#fixed').length && searchElement.find('#fixed').is(':checked')) {
                 fixed = true;
             }
-
-            var start = searchElement.find('#start').val() + ' ' + searchElement.find('#start_time').val();
-            var end = searchElement.find('#end').val() + ' ' + searchElement.find('#end_time').val();
+            var start = searchElement.find('[name="alternativeDateStart"]').val() + ' '
+                + searchElement.find('#start_time').val();
+            var end = searchElement.find('[name="alternativeDateEnd"]').val() + ' '
+                + searchElement.find('#end_time').val();
             var author = jQuery('#author').val();
             var duration = searchElement.find('#duration').val();
             var duration_scale = searchElement.find('#duration_scale').val();

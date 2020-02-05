@@ -36,18 +36,20 @@
 if (!isset($centreon)) {
     exit();
 }
+$server_id = filter_var(
+    $_GET["server_id"] ?? $_POST["server_id"] ?? null,
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["server_id"]) ? $cG = $_GET["server_id"] : $cG = null;
-isset($_POST["server_id"]) ? $cP = $_POST["server_id"] : $cP = null;
-$cG ? $server_id = $cG : $server_id = $cP;
+$select = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$dupNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
 // Path to the configuration dir
 $path = "./include/configuration/configServers/";
@@ -61,42 +63,69 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
-$serverResult = $centreon->user->access->getPollerAclConf(array('fields' => array('id', 'name', 'last_restart'),
-                                                             'order'  => array('name'),
-                                                             'keys'   => array('id')));
+$serverResult =
+    $centreon->user->access->getPollerAclConf(
+        array(
+            'fields' => array('id', 'name', 'last_restart'),
+            'order'  => array('name'),
+            'keys'   => array('id')
+        )
+    );
 
 $instanceObj = new CentreonInstance($pearDB);
 
+define('SERVER_ADD', 'a');
+define('SERVER_DELETE', 'd');
+define('SERVER_DISABLE', 'u');
+define('SERVER_DUPLICATE', 'm');
+define('SERVER_ENABLE', 's');
+define('SERVER_MODIFY', 'c');
+define('SERVER_WATCH', 'w');
+
+$action = filter_var(
+    $_POST['o1'] ?? $_POST['o2'] ?? null,
+    FILTER_VALIDATE_REGEXP,
+    ['options' => ['regexp' => '/^(a|c|d|m|s|u|w)$/']]
+);
+if ($action !== false) {
+    $o = $action;
+}
+
 switch ($o) {
-    case "a":
-        require_once($path."formServers.php");
-        break; // Add Servers
-    case "w":
-        require_once($path."formServers.php");
-        break; // Watch Servers
-    case "c":
-        require_once($path."formServers.php");
-        break; // Modify Servers
-    case "s":
-        enableServerInDB($server_id);
-        require_once($path."listServers.php");
-        break; // Activate a Server
-    case "u":
-        disableServerInDB($server_id);
-        require_once($path."listServers.php");
-        break; // Desactivate a Server
-    case "i":
-        require_once($path."getServersVersions.php");
-        break; // Search for version of engines Servers
-    case "m":
-        multipleServerInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listServers.php");
-        break; // Duplicate n Servers
-    case "d":
-        deleteServerInDB(isset($select) ? $select : array());
-        require_once($path."listServers.php");
-        break; // Delete n Servers
+    case SERVER_ADD:
+        require_once($path . "formServers.php");
+        break;
+    case SERVER_WATCH:
+        require_once($path . "formServers.php");
+        break;
+    case SERVER_MODIFY:
+        require_once($path . "formServers.php");
+        break;
+    case SERVER_ENABLE:
+        if ($server_id !== false) {
+            enableServerInDB($server_id);
+        }
+        require_once($path . "listServers.php");
+        break;
+    case SERVER_DISABLE:
+        if ($server_id !== false) {
+            disableServerInDB($server_id);
+        }
+        require_once($path . "listServers.php");
+        break;
+    case SERVER_DUPLICATE:
+        if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
+            duplicateServer($select, $dupNbr);
+        }
+        require_once($path . "listServers.php");
+        break;
+    case SERVER_DELETE:
+        if (!in_array(false, $select)) {
+            deleteServerInDB($select);
+        }
+        require_once($path . "listServers.php");
+        break;
     default:
-        require_once($path."listServers.php");
+        require_once($path . "listServers.php");
         break;
 }

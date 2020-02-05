@@ -109,7 +109,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             $t = 'host';
         }
 
-        // Check for service type
+        // Check for service with graph
         $g = false;
         if (isset($this->arguments['g'])) {
             $g = $this->arguments['g'];
@@ -122,7 +122,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
         if (isset($this->arguments['s'])) {
             $sTypeList = array('s', 'm', 'all');
             if (in_array(strtolower($this->arguments['s']), $sTypeList)) {
-                $s = $this->arguments['s'];;
+                $s = $this->arguments['s'];
             } else {
                 throw new \RestBadRequestException('Error, bad service type');
             }
@@ -185,10 +185,10 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
         switch ($s) {
             case 'all':
-                $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id ' .
+                $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id, service_activate ' .
                     'FROM ( ' .
                     '( SELECT DISTINCT CONCAT(h.host_name, " - ", s.service_description) ' .
-                    'as fullname, s.service_id, h.host_id ' .
+                    'as fullname, s.service_id, h.host_id, s.service_activate ' .
                     'FROM host h, service s, host_service_relation hsr ' .
                     'WHERE hsr.host_host_id = h.host_id ' .
                     'AND hsr.service_service_id = s.service_id ' .
@@ -197,7 +197,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     'AND CONCAT(h.host_name, " - ", s.service_description) LIKE :description ' .
                     $enableQuery . $aclServices . ') ' .
                     'UNION ALL ( ' .
-                    'SELECT DISTINCT CONCAT("Meta - ", ms.display_name) as fullname, ms.service_id, mh.host_id ' .
+                    'SELECT DISTINCT CONCAT("Meta - ", ms.display_name) as fullname, ms.service_id, mh.host_id, ms.service_activate ' .
                     'FROM host mh, service ms ' .
                     'WHERE mh.host_name = "_Module_Meta" ' .
                     'AND mh.host_register = "2" ' .
@@ -222,7 +222,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 break;
             case 's':
                 $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT(h.host_name, " - ", ' .
-                    's.service_description) as fullname, s.service_id, h.host_id ' .
+                    's.service_description) as fullname, s.service_id, h.host_id, s.service_activate ' .
                     'FROM host h, service s, host_service_relation hsr ' .
                     'WHERE hsr.host_host_id = h.host_id ' .
                     'AND hsr.service_service_id = s.service_id ' .
@@ -248,7 +248,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 break;
             case 'm':
                 $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT CONCAT("Meta - ", ms.display_name) ' .
-                    'as fullname, ms.service_id, mh.host_id ' .
+                    'as fullname, ms.service_id, mh.host_id, ms.service_activate ' .
                     'FROM host mh, service ms ' .
                     'WHERE mh.host_name = "_Module_Meta" ' .
                     'AND mh.host_register = "2" ' .
@@ -281,18 +281,26 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                 if (service_has_graph($data['host_id'], $data['service_id'], $this->pearDBMonitoring)) {
                     $serviceCompleteName = $data['fullname'];
                     $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-                    $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
+                    $serviceList[] = [
+                        'id' => htmlentities($serviceCompleteId),
+                        'text' => $serviceCompleteName,
+                        'status' => (bool) $data['service_activate'],
+                    ];
                 }
             } else {
                 $serviceCompleteName = $data['fullname'];
                 $serviceCompleteId = $data['host_id'] . '-' . $data['service_id'];
-                $serviceList[] = array('id' => htmlentities($serviceCompleteId), 'text' => $serviceCompleteName);
+                $serviceList[] = [
+                    'id' => htmlentities($serviceCompleteId),
+                    'text' => $serviceCompleteName,
+                    'status' => (bool) $data['service_activate'],
+                ];
             }
         }
 
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 
@@ -340,7 +348,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 

@@ -8,7 +8,7 @@ Votre plate-forme est maintenant prête pour superviser vos premiers serveurs
 et équipements réseau mais vous ne savez pas comment faire. Pas de problème,
 le démarrage est très rapide !
 
-Premièrement vous devez vous :ref:`connectez<centreon_login>` à l'interface
+Premièrement vous devez vous :ref:`connecter<centreon_login>` à l'interface
 web Centreon avec un compte administrateur ou un compte disposant des droits
 d'accès pour gérer les objets.
 
@@ -19,7 +19,7 @@ bouton **Add** :
     :align: center
 
 Vous accédez à un formulaire permettant de décrire votre équipement mais ne
-soyez pas effrayé, tous les champs ne sont pas obligatoire !
+soyez pas effrayé, tous les champs ne sont pas obligatoires !
 
 Pour démarrer renseigner les champs suivants :
 
@@ -38,7 +38,7 @@ Sauvegarder les modifications en cliquant sur le bouton **Save**.
     :align: center
 
 L'hôte est maintenant défini dans l'interface Centreon web mais le moteur ne le 
-connait pas encore !
+connaît pas encore !
 
 Vous devez :ref:`générer la configuration, l'exporter et l'envoyer au moteur de supervision<deployconfiguration>`.
 

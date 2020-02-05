@@ -13,7 +13,7 @@ class URIContext extends CentreonContext
     protected $page;
     protected $hostname = 'passiveHost';
     protected $serviceDescription = 'PassiveService';
-    protected $checkOutput = 'https://www.centreon.com/';
+    protected $checkOutput = 'https://github.com/centreon';
 
     /**
      * @Given a monitored passive service
@@ -79,7 +79,7 @@ class URIContext extends CentreonContext
         $this->page->save();
 
         $this->spin(
-            function($context) {
+            function ($context) {
                 $context->page = new CommentMonitoringListingPage($context);
                 $context->page->getEntry("HOST;" . $this->hostname . ";1");
                 return true;
@@ -96,7 +96,7 @@ class URIContext extends CentreonContext
     {
         $this->page = new ServiceMonitoringDetailsPage($this, $this->hostname, $this->serviceDescription);
         $this->spin(
-            function($context) {
+            function ($context) {
                 $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
                 return true;
             },
@@ -112,7 +112,7 @@ class URIContext extends CentreonContext
     {
         $this->page = new CommentMonitoringListingPage($this);
         $this->spin(
-            function($context) {
+            function ($context) {
                 $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
                 return true;
             },

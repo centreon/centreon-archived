@@ -161,36 +161,37 @@ function tidySearchKey($search, $advanced_search)
 
 #
 
+/**
+ * Allows to load Smarty's configuration in relation to a path
+ *
+ * @param {string} [$path=null] Path to the default template directory
+ * @param {object} [$tpl=null] A Smarty instance
+ * @param {string} [$subDir=null] A subdirectory of path
+ *
+ * @return {empty|object} A Smarty instance with configuration parameters
+ */
 function initSmartyTpl($path = null, $tpl = null, $subDir = null)
 {
     if (!$tpl) {
         return;
     }
     $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = "../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = "../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = "../GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = "../GPL_LIB/smarty-plugins";
+    $tpl->compile_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/compile";
+    $tpl->config_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/config";
+    $tpl->cache_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/cache";
+    $tpl->plugins_dir[] = __DIR__ . "/../../../GPL_LIB/smarty-plugins";
     $tpl->caching = 0;
     $tpl->compile_check = true;
     $tpl->force_compile = true;
     return $tpl;
 }
 
-function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centreon_path = null)
+/**
+ * This function is mainly used in widgets
+ */
+function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centreonPath = null)
 {
-    if (!$tpl) {
-        return;
-    }
-    $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = _CENTREON_PATH_ . "/GPL_LIB/smarty-plugins";
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
-    return $tpl;
+    return initSmartyTpl($path, $tpl, $subDir);
 }
 
 /*
@@ -1176,7 +1177,6 @@ function getMyServiceID($service_description = null, $host_id = null, $hg_id = n
 
     $service_description = str2db($service_description);
     if ($host_id) {
-
         $query = "SELECT service_id FROM service, host_service_relation hsr " .
             "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id " .
             "AND (service_description = '" . $pearDB->escape($service_description) .
@@ -1805,19 +1805,22 @@ function getLangs()
 {
     $langs = array('browser' => _("Detection by browser"));
     $chemintotal = "./locale/";
-    $default = "en_US";
 
-    $langs["en_US"] = "en_US";
     if (is_dir($chemintotal)) {
         if ($handle = opendir($chemintotal)) {
             while ($file = readdir($handle)) {
                 if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, "..")) {
-                    $langs[$file] = $file;
+                    $langTitle = str_replace('.UTF-8', '', $file);
+                    $langs[$file] = $langTitle;
                 }
             }
             closedir($handle);
         }
     }
+    if (!array_key_exists('en_US.UTF-8', $langs)) {
+        $langs["en_US.UTF-8"] = "en_US";
+    }
+
     return $langs;
 }
 
@@ -1947,6 +1950,37 @@ function getNDOPrefix()
     $conf_ndo = $DBRESULT->fetchRow();
     unset($DBRESULT);
     return $conf_ndo["db_prefix"];
+}
+
+/**
+ * Send a well formatted error.
+ *
+ * @param string $message Message to send
+ * @param int $code HTTP error code
+ * @param string $type Response type (json by default)
+ */
+function sendError(string $message, int $code = 500, string $type = 'json')
+{
+    switch ($type) {
+        case 'xml':
+            header('Content-Type: text/xml');
+            echo '<message>' . $message . '</message>';
+            break;
+        case 'json':
+        default:
+            header('Content-Type: application/json');
+            echo json_encode(['message' => $message]);
+            break;
+    }
+    switch ($code) {
+        case 401:
+            header("HTTP/1.0 401 Unauthorized");
+            break;
+        case 500:
+        default:
+            header("HTTP/1.0 500 Internal Server Error");
+    }
+    exit();
 }
 
 /* Ajax tests */
@@ -2118,18 +2152,16 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
         return $svcTmpl;
     } else {
         $alreadyProcessed[] = $svcId;
-
-        $query = "SELECT * FROM service WHERE service_id = " . intval($svcId);
+        $query = "SELECT * FROM service WHERE service_id = " . (int)$svcId;
         $stmt = $pearDB->query($query);
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetchRow();
+        if ($row = $stmt->fetch()) {
             if ($row['service_template_model_stm_id'] !== null) {
                 $svcTmpl = array_merge(
                     $svcTmpl,
                     getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed)
                 );
-                $svcTmpl[] = $row;
             }
+            $svcTmpl[] = $row;
         }
         return $svcTmpl;
     }
@@ -2208,12 +2240,20 @@ function reset_search_page($url)
     if (!isset($url)) {
         return;
     }
-    if (isset($_GET['search']) &&
-        isset($centreon->historySearch[$url]) && $_GET['search'] != $centreon->historySearch[$url] &&
-        !isset($_GET['num']) && !isset($_POST['num'])
+    if (isset($_GET['search'])
+        && isset($centreon->historySearch[$url])
+        && $_GET['search'] != $centreon->historySearch[$url]
+        && !isset($_GET['num'])
+        && !isset($_POST['num'])
     ) {
         $_POST['num'] = 0;
         $_GET['num'] = 0;
+    } elseif (isset($_GET["search"])
+        && isset($_POST["search"])
+        && $_GET["search"] === $_POST["search"]
+    ) {
+        //if the user change the search filter, we reset the num argument sent in the hybride POST and GET request
+        $_POST['num'] = $_GET['num'] = 0;
     }
 }
 

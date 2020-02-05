@@ -105,7 +105,8 @@ class ServiceGroupConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ServiceGroupConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -145,7 +146,8 @@ class ServiceGroupConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ServiceGroupConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

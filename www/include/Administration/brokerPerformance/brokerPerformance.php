@@ -42,7 +42,8 @@ require_once "./class/centreonDB.class.php";
 require_once "./class/centreonGMT.class.php";
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
-function createArrayStats($arryFromJson) {
+function createArrayStats($arryFromJson)
+{
     $io = array('class' => 'stats_lv1');
 
     if (isset($arryFromJson['state'])) {
@@ -69,7 +70,8 @@ function createArrayStats($arryFromJson) {
     }
 
     if (isset($arryFromJson['last_connection_success']) && $arryFromJson['last_connection_success'] != -1) {
-        $io[_('Last connection success')] = array('value' => $arryFromJson['last_connection_success'], 'isTimestamp' => true);;
+        $io[_('Last connection success')] = array('value' => $arryFromJson['last_connection_success'], 'isTimestamp' => true);
+        ;
     }
 
     if (isset($arryFromJson['one_peer_retention_mode'])) {
@@ -130,10 +132,9 @@ function parseStatsFile($statfile)
 
     foreach ($json_stats as $key => $value) {
         if (preg_match('/endpoint \(?(.*[^()])\)?/', $key, $matches)) {
-
-                if (preg_match('/.*external commands.*/', $matches[1])) {
-                    $matches[1] = "external-commands";
-                }
+            if (preg_match('/.*external commands.*/', $matches[1])) {
+                $matches[1] = "external-commands";
+            }
 
             if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected") || (!preg_match('/.*external commands.*/', $key))) {
                 $keySepByDash = explode('-', $key);
@@ -163,7 +164,7 @@ function parseStatsFile($statfile)
 
                 /* manage peers input */
                 if (isset($json_stats[$key]['peers'])) {
-                    $arrayPeers = explode (',', $json_stats[$key]['peers']);
+                    $arrayPeers = explode(',', $json_stats[$key]['peers']);
                     for ($i = 1; $i < count($arrayPeers); $i++) {
                         $peerName = trim($arrayPeers[$i]);
                         $id = str_replace(':', '_', $peerName);

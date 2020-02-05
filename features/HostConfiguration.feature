@@ -7,7 +7,6 @@ Feature: HostConfiguration
         Given I am logged in a Centreon server
         And an host is configured
 
-    @critical
     Scenario: Edit the name of an host
         When I change the properties of a host
         Then its properties are updated

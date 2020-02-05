@@ -1,96 +1,102 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 $mnftr_id = null;
 
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchTM']) && $_POST['searchTM']) {
-    $search = $_POST['searchTM'];
-    $SearchTool = " WHERE (alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%') OR (name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+$search = filter_var(
+    $_POST['searchTM'] ?? $_GET['searchTM'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchTM']) || isset($_GET['searchTM'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps_vendor $SearchTool");
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$SearchTool = '';
+if ($search) {
+    $SearchTool .= " WHERE (alias LIKE '%" . $search . "%') OR (name LIKE '%" . $search . "%')";
+}
 
+// List of elements - Depends on different criteria
+$dbResult = $pearDB->query(
+    "SELECT SQL_CALC_FOUND_ROWS * FROM traps_vendor " . $SearchTool .
+    "ORDER BY name, alias LIMIT " . $num * $limit . ", " . $limit
+);
 
-include("./include/common/checkPagination.php");
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+include "./include/common/checkPagination.php";
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Vendor Name"));
 $tpl->assign("headerMenu_alias", _("Alias"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * List of elements - Depends on different criteria
- */
-$query = "SELECT * FROM traps_vendor $SearchTool ORDER BY name, alias LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $mnftr = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $mnftr = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $mnftr['id'] . "]");
     $moptions = "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
@@ -100,7 +106,7 @@ for ($i = 0; $mnftr = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure(myDecode($mnftr["name"])),
-        "RowMenu_link" => "?p=" . $p . "&o=c&id=" . $mnftr['id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&id=" . $mnftr['id'],
         "RowMenu_alias" => CentreonUtils::escapeSecure(myDecode($mnftr["alias"])),
         "RowMenu_options" => $moptions
     );
@@ -108,23 +114,23 @@ for ($i = 0; $mnftr = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -185,9 +191,7 @@ $o2->setSelected(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchTM', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

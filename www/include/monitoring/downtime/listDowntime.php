@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,52 +41,47 @@ include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
 include("./include/common/autoNumLimit.php");
 
-if (isset($_POST["search_service"])) {
+$search_service = null;
+$host_name = null;
+$search_output = null;
+$view_all = 0;
+$view_downtime_cycle = 0;
+
+if (isset($_POST['SearchB'])) {
+    $centreon->historySearch[$url] = array();
     $search_service = $_POST["search_service"];
-} elseif (isset($_GET["search_service"])) {
-    $search_service = $_GET["search_service"];
-} else {
-    $search_service = null;
-}
-
-if (isset($_POST["search_host"])) {
+    $centreon->historySearch[$url]["search_service"] = $search_service;
     $host_name = $_POST["search_host"];
-} elseif (isset($_GET["search_host"])) {
-    $host_name = $_GET["search_host"];
-} else {
-    $host_name = null;
-}
-
-if (isset($_POST["search_output"])) {
+    $centreon->historySearch[$url]["search_host"] = $host_name;
     $search_output = $_POST["search_output"];
-} elseif (isset($_GET["search_output"])) {
-    $search_output = $_GET["search_output"];
-} else {
-    $search_output = null;
-}
-
-if (isset($_POST["view_all"])) {
-    $view_all = 1;
-} elseif (isset($_GET["view_all"]) && !isset($_POST["SearchB"])) {
-    $view_all = 1;
-} else {
-    $view_all = 0;
-}
-
-if (isset($_POST["view_downtime_cycle"])) {
-    $view_downtime_cycle = 1;
-} elseif (isset($_GET["view_downtime_cycle"]) && !isset($_POST["SearchB"])) {
-    $view_downtime_cycle = 1;
-} else {
-    $view_downtime_cycle = 0;
-}
-
-if (isset($_POST["search_author"])) {
+    $centreon->historySearch[$url]["search_output"] = $search_output;
     $search_author = $_POST["search_author"];
-} elseif (isset($_GET["search_author"]) && !isset($_POST["SearchB"])) {
+    $centreon->historySearch[$url]["search_author"] = $search_author;
+    isset($_POST["view_all"]) ? $view_all = 1 : $view_all = 0;
+    $centreon->historySearch[$url]["view_all"] = $view_all;
+    isset($_POST["view_downtime_cycle"]) ? $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
+    $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
+} elseif (isset($_GET['SearchB'])) {
+    $centreon->historySearch[$url] = array();
+    $search_service = $_GET['search_service'];
+    $centreon->historySearch[$url]['search_service'] = $search_service;
+    $host_name = $_GET["search_host"];
+    $centreon->historySearch[$url]["search_host"] = $host_name;
+    $search_output = $_GET["search_output"];
+    $centreon->historySearch[$url]["search_output"] = $search_output;
     $search_author = $_GET["search_author"];
+    $centreon->historySearch[$url]["search_author"] = $search_author;
+    isset($_GET["view_all"]) ? $view_all = 1 : $view_all = 0;
+    $centreon->historySearch[$url]["view_all"] = $view_all;
+    isset($_GET["view_downtime_cycle"]) ? $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
+    $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } else {
-    $search_author = null;
+    $search_service = $centreon->historySearch[$url]['search_service'] ?? null;
+    $host_name = $centreon->historySearch[$url]["search_host"] ?? null;
+    $search_output = $centreon->historySearch[$url]["search_output"] ?? null;
+    $search_author = $centreon->historySearch[$url]["search_author"] ?? null;
+    $view_all = $centreon->historySearch[$url]["view_all"] ?? 0;
+    $view_downtime_cycle = $centreon->historySearch[$url]["view_downtime_cycle"] ?? 0;
 }
 
 /*
@@ -95,7 +90,7 @@ if (isset($_POST["search_author"])) {
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-include_once("./class/centreonDB.class.php");
+include_once "./class/centreonDB.class.php";
 
 /*
  * Smarty template Init
@@ -107,9 +102,14 @@ $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tab_downtime_svc = array();
 
-/*
- * Service Downtimes
- */
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
+
+//Service Downtimes
 if ($view_all == 1) {
     $downtimeTable = "downtimehistory";
     $extrafields = ", actual_end_time, cancelled as was_cancelled ";
@@ -142,7 +142,7 @@ $request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downt
     "WHERE d.host_id = s.host_id " .
     "AND d.service_id = s.service_id " .
     "AND s.host_id = h.host_id " .
-    "AND d.service_id IS NOT NULL ";
+    "AND d.type = 1 ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
@@ -164,7 +164,7 @@ $request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.e
   d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
    '' as service_description " . $extrafields .
     "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") . " " .
-    "WHERE d.host_id = h.host_id AND d.service_id IS NULL ";
+    "WHERE d.host_id = h.host_id AND d.type = 2 ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
@@ -183,10 +183,14 @@ $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : ""
     "LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDBO->query($request);
 
-$rows = $pearDBO->numberRows();
+$rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
+
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
-    $tab_downtime_svc[$i]['comment_data'] = trim($data['comment_data']);
+    
+    $tab_downtime_svc[$i]['comment_data'] =
+        CentreonUtils::escapeAllExceptSelectedTags($data['comment_data']);
+    
     $tab_downtime_svc[$i]['scheduled_start_time'] = $tab_downtime_svc[$i]["scheduled_start_time"] . " ";
     $tab_downtime_svc[$i]['scheduled_end_time'] = $tab_downtime_svc[$i]["scheduled_end_time"] . " ";
 
@@ -218,9 +222,6 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
 }
 unset($data);
 
-/*
- * Number Rows
- */
 include("./include/common/checkPagination.php");
 
 $en = array("0" => _("No"), "1" => _("Yes"));
@@ -274,15 +275,15 @@ $tpl->assign("Output", _("Output"));
 $tpl->assign("user", _("Users"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
 $tpl->assign('Search', _("Search"));
-$tpl->assign("ViewAll", _("Display Finished Downtime"));
-$tpl->assign("ViewDowntimeCycle", _("Display Downtime Cycle"));
+$tpl->assign("ViewAll", _("Display Finished Downtimes"));
+$tpl->assign("ViewDowntimeCycle", _("Display Recurring Downtimes"));
 $tpl->assign("Author", _("Author"));
 $tpl->assign("search_output", $search_output);
 $tpl->assign('search_host', $host_name);
 $tpl->assign("search_service", $search_service);
 $tpl->assign('view_all', $view_all);
 $tpl->assign('view_downtime_cycle', $view_downtime_cycle);
-$tpl->assign('search_author', $search_author);
+$tpl->assign('search_author', $search_author ?? '');
 
 /* Send Form */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

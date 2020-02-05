@@ -37,56 +37,91 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["vmetric_id"]) ? $cG = $_GET["vmetric_id"] : $cG = null;
-isset($_POST["vmetric_id"]) ? $cP = $_POST["vmetric_id"] : $cP = null;
-$cG ? $vmetric_id = $cG : $vmetric_id = $cP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
 /*
  * Path to the configuration dir
  */
 $path = "./include/views/virtualMetrics/";
 
-/*
- * PHP functions
- */
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+define('METRIC_ADD', 'a');
+define('METRIC_MODIFY', 'c');
+define('METRIC_DELETE', 'd');
+define('METRIC_DUPLICATE', 'm');
+define('METRIC_ENABLE', 's');
+define('METRIC_DISABLE', 'u');
+define('METRIC_WATCH', 'w');
+
+$action = filter_var(
+    $_POST['o1'] ?? $_POST['o2'] ?? null,
+    FILTER_VALIDATE_REGEXP,
+    array(
+        "options" => array("regexp"=>"/([a|c|d|m|s|u|w]{1})/")
+    )
+);
+if ($action !== false) {
+    $o = $action;
+}
+
+$vmetricId = filter_var(
+    $_GET["vmetric_id"] ?? $_POST["vmetric_id"] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$selectIds = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? array(),
+    FILTER_VALIDATE_INT
+);
+
+$duplicateNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? array(),
+    FILTER_VALIDATE_INT
+);
+
 switch ($o) {
-    case "a":
-        require_once $path . "formVirtualMetrics.php";
-        break; #Add a Virtual Metrics
-    case "w":
-        require_once $path . "formVirtualMetrics.php";
-        break; #Watch a Virtual Metrics
-    case "c":
-        require_once $path . "formVirtualMetrics.php";
-        break; #Modify a Virtual Metrics
-    case "s":
-        enableVirtualMetricInDB($vmetric_id);
-        require_once $path . "listVirtualMetrics.php";
-        break; #Activate a Virtual Metrics
-    case "u":
-        disableVirtualMetricInDB($vmetric_id);
-        require_once $path . "listVirtualMetrics.php";
-        break; #Desactivate a Virtual Metrics...
-    case "m":
-        multipleVirtualMetricInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once $path . "listVirtualMetrics.php";
-        break; #Duplicate n Virtual Metrics
-    case "d":
-        deleteVirtualMetricInDB(isset($select) ? $select : array());
-        require_once $path . "listVirtualMetrics.php";
-        break; #Delete n Virtual Metrics
+    case METRIC_ADD:
+        require_once($path . "formVirtualMetrics.php");
+        break;
+    case METRIC_WATCH:
+        if (is_int($vmetricId)) {
+            require_once($path . "formVirtualMetrics.php");
+        } else {
+            require_once($path . "listVirtualMetrics.php");
+        }
+        break;
+    case METRIC_MODIFY:
+        if (is_int($vmetricId)) {
+            require_once($path . "formVirtualMetrics.php");
+        } else {
+            require_once($path . "listVirtualMetrics.php");
+        }
+        break;
+    case METRIC_ENABLE:
+        if (is_int($vmetricId)) {
+            enableVirtualMetricInDB($vmetricId);
+        }
+        require_once($path . "listVirtualMetrics.php");
+        break;
+    case METRIC_DISABLE:
+        if (is_int($vmetricId)) {
+            disableVirtualMetricInDB($vmetricId);
+        }
+        require_once($path . "listVirtualMetrics.php");
+        break;
+    case METRIC_DUPLICATE:
+        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+            multipleVirtualMetricInDB($selectIds, $duplicateNbr);
+        }
+        require_once($path . "listVirtualMetrics.php");
+        break;
+    case METRIC_DELETE:
+        if (!in_array(false, $selectIds)) {
+            deleteVirtualMetricInDB($selectIds);
+        }
+        require_once($path . "listVirtualMetrics.php");
+        break;
     default:
-        require_once $path . "listVirtualMetrics.php";
+        require_once($path . "listVirtualMetrics.php");
         break;
 }

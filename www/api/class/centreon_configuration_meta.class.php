@@ -72,7 +72,7 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
             $queryValues['name'] = '%%';
         }
 
-        $queryMeta = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name FROM meta_service ' .
+        $queryMeta = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT meta_id, meta_name, meta_activate FROM meta_service ' .
             'WHERE meta_name LIKE :name ' .
             $aclMetaServices .
             'ORDER BY meta_name ';
@@ -98,13 +98,14 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
         while ($data = $stmt->fetch()) {
             $metaList[] = array(
                 'id' => $data['meta_id'],
-                'text' => $data['meta_name']
+                'text' => $data['meta_name'],
+                'status' => (bool) $data['meta_activate'],
             );
         }
 
         return array(
             'items' => $metaList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

@@ -16,48 +16,55 @@
  */
 namespace CentreonLegacy\Core\Module;
 
-use \Centreon\Test\Mock\CentreonDB;
+use Pimple\Container;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
-use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
-use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
+use CentreonLegacy\Core\Module;
+use CentreonLegacy\ServiceProvider;
 
 /**
  * Description of factoryTest
  *
  * @author lionel
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
-    private $db;
-    private $license;
-    private $utils;
-
     public function setUp()
     {
         $this->container = new ServiceContainer();
 
-        $this->db = new CentreonDB();
-
-        $this->license = $this->getMockBuilder('CentreonLegacy\Core\Module\License')
+        $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION] = $this
+            ->getMockBuilder(Module\Information::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->utils = $this->getMockBuilder('CentreonLegacy\Core\Utils\Utils')
+        $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE] = $this
+            ->getMockBuilder(Module\License::class)
             ->disableOriginalConstructor()
             ->getMock();
-        
-        $moduleConfiguration = array(
-            'MyModule' => array(
-                'name' => 'MyModule',
-                'rname' => 'MyModule',
-                'mod_release' => '1.0.0'
-            )
-        );
-        
-        $this->utils->expects($this->any())
-            ->method('requireConfiguration')
-            ->willReturn($moduleConfiguration);
+
+        $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER] = function (Container $container) {
+            return function ($moduleName) {
+                return $this->getMockBuilder(Module\Installer::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+            };
+        };
+
+        $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_UPGRADER] = function (Container $container) {
+            return function ($moduleName, $moduleId) {
+                return $this->getMockBuilder(Module\Upgrader::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+            };
+        };
+
+        $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_REMOVER] = function (Container $container) {
+            return function ($moduleName, $moduleId) {
+                return $this->getMockBuilder(Module\Remover::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+            };
+        };
     }
 
     public function tearDown()
@@ -68,31 +75,31 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     
     public function testNewInformation()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Module\Information', $factory->newInformation());
+        $factory = new Module\Factory($this->container);
+        $this->assertInstanceOf(Module\Information::class, $factory->newInformation());
     }
     
     public function testNewInstaller()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Module\Installer', $factory->newInstaller('MyModule'));
+        $factory = new Module\Factory($this->container);
+        $this->assertInstanceOf(Module\Installer::class, $factory->newInstaller('MyModule'));
     }
     
     public function testNewUpgrader()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Module\Upgrader', $factory->newUpgrader('MyModule', 1));
+        $factory = new Module\Factory($this->container);
+        $this->assertInstanceOf(Module\Upgrader::class, $factory->newUpgrader('MyModule', 1));
     }
     
     public function testNewRemover()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Module\Remover', $factory->newRemover('MyModule', 1));
+        $factory = new Module\Factory($this->container);
+        $this->assertInstanceOf(Module\Remover::class, $factory->newRemover('MyModule', 1));
     }
     
     public function testNewLicense()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Module\License', $factory->newLicense());
+        $factory = new Module\Factory($this->container);
+        $this->assertInstanceOf(Module\License::class, $factory->newLicense());
     }
 }

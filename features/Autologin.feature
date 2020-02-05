@@ -1,7 +1,7 @@
-Feature: Meta-services acknowledgement
+Feature: Autologin
     As a Centreon Web user
-    I want to acknowledge my monitoring objects
-    So that I can filter my monitoring pages
+    I want to use the Autologin feature
+    So that I can access centreon without using the login page
 
     Background:
         Given I am logged in a Centreon server

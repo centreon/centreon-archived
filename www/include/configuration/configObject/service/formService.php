@@ -65,7 +65,7 @@ function myDecodeService($arg)
 if (!$centreon->user->admin) {
     if ($service_id) {
         $checkres = $pearDB->query("SELECT service_id
-                                        FROM $acldbname.centreon_acl
+                                        FROM $aclDbName.centreon_acl
                                         WHERE service_id = " . $pearDB->escape($service_id) . "
                                         AND group_id IN (" . $acl->getAccessGroupsString() . ")");
         if (!$checkres->rowCount()) {
@@ -264,7 +264,7 @@ $attrGraphtemplates = array(
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */ 
+ */
 unset($_POST['o']);
 #
 ## Form begin
@@ -484,7 +484,6 @@ if ($o != "mc") {
 /*
  * Additive
  */
-
 if ($o == "mc") {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
@@ -1114,6 +1113,8 @@ if ($valid) {
         require_once($path . "listServiceByHost.php");
     }
 } else {
+    $dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
+    $inheritanceMode = $dbResult->fetch();
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -1122,6 +1123,7 @@ if ($valid) {
     $tpl->assign('is_not_template', $service_register);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
+    $tpl->assign('inheritance', $inheritanceMode['value']);
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('template_inheritance', _('Template inheritance'));
     $tpl->assign('command_inheritance', _('Command inheritance'));

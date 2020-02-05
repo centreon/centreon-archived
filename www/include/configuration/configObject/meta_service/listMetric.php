@@ -140,7 +140,7 @@ if ($in_statement != "") {
                 "MenuClass" => "list_" . $style,
                 "RowMenu_select" => $selectedElements->toHtml(),
                 "RowMenu_host" => htmlentities($metric["host_name"], ENT_QUOTES, "UTF-8"),
-                "RowMenu_link" => "?p=" . $p . "&o=cs&msr_id=" . $relation['msr_id'],
+                "RowMenu_link" => "main.php?p=" . $p . "&o=cs&msr_id=" . $relation['msr_id'],
                 "RowMenu_service" => htmlentities($metric["service_description"], ENT_QUOTES, "UTF-8"),
                 "RowMenu_metric" =>
                     CentreonUtils::escapeSecure($metric["metric_name"] . " (" . $metric["unit_name"] . ")"),
@@ -163,7 +163,7 @@ if (isset($elemArr1)) {
  * Different messages we put in the template
  */
 $tpl->assign('msg', array(
-    "addL1" => "?p=" . $p . "&o=as&meta_id=" . $meta_id,
+    "addL1" => "main.php?p=" . $p . "&o=as&meta_id=" . $meta_id,
     "addT" => _("Add"),
     "delConfirm" => _("Do you confirm the deletion ?")
 ));

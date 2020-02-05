@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -37,7 +37,7 @@ $page_max = ceil($rows / $limit);
 if ($num >= $page_max && $rows) {
     $num = $page_max - 1;
 }
-        
+
 if ($rows == 0) {
     $num = 0;
     $page_max = 0;

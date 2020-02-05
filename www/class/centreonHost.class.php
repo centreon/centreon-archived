@@ -78,10 +78,11 @@ class CentreonHost
     /**
      * @param bool $enable
      * @param bool $template
+     * @param null|int $exclude - host id to exclude in returned result
      * @return array
      * @throws Exception
      */
-    public function getList($enable = false, $template = false)
+    public function getList($enable = false, $template = false, $exclude = null)
     {
         $hostType = 1;
         if ($template) {
@@ -93,9 +94,15 @@ class CentreonHost
         if ($enable) {
             $queryList .= 'AND host_activate = "1" ';
         }
+        if ($exclude !== null) {
+            $queryList .= 'AND host_id <> :exclude_id ';
+        }
         $queryList .= 'ORDER BY host_name';
         $stmt = $this->db->prepare($queryList);
         $stmt->bindParam(':register', $hostType, PDO::PARAM_STR);
+        if ($exclude !== null) {
+            $stmt->bindParam(':exclude_id', $exclude, PDO::PARAM_INT);
+        }
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
@@ -836,7 +843,7 @@ class CentreonHost
                 }
                 $arr[$index]['macroInput_#index#'] = $val;
                 $arr[$index]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
-                $arr[$index]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : null;
+                $arr[$index]['macroPassword_#index#'] = isset($_REQUEST['macroPassword'][$key]) ? 1 : null;
                 $arr[$index]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ?
                     $_REQUEST['description'][$key] : null;
                 $arr[$index]['macroDescription'] = isset($_REQUEST['description'][$key]) ?
@@ -1860,7 +1867,9 @@ class CentreonHost
                     $centreon->CentreonLogAction->insertLog(
                         "service",
                         $svcId,
-                        CentreonDB::escape($service['service_alias']), "a", $fields
+                        CentreonDB::escape($service['service_alias']),
+                        "a",
+                        $fields
                     );
                     $this->insertRelHostService($hostId, $svcId);
                 }

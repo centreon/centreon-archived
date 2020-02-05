@@ -49,12 +49,12 @@ function testHostDependencyExistence($name = null)
         $id = $form->getSubmitValue('dep_id');
     }
     $query = "SELECT dep_name, dep_id FROM dependency WHERE dep_name = '" . CentreonDB::escape($name) . "'";
-    $DBRESULT = $pearDB->query($query);
-    $dep = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $dep = $dbResult->fetch();
 
-    if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
         return true;
@@ -85,9 +85,9 @@ function deleteHostDependencyInDB($dependencies = array())
     global $pearDB, $centreon;
 
     foreach ($dependencies as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
-        $DBRESULT = $pearDB->query("DELETE FROM dependency WHERE dep_id = '" . $key . "'");
+        $dbResult2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult2->fetch();
+        $dbResult = $pearDB->query("DELETE FROM dependency WHERE dep_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("host dependency", $key, $row['dep_name'], "d");
     }
 }
@@ -96,9 +96,9 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
 {
     foreach ($dependencies as $key => $value) {
         global $pearDB, $centreon;
-        $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["dep_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["dep_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
@@ -116,16 +116,15 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
             if (isset($dep_name) && testHostDependencyExistence($dep_name)) {
                 $val ? $rq = "INSERT INTO dependency VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+                $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(dep_id)"])) {
-
                     $query = "SELECT service_service_id, host_host_id FROM dependency_serviceChild_relation " .
                         "WHERE dependency_dep_id = " . $key;
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
                     $fields["dep_serviceChilds"] = "";
-                    while ($service = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_serviceChild_relation VALUES ('', '" .
+                    while ($service = $dbResult->fetch()) {
+                        $query = "INSERT INTO dependency_serviceChild_relation VALUES ('" .
                             $maxId["MAX(dep_id)"] . "', '" . $service["service_service_id"] . "', '" .
                             $service["host_host_id"] . "')";
                         $pearDB->query($query);
@@ -135,28 +134,28 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
 
                     $query = "SELECT DISTINCT host_host_id FROM dependency_hostParent_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
                     $fields["dep_hostParents"] = "";
-                    while ($host = $DBRESULT->fetchRow()) {
+                    while ($host = $dbResult->fetch()) {
                         $query = "INSERT INTO dependency_hostParent_relation " .
-                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
+                            "VALUES ('" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hostParents"] .= $host["host_host_id"] . ",";
                     }
                     $fields["dep_hostParents"] = trim($fields["dep_hostParents"], ",");
-                    $DBRESULT->closeCursor();
+                    $dbResult->closeCursor();
                     $query = "SELECT DISTINCT host_host_id FROM dependency_hostChild_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
                     $fields["dep_hostChilds"] = "";
-                    while ($host = $DBRESULT->fetchRow()) {
+                    while ($host = $dbResult->fetch()) {
                         $query = "INSERT INTO dependency_hostChild_relation " .
-                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
+                            "VALUES ('" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hostChilds"] .= $host["host_host_id"] . ",";
                     }
                     $fields["dep_hostChilds"] = trim($fields["dep_hostChilds"], ",");
-                    $DBRESULT->closeCursor();
+                    $dbResult->closeCursor();
                     $centreon->CentreonLogAction->insertLog(
                         "host dependency",
                         $maxId["MAX(dep_id)"],
@@ -222,8 +221,8 @@ function insertHostDependency($ret = array())
         : $rq .= "NULL ";
     $rq .= ")";
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-    $dep_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+    $dep_id = $dbResult->fetch();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -296,7 +295,7 @@ function updateHostDependencyHostParents($dep_id = null, $ret = array())
     global $pearDB;
     $rq = "DELETE FROM dependency_hostParent_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     if (isset($ret["dep_hostParents"])) {
         $ret = $ret["dep_hostParents"];
     } else {
@@ -307,7 +306,7 @@ function updateHostDependencyHostParents($dep_id = null, $ret = array())
         $rq .= "(dependency_dep_id, host_host_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -321,7 +320,7 @@ function updateHostDependencyHostChilds($dep_id = null, $ret = array())
 
     $rq = "DELETE FROM dependency_hostChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     if (isset($ret["dep_hostChilds"])) {
         $ret = $ret["dep_hostChilds"];
     } else {
@@ -332,7 +331,7 @@ function updateHostDependencyHostChilds($dep_id = null, $ret = array())
         $rq .= "(dependency_dep_id, host_host_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -349,7 +348,7 @@ function updateHostDependencyServiceChildren($dep_id = null, $ret = array())
 
     $rq = "DELETE FROM dependency_serviceChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     if (isset($ret["dep_hSvChi"])) {
         $ret = $ret["dep_hSvChi"];
     } else {
@@ -362,7 +361,7 @@ function updateHostDependencyServiceChildren($dep_id = null, $ret = array())
             $rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
             $rq .= "VALUES ";
             $rq .= "('" . $dep_id . "', '" . $exp[1] . "', '" . $exp[0] . "')";
-            $DBRESULT = $pearDB->query($rq);
+            $dbResult = $pearDB->query($rq);
         }
     }
 }

@@ -74,7 +74,7 @@ class CentreonConfigurationObjects extends CentreonWebService
         }
 
         $defaultValuesParameters = array();
-        $targetedFile = _CENTREON_PATH_ . "/www/class/centreon$target.class.php";
+        $targetedFile = _CENTREON_PATH_ . "/www/class/centreon" . $target . ".class.php";
         if (file_exists($targetedFile)) {
             require_once $targetedFile;
             $calledClass = 'Centreon' . $target;
@@ -104,7 +104,7 @@ class CentreonConfigurationObjects extends CentreonWebService
             throw new RestBadRequestException("Bad parameters");
         }
 
-        # Manage final data
+        // Manage final data
         $finalDatas = array();
         if (count($selectedValues) > 0) {
             $finalDatas = $this->retrieveExternalObjectDatas(
@@ -276,10 +276,13 @@ class CentreonConfigurationObjects extends CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if (parent::authorize($action, $user, $isInternal)) {
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiConfiguration())
+        ) {
             return true;
         }
 
-        return $user->hasAccessRestApiConfiguration();
+        return false;
     }
 }

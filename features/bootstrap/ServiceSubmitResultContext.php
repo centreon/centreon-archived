@@ -27,8 +27,8 @@ class ServiceSubmitResultContext extends CentreonContext
             'max_check_attempts' => 1,
             'normal_check_interval' => 1,
             'retry_check_interval' => 1,
-            'active_checks_enabled' => "0",
-            'passive_checks_enabled' => "1"
+            'active_checks_enabled' => 0,
+            'passive_checks_enabled' => 1
         );
         $hostConfig->setProperties($hostProperties);
         $hostConfig->save();
@@ -41,8 +41,12 @@ class ServiceSubmitResultContext extends CentreonContext
             'templates' => 'generic-service',
             'check_command' => 'check_centreon_dummy',
             'check_period' => '24x7',
-            'active_checks_enabled' => "0",
-            'passive_checks_enabled' => "1"
+            'max_check_attempts' => 1,
+            'normal_check_interval' => 1,
+            'retry_check_interval' => 1,
+            'active_checks_enabled' => 0,
+            'is_volatile' => 0,
+            'passive_checks_enabled' => 1
         );
         $serviceConfig->setProperties($serviceProperties);
         $serviceConfig->save();
@@ -56,6 +60,7 @@ class ServiceSubmitResultContext extends CentreonContext
      */
     public function iSubmitSomeResultToThisService()
     {
+
         $this->submitServiceResult($this->hostname, $this->hostservice, 2, $this->checkoutput);
     }
 
@@ -64,13 +69,21 @@ class ServiceSubmitResultContext extends CentreonContext
      */
     public function theValuesAreSetAsWantedInMonitoringStatusDetailsPage()
     {
-        $this->page = new MonitoringServicesPage($this);
-        $result = $this->page->getPropertyFromAHostAndService(
-            $this->hostname,
-            $this->hostservice,
-            'status_information'
-        );
-        if ($result != $this->checkoutput) {
+        try {
+            $this->spin(
+                function ($context) {
+                    $this->page = new MonitoringServicesPage($this);
+                    $result = $this->page->getPropertyFromAHostAndService(
+                        $this->hostname,
+                        $this->hostservice,
+                        'status_information'
+                    );
+                    return ($result == $this->checkoutput);
+                },
+                "The result submitted is not set as wanted",
+                15
+            );
+        } catch (\Exception $e) {
             throw new Exception('The result submitted is not set as wanted');
         }
     }

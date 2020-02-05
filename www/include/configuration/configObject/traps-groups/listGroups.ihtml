@@ -10,7 +10,7 @@
       </tr>
       <tr>
         <td><input type="text" name="searchTM" value="{$searchTM}"></td>
-        <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+	    <td>{$form.Search.html}</td>
       </tr>
     </tbody>
     </table>
@@ -34,7 +34,12 @@
 <input name="p" value="{$p}" type="hidden">
 	<table class="ListTable">
 		<tr class="ListHeader">
-			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+            <td class="ListColHeaderPicker">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <label class="empty-label" for="checkall"></label>
+                </div>
+            </td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>

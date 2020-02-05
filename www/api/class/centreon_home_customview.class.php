@@ -228,7 +228,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $tpl->compile_check = true;
         $tpl->force_compile = true;
 
-        $form = new HTML_QuickForm('Form', 'post', "?p=103");
+        $form = new HTML_QuickFormCustom('Form', 'post', "?p=103");
         $form->addElement('header', 'title', $title);
         $form->addElement('header', 'information', _("General Information"));
 
@@ -322,6 +322,25 @@ class CentreonHomeCustomview extends CentreonWebService
     }
 
     /**
+     * Get preferences by widget id
+     *
+     * @return array The widget preferences
+     * @throws \Exception When missing argument
+     */
+    public function getPreferencesByWidgetId()
+    {
+        global $centreon;
+
+        if (!isset($this->arguments['widgetId'])) {
+            throw new \Exception('Missing argument : widgetId');
+        }
+        $widgetId = $this->arguments['widgetId'];
+        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
+
+       return $widgetObj->getWidgetPreferences($widgetId);
+    }
+
+    /**
      * Authorize to access to the action
      *
      * @param string $action The action name
@@ -331,6 +350,13 @@ class CentreonHomeCustomview extends CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        return true;
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiConfiguration())
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -35,26 +35,34 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\ServiceProvider;
+
+/**
+ * License service provide information about module licenses
+ */
 class License extends Module
 {
+
     /**
-     *
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
-    
+    protected $services;
+
     /**
+     * Construct
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
+    public function __construct(ContainerInterface $services)
     {
-        $this->dependencyInjector = $dependencyInjector;
+        $this->services = $services;
     }
 
     /**
-     * Parsing a Zend license file
+     * Parsing a license file
      *
+     * @param type $licenseFile
      * @return array
      */
     private function parseLicenseFile($licenseFile)
@@ -74,21 +82,22 @@ class License extends Module
     /**
      * Get license expiration date
      *
-     * @return false|string
+     * @param string $module
+     * @return string
      */
-    public function getLicenseExpiration($licenseFile)
+    public function getLicenseExpiration($module): ?string
     {
-        if (function_exists('zend_loader_enabled') && file_exists($licenseFile)) {
-            if (zend_loader_file_encoded($licenseFile)) {
-                $zend_info = zend_loader_file_licensed($licenseFile);
-            } else {
-                $zend_info = $this->parseLicenseFile($licenseFile);
-            }
-            $licenseExpiration = strtotime($zend_info['Expires']);
-        } else {
-            $licenseExpiration = _("N/A");
+        $healthcheck = $this->services->get(ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK);
+
+        try {
+            $healthcheck->check($module);
+        } catch (\Exception $ex) {
         }
 
-        return $licenseExpiration;
+        if ($expiration = $healthcheck->getLicenseExpiration()) {
+            return $expiration->format(\DateTime::ISO8601);
+        }
+
+        return null;
     }
 }

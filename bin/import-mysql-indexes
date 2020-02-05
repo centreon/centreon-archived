@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!@PHP_BIN@
 <?php
 $help = "NAME
     import-mysql-indexes - MySQL indexes import tool

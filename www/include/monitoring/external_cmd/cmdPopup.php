@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once realpath(dirname(__FILE__) . "/../../../../bootstrap.php");
 
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
@@ -51,7 +51,7 @@ global $centreon, $pearDB;
 /*
  * Connect to DB
  */
-$pearDB = new CentreonDB();
+$pearDB = $dependencyInjector['configuration_db'];
 
 session_start();
 session_write_close();

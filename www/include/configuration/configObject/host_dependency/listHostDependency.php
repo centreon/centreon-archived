@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,11 +37,25 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
+$list = $_GET["list"] ?? null;
+
+$search = filter_var(
+    $_POST['searchHD'] ?? $_GET['searchHD'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchHD']) || isset($_GET['searchHD'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+}
 
 $aclFrom = "";
 $aclCond = "";
@@ -51,39 +65,8 @@ if (!$centreon->user->admin) {
                      AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 
-$rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
-    . "FROM dependency dep, dependency_hostParent_relation dhpr " . $aclFrom . " "
-    . "WHERE dhpr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
-
-$search = '';
-if (isset($_POST['searchHD']) && $_POST['searchHD']) {
-    $search = $_POST['searchHD'];
-    $rq .= " AND (dep_name LIKE '%" . CentreonDB::escape($search) . "%' OR dep_description LIKE '%" .
-        CentreonDB::escape($search) . "%')";
-}
-
-$DBRESULT = $pearDB->query($rq);
-$tmp = $DBRESULT->fetchRow();
-
-# Manage pagination
-$rows = $tmp["count_dep"];
-include("./include/common/checkPagination.php");
-
-# Smarty template Init
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
-# Access level
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
-$tpl->assign('mode_access', $lvl_access);
-
-# Start header menu
-$tpl->assign("headerMenu_name", _("Name"));
-$tpl->assign("headerMenu_description", _("Description"));
-$tpl->assign("headerMenu_options", _("Options"));
-
-# Dependency list
-$rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
+// Dependency list
+$rq = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dep_id, dep_name, dep_description "
     . "FROM dependency dep, dependency_hostParent_relation dhpr " . $aclFrom . " "
     . "WHERE dhpr.dependency_dep_id = dep.dep_id " . $aclCond . " ";
 
@@ -92,18 +75,41 @@ if ($search) {
         "%' OR dep_description LIKE '%" . CentreonDB::escape($search) . "%')";
 }
 $rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
+$dbResult = $pearDB->query($rq);
+
+// Manage pagination
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+include "./include/common/checkPagination.php";
+
+// Smarty template Init
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
+
+// Access level
+($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+$tpl->assign('mode_access', $lvl_access);
+
+// Start header menu
+$tpl->assign("headerMenu_name", _("Name"));
+$tpl->assign("headerMenu_description", _("Description"));
+$tpl->assign("headerMenu_options", _("Options"));
 
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-# Different style between each lines
+// Different style between each lines
 $style = "one";
 
-# Fill a tab with a mutlidimensionnal Array we put in $tpl
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $dep = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $dep['dep_id'] . "]");
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
@@ -115,31 +121,31 @@ for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure(myDecode($dep["dep_name"])),
         "RowMenu_description" => CentreonUtils::escapeSecure(myDecode($dep["dep_description"])),
-        "RowMenu_link" => "?p=" . $p . "&o=c&dep_id=" . $dep['dep_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&dep_id=" . $dep['dep_id'],
         "RowMenu_options" => $moptions
     );
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -200,9 +206,7 @@ $o2->setSelected(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchHD', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);

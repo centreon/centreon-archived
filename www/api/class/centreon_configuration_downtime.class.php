@@ -33,7 +33,6 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDowntime.class.php";
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
@@ -54,7 +53,6 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
         global $pearDBO;
 
         parent::__construct();
-        $brk = new CentreonBroker($this->pearDB);
         $this->pearDBMonitoring = new CentreonDB('centstorage');
         $pearDBO = $this->pearDBMonitoring;
     }
@@ -95,7 +93,7 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
         }
         return array(
             'items' => $downtimeList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

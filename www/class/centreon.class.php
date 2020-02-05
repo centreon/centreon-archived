@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -50,14 +50,29 @@ class Centreon
 
     public $Nagioscfg;
     public $optGen;
+    public $informations;
     public $redirectTo;
     public $modules;
     public $hooks;
     public $plugins;
     public $status_graph_service;
     public $status_graph_host;
+
+    /*
+     * @var array : saved user's pagination filter value
+     */
     public $historyPage;
+
+    /*
+     * @var string : saved last page's file name
+     */
+    public $historyLastUrl;
+
+    /*
+     * @var array : saved user's filters
+     */
     public $historySearch;
+
     public $historySearchService;
     public $historySearchOutput;
     public $historyLimit;
@@ -69,6 +84,8 @@ class Centreon
     public $template;
     public $hostgroup;
     public $host_id;
+    public $host_group_search;
+    public $host_list_search;
 
     /**
      * @var \CentreonUser
@@ -111,6 +128,11 @@ class Centreon
         $this->initOptGen();
 
         /*
+         * Get general informations
+         */
+        $this->initInformations();
+
+        /*
          * Grab Modules
          */
         $this->creatModuleList();
@@ -149,15 +171,13 @@ class Centreon
     public function creatModuleList()
     {
         $this->modules = array();
-        $query = "SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`";
+        $query = "SELECT `name` FROM `modules_informations`";
         $dbResult = CentreonDBInstance::getConfInstance()->query($query);
         while ($result = $dbResult->fetch()) {
             $this->modules[$result["name"]] = array(
                 "name" => $result["name"],
                 "gen" => false,
                 "restart" => false,
-                "sql" => $result["sql_files"],
-                "lang" => $result["lang_files"],
                 "license" => false
             );
 
@@ -215,6 +235,7 @@ class Centreon
     public function createHistory()
     {
         $this->historyPage = array();
+        $this->historyLastUrl = '';
         $this->historySearch = array();
         $this->historySearchService = array();
         $this->historySearchOutput = array();
@@ -232,13 +253,13 @@ class Centreon
     {
         $this->Nagioscfg = array();
         /*
-         * We don't check activate because we can a server without a engine on localhost running 
+         * We don't check activate because we can a server without a engine on localhost running
          * (but we order to get if we have one)
          */
         $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT * FROM cfg_nagios, nagios_server
                                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
-                                    AND nagios_server.localhost = '1' 
-                                    ORDER BY cfg_nagios.nagios_activate 
+                                    AND nagios_server.localhost = '1'
+                                    ORDER BY cfg_nagios.nagios_activate
                                     DESC LIMIT 1");
         $this->Nagioscfg = $DBRESULT->fetch();
         $DBRESULT = null;
@@ -258,6 +279,20 @@ class Centreon
         }
         $DBRESULT = null;
         unset($opt);
+    }
+
+    /**
+     * Store centreon informations in session
+     *
+     * @return void
+     */
+    public function initInformations(): void
+    {
+        $this->informations = [];
+        $result = CentreonDBInstance::getConfInstance()->query("SELECT * FROM `informations`");
+        while ($row = $result->fetch()) {
+            $this->informations[$row["key"]] = $row["value"];
+        }
     }
 
     /**

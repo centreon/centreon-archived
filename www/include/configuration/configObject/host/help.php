@@ -140,15 +140,17 @@ $help["notification_options"] = dgettext(
 );
 $help["first_notification_delay"] = dgettext(
     "help",
-    "Define the number of \"time units\" to wait before sending out the first problem notification when this host"
-    . " enters a non-UP state. With the default time unit of 60s, this number will mean multiples of 1 minute."
-    . " If you set this value to 0, monitoring engine will start sending out notifications immediately."
+    "Define the number of \"time units\" to wait before sending out the first problem notification when this " .
+    "host enters a non-UP state. " .
+    "With the default time unit of 60s, this number will mean multiples of 1 minute. " .
+    "If you set this value to 0, monitoring engine will start sending out notifications immediately."
 );
 $help["recovery_notification_delay"] = dgettext(
     "help",
-    "Define the number of \"time units\" to wait before sending out the recovery notification when this host"
-    . " enters an UP state. The default time unit is 0 (this number will mean multiples of 1 minute)."
-    . " If you set this value to 0, monitoring engine will start sending out notifications immediately."
+    "Define the number of \"time units\" to wait before sending out the recovery notification when this " .
+    "host enters an UP state. " .
+    "With the default time unit of 60s, this number will mean multiples of 1 minute. " .
+    "If you set this value to 0, monitoring engine will start sending out notifications immediately."
 );
 
 /*

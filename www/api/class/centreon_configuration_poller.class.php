@@ -76,9 +76,34 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
             $queryValues['name'] = '%%';
         }
 
-        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT id, name FROM nagios_server ' .
-            'WHERE name LIKE :name ' .
-            'AND ns_activate = "1" ';
+        $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ns.id, ns.name FROM nagios_server ns ';
+
+        if (isset($this->arguments['t'])) {
+            if ($this->arguments['t'] == 'remote') {
+                $queryPoller .= "JOIN remote_servers rs ON (ns.ns_ip_address = rs.ip) ";
+                // Exclude selected master Remote Server
+                if (isset($this->arguments['e'])) {
+                    $queryPoller .= 'WHERE ns.id <> :masterId ';
+                    $queryValues['masterId'] = (int)$this->arguments['e'];
+                }
+            } elseif ($this->arguments['t'] == 'poller') {
+                $queryPoller .= "LEFT JOIN remote_servers rs ON (ns.ns_ip_address = rs.ip) "
+                    . "WHERE rs.ip IS NULL "
+                    . "AND ns.localhost = '0' ";
+            } elseif ($this->arguments['t'] == 'central') {
+                $queryPoller .= "WHERE ns.localhost = '0' ";
+            }
+        } else {
+            $queryPoller .= '';
+        }
+
+        if (stripos($queryPoller, 'WHERE') === false) {
+            $queryPoller .= 'WHERE ns.name LIKE :name ';
+        } else {
+            $queryPoller .= 'AND ns.name LIKE :name ';
+        }
+        $queryPoller .= 'AND ns.ns_activate = "1" ';
+
         if (!$isAdmin) {
             $queryPoller .= $acl->queryBuilder('AND', 'id', $acl->getPollerString('ID', $this->pearDB));
         }
@@ -95,6 +120,13 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
         $stmt = $this->pearDB->prepare($queryPoller);
         $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        // bind exluded master Remote Server
+        if (isset($this->arguments['t']) 
+            && $this->arguments['t'] == 'remote' 
+            && isset($this->arguments['e'])
+        ) {
+            $stmt->bindParam(':masterId', $queryValues['masterId'], PDO::PARAM_STR);
+        }
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
@@ -109,7 +141,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         }
         return array(
             'items' => $pollerList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

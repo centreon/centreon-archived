@@ -194,7 +194,6 @@ class CentreonRtDowntime extends CentreonObject
             $method = 'show' . ucfirst($parsedParameters['type']);
             $this->$method($parsedParameters['resource']);
         } else {
-
             $this->dHosts = $this->object->getHostDowntimes();
             $this->dServices = $this->object->getSvcDowntimes();
 
@@ -228,6 +227,8 @@ class CentreonRtDowntime extends CentreonObject
      */
     public function showHost($hostList)
     {
+        $unknownHost = [];
+
         $fields = array(
             'id',
             'host_name',
@@ -253,7 +254,6 @@ class CentreonRtDowntime extends CentreonObject
             );
 
             // check if host exist
-            $unknownHost = array();
             $existingHost = array();
             foreach ($hostList as $host) {
                 if ($this->hostObject->getHostID($host) == 0) {
@@ -421,7 +421,6 @@ class CentreonRtDowntime extends CentreonObject
                 self::OBJECT_NOT_FOUND . ' : Service : ' . implode('|', $unknownService) . "\n"
             );
         }
-
     }
 
     /**
@@ -752,10 +751,16 @@ class CentreonRtDowntime extends CentreonObject
                 $infoDowntime = $this->object->getCurrentDowntime($downtime);
                 if ($infoDowntime) {
                     $hostName = $this->hostObject->getHostName($infoDowntime['host_id']);
-                    if (is_null($infoDowntime['service_id'])) {
-                        $this->externalCmdObj->deleteDowntime('HOST', array($hostName . ';' . $downtime => 'on'));
+                    if ($infoDowntime['type'] == 2) {
+                        $this->externalCmdObj->deleteDowntime(
+                            'HOST',
+                            array($hostName . ';' . $infoDowntime['internal_id'] => 'on')
+                        );
                     } else {
-                        $this->externalCmdObj->deleteDowntime('SVC', array($hostName . ';' . $downtime => 'on'));
+                        $this->externalCmdObj->deleteDowntime(
+                            'SVC',
+                            array($hostName . ';' . $infoDowntime['internal_id'] => 'on')
+                        );
                     }
                 } else {
                     $unknownDowntime[] = $downtime;

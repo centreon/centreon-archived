@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,20 +37,33 @@ if (!isset($centreon)) {
     exit();
 }
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchTP']) && $_POST['searchTP']) {
-    $search = $_POST['searchTP'];
-    $SearchTool = " WHERE tp_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+$search = filter_var(
+    $_POST['searchTP'] ?? $_GET['searchTP'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+if (isset($_POST['searchTP']) || isset($_GET['searchTP'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM timeperiod $SearchTool");
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$SearchTool = '';
+if ($search) {
+    $SearchTool .= " WHERE tp_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+}
 
-include("./include/common/checkPagination.php");
+// Timeperiod list
+$query = "SELECT SQL_CALC_FOUND_ROWS tp_id, tp_name, tp_alias FROM timeperiod $SearchTool " .
+    "ORDER BY tp_name LIMIT " . $num * $limit . ", " . $limit;
+$dbResult = $pearDB->query($query);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+
+include "./include/common/checkPagination.php";
 
 /*
  * Smarty template Init
@@ -58,38 +71,31 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Timeperiod list
- */
-$query = "SELECT tp_id, tp_name, tp_alias FROM timeperiod $SearchTool " .
-    "ORDER BY tp_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
-
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 
-for ($i = 0; $timeperiod = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $timeperiod = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $timeperiod['tp_id'] . "]");
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
@@ -100,31 +106,32 @@ for ($i = 0; $timeperiod = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $timeperiod["tp_name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&tp_id=" . $timeperiod['tp_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&tp_id=" . $timeperiod['tp_id'],
         "RowMenu_desc" => $timeperiod["tp_alias"],
         "RowMenu_options" => $moptions,
-        "resultingLink" => "?p=" . $p . "&o=s&tp_id=" . $timeperiod['tp_id']
+        "resultingLink" => "main.php?p=" . $p . "&o=s&tp_id=" . $timeperiod['tp_id']
     );
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
-/*
- * Different messages we put in the template
- */
+
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {
@@ -159,9 +166,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('limit', $limit);
 $tpl->assign('searchTP', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

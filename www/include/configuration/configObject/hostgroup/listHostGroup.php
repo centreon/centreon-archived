@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,24 +37,36 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+require_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+require_once "./include/common/autoNumLimit.php";
 
 /*
  * Object init
  */
 $mediaObj = new CentreonMedia($pearDB);
 
-/*
- * Search
- */
-$SearchTool = null;
-$search = "";
-if (isset($_POST['searchHg']) && $_POST['searchHg']) {
-    $search = $_POST['searchHg'];
-    $SearchTool = " (hg_name LIKE '%" . $pearDB->escape($search)
-        . "%' OR hg_alias LIKE '%" . $pearDB->escape($search) . "%') AND ";
+// Search
+$searchFilterQuery = null;
+$mainQueryParameters = [];
+
+$search = filter_var(
+    $_POST['searchHg'] ?? $_GET['searchHg'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchHg']) || isset($_GET['searchHg'])) {
+    //saving chosen filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+}
+
+if ($search) {
+    $mainQueryParameters[':search_string'] = "%{$search}%";
+    $searchFilterQuery = " (hg_name LIKE :search_string OR hg_alias LIKE :search_string) AND ";
 }
 
 /*
@@ -63,15 +75,11 @@ if (isset($_POST['searchHg']) && $_POST['searchHg']) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-//$centreon->cache->initHostGroupCache($pearDB);
-
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_status", _("Status"));
@@ -79,35 +87,34 @@ $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 $tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Hostgroup list
- */
-$rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image
-           FROM hostgroup
-           WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
+// Hostgroup list
+$rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image " .
+    "FROM hostgroup " .
+    "WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
     $acl->queryBuilder('AND', 'hg_id', $hgString) .
-    " ORDER BY hg_name LIMIT " . $num * $limit . ", $limit";
-$DBRESULT = $pearDB->query($rq);
+    " ORDER BY hg_name LIMIT " . $num * $limit . ", " . $limit;
+$dbResult = $pearDB->query($rq, $mainQueryParameters);
 
-/*
- * Pagination
- */
-$rows = $pearDB->numberRows();
-include("./include/common/checkPagination.php");
+// Pagination
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+require_once "./include/common/checkPagination.php";
 
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $hg = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hg['hg_id'] . "]");
     $moptions = "";
     if ($hg["hg_activate"]) {
@@ -145,10 +152,10 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
                WHERE hostgroup_hg_id = '" . $hg['hg_id'] . "'
                AND h.host_id = hgr.host_host_id
                AND h.host_register = '1' $aclCond";
-    $DBRESULT2 = $pearDB->query($rq);
+    $dbResult2 = $pearDB->query($rq);
     $nbrhostActArr = array();
     $nbrhostDeactArr = array();
-    while ($row = $DBRESULT2->fetchRow()) {
+    while ($row = $dbResult2->fetch()) {
         if ($row['host_activate']) {
             $nbrhostActArr[$row['host_id']] = true;
         } else {
@@ -167,7 +174,7 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($hg["hg_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&hg_id=" . $hg['hg_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&hg_id=" . $hg['hg_id'],
         "RowMenu_desc" => ($hg["hg_alias"] == ''
             ? '-'
             : CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"]))),
@@ -178,27 +185,28 @@ for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_hostDeact" => $nbrhostDeact,
         "RowMenu_options" => $moptions
     );
-    /*
-     * Switch color line
-     */
+
+    // Switch color line
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
@@ -218,13 +226,19 @@ foreach (array('o1', 'o2') as $option) {
             . "   setO(this.form.elements['$option'].value); submit();} "
             . "this.form.elements['$option'].selectedIndex = 0"
     );
-    $form->addElement('select', $option, null, array(
-        null => _("More actions..."),
-        "m" => _("Duplicate"),
-        "d" => _("Delete"),
-        "ms" => _("Enable"),
-        "mu" => _("Disable")
-    ), $attrs1);
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete"),
+            "ms" => _("Enable"),
+            "mu" => _("Disable")
+        ),
+        $attrs1
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
@@ -234,9 +248,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('searchHg', $search);
 $tpl->assign('limit', $limit);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

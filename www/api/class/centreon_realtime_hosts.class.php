@@ -95,7 +95,6 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             $this->limit = 30;
         }
         if (isset($this->arguments['number'])) {
-
             $this->number = $this->arguments['number'];
         } else {
             $this->number = 0;
@@ -406,8 +405,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         }
         $query .= " AND h.enabled = 1 ";
 
-        if (
-            !isset($this->arguments['fields']) ||
+        if (!isset($this->arguments['fields']) ||
             is_null($this->arguments['fields']) ||
             in_array($this->sortType, explode(',', $this->arguments['fields']))
         ) {

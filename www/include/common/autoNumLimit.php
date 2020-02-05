@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -37,40 +37,54 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (isset($_POST["limit"]) && $_POST["limit"]) {
-    $limit = $_POST["limit"];
-} elseif (isset($_GET["limit"])) {
-    $limit = $_GET["limit"];
-} elseif (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
+$limitNotInRequestParameter = !isset($_POST['limit']) && !isset($_GET['limit']);
+$historyLimitNotDefault = isset($centreon->historyLimit[$url]) && $centreon->historyLimit[$url] !== 30;
+$sessionLimitKey = "results_limit_{$url}";
+
+// Setting the limit filter
+if (isset($_POST['limit']) && $_POST['limit']) {
+    $limit = $_POST['limit'];
+} elseif (isset($_GET['limit'])) {
+    $limit = $_GET['limit'];
+} elseif ($limitNotInRequestParameter && $historyLimitNotDefault) {
     $limit = $centreon->historyLimit[$url];
+} elseif (isset($_SESSION[$sessionLimitKey])) {
+    $limit = $_SESSION[$sessionLimitKey];
 } else {
     if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
-        $gopt = $DBRESULT->fetchRow();
-        $limit = myDecode($gopt["value"]);
+        $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
     } else {
-        $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
-        $gopt = $DBRESULT->fetchRow();
-        $limit = myDecode($gopt["value"]);
+        $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
+    }
+    $gopt = $dbResult->fetch();
+    if ((int)$gopt['value']) {
+        $limit = (int)$gopt['value'];
+    } else {
+        $limit = 30;
     }
 }
 
-if (!empty($centreon->historyLimit) &&
-    !empty($centreon->historyLimit[$url]) &&
-    $limit != $centreon->historyLimit[$url]
+$_SESSION[$sessionLimitKey] = $limit;
+
+// Setting the pagination filter
+if (isset($_POST['num'])
+    && isset($_POST['search'])
+    || (isset($centreon->historyLastUrl) && $centreon->historyLastUrl !== $url)
 ) {
+    // Checking if the current page and the last displayed page are the same and resetting the filters
     $num = 0;
-} elseif (isset($_POST["num"]) && $_POST["num"]) {
-    $num = $_POST["num"];
-} elseif (isset($_GET["num"]) && $_GET["num"]) {
-    $num = $_GET["num"];
-} elseif (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
-    $num = $centreon->historyPage[$url];
+} elseif (isset($_REQUEST['num'])) {
+    // Checking if a pagination filter has been sent in the http request
+    $num = filter_var(
+        $_GET['num'] ?? $_POST['num'] ?? 0,
+        FILTER_VALIDATE_INT
+    );
 } else {
-    $num = 0;
+    // Resetting the pagination filter
+    $num = $centreon->historyPage[$url] ?? 0;
 }
 
-/* cast limit and num to avoid sql error on prepared statement (PDO::PARAM_INT) */
+// Cast limit and num to avoid sql error on prepared statement (PDO::PARAM_INT)
 $limit = (int)$limit;
 $num = (int)$num;
 

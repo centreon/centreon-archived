@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -51,16 +51,23 @@ $objMain = new CentreonMainCfg();
  */
 $nagios = array();
 $nagios_d = array();
+
+$defaultEventBrokerOptions['event_broker_options'][-1] = 1;
+
 if (($o == "c" || $o == "w") && $nagios_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '" . $nagios_id . "' LIMIT 1");
-    # Set base value
-    $nagios = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '" . $nagios_id . "' LIMIT 1");
+    // Set base value
+    $nagios = array_map("myDecode", $dbResult->fetch());
+    $dbResult->closeCursor();
 
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
         $nagios_d["nagios_debug_level"][$value] = 1;
     }
+    $defaultEventBrokerOptions['event_broker_options'] = $objMain->explodeEventBrokerOptions(
+        (int)$nagios['event_broker_options']
+    );
+    unset($nagios['event_broker_options']);
 }
 
 /*
@@ -72,7 +79,7 @@ if ($o != "a") {
     $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
 } else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
-    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml";
+    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json";
 }
 $cdata->addJsData(
     'clone-values-broker',
@@ -87,28 +94,55 @@ $cdata->addJsData(
     count($dirArray)
 );
 
+/* Set the values for list of whitelist macros */
+$macrosWhitelist = [];
+if ($o != 'a') {
+    $macrosWhitelist = array_map(
+        function ($macro) {
+            return [
+                'macros_filter_#index#' => $macro
+            ];
+        },
+        explode(',', $nagios['macros_filter'])
+    );
+    unset($nagios['macros_filter']);
+}
+$cdata->addJsData(
+    'clone-values-macros_filter',
+    htmlspecialchars(
+        json_encode($macrosWhitelist),
+        ENT_QUOTES
+    )
+);
+$cdata->addJsData(
+    'clone-count-macros_filter',
+    count($macrosWhitelist)
+);
+
 /*
- * Database retrieve information for differents elements list we need on the page
+ * Database retrieve information for different elements list we need on the page
  *
  * Check commands comes from DB -> Store in $checkCmds Array
  *
  */
 $checkCmds = array();
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+$dbResult = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 $checkCmds = array(null => null);
-while ($checkCmd = $DBRESULT->fetchRow()) {
+while ($checkCmd = $dbResult->fetch()) {
     $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 /*
  * Get all nagios servers
  */
 $nagios_server = array(null => "");
-$result = $oreon->user->access->getPollerAclConf(array(
-    'fields' => array('name', 'id'),
-    'keys' => array('id')
-));
+$result = $oreon->user->access->getPollerAclConf(
+    array(
+        'fields' => array('name', 'id'),
+        'keys' => array('id')
+    )
+);
 foreach ($result as $ns) {
     $nagios_server[$ns["id"]] = $ns["name"];
 }
@@ -118,15 +152,15 @@ foreach ($result as $ns) {
  */
 $nBk = 0;
 $aBk = array();
-$DBRESULT = $pearDB->query(
+$dbResult = $pearDB->query(
     "SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '"
     . $nagios_id . "'"
 );
-while ($lineBk = $DBRESULT->fetchRow()) {
+while ($lineBk = $dbResult->fetch()) {
     $aBk[$nBk] = $lineBk;
     $nBk++;
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 unset($lineBk);
 
 $attrsText = array("size" => "30");
@@ -625,7 +659,48 @@ $cloneSet[] = $form->addElement(
         'size' => 100
     )
 );
-$form->addElement('text', 'event_broker_options', _("Broker Module Options"), $attrsText2);
+
+$eventBrokerOptionsData = [];
+// Add checkbox for each of event broker options
+foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
+    if ($bit === -1 || $bit === 0) {
+        $onClick = 'unCheckOthers("event-broker-options", this.name);';
+    } else {
+        $onClick = 'unCheckAllAndNaught("event-broker-options");';
+    }
+    $eventBrokerOptionsData[] = $form->createElement(
+        'checkbox',
+        $bit,
+        '',
+        _($label),
+        [
+            'onClick' => $onClick,
+            'class' => 'event-broker-options'
+        ]
+    );;
+}
+$form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '&nbsp;');
+ // New options for enable whitelist of macros sent to Centreon Broker
+$enableMacrosFilter = [];
+$enableMacrosFilter[] = $form->createElement('radio', 'enable_macros_filter', null, _("Yes"), 1);
+$enableMacrosFilter[] = $form->createElement('radio', 'enable_macros_filter', null, _("No"), 0);
+$form->addGroup($enableMacrosFilter, 'enable_macros_filter', _("Enable macro filtering"), '&nbsp;');
+ // Dynamic field for macros whitelisted
+$form->addElement(
+    'static',
+    'macros_filter',
+    _('Macros whitelist')
+);
+$cloneSetMacrosFilter = array();
+$cloneSetMacrosFilter[] = $form->addElement(
+    'text',
+    'macros_filter[#index#]',
+    _('Macros whitelist'),
+    [
+        'id' => 'macros_filter_#index#',
+        'size' => 100
+    ]
+);
 
 $tab = array();
 $tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
@@ -726,7 +801,11 @@ foreach ($debugLevel as $key => $val) {
             $key,
             '&nbsp;',
             $val,
-            array("id" => "debug" . $key, "onClick" => "unCheckOthers(this.id);")
+            array(
+                "id" => "debug" . $key,
+                "onClick" => "unCheckOthers('debug-level', this.name);",
+                'class' => 'debug-level'
+            )
         );
     } else {
         $debugCheck[] = $form->createElement(
@@ -734,12 +813,17 @@ foreach ($debugLevel as $key => $val) {
             $key,
             '&nbsp;',
             $val,
-            array("id" => "debug" . $key, "onClick" => "unCheckAllAndNaught();")
+            array(
+                "id" => "debug" . $key,
+                "onClick" => "unCheckAllAndNaught('debug-level');",
+                'class' => 'debug-level'
+            )
         );
     }
 }
 $form->addGroup($debugCheck, 'nagios_debug_level', _("Debug Level"), '<br/>');
 $form->setDefaults($nagios_d);
+$form->setDefaults($defaultEventBrokerOptions);
 
 $form->setDefaults($objMain->getDefaultMainCfg());
 
@@ -758,6 +842,28 @@ function isNum($value)
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->registerRule('isNum', 'callback', 'isNum');
 
+/* Add validator for macro name format */
+/**
+ * Validate the macro name
+ *
+ * @param string $value Not used
+ * @return bool If all name are valid
+ */
+function validMacroName($value)
+{
+    // Get the list of invalid characters
+    $invalidCharacters = str_split($_REQUEST['illegal_macro_output_chars']);
+    foreach ($_REQUEST['macros_filter'] as $name) {
+        $parsed = str_replace($invalidCharacters, '', $name);
+        // Contains one of invalid characters
+        if ($parsed !== $name) {
+            return false;
+        }
+    }
+    return true;
+}
+$form->registerRule('validMacroName', 'callback', 'validMacroName');
+
 $form->applyFilter('cfg_dir', 'slash');
 $form->applyFilter('log_archive_path', 'slash');
 $form->applyFilter('__ALL__', 'myTrim');
@@ -766,21 +872,13 @@ $form->addRule('nagios_name', _("Compulsory Name"), 'required');
 $form->addRule('cfg_file', _("Required Field"), 'required');
 $form->addRule('nagios_comment', _("Required Field"), 'required');
 $form->addRule('nagios_name', _("Name is already in use"), 'exist');
+// Add rule to field for whitelist macro
+$form->addRule('macros_filter', _("A macro is malformated."), 'validMacroName');
 
 /*
  * Get Values
  */
 $ret = $form->getSubmitValues();
-
-for ($i = 0, $brokerOptValidate = 0; isset($ret["in_broker_$i"]); $i++) {
-    if ($ret["in_broker_$i"] != "") {
-        $brokerOptValidate++;
-    }
-}
-if ($brokerOptValidate) {
-    $form->addRule('event_broker_options', _("Broker need options to be loaded"), 'required');
-}
-$form->addRule('event_broker_options', _("This value must be a numerical value."), 'isNum');
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
@@ -791,7 +889,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 if ($o == "w") {
-    # Just watch a nagios information
+    // Just watch a nagios information
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -803,7 +901,7 @@ if ($o == "w") {
     $form->setDefaults($nagios);
     $form->freeze();
 } elseif ($o == "c") {
-    # Modify a nagios information
+    // Modify nagios information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement(
         'reset',
@@ -814,7 +912,7 @@ if ($o == "w") {
 
     $form->setDefaults($nagios);
 } elseif ($o == "a") {
-    # Add a nagios information
+    // Add nagios information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement(
         'reset',
@@ -833,7 +931,7 @@ $tpl->assign(
     . '["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
 );
 
-# prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
@@ -921,6 +1019,7 @@ if ($valid) {
         _("Warning: this value can be dangerous, use -1 if you have any doubt.")
     );
     $tpl->assign('cloneSet', $cloneSet);
+    $tpl->assign('cloneSetMacrosFilter', $cloneSetMacrosFilter);
     $tpl->assign('centreon_path', _CENTREON_PATH_);
     $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
     $tpl->assign("aggressive_host_warning", _("This option must be disable in order to avoid latency problem."));
@@ -930,30 +1029,22 @@ if ($valid) {
 
 <script type="text/javascript">
 
-    function unCheckOthers(id) {
-        if (id == "debug-1") {
-            document.getElementById("debug0").checked = false;
-        } else if (id == "debug0") {
-            document.getElementById("debug-1").checked = false;
-        }
-
-        document.getElementById("debug1").checked = false;
-        document.getElementById("debug2").checked = false;
-        document.getElementById("debug4").checked = false;
-        document.getElementById("debug8").checked = false;
-        document.getElementById("debug16").checked = false;
-        document.getElementById("debug32").checked = false;
-        document.getElementById("debug64").checked = false;
-        document.getElementById("debug128").checked = false;
-        document.getElementById("debug256").checked = false;
-        document.getElementById("debug512").checked = false;
-        document.getElementById("debug1024").checked = false;
-        document.getElementById("debug2048").checked = false;
+    function unCheckOthers(className, name) {
+        var elements = document.querySelectorAll("." + className);
+        elements.forEach(function (element) {
+            if (element.name !== name) {
+                element.checked = false;
+            }
+        })
     }
 
-    function unCheckAllAndNaught() {
-        document.getElementById("debug-1").checked = false;
-        document.getElementById("debug0").checked = false;
+    function unCheckAllAndNaught(className) {
+        var elements = document.querySelectorAll("." + className);
+        elements.forEach(function (element) {
+            if (element.name.match(/\[(0|-1)\]$/)) {
+                element.checked = false;
+            }
+        })
     }
 
 </script>

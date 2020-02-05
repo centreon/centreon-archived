@@ -44,8 +44,8 @@ $inputArguments = array(
     'css_color_5' => FILTER_SANITIZE_STRING,
     'css_color_6' => FILTER_SANITIZE_STRING
 );
-$inputGet = filter_input_array(
-    INPUT_GET,
+$inputPost = filter_input_array(
+    INPUT_POST,
     $inputArguments
 );
 
@@ -73,10 +73,10 @@ $DBRESULT = $pearDB->query($rq);
 $tab_css = array();
 for ($i = 0; $DBRESULT->rowCount() && $elem = $DBRESULT->fetchRow(); $i++) {
     $tab_css[$elem["menu_nb"]] = $elem;
-    if (isset($inputGet["css_color_" . $elem["id_css_color_menu"]])) {
+    if (isset($inputPost["css_color_" . $elem["id_css_color_menu"]])) {
         $pearDB->query(
             "UPDATE `css_color_menu` " .
-            "SET `css_name` = '" . $inputGet["css_color_".$elem["id_css_color_menu"]] . "' " .
+            "SET `css_name` = '" . $inputPost["css_color_".$elem["id_css_color_menu"]] . "' " .
             "WHERE `id_css_color_menu` = " . $elem["id_css_color_menu"]
         );
     }

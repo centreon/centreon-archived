@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give Centreon
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,10 +33,9 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/wiki.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/procedures.class.php";
 
 class WikiApi
 {
@@ -78,7 +77,7 @@ class WikiApi
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiefile);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $cookiefile);
-        if($this->noSslCertificate == 1){
+        if ($this->noSslCertificate == 1) {
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         }
@@ -97,7 +96,6 @@ class WikiApi
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
         $result = json_decode($result, true);
-
         $version = $result['query']['general']['generator'];
         $version = explode(' ', $version);
         if (isset($version[1])) {
@@ -116,20 +114,12 @@ class WikiApi
         curl_setopt($this->curl, CURLOPT_HEADER, true);
 
         // Get Connection Cookie/Token
-        if ($this->version >= 1.27) {
-            $postfields = array(
-                'action' => 'query',
-                'meta' => 'tokens',
-                'format' => 'json',
-                'type' => 'login'
-            );
-        } else {
-            $postfields = array(
-                'action' => 'login',
-                'format' => 'json',
-                'lgname' => $this->username
-            );
-        }
+        $postfields = array(
+            'action' => 'query',
+            'meta' => 'tokens',
+            'format' => 'json',
+            'type' => 'login'
+        );
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
@@ -146,15 +136,9 @@ class WikiApi
 
         $result = json_decode($body, true);
 
-        $token = '';
-        if (isset($result['query']['tokens']['logintoken'])) {
-            $token = $result['query']['tokens']['logintoken'];
-        } elseif (isset($result['login']['token'])) {
-            $token = $result['login']['token'];
-        }
+        $token = $result['query']['tokens']['logintoken'];
 
         // Launch Connection
-
         $postfields = [
             'action' => 'login',
             'lgname' => $this->username,
@@ -231,8 +215,8 @@ class WikiApi
 
         if ($this->version >= 1.24) {
             $this->tokens[$method] = $result['query']['tokens']['csrftoken'];
-            if ($this->tokens[$method] == '+/'){
-                $this->tokens[$method] = $this->getMethodToken('delete',$title);
+            if ($this->tokens[$method] == '+/') {
+                $this->tokens[$method] = $this->getMethodToken('delete', $title);
             }
         } elseif ($this->version >= 1.20) {
             $this->tokens[$method] = $result['tokens'][$method . 'token'];
@@ -246,8 +230,7 @@ class WikiApi
 
     public function movePage($oldTitle = '', $newTitle = '')
     {
-        $login = $this->login();
-
+        $this->login();
         $token = $this->getMethodToken('move', $oldTitle);
 
         $postfields = array(
@@ -272,7 +255,7 @@ class WikiApi
     {
         $tries = 0;
         $deleteResult = $this->deleteMWPage($title);
-        while ($tries < 5 && isset($deleteResult->error)){
+        while ($tries < 5 && isset($deleteResult->error)) {
             $deleteResult = $this->deleteMWPage($title);
             $tries++;
         }
@@ -280,7 +263,7 @@ class WikiApi
         //remove cookies related to this action
         unlink('/tmp/CURLCOOKIE*');
 
-        if (isset($deleteResult->error)){
+        if (isset($deleteResult->error)) {
             return false;
         } elseif (isset($deleteResult->delete)) {
             return true;
@@ -324,9 +307,6 @@ class WikiApi
     public function getChangedPages($count = 50)
     {
         // Connecting to Mediawiki API
-        $apiUrl = $this->url . '/api.php?format=json&action=query&list=recentchanges' .
-            '&rclimit=' . $count . '&rcprop=title&rctype=new|edit';
-
         $postfields = array(
             'format' => 'json',
             'action' => 'query',
@@ -446,15 +426,17 @@ class WikiApi
      */
     public function updateLinkForHost($hostName)
     {
-        $querySelect = "SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "'";
-        $resHost = $this->db->query($querySelect);
-        $tuple = $resHost->fetchRow();
+        $resHost = $this->db->query(
+            "SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "'"
+        );
+        $tuple = $resHost->fetch();
 
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
-        $queryUpdate = "UPDATE extended_host_information "
+        $this->db->query(
+            "UPDATE extended_host_information "
             . "SET ehi_notes_url = '" . $valueToAdd . "' "
-            . "WHERE host_host_id = '" . $tuple['host_id'] . "'";
-        $this->db->query($queryUpdate);
+            . "WHERE host_host_id = '" . $tuple['host_id'] . "'"
+        );
     }
 
     /**
@@ -463,21 +445,23 @@ class WikiApi
      */
     public function updateLinkForService($hostName, $serviceDescription)
     {
-        $query = "SELECT service_id " .
+        $resService = $this->db->query(
+            "SELECT service_id " .
             "FROM service, host, host_service_relation " .
             "WHERE host.host_name LIKE '" . $hostName . "' " .
             "AND service.service_description LIKE '" . $serviceDescription . "' " .
             "AND host_service_relation.host_host_id = host.host_id " .
-            "AND host_service_relation.service_service_id = service.service_id ";
-        $resService = $this->db->query($query);
-        $tuple = $resService->fetchRow();
+            "AND host_service_relation.service_service_id = service.service_id "
+        );
+        $tuple = $resService->fetch();
 
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
             'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $queryUpdate = "UPDATE extended_service_information " .
+        $this->db->query(
+            "UPDATE extended_service_information " .
             "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' ";
-        $this->db->query($queryUpdate);
+            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
+        );
     }
 
     /**
@@ -485,16 +469,19 @@ class WikiApi
      */
     public function updateLinkForServiceTemplate($serviceName)
     {
-        $query = "SELECT service_id FROM service WHERE service_description LIKE '" . $serviceName . "' ";
-        $resService = $this->db->query($query);
-        $tuple = $resService->fetchRow();
+        $resService = $this->db->query(
+            "SELECT service_id FROM service " .
+            "WHERE service_description LIKE '" . $serviceName . "' "
+        );
+        $tuple = $resService->fetch();
 
         $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
             'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $queryUpdate = "UPDATE extended_service_information " .
+        $this->db->query(
+            "UPDATE extended_service_information " .
             "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' ";
-        $this->db->query($queryUpdate);
+            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
+        );
     }
 
     /**
@@ -502,7 +489,7 @@ class WikiApi
      * @param string $title
      * @return array
      */
-    private function deleteMWPage($title='')
+    private function deleteMWPage($title = '')
     {
         $this->login();
 

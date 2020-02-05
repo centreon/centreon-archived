@@ -3,12 +3,14 @@ Object management
 =================
 
 .. toctree::
-  
+   :maxdepth: 1
+
    acl
    acl_action
    acl_group
    acl_menu
    acl_resource
+   realtime_acknowledgement
    broker_cfg
    commands
    contacts

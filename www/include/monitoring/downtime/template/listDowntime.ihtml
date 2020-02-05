@@ -21,7 +21,7 @@
 	<tr>
         <td class="checkbox"><input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /> <h4>{$ViewAll}</h4></td>
         <td class="checkbox"><input type='checkbox' name='view_downtime_cycle' {if $view_downtime_cycle == '1'}checked{/if} /> <h4>{$ViewDowntimeCycle}</h4></td>
-        <td colspan="2" class="actions"><input type='submit' name='SearchB' value='{$Search}' class="btc bt_success" /></td>
+        <td>{$form.SearchB.html}</td>
 	</tr>
   </tbody>
 </table>
@@ -30,7 +30,7 @@
 	<tr class="ToolbarTR">
         <td>
             {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
-            {if $nb_downtime_svc}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
+            {if $nb_downtime_svc && $msgs2}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
         </td>
         {php}
         include('./include/common/pagination.php');
@@ -39,7 +39,12 @@
 </table>
 <table class="ListTable">
     <tr class='ListHeader'>
-        <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+        <td class="ListColHeaderPicker">
+            <div class="md-checkbox md-checkbox-inline">
+                <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                <label class="empty-label" for="checkall"></label>
+            </div>
+        </td>
     	<td class="ListColHeaderCenter">{t}Host Name{/t}</td>
     	<td class="ListColHeaderCenter">{t}Services{/t}</td>
     	<td class="ListColHeaderCenter">{t}Start Time{/t}</td>
@@ -108,7 +113,7 @@
     <tr class="ToolbarTR">
         <td>
             {if $msgs2}<a class="btc bt_success" href="{$msgs2.addL2}">{$msgs2.addT2}</a>{/if}
-            {if $nb_downtime_svc}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
+            {if $nb_downtime_svc && $msgs2}<input type="submit" name="submit2" value="{$cancel}" class="btc bt_danger" onclick="doAction('select[name=\'o1\']', 'cs','{$msgs2.delConfirm}')">{/if}
         </td>
 	{php}
 	   include('./include/common/pagination.php');

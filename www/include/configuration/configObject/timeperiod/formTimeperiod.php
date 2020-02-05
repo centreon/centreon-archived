@@ -71,7 +71,9 @@ $attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
     . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
-$timeAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list';
+$timeAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list' .
+    ($tp_id ? "&exclude={$tp_id}" : '') // exclude this timeperiod from list
+;
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $timeAvRoute,
@@ -82,7 +84,7 @@ $attrTimeperiods = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p, '', ['onsubmit' => 'return formValidate()', 'data-centreon-validate' => '']);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Time Period"));
 } elseif ($o == "c") {
@@ -140,21 +142,20 @@ $DBRESULT->closeCursor();
  */
 require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
 if ($o == "c" || $o == "a" || $o == "mc") {
-    for ($k = 0; isset($mTp[$k]); $k++) {
-        print "<script type=\"text/javascript\">";
-        print "tab[$k] = " . $mTp[$k] . ";";
-        print "</script>";
-    }
+    print "<script type=\"text/javascript\">";
+    print "var tab = [];";
 
+    for ($k = 0; isset($mTp[$k]); $k++) {
+        print "tab[$k] = " . $mTp[$k] . ";";
+    }
     for ($k = 0; isset($exception_id[$k]); $k++) { ?>
-        <script type="text/javascript">
             globalExceptionTabId[<?php echo $k;?>] = <?php echo $exception_id[$k];?>;
             globalExceptionTabName[<?php echo $k;?>] = '<?php echo $exception_days[$k];?>';
             globalExceptionTabTimerange[<?php echo $k;?>] = '<?php echo $exception_timerange[$k];?>';
             globalExceptionTabTimeperiodId[<?php echo $k;?>] = <?php echo $exception_timeperiod_id[$k];?>;
-        </script>
         <?php
     }
+    print "</script>";
 }
 
 /*
@@ -200,6 +201,12 @@ $form->addRule('tp_wednesday', _('Error in hour definition'), 'format');
 $form->addRule('tp_thursday', _('Error in hour definition'), 'format');
 $form->addRule('tp_friday', _('Error in hour definition'), 'format');
 $form->addRule('tp_saturday', _('Error in hour definition'), 'format');
+
+/*
+ * Check for template loops
+ */
+$form->registerRule('templateLoop', 'callback', 'testTemplateLoop');
+$form->addRule('tp_include', _('The selected template has the same time period as a template'), 'templateLoop');
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 

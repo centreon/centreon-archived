@@ -44,7 +44,7 @@
                                     {foreach item=hs from=$hosts_services}
                                     <tr class="{$hs.line_class}">
                                         <td class="ListColLeft ListColNoWrap ColPopup" style='white-space:nowrap'>
-                                            <a href="./main.php?p=20201&o=svcd&host_name={$hs.host_name}&service_description={$hs.service_description}">{$hs.service_description}</a>
+                                            <a href="./main.php?p=20201&o=svcd&host_name={$hs.hnl}&service_description={$hs.sdl}">{$hs.service_description}</a>
                                         </td>
                                         <td>
                                             {if $hs.svc_index > 0}
@@ -322,7 +322,7 @@
                             <table class="ListTable">
                                 <tr class='list_lvl_1'>
                                     <td class="ListColHeaderCenter FormHeader">{$cmt_host_name}</td>
-                                    <td class="ListColHeaderCenter FormHeader" width="120">{$cmt_entry_time}</td>
+                                    <td class="ListColHeaderCenter FormHeader" width="180">{$cmt_entry_time}</td>
                                     <td class="ListColHeaderCenter FormHeader" width="120">{$cmt_author}</td>
                                     <td class="ListColHeaderCenter FormHeader">{$cmt_comment}</td>
                                     <td class="ListColHeaderCenter FormHeader" width="50">{$cmt_persistent}</td>
@@ -330,7 +330,7 @@
                                 {foreach item=tch from=$tab_comments_host}
                                 <tr class={cycle values="list_two, list_one"}>
                                     <td class="ListColLeft">{$tch.host_name}</td>
-                                    <td class="ListColRight">{$tch.comment_time}</td>
+                                    <td class="ListColRight isTimestamp">{$tch.comment_time}</td>
                                     <td class="ListColCenter">{$tch.author_name}</td>
                                     <td class="ListColLeft containsURI">{$tch.comment_data}</td>
                                     <td class="ListColCenter">{$tch.is_persistent}</td>
@@ -375,10 +375,10 @@
                         <h4>{t}Host commands and shortcuts{/t}</h4>
                     </td>
                 </tr>
-                {if $lcaTopo.60101 || $admin == 1}
+                {if ($lcaTopo.60101 || $admin == 1) && !$isRemote}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup">
-                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$host_data.host_name}</a>
+                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config}</a>
                     </td>
                 </tr>
                 {/if}
@@ -392,7 +392,7 @@
                 {if $lcaTopo.20301 || $admin == 1}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup">
-                        <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc'>{$lnk_all_services}</a>
+                        <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc&statusFilter='>{$lnk_all_services}</a>
                     </td>
                 </tr>
                 {/if}
@@ -424,28 +424,28 @@
                     </td>
                 </tr>
                 {/if}
-                {if $aclAct.host_notifications_for_services || $admin == 1}
+                {if ($aclAct.host_notifications_for_services || $admin == 1) && !$isRemote}
                 <tr class='list_one'>
                     <td class="ListColLeft ColPopup" id="host_notifications_for_services">
                         <a href="#" onClick="send_command('host_notifications_for_services', '1');">{$m_mon_disable_not_all_services}</a>
                     </td>
                 </tr>
                 {/if}
-                {if $aclAct.host_notifications_for_services || $admin == 1}
+                {if ($aclAct.host_notifications_for_services || $admin == 1) && !$isRemote}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup" id="host_notifications_for_services">
                         <a href="#" onClick="send_command('host_notifications_for_services', '0');">{$m_mon_enable_not_all_services}</a>
                     </td>
                 </tr>
                 {/if}
-                {if $aclAct.service_schedule_check || $admin == 1}
+                {if ($aclAct.service_schedule_check || $admin == 1) && !$isRemote}
                 <tr class='list_one'>
                     <td class="ListColLeft ColPopup" id ="host_schedule_check">
                         <a href="#" onClick="send_command('host_schedule_check', '0');">{$m_mon_SCH_immediate_check}</a>
                     </td>
                 </tr>
                 {/if}
-                {if $aclAct.service_schedule_forced_check || $admin == 1}
+                {if ($aclAct.service_schedule_forced_check || $admin == 1) && !$isRemote}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup" id="host_schedule_check">
                         <a href="#" onClick="send_command('host_schedule_check', '1');">{$m_mon_SCH_immediate_check_f}</a>
@@ -459,14 +459,14 @@
                     </td>
                 </tr>
                 {/if}
-                {if $aclAct.host_checks_for_services || $admin == 1}
+                {if ($aclAct.host_checks_for_services || $admin == 1) && !$isRemote}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup" id="host_checks_for_services">
                         <a href="#" onClick="send_command('host_checks_for_services', '1');">{$m_mon_diable_check_all_svc}</a>
                     </td>
                 </tr>
                 {/if}
-                {if $aclAct.host_checks_for_services || $admin == 1}
+                {if ($aclAct.host_checks_for_services || $admin == 1) && !$isRemote}
                 <tr class='list_one'>
                     <td class="ListColLeft ColPopup" id="host_checks_for_services">
                         <a href="#" onClick="send_command('host_checks_for_services', '0');">{$m_mon_enable_check_all_svc}</a>

@@ -6,7 +6,6 @@ Feature: Centreon Engine Restart
     Background:
         Given I am logged in a Centreon server
 
-    @critical
     Scenario: Check Centreon Engine Restart
         Given I am on the poller configuration export page
         And I check Restart Monitoring Engine

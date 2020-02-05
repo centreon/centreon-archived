@@ -95,7 +95,7 @@ class CentreonConfigurationTrap extends CentreonConfigurationObjects
         }
         return array(
             'items' => $trapList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 

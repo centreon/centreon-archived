@@ -1,23 +1,19 @@
-.. _exploitationguide:
-
 ##############
 Administration
 ##############
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :glob:
 
-   02b
-   02c
-   02d
-   02e
-   02f
-   02h
-   02i
-   02j
-   02k
-   02l
+   ui_access
+   acl
+   poller/index
+   knowledge_base/index
+   extensions
+   media
+   parameters
+   data_retention
+   logs
    backup
-   partitioning/index
-   03stats
+   partitioning

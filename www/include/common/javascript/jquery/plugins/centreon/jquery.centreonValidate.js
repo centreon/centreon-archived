@@ -85,7 +85,8 @@
 		$this.find(':input').each(function(idx, el) {
 		    var rules = [
 		        'required',
-			'number'
+			'number',
+			'regex'
 		    ];
 		    $.each(rules, function(idx, rule) {
 		         if ($(el).hasClass('v_' + rule)) {
@@ -164,6 +165,24 @@
 	    }
 	    $this.centreonValidate('displayError', el, 'It\'s not number');
 	    return false;
+	},
+	regex: function(el) {
+            var validator = el.data('validator');
+
+            if (!validator || el.val() == '') {
+                return true;
+            }
+
+            var patt = new RegExp(validator);
+
+            if (patt.test(el.val())) {
+                return true;
+            }
+
+            var $this = $(this);
+            $this.centreonValidate('displayError', el, 'It\'s not in the correct format');
+
+            return false;
 	}
     };
     $.fn.centreonValidate = function(method) {

@@ -1,3 +1,5 @@
+.. _archi_poller:
+
 ========================
 Distributed architecture
 ========================
@@ -18,7 +20,7 @@ The central Centreon server includes the following items:
 * Monitoring Engine
 * Broker
 
-The remote servers include the following items:
+The Poller includes the following items:
 
 * Monitoring Engine
 * Broker module to forward collected data to a central broker
@@ -45,15 +47,13 @@ Many components are used to build a central Centreon server:
 * Centreon Broker SQL allows to store information into MariaDB databases and forward them to Centreon Broker RRD
 * Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs
 
-Remote monitoring server
-========================
+Poller
+======
 
-Many components are used to build a remote server:
+Many components are used to build a poller:
 
 * A monitoring engine to collect data
 * Collected data are sent to Centreon Broker SQL using cbmod by monitoring engine
-* Centreon Broker SQL allows to store information into MariaDB databases and forward them to Centreon Broker RRD
-* Centreon Broker RRD generates and updates RRD files with data in order to display performance graphs
 
 ************
 Architecture
@@ -61,5 +61,6 @@ Architecture
 
 The diagram below summarizes the architecture:
 
-.. image:: /images/architecture/bschema.png
+.. image:: /images/architecture/Architecture_distributed.png
    :align: center
+   :scale: 65%

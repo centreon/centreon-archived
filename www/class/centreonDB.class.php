@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,14 +33,21 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+// file centreon.config.php may not exist in test environment
+$configFile = realpath(__DIR__ . "/../../config/centreon.config.php");
+if ($configFile !== false) {
+    require_once $configFile;
+}
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDBStatement.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
+/**
+ * Class CentreonDB used to manage DB connection
+ */
 class CentreonDB extends \PDO
 {
-
-    private static $instance = array();
+    private static $instance = [];
     protected $db_type = "mysql";
     protected $db_port = "3306";
     protected $retry;
@@ -55,12 +62,12 @@ class CentreonDB extends \PDO
     protected $requestSuccessful;
     protected $lineRead;
     protected $debug;
-    
+
     /**
      * @var int
      */
     private $queryNumber;
-    
+
     /**
      * @var int
      */
@@ -73,9 +80,10 @@ class CentreonDB extends \PDO
      * @param int $retry
      * @param bool $silent | when silent is set to false, it will display an HTML error msg,
      *                       otherwise it will throw an Exception
+     *
      * @throws Exception
      */
-    public function __construct($db = "centreon", $retry = 3, $silent = true)
+    public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
@@ -91,28 +99,37 @@ class CentreonDB extends \PDO
             $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
 
-            $this->options = array(
+            $this->debug = 0;
+            if (false === $silent) {
+                $this->debug = 1;
+            }
+
+            $this->options = [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_STATEMENT_CLASS => array('CentreonDBStatement', array($this)),
+                PDO::ATTR_STATEMENT_CLASS => [
+                    CentreonDBStatement::class,
+                    [$this, $this->log, $this->debug],
+                ],
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+                PDO::MYSQL_ATTR_LOCAL_INFILE => true,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-            );
+            ];
 
             /*
              * Add possibility to change SGDB port
              */
-            if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "") {
+            if (!empty($conf_centreon["port"])) {
                 $this->db_port = $conf_centreon["port"];
             } else {
                 $this->db_port = '3306';
             }
 
-            $this->dsn = array(
+            $this->dsn = [
                 'phptype' => $this->db_type,
                 'username' => $conf_centreon["user"],
                 'password' => $conf_centreon["password"],
-                'port'     => $this->db_port
-            );
+                'port' => $this->db_port
+            ];
 
             switch (strtolower($db)) {
                 case "centstorage":
@@ -133,14 +150,9 @@ class CentreonDB extends \PDO
             $this->requestSuccessful = 0;
             $this->lineRead = 0;
 
-            $this->debug = 0;
-            if (false === $silent) {
-                $this->debug = 1;
-            }
-
             parent::__construct(
-                $this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
-                ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
+                $this->dsn['phptype'] . ":" . "dbname=" . $this->dsn['database'] .
+                ";host=" . $this->dsn['hostspec'] . ";port=" . $this->dsn['port'],
                 $this->dsn['username'],
                 $this->dsn['password'],
                 $this->options
@@ -163,6 +175,7 @@ class CentreonDB extends \PDO
      *
      * @param type $stmt
      * @param type $arrayValues
+     *
      * @return type
      */
     public function execute($stmt, $arrayValues)
@@ -211,8 +224,10 @@ class CentreonDB extends \PDO
      * Escapes a string for query
      *
      * @access public
+     *
      * @param string $str
      * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
+     *
      * @return string
      */
     public static function escape($str, $htmlSpecialChars = false)
@@ -227,14 +242,14 @@ class CentreonDB extends \PDO
     }
 
     /**
-     *  Query
+     * Query
      *
-     *  @return \PDOStatement
+     * @return \PDOStatement
      */
     public function query($queryString = null, $parameters = null)
     {
         if (!is_null($parameters) && !is_array($parameters)) {
-            $parameters = array($parameters);
+            $parameters = [$parameters];
         }
 
         /*
@@ -248,16 +263,19 @@ class CentreonDB extends \PDO
                 $sth = $this->prepare($queryString);
                 $sth->execute($parameters);
             }
-            $this->queryNumber++;
-            $this->successQueryNumber++;
         } catch (\PDOException $e) {
-            if ($this->debug) {
+            // skip if we use CentreonDBStatement::execute method
+            if ($this->debug && is_null($parameters)) {
                 $string = str_replace("`", "", $queryString);
                 $string = str_replace('*', "\*", $string);
                 $this->log->insertLog(2, " QUERY : " . $string);
             }
-            throw new \PDOException($e->getMessage(), $e->getCode());
+
+            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
         }
+
+        $this->queryNumber++;
+        $this->successQueryNumber++;
 
         return $sth;
     }
@@ -266,12 +284,14 @@ class CentreonDB extends \PDO
      * launch a getAll
      *
      * @access public
-     * @param   string  $query_string   query
+     *
+     * @param string $query_string query
+     *
      * @return  object  getAll result
      */
-    public function getAll($query_string = null, $placeHolders = array())
+    public function getAll($query_string = null, $placeHolders = [])
     {
-        $rows = array();
+        $rows = [];
         $this->requestExecuted++;
 
         try {
@@ -282,7 +302,7 @@ class CentreonDB extends \PDO
             if ($this->debug) {
                 $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
             }
-            throw new \PDOException($e->getMessage(), $e->getCode());
+            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
         }
 
         return $rows;
@@ -292,12 +312,13 @@ class CentreonDB extends \PDO
      * Factory for singleton
      *
      * @param string $name The name of centreon datasource
-     * @throws Exception
+     *
      * @return CentreonDB
+     * @throws Exception
      */
     public static function factory($name = "centreon")
     {
-        if (!in_array($name, array('centreon', 'centstorage', 'ndo'))) {
+        if (!in_array($name, ['centreon', 'centstorage', 'ndo'])) {
             throw new Exception("The datasource isn't defined in configuration file.");
         }
         if (!isset(self::$instance[$name])) {
@@ -313,15 +334,15 @@ class CentreonDB extends \PDO
     public function numberRows()
     {
         $number = 0;
-        $DBRESULT = $this->query("SELECT FOUND_ROWS() AS number");
-        $data = $DBRESULT->fetch();
+        $dbResult = $this->query("SELECT FOUND_ROWS() AS number");
+        $data = $dbResult->fetch();
         if (isset($data["number"])) {
             $number = $data["number"];
         }
         return $number;
     }
 
-    /*
+    /**
      * checks if there is malicious injection
      */
     public static function checkInjection($sString)
@@ -329,7 +350,7 @@ class CentreonDB extends \PDO
         return 0;
     }
 
-    /*
+    /**
      * return database Properties
      *
      * <code>
@@ -340,31 +361,31 @@ class CentreonDB extends \PDO
      */
     public function getProperties()
     {
-        $unitMultiple = 1024*1024;
+        $unitMultiple = 1024 * 1024;
 
-        $info = array(
+        $info = [
             'version' => null,
             'engine' => null,
             'dbsize' => 0,
             'rows' => 0,
             'datafree' => 0,
             'indexsize' => 0
-        );
+        ];
         /*
          * Get Version
          */
         if ($res = $this->query("SELECT VERSION() AS mysql_version")) {
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
-            if ($DBRESULT = $this->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")) {
-                while ($data = $DBRESULT->fetch()) {
+            if ($dbResult = $this->query("SHOW TABLE STATUS FROM `" . $this->dsn['database'] . "`")) {
+                while ($data = $dbResult->fetch()) {
                     $info['dbsize'] += $data['Data_length'] + $data['Index_length'];
                     $info['indexsize'] += $data['Index_length'];
                     $info['rows'] += $data['Rows'];
                     $info['datafree'] += $data['Data_free'];
                 }
-                $DBRESULT->closeCursor();
+                $dbResult->closeCursor();
             }
             foreach ($info as $key => $value) {
                 if ($key != "rows" && $key != "version" && $key != "engine") {
@@ -378,5 +399,50 @@ class CentreonDB extends \PDO
             }
         }
         return $info;
+    }
+
+    /**
+     * As 'ALTER TABLE IF NOT EXIST' queries are supported only by mariaDB (no more by mysql),
+     * This method check if a column was already added in a previous upgrade script.
+     *
+     * @param string $table - the table on which we'll search the column
+     * @param string $column - the column name to be checked
+     *
+     * @return int
+     */
+    public function isColumnExist(string $table = null, string $column = null): int
+    {
+        if (!$table || !$column) {
+            return -1;
+        }
+
+        $table = filter_var($table, FILTER_SANITIZE_STRING);
+        $column = filter_var($column, FILTER_SANITIZE_STRING);
+
+        $query = "SELECT COLUMN_NAME
+		    FROM INFORMATION_SCHEMA.COLUMNS
+		    WHERE TABLE_SCHEMA = :dbName
+		    AND TABLE_NAME = :tableName
+		    AND COLUMN_NAME = :columnName";
+
+        $stmt = $this->prepare($query);
+
+        try {
+            $stmt->bindValue(':dbName', $this->dsn['database'], \PDO::PARAM_STR);
+            $stmt->bindValue(':tableName', $table, \PDO::PARAM_STR);
+            $stmt->bindValue(':columnName', $column, \PDO::PARAM_STR);
+            $stmt->execute();
+            $stmt->fetch();
+
+            if ($stmt->rowCount()) {
+                return 1; // column already exist
+            }
+            return 0; // column to add
+        } catch (\PDOException $e) {
+            if ($this->debug) {
+                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query);
+            }
+            return -1;
+        }
     }
 }

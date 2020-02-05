@@ -294,7 +294,7 @@ class CentreonMedia
             $archiveObj = new \ZipArchive;
             $res = $archiveObj->open($archiveFile);
 
-            if ($res !== TRUE) {
+            if ($res !== true) {
                 throw new Exception('Could not read archive');
             }
 
@@ -304,7 +304,7 @@ class CentreonMedia
         } else {
             $archiveObj = new \PharData($archiveFile, \Phar::KEY_AS_FILENAME);
 
-            foreach($archiveObj as $file) {
+            foreach ($archiveObj as $file) {
                 $files[] = $file->getFilename();
             }
         }

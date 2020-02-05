@@ -1,52 +1,100 @@
 {
     "name": "centreon/centreon",
-    "version": "2.7.3",
     "type": "project",
-    "license": "GPL Licence 2.0",
+    "license": "GPL-2.0-only",
     "authors": [
         {
             "name": "Kevin Duret",
             "email": "kduret@centreon.com"
         }
     ],
-    "repositories": [
-        { "type": "composer", "url": "https://packagist.centreon.com" }
-    ],
+    "description": "Centreon - IT and Application monitoring software",
     "config": {
         "secure-http": false
     },
     "require-dev": {
         "behat/behat": "^3.3",
-        "behat/mink": "^1.7",
-        "phpunit/phpunit": "^4.8",
+        "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
+        "phpunit/phpunit": "^7.5",
         "squizlabs/php_codesniffer": "^2.9",
-        "phing/phing": "^2.13",
+        "phing/phing": "3.0.0-alpha3",
         "behat/mink-extension": "^2.2",
         "behat/mink-selenium2-driver": "^1.3",
+        "adlawson/vfs": "^0.12.1",
+        "zircote/swagger-php": "^3.0",
+        "symfony/phpunit-bridge": "^4.3",
         "centreon/centreon-test-lib": "dev-master"
     },
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.3",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
-        "pimple/pimple": "~3.0",
-        "symfony/filesystem": "~2.6",
-        "symfony/finder": "~2.6",
+        "pimple/pimple": "^3.2",
+        "symfony/filesystem": "^4.1",
+        "symfony/finder": "^4.1",
         "openpsa/quickform": "3.3.*",
-        "smarty/smarty": "~2.6"
+        "smarty/smarty": "~2.6",
+        "curl/curl" : "^1.5",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "friendsofsymfony/rest-bundle": "^2.5",
+        "jms/serializer-bundle": "^2.4",
+        "sensio/framework-extra-bundle": "^5.3",
+        "symfony/console": "4.3.*",
+        "symfony/dotenv": "4.3.*",
+        "symfony/flex": "^1.1",
+        "symfony/framework-bundle": "4.3.*",
+        "symfony/security-bundle": "^4.3",
+        "symfony/yaml": "4.3.*",
+        "symfony/options-resolver": "4.3.*",
+        "symfony/serializer-pack": "^1.0",
+        "symfony/maker-bundle": "^1.11",
+        "nelmio/cors-bundle": "^1.5",
+        "symfony/validator": "4.3.*",
+        "symfony/translation": "4.3.*",
+        "symfony/expression-language": "4.3.*",
+        "ext-json": "*",
+        "justinrainbow/json-schema": "^5.2",
+        "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {
-            "CentreonLegacy\\": "src/CentreonLegacy/"
+            "": "src/",
+            "ConfigGenerateRemote\\": "www/class/config-generate-remote/",
+            "App\\": "src/",
+            "Tests\\": "tests/php/"
         },
+        "classmap": ["www/class/"],
         "files" : [
             "GPL_LIB/smarty-plugins/block.t.php",
+            "www/api/exceptions.php",
+            "www/api/class/webService.class.php",
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
+            "www/lib/HTML/QuickForm/HTML_QuickForm_checkbox_Custom.php",
             "www/lib/HTML/QuickForm/HTML_QuickForm_radio_Custom.php",
             "www/lib/HTML/QuickForm/select2.php",
             "www/lib/HTML/QuickForm/advmultiselect.php",
             "www/lib/HTML/QuickForm/tags.php",
-            "www/lib/HTML/QuickForm/customcheckbox.php"
+            "www/lib/HTML/QuickForm/customcheckbox.php",
+            "www/lib/HTML/QuickForm/selectoptgroup.php",
+            "www/class/centreon-clapi/centreonACL.class.php"
         ]
+    },
+    "replace": {
+        "paragonie/random_compat": "2.*",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php71": "*",
+        "symfony/polyfill-php70": "*",
+        "symfony/polyfill-php56": "*"
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": true,
+            "require": "4.3.*"
+        }
     }
 }

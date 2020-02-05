@@ -35,8 +35,9 @@ class KnowledgeBaseContext extends CentreonContext
         $page = new KBParametersPage($this);
         $page->setProperties(
             array(
-                'kb_db_host' => $containerId,
-                'kb_wiki_url' => 'http://' . $containerId
+                'kb_wiki_url' => 'http://' . $containerId,
+                'kb_wiki_account' => 'WikiSysop',
+                'kb_wiki_password' => 'centreon'
             )
         );
         $page->save();
@@ -130,7 +131,7 @@ class KnowledgeBaseContext extends CentreonContext
 
         /* cron */
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
-        sleep(2);
+
         /* Apply config */
         $this->restartAllPollers();
     }
@@ -170,7 +171,6 @@ class KnowledgeBaseContext extends CentreonContext
 
         /* cron */
         $this->container->execute("php /usr/share/centreon/cron/centKnowledgeSynchronizer.php", 'web');
-        sleep(2);
 
         /* Apply config */
         $this->restartAllPollers();

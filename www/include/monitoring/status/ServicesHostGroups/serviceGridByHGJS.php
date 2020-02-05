@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -61,9 +61,10 @@ if (isset($_GET["acknowledge"])) {
 ?>
 <script type="text/javascript">
     var _debug = 0;
-
     var _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
     var _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceGridByHG.xsl";
+    // hostgroup select2 value
+    var hg_search = "";
 
     <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -135,10 +136,10 @@ if (isset($_GET["acknowledge"])) {
         }
         _oldInputFieldValue = _currentInputFieldValue;
 
-        setTimeout("mainLoopLocal()", 250);
+        setTimeout(mainLoopLocal, 250);
     }
 
-    function initM(_time_reload, _sid, _o) {
+    function initM(_time_reload, _o) {
 
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
@@ -150,6 +151,14 @@ if (isset($_GET["acknowledge"])) {
             _host_search = "";
         }
 
+        // checking if a hostgroup was selected
+        if (document.getElementById("select2-hg_search-container") &&
+            document.getElementById("select2-hg_search-container").title
+        ) {
+            this.hg_search = jQuery("#select2-hg_search-container .select2-content").attr("title");
+            viewDebugInfo('hostgroup search: ' +  this.hg_search);
+        }
+
         if (_first) {
             mainLoopLocal();
             _first = 0;
@@ -157,18 +166,18 @@ if (isset($_GET["acknowledge"])) {
 
         _time =<?php echo $time; ?>;
         if (_on) {
-            goM(_time_reload, _sid, _o);
+            goM(_time_reload, _o);
         }
     }
 
-    function goM(_time_reload, _sid, _o) {
+    function goM(_time_reload, _o) {
         _lock = 1;
         var proc = new Transformation();
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         proc.setXml(
-            _addrXML + "?" + '&search=' + _host_search + '&num=' + _num + '&limit=' + _limit +
-            '&sort_type=' + _sort_type + '&order=' + _order + '&date_time_format_status=' + _date_time_format_status +
-            '&o=' + _o + '&p=' + _p + '&time=<?php print time(); ?>'
+            _addrXML + "?" + '&search=' + _host_search + '&hg_search=' + this.hg_search + '&num=' + _num +
+            '&limit=' + _limit + '&sort_type=' + _sort_type + '&order=' + _order + '&date_time_format_status=' +
+            _date_time_format_status + '&o=' + _o + '&p=' + _p + '&time=<?php print time(); ?>'
         );
         proc.setXslt(_addrXSL);
         if (handleVisibilityChange()) {
@@ -181,10 +190,9 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
-        _timeoutID = cycleVisibilityChange('goM("' + _time_reload + '","' + _sid + '","' + _o + '")', _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
         set_header_title();
     }
-
-</SCRIPT>
+</script>

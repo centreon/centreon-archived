@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,10 +30,6 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 if (!isset($oreon)) {
@@ -42,35 +38,18 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
-!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
-!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
-!isset($_GET["sort_type"]) ? $sort_type = "alias" : $sort_type = $_GET["sort_type"];
-!isset($_GET["host_search"]) ? $host_search = 0 : $host_search = $_GET["host_search"];
+$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'alias']]);
+$hgSearch = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 30]]);
 
-$aTypeAffichageLevel1 = array(
-    "svcOVHG" => _("Details"),
-    "svcSumHG" => _("Summary")
-);
+// Check search value in Host search field
+$centreon->historySearch[$url] = $search;
+$centreon->historySearch[$hostgroup] = $hgSearch;
 
-$aTypeAffichageLevel2 = array(
-    "" => _("All"),
-    "pb" => _("Problems"),
-    "ack_1" => _("Acknowledge"),
-    "ack_0" => _("Not Acknowledged"),
-);
-
-/*
- * Check search value in Host search field
- */
-if (isset($_GET["host_search"])) {
-    $centreon->historySearch[$url] = $_GET["host_search"];
-}
-
-
-$tab_class = array("0" => "list_one", "1" => "list_two");
+$tab_class = ["0" => "list_one", "1" => "list_two"];
 $rows = 10;
 
 include_once("./include/monitoring/status/Common/default_poller.php");
@@ -83,7 +62,7 @@ $tpl = initSmartyTpl($hg_path, $tpl, "/templates/");
 
 $tpl->assign("p", $p);
 $tpl->assign('o', $o);
-$tpl->assign("sort_types", $sort_types);
+$tpl->assign("sort_types", $sort_type);
 $tpl->assign("num", $num);
 $tpl->assign("limit", $limit);
 $tpl->assign("mon_host", _("Hosts"));
@@ -101,12 +80,42 @@ $tpl->assign('hgStr', _('Hostgroup'));
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
+// adding hostgroup's select2 list
+$hostgroupsRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
+$attrHostGroup = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $hostgroupsRoute,
+    'defaultDatasetRoute' => "",
+    'multiple' => false,
+    'linkedObject' => 'centreonHostgroups'
+);
+$form->addElement(
+    'select2',
+    'hg_search',
+    '',
+    array('id' => 'hg_search'),
+    $attrHostGroup
+);
+
+// display type
+$aTypeAffichageLevel1 = array(
+    "svcOVHG" => _("Details"),
+    "svcSumHG" => _("Summary")
+);
 $form->addElement(
     'select',
     'typeDisplay',
     _('Display'),
     $aTypeAffichageLevel1,
     array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);")
+);
+
+// status filters
+$aTypeAffichageLevel2 = array(
+    "" => _("All"),
+    "pb" => _("Problems"),
+    "ack_1" => _("Acknowledge"),
+    "ack_0" => _("Not Acknowledged"),
 );
 $form->addElement(
     'select',
@@ -133,8 +142,14 @@ $tpl->assign("tab_order", $tab_order);
         }
 
         function displayingLevel1(val) {
+            var filterDetails = document.getElementById("typeDisplay2").value;
             _o = val;
-            if (_o == 'svcOVHG') {
+
+            if (filterDetails !== '') {
+                _o += '_' + filterDetails;
+            }
+
+            if (val == 'svcOVHG') {
                 _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
                 _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceGridByHG.xsl";
             } else {
@@ -146,7 +161,12 @@ $tpl->assign("tab_order", $tab_order);
 
         function displayingLevel2(val) {
             var sel1 = document.getElementById("typeDisplay").value;
-            _o = sel1 + "_" + val;
+            _o = sel1;
+
+            if (val !== '') {
+                _o += '_' + val;
+            }
+
             monitoring_refresh();
         }
     </script>

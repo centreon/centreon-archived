@@ -17,13 +17,14 @@
 
 namespace CentreonLegacy\Core\Module;
 
-use \Centreon\Test\Mock\CentreonDB;
+use Pimple\Psr11\Container;
+use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
 use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class InformationTest extends \PHPUnit_Framework_TestCase
+class InformationTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;
@@ -70,7 +71,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             ->method('requireConfiguration')
             ->willReturn($moduleConfiguration);
 
-        $information = new Information($this->container, $this->license, $this->utils);
+        $information = new Information(new Container($this->container), $this->license, $this->utils);
         $configuration = $information->getConfiguration('MyModule');
 
         $this->assertEquals($configuration, $expectedResult);
@@ -87,7 +88,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $information = new Information($this->container, $this->license, $this->utils);
+        $information = new Information(new Container($this->container), $this->license, $this->utils);
         $name = $information->getNameById(1);
 
         $this->assertEquals($name, 'MyModule');
@@ -196,7 +197,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             ->method('getLicenseExpiration')
             ->willReturn('2020-10-10 12:00:00');
 
-        $information = new Information($this->container, $this->license, $this->utils);
+        $information = new Information(new Container($this->container), $this->license, $this->utils);
         $list = $information->getList();
 
         $this->assertEquals($list, $expectedResult);

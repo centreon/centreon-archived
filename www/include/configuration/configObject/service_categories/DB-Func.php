@@ -64,11 +64,11 @@ function testServiceCategorieExistence($name = null)
     }
     $query = "SELECT `sc_name`, `sc_id` FROM `service_categories` " .
         "WHERE `sc_name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $sc = $DBRESULT->fetchRow();
-    if ($DBRESULT->rowCount() >= 1 && $sc["sc_id"] == $id) {
+    $dbResult = $pearDB->query($query);
+    $sc = $dbResult->fetch();
+    if ($dbResult->rowCount() >= 1 && $sc["sc_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $sc["sc_id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $sc["sc_id"] != $id) {
         return false;
     } else {
         return true;
@@ -90,9 +90,9 @@ function multipleServiceCategorieInDB($sc = array(), $nbrDup = array())
 
     $scAcl = array();
     foreach ($sc as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["sc_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["sc_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
@@ -105,8 +105,8 @@ function multipleServiceCategorieInDB($sc = array(), $nbrDup = array())
             if (testServiceCategorieExistence($sc_name)) {
                 $val ? $rq = "INSERT INTO `service_categories` VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(sc_id) as maxid FROM `service_categories`");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(sc_id) as maxid FROM `service_categories`");
+                $maxId = $dbResult->fetch();
                 $scAcl[$maxId['MAX(sc_id)']] = $key;
                 $query = "INSERT INTO service_categories_relation (service_service_id, sc_id) " .
                     "(SELECT service_service_id, " . $maxId['maxid'] .
@@ -152,7 +152,6 @@ function insertServiceCategorieInDB()
     global $pearDB, $centreon;
 
     if (testServiceCategorieExistence($_POST["sc_name"])) {
-
         $query = "INSERT INTO `service_categories` (`sc_name`, `sc_description`, `level`, `icon_id`, `sc_activate` ) " .
             "VALUES ('" . $pearDB->escape($_POST["sc_name"]) . "', '" .
             $pearDB->escape($_POST["sc_description"]) . "', " .
@@ -168,8 +167,8 @@ function insertServiceCategorieInDB()
 
         $query = "SELECT MAX(sc_id) FROM `service_categories` " .
             "WHERE sc_name LIKE '" . $pearDB->escape($_POST["sc_name"]) . "'";
-        $DBRESULT = $pearDB->query($query);
-        $data = $DBRESULT->fetchRow();
+        $dbResult = $pearDB->query($query);
+        $data = $dbResult->fetch();
     }
     updateServiceCategoriesServices($data["MAX(sc_id)"]);
     $centreon->user->access->updateACL();

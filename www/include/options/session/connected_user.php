@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -37,18 +37,44 @@ if (!isset($centreon)) {
     exit();
 }
 
-$path = "./include/options/session/";
+/**
+ * Kick a logged user
+ */
+const KICK_USER = "k";
 
+$path = "./include/options/session/";
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
 
-if (isset($_GET["o"]) && $_GET["o"] == "k") {
-    $sid = $_GET['session'];
-    $pearDB->query("DELETE FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
+$action = filter_var(
+    $_GET["o"] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$selectedUserSid = filter_var(
+    $_GET['session'] ?? null, // the sessionId of the chosen user
+    FILTER_SANITIZE_STRING
+);
+
+$currentPage = filter_var(
+    $_GET['p'] ?? $_POST['p'] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+if ($selectedUserSid) {
     $msg = new CentreonMsg();
     $msg->setTextStyle("bold");
-    $msg->setText(_("User kicked"));
     $msg->setTimeOut("3");
+
+    switch ($action) {
+        // logout action
+        case KICK_USER:
+            $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
+            $stmt->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
+            $stmt->execute();
+            $msg->setText(_("User kicked"));
+            break;
+    }
 }
 
 /*
@@ -58,40 +84,72 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $session_data = array();
-$query = "SELECT session.*, contact_name, contact_admin FROM session, contact " .
-    "WHERE contact_id = user_id ORDER BY contact_name, contact_admin";
-$res = $pearDB->query($query);
-for ($cpt = 0; $r = $res->fetchRow(); $cpt++) {
+$res = $pearDB->query(
+    "SELECT session.*, contact_name, contact_admin, contact_auth_type, `contact_ldap_last_sync`
+    FROM session, contact
+    WHERE contact_id = user_id ORDER BY contact_name, contact_admin"
+);
+for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     $session_data[$cpt] = array();
     if ($cpt % 2) {
         $session_data[$cpt]["class"] = "list_one";
     } else {
         $session_data[$cpt]["class"] = "list_two";
     }
-
     $session_data[$cpt]["user_id"] = $r["user_id"];
     $session_data[$cpt]["user_alias"] = $r["contact_name"];
     $session_data[$cpt]["admin"] = $r["contact_admin"];
     $session_data[$cpt]["ip_address"] = $r["ip_address"];
-    $session_data[$cpt]["last_reload"] = date("H:i:s", $r["last_reload"]);
+    $session_data[$cpt]["last_reload"] = $r["last_reload"];
+    $session_data[$cpt]["ldapContact"] = $r['contact_auth_type'];
 
-    $query = "SELECT topology_name, topology_page, topology_url_opt FROM topology WHERE topology_page = '" .
-        $r["current_page"] . "'";
-    $resCP = $pearDB->query($query);
-    $rCP = $resCP->fetchRow();
+    $resCP = $pearDB->prepare(
+        "SELECT topology_name, topology_page, topology_url_opt FROM topology " .
+        "WHERE topology_page = :topologyPage"
+    );
+    $resCP->bindValue(':topologyPage', $r["current_page"], \PDO::PARAM_INT);
+    $resCP->execute();
+    $rCP = $resCP->fetch();
 
+    // getting the current users' position in the IHM
     $session_data[$cpt]["current_page"] = $r["current_page"] . $rCP["topology_url_opt"];
     if ($rCP['topology_name'] != '') {
         $session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
     } else {
         $session_data[$cpt]["topology_name"] = $rCP["topology_name"];
     }
+
     if ($centreon->user->admin) {
-        $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session=" . $r['session_id'] .
-            "'><img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
-            "' title='" . _("Kick User") . "'></a>";
-    } else {
-        $session_data[$cpt]["actions"] = "";
+        // adding the link to be able to kick the user
+        $session_data[$cpt]["actions"] =
+            "<a href='./main.php?p=" . $p . "&o=k&session=" . $r['session_id'] . "'>" .
+                "<img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
+                "' title='" . _("Kick User") . "'>" .
+            "</a>";
+
+        // checking if the user account is linked to an LDAP
+        if ($r['contact_auth_type'] === "ldap") {
+            // adding the last synchronization time
+            if ((int)$r["contact_ldap_last_sync"] > 0) {
+                $session_data[$cpt]["last_sync"] = (int)$r["contact_ldap_last_sync"];
+            } elseif ($r["contact_ldap_last_sync"] === '0' || $r["contact_ldap_last_sync"] === null) {
+                $session_data[$cpt]["last_sync"] = "-";
+            }
+            $session_data[$cpt]["synchronize"] =
+                "<a href='#'>" .
+                    "<img src='./img/icons/refresh.png' border='0' " .
+                        "alt='" . _("Synchronize LDAP") . "' title='" . _("Synchronize LDAP") . "' " .
+                        "onclick='submitSync(" . $currentPage . ", \"" . $r['session_id'] . "\")'>" .
+                "</a>";
+        } else {
+            // hiding the synchronization option and details
+            $session_data[$cpt]["last_sync"] = "";
+            $session_data[$cpt]["synchronize"] = "";
+        }
+        // adding the column titles
+        $tpl->assign("wi_last_sync", _("Last LDAP sync"));
+        $tpl->assign("wi_syncLdap", _("Refresh LDAP"));
+        $tpl->assign("wi_logoutUser", _("Logout user"));
     }
 }
 
@@ -100,9 +158,36 @@ if (isset($msg)) {
 }
 
 $tpl->assign("session_data", $session_data);
+$tpl->assign("isAdmin", $centreon->user->admin);
 $tpl->assign("wi_user", _("Users"));
 $tpl->assign("wi_where", _("Position"));
 $tpl->assign("wi_last_req", _("Last request"));
 $tpl->assign("distant_location", _("IP Address"));
-
 $tpl->display("connected_user.ihtml");
+?>
+
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+
+    // ask for confirmation when requesting to resynchronize contact data from the LDAP
+    function submitSync(p, sessionId) {
+        // msg = localized message to be displayed in the confirmation popup
+        let msg = "<?= _('All this contact sessions will be closed. Are you sure you want to request a ' .
+            'synchronization at the next login of this Contact ?'); ?>";
+        // then executing the request and refreshing the page
+        if (confirm(msg)) {
+            $.ajax({
+                url: './api/internal.php?object=centreon_ldap_synchro&action=requestLdapSynchro',
+                type: 'POST',
+                async: false,
+                data: {sessionId: sessionId},
+                success: function(data) {
+                    if (data === true) {
+                        window.location.href = "?p=" + p;
+                    }
+                }
+            });
+        }
+    }
+</script>

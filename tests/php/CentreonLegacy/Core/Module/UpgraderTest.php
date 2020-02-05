@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2016 Centreon
+ * Copyright 2016-2019 Centreon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
 
 namespace CentreonLegacy\Core\Module;
 
-use \Centreon\Test\Mock\CentreonDB;
+use Pimple\Psr11\Container;
+use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
 use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class UpgraderTest extends \PHPUnit_Framework_TestCase
+class UpgraderTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;
@@ -48,9 +49,6 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
             'is_removeable' => 1,
             'infos' => 'my module for unit test',
             'author' => 'unit test',
-            'lang_files' => 0,
-            'sql_files' => 1,
-            'php_files' => 1,
             'svc_tools' => null,
             'host_tools' => null
         );
@@ -65,9 +63,6 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
             'is_removeable' => 1,
             'infos' => 'my module for unit test',
             'author' => 'unit test',
-            'lang_files' => 0,
-            'sql_files' => 1,
-            'php_files' => 1,
             'svc_tools' => null,
             'host_tools' => null
         );
@@ -90,10 +85,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
                 'release_from' => '1.0.0',
                 'release_to' => '1.0.1',
                 'infos' => 'my module for unit test',
-                'author' => 'unit test',
-                'lang_files' => 0,
-                'sql_files' => 1,
-                'php_files' => 1
+                'author' => 'unit test'
             )
         );
         $this->utils->expects($this->any())
@@ -146,8 +138,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
 
         $query = 'UPDATE modules_informations ' .
             'SET `name` = :name , `rname` = :rname , `is_removeable` = :is_removeable , ' .
-            '`infos` = :infos , `author` = :author , `lang_files` = :lang_files , ' .
-            '`sql_files` = :sql_files , `php_files` = :php_files , ' .
+            '`infos` = :infos , `author` = :author , ' .
             '`svc_tools` = :svc_tools , `host_tools` = :host_tools WHERE id = :id';
         $this->db->addResultSet(
             $query,
@@ -164,7 +155,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $upgrader = new Upgrader($this->container, $this->information, 'MyModule', $this->utils, 1);
+        $upgrader = new Upgrader(new Container($this->container), $this->information, 'MyModule', $this->utils, 1);
         $id = $upgrader->upgrade();
 
         $this->assertEquals($id, 1);

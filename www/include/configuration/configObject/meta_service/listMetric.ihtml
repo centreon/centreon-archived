@@ -26,7 +26,10 @@
     <table class="ListTable">
         <tr class="ListHeader">
             <td class="ListColHeaderPicker">
-                <input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>           
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <label class="empty-label" for="checkall"></label>
+                </div>
             </td>
             <td class="ListColLeft">{$headerMenu_host}</td>
             <td class="ListColLeft">{$headerMenu_service}</td>

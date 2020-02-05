@@ -35,6 +35,11 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Module\Information;
+use CentreonLegacy\Core\Utils\Utils;
+use CentreonLegacy\ServiceProvider;
+
 class Module
 {
     /**
@@ -69,30 +74,30 @@ class Module
     
     /**
      *
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
+    protected $services;
     
     /**
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Module\Information $informationObj
      * @param string $moduleName
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      * @param int $moduleId
      */
     public function __construct(
-        \Pimple\Container $dependencyInjector,
-        \CentreonLegacy\Core\Module\Information $informationObj,
+        ContainerInterface $services,
+        Information $informationObj = null,
         $moduleName,
-        \CentreonLegacy\Core\Utils\Utils $utils,
+        Utils $utils = null,
         $moduleId = null
     ) {
         $this->moduleId = $moduleId;
-        $this->dependencyInjector = $dependencyInjector;
-        $this->informationObj = $informationObj;
+        $this->services = $services;
+        $this->informationObj = $informationObj ?? $services->get(ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION);
         $this->moduleName = $moduleName;
-        $this->utils = $utils;
+        $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
 
         $this->moduleConfiguration = $this->informationObj->getConfiguration($this->moduleName);
     }

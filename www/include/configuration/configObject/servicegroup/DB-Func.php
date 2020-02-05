@@ -49,12 +49,12 @@ function testServiceGroupExistence($name = null)
 
     $query = "SELECT sg_name, sg_id FROM servicegroup " .
         "WHERE sg_name = '" . htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $sg = $DBRESULT->fetchRow();
-    if ($DBRESULT->rowCount() >= 1 && $sg["sg_id"] == $id) {
+    $dbResult = $pearDB->query($query);
+    $sg = $dbResult->fetch();
+    if ($dbResult->rowCount() >= 1 && $sg["sg_id"] == $id) {
         # Modif
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $sg["sg_id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $sg["sg_id"] != $id) {
         # Duplicate
         return false;
     } else {
@@ -69,8 +69,8 @@ function enableServiceGroupInDB($sg_id = null)
     }
     global $pearDB, $centreon;
     $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '" . $sg_id . "'");
-    $DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '" . $sg_id . "' LIMIT 1");
-    $row = $DBRESULT2->fetchRow();
+    $dbResult2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '" . $sg_id . "' LIMIT 1");
+    $row = $dbResult2->fetch();
     $centreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "enable");
 }
 
@@ -81,8 +81,8 @@ function disableServiceGroupInDB($sg_id = null)
     }
     global $pearDB, $centreon;
     $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '" . $sg_id . "'");
-    $DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '" . $sg_id . "' LIMIT 1");
-    $row = $DBRESULT2->fetchRow();
+    $dbResult2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '" . $sg_id . "' LIMIT 1");
+    $row = $dbResult2->fetch();
     $centreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "disable");
 }
 
@@ -91,8 +91,8 @@ function deleteServiceGroupInDB($serviceGroups = array())
     global $pearDB, $centreon;
 
     foreach ($serviceGroups as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
+        $dbResult2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult2->fetch();
         $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
     }
@@ -105,9 +105,9 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
 
     $sgAcl = array();
     foreach ($serviceGroups as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["sg_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["sg_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             $rq = null;
@@ -126,16 +126,16 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
             if (testServiceGroupExistence($sg_name)) {
                 $val ? $rq = "INSERT INTO servicegroup VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
+                $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(sg_id)"])) {
                     $sgAcl[$maxId["MAX(sg_id)"]] = $key;
-                    $DBRESULT->closeCursor();
+                    $dbResult->closeCursor();
                     $query = "SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id " .
                         "FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
                     $fields["sg_hgServices"] = "";
-                    while ($service = $DBRESULT->fetchRow()) {
+                    while ($service = $dbResult->fetch()) {
                         $val = null;
                         foreach ($service as $key2 => $value2) {
                             $val
@@ -215,9 +215,9 @@ function insertServiceGroup($ret = array())
     $rq .= ")";
     $pearDB->query($rq);
 
-    $DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
-    $sg_id = $DBRESULT->fetchRow();
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
+    $sg_id = $dbResult->fetch();
+    $dbResult->closeCursor();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -291,7 +291,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
 
     /* service templates */
     $retTmp = isset($ret["sg_tServices"]) ? $ret["sg_tServices"] : $form->getSubmitValue("sg_tServices");
-    if ($retTmp) { 
+    if ($retTmp) {
         for ($i = 0; $i < count($retTmp); $i++) {
             if (isset($retTmp[$i]) && $retTmp[$i]) {
                 $t = preg_split("/\-/", $retTmp[$i]);

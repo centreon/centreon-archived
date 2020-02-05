@@ -1,0 +1,59 @@
+@import "../../styles/partials/variables";
+
+.progress-bar {
+  padding-bottom: 39px;
+  padding-left:24px;
+  padding-right:24px;
+  background: $white-color;
+  max-width: 890px;
+  margin: 0 auto;
+  &-items {
+    list-style: none;
+    padding: 0;
+    position: relative;
+    display: flex;
+    margin-bottom: 0;
+    justify-content: space-between;
+    &:after {
+      background-color: #cdcdcd;
+      content: '';
+      display: block;
+      height: 1px;
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 17px;
+      z-index: 1;
+    }
+  }
+  &-item {
+    border-radius: 50%;
+    background: $white-color;
+    width: 33px;
+    height: 33px;
+    z-index: 2;
+  }
+  &-link {
+    border-radius: 50%;
+    display: block;
+    width: 33px;
+    height: 33px;
+    line-height: 33px;
+    text-align: center;
+    border: 1px solid #cdcdcd;
+    font-family: $primary-font-light;
+    font-size: 0.75rem;
+    color: #cdcdcd;
+    box-sizing: border-box;
+    &.active {
+      background: $lightblue-centreon-primary;
+      color: $white-color;
+      border: none;
+      &.prev {
+        background: $white-color;
+        color: $lightblue-centreon-primary;
+        border: 1px solid $lightblue-centreon-primary;
+      }
+    }
+  }
+}

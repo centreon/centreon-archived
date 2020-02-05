@@ -32,7 +32,13 @@
  * For more information : contact@centreon.com
  *
  */
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+
+// file centreon.config.php may not exist in test environment
+$configFile = realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+if ($configFile !== false) {
+    require_once $configFile;
+}
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
 require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
@@ -126,7 +132,7 @@ class CentreonExternalCommand
             if ($this->debug) {
                 print "COMMAND BEFORE SEND: $str_remote";
             }
-            $result = file_put_contents($varlib . '/centcore.cmd', $str_remote, FILE_APPEND);
+            $result = file_put_contents($varlib . '/centcore/' . microtime(true) . '-externalcommand.cmd', $str_remote, FILE_APPEND);
             $return_remote = ($result !== false) ? 0 : 1;
         }
 
@@ -398,19 +404,42 @@ class CentreonExternalCommand
         $this->write();
     }
 
+    /**
+     *
+     * Delete acknowledgement.
+     * @param string $type (HOST/SVC)
+     * @param array $hosts
+     */
+    public function deleteAcknowledgement($type, $hosts = array())
+    {
+        foreach (array_keys($hosts) as $name) {
+            $res = preg_split("/\;/", $name);
+            $oName = $res[0];
+            $pollerId = $this->getPollerID($oName);
+            if ($type === 'SVC') {
+                $oName .= ';' . $res[1];
+            }
+            $this->setProcessCommand("REMOVE_" . $type . "_ACKNOWLEDGEMENT;" . $oName, $pollerId);
+        }
+        $this->write();
+    }
+
+
     /************
      * Downtime
      ***********/
 
     private function getDowntimeTimestampFromDate($date = 'now', $timezone = '', $start = true)
     {
+        $inputDate = new \DateTime($date . ' GMT');
         $dateTime = new \DateTime($date, new \DateTimeZone($timezone));
 
         // Winter to summer dst
         $dateTime2 = clone $dateTime;
         $dateTime2->setTimestamp($dateTime2->getTimestamp());
-        if ($dateTime2->format("H") != $dateTime->format("H")) {
-            $hour = $dateTime->format('H');
+
+        if ($dateTime2->format("H") != $inputDate->format("H")) {
+            $hour = $inputDate->format('H');
             $dateTime->setTime($hour, '00');
             return $dateTime->getTimestamp();
         }

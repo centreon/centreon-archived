@@ -47,15 +47,15 @@ function testContactGroupExistence($name = null)
     }
     $query = "SELECT `cg_name`, `cg_id` FROM `contactgroup` " .
         "WHERE `cg_name` = '" . htmlentities($centreon->checkIllegalChar($name)) . "'";
-    $DBRESULT = $pearDB->query($query);
-    $cg = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $cg = $dbResult->fetch();
 
-    if ($DBRESULT->rowCount() >= 1 && $cg["cg_id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $cg["cg_id"] == $id) {
         /*
          * Modif case
          */
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $cg["cg_id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $cg["cg_id"] != $id) {
         /*
          * Duplicate entry
          */
@@ -72,10 +72,10 @@ function enableContactGroupInDB($cg_id = null)
     if (!$cg_id) {
         return;
     }
-    $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '1' WHERE `cg_id` = '" . intval($cg_id) . "'");
+    $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '1' WHERE `cg_id` = '" . (int)$cg_id . "'");
 
-    $DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($cg_id) . "' LIMIT 1");
-    $row = $DBRESULT2->fetchRow();
+    $dbResult2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . (int)$cg_id . "' LIMIT 1");
+    $row = $dbResult2->fetch();
 
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "enable");
 }
@@ -87,10 +87,10 @@ function disableContactGroupInDB($cg_id = null)
     if (!$cg_id) {
         return;
     }
-    $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '0' WHERE `cg_id` = '" . intval($cg_id) . "'");
+    $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '0' WHERE `cg_id` = '" . (int)$cg_id . "'");
 
-    $DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($cg_id) . "' LIMIT 1");
-    $row = $DBRESULT2->fetchRow();
+    $dbResult2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . (int)$cg_id . "' LIMIT 1");
+    $row = $dbResult2->fetch();
 
     $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "disable");
 }
@@ -100,11 +100,11 @@ function deleteContactGroupInDB($contactGroups = array())
     global $pearDB, $centreon;
 
     foreach ($contactGroups as $key => $value) {
-        $query = "SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "' LIMIT 1";
-        $DBRESULT2 = $pearDB->query($query);
-        $row = $DBRESULT2->fetchRow();
+        $query = "SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '" . (int)$key . "' LIMIT 1";
+        $dbResult2 = $pearDB->query($query);
+        $row = $dbResult2->fetch();
 
-        $pearDB->query("DELETE FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "'");
+        $pearDB->query("DELETE FROM `contactgroup` WHERE `cg_id` = '" . (int)$key . "'");
         $centreon->CentreonLogAction->insertLog("contactgroup", $key, $row['cg_name'], "d");
     }
 }
@@ -114,15 +114,17 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
     global $pearDB, $centreon;
 
     foreach ($contactGroups as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "' LIMIT 1");
+        $dbResult = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '" . (int)$key . "' LIMIT 1");
 
-        $row = $DBRESULT->fetchRow();
-        $row["cg_id"] = '';
+        $row = $dbResult->fetch();
+        $row["cg_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "cg_name" ? ($cg_name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ", '" . $value2 . "'" : $val .= "'" . $value2 . "'";
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "cg_id") {
                     $fields[$key2] = $value2;
                 }
@@ -134,28 +136,27 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
                 $val ? $rq = "INSERT INTO `contactgroup` VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
 
-                $DBRESULT = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
+                $maxId = $dbResult->fetch();
 
                 if (isset($maxId["MAX(cg_id)"])) {
-
                     $query = "SELECT DISTINCT `acl_group_id` FROM `acl_group_contactgroups_relations` " .
                         "WHERE `cg_cg_id` = " . (int)$key;
                     $dbResult = $pearDB->query($query);
                     $fields["cg_aclRelation"] = "";
-                    while ($cgAcl = $dbResult->fetchRow()) {
-                        $query = "INSERT INTO `acl_group_contactgroups_relations` VALUES ('', '" .
+                    while ($cgAcl = $dbResult->fetch()) {
+                        $query = "INSERT INTO `acl_group_contactgroups_relations` VALUES ('" .
                             $maxId["MAX(cg_id)"] . "', '" . $cgAcl['acl_group_id'] . "')";
                         $pearDB->query($query);
                         $fields["cg_aclRelation"] .= $cgAcl["acl_group_id"] . ",";
                     }
                     $query = "SELECT DISTINCT `cgcr`.`contact_contact_id` FROM `contactgroup_contact_relation` `cgcr`" .
-                        " WHERE `cgcr`.`contactgroup_cg_id` = '" . intval($key) . "'";
-                    $DBRESULT = $pearDB->query($query);
+                        " WHERE `cgcr`.`contactgroup_cg_id` = '" . (int)$key . "'";
+                    $dbResult = $pearDB->query($query);
                     $fields["cg_contacts"] = "";
-                    while ($cct = $DBRESULT->fetchRow()) {
+                    while ($cct = $dbResult->fetch()) {
                         $query = "INSERT INTO `contactgroup_contact_relation` " .
-                            "VALUES ('', '" . $cct["contact_contact_id"] . "', '" . $maxId["MAX(cg_id)"] . "')";
+                            "VALUES ('" . $cct["contact_contact_id"] . "', '" . $maxId["MAX(cg_id)"] . "')";
                         $pearDB->query($query);
                         $fields["cg_contacts"] .= $cct["contact_contact_id"] . ",";
                     }
@@ -196,8 +197,8 @@ function insertContactGroup($ret)
         "', '" . CentreonDB::escape($ret["cg_comment"]) . "', '" . $ret["cg_activate"]["cg_activate"] . "')";
     $pearDB->query($rq);
 
-    $DBRESULT = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
-    $cg_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
+    $cg_id = $dbResult->fetch();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -242,8 +243,8 @@ function updateContactGroup($cg_id = null, $params = array())
         "`cg_alias` = '" . CentreonDB::escape($ret["cg_alias"]) . "', " .
         "`cg_comment` = '" . CentreonDB::escape($ret["cg_comment"]) . "', " .
         "`cg_activate` = '" . $ret["cg_activate"]["cg_activate"] . "' " .
-        "WHERE `cg_id` = '" . intval($cg_id) . "'";
-    $DBRESULT = $pearDB->query($rq);
+        "WHERE `cg_id` = '" . (int)$cg_id . "'";
+    $dbResult = $pearDB->query($rq);
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -257,8 +258,8 @@ function updateContactGroupContacts($cg_id, $ret = array())
         return;
     }
 
-    $rq = "DELETE FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '" . intval($cg_id) . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $rq = "DELETE FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '" . (int)$cg_id . "'";
+    $dbResult = $pearDB->query($rq);
 
     if (isset($ret["cg_contacts"])) {
         $ret = $ret["cg_contacts"];
@@ -268,8 +269,8 @@ function updateContactGroupContacts($cg_id, $ret = array())
 
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) ";
-        $rq .= "VALUES ('" . $ret[$i] . "', '" . intval($cg_id) . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $rq .= "VALUES ('" . $ret[$i] . "', '" . (int)$cg_id . "')";
+        $dbResult = $pearDB->query($rq);
 
         CentreonCustomView::syncContactGroupCustomView($centreon, $pearDB, $ret[$i]);
     }
@@ -283,7 +284,7 @@ function updateContactGroupAclGroups($cg_id, $ret = array())
         return;
     }
 
-    $rq = "DELETE FROM `acl_group_contactgroups_relations` WHERE `cg_cg_id` = " . intval($cg_id);
+    $rq = "DELETE FROM `acl_group_contactgroups_relations` WHERE `cg_cg_id` = " . (int)$cg_id;
     $res = $pearDB->query($rq);
 
     if (isset($ret["cg_acl_groups"])) {
@@ -294,8 +295,8 @@ function updateContactGroupAclGroups($cg_id, $ret = array())
 
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO `acl_group_contactgroups_relations` (`acl_group_id`, `cg_cg_id`) ";
-        $rq .= "VALUES ('" . $ret[$i] . "', '" . intval($cg_id) . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $rq .= "VALUES ('" . $ret[$i] . "', '" . (int)$cg_id . "')";
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -312,7 +313,7 @@ function getContactGroupIdByName($name)
     $id = 0;
     $res = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '" . CentreonDB::escape($name) . "'");
     if ($res->rowCount()) {
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $id = $row['cg_id'];
     }
     return $id;

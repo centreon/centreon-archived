@@ -82,5 +82,4 @@ class CentreonMenu
         }
         return $name;
     }
-
 }

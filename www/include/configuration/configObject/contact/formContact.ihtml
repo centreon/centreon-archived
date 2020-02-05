@@ -15,7 +15,7 @@
 </div>
 </div>
     <div id='tab1' class='tab'>
-    <table class="formTable table">
+        <table class="formTable table">
         <tr class="ListHeader">
             <td class="FormHeader" colspan="2">
                 <h3>| {$form.header.title}</h3>
@@ -83,10 +83,15 @@
         {if $o == "a" || $o == "c"}
             <tr class="list_lvl_1"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
         {/if}
+        {if is_array($modules_template)}
+            {foreach item=module_template from=$modules_template}
+                {include file=$module_template}
+            {/foreach}
+        {/if}
     </table>
     </div>
     <div id='tab2' class='tab'>
-    <table class="formTable table">
+        <table class="formTable table">
         <tr class="ListHeader">
             <td class="FormHeader" colspan="2">
                 <h3>| {$form.header.title}</h3>
@@ -144,7 +149,7 @@
     </table>
     </div>
     <div id='tab3' class='tab'>
-    <table class="formTable table">
+        <table class="formTable table">
         <tr class="ListHeader">
             <td class="FormHeader" colspan="2">
                 <h3>| {$form.header.title}</h3>

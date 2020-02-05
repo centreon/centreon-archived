@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -51,7 +51,8 @@ class CentreonConfigPoller
     private $dependencyInjector;
     private $resultTest;
     private $optGen;
-    private $nagiosCFGPath;
+    private $brokerCachePath;
+    private $engineCachePath;
     private $centreon_path;
     private $centcore_pipe;
     const MISSING_POLLER_ID = "Missing poller ID";
@@ -70,7 +71,8 @@ class CentreonConfigPoller
         $this->_DB = $this->dependencyInjector["configuration_db"];
         $this->_DBC = $this->dependencyInjector["realtime_db"];
         $this->resultTest = 0;
-        $this->nagiosCFGPath = "$centreon_path/filesGeneration/engine/";
+        $this->brokerCachePath = _CENTREON_CACHEDIR_ . "/config/broker/";
+        $this->engineCachePath = _CENTREON_CACHEDIR_ . "/config/engine/";
         $this->centreon_path = $centreon_path;
         $this->resultTest = array("warning" => 0, "errors" => 0);
         $this->centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
@@ -142,20 +144,7 @@ class CentreonConfigPoller
      */
     private function getMonitoringEngine($poller)
     {
-        if (is_numeric($poller)) {
-            $sQuery = "SELECT monitoring_engine FROM nagios_server WHERE `id` = " . $this->_DB->escape($poller);
-        } else {
-            $sQuery = "SELECT monitoring_engine FROM nagios_server WHERE `name` = '"
-                . $this->_DB->escape($poller) . "'";
-        }
-
-        $res = $this->_DB->query($sQuery);
-
-        $row = $res->fetchRow();
-        if (isset($row['monitoring_engine'])) {
-            return $row['monitoring_engine'];
-        }
-        return "";
+        return 'CENGINE';
     }
 
     /**
@@ -178,18 +167,6 @@ class CentreonConfigPoller
     }
 
     /**
-     * Restart Centreon broker
-     */
-    protected function restartCentreonBroker()
-    {
-        if (file_exists($this->centreon_path . "/www/class/centreonBroker.class.php")) {
-            require_once $this->centreon_path . "/www/class/centreonBroker.class.php";
-            $brk = new \CentreonBroker($this->_DB);
-            $brk->reload();
-        }
-    }
-
-    /**
      * @param $variables
      * @return mixed
      */
@@ -203,37 +180,15 @@ class CentreonConfigPoller
         $poller_id = $this->getPollerId($variables);
         $this->testPollerId($poller_id);
 
-        /*
-         * Restart broker
-         */
-        $this->restartCentreonBroker();
-
-        /*
-         * Get Init Script
-         */
-        $DBRESULT = $this->_DB->query(
-            "SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
-        );
-        $serveurs = $DBRESULT->fetchrow();
-        $DBRESULT->closeCursor();
-        (isset($serveurs["init_script"]))
-            ? $nagios_init_script = $serveurs["init_script"]
-            : $nagios_init_script = "centengine";
-        unset($serveurs);
-
-        $DBRESULT = $this->_DB->query(
+        $result = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
-        $host = $DBRESULT->fetchRow();
-        $DBRESULT->closeCursor();
+        $host = $result->fetch();
+        $result->closeCursor();
 
-        $msg_restart = "";
-        if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_restart = exec("sudo service " . $nagios_init_script . " reload", $stdout, $return_code);
-        } else {
-            exec("echo 'RELOAD:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
-            $msg_restart .= _("OK: A reload signal has been sent to '" . $host["name"] . "'");
-        }
+        exec("echo 'RELOAD:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
         $this->_DB->query(
             "UPDATE `nagios_server` SET `last_restart` = '" . time()
@@ -293,40 +248,15 @@ class CentreonConfigPoller
         $this->testPollerId($variables);
         $poller_id = $this->getPollerId($variables);
 
-        /*
-         * Restart broker
-         */
-        $this->restartCentreonBroker();
-
-        /*
-         * Get Init Script
-         */
-        $DBRESULT = $this->_DB->query(
-            "SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
-        );
-        $serveurs = $DBRESULT->fetchrow();
-        $DBRESULT->closeCursor();
-        (isset($serveurs["init_script"]))
-            ? $nagios_init_script = $serveurs["init_script"]
-            : $nagios_init_script = "centengine";
-        unset($serveurs);
-
-        $DBRESULT = $this->_DB->query(
+        $result = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
-        $host = $DBRESULT->fetchRow();
-        $DBRESULT->closeCursor();
+        $host = $result->fetch();
+        $result->closeCursor();
 
-        if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_restart = exec(
-                escapeshellcmd("sudo service " . $nagios_init_script . " restart"),
-                $lines,
-                $return_code
-            );
-        } else {
-            exec("echo 'RESTART:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
-            $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
-        }
+        exec("echo 'RESTART:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
         $this->_DB->query(
             "UPDATE `nagios_server` SET `last_restart` = '" . time()
@@ -368,7 +298,7 @@ class CentreonConfigPoller
             exec(
                 escapeshellcmd(
                     $nagios_bin["nagios_bin"] . " -v "
-                    . $this->nagiosCFGPath . $idPoller . "/centengine.DEBUG"
+                    . $this->engineCachePath . '/' . $idPoller . "/centengine.DEBUG"
                 ),
                 $lines,
                 $return_code
@@ -452,25 +382,25 @@ class CentreonConfigPoller
         $setFilesOwner = 1;
         if ($apacheUser != "") {
             /* Change engine Path mod */
-            chown($this->centreon_path . "/filesGeneration/engine/$poller_id", $apacheUser);
-            chgrp($this->centreon_path . "/filesGeneration/engine/$poller_id", $apacheUser);
+            chown($this->engineCachePath . "/$poller_id", $apacheUser);
+            chgrp($this->engineCachePath . "/$poller_id", $apacheUser);
 
-            foreach (glob($this->centreon_path . "/filesGeneration/engine/$poller_id/*.cfg") as $file) {
+            foreach (glob($this->engineCachePath . "/$poller_id/*.cfg") as $file) {
                 chown($file, $apacheUser);
                 chgrp($file, $apacheUser);
             }
 
-            foreach (glob($this->centreon_path . "/filesGeneration/engine/$poller_id/*.DEBUG") as $file) {
+            foreach (glob($this->engineCachePath . "/$poller_id/*.DEBUG") as $file) {
                 chown($file, $apacheUser);
                 chgrp($file, $apacheUser);
             }
 
             /* Change broker Path mod */
-            chown($this->centreon_path . "/filesGeneration/broker/$poller_id", $apacheUser);
-            chgrp($this->centreon_path . "/filesGeneration/broker/$poller_id", $apacheUser);
+            chown($this->brokerCachePath . "/$poller_id", $apacheUser);
+            chgrp($this->brokerCachePath . "/$poller_id", $apacheUser);
 
-            foreach (glob($this->centreon_path
-                . "/filesGeneration/broker/$poller_id/*.{xml,cfg}", GLOB_BRACE) as $file) {
+            foreach (glob($this->brokerCachePath
+                . "/$poller_id/*.{xml,json,cfg}", GLOB_BRACE) as $file) {
                 chown($file, $apacheUser);
                 chgrp($file, $apacheUser);
             }
@@ -481,9 +411,9 @@ class CentreonConfigPoller
         if ($setFilesOwner == 0) {
             print "We can set configuration file owner after the generation. \n";
             print "Please check that files in the followings directory are writable by apache user : "
-                . $this->centreon_path . "/filesGeneration/engine/$poller_id/\n";
+                . $this->engineCachePath . "/$poller_id/\n";
             print "Please check that files in the followings directory are writable by apache user : "
-                . $this->centreon_path . "/filesGeneration/broker/$poller_id/\n";
+                . $this->brokerCachePath . "/$poller_id/\n";
         }
 
         print "Configuration files generated for poller '" . $variables . "'\n";
@@ -538,7 +468,7 @@ class CentreonConfigPoller
         $DBRESULT_Servers->closeCursor();
         if (isset($host['localhost']) && $host['localhost'] == 1) {
             $msg_copy = "";
-            foreach (glob($this->nagiosCFGPath . '/' . $poller_id . "/*.cfg") as $filename) {
+            foreach (glob($this->engineCachePath . '/' . $poller_id . "/*.cfg") as $filename) {
                 $bool = @copy($filename, $Nagioscfg["cfg_dir"] . "/" . basename($filename));
                 $result = explode("/", $filename);
                 $filename = array_pop($result);
@@ -551,12 +481,12 @@ class CentreonConfigPoller
             /* Change files owner */
             if ($apacheUser != "") {
                 foreach (glob($Nagioscfg["cfg_dir"] . "/*.cfg") as $file) {
-                    chown($file, $apacheUser);
-                    chgrp($file, $apacheUser);
+                    @chown($file, $apacheUser);
+                    @chgrp($file, $apacheUser);
                 }
                 foreach (glob($Nagioscfg["cfg_dir"] . "/*.DEBUG") as $file) {
-                    chown($file, $apacheUser);
-                    chgrp($file, $apacheUser);
+                    @chown($file, $apacheUser);
+                    @chgrp($file, $apacheUser);
                 }
             } else {
                 print "Please check that files in the followings directory are writable by apache user : "
@@ -566,8 +496,7 @@ class CentreonConfigPoller
             /*
              * Centreon Broker configuration
              */
-            $centreonBrokerPath = $this->centreon_path . "/filesGeneration/broker/";
-            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg}", GLOB_BRACE);
+            $listBrokerFile = glob($this->brokerCachePath . '/' . $host['id'] . "/*.{xml,json,cfg}", GLOB_BRACE);
             if (count($listBrokerFile) > 0) {
                 $centreonBrokerDirCfg = getCentreonBrokerDirCfg($host['id']);
                 if (!is_null($centreonBrokerDirCfg)) {
@@ -600,9 +529,9 @@ class CentreonConfigPoller
 
                 /* Change files owner */
                 if ($apacheUser != "") {
-                    foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*.{xml,cfg}", GLOB_BRACE) as $file) {
-                        chown($file, $apacheUser);
-                        chgrp($file, $apacheUser);
+                    foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*.{xml,json,cfg}", GLOB_BRACE) as $file) {
+                        @chown($file, $apacheUser);
+                        @chgrp($file, $apacheUser);
                     }
                 } else {
                     print "Please check that files in the followings directory are writable by apache user : "

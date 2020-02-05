@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,22 +39,6 @@ class Installer extends Widget
 {
     /**
      *
-     * @param \Pimple\Container $dependencyInjector
-     * @param \CentreonLegacy\Core\Widget\Information $informationObj
-     * @param string $widgetName
-     * @param \CentreonLegacy\Core\Utils\Utils $utils
-     */
-    public function __construct(
-        \Pimple\Container $dependencyInjector,
-        \CentreonLegacy\Core\Widget\Information $informationObj,
-        $widgetName,
-        \CentreonLegacy\Core\Utils\Utils $utils
-    ) {
-        parent::__construct($dependencyInjector, $informationObj, $widgetName, $utils);
-    }
-    
-    /**
-     *
      * @return int
      * @throws \Exception
      */
@@ -83,13 +67,13 @@ class Installer extends Widget
             'VALUES (:title, :description, :url, :version, :directory, :author, ' .
             ':email, :website, :keywords, :thumbnail, :autoRefresh) ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':title', $this->widgetConfiguration['title'], \PDO::PARAM_STR);
         $sth->bindParam(':description', $this->widgetConfiguration['description'], \PDO::PARAM_STR);
         $sth->bindParam(':url', $this->widgetConfiguration['url'], \PDO::PARAM_STR);
         $sth->bindParam(':version', $this->widgetConfiguration['version'], \PDO::PARAM_STR);
-        $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
+        $sth->bindParam(':directory', $this->widgetConfiguration['directory'], \PDO::PARAM_STR);
         $sth->bindParam(':author', $this->widgetConfiguration['author'], \PDO::PARAM_STR);
         $sth->bindParam(':email', $this->widgetConfiguration['email'], \PDO::PARAM_STR);
         $sth->bindParam(':website', $this->widgetConfiguration['website'], \PDO::PARAM_STR);
@@ -157,7 +141,7 @@ class Installer extends Widget
             '(:widget_model_id, :field_type_id, :parameter_name, :parameter_code_name, ' .
             ':default_value, :parameter_order, :require_permission, :header_title) ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':widget_model_id', $id, \PDO::PARAM_INT);
         $sth->bindParam(':field_type_id', $parameters['type']['id'], \PDO::PARAM_INT);
@@ -199,7 +183,7 @@ class Installer extends Widget
             '(parameter_id, option_name, option_value) VALUES ' .
             '(:parameter_id, :option_name, :option_value) ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         foreach ($preference['option'] as $option) {
             if (isset($option['@attributes'])) {
@@ -226,7 +210,7 @@ class Installer extends Widget
         $query = 'INSERT INTO widget_parameters_range (parameter_id, min_range, max_range, step) ' .
             'VALUES (:parameter_id, :min_range, :max_range, :step) ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':parameter_id', $paramId, \PDO::PARAM_INT);
         $sth->bindParam(':min_range', $parameters['min'], \PDO::PARAM_INT);

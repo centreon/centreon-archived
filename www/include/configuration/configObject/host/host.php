@@ -116,6 +116,9 @@ switch ($o) {
         break;
     case "m":
         multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+        $hgs = $acl->getHostGroupAclConf(null, 'broker');
+        $aclHostString = $acl->getHostsString('ID', $dbmon);
+        $aclPollerString = $acl->getPollerString();
         require_once($path."listHost.php");
         break; #Duplicate n hosts
     case "d":

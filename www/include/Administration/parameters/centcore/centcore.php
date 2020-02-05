@@ -59,6 +59,7 @@ $form->addElement('header', 'title', _("Modify Centcore options"));
 $form->addElement('checkbox', 'enable_broker_stats', _("Enable Broker Statistics Collection"));
 $form->addElement('text', 'centcore_cmd_timeout', _("Timeout value for Centcore commands"), $attrsText2);
 $form->addRule('centcore_cmd_timeout', _('Must be a number'), 'numeric');
+$form->addElement('text', 'centcore_illegal_characters', _("Illegal characters for Centcore commands"), $attrsText);
 
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');

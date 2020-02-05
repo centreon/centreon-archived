@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 /**
@@ -59,7 +57,7 @@ class CentreonRestHttp
         $this->getProxy();
         $this->contentType = $contentType;
         if (!is_null($logFile)) {
-            $this->logObj = new CentreonLog(array(4 => $logFile));
+            $this->logObj = new \CentreonLog(array(4 => $logFile));
         }
     }
 
@@ -82,9 +80,11 @@ class CentreonRestHttp
      * @param array|null $data The data to send on the request
      * @param array $headers The extra headers without Content-Type
      * @param bool $throwContent
+     * @param bool $noCheckCertificate To disable CURLOPT_SSL_VERIFYPEER
+     * @param bool$noProxy To disable CURLOPT_PROXY
      * @return array The result content
      */
-    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false)
+    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false, $noCheckCertificate = false, $noProxy = false)
     {
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
@@ -98,7 +98,11 @@ class CentreonRestHttp
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        if (!is_null($this->proxy)) {
+        if ($noCheckCertificate) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
+        if (!$noProxy && !is_null($this->proxy)) {
             curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
             if (!is_null($this->proxyAuthentication)) {
                 curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
@@ -133,6 +137,13 @@ class CentreonRestHttp
         $decodedContent = '';
         if ($result) {
             $decodedContent = json_decode($result, true);
+
+            // if it is not possible to parse json, then result is probably a string
+            if (!is_array($decodedContent) && is_string($result)) {
+                $decodedContent = [
+                    'message' => $result
+                ];
+            }
         }
 
         /* Manage HTTP status code */
@@ -182,7 +193,7 @@ class CentreonRestHttp
         /* Return the content */
         return $decodedContent;
     }
-    
+
     /**
      *
      * @param type $url
@@ -205,7 +216,7 @@ class CentreonRestHttp
      */
     private function getProxy()
     {
-        $db = new CentreonDB();
+        $db = new \CentreonDB();
         $query = 'SELECT `key`, `value` '
             . 'FROM `options` '
             . 'WHERE `key` IN ( '

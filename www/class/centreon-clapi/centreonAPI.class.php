@@ -46,7 +46,7 @@ require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
 
 
 /**
- * General Centeon Management
+ * General Centreon Management
  */
 require_once "centreon.Config.Poller.class.php";
 
@@ -233,6 +233,13 @@ class CentreonAPI
             'export' => false
         );
 
+        /* RtAcknowledgement */
+        $this->relationObject["RTACKNOWLEDGEMENT"] = array(
+            'module' => 'core',
+            'class' => 'RtAcknowledgement',
+            'export' => false
+        );
+
         /* Templates */
         $this->relationObject["HTPL"] = array(
             'module' => 'core',
@@ -357,7 +364,6 @@ class CentreonAPI
         $dependencyInjector = null
     ) {
         if (is_null(self::$instance)) {
-
             if (is_null($dependencyInjector)) {
                 $dependencyInjector = loadDependencyInjector();
             }
@@ -486,9 +492,10 @@ class CentreonAPI
      * Check user access and password
      *
      * @param boolean $useSha1
+     * @param boolean $isWorker
      * @return return bool 1 if user can login
      */
-    public function checkUser($useSha1 = false)
+    public function checkUser($useSha1 = false, $isWorker = false)
     {
         if (!isset($this->login) || $this->login == "") {
             print "ERROR: Can not connect to centreon without login.\n";
@@ -508,43 +515,49 @@ class CentreonAPI
         } else {
             $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'md5');
         }
+
+        if ($isWorker) {
+            $pass = 'md5__' . $this->password;
+        }
+
         $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
                  WHERE contact_alias = '" . $this->login . "'
-                 AND contact_activate = '1'
-                 AND contact_oreon = '1'");
+                 AND contact_activate = '1'");
+
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
-            if ($row['contact_admin'] == 1) {
-                $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
-                if (!$algo) {
-                    if ($useSha1) {
-                        $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
-                    } else {
-                        $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
-                    }
+
+            if ($row['contact_admin'] == 0) {
+                print "You don't have permissions for CLAPI.\n";
+                exit(1);
+            }
+
+            $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
+            if (!$algo) {
+                if ($useSha1) {
+                    $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
+                } else {
+                    $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
                 }
-                if ($row['contact_passwd'] == $pass) {
+            }
+            if ($row['contact_passwd'] == $pass) {
+                \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                return 1;
+            } elseif ($row['contact_auth_type'] == 'ldap') {
+                $CentreonLog = new \CentreonUserLog(-1, $this->DB);
+                $centreonAuth = new \CentreonAuthLDAP(
+                    $this->DB,
+                    $CentreonLog,
+                    $this->login,
+                    $this->password,
+                    $row,
+                    $row['ar_id']
+                );
+                if ($centreonAuth->checkPassword() == 1) {
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
-                } elseif ($row['contact_auth_type'] == 'ldap') {
-                    $CentreonLog = new \CentreonUserLog(-1, $this->DB);
-                    $centreonAuth = new \CentreonAuthLDAP(
-                        $this->DB,
-                        $CentreonLog,
-                        $this->login,
-                        $this->password,
-                        $row,
-                        $row['ar_id']
-                    );
-                    if ($centreonAuth->checkPassword() == 1) {
-                        \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
-                        return 1;
-                    }
                 }
-            } else {
-                print "Centreon CLAPI is for admin users only.\n";
-                exit(1);
             }
         }
         print "Invalid credentials.\n";
@@ -656,7 +669,7 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
-
+        
         $action = strtoupper($this->action);
 
         /**
@@ -670,28 +683,34 @@ class CentreonAPI
          * Check method availability before using it.
          */
         if ($this->object) {
-            /**
-             * Require needed class
-             */
-            $this->requireLibs($this->object);
+            $isService = $this->dependencyInjector['centreon.clapi']->has($this->object);
 
-            /**
-             * Check class declaration
-             */
-            if (isset($this->relationObject[$this->object]['class'])) {
-                if ($this->relationObject[$this->object]['module'] === 'core') {
-                    $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
-                } else {
-                    $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" .
-                        $this->relationObject[$this->object]['class'];
-                }
+            if ($isService === true) {
+                $objName = $this->dependencyInjector['centreon.clapi']->get($this->object);
             } else {
-                $objName = "";
-            }
+                /**
+                 * Require needed class
+                 */
+                $this->requireLibs($this->object);
 
-            if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
-                print "Object $this->object not found in Centreon API.\n";
-                return 1;
+                /**
+                 * Check class declaration
+                 */
+                if (isset($this->relationObject[$this->object]['class'])) {
+                    if ($this->relationObject[$this->object]['module'] === 'core') {
+                        $objName = "\CentreonClapi\centreon" . $this->relationObject[$this->object]['class'];
+                    } else {
+                        $objName = $this->relationObject[$this->object]['namespace'] . "\CentreonClapi\Centreon" .
+                            $this->relationObject[$this->object]['class'];
+                    }
+                } else {
+                    $objName = "";
+                }
+
+                if (!isset($this->relationObject[$this->object]['class']) || !class_exists($objName)) {
+                    print "Object $this->object not found in Centreon API.\n";
+                    return 1;
+                }
             }
 
             $obj = new $objName($this->dependencyInjector);
@@ -702,7 +721,6 @@ class CentreonAPI
                 print "Method not implemented into Centreon API.\n";
                 return 1;
             }
-
         } else {
             if (method_exists($this, $action)) {
                 $this->return_code = $this->$action();
@@ -803,15 +821,33 @@ class CentreonAPI
     /**
      * @param $newOption
      */
-    public function setOption($newOption)
+    public function setOption($newOption): void
     {
         $this->options = $newOption;
     }
 
     /**
-     * Export All configuration
+     * @param $newVariables
      */
-    public function export()
+    public function setVariables($newVariables): void
+    {
+        $this->variables = $newVariables;
+    }
+
+    /**
+     * @param $newPath
+     */
+    public function setCentreonPath($newPath): void
+    {
+        $this->centreon_path = $newPath;
+    }
+
+    /**
+     * Export All configuration
+     *
+     * @param $withoutClose disable using of PHP exit function (default: false)
+     */
+    public function export($withoutClose = false)
     {
         $this->requireLibs("");
 
@@ -838,7 +874,12 @@ class CentreonAPI
                 if (!isset($this->objectTable[$splits[0]])) {
                     print "Unknown object : $splits[0]\n";
                     $this->setReturnCode(1);
-                    $this->close();
+
+                    if ($withoutClose === false) {
+                        $this->close();
+                    } else {
+                        return;
+                    }
                 } elseif (!is_null($splits[1])) {
                     $name = $splits[1];
                     if (isset($splits[2])) {
@@ -847,7 +888,12 @@ class CentreonAPI
                     if ($this->objectTable[$splits[0]]->getObjectId($name) == 0) {
                         echo "Unknown object : $splits[0];$splits[1]\n";
                         $this->setReturnCode(1);
-                        $this->close();
+                        
+                        if ($withoutClose === false) {
+                            $this->close();
+                        } else {
+                            return;
+                        }
                     } else {
                         $this->objectTable[$splits[0]]->export($name);
                     }
@@ -1071,7 +1117,6 @@ class CentreonAPI
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
                     && !in_array($key, $this->aExport)) {
-
                     $objName = '';
                     if (isset($oObjet[$key]['namespace'])) {
                         $objName = '\\' . $oObjet[$key]['namespace'];
@@ -1092,7 +1137,6 @@ class CentreonAPI
                             $this->aExport[] = $key;
                             array_pop($aObject);
                         } else {
-
                             $aObject = array_merge($oObjet, $aObject);
                         }
                     } else {

@@ -34,9 +34,9 @@
  */
 
 if (!$centreon->user->admin &&
-    isset($resource_id) &&
+    isset($resourceId) &&
     count($allowedResourceConf) &&
-    !isset($allowedResourceConf[$resource_id])
+    !isset($allowedResourceConf[$resourceId])
 ) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
@@ -55,8 +55,8 @@ $instances = $acl->getPollerAclConf(array('fields' => array('id', 'name'),
 /**
  * Database retrieve information for Resources CFG
  */
-if (($o == "c" || $o == "w") && $resource_id) {
-    $query = "SELECT * FROM cfg_resource WHERE resource_id = '" . $pearDB->escape($resource_id) . "' LIMIT 1";
+if (($o == MACRO_MODIFY || $o == MACRO_WATCH) && is_int($resourceId)) {
+    $query = "SELECT * FROM cfg_resource WHERE resource_id = $resourceId LIMIT 1";
     $DBRESULT = $pearDB->query($query);
     // Set base value
     $rs = array_map("myDecode", $DBRESULT->fetchRow());
@@ -78,11 +78,11 @@ require_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
  * Form
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == MACRO_ADD) {
     $form->addElement('header', 'title', _("Add a Resource"));
-} elseif ($o == "c") {
+} elseif ($o == MACRO_MODIFY) {
     $form->addElement('header', 'title', _("Modify a Resource"));
-} elseif ($o == "w") {
+} elseif ($o == MACRO_WATCH) {
     $form->addElement('header', 'title', _("View Resource"));
 }
 
@@ -102,7 +102,7 @@ $attrPoller = array(
 );
 /* Host Parents */
 $route = './api/internal.php?object=centreon_configuration_poller&action=defaultValues' .
-    '&target=resources&field=instance_id&id=' . $resource_id;
+    '&target=resources&field=instance_id&id=' . $resourceId;
 $attrPoller1 = array_merge(
     $attrPoller,
     array('defaultDatasetRoute' => $route)
@@ -156,24 +156,24 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 // Just watch a Resources CFG information
-if ($o == "w") {
+if ($o == MACRO_WATCH) {
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
             "change",
             _("Modify"),
-            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $resource_id . "'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&resource_id=" . $resourceId . "'")
         );
     }
     $form->setDefaults($rs);
     $form->freeze();
-} // Modify a Resources CFG information
-elseif ($o == "c") {
+} elseif ($o == MACRO_MODIFY) {
+    // Modify a Resources CFG information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($rs);
-} // Add a Resources CFG information
-elseif ($o == "a") {
+} elseif ($o == MACRO_ADD) {
+    // Add a Resources CFG information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }

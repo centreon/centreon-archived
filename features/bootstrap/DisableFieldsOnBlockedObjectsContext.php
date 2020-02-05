@@ -26,6 +26,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         $centreonDb->query("UPDATE host SET host_locked = 1 WHERE host_name = 'myHostTemplate'");
 
         $hostTemplate = new HostTemplateConfigurationListingPage($this);
+        $hostTemplate->setLockedElementsFilter(true);
         $hostTemplate = $hostTemplate->getEntries();
         $hostTemplate = $hostTemplate['myHostTemplate'];
 
@@ -39,8 +40,8 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
      */
     public function iOpenTheForm()
     {
-
         $hostTemplate = new HostTemplateConfigurationListingPage($this);
+        $hostTemplate->setLockedElementsFilter(true);
         $editHostTemplate = $hostTemplate->inspect('myHostTemplate');
 
         return $editHostTemplate;
@@ -51,7 +52,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
      */
     public function theFieldsAreFrozen()
     {
-        $hostTemplate = $this->iOpenTheForm();
+        $this->iOpenTheForm();
         $macro = $this->getSession()->getPage()->find('css', '#macro li.clone_template span input[type="text"]');
         if ($macro->getAttribute('disabled') != 'disabled' && $macro->getAttribute('readonly') != 'readonly') {
             throw new \Exception('the macros are not disabled');

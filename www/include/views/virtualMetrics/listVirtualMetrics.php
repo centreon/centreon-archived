@@ -39,21 +39,42 @@ if (!isset($oreon)) {
 
 include("./include/common/autoNumLimit.php");
 
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchVM']) && $_POST['searchVM']) {
+$queryValues = $queryValues ?? [];
+$SearchTool = '';
+$search = null;
+
+
+if (isset($_POST['searchVM'])) {
     $search = $_POST['searchVM'];
-    $SearchTool = " WHERE vmetric_name LIKE '%" . $search . "%'";
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($_GET['searchVM'])) {
+    $search = $_GET['searchVM'];
+    $centreon->historySearch[$url] = $search;
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
+}
+
+if ($search) {
+    $SearchTool .= " WHERE vmetric_name LIKE :search";
+    $queryValues['search'] = '%' . $search . '%';
+}
+
+$rq = "SELECT SQL_CALC_FOUND_ROWS * FROM virtual_metrics $SearchTool "
+    . "ORDER BY index_id,vmetric_name LIMIT " . $num * $limit . ", " . $limit;
+$stmt = $pearDB->prepare($rq);
+if (!empty($queryValues)) {
+    foreach ($queryValues as $key => $value) {
+        $stmt->bindValue(':' . $key, $value, \PDO::PARAM_STR);
+    }
 }
 
 try {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM virtual_metrics" . $SearchTool);
+    $stmt->execute();
 } catch (\PDOException $e) {
     print "DB Error : " . $e->getMessage();
 }
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -73,28 +94,23 @@ $tpl->assign("headerMenu_dtype", _("DEF Type"));
 $tpl->assign("headerMenu_hidden", _("Hidden"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
-$rq = "SELECT  * FROM virtual_metrics $SearchTool ORDER BY index_id,vmetric_name LIMIT " .
-    $num * $limit . ", " . $limit;
-try {
-    $DBRESULT = $pearDB->query($rq);
-} catch (\PDOException $e) {
-    print "Mysql Error : " . $e->getMessage();
-}
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensionnal Array we put in $tpl
 $deftype = array(0 => "CDEF", 1 => "VDEF");
 $yesOrNo = array(null => "No", 0 => "No", 1 => "Yes");
 $elemArr = array();
-for ($i = 0; $vmetric = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $vmetric = $stmt->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $vmetric['vmetric_id'] . "]");
     if ($vmetric["vmetric_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&vmetric_id=" . $vmetric['vmetric_id'] . "&o=u&limit=" . $limit .
@@ -105,7 +121,7 @@ for ($i = 0; $vmetric = $DBRESULT->fetchRow(); $i++) {
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border = '0' alt = '" . _("Enabled") . "' ></a > ";
     }
-    $moptions .= " & nbsp;<input onKeypress = \"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
+    $moptions .= " &nbsp;<input onKeypress = \"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" .
         "\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
         $vmetric['vmetric_id'] . "]' />";
@@ -144,9 +160,9 @@ for ($i = 0; $vmetric = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_ckstate" => $vmetric["ck_state"],
         "RowMenu_name" => $vmetric["vmetric_name"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&vmetric_id=" . $vmetric['vmetric_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&vmetric_id=" . $vmetric['vmetric_id'],
         "RowMenu_unit" => $vmetric["unit_name"],
-        "RowMenu_rpnfunc" => $vmetric["rpn_function"],
+        "RowMenu_rpnfunc" => htmlentities($vmetric["rpn_function"]),
         "RowMenu_count" => "-",
         "RowMenu_dtype" => $deftype[$vmetric["def_type"]],
         "RowMenu_hidden" => $yesOrNo[$vmetric["hidden"]],
@@ -163,7 +179,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*
@@ -226,7 +242,7 @@ $form->setDefaults(array('o2' => null));
 $o2 = $form->getElement('o2');
 $o2->setValue(null);
 $tpl->assign('limit', $limit);
-$tpl->assign('searchVM', $search);
+$tpl->assign('searchVM', htmlentities($search));
 
 /*
  * Apply a template definition

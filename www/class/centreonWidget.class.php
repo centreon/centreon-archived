@@ -143,7 +143,7 @@ class CentreonWidget
             throw new \Exception("An error occured");
         }
         while ($row = $stmt->fetch()) {
-            return $row['title'];
+            return htmlentities($row['title'], ENT_QUOTES);
         }
         return null;
     }
@@ -292,15 +292,15 @@ class CentreonWidget
             $matrix[$row][] = $col;
         }
         ksort($matrix);
-        $rowNb = 0;
+        $rowNb = 0; //current row in the foreach
         foreach ($matrix as $row => $cols) {
             if ($rowNb != $row) {
                 break;
             }
             if (count($cols) < $layout) {
-                sort($cols);
+                sort($cols); // number of used columns in this row
                 for ($i = 0; $i < $layout; $i++) {
-                    if ($cols[$i] != $i) {
+                    if (!isset($cols[$i]) || $cols[$i] != $i) {
                         $newPosition = $i . '_' . $rowNb;
                         break;
                     }
@@ -400,11 +400,11 @@ class CentreonWidget
     }
 
     /**
-     * @param $viewId
-     * @return mixed
+     * @param int $viewId
+     * @return array
      * @throws Exception
      */
-    public function getWidgetsFromViewId($viewId)
+    public function getWidgetsFromViewId(int $viewId) : array
     {
         if (!isset($this->widgets[$viewId])) {
             $this->widgets[$viewId] = array();
@@ -423,7 +423,7 @@ class CentreonWidget
                 throw new \Exception("An error occured");
             }
             while ($row = $stmt->fetch()) {
-                $this->widgets[$viewId][$row['widget_id']]['title'] = $row['title'];
+                $this->widgets[$viewId][$row['widget_id']]['title'] = htmlentities($row['title'], ENT_QUOTES);
                 $this->widgets[$viewId][$row['widget_id']]['url'] = $row['url'];
                 $this->widgets[$viewId][$row['widget_id']]['widget_order'] = $row['widget_order'];
                 $this->widgets[$viewId][$row['widget_id']]['widget_id'] = $row['widget_id'];
@@ -471,7 +471,7 @@ class CentreonWidget
         }
         return array(
             'items' => $widgets,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->db->numberRows()
         );
     }
 
@@ -712,21 +712,18 @@ class CentreonWidget
                 if (count($tmp) != 3) {
                     throw new CentreonWidgetException('incorrect position data');
                 }
-                $column = $tmp[0];
-                $row = $tmp[1];
+                $widgetOrder = "{$tmp[0]}_{$tmp[1]}";
                 $widgetId = $tmp[2];
-                $queryValues = array();
+
                 $query = 'UPDATE widget_views SET widget_order = :widgetOrder ' .
                     'WHERE custom_view_id = :viewId ' .
                     'AND widget_id = :widgetId';
-                $queryValues[] = (string)$column . "_" . $row;
-                $queryValues[] = (int)$viewId;
-                $queryValues[] = (int)$widgetId;
                 $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':widgetOrder', $column . "_" . $row, PDO::PARAM_STR);
+                $stmt->bindParam(':widgetOrder', $widgetOrder, PDO::PARAM_STR);
                 $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
                 $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
+
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
                 }
@@ -1322,18 +1319,42 @@ class CentreonWidget
             $tab[$row['parameter_code_name']] = $row['default_value'];
         }
 
-        $query = 'SELECT pref.preference_value, param.parameter_code_name ' .
-            'FROM widget_preferences pref, widget_parameters param, widget_views wv ' .
-            'WHERE param.parameter_id = pref.parameter_id ' .
-            'AND pref.widget_view_id = wv.widget_view_id ' .
-            'AND wv.widget_id = :widgetId';
+        try {
+            $query = 'SELECT pref.preference_value, param.parameter_code_name ' .
+                'FROM widget_preferences pref, widget_parameters param, widget_views wv ' .
+                'WHERE param.parameter_id = pref.parameter_id ' .
+                'AND pref.widget_view_id = wv.widget_view_id ' .
+                'AND wv.widget_id = :widgetId ' .
+                'AND pref.user_id = :userId';
 
-        // Prevent SQL injection with widget id
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
+            // Prevent SQL injection with widget id
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+        } catch (\PDOException $e) {
+            throw new Exception(
+                "Error: cannot get preference parameter by user for widget , " . $e->getMessage() . "\n"
+            );
+        }
+
+        //if user has no preferences take parent preferences
+        if ($this->db->numberRows() === 0) {
+            try {
+                $query = 'SELECT pref.preference_value, param.parameter_code_name ' .
+                    'FROM widget_preferences pref, widget_parameters param, widget_views wv ' .
+                    'WHERE param.parameter_id = pref.parameter_id ' .
+                    'AND pref.widget_view_id = wv.widget_view_id ' .
+                    'AND wv.widget_id = :widgetId ';
+                // Prevent SQL injection with widget id
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':widgetId', $widgetId, \PDO::PARAM_INT);
+                $dbResult = $stmt->execute();
+            } catch (\PDOException $e) {
+                throw new Exception(
+                    "Error: cannot get preference parameter for widget , " . $e->getMessage() . "\n"
+                );
+            }
         }
 
         while ($row = $stmt->fetch()) {

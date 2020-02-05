@@ -120,7 +120,7 @@ class CentreonEngineCfg extends CentreonObject
             'host_perfdata_file_mode' => '2',
             'service_perfdata_file_mode' => '2',
             'check_for_orphaned_services' => '0',
-            'check_for_orphaned_hosts' => '',
+            'check_for_orphaned_hosts' => '0',
             'check_service_freshness' => '2',
             'check_host_freshness' => '2',
             'date_format' => 'euro',

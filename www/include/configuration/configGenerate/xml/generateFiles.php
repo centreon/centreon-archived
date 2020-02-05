@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,10 +35,8 @@
 
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
-
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
@@ -46,7 +44,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 
 $pearDB = $dependencyInjector["configuration_db"];
 
@@ -62,16 +60,13 @@ if (!isset($_POST['poller']) || !isset($_POST['debug'])) {
     exit();
 }
 
-/**
- * List of error from php
- */
+// List of error from php
 global $generatePhpErrors;
 $generatePhpErrors = array();
 
 $path = _CENTREON_PATH_ . "www/include/configuration/configGenerate/";
-$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/engine/";
-$centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
-$DebugPath = "filesGeneration/engine/";
+$nagiosCFGPath = _CENTREON_CACHEDIR_ . "/config/engine/";
+$centreonBrokerPath = _CENTREON_CACHEDIR_ . "/config/broker/";
 
 chdir(_CENTREON_PATH_ . "www");
 $username = 'unknown';
@@ -89,7 +84,7 @@ $ret = array();
 $ret['host'] = $pollers;
 $ret['debug'] = $debug;
 
-/*  Set new error handler */
+// Set new error handler
 set_error_handler('log_error');
 
 $okMsg = "<b><font color='green'>OK</font></b>";
@@ -100,18 +95,18 @@ try {
     $tabs = array();
     if ($generate) {
         $tabs = $centreon->user->access->getPollerAclConf(array(
-            'fields' => array('id', 'name', 'localhost', 'monitoring_engine'),
+            'fields' => array('id', 'name', 'localhost'),
             'order' => array('name'),
             'keys' => array('id'),
             'conditions' => array('ns_activate' => '1')
         ));
     }
 
-    # Sync contactgroups to ldap
+    // Sync contactgroups to ldap
     $cgObj = new CentreonContactgroup($pearDB);
-    $cgObj->syncWithLdap();
+    $cgObj->syncWithLdapConfigGen();
 
-    # Generate configuration
+    // Generate configuration
     if ($pollers == '0') {
         $config_generate->configPollers($username);
     } else {
@@ -121,7 +116,7 @@ try {
         }
     }
 
-    # Debug configuration
+    // Debug configuration
     $statusMsg = $okMsg;
     $statusCode = 0;
     if ($debug) {
@@ -139,12 +134,10 @@ try {
     $xml->writeElement("error", $e->getMessage());
 }
 
-/* Restore default error handler */
+// Restore default error handler
 restore_error_handler();
 
-/*
- * Add error form php
- */
+// Add error form php
 $xml->startElement('errorsPhp');
 foreach ($generatePhpErrors as $error) {
     if ($error[0] == 'error') {
@@ -157,7 +150,6 @@ foreach ($generatePhpErrors as $error) {
 }
 $xml->endElement();
 
-$xml->endElement();
 header('Content-Type: application/xml');
 header('Cache-Control: no-cache');
 header('Expires: 0');
@@ -174,7 +166,7 @@ $xml->output();
 function log_error($errno, $errstr, $errfile, $errline)
 {
     global $generatePhpErrors;
-    if (!(error_reporting() & $errno)) {
+    if (!(error_reporting() && $errno)) {
         return;
     }
 
@@ -197,11 +189,11 @@ function printDebug($xml, $tabs)
 {
     global $pearDB, $ret, $centreon, $nagiosCFGPath;
 
-    $DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` 
-                                        FROM `nagios_server` 
-                                        WHERE `localhost` = '1' 
-                                        ORDER BY ns_activate DESC LIMIT 1");
-    $nagios_bin = $DBRESULT_Servers->fetchRow();
+    $DBRESULT_Servers = $pearDB->query(
+        "SELECT `nagios_bin` FROM `nagios_server`
+        WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1"
+    );
+    $nagios_bin = $DBRESULT_Servers->fetch();
     $DBRESULT_Servers->closeCursor();
     $msg_debug = array();
 
@@ -218,7 +210,8 @@ function printDebug($xml, $tabs)
 
     foreach ($tab_server as $host) {
         $stdout = shell_exec(
-            $nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"] . "/centengine.DEBUG 2>&1"
+            escapeshellarg($nagios_bin['nagios_bin']) . " -v " . $nagiosCFGPath .
+            escapeshellarg($host['id']) . "/centengine.DEBUG 2>&1"
         );
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace("\n", "<br />", $stdout);

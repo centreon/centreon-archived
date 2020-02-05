@@ -23,7 +23,7 @@
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
  * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
+ * Centreon also meet, for each linked independent module, the terms and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -32,9 +32,6 @@
  * For more information : contact@centreon.com
  *
  */
-
-// Calling PHP-DI
-use Pimple\Container;
 
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath(__DIR__ . '/www/class'),
@@ -46,8 +43,8 @@ set_include_path(implode(PATH_SEPARATOR, array(
 spl_autoload_register(function ($sClass) {
     $fileName = $sClass;
     $fileName{0} = strtolower($fileName{0});
-    $fileNameType1 = __DIR__  . "/www/class/" . $fileName . ".class.php";
-    $fileNameType2 = __DIR__  . "/www/class/" . $fileName . ".php";
+    $fileNameType1 = __DIR__ . "/www/class/" . $fileName . ".class.php";
+    $fileNameType2 = __DIR__ . "/www/class/" . $fileName . ".php";
 
     if (file_exists($fileNameType1)) {
         require_once $fileNameType1;
@@ -63,43 +60,8 @@ function loadDependencyInjector()
 }
 
 // require composer file
-require __DIR__ . '/vendor/autoload.php';
+$loader = require __DIR__ . '/vendor/autoload.php';
 
-// Creating container
-$dependencyInjector = new Container();
+Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
-// Define Centreon Configuration Database Connection
-$dependencyInjector['configuration_db'] = function ($c) {
-    return new \CentreonDB('centreon');
-};
-
-// Define Centreon Realtime Database Connection
-$dependencyInjector['realtime_db'] = function ($c) {
-    return new \CentreonDB('centstorage');
-};
-
-// Define filesystem
-$dependencyInjector['filesystem'] = function ($c) {
-    return new \Symfony\Component\Filesystem\Filesystem();
-};
-
-// Utils
-$dependencyInjector['utils'] = function ($c) use ($dependencyInjector) {
-    return new \CentreonLegacy\Core\Utils\Utils($dependencyInjector);
-};
-
-// Define finder
-$dependencyInjector['finder'] = $dependencyInjector->factory(function ($c) {
-    return new \Symfony\Component\Finder\Finder();
-});
-
-// Centreon configuration files
-$configFiles = $dependencyInjector['finder']
-    ->files()
-    ->name('*.config.php')
-    ->depth('== 0')
-    ->in(__DIR__ . '/config');
-foreach ($configFiles as $configFile) {
-    $configFileName = $configFile->getBasename();
-    require __DIR__ . '/config/' . $configFileName;
-}
+require_once __DIR__ . "/container.php";

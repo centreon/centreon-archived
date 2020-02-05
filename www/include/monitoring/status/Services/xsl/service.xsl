@@ -4,7 +4,12 @@
 <xsl:template match="/">
 <table class="ListTable">
     <tr class='ListHeader'>
-        <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>      
+        <td class="ListColHeaderPicker">
+            <div class="md-checkbox md-checkbox-inline">
+                <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                <label class="empty-label" for="checkall"></label>
+            </div>
+        </td>
         <xsl:if test = "//i/use_criticality = 1">
             <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="criticality_id"></td>
         </xsl:if>
@@ -13,7 +18,7 @@
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
         <xsl:for-each select="//i">
-            <xsl:if test="o = 'svc_unhandled' or o = 'svcpb' or o = 'svc_warning' or o = 'svc_critical' or o = 'svc_unknown' or o = 'svc_unhandled_warning' or o = 'svc_unhandled_critical' or o = 'svc_unhandled_unknown'">
+            <xsl:if test="use_hard_state_duration = 1">
                 <td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
                     <xsl:value-of select="hard_state_label"/>
                 </td>
@@ -33,19 +38,25 @@
         <xsl:attribute name="id">trStatus</xsl:attribute>
         <xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
         <td class="ListColPicker">
-            <xsl:element name="input">
-                <xsl:attribute name="type">checkbox</xsl:attribute>
-                <xsl:attribute name="value">1</xsl:attribute>
-                <xsl:attribute name="id"><xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
-                <xsl:attribute name="name">select[<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/>]</xsl:attribute>
-                <xsl:attribute name="onclick">
-                    if (this.checked) {
-                        putInSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
-                    } else {
-                        removeFromSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
-                    }
-                </xsl:attribute>
-            </xsl:element>
+            <div class="md-checkbox md-checkbox-inline">
+                <xsl:element name="input">
+                    <xsl:attribute name="type">checkbox</xsl:attribute>
+                    <xsl:attribute name="value">1</xsl:attribute>
+                    <xsl:attribute name="id"><xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
+                    <xsl:attribute name="name">select[<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/>]</xsl:attribute>
+                    <xsl:attribute name="onclick">
+                        if (this.checked) {
+                            putInSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
+                        } else {
+                            removeFromSelectedElem('<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>');
+                        }
+                    </xsl:attribute>
+                </xsl:element>
+                <xsl:element name="label">
+                    <xsl:attribute name="class">empty-label</xsl:attribute>
+                    <xsl:attribute name="for"><xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
+                </xsl:element>
+            </div>
         </td>
         <xsl:if test = "//i/use_criticality = 1">
             <td class="ListColCenter">
@@ -309,7 +320,7 @@
         <td class="ListColRight" style="white-space:nowrap;">
             <xsl:value-of select="d"/>
         </td>
-        <xsl:if test = "//i/o = 'svc_unhandled' or //i/o = 'svcpb' or //i/o = 'svc_warning' or //i/o = 'svc_critical' or //i/o = 'svc_unknown' or //i/o = 'svc_unhandled_warning' or //i/o = 'svc_unhandled_critical' or //i/o = 'svc_unhandled_unknown'">
+        <xsl:if test = "//i/use_hard_state_duration = 1">
             <td class="ListColRight" style="white-space:nowrap;">
                 <xsl:value-of select="last_hard_state_change"/>
             </td>

@@ -33,11 +33,15 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+// file centreon.config.php may not exist in test environment
+$configFile = realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+if ($configFile !== false) {
+    require_once $configFile;
+}
 
 require_once dirname(__FILE__) . '/backend.class.php';
 require_once dirname(__FILE__) . '/abstract/object.class.php';
-require_once dirname(__FILE__) . '/abstract/objectXML.class.php';
+require_once dirname(__FILE__) . '/abstract/objectJSON.class.php';
 require_once dirname(__FILE__) . '/hosttemplate.class.php';
 require_once dirname(__FILE__) . '/command.class.php';
 require_once dirname(__FILE__) . '/timeperiod.class.php';
@@ -61,7 +65,6 @@ require_once dirname(__FILE__) . '/meta_service.class.php';
 require_once dirname(__FILE__) . '/resource.class.php';
 require_once dirname(__FILE__) . '/engine.class.php';
 require_once dirname(__FILE__) . '/broker.class.php';
-require_once dirname(__FILE__) . '/correlation.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate
@@ -128,7 +131,7 @@ class Generate
 
     private function getPollerFromId($poller_id)
     {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server " .
+        $query = "SELECT id, localhost,  centreonconnector_path FROM nagios_server " .
             "WHERE id = :poller_id";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
@@ -142,7 +145,7 @@ class Generate
 
     private function getPollerFromName($poller_name)
     {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server " .
+        $query = "SELECT id, localhost, centreonconnector_path FROM nagios_server " .
             "WHERE name = :poller_name";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_name', $poller_name, PDO::PARAM_STR);
@@ -176,7 +179,6 @@ class Generate
         Resource::getInstance($this->dependencyInjector)->reset();
         Engine::getInstance($this->dependencyInjector)->reset();
         Broker::getInstance($this->dependencyInjector)->reset();
-        Correlation::getInstance($this->dependencyInjector)->reset();
         $this->resetModuleObjects();
     }
 
@@ -196,13 +198,6 @@ class Generate
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);
-        # Correlation files are always generated on central poller
-        if (Correlation::getInstance($this->dependencyInjector)->hasCorrelation()) {
-            Correlation::getInstance($this->dependencyInjector)->generateFromPollerId(
-                $this->current_poller['id'],
-                $this->current_poller['localhost']
-            );
-        }
         $this->generateModuleObjects(2);
         Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
@@ -238,7 +233,7 @@ class Generate
 
     public function configPollers($username = 'unknown')
     {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM " .
+        $query = "SELECT id, localhost, centreonconnector_path FROM " .
             "nagios_server WHERE ns_activate = '1'";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->execute();

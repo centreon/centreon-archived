@@ -67,7 +67,7 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
 
     /**
      * Post
-     * 
+     *
      * @global \Centreon $centreon
      * @global array $conf_centreon
      * @return array
@@ -192,6 +192,13 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
         for ($i = 0; $i < count($lines); $i++) {
             if (strpos($lines[$i], ';') !== false) {
                 $tmpLine = explode(';', $lines[$i]);
+                
+                if (count($tmpLine) > count($headers)) {
+                    /* Handle ; in variable (more values than headers) */
+                    $tmpLine[count($headers) - 1] = implode(';', array_slice($tmpLine, count($headers) - 1));
+                    $tmpLine = array_slice($tmpLine, 0, count($headers));
+                }
+                
                 foreach ($tmpLine as &$line) {
                     if (strpos($line, "|") !== false) {
                         $line = explode("|", $line);
@@ -204,6 +211,11 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
                 $return['result'][] = $lines[$i];
             }
         }
+        
+        if (is_array($return['result'])) {
+            array_walk($return['result'], [$this, 'clearCarriageReturns']);
+        }
+            
         return $return;
     }
 
@@ -217,10 +229,22 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if (parent::authorize($action, $user, $isInternal)) {
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiConfiguration())
+        ) {
             return true;
         }
 
-        return $user->hasAccessRestApiConfiguration();
+        return false;
+    }
+
+    /**
+     * Removes carriage returns from $item if string
+     * @param $item variable to check
+     */
+    private function clearCarriageReturns(&$item)
+    {
+        $item = (is_string($item)) ? str_replace(array("\n", "\t", "\r", "<br/>"), '', $item) : $item;
     }
 }

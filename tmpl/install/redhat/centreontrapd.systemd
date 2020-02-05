@@ -1,5 +1,5 @@
 ##
-## Copyright 2015 Centreon
+## Copyright 2015,2019 Centreon
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -17,12 +17,17 @@
 ##
 
 [Unit]
-Description=Centreon Trapd Daemon
+Description=Centreon Trapd Daemon is a Centreon program that manage traps
+PartOf=centreon.service
+After=centreon.service
+ReloadPropagatedFrom=centreon.service
 
 [Service]
-ExecStart=@CENTREONTRAPD_BINDIR@/centreontrapd
+EnvironmentFile=/etc/sysconfig/centreontrapd
+ExecStart=@CENTREONTRAPD_BINDIR@/centreontrapd $OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
 Type=simple
 User=centreon
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=centreon.service

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,7 +36,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/reporting/dashboard/common-Func.php";
@@ -46,11 +46,9 @@ require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
 include_once _CENTREON_PATH_ . "www/include/reporting/dashboard/DB-Func.php";
 
-/*
- * DB Connexion
- */
-$pearDB    = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
+// DB Connexion
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
 if (!isset($_SESSION["centreon"])) {
     CentreonSession::start();
@@ -61,11 +59,14 @@ if (!isset($_SESSION["centreon"])) {
 }
 
 $sid = session_id();
+
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
-    $res = $pearDB->query($query);
-    if (!$res->rowCount()) {
+    $res = $pearDB->prepare("SELECT COUNT(*) as count FROM session WHERE user_id = :id");
+    $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
+    $res->execute();
+    $row = $res->fetch(\PDO::FETCH_ASSOC);
+    if ($row['count'] < 1) {
         get_error('bad session id');
     }
 } else {
@@ -74,109 +75,168 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 
 $centreon = $oreon;
 
-/*
- * getting hostgroup id
- */
-isset($_GET["hostgroup"]) ? $id = htmlentities($_GET["hostgroup"], ENT_QUOTES, "UTF-8") : $id = "NULL";
-isset($_POST["hostgroup"]) ? $id = htmlentities($_POST["hostgroup"], ENT_QUOTES, "UTF-8") : $id;
+// Getting hostgroup id
+$hostgroupId = filter_var(
+    $_GET["hostgroup"] ?? $_POST['hostgroup'] ?? null,
+    FILTER_VALIDATE_INT
+);
 
-/*
- * Getting time interval to report
- */
+// finding the user's allowed hostgroups
+$allowedHostgroups = $centreon->user->access->getHostGroupAclConf(null, 'broker');
+
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $hostgroupId !== null
+    && !array_key_exists($hostgroupId, $allowedHostgroups)
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this host group</b></div>';
+    exit();
+}
+
+// Getting time interval to report
 $dates = getPeriodToReport();
-$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$hostgroup_name = getHostgroupNameFromId($id);
+$startDate = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+$endDate = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+$hostgroupName = getHostgroupNameFromId($hostgroupId);
 
-/*
- * file type setting
- */
+// file type setting
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: filename=".$hostgroup_name.".csv");
+header("Content-disposition: filename=" . $hostgroupName . ".csv");
 
-
-echo _("Hostgroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-echo $hostgroup_name."; ".date(_("d/m/Y H:i:s"), $start_date)."; "
-    . date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";
+echo _("Hostgroup") . ";"
+    . _("Begin date") . "; "
+    . _("End date") . "; "
+    . _("Duration") . "\n";
+echo $hostgroupName . "; "
+    . date(_("d/m/Y H:i:s"), $startDate) . "; "
+    . date(_("d/m/Y H:i:s"), $endDate) . "; "
+    . ($endDate - $startDate) . "s\n";
 echo "\n";
+echo _("Status") . ";"
+    . _("Total Time") . ";"
+    . _("Mean Time") . "; "
+    . _("Alert") . "\n";
 
-echo _("Status").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
-/*
- * Getting stats on Host
- */
+// Getting stats on Host
 $reportingTimePeriod = getreportingTimePeriod();
 $hostgroupStats = array();
-$hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod);
-echo _("DOWN").";".$hostgroupStats["average"]["DOWN_TP"]
-    . ";".$hostgroupStats["average"]["DOWN_MP"]."%;".$hostgroupStats["average"]["DOWN_A"].";\n";
-echo _("UP").";".$hostgroupStats["average"]["UP_TP"].";".$hostgroupStats["average"]["UP_MP"]
-    . "%;".$hostgroupStats["average"]["UP_A"].";\n";
-echo _("UNREACHABLE").";".$hostgroupStats["average"]["UNREACHABLE_TP"].";"
-    . $hostgroupStats["average"]["UNREACHABLE_MP"]."%;".$hostgroupStats["average"]["UNREACHABLE_A"].";\n";
-echo _("UNDETERMINED").";".$hostgroupStats["average"]["UNDETERMINED_TP"].";\n";
+$hostgroupStats = getLogInDbForHostGroup($hostgroupId, $startDate, $endDate, $reportingTimePeriod);
+
+echo _("UP") . ";"
+    . $hostgroupStats["average"]["UP_TP"] . "%;"
+    . $hostgroupStats["average"]["UP_MP"] . "%;"
+    . $hostgroupStats["average"]["UP_A"] . ";\n";
+echo _("DOWN") . ";"
+    . $hostgroupStats["average"]["DOWN_TP"] . "%;"
+    . $hostgroupStats["average"]["DOWN_MP"] . "%;"
+    . $hostgroupStats["average"]["DOWN_A"] . ";\n";
+echo _("UNREACHABLE") . ";"
+    . $hostgroupStats["average"]["UNREACHABLE_TP"] . "%;"
+    . $hostgroupStats["average"]["UNREACHABLE_MP"] . "%;"
+    . $hostgroupStats["average"]["UNREACHABLE_A"] . ";\n";
+echo _("SCHEDULED DOWNTIME") . ";"
+    . $hostgroupStats["average"]["MAINTENANCE_TP"] . "%;\n";
+echo _("UNDETERMINED") . ";"
+    . $hostgroupStats["average"]["UNDETERMINED_TP"] . "%;\n";
 echo "\n\n";
-echo _("Hosts Group").";"._("Up Time").";"._("Up Mean Time").";"._("Up Alerts").";".
-    _("Down Time").";"._("Down Mean Time").";"._("Down Alerts").";".
-    _("Unreachable Time").";"._("Unreachable Mean Time").";"._("Unreachable Alerts").";".
-    _("Undetermined Time").";\n";
+
+echo _("Hosts") . ";"
+    . _("Up") . " %;"
+    . _("Up Mean Time") . " %;"
+    . _("Up") . " " . _("Alert") . ";"
+    . _("Down") . " %;"
+    . _("Down Mean Time") . " %;"
+    . _("Down") . " " . _("Alert") . ";"
+    . _("Unreachable") . " %;"
+    . _("Unreachable Mean Time") . " %;"
+    . _("Unreachable") ." " . _("Alert") . ";"
+    . _("Scheduled Downtimes") . " %;"
+    . _("Undetermined") ." %;\n";
+
 foreach ($hostgroupStats as $key => $tab) {
     if ($key != "average") {
-        echo $tab["NAME"].";".$tab["UP_TP"].";".$tab["UP_MP"].";".$tab["UP_A"].";".
-        $tab["DOWN_TP"].";".$tab["DOWN_MP"].";".$tab["DOWN_A"].";".
-        $tab["UNREACHABLE_TP"].";".$tab["UNREACHABLE_MP"].";".$tab["UNREACHABLE_A"].";".
-        $tab["UNDETERMINED_TP"].";\n";
+        echo $tab["NAME"] . ";"
+            . $tab["UP_TP"] . "%;"
+            . $tab["UP_MP"] . "%;"
+            . $tab["UP_A"] . ";"
+            . $tab["DOWN_TP"] . "%;"
+            . $tab["DOWN_MP"] . "%;"
+            . $tab["DOWN_A"] .";"
+            . $tab["UNREACHABLE_TP"] . "%;"
+            . $tab["UNREACHABLE_MP"] . "%;"
+            . $tab["UNREACHABLE_A"] . ";"
+            . $tab["MAINTENANCE_TP"] . "%;"
+            . $tab["UNDETERMINED_TP"]."%;\n";
     }
 }
-echo "\n\n";
-/*
- * getting all hosts from hostgroup
- */
+echo "\n";
+echo "\n";
+
+// getting all hosts from hostgroup
 $str = "";
-$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" .$id."'";
-$DBRESULT = $pearDB->query($request);
-while ($hg = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->prepare(
+    "SELECT host_host_id FROM `hostgroup_relation` " .
+    "WHERE `hostgroup_hg_id` = :hostgroupId"
+);
+$dbResult->bindValue(':hostgroupId', $hostgroupId, PDO::PARAM_INT);
+$dbResult->execute();
+
+while ($hg = $dbResult->fetch()) {
     if ($str != "") {
         $str .= ", ";
     }
-    $str .= "'".$hg["host_host_id"]."'";
+    $str .= "'" . $hg["host_host_id"] . "'";
 }
 if ($str == "") {
     $str = "''";
 }
 unset($hg);
-unset($DBRESULT);
-/*
- * Getting hostgroup stats evolution
- */
-$rq = "SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, "
+unset($dbResult);
+
+// Getting hostgroup stats evolution
+$dbResult = $pearDBO->prepare(
+    "SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, "
     . "sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, "
     . "avg( `UPTimeScheduled` ) as UPTimeScheduled, "
     . "avg( `DOWNTimeScheduled` ) as DOWNTimeScheduled, "
     . "avg( `UNREACHABLETimeScheduled` ) as UNREACHABLETimeScheduled "
-    . "FROM `log_archive_host` WHERE `host_id` IN (".$str.") "
-    . "AND `date_start` >= '".$start_date."' "
-    . "AND `date_end` <= '".$end_date."' "
-    . "GROUP BY `date_end`, `date_start` ORDER BY `date_start` desc";
-$DBRESULT = $pearDBO->query($rq);
+    . "FROM `log_archive_host` WHERE `host_id` IN (" . $str . ") "
+    . "AND `date_start` >= :startDate "
+    . "AND `date_end` <= :endDate "
+    . "GROUP BY `date_end`, `date_start` ORDER BY `date_start` desc"
+);
+$dbResult->bindValue(':startDate', $startDate, PDO::PARAM_INT);
+$dbResult->bindValue(':endDate', $endDate, PDO::PARAM_INT);
+$dbResult->execute();
 
-echo _("Day").";"._("Duration").";".
-    _("Up Mean Time").";"._("Up Alert").";".
-    _("Down Mean Time").";"._("Down Alert").";".
-    _("Unreachable Mean Time").";"._("Unreachable Alert")._("Day").";\n";
-while ($row = $DBRESULT->fetchRow()) {
+echo _("Day") . ";"
+    . _("Duration") . ";"
+    . _("Up Mean Time") . ";"
+    . _("Up Alert") . ";"
+    . _("Down Mean Time") . ";"
+    . _("Down Alert") . ";"
+    . _("Unreachable Mean Time") . ";"
+    . _("Unreachable Alert") . _("Day") . ";\n";
+
+while ($row = $dbResult->fetch()) {
     $duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
 
-    /* Percentage by status */
+    // Percentage by status
     $row["UP_MP"] = round($row["UPTimeScheduled"] * 100 / $duration, 2);
     $row["DOWN_MP"] = round($row["DOWNTimeScheduled"] * 100 / $duration, 2);
     $row["UNREACHABLE_MP"] = round($row["UNREACHABLETimeScheduled"] * 100 / $duration, 2);
 
-    echo $row["date_start"].";".$duration."s;".
-        $row["UP_MP"]."%;".$row["UPnbEvent"].";".
-        $row["DOWN_MP"]."%;".$row["DOWNnbEvent"].";".
-        $row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";".
-        date("Y-m-d H:i:s", $row["date_start"]).";\n";
+    echo $row["date_start"] . ";"
+        . $duration . "s;"
+        . $row["UP_MP"] . "%;"
+        . $row["UPnbEvent"] . ";"
+        . $row["DOWN_MP"] . "%;"
+        . $row["DOWNnbEvent"] . ";"
+        . $row["UNREACHABLE_MP"] . "%;"
+        . $row["UNREACHABLEnbEvent"] . ";"
+        . date("Y-m-d H:i:s", $row["date_start"]) . ";\n";
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();

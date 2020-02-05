@@ -43,6 +43,20 @@ include("./include/common/autoNumLimit.php");
 
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
 
+$search = filter_var(
+    $_POST['searchSD'] ?? $_GET['searchSD'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchSD']) || isset($_GET['searchSD'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+}
+
 $aclFrom = "";
 $aclCond = "";
 if (!$oreon->user->admin) {
@@ -52,21 +66,19 @@ if (!$oreon->user->admin) {
                  AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 
-$rq = "SELECT COUNT(DISTINCT dep.dep_id) as count_dep "
+$rq = "SELECT SQL_CALC_FOUND_ROWS DISTINCT dep_id, dep_name, dep_description "
     . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
     . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " "
     . "AND dspr.host_host_id NOT IN (SELECT host_id FROM host WHERE host_register = '2') ";
 
-$search = '';
-if (isset($_POST['searchSD']) && $_POST['searchSD']) {
-    $search = $_POST['searchSD'];
+if ($search) {
     $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
-$DBRESULT = $pearDB->query($rq);
+$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["count_dep"];
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -85,25 +97,18 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_description", _("Description"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-# Dependency list
-$rq = "SELECT DISTINCT dep_id, dep_name, dep_description "
-    . "FROM dependency dep, dependency_serviceParent_relation dspr " . $aclFrom . " "
-    . "WHERE dspr.dependency_dep_id = dep.dep_id " . $aclCond . " "
-    . "AND dspr.host_host_id NOT IN (SELECT host_id FROM host WHERE host_register = '2') ";
-
-if ($search) {
-    $rq .= " AND (dep_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR dep_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
-}
-$rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
-
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 # Different style between each lines
 $style = "one";
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 # Fill a tab with a mutlidimensionnal Array we put in $tpl
 $elemArr = array();
@@ -118,7 +123,7 @@ for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure(myDecode($dep["dep_name"])),
-        "RowMenu_link" => "?p=" . $p . "&o=c&dep_id=" . $dep['dep_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&dep_id=" . $dep['dep_id'],
         "RowMenu_description" => CentreonUtils::escapeSecure(myDecode($dep["dep_description"])),
         "RowMenu_options" => $moptions
     );
@@ -131,7 +136,7 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 /*
@@ -142,7 +147,7 @@ $tpl->assign(
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -210,4 +215,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceDependency.ihtml");
-

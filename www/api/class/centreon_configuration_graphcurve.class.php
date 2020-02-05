@@ -91,7 +91,7 @@ class CentreonConfigurationGraphcurve extends CentreonConfigurationObjects
         }
         return array(
             'items' => $graphCurveList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

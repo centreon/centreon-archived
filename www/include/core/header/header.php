@@ -60,6 +60,7 @@ require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
+require_once $classdir . '/centreonFeature.class.php';
 require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
@@ -70,7 +71,7 @@ require_once SMARTY_DIR . "Smarty.class.php";
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
 
-ini_set("session.gc_maxlifetime", "31536000");
+$centreonSession = new CentreonSession();
 
 CentreonSession::start();
 
@@ -86,6 +87,11 @@ $time_limit = time() - ($session_expire["value"] * 60);
 
 $DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
 
+// drop session if session has been deleted due to expiration
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    CentreonSession::stop();
+}
+
 
 $args = "&redirect='";
 $a = 0;
@@ -93,22 +99,15 @@ foreach ($_GET as $key => $value) {
     if ($a) {
         $args .= '&';
     }
-    $args .= "$key=$value";
+    if (is_string($value)) {
+        $args .= "{$key}={$value}";
+    }
     $a++;
 }
 $args .= "'";
 
-/*
- * Get session and Check if session is not expired
- */
-$DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '" . session_id() . "'");
-if (!$DBRESULT->fetchColumn()) {
-    header("Location: index.php?disconnect=2" . $args);
-}
-
-/*
- * Check autologin here
- */
+// check centreon session
+// if session is not valid and autologin token is not given, then redirect to login page
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
         $args = "&redirect='";
@@ -135,15 +134,14 @@ if (!isset($_SESSION["centreon"])) {
  * Define Oreon var alias
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
+    $oreon = $centreon = $_SESSION["centreon"];
 }
 if (!isset($centreon) || !is_object($centreon)) {
     exit();
 }
 
 /*
- * Init differents elements we need in a lot of pages
+ * Init different elements we need in a lot of pages
  */
 unset($centreon->Nagioscfg);
 $centreon->initNagiosCFG($pearDB);
@@ -219,26 +217,29 @@ if ($handle = @opendir("./Themes/Centreon-2/Color")) {
 
 $colorfile = "Color/" . $tab_file_css[0];
 
-/*
- * Get CSS Order and color
- */
+//Get CSS Order and color
 $DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
-if ($DBRESULT->fetchColumn() && ($elem = $DBRESULT->fetch())) {
+if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
     $colorfile = "Color/" . $elem["css_name"];
 }
 
-/*
- * Update Session Table For last_reload and current_page row
- */
-$query = "UPDATE `session` SET `current_page` = '" . $level1 . $level2 . $level3 . $level4 .
-    "', `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
+//Update Session Table For last_reload and current_page row
+$page = '' . $level1 . $level2 . $level3 . $level4;
+if ($page == '') {
+    $page = "NULL";
+}
+$query = "UPDATE `session` SET `current_page` = " . $page .
+    ", `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
     "' WHERE CONVERT(`session_id` USING utf8) = '" . session_id() . "' AND `user_id` = '" .
     $centreon->user->user_id . "'";
 $DBRESULT = $pearDB->query($query);
 
-/*
- * Init Language
- */
+//Init Language
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
+
+/**
+ * Initialize features flipping
+ */
+$centreonFeature = new CentreonFeature($pearDB);

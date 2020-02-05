@@ -64,7 +64,6 @@ if (!$is_admin) {
 $hostTab = array();
 
 if ($is_admin || ($flag_acl && !$is_admin)) {
-
     $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=".$p);
     $form->addElement('header', 'title', _("Command Options"));
 

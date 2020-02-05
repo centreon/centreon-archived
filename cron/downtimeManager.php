@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!@PHP_BIN@
 <?php
 /**
  * Copyright 2005-2015 Centreon
@@ -67,7 +67,6 @@ $downtimeObj = new CentreonDowntimeBroker($pearDB, _CENTREON_VARLIB_);
 $downtimes = $downtimeObj->getApproachingDowntimes(_DELAY_);
 
 foreach ($downtimes as $downtime) {
-
     $isScheduled = $downtimeObj->isScheduled($downtime);
 
     if (!$isScheduled && $downtime['dt_activate'] == '1') {

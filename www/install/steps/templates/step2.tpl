@@ -22,12 +22,10 @@
 
 <script type="text/javascript">
 
-    var validate = {$validate};
-
     {literal}
 
     function validation() {
-        return validate;
+        return true;
     }
 
     {/literal}

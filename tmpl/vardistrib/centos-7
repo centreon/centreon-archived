@@ -5,3 +5,7 @@
 
 # Set platform-specific directories.
 PLUGIN_DIR="/usr/lib64/nagios/plugins"
+
+PEAR_PATH="/opt/rh/rh-php72/root/usr/share/pear"
+
+PHP_BIN="/opt/rh/rh-php72/root/usr/bin/php"

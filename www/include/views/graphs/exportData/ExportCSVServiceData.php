@@ -72,7 +72,7 @@ if (isset($_GET['chartId'])) {
         ' AND service_id = ' . $pearDBO->escape($serviceId));
     if ($res->rowCount()) {
         $row = $res->fetchRow();
-        $index = $row['id'];     
+        $index = $row['id'];
     } else {
         die('Resource not found');
     }
@@ -113,16 +113,17 @@ while ($index_data = $DBRESULT->fetchRow()) {
     }
 }
 
-# Order by timestamp
+// Order by timestamp
 ksort($datas);
 foreach ($datas as $key => $data) {
     $datas[$key] = $data + $listEmptyMetric;
-    # Order by metric
+    // Order by metric
     ksort($datas[$key]);
 }
 
 print "time;humantime";
 if (count($listMetric)) {
+    ksort($listMetric);
     print ";" . implode(';', $listMetric);
 }
 print "\n";

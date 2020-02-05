@@ -33,10 +33,8 @@ CREATE TABLE `acl_actions_rules` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_group_actions_relations` (
-  `agar_id` int(11) NOT NULL AUTO_INCREMENT,
   `acl_action_id` int(11) DEFAULT NULL,
   `acl_group_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`agar_id`),
   KEY `acl_action_id` (`acl_action_id`),
   KEY `acl_group_id` (`acl_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -44,10 +42,8 @@ CREATE TABLE `acl_group_actions_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_group_contactgroups_relations` (
-  `agcgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `cg_cg_id` int(11) DEFAULT NULL,
   `acl_group_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`agcgr_id`),
   KEY `cg_cg_id` (`cg_cg_id`),
   KEY `acl_group_id` (`acl_group_id`),
   CONSTRAINT `acl_group_contactgroups_relations_ibfk_2` FOREIGN KEY (`acl_group_id`) REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
@@ -57,10 +53,8 @@ CREATE TABLE `acl_group_contactgroups_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_group_contacts_relations` (
-  `agcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `contact_contact_id` int(11) DEFAULT NULL,
   `acl_group_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`agcr_id`),
   KEY `contact_contact_id` (`contact_contact_id`),
   KEY `acl_group_id` (`acl_group_id`),
   CONSTRAINT `acl_group_contacts_relations_ibfk_1` FOREIGN KEY (`contact_contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
@@ -70,10 +64,8 @@ CREATE TABLE `acl_group_contacts_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_group_topology_relations` (
-  `agt_id` int(11) NOT NULL AUTO_INCREMENT,
   `acl_group_id` int(11) DEFAULT NULL,
   `acl_topology_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`agt_id`),
   KEY `acl_group_id` (`acl_group_id`),
   KEY `acl_topology_id` (`acl_topology_id`),
   CONSTRAINT `acl_group_topology_relations_ibfk_1` FOREIGN KEY (`acl_group_id`) REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
@@ -86,7 +78,7 @@ CREATE TABLE `acl_groups` (
   `acl_group_id` int(11) NOT NULL AUTO_INCREMENT,
   `acl_group_name` varchar(255) DEFAULT NULL,
   `acl_group_alias` varchar(255) DEFAULT NULL,
-  `acl_group_changed` int(11) NOT NULL,
+  `acl_group_changed` int(11) NOT NULL DEFAULT 1,
   `acl_group_activate` enum('0','1','2') DEFAULT NULL,
   PRIMARY KEY (`acl_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -94,10 +86,8 @@ CREATE TABLE `acl_groups` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_res_group_relations` (
-  `argr_id` int(11) NOT NULL AUTO_INCREMENT,
   `acl_res_id` int(11) DEFAULT NULL,
   `acl_group_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`argr_id`),
   KEY `acl_res_id` (`acl_res_id`),
   KEY `acl_group_id` (`acl_group_id`),
   CONSTRAINT `acl_res_group_relations_ibfk_1` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE,
@@ -124,10 +114,8 @@ CREATE TABLE `acl_resources` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_hc_relations` (
-  `arhcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `hc_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`arhcr_id`),
   KEY `hc_id` (`hc_id`),
   KEY `acl_res_id` (`acl_res_id`),
   CONSTRAINT `acl_resources_hc_relations_ibfk_1` FOREIGN KEY (`hc_id`) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE,
@@ -137,10 +125,8 @@ CREATE TABLE `acl_resources_hc_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_hg_relations` (
-  `arhge_id` int(11) NOT NULL AUTO_INCREMENT,
   `hg_hg_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`arhge_id`),
   KEY `hg_hg_id` (`hg_hg_id`),
   KEY `acl_res_id` (`acl_res_id`),
   KEY `hg_hg_id_2` (`hg_hg_id`,`acl_res_id`),
@@ -151,10 +137,8 @@ CREATE TABLE `acl_resources_hg_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_host_relations` (
-  `arhr_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_host_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`arhr_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `acl_res_id` (`acl_res_id`),
   CONSTRAINT `acl_resources_host_relations_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
@@ -164,10 +148,8 @@ CREATE TABLE `acl_resources_host_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_hostex_relations` (
-  `arhe_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_host_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`arhe_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `acl_res_id` (`acl_res_id`),
   CONSTRAINT `acl_resources_hostex_relations_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
@@ -177,10 +159,8 @@ CREATE TABLE `acl_resources_hostex_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_meta_relations` (
-  `armse_id` int(11) NOT NULL AUTO_INCREMENT,
   `meta_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`armse_id`),
   KEY `meta_id` (`meta_id`),
   KEY `acl_res_id` (`acl_res_id`),
   CONSTRAINT `acl_resources_meta_relations_ibfk_2` FOREIGN KEY (`acl_res_id`) REFERENCES `acl_resources` (`acl_res_id`) ON DELETE CASCADE,
@@ -190,10 +170,8 @@ CREATE TABLE `acl_resources_meta_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_poller_relations` (
-  `arpr_id` int(11) NOT NULL AUTO_INCREMENT,
   `poller_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`arpr_id`),
   KEY `poller_id` (`poller_id`),
   KEY `acl_res_id` (`acl_res_id`),
   CONSTRAINT `acl_resources_poller_relations_ibfk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
@@ -203,10 +181,8 @@ CREATE TABLE `acl_resources_poller_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_sc_relations` (
-  `arscr_id` int(11) NOT NULL AUTO_INCREMENT,
   `sc_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`arscr_id`),
   KEY `sc_id` (`sc_id`),
   KEY `acl_res_id` (`acl_res_id`),
   CONSTRAINT `acl_resources_sc_relations_ibfk_1` FOREIGN KEY (`sc_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE,
@@ -216,10 +192,8 @@ CREATE TABLE `acl_resources_sc_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_service_relations` (
-  `arsr_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_service_id` int(11) DEFAULT NULL,
   `acl_group_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`arsr_id`),
   KEY `service_service_id` (`service_service_id`),
   KEY `acl_group_id` (`acl_group_id`),
   CONSTRAINT `acl_resources_service_relations_ibfk_1` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
@@ -229,10 +203,8 @@ CREATE TABLE `acl_resources_service_relations` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_resources_sg_relations` (
-  `asgr` int(11) NOT NULL AUTO_INCREMENT,
   `sg_id` int(11) DEFAULT NULL,
   `acl_res_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`asgr`),
   KEY `sg_id` (`sg_id`),
   KEY `acl_res_id` (`acl_res_id`),
   KEY `sg_id_2` (`sg_id`,`acl_res_id`),
@@ -255,11 +227,9 @@ CREATE TABLE `acl_topology` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_topology_relations` (
-  `agt_id` int(11) NOT NULL AUTO_INCREMENT,
   `topology_topology_id` int(11) DEFAULT NULL,
   `acl_topo_id` int(11) DEFAULT NULL,
   `access_right` tinyint(4) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`agt_id`),
   KEY `topology_topology_id` (`topology_topology_id`),
   KEY `acl_topo_id` (`acl_topo_id`),
   CONSTRAINT `acl_topology_relations_ibfk_2` FOREIGN KEY (`topology_topology_id`) REFERENCES `topology` (`topology_id`) ON DELETE CASCADE,
@@ -272,8 +242,9 @@ CREATE TABLE `auth_ressource` (
   `ar_id` int(11) NOT NULL AUTO_INCREMENT,
   `ar_name` varchar(255) NOT NULL DEFAULT 'Default',
   `ar_description` varchar(255) NOT NULL DEFAULT 'Default description',
-  `ar_type` varchar(50) NOT NULL,
+  `ar_type` varchar(50) NOT NULL DEFAULT 'ldap',
   `ar_enable` enum('0','1') DEFAULT '0',
+  `ar_sync_base_date` int(11) DEFAULT 0,
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -450,7 +421,6 @@ CREATE TABLE `cfg_centreonbroker` (
   `command_file` varchar(255),
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
-  `correlation_activate` enum('0','1') DEFAULT '0',
   `daemon` TINYINT(1),
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -604,6 +574,8 @@ CREATE TABLE `cfg_nagios` (
   `daemon_dumps_core` enum('0','1') DEFAULT NULL,
   `cfg_file` varchar(255) NOT NULL DEFAULT 'centengine.cfg',
   `log_pid` enum('0','1') DEFAULT '1',
+  `enable_macros_filter` enum('0', '1') DEFAULT '0',
+  `macros_filter` TEXT DEFAULT '',
   PRIMARY KEY (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
   KEY `cmd2_index` (`global_service_event_handler`),
@@ -703,10 +675,8 @@ CREATE TABLE `command_categories` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `command_categories_relation` (
-  `cmd_cat_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(11) DEFAULT NULL,
-  `command_command_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`cmd_cat_id`)
+  `command_command_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -733,7 +703,7 @@ CREATE TABLE `contact` (
   `contact_name` varchar(200) DEFAULT NULL,
   `contact_alias` varchar(200) DEFAULT NULL,
   `contact_passwd` varchar(255) DEFAULT NULL,
-  `contact_lang` varchar(255) DEFAULT NULL,
+  `contact_lang` varchar(255) DEFAULT 'browser',
   `contact_host_notification_options` varchar(200) DEFAULT NULL,
   `contact_service_notification_options` varchar(200) DEFAULT NULL,
   `contact_email` varchar(200) DEFAULT NULL,
@@ -763,6 +733,8 @@ CREATE TABLE `contact` (
   `default_page` int(11) DEFAULT NULL,
   `contact_charset` varchar(255) DEFAULT NULL,
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
+  `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
+  `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -779,10 +751,8 @@ CREATE TABLE `contact` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact_host_relation` (
-  `chr_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_host_id` int(11) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`chr_id`),
   KEY `host_index` (`host_host_id`),
   KEY `contact_id` (`contact_id`),
   CONSTRAINT `contact_host_relation_ibfk_2` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
@@ -792,10 +762,8 @@ CREATE TABLE `contact_host_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact_hostcommands_relation` (
-  `chr_id` int(11) NOT NULL AUTO_INCREMENT,
   `contact_contact_id` int(11) DEFAULT NULL,
   `command_command_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`chr_id`),
   KEY `contact_index` (`contact_contact_id`),
   KEY `command_index` (`command_command_id`),
   CONSTRAINT `contact_hostcommands_relation_ibfk_1` FOREIGN KEY (`contact_contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
@@ -817,10 +785,8 @@ CREATE TABLE `contact_param` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact_service_relation` (
-  `csr_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_service_id` int(11) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`csr_id`),
   KEY `service_index` (`service_service_id`),
   KEY `contact_id` (`contact_id`),
   CONSTRAINT `contact_service_relation_ibfk_2` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
@@ -830,10 +796,8 @@ CREATE TABLE `contact_service_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact_servicecommands_relation` (
-  `csc_id` int(11) NOT NULL AUTO_INCREMENT,
   `contact_contact_id` int(11) DEFAULT NULL,
   `command_command_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`csc_id`),
   KEY `contact_index` (`contact_contact_id`),
   KEY `command_index` (`command_command_id`),
   CONSTRAINT `contact_servicecommands_relation_ibfk_1` FOREIGN KEY (`contact_contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
@@ -859,10 +823,8 @@ CREATE TABLE `contactgroup` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contactgroup_contact_relation` (
-  `cgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `contact_contact_id` int(11) DEFAULT NULL,
   `contactgroup_cg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`cgr_id`),
   KEY `contact_index` (`contact_contact_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   CONSTRAINT `contactgroup_contact_relation_ibfk_1` FOREIGN KEY (`contact_contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
@@ -872,10 +834,8 @@ CREATE TABLE `contactgroup_contact_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contactgroup_host_relation` (
-  `cghr_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_host_id` int(11) DEFAULT NULL,
   `contactgroup_cg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`cghr_id`),
   KEY `host_index` (`host_host_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   CONSTRAINT `contactgroup_host_relation_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
@@ -885,10 +845,8 @@ CREATE TABLE `contactgroup_host_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contactgroup_hostgroup_relation` (
-  `cghgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `contactgroup_cg_id` int(11) DEFAULT NULL,
   `hostgroup_hg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`cghgr_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
   CONSTRAINT `contactgroup_hostgroup_relation_ibfk_1` FOREIGN KEY (`contactgroup_cg_id`) REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE,
@@ -898,10 +856,8 @@ CREATE TABLE `contactgroup_hostgroup_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contactgroup_service_relation` (
-  `cgsr_id` int(11) NOT NULL AUTO_INCREMENT,
   `contactgroup_cg_id` int(11) DEFAULT NULL,
   `service_service_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`cgsr_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   KEY `service_index` (`service_service_id`),
   CONSTRAINT `contactgroup_service_relation_ibfk_1` FOREIGN KEY (`contactgroup_cg_id`) REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE,
@@ -911,10 +867,8 @@ CREATE TABLE `contactgroup_service_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contactgroup_servicegroup_relation` (
-  `cgsgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `servicegroup_sg_id` int(11) DEFAULT NULL,
   `contactgroup_cg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`cgsgr_id`),
   KEY `servicegroup_index` (`servicegroup_sg_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   CONSTRAINT `contactgroup_servicegroup_relation_ibfk_1` FOREIGN KEY (`contactgroup_cg_id`) REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE,
@@ -1003,10 +957,8 @@ CREATE TABLE `dependency` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_hostChild_relation` (
-  `dhcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dhcr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`),
   CONSTRAINT `dependency_hostChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1016,10 +968,8 @@ CREATE TABLE `dependency_hostChild_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_hostParent_relation` (
-  `dhpr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dhpr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`),
   CONSTRAINT `dependency_hostParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1029,10 +979,8 @@ CREATE TABLE `dependency_hostParent_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_hostgroupChild_relation` (
-  `dhgcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `hostgroup_hg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dhgcr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
   CONSTRAINT `dependency_hostgroupChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1042,10 +990,8 @@ CREATE TABLE `dependency_hostgroupChild_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_hostgroupParent_relation` (
-  `dhgpr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `hostgroup_hg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dhgpr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
   CONSTRAINT `dependency_hostgroupParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1055,10 +1001,8 @@ CREATE TABLE `dependency_hostgroupParent_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_metaserviceChild_relation` (
-  `dmscr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `meta_service_meta_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dmscr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`),
   CONSTRAINT `dependency_metaserviceChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1068,10 +1012,8 @@ CREATE TABLE `dependency_metaserviceChild_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_metaserviceParent_relation` (
-  `dmspr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `meta_service_meta_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dmspr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`),
   CONSTRAINT `dependency_metaserviceParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1081,11 +1023,9 @@ CREATE TABLE `dependency_metaserviceParent_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_serviceChild_relation` (
-  `dscr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `service_service_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dscr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`),
@@ -1097,11 +1037,9 @@ CREATE TABLE `dependency_serviceChild_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_serviceParent_relation` (
-  `dspr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `service_service_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dspr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`),
@@ -1113,10 +1051,8 @@ CREATE TABLE `dependency_serviceParent_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_servicegroupChild_relation` (
-  `dsgcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `servicegroup_sg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dsgcr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`),
   CONSTRAINT `dependency_servicegroupChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1126,10 +1062,8 @@ CREATE TABLE `dependency_servicegroupChild_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dependency_servicegroupParent_relation` (
-  `dsgpr_id` int(11) NOT NULL AUTO_INCREMENT,
   `dependency_dep_id` int(11) DEFAULT NULL,
   `servicegroup_sg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`dsgpr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`),
   CONSTRAINT `dependency_servicegroupParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
@@ -1235,10 +1169,8 @@ CREATE TABLE `escalation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `escalation_contactgroup_relation` (
-  `ecgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `escalation_esc_id` int(11) DEFAULT NULL,
   `contactgroup_cg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ecgr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `cg_index` (`contactgroup_cg_id`),
   CONSTRAINT `escalation_contactgroup_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
@@ -1248,10 +1180,8 @@ CREATE TABLE `escalation_contactgroup_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `escalation_host_relation` (
-  `ehr_id` int(11) NOT NULL AUTO_INCREMENT,
   `escalation_esc_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ehr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `host_index` (`host_host_id`),
   CONSTRAINT `escalation_host_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
@@ -1261,10 +1191,8 @@ CREATE TABLE `escalation_host_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `escalation_hostgroup_relation` (
-  `ehgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `escalation_esc_id` int(11) DEFAULT NULL,
   `hostgroup_hg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ehgr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `hg_index` (`hostgroup_hg_id`),
   CONSTRAINT `escalation_hostgroup_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
@@ -1274,10 +1202,8 @@ CREATE TABLE `escalation_hostgroup_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `escalation_meta_service_relation` (
-  `emsr_id` int(11) NOT NULL AUTO_INCREMENT,
   `escalation_esc_id` int(11) DEFAULT NULL,
   `meta_service_meta_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`emsr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `meta_service_index` (`meta_service_meta_id`),
   CONSTRAINT `escalation_meta_service_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
@@ -1287,11 +1213,9 @@ CREATE TABLE `escalation_meta_service_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `escalation_service_relation` (
-  `esr_id` int(11) NOT NULL AUTO_INCREMENT,
   `escalation_esc_id` int(11) DEFAULT NULL,
   `service_service_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`esr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`),
@@ -1303,10 +1227,8 @@ CREATE TABLE `escalation_service_relation` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `escalation_servicegroup_relation` (
-  `esgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `escalation_esc_id` int(11) DEFAULT NULL,
   `servicegroup_sg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`esgr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `sg_index` (`servicegroup_sg_id`),
   CONSTRAINT `escalation_servicegroup_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
@@ -1479,10 +1401,8 @@ CREATE TABLE `host` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_hostparent_relation` (
-  `hhr_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_parent_hp_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`hhr_id`),
   KEY `host1_index` (`host_parent_hp_id`),
   KEY `host2_index` (`host_host_id`),
   CONSTRAINT `host_hostparent_relation_ibfk_1` FOREIGN KEY (`host_parent_hp_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
@@ -1539,10 +1459,8 @@ CREATE TABLE `hostcategories` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `hostcategories_relation` (
-  `hcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `hostcategories_hc_id` int(11) DEFAULT NULL,
   `host_host_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`hcr_id`),
   KEY `hostcategories_index` (`hostcategories_hc_id`),
   KEY `host_index` (`host_host_id`),
   CONSTRAINT `hostcategories_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
@@ -1572,10 +1490,8 @@ CREATE TABLE `hostgroup` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `hostgroup_hg_relation` (
-  `hgr_id` int(11) NOT NULL AUTO_INCREMENT,
   `hg_parent_id` int(11) DEFAULT NULL,
   `hg_child_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`hgr_id`),
   KEY `hg_parent_id` (`hg_parent_id`),
   KEY `hg_child_id` (`hg_child_id`),
   CONSTRAINT `hostgroup_hg_relation_ibfk_2` FOREIGN KEY (`hg_child_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE,
@@ -1599,16 +1515,14 @@ CREATE TABLE `hostgroup_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `informations` (
   `key` varchar(25) DEFAULT NULL,
-  `value` varchar(25) DEFAULT NULL
+  `value` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `meta_contactgroup_relation` (
-  `mcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `meta_id` int(11) DEFAULT NULL,
   `cg_cg_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`mcr_id`),
   KEY `meta_index` (`meta_id`),
   KEY `cg_index` (`cg_cg_id`),
   CONSTRAINT `meta_contactgroup_relation_ibfk_1` FOREIGN KEY (`meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE,
@@ -1677,9 +1591,6 @@ CREATE TABLE `modules_informations` (
   `is_removeable` enum('0','1') DEFAULT NULL,
   `infos` text,
   `author` varchar(255) DEFAULT NULL,
-  `lang_files` enum('0','1') DEFAULT NULL,
-  `sql_files` enum('0','1') DEFAULT NULL,
-  `php_files` enum('0','1') DEFAULT NULL,
   `svc_tools` enum('0','1') DEFAULT NULL,
   `host_tools` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -1704,12 +1615,14 @@ CREATE TABLE `nagios_server` (
   `ns_ip_address` varchar(255) DEFAULT NULL,
   `ns_activate` enum('1','0') DEFAULT '1',
   `ns_status` enum('0','1','2','3','4') DEFAULT '0',
-  `init_script` varchar(255) DEFAULT NULL,
-  `init_system` varchar(255) DEFAULT 'systemv',
-  `monitoring_engine` varchar(20) DEFAULT NULL,
+  `engine_start_command` varchar(255) DEFAULT 'service centengine start',
+  `engine_stop_command` varchar(255) DEFAULT 'service centengine stop',
+  `engine_restart_command` varchar(255) DEFAULT 'service centengine restart',
+  `engine_reload_command` varchar(255) DEFAULT 'service centengine reload',
   `nagios_bin` varchar(255) DEFAULT NULL,
   `nagiostats_bin` varchar(255) DEFAULT NULL,
   `nagios_perfdata` varchar(255) DEFAULT NULL,
+  `broker_reload_command` varchar(255) DEFAULT 'service cbd reload',
   `centreonbroker_cfg_path` varchar(255) DEFAULT NULL,
   `centreonbroker_module_path` varchar(255) DEFAULT NULL,
   `centreonconnector_path` varchar(255) DEFAULT NULL,
@@ -1720,7 +1633,11 @@ CREATE TABLE `nagios_server` (
   `engine_name` varchar(255) DEFAULT NULL,
   `engine_version` varchar(255) DEFAULT NULL,
   `centreonbroker_logs_path` VARCHAR(255),
-  PRIMARY KEY (`id`)
+  `remote_id` int(11) NULL,
+  `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1',
+  `updated` enum('1','0') NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1740,7 +1657,7 @@ CREATE TABLE `ns_host_relation` (
 CREATE TABLE `ods_view_details` (
   `dv_id` int(11) NOT NULL AUTO_INCREMENT,
   `index_id` int(11) DEFAULT NULL,
-  `metric_id` varchar(12) DEFAULT NULL,
+  `metric_id` int(11) DEFAULT NULL,
   `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
   `all_user` enum('0','1') DEFAULT NULL,
@@ -2008,6 +1925,7 @@ CREATE TABLE `topology` (
   `topology_style_id` varchar(255) DEFAULT NULL,
   `topology_OnClick` varchar(255) DEFAULT NULL,
   `readonly` enum('0','1') NOT NULL DEFAULT '1',
+  `is_react` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`topology_id`),
   KEY `topology_page` (`topology_page`),
   KEY `topology_parent` (`topology_parent`),
@@ -2035,19 +1953,20 @@ CREATE TABLE `traps` (
   `traps_id` int(11) NOT NULL AUTO_INCREMENT,
   `traps_name` varchar(255) DEFAULT NULL,
   `traps_oid` varchar(255) DEFAULT NULL,
+  `traps_mode` enum('0','1') DEFAULT '0',
   `traps_args` text,
   `traps_status` enum('-1','0','1','2','3') DEFAULT NULL,
   `severity_id` int(11) DEFAULT NULL,
   `manufacturer_id` int(11) DEFAULT NULL,
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
-  `traps_execution_command` varchar(255) DEFAULT NULL,
+  `traps_execution_command` text DEFAULT NULL,
   `traps_execution_command_enable` enum('0','1') DEFAULT '0',
   `traps_submit_result_enable` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment_default` enum('0','1', '2') DEFAULT '0',
   `traps_timeout` int(11) DEFAULT NULL,
   `traps_exec_interval` int(11) DEFAULT NULL,
-  `traps_exec_interval_type` enum('0','1', '2') DEFAULT '0',
+  `traps_exec_interval_type` enum('0','1','2','3') DEFAULT '0',
   `traps_log` enum('0','1') DEFAULT '0',
   `traps_routing_mode` enum('0','1') DEFAULT '0',
   `traps_routing_value` varchar(255) DEFAULT NULL,
@@ -2094,10 +2013,8 @@ CREATE TABLE `traps_preexec` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `traps_service_relation` (
-  `tsr_id` int(11) NOT NULL AUTO_INCREMENT,
   `traps_id` int(11) DEFAULT NULL,
   `service_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`tsr_id`),
   KEY `service_index` (`service_id`),
   KEY `traps_index` (`traps_id`),
   CONSTRAINT `traps_service_relation_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
@@ -2187,7 +2104,7 @@ CREATE TABLE `virtual_metrics` (
 CREATE TABLE `widget_models` (
   `widget_model_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` TEXT NOT NULL,
   `url` varchar(255) NOT NULL,
   `version` varchar(255) NOT NULL,
   `directory` varchar(255) NOT NULL,
@@ -2355,6 +2272,49 @@ CREATE TABLE IF NOT EXISTS `downtime_cache` (
   CONSTRAINT `downtime_cache_ibfk_3` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Manage new feature proposal
+CREATE TABLE IF NOT EXISTS contact_feature (
+  contact_id INT NOT NULL,
+  feature VARCHAR(255) NOT NULL,
+  feature_version VARCHAR(50) NOT NULL,
+  feature_enabled TINYINT DEFAULT 0,
+  PRIMARY KEY (contact_id, feature, feature_version),
+  FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- Create remote servers table for keeping track of remote instances
+CREATE TABLE IF NOT EXISTS `remote_servers` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `ip` VARCHAR(255) NOT NULL,
+  `app_key` VARCHAR(40) NOT NULL,
+  `version` VARCHAR(16) NOT NULL,
+  `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL,
+  `connected_at` TIMESTAMP NULL,
+  `centreon_path` VARCHAR(255) NULL,
+  `http_method` enum('http','https') NOT NULL DEFAULT 'http',
+  `http_port` int(11) DEFAULT NULL,
+  `no_check_certificate` enum('0','1') NOT NULL DEFAULT '0',
+  `no_proxy` enum('0','1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create rs_poller_relation for the additional relationship between poller and remote servers
+CREATE TABLE IF NOT EXISTS `rs_poller_relation` (
+  `remote_server_id` int(11) NOT NULL,
+  `poller_server_id` int(11) NOT NULL,
+  KEY `remote_server_id` (`remote_server_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers';
+
+-- Create tasks table
+CREATE TABLE IF NOT EXISTS `task` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `type` VARCHAR(40) NOT NULL,
+  `status` VARCHAR(40) NOT NULL,
+  `parent_id` INT(11) NULL,
+  `params` BLOB NULL,
+  `created_at` TIMESTAMP NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -2362,4 +2322,3 @@ CREATE TABLE IF NOT EXISTS `downtime_cache` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-

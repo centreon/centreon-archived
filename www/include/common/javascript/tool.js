@@ -54,11 +54,11 @@ function checkItem(element, toCheck)
 	}
 }
 
-function getChecked(element)
-{
+function getChecked(element) {
 	if (element.type == 'checkbox') {
 		return element.checked;
 	}
+
 	var element = document.Form[element.name];
 	for (var j = 0; j < element.length; j++) {
 		if (element[j].checked) {
@@ -70,8 +70,7 @@ function getChecked(element)
 	return false;
 }
 
-function toggleCheckAll(theElement, id)
-{
+function toggleCheckAll(theElement, id) {
 	var a = document.getElementById(id);
 
 	// enable/disable all subnodes of id
@@ -115,10 +114,9 @@ function toggleCheckAll(theElement, id)
 	    node = upnode;
 	    pos = node.lastIndexOf("_");
 	}
-}					
-		
-function toggleDisplay(id)
-{
+}
+
+function toggleDisplay(id) {
 	var d = document.getElementById(id);
 	if (d){
 		var img = document.getElementById('img_'+id);
@@ -140,13 +138,13 @@ function toggleDisplay(id)
 function checkUncheckAll(theElement)
 {
     jQuery(theElement).parents('tr').nextAll().find('input[type=checkbox]').each(function() {
-        if (theElement.checked && !jQuery(this).attr('checked')) {
-            jQuery(this).attr('checked',true);
+        if (theElement.checked && !jQuery(this).prop('checked')) {
+            jQuery(this).prop('checked', true);
             if (typeof(_selectedElem) != 'undefined') {
                 putInSelectedElem(jQuery(this).attr('id'));
             }
-        } else if (!theElement.checked && jQuery(this).attr('checked')) {
-            jQuery(this).attr('checked', false);
+        } else if (!theElement.checked && jQuery(this).prop('checked')) {
+            jQuery(this).prop('checked', false);
             if (typeof(_selectedElem) != 'undefined') {
                 removeFromSelectedElem(jQuery(this).attr('id'));
             }

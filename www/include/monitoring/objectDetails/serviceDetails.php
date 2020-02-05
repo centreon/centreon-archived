@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -60,7 +60,7 @@ $GroupListofUser = $centreon->user->access->getAccessGroups();
 $allActions = false;
 /*
  * Get list of actions allowed for user
-	 */
+ */
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
     $authorized_actions = $centreon->user->access->getActions();
@@ -80,9 +80,7 @@ if (isset($_GET["host_name"]) &&
     $svc_description = $tab_data[1];
 }
 
-/*
- * Check if host is found
- */
+// Check if host is found
 $host_id = getMyHostID($host_name);
 
 if (!is_null($host_id)) {
@@ -133,13 +131,10 @@ if (!is_null($host_id)) {
         }
 
         // Get notifications contacts
-        $retrievedNotificationsInfos = get_notified_infos_for_service($service_id, $host_id);
+        $retrievedNotificationsInfos = getNotifiedInfosForService($service_id, $host_id, $dependencyInjector);
         $contacts = $retrievedNotificationsInfos['contacts'];
         $contactGroups = $retrievedNotificationsInfos['contactGroups'];
-
-        /*
-         * Get servicegroups list
-         */
+        // Get servicegroups list
         if (isset($service_id) && isset($host_id)) {
             $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg, servicegroup_relation sgr " .
                 "WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id .
@@ -156,9 +151,7 @@ if (!is_null($host_id)) {
             $DBRESULT->closeCursor();
         }
 
-        /*
-         * Get service category
-         */
+        // Get service category
         $tab_sc = getMyServiceCategories($service_id);
         if (is_array($tab_sc)) {
             foreach ($tab_sc as $sc_id) {
@@ -169,7 +162,7 @@ if (!is_null($host_id)) {
         $tab_status = array();
 
         /*
-         * Get all service information 
+         * Get all service information
          */
         $rq = "SELECT s.service_id, " .
             " s.state AS current_state," .
@@ -291,7 +284,7 @@ if (!is_null($host_id)) {
          */
         $tabCommentServices = array();
         if (isset($host_id) && isset($service_id)) {
-            $rq2 = " SELECT DISTINCT FROM_UNIXTIME(cmt.entry_time) as entry_time, cmt.comment_id, " .
+            $rq2 = " SELECT DISTINCT cmt.entry_time as entry_time, cmt.comment_id, " .
                 "cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, " .
                 "h.name AS host_name, s.description AS service_description " .
                 " FROM comments cmt, hosts h, services s " .
@@ -308,7 +301,11 @@ if (!is_null($host_id)) {
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]['host_name'] = $data['host_name'];
                 $tabCommentServices[$i]['service_description'] = $data['service_description'];
-                $tabCommentServices[$i]['comment_data'] = $data['comment_data'];
+                $tabCommentServices[$i]['comment_data'] =
+                    CentreonUtils::escapeAllExceptSelectedTags(
+                        $data['comment_data'],
+                        array('a', 'hr', 'br')
+                    );
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
             $DBRESULT->closeCursor();
@@ -657,7 +654,7 @@ if (!is_null($host_id)) {
         $tpl->assign("admin", $is_admin);
         $tpl->assign("lcaTopo", $centreon->user->access->topology);
         $tpl->assign("count_comments_svc", count($tabCommentServices));
-        $tpl->assign("tab_comments_svc", array_map(array("CentreonUtils", "escapeSecure"), $tabCommentServices));
+        $tpl->assign("tab_comments_svc", $tabCommentServices);
         $tpl->assign("host_id", $host_id);
         $tpl->assign("service_id", $service_id);
         $centreonGraph = new CentreonGraph($centreon->user->user_id, null, 0, null);
@@ -819,6 +816,7 @@ if (!is_null($host_id)) {
 }
 ?>
 <?php if (!is_null($host_id)) { ?>
+    <?php require_once _CENTREON_PATH_ . "www/class/centreonMsg.class.php"; ?>
     <script type="text/javascript">
         var glb_confirm = "<?php  echo _("Submit command?"); ?>";
         var command_sent = "<?php echo _("Command sent"); ?>";
@@ -930,9 +928,6 @@ if (!is_null($host_id)) {
             } else {
                 msg_result = command_failure;
             }
-            <?php
-            require_once "./class/centreonMsg.class.php";
-            ?>
             _clear("centreonMsg");
             _setTextStyle("centreonMsg", "bold");
             _setText("centreonMsg", msg_result);

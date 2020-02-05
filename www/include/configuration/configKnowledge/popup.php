@@ -45,40 +45,31 @@
  */
 
 $centreon_path = realpath(dirname(__FILE__) . '/../../../../');
-require_once $centreon_path."/config/centreon.config.php";
+require_once $centreon_path . "/config/centreon.config.php";
 
 set_include_path(
-    get_include_path() . PATH_SEPARATOR . $centreon_path . "config/". PATH_SEPARATOR .
+    get_include_path() . PATH_SEPARATOR . $centreon_path . "config/" . PATH_SEPARATOR .
     $centreon_path . "www/class/"
 );
 
-require_once "DB.php";
-
-require_once "centreon-knowledge/procedures_DB_Connector.class.php";
 require_once "centreon-knowledge/procedures.class.php";
 require_once "centreonLog.class.php";
-require_once "centreonDB.class.php";
 
 $modules_path = $centreon_path . "/www/include/configuration/configKnowledge/";
 require_once $modules_path . 'functions.php';
+require_once $centreon_path . '/bootstrap.php';
 
 
 /*
  * Connect to centreon DB
  */
-$pearDB = new CentreonDB();
+$pearDB = $dependencyInjector['configuration_db'];
 
 $conf = getWikiConfig($pearDB);
 $WikiURL = $conf['kb_wiki_url'];
 
 $proc = new procedures(
-    3,
-    $conf['kb_db_name'],
-    $conf['kb_db_user'],
-    $conf['kb_db_host'],
-    $conf['kb_db_password'],
-    $pearDB,
-    $conf['kb_db_prefix']
+    $pearDB
 );
 
 if (isset($_GET["template"]) && $_GET["template"] != "") {
@@ -89,4 +80,4 @@ if (isset($_GET["template"]) && $_GET["template"] != "") {
     );
 }
 
-header("Location: $WikiURL/index.php?title=".htmlentities($_GET["object"], ENT_QUOTES)."&action=edit");
+header("Location: $WikiURL/index.php?title=" . htmlentities($_GET["object"], ENT_QUOTES) . "&action=edit");

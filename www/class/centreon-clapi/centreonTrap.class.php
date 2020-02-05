@@ -370,12 +370,11 @@ class CentreonTrap extends CentreonObject
                 }
             }
             $matchingObj = new \Centreon_Object_Trap_Matching($this->dependencyInjector);
-            $matchingLabelField = $matchingObj->getUniqueLabelField();
             $matchingProps = $matchingObj->getList(
                 "*",
                 -1,
                 0,
-                $matchingLabelField,
+                null,
                 'ASC',
                 array('trap_id' => $element['traps_id'])
             );

@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,9 +38,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
 $contactTypeIcone = array(
     1 => "./img/icons/admin.png",
@@ -52,17 +52,29 @@ $contactTypeIcone = array(
  * Create Timeperiod Cache
  */
 $tpCache = array("" => "");
-$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+while ($data = $dbResult->fetch()) {
     $tpCache[$data["tp_id"]] = $data["tp_name"];
 }
 unset($data);
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
+
+$search = filter_var(
+    $_POST['searchCT'] ?? $_GET['searchCT'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchCT']) || isset($_GET['searchCT'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+}
 
 $clauses = array();
-$search = '';
-if (isset($_POST['searchCT']) && $_POST['searchCT']) {
-    $search = $_POST['searchCT'];
+if ($search) {
     $clauses = array('contact_name' => '%' . $search . '%');
 }
 
@@ -80,8 +92,8 @@ $contacts = $contactObj->getContactTemplates(
     array('contact_name', 'ASC'),
     array(($num * $limit), $limit)
 );
-$rows = $pearDB->numberRows();
-include("./include/common/checkPagination.php");
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+include "./include/common/checkPagination.php";
 
 /*
  * Smarty template Init
@@ -89,13 +101,11 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Full Name"));
 $tpl->assign("headerMenu_desc", _("Alias / Login"));
 $tpl->assign("headerMenu_email", _("Email"));
@@ -107,21 +117,21 @@ $tpl->assign("headerMenu_access", _("Access"));
 $tpl->assign("headerMenu_admin", _("Admin"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Contact list
- */
+// Contact list
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 foreach ($contacts as $contact) {
     $selectedElements = $form->addElement('checkbox', "select[" . $contact['contact_id'] . "]");
@@ -165,7 +175,7 @@ foreach ($contacts as $contact) {
         "RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
         "RowMenu_ico" => isset($contactTypeIcone[$contact_type]) ? $contactTypeIcone[$contact_type] : "",
         "RowMenu_ico_title" => _('This is a contact template.'),
-        "RowMenu_link" => "?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(
             html_entity_decode(
                 $contact["contact_alias"],
@@ -189,17 +199,13 @@ foreach ($contacts as $contact) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
-$tpl->assign('msg', array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add")));
+// Different messages we put in the template
+$tpl->assign('msg', array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add")));
 if ($centreon->optGen['ldap_auth_enable']) {
     $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
 }
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
 <script type="text/javascript">
     function setO(_i) {
@@ -224,14 +230,20 @@ $attrs1 = array(
         "   setO(this.form.elements['o1'].value); submit();} " .
         "this.form.elements['o1'].selectedIndex = 0"
 );
-$form->addElement('select', 'o1', null, array(
-    null => _("More actions..."),
-    "m" => _("Duplicate"),
-    "d" => _("Delete"),
-    "mc" => _("Massive Change"),
-    "ms" => _("Enable"),
-    "mu" => _("Disable")
-), $attrs1);
+$form->addElement(
+    'select',
+    'o1',
+    null,
+    array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "mc" => _("Massive Change"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ),
+    $attrs1
+);
 $form->setDefaults(array('o1' => null));
 
 $attrs2 = array(
@@ -250,14 +262,20 @@ $attrs2 = array(
         "   setO(this.form.elements['o2'].value); submit();} " .
         "this.form.elements['o1'].selectedIndex = 0"
 );
-$form->addElement('select', 'o2', null, array(
-    null => _("More actions..."),
-    "m" => _("Duplicate"),
-    "d" => _("Delete"),
-    "mc" => _("Massive Change"),
-    "ms" => _("Enable"),
-    "mu" => _("Disable")
-), $attrs2);
+$form->addElement(
+    'select',
+    'o2',
+    null,
+    array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "mc" => _("Massive Change"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ),
+    $attrs2
+);
 $form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
@@ -271,9 +289,7 @@ $o2->setSelected(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchCT', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

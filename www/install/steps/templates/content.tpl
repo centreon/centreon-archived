@@ -27,7 +27,7 @@
                 <p class="link-group">
                     <a href="https://documentation.centreon.com" target="_blank">Documentation</a> |
                     <a href="https://github.com/centreon/centreon" target="_blank">Github </a> |
-                    <a href="https://forum.centreon.com/" target="_blank">Forum</a> |
+                    <a href="http://centreon.github.io/" target="_blank">Community Slack</a> |
                     <a href="http://support.centreon.com" target="_blank">Support</a>
                     <b><a href=" https://www.centreon.com" target="_blank">www.centreon.com</a></b>
                 </p>
@@ -39,10 +39,12 @@
         <input class='btc bt_info' type='button' id='previous' value='Back' onClick='previousStep();'/>
         {/if}
         <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep();'/>
-        {if !$finish}
-        <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) nextStep();'/>
-        {else}
-        <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='validation();'/>
+        {if (!isset($validate) || $validate)}
+            {if !$finish}
+            <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) nextStep();'/>
+            {else}
+            <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='validation();'/>
+            {/if}
         {/if}
         </td>
     </tr>

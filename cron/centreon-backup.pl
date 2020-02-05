@@ -46,7 +46,7 @@ use IO::Dir;
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_port $mysql_database_oreon $mysql_database_ods $centreon_config);
 use vars qw($BACKUP_ENABLED $BACKUP_DIR $TEMP_DIR);
 use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_FULL $BACKUP_DATABASE_PARTIAL $BACKUP_RETENTION);
-use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF $ZEND_CONF);
+use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF);
 use vars qw($TEMP_DB_DIR $TEMP_CENTRAL_DIR $TEMP_CENTRAL_ETC_DIR $TEMP_CENTRAL_INIT_DIR $TEMP_CENTRAL_CRON_DIR $TEMP_CENTRAL_LOG_DIR $TEMP_CENTRAL_BIN_DIR $TEMP_CENTRAL_LIC_DIR $CENTREON_MODULES_PATH $TEMP_POLLERS $DISTANT_POLLER_BACKUP_DIR);
 use vars qw($BIN_GZIP $BIN_TAR);
 use vars qw($scp_enabled $scp_user $scp_host $scp_directory);
@@ -152,7 +152,6 @@ $BACKUP_RETENTION = $backupOptions->{'backup_retention'}->{'value'};
 
 $BACKUP_CONFIGURATION_FILES = $backupOptions->{'backup_configuration_files'}->{'value'};
 $MYSQL_CONF = $backupOptions->{'backup_mysql_conf'}->{'value'};
-$ZEND_CONF = $backupOptions->{'backup_zend_conf'}->{'value'};
 
 $BIN_GZIP = "";
 $BIN_TAR = "";
@@ -229,22 +228,29 @@ sub getbinaries() {
 	}
 }
 
-sub exportBackup() {
+sub exportBackup($) {
+    my $export_type = shift; # 0 : database, 1 : configuration
     if ($scp_enabled == '1' &&
 		(!defined($scp_host) || $scp_host ne '') &&
 		(!defined($scp_directory) || $scp_directory ne '') &&
-		(!defined($scp_user) || $scp_user ne '')) {
-		if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
-	    	chdir($TEMP_DB_DIR);
-	    	`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+		(!defined($scp_user) || $scp_user ne '')
+    ) {
+
+        # Export database backups
+        if ($export_type == 0 && ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1')) {
+            chdir($TEMP_DB_DIR);
+            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
             } else {
                 print "All files were copied with success using SCP on ".$scp_user."@".$scp_host.":".$scp_directory."\n";
             }
-		} elsif ($BACKUP_CONFIGURATION_FILES == '1') {
-			chdir($TEMP_CENTRAL_DIR);
-			`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+        }
+
+        # Export configuration files backup
+        if ($export_type == 1 && $BACKUP_CONFIGURATION_FILES == '1') {
+            chdir($TEMP_CENTRAL_DIR);
+            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_CENTRAL_DIR . "\n";
             } else {
@@ -284,11 +290,13 @@ sub cleanOldBackup() {
 ###############################################
 
 sub getApacheDirectory() {
-	if ( -d '/etc/httpd/conf.d' ) {
-		return '/etc/httpd/conf.d';
-	} else {
-		print STDERR "Unable to get Apache conf directory\n";
-	}
+    if ( -d '/opt/rh/httpd24/root/etc/httpd/conf.d' ) {
+        return '/opt/rh/httpd24/root/etc/httpd/conf.d';
+    } elsif ( -d '/etc/httpd/conf.d' ) {
+        return '/etc/httpd/conf.d';
+    } else {
+        print STDERR "Unable to get Apache conf directory\n";
+    }
 }
 
 sub getMySQLConfFile() {
@@ -313,25 +321,18 @@ sub getPHPConfFile() {
 	my @tab_php_ini;
 
 	# PHP CLI
-	my $result = `php -r 'echo php_ini_loaded_file();'`;
+	my $result = `@PHP_BIN@ -r 'echo php_ini_loaded_file();'`;
 	push(@tab_php_ini, trim($result));
 
-	# Apache
-	if ( -e '/etc/php.ini') {
-		push(@tab_php_ini, '/etc/php.ini');
-	} else {
-        print STDERR "Unable to get PHP configuration\n";
+    # PHP configuration files
+	my @ini=`@PHP_BIN@ -r "echo php_ini_scanned_files();"`;
+	for (@ini) {
+	    chomp;
+	    s/,$//;
+	    push(@tab_php_ini, $_);
     }
 
 	return @tab_php_ini;
-}
-
-sub getZendConfFile() {
-	if ( -e '/etc/php.d/zendoptimizer.ini' ) {
-		return '/etc/php.d/zendoptimizer.ini';
-	} elsif ( -e '/usr/local/Zend/etc/php.ini' ) {
-		return '/usr/local/Zend/etc/php.ini';
-	}
 }
 
 ############################
@@ -434,7 +435,7 @@ sub databasesBackup() {
 	}
 
 	# Export archives
-	exportBackup();
+	exportBackup(0);
     if (-r $TEMP_DB_DIR."/".$today."-mysql-full.tar.gz") {
         move($TEMP_DB_DIR."/".$today."-mysql-full.tar.gz", $BACKUP_DIR."/".$today."-mysql-full.tar.gz");
     }
@@ -474,6 +475,8 @@ sub centralBackup() {
 	###################################
 	# Get configuration program files #
 	###################################
+
+
 
 	# Create path
 	mkpath($TEMP_CENTRAL_ETC_DIR, {mode => 0755, error => \my $err_list});
@@ -595,42 +598,6 @@ sub centralBackup() {
 		}
 	}
 
-	##########################################
-	# Get Zend binary and configuration file #
-	##########################################
-	# Zend ini
-	mkpath($TEMP_CENTRAL_ETC_DIR."/zend", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-			}
-		}
-	}
-	if (!defined($ZEND_CONF)){
-		$ZEND_CONF = getZendConfFile();
-	}
-	`cp -pr $ZEND_CONF $TEMP_CENTRAL_ETC_DIR/zend/`;
-	if ($? ne 0) {
-		print STDERR "Unable to copy Zend configuration file\n";
-	}
-
-	# zend binary
-	mkpath($TEMP_CENTRAL_ETC_DIR."/zend_bin", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-			}
-		}
-	}
-
 	#####################
 	# Get Centreon logs #
 	#####################
@@ -728,15 +695,16 @@ sub centralBackup() {
 	################
 	# Make archive #
 	################
-        my $dir = basename($TEMP_DIR);
-        `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-central.tar.gz $dir`;
+	chdir($TEMP_DIR);
+	`$BIN_TAR -czf $today-central.tar.gz central`;
+	move("$today-central.tar.gz", "central/$today-central.tar.gz");
 	if ($? ne 0) {
 		print STDERR "Unable to make tar of backup\n";
 	}
 
 	# Export archives
-	exportBackup();
-	move ($TEMP_DIR."/".$today."-central.tar.gz", $BACKUP_DIR."/".$today."-central.tar.gz");
+	exportBackup(1);
+	move ($TEMP_CENTRAL_DIR."/".$today."-central.tar.gz", $BACKUP_DIR."/".$today."-central.tar.gz");
 
 	# Remove all temp directory
 	chdir;
@@ -761,6 +729,9 @@ sub monitoringengineBackup() {
 	my $today = sprintf("%d-%02d-%02d",(1900+$year),($mon+1),$mday);
 	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$year), ($mon+1), $mday, $hour, $min, $sec) . "] Start monitoring engine backup processus\n";
 
+    # create path
+    mkpath($TEMP_CENTRAL_DIR, {mode => 0755, error => \my $err_list});
+
 	my $sth2 = $dbh->prepare("SELECT n.nagios_name, n.cfg_dir, n.log_file, n.log_archive_path, ns.* FROM nagios_server ns, cfg_nagios n WHERE ns.id = n.nagios_server_id AND n.nagios_activate = '1' AND ns.localhost = '1';");
 	if (!$sth2->execute()) {
 		print STDERR "Error: " . $dbh->errstr . "\n";
@@ -781,7 +752,7 @@ sub monitoringengineBackup() {
 	###########
 	# Plugins #
 	###########
-	mkpath($TEMP_DIR."/plugins", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_CENTRAL_DIR."/plugins", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -792,9 +763,9 @@ sub monitoringengineBackup() {
 			}
 		}
 	}
-	my $plugins_dir = "/usr/lib/nagios/plugins";
+	my $plugins_dir = "/usr/lib64/nagios/plugins";
 	if ($plugins_dir ne "") {
-		`cp -pr $plugins_dir/* $TEMP_DIR/plugins/`;
+		`cp -pr $plugins_dir/* $TEMP_CENTRAL_DIR/plugins/`;
 		if ($? != 0) {
 			print STDERR "Unable to copy plugins\n";
 		}
@@ -803,7 +774,7 @@ sub monitoringengineBackup() {
 	########
 	# Logs #
 	########
-	mkpath($TEMP_DIR."/logs", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_CENTRAL_DIR."/logs", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -815,9 +786,9 @@ sub monitoringengineBackup() {
 		}
 	}
 
-	copy($nagios_server->{log_file}, ($TEMP_DIR."/logs/centengine.log"));
+	copy($nagios_server->{log_file}, ($TEMP_CENTRAL_DIR."/logs/centengine.log"));
 	my $logs_archive_directory = substr($nagios_server->{log_archive_path}, 0, rindex($nagios_server->{log_archive_path}, "/"));
-	mkpath($TEMP_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_CENTRAL_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
     if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -828,7 +799,7 @@ sub monitoringengineBackup() {
 			}
 		}
 	}
-	`cp -p $logs_archive_directory/* $TEMP_DIR/logs/archives/`;
+	`cp -p $logs_archive_directory/* $TEMP_CENTRAL_DIR/logs/archives/`;
 	if ($? != 0) {
 		print STDERR "Unable to copy monitoring engine logs archives\n";
 	}
@@ -836,7 +807,7 @@ sub monitoringengineBackup() {
 	#################
 	# Configuration #
 	#################
-	mkpath($TEMP_DIR."/etc/centreon-engine", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_CENTRAL_DIR."/etc/centreon-engine", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -847,7 +818,7 @@ sub monitoringengineBackup() {
 			}
 		}
 	}
-	`cp -pr $nagios_server->{cfg_dir}/* $TEMP_DIR/etc/centreon-engine`;
+	`cp -pr $nagios_server->{cfg_dir}/* $TEMP_CENTRAL_DIR/etc/centreon-engine`;
 	if ($? != 0) {
 		print STDERR "Unable to copy Monitoring Engine configuration files\n";
 	}
@@ -855,17 +826,17 @@ sub monitoringengineBackup() {
 	#########################
 	# Script initialisation #
 	#########################
-	copy($nagios_server->{init_script}, ($TEMP_DIR."/init_d_centengine"));
+	copy($nagios_server->{init_script}, ($TEMP_CENTRAL_DIR."/init_d_centengine"));
 
 	###############
 	# Sudo rights #
 	###############
-	copy("/etc/sudoers", ($TEMP_DIR."/etc_sudoers"));
+	copy("/etc/sudoers", ($TEMP_CENTRAL_DIR."/etc_sudoers"));
 
 	############
 	# SSH keys #
 	############
-	mkpath($TEMP_DIR."/ssh", {mode => 0755, error => \my $err_list});
+	mkpath($TEMP_CENTRAL_DIR."/ssh", {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
@@ -878,12 +849,12 @@ sub monitoringengineBackup() {
 	}
     my $centreon_home = "/var/spool/centreon";
     if (-d "$centreon_home/.ssh" ) {
-        `cp -pr $centreon_home/.ssh/* $TEMP_DIR/ssh`;
+        `cp -pr $centreon_home/.ssh/* $TEMP_CENTRAL_DIR/ssh`;
     } else {
         print STDERR "No SSH keys for Centreon\n";
     }
 
-    mkpath($TEMP_DIR."/ssh-centreon-engine", {mode => 0755, error => \my $err_list});
+    mkpath($TEMP_CENTRAL_DIR."/ssh-centreon-engine", {mode => 0755, error => \my $err_list});
     if (@$err_list) {
         for my $diag (@$err_list) {
             my ($file, $message) = %$diag;
@@ -897,7 +868,7 @@ sub monitoringengineBackup() {
 
     my $centreonengine_home = "/var/lib/centreon-engine/";
     if (-d "$centreonengine_home/.ssh") {
-        `cp -pr $centreonengine_home/.ssh/* $TEMP_DIR/ssh-centreon-engine/`;
+        `cp -pr $centreonengine_home/.ssh/* $TEMP_CENTRAL_DIR/ssh-centreon-engine/`;
     } else {
         print STDERR "No ssh keys for Centreon Engine\n";
     }
@@ -905,8 +876,9 @@ sub monitoringengineBackup() {
     ##################
     # Make archives #
     #################
-    my $dir = basename($TEMP_DIR);
-    `cd $TEMP_DIR && cd .. && $BIN_TAR -czf $BACKUP_DIR/$today-centreon-engine.tar.gz $dir`;
+    chdir($TEMP_DIR);
+    `$BIN_TAR -czf $today-centreon-engine.tar.gz central`;
+    move("$today-centreon-engine.tar.gz", "central/$today-centreon-engine.tar.gz");
     if ($? ne 0) {
         print STDERR "Unable to make tar of backup\n";
     }
@@ -914,8 +886,8 @@ sub monitoringengineBackup() {
     ###################
     # Export archives #
     ###################
-    exportBackup();
-    move ($TEMP_DIR."/".$today."-centreon-engine.tar.gz", $BACKUP_DIR."/".$today."-centreon-engine.tar.gz");
+    exportBackup(1);
+    move ($TEMP_CENTRAL_DIR."/".$today."-centreon-engine.tar.gz", $BACKUP_DIR."/".$today."-centreon-engine.tar.gz");
 
 	# Remove all temp directory
 	chdir;

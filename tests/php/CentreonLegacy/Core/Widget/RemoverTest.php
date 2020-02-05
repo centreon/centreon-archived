@@ -17,13 +17,12 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Pimple\Psr11\Container;
 use \Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
-use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class RemoverTest extends \PHPUnit_Framework_TestCase
+class RemoverTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;
@@ -157,7 +156,7 @@ class RemoverTest extends \PHPUnit_Framework_TestCase
         );
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $remover = new Remover($this->container, $this->information, 'MyWidget', $this->utils);
+        $remover = new Remover(new Container($this->container), $this->information, 'MyWidget', $this->utils);
         $removed = $remover->remove();
 
         $this->assertEquals($removed, true);

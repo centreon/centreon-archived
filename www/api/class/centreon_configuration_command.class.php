@@ -106,7 +106,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         return array(
             'items' => $commandList,
-            'total' => $stmt->rowCount()
+            'total' => (int)$this->pearDB->numberRows()
         );
     }
 }

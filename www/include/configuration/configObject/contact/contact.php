@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,13 +33,17 @@
  *
  */
 
+use Centreon\ServiceProvider;
+use Centreon\Infrastructure\Event\EventDispatcher;
+use Centreon\Infrastructure\Event\EventHandler;
+
 if (!isset($centreon)) {
     exit();
 }
 
 isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
 isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
-$cG ? $contact_id = $cG : $contact_id = $cP;
+$cG ? $contactId = $cG : $contactId = $cP;
 
 isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
 isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
@@ -69,6 +72,72 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 $acl = $oreon->user->access;
 $allowedAclGroups = $acl->getAccessGroups();
 
+/**
+ * @var $eventDispatcher EventDispatcher
+ */
+$eventDispatcher = $dependencyInjector[ServiceProvider::CENTREON_EVENT_DISPATCHER];
+
+if(! is_null($eventDispatcher->getDispatcherLoader())) {
+    $eventDispatcher->getDispatcherLoader()->load();
+}
+
+$duplicateEventHandler = new EventHandler();
+$duplicateEventHandler->setProcessing(
+    function (array $arguments) {
+        if (isset($arguments['contact_ids'], $arguments['numbers'])) {
+            $newContactIds = multipleContactInDB(
+                $arguments['contact_ids'],
+                $arguments['numbers']
+            );
+            // We store the result for possible future use
+            return ['new_contact_ids' => $newContactIds];
+        }
+    }
+);
+$eventDispatcher->addEventHandler(
+    'contact.form',
+    EventDispatcher::EVENT_DUPLICATE,
+    $duplicateEventHandler
+);
+
+/*
+ * We define a event to delete a list of contacts
+ */
+$deleteEventHandler = new EventHandler();
+$deleteEventHandler->setProcessing(
+    function ($arguments) {
+        if (isset($arguments['contact_ids'])) {
+            deleteContactInDB($arguments['contact_ids']);
+        }
+    }
+);
+/*
+ * We add the delete event in the context named 'contact.form' for and event type
+ * EventDispatcher::EVENT_DELETE
+ */
+$eventDispatcher->addEventHandler(
+    'contact.form',
+    EventDispatcher::EVENT_DELETE,
+    $deleteEventHandler
+);
+
+/*
+ * Defining an event to manually request a LDAP synchronization of an array of contacts
+ */
+$synchronizeEventHandler = new EventHandler();
+$synchronizeEventHandler->setProcessing(
+    function ($arguments) {
+        if (isset($arguments['contact_ids'])) {
+            synchronizeContactWithLdap($arguments['contact_ids']);
+        }
+    }
+);
+$eventDispatcher->addEventHandler(
+    'contact.form',
+    EventDispatcher::EVENT_SYNCHRONIZE,
+    $synchronizeEventHandler
+);
+
 switch ($o) {
     case "li":
         require_once($path . "ldapImportContact.php");
@@ -86,7 +155,7 @@ switch ($o) {
         require_once($path . "formContact.php");
         break; #Modify a contact
     case "s":
-        enableContactInDB($contact_id);
+        enableContactInDB($contactId);
         require_once($path . "listContact.php");
         break; #Activate a contact
     case "ms":
@@ -94,7 +163,7 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case "u":
-        disableContactInDB($contact_id);
+        disableContactInDB($contactId);
         require_once($path . "listContact.php");
         break; #Desactivate a contact
     case "mu":
@@ -102,16 +171,38 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case "m":
-        multipleContactInDB(isset($select) ? $select : array(), $dupNbr);
+        // We notify that we have made a duplicate
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_DUPLICATE,
+            [
+                'contact_ids' => $select,
+                'numbers' => $dupNbr
+            ]
+        );
+
         require_once($path . "listContact.php");
         break; #Duplicate n contacts
     case "d":
-        deleteContactInDB(isset($select) ? $select : array());
+        // We notify that we have made a delete
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_DELETE,
+            ['contact_ids' => $select]
+        );
         require_once($path . "listContact.php");
         break; #Delete n contacts
     case "dn":
         require_once $path . 'displayNotification.php';
         break;
+    case "sync":
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_SYNCHRONIZE,
+            ['contact_ids' => $select]
+        );
+        require_once($path . "listContact.php");
+        break; #Synchronize selected contacts with the LDAP
     default:
         require_once($path . "listContact.php");
         break;

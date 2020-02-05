@@ -36,10 +36,9 @@
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once dirname(__FILE__) . '/class/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/interface/di.interface.php';
 
-error_reporting(0);
+error_reporting(-1);
 ini_set('display_errors', 0);
 
 $pearDB = $dependencyInjector['configuration_db'];
@@ -79,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             $reachAPI = 1;
         } else {
             if (isset($data['reach_api']) && $data['reach_api'] == 1) {
-               $reachAPI = 1;
+                $reachAPI = 1;
             } else if (isset($data['reach_api_rt']) && $data['reach_api_rt'] == 1) {
                 $reachAPI = 1;
             }
@@ -93,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     }
 
     /* Insert Token in API webservice session table */
-    $token = base64_encode(uniqid('', true));
+    $token = base64_encode(random_bytes(32));
     $res = $pearDB->prepare("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (?, ?, NOW())");
     $res->execute(array($auth->userInfos['contact_id'], $token));
 

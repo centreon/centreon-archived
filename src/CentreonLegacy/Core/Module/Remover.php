@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,24 +39,6 @@ class Remover extends Module
 {
     /**
      *
-     * @param \Pimple\Container $dependencyInjector
-     * @param \CentreonLegacy\Core\Module\Information $informationObj
-     * @param string $moduleName
-     * @param \CentreonLegacy\Core\Utils\Utils $utils
-     * @param int $moduleId
-     */
-    public function __construct(
-        \Pimple\Container $dependencyInjector,
-        Information $informationObj,
-        $moduleName,
-        \CentreonLegacy\Core\Utils\Utils $utils,
-        $moduleId = null
-    ) {
-        parent::__construct($dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
-    }
-
-    /**
-     *
      * @return boolean
      */
     public function remove()
@@ -78,13 +60,13 @@ class Remover extends Module
     private function removeModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
+        if (!$this->services->get('filesystem')->exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
 
         $query = 'DELETE FROM modules_informations WHERE id = :id ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
 
@@ -102,7 +84,7 @@ class Remover extends Module
         $removed = false;
 
         $sqlFile = $this->getModulePath($this->moduleName) . '/sql/uninstall.sql';
-        if ($this->moduleConfiguration["sql_files"] && $this->dependencyInjector['filesystem']->exists($sqlFile)) {
+        if ($this->services->get('filesystem')->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $removed = true;
         }
@@ -119,7 +101,7 @@ class Remover extends Module
         $removed = false;
 
         $phpFile = $this->getModulePath($this->moduleName) . '/php/uninstall.php';
-        if ($this->moduleConfiguration["php_files"] && $this->dependencyInjector['filesystem']->exists($phpFile)) {
+        if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $removed = true;
         }

@@ -1039,6 +1039,7 @@ class CentreonService extends CentreonObject
                     );
                     if ($matches[1] == "set") {
                         $relobj->delete(null, $serviceId);
+                        $existingRelationIds = array();
                     }
                     foreach ($relationTable as $relationId) {
                         if ($matches[1] == "del") {
@@ -1114,17 +1115,18 @@ class CentreonService extends CentreonObject
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
-                        $tmpObj = $tpObj;
+                        $action_tmp = 'TP';
+                        $tmpObj = CentreonTimePeriod::getInstance();
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
-                        $tmpObj = $commandObj;
+                        $action_tmp = 'CMD';
+                        $tmpObj = CentreonCommand::getInstance();
                     }
                     if (isset($tmpObj)) {
-
-                        $tmpLabelField = $tmpObj->getObject()->getUniqueLabelField();
-                        $tmp = $tmpObj->getObject()->getParameters($value, $tmpLabelField);
-                        if (isset($tmp) && isset($tmp[$tmpLabelField])) {
-                            $value = $tmp[$tmpLabelField];
-                            $tmpObj::getInstance()->export($value);
+                        $tmp = $tmpObj->getObject()->getParameters($value, $tmpObj->getObject()->getUniqueLabelField());
+                        if (isset($tmp) && isset($tmp[$tmpObj->getObject()->getUniqueLabelField()])) {
+                            $tmp_id = $value;
+                            $value = $tmp[$tmpObj->getObject()->getUniqueLabelField()];
+                            $tmpObj->export($value);
                         }
                         unset($tmpObj);
                     }
@@ -1237,7 +1239,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($telements as $telement) {
-                CentreonTrap::getInstance()->export($element['traps_name']);
+                CentreonTrap::getInstance()->export($telement['traps_name']);
                 echo $this->action . $this->delim . "addtrap" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $telement['service_description'] . $this->delim

@@ -1,0 +1,274 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Centreon Remote Server API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/centreon/api/internal.php?object=centreon_configuration_remote&action=getWaitList": {
+            "post": {
+                "operationId": "getWaitList",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_remote"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getWaitList"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with the IPs inside the waitlist"
+                    }
+                }
+            }
+        },
+        "/centreon/api/internal.php?object=centreon_configuration_remote&action=getRemotesList": {
+            "post": {
+                "operationId": "getRemotesList",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_remote"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getRemotesList"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with the IPs of connected remotes"
+                    }
+                }
+            }
+        },
+        "/centreon/api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer": {
+            "post": {
+                "operationId": "linkCentreonRemoteServer",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_remote"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "linkCentreonRemoteServer"
+                    },
+                    {
+                        "name": "open_broker_flow",
+                        "in": "formData",
+                        "description": "if the connection should be made with open broker flow",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "manage_broker_configuration",
+                        "in": "formData",
+                        "description": "if broker configuration of poller should be managed",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "server_ip",
+                        "in": "formData",
+                        "description": "the remote server ip address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "server_name",
+                        "in": "formData",
+                        "description": "the remote server name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "centreon_central_ip",
+                        "in": "formData",
+                        "description": "the centreon central ip address",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "db_user",
+                        "in": "formData",
+                        "description": "database user",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "db_password",
+                        "in": "formData",
+                        "description": "database password",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "server_type",
+                        "in": "formData",
+                        "description": "type of server - remote or poller",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "centreon_folder",
+                        "in": "formData",
+                        "description": "path to the centreon web folder on the remote machine",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "linked_pollers",
+                        "in": "formData",
+                        "description": "pollers to link with the new remote",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "linked_remote",
+                        "in": "formData",
+                        "description": "remote to manage the new poller",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with the IPs inside the waitlist"
+                    }
+                }
+            }
+        },
+        "/centreon/api/internal.php?object=centreon_configuration_topology&action=getTopologyData": {
+            "post": {
+                "operationId": "getTopologyData",
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_configuration_topology"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getTopologyData"
+                    },
+                    {
+                        "name": "topology_id",
+                        "in": "formData",
+                        "description": "the ID of the topology page",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with topology data"
+                    }
+                }
+            }
+        },
+        "/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_remote_server"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "addToWaitList"
+                    },
+                    {
+                        "name": "app_key",
+                        "in": "formData",
+                        "description": "the unique app key of the Centreon instance",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "formData",
+                        "description": "the app version Centreon instance",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empty string"
+                    }
+                }
+            }
+        },
+        "/centreon/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "object",
+                        "in": "query",
+                        "description": "the name of the API object class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "centreon_modules_webservice"
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "the name of the action in the API class",
+                        "required": true,
+                        "type": "string",
+                        "enum": "getBamModuleInfo"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON with BAM module info"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {}
+}

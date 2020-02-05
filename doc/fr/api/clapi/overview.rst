@@ -29,4 +29,4 @@ The password can be in clear or the encrypted in the database.
 .. note::
     If your passwords are encoded with SHA1 in database (MD5 by default), use the **-s** option::
 
-  # ./centreon -u admin -p centreon -s [...]
+    # ./centreon -u admin -p centreon -s [...]

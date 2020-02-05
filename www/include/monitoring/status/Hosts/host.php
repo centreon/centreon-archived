@@ -83,23 +83,17 @@ if (empty($filters['host_search']) && isset($centreon->historySearch[$url])) {
     $centreon->historySearch[$url] = $filters['host_search'];
 }
 
-/*
- * ACL Actions
- */
+//ACL Actions
 $GroupListofUser = array();
 $GroupListofUser = $centreon->user->access->getAccessGroups();
 
 $allActions = false;
-/*
- * Get list of actions allowed for user
- */
+//Get list of actions allowed for user
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
     $authorized_actions = $centreon->user->access->getActions();
 } else {
-    /*
-     * if user is admin, or without ACL, he cans perform all actions
-     */
+    //if user is admin, or without ACL, he cans perform all actions
     $allActions = true;
 }
 
@@ -183,9 +177,7 @@ include_once("./include/monitoring/status/Common/default_hostgroups.php");
 
 include_once("hostJS.php");
 
-/*
- *  Smarty template Init
- */
+//Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl, "/templates/");
 
@@ -221,10 +213,10 @@ $form->addElement(
     array('id' => 'statusHost', 'onChange' => "statusHosts(this.value);")
 );
 
-/* Get default host status by GET */
+// Get default host status by GET
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
     $form->setDefaults(array('statusHost' => $_GET['o']));
-    /* Get default host status in SESSION */
+    //Get default host status in SESSION
 } elseif ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_host_status'])) {
     $form->setDefaults(array('statusHost' => $_SESSION['monitoring_host_status']));
     $sDefaultOrder = "1";
@@ -245,9 +237,10 @@ $tpl->assign("tab_order", $tab_order);
 $action_list = array();
 $action_list[] = _("More actions...");
 
-/*
- * Showing actions allowed for current user
- */
+$informationsService = $dependencyInjector['centreon_remote.informations_service'];
+$serverIsMaster = $informationsService->serverIsMaster();
+
+//Showing actions allowed for current user
 if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions) && $allActions == false) {
         $action_list[94] = _("Hosts : Schedule immediate check");
@@ -261,16 +254,16 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["host_disacknowledgement"])) {
         $action_list[73] = _("Hosts : Disacknowledge");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[82] = _("Hosts : Enable Notification");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[83] = _("Hosts : Disable Notification");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[92] = _("Hosts : Enable Check");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[93] = _("Hosts : Disable Check");
     }
     if (isset($authorized_actions["host_schedule_downtime"])) {
@@ -281,10 +274,14 @@ if (isset($authorized_actions) && $allActions == false) {
     $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
-    $action_list[82] = _("Hosts : Enable Notification");
-    $action_list[83] = _("Hosts : Disable Notification");
-    $action_list[92] = _("Hosts : Enable Check");
-    $action_list[93] = _("Hosts : Disable Check");
+
+    if ($serverIsMaster) {
+        $action_list[82] = _("Hosts : Enable Notification");
+        $action_list[83] = _("Hosts : Disable Notification");
+        $action_list[92] = _("Hosts : Enable Check");
+        $action_list[93] = _("Hosts : Disable Check");
+    }
+
     $action_list[75] = _("Hosts : Set Downtime");
 }
 
@@ -393,7 +390,6 @@ $tpl->display("host.ihtml");
     var down = '<?php echo _("Down");?>';
     var unreachable = '<?php echo _("Unreachable");?>';
     var pending = '<?php echo _("Pending");?>';
-
     var _keyPrefix;
 
     jQuery('#statusHost').change(function () {
@@ -403,12 +399,13 @@ $tpl->display("host.ihtml");
     function updateSelect() {
         var oldStatus = jQuery('#statusFilter').val();
         var opts = document.getElementById('statusFilter').options;
+        var newTypeOrder = null;
         if (jQuery('#statusHost').val() == 'hpb' || jQuery('#statusHost').val() == 'h_unhandled') {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
             opts[opts.length] = new Option(down, "down");
             opts[opts.length] = new Option(unreachable, "unreachable");
-            change_type_order(tabSortPb['champ']);
+            newTypeOrder = tabSortPb['champ'];
         } else {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
@@ -416,11 +413,16 @@ $tpl->display("host.ihtml");
             opts[opts.length] = new Option(down, "down");
             opts[opts.length] = new Option(unreachable, "unreachable");
             opts[opts.length] = new Option(pending, "pending");
-            change_type_order(tabSortAll['champ']);
+            newTypeOrder = tabSortAll['champ'];
         }
+
+        // We define the statusFilter before calling ajax
         if (jQuery("#statusFilter option[value='" + oldStatus + "']").length > 0) {
             jQuery("#statusFilter option[value='" + oldStatus + "']").prop('selected', true);
+        } else {
+            jQuery("#statusFilter option[value='']").prop('selected', true);
         }
+        change_type_order(newTypeOrder);
     }
 
     jQuery(function () {
@@ -428,12 +430,11 @@ $tpl->display("host.ihtml");
     });
 
     function preInit() {
-        _keyPrefix = '<?php echo $keyPrefix; ?>';
-        _sid = '<?php echo $sid ?>';
-        _tm = <?php echo $tM ?>;
-        _o = '<?php echo $o; ?>';
-        _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
-        sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
+        _keyPrefix = '<?= $keyPrefix; ?>';
+        _tm = <?= $tM ?>;
+        _o = '<?= $o; ?>';
+        _sDefaultOrder = '<?= $sDefaultOrder; ?>';
+        sSetOrderInMemory = '<?= $sSetOrderInMemory; ?>';
 
         if (_sDefaultOrder == "0") {
             if (_o == 'h') {
@@ -457,9 +458,6 @@ $tpl->display("host.ihtml");
             }
         }
         filterStatus(document.getElementById('statusFilter').value, 1);
-
-        window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
     }
 
     function filterStatus(value, isInit) {
@@ -470,17 +468,15 @@ $tpl->display("host.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function statusHosts(value, isInit) {
         _o = value;
-        window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
     }
 </script>

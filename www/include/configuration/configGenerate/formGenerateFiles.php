@@ -48,8 +48,10 @@ $tab_nagios_server = $acl->getPollerAclConf(array(
     'conditions' => array('ns_activate' => 1)
 ));
 /* Sort the list of poller server */
-$pollersId = explode(',', $_GET['poller']);
+$pollersFromUrl = $_GET['poller'] ?? '';
+$pollersId = explode(',', $pollersFromUrl);
 $selectedPollers = array();
+
 foreach ($tab_nagios_server as $key => $name) {
     if (in_array($key, $pollersId)) {
         $selectedPollers[] = array(

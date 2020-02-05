@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,19 +45,6 @@ while ($opt = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->closeCursor();
 
-$fontList = array('Arial' => 'Arial', 'Times' => 'Times', 'Verdana' => 'Verdana');
-$fontSize = array(
-    '5' => '5',
-    '6' => '6',
-    '7' => '7',
-    '8' => '8',
-    '9' => '9',
-    '10' => '10',
-    '11' => '11',
-    '12' => '12',
-    '13' => '13'
-);
-
 /*
  * Var information to format the element
  */
@@ -78,57 +65,9 @@ $form->addElement('header', 'title', _("Modify General Options"));
 $form->addElement('text', 'rrdtool_path_bin', _("Directory + RRDTOOL Binary"), $attrsText);
 $form->addElement('text', 'rrdtool_version', _("RRDTool Version"), $attrsText2);
 
-/*
- * Unit
- */
-$form->addElement('header', 'unit_title', _("Unit Properties"));
-$form->addElement('select', 'rrdtool_unit_font', _("Font"), $fontList, $attrSelect);
-$form->addElement('select', 'rrdtool_unit_fontsize', _("Font size"), $fontSize, $attrSelect2);
-
-/*
- * Title
- */
-$form->addElement('header', 'title_title', _("Title Properties"));
-$form->addElement('select', 'rrdtool_title_font', _("Font"), $fontList, $attrSelect);
-$form->addElement('select', 'rrdtool_title_fontsize', _("Font size"), $fontSize, $attrSelect2);
-
-/*
- * Axis
- */
-$form->addElement('header', 'axis_title', _("Axis Properties"));
-$form->addElement('select', 'rrdtool_axis_font', _("Font"), $fontList, $attrSelect);
-$form->addElement('select', 'rrdtool_axis_fontsize', _("Font size"), $fontSize, $attrSelect2);
-
-/*
- * Legend
- */
-$form->addElement('header', 'legend_title', _("Legend Properties"));
-$form->addElement('select', 'rrdtool_legend_font', _("Font"), $fontList, $attrSelect);
-$form->addElement('select', 'rrdtool_legend_fontsize', _("Font size"), $fontSize, $attrSelect2);
-
-/*
- * Watermark
- */
-$form->addElement('header', 'watermark_title', _("Watermark Properties"));
-$form->addElement('select', 'rrdtool_watermark_font', _("Font"), $fontList, $attrSelect);
-$form->addElement('select', 'rrdtool_watermark_fontsize', _("Font size"), $fontSize, $attrSelect2);
-
-/*
- * Rrdcached
- */
-$attrEnable = array('onclick' => 'toggleRrdcached(this)');
-$form->addElement('header', 'rrdcached_title', _("Rrdcached configuration : work only with Centreon Broker"));
-$rrdcachedEnable[] = $form->createElement('radio', 'rrdcached_enable', null, _("Yes"), '1', $attrEnable);
-$rrdcachedEnable[] = $form->createElement('radio', 'rrdcached_enable', null, _("No"), '0', $attrEnable);
-$form->addGroup($rrdcachedEnable, 'rrdcached_enable', _("Enable RRDCached"), '&nbsp;');
-$form->addElement('text', 'rrdcached_port', _('TCP Port'), $attrsText2);
-$form->addElement('text', 'rrdcached_unix_path', _('UNIX Socket path'), $attrsText);
-
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
-
-
 
 $form->applyFilter('__ALL__', 'myTrim');
 $form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
@@ -205,7 +144,7 @@ $form->addElement(
     array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'", 'class' => 'btc bt_info')
 );
 
-    // prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {

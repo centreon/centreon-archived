@@ -8,6 +8,7 @@ $constants = array(
     '_CENTREON_PATH_' => realpath(__DIR__ . '/..') . '/',
     '_CENTREON_ETC_' => '@CENTREON_ETC@',
     '_CENTREON_LOG_' => '@CENTREON_LOG@',
+    '_CENTREON_CACHEDIR_' => '@CENTREON_CACHEDIR@',
     '_CENTREON_VARLIB_' => '@CENTREON_VARLIB@'
 );
 
@@ -18,7 +19,7 @@ foreach ($constants as $name => $value) {
 }
 
 if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
-    require_once _CENTREON_ETC_ . '/centreon.conf.php';
+    require _CENTREON_ETC_ . '/centreon.conf.php';
 
     if (!defined('hostCentreon')) {
         define('hostCentreon', $conf_centreon['hostCentreon']);
@@ -47,12 +48,10 @@ if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
     if (!defined('port')) {
         define('port', $conf_centreon['port']);
     }
-
-    if (isset($dependencyInjector)) {
-        $dependencyInjector['configuration'] = function ($c) use ($conf_centreon) {
-            return new CentreonLegacy\Core\Configuration\Configuration($conf_centreon);
-        };
-    }
 }
 
 $classdir = _CENTREON_PATH_ . '/www/class';
+
+if (!isset($centreon_path) || !$centreon_path) {
+    $centreon_path = _CENTREON_PATH_;
+}

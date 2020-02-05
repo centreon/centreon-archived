@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,24 +39,6 @@ class Upgrader extends Module
 {
     /**
      *
-     * @param \Pimple\Container $dependencyInjector
-     * @param \CentreonLegacy\Core\Module\Information $informationObj
-     * @param string $moduleName
-     * @param \CentreonLegacy\Core\Utils\Utils $utils
-     * @param int $moduleId
-     */
-    public function __construct(
-        \Pimple\Container $dependencyInjector,
-        Information $informationObj,
-        $moduleName,
-        \CentreonLegacy\Core\Utils\Utils $utils,
-        $moduleId = null
-    ) {
-        parent::__construct($dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
-    }
-
-    /**
-     *
      * @return boolean
      */
     public function upgrade()
@@ -65,32 +47,35 @@ class Upgrader extends Module
 
         $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
 
-        $upgradesPath = $this->getModulePath($this->moduleName) . '/UPGRADE/';
-        $upgrades = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($upgradesPath);
+        // Process all directories within the /upgrade/ path.
+        // Entry name should be a version.
+        $upgradesPath = $this->getModulePath($this->moduleName) . '/upgrade/';
+        $upgrades = $this->services->get('finder')->directories()->depth('== 0')->in($upgradesPath);
+        $orderedUpgrades = array();
         foreach ($upgrades as $upgrade) {
-            $upgradeName = $upgrade->getBasename();
-            $upgradePath = $upgradesPath . $upgradeName;
-            if (!preg_match('/^' . $this->moduleName . '-(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
-                !$this->dependencyInjector['filesystem']->exists($upgradePath . '/conf.php')) {
-                continue;
-            }
-
-            $configuration = $this->utils->requireConfiguration(
-                $upgradePath . '/conf.php',
-                    'upgrade'
-            );
-
-            if ($moduleInstalledInformation["mod_release"] != $configuration[$this->moduleName]["release_from"]) {
-                continue;
-            }
-
-            $this->upgradeVersion($configuration[$this->moduleName]["release_to"]);
-            $moduleInstalledInformation["mod_release"] = $configuration[$this->moduleName]["release_to"];
-
-            $this->upgradePhpFiles($configuration, $upgradePath, true);
-            $this->upgradeSqlFiles($configuration, $upgradePath);
-            $this->upgradePhpFiles($configuration, $upgradePath, false);
+            $orderedUpgrades[] = $upgrade->getBasename();
         }
+        usort($orderedUpgrades, 'version_compare');
+        foreach ($orderedUpgrades as $upgradeName) {
+            $upgradePath = $upgradesPath . $upgradeName;
+            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches)) {
+                continue;
+            }
+
+            if (version_compare($moduleInstalledInformation["mod_release"], $upgradeName) >= 0) {
+                continue;
+            }
+
+            $this->upgradeVersion($upgradeName);
+            $moduleInstalledInformation["mod_release"] = $upgradeName;
+
+            $this->upgradePhpFiles($upgradePath, true);
+            $this->upgradeSqlFiles($upgradePath);
+            $this->upgradePhpFiles($upgradePath, false);
+        }
+
+        // finally, upgrade to current version
+        $this->upgradeVersion($this->moduleConfiguration['mod_release']);
 
         return $this->moduleId;
     }
@@ -104,7 +89,7 @@ class Upgrader extends Module
     private function upgradeModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
+        if (!$this->services->get('filesystem')->exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
 
@@ -114,26 +99,20 @@ class Upgrader extends Module
             '`is_removeable` = :is_removeable , ' .
             '`infos` = :infos , ' .
             '`author` = :author , ' .
-            '`lang_files` = :lang_files , ' .
-            '`sql_files` = :sql_files , ' .
-            '`php_files` = :php_files , ' .
             '`svc_tools` = :svc_tools , ' .
             '`host_tools` = :host_tools ' .
             'WHERE id = :id';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
-        $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
-        $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
-        $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
-        $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
-        $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':lang_files', $this->moduleConfiguration['lang_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':sql_files', $this->moduleConfiguration['sql_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':php_files', $this->moduleConfiguration['php_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindValue(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
+        $sth->bindValue(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
+        $sth->bindValue(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
+        $sth->bindValue(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
+        $sth->bindValue(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
+        $sth->bindValue(':svc_tools', $this->moduleConfiguration['svc_tools'] ?? '0', \PDO::PARAM_STR);
+        $sth->bindValue(':host_tools', $this->moduleConfiguration['host_tools'] ?? '0', \PDO::PARAM_STR);
+        $sth->bindValue(':id', $this->moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 
@@ -151,10 +130,10 @@ class Upgrader extends Module
             '`mod_release` = :mod_release ' .
             'WHERE id = :id';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
-        $sth->bindParam(':mod_release', $version, \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindValue(':mod_release', $version, \PDO::PARAM_STR);
+        $sth->bindValue(':id', $this->moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 
@@ -163,16 +142,15 @@ class Upgrader extends Module
 
     /**
      *
-     * @param array $conf
      * @param string $path
      * @return boolean
      */
-    private function upgradeSqlFiles($conf, $path)
+    private function upgradeSqlFiles($path)
     {
         $installed = false;
 
-        $sqlFile = $path . '/sql/install.sql';
-        if ($conf[$this->moduleName]["sql_files"] && $this->dependencyInjector['filesystem']->exists($sqlFile)) {
+        $sqlFile = $path . '/sql/upgrade.sql';
+        if ($this->services->get('filesystem')->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
         }
@@ -182,19 +160,18 @@ class Upgrader extends Module
 
     /**
      *
-     * @param array $conf
      * @param string $path
      * @param boolean $pre
      * @return boolean
      */
-    private function upgradePhpFiles($conf, $path, $pre = false)
+    private function upgradePhpFiles($path, $pre = false)
     {
         $installed = false;
 
-        $phpFile = $path . '/php/install';
+        $phpFile = $path . '/php/upgrade';
         $phpFile = $pre ? $phpFile . '.pre.php' : $phpFile . '.php';
 
-        if ($conf[$this->moduleName]['php_files'] && $this->dependencyInjector['filesystem']->exists($phpFile)) {
+        if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
         }

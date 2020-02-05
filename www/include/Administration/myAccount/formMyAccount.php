@@ -3,34 +3,34 @@
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 if (!isset($centreon)) {
@@ -39,7 +39,9 @@ if (!isset($centreon)) {
 
 require_once "./include/common/common-Func.php";
 
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+require_once './class/centreonFeature.class.php';
+
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
 
 /*
  * Path to the configuration dir
@@ -48,6 +50,10 @@ $path = "./include/Administration/myAccount/";
 
 // PHP Functions
 require_once $path . "DB-Func.php";
+
+if (!isset($centreonFeature)) {
+    $centreonFeature = new CentreonFeature($pearDB);
+}
 
 /*
  * Database retrieve information for the User
@@ -59,11 +65,13 @@ if ($o == "c") {
         "FROM contact WHERE contact_id = '" . $centreon->user->get_id() . "'";
     $DBRESULT = $pearDB->query($query);
     // Set base value
-    $cct = array_map("myDecode", $DBRESULT->fetchRow());
-    $res = $pearDB->query("SELECT cp_key, cp_value 
-                           FROM contact_param 
-                           WHERE cp_contact_id = '" . $pearDB->escape($centreon->user->get_id()) . "'");
-    while ($row = $res->fetchRow()) {
+    $cct = array_map("myDecode", $DBRESULT->fetch());
+    $res = $pearDB->query(
+        "SELECT cp_key, cp_value " .
+        "FROM contact_param " .
+        "WHERE cp_contact_id = '" . $pearDB->escape($centreon->user->get_id()) . "'"
+    );
+    while ($row = $res->fetch()) {
         $cct[$row['cp_key']] = $row['cp_value'];
     }
 }
@@ -94,13 +102,13 @@ if ($cct["contact_auth_type"] != 'ldap') {
         'password',
         'contact_passwd',
         _("Password"),
-        array("size" => "30", "autocomplete" => "off", "id" => "passwd1", "onFocus" => "resetPwdType(this);")
+        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onFocus" => "resetPwdType(this);")
     );
     $form->addElement(
         'password',
         'contact_passwd2',
         _("Confirm Password"),
-        array("size" => "30", "autocomplete" => "off", "id" => "passwd2", "onFocus" => "resetPwdType(this);")
+        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onFocus" => "resetPwdType(this);")
     );
     $form->addElement(
         'button',
@@ -121,44 +129,136 @@ $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null
 
 
 /* ------------------------ Topoogy ---------------------------- */
-$pages = array();
-$query = "SELECT topology_page, topology_name, topology_parent FROM topology " .
-    "WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order, topology_group";
-$DBRESULT1 = $pearDB->query($query);
-while ($topo1 = $DBRESULT1->fetchRow()) {
-    if ($centreon->user->access->page($topo1["topology_page"]) == 1) {
-        $pages[$topo1["topology_page"]] = _($topo1["topology_name"]);
-    }
-    $query = "SELECT topology_page, topology_name, topology_parent FROM topology " .
-        "WHERE topology_parent = '" . $topo1["topology_page"] . "' AND topology_show = '1' ORDER BY topology_order";
-    $DBRESULT2 = $pearDB->query($query);
-    while ($topo2 = $DBRESULT2->fetchRow()) {
-        if ($centreon->user->access->page($topo2["topology_page"]) == 1) {
-            $pages[$topo2["topology_page"]] = "  " . _($topo1["topology_name"]) . " > " . _($topo2["topology_name"]);
-        }
-        $query = "SELECT topology_name, topology_parent, topology_page FROM topology " .
-            "WHERE topology_parent = '" . $topo2["topology_page"] . "' " .
-            "AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_group, topology_order";
-        $DBRESULT3 = $pearDB->query($query);
-        while ($topo3 = $DBRESULT3->fetchRow()) {
-            if ($centreon->user->access->page($topo3["topology_page"]) == 1) {
-                $pages[$topo3["topology_page"]] = "  " . _($topo1["topology_name"]) . " > " .
-                    _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]);
-            }
-            $query = "SELECT topology_name, topology_page, topology_parent FROM topology " .
-                "WHERE topology_parent = '" . $topo3["topology_page"] . "' " .
-                "AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_order";
-            $DBRESULT4 = $pearDB->query($query);
-            while ($topo4 = $DBRESULT4->fetchRow()) {
-                if ($centreon->user->access->page($topo4["topology_page"]) == 1) {
-                    $pages[$topo4["topology_page"]] = "  " . _($topo1["topology_name"]) . " > " .
-                        _($topo2["topology_name"]) . " > " . _($topo3["topology_name"]) . " > " .
-                        _($topo4["topology_name"]);
+$pages = [];
+$aclUser = $centreon->user->lcaTStr;
+if (!empty($aclUser)) {
+    $acls = array_flip(explode(',', $aclUser));
+    /**
+    * Transform [1, 2, 101, 202, 10101, 20201] to :
+    *
+    * 1
+    *   101
+    *     10101
+    * 2
+    *   202
+    *     20201
+    */
+    $createTopologyTree = function (array $topologies): array {
+        ksort($topologies, \SORT_ASC);
+        $parentsLvl = [];
+
+        // Classify topologies by parents
+        foreach (array_keys($topologies) as $page) {
+            if (strlen($page) == 1) {
+                // MENU level 1
+                if (!array_key_exists($page, $parentsLvl)) {
+                    $parentsLvl[$page] = [];
                 }
+            } elseif (strlen($page) == 3) {
+                // MENU level 2
+                $parentLvl1 = substr($page, 0, 1);
+                if (!array_key_exists($parentLvl1, $parentsLvl)) {
+                    $parentsLvl[$parentLvl1] = [];
+                }
+                if (!array_key_exists($page, $parentsLvl[$parentLvl1])) {
+                    $parentsLvl[$parentLvl1][$page] = [];
+                }
+            } elseif (strlen($page) == 5) {
+                // MENU level 3
+                $parentLvl1 = substr($page, 0, 1);
+                $parentLvl2 = substr($page, 0, 3);
+                if (!array_key_exists($parentLvl1, $parentsLvl)) {
+                    $parentsLvl[$parentLvl1] = [];
+                }
+                if (!array_key_exists($parentLvl2, $parentsLvl[$parentLvl1])) {
+                    $parentsLvl[$parentLvl1][$parentLvl2] = [];
+                }
+                if (!in_array($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
+                    $parentsLvl[$parentLvl1][$parentLvl2][] = $page;
+                }
+            }
+        }
+
+        return $parentsLvl;
+    };
+    
+    /**
+     * Check if at least one child can be shown
+     */
+    $oneChildCanBeShown = function () use (&$childrenLvl3, &$translatedPages): bool {
+        $isCanBeShow = false;
+        foreach ($childrenLvl3 as $topologyPage) {
+            if ($translatedPages[$topologyPage]['show']) {
+                $isCanBeShow = true;
+                break;
+            }
+        }
+        return $isCanBeShow;
+    };
+
+    $topologies = $createTopologyTree($acls);
+
+    /**
+     * Retrieve the name of all topologies available for this user
+     */
+    $aclResults = $pearDB->query(
+        "SELECT topology_page, topology_name, topology_show "
+        . "FROM topology "
+        . "WHERE topology_page IN ($aclUser)"
+    );
+
+    $translatedPages = [];
+
+    while ($acl = $aclResults->fetch(\PDO::FETCH_ASSOC)) {
+        $translatedPages[$acl['topology_page']] = [
+            'i18n' => _($acl['topology_name']),
+            'show' => ((int)$acl['topology_show'] === 1)
+        ];
+    }
+
+    /**
+     * Create flat tree for menu with the topologies names
+     * [item1Id] = menu1 > submenu1 > item1
+     * [item2Id] = menu2 > submenu2 > item2
+     */
+    foreach ($topologies as $parentLvl1 => $childrenLvl2) {
+        $parentNameLvl1 = $translatedPages[$parentLvl1]['i18n'];
+        foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
+            $parentNameLvl2 = $translatedPages[$parentLvl2]['i18n'];
+            if ($oneChildCanBeShown()) {
+                /**
+                 * There is at least one child that can be shown then we can
+                 * process the third level
+                 */
+                foreach ($childrenLvl3 as $parentLvl3) {
+                    if ($translatedPages[$parentLvl3]['show']) {
+                        $parentNameLvl3 = $translatedPages[$parentLvl3]['i18n'];
+                    
+                        if ($parentNameLvl2 === $parentNameLvl3) {
+                            /**
+                             * The name between lvl2 and lvl3 are equals.
+                             * We keep only lvl1 and lvl3
+                             */
+                            $pages[$parentLvl3] = $parentNameLvl1 . ' > '
+                                . $parentNameLvl3;
+                        } else {
+                            $pages[$parentLvl3] = $parentNameLvl1 . ' > '
+                                . $parentNameLvl2 . ' > '
+                                . $parentNameLvl3;
+                        }
+                    }
+                }
+            } else {
+                /**
+                 * We show only first and second level
+                 */
+                $pages[$parentLvl3] =
+                    $parentNameLvl1 . ' > ' . $parentNameLvl2;
             }
         }
     }
 }
+
 $form->addElement('select', 'default_page', _("Default page"), $pages);
 
 $form->addElement('checkbox', 'monitoring_host_notification_0', _('Show Up status'));
@@ -168,6 +268,17 @@ $form->addElement('checkbox', 'monitoring_svc_notification_0', _('Show OK status
 $form->addElement('checkbox', 'monitoring_svc_notification_1', _('Show Warning status'));
 $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
 $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
+
+/* Add feature information */
+$features = $centreonFeature->getFeatures();
+$defaultFeatures = array();
+foreach ($features as $feature) {
+    $featRadio = array();
+    $featRadio[] = $form->createElement('radio', $feature['version'], null, _('New version'), '1');
+    $featRadio[] = $form->createElement('radio', $feature['version'], null, _('Legacy version'), '0');
+    $feat = $form->addGroup($featRadio, 'features[' . $feature['name'] . ']', $feature['name'], '&nbsp;');
+    $defaultFeatures['features'][$feature['name']][$feature['version']] = '0';
+}
 
 $sound_files = scandir(_CENTREON_PATH_ . "www/sounds/");
 $sounds = array(null => null);
@@ -186,7 +297,6 @@ $form->addElement('select', 'monitoring_sound_svc_notification_0', _("Sound for 
 $form->addElement('select', 'monitoring_sound_svc_notification_1', _("Sound for Warning status"), $sounds);
 $form->addElement('select', 'monitoring_sound_svc_notification_2', _("Sound for Critical status"), $sounds);
 $form->addElement('select', 'monitoring_sound_svc_notification_3', _("Sound for Unknown status"), $sounds);
-
 
 $availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone&action=list';
 $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone' .
@@ -226,18 +336,58 @@ $form->setRequiredNote("<font style='color: red;'>*</font>" . _("Required fields
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$form->setDefaults($defaultFeatures);
+
+// remove illegal chars in data sent by the user
+$cct['contact_name'] = CentreonUtils::escapeSecure($cct['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+$cct['contact_alias'] = CentreonUtils::escapeSecure($cct['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+
 // Modify a contact information
 if ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
+    /* Add saved value for feature testing */
+    $userFeatures = $centreonFeature->userFeaturesValue($centreon->user->get_id());
+    $defaultUserFeatures = array();
+    foreach ($userFeatures as $feature) {
+        $defaultUserFeatures['features'][$feature['name']][$feature['version']] = $feature['enabled'];
+    }
+    $form->setDefaults($defaultUserFeatures);
 }
+
+$sessionKeyFreeze = 'administration-form-my-account-freeze';
 
 if ($form->validate()) {
     updateContactInDB($centreon->user->get_id());
     if ($form->getSubmitValue("contact_passwd")) {
         $centreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
     }
+    $o = null;
+    $features = $form->getSubmitValue('features');
+
+    if ($features === null) {
+        $features = [];
+    }
+
+    $centreonFeature->saveUserFeaturesValue($centreon->user->get_id(), $features);
+    $form->addElement(
+        "button",
+        "change",
+        _("Modify"),
+        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c'", 'class' => 'btc bt_info')
+    );
+    $form->freeze();
+
+    if ($form->getSubmitValue("contact_lang") !== $cct['contact_lang']) {
+        $_SESSION[$sessionKeyFreeze] = true;
+        echo '<script>parent.location.href = "main.php?p=' . $p . '&o=c";</script>';
+        exit;
+    } elseif (array_key_exists($sessionKeyFreeze, $_SESSION)) {
+        unset($_SESSION[$sessionKeyFreeze]);
+    }
+} elseif (array_key_exists($sessionKeyFreeze, $_SESSION) && $_SESSION[$sessionKeyFreeze] === true) {
+    unset($_SESSION[$sessionKeyFreeze]);
     $o = null;
     $form->addElement(
         "button",
@@ -248,7 +398,7 @@ if ($form->validate()) {
     $form->freeze();
 }
 
-//Apply a template definition	
+//Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -256,6 +406,7 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
+$tpl->assign('featuresFlipping', (count($features) > 0));
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>

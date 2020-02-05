@@ -1,5 +1,13 @@
 {$form.javascript}{$javascript}
+<div id="popin"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
+    {if $inheritance !="1" }
+    <!-- notification inheritance option -->
+    <div style='visibility: hidden'>
+        {$form.contact_additive_inheritance.html}
+        {$form.cg_additive_inheritance.html}
+    </div>
+    {/if}
      <div  class="headerTabContainer">
         <ul id="mainnav">
             <li class="a" id='c1'><a href="#"  style='cursor:pointer' onclick="javascript:montre('1');">{$sort1}</a></li>
@@ -145,116 +153,153 @@
 		<tbody>
 	</table>
 </div>
-<div id='tab2' class='tab'>
-	<table class="formTable table">
-        <tr class="ListHeader">
-            <td class="FormHeader"><h3>| {$form.header.title}</h3></td>
-        </tr>
-        <tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name" colspan="2"><h4>{$form.header.notification}</h4></td>
-	 	</tr>
-		<tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.host_notifications_enabled.label}</td>
-			<td class="FormRowValue">{$form.host_notifications_enabled.html}</td>
-		</tr>
-		<tr class="list_lvl_1">
-		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification receivers{/t}</h4></td>
-		</tr>
-		{if $o == "mc"}
-		<tr class="list_two">
-			<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hcg.label}</td>
-			<td class="FormRowValue">{$form.mc_mod_hcg.html}</td>
-		</tr>
-        <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
-			<td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
-        </tr>
-        <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cs.label}</td>
-			<td class="FormRowValue">{$form.host_cs.html} </td>
-        </tr>
-		{else}
-            <tr class="list_one">
-                <td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td>
-                <td class="FormRowValue">{$form.host_cs.html} </td>
-        </tr>
-        <tr class="list_one">
-			<td class="FormRowField"></td>
-			<td class="FormRowValue">{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance"></td>
-        </tr>		
-        {/if}
-        {if $o == "mc"}
-        <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
-			<td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
-        </tr>
-        <tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
-			<td class="FormRowValue">{$form.host_cgs.html}</td>
-        </tr>
-		{else}
-        <tr class="list_two">
-            <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
-            <td class="FormRowValue">{$form.host_cgs.html} </td>
-        </tr>
-        <tr class="list_one">
-			<td class="FormRowField"></td>
-			<td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
-        </tr>		
-		{/if}
-		<tr class="list_lvl_1">
-		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification options{/t}</h4></td>
-		</tr>
-	        {if $o == "mc"}
-		<tr class="list_two">
-			<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopts.label}</td>
-			<td class="FormRowValue">{$form.mc_mod_notifopts.html}</td>
-		</tr>
-		{/if}
-		<tr class="list_two">
-			<td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.host_notifOpts.label}</td>
-			<td class="FormRowValue">{$form.host_notifOpts.html}</td>
-		</tr>
-	       {if $o == "mc"}
-		<tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_notification_interval.label}</td>
-			<td class="FormRowValue">{$form.mc_mod_notifopt_notification_interval.html}</td>
-		</tr>
-		{/if}
-		<tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.host_notification_interval.label}</td>
-			<td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td>
-		</tr>
-		{if $o == "mc"}
-		<tr class="list_two">
-			<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_timeperiod.label}</td>
-			<td class="FormRowValue">{$form.mc_mod_notifopt_timeperiod.html}</td>
-		</tr>
-		{/if}
-		<tr class="list_two">
-			<td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.timeperiod_tp_id2.label}</td>
-			<td class="FormRowValue">{$form.timeperiod_tp_id2.html} </td>
-		</tr>
-		{if $o == "mc"}
-		<tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_first_notification_delay.label}</td>
-			<td class="FormRowValue">{$form.mc_mod_notifopt_first_notification_delay.html}</td>
-		</tr>
-		{/if}
-		<tr class="list_two">
-			<td class="FormRowField"><img class="helpTooltip" name="first_notification_delay"> {$form.host_first_notification_delay.label}</td>
-			<td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td>
-		</tr>
-        {if $o == "mc"}
-        <tr class="list_one">
-        {else}
-        <tr class="list_two">
-        {/if}
-            <td class="FormRowField"><img class="helpTooltip" name="recovery_notification_delay"> {$form.host_recovery_notification_delay.label}</td>
-            <td class="FormRowValue">{$form.host_recovery_notification_delay.html} {$time_unit}</td>
-    	</tr>
-	</table>
-</div>
+	<div id='tab2' class='tab'>
+		<table class="formTable table">
+			<tr class="ListHeader">
+				<td class="FormHeader"><h3>| {$form.header.title}</h3></td>
+			</tr>
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2"><h4>{$form.header.notification}</h4></td>
+			</tr>
+			<tr class="list_one">
+				<td class="FormRowField"><img class="helpTooltip" name="notifications_enabled">
+					{$form.host_notifications_enabled.label}
+				</td>
+				<td class="FormRowValue">{$form.host_notifications_enabled.html}</td>
+			</tr>
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2"><h4>{t}Notification receivers{/t}</h4></td>
+			</tr>
+			{if $o == "mc"}
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hcg.label}</td>
+				<td class="FormRowValue">{$form.mc_mod_hcg.html}</td>
+			</tr>
+            {if $inheritance =="1" }
+                <tr class="list_one">
+                    <td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance">
+                        {$form.mc_contact_additive_inheritance.label}
+                    </td>
+                    <td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
+                </tr>
+            {/if}
+			<tr class="list_one">
+				<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cs.label}</td>
+				<td class="FormRowValue">{$form.host_cs.html}</td>
+			</tr>
+			{else}
+			<tr class="list_one">
+				<td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td>
+				<td class="FormRowValue">{$form.host_cs.html}</td>
+			</tr>
+                {if $inheritance =="1" }
+                <tr class="list_one">
+                    <td class="FormRowField"></td>
+                    <td class="FormRowValue">
+                        {$form.contact_additive_inheritance.html}
+                        <img class="helpTooltip" name="contact_additive_inheritance">
+                    </td>
+                </tr>
+                {/if}
+			{/if}
+			{if $o == "mc"}
+            {if $inheritance =="1" }
+                <tr class="list_one">
+                    <td class="FormRowField">
+                        <img class="helpTooltip" name="cg_additive_inheritance">
+                        {$form.mc_cg_additive_inheritance.label}
+                    </td>
+                    <td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
+                </tr>
+            {/if}
+			<tr class="list_one">
+				<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
+				<td class="FormRowValue">{$form.host_cgs.html}</td>
+			</tr>
+			{else}
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
+				<td class="FormRowValue">{$form.host_cgs.html}</td>
+			</tr>
+                {if $inheritance =="1" }
+                <tr class="list_one">
+                    <td class="FormRowField"></td>
+                    <td class="FormRowValue">
+                        {$form.cg_additive_inheritance.html}
+                        <img class="helpTooltip" name="cg_additive_inheritance">
+                    </td>
+                </tr>
+                {/if}
+			{/if}
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2"><h4>{t}Notification options{/t}</h4></td>
+			</tr>
+			{if $o == "mc"}
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopts.label}</td>
+				<td class="FormRowValue">{$form.mc_mod_notifopts.html}</td>
+			</tr>
+			{/if}
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="notification_options">
+					{$form.host_notifOpts.label}
+				</td>
+				<td class="FormRowValue">{$form.host_notifOpts.html}</td>
+			</tr>
+			{if $o == "mc"}
+			<tr class="list_one">
+				<td class="FormRowField"><img class="helpTooltip" name="mc_update">
+					{$form.mc_mod_notifopt_notification_interval.label}
+				</td>
+				<td class="FormRowValue">{$form.mc_mod_notifopt_notification_interval.html}</td>
+			</tr>
+			{/if}
+			<tr class="list_one">
+				<td class="FormRowField"><img class="helpTooltip" name="notification_interval">
+					{$form.host_notification_interval.label}
+				</td>
+				<td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td>
+			</tr>
+			{if $o == "mc"}
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="mc_update">
+					{$form.mc_mod_notifopt_timeperiod.label}
+				</td>
+				<td class="FormRowValue">{$form.mc_mod_notifopt_timeperiod.html}</td>
+			</tr>
+			{/if}
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="notification_period">
+					{$form.timeperiod_tp_id2.label}
+				</td>
+				<td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td>
+			</tr>
+			{if $o == "mc"}
+			<tr class="list_one">
+				<td class="FormRowField"><img class="helpTooltip" name="mc_update">
+					{$form.mc_mod_notifopt_first_notification_delay.label}
+				</td>
+				<td class="FormRowValue">{$form.mc_mod_notifopt_first_notification_delay.html}</td>
+			</tr>
+			{/if}
+			<tr class="list_two">
+				<td class="FormRowField"><img class="helpTooltip" name="first_notification_delay">
+					{$form.host_first_notification_delay.label}
+				</td>
+				<td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td>
+			</tr>
+			{if $o == "mc"}
+			<tr class="list_one">
+				{else}
+			<tr class="list_two">
+				{/if}
+				<td class="FormRowField"><img class="helpTooltip" name="recovery_notification_delay">
+					{$form.host_recovery_notification_delay.label}
+				</td>
+				<td class="FormRowValue">{$form.host_recovery_notification_delay.html} {$time_unit}</td>
+			</tr>
+		</table>
+	</div>
 <div id='tab3' class='tab'>
  <table class="formTable table">
 	<tr class="ListHeader">
@@ -506,7 +551,7 @@ jQuery(function() {
         }
         {/literal}{else}{literal}
         if ($passwordCheckbox.is(':checked')) {
-            $passwordCheckbox.parent('span').hide();
+            $passwordCheckbox.closest('span').hide();
         }
         {/literal}{/if}{literal}
     });
@@ -524,6 +569,21 @@ jQuery(function() {
 });
 
 function setListener(elem){
+    elem.centreonSelect2({
+        multiple: false,
+        select2: {
+            allowClear: false,
+            placeholder: "{/literal}{$select_template}{literal}"
+        }
+    });
+    var id = elem.attr('id').replace('tpSelect_', '');
+    if (!isNaN(id) && typeof(jQuery("#clone-values-template").data('clone-values-template')[id]) != 'undefined') {
+        var selected = jQuery("#clone-values-template").data('clone-values-template')[id]['tpSelect_#index#'];
+        if (!isNaN(selected)) {
+            elem.val(selected).trigger('change');
+        }
+    }
+
     elem.on('change',function(event,data){
         if(typeof data != "undefined" && typeof data.origin !=undefined 
             && data.origin == "select2defaultinit"){
@@ -623,9 +683,19 @@ function clonerefreshListener(el){
 
                         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
                         	jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
-                            jQuery(elem).find("input[id^='macroPassword_']").parent('span').hide();
+                            jQuery(elem).find("input[id^='macroPassword_']").closest('span').hide();
                     	}
                     });
+                },
+                error: function(jqXHR, data) {
+                    let message = 'Internal error';
+                    if (typeof(jqXHR.responseJSON) === 'object') {
+                        if (typeof(jqXHR.responseJSON.message) !== "undefined") {
+                            message = jqXHR.responseJSON.message;
+                        }
+                    }
+                    jQuery('#msg-wrapper').html('<span class="msg-field error">' + message + '</span>');
+                    jQuery('#popin').centreonPopin("open");
                 }
             });
     }

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,7 +39,7 @@ function updateOption($pearDB, $key, $value)
     /*
      * Purge
      */
-    $DBRESULT = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+    $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
     
     /*
      * Add
@@ -47,7 +47,7 @@ function updateOption($pearDB, $key, $value)
     if (!is_null($value) && $value != 'NULL') {
         $value = "'$value'";
     }
-    $DBRESULT = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+    $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
 }
 
 function is_valid_path_images($path)
@@ -113,6 +113,18 @@ function is_writable_file_if_exist($path = null)
     return false;
 }
 
+/**
+ * rule to check the session duration value chosen by the user
+ * @param int $value
+ * @param int $valueMax
+ *
+ * @return bool
+ */
+function isSessionDurationValid(int $value = null)
+{
+    return ($value > 0 && $value <= SESSION_DURATION_LIMIT);
+}
+
 function updateGeneralOptInDB($gopt_id = null)
 {
     if (!$gopt_id) {
@@ -142,21 +154,9 @@ function updateNagiosConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "monitoring_engine",
-        isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != null
-            ? $ret["monitoring_engine"] : "NULL"
-    );
-    updateOption(
-        $pearDB,
         "mailer_path_bin",
         isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != null
             ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "broker_correlator_script",
-        isset($ret["broker_correlator_script"]) && $ret["broker_correlator_script"] != null
-            ? $pearDB->escape($ret["broker_correlator_script"]) : "NULL"
     );
     updateOption(
         $pearDB,
@@ -171,11 +171,6 @@ function updateNagiosConfigData($gopt_id = null)
             ? $pearDB->escape($ret['broker']) : "broker"
     );
     $pearDB->query("UPDATE acl_resources SET changed = 1");
-    
-    /*
-     * Correlation engine
-     */
-    updateOption($pearDB, 'broker_correlator_script', $ret['broker_correlator_script']);
 
     /*
      * Tactical Overview part
@@ -300,6 +295,13 @@ function updateCentcoreConfigData($db, $form, $centreon)
         $db,
         "centcore_cmd_timeout",
         isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0
+    );
+    updateOption(
+        $db,
+        "centcore_illegal_characters",
+        isset($ret["centcore_illegal_characters"]) && $ret['centcore_illegal_characters']
+            ? $ret['centcore_illegal_characters']
+            : ""
     );
     $centreon->initOptGen($db);
 }
@@ -495,6 +497,13 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "inheritance_mode",
+        !empty($ret["inheritance_mode"]["inheritance_mode"])
+            ? (int)$ret["inheritance_mode"]["inheritance_mode"]
+            : 3 //default cumulative inheritance
+    );
+    updateOption(
+        $pearDB,
         "session_expire",
         isset($ret["session_expire"]) && $ret["session_expire"] != null
             ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8"): "NULL"
@@ -638,7 +647,7 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "sso_blacklist_clients",
-        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != NULL
+        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != null
             ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
     );
     updateOption(
@@ -650,14 +659,67 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "sso_username_pattern",
-        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != NULL
+        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != null
             ? $pearDB->escape($ret["sso_username_pattern"]) : ""
     );
     updateOption(
         $pearDB,
         "sso_username_replace",
-        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != NULL
+        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != null
             ? $pearDB->escape($ret["sso_username_replace"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_enable",
+        isset($ret["keycloak_enable"]["yes"]) && $ret["keycloak_enable"]["yes"] != null ? 1 : 0
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_mode",
+        isset($ret["keycloak_mode"]["keycloak_mode"]) && $ret["keycloak_mode"]["keycloak_mode"] != null
+            ? $pearDB->escape($ret["keycloak_mode"]["keycloak_mode"]) : 1
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_trusted_clients",
+        isset($ret["keycloak_trusted_clients"]) && $ret["keycloak_trusted_clients"] != null
+            ? $pearDB->escape($ret["keycloak_trusted_clients"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_blacklist_clients",
+        isset($ret["keycloak_blacklist_clients"]) && $ret["keycloak_blacklist_clients"] != null
+            ? $pearDB->escape($ret["keycloak_blacklist_clients"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_url",
+        isset($ret["keycloak_url"]) && $ret["keycloak_url"] != null
+            ? $pearDB->escape($ret["keycloak_url"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_redirect_url",
+        isset($ret["keycloak_redirect_url"]) && $ret["keycloak_redirect_url"] != null
+            ? $pearDB->escape($ret["keycloak_redirect_url"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_realm",
+        isset($ret["keycloak_realm"]) && $ret["keycloak_realm"] != null
+            ? $pearDB->escape($ret["keycloak_realm"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_client_id",
+        isset($ret["keycloak_client_id"]) && $ret["keycloak_client_id"] != null
+            ? $pearDB->escape($ret["keycloak_client_id"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "keycloak_client_secret",
+        isset($ret["keycloak_client_secret"]) && $ret["keycloak_client_secret"] != null
+            ? $pearDB->escape($ret["keycloak_client_secret"]) : ""
     );
     updateOption(
         $pearDB,
@@ -665,7 +727,13 @@ function updateGeneralConfigData($gopt_id = null)
         isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != null
             ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL"
     );
-        
+    updateOption(
+        $pearDB,
+        "send_statistics",
+        isset($ret["send_statistics"]["yes"]) && $ret["send_statistics"]["yes"] != null
+            ? htmlentities($ret["send_statistics"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+    );
+
     $centreon->initOptGen($pearDB);
 }
 
@@ -687,66 +755,6 @@ function updateRRDToolConfigData($gopt_id = null)
         "rrdtool_version",
         isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != null
             ? htmlentities($ret["rrdtool_version"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_title_font",
-        isset($ret["rrdtool_title_font"]) && $ret["rrdtool_title_font"] != null
-            ? htmlentities($ret["rrdtool_title_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_title_fontsize",
-        isset($ret["rrdtool_title_fontsize"]) && $ret["rrdtool_title_fontsize"] != null
-            ? htmlentities($ret["rrdtool_title_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_unit_font",
-        isset($ret["rrdtool_unit_font"]) && $ret["rrdtool_unit_font"] != null
-            ? htmlentities($ret["rrdtool_unit_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_unit_fontsize",
-        isset($ret["rrdtool_unit_fontsize"]) && $ret["rrdtool_unit_fontsize"] != null
-            ? htmlentities($ret["rrdtool_unit_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_axis_font",
-        isset($ret["rrdtool_axis_font"]) && $ret["rrdtool_axis_font"] != null
-            ? htmlentities($ret["rrdtool_axis_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_axis_fontsize",
-        isset($ret["rrdtool_axis_fontsize"]) && $ret["rrdtool_axis_fontsize"] != null
-            ? htmlentities($ret["rrdtool_axis_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_watermark_font",
-        isset($ret["rrdtool_watermark_font"]) && $ret["rrdtool_watermark_font"] != null
-            ? htmlentities($ret["rrdtool_watermark_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_watermark_fontsize",
-        isset($ret["rrdtool_watermark_fontsize"]) && $ret["rrdtool_watermark_fontsize"] != null
-            ? htmlentities($ret["rrdtool_watermark_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_legend_font",
-        isset($ret["rrdtool_legend_font"]) && $ret["rrdtool_legend_font"] != null
-            ? htmlentities($ret["rrdtool_legend_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_legend_fontsize",
-        isset($ret["rrdtool_legend_fontsize"]) && $ret["rrdtool_legend_fontsize"] != null
-            ? htmlentities($ret["rrdtool_legend_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
@@ -817,22 +825,26 @@ function updateODSConfigData()
     if (!isset($ret["len_storage_comments"])) {
         $ret["len_storage_comments"] = 0;
     }
-    
-    $rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
-                `RRDdatabase_status_path` = '".$ret["RRDdatabase_status_path"]."',
-				`RRDdatabase_nagios_stats_path` = '".$ret["RRDdatabase_nagios_stats_path"]."',
-				`len_storage_rrd` = '".$ret["len_storage_rrd"]."',
-				`len_storage_mysql` = '".$ret["len_storage_mysql"]."',
-				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',
-				`purge_interval` = '".$ret["purge_interval"]."',
-				`archive_log` = '".$ret["archive_log"]."',
-				`archive_retention` = '".$ret["archive_retention"]."',
-				`reporting_retention` = '".$ret["reporting_retention"]."',
-                `audit_log_option` = '".$ret["audit_log_option"]."',
-				`storage_type` = '".(isset($ret["storage_type"]) ? $ret["storage_type"] : null)."', 
-                `len_storage_downtimes` = '".$ret["len_storage_downtimes"]."',
-                `len_storage_comments` = '".$ret["len_storage_comments"]."' "
-                . " WHERE `id` = 1 LIMIT 1 ;";
+    if (!isset($ret["audit_log_retention"])) {
+        $ret["audit_log_retention"] = 0;
+    }
+
+    $rq = "UPDATE `config` SET `RRDdatabase_path` = '" . $ret["RRDdatabase_path"] . "',
+        `RRDdatabase_status_path` = '" . $ret["RRDdatabase_status_path"] . "',
+        `RRDdatabase_nagios_stats_path` = '" . $ret["RRDdatabase_nagios_stats_path"] . "',
+        `len_storage_rrd` = '" . $ret["len_storage_rrd"] . "',
+        `len_storage_mysql` = '" . $ret["len_storage_mysql"] . "',
+        `autodelete_rrd_db` = '" . $ret["autodelete_rrd_db"] . "',
+        `purge_interval` = '" . $ret["purge_interval"] . "',
+        `archive_log` = '" . $ret["archive_log"] . "',
+        `archive_retention` = '" . $ret["archive_retention"] . "',
+        `reporting_retention` = '" . $ret["reporting_retention"] . "',
+        `audit_log_option` = '" . $ret["audit_log_option"] . "',
+        `storage_type` = " . (isset($ret["storage_type"]) ? $ret["storage_type"] : 'NULL') . ",
+        `len_storage_downtimes` = '" . $ret["len_storage_downtimes"] . "',
+        `audit_log_retention` = '" . $ret["audit_log_retention"] . "',
+        `len_storage_comments` = '" . $ret["len_storage_comments"] . "' "
+        . " WHERE `id` = 1 LIMIT 1 ;";
     $DBRESULT = $pearDBO->query($rq);
 
     updateOption(
@@ -925,7 +937,7 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    if (!isset($ret['kb_wiki_certificate'])){
+    if (!isset($ret['kb_wiki_certificate'])) {
         $ret['kb_wiki_certificate'] = 0;
     }
     foreach ($ret as $key => $value) {

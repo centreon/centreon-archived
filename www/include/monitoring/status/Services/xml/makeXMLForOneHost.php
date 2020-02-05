@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,99 +36,93 @@
 /**
  * Require Centreon Config file
  */
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
-
 include_once $centreon_path . "www/class/centreonUtils.class.php";
-
-/**
- * Include Monitoring Classes
- */
+include_once $centreon_path . "www/class/centreonACL.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 
-/*
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
-/**
- * Manage Session
- */
-
+// Manage Session
 $centreon = $_SESSION['centreon'];
 
-/**
- * Check Security
- */
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
-    print "Bad Session ID";
+// Check Security
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+    print _("Bad Session ID");
     exit();
 }
 
-/** **************************************************
- * Enable Lang Object
- */
+// Enable Lang Object
 $centreonlang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonlang->bindLang();
 
-/** **************************************************
+/*
  * Check Arguments From GET tab
  */
-$host_id = $obj->checkArgument("host_id", $_GET, 0);
-$enable = $obj->checkArgument("enable", $_GET, "");
-$disable = $obj->checkArgument("disable", $_GET, "disable");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$hostId = filter_input(INPUT_GET, 'host_id', FILTER_VALIDATE_INT, ['options' => ['default' =>  false]]);
 
-/** ***************************************************
+if ($hostId === false) {
+    print _("Bad host ID");
+    exit();
+}
+
+// Check ACL if user is not admin
+$isAdmin = $centreon->user->admin;
+if (!$isAdmin) {
+    $userId = $centreon->user->user_id;
+    $acl = new CentreonACL($userId, $isAdmin);
+    if (!$acl->checkHost($hostId)) {
+        print _("You don't have access to this resource");
+        exit();
+    }
+}
+
+/**
  * Get Host status
  */
-$rq1 = " SELECT h.state," .
-    " h.address," .
-    " h.name," .
-    " h.alias," .
-    " i.name AS poller, " .
-    " h.perfdata," .
-    " h.check_attempt," .
-    " h.state_type," .
-    " h.last_check, " .
-    " h.next_check, " .
-    " h.latency," .
-    " h.execution_time," .
-    " h.last_state_change," .
-    " h.last_notification," .
-    " h.next_host_notification," .
-    " h.last_hard_state_change," .
-    " h.last_hard_state," .
-    " h.last_time_up," .
-    " h.last_time_down," .
-    " h.last_time_unreachable," .
-    " h.notification_number," .
-    " h.scheduled_downtime_depth," .
-    " h.output," .
-    " h.notes," .
-    " h.notify," .
-    " h.event_handler_enabled," .
-    " h.icon_image, " .
-    " h.timezone" .
-    " FROM hosts h, instances i " .
-    " WHERE h.host_id = " . $host_id .
-    " AND h.instance_id = i.instance_id " .
-    " LIMIT 1";
-/*
- * Request
- */
-$DBRESULT = $obj->DBC->query($rq1);
+$rq1 = "SELECT h.state,
+    h.address,
+    h.name,
+    h.alias,
+    i.name AS poller,
+    h.perfdata,
+    h.check_attempt,
+    h.state_type,
+    h.last_check,
+    h.next_check,
+    h.latency,
+    h.execution_time,
+    h.last_state_change,
+    h.last_notification,
+    h.next_host_notification,
+    h.last_hard_state_change,
+    h.last_hard_state,
+    h.last_time_up,
+    h.last_time_down,
+    h.last_time_unreachable,
+    h.notification_number,
+    h.scheduled_downtime_depth,
+    h.output,
+    h.notes,
+    h.notify,
+    h.event_handler_enabled,
+    h.icon_image,
+    h.timezone
+    FROM hosts h, instances i
+    WHERE h.host_id = :hostId AND h.instance_id = i.instance_id LIMIT 1";
+$dbResult = $obj->DBC->prepare($rq1);
+$dbResult->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+$dbResult->execute();
 
 /*
  * Start Buffer
  */
 $obj->XML->startElement("reponse");
-if ($data = $DBRESULT->fetchRow()) {
-    /* Split the plugin_output */
+if ($data = $dbResult->fetch()) {
+    // Split the plugin_output
     $outputLines = explode("\n", $data['output']);
     $pluginShortOuput = $outputLines[0];
 
@@ -192,7 +186,7 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("timezone_name", _("Timezone"));
     $obj->XML->writeElement("timezone", str_replace(':', '', $data["timezone"]));
 
-    /* Last State Info */
+    // Last State Info
     if ($data["state"] == 0) {
         $status = _('DOWN');
         $status_date = 0;
@@ -225,29 +219,21 @@ if ($data = $DBRESULT->fetchRow()) {
 } else {
     $obj->XML->writeElement("infos", "none");
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
-/*
- * Translations
- */
+// Translations
 $obj->XML->writeElement("tr1", _("Check information"), 0);
 $obj->XML->writeElement("tr2", _("Notification information"), 0);
 $obj->XML->writeElement("tr3", _("Last Status Change"), 0);
 $obj->XML->writeElement("tr4", _("Extended information"), 0);
 $obj->XML->writeElement("tr5", _("Status Information"), 0);
 
-/*
- * End buffer
- */
+// End buffer
 $obj->XML->endElement();
 
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();

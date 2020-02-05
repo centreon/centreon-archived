@@ -1,12 +1,46 @@
+#generic development files
+www/index.html
+
+#backend development and project files
 .idea/
-/nbproject/private/
+vendor/
 nbproject/
-/vendor/
-composer.lock
 GPL_LIB/SmartyCache/*
-www/install/tmp/*
+
+#front development files
+node_modules/
+www/static
+www/asset-manifest.json
+www/front_src/src/App.css
+www/service-worker.js
+www/include/core/menu/templates/*.js
+www/include/core/menu/templates/*.tpl
+
+#sample files
 !www/img/media/.keep
 www/img/media/*
+www/template
+
+#temporary files needed for the installation
+www/install/tmp/*
 !www/install/tmp/.gitkeep
 www/install/install.conf.php
+
+#config files
 config/centreon.config.php
+
+#continuous integration and testing files
+*-dev.yml
+coverage-report/
+centreon-build/
+secret
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+###< symfony/framework-bundle ###
+/bin/.phpunit/
+/doc/en/_build/

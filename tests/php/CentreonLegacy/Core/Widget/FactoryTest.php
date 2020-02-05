@@ -16,64 +16,50 @@
  */
 namespace CentreonLegacy\Core\Widget;
 
-use \Centreon\Test\Mock\CentreonDB;
+use Pimple\Container;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
-use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
-use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
+use CentreonLegacy\Core\Widget;
+use CentreonLegacy\ServiceProvider;
 
 /**
  * Description of factoryTest
  *
  * @author lionel
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
-    private $db;
-    private $information;
-    private $utils;
-
     public function setUp()
     {
         $this->container = new ServiceContainer();
 
-        $this->db = new CentreonDB();
-
-        $this->utils = $this->getMockBuilder('CentreonLegacy\Core\Utils\Utils')
+        $this->container[ServiceProvider::CENTREON_LEGACY_WIDGET_INFORMATION] = $this
+            ->getMockBuilder(Widget\Information::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $configuration = array(
-            'title' => 'My Widget',
-            'author' => 'Centreon',
-            'email' => 'contact@centreon.com',
-            'website' => 'http://www.centreon.com',
-            'description' => 'Widget for displaying host monitoring information',
-            'version' => '1.0.0',
-            'keywords' => 'centreon, widget, host, monitoring',
-            'screenshot' => '',
-            'thumbnail' => './widgets/host-monitoring/resources/centreon-logo.png',
-            'url' => './widgets/host-monitoring/index.php',
-            'preferences' => array(),
-            'autoRefresh' => 0
-        );
+        $this->container[ServiceProvider::CENTREON_LEGACY_WIDGET_INSTALLER] = function (Container $container) {
+            return function ($widgetDirectory) {
+                return $this->getMockBuilder(Widget\Installer::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+            };
+        };
 
-        $this->utils->expects($this->any())
-            ->method('buildPath')
-            ->willReturn('/');
+        $this->container[ServiceProvider::CENTREON_LEGACY_WIDGET_UPGRADER] = function (Container $container) {
+            return function ($widgetDirectory) {
+                return $this->getMockBuilder(Widget\Upgrader::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+            };
+        };
 
-        $this->utils->expects($this->any())
-            ->method('xmlToArray')
-            ->willReturn($configuration);
-
-        $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
-            ->disableOriginalConstructor()
-            ->setMethods(array('exists'))
-            ->getMock();
-        $filesystem->expects($this->any())
-            ->method('exists')
-            ->willReturn(true);
-        $this->container->registerProvider(new FilesystemProvider($filesystem));
+        $this->container[ServiceProvider::CENTREON_LEGACY_WIDGET_REMOVER] = function (Container $container) {
+            return function ($widgetDirectory) {
+                return $this->getMockBuilder(Widget\Remover::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+            };
+        };
     }
 
     public function tearDown()
@@ -84,25 +70,25 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInformation()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Widget\Information', $factory->newInformation());
+        $factory = new Widget\Factory($this->container);
+        $this->assertInstanceOf(Widget\Information::class, $factory->newInformation());
     }
 
     public function testNewInstaller()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Widget\Installer', $factory->newInstaller('MyWidget'));
+        $factory = new Widget\Factory($this->container);
+        $this->assertInstanceOf(Widget\Installer::class, $factory->newInstaller('MyWidget'));
     }
     
     public function testNewUpgrader()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Widget\Upgrader', $factory->newUpgrader('MyWidget'));
+        $factory = new Widget\Factory($this->container);
+        $this->assertInstanceOf(Widget\Upgrader::class, $factory->newUpgrader('MyWidget'));
     }
     
     public function testNewRemover()
     {
-        $factory = new Factory($this->container, $this->utils);
-        $this->assertInstanceOf('\CentreonLegacy\Core\Widget\Remover', $factory->newRemover('MyWidget'));
+        $factory = new Widget\Factory($this->container);
+        $this->assertInstanceOf(Widget\Remover::class, $factory->newRemover('MyWidget'));
     }
 }

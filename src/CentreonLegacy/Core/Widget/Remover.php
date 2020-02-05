@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,22 +39,6 @@ class Remover extends Widget
 {
     /**
      *
-     * @param \Pimple\Container $dependencyInjector
-     * @param \CentreonLegacy\Core\Widget\Information $informationObj
-     * @param string $widgetName
-     * @param \CentreonLegacy\Core\Utils\Utils $utils
-     */
-    public function __construct(
-        \Pimple\Container $dependencyInjector,
-        \CentreonLegacy\Core\Widget\Information $informationObj,
-        $widgetName,
-        \CentreonLegacy\Core\Utils\Utils $utils
-    ) {
-        parent::__construct($dependencyInjector, $informationObj, $widgetName, $utils);
-    }
-    
-    /**
-     *
      * @return boolean
      */
     public function remove()
@@ -62,11 +46,11 @@ class Remover extends Widget
         $query = 'DELETE FROM widget_models ' .
             'WHERE directory = :directory ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
-        if ($sth->execute() && $sth->rowCount()) {
+        if ($sth->execute()) {
             $removed = true;
         } else {
             $removed = false;

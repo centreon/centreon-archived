@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #----
 ## @Synopsis	Install Script for Centreon project
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -6,7 +6,7 @@
 ## Centreon Install Script
 ## Use 
 ## <pre>
-## Usage: bash install.sh [OPTION]
+## Usage: sh install.sh [OPTION]
 ## Options:
 ##  -f	Input file with all variables define (use for with template)
 ##  -u	Input file with all variables define for update centreon
@@ -15,7 +15,7 @@
 ## </pre>
 #----
 ###################################################################
-# Centreon is developped with GPL Licence 2.0 
+# Centreon is developed with GPL Licence 2.0
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="2.9.0"
+version="18.10.3"
 
 # Debug
 #set -x
@@ -59,7 +59,7 @@ version="2.9.0"
 ## Usage informations for install.sh
 ## @Sdtout	Usage informations
 #----
-function usage() {
+usage() {
 	local program=$0
 	echo -e "$(gettext "Usage: $program -f <file>")"
 	echo -e "  -i\t$(gettext "install centreon")"
@@ -244,7 +244,7 @@ if [ "$silent_install" -ne 1 ] ; then
 	echo -e "\n$(gettext "You will now read Centreon Licence.\\n\\tPress enter to continue.")"
 	read 
 	tput clear 
-	more "$BASE_DIR/LICENSE"
+	more "$BASE_DIR/LICENSE.md"
 
 	yes_no_default "$(gettext "Do you accept GPL license ?")" 
 	if [ "$?" -ne 0 ] ; then 
@@ -352,7 +352,6 @@ if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then
 			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
 			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
 			[ -n "$NAGIOS_BINARY" ] && MONITORINGENGINE_BINARY=$NAGIOS_BINARY
-			[ -n "$NAGIOS_INIT_SCRIPT" ] && MONITORINGENGINE_INIT_SCRIPT=$NAGIOS_INIT_SCRIPT
 		fi
 	fi
 	. $INSTALL_DIR/CentWeb.sh

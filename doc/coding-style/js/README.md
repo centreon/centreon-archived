@@ -44,10 +44,10 @@ for (i = 0; i < 5; i++) {
     x += i;
 }
 ```
-* Prefer 4 spaces for indentation of code blocks.
+* Prefer 2 spaces for indentation of code blocks.
 ```js
 function hello(world) {
-    return world;
+  return world;
 }
 ```
 * The limit on line length must be 120 characters, 80 is better.

@@ -17,13 +17,12 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Pimple\Psr11\Container;
 use \Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
-use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class UpgraderTest extends \PHPUnit_Framework_TestCase
+class UpgraderTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;
@@ -47,6 +46,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
             'screenshot' => '',
             'thumbnail' => './widgets/host-monitoring/resources/centreon-logo.png',
             'url' => './widgets/host-monitoring/index.php',
+            'directory' => 'my-widget',
             'preferences' => array(
                 'preference' => array(
                     array(
@@ -185,7 +185,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
         $this->container = null;
     }
 
-    public function testInstall()
+    public function testUpgrade()
     {
         $query = 'UPDATE widget_models SET ' .
             'title = :title, ' .
@@ -265,7 +265,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $installer = new Upgrader($this->container, $this->information, 'MyWidget', $this->utils);
+        $installer = new Upgrader(new Container($this->container), $this->information, 'MyWidget', $this->utils);
         $upgraded = $installer->upgrade();
 
         $this->assertEquals($upgraded, true);

@@ -35,46 +35,65 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Utils\Utils;
+use CentreonLegacy\ServiceProvider;
+
 class Information
 {
     /**
-     *
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
+    protected $services;
     
     /**
-     *
      * @var \CentreonLegacy\Core\Utils\Utils
      */
     protected $utils;
+
+    /**
+     * @var array
+     */
+    protected $cachedWidgetsList = [];
+
+    /**
+     * @var bool
+     */
+    protected $hasWidgetsForUpgrade = false;
+
+    /**
+     * @var bool
+     */
+    protected $hasWidgetsForInstallation = false;
     
     /**
+     * Construct
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
-    public function __construct(\Pimple\Container $dependencyInjector, \CentreonLegacy\Core\Utils\Utils $utils)
+    public function __construct(ContainerInterface $services, Utils $utils = null)
     {
-        $this->dependencyInjector = $dependencyInjector;
-        $this->utils = $utils;
+        $this->services = $services;
+        $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
     }
 
     /**
      * Get module configuration from file
-     * @param string $widgetName
+     * @param string $widgetDirectory the widget directory (usually the widget name)
      * @return array
      * @throws \Exception
      */
-    public function getConfiguration($widgetName)
+    public function getConfiguration($widgetDirectory)
     {
-        $widgetPath = $this->utils->buildPath('/widgets/' . $widgetName);
-        if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
-            throw new \Exception('Cannot get configuration file of widget "' . $widgetName . '"');
+        $widgetPath = $this->utils->buildPath('/widgets/' . $widgetDirectory);
+        if (!$this->services->get('filesystem')->exists($widgetPath . '/configs.xml')) {
+            throw new \Exception('Cannot get configuration file of widget "' . $widgetDirectory . '"');
         }
 
         $conf = $this->utils->xmlIntoArray($widgetPath . '/configs.xml');
 
+        $conf['directory'] = $widgetDirectory;
         $conf['autoRefresh'] = isset($conf['autoRefresh']) ? $conf['autoRefresh'] : 0;
 
         return $conf;
@@ -91,7 +110,7 @@ class Information
         $query = 'SELECT ft_typename, field_type_id ' .
             'FROM widget_parameters_field_type ';
 
-        $result = $this->dependencyInjector['configuration_db']->query($query);
+        $result = $this->services->get('configuration_db')->query($query);
 
         while ($row = $result->fetchRow()) {
             $types[$row['ft_typename']] = array(
@@ -118,7 +137,7 @@ class Information
             $query .= 'AND widget_model_id = :id ';
         }
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindValue(':name', $name, \PDO::PARAM_STR);
         if (!is_null($widgetModelId)) {
@@ -146,7 +165,7 @@ class Information
             'FROM widget_parameters ' .
             'WHERE widget_model_id = :id ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
         $sth->bindParam(':id', $widgetId, \PDO::PARAM_INT);
         $sth->execute();
 
@@ -169,7 +188,7 @@ class Information
             'FROM widget_models ' .
             'WHERE directory = :directory';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':directory', $name, \PDO::PARAM_STR);
 
@@ -192,13 +211,14 @@ class Information
         $query = 'SELECT * ' .
             'FROM widget_models ';
 
-        $result = $this->dependencyInjector['configuration_db']->query($query);
+        $result = $this->services->get('configuration_db')->query($query);
 
         $widgets = $result->fetchAll();
 
         $installedWidgets = array();
         foreach ($widgets as $widget) {
-            $installedWidgets[$widget['directory']] = $widget;
+            // we use lowercase to avoid problems if directory name have some letters in uppercase
+            $installedWidgets[strtolower($widget['directory'])] = $widget;
         }
 
         return $installedWidgets;
@@ -214,20 +234,21 @@ class Information
         $widgetsConf = array();
 
         $widgetsPath = $this->getWidgetPath();
-        $widgets = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($widgetsPath);
+        $widgets = $this->services->get('finder')->directories()->depth('== 0')->in($widgetsPath);
 
         foreach ($widgets as $widget) {
-            $widgetName = $widget->getBasename();
-            if (!empty($search) && !stristr($widgetName, $search)) {
+            $widgetDirectory = $widget->getBasename();
+            if (!empty($search) && !stristr($widgetDirectory, $search)) {
                 continue;
             }
 
-            $widgetPath = $widgetsPath . $widgetName;
-            if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
+            $widgetPath = $widgetsPath . $widgetDirectory;
+            if (!$this->services->get('filesystem')->exists($widgetPath . '/configs.xml')) {
                 continue;
             }
 
-            $widgetsConf[$widgetName] = $this->getConfiguration($widgetName);
+            // we use lowercase to avoid problems if directory name have some letters in uppercase
+            $widgetsConf[strtolower($widgetDirectory)] = $this->getConfiguration($widgetDirectory);
         }
 
         return $widgetsConf;
@@ -251,15 +272,19 @@ class Information
             $widgets[$name]['upgradeable'] = false;
             $widgets[$name]['installed_version'] = _('N/A');
             $widgets[$name]['available_version'] = $widgets[$name]['version'];
+
             unset($widgets[$name]['version']);
+
             if (isset($installedWidgets[$name])) {
                 $widgets[$name]['id'] = $installedWidgets[$name]['widget_model_id'];
                 $widgets[$name]['is_installed'] = true;
                 $widgets[$name]['installed_version'] = $installedWidgets[$name]['version'];
-                $widgets[$name]['upgradeable'] = $this->isUpgradeable(
+                $widgetIsUpgradable = $this->isUpgradeable(
                     $widgets[$name]['available_version'],
                     $widgets[$name]['installed_version']
                 );
+                $widgets[$name]['upgradeable'] = $widgetIsUpgradable;
+                $this->hasWidgetsForUpgrade = $widgetIsUpgradable ?: $this->hasWidgetsForUpgrade;
             }
         }
 
@@ -269,6 +294,9 @@ class Information
                 $widgets[$name]['source_available'] = false;
             }
         }
+
+        $this->hasWidgetsForInstallation = count($availableWidgets) > count($installedWidgets);
+        $this->cachedWidgetsList = $widgets;
 
         return $widgets;
     }
@@ -283,7 +311,7 @@ class Information
         $query = 'SELECT widget_model_id ' .
             'FROM widget_models ' .
             'WHERE directory = :name';
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':name', $widgetName, \PDO::PARAM_STR);
 
@@ -315,5 +343,33 @@ class Information
     public function getWidgetPath($widgetName = '')
     {
         return $this->utils->buildPath('/widgets/' . $widgetName) . '/';
+    }
+
+    public function hasWidgetsForUpgrade()
+    {
+        return $this->hasWidgetsForUpgrade;
+    }
+
+    public function getUpgradeableList()
+    {
+        $list = empty($this->cachedWidgetsList) ? $this->getList() : $this->cachedWidgetsList;
+
+        return array_filter($list, function ($widget) {
+            return $widget['upgradeable'];
+        });
+    }
+
+    public function hasWidgetsForInstallation()
+    {
+        return $this->hasWidgetsForInstallation;
+    }
+
+    public function getInstallableList()
+    {
+        $list = empty($this->cachedWidgetsList) ? $this->getList() : $this->cachedWidgetsList;
+
+        return array_filter($list, function ($widget) {
+            return !$widget['is_installed'];
+        });
     }
 }

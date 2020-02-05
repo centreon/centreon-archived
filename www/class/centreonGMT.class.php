@@ -33,7 +33,13 @@
  *
  */
 
-include_once(realpath(dirname(__FILE__) . "/../../config/centreon.config.php"));
+
+// file centreon.config.php may not exist in test environment
+$configFile = realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+if ($configFile !== false) {
+    include_once $configFile;
+}
+
 require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
 
 class CentreonGMT
@@ -203,6 +209,10 @@ class CentreonGMT
             $gmt = $this->myGMT;
         }
 
+        if (empty($gmt)) {
+            $gmt = date_default_timezone_get();
+        }
+
         if (isset($date) && isset($gmt)) {
             $sDate = new DateTime();
             $sDate->setTimestamp($date);
@@ -277,9 +287,15 @@ class CentreonGMT
     public function getUTCDateFromString($date, $gmt = null, $reverseOffset = 1)
     {
         $return = "";
+
         if (!isset($gmt)) {
             $gmt = $this->myGMT;
         }
+
+        if ($gmt == null) {
+            $gmt = date_default_timezone_get();
+        }
+
         if (isset($date) && isset($gmt)) {
             if (!is_numeric($date)) {
                 $sDate = new DateTime($date);
@@ -352,7 +368,6 @@ class CentreonGMT
     public function getMyGTMFromUser($userId, $DB = null)
     {
         if (!empty($userId)) {
-
             try {
                 $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `contact_location` FROM `contact` " .
                     "WHERE `contact`.`contact_id` = " . $userId . " LIMIT 1");
@@ -362,7 +377,6 @@ class CentreonGMT
             } catch (\PDOException $e) {
                 $this->myGMT = 0;
             }
-
         } else {
             $this->myGMT = 0;
         }

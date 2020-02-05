@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,57 +33,47 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
-
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-/*
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
-
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/***************************************************
- * Check Arguments From GET tab
+/*
+ * Check Arguments From GET request
  */
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$hg = $obj->checkArgument("hg", $_GET, "");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search = $obj->checkArgument("search", $_GET, "");
-$sort_type = $obj->checkArgument("sort_type", $_GET, "alias");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'svcSumHG_pb']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 30]]);
+//if instance value is not set, displaying all active pollers' linked resources
+$instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
+$hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'alias']]);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
+
 $grouplistStr = $obj->access->getAccessGroupsString();
 
+//saving bound values
+$queryValues = [];
 
-/****************************************
- * Get Host status
- *
- */
-$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.name as hgname, hgm.hostgroup_id, h.host_id, " .
-    "h.state, h.icon_image FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+// Get Host status
+$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT
+    h.name AS host_name, hg.name AS hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image
+    FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
@@ -93,59 +82,78 @@ if (!$obj->is_admin) {
 $rq1 .= "WHERE h.host_id = hgm.host_id "
     . "AND hgm.hostgroup_id = hg.hostgroup_id "
     . "AND h.enabled = '1' "
-    . "AND h.name not like '_Module_%' ";
+    . "AND h.name NOT LIKE '_Module_%' ";
 
 if (!$obj->is_admin) {
     $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . " "
         . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " "
-        . $obj->access->queryBuilder("AND", "hg.hostgroup_id", $obj->access->getHostGroupsString("ID")) . " ";
+        . $obj->access->queryBuilder("AND", "hg.hostgroup_id", $obj->access->getHostGroupsString("ID"));
 }
 
-if ($instance != -1) {
-    $rq1 .= "AND h.instance_id = " . $instance . " ";
+if ($instance !== -1) {
+    $rq1 .= " AND h.instance_id = :instance ";
+    $queryValues['instance'] = [
+        PDO::PARAM_INT => (int)$instance
+    ];
 }
 
-if ($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
+if (substr($o, -3) === '_pb') {
     $rq1 .= " AND h.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
-}
-
-if ($o == "svcSumHG_ack_0") {
-    $rq1 .= "AND h.host_id IN ( "
+} elseif (substr($o, -6) === '_ack_0') {
+    $rq1 .= " AND h.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
-}
-
-if ($o == "svcSumHG_ack_1") {
-    $rq1 .= "AND h.host_id IN ( "
+} elseif (substr($o, -6) === '_ack_1') {
+    $rq1 .= " AND h.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 }
 
 if ($search != "") {
-    $rq1 .= "AND h.name like '%" . $search . "%' ";
+    $rq1 .= " AND h.name LIKE :search";
+    $queryValues['search'] = [
+        PDO::PARAM_STR => "%" . $search . "%"
+    ];
 }
 
-if ($hostgroups) {
-    $rq1 .= "AND hg.hostgroup_id IN (" . $hostgroups . ") ";
+if ($hostgroup != "") {
+    $rq1 .= " AND hg.name LIKE :hgName";
+    $queryValues['hgName'] = [
+        PDO::PARAM_STR => $hostgroup
+    ];
 }
 
-$rq1 .= "AND h.enabled = 1 "
-    . "ORDER BY " . $sort_type . ", h.name " . $order . " "
-    . "LIMIT " . ($num * $limit) . "," . $limit . " ";
+$rq1 .= " AND h.enabled = 1 ORDER BY :sort_type, host_name ";
+("ASC" != $order) ? $rq1 .= "DESC" : $rq1 .= "ASC";
+$rq1 .= " LIMIT :numLimit, :limit";
+$queryValues['sort_type'] = [
+    PDO::PARAM_STR => $sort_type
+];
+$queryValues['numLimit'] = [
+    PDO::PARAM_INT => (int)($num * $limit)
+];
+$queryValues['limit'] = [
+    PDO::PARAM_INT => (int)$limit
+];
 
-$obj->XML = new CentreonXML();
-$obj->XML->startElement("reponse");
+$dbResult = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResult->execute();
+$numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 $class = "list_one";
 $ct = 0;
+$tab_final = [];
+$tabHGUrl = [];
 
-$tab_final = array();
-$tabHGUrl = array();
-$DBRESULT = $obj->DBC->query($rq1);
-$numRows = $obj->DBC->numberRows();
-
+$obj->XML = new CentreonXML();
+$obj->XML->startElement("reponse");
 $obj->XML->startElement("i");
 $obj->XML->writeElement("numrows", $numRows);
 $obj->XML->writeElement("num", $num);
@@ -154,14 +162,14 @@ $obj->XML->writeElement("p", $p);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
-while ($ndo = $DBRESULT->fetchRow()) {
+while ($ndo = $dbResult->fetch()) {
     if (!isset($tab_final[$ndo["hgname"]])) {
-        $tab_final[$ndo["hgname"]] = array();
+        $tab_final[$ndo["hgname"]] = [];
     }
     if (!isset($tab_final[$ndo["hgname"]][$ndo["host_name"]])) {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]] = array("0" => 0, "1" => 0, "2" => 0, "3" => 0, "4" => 0);
     }
-    if ($o != "svcSum_pb" && $o != "svcSum_ack_1" && $o != "svcSum_ack_0") {
+    if (strpos('svcSumHG_', $o) !== false) {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]][0] =
             $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
     }
@@ -177,7 +185,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $hg = "";
 $count = 0;
@@ -227,12 +235,8 @@ if (!$ct) {
 }
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();

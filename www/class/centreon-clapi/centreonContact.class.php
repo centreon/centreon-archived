@@ -165,9 +165,7 @@ class CentreonContact extends CentreonObject
      */
     public function getContactID($contact_name = null)
     {
-        $this->object->setCache(true);
         $cIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($contact_name));
-        $this->object->setCache(false);
         if (!count($cIds)) {
             throw new CentreonClapiException("Unknown contact: " . $contact_name);
         }
@@ -289,7 +287,13 @@ class CentreonContact extends CentreonObject
         }
 
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
+        if ($addParams['contact_admin'] == '') {
+            $addParams['contact_admin'] = '0';
+        }
         $addParams['contact_oreon'] = $params[self::ORDER_ACCESS];
+        if ($addParams['contact_oreon'] == '') {
+            $addParams['contact_oreon'] = '1';
+        }
         if ($this->checkLang($params[self::ORDER_LANG]) == false) {
             throw new CentreonClapiException(self::UNKNOWN_LOCALE);
         }

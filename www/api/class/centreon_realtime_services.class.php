@@ -123,7 +123,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
 
         /* Filters */
         if (isset($this->arguments['status'])) {
-            $statusList = array('up', 'down', 'unreachable', 'pending', 'all');
+            $statusList = array('ok', 'warning', 'critical', 'unknown', 'pending', 'all');
             if (in_array(strtolower($this->arguments['status']), $statusList)) {
                 $this->status = $this->arguments['status'];
             } else {

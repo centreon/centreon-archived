@@ -87,13 +87,13 @@ function testTPExistence($name = null)
 
     $query = "SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '" .
         htmlentities($centreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $tp = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $tp = $dbResult->fetch();
     #Modif case
-    if ($DBRESULT->rowCount() >= 1 && $tp["tp_id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $tp["tp_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->rowCount() >= 1 && $tp["tp_id"] != $id) {
+    elseif ($dbResult->rowCount() >= 1 && $tp["tp_id"] != $id) {
         return false;
     } else {
         return true;
@@ -104,9 +104,9 @@ function deleteTimeperiodInDB($timeperiods = array())
 {
     global $pearDB, $centreon;
     foreach ($timeperiods as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT tp_name FROM `timeperiod` WHERE `tp_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
-        $DBRESULT = $pearDB->query("DELETE FROM timeperiod WHERE tp_id = '" . $key . "'");
+        $dbResult2 = $pearDB->query("SELECT tp_name FROM `timeperiod` WHERE `tp_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult2->fetch();
+        $dbResult = $pearDB->query("DELETE FROM timeperiod WHERE tp_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("timeperiod", $key, $row['tp_name'], "d");
     }
 }
@@ -119,18 +119,18 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
         global $pearDB;
 
         $fields = array();
-        $DBRESULT = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '" . $key . "' LIMIT 1");
+        $dbResult = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '" . $key . "' LIMIT 1");
 
         $query = "SELECT days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '" . $key . "'";
         $res = $pearDB->query($query);
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             foreach ($row as $keyz => $valz) {
                 $fields[$keyz] = $valz;
             }
         }
 
-        $row = $DBRESULT->fetchRow();
-        $row["tp_id"] = '';
+        $row = $dbResult->fetch();
+        $row["tp_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
@@ -154,8 +154,8 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
                 /*
                  * Get Max ID
                  */
-                $DBRESULT = $pearDB->query("SELECT MAX(tp_id) FROM `timeperiod`");
-                $tp_id = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(tp_id) FROM `timeperiod`");
+                $tp_id = $dbResult->fetch();
 
                 $query = "INSERT INTO timeperiod_exceptions (timeperiod_id, days, timerange) " .
                     "SELECT " . $tp_id['MAX(tp_id)'] . ", days, timerange FROM timeperiod_exceptions " .
@@ -307,8 +307,8 @@ function insertTimeperiod($ret = array(), $exceptions = null)
         : $rq .= "NULL";
     $rq .= ")";
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
-    $tp_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
+    $tp_id = $dbResult->fetch();
 
     if (!isset($ret['tp_include'])) {
         $ret['tp_include'] = array();
@@ -342,7 +342,6 @@ function insertTimeperiod($ret = array(), $exceptions = null)
                 $fields[$my_tab[$exInput]] = $my_tab[$exValue];
                 $already_stored[strtolower($my_tab[$exInput])] = 1;
             }
-
         }
     }
 
@@ -414,8 +413,65 @@ function getTimeperiodIdByName($name)
     $id = 0;
     $res = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '" . $pearDB->escape($name) . "'");
     if ($res->rowCount()) {
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $id = $row['tp_id'];
     }
     return $id;
+}
+
+/**
+ * Get chain of time periods via template relation
+ *
+ * @global \Pimple\Container $dependencyInjector
+ * @param array $tpIds List of selected time period as IDs
+ * @return array
+ */
+function getTimeperiodsFromTemplate(array $tpIds)
+{
+    global $dependencyInjector;
+
+    $db = $dependencyInjector['centreon.db-manager'];
+
+    $result = [];
+
+    foreach ($tpIds as $tpId) {
+        $db->getRepository(Centreon\Domain\Repository\TimePeriodRepository::class)
+            ->getIncludeChainByParent($tpId, $result);
+    }
+
+    return $result;
+}
+
+/**
+ * Validator prevent loops via template
+ *
+ * @global \HTML_QuickFormCustom $form Access to the form object
+ * @param array $value List of selected time period as IDs
+ * @return bool
+ */
+function testTemplateLoop($value)
+{
+    // skip check if template field is empty
+    if (!$value) {
+        return true;
+    }
+
+    global $form;
+
+    $data = $form->getSubmitValues();
+
+    // skip check if timeperiod is new
+    if (!$data['tp_id']) {
+        return true;
+    } elseif (in_array($data['tp_id'], $value)) {
+        // try to skip heavy check of templates
+
+        return false;
+    } elseif (in_array($data['tp_id'], getTimeperiodsFromTemplate($value))) {
+        // get list of all timeperiods related via templates
+
+        return false;
+    }
+
+    return true;
 }

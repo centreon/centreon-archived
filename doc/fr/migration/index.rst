@@ -1,12 +1,20 @@
-#################################
-Migration de Nagios vers Centreon
-#################################
+.. _upgradecentreon1904:
 
-Ce chapitre présente les procédures de migration d'une plate-forme de supervision basée sur Nagios vers une plate-forme Centreon.
+#############################
+Migration vers Centreon 19.10
+#############################
+
+Ce chapitre présente les procédure de migration d'une plate-forme de
+supervision vers Centreon 19.10 :
+
+.. note::
+    Pour mettre à jour votre serveur Centreon 18.10 ou 19.04 vers 19.10, suivre cette
+    :ref:`procédure <upgrade>`.
 
 .. toctree::
    :maxdepth: 1
 
+   upgradetoCentreon19.10
+   pollerdisplaytoremoteserver
    nagiostocentreon
 
-Si vous avez des questions particulières en lien avec l'utilisation de ce module de migration, vous pouvez les poser sur notre `gitub <https://github.com/centreon/nagiosToCentreon>`_.

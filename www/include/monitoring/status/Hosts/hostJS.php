@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,16 +37,16 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"]) ||
-    $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0
+if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"])
+    || $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0
 ) {
     $tFM = 10;
 } else {
     $tFM = $centreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 }
 
-if (!isset($centreon->optGen["AjaxFirstTimeReloadStatistic"]) ||
-    $centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0
+if (!isset($centreon->optGen["AjaxFirstTimeReloadStatistic"])
+    || $centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0
 ) {
     $tFS = 10;
 } else {
@@ -206,10 +206,10 @@ if (isset($_GET["acknowledge"])) {
         }
         _oldInputFieldValue = _currentInputFieldValue;
 
-        setTimeout("mainLoopHost()", 250);
+        setTimeout(mainLoopHost, 250);
     }
 
-    function initM(_time_reload, _sid, _o) {
+    function initM(_time_reload, _o) {
 
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
@@ -234,12 +234,14 @@ if (isset($_GET["acknowledge"])) {
 
         _time =<?php echo $time; ?>;
         if (_on) {
-            goM(_time_reload, _sid, _o);
+            goM(_time_reload, _o);
         }
     }
 
-    function goM(_time_reload, _sid, _o) {
-
+    function goM(_time_reload, _o) {
+        if (_on == 0) {
+            return;
+        }
         _lock = 1;
         var proc = new Transformation();
 
@@ -252,7 +254,7 @@ if (isset($_GET["acknowledge"])) {
         var statusHost = jQuery.trim(jQuery('#statusHost').val());
         var statusFilter = jQuery.trim(jQuery('#statusFilter').val());
 
-        proc.setCallback(monitoringCallBack);
+        proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
         proc.setXml(_addrXML + "?" + 'search=' + _host_search + '&num=' + _num + '&limit=' + _limit +
             '&sort_type=' + _sort_type + '&order=' + _order + '&date_time_format_status=' + _date_time_format_status +
             '&o=' + _o + '&p=' + _p + '&time=<?php print time(); ?>&criticality=' + _criticality_id +
@@ -264,7 +266,10 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
-        _timeoutID = cycleVisibilityChange('goM("' + _time_reload + '","' + _sid + '","' + _o + '")', _time_reload);
+        if (_timeoutID) { // Kill next execution if in queue
+            clearTimeout(_timeoutID);
+        }
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
 
@@ -302,7 +307,7 @@ if (isset($_GET["acknowledge"])) {
                 }
             }
 
-            var url = './include/monitoring/external_cmd/popup/popup.php?sid=' + _sid + '&o=' + _o + '&p=' + _p +
+            var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p=' + _p +
                 '&cmd=' + cmd + _getVar;
 
             var popin = jQuery('<div>');
@@ -375,8 +380,10 @@ if (isset($_GET["acknowledge"])) {
             else {
                 var fixed = 0;
             }
-            var start = document.getElementById('start').value + ' ' + document.getElementById('start_time').value;
-            var end = document.getElementById('end').value + ' ' + document.getElementById('end_time').value;
+            var start = jQuery(document).find('[name="alternativeDateStart"]').val() + ' '
+                + document.getElementById('start_time').value;
+            var end = jQuery(document).find('[name="alternativeDateEnd"]').val() + ' '
+                + document.getElementById('end_time').value;
             var author = document.getElementById('author').value;
             var duration = document.getElementById('duration').value;
             var duration_scale = document.getElementById('duration_scale').value;
@@ -396,7 +403,6 @@ if (isset($_GET["acknowledge"])) {
         }
         xhr_cmd.send(null);
         window.currentPopin.centreonPopin("close");
-        //Modalbox.hide();
         unsetCheckboxes();
     }
 

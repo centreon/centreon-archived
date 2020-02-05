@@ -207,7 +207,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDBMonitoring->numberRows()
         );
     }
 
@@ -225,6 +225,17 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $additionalValues,
         $aclObj = null
     ) {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+
+        /* Get ACL if user is not admin */
+        $acl = null;
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+        }
+
         /* First, get virtual services for metaservices */
         $metaServiceCondition = '';
         $metaValues = $additionalValues;
@@ -232,14 +243,14 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $metaServices = $aclObj->getMetaServices();
             $virtualServices = array();
             foreach ($metaServices as $metaServiceId => $metaServiceName) {
-                $virtualServices[] = '"meta_' . $metaServiceId . '"';
+                $virtualServices[] = 'meta_' . $metaServiceId;
             }
             if (count($virtualServices)) {
                 $metaServiceCondition = 'AND s.description IN (';
                 $explodedValues = '';
                 foreach ($virtualServices as $k => $v) {
-                    $explodedValues .= ':meta' . $v . ',';
-                    $metaValues['metaService']['meta' . $v] = (string)$v;
+                    $explodedValues .= ':meta' . $k . ',';
+                    $metaValues['metaService']['meta' . $k] = (string)$v;
                 }
                 $explodedValues = rtrim($explodedValues, ',');
                 $metaServiceCondition .= $explodedValues . ') ';
@@ -250,14 +261,19 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
 
         $virtualServicesCondition = 'UNION ALL (' .
             'SELECT CONCAT("Meta - ", s.display_name) as fullname, i.host_id, i.service_id, m.index_id ' .
-            'FROM index_data i, metrics m, services s ' .
+            'FROM index_data i, metrics m, services s ' . (!$isAdmin ? ', centreon_acl acl ' : '') .
             $additionalTables .
             'WHERE i.id = m.index_id ' .
             'AND s.enabled = 1 ' .
             $additionalCondition .
             $metaServiceCondition .
-            'AND i.service_id = s.service_id ' .
-            ') ';
+            'AND i.service_id = s.service_id ';
+        if (!$isAdmin) {
+            $virtualServicesCondition .= 'AND acl.host_id = i.host_id ' .
+                'AND acl.service_id = i.service_id ' .
+                'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
+        }
+        $virtualServicesCondition .= ') ';
 
         /* Then, get virtual services for modules */
         $allVirtualServiceIds = CentreonHook::execute('Service', 'getVirtualServiceIds');
@@ -290,6 +306,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 }
             }
         }
+
         return array('query' => $virtualServicesCondition, 'value' => $metaValues);
     }
 }

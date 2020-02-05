@@ -40,6 +40,9 @@ require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
  */
 class CentreonACL
 {
+    const ACL_ACCESS_NONE = 0;
+    const ACL_ACCESS_READ_WRITE = 1;
+    const ACL_ACCESS_READ_ONLY = 2;
 
     private $userID; /* ID of the user */
     private $parentTemplates = null;
@@ -74,13 +77,13 @@ class CentreonACL
         $this->userID = $userId;
 
         if (!isset($isAdmin)) {
-            $localPearDB = new CentreonDB();
+            $db = \CentreonDBInstance::getConfInstance();
             $query = "SELECT contact_admin "
                 . "FROM `contact` "
                 . "WHERE contact_id = '" . CentreonDB::escape($userId) . "' "
                 . "LIMIT 1 ";
-            $RESULT = $localPearDB->query($query);
-            $row = $RESULT->fetchRow();
+            $result = $db->query($query);
+            $row = $result->fetch();
             $this->admin = $row['contact_admin'];
         } else {
             $this->admin = $isAdmin;
@@ -134,21 +137,22 @@ class CentreonACL
      */
     private function checkUpdateACL()
     {
-        global $pearDB;
-
         if (is_null($this->parentTemplates)) {
             $this->loadParentTemplates();
         }
 
         if (!$this->admin) {
+            $db = \CentreonDBInstance::getConfInstance();
             $query = "SELECT update_acl "
                 . "FROM session "
                 . "WHERE update_acl = '1' "
                 . "AND user_id IN (" . join(', ', $this->parentTemplates) . ") ";
-            $DBRES = $pearDB->query($query);
-            if ($DBRES->rowCount()) {
-                $pearDB->query("UPDATE session SET update_acl = '0'
-                    WHERE user_id IN (" . join(', ', $this->parentTemplates) . ")");
+            $result = $db->query($query);
+            if ($result->rowCount()) {
+                $db->query(
+                    "UPDATE session SET update_acl = '0' " .
+                    "WHERE user_id IN (" . join(', ', $this->parentTemplates) . ")"
+                );
                 $this->resetACL();
             }
         }
@@ -371,79 +375,178 @@ class CentreonACL
      */
     private function setTopology()
     {
+        $this->topology = [];
+        $centreonDb = \CentreonDBInstance::getConfInstance();
         if ($this->admin) {
             $query = "SELECT topology_page "
                 . "FROM topology "
                 . "WHERE topology_page IS NOT NULL ";
-            $DBRES = \CentreonDBInstance::getConfInstance()->query($query);
+            $DBRES = $centreonDb->query($query);
             while ($row = $DBRES->fetchRow()) {
-                $this->topology[$row['topology_page']] = 1;
+                $this->topology[$row['topology_page']] = self::ACL_ACCESS_READ_WRITE;
             }
             $DBRES->closeCursor();
-        } else {
-            if (count($this->accessGroups) > 0) {
-                # If user is in an access group
-                $str_topo = "";
-                $query = "SELECT DISTINCT acl_group_topology_relations.acl_topology_id "
-                    . "FROM acl_group_topology_relations, acl_topology, acl_topology_relations "
-                    . "WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id "
-                    . "AND acl_topology.acl_topo_activate = '1' "
-                    . "AND acl_group_topology_relations.acl_group_id IN (" . $this->getAccessGroupsString() . ") ";
-                $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
+        } elseif (count($this->accessGroups) > 0) {
+            // If user is in an access group
+            $query = "SELECT DISTINCT acl_group_topology_relations.acl_topology_id "
+                . "FROM acl_group_topology_relations, acl_topology, acl_topology_relations "
+                . "WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id "
+                . "AND acl_topology.acl_topo_activate = '1' "
+                . "AND acl_group_topology_relations.acl_group_id IN ("
+                . $this->getAccessGroupsString() . ") ";
 
-                if (!$DBRESULT->rowCount()) {
-                    $this->topology[1] = 1;
-                    $this->topology[101] = 1;
-                    $this->topology[10101] = 1;
-                } else {
-                    $topology = array();
-                    $tmp_topo_page = array();
-                    while ($topo_group = $DBRESULT->fetchRow()) {
-                        $query2 = "SELECT topology_topology_id, acl_topology_relations.access_right "
-                            . "FROM acl_topology_relations, acl_topology "
-                            . "WHERE acl_topology.acl_topo_activate = '1' "
-                            . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
-                            . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' ";
-                        $DBRESULT2 = \CentreonDBInstance::getConfInstance()->query($query2);
-                        while ($topo_page = $DBRESULT2->fetchRow()) {
-                            $topology[] = $topo_page["topology_topology_id"];
-                            if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
+            $DBRESULT = $centreonDb->query($query);
+
+            if ($DBRESULT->rowCount()) {
+                $topology = array();
+                $tmp_topo_page = array();
+                while ($topo_group = $DBRESULT->fetchRow()) {
+                    $query2 = "SELECT topology_topology_id, acl_topology_relations.access_right "
+                        . "FROM acl_topology_relations, acl_topology "
+                        . "WHERE acl_topology.acl_topo_activate = '1' "
+                        . "AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id "
+                        . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' "
+                        . "AND acl_topology_relations.access_right != 0"; // do not get "access none"
+                    $DBRESULT2 = $centreonDb->query($query2);
+                    while ($topo_page = $DBRESULT2->fetchRow()) {
+                        $topology[] = (int) $topo_page["topology_topology_id"];
+                        if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
+                            $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
+                        } else {
+                            if ($topo_page["access_right"] == self::ACL_ACCESS_READ_WRITE) {
                                 $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
-                            } else {
-                                if ($topo_page["access_right"] == 1) { // Read/Write
-                                    $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
-                                } else {
-                                    if ($topo_page["access_right"] == 2 &&
-                                        $tmp_topo_page[$topo_page["topology_topology_id"]] == 0
-                                    ) {
-                                        $tmp_topo_page[$topo_page["topology_topology_id"]] = 2;
-                                    }
-                                }
+                            } elseif ($topo_page["access_right"] == self::ACL_ACCESS_READ_ONLY
+                                && $tmp_topo_page[$topo_page["topology_topology_id"]] == self::ACL_ACCESS_NONE
+                            ) {
+                                $tmp_topo_page[$topo_page["topology_topology_id"]] =
+                                    self::ACL_ACCESS_READ_ONLY;
                             }
                         }
-                        $DBRESULT2->closeCursor();
                     }
-                    $DBRESULT->closeCursor();
-                    $ACL = "";
-                    if (count($topology)) {
-                        $ACL = "AND topology_id IN (" . implode(', ', $topology) . ") ";
-                    }
+                    $DBRESULT2->closeCursor();
+                }
+                $DBRESULT->closeCursor();
 
+                if (count($topology)) {
                     $query3 = "SELECT topology_page, topology_id "
                         . "FROM topology FORCE INDEX (`PRIMARY`) "
                         . "WHERE topology_page IS NOT NULL "
-                        . $ACL;
-                    $DBRESULT3 = \CentreonDBInstance::getConfInstance()->query($query3);
+                        . "AND topology_id IN (" . implode(', ', $topology) . ") ";
+                    $DBRESULT3 = $centreonDb->query($query3);
                     while ($topo_page = $DBRESULT3->fetchRow()) {
-                        $this->topology[$topo_page["topology_page"]] = $tmp_topo_page[$topo_page["topology_id"]];
+                        $this->topology[$topo_page["topology_page"]] =
+                            $tmp_topo_page[$topo_page["topology_id"]];
                     }
                     $DBRESULT3->closeCursor();
                 }
-            } else {
-                # If user isn't in an access group
-                $this->topology[1] = 1;
-                $this->topology[101] = 1;
-                $this->topology[10101] = 1;
+            }
+        }
+        $this->checkTopology();
+    }
+    
+    /**
+     * Use to check and fix if in the topology, a parent has access rights that
+     * can be higher than children when they have the same endpoint.
+     */
+    private function checkTopology(): void
+    {
+        if (!empty($this->topology)) {
+            /**
+             * Filter to keep the first child available per level.
+             */
+            $getFirstChildPerLvl = function (array $topologies): array {
+                ksort($topologies, \SORT_ASC);
+                $parentsLvl = [];
+                
+                // Classify topologies by parents
+                foreach (array_keys($topologies) as $page) {
+                    if (strlen($page) == 1) {
+                        // MENU level 1
+                        if (!array_key_exists($page, $parentsLvl)) {
+                            $parentsLvl[$page] = [];
+                        }
+                    } elseif (strlen($page) == 3) {
+                        // MENU level 2
+                        $parentLvl1 = substr($page, 0, 1);
+                        if (!array_key_exists($parentLvl1, $parentsLvl)) {
+                            $parentsLvl[$parentLvl1] = [];
+                        }
+                        if (!array_key_exists($page, $parentsLvl[$parentLvl1])) {
+                            $parentsLvl[$parentLvl1][$page] = [];
+                        }
+                    } elseif (strlen($page) == 5) {
+                        // MENU level 3
+                        $parentLvl1 = substr($page, 0, 1);
+                        $parentLvl2 = substr($page, 0, 3);
+                        if (!array_key_exists($parentLvl1, $parentsLvl)) {
+                            $parentsLvl[$parentLvl1] = [];
+                        }
+                        if (!array_key_exists($parentLvl2, $parentsLvl[$parentLvl1])) {
+                            $parentsLvl[$parentLvl1][$parentLvl2] = [];
+                        }
+                        if (!in_array($page, $parentsLvl[$parentLvl1][$parentLvl2])) {
+                            $parentsLvl[$parentLvl1][$parentLvl2][] = $page;
+                        }
+                    }
+                }
+                
+                /**
+                 * We keep the first lvl3 child by lvl1.
+                 * In this way, we keep the first child available for each parent
+                 */
+                foreach ($parentsLvl as $parentLvl1 => $childrenLvl2) {
+                    // First reading, we don't delete the first child
+                    $canDeleteOtherChild = false;
+                    foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
+                        if ($canDeleteOtherChild) {
+                            // Not the first reading, we can delete this child
+                            unset($parentsLvl[$parentLvl1][$parentLvl2]);
+                            continue;
+                        }
+                        // First reading
+                        ksort($childrenLvl3);
+                        // We keep the tree of the first child
+                        $parentsLvl[$parentLvl1][$parentLvl2] = is_array($childrenLvl3)
+                            ? array_slice($childrenLvl3, 0, 1, true)[0]
+                            : $childrenLvl3;
+                        /**
+                         * The first child has been processed so we set TRUE
+                         * to delete all the following children
+                         */
+                        $canDeleteOtherChild = true;
+                    }
+                }
+                return $parentsLvl;
+            };
+            
+            $parentsLvl = $getFirstChildPerLvl($this->topology);
+            
+            // We fix topologies according to filter
+            foreach ($parentsLvl as $parentLvl1 => $childrenLvl2) {
+                foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
+                    if (isset($this->topology[$childrenLvl3])
+                        && isset($this->topology[$parentLvl2])
+                        && $this->topology[$childrenLvl3] > $this->topology[$parentLvl2]
+                    ) {
+                        /**
+                         * The parent has more privileges than his child.
+                         * We define the access rights of parent with that of
+                         * his child.
+                         */
+                        $this->topology[$parentLvl2] = $this->topology[$childrenLvl3];
+                    }
+                    if (isset($this->topology[$parentLvl2])
+                        && isset($this->topology[$parentLvl1])
+                        && $this->topology[$parentLvl2] > $this->topology[$parentLvl1]
+                    ) {
+                        /**
+                         * The parent has more privileges than his child.
+                         * We define the access rights of parent with that of
+                         * his child.
+                         */
+                        $this->topology[$parentLvl1] = $this->topology[$parentLvl2];
+                    }
+                }
             }
         }
     }
@@ -457,18 +560,9 @@ class CentreonACL
      */
     public function getACLStr()
     {
-        foreach ($this->topology as $key => $tmp) {
-            if (isset($key) && $key) {
-                if ($this->topologyStr != "") {
-                    $this->topologyStr .= ", ";
-                }
-                $this->topologyStr .= "'" . $key . "'";
-            }
-        }
-        unset($key);
-        if (!$this->topologyStr) {
-            $this->topologyStr = "\'\'";
-        }
+        $this->topologyStr = empty($this->topology)
+            ? "''"
+            : implode(',', array_keys($this->topology));
     }
 
     /**
@@ -1361,42 +1455,46 @@ class CentreonACL
     /**
      * Function that returns the pair host/service by ID if $host_id is NULL
      *  Otherwise, it returns all the services of a specific host
+     *
+     * @param CentreonDB $pearDBMonitoring access to centreon_storage database
+     * @param Boolean $withServiceDescription to retrieve description of services
+     *
+     * @return array
      */
-    public function getHostsServices($pearDBMonitoring, $get_service_description = null)
+    public function getHostsServices($pearDBMonitoring, $withServiceDescription = false)
     {
-        $tab = array();
+        $tab = [];
         if ($this->admin) {
-            $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
+            $req = $withServiceDescription ? ", s.service_description " : "";
             $query = "SELECT h.host_id, s.service_id " . $req
                 . "FROM host h "
                 . "LEFT JOIN host_service_relation hsr on hsr.host_host_id = h.host_id "
                 . "LEFT JOIN service s on hsr.service_service_id = s.service_id "
-                . "WHERE h.host_activate = '1' "
-                . "AND (s.service_activate = '1' OR s.service_id is null) ";
-            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                if (!is_null($get_service_description)) {
+                . "WHERE h.host_register = '1' ";
+            $result = \CentreonDBInstance::getConfInstance()->query($query);
+            while ($row = $result->fetchRow()) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->closeCursor();
+            $result->closeCursor();
             // Used By EventLogs page Only
-            if (!is_null($get_service_description)) {
+            if ($withServiceDescription) {
                 // Get Services attached to hostgroups
                 $query = "SELECT hgr.host_host_id, s.service_id, s.service_description "
                     . "FROM hostgroup_relation hgr, service s, host_service_relation hsr "
                     . "WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
                     . "AND s.service_id = hsr.service_service_id ";
-                $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
-                while ($elem = $DBRESULT->fetchRow()) {
+                $result = \CentreonDBInstance::getConfInstance()->query($query);
+                while ($elem = $result->fetchRow()) {
                     $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];
                 }
-                $DBRESULT->closeCursor();
+                $result->closeCursor();
             }
         } else {
-            if (!is_null($get_service_description)) {
+            if ($withServiceDescription) {
                 $query = "SELECT acl.host_id, acl.service_id, s.description "
                     . "FROM centreon_acl acl "
                     . "LEFT JOIN services s on acl.service_id = s.service_id "
@@ -1409,21 +1507,21 @@ class CentreonACL
                     . "GROUP BY host_id, service_id ";
             }
 
-            $DBRESULT = $pearDBMonitoring->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                if (!is_null($get_service_description)) {
+            $result = $pearDBMonitoring->query($query);
+            while ($row = $result->fetchRow()) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->closeCursor();
+            $result->closeCursor();
         }
 
         return $tab;
     }
 
-    public function getHostServices($pearDBMonitoring, $host_id, $get_service_description = null)
+    public function getHostServices($pearDBMonitoring, $host_id)
     {
         $tab = array();
         if ($this->admin) {
@@ -1579,7 +1677,8 @@ class CentreonACL
                         $svc = getMyHostServices($data['id']);
                         foreach ($svc as $svc_id => $svc_name) {
                             $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
-                                . "VALUES ('" . $data["id"] . "', '" . $svc_id . "', " . $group_id . ")";
+                                . "VALUES ('" . $data["id"] . "', '" . $svc_id . "', " . $group_id . ") "
+                                . "ON DUPLICATE KEY UPDATE group_id = " . $group_id;
                             \CentreonDBInstance::getMonInstance()->query($request2);
                         }
                     } elseif ($data['action'] == 'DUP' && isset($data['duplicate_host'])) {
@@ -1596,11 +1695,12 @@ class CentreonACL
                             // Insert services
                             $request = "SELECT service_id, group_id FROM centreon_acl "
                                 . "WHERE host_id = " . $data['duplicate_host'] . " AND service_id IS NOT NULL";
-                            $DBRESULT = \CentreonDBInstance::getMonInstance()->query($request);
-                            while ($row = $DBRESULT->fetchRow()) {
+                            $DBRESULT2 = \CentreonDBInstance::getMonInstance()->query($request);
+                            while ($row2 = $DBRESULT2->fetch()) {
                                 $request2 = "INSERT INTO centreon_acl (host_id, service_id, group_id) "
                                     . "VALUES ('" . $data["id"] . "', "
-                                    . "'" . $row["service_id"] . "', " . $row['group_id'] . ")";
+                                    . "'" . $row2["service_id"] . "', " . $row2['group_id'] . ") "
+                                    . "ON DUPLICATE KEY UPDATE group_id = " . $row2['group_id'];
                                 \CentreonDBInstance::getMonInstance()->query($request2);
                             }
                         }
@@ -1770,6 +1870,14 @@ class CentreonACL
             }
             if (!$first) {
                 $requests['conditions'] .= ') ';
+            }
+        }
+
+        // Manage join
+        $requests['join'] = '';
+        if (isset($options['join']) && is_array($options['join'])) {
+            foreach ($options['join'] as $joinValues) {
+                $requests['join'] .= 'INNER JOIN ' . $joinValues['table'] . ' ON ' . $joinValues['condition'] . ' ';
             }
         }
 
@@ -2193,12 +2301,19 @@ class CentreonACL
         return $hg;
     }
 
-    public function getHostHostGroupAclConf($hg_id, $broker = null, $options = null)
+    /**
+     * @param $hg_id
+     * @param null $broker
+     * @param null $options
+     * @return array|void
+     */
+    public function getHostHostGroupAclConf($hgId, $broker = null, $options = null)
     {
         $hg = array();
 
         if (is_null($options)) {
             $options = array(
+                'distinct' => true,
                 'order' => array('LOWER(host_name)'),
                 'fields' => array('host_id', 'host_name'),
                 'keys' => array('host_id'),
@@ -2209,12 +2324,10 @@ class CentreonACL
 
         $request = $this->constructRequest($options);
 
-        $searchCondition = "";
-
         if ($this->admin) {
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM hostgroup, hostgroup_relation, host "
-                . "WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' "
+                . "WHERE hg_id = '" . CentreonDB::escape($hgId) . "' "
                 . "AND hg_activate = '1' "
                 . "AND host_activate='1' "
                 . "AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id "
@@ -2224,14 +2337,16 @@ class CentreonACL
             $groupIds = array_keys($this->accessGroups);
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM hostgroup, hostgroup_relation, host, acl_res_group_relations, acl_resources_hg_relations "
-                . "WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' "
+                . "WHERE hg_id = '" . CentreonDB::escape($hgId) . "' "
                 . "AND hg_activate = '1' "
                 . "AND host_activate='1' "
                 . "AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id "
                 . "AND hostgroup_relation.host_host_id = host.host_id "
                 . "AND acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
                 . "AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id "
-                . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id ";
+                . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id "
+                . "AND host.host_id NOT IN ( SELECT DISTINCT host_host_id "
+                . "FROM acl_resources_hostex_relations WHERE acl_res_id IN (" . implode(',', $groupIds) . "))";
         }
 
         $query .= $request['order'] . $request['pages'];
@@ -2287,10 +2402,10 @@ class CentreonACL
     public function getContactAclConf($options = array())
     {
         $request = $this->constructRequest($options, true);
-
         if ($this->admin) {
             $sql = $request['select'] . $request['fields'] . " "
                 . "FROM contact "
+                . $request['join']
                 . "WHERE contact_register = '1' "
                 . $request['conditions'];
         } else {
@@ -2298,6 +2413,7 @@ class CentreonACL
                 . "FROM ( "
                 . "SELECT " . $request['fields'] . " "
                 . "FROM acl_group_contacts_relations agcr, contact c "
+                . $request['join']
                 . "WHERE c.contact_id = agcr.contact_contact_id "
                 . "AND c.contact_register = '1'"
                 . "AND agcr.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
@@ -2314,7 +2430,6 @@ class CentreonACL
         }
 
         $sql .= $request['order'] . $request['pages'];
-
         $result = $this->constructResult($sql, $options);
 
         return $result;

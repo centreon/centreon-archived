@@ -37,18 +37,40 @@ if (!isset($centreon)) {
     exit();
 }
 
+if ($o == ACL_ADD || $o == ACL_MODIFY) {
+    /**
+     * Filtering the topology relation to remove all relations with access right
+     * that are not equal to 1 (CentreonACL::ACL_ACCESS_READ_WRITE)
+     * or 2 (CentreonACL::ACL_ACCESS_READ_ONLY)
+     */
+    if (isset($_POST['acl_r_topos']) && is_array($_POST['acl_r_topos'])) {
+        foreach ($_POST['acl_r_topos'] as $topologyId => $accessRight) {
+            $topologyId = (int) $topologyId;
+            $accessRight = (int) $accessRight;
+            // Only 1 or 2 are allowed
+            $hasAccessNotAllowed =
+                $accessRight != CentreonACL::ACL_ACCESS_READ_WRITE
+                && $accessRight != CentreonACL::ACL_ACCESS_READ_ONLY;
+
+            if ($hasAccessNotAllowed) {
+                unset($_POST['acl_r_topos'][$topologyId]);
+            }
+        }
+    }
+}
+
 /*
  * Database retrieve information for LCA
  */
-if ($o == "c" || $o == "w") {
-    $DBRESULT = $pearDB->query("SELECT * FROM acl_topology WHERE acl_topo_id = '" . $acl_id . "' LIMIT 1");
+if ($o == ACL_MODIFY || $o == ACL_WATCH) {
+    $DBRESULT = $pearDB->query("SELECT * FROM acl_topology WHERE acl_topo_id = '" . $aclTopologyId . "' LIMIT 1");
 
     // Set base value
     $acl = array_map("myDecode", $DBRESULT->fetchRow());
 
     // Set Topology relations
     $query = "SELECT topology_topology_id, access_right FROM acl_topology_relations " .
-        "WHERE acl_topo_id = '" . $acl_id . "'";
+        "WHERE acl_topo_id = '" . $aclTopologyId . "'";
     $DBRESULT = $pearDB->query($query);
     for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_topos"][$topo["topology_topology_id"]] = $topo["access_right"];
@@ -56,7 +78,8 @@ if ($o == "c" || $o == "w") {
     $DBRESULT->closeCursor();
 
     // Set Contact Groups relations
-    $query = "SELECT DISTINCT acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = '" . $acl_id . "'";
+    $query = "SELECT DISTINCT acl_group_id FROM acl_group_topology_relations "
+        . "WHERE acl_topology_id = '" . $aclTopologyId . "'";
     $DBRESULT = $pearDB->query($query);
     for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++) {
         $acl["acl_groups"][$i] = $groups["acl_group_id"];
@@ -67,7 +90,10 @@ if ($o == "c" || $o == "w") {
 $groups = array();
 $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 while ($group = $DBRESULT->fetchRow()) {
-    $groups[$group["acl_group_id"]] = $group["acl_group_name"];
+    $groups[$group["acl_group_id"]] = CentreonUtils::escapeSecure(
+        $group["acl_group_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 $DBRESULT->closeCursor();
 
@@ -90,11 +116,11 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
  */
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == ACL_ADD) {
     $form->addElement('header', 'title', _("Add an ACL"));
-} elseif ($o == "c") {
+} elseif ($o == ACL_MODIFY) {
     $form->addElement('header', 'title', _("Modify an ACL"));
-} elseif ($o == "w") {
+} elseif ($o == ACL_WATCH) {
     $form->addElement('header', 'title', _("View an ACL"));
 }
 
@@ -274,8 +300,8 @@ $redirect->setValue($o);
  */
 $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('acl_topo_name', _("Required"), 'required');
-$form->registerRule('exist', 'callback', 'testExistence');
-if ($o == "a") {
+$form->registerRule('exist', 'callback', 'hasTopologyNameNeverUsed');
+if ($o == ACL_ADD) {
     $form->addRule('acl_topo_name', _("Already exists"), 'exist');
 }
 $form->setRequiredNote(_("Required field"));
@@ -283,28 +309,27 @@ $form->setRequiredNote(_("Required field"));
 /*
  * Smarty template Init
  */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($path, new Smarty());
 
 /*
  * Just watch a LCA information
  */
-if ($o == "w") {
+if ($o == ACL_WATCH) {
     $form->addElement("button", "change", _("Modify"), array(
-        "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&acl_id=" . $acl_id . "'",
+        "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&acl_id=" . $aclTopologyId . "'",
         "class" => "btc bt_success"
     ));
     $form->setDefaults($acl);
     $form->freeze();
-} elseif ($o == "c") { # Modify a LCA information
+} elseif ($o == ACL_MODIFY) { # Modify a LCA information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
     $form->setDefaults($acl);
-} elseif ($o == "a") {  # Add a LCA information
+} elseif ($o == ACL_ADD) {  # Add a LCA information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 }
-$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&lca_id=" . $acl_id, "changeT" => _("Modify")));
+$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&lca_id=" . $aclTopologyId, "changeT" => _("Modify")));
 
 $tpl->assign("lca_topos2", $acl_topos2);
 $tpl->assign("sort1", _("General Information"));
@@ -324,6 +349,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
+
 if ($form->validate()) {
     $aclObj = $form->getElement('acl_topo_id');
     if ($form->getSubmitValue("submitA")) {

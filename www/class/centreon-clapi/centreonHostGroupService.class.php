@@ -965,15 +965,21 @@ class CentreonHostGroupService extends CentreonObject
                 if (!in_array($parameter, $this->exportExcludedParams) && !is_null($value) && $value != "") {
                     $action_tmp = null;
                     if ($parameter == "timeperiod_tp_id" || $parameter == "timeperiod_tp_id2") {
-                        $tmpObj = $tpObj;
+                        $action_tmp = 'TP';
+                        $tmpObj = CentreonTimePeriod::getInstance();
                     } elseif ($parameter == "command_command_id" || $parameter == "command_command_id2") {
-                        $tmpObj = $commandObj;
+                        $action_tmp = 'CMD';
+                        $tmpObj = CentreonCommand::getInstance();
                     }
                     if (isset($tmpObj)) {
-                        $tmp = $tmpObj->getParameters($value, $tmpObj->getUniqueLabelField());
-                        if (isset($tmp) && isset($tmp[$tmpObj->getUniqueLabelField()])) {
-                            $value = $tmp[$tmpObj->getUniqueLabelField()];
-                            $tmpObj::getInstance()->export($value);
+                        $tmpLabelField = $tmpObj->getObject()->getUniqueLabelField();
+                        $tmp = $tmpObj->getObject()->getParameters($value, $tmpLabelField);
+                        if (isset($tmp) && isset($tmp[$tmpLabelField])) {
+                            $tmp_id = $value;
+                            $value = $tmp[$tmpLabelField];
+                            if (!is_null($action_tmp)) {
+                                $tmpObj::getInstance()->export($value);
+                            }
                         }
                         unset($tmpObj);
                     }

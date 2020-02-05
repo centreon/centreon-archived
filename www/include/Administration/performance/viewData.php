@@ -89,36 +89,48 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '') {
+    if (!is_null($inputPost[$argumentName]) && (
+            (is_array($inputPost[$argumentName]) && $inputPost[$argumentName]) ||
+            (!is_array($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '')
+        )
+    ) {
         $inputs[$argumentName] = $inputPost[$argumentName];
     } else {
         $inputs[$argumentName] = $inputGet[$argumentName];
     }
 }
 
-if (isset($_POST["searchH"])){
+$searchS = null;
+$searchH = null;
+$searchP = null;
+
+if (isset($_POST['Search'])) {
     $num = 0;
+    $centreon->historySearch[$url] = array();
     $searchH = $_POST["searchH"];
-} elseif (isset($_GET['searchH'])) {
-    $searchH = $_GET['searchH'];
-} else {
-    $searchH = null;
-}
-
-if (isset($_POST["searchS"])){
-    $num = 0;
+    $centreon->historySearch[$url]["searchH"] = $searchH;
     $searchS = $_POST["searchS"];
-} elseif (isset($_GET['searchS'])) {
+    $centreon->historySearch[$url]["searchS"] = $searchS;
+    $searchP = $_POST["searchP"];
+    $centreon->historySearch[$url]["searchP"] = $searchP;
+} elseif (isset($_GET['Search'])) {
+    $centreon->historySearch[$url] = array();
+    $searchH = $_GET['searchH'];
+    $centreon->historySearch[$url]["searchH"] = $searchH;
     $searchS = $_GET['searchS'];
+    $centreon->historySearch[$url]["searchS"] = $searchS;
+    $searchP = $_GET['searchP'];
+    $centreon->historySearch[$url]["searchP"] = $searchP;
 } else {
-    $searchS = null;
-}
-
-/* Search for poller */
-if (isset($inputs['searchP']) && is_numeric($inputs['searchP'])) {
-    $searchP = $inputs['searchP'];
-} else {
-    $searchP = null;
+    if (isset($centreon->historySearch[$url]['searchH'])) {
+        $searchH = $centreon->historySearch[$url]['searchH'];
+    }
+    if (isset($centreon->historySearch[$url]['searchS'])) {
+        $searchS = $centreon->historySearch[$url]['searchS'];
+    }
+    if (isset($centreon->historySearch[$url]['searchP'])) {
+        $searchP = $centreon->historySearch[$url]['searchP'];
+    }
 }
 
 /* Get broker type */
@@ -217,7 +229,7 @@ $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.* FROM index_data i, metrics m" 
     " WHERE i.id = m.index_id $search_string ORDER BY host_name, service_description LIMIT " . $num * $limit .
     ", $limit";
 $DBRESULT = $pearDBO->query($query);
-$rows = $pearDBO->numberRows();
+$rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
     $query = "SELECT * FROM metrics WHERE index_id = '" . $index_data["id"] . "' ORDER BY metric_name";
@@ -272,6 +284,13 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
 
 ?>
     <script type="text/javascript">

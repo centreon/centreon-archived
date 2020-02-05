@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,7 +36,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/reporting/dashboard/common-Func.php";
@@ -46,11 +46,9 @@ require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
 include_once _CENTREON_PATH_ . "www/include/reporting/dashboard/DB-Func.php";
 
-/*
- * DB Connexion
- */
-$pearDB    = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
+// DB Connexion
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
 if (!isset($_SESSION["centreon"])) {
     CentreonSession::start();
@@ -63,9 +61,11 @@ if (!isset($_SESSION["centreon"])) {
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
-    $res = $pearDB->query($query);
-    if (!$res->rowCount()) {
+    $res = $pearDB->prepare("SELECT COUNT(*) as count FROM session WHERE user_id = :id");
+    $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
+    $res->execute();
+    $row = $res->fetch(\PDO::FETCH_ASSOC);
+    if ($row['count'] < 1) {
         get_error('bad session id');
     }
 } else {
@@ -74,16 +74,31 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 
 $centreon = $oreon;
 
-isset($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUOTES, "UTF-8") : $id = "NULL";
-isset($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES, "UTF-8") : $id = $id;
+$servicegroupId = filter_var(
+    $_GET['servicegroup'] ?? $_POST['servicegroup'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+// finding the user's allowed servicegroup
+$allowedServicegroup = $centreon->user->access->getServiceGroupAclConf(null, 'broker');
+
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $servicegroupId !== null
+    && !array_key_exists($servicegroupId, $allowedServicegroup)
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this service group</b></div>';
+    exit();
+}
 
 /*
  * Getting time interval to report
  */
 $dates = getPeriodToReport();
-$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$servicegroup_name = getServiceGroupNameFromId($id);
+$startDate = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+$endDate = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+$servicegroupName = getServiceGroupNameFromId($servicegroupId);
 
 /*
  * file type setting
@@ -91,98 +106,187 @@ $servicegroup_name = getServiceGroupNameFromId($id);
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: filename=".$servicegroup_name.".csv");
+header("Content-disposition: filename=" . $servicegroupName . ".csv");
 
-echo _("ServiceGroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-echo $servicegroup_name.";".date(_("d/m/Y H:i:s"), $start_date)."; "
-    . date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n\n";
-/*
- * Getting service group start
- */
-echo _("Status").";"._("Time").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
+echo _("ServiceGroup") . ";"
+    . _("Begin date") . "; "
+    . _("End date") . "; "
+    . _("Duration") . "\n";
+
+echo $servicegroupName . ";"
+    . date(_("d/m/Y H:i:s"), $startDate) . "; "
+    . date(_("d/m/Y H:i:s"), $endDate) . "; "
+    . ($endDate - $startDate) . "s\n\n";
+
+echo "\n";
+
+$stringMeanTime = _("Mean Time");
+$stringAlert = _("Alert");
+$stringOk = _("OK");
+$stringWarning = _("Warning");
+$stringCritical = _("Critical");
+$stringUnknown = _("Unknown");
+$stringDowntime = _("Scheduled Downtimes");
+$stringUndetermined = _("Undetermined");
+
+// Getting service group start
 $reportingTimePeriod = getreportingTimePeriod();
 $stats = array();
-$stats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod);
-echo _("OK").";".$stats["average"]["OK_TP"]."%;".$stats["average"]["OK_MP"]. "%;".$stats["average"]["OK_A"].";\n";
-echo _("WARNING").";".$stats["average"]["WARNING_TP"]."%;"
-    . $stats["average"]["WARNING_MP"]. "%;".$stats["average"]["WARNING_A"].";\n";
-echo _("CRITICAL").";".$stats["average"]["CRITICAL_TP"]."%;"
-    . $stats["average"]["CRITICAL_MP"]. "%;".$stats["average"]["CRITICAL_A"].";\n";
-echo _("UNKNOWN").";".$stats["average"]["UNKNOWN_TP"]."%;"
-    . $stats["average"]["UNKNOWN_MP"]. "%;".$stats["average"]["UNKNOWN_A"].";\n";
-echo _("UNDETERMINED").";".$stats["average"]["UNDETERMINED_TP"]."%;;;\n\n";
-/*
- * Services group services stats
- */
-echo _("Host").";"._("Service").";"._("OK Time").";"._("OK Mean Time").";"._("OK Alerts"). ";".
-    _("WARNING Time").";"._("WARNING Mean Time").";"._("WARNING Alerts"). ";".
-    _("CRITICAL Time").";"._("CRITICAL Mean Time").";"._("CRITICAL Alerts"). ";".
-    _("UNKNOWN Time").";"._("UNKNOWN Mean Time").";"._("UNKNOWN Alerts"). ";".
-    _("UNDETERMINED Time").";"._("UNDETERMINED Mean Time").";"._("UNDETERMINED Alerts")."\n";
+$stats = getLogInDbForServicesGroup(
+    $servicegroupId,
+    $startDate,
+    $endDate,
+    $reportingTimePeriod
+);
+
+echo _("Status") . ";"
+    . _("Total Time") . ";"
+    . $stringMeanTime . ";"
+    . $stringAlert . "\n";
+
+echo $stringOk . ";"
+    . $stats["average"]["OK_TP"] . "%;"
+    . $stats["average"]["OK_MP"] . "%;"
+    . $stats["average"]["OK_A"] . ";\n";
+
+echo $stringWarning . ";"
+    . $stats["average"]["WARNING_TP"] . "%;"
+    . $stats["average"]["WARNING_MP"] . "%;"
+    . $stats["average"]["WARNING_A"] . ";\n";
+
+echo $stringCritical . ";"
+    . $stats["average"]["CRITICAL_TP"] . "%;"
+    . $stats["average"]["CRITICAL_MP"] . "%;"
+    . $stats["average"]["CRITICAL_A"] . ";\n";
+
+echo $stringUnknown . ";"
+    . $stats["average"]["UNKNOWN_TP"] . "%;"
+    . $stats["average"]["UNKNOWN_MP"] . "%;"
+    . $stats["average"]["UNKNOWN_A"] . ";\n";
+
+echo $stringDowntime . ";"
+    . $stats["average"]["MAINTENANCE_TP"] . "%;;;\n";
+
+echo $stringUndetermined . ";"
+    . $stats["average"]["UNDETERMINED_TP"] . "%;;;\n\n";
+
+echo "\n\n";
+
+// Services group services stats
+echo _("Host") . ";"
+    . _("Service") . ";"
+    . $stringOk . " %;"
+    . $stringOk . " " . $stringMeanTime . " %;"
+    . $stringOk . " " . $stringAlert . ";"
+    . $stringWarning . " %;"
+    . $stringWarning . " " . $stringMeanTime . " %;"
+    . $stringWarning . " " . $stringAlert . ";"
+    . $stringCritical . " %;"
+    . $stringCritical . " " . $stringMeanTime . " %;"
+    . $stringCritical . " " . $stringAlert . ";"
+    . $stringUnknown . " %;"
+    . $stringUnknown . $stringMeanTime . " %;"
+    . $stringUnknown . " " . $stringAlert . ";"
+    . $stringDowntime . " %;"
+    . $stringUndetermined . "\n";
+
 foreach ($stats as $key => $tab) {
     if ($key != "average") {
-        echo $tab["HOST_NAME"]. ";".$tab["SERVICE_DESC"].";".$tab["OK_TP"]. "%;".$tab["OK_MP"]. "%;".$tab["OK_A"].
-                          ";".$tab["WARNING_TP"]. "%;".$tab["WARNING_MP"]. "%;".$tab["WARNING_A"].
-                          ";".$tab["CRITICAL_TP"]. "%;".$tab["CRITICAL_MP"]. "%;".$tab["CRITICAL_A"].
-                          ";".$tab["UNKNOWN_TP"]. "%;".$tab["UNKNOWN_MP"]. "%;".$tab["UNKNOWN_A"].
-                          ";".$tab["UNDETERMINED_TP"]. "%;;\n";
+        echo $tab["HOST_NAME"] . ";"
+            . $tab["SERVICE_DESC"] . ";"
+            . $tab["OK_TP"] . "%;"
+            . $tab["OK_MP"] . "%;"
+            . $tab["OK_A"] . ";"
+            . $tab["WARNING_TP"] . "%;"
+            . $tab["WARNING_MP"] . "%;"
+            . $tab["WARNING_A"] . ";"
+            . $tab["CRITICAL_TP"] . "%;"
+            . $tab["CRITICAL_MP"] . "%;"
+            . $tab["CRITICAL_A"] . ";"
+            . $tab["UNKNOWN_TP"] . "%;"
+            . $tab["UNKNOWN_MP"] . "%;"
+            . $tab["UNKNOWN_A"] . ";"
+            . $tab["MAINTENANCE_TP"] . " %;"
+            . $tab["UNDETERMINED_TP"]. "%\n";
     }
 }
 echo "\n\n";
 
-/*
- * Services group stats evolution
- */
-echo _("Day").";"._("Duration").";"
-               ._("OK Mean Time").";"._("OK Alert").";"
-               ._("Warning Mean Time").";"._("Warning Alert").";"
-               ._("Unknown Mean Time").";"._("Unknown Alert").";"
-               ._("Critical Mean Time").";"._("Critical Alert").";"
-               ._("Day")."\n";
+// Services group stats evolution
+echo _("Day") . ";"
+    . _("Duration") . ";"
+    . $stringOk . " " . $stringMeanTime . ";"
+    . $stringOk . " " . $stringAlert . ";"
+    . $stringWarning . " " . $stringMeanTime . ";"
+    . $stringWarning . " " . $stringAlert . ";"
+    . $stringUnknown . " " . $stringMeanTime . ";"
+    . $stringUnknown . " " . $stringAlert . ";"
+    . $stringCritical . " " . $stringMeanTime . ";"
+    . $stringCritical . " " . $stringAlert . ";"
+    . _("Day") . "\n";
+
+$dbResult = $pearDB->prepare(
+    "SELECT `service_service_id` FROM `servicegroup_relation` " .
+    "WHERE `servicegroup_sg_id` = :servicegroupId"
+);
+$dbResult->bindValue(':servicegroupId', $servicegroupId, PDO::PARAM_INT);
+$dbResult->execute();
+
 $str = "";
-$request = "SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$id."'";
-$DBRESULT = $pearDB->query($request);
-while ($sg = $DBRESULT->fetchRow()) {
+while ($sg = $dbResult->fetch()) {
     if ($str != "") {
         $str .= ", ";
     }
     $str .= "'" . $sg["service_service_id"] . "'";
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 if ($str == "") {
     $str = "''";
 }
 unset($sg);
-unset($DBRESULT);
+unset($dbResult);
 
-$request =  "SELECT `date_start`, `date_end`, sum(`OKnbEvent`) as OKnbEvent, sum(`CRITICALnbEvent`) as CRITICALnbEvent,"
-            . " sum(`WARNINGnbEvent`) as WARNINGnbEvent, sum(`UNKNOWNnbEvent`) as UNKNOWNnbEvent, "
-            . "avg( `OKTimeScheduled` ) as OKTimeScheduled, "
-            . "avg( `WARNINGTimeScheduled` ) as WARNINGTimeScheduled, "
-            . "avg( `UNKNOWNTimeScheduled` ) as UNKNOWNTimeScheduled, "
-            . "avg( `CRITICALTimeScheduled` ) as CRITICALTimeScheduled "
-            . "FROM `log_archive_service` WHERE `service_id` IN (".$str.") "
-            . "AND `date_start` >= '".$start_date."' "
-            . "AND `date_end` <= '".$end_date."' "
-            . "GROUP BY `date_end`, `date_start` order by `date_start` desc";
-$res = $pearDBO->query($request);
+$res = $pearDBO->prepare(
+    "SELECT `date_start`, `date_end`, sum(`OKnbEvent`) as OKnbEvent, "
+    . "sum(`CRITICALnbEvent`) as CRITICALnbEvent, "
+    . "sum(`WARNINGnbEvent`) as WARNINGnbEvent, "
+    . "sum(`UNKNOWNnbEvent`) as UNKNOWNnbEvent, "
+    . "avg( `OKTimeScheduled` ) as OKTimeScheduled, "
+    . "avg( `WARNINGTimeScheduled` ) as WARNINGTimeScheduled, "
+    . "avg( `UNKNOWNTimeScheduled` ) as UNKNOWNTimeScheduled, "
+    . "avg( `CRITICALTimeScheduled` ) as CRITICALTimeScheduled "
+    . "FROM `log_archive_service` WHERE `service_id` IN (" . $str . ") "
+    . "AND `date_start` >= :startDate "
+    . "AND `date_end` <= :endDate "
+    . "GROUP BY `date_end`, `date_start` order by `date_start` desc"
+);
+$res->bindValue(':startDate', $startDate, PDO::PARAM_INT);
+$res->bindValue(':endDate', $endDate, PDO::PARAM_INT);
+$res->execute();
+
 $statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-while ($row = $res->fetchRow()) {
+while ($row = $res->fetch()) {
     $duration = $row["date_end"] - $row["date_start"];
 
     /* Percentage by status */
     $duration = $row["OKTimeScheduled"] + $row["WARNINGTimeScheduled"] + $row["UNKNOWNTimeScheduled"]
-                + $row["CRITICALTimeScheduled"];
+        + $row["CRITICALTimeScheduled"];
+
     $row["OK_MP"] = round($row["OKTimeScheduled"] * 100 / $duration, 2);
     $row["WARNING_MP"] = round($row["WARNINGTimeScheduled"] * 100 / $duration, 2);
     $row["UNKNOWN_MP"] = round($row["UNKNOWNTimeScheduled"] * 100 / $duration, 2);
     $row["CRITICAL_MP"] = round($row["CRITICALTimeScheduled"] * 100 / $duration, 2);
 
-    echo $row["date_start"].";".$duration."s;"
-        . $row["OK_MP"]."%;".$row["OKnbEvent"].";"
-        . $row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";"
-        . $row["UNKNOWN_MP"]."%;".$row["UNKNOWNnbEvent"].";"
-        . $row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";"
-        . date("Y-m-d H:i:s", $row["date_start"]).";\n";
+    echo $row["date_start"] . ";"
+        . $duration . "s;"
+        . $row["OK_MP"] . "%;"
+        . $row["OKnbEvent"] . ";"
+        . $row["WARNING_MP"] . "%;"
+        . $row["WARNINGnbEvent"] . ";"
+        . $row["UNKNOWN_MP"] . "%;"
+        . $row["UNKNOWNnbEvent"] . ";"
+        . $row["CRITICAL_MP"] . "%;"
+        . $row["CRITICALnbEvent"] . ";"
+        . date("Y-m-d H:i:s", $row["date_start"]) . ";\n";
 }
 $res->closeCursor();

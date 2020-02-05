@@ -341,6 +341,14 @@ if (isset($_SESSION['customview_edit_mode'])) {
 ?>
 <script type="text/javascript">
     var defaultShow = <?php echo $modeEdit; ?>;
+    var deleteWdgtMessage =
+        "<?php echo _("Deleting this widget might impact users with whom you are sharing this view. " .
+            "Are you sure you want to do it?");?>";
+    var deleteViewMessage =
+        "<?php echo _("Deleting this view might impact other users. Are you sure you want to do it?");?>";
+    var setDefaultMessage = "<?php echo _("Set this view as your default view?");?>";
+    var wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
+    var trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
 
     /**
      * Resize widget iframe

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -83,15 +83,10 @@ if (isset($_GET["openid"])) {
     $openid = $_GET["openid"];
 }
 
-if (isset($_GET["id"])) {
-    $id = $_GET["id"];
-} else {
-    $id = 1;
-}
-
-if (isset($_POST["id"])) {
-    $id = $_POST["id"];
-}
+$id = filter_var(
+    $_GET['id'] ?? $_POST['id'] ?? 1,
+    FILTER_VALIDATE_INT
+);
 
 $serviceGrpArray = array();
 $pollerArray = array();
@@ -197,15 +192,80 @@ $lang = array(
 );
 
 $form->addElement('select', 'period', _("Log Period"), $periods);
-$form->addElement('text', 'StartDate', '', array("id" => "StartDate", "class" => "datepicker", "size" => 8));
-$form->addElement('text', 'StartTime', '', array("id" => "StartTime", "class" => "timepicker", "size" => 5));
-$form->addElement('text', 'EndDate', '', array("id" => "EndDate", "class" => "datepicker", "size" => 8));
-$form->addElement('text', 'EndTime', '', array("id" => "EndTime", "class" => "timepicker", "size" => 5));
+$form->addElement(
+    'text',
+    'StartDate',
+    '',
+    array(
+        "id" => "StartDate",
+        "onClick" => "resetPeriod()",
+        "class" => "datepicker",
+        "size" => 8
+    )
+);
+$form->addElement(
+    'text',
+    'StartTime',
+    '',
+    array(
+        "id" => "StartTime",
+        "onChange" => "resetPeriod()",
+        "class" => "timepicker",
+        "size" => 5
+    )
+);
+$form->addElement(
+    'text',
+    'EndDate',
+    '',
+    array(
+        "id" => "EndDate",
+        "onClick" => "resetPeriod()",
+        "class" => "datepicker",
+        "size" => 8
+    )
+);
+$form->addElement(
+    'text',
+    'EndTime',
+    '',
+    array(
+        "id" => "EndTime",
+        "onChange" => "resetPeriod()",
+        "class" => "timepicker",
+        "size" => 5
+    )
+);
 $form->addElement(
     'text',
     'output',
     _("Output"),
-    array("id" => "output", "style" => "width: 203px;", "size" => 15, "value" => $user_params['output'])
+    array(
+        "id" => "output",
+        "style" => "width: 203px;",
+        "size" => 15,
+        "value" => $user_params['output']
+    )
+);
+
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$form->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$form->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
 );
 
 if ($engine == "false") {
@@ -213,14 +273,20 @@ if ($engine == "false") {
         'button',
         'graph',
         _("Apply period"),
-        array("onclick" => "apply_period()", "class" => "btc bt_success")
+        array(
+            "onclick" => "apply_period()",
+            "class" => "btc bt_success"
+        )
     );
 } else {
     $form->addElement(
         'button',
         'graph',
         _("Apply period"),
-        array("onclick" => "apply_period_engine()", "class" => "btc bt_success")
+        array(
+            "onclick" => "apply_period_engine()",
+            "class" => "btc bt_success"
+        )
     );
 }
 
@@ -232,7 +298,13 @@ $attrHost1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultHosts
 );
-$form->addElement('select2', 'host_filter', _("Hosts"), array(), $attrHost1);
+$form->addElement(
+    'select2',
+    'host_filter',
+    _("Hosts"),
+    array(),
+    $attrHost1
+);
 
 $serviceGroupRoute = './include/common/webServices/rest/'
     . 'internal.php?object=centreon_configuration_servicegroup&action=list';
@@ -243,7 +315,13 @@ $attrServicegroup1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultServicegroups
 );
-$form->addElement('select2', 'service_group_filter', _("Services Groups"), array(), $attrServicegroup1);
+$form->addElement(
+    'select2',
+    'service_group_filter',
+    _("Services Groups"),
+    array(),
+    $attrServicegroup1
+);
 
 $serviceRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
 $attrService1 = array(
@@ -253,7 +331,13 @@ $attrService1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultServices
 );
-$form->addElement('select2', 'service_filter', _("Services"), array(), $attrService1);
+$form->addElement(
+    'select2',
+    'service_filter',
+    _("Services"),
+    array(),
+    $attrService1
+);
 
 $hostGroupRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostGroup1 = array(
@@ -263,7 +347,13 @@ $attrHostGroup1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultHostgroups
 );
-$form->addElement('select2', 'host_group_filter', _("Hosts Groups"), array(), $attrHostGroup1);
+$form->addElement(
+    'select2',
+    'host_group_filter',
+    _("Hosts Groups"),
+    array(),
+    $attrHostGroup1
+);
 
 $pollerRoute = './include/common/webServices/rest/internal.php?object=centreon_monitoring_poller&action=list';
 $attrPoller1 = array(
@@ -273,9 +363,19 @@ $attrPoller1 = array(
     'multiple' => true,
     'defaultDataset' => $defaultPollers
 );
-$form->addElement('select2', 'poller_filter', _("Pollers"), array(), $attrPoller1);
+$form->addElement(
+    'select2',
+    'poller_filter',
+    _("Pollers"),
+    array(),
+    $attrPoller1
+);
 
-$form->setDefaults(array("period" => $user_params['log_filter_period']));
+$form->setDefaults(
+    array(
+        "period" => $user_params['log_filter_period']
+    )
+);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
@@ -293,6 +393,9 @@ if ($engine == 'false') {
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
+    /*
+     * Selecting chosen Host, Service, HG and/or SG
+     */
     function apply_period() {
         var openid = getArgsForHost();
         logs(openid[0], '', '');
@@ -319,7 +422,6 @@ if ($engine == 'false') {
         _num = num;
         logsEngine();
     }
-
     var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
     var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
     var _engine = <?php echo $engine; ?>;
@@ -368,8 +470,8 @@ if ($engine == 'false') {
     }
 
     if (document.FormPeriod && document.FormPeriod.period.value == "") {
-        document.FormPeriod.StartDate.value = StartDate;
-        document.FormPeriod.EndDate.value = EndDate;
+        jQuery("input[name=alternativeDateStartDate]").val(StartDate);
+        jQuery("input[name=alternativeDateEndDate]").val(EndDate);
         document.FormPeriod.StartTime.value = StartTime;
         document.FormPeriod.EndTime.value = EndTime;
     }
@@ -382,7 +484,7 @@ if ($engine == 'false') {
         if (poller_value !== null) {
             urlargs += "&poller=";
             var flagfirst = true;
-            poller_value.each(function (val) {
+            poller_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -401,7 +503,6 @@ if ($engine == 'false') {
         if (window.history.pushState) {
             window.history.pushState("", "", "main.php?p=20302&engine=true" + urlargs);
         }
-
         controlTimePeriod();
         var proc = new Transformation();
         var _addrXSL = "./include/eventLogs/xsl/logEngine.xsl";
@@ -414,7 +515,7 @@ if ($engine == 'false') {
                 '&limit=' + _limit + '&id=' + args;
             proc.setXml(_addr);
             proc.setXslt(_addrXSL);
-            proc.setCallback(formatDateMoment);
+            proc.setCallback(function(t){formatDateMoment(t); proc = null;});
             proc.transform("logView4xml");
         } else {
             if (type == 'CSV') {
@@ -435,27 +536,43 @@ if ($engine == 'false') {
 
     }
 
+
+    function resetPeriod(){
+        document.FormPeriod.period.value = "";
+    }
+
+
     function controlTimePeriod() {
         if (document.FormPeriod) {
             if (document.FormPeriod.period.value != "") {
                 period = document.FormPeriod.period.value;
+                jQuery("input[name=alternativeDateStartDate]").val("");
+                jQuery("#StartDate").val("");
+                jQuery("#StartTime").val("");
+                jQuery("input[name=alternativeDateEndDate]").val("");
+                jQuery("#EndDate").val("");
+                jQuery("#EndTime").val("");
             } else {
                 period = '';
-                StartDate = document.FormPeriod.StartDate.value;
-                EndDate = document.FormPeriod.EndDate.value;
-                StartTime = document.FormPeriod.StartTime.value;
-                EndTime = document.FormPeriod.EndTime.value;
+                StartTime = '00:00';
+                EndTime = '24:00';
+
+                if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
+                    jQuery("input[name=alternativeDateEndDate]").val() != ""
+                ) {
+                    StartDate = jQuery("input[name=alternativeDateStartDate]").val();
+                    EndDate = jQuery("input[name=alternativeDateEndDate]").val();
+                }
+
+                if (document.FormPeriod.StartTime.value != "") {
+                    StartTime = document.FormPeriod.StartTime.value;
+                }
+
+                if (document.FormPeriod.EndTime.value != "") {
+                    EndTime = document.FormPeriod.EndTime.value;
+                }
             }
         }
-        if (document.FormPeriod && document.FormPeriod.StartDate.value != "")
-            StartDate = document.FormPeriod.StartDate.value;
-        if (document.FormPeriod && document.FormPeriod.EndDate.value != "")
-            EndDate = document.FormPeriod.EndDate.value;
-
-        if (document.FormPeriod && document.FormPeriod.StartTime.value != "")
-            StartTime = document.FormPeriod.StartTime.value;
-        if (document.FormPeriod && document.FormPeriod.EndTime.value != "")
-            EndTime = document.FormPeriod.EndTime.value;
     }
 
     function logs(id, formu, type) {
@@ -489,22 +606,19 @@ if ($engine == 'false') {
                 '&down=' + _down + '&up=' + _up + '&num=' + _num + '&error=' + _error + '&alert=' + _alert +
                 '&notification=' + _notification + '&search_H=' + _search_H + '&search_S=' + _search_S +
                 '&period=' + period + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id +
-
-
-
+                '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + id
                 <?php
                 if (isset($search) && $search) {
-                    print "&search_host=" . $search;
-                } if (isset($search_service) && $search_service) {
-                    print "&search_service=" . $search_service;
+                    print " + &search_host=" . $search;
+                }
+                if (isset($search_service) && $search_service) {
+                    print " + &search_service=" . $search_service;
                 }
                 ?>;
 
-
             proc.setXml(_addr)
             proc.setXslt(_addrXSL)
-            proc.setCallback(formatDateMoment)
+            proc.setCallback(function(t){formatDateMoment(t); proc = null;});
             proc.transform("logView4xml");
         } else {
             var openid = document.getElementById('openid').innerHTML;
@@ -516,12 +630,13 @@ if ($engine == 'false') {
                         '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
                         '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
                         '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid
                         <?php
                         if (isset($search) && $search) {
-                            print "&search_host=" . $search;
-                        } if (isset($search_service) && $search_service) {
-                            print "&search_service=" . $search_service;
+                            print " + &search_host=" . $search;
+                        }
+                        if (isset($search_service) && $search_service) {
+                            print " + &search_service=" . $search_service;
                         }
                         ?> +'&export=1';
                 } else if (type == 'XML') {
@@ -531,14 +646,14 @@ if ($engine == 'false') {
                         '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
                         '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
                         '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid
                         <?php
                         if (isset($search) && $search) {
-                            print "&search_host=" . $search;
+                            print " + &search_host=" . $search;
                             print "&search_host=" . $search;
                         }
                         if (isset($search_service) && $search_service) {
-                            print "&search_service=" . $search_service;
+                            print " + &search_service=" . $search_service;
                         }
                         ?> +'&export=1';
                 }
@@ -546,7 +661,7 @@ if ($engine == 'false') {
                 var poller_value = jQuery("#poller_filter").val();
                 var args = "";
                 if (poller_value !== null) {
-                    poller_value.each(function (val) {
+                    poller_value.forEach(function (val) {
                         if (val !== " " && val !== "") {
                             if (args !== "") {
                                 args += ",";
@@ -618,7 +733,7 @@ if ($engine == 'false') {
         if (host_value !== null) {
             urlargs += "&h=";
             var flagfirst = true;
-            host_value.each(function (val) {
+            host_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -636,7 +751,7 @@ if ($engine == 'false') {
         if (service_value !== null) {
             urlargs += "&svc=";
             var flagfirst = true;
-            service_value.each(function (val) {
+            service_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -654,7 +769,7 @@ if ($engine == 'false') {
         if (hg_value !== null) {
             urlargs += "&hg=";
             var flagfirst = true;
-            hg_value.each(function (val) {
+            hg_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -672,7 +787,7 @@ if ($engine == 'false') {
         if (sg_value !== null) {
             urlargs += "&svcg=";
             var flagfirst = true;
-            sg_value.each(function (val) {
+            sg_value.forEach(function (val) {
                 if (val !== " " && val !== "") {
                     if (args !== "") {
                         args += ",";
@@ -694,6 +809,9 @@ if ($engine == 'false') {
         if (_engine == 0) {
             // Here is your precious function
             // You can call as many functions as you want here;
+
+            /* initializing datepicker and the alternative format field */
+            initDatepicker("datepicker", "mm/dd/yy", null);
 
             jQuery("#service_group_filter, #host_filter, #service_filter, #host_group_filter").change(
                 function (event, infos) {
@@ -723,7 +841,7 @@ if ($engine == 'false') {
                     dataType: "json",
                     data: "hgid=" + hg_value,
                     success: function (json) {
-                        json.items.each(function (elem) {
+                        json.items.forEach(function (elem) {
                             if (jQuery.inArray(elem.id, host_value) === -1) {
                                 var existingOptions = jQuery("#host_filter").find('option');
                                 var existFlag = false;
@@ -759,7 +877,7 @@ if ($engine == 'false') {
                     dataType: "json",
                     data: "sgid=" + sg_value,
                     success: function (json) {
-                        json.items.each(function (elem) {
+                        json.items.forEach(function (elem) {
                             if (jQuery.inArray(elem.id, service_value) === -1) {
                                 var existingOptions = jQuery("#service_filter option");
                                 var existFlag = false;

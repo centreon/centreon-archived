@@ -34,5 +34,6 @@ Architecture
 
 Le schéma ci-dessous résume le fonctionnement de l'architecture :
 
-.. image :: /images/architecture/aschema.png
+.. image :: /images/architecture/Architecture_standalone.png
    :align: center 
+   :scale: 65%

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,18 +37,29 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-/*
- * Search engine
- */
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchR']) && $_POST['searchR']) {
-    $search = $_POST['searchR'];
-    $SearchTool = " WHERE resource_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+// Search engine
+
+$search = filter_var(
+    $_POST['searchR'] ?? $_GET['searchR'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchR']) || isset($_GET['searchR'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+}
+
+$SearchTool = '';
+if ($search) {
+    $SearchTool .= " WHERE resource_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
 
 $aclCond = "";
@@ -61,28 +72,25 @@ if (!$oreon->user->admin && count($allowedResourceConf)) {
     $aclCond .= "resource_id IN (" . implode(',', array_keys($allowedResourceConf)) . ") ";
 }
 
+// resources list
+$dbResult = $pearDB->query(
+    "SELECT SQL_CALC_FOUND_ROWS * FROM cfg_resource " . $SearchTool . $aclCond .
+    " ORDER BY resource_name LIMIT " . $num * $limit . ", " . $limit
+);
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*)
-                            FROM cfg_resource $SearchTool $aclCond");
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+include "./include/common/checkPagination.php";
 
-include("./include/common/checkPagination.php");
-
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_values", _("Values"));
 $tpl->assign("headerMenu_comment", _("Description"));
@@ -90,27 +98,14 @@ $tpl->assign("headerMenu_associated_poller", _("Associated pollers"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * resources list
- */
-$rq = "SELECT *
-       FROM cfg_resource $SearchTool $aclCond
-       ORDER BY resource_name
-       LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
-
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $resource = $dbResult->fetch(); $i++) {
     preg_match("\$USER([0-9]*)\$", $resource["resource_name"], $tabResources);
     $selectedElements = $form->addElement('checkbox', "select[" . $resource['resource_id'] . "]");
     $moptions = "";
@@ -131,14 +126,27 @@ for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
         "order" => isset($tabResources[1]) ? $tabResources[1] : null,
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => CentreonUtils::escapeSecure($resource["resource_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&resource_id=" . $resource['resource_id'],
-        "RowMenu_values" => substr($resource["resource_line"], 0, 40),
-        "RowMenu_comment" => CentreonUtils::escapeSecure(substr(html_entity_decode(
-            $resource["resource_comment"],
-            ENT_QUOTES,
-            "UTF-8"
-        ), 0, 40)),
+        "RowMenu_name" => CentreonUtils::escapeSecure(
+            $resource["resource_name"],
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&resource_id=" . $resource['resource_id'],
+        "RowMenu_values" => CentreonUtils::escapeSecure(
+            substr($resource["resource_line"], 0, 40),
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
+        "RowMenu_comment" => CentreonUtils::escapeSecure(
+            substr(
+                html_entity_decode(
+                    $resource["resource_comment"],
+                    ENT_QUOTES,
+                    "UTF-8"
+                ),
+                0,
+                40
+            ),
+            CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+        ),
         "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
         "RowMenu_status" => $resource["resource_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $resource["resource_activate"] ? "service_ok" : "service_critical",
@@ -169,23 +177,23 @@ while ($flag) {
 }
 
 $tpl->assign("elemArr", $elemArr);
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
@@ -216,9 +224,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('limit', $limit);
 $tpl->assign('searchR', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

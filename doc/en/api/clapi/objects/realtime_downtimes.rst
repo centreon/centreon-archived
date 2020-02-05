@@ -1,6 +1,6 @@
-=========
+===================
 Real time Downtimes
-=========
+===================
 
 Overview
 --------
@@ -8,7 +8,7 @@ Overview
 Object name: **RTDOWNTIME**
 
 Show host real time downtime
----------------------------
+----------------------------
 
 In order to list available real time downtimes, use the **SHOW** action::
 You can use the value "HOST" to display all the downtimes::
@@ -45,7 +45,7 @@ Fixed                             Downtime starts and stops at the exact start a
 ================================= ===========================================================================
 
 Show service real time downtime
-------------------------------
+-------------------------------
 
 In order to list available real time downtimes, use the **SHOW** action::
 You can use the value "SVC" to display all the downtimes::
@@ -84,7 +84,7 @@ Fixed                             Downtime starts and stops at the exact start a
 ================================= ===========================================================================
 
 Real time Downtime for : Addhost, addhostgroup
------------------------------------------------------------
+----------------------------------------------
 
 If you want to associate a host, host group to a real time downtime, use the **ADD** action::
 To set the value of the start/end, use following format : YYYY/MM/DD HH:mm::
@@ -117,7 +117,7 @@ Order     Description
 
 
 Real time Downtime for : addservice, addservicegroup
------------------------------------------------------------
+----------------------------------------------------
 
 If you want to associate a service or service group to a real time downtime, use the **ADD** action::
 To set the value of the start/end, use following format : YYYY/MM/DD HH:mm::
@@ -147,7 +147,7 @@ Order     Description
 ========= ============================================
 
 Add instance real time downtime
-------------------------------
+-------------------------------
 
 In order to add a new real time downtime for a poller, use the **ADD** action::
 To set the value of the start/end, use following format : YYYY/MM/DD HH:mm::
@@ -177,7 +177,7 @@ Order     Description
 
 
 Cancel a real time downtime
-------------------------------
+---------------------------
 
 In order to cancel a real time downtime, use the **CANCEL** action::
 To get the value of the id, use the **SHOW** action::

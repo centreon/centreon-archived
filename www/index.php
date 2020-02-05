@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +34,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__).'/../config/centreon.config.php');
+require_once realpath(__DIR__ . '/../config/centreon.config.php');
 
 $etc = _CENTREON_ETC_;
 
@@ -42,28 +42,26 @@ define('SMARTY_DIR', realpath('../vendor/smarty/smarty/libs/') . '/');
 
 ini_set('display_errors', 'Off');
 
-clearstatcache(true, "$etc/centreon.conf.php");
-if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
+clearstatcache(true, $etc . "/centreon.conf.php");
+if (!file_exists($etc . "/centreon.conf.php") && is_dir('./install')) {
     header("Location: ./install/install.php");
     return;
 } elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
-    require_once("$etc/centreon.conf.php");
+    require_once $etc . "/centreon.conf.php";
     header("Location: ./install/upgrade.php");
 } else {
-    if (file_exists("$etc/centreon.conf.php")) {
-        require_once("$etc/centreon.conf.php");
-        $freeze = 0;
-    } else {
-        $freeze = 0;
+    if (file_exists($etc . "/centreon.conf.php")) {
+        require_once $etc . "/centreon.conf.php";
     }
+    $freeze = 0;
 }
 
-require_once "$classdir/centreon.class.php";
-require_once "$classdir/centreonSession.class.php";
-require_once "$classdir/centreonAuth.SSO.class.php";
-require_once "$classdir/centreonLog.class.php";
-require_once "$classdir/centreonDB.class.php";
-require_once SMARTY_DIR."Smarty.class.php";
+require_once $classdir . "/centreon.class.php";
+require_once $classdir . "/centreonSession.class.php";
+require_once $classdir . "/centreonAuth.SSO.class.php";
+require_once $classdir . "/centreonLog.class.php";
+require_once $classdir . "/centreonDB.class.php";
+require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
  * Get auth type
@@ -71,40 +69,52 @@ require_once SMARTY_DIR."Smarty.class.php";
 global $pearDB;
 $pearDB = new CentreonDB();
 
-$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-while ($generalOption = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM `options`");
+while ($generalOption = $dbResult->fetch()) {
     $generalOptions[$generalOption["key"]] = $generalOption["value"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 /*
  * detect installation dir
  */
-$file_install_acces = 0;
+$file_install_access = 0;
 if (file_exists("./install/setup.php")) {
-    $error_msg = "Installation Directory '". getcwd() .
+    $error_msg = "Installation Directory '" . __DIR__ .
         "/install/' is accessible. Delete this directory to prevent security problem.";
-    $file_install_acces = 1;
+    $file_install_access = 1;
 }
 
-/*
- * Set PHP Session Expiration time
+/**
+ * Install frontend assets if needed
  */
-ini_set("session.gc_maxlifetime", "31536000");
+$basePath = '/' . trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/") . '/';
+$indexHtmlPath = './index.html';
+$indexHtmlContent = file_get_contents($indexHtmlPath);
+
+// update base path only if it has changed
+if (!preg_match('/.*<base\shref="' . preg_quote($basePath, '/') . '">/', $indexHtmlContent)) {
+    $indexHtmlContent = preg_replace(
+        '/(.*<base\shref=").*(">)/',
+        '${1}' . $basePath . '${2}',
+        $indexHtmlContent
+    );
+    file_put_contents($indexHtmlPath, $indexHtmlContent);
+}
 
 CentreonSession::start();
 
 if (isset($_GET["disconnect"])) {
-    $centreon = & $_SESSION["centreon"];
-    
+    $centreon = &$_SESSION["centreon"];
+
     /*
      * Init log class
      */
     if (is_object($centreon)) {
         $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
-        $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
+        $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
 
-        $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+        $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
 
         CentreonSession::restart();
     }
@@ -114,18 +124,18 @@ if (isset($_GET["disconnect"])) {
  * Already connected
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = & $_SESSION["centreon"];
+    $centreon = &$_SESSION["centreon"];
     header('Location: main.php');
 }
 
 /*
  * Check PHP version
  *
- *  Centreon 2.x doesn't support PHP < 5.3
+ *  Centreon >= 18.10 doesn't support PHP < 7.1
  *
  */
-if (version_compare(phpversion(), '5.3') < 0) {
-    echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
+if (version_compare(phpversion(), '7.1') < 0) {
+    echo "<div class='msg'> PHP version is < 7.1. Please Upgrade PHP</div>";
 } else {
-    include_once("./include/core/login/login.php");
+    include_once "./include/core/login/login.php";
 }

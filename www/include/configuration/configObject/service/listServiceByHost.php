@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,60 +37,78 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+require_once "./class/centreonUtils.class.php";
 
-$hostgroupsFilter = isset($hostgroupsFilter) ? $hostgroupsFilter : null;
-$statusHostFilter = isset($statusHostFilter) ? $statusHostFilter : null;
+$hostgroupsFilter = $hostgroupsFilter ?? null;
+$statusHostFilter = $statusHostFilter ?? null;
 
 /*
  * Object init
  */
 $mediaObj = new CentreonMedia($pearDB);
 
-/*
- * Get Extended informations
- */
+// Get Extended informations
 $ehiCache = array();
-$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-while ($ehi = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+while ($ehi = $dbResult->fetch()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
-$template = null;
-if (isset($_POST["template"])) {
-    $template = $_POST["template"];
-} elseif (isset($_GET["template"])) {
-    $template = $_GET["template"];
-}
+$hostgroups = null;
 
-if (isset($_POST["hostgroups"])) {
-    $hostgroups = $_POST["hostgroups"];
-    $_SESSION['configuration_default_hostgroups'] = $hostgroups;
-} elseif (isset($_GET["hostgroups"])) {
-    $hostgroups = $_GET["hostgroups"];
-    $_SESSION['configuration_default_hostgroups'] = $hostgroups;
-} elseif (isset($_SESSION['configuration_default_hostgroups'])) {
-    $hostgroups = $_SESSION['configuration_default_hostgroups'];
+$template = filter_var(
+    $_POST['template'] ?? $_GET['template'] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+$searchH = filter_var(
+    $_POST['searchH'] ?? $_GET['search'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$searchS = filter_var(
+    $_POST['searchS'] ?? $_GET['searchS'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+if (isset($_POST['search']) || isset($_GET['search'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]["template"] = $template;
+    $centreon->historySearch[$url]["searchH"] = $searchH;
+    $centreon->historySearch[$url]["searchS"] = $searchS;
+    $hostStatus = isset($_POST["statusHostFilter"]) ? 1 : 0;
+    $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
+    $centreon->historySearch[$url]["status"] = $status;
 } else {
-    $hostgroups = null;
+    //restoring saved values
+    $template = $centreon->historySearch[$url]['template'] ?? 0;
+    $searchH = $centreon->historySearch[$url]["searchH"] ?? null;
+    $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
+    $hostStatus = $centreon->historySearch[$url]["hostStatus"] ?? 0;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
 
-$hostStatus = 0;
-if (!is_null($template)) {
-    if (isset($_POST["statusHostFilter"]) || isset($_GET["statusHostFilter"])) {
-        $hostStatus = 1;
-    } else {
-        $hostStatus = 0;
-    }
-} elseif (isset($_SESSION["status_host_filter"])) {
-    $hostStatus = $_SESSION["status_host_filter"];
+$searchH_SQL = '';
+if ($searchH) {
+    $searchH_SQL .= "AND (host.host_name LIKE '%" . $pearDB->escape($searchH) .
+        "%' OR host_alias LIKE '%" . $pearDB->escape($searchH) . "%' OR host_address LIKE '%" .
+        $pearDB->escape($searchH) . "%')";
 }
-$_SESSION["status_host_filter"] = $hostStatus;
 
-/*
- * Host Status Filter
- */
+$searchS_SQL = '';
+if ($searchS) {
+    $searchS_SQL .= "AND (sv.service_alias LIKE '%" . $pearDB->escape($searchS) .
+        "%' OR sv.service_description LIKE '%" . $pearDB->escape($searchS) . "%')";
+}
+
+// Host Status Filter
 $hostStatusChecked = "";
 $sqlFilterCase2 = "AND host.host_activate = '1'";
 if ($hostStatus == 1) {
@@ -98,112 +116,34 @@ if ($hostStatus == 1) {
     $sqlFilterCase2 = "";
 }
 
-if (isset($_POST["status"])) {
-    $status = $_POST["status"];
-} elseif (isset($_GET["status"])) {
-    $status = $_GET["status"];
-} else {
-    $status = -1;
-}
-
-/*
- * Get Service Template List
- */
-$tplService = array();
-$templateFilter = "<option value='0'></option>";
-$query = "SELECT service_id, service_description, service_alias FROM service " .
-    "WHERE service_register = '0' AND service_activate = '1' ORDER BY service_description";
-$DBRESULT = $pearDB->query($query);
-while ($tpl = $DBRESULT->fetchRow()) {
-    $tplService[$tpl["service_id"]] = $tpl["service_alias"];
-    $templateFilter .= "<option value='" . $tpl["service_id"] . "'" .
-        (($tpl["service_id"] == $template) ? " selected" : "") . ">" . $tpl["service_description"] . "</option>";
-}
-$DBRESULT->closeCursor();
-
-/*
- * Status Filter
- */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
-
+// Status Filter
+$statusFilter = array(1 => _("Disabled"), 2 => _("Enabled"));
 $sqlFilterCase = "";
-if ($status == 1) {
+if ($status == 2) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
 require_once "./class/centreonHost.class.php";
 
-/*
- * Init Objects
- */
+// Init Objects
 $host_method = new CentreonHost($pearDB);
 $service_method = new CentreonService($pearDB);
 
-$searchH = '';
-$searchH_SQL = '';
-$searchH_GET = '';
-$tmp_search_h = '';
+include "./include/common/autoNumLimit.php";
 
-if (isset($_GET['search_h'])) {
-    $tmp_search_h = $_GET['search_h'];
-    $centreon->svc_host_search = $tmp_search_h;
-}
-if (isset($_POST["searchH"])) {
-    $tmp_search_h = $_POST["searchH"];
-    $centreon->svc_host_search = $tmp_search_h;
-} elseif (isset($centreon->svc_host_search) && $centreon->svc_host_search != '') {
-    $tmp_search_h = $centreon->svc_host_search;
-}
-
-if ($tmp_search_h != '') {
-    $searchH = $tmp_search_h;
-    $searchH_GET = $tmp_search_h;
-    $searchH_SQL = "AND (host.host_name LIKE '%" . $pearDB->escape($tmp_search_h) .
-        "%' OR host_alias LIKE '%" . $pearDB->escape($tmp_search_h) . "%' OR host_address LIKE '%" .
-        $pearDB->escape($tmp_search_h) . "%')";
-}
-
-$searchS = '';
-$searchS_SQL = '';
-$searchS_GET = '';
-$tmp_search_s = '';
-
-if (isset($_GET['search_s'])) {
-    $tmp_search_s = $_GET['search_s'];
-    $centreon->svc_svc_search = $tmp_search_s;
-} elseif (isset($_POST["searchS"])) {
-    $tmp_search_s = $_POST["searchS"];
-    $centreon->svc_svc_search = $tmp_search_s;
-} elseif (isset($centreon->svc_svc_search)) {
-    $tmp_search_s = $centreon->svc_svc_search;
-}
-
-if ($tmp_search_s != '') {
-    $searchS = $tmp_search_s;
-    $searchS_GET = $tmp_search_s;
-    $searchS_SQL = "AND (sv.service_alias LIKE '%" . $pearDB->escape($tmp_search_s) .
-        "%' OR sv.service_description LIKE '%" . $pearDB->escape($tmp_search_s) . "%')";
-}
-
-include("./include/common/autoNumLimit.php");
-
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1)
+    ? 'w'
+    : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Host"));
 $tpl->assign("headerMenu_desc", _("Service"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
@@ -211,71 +151,109 @@ $tpl->assign("headerMenu_parent", _("Template"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-$aclfilter = "";
+$aclFilter = "";
 $distinct = "";
 if (!$centreon->user->admin) {
-    $aclfilter = " AND host.host_id = acl.host_id
-                   AND acl.service_id = sv.service_id
-                   AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
+    $aclFilter = " AND host.host_id = acl.host_id " .
+        "AND acl.service_id = sv.service_id " .
+        "AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     $distinct = " DISTINCT ";
 }
 
 /*
  * Host/service list
  */
-$rq_body = "esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, " .
-    "sv.service_template_model_stm_id, " .
-    "host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
-    "sv.service_retry_check_interval, sv.service_max_check_attempts " .
-    "FROM service sv, host" .
-    ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
-    ($centreon->user->admin ? "" : $acldbname . ".centreon_acl acl, ") .
-    "host_service_relation hsr " .
-    "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
-    "WHERE host.host_register = '1' $searchH_SQL $sqlFilterCase2 " .
-    " AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
-    "AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
-    ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
+$queryFieldsToSelect = 'esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, ' .
+    'sv.service_template_model_stm_id, ' .
+    'host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, ' .
+    'sv.service_retry_check_interval, sv.service_max_check_attempts ';
+
+$queryTablesToFetch = 'FROM service sv, host' .
+    ((isset($hostgroups) && $hostgroups) ? ', hostgroup_relation hogr, ' : ', ') .
+    ($centreon->user->admin ? '' : $aclDbName . '.centreon_acl acl, ') .
+    'host_service_relation hsr ' .
+    'LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id ';
+
+$queryWhereClause = "WHERE host.host_register = '1' " . $searchH_SQL . " " . $sqlFilterCase2 .
+    " AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id" .
+    " AND sv.service_register = '1' " . $searchS_SQL . " " . $sqlFilterCase .
+    ((isset($template) && $template) ? " AND service_template_model_stm_id = '{$template}' " : '') .
     ((isset($hostgroups) && $hostgroups)
-        ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id "
-        : "") .
-    $aclfilter .
-    "ORDER BY host.host_name, service_description";
+        ? " AND hogr.hostgroup_hg_id = '{$hostgroups}' AND hogr.host_host_id = host.host_id "
+        : '') .
+    $aclFilter;
 
-$query = "SELECT SQL_CALC_FOUND_ROWS " . $distinct . $rq_body . " LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
-$rows = $DBRESULT->rowCount();
+$rq_body = $queryFieldsToSelect .
+    $queryTablesToFetch .
+    $queryWhereClause .
+    " ORDER BY host.host_name, service_description";
 
-if (!($DBRESULT->rowCount())) {
-    $query = "SELECT " . $distinct . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
-    $DBRESULT = $pearDB->query($query);
+$dbResult = $pearDB->query(
+    'SELECT SQL_CALC_FOUND_ROWS ' . $distinct . $rq_body .
+    ' LIMIT ' . $num * $limit . ', ' . $limit
+);
+
+$totalRowsQuery = 'SELECT COUNT(*) as count ' . $queryTablesToFetch . $queryWhereClause;
+$rowsCountStatement = $pearDB->query($totalRowsQuery);
+$totalRowsResult = $rowsCountStatement->fetch();
+
+$rows = $totalRowsResult['count'];
+
+if (!($dbResult->rowCount())) {
+    $dbResult = $pearDB->query(
+        "SELECT " . $distinct . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit
+    );
 }
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/**
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/**
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+
+//select2 Service template
+$route = './api/internal.php?object=centreon_configuration_servicetemplate&action=list';
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $route,
+    'multiple' => false,
+    'defaultDataset' => $template,
+    'linkedObject' => 'centreonServicetemplates'
+);
+$form->addElement('select2', 'template', "", array(), $attrServicetemplates);
+
+//select2 Service Status
+$attrServiceStatus = null;
+if ($status) {
+    $statusDefault = array($statusFilter[$status] => $status);
+    $attrServiceStatus = array(
+        'defaultDataset' => $statusDefault
+    );
+}
+$form->addElement('select2', 'status', "", $statusFilter, $attrServiceStatus);
+
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 $fgHost = array("value" => null, "print" => null);
 
 $interval_length = $centreon->optGen['interval_length'];
 
-for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-    /*
-	 * Get Number of Hosts linked to this one.
-	 */
-    $request = "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '" . $service["service_id"] . "'";
-    $BDRESULT2 = $pearDB->query($request);
-    $data = $BDRESULT2->fetchRow();
+for ($i = 0; $service = $dbResult->fetch(); $i++) {
+    //Get Number of Hosts linked to this one.
+    $dbResult2 = $pearDB->query(
+        "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '" . $service["service_id"] . "'"
+    );
+    $data = $dbResult2->fetch();
     $service["nbr"] = $data["COUNT(*)"];
-    $BDRESULT2->closeCursor();
+    $dbResult2->closeCursor();
     unset($data);
 
     /**
@@ -286,6 +264,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         : $fgHost["print"] = false;
     $selectedElements = $form->addElement('checkbox', "select[" . $service['service_id'] . "]");
     $moptions = "";
+
     if ($service["service_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=u&limit=" .
             $limit . "&num=" . $num . "&hostgroups=" . $hostgroups . "&template=$template&status=" . $status .
@@ -301,11 +280,8 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         "return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" " .
         "value='1' style=\"margin-bottom:0px;\" name='dupNbr[" . $service['service_id'] . "]' />";
 
-    /*
-	 * If the description of our Service is in the Template definition, we have to catch it,
-     *  whatever the level of it :-)
-	 */
-
+    /*If the description of our Service is in the Template definition,
+     we have to catch it, whatever the level of it :-) */
     if (!$service["service_description"]) {
         $service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
     } else {
@@ -313,9 +289,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         $service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
     }
 
-    /**
-     * TPL List
-     */
+    // TPL List
     $tplArr = array();
     $tplStr = null;
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
@@ -325,9 +299,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         }
     }
 
-    /**
-     * Get service intervals in seconds
-     */
+    // Get service intervals in seconds
     $normal_check_interval =
         getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
     $retry_check_interval =
@@ -379,8 +351,8 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_name" => CentreonUtils::escapeSecure($service["host_name"]),
         "RowMenu_icone" => $host_icone,
         "RowMenu_sicon" => $svc_icon,
-        "RowMenu_link" => "?p=60101&o=c&host_id=" . $service['host_id'],
-        "RowMenu_link2" => "?p=" . $p . "&o=c&service_id=" . $service['service_id'],
+        "RowMenu_link" => "main.php?p=60101&o=c&host_id=" . $service['host_id'],
+        "RowMenu_link2" => "main.php?p=" . $p . "&o=c&service_id=" . $service['service_id'],
         "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
         "RowMenu_retry" => CentreonUtils::escapeSecure(
             "$normal_check_interval $normal_units / $retry_check_interval $retry_units"
@@ -395,29 +367,24 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
     <script type="text/javascript">
         function setO(_i) {
             document.forms['form'].elements['o'].value = _i;
         }
-    </SCRIPT>
+    </script>
 <?php
-
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
         'onchange' => "javascript: " .
@@ -438,24 +405,29 @@ foreach (array('o1', 'o2') as $option) {
             " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
             "this.form.elements['" . $option . "'].selectedIndex = 0"
     );
-    $form->addElement('select', $option, null, array(
-        null => _("More actions..."),
-        "m" => _("Duplicate"),
-        "d" => _("Delete"),
-        "mc" => _("Massive Change"),
-        "ms" => _("Enable"),
-        "mu" => _("Disable"),
-        "dv" => _("Detach")
-    ), $attrs1);
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete"),
+            "mc" => _("Massive Change"),
+            "ms" => _("Enable"),
+            "mu" => _("Disable"),
+            "dv" => _("Detach")
+        ),
+        $attrs1
+    );
+
     $o1 = $form->getElement($option);
     $o1->setValue(null);
 }
 
 $tpl->assign('limit', $limit);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 if (isset($searchH) && $searchH) {
     $searchH = html_entity_decode($searchH);
     $searchH = stripslashes(str_replace('"', "&quot;", $searchH));
@@ -467,9 +439,7 @@ if (isset($searchS) && $searchS) {
 $tpl->assign("searchH", $searchH);
 $tpl->assign("searchS", $searchS);
 $tpl->assign("hostgroupsFilter", $hostgroupsFilter);
-$tpl->assign("templateFilter", $templateFilter);
 $tpl->assign("statusHostFilter", $statusHostFilter);
-$tpl->assign("statusFilter", $statusFilter);
 $tpl->assign("hostStatusChecked", $hostStatusChecked);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -480,5 +450,4 @@ $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
 $tpl->assign('HostStatus', _("Disabled hosts"));
 $tpl->assign('Services', _("Services"));
-$tpl->assign('Search', _("Search"));
 $tpl->display("listService.ihtml");

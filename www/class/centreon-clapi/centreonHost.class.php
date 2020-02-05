@@ -109,7 +109,8 @@ class CentreonHost extends CentreonObject
         'u' => 'Unreachable',
         'r' => 'Recovery',
         'f' => 'Flapping',
-        's' => 'Downtime Scheduled'
+        's' => 'Downtime Scheduled',
+        'n' => 'None'
     );
 
     protected $templateIds;
@@ -298,7 +299,6 @@ class CentreonHost extends CentreonObject
         }
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-
     }
 
     /**
@@ -339,6 +339,41 @@ class CentreonHost extends CentreonObject
             "DELETE FROM service WHERE service_register = '1' "
             . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
         );
+    }
+
+    /**
+     * List instance (poller) for host
+     *
+     * @param string $parameters
+     * @throws CentreonClapiException
+     */
+    public function showinstance($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if ($parameters == '') {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        if (($hostId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $relObj = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
+            $fields = array('id', 'name');
+            $elements = $relObj->getMergedParameters(
+                $fields,
+                array(),
+                -1,
+                0,
+                "host_name",
+                "ASC",
+                array('host_id' => $hostId),
+                'AND'
+            );
+
+            echo 'id' . $this->delim . 'name' . "\n";
+            foreach ($elements as $elem) {
+                echo $elem['id'] . $this->delim . $elem['name'] . "\n";
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
     }
 
     /**
@@ -383,6 +418,7 @@ class CentreonHost extends CentreonObject
             'action_url',
             'activate',
             'active_checks_enabled',
+            'acknowledgement_timeout',
             'address',
             'alias',
             'check_command',
@@ -398,10 +434,15 @@ class CentreonHost extends CentreonObject
             'first_notification_delay',
             'flap_detection_enabled',
             'flap_detection_options',
+            'freshness_threshold',
+            'geo_coords',
             'host_high_flap_threshold',
             'host_low_flap_threshold',
+            'host_notification_options',
+            'high_flap_threshold',
             'icon_image',
             'icon_image_alt',
+            'low_flap_threshold',
             'max_check_attempts',
             'name',
             'notes',
@@ -421,14 +462,20 @@ class CentreonHost extends CentreonObject
             'snmp_version',
             'stalking_options',
             'statusmap_image',
-            'host_notification_options',
             'timezone'
         );
         $unknownParam = array();
 
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             $listParam = explode('|', $params[1]);
+            $exportedFields = [];
+            $resultString = "";
             foreach ($listParam as $paramSearch) {
+                if (!$paramString) {
+                    $paramString = $paramSearch;
+                } else {
+                    $paramString = $paramString . $this->delim . $paramSearch;
+                }
                 $field = $paramSearch;
                 if (!in_array($field, $authorizeParam)) {
                     $unknownParam[] = $field;
@@ -456,6 +503,7 @@ class CentreonHost extends CentreonObject
                         case "contact_additive_inheritance":
                         case "cg_additive_inheritance":
                         case "flap_detection_options":
+                        case "geo_coords":
                             break;
                         case "notes":
                         case "notes_url":
@@ -509,7 +557,10 @@ class CentreonHost extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                    echo $paramSearch . ' : ' . $ret . "\n";
+                    if (!isset($exportedFields[$paramSearch])) {
+                        $resultString .= $ret . $this->delim;
+                        $exportedFields[$paramSearch] = 1;
+                    }
                 }
             }
         } else {
@@ -519,6 +570,8 @@ class CentreonHost extends CentreonObject
         if (!empty($unknownParam)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
         }
+        echo implode(';', array_unique(explode(';', $paramString))) . "\n";
+        echo substr($resultString, 0, -1) . "\n";
     }
 
     /**
@@ -1158,9 +1211,8 @@ class CentreonHost extends CentreonObject
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
-
         $elements = $this->object->getList(
-            '*',
+            "*",
             -1,
             0,
             $labelField,
@@ -1248,7 +1300,11 @@ class CentreonHost extends CentreonObject
                     echo $this->action . $this->delim
                     . "addparent" . $this->delim
                     . $element[$this->object->getUniqueLabelField()] . $this->delim
-                    . isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]) ? $elements[$parentId][$this->object->getUniqueLabelField()] : '' . "\n";
+                    . ((isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]))
+                        ? $elements[$parentId][$this->object->getUniqueLabelField()]
+                        : ''
+                    )
+                    . "\n";
                 }
             }
 
@@ -1260,6 +1316,7 @@ class CentreonHost extends CentreonObject
                     "ehi_action_url",
                     "ehi_icon_image",
                     "ehi_icon_image_alt",
+                    "ehi_vrml_image",
                     "ehi_statusmap_image",
                     "ehi_2d_coords",
                     "ehi_3d_coords"

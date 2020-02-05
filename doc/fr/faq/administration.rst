@@ -1,10 +1,6 @@
-===================
-Foire Aux Questions
-===================
-
-**************
-Administration
-**************
+=========================================
+Administration de la plate-forme Centreon
+=========================================
 
 Comment la fonction **Supprimer des graphiques** fonctionne ?
 =============================================================
@@ -21,6 +17,17 @@ toute votre base de données pendant plusieurs heures.
 Quoi qu'il en soit, cela ne signifie pas que les données resteront dans votre base de données
 indéfiniment. Elles seront supprimées plus tard, en fonction de votre politique de rétention
 des données programmée.
+
+Mon dashboard sur plusieurs jours est indetermminé, que dois-je contrôler?
+==========================================================================
+
+Il s'agit d'un bug du à certaines versions mysql avec les tables partitionées
+(https://bugs.mysql.com/bug.php?id=70588).
+Remplacer les '=' par des LIKE dans les requêtes corrige le problème mais réduit les performances.
+
+Nous vous recommandons de mettre à jour votre SGBD
+MySQL 5.5.36, 5.6.16, 5.7.4,
+MariaDB  10.0.33, 10.1.29, 10.2.10.
 
 Aucun graphique ne semble être généré, que dois-je contrôler?
 =============================================================
@@ -51,15 +58,20 @@ pour plus d'informations.
 Centreon Broker
 ---------------
 
-Centreon Broker doit être correctement configuré correctement. Se référer à la 
-:ref:`documentation de configuration <centreon_broker_wizards>` pour plus d'informations.
+Centreon Broker doit être correctement configuré. Se référer à la 
+:ref:`documentation de configuration <advance_conf_broker>` pour plus d'informations.
 
 Le démon cbd rrd doit être en cours d'exécution :
 
 ::
 
-  $ /etc/init.d/cbd status
-  * cbd_central-rrd is running
-
-Assurez-vous d'avoir correctement rempli le paramètre **Script de démarrage du broker**
-dans le menu **Administration ==> Options ==> Monitoring**.
+    # systemctl status cbd
+    ● cbd.service - Centreon Broker watchdog
+       Loaded: loaded (/etc/systemd/system/cbd.service; enabled; vendor preset: disabled)
+       Active: active (running) since mer. 2018-07-18 17:46:03 CEST; 2 months 9 days ago
+      Process: 21410 ExecReload=/bin/kill -HUP $MAINPID (code=exited, status=0/SUCCESS)
+     Main PID: 9537 (cbwd)
+       CGroup: /system.slice/cbd.service
+               ├─9537 /usr/sbin/cbwd /etc/centreon-broker/watchdog.json
+               ├─9539 /usr/sbin/cbd /etc/centreon-broker/central-rrd.json
+               └─9540 /usr/sbin/cbd /etc/centreon-broker/central-broker.json

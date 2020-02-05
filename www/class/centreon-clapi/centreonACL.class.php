@@ -35,7 +35,6 @@
 
 namespace CentreonClapi;
 
-require_once _CLAPI_LIB_."/Centreon/Db/Manager/Manager.php";
 require_once "centreonUtils.class.php";
 
 /**
@@ -70,7 +69,7 @@ class CentreonACL
         $this->db->query("UPDATE acl_groups SET acl_group_changed = 1");
         $this->db->query("UPDATE acl_resources SET changed = 1");
         if ($flagOnly == false) {
-            passthru('php ' . CentreonUtils::getCentreonPath() . '/cron/centAcl.php');
+            passthru(CentreonUtils::getCentreonPath() . '/cron/centAcl.php');
         }
     }
 

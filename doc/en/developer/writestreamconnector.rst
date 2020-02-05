@@ -62,7 +62,7 @@ In this how-to, we will write two scripts:
 
 * The first one, easy, that explains the basics of Stream Connectors. Its goal
   is to export data to a log file.
-* The second one is more exigent for the reader ; it exports performance data
+* The second one is more exigent for the reader, it exports performance data
   to the TSDB InfluxDB but is easily adaptable to export to another TSDB.
 
 Programming language
@@ -299,13 +299,6 @@ So it is time to improve our Stream Connector:
     broker_log:set_parameters(3, "/var/log/centreon-broker/debug.log")
   end
 
-  function write(d)
-    for k,v in pairs(d) do
-      writeIntoFile(k .. " => " .. tostring(v) .. "\n")
-    end
-    return true
-  end
-
   function writeIntoFile(output)
     local file,err = io.open(logFile, 'a')
     if file == nil then
@@ -315,6 +308,14 @@ So it is time to improve our Stream Connector:
       file:close()
     end
   end
+
+  function write(d)
+    for k,v in pairs(d) do
+      writeIntoFile(k .. " => " .. tostring(v) .. "\n")
+    end
+    return true
+  end
+
 
 Did you notice that expression `local file,err = io.open(logFile, 'a')`?
 
@@ -438,6 +439,16 @@ Let's complete our Lua script:
     broker_log:set_parameters(3, "/var/log/centreon-broker/debug.log")
   end
 
+  local function writeIntoFile(output)
+    local file,err = io.open(logFile, 'a')
+    if file == nil then
+      broker_log:info(3, "Couldn't open file: " .. err)
+    else
+      file:write(output)
+      file:close()
+    end
+  end
+
   function write(d)
     local output = ""
 
@@ -472,15 +483,7 @@ Let's complete our Lua script:
       return false
   end
 
-  local function writeIntoFile(output)
-    local file,err = io.open(logFile, 'a')
-    if file == nil then
-      broker_log:info(3, "Couldn't open file: " .. err)
-    else
-      file:write(output)
-      file:close()
-    end
-  end
+
 
 Just several remarks on this new script before showing what we get.
 
@@ -898,4 +901,3 @@ and the community. Please go to the `dedicated Github <http://github.com/centreo
 
 Need help to develop your Stream connector? You want to share your experience with
 the community? Join the `Centreon community Slack channel <https://centreon.github.io/>`_.
-

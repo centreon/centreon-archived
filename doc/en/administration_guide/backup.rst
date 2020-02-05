@@ -40,7 +40,7 @@ Backup format :
 Configuration files backup
 --------------------------
 
-All configuration files of central server can be saved : MySQL, Zend, Apache, PHP, SNMP, centreon, centreon-broker)
+All configuration files of central server can be saved : MySQL, Apache, PHP, SNMP, centreon, centreon-broker)
 
 Backup format :
 
@@ -54,7 +54,7 @@ Configuration
 
 This part covers the configuration of centreon-backup.
 
-#. Go into the menu: **Administration** ==> **Parameters** ==> **Backup**
+#. Go into the menu: **Administration > Parameters > Backup**
 
 The following window is displayed:
 
@@ -72,7 +72,6 @@ The following window is displayed:
 * **Backup retention** Retention for backups (in days)
 * **Backup configuration files** Enable backup of configuration files
 * **MySQL configuration file path** Path for MySQL configuration file
-* **Zend configuration file path** Path for Zend configuration file
 * **SCP export enabled** Enable SCP export of backups
 * **Remote user** Remote user for SCP export
 * **Remote host** Remote host for SCP export
@@ -198,7 +197,7 @@ Graphs rebuild
 ==============
 
 Once your monitoring platform is restored and all is doing well, you can rebuild RRD files in order to restore all performance graphs.
-To rebuild performance graphics, go to the menu **Administration -> Options -> Centstorage -> Manage**.
+To rebuild performance graphics, go to the menu **Administration > Options > Centstorage > Manage**.
 On this page, you must select all the services and click "Rebuild RRD Database".
 
 **Your server is now restored.**

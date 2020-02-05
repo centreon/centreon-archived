@@ -33,7 +33,12 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+if (!(class_exists('centreonDB') || class_exists('\\centreonDB')) && defined('_CENTREON_PATH_')) {
+    require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+}
+
+use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
+use Centreon\Infrastructure\Webservice\WebserviceAutorizeRestApiInterface;
 
 class CentreonWebService
 {
@@ -65,13 +70,21 @@ class CentreonWebService
      */
     public function __construct()
     {
+        $this->loadDb();
+        $this->loadArguments();
+        $this->loadToken();
+    }
+
+    /**
+     * Load database
+     */
+    protected function loadDb()
+    {
         if (isset($this->pearDB)) {
             $this->pearDB = $this->pearDB;
         } else {
             $this->pearDB = new CentreonDB();
         }
-        $this->loadArguments();
-        $this->loadToken();
     }
 
     /**
@@ -134,7 +147,7 @@ class CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if ($isInternal || $user->admin) {
+        if ($isInternal || ($user && $user->admin)) {
             return true;
         }
 
@@ -213,6 +226,10 @@ class CentreonWebService
             case 409:
                 header("HTTP/1.1 409 Conflict");
                 break;
+            case 206:
+                header("HTTP/1.1 206 Partial content");
+                $data = json_decode($data, true);
+                break;
         }
 
         switch ($format) {
@@ -289,12 +306,38 @@ class CentreonWebService
             glob(_CENTREON_PATH_ . '/www/widgets/*/webServices/rest/*.class.php')
         );
 
-        $webService = self::webservicePath($object);
+        $isService = $dependencyInjector['centreon.webservice']->has($object);
 
-        /* Initialize the webservice */
-        require_once($webService['path']);
-        
-        $wsObj = new $webService['class']();
+        if ($isService === true) {
+            $webService = [
+                'class' => $dependencyInjector['centreon.webservice']->get($object)
+            ];
+
+            // Initialize the language translator
+            $dependencyInjector['translator'];
+
+            // Use the web service if has been initialized or initialize it
+            if(isset($dependencyInjector[$webService['class']])) {
+                $wsObj = $dependencyInjector[$webService['class']];
+            } else {
+                $wsObj = new $webService['class'];
+                $wsObj->setDi($dependencyInjector);
+            }
+        } else {
+            $webService = self::webservicePath($object);
+            
+            /**
+             * Either we retrieve an instance of this web service that has been
+             * created in the dependency injector, or we create a new one.
+             */
+            if (isset($dependencyInjector[$webService['class']])) {
+                $wsObj = $dependencyInjector[$webService['class']];
+            } else {
+                /* Initialize the webservice */
+                require_once($webService['path']);
+                $wsObj = new $webService['class'];
+            }
+        }
 
         if ($wsObj instanceof CentreonWebServiceDiInterface) {
             $wsObj->finalConstruct($dependencyInjector);
@@ -304,7 +347,24 @@ class CentreonWebService
             static::sendResult("Method not found", 404);
         }
 
-        if (false === $wsObj->authorize($action, $user, $isInternal)) {
+        $accessDenied = true;
+
+        // if impemented public interface skip checks
+        if ($wsObj instanceof WebserviceAutorizePublicInterface) {
+            $accessDenied = false;
+        } elseif ($wsObj instanceof WebserviceAutorizeRestApiInterface) {
+            // unified check for Rest APIs authorization
+            if ($wsObj->authorize($action, $user, $isInternal)) {
+                $accessDenied = false;
+            } elseif (!$user || !$user->hasAccessRestApiConfiguration()) {
+                $accessDenied = false;
+            }
+        } elseif (false !== $wsObj->authorize($action, $user, $isInternal)) {
+            $accessDenied = false;
+        }
+
+        // Check of the authorization
+        if ($accessDenied) {
             static::sendResult('Forbidden', 403, static::RESULT_JSON);
         }
 

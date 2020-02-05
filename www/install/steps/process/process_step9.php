@@ -38,15 +38,29 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 $step = new \CentreonLegacy\Core\Install\Step\Step9($dependencyInjector);
 $version = $step->getVersion();
 
-$message = '';
+$parameters = filter_input_array(INPUT_POST);
+if ((int)$parameters["send_statistics"] == 1) {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
+} else {
+    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
+}
 
+$db = $dependencyInjector['configuration_db'];
+$db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
+$db->query($query);
+
+$message = '';
 try {
-    $backupDir = realpath(__DIR__ . '/../../../../installDir/')
+    $backupDir = _CENTREON_VARLIB_ . '/installs/'
         . '/install-' . $version . '-' . date('Ymd_His');
     $installDir = realpath(__DIR__ . '/../..');
-    $dependencyInjector['filesystem']->rename($installDir, $backupDir);
+    $dependencyInjector['filesystem']->mirror($installDir, $backupDir);
+    $dependencyInjector['filesystem']->remove($installDir);
     if ($dependencyInjector['filesystem']->exists($installDir)) {
-        throw new \Exception('Cannot move directory from ' . $installDir . ' to ' . $backupDir);
+        throw new \Exception(
+            'Cannot move directory from ' . $installDir . ' to ' . $backupDir
+            . ', please move it manually.'
+        );
     }
     $dependencyInjector['filesystem']->remove($backupDir . '/tmp/admin.json');
     $dependencyInjector['filesystem']->remove($backupDir . '/tmp/database.json');

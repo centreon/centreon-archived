@@ -32,18 +32,27 @@
  * 
  */
  
-function setOverflowDivToTitle(elemA){
+function setOverflowDivToTitle(elemA, calledTwice){
+
+    var contentLength = jQuery(elemA).length;
+
     jQuery(elemA).contents().filter(function() {
         return this.nodeType === 3;
     }).each(function() {
         //this.nodeValue = jQuery.trim(this.nodeValue); code here if you want to apply some modification to the node value
     }).wrap('<span class="unWrapedElement"></span>');
-    jQuery(elemA).wrapInner('<div style="display:inline-block"></div>');
-
+    
+    if(!calledTwice){
+        jQuery(elemA).wrapInner('<div style="display:inline-block"></div>');
+    }
+    
     jQuery(elemA).each(function(idx, elem){
         var elementWith = jQuery(elem).width();
         var elementContentWith = jQuery(elem).children(":first-child").width();
         var wrapper = jQuery(elem).children(":first-child");
+        if(elementWith == 0 && elementContentWith == 0){
+            contentLength--;
+        }
         if (elementWith < elementContentWith) {
             var elemOldText = jQuery(elem).children(":first-child").text();
             var elemOldHtml = jQuery(elem).children(":first-child").html();
@@ -55,7 +64,7 @@ function setOverflowDivToTitle(elemA){
                 title : elemOldText}
             );
             jQuery(elem).append(newSpan);
-            var tmpWidth = newSpan.outerWidth(true);
+            var tmpWidth = newSpan.outerWidth(true); 
             newSpan.click(function(){
                 popin.centreonPopin("open");
             });
@@ -78,6 +87,11 @@ function setOverflowDivToTitle(elemA){
             }
             newHtml.append(newSpan);
             jQuery(elem).empty().append(newHtml);
+        }
+        if(contentLength == 0){
+            setTimeout(function(){
+                setOverflowDivToTitle('.resizeTitle',true)
+            },500)
         }
     });
 

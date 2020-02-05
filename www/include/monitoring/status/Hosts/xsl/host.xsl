@@ -3,8 +3,13 @@
 <xsl:variable name="i" select="//i"/>
 <xsl:template match="/">
 <table class="ListTable">
-	<tr class='ListHeader'>
-		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+    <tr class='ListHeader'>
+        <td class="ListColHeaderPicker">
+            <div class="md-checkbox md-checkbox-inline">
+                <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                <label class="empty-label" for="checkall"></label>
+            </div>
+        </td>
         <xsl:if test = "//i/use_criticality = 1">
             <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="criticality_id"></td>
         </xsl:if>
@@ -35,21 +40,27 @@
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>  		
-		<td class="ListColPicker">
-		<xsl:element name="input">
-			<xsl:attribute name="type">checkbox</xsl:attribute>
-			<xsl:attribute name="value">1</xsl:attribute>
-			<xsl:attribute name="id"><xsl:value-of select="hn"/></xsl:attribute>
-			<xsl:attribute name="name">select[<xsl:value-of select="hnl"/>]</xsl:attribute>
-			<xsl:attribute name="onclick">
-            	if (this.checked) {
-                	putInSelectedElem('<xsl:value-of select="hn"/>');
-                } else {
-                	removeFromSelectedElem('<xsl:value-of select="hn"/>');
-                }
-            </xsl:attribute>
-		</xsl:element>
-		</td>
+        <td class="ListColPicker">
+            <div class="md-checkbox md-checkbox-inline">
+                <xsl:element name="input">
+                    <xsl:attribute name="type">checkbox</xsl:attribute>
+                    <xsl:attribute name="value">1</xsl:attribute>
+                    <xsl:attribute name="id"><xsl:value-of select="hn"/></xsl:attribute>
+                    <xsl:attribute name="name">select[<xsl:value-of select="hnl"/>]</xsl:attribute>
+                    <xsl:attribute name="onclick">
+                        if (this.checked) {
+                            putInSelectedElem('<xsl:value-of select="hn"/>');
+                        } else {
+                            removeFromSelectedElem('<xsl:value-of select="hn"/>');
+                        }
+                    </xsl:attribute>
+                </xsl:element>
+                <xsl:element name="label">
+                    <xsl:attribute name="class">empty-label</xsl:attribute>
+                    <xsl:attribute name="for"><xsl:value-of select="hn"/></xsl:attribute>
+                </xsl:element>
+            </div>
+        </td>
             <xsl:if test = "//i/use_criticality = 1">
                 <td class="ListColCenter" style="white-space:nowrap;width:17px;">
                 <xsl:if test = "hci = 1">

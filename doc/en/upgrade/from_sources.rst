@@ -1,465 +1,412 @@
 .. _upgrade_from_sources:
 
-============
-From sources
-============
+===========================
+Upgrading from source files
+===========================
 
-In order to upgrade Centreon from sources, :ref:`download <downloads>` the
-latest Centreon package.
+To upgrade Centreon from source files, :ref:`download <downloads>` the latest version of Centreon.
 
-******************
-Shell installation
-******************
+********************
+Installing the shell
+********************
 
-Extract the package::
+Extract the package: ::
 
-  $ tar xvfz centreon-2.x.x.tar.gz
+    $ tar zxf centreon-web-YY.MM.x.tar.gz
 
-Change the directory::
+Change directory: ::
 
-  $ cd centreon-2.x.x
+    $ cd centreon-web-YY.MM.x
 
-Run the upgrade script::
+Run the upgrade script: ::
 
-  $ ./install -u /etc/centreon
+    $ ./install -u /etc/centreon
 
-Where /etc/centreon is to be replaced by configuration directory.
+The directory **/etc/centreon** represents any desired configuration directory.
 
-Prerequisites check
--------------------
+Prerequisites
+-------------
 
-If [Step 01] is successful, you should not have any problem here. Otherwise,
+If [Step 01] is successful, you are ready to proceed. Otherwise,
 go back to [Step 01] and install the prerequisites::
 
-  ###############################################################################
-  #                                                                             #
-  #                         Centreon (www.centreon.com)                         #
-  #                          Thanks for using Centreon                          #
-  #                                                                             #
-  #                                    v2.8.1                                   #
-  #                                                                             #
-  #                               infos@centreon.com                            #
-  #                                                                             #
-  #                   Make sure you have installed and configured               #
-  #                   sudo - sed - php - apache - rrdtool - mysql               #
-  #                                                                             #
-  ###############################################################################
-  ------------------------------------------------------------------------
-  	Checking all needed binaries
-  ------------------------------------------------------------------------
-  rm                                                         OK
-  cp                                                         OK
-  mv                                                         OK
-  /bin/chmod                                                 OK
-  /bin/chown                                                 OK
-  echo                                                       OK
-  more                                                       OK
-  mkdir                                                      OK
-  find                                                       OK
-  /bin/grep                                                  OK
-  /bin/cat                                                   OK
-  /bin/sed                                                   OK
-  ------------------------------------------------------------------------
-  	Detecting old installation
-  ------------------------------------------------------------------------
-  Finding configuration file in: /etc/centreon               OK
-  You seem to have an existing Centreon.
+    ###############################################################################
+    #                                                                             #
+    #                         Centreon (www.centreon.com)                         #
+    #                          Thanks for using Centreon                          #
+    #                                                                             #
+    #                                   vYY.MM.x                                  #
+    #                                                                             #
+    #                               infos@centreon.com                            #
+    #                                                                             #
+    #                   Make sure you have installed and configured               #
+    #                   sudo - sed - php - apache - rrdtool - mysql               #
+    #                                                                             #
+    ###############################################################################
+    ------------------------------------------------------------------------
+    	Checking all needed binaries
+    ------------------------------------------------------------------------
+    rm                                                         OK
+    cp                                                         OK
+    mv                                                         OK
+    /bin/chmod                                                 OK
+    /bin/chown                                                 OK
+    echo                                                       OK
+    more                                                       OK
+    mkdir                                                      OK
+    find                                                       OK
+    /bin/grep                                                  OK
+    /bin/cat                                                   OK
+    /bin/sed                                                   OK
+    ------------------------------------------------------------------------
+    	Detecting old installation
+    ------------------------------------------------------------------------
+    Finding configuration file in: /etc/centreon               OK
+    You seem to have an existing Centreon.
 
-Main components
----------------
+Choosing the main components
+----------------------------
 
 Load the previous installation parameters::
 
-  Do you want to use the last Centreon install parameters ?
-  [y/n], default to [y]:
-  > y
+    Do you want to use the last Centreon install parameters ?
+    [y/n], default to [y]:
+    > y
 
-  Using:  /etc/centreon/instCentCore.conf
-  /etc/centreon/instCentPlugins.conf
-  /etc/centreon/instCentStorage.conf
-  /etc/centreon/instCentWeb.conf
+    Using:  /etc/centreon/instCentCore.conf
+    /etc/centreon/instCentPlugins.conf
+    /etc/centreon/instCentStorage.conf
+    /etc/centreon/instCentWeb.conf
 
-Answer y to components you want to upgrade::
+Answer **y** for the components you wish to upgrade::
 
-  Do you want to install : Centreon Web Front
-  [y/n], default to [n]:
-  > y
+    Do you want to install : Centreon Web Front
+    [y/n], default to [n]:
+    > y
 
-  Do you want to install : Centreon CentCore
-  [y/n], default to [n]:
-  > y
+    Do you want to install : Centreon CentCore
+    [y/n], default to [n]:
+    > y
 
-  Do you want to install : Centreon Nagios Plugins
-  [y/n], default to [n]:
-  > y
+    Do you want to install : Centreon Nagios Plugins
+    [y/n], default to [n]:
+    > y
 
-  Do you want to install : Centreon Snmp Traps process
-  [y/n], default to [n]:
-  > y
-  Convert variables for upgrade:
+    Do you want to install : Centreon Snmp Traps process
+    [y/n], default to [n]:
+    > y
+    Convert variables for upgrade:
 
-Upgrade Centreon Web Front
+Upgrading the Centreon Web interface
+------------------------------------
+
+Certain new information are required. Specify the path to the binaries for Centreon Web::
+
+    ------------------------------------------------------------------------
+    	Start CentWeb Installation
+    ------------------------------------------------------------------------
+
+Specify the path for the additional data used by Centreon Web::
+
+    Where is your Centreon data information directory
+    default to [/usr/local/centreon/data]
+    >
+
+    Do you want me to create this directory ? [/usr/local/centreon/data]
+    [y/n], default to [n]:
+    > y
+    Path /usr/local/centreon/data
+    /usr/bin/composer                                          OK
+    /usr/bin/perl                                              OK
+    Check PHP version                                          OK
+    Check PHP modules                                          OK
+             ldap                                              OK
+             xmlwriter                                         OK
+             mbstring                                          OK
+             pdo_mysql                                         OK
+             pdo_sqlite                                        OK
+             gd                                                OK
+             intl                                              OK
+    Finding Apache user :                                      www-data
+    Finding Apache group :                                     www-data
+
+Specify the path to the monitoring plugins: ::
+
+    Where is your monitoring plugins (libexec) directory ?
+    default to [/usr/lib/nagios/plugins]
+    >
+
+    Path /usr/lib/nagios/plugins                               OK
+
+    Where is your centreon plugins directory ?
+    default to [/usr/lib/centreon/plugins]
+    >
+    Path /usr/lib/centreon/plugins                             OK
+    Add group centreon to user www-data                        OK
+    Add group centreon to user centreon-engine                 OK
+    Add group centreon-engine to user www-data                 OK
+    Add group centreon-engine to user centreon                 OK
+    Add group www-data to user centreon                        OK
+
+Configure sudo
+--------------
+
+Replace your sudoers file, if necessary. For increased security, you can backup
+the **/etc/sudoers** file: ::
+
+    ------------------------------------------------------------------------
+    	Configure Sudo
+    ------------------------------------------------------------------------
+
+    What is the Monitoring engine init.d script ? [centengine]
+    default to [centengine]
+    >
+
+    Where is your service command binary ?
+    default to [/usr/sbin/service]
+    >
+
+    Your sudo has been configured previously
+
+    Do you want me to reconfigure your sudo ? (WARNING)
+    [y/n], default to [n]:
+    > y
+    Configuring Sudo                                           OK
+
+Apache configuration
+--------------------
+
+::
+
+    ------------------------------------------------------------------------
+    	Configure Apache server
+    ------------------------------------------------------------------------
+    Create '/etc/apache2/conf.d/centreon.conf'                 OK
+    Configuring Apache                                         OK
+
+    Do you want to reload your Apache ?
+    [y/n], default to [n]:
+    > y
+    Reloading Apache service                                   OK
+
+    What is the fpm-php service name ?
+    default to [fpm-php]
+    > php7.2-fpm
+    The fpm-php service : php7.2-fpm
+
+    Do you want to reload PHP FPM service ?
+    [y/n], default to [n]:
+    > y
+
+    Preparing Centreon temporary files
+    Change right on /var/log/centreon                          OK
+    Change right on /etc/centreon                              OK
+    Loading composer repositories with package information
+    Updating dependencies
+    Package operations: xx installs, yy updates, zz removals
+    Writing lock file
+    Generating autoload files
+    Change macros for insertBaseConf.sql                       OK
+    Change macros for sql update files                         OK
+    Change macros for php files                                OK
+    Change macros for php config files                         OK
+    Change right on /etc/centreon-engine                       OK
+    Add group centreon-broker to user www-data                 OK
+    Add group centreon-broker to user centreon-engine          OK
+    Add group centreon to user centreon-broker                 OK
+    Change right on /etc/centreon-broker                       OK
+    Disconnect users from WebUI
+    All users are disconnected                                 OK
+    Copy CentWeb in system directory
+    Install CentWeb (web front of centreon)                    OK
+    Change right for install directory
+    Change right for install directory                         OK
+    Install libraries                                          OK
+    Write right to Smarty Cache                                OK
+    Copying libinstall                                         OK
+    Change macros for centreon.cron                            OK
+    Install Centreon cron.d file                               OK
+    Change macros for centAcl.php                              OK
+    Change macros for downtimeManager.php                      OK
+    Change macros for centreon-backup.pl                       OK
+    Install cron directory                                     OK
+    Change right for eventReportBuilder.pl                     OK
+    Change right for dashboardBuilder.pl                       OK
+    Change right for centreon-backup.pl                        OK
+    Change right for centreon-backup-mysql.pl                  OK
+    Change macros for centreon.logrotate                       OK
+    Install Centreon logrotate.d file                          OK
+    Prepare centFillTrapDB                                     OK
+    Install centFillTrapDB                                     OK
+    Prepare centreon_trap_send                                 OK
+    Install centreon_trap_send                                 OK
+    Prepare centreon_check_perfdata                            OK
+    Install centreon_check_perfdata                            OK
+    Prepare centreonSyncPlugins                                OK
+    Install centreonSyncPlugins                                OK
+    Prepare centreonSyncArchives                               OK
+    Install centreonSyncArchives                               OK
+    Prepare generateSqlLite                                    OK
+    Install generateSqlLite                                    OK
+    Install changeRrdDsName.pl                                 OK
+    Prepare export-mysql-indexes                               OK
+    Install export-mysql-indexes                               OK
+    Prepare import-mysql-indexes                               OK
+    Install import-mysql-indexes                               OK
+    Prepare clapi binary                                       OK
+    Install clapi binary                                       OK
+    Centreon Web Perl lib installed                            OK
+
+    ------------------------------------------------------------------------
+    Pear Modules
+    ------------------------------------------------------------------------
+    Check PEAR modules
+    PEAR                            1.4.9       1.10.6         OK
+    DB                              1.7.6       1.9.2          OK
+    Date                            1.4.6       1.4.7          OK
+    All PEAR modules                                           OK
+
+    ------------------------------------------------------------------------
+    		Centreon Post Install
+    ------------------------------------------------------------------------
+    Create /usr/local/centreon/www/install/install.conf.php    OK
+    Create /etc/centreon/instCentWeb.conf                      OK
+
+Upgrading Centreon Storage
 --------------------------
 
-New information is required.
+Fill in the required information. ::
 
-The path to binaries for Centreon Web::
+    ------------------------------------------------------------------------
+          Start CentStorage Installation
+    ------------------------------------------------------------------------
+    Preparing Centreon temporary files
+    /tmp/centreon-setup exists, it will be moved...
+    install www/install/createTablesCentstorage.sql            OK
+    CentStorage status Directory already exists                PASSED
+    CentStorage metrics Directory already exists               PASSED
+    Install logAnalyserBroker                                  OK
+    Install nagiosPerfTrace                                    OK
+    Change macros for centstorage.cron                         OK
+    Install CentStorage cron                                   OK
+    Change macros for centstorage.logrotate                    OK
+    Install Centreon Storage logrotate.d file                  OK
+    Create /etc/centreon/instCentStorage.conf                  OK
 
-  ------------------------------------------------------------------------
-  	Start CentWeb Installation
-  ------------------------------------------------------------------------
+Upgrading Centreon Core
+-----------------------
 
-  Where is your Centreon binaries directory
-  default to [/usr/local/centreon/bin]
-  >
-  Path /usr/local/centreon/bin                               OK
+Fill in the required information. ::
 
-The path for extra data for Centreon Web::
+    ------------------------------------------------------------------------
+    	Start CentCore Installation
+    ------------------------------------------------------------------------
+    Preparing Centreon temporary files
+    /tmp/centreon-setup exists, it will be moved...
+    Copy CentCore in binary directory                          OK
+    Change right : /var/run/centreon                           OK
+    Change right : /var/lib/centreon                           OK
+    Change macros for centcore.logrotate                       OK
+    Install Centreon Core logrotate.d file                     OK
+    Replace CentCore init script Macro                         OK
+    Replace CentCore default script Macro                      OK
 
-  Where is your Centreon data information directory
-  default to [/usr/local/centreon/data]
-  >
+    Do you want me to install CentCore init script ?
+    [y/n], default to [n]:
+    > y
+    CentCore init script installed                             OK
+    CentCore default script installed                          OK
 
-  Do you want me to create this directory ? [/usr/local/centreon/data]
-  [y/n], default to [n]:
-  > y
-  Path /usr/local/centreon/data
-  /usr/bin/perl                                              OK
-  Finding Apache user :                                      www-data
-  Finding Apache group :                                     www-data
+    Do you want me to install CentCore run level ?
+    [y/n], default to [n]:
+    > y
+    Create /etc/centreon/instCentCore.conf                     OK
 
-The group of Centreon applications : This group is used for access rights
-between monitoring applications::
+Upgrading Centreon Plugins
+--------------------------
 
-  What is the Centreon group ? [centreon]
-  default to [centreon]
-  >
+Fill in the required information. ::
 
-  Do you want me to create this group ? [centreon]
-  [y/n], default to [n]:
-  > y
+    ------------------------------------------------------------------------
+    	  Starting Centreon Plugins Installation
+    ------------------------------------------------------------------------
 
-The user of Centreon applications::
+    Where is your monitoring plugins (libexec) directory ?
+    default to [/usr/lib/nagios/plugins]
+    >
+    Path /usr/lib/nagios/plugins                               OK
 
-  What is the Centreon user ? [centreon]
-  default to [centreon]
-  >
+    Where is your centreon plugins directory ?
+    default to [/usr/lib/centreon/plugins]
+    >
+    Path /usr/lib/centreon/plugins                             OK
+    Preparing Centreon temporary files
+    Change macros for CentPlugins                              OK
+    Installing the plugins                                     OK
+    Change right on centreon.conf                              OK
+    CentPlugins is installed
+    Create /etc/centreon/instCentPlugins                       OK
 
-  Do you want me to create this user ? [centreon]
-  [y/n], default to [n]:
-  > y
-
-The user of broker module.
-
-This user is used for adding rights to Centreon on the configuration and logs
-directories. If left empty, it will use the Monitoring Engine user instead.
-
-For example:
-
-* Centreon Broker : *centreon-broker*
-* ndo2db : *nagios*
-
-::
-
-  What is the Broker user ? (optional)
-  >
-
-The path to monitoring engine log directory.
-
-For example:
-
-* Centreon Engine : */var/log/centreon-engine*
-* Nagios : */var/log/nagios*
-
-::
-
-  What is the Monitoring engine log directory ?
-  > /var/log/nagios
-
-The path to monitoring plugins::
-
-  Where is your monitoring plugins (libexec) directory ?
-  default to [/usr/lib/nagios/plugins]
-  >
+Centreon SNMP trap management installation
+------------------------------------------
 
 ::
 
-  Path /usr/lib/nagios/plugins                               OK
-  Add group centreon to user www-data                        OK
-  Add group centreon to user nagios                          OK
-  Add group nagios to user www-data                          OK
-  Add group nagios to user centreon                          OK
+    ------------------------------------------------------------------------
+    	Start CentPlugins Traps Installation
+    ------------------------------------------------------------------------
+    Finding Apache user :                                      www-data
+    Preparing Centreon temporary files
+    /tmp/centreon-setup exists, it will be moved...
+    Change macros for snmptrapd.conf                           OK
+    Replace CentreonTrapd init script macro                    OK
+    Replace CentreonTrapd default script macro                 OK
 
-  ------------------------------------------------------------------------
-  	Configure Sudo
-  ------------------------------------------------------------------------
+    Do you want me to install CentreonTrapd init script ?
+    [y/n], default to [n]:
+    > y
+    CentreonTrapd init script installed                        OK
+    CentreonTrapd default script installed                     OK
 
-The path to Monitoring engine init script.
+    Do you want me to install CentreonTrapd run level ?
+    [y/n], default to [n]:
+    > y
+    update-rc.d: using dependency based boot sequencing
+    trapd Perl lib installed                                   OK
 
-For example :
+    Should I overwrite all your SNMP configuration files?
+    [y/n], default to [n]:
+    > y
+    Install : snmptrapd.conf                                   OK
+    Install : centreontrapdforward                             OK
+    Install : centreontrapd                                    OK
+    Change macros for centreontrapd.logrotate                  OK
+    Install Centreon Trapd logrotate.d file                    OK
+    Create /etc/centreon/instCentPlugins.conf                  OK
 
-* Centreon Engine : */etc/init.d/centengine*
-* Nagios : */etc/init.d/nagios*
+This completes the upgrade::
 
-::
-
-  What is the Monitoring engine init.d script ?
-  > /etc/init.d/nagios
-
-The path to broker module configuration directory.
-
-For example :
-
-* Centreon Broker : */etc/centreon-broker*
-* NDO : */etc/nagios*
-
-::
-
-  Where is the configuration directory for broker module ?
-  > /etc/nagios
-
-The path to broker daemon init script.
-
-For example :
-
-* Centreon Broker : *cbd*
-
-::
-
-  Where is the init script for broker module daemon ?
-  > cbd
-  Your sudo has been configured previously
-
-Replace or not your sudoers file.
-For more security, you can backup the file **/etc/sudoers**.
-
-::
-
-  Do you want me to reconfigure your sudo ? (WARNING)
-  [y/n], default to [n]:
-  > y
-  Configuring Sudo                                           OK
-
-  ------------------------------------------------------------------------
-  	Configure Apache server
-  ------------------------------------------------------------------------
-  Create '/etc/apache2/conf.d/centreon.conf'                 OK
-  Configuring Apache                                         OK
-
-  Do you want to reload your Apache ?
-  [y/n], default to [n]:
-  > y
-  Reloading Apache service                                   OK
-  Preparing Centreon temporary files
-  Change right on /usr/local/centreon/log                    OK
-  Change right on /etc/centreon                              OK
-  Change macros for insertBaseConf.sql                       OK
-  Change macros for sql update files                         OK
-  Change macros for php files                                OK
-  Change right on /etc/nagios3                               OK
-  Disconnect users from WebUI
-  All users are disconnected                                 OK
-  Copy CentWeb in system directory
-  Install CentWeb (web front of centreon)                    OK
-  Change right for install directory
-  Change right for install directory                         OK
-  Install libraries                                          OK
-  Write right to Smarty Cache                                OK
-  Copying libinstall                                         OK
-  Change macros for centreon.cron                            OK
-  Install Centreon cron.d file                               OK
-  Change macros for centAcl.php                              OK
-  Change macros for downtimeManager.php                      OK
-  Change macros for eventReportBuilder.pl                    OK
-  Change macros for dashboardBuilder.pl                      OK
-  Install cron directory                                     OK
-  Change right for eventReportBuilder.pl                     OK
-  Change right for dashboardBuilder.pl                       OK
-  Change macros for centreon.logrotate                       OK
-  Install Centreon logrotate.d file                          OK
-  Prepare export-mysql-indexes                               OK
-  Install export-mysql-indexes                               OK
-  Prepare import-mysql-indexes                               OK
-  Install import-mysql-indexes                               OK
-  Prepare indexes schema                                     OK
-  Install indexes schema                                     OK
-
-  ------------------------------------------------------------------------
-  Pear Modules
-  ------------------------------------------------------------------------
-  Check PEAR modules
-  PEAR                            1.4.9       1.9.4          OK
-  DB                              1.7.6       1.7.14         OK
-  DB_DataObject                   1.8.4       1.10.0         OK
-  DB_DataObject_FormBuilder       1.0.0RC4    1.0.2          OK
-  MDB2                            2.0.0       2.4.1          OK
-  Date                            1.4.6       1.4.7          OK
-  HTML_Common                     1.2.2       1.2.5          OK
-  HTML_QuickForm                  3.2.5       3.2.13         OK
-  HTML_QuickForm_advmultiselect   1.1.0       1.5.1          OK
-  HTML_Table                      1.6.1       1.8.3          OK
-  Archive_Tar                     1.1         1.3.7          OK
-  Auth_SASL                       1.0.1       1.0.6          OK
-  Console_Getopt                  1.2         1.2.3          OK
-  Net_SMTP                        1.2.8       1.6.1          OK
-  Net_Socket                      1.0.1       1.0.10         OK
-  Net_Traceroute                  0.21        0.21.3         OK
-  Net_Ping                        2.4.1       2.4.5          OK
-  Validate                        0.6.2       0.8.5          OK
-  XML_RPC                         1.4.5       1.5.5          OK
-  SOAP                            0.10.1      0.13.0         OK
-  Log                             1.9.11      1.12.7         OK
-  Archive_Zip                     0.1.2       0.1.2          OK
-  All PEAR modules                                           OK
-
-  ------------------------------------------------------------------------
-  		Centreon Post Install
-  ------------------------------------------------------------------------
-  Create /usr/local/centreon/www/install/install.conf.php    OK
-  Create /etc/centreon/instCentWeb.conf                      OK
-  Convert variables for upgrade:
-
-Upgrade Centreon Storage
-------------------------
-
-New information is required.
-
-::
-
-  ------------------------------------------------------------------------
-        Start CentStorage Installation
-  ------------------------------------------------------------------------
-  Preparing Centreon temporary files
-  /tmp/centreon-setup exists, it will be moved...
-  install www/install/createTablesCentstorage.sql            OK
-  CentStorage status Directory already exists                PASSED
-  CentStorage metrics Directory already exists               PASSED
-  Change macros for centstorage binary                       OK
-  Install CentStorage binary                                 OK
-  Install library for centstorage                            OK
-  Change right : /var/run/centreon                           OK
-  Change macros for centstorage init script                  OK
-  Replace CentCore default script Macro                      OK
-
-  Do you want me to install CentStorage init script ?
-  [y/n], default to [n]:
-  > y
-  CentStorage init script installed                          OK
-  CentStorage default script installed                       OK
-
-  Do you want me to install CentStorage run level ?
-  [y/n], default to [n]:
-  > y
-  update-rc.d: using dependency based boot sequencing
-  insserv: warning: current start runlevel(s) (3 5) of script 'centstorage' overwrites defaults (2 3 4 5).
-  Change macros for logAnalyser                              OK
-  Install logAnalyser                                        OK
-  Change macros for logAnalyser-cbroker                      OK
-  Install logAnalyser-cbroker                                OK
-  Change macros for nagiosPerfTrace                          OK
-  Install nagiosPerfTrace                                    OK
-  Change macros for purgeLogs                                OK
-  Install purgeLogs                                          OK
-  Change macros for purgeCentstorage                         OK
-  Install purgeCentstorage                                   OK
-  Change macros for centreonPurge.sh                         OK
-  Install centreonPurge.sh                                   OK
-  Change macros for centstorage.cron                         OK
-  Install CentStorage cron                                   OK
-  Change macros for centstorage.logrotate                    OK
-  Install Centreon Storage logrotate.d file                  OK
-  Create /etc/centreon/instCentStorage.conf                  OK
-  Convert variables for upgrade:
-
-Upgrade Centreon Core
----------------------
-
-New information is required.
-
-::
-
-  ------------------------------------------------------------------------
-  	Start CentCore Installation
-  ------------------------------------------------------------------------
-  Preparing Centreon temporary files
-  /tmp/centreon-setup exists, it will be moved...
-  Change CentCore Macro                                      OK
-  Copy CentCore in binary directory                          OK
-  Change right : /var/run/centreon                           OK
-  Change right : /var/lib/centreon                           OK
-  Change macros for centcore.logrotate                       OK
-  Install Centreon Core logrotate.d file                     OK
-  Replace CentCore init script Macro                         OK
-  Replace CentCore default script Macro                      OK
-
-  Do you want me to install CentCore init script ?
-  [y/n], default to [n]:
-  > y
-  CentCore init script installed                             OK
-  CentCore default script installed                          OK
-
-  Do you want me to install CentCore run level ?
-  [y/n], default to [n]:
-  > y
-  update-rc.d: using dependency based boot sequencing
-  insserv: warning: current start runlevel(s) (3 5) of script 'centcore' overwrites defaults (2 3 4 5).
-  Create /etc/centreon/instCentCore.conf                     OK
-  Convert variables for upgrade:
-
-Upgrade Centreon Plugins
-------------------------
-
-New information is required.
-
-::
-
-  ------------------------------------------------------------------------
-  	Start CentPlugins Traps Installation
-  ------------------------------------------------------------------------
-  Finding Apache user :                                      www-data
-  Preparing Centreon temporary files
-  /tmp/centreon-setup exists, it will be moved...
-  Change macros for CentPluginsTraps                         OK
-  Change macros for init scripts                             OK
-  Installing the plugins Trap binaries                       OK
-  Backup all your snmp files                                 OK
-  Change macros for snmptrapd.conf                           OK
-  Change macros for snmptt.ini                               OK
-  SNMPTT init script installed                               OK
-  SNMPTT default script installed                            OK
-  update-rc.d: using dependency based boot sequencing
-  Install : snmptrapd.conf                                   OK
-  Install : snmp.conf                                        OK
-  Install : snmptt.ini                                       OK
-  Install : snmptt                                           OK
-  Install : snmptthandler                                    OK
-  Install : snmpttconvertmib                                 OK
-  Generate SNMPTT configuration                              OK
-  Create /etc/centreon/instCentPlugins.conf                  OK
-
-The end of upgrade::
-
-  ###############################################################################
-  #                                                                             #
-  #                 Go to the URL : http://localhost/centreon/                  #
-  #                   	     to finish the setup                                #
-  #                                                                             #
-  #           Report bugs at https://github.com/centreon/centreon/issues        #
-  #                                                                             #
-  #                         Thanks for using Centreon.                          #
-  #                          -----------------------                            #
-  #                        Contact : infos@centreon.com                         #
-  #                          http://www.centreon.com                            #
-  #                                                                             #
-  ###############################################################################
+    ###############################################################################
+    #                                                                             #
+    #                 Go to the URL : http://localhost.localdomain/centreon/      #
+    #                          to finish the setup                                #
+    #                                                                             #
+    #           Report bugs at https://github.com/centreon/centreon/issues        #
+    #                                                                             #
+    #                         Thanks for using Centreon.                          #
+    #                          -----------------------                            #
+    #                        Contact : infos@centreon.com                         #
+    #                          http://www.centreon.com                            #
+    #                                                                             #
+    ###############################################################################
 
 .. _upgrade_web:
 
-****************
-Web installation
-****************
+***********************
+Installing from the web
+***********************
 
-During the web installation, follow these steps.
+During the web installation, follow these steps:
 
 Presentation
 ------------
@@ -467,10 +414,10 @@ Presentation
 .. image:: /_static/images/upgrade/step01.png
    :align: center
 
-Check dependencies
-------------------
+Check the dependencies
+----------------------
 
-This step checks the dependencies on php modules.
+This step checks the dependencies on php modules:
 
 .. image:: /_static/images/upgrade/step02.png
    :align: center
@@ -481,16 +428,16 @@ Release notes
 .. image:: /_static/images/upgrade/step03.png
    :align: center
 
-Upgrade the database
---------------------
+Upgrading the database
+----------------------
 
-This step upgrades database model and data, version by version.
+This step upgrades the database model and data, version by version:
 
 .. image:: /_static/images/upgrade/step04.png
    :align: center
 
-Finish
-------
+Completion
+----------
 
 .. image:: /_static/images/upgrade/step05.png
    :align: center

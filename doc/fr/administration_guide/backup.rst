@@ -40,13 +40,12 @@ Format de la sauvegarde :
 Sauvegarde des fichiers de configuration
 ----------------------------------------
 
-Tous les fichiers de configuration du serveur central sont sauvegardés : MySQL, Zend, Apache, PHP, SNMP, centreon, centreon-broker
+Tous les fichiers de configuration du serveur central sont sauvegardés : MySQL, Apache, PHP, SNMP, centreon, centreon-broker
 
 Format de la sauvegarde :
 
 * yyyy-mm-dd-Monitoring-Engine.tar.gz (fichiers de configuration centreon-engine)
 * yyyy-mm-dd-Central.tar.gz (autres fichiers de configuration)
-
 
 *************
 Configuration
@@ -54,7 +53,7 @@ Configuration
 
 Ce chapitre décrit la configuration de centreon-backup.
 
-#. Se rendre dans le menu: **Administration** ==> **Paramètres** ==> **Backup**
+#. Se rendre dans le menu: **Administration > Paramètres > Backup**
 
 La fenêtre suivante est affichée:
 
@@ -72,7 +71,6 @@ La fenêtre suivante est affichée:
 * **Backup retention** Durée de rétention des sauvegardes (en jours)
 * **Backup configuration files** Activer la sauvegarde des fichiers de configuration
 * **MySQL configuration file path** Chemin d'accès au fichier de configuration MySQL
-* **Zend configuration file path** Chemin d'accès au fichier de configuration Zend
 * **SCP export enabled** Activer l'export des sauvegardes par SCP
 * **Remote user** Utilisateur distant pour l'export SCP
 * **Remote host** Hôte distant pour l'export SCP
@@ -207,7 +205,7 @@ Reconstruction des graphiques
 
 Une fois que vous avez restauré votre plate-forme de supervision et que tout est en ordre, il faudra reconstruire les fichiers RRD afin de retrouver tous vos "anciens" graphiques de performance.
 
-Pour reconstruire les graphiques de performance, il faudra vous rendre dans le menu **Administration -> Options -> Centstorage -> Manage**.
+Pour reconstruire les graphiques de performance, il faudra vous rendre dans le menu **Administration > Options > Centstorage > Manage**.
 Sur cette page, il faudra sélectionner tous les services et cliquer sur **Rebuild RRD Database**.
 
 **Le serveur central est maintenant restauré.**

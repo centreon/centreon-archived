@@ -39,14 +39,14 @@ function testExistence($name = null)
 
     $query = "SELECT contact_name, contact_id FROM contact WHERE contact_name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $contact = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $contact = $dbResult->fetch();
     /*
 	 * Modif case
 	 */
-    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
+    if ($dbResult->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
+    } elseif ($dbResult->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
 		 * Duplicate entry
 		 */
@@ -62,15 +62,15 @@ function testAliasExistence($alias = null)
 
     $query = "SELECT contact_alias, contact_id FROM contact " .
         "WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $contact = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $contact = $dbResult->fetch();
 
     /*
 	 * Modif case
 	 */
-    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
+    if ($dbResult->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
+    } elseif ($dbResult->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
 		 * Duplicate entry
 		 */
@@ -122,6 +122,10 @@ function updateContact($contact_id = null)
 
     $ret = array();
     $ret = $form->getSubmitValues();
+    // remove illegal chars in data sent by the user
+    $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+    $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+
     $rq = "UPDATE contact SET ";
     $rq .= "contact_name = ";
     isset($ret["contact_name"]) && $ret["contact_name"] != null
@@ -149,7 +153,7 @@ function updateContact($contact_id = null)
     $rq .= "contact_lang = ";
     isset($ret["contact_lang"]) && $ret["contact_lang"] != null
         ? $rq .= "'" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
+        : $rq .= "'browser', ";
     $rq .= "contact_email = ";
     isset($ret["contact_email"]) && $ret["contact_email"] != null
         ? $rq .= "'" . htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8") . "', "
@@ -165,9 +169,14 @@ function updateContact($contact_id = null)
     $rq .= "contact_js_effects = ";
     isset($ret["contact_js_effects"]) ? $rq .= "'1', " : $rq .= "'0', ";
     $rq .= "contact_autologin_key = ";
-    $rq .= isset($ret["contact_autologin_key"]) ? "'" . $pearDB->escape($ret['contact_autologin_key']) . "'" : "''";
-    $rq .= "WHERE contact_id = '" . $contact_id . "'";
-    $pearDB->query($rq);
+    $rq .= !empty($ret["contact_autologin_key"])
+        ? "'" . $pearDB->escape($ret['contact_autologin_key']) . "'"
+        : "NULL ";
+    $rq .= "WHERE contact_id = :contactId";
+
+    $stmt = $pearDB->prepare($rq);
+    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
+    $stmt->execute();
 
     /*
 	 * Update user object..

@@ -124,7 +124,7 @@ ldap_store_password        Store password in database or not (0 or 1)
 
 ldap_template              Possible values: Posix, Active Directory
 
-protocol_version           Protocl version (2 or 3)
+protocol_version           Protocol version (2 or 3)
 
 user_base_search           User base search
 

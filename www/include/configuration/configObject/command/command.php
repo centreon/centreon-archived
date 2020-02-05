@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -95,14 +95,8 @@ if ($min) {
              */
             require_once($path."minHelpCommand.php");
             break;
-        case "p":
-            /*
-             * Test the plugin
-             */
-            require_once($path."minPlayCommand.php");
-            break;
         default:
-            require_once($path."minCommand.php");
+            require_once($path."minHelpCommand.php");
             break;
     }
 } else {

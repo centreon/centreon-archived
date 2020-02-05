@@ -49,9 +49,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
         'is_volatile' => 0,
         'notifications_enabled' => 2,
         'contacts' => 'Guest',
-        'contact_additive_inheritance' => 1,
         'contact_groups' => 'Supervisors',
-        'contact_group_additive_inheritance' => 1,
         'notification_interval' => 23,
         'notify_on_none' => 1,
         'notify_on_warning' => 0,
@@ -109,9 +107,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
         'is_volatile' => 0,
         'notifications_enabled' => 2,
         'contacts' => 'Guest',
-        'contact_additive_inheritance' => 1,
         'contact_groups' => 'Supervisors',
-        'contact_group_additive_inheritance' => 1,
         'notification_interval' => 23,
         'notify_on_none' => 1,
         'notify_on_warning' => 0,
@@ -169,9 +165,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
         'is_volatile' => 1,
         'notifications_enabled' => 0,
         'contacts' => 'User',
-        'contact_additive_inheritance' => 0,
         'contact_groups' => 'Guest',
-        'contact_group_additive_inheritance' => 0,
         'notification_interval' => 14,
         'notify_on_none' => 0,
         'notify_on_warning' => 1,
@@ -230,9 +224,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
         'is_volatile' => 1,
         'notifications_enabled' => 0,
         'contacts' => 'User',
-        'contact_additive_inheritance' => 0,
         'contact_groups' => 'Guest',
-        'contact_group_additive_inheritance' => 0,
         'notification_interval' => 14,
         'notify_on_none' => 0,
         'notify_on_warning' => 1,
@@ -330,7 +322,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                     return count($this->tableau) == 0;
                 },
                 "Some properties are not being updated : ",
-                5
+                10
             );
         } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
@@ -345,7 +337,8 @@ class ServiceTemplateConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ServiceTemplateConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['description']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -375,7 +368,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                     return count($this->tableau) == 0;
                 },
                 "Some properties are not being updated : ",
-                5
+                10
             );
         } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
@@ -390,7 +383,8 @@ class ServiceTemplateConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ServiceTemplateConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['description']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }
@@ -411,7 +405,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                 return $bool;
             },
             "The service is not being deleted.",
-            5
+            10
         );
     }
 }

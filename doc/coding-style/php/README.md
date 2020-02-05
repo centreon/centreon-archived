@@ -86,9 +86,9 @@ public function longLine (
         'Concatinated';
  
     if (
-        ($a == $b) &&
-        ($b == $c) ||
-        ($c == $d)
+        ($a == $b)
+        && ($b == $c)
+        || ($c == $d)
     ) {
         $a = $d;
     }

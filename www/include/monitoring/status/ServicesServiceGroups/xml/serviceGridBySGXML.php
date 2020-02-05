@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,120 +35,132 @@
 
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
-
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
-/*
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start();
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
-
 
 if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/* **************************************************
- * Check Arguments From GET tab
- */
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$nc = $obj->checkArgument("nc", $_GET, "0");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$hSearch = $obj->checkArgument("host_search", $_GET, "");
-$sgSearch = $obj->checkArgument("sg_search", $_GET, "");
-$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+// Check Arguments From GET tab
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
+//if instance value is not set, displaying all active pollers linked resources
+$instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
+$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
-/*
- * Backup poller selection
- */
+//saving bound values
+$queryValues = [];
+$queryValues2 = [];
+
+// Backup poller selection
 $obj->setInstanceHistory($instance);
-
 
 $_SESSION['monitoring_service_groups'] = $sgSearch;
 
-/** **********************************************
- * Prepare pagination
- */
-
+// Filter on state
 $s_search = "";
-/* Display service problems */
+
+// Display service problems
 if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
     $s_search .= " AND s.state != 0 AND s.state != 4 ";
 }
 
-/* Display acknowledged services */
+// Display acknowledged services
 if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
     $s_search .= " AND s.acknowledged = '1' ";
 }
 
-/* Display not acknowledged services */
+// Display not acknowledged services
 if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
     $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 ";
 }
 
-$query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
-    . "FROM servicegroups sg "
-    . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
-    . "INNER JOIN services s ON s.service_id = sgm.service_id "
-    . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
-    . $obj->access->getACLHostsTableJoin($obj->DBC, "h.host_id")
-    . $obj->access->getACLServicesTableJoin($obj->DBC, "s.service_id")
-    . "WHERE 1 = 1  ";
+// this query allows to manage pagination
+$query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id
+    FROM servicegroups sg, services_servicegroups sgm, hosts h, services s ";
 
-# Servicegroup ACL
-$query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
-
-/* Servicegroup search */
-if ($sgSearch != "") {
-    $query .= "AND sg.name = '" . $sgSearch . "' ";
+if (!$obj->is_admin) {
+    $query .= ", centreon_acl ";
 }
 
-/* Host search */
+$query .= "WHERE sgm.servicegroup_id = sg.servicegroup_id
+    AND sgm.host_id = h.host_id
+    AND h.host_id = s.host_id
+    AND sgm.service_id = s.service_id ";
+
+// filter elements with acl (host, service, servicegroup)
+if (!$obj->is_admin) {
+    $query .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id")
+        . $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id")
+        . $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id")
+        . $obj->access->queryBuilder("AND", "group_id", $obj->access->getAccessGroupsString()) . " "
+        . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID")) . " ";
+}
+
+// Servicegroup search
+if ($sgSearch != "") {
+    $query .= " AND sg.name = :sgSearch ";
+    $queryValues['sgSearch'] = [
+        \PDO::PARAM_STR => $sgSearch
+    ];
+}
+
+// Host search
 $h_search = '';
 if ($hSearch != "") {
-    $h_search .= "AND h.name like '%" . $hSearch . "%' ";
+    $h_search .= " AND h.name LIKE :hSearch ";
+    // as this partial request is used in two queries, we need to bound it two times using two arrays
+    // to avoid incoherent number of bound variables in the second query
+    $queryValues['hSearch'] = $queryValues2['hSearch'] = [
+        \PDO::PARAM_STR => "%" . $hSearch . "%"
+    ];
 }
-$query .= $h_search;
+$query .= $h_search . $s_search;
 
-/* Service search */
-$query .= $s_search;
-
-/* Poller search */
+// Poller search
 if ($instance != -1) {
-    $query .= " AND h.instance_id = " . $instance . " ";
+    $query .= " AND h.instance_id = :instance ";
+    $queryValues['instance'] = [
+        \PDO::PARAM_INT => $instance
+    ];
 }
+$query .= " ORDER BY sg.name " . $order . " LIMIT :numLimit, :limit";
+$queryValues['numLimit'] = [
+    \PDO::PARAM_INT => (int)($num * $limit)
+];
+$queryValues['limit'] = [
+    \PDO::PARAM_INT => (int)$limit
+];
 
-$query .= "ORDER BY sg.name " . $order . " "
-    . "LIMIT " . ($num * $limit) . "," . $limit;
+$dbResult = $obj->DBC->prepare($query);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResult->execute();
+$numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-$DBRESULT = $obj->DBC->query($query);
-
-$numRows = $obj->DBC->numberRows();
-
-/** ***************************************************
- * Create XML Flow
- */
+// Create XML Flow
 $obj->XML = new CentreonXML();
 $obj->XML->startElement("reponse");
 $obj->XML->startElement("i");
@@ -161,45 +173,68 @@ $obj->XML->writeElement("p", $p);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
-/* Construct query for servigroups search */
-$aTab = array();
+// Construct query for servicegroups search
+$aTab = [];
 $sg_search = "";
-$aTab = array();
+$aTab = [];
 if ($numRows > 0) {
     $sg_search .= "AND (";
-    $servicegroups = array();
-    while ($row = $DBRESULT->fetchRow()) {
+    $servicegroups = [];
+    while ($row = $dbResult->fetch()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
-    $servicegroupsSql1 = array();
+    $servicegroupsSql1 = [];
     foreach ($servicesgroups as $key => $value) {
-        $hostsSql = array();
+        $hostsSql = [];
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id IN (" .
-            implode(',', $hostsSql) . ")) ";
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key .
+            " AND h.host_id IN (" . implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
     if ($sgSearch != "") {
-        $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
+        $sg_search .= "AND sg.name = :sgSearch";
+        $queryValues2['sgSearch'] = [
+            \PDO::PARAM_STR => $sgSearch
+        ];
     }
 
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name as alias, h.name as host_name," .
-        "h.state as host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id, "
-        . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id " .
-        "AND sg.servicegroup_id=sgm.servicegroup_id "
-        . $s_search
-        . $sg_search
-        . $h_search
-        . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"))
-        . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
-        . " order by tri asc";
+    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name,
+        sg.name AS alias,
+        h.name AS host_name,
+        h.state AS host_state,
+        h.icon_image, h.host_id, s.state, s.description, s.service_id,
+        (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
+        FROM servicegroups sg, services_servicegroups sgm, services s, hosts h ";
 
-    $DBRESULT = $obj->DBC->query($query2);
+    if (!$obj->is_admin) {
+        $query2 .= ", centreon_acl ";
+    }
+
+    $query2 .= "WHERE sgm.servicegroup_id = sg.servicegroup_id
+        AND sgm.host_id = h.host_id
+        AND h.host_id = s.host_id
+        AND sgm.service_id = s.service_id ";
+
+    // filter elements with acl (host, service, servicegroup)
+    if (!$obj->is_admin) {
+        $query2 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
+            $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
+            $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id") .
+            $obj->access->queryBuilder("AND", "group_id", $obj->access->getAccessGroupsString()) . " " .
+            $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID")) . " ";
+    }
+    $query2 .= $sg_search . $h_search . $s_search . " ORDER BY sg_name, tri ASC";
+
+    $dbResult = $obj->DBC->prepare($query2);
+    foreach ($queryValues2 as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $dbResult->bindValue($bindId, $bindValue, $bindType);
+        }
+    }
+    $dbResult->execute();
 
     $ct = 0;
     $sg = "";
@@ -207,12 +242,12 @@ if ($numRows > 0) {
     $flag = 0;
     $count = 0;
 
-    while ($tab = $DBRESULT->fetchRow()) {
+    while ($tab = $dbResult->fetch()) {
         if (!isset($aTab[$tab["sg_name"]])) {
             $aTab[$tab["sg_name"]] = array(
                 'sgn' => CentreonUtils::escapeSecure($tab["sg_name"]),
                 'o' => $ct,
-                'host' => array()
+                'host' => []
             );
         }
 
@@ -225,21 +260,19 @@ if ($numRows > 0) {
             }
             $aTab[$tab["sg_name"]]['host'][$tab["host_name"]] = array(
                 'h' => $tab["host_name"],
-                'hs' => $tab["host_state"],
+                'hs' => _($obj->statusHost[$tab["host_state"]]),
                 'hn' => CentreonUtils::escapeSecure($tab["host_name"]),
                 'hico' => $icone,
                 'hnl' => CentreonUtils::escapeSecure(urlencode($tab["host_name"])),
                 'hid' => $tab["host_id"],
                 "hcount" => $count,
-                "hs" => _($obj->statusHost[$tab["host_state"]]),
                 "hc" => $obj->colorHost[$tab["host_state"]],
-                'service' => array()
+                'service' => []
             );
         }
 
         if (!isset($aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']])) {
             $aTab[$tab["sg_name"]]['host'][$tab["host_name"]]['service'][$tab['description']] = array(
-
                 "sn" => CentreonUtils::escapeSecure($tab['description']),
                 "snl" => CentreonUtils::escapeSecure(urlencode($tab['description'])),
                 "sc" => $obj->colorService[$tab['state']],
@@ -254,7 +287,6 @@ foreach ($aTab as $key => $element) {
     $obj->XML->startElement("sg");
     $obj->XML->writeElement("sgn", $element['sgn']);
     $obj->XML->writeElement("o", $element['o']);
-
     foreach ($element['host'] as $host) {
         $obj->XML->startElement("h");
         $obj->XML->writeAttribute("class", $obj->getNextLineClass());
@@ -280,15 +312,10 @@ foreach ($aTab as $key => $element) {
     $obj->XML->endElement();
 }
 
-
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();

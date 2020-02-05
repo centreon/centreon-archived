@@ -49,8 +49,8 @@ function getMyHostTemplateCriticality($host_id)
     }
 
     $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" . $host_id . "' ORDER BY `order`";
-    $DBRESULT = $pearDB->query($rq);
-    while ($row = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($rq);
+    while ($row = $dbResult->fetch()) {
         if (isset($critHTpl[$row['host_tpl_id']]) && $critHTpl[$row['host_tpl_id']]) {
             return $critHTpl[$row['host_tpl_id']];
         } else {
@@ -74,14 +74,14 @@ function intCmdParam($DB, $pollerId)
     $cache = array('tpl' => array(), 'svc' => array());
 
     $commands = array();
-    $DBRESULT = $DB->query("SELECT command_id, command_name FROM command");
-    while ($data = $DBRESULT->fetchRow()) {
+    $dbResult = $DB->query("SELECT command_id, command_name FROM command");
+    while ($data = $dbResult->fetch()) {
         $commands[$data["command_id"]] = $data["command_name"];
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     $i = 0;
-    $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id,
+    $dbResult = $DB->query("SELECT service_id, service_register, service_template_model_stm_id,
                                 command_command_id, command_command_id_arg
                                  FROM service s, host_service_relation hsr, ns_host_relation nhr
                                  WHERE s.service_id = hsr.service_service_id
@@ -101,7 +101,7 @@ function intCmdParam($DB, $pollerId)
                                  FROM service s
                                  WHERE service_register = '0'
                                  ORDER BY service_register, service_template_model_stm_id");
-    while ($data = $DBRESULT->fetchRow()) {
+    while ($data = $dbResult->fetch()) {
         if ($data["service_register"] == 1) {
             if ($data["command_command_id_arg"] && !$data["command_command_id"]) {
                 $cache["svc"][$data["service_id"]] =
@@ -129,7 +129,7 @@ function intCmdParam($DB, $pollerId)
         }
         $i++;
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     return $cache;
 }
 
@@ -193,7 +193,7 @@ function getMyServiceTPInCache($service_id = null, $cache)
 }
 
 /*
- * Convert Service Sp�cial Char for generation
+ * Convert Service Special Char for generation
  */
 function convertServiceSpecialChar($str)
 {
@@ -349,8 +349,8 @@ function isHostOnThisInstance($host_id, $instance_id)
     global $pearDB;
     $query = "SELECT * FROM ns_host_relation WHERE host_host_id = '" . $host_id .
         "' AND nagios_server_id = '" . $instance_id . "'";
-    $DBRESULT_relation = $pearDB->query($query);
-    if ($DBRESULT_relation->rowCount()) {
+    $dbResult_relation = $pearDB->query($query);
+    if ($dbResult_relation->rowCount()) {
         return 1;
     } else {
         return 0;
@@ -361,8 +361,8 @@ function isLocalInstance($instance_id)
 {
     global $pearDB;
 
-    $DBRESULT_relation = $pearDB->query("SELECT localhost FROM nagios_server WHERE id = '" . $instance_id . "'");
-    $data = $DBRESULT_relation->fetchRow();
+    $dbResult_relation = $pearDB->query("SELECT localhost FROM nagios_server WHERE id = '" . $instance_id . "'");
+    $data = $dbResult_relation->fetch();
     return $data["localhost"];
 }
 
@@ -403,12 +403,12 @@ function checkDependenciesStrong()
      * Contact
      */
     $contact = array();
-    $DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_activate = '1'");
-    while ($contact = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query("SELECT contact_id FROM contact WHERE contact_activate = '1'");
+    while ($contact = $dbResult->fetch()) {
         $cctEnb[$contact["contact_id"]] = 1;
         unset($contact);
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     /*
      * Contact with template
      */
@@ -420,33 +420,33 @@ function checkDependenciesStrong()
 					WHERE contact_enable_notifications = "1" AND contact_activate = "1" AND contact_register = 0
 			)';
     $contact = array();
-    $DBRESULT = $pearDB->query($queryContactWithTemplate);
-    while ($contact = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($queryContactWithTemplate);
+    while ($contact = $dbResult->fetch()) {
         $cctEnb[$contact["contact_id"]] = 1;
         unset($contact);
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /*
      * ContactGroup
      */
     $contactGroup = array();
-    $DBRESULT = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_activate = '1'");
-    while ($contactGroup = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_activate = '1'");
+    while ($contactGroup = $dbResult->fetch()) {
         $cgEnb[$contactGroup["cg_id"]] = 1;
     }
     unset($contactGroup);
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /*
      * Host Template Model
      */
     $query = "SELECT host_id, host_name FROM host WHERE host.host_register = '0' AND host.host_activate = '1'";
-    $DBRESULT = $pearDB->query($query);
-    while ($host = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($query);
+    while ($host = $dbResult->fetch()) {
         $hostEnb[$host["host_id"]] = $host["host_name"];
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /*
      * Host
@@ -458,15 +458,15 @@ function checkDependenciesStrong()
     $hostTemplate = array();
     $query = "SELECT htr.host_tpl_id, host.host_id FROM host_template_relation htr, host " .
         "WHERE host.host_id = htr.host_host_id";
-    $DBRESULT = $pearDB->query($query);
-    while ($htpl = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($query);
+    while ($htpl = $dbResult->fetch()) {
         $hostTemplate[$htpl["host_id"]] = $htpl["host_tpl_id"];
     }
 
     $query = "SELECT host.host_id, host.host_name FROM host " .
         "WHERE host.host_register = '1' AND host.host_activate = '1'";
-    $DBRESULT = $pearDB->query();
-    while ($host = $DBRESULT->fetchRow($query)) {
+    $dbResult = $pearDB->query();
+    while ($host = $dbResult->fetch($query)) {
         /*
          * If the Host is link to a Template, we think that the dependencies are manage in the template
          */
@@ -479,11 +479,11 @@ function checkDependenciesStrong()
              */
             $query = "SELECT DISTINCT cghr.contactgroup_cg_id FROM contactgroup_host_relation cghr " .
                 "WHERE cghr.host_host_id = '" . $host["host_id"] . "'";
-            $DBRESULT2 = $pearDB->query($query);
-            while ($valid = $DBRESULT2->fetchRow()) {
+            $dbResult2 = $pearDB->query($query);
+            while ($valid = $dbResult2->fetch()) {
                 isset($cgEnb[$valid["contactgroup_cg_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
             }
-            $DBRESULT2->closeCursor();
+            $dbResult2->closeCursor();
             unset($valid);
 
             /*
@@ -491,57 +491,57 @@ function checkDependenciesStrong()
              */
             $query = "SELECT DISTINCT chr.contact_id FROM contact_host_relation chr " .
                 "WHERE chr.host_host_id = '" . $host["host_id"] . "'";
-            $DBRESULT2 = $pearDB->query($query);
-            while ($valid = $DBRESULT2->fetchRow()) {
+            $dbResult2 = $pearDB->query($query);
+            while ($valid = $dbResult2->fetch()) {
                 isset($cctEnb[$valid["contact_id"]]) ? $hostEnb[$host["host_id"]] = $host["host_name"] : null;
             }
-            $DBRESULT2->closeCursor();
+            $dbResult2->closeCursor();
             unset($valid);
         }
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     unset($host);
 
     /*
      * Host Group
      */
     $hostGroup = array();
-    $DBRESULT = $pearDB->query("SELECT DISTINCT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
-    while ($hostGroup = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query("SELECT DISTINCT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
+    while ($hostGroup = $dbResult->fetch()) {
         $query = "SELECT DISTINCT hgr.host_host_id, hgr.hostgroup_hg_id FROM hostgroup_relation hgr " .
             "WHERE hgr.hostgroup_hg_id = '" . $hostGroup["hg_id"] . "'";
-        $DBRESULT2 = $pearDB->query($query);
-        while ($hostGroup = $DBRESULT2->fetchRow()) {
+        $dbResult2 = $pearDB->query($query);
+        while ($hostGroup = $dbResult2->fetch()) {
             if (isset($hostEnb[$hostGroup["host_host_id"]])) {
                 $hgEnb[$hostGroup["hostgroup_hg_id"]] = 1;
                 break;
             }
         }
-        $DBRESULT2->closeCursor();
+        $dbResult2->closeCursor();
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     unset($hostGroup);
 
     /*
      * Service Template Model
      */
     $query = "SELECT DISTINCT sv.service_id FROM service sv WHERE sv.service_activate = '1' AND service_register = '0'";
-    $DBRESULT = $pearDB->query($query);
-    while ($service = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($query);
+    while ($service = $dbResult->fetch()) {
         $svEnb[$service["service_id"]] = 1;
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /*
      * Service
      */
 
     $service = array();
-    $DBRESULT = $pearDB->query("SELECT DISTINCT service_id, service_description, service_template_model_stm_id " .
+    $dbResult = $pearDB->query("SELECT DISTINCT service_id, service_description, service_template_model_stm_id " .
         "FROM service " .
         "WHERE service_activate = '1' " .
         "AND service_register = '1'");
-    while ($service = $DBRESULT->fetchRow()) {
+    while ($service = $dbResult->fetch()) {
         /*
          * If the Service is link to a Template, we think that
          * the dependencies are manage in the template
@@ -553,12 +553,12 @@ function checkDependenciesStrong()
             $hg = false;
             $query = "SELECT DISTINCT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr " .
                 "WHERE hsr.service_service_id = '" . $pearDB->escape($service["service_id"]) . "'";
-            $DBRESULT2 = $pearDB->query($query);
-            while ($valid = $DBRESULT2->fetchRow()) {
+            $dbResult2 = $pearDB->query($query);
+            while ($valid = $dbResult2->fetch()) {
                 isset($hostEnb[$valid["host_host_id"]]) ? $h = true : null;
                 isset($hgEnb[$valid["hostgroup_hg_id"]]) ? $hg = true : null;
             }
-            $DBRESULT2->closeCursor();
+            $dbResult2->closeCursor();
             unset($valid);
 
             if ($h || $hg) {
@@ -567,38 +567,38 @@ function checkDependenciesStrong()
             unset($valid);
         }
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
 
     /*
      * Service Group
      */
     $serviceGroup = array();
-    $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup sg WHERE sg.sg_activate = '1'");
-    while ($serviceGroup = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup sg WHERE sg.sg_activate = '1'");
+    while ($serviceGroup = $dbResult->fetch()) {
         $query = "SELECT sgr.service_service_id FROM servicegroup_relation sgr " .
             "WHERE sgr.servicegroup_sg_id = '" . $serviceGroup["sg_id"] . "'";
-        $DBRESULT2 = $pearDB->query($query);
-        while ($valid = $DBRESULT2->fetchRow()) {
+        $dbResult2 = $pearDB->query($query);
+        while ($valid = $dbResult2->fetch()) {
             if (isset($svEnb[$valid["service_service_id"]])) {
                 $sgEnb[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
             }
         }
-        $DBRESULT2->closeCursor();
+        $dbResult2->closeCursor();
     }
     unset($serviceGroup);
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /*
      * Meta Service
      */
     $oms = array();
-    $DBRESULT = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_activate = '1'");
-    while ($oms = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_activate = '1'");
+    while ($oms = $dbResult->fetch()) {
         $omsEnb[$oms["meta_id"]] = 1;
     }
     unset($oms);
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     return ($gbEnb);
 }
@@ -623,20 +623,20 @@ function print_header($handle, $name)
     $str .= "#         Last modification " . $time;
 
     $len_time = strlen($time);
-    $DBRESULT = $len - 28 - $len_time - 2;
+    $dbResult = $len - 28 - $len_time - 2;
 
     // Add space to put text on center
-    for ($i = 0; $i != $DBRESULT; $i++) {
+    for ($i = 0; $i != $dbResult; $i++) {
         $str .= " ";
     }
 
     $str .= "#\n";
     $str .= "#         By " . $by;
     $len_by = mb_strlen($by, 'UTF-8');
-    $DBRESULT = $len - 13 - $len_by - 2;
+    $dbResult = $len - 13 - $len_by - 2;
 
     // Add space to put text on center
-    for ($i = 0; $i != $DBRESULT; $i++) {
+    for ($i = 0; $i != $dbResult; $i++) {
         $str .= " ";
     }
     $str .= "#\n";
@@ -845,7 +845,7 @@ function getCentreonBrokerDirCfg($ns_id)
 	    	FROM nagios_server
 	    	WHERE id = " . $ns_id;
     $res = $pearDB->query($query);
-    $row = $res->fetchRow();
+    $row = $res->fetch();
     if (trim($row['centreonbroker_cfg_path']) != '') {
         return trim($row['centreonbroker_cfg_path']);
     }
@@ -870,7 +870,7 @@ function getLocalhostId()
     if ($error || $res->rowCount() == 0) {
         return false;
     }
-    $row = $res->fetchRow();
+    $row = $res->fetch();
     return $row['id'];
 }
 
@@ -892,7 +892,7 @@ function getListIndexData()
         throw new Exception('Bad query');
     }
     $listRelation = array();
-    while ($row = $res->fetchRow()) {
+    while ($row = $res->fetch()) {
         $id = $row['host_id'] . ';' . $row['service_id'];
         $listRelation[$id] = true;
     }
@@ -940,7 +940,7 @@ function getChildren($infos)
     } catch (\PDOException $e) {
         return null;
     }
-    while ($row = $res->fetchRow()) {
+    while ($row = $res->fetch()) {
         if (!isset($children[$row['config_key']])) {
             $children[$row['config_key']] = array(
                 'key' => $row['config_key'],

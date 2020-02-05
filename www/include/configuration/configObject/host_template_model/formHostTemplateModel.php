@@ -181,7 +181,7 @@ $attrCommands = array(
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */ 
+ */
 unset($_POST['o']);
 #
 ## Form begin
@@ -279,18 +279,13 @@ $cloneSetTemplate = array();
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
-    _("Template"),
-    (array(null => null) + $hostObj->getList(false, true)),
+    '',
+    (array(null => null) + $hostObj->getList(false, true, $host_id)),
     array(
         "id" => "tpSelect_#index#",
+        "class" => "select2",
         "type" => "select-one"
     )
-);
-$cloneSetMacro[] = $form->addElement(
-    'hidden',
-    'macroFrom[#index#]',
-    'direct',
-    array('id' => 'macroFrom_#index#')
 );
 
 /*
@@ -390,6 +385,9 @@ if ($o != "mc") {
 /*
  * Additive
  */
+$dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
+$inheritanceMode = $dbResult->fetch();
+
 if ($o == "mc") {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
@@ -752,7 +750,7 @@ $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
 /*
- * Criticality 
+ * Criticality
  */
 $criticality = new CentreonCriticality($pearDB);
 $critList = $criticality->getList();
@@ -812,8 +810,8 @@ function myReplace()
 
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('host_name', 'myReplace');
-$form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
-$form->registerRule('exist', 'callback', 'testHostExistence');
+$form->registerRule('existTemplate', 'callback', 'hasHostTemplateNeverUsed');
+$form->registerRule('exist', 'callback', 'hasHostNameNeverUsed');
 $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
 $form->addRule('host_name', _("Host name is already in use"), 'exist');
 $form->addRule('host_name', _("Compulsory Name"), 'required');
@@ -854,17 +852,14 @@ if ($o == "w") {
     }
     $form->setDefaults($host);
     $form->freeze();
-} # Modify a host information
-elseif ($o == "c") {
+} elseif ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($host);
-} # Add a host information
-elseif ($o == "a") {
+} elseif ($o == "a") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-} # Massive Change
-elseif ($o == "mc") {
+} elseif ($o == "mc") {
     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
@@ -933,7 +928,7 @@ if ($valid) {
     $form->accept($renderer);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
-
+    $tpl->assign('inheritance', $inheritanceMode['value']);
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('template_inheritance', _('Template inheritance'));
     $tpl->assign('command_inheritance', _('Command inheritance'));
@@ -946,6 +941,7 @@ if ($valid) {
     $tpl->assign("History_Options", _("History Options"));
     $tpl->assign("Event_Handler", _("Event Handler"));
     $tpl->assign("add_mtp_label", _("Add a template"));
+    $tpl->assign('select_template', _('Select a template'));
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign("tpl", 1);
     $tpl->display("formHost.ihtml");

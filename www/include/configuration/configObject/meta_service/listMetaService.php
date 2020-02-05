@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,27 +37,40 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
+$search = filter_var(
+    $_POST['searchMS'] ?? $_GET['searchMS'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-$search = '';
-if (isset($_POST['searchMS']) && $_POST['searchMS'] != "") {
-    $search = $_POST['searchMS'];
-    $query = "SELECT COUNT(*) FROM meta_service " .
-        "WHERE meta_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' " .
-        $acl->queryBuilder('AND', 'meta_id', $metaStr);
-    $DBRESULT = $pearDB->query($query);
+if (isset($_POST['searchMS']) || isset($_GET['searchMS'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]["search"] = $search;
 } else {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*)
-                                FROM meta_service " .
-        $acl->queryBuilder('WHERE', 'meta_id', $metaStr));
+    //restoring saved values
+    $search = $centreon->historySearch[$url]["search"] ?? null;
 }
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
 
-include("./include/common/checkPagination.php");
+/*
+ * Meta Service list
+ */
+$rq = "SELECT SQL_CALC_FOUND_ROWS * FROM meta_service ";
+if ($search) {
+    $rq .= "WHERE meta_name LIKE '%" . $search . "%' " .
+        $acl->queryBuilder("AND", "meta_id", $metaStr);
+} else {
+    $rq .= $acl->queryBuilder("WHERE", "meta_id", $metaStr);
+}
+$rq .= " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
+
+$dbResult = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+
+include "./include/common/checkPagination.php";
 
 /*
  * Smarty template Init
@@ -65,8 +78,8 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 /*
@@ -86,28 +99,31 @@ $calcType = array("AVE" => _("Average"), "SOM" => _("Sum"), "MIN" => _("Min"), "
  */
 if ($search) {
     $rq = "SELECT * FROM meta_service " .
-        "WHERE meta_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' " .
+        "WHERE meta_name LIKE '%" . $search . "%' " .
         $acl->queryBuilder("AND", "meta_id", $metaStr) .
-        "ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
+        " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $rq = "SELECT * FROM meta_service " .
         $acl->queryBuilder("WHERE", "meta_id", $metaStr) .
-        "ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
+        " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
 }
-$DBRESULT = $pearDB->query($rq);
+$dbResult = $pearDB->query($rq);
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $ms = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $ms['meta_id'] . "]");
     if ($ms["meta_select_mode"] == 1) {
@@ -120,12 +136,12 @@ for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
 
     if ($ms["meta_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&meta_id=" . $ms['meta_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";
 
@@ -138,7 +154,7 @@ for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($ms["meta_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&meta_id=" . $ms['meta_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&meta_id=" . $ms['meta_id'],
         "RowMenu_type" => CentreonUtils::escapeSecure($calcType[$ms["calcul_type"]]),
         "RowMenu_levelw" => isset($ms["warning"]) && $ms["warning"] ? $ms["warning"] : "-",
         "RowMenu_levelc" => isset($ms["critical"]) && $ms["critical"] ? $ms["critical"] : "-",
@@ -150,27 +166,23 @@ for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
 $attrs1 = array(
@@ -232,9 +244,7 @@ $o2->setSelected(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchMS', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

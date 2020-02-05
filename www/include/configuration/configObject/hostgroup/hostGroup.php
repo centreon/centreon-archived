@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 
 isset($_GET["hg_id"]) ? $hG = $_GET["hg_id"] : $hG = null;
 isset($_POST["hg_id"]) ? $hP = $_POST["hg_id"] : $hP = null;
-$hG ? $hg_id = $hG : $hg_id = $hP;
+$hG ? $hg_id = (int)$hG : $hg_id = (int)$hP;
 
 isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
 isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
@@ -106,6 +106,10 @@ switch ($o) {
         break;
     case "m":
         multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        $acl = $centreon->user->access;
+        $hgs = $acl->getHostGroupAclConf(null, 'broker');
+        $hgString = implode(',', array_map('mywrap', array_keys($hgs)));
+        $hoststring = $acl->getHostsString('ID', $dbmon);
         require_once($path . "listHostGroup.php");
         break; #Duplicate n Host grou
     case "d":

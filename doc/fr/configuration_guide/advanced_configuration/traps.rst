@@ -30,16 +30,10 @@ Les traps peuvent ensuite être reliés à des services passifs via l'onglet **R
 Architecture
 ************
 
-Avec Centreon 2.5.x, la gestion des traps SNMP a été revue en profondeur par rapport aux versions précédentes : 
+Processus de traitement d'un trap par le serveur central
+========================================================
 
-*   les processus 'snmptt' et 'centtraphandler' ont été fusionnés au sein d'un unique processus 'centreontrapd'.
-*   le processus 'snmptthandler' est remplacé par le processus 'centreontrapdforward'.
-*   les satellites peuvent disposer de leur propre définition de Trap SNMP au sein d'une base dédiée SQLite supprimant ainsi l'accès au serveur MySQL Centreon.
-
-Traitement d'un trap par le serveur central
-===========================================
-
-Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
+Voici le processus de traitement d'un trap SNMP :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyés par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier tampon (par défaut : **/var/spool/centreontrapd/**).
@@ -49,12 +43,13 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_centreon.png
    :align: center
 
-Traitement d'un trap par un serveur satellite
-=============================================
+Processus de traitement d'un trap par un collecteur
+===================================================
 
 Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
 Cette base de données SQLite est automatiquement générée par le serveur Central. 
-Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
+
+Voici le processus de traitement d'un trap SNMP :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyées par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier tampon (par défaut : **/var/spool/centreontrapd/**).
@@ -66,6 +61,14 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 
 .. note::
     Le processus Centcore à la charge, comme pour l'export de configuration de la supervision, de copier la base SQLite sur le collecteur distant.
+
+Ordre de réalisation des actions par le processus centreontrapd
+===============================================================
+
+Voici l'ordre des actions réalisé par le processus **centreontrapd** :
+
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/SNMP_Traps_management_general_view.png
+   :align: center
 
 **************************
 Configuration des services
@@ -163,8 +166,6 @@ Voici un exemple de configuration possible du fichier **/etc/centreon/centreontr
         date_format => "",
         time_format => "",
         date_time_format => "",
-        # Utiliser le cache d'OID interne de la base de données
-        cache_unknown_traps_enable => 1,
         # Temps en secondes avant de recharger le cache
         cache_unknown_traps_retention => 600,
         # 0 = central, 1 = poller
@@ -185,44 +186,34 @@ Voici un exemple de configuration possible du fichier **/etc/centreon/centreontr
 Configuration de la connexion à la base de données
 --------------------------------------------------
 
-.. note::
-    Sur un collecteur distant (satellite), la configuration de l'accès à la base de données
-    est à réaliser dans le fichier **/etc/centreon/centreontrapd.pm**.
+Sur un serveur Centreon central, éditer le fichier **/etc/centreon/conf.pm** : ::
 
-Il est possible de configurer le fichier **/etc/centreon/conf.pm** de deux manières :
+    $centreon_config = {
+        VarLib => "/var/lib/centreon",
+        CentreonDir => "/usr/share/centreon/",
+        "centreon_db" => "centreon",
+        "centstorage_db" => "centreon_storage",
+        "db_host" => "localhost:3306",
+        "db_user" => "centreon",
+        "db_passwd" => "centreon"
+    };
+    
+    1;
 
-* Conserver la connexion au serveur de base de données MySQL (nécessaire pour le serveur central et possible pour les serveurs satellites). Contenu du fichier :
+Sur un collecteur, éditer le fichier **/etc/centreon/centreontrapd.pm** : ::
 
-::
-
-	$centreon_config = {
-	VarLib => "/var/lib/centreon",
-	CentreonDir => "/usr/share/centreon/",
-	"centreon_db" => "centreon",
-	"centstorage_db" => "centreon_storage",
-	"db_host" => "localhost:3306",
-	"db_user" => "centreon",
-	"db_passwd" => "centreon"
-	};
-
-	1;
-
-* Connecter centreontrapd à la base de données SQLite locale. Contenu du fichier :
-
-::
-
-	$centreon_config = {
-	VarLib => "/var/lib/centreon",
-	CentreonDir => "/usr/share/centreon/",
-	"centreon_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
-	"centstorage_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
-	"db_host" => "",
-	"db_user" => "",
-	"db_passwd" => "",
-	"db_type" => 'SQLite',
-	};
-
-	1;
+    our %centreontrapd_config = (
+        ...
+        "centreon_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
+        "centstorage_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
+        "db_host" => "",
+        "db_user" => "",
+        "db_passwd" => "",
+        "db_type" => 'SQLite',
+        ...
+    );
+    
+    1;
 
 **********************
 Configuration Centreon
@@ -288,6 +279,7 @@ Il est également possible de créer manuellement des définitions de trap SNMP 
    :align: center
 
 * Le champ **Nom du Trap** définit le nom du trap.
+* Le champ **Mode** définit comment le champ **OID** est interpreté lors de la réception de ce trap.
 * Le champ **OID** définit l'OID racine à recevoir pour que ce trap soit considéré comme reçu.
 * Le champ **Nom du constructeur** définit le nom du constructeur auquel appartient le trap à sélectionner dans la liste déroulante.
 * Le champ **Message de sortie** contient le message à afficher en cas de réception d'un trap contenant l'OID configuré au-dessus.
@@ -323,8 +315,8 @@ Pour chaque règle, définir les paramètres :
 * Si la case **Reprogrammer les services associés** est cochée alors le prochain contrôle du service, qui doit être 'actif', sera reprogrammé au plus tôt après la réception du trap.
 * Si la case **Exécuter une commande spéciale** est cochée alors la commande définie dans **Commande spéciale** est exécutée.
 
-Configuration très avancée des traps
-------------------------------------
+Configuration très avancée des traps - Le routage
+-------------------------------------------------
 
 L'onglet **Avancé** permet de configurer le comportement d'exécution du processus de traitement des traps SNMP lors de la réception de ce dernier.
 
@@ -363,6 +355,33 @@ Le résultat sera de la forme : Interface GigabitEthernet0/1 ( SERVEUR NAS ) lin
 *   Le champ **Intervalle d'exécution** exprimé en secondes, permet de définir le temps minimum d'attente entre deux traitements d'un évènement.
 *   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.
 *   Le champ **Méthode d'exécution** permet de définir si lors de la réception de plusieurs mêmes évènements (OID racine). L'exécution est soit **Séquentielle**, soit **Parallèle**.
+
+Configuration très avancée des traps - Le code personnalisé
+-----------------------------------------------------------
+
+Le paramètre **code personnalisé** permet d'ajouter un traitement Perl personnalisé.
+Pour l'activer, il est nécessaire de modifier la variable **secure_mode** à 0 dans le 
+fichier **/etc/centreon/centreontrapd.pm** tel que : ::
+
+    our %centreontrapd_config = (
+       ...
+       secure_mode => 0,
+       ....
+    );
+    
+    1;
+
+Par exemple, pour décoder le 4ème argument dont la valeur est en hexadécimal, le
+code personnalisé sera : ::
+
+    if ($self->{trap_data}->{entvar}->[3] =~ /[[:xdigit:]]+/) {
+        my $hexa_value = $self->{trap_data}->{entvar}->[3];
+        $hexa_value =~ s/ //g;
+        $self->{trap_data}->{entvar}->[3] = pack('H*', $hexa_value);
+    }
+
+.. note::
+    Attention le tableau des arguments démarre à 0 pour l'argument 1 du trap SNMP.
 
 *************
 Les variables

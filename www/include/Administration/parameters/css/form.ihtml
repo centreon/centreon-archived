@@ -1,4 +1,4 @@
-<form action="main.php" method=get>
+<form action="?p={$p}&o={$o}" method="post">
 	<table class="formTable table">
         <tr class="ListHeader">
           <td class="FormHeader" colspan="2">
@@ -21,9 +21,7 @@
 		</tr>
 		{/section}
     </table>
-	<div id="validForm" class="oreonbutton">
-		<input type=submit class="btc bt_success" value="{$submitTitle}">
-	</div>
-<input type=hidden name=p value={$p}>
-<input type=hidden name=o value={$o}>
+    <div id="validForm" class="oreonbutton">
+        <input type=submit class="btc bt_success" value="{$submitTitle}">
+    </div>
 </form>

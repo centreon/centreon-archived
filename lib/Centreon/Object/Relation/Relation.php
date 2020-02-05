@@ -33,9 +33,6 @@
  *
  */
 
-//require_once "Centreon/Db/Manager/Manager.php";
-require_once "Centreon/Cache/Manager/Manager.php";
-
 /**
  * Centreon Object Relation
  *
@@ -47,11 +44,6 @@ abstract class Centreon_Object_Relation
      * Database Connector
      */
     protected $db;
-
-    /**
-     * Database Cache
-     */
-    protected $cache;
 
     /**
      * Relation Table
@@ -69,12 +61,6 @@ abstract class Centreon_Object_Relation
     protected $secondKey = null;
 
     /**
-     *
-     * @var bool
-     */
-    protected $useCache;
-
-    /**
      * Constructor
      *
      * @return void
@@ -82,8 +68,6 @@ abstract class Centreon_Object_Relation
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         $this->db = $dependencyInjector['configuration_db'];
-        $this->cache = Centreon_Cache_Manager::factory('centreonRelations');
-        $this->useCache = false;
     }
 
     /**
@@ -123,14 +107,9 @@ abstract class Centreon_Object_Relation
 
     protected function getResult($sql, $params = array())
     {
-        $cacheFileName = Centreon_Cache_Manager::getCacheFileName($sql, $params);
-        if (($this->useCache === false) || ($result = $this->cache->load($cacheFileName)) === false) {
-            $res = $this->db->query($sql, $params);
-            $result = $res->fetchAll();
-            if ($this->useCache == true) {
-                $this->cache->save($result, $cacheFileName);
-            }
-        }
+        $res = $this->db->query($sql, $params);
+        $result = $res->fetchAll();
+
         return $result;
     }
 
@@ -272,17 +251,6 @@ abstract class Centreon_Object_Relation
         } else {
             throw new Exception('Unknown method');
         }
-    }
-
-    /**
-     * Set cache
-     *
-     * @param bool $value
-     * @return void
-     */
-    public function setCache($value)
-    {
-        $this->useCache = $value;
     }
 
     /**

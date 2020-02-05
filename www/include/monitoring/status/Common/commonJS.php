@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,9 +41,30 @@ if (!isset($default_poller)) {
     include_once "./include/monitoring/status/Common/default_poller.php";
 }
 
+$searchHistory = CentreonUtils::escapeSecure(
+    ($centreon->historySearch[$url] ?? '')
+);
+
+$historySearchService = CentreonUtils::escapeSecure(
+    ($centreon->historySearchService[$url] ?? '')
+);
+
+if (!isset($search_host) || empty($search_host)) {
+    $search_host = $searchHistory;
+}
+
+if (!isset($search_sg) || empty($search_sg)) {
+    $search_sg = $searchHistory;
+}
+
+if (!isset($search_output) || empty($search_output)) {
+    $search_output = CentreonUtils::escapeSecure(
+        ($centreon->historySearchOutput[$url] ?? '')
+    );
+}
+
 ?>
 // Dynamique
-var _sid='<?php echo $sid?>';
 <?php if (isset($search_type_host)) { ?>
 var _search_type_host='<?php echo $search_type_host?>';
 <?php } ?>
@@ -51,14 +72,10 @@ var _search_type_host='<?php echo $search_type_host?>';
 var _search_type_service='<?php echo $search_type_service?>';
 <?php } ?>
 
-var _search = '<?php global $url ;
-echo ($search ? $search : (isset($centreon->historySearchService[$url]) ? $centreon->historySearchService[$url] : ""));?>';
-var _host_search = '<?php global $url ;
-echo (isset($search_host) && $search_host != "" ? $search_host : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
-var _sg_search = '<?php global $url ;
-echo (isset($search_sg) && $search_sg != "" ? $search_sg : (isset($centreon->historySearch[$url]) ? $centreon->historySearch[$url] : "")); ?>';
-var _output_search = '<?php global $url ;
-echo (isset($search_output) && $search_output != "" ? $search_output : (isset($centreon->historySearchOutput[$url]) ? $centreon->historySearchOutput[$url] : "")); ?>';
+var _search = '<?= $search ?? $historySearchService; ?>';
+var _host_search = '<?= $search_host ?>';
+var _sg_search = '<?= $search_sg ?>';
+var _output_search = '<?= $search_output ?>';
 
 var _num='<?php echo $num?>';
 var _limit='<?php echo $limit?>';
@@ -116,7 +133,7 @@ document.onmousemove = position;
 /* Reset trim function in order to be compatible with IE */
 if (typeof String.prototype.trim !== 'function') {
     String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, ''); 
+        return this.replace(/^\s+|\s+$/g, '');
     }
 }
 
@@ -125,7 +142,9 @@ if (typeof String.prototype.trim !== 'function') {
 jQuery('body').delegate(
   '#forAjax a .graph-volant',
   'mouseenter',
-  function(e) { func_displayIMG(e); }
+  function(e) { func_displayIMG(e, function() {
+    });
+  }
 );
 jQuery('body').delegate(
   '#forAjax a .graph-volant',
@@ -172,7 +191,7 @@ function resetSelectedCheckboxes()
             }
         }
     });
-        
+
     $('input[type="checkbox"]').each(function(index) {
         var id = $(this).attr('id');
         if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(id)]) {
@@ -241,7 +260,11 @@ function construct_selecteList_ndo_instance(id){
             xhr = new XMLHttpRequest();
             xhr.open('GET','./include/monitoring/status/Common/updateContactParam.php?uid=<?php echo $centreon->user->user_id; ?>&instance_id='+this.value, true);
             xhr.send(null);
-            xhr.onreadystatechange = function() { monitoring_refresh(); };
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    monitoring_refresh();
+                }
+            };
         };
         var k = document.createElement('option');
         k.value= -1;
@@ -255,13 +278,13 @@ function construct_selecteList_ndo_instance(id){
     /** *************************************
      * Get instance listing
      */
-    
+
 if ($centreon->user->admin || !count($pollerArray)) {
     $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = 1 AND deleted = 0 ORDER BY name";
 } else {
-    $instanceQuery = "SELECT instance_id, name 
+    $instanceQuery = "SELECT instance_id, name
                       FROM `instances` WHERE running = 1 AND deleted = 0
-                      AND name IN (". $centreon->user->access->getPollerString('NAME') .") 
+                      AND name IN (". $centreon->user->access->getPollerString('NAME') .")
                       ORDER BY name";
 }
     $DBRESULT = $pearDBO->query($instanceQuery);
@@ -296,7 +319,9 @@ function construct_HostGroupSelectList(id) {
             xhr.open('GET','./include/monitoring/status/Common/updateContactParamHostGroups.php?uid=<?php echo $centreon->user->user_id; ?>&hostgroups='+this.value, true);
             xhr.send(null);
             xhr.onreadystatechange = function() {
-                monitoring_refresh();
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    monitoring_refresh();
+                }
             };
         };
         var k = document.createElement('option');
@@ -325,13 +350,16 @@ if (!$centreon->user->access->admin) {
     unset($data);
 }
 
-        $DBRESULT = $pearDBO->query("SELECT DISTINCT hg.name, hg.hostgroup_id 
-                                        FROM hostgroups hg, hosts_hostgroups hhg 
-                                        WHERE hg.hostgroup_id = hhg.hostgroup_id 
-                                        AND hg.name NOT LIKE 'meta\_%' 
-                                     ORDER BY hg.name");
+$DBRESULT = $pearDBO->query(
+    "SELECT DISTINCT hg.name, hg.hostgroup_id " .
+    "FROM hostgroups hg, hosts_hostgroups hhg " .
+    "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
+    "AND hg.name NOT LIKE 'meta\_%' " .
+    "ORDER BY hg.name"
+);
 while ($hostgroups = $DBRESULT->fetchRow()) {
-    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
+    if ($centreon->user->access->admin ||
+        ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
         if (!isset($tabHG)) {
             $tabHG = array();
         }
@@ -346,7 +374,7 @@ while ($hostgroups = $DBRESULT->fetchRow()) {
 
 if (isset($tabHG)) {
     foreach ($tabHG as $name => $id) {
-        ?>
+?>
         var m = document.createElement('option');
             m.value= "<?php echo $id; ?>";
             _select.appendChild(m);
@@ -355,7 +383,7 @@ if (isset($tabHG)) {
             _select.appendChild(m);
             select_index["<?php echo $id; ?>"] = i;
             i++;
-                <?php
+<?php
     }
 }
 ?>
@@ -382,7 +410,9 @@ function construct_ServiceGroupSelectList(id) {
             xhr.open('GET','./include/monitoring/status/Common/updateContactParamServiceGroups.php?uid=<?php echo $centreon->user->user_id; ?>&servicegroups='+this.value, true);
             xhr.send(null);
             xhr.onreadystatechange = function() {
-                monitoring_refresh();
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    monitoring_refresh();
+                }
             };
         };
         var k = document.createElement('option');
@@ -470,8 +500,8 @@ function change_page(page_number) {
 function change_type_order(_type) {
     if (_sort_type != _type){
         _sort_type = _type;
-        monitoring_refresh();
     }
+    monitoring_refresh();
 }
 
 function change_order(_odr) {
@@ -505,7 +535,8 @@ function getVar (nomVariable) {
         nomVariable = nomVariable + "=";
         var taille = nomVariable.length;
         if (infos.indexOf(nomVariable)!=-1)
-        variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length).substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
+        variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length)
+            .substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
     }
     return variable;
 }
@@ -827,16 +858,16 @@ function set_limit(limit)   {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&limit="+limit+"&url=<?php echo $url; ?>";
+    _var = "limit="+limit+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
-        jQuery('input[name=limit]').val(limit);
+    jQuery('input[name=limit]').val(limit);
 }
 
 function set_search(search) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&search="+search+"&url=<?php echo $url; ?>";
+    _var = "search="+search+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
@@ -844,7 +875,7 @@ function set_search_host(search_host) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&search_host="+search_host+"&url=<?php echo $url; ?>";
+    _var = "search_host="+search_host+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
@@ -852,7 +883,7 @@ function set_search_output(search_output) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&search_output="+search_output+"&url=<?php echo $url; ?>";
+    _var = "search_output="+search_output+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
@@ -860,24 +891,47 @@ function set_page(page) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&page="+page+"&url=<?php echo $url; ?>";
+    _var = "page="+page+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
 // Popin images
 
-var func_displayIMG = function(event) {
+var func_displayIMG = function(event, callback) {
     var self = event.currentTarget;
+    var windowHeight = jQuery(window).height();
 
-    jQuery('.img_volante').css('left', event.pageX + 20);
-    jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    //getting the absolute cursor position, when scrolling in the iFrame
+    var positionY = self
+        .getBoundingClientRect()
+        .top;
+
+    jQuery('.img_volante').css('top', positionY);
+    jQuery('.img_volante').css('left', event.pageX + 15);
     jQuery('.img_volante').show();
-        
     var chartElem = jQuery('<div></div>')
         .addClass('chart')
         .data('graphType', 'service')
         .data('graphId', jQuery(self).attr('id').replace('-', '_'))
         .appendTo(jQuery('.img_volante'));
+
+    // Add event resize, as we can't get the popin size until it is loaded
+    var oldHeight = 0;
+    var interval = setInterval(function () {
+        if (oldHeight == chartElem.height()) {
+            clearInterval(interval);
+            callback();
+        } else {
+            oldHeight = chartElem.height();
+            //is the popup out the displayed screen ?
+            if ((positionY + oldHeight) >= windowHeight) {
+                positionY = windowHeight - oldHeight;
+                //setting the new popin position
+                jQuery('.img_volante').css('top', positionY);
+                jQuery('.img_volante').show();
+            }
+      }
+    }, 500);
     jQuery(chartElem).centreonGraph({height: 200, interval: '24h'});
 };
 
@@ -892,20 +946,41 @@ var popup_counter = {};
 var func_popupXsltCallback = function(trans_obj) {
     var target_element = trans_obj.getTargetElement();
     if (popup_counter[target_element] == 0) {
-            return ;
+        return ;
     }
 
     jQuery('.popup_volante .container-load').empty();
 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-    jQuery('.popup_volante').stop(true, true).animate({width: jQuery('#' + target_element).width(), height: jQuery('#' + target_element).height(),
-                         top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, 25);
+    jQuery('.popup_volante').stop(true, true).animate(
+    {
+        width: jQuery('#' + target_element).width(),
+        height: jQuery('#' + target_element).height(),
+        top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)
+    }, 25);
     jQuery('#' + target_element).stop(true, true).fadeIn(1000);
 <?php } else { ?>
+
     jQuery('.popup_volante').css('left', jQuery('#' + target_element).attr('left'));
-    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2));
+
+    //item's Id from where the popin was called
+    var eventCalledFrom = target_element.substr(24); //removing "popup-container-display-"
+
+    var windowHeight = jQuery(window).height();
+    var popupHeight = jQuery('#' + target_element).height();
+
+    //getting the absolute cursor position, when scrolling in the iFrame
+    var positionY = document
+        .querySelector('#' + eventCalledFrom)
+        .getBoundingClientRect()
+        .top;
+
+    //is the popup out the displayed screen ?
+    if ((positionY + popupHeight) >= windowHeight) {
+        positionY =  windowHeight - popupHeight;
+    }
+    jQuery('.popup_volante').css('top', positionY);
     jQuery('#' + target_element).show();
 <?php } ?>
-
     formatDateMoment();
 };
 
@@ -915,25 +990,25 @@ var func_displayPOPUP = function(event) {
         elementId = $(self).attr('id');
 
     if ($('#popup-container-display-' + elementId).length == 0) {
-            popup_counter['popup-container-display-' + elementId] = 1;
-            jQuery('.popup_volante').append('<div id="popup-container-display-' + elementId + '" style="display: none"></div>');
+        popup_counter['popup-container-display-' + elementId] = 1;
+        jQuery('.popup_volante').
+            append('<div id="popup-container-display-' + elementId + '" style="display: none"></div>');
     } else {
-            popup_counter['popup-container-display-' + elementId] += 1;
+        popup_counter['popup-container-display-' + elementId] += 1;
     }
     jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
     jQuery('.popup_volante').css('left', position.left + $('#' + elementId).width() + 10);
-    jQuery('.popup_volante').css('top', ($(window).height() / 2) - ($('.img_volante').height() / 2));
     jQuery('.popup_volante').show();
 
     var elements = elementId.split('-');
     var proc_popup = new Transformation();
     proc_popup.setCallback(func_popupXsltCallback);
     if (elements[0] == "host") {
-            proc_popup.setXml(_addrXMLSpanHost+"?"+'&host_id=' + elements[1]);
-            proc_popup.setXslt(_addrXSLSpanhost);
+        proc_popup.setXml(_addrXMLSpanHost+"?"+'&host_id=' + elements[1]);
+        proc_popup.setXslt(_addrXSLSpanhost);
     } else {
-            proc_popup.setXml(_addrXMLSpanSvc+"?"+'&svc_id=' + elements[1] + '_' + elements[2]);
-            proc_popup.setXslt(_addrXSLSpanSvc);
+        proc_popup.setXml(_addrXMLSpanSvc+"?"+'&svc_id=' + elements[1] + '_' + elements[2]);
+        proc_popup.setXslt(_addrXSLSpanSvc);
     }
     proc_popup.transform('popup-container-display-' + elementId);
 };
@@ -949,40 +1024,45 @@ var func_hidePOPUP = function(event) {
     jQuery('.popup_volante').css('height', 'auto');
 };
 
-/* Use 'id' attribute to get element */
-/* Use 'name' attribute to get xml/xsl infos */
+// Use 'id' attribute to get element
+// Use 'name' attribute to get xml/xsl infos
 var func_displayGenericInfo = function(event) {
     var self = event.currentTarget,
-        position = jQuery('#' + $(self).attr('id')).offset();
+        position = jQuery('#' + $(self).attr('id')).offset(),
+        $self = $(self);
 
-    if (jQuery('#popup-container-display-' + $(self).attr('id')).length == 0) {
-            popup_counter['popup-container-display-' + $(self).attr('id')] = 1;
-            jQuery('.popup_volante').append('<div id="popup-container-display-' + $(self).attr('id') + '" style="display: none"></div>');
+    if (jQuery('#popup-container-display-' + $self.attr('id')).length == 0) {
+        popup_counter['popup-container-display-' + $self.attr('id')] = 1;
+        jQuery('.popup_volante').
+            append('<div id="popup-container-display-' + $self.attr('id') + '" style="display: none"></div>');
     } else {
-            popup_counter['popup-container-display-' + $(self).attr('id')] += 1;
+        popup_counter['popup-container-display-' + $self.attr('id')] += 1;
     }
     jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(self).attr('id')).width() + 10);
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $self.attr('id')).width() + 3);
     jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
     jQuery('.popup_volante').show();
 
-    var elements = $(self).name.split('|');
+    var elements = $self.attr('name').split('|');
     var proc_popup = new Transformation();
     proc_popup.setCallback(func_popupXsltCallback);
     proc_popup.setXml(elements[0]);
     proc_popup.setXslt(elements[1]);
-    proc_popup.transform('popup-container-display-' + $(self).attr('id'));
+    proc_popup.transform('popup-container-display-' + $self.attr('id'));
 };
 
 // Monitoring Refresh management Options
-
 function monitoring_play()  {
     document.getElementById('JS_monitoring_play').style.display = 'none';
     document.getElementById('JS_monitoring_pause').style.display = 'block';
     document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
     document.getElementById('JS_monitoring_play_gray').style.display = 'block';
     _on = 1;
-    initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
+    // Allows to use the new status when click on the play button
+    if (typeof(_o) == "undefined") {
+        _o = "<?= $o ?>";
+    }
+    initM(<?php echo $tM?>, _o)
 }
 
 function monitoring_pause() {
@@ -995,17 +1075,17 @@ function monitoring_pause() {
 }
 
 function monitoring_refresh()   {
-        _tmp_on = _on;
+    _tmp_on = _on;
     _time_live = _time_reload;
     _on = 1;
 
     window.clearTimeout(_timeoutID);
-    initM(<?php echo $tM?>,"<?php echo $sid?>",_o);
+    initM(<?php echo $tM?>,_o);
     _on = _tmp_on;
     viewDebugInfo('refresh');
 }
 
-function initM(_time_reload, _sid, _o) {
+function initM(_time_reload, _o) {
     construct_selecteList_ndo_instance('instance_selected');
     if (_hostgroup_enable == 1) {
         construct_HostGroupSelectList('hostgroups_selected');
@@ -1033,7 +1113,7 @@ function initM(_time_reload, _sid, _o) {
     _time=<?php echo $time?>;
 
     if (_on) {
-        goM(_time_reload,_sid,_o);
+        goM(_time_reload, _o);
     }
 }
 

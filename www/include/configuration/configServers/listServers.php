@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,19 +37,30 @@ if (!isset($centreon)) {
     exit();
 }
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-/*
- * Init GMT class
- */
+// Init GMT class
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$LCASearch = "";
-$search = '';
-if (isset($_POST['searchP']) && $_POST['searchP']) {
-    $search = $_POST['searchP'];
-    $LCASearch = " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+
+$search = filter_var(
+    $_POST['searchP'] ?? $_GET['searchP'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchP']) || isset($_GET['searchP'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+}
+
+$LCASearch = '';
+if ($search) {
+    $LCASearch .= " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
 
 // Get Authorized Actions
@@ -79,48 +90,51 @@ $pollerstring = implode(',', array_keys($nagios_servers));
  * Get information info RTM
  */
 $nagiosInfo = array();
-$query = "SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, " .
-    "name AS instance_name , last_alive FROM instances WHERE deleted = 0";
-$DBRESULT = $pearDBO->query($query);
-while ($info = $DBRESULT->fetchRow()) {
+$dbResult = $pearDBO->query(
+    "SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, " .
+    "name AS instance_name , last_alive FROM instances WHERE deleted = 0"
+);
+while ($info = $dbResult->fetch()) {
     $nagiosInfo[$info["instance_id"]] = $info;
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 /*
  * Get Scheduler version
  */
-$query = "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name " .
-    "FROM instances WHERE deleted = 0 ";
-$DBRESULT = $pearDBO->query($query);
-while ($info = $DBRESULT->fetchRow()) {
+$dbResult = $pearDBO->query(
+    "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name " .
+    "FROM instances WHERE deleted = 0 "
+);
+while ($info = $dbResult->fetch()) {
     if (isset($nagiosInfo[$info["instance_id"]])) {
         $nagiosInfo[$info["instance_id"]]["version"] = $info["program_name"] . " " . $info["program_version"];
     }
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
-/*
- * Smarty template Init
- */
+$query = 'SELECT ip FROM remote_servers';
+$dbResult = $pearDB->query($query);
+$remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+$dbResult->closeCursor();
+
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_ip_address", _("IP Address"));
-$tpl->assign("headerMenu_localisation", _("Localhost"));
+$tpl->assign("headerMenu_type", _("Server type"));
 $tpl->assign("headerMenu_is_running", _("Is running ?"));
 $tpl->assign("headerMenu_hasChanged", _("Conf Changed"));
 $tpl->assign("headerMenu_pid", _("PID"));
 $tpl->assign("headerMenu_version", _("Version"));
-$tpl->assign("headerMenu_startTime", _("Start time"));
+$tpl->assign("headerMenu_uptime", _("Uptime"));
 $tpl->assign("headerMenu_lastUpdateTime", _("Last Update"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_default", _("Default"));
@@ -130,29 +144,22 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Poller list
  */
 $ACLString = $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring);
+
 $query = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default " .
     "FROM `nagios_server` " . $ACLString . " " .
     ($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE ") . $LCASearch : "") .
     " ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
+$dbResult = $pearDB->query($query);
 
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-$rows = $pearDB->numberRows();
-
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
-$style = "one";
-
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement(
         'checkbox',
@@ -163,12 +170,12 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     );
     if ($config["ns_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Disabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Enabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
@@ -180,18 +187,18 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     }
 
 
-    /*
-    * Manage flag for changes
-    */
+    // Manage flag for changes
     $confChangedMessage = _("N/A");
-    if ($config["ns_activate"]) {
-        $hasChanged = checkChangeState($config['id'], (isset($nagios_restart[$config['id']]) ? $nagios_restart[$config['id']] : null));
+    $hasChanged = false;
+    if ($config["ns_activate"] && isset($nagios_restart[$config['id']])) {
+        $hasChanged = checkChangeState(
+            (int) $config['id'],
+            (int) $nagios_restart[$config['id']]
+        );
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 
-    /*
-     * Manage flag for update time
-     */
+    // Manage flag for update time
     $lastUpdateTimeFlag = 0;
     if (!isset($nagiosInfo[$config["id"]]["last_alive"])) {
         $lastUpdateTimeFlag = 0;
@@ -199,81 +206,106 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $lastUpdateTimeFlag = 1;
     }
 
-    /*
-	 * Get cfg_id
-	 */
+    //Get cfg_id
+    $dbResult2 = $pearDB->query(
+        "SELECT nagios_id FROM cfg_nagios " .
+        "WHERE nagios_server_id = " . (int) $config["id"] . " AND nagios_activate = '1'"
+    );
+    $cfg_id = $dbResult2->rowCount() ? $dbResult2->fetch() : -1;
 
-    $query = "SELECT nagios_id FROM cfg_nagios " .
-        "WHERE nagios_server_id = " . $config["id"] . " AND nagios_activate = '1'";
-    $DBRESULT2 = $pearDB->query($query);
-    if ($DBRESULT2->rowCount()) {
-        $cfg_id = $DBRESULT2->fetchRow();
-    } else {
-        $cfg_id = -1;
+    $uptime = '-';
+    $isRunning = (isset($nagiosInfo[$config['id']]['is_currently_running']) &&
+        $nagiosInfo[$config['id']]['is_currently_running'] == 1)
+        ? true
+        : false;
+    $version = (isset($nagiosInfo[$config['id']]['version']))
+        ? $nagiosInfo[$config['id']]['version']
+        : _('N/A');
+    $updateTime = (isset($nagiosInfo[$config['id']]['last_alive']) &&
+        $nagiosInfo[$config['id']]['last_alive'])
+        ? $nagiosInfo[$config['id']]['last_alive']
+        : '-';
+    $serverType = $config['localhost'] ? _('Central') : _('Distant Poller');
+    $serverType = in_array($config['ns_ip_address'], $remotesServerIPs)
+        ? _('Remote Server')
+        : $serverType;
+
+    if (isset($nagiosInfo[$config['id']]['is_currently_running'])
+        && $nagiosInfo[$config['id']]['is_currently_running'] == 1
+    ) {
+        $now = new DateTime;
+        $startDate = (new DateTime)->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
+        $interval = date_diff($now, $startDate);
+        if (intval($interval->format('%a')) >= 2) {
+            $uptime = $interval->format('%a days');
+        } elseif (intval($interval->format('%a')) == 1) {
+            $uptime = $interval->format('%a days %i minutes');
+        } elseif (intval($interval->format('%a')) < 1 && intval($interval->format('%h')) >= 1) {
+            $uptime = $interval->format('%h hours %i minutes');
+        } elseif (intval($interval->format('%h')) < 1) {
+            $uptime = $interval->format('%i minutes %s seconds');
+        } else {
+            $uptime = $interval->format('%a days %h hours %i minutes %s seconds');
+        }
     }
 
-    $elemArr[$i] = array(
-        "MenuClass" => "list_" . $style,
-        "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => $config["name"],
-        "RowMenu_ip_address" => $config["ns_ip_address"],
-        "RowMenu_link" => "?p=" . $p . "&o=c&server_id=" . $config['id'],
-        "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
-        "RowMenu_is_running" => (isset($nagiosInfo[$config["id"]]["is_currently_running"])
-            && $nagiosInfo[$config["id"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
-        "RowMenu_is_runningFlag" => $nagiosInfo[$config["id"]]["is_currently_running"],
-        "RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
-        "RowMenu_hasChanged" => $confChangedMessage,
-        "RowMenu_hasChangedFlag" => $hasChanged,
-        "RowMenu_version" => (isset($nagiosInfo[$config["id"]]["version"])
-            ? $nagiosInfo[$config["id"]]["version"]
-            : _("N/A")),
-        "RowMenu_startTime" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) &&
-            $nagiosInfo[$config["id"]]["is_currently_running"] == 1)
-            ? $nagiosInfo[$config["id"]]["program_start_time"]
-            : "-",
-        "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["id"]]["last_alive"]) &&
-            $nagiosInfo[$config["id"]]["last_alive"])
-            ? $nagiosInfo[$config["id"]]["last_alive"]
-            : "-",
-        "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag,
-        "RowMenu_pid" => (isset($nagiosInfo[$config["id"]]["is_currently_running"]) &&
-            $nagiosInfo[$config["id"]]["is_currently_running"] == 1)
-            ? $nagiosInfo[$config["id"]]["process_id"]
-            : "-",
-        "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
-        "RowMenu_badge" => $config["ns_activate"] ? "service_ok" : "service_critical",
-        "RowMenu_statusVal" => $config["ns_activate"],
-        "RowMenu_cfg_id" => ($cfg_id == -1) ? "" : $cfg_id['nagios_id'],
-        "RowMenu_options" => $moptions
-    );
-    $style != "two" ? $style = "two" : $style = "one";
+    $pollerProcessId = $isRunning
+        ? $nagiosInfo[$config["id"]]["process_id"]
+        : "-";
+
+    // Manage different styles between each line
+    $style = ($i % 2) ? "two" : "one";
+
+    $elemArr[$i] = [
+        'MenuClass'                  => "list_{$style}",
+        'RowMenu_select'             => $selectedElements->toHtml(),
+        'RowMenu_name'               => $config['name'],
+        'RowMenu_ip_address'         => $config['ns_ip_address'],
+        'RowMenu_link'               => "main.php?p={$p}&o=c&server_id={$config['id']}",
+        'RowMenu_type'               => $serverType,
+        'RowMenu_is_running'         => $isRunning ? _('Yes') : _('No'),
+        'RowMenu_is_runningFlag'     => $nagiosInfo[$config['id']]['is_currently_running'],
+        'RowMenu_is_default'         => $config['is_default'] ? _('Yes') : _('No'),
+        'RowMenu_hasChanged'         => $confChangedMessage,
+        "RowMenu_pid"                => $pollerProcessId,
+        'RowMenu_hasChangedFlag'     => $hasChanged,
+        'RowMenu_version'            => $version,
+        'RowMenu_uptime'             => $uptime,
+        'RowMenu_lastUpdateTime'     => $updateTime,
+        'RowMenu_lastUpdateTimeFlag' => $lastUpdateTimeFlag,
+        'RowMenu_status'             => $config['ns_activate'] ? _('Enabled') : _('Disabled'),
+        'RowMenu_badge'              => $config['ns_activate'] ? 'service_ok' : 'service_critical',
+        'RowMenu_statusVal'          => $config['ns_activate'],
+        'RowMenu_cfg_id'             => ($cfg_id == -1) ? '' : $cfg_id['nagios_id'],
+        'RowMenu_options'            => $moptions
+    ];
 }
 $tpl->assign("elemArr", $elemArr);
 
 $tpl->assign(
     "notice",
-    _("Only services, servicegroups, hosts and hostgroups are taken in account in order to calculate this status. " .
-        "If you modify a template, it won't tell you the configuration had changed.")
+    _("Only services, servicegroups, hosts and hostgroups are taken in " .
+        "account in order to calculate this status. If you modify a " .
+        "template, it won't tell you the configuration had changed.")
 );
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {
@@ -288,15 +320,17 @@ foreach (array('o1', 'o2') as $option) {
             "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
             _("Do you confirm the deletion ?") . "')) {" .
             " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
             ""
     );
     $form->addElement(
         'select',
         $option,
         null,
-        array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete"), "i" => _("Update informations")),
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete")
+        ),
         $attrs
     );
     $form->setDefaults(array($option => null));
@@ -304,7 +338,7 @@ foreach (array('o1', 'o2') as $option) {
     $o1->setValue(null);
 }
 
-# Apply configuration button
+// Apply configuration button
 $form->addElement(
     'button',
     'apply_configuration',
@@ -317,9 +351,7 @@ $tpl->assign('searchP', $search);
 $tpl->assign("can_generate", $can_generate);
 $tpl->assign("is_admin", $is_admin);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

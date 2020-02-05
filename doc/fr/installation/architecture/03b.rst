@@ -1,3 +1,5 @@
+.. _archi_poller:
+
 =======================
 Architecture distribuée
 =======================
@@ -9,7 +11,7 @@ Fonctionnement
 L'architecture distribuée consiste à avoir deux types d'entités :
 
 * Le serveur central qui centralise les informations de supervision
-* Un ou plusieurs serveurs satellites qui sont chargés de la supervision des équipements
+* Un ou plusieurs collecteurs qui sont chargés de la supervision des équipements
 
 Le serveur central regroupe les éléments suivants :
 
@@ -45,15 +47,13 @@ Le serveur central fonctionne de la manière suivante :
 * Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD
 * Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
-Serveur satellite
-=================
+Collecteur
+==========
 
-Le serveur satellite fonctionne de la manière suivante :
+Le collecteure fonctionne de la manière suivante :
 
 * Le moteur de supervision supervise le système d'informations
 * Les informations de supervision sont envoyées via cbmod au service Centreon Broker SQL hébergé sur le serveur Central
-* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD
-* Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
 ************
 Architecture
@@ -61,5 +61,6 @@ Architecture
 
 Le schéma ci-dessous résume le fonctionnement de l'architecture :
 
-.. image :: /images/architecture/bschema.png
-   :align: center 
+.. image :: /images/architecture/Architecture_distributed.png
+   :align: center
+   :scale: 65%

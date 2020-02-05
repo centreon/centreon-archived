@@ -150,7 +150,10 @@ if ($o == "c" || $o == "w") {
 $groups = array();
 $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
 while ($group = $DBRESULT->fetchRow()) {
-    $groups[$group["acl_group_id"]] = $group["acl_group_name"];
+    $groups[$group["acl_group_id"]] = CentreonUtils::escapeSecure(
+        $group["acl_group_name"],
+        CentreonUtils::ESCAPE_ALL
+    );
 }
 $DBRESULT->closeCursor();
 
@@ -483,6 +486,11 @@ $form->setRequiredNote(_("Required field"));
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
+$formDefaults = $acl ?? [];
+$formDefaults['all_hosts[all_hosts]'] = $formDefaults['all_hosts'] ?? '0';
+$formDefaults['all_hostgroups[all_hostgroups]'] = $formDefaults['all_hostgroups'] ?? '0';
+$formDefaults['all_servicegroups[all_servicegroups]'] = $formDefaults['all_servicegroups'] ?? '0';
+
 if ($o == "w") {
     /*
      * Just watch a LCA information
@@ -491,7 +499,7 @@ if ($o == "w") {
         "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&acl_id=" . $acl_id . "'",
         "class" => "btc bt_success"
     ));
-    $form->setDefaults($acl);
+    $form->setDefaults($formDefaults);
     $form->freeze();
 } elseif ($o == "c") {
     /*
@@ -499,7 +507,7 @@ if ($o == "w") {
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
-    $form->setDefaults($acl);
+    $form->setDefaults($formDefaults);
 } elseif ($o == "a") {
     /*
      *  Add a LCA information
@@ -507,7 +515,7 @@ if ($o == "w") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 }
-$tpl->assign('msg', array("changeL" => "?p=" . $p . "&o=c&lca_id=" . $acl_id, "changeT" => _("Modify")));
+$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&lca_id=" . $acl_id, "changeT" => _("Modify")));
 
 // prepare help texts
 $helptext = "";

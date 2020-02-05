@@ -46,7 +46,7 @@
 
         listArea = document.getElementById('listOfArg');
         tmpStr = listArea.value;
-        tmpStr = tmpStr.replace(reg, ";;;");
+        tmpStr = encodeURIComponent(tmpStr.replace(reg, ";;;"));
         cmd_line = document.getElementById('command_line').value;
 
         var popin = jQuery('<div id="config-popin">');

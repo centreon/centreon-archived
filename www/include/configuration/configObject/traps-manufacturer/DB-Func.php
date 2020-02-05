@@ -43,13 +43,13 @@ function testMnftrExistence($name = null)
         $id = $form->getSubmitValue('id');
     }
     $query = "SELECT name, id FROM traps_vendor WHERE name = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $mnftr = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $mnftr = $dbResult->fetch();
     #Modif case
-    if ($DBRESULT->rowCount() >= 1 && $mnftr["id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $mnftr["id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->rowCount() >= 1 && $mnftr["id"] != $id) {
+    elseif ($dbResult->rowCount() >= 1 && $mnftr["id"] != $id) {
         return false;
     } else {
         return true;
@@ -60,8 +60,8 @@ function deleteMnftrInDB($mnftr = array())
 {
     global $pearDB, $oreon;
     foreach ($mnftr as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT name FROM `traps_vendor` WHERE `id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
+        $dbResult2 = $pearDB->query("SELECT name FROM `traps_vendor` WHERE `id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult2->fetch();
 
         $pearDB->query("DELETE FROM traps_vendor WHERE id = '" . htmlentities($key, ENT_QUOTES, "UTF-8") . "'");
         $oreon->CentreonLogAction->insertLog("manufacturer", $key, $row['name'], "d");
@@ -73,9 +73,9 @@ function multipleMnftrInDB($mnftr = array(), $nbrDup = array())
     foreach ($mnftr as $key => $value) {
         global $pearDB, $oreon;
         $query = "SELECT * FROM traps_vendor WHERE id = '" . htmlentities($key, ENT_QUOTES, "UTF-8") . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
-        $row["id"] = '';
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetch();
+        $row["id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
@@ -126,7 +126,7 @@ function updateMnftr($id = null)
     $rq .= "alias = '" . htmlentities($ret["alias"], ENT_QUOTES, "UTF-8") . "', ";
     $rq .= "description = '" . htmlentities($ret["description"], ENT_QUOTES, "UTF-8") . "' ";
     $rq .= "WHERE id = '" . $id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -153,9 +153,9 @@ function insertMnftr($ret = array())
     $rq .= "('" . htmlentities($ret["name"], ENT_QUOTES, "UTF-8") . "', ";
     $rq .= "'" . htmlentities($ret["alias"], ENT_QUOTES, "UTF-8") . "', ";
     $rq .= "'" . htmlentities($ret["description"], ENT_QUOTES, "UTF-8") . "')";
-    $DBRESULT = $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(id) FROM traps_vendor");
-    $mnftr_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($rq);
+    $dbResult = $pearDB->query("SELECT MAX(id) FROM traps_vendor");
+    $mnftr_id = $dbResult->fetch();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);

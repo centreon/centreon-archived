@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,13 +37,25 @@ if (!isset($centreon)) {
     exit();
 }
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-$SearchTool = null;
-$search = '';
-if (isset($_POST['searchN']) && $_POST['searchN']) {
-    $search = $_POST['searchN'];
-    $SearchTool = " WHERE nagios_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' ";
+$search = filter_var(
+    $_POST['searchN'] ?? $_GET['searchN'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchN']) || isset($_GET['searchN'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+}
+
+$SearchTool = '';
+if ($search) {
+    $SearchTool .= " WHERE nagios_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' ";
 }
 
 $aclCond = "";
@@ -56,26 +68,26 @@ if (!$centreon->user->admin && count($allowedMainConf)) {
     $aclCond .= "nagios_id IN (" . implode(',', array_keys($allowedMainConf)) . ") ";
 }
 
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool $aclCond");
-
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
-
 /*
  * nagios servers comes from DB
  */
 $nagios_servers = array(null => "");
-$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
-while ($nagios_server = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+while ($nagios_server = $dbResult->fetch()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
-include("./include/common/checkPagination.php");
+$dbResult = $pearDB->query(
+    'SELECT SQL_CALC_FOUND_ROWS nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id ' .
+    'FROM cfg_nagios ' . $SearchTool . $aclCond . ' ORDER BY nagios_name LIMIT ' . $num * $limit . ', ' . $limit
+);
 
-/*
- * Smarty template Init
- */
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+
+include "./include/common/checkPagination.php";
+
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
@@ -83,9 +95,7 @@ $tpl = initSmartyTpl($path, $tpl);
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_instance", _("Satellites"));
 $tpl->assign("headerMenu_desc", _("Description"));
@@ -95,24 +105,14 @@ $tpl->assign("headerMenu_options", _("Options"));
 /*
  * Nagios list
  */
-
-$DBRESULT = $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id
-                            FROM cfg_nagios $SearchTool $aclCond
-                            ORDER BY nagios_name
-                            LIMIT " . $num * $limit . ", " . $limit);
-
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $nagios = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $nagios['nagios_id'] . "]");
     if ($nagios["nagios_activate"]) {
@@ -133,7 +133,7 @@ for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $nagios["nagios_name"],
         "RowMenu_instance" => $nagios_servers[$nagios["nagios_server_id"]],
-        "RowMenu_link" => "?p=" . $p . "&o=c&nagios_id=" . $nagios['nagios_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&nagios_id=" . $nagios['nagios_id'],
         "RowMenu_desc" => substr($nagios["nagios_comment"], 0, 40),
         "RowMenu_status" => $nagios["nagios_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $nagios["nagios_activate"] ? "service_ok" : "service_critical",
@@ -144,20 +144,22 @@ for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
 
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {
@@ -188,9 +190,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('limit', $limit);
 $tpl->assign('searchN', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

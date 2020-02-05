@@ -75,7 +75,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
             $acl = new CentreonACL($userId, $isAdmin);
             $aclServicegroups .= ' AND sg_id IN (' . $acl->getServiceGroupsString('ID') . ') ';
         }
-        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name FROM servicegroup ' .
+        $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg_id, sg_name, sg_activate FROM servicegroup ' .
             'WHERE sg_name LIKE :name ' .
             $aclServicegroups .
             'ORDER BY sg_name ';
@@ -99,11 +99,15 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         $stmt->execute();
         $serviceList = array();
         while ($data = $stmt->fetch()) {
-            $serviceList[] = array('id' => $data['sg_id'], 'text' => $data['sg_name']);
+            $serviceList[] = [
+                'id' => htmlentities($data['sg_id']),
+                'text' => $data['sg_name'],
+                'status' => (bool) $data['sg_activate'],
+            ];
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 
@@ -182,7 +186,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

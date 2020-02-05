@@ -90,7 +90,7 @@ if (count($aMacroDescription) > 0) {
             $macro['description'] . "\n";
         $nbRowMacro++;
     }
-} elseif( array_key_exists('command_line', $cmd) ) {
+} elseif (array_key_exists('command_line', $cmd)) {
     $macrosHostDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '1');
     $macrosServiceDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '2');
 
@@ -207,7 +207,6 @@ if (isset($cmd['connector_id']) && is_numeric($cmd['connector_id'])) {
 
 $form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 $form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
-$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
 $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
 $form->addElement('checkbox', 'enable_shell', _("Enable shell"), null, $attrsText);
 
@@ -307,7 +306,6 @@ if ($o == "w") {
 
 $tpl->assign('msg', array("comment" => _("Commands definitions can contain Macros but they have to be valid.")));
 $tpl->assign('cmd_help', _("Plugin Help"));
-$tpl->assign('cmd_play', _("Test the plugin"));
 
 $valid = false;
 if ($form->validate()) {

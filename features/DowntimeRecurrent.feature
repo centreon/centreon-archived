@@ -6,7 +6,6 @@ Feature: Testing a recurrent Downtime
   Background:
     Given I am logged in a Centreon server
 
-  @critical
   Scenario: Testing a recurrent Downtime on a HostGroup without any ServiceGroup created (Bugfix)
     Given a hostGroup is configured
     And a recurrent downtime on a hostGroup

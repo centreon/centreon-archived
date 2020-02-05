@@ -127,7 +127,7 @@ class MetaService extends AbstractObject
             "AND display_name = :meta_name";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':meta_composed_name', $composed_name);
-        $stmt->bindParam(':meta_name', $meta_name);
+        $stmt->bindParam(':meta_name', html_entity_decode($meta_name));
         $stmt->execute();
 
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -139,7 +139,6 @@ class MetaService extends AbstractObject
         }
 
         return $service_id;
-
     }
 
     private function buildCacheMetaServices()
@@ -186,7 +185,7 @@ class MetaService extends AbstractObject
             $meta_service['passive_checks_enabled'] = 0;
             $meta_service['host_name'] = '_Module_Meta';
             $meta_service['service_description'] = 'meta_' . $meta_id;
-            $meta_service['display_name'] = $meta_service['display_name'];
+            $meta_service['display_name'] = html_entity_decode($meta_service['display_name']);
             $meta_service['check_command'] = 'check_meta!' . $meta_id;
 
             $this->generated_services[] = $meta_id;

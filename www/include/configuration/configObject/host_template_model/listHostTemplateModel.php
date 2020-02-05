@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,42 +37,60 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+require_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-/*
- * Init Host Method
- */
+// Init Host Method
 $host_method = new CentreonHost($pearDB);
 $mediaObj = new CentreonMedia($pearDB);
 
-/*
- * Get Extended informations
- */
+// Get Extended informations
 $ehiCache = array();
 $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-while ($ehi = $DBRESULT->fetchRow()) {
+while ($ehi = $DBRESULT->fetch()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
 $DBRESULT->closeCursor();
 
-$search = '';
-if (isset($_POST['searchHT'])) {
-    $search = $_POST['searchHT'];
-    $_SESSION['searchHT'] = $_POST['searchHT'];
-} elseif (isset($_SESSION['searchHT']) && $_SESSION['searchHT'] != "") {
-    $search = $_SESSION['searchHT'];
+$search = filter_var(
+    $_POST['searchHT'] ?? $_GET['searchHT'] ?? $centreon->historySearch[$url]['search'] ?? '',
+    FILTER_SANITIZE_STRING
+);
+
+$displayLocked = filter_var(
+    $_POST['displayLocked'] ?? $_GET['displayLocked'] ?? 'off',
+    FILTER_VALIDATE_BOOLEAN
+);
+
+// keep checkbox state if navigating in pagination
+// this trick is mandatory cause unchecked checkboxes do not post any data
+if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+    $displayLocked = $centreon->historySearch[$url]['displayLocked'];
 }
 
-$query = "SELECT COUNT(*) "
-    . "FROM host "
-    . "WHERE host_register = '0' "
-    . "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
-    CentreonDB::escape($search) . "%') ";
-$DBRESULT = $pearDB->query($query);
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+// store filters in session
+$centreon->historySearch[$url] = [
+    'search' => $search,
+    'displayLocked' => $displayLocked
+];
+
+// Locked filter
+$lockedFilter = $displayLocked ? "" : "AND host_locked = 0 ";
+
+// Host Template list
+$rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id " .
+    "FROM host " .
+    "WHERE host_register = '0' " .
+    $lockedFilter;
+if ($search) {
+    $rq .= "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
+        CentreonDB::escape($search) . "%')";
+}
+$rq .= " ORDER BY host_name LIMIT " . $num * $limit . ", " . $limit;
+
+$DBRESULT = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
@@ -96,20 +114,6 @@ $tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Host Template list
- */
-if ($search) {
-    $rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host " .
-        "WHERE (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
-        CentreonDB::escape($search) . "%') AND host_register = '0' ORDER BY host_name LIMIT " . $num * $limit .
-        ", " . $limit;
-} else {
-    $rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host " .
-        "WHERE host_register = '0' ORDER BY host_name LIMIT " . $num * $limit . ", " . $limit;
-}
-$DBRESULT = $pearDB->query($rq);
-
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
@@ -117,9 +121,15 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 /* Different style between each lines */
 $style = "one";
 
-/* Fill a tab with a mutlidimensionnal Array we put in $tpl */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+/* Fill a tab with a multidimensional Array we put in $tpl */
 $elemArr = array();
-for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $host['host_id'] . "]");
     if (isset($lockedElements[$host['host_id']])) {
@@ -162,9 +172,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         }
     }
 
-    /*
-	 * Check icon
-	 */
+    //Check icon
     if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
     } elseif ($icone = $host_method->replaceMacroInString(
@@ -177,9 +185,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $host_icone = "./img/icons/host.png";
     }
 
-    /*
-	 * Service List
-	 */
+    //Service List
     $svArr = array();
     $svStr = null;
     $svArr = getMyHostServices($host['host_id']);
@@ -187,7 +193,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&host_id=" . $host['host_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&host_id=" . $host['host_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"]),
         "RowMenu_icone" => $host_icone,
         "RowMenu_svChilds" => count($svArr),
@@ -200,15 +206,13 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/* Different messages we put in the template */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
-#
-## Toolbar select
-#
+// Toolbar select
 ?>
     <script type="text/javascript">
         function setO(_i) {
@@ -259,4 +263,5 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('searchHT', $search);
+$tpl->assign("displayLocked", $displayLocked);
 $tpl->display("listHostTemplateModel.ihtml");

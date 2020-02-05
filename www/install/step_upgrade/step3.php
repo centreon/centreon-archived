@@ -52,7 +52,7 @@ if (is_file('../RELEASENOTES.html')) {
     if (file_exists('../RELEASENOTES')) {
         $releasenotesContent = file_get_contents('../RELEASENOTES');
     }
-    $contents = "<textarea cols='100' rows='30' readonly>".$releasenotesContent."</textarea>";
+    $contents = "<textarea cols='100' rows='30' readonly>" . $releasenotesContent . "</textarea>";
 }
 
 $template->assign('step', STEP_NUMBER);
@@ -62,30 +62,55 @@ $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
-var step3_s = 10;
-var step3_t;
+    var step3_s = 10;
+    var step3_t;
 
-jQuery(function() {
-    jQuery('#releasenotes').load('RELEASENOTES.html');
-    jQuery('#next').attr('disabled', 'disabled');
-    timeout_button();
-});
+    jQuery(function () {
+        jQuery('#releasenotes').load('RELEASENOTES.html', function() {
+            /* add accordion class to all div matching centreon-web-* id */
+            jQuery('div[id^="centreon-web-"]').addClass('accordion');
 
-function timeout_button() {
-    if (step3_t) {
-        clearTimeout(step3_t);
+            var acc = document.getElementsByClassName("accordion");
+            var i;
+
+            for (i = 0; i < acc.length; i++) {
+              acc[i].addEventListener("click", function() {
+                /* Toggle between adding and removing the "active" class,
+                to highlight the button that controls the panel */
+                this.classList.toggle("active");
+
+                /* Toggle between hiding and showing the active panel */
+                var panels = this.getElementsByClassName("section");
+                var j;
+                for (j = 0; j < panels.length; j++) {
+                    if (panels[j].style.display === "block") {
+                        panels[j].style.display = "none";
+                    } else {
+                        panels[j].style.display = "block";
+                    }
+                }
+              });
+            }
+        });
+        jQuery('#next').attr('disabled', 'disabled');
+        timeout_button();
+    });
+
+    function timeout_button() {
+        if (step3_t) {
+            clearTimeout(step3_t);
+        }
+        jQuery("#next").val("Next (" + step3_s + ")");
+        step3_s--;
+        if (step3_s == 0) {
+            jQuery("#next").val("Next");
+            jQuery("#next").removeAttr('disabled');
+        } else {
+            step3_t = setTimeout('timeout_button()', 1000);
+        }
     }
-    jQuery("#next").val("Next (" + step3_s  + ")");
-    step3_s--;
-    if (step3_s == 0) {
-        jQuery("#next").val("Next");
-        jQuery("#next").removeAttr('disabled');
-    } else {
-        step3_t = setTimeout('timeout_button()', 1000);
-    }
-}
 
-function validation() {
-    return true;
-}
+    function validation() {
+        return true;
+    }
 </script>

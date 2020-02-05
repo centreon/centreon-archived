@@ -5,8 +5,6 @@ $help = array();
  * Engine Status
  */
 
-$help['tip_enable_centstorage_engine'] = dgettext('help', 'Enables Centstorage Engine.');
-$help['tip_insert_in_index_data'] = dgettext('help', 'Enables resource\'s insertion in index_data.');
 $help['tip_path_to_rrdtool_database_for_metrics'] = dgettext('help', 'Path to RRDTool database for graphs of metrics.');
 $help['tip_path_to_rrdtool_database_for_status'] = dgettext('help', 'Path to RRDTool database for graphs of status.');
 $help['tip_path_to_rrdtool_database_for_nagios_statistics'] = dgettext(
@@ -33,35 +31,9 @@ $help['tip_retention_duration_for_data_in_comments'] = dgettext(
 );
 
 /**
- * Purge options
- */
-
-$help['tip_rrdtool_auto_delete'] = dgettext('help', 'Enables RRDTool auto purge system.');
-
-/**
- * Censtorage Core Options
- */
-
-$help['tip_purge_check_interval'] = dgettext('help', 'Centstorage will check for data to purge every now and then.');
-
-/**
- * Input treatment options
- */
-
-$help['tip_storage_type'] = dgettext('help', 'Storage Type.');
-
-/**
- * Drop possibility after parsing performance data
- */
-
-$help['tip_drop_data_in_another_file'] = dgettext('help', 'Dumps data into another file.');
-$help['tip_drop_file'] = dgettext('help', 'Dump file.');
-
-/**
  * Logs Integration Properties
  */
 
-$help['tip_archive_nagios_logs'] = dgettext('help', 'Archives logs of monitoring engine.');
 $help['tip_logs_retention_duration'] = dgettext(
     'help',
     'Retention duration of logs. 0 means that no retention will be applied.'
@@ -74,6 +46,22 @@ $help['tip_logs_retention_duration'] = dgettext(
 $help['tip_reporting_retention'] = dgettext(
     'help',
     'Retention duration of reporting data. 0 means that no retention will be applied.'
+);
+
+/**
+ * Partitioning retention options
+ */
+$help['tip_partitioning_retention'] = dgettext(
+    'help',
+    'Retention time for partitioned tables (data_bin, logs, log_archive_host, log_archive_service), by default 365 days.'
+);
+$help['tip_partitioning_retention_forward'] = dgettext(
+    'help',
+    'number of partitions created in advance to prevent issues, by default 10 days.'
+);
+$help['tip_partitioning_backup_directory'] = dgettext(
+    'help',
+    'Backup directory to store partition, by default /var/cache/centreon/backup.'
 );
 
 /**

@@ -23,7 +23,7 @@ Feature: Recovery notification delay
         Given a host configured with first notification delay
         And the host is not UP
         When the host is still not UP after the first notification delay
-	Then a notification is sent
+        Then a notification is sent
         When the host is UP
         Then a notification is sent
         When the host is not UP
@@ -41,4 +41,3 @@ Feature: Recovery notification delay
         When the service is not OK
         And the service is still not OK before the first notification delay
         Then no notification is sent
-

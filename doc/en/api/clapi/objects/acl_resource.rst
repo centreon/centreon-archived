@@ -133,7 +133,7 @@ Command	                  Description	                     Example	             
 ========================= ================================== ===================================================================== ============================
 grant_host	          Put host name(s)	             [...] -a grant_host -v "ACL Resource Test;srv-esx"	                   Yes
 grant_hostgroup	          Put hostgroup name(s)	             [...] -a grant_hostgroup -v "ACL Resource Test;Linux servers"	   Yes
-grant_servicegroup	  Put servicegroup name(s)	     [...] -a grant_servicegruop -v "ACL Resource Test;Ping"	           Yes
+grant_servicegroup	  Put servicegroup name(s)	     [...] -a grant_servicegroup -v "ACL Resource Test;Ping"	           Yes
 grant_metaservice	  Put metaservice name(s)	     [...] -a grant_metaservice -v "ACL Resource Test;Traffic Average"	   No
 addhostexclusion	  Put host name(s)	             [...] -a addhostexclusion -v "ACL Resource Test;srv-test|srv-test2"   No
 revoke_host	          Put host name(s)	             [...] -a revoke_host -v "ACL Resource Test;srv-esx"	           Yes

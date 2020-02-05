@@ -308,9 +308,12 @@
 
       this.$elem.on('select2:open', function (e) {
         if (self.savedSearch) {
-          self.$elem.data()
-              .select2.$container.find(".select2-search__field")
-              .val(self.savedSearch);
+          let searchField = self.$elem.data().select2.$container.find(".select2-search__field");
+          searchField.val(self.savedSearch);
+          searchField.css(
+            {'width': 'auto'}
+          );
+
           /* Wait for select2 finish to open */
           setTimeout(function () {
             self.$elem.data().select2.trigger(
@@ -516,24 +519,23 @@
     selectElements: function (elements) {
       var self = this;
       var item;
-      var option;
       var selectedElements;
 
       if (this.remoteData) {
         /* Append new elements */
+        let options = '';
         for (var i = 0; i < elements.length; i++) {
           item = elements[i];
 
           /* Create DOM option that is pre-selected by default */
-          option = '<option selected value="' + item.id + '"';
+          options += '<option selected value="' + item.id + '"';
           if (item.hide === true) {
-            option += ' hidden';
+            options += ' hidden';
           }
-          option += '>' + item.text + '</option>';
-
-          /* Append it to select */
-          self.$elem.append(option);
+          options += '>' + item.text + '</option>';
         }
+        /* Append it to select */
+        self.$elem.append(options);
       } else {
         /* Select existing elements */
         selectedElements = elements.map(function (object) {

@@ -123,7 +123,6 @@ class CentreonCommand extends CentreonObject
      */
     public function initInsertParameters($parameters)
     {
-
         $params = explode($this->delim, $parameters);
 
         if (count($params) < $this->nbOfCompulsoryParams) {
@@ -189,6 +188,55 @@ class CentreonCommand extends CentreonObject
     }
 
     /**
+     * Get command arguments descriptions
+     *
+     * @param string $objUniqueName
+     * @throws CentreonClapiException
+     */
+    public function getargumentdesc($objUniqueName)
+    {
+        if ($objUniqueName != "" && ($objectId = $this->getObjectId($objUniqueName)) != 0) {
+            $sql = "SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = ?";
+            $res = $this->db->query($sql, array($objectId));
+
+            echo "name" . $this->delim . "description" . "\n";
+            foreach ($res as $param) {
+                echo $param['macro_name'] . $this->delim . $param['macro_description'] . "\n";
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objUniqueName);
+        }
+    }
+
+    /**
+     * Set command arguments descriptions
+     *
+     * @param string $descriptions
+     * @throws CentreonClapiException
+     */
+    public function setargumentdescr($descriptions)
+    {
+        $data = explode($this->delim, trim($descriptions, $this->delim));
+        if (count($data) < 1) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $objUniqueName = array_shift($data);
+        if (($objectId = $this->getObjectId($objUniqueName)) != 0) {
+            $sql = "DELETE FROM command_arg_description WHERE cmd_id = ?";
+            $this->db->query($sql, array($objectId));
+
+            foreach ($data as $description) {
+                list($arg, $desc) = explode(':', $description, 2);
+                $sql = "INSERT INTO command_arg_description (cmd_id, macro_name, macro_description) VALUES (?,?,?)";
+                $this->db->query($sql, array($objectId, $arg, $desc));
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objUniqueName);
+        }
+    }
+
+
+    /**
      * Returns command id
      *
      * @param string $commandName
@@ -214,7 +262,6 @@ class CentreonCommand extends CentreonObject
      */
     public function export($filterName = null)
     {
-
         if (!$this->canBeExported($filterName)) {
             return false;
         }
@@ -268,6 +315,14 @@ class CentreonCommand extends CentreonObject
                         . $this->getClapiActionName($parameter) . $this->delim
                         . $v . "\n";
                 }
+            }
+
+            $argDescriptions = $this->getArgsDescriptions($element['command_id']);
+            if (sizeof($argDescriptions) > 0) {
+                echo $this->action . $this->delim
+                    . "setargumentdescr" . $this->delim
+                    . $element[$this->object->getUniqueLabelField()] . $this->delim
+                    . implode(';', $argDescriptions) . "\n";
             }
         }
     }
@@ -371,5 +426,28 @@ class CentreonCommand extends CentreonObject
             $aReturn[$row['command_macro_name']] = $arr;
         }
         return $aReturn;
+    }
+
+
+    /**
+     * Export command_arg_description
+     * @param int $command_id
+     *
+     * @return array
+     */
+    protected function getArgsDescriptions($command_id)
+    {
+        $sql = "SELECT macro_name, macro_description
+        		FROM command_arg_description
+        		WHERE cmd_id = ?
+        		ORDER BY macro_name";
+        $res = $this->db->query($sql, array($command_id));
+
+        $args_desc = array();
+        while ($row = $res->fetch()) {
+            $args_desc[] = $row['macro_name'] . ':' . trim($row['macro_description']);
+        }
+        unset($res);
+        return $args_desc;
     }
 }

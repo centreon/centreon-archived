@@ -47,7 +47,7 @@ function testExistence($name = null)
     }
     $query = "SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = '" . $name . "'";
     $dbResult = $pearDB->query($query);
-    $lca = $dbResult->fetchRow();
+    $lca = $dbResult->fetch();
     if ($dbResult->rowCount() >= 1 && $lca["acl_res_id"] == $id) {
         return true;
     } elseif ($dbResult->rowCount() >= 1 && $lca["acl_res_id"] != $id) {
@@ -73,16 +73,15 @@ function enableLCAInDB($aclResId = null, $acls = array())
     }
 
     foreach ($acls as $key => $value) {
-
         $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
             "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')";
         $pearDB->query($query);
         $query = "UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' " .
             "WHERE `acl_res_id` = '" . $key . "'";
         $pearDB->query($query);
-        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetchRow();
+        $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("resource access", $key, $row['acl_res_name'], "enable");
     }
 }
@@ -112,7 +111,7 @@ function disableLCAInDB($aclResId = null, $acls = array())
         $pearDB->query($query);
         $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetchRow();
+        $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("resource access", $key, $row['acl_res_name'], "disable");
     }
 }
@@ -127,9 +126,9 @@ function deleteLCAInDB($acls = array())
     global $pearDB, $centreon;
 
     foreach ($acls as $key => $value) {
-        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetchRow();
+        $row = $dbResult->fetch();
         $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
             "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')";
         $pearDB->query($query);
@@ -150,8 +149,8 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
     global $pearDB, $centreon;
 
     foreach ($lcas as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `acl_resources` WHERE acl_res_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
+        $dbResult = $pearDB->query("SELECT * FROM `acl_resources` WHERE acl_res_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
         $row["acl_res_id"] = '';
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
@@ -172,9 +171,9 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
                 $val ? $rq = "INSERT INTO acl_resources VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
 
-                $DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
-                $maxId = $DBRESULT->fetchRow();
-                $DBRESULT->closeCursor();
+                $dbResult = $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
+                $maxId = $dbResult->fetch();
+                $dbResult->closeCursor();
 
                 if (isset($maxId["MAX(acl_res_id)"])) {
                     duplicateGroups($key, $maxId["MAX(acl_res_id)"], $pearDB);
@@ -337,9 +336,9 @@ function insertLCA()
         "'" . $pearDB->escape(isset($ret["acl_res_activate"]) ? $ret["acl_res_activate"]["acl_res_activate"] : '') . "', " .
         "'1', " .
         "'" . $pearDB->escape($ret["acl_res_comment"]) . "')";
-    $DBRESULT = $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
-    $acl = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($rq);
+    $dbResult = $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
+    $acl = $dbResult->fetch();
 
     return ($acl["MAX(acl_res_id)"]);
 }
@@ -378,7 +377,7 @@ function updateLCA($acl_id = null)
             : $ret["acl_res_comment"]) . "', " .
         "changed = '1' " .
         "WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 }
 
 /** ****************
@@ -402,7 +401,7 @@ function updateGroups($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }
@@ -429,7 +428,7 @@ function updateHosts($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }
@@ -483,7 +482,7 @@ function updateHostexcludes($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }
@@ -510,7 +509,7 @@ function updateHostGroups($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }
@@ -537,7 +536,7 @@ function updateServiceCategories($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }
@@ -564,7 +563,7 @@ function updateHostCategories($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }
@@ -591,7 +590,7 @@ function updateServiceGroups($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }
@@ -610,7 +609,7 @@ function updateMetaServices($acl_id = null)
         return;
     }
 
-    $DBRESULT = $pearDB->query("DELETE FROM acl_resources_meta_relations WHERE acl_res_id = '" . $acl_id . "'");
+    $dbResult = $pearDB->query("DELETE FROM acl_resources_meta_relations WHERE acl_res_id = '" . $acl_id . "'");
     $ret = array();
     $ret = $form->getSubmitValue("acl_meta");
     if (isset($ret)) {
@@ -618,7 +617,7 @@ function updateMetaServices($acl_id = null)
             if (isset($value)) {
                 $query = "INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES ('" .
                     $acl_id . "', '" . $value . "')";
-                $DBRESULT = $pearDB->query($query);
+                $dbResult = $pearDB->query($query);
             }
         }
     }

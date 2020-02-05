@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,44 +37,63 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
 /*
  * Object init
  */
 $mediaObj = new CentreonMedia($pearDB);
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
 $o = "";
 
-$search = '';
-if (isset($_POST['searchST']) && $_POST['searchST']) {
-    $search = $_POST['searchST'];
-    $search = str_replace('/', "#S#", $search);
-    $search = str_replace('\\', "#BS#", $search);
-    $_SESSION['searchST'] = $search;
-} elseif (isset($_POST['searchST']) && $_POST['searchST'] === '') {
-    $_SESSION['searchST'] = '';
-    $search = '';
-} elseif (isset($_SESSION['searchST']) && $_SESSION['searchST']) {
-    $search = $_SESSION['searchST'];
+$search = filter_var(
+    $_POST['searchST'] ?? $_GET['searchST'] ?? $centreon->historySearch[$url]['search'] ?? '',
+    FILTER_SANITIZE_STRING
+);
+
+$displayLocked = filter_var(
+    $_POST['displayLocked'] ?? $_GET['displayLocked'] ?? 'off',
+    FILTER_VALIDATE_BOOLEAN
+);
+
+// keep checkbox state if navigating in pagination
+// this trick is mandatory cause unchecked checkboxes do not post any data
+if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+    $displayLocked = $centreon->historySearch[$url]['displayLocked'];
 }
 
-if ($search != '') {
-    $query = "SELECT COUNT(*) FROM service sv " .
-        "WHERE (sv.service_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR sv.service_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%') AND sv.service_register = '0'";
-    $DBRESULT = $pearDB->query($query);
+// store filters in session
+$centreon->historySearch[$url] = [
+    'search' => $search,
+    'displayLocked' => $displayLocked
+];
+
+// Locked filter
+$lockedFilter = $displayLocked ? "" : "AND sv.service_locked = 0 ";
+
+//Service Template Model list
+if ($search) {
+    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
+        "sv.service_activate, sv.service_template_model_stm_id " .
+        "FROM service sv " .
+        "WHERE (sv.service_description LIKE '%" . $search . "%' OR sv.service_alias LIKE '%" . $search . "%') " .
+        "AND sv.service_register = '0' " .
+        $lockedFilter .
+        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
+    $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
+        "sv.service_activate, sv.service_template_model_stm_id " .
+        "FROM service sv " .
+        "WHERE sv.service_register = '0' " .
+        $lockedFilter .
+        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 }
+$dbResult = $pearDB->query($query);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
-
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 /*
  * Smarty template Init
@@ -82,13 +101,11 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_desc", _("Name"));
 $tpl->assign("headerMenu_alias", _("Alias"));
 $tpl->assign("headerMenu_retry", _("Scheduling"));
@@ -96,33 +113,19 @@ $tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Service Template Model list
- */
-if ($search) {
-    $query = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, " .
-        "sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR sv.service_alias LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%') AND sv.service_register = '0' " .
-        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $query = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, " .
-        "sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' " .
-        "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
-}
-$DBRESULT = $pearDB->query($query);
-
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 
 $interval_length = $oreon->optGen['interval_length'];
@@ -130,7 +133,7 @@ $interval_length = $oreon->optGen['interval_length'];
 $search = str_replace('#S#', "/", $search);
 $search = str_replace('#BS#', "\\", $search);
 
-for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $service = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $service['service_id'] . "]");
     if (isset($lockedElements[$service['service_id']])) {
@@ -152,17 +155,13 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
             $service['service_id'] . "]' />";
     }
 
-    /*
-	 * If the description of our Service Model is in the Template definition, we have to catch it,
-     *  whatever the level of it :-)
-	 */
+    /*If the description of our Service Model is in the Template definition,
+     we have to catch it, whatever the level of it :-) */
     if (!$service["service_description"]) {
         $service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);
     }
 
-    /*
-	 * TPL List
-	 */
+    //TPL List
     $tplArr = array();
     $tplStr = "";
     $tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
@@ -187,11 +186,11 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
     $service["service_alias"] = str_replace("#S#", '/', $service["service_alias"]);
     $service["service_alias"] = str_replace("#BS#", '\\', $service["service_alias"]);
 
-    # Get service intervals in seconds
-    $normal_check_interval =
-        getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
-    $retry_check_interval =
-        getMyServiceField($service['service_id'], "service_retry_check_interval") * $interval_length;
+    // Get service intervals in seconds
+    $normal_check_interval
+        = getMyServiceField($service['service_id'], "service_normal_check_interval") * $interval_length;
+    $retry_check_interval
+        = getMyServiceField($service['service_id'], "service_retry_check_interval") * $interval_length;
 
     if ($normal_check_interval % 60 == 0) {
         $normal_units = "min";
@@ -214,7 +213,8 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
             $service["service_id"],
             "esi_icon_image"
         )
-    )) {
+    )
+    ) {
         $svc_icon = "./img/media/" . $icone;
     } else {
         $svc_icon = "./img/icons/service.png";
@@ -231,7 +231,7 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
             "$normal_check_interval $normal_units / $retry_check_interval $retry_units"
         ),
         "RowMenu_attempts" => getMyServiceField($service['service_id'], "service_max_check_attempts"),
-        "RowMenu_link" => "?p=" . $p . "&o=c&service_id=" . $service['service_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&service_id=" . $service['service_id'],
         "RowMenu_status" => $service["service_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $service["service_activate"] ? "service_ok" : "service_critical",
         "RowMenu_options" => $moptions
@@ -240,23 +240,23 @@ for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select lgd_more_actions
- */
+// Toolbar select lgd_more_actions
 ?>
 <script type="text/javascript">
     function setO(_i) {
         document.forms['form'].elements['o'].value = _i;
     }
-</SCRIPT>
+</script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -274,14 +274,20 @@ $attrs1 = array(
         " 	setO(this.form.elements['o1'].value); submit();} " .
         "this.form.elements['o1'].selectedIndex = 0"
 );
-$form->addElement('select', 'o1', null, array(
-    null => _("More actions..."),
-    "m" => _("Duplicate"),
-    "d" => _("Delete"),
-    "mc" => _("Massive Change"),
-    "ms" => _("Enable"),
-    "mu" => _("Disable")
-), $attrs1);
+$form->addElement(
+    'select',
+    'o1',
+    null,
+    array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "mc" => _("Massive Change"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ),
+    $attrs1
+);
 $form->setDefaults(array('o1' => null));
 
 $attrs2 = array(
@@ -300,14 +306,20 @@ $attrs2 = array(
         " 	setO(this.form.elements['o2'].value); submit();} " .
         "this.form.elements['o1'].selectedIndex = 0"
 );
-$form->addElement('select', 'o2', null, array(
-    null => _("More actions..."),
-    "m" => _("Duplicate"),
-    "d" => _("Delete"),
-    "mc" => _("Massive Change"),
-    "ms" => _("Enable"),
-    "mu" => _("Disable")
-), $attrs2);
+$form->addElement(
+    'select',
+    'o2',
+    null,
+    array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "mc" => _("Massive Change"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ),
+    $attrs2
+);
 $form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
@@ -320,12 +332,10 @@ $o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchST', $search);
+$tpl->assign("displayLocked", $displayLocked);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceTemplateModel.ihtml");
-?>

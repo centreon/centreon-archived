@@ -1,6 +1,6 @@
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,10 +32,10 @@
  *
  */
 
-var _addrSearchM = "include/configuration/configObject/contact/ldapsearch.php" //l'adresse   interroger pour trouver les suggestions
+var _addrSearchM = "include/configuration/configObject/contact/ldapsearch.php"
 
 function getXhrM() {
-    if (window.XMLHttpRequest) // Firefox et autres
+    if (window.XMLHttpRequest) // Firefox and others
         var xhrM = new XMLHttpRequest();
     else if (window.ActiveXObject) { // Internet Explorer
         try {
@@ -43,8 +43,8 @@ function getXhrM() {
         } catch (e) {
             var xhrM = new ActiveXObject("Microsoft.XMLHTTP");
         }
-    } else { // XMLHttpRequest non supporté par le navigateur
-        alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+    } else { // if XMLHttpRequest isn't supported by the browser
+        alert("Your browser doesn't support XMLHTTPRequest objects");
         var xhrM = false;
     }
     return xhrM;
@@ -79,17 +79,17 @@ function LdapSearch() {
         xhrM.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhrM.send("confList=" + confList + ldap_search_filters);
 
-        document.getElementById('ldap_search_result_output').innerHTML = "<img src='./img/icones/16x16/spinner_blue.gif'>";
+        document.getElementById('ldap_search_result_output').
+            innerHTML = "<img src='./img/icones/16x16/spinner_blue.gif'>";
 
-        // On defini ce qu'on va faire quand on aura la reponse
+        // defining what we should do when we got a reply
         xhrM.onreadystatechange = function () {
-            // On ne fait quelque chose que si on a tout recu et que le serveur est ok
+            // doing nothing until we got everything and a status 200
             document.getElementById('ldap_search_result_output').innerHTML = xhrM.responseText;
             if (xhrM && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML) {
-                //alert(xhrM.responseText);
                 document.getElementById('ldap_search_result_output').innerHTML = '';
 
-                reponse = xhrM.responseXML.documentElement;
+                response = xhrM.responseXML.documentElement;
 
                 var _tab = document.createElement('table');
 
@@ -158,7 +158,7 @@ function LdapSearch() {
                 _tr.appendChild(_td7);
                 _tbody.appendChild(_tr);
 
-                var infos = reponse.getElementsByTagName("user");
+                var infos = response.getElementsByTagName("user");
                 var serverName = '';
 
                 for (var i = 0; i < infos.length; i++) {

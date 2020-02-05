@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,16 +42,16 @@ if (!isset($centreon)) {
 global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host,
        $host_name, $hostgroup, $rows, $p, $gopt, $pagination, $poller, $template, $search_output, $search_service;
 
-$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] : null;
-isset($_GET["o"]) ? $o = $_GET["o"] : $o = null;
+$type = filter_var(
+    $_POST['type'] ?? $_GET['type'] ?? null,
+    FILTER_VALIDATE_INT
+);
+$type = $type ? '&type=' . $type : '';
+$o = $_GET["o"] ?? null;
 
-if (isset($_GET["num"])) {
-    $num = $_GET["num"];
-} elseif (!isset($_GET["num"]) && isset($centreon->historyPage[$url]) && $centreon->historyPage[$url]) {
-    $num = $centreon->historyPage[$url];
-} else {
-    $num = 0;
-}
+//saving current pagination filter value and current displayed page
+$centreon->historyPage[$url] = $num;
+$centreon->historyLastUrl = $url;
 
 $num = addslashes($num);
 
@@ -75,10 +75,10 @@ if (isset($_GET["search_type_host"])) {
     $search_type_host = null;
 }
 
-if (!isset($_GET["search_type_host"]) &&
-    !isset($centreon->search_type_host) &&
-    !isset($_GET["search_type_service"]) &&
-    !isset($centreon->search_type_service)
+if (!isset($_GET["search_type_host"])
+    && !isset($centreon->search_type_host)
+    && !isset($_GET["search_type_service"])
+    && !isset($centreon->search_type_service)
 ) {
     $search_type_host = 1;
     $centreon->search_type_host = 1;
@@ -140,14 +140,14 @@ if (isset($_REQUEST['hostgroups'])) {
 /* Start Fix for performance management under administration - parameters */
 if (isset($_REQUEST['searchS'])) {
     $url_var .= '&searchS=' . $_REQUEST['searchS'];
-    if (isset($_POST['num'])){
+    if (isset($_POST['num'])) {
         $num = 0;
     }
 }
 
 if (isset($_REQUEST['searchH'])) {
     $url_var .= '&searchH=' . $_REQUEST['searchH'];
-    if (isset($_POST['num'])){
+    if (isset($_POST['num'])) {
         $num = 0;
     }
 }
@@ -169,19 +169,17 @@ if ($num >= $page_max && $rows) {
 }
 
 $pageArr = array();
-$istart = 0;
-for ($i = 5, $istart = $num; $istart && $i > 0; $i--) {
-    $istart--;
+$iStart = 0;
+for ($i = 5, $iStart = $num; $iStart && $i > 0; $i--) {
+    $iStart--;
 }
-for ($i2 = 0, $iend = $num; ($iend < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
-    $iend++;
+for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
+    $iEnd++;
 }
 
 if ($rows != 0) {
-    for ($i = $istart; $i <= $iend; $i++) {
-
-        $urlPage = "./main.php?p=" . $p . "&num=$i&limit=" . $limit . "&poller=" . $poller .
-            "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
+    for ($i = $iStart; $i <= $iEnd; $i++) {
+        $urlPage = "main.php?p=" . $p . "&num=" . $i . $type;
         $pageArr[$i] = array(
             "url_page" => $urlPage,
             "label_page" => "<b>" . ($i + 1) . "</b>",
@@ -202,16 +200,14 @@ if ($rows != 0) {
     if (($prev = $num - 1) >= 0) {
         $tpl->assign(
             'pagePrev',
-            ("./main.php?p=" . $p . "&num=$prev&limit=" . $limit . "&poller=" . $poller .
-                "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=" . $prev . "&limit=" . $limit . $type)
         );
     }
 
     if (($next = $num + 1) < ($rows / $limit)) {
         $tpl->assign(
             'pageNext',
-            ("./main.php?p=" . $p . "&num=$next&limit=" . $limit . "&poller=" . $poller .
-                "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=" . $next . "&limit=" . $limit . $type)
         );
     }
 
@@ -225,22 +221,17 @@ if ($rows != 0) {
     if ($page_max > 5 && $num != 0) {
         $tpl->assign(
             'firstPage',
-            ("./main.php?p=" . $p . "&num=0&limit=" . $limit . "&poller=" . $poller .
-                "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=0&limit=" . $limit . $type)
         );
     }
     if ($page_max > 5 && $num != ($pageNumber - 1)) {
         $tpl->assign(
             'lastPage',
-            ("./main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit .
-                "&template=$template&poller=" . $poller . "&search=" . $search .
-                "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit . $type)
         );
     }
 
-    /*
- * Select field to change the number of row on the page
- */
+    // Select field to change the number of row on the page
     for ($i = 10; $i <= 100; $i = $i + 10) {
         $select[$i] = $i;
     }
@@ -264,8 +255,9 @@ if ($rows != 0) {
             document.forms['form'].elements['limit'].value = _this;
             _l[0].value = _this;
             _l[1].value = _this;
+            window.history.replaceState('', '', '?p=<?= $p.$type ?>');
         }
-    </SCRIPT>
+    </script>
 <?php
 $form = new HTML_QuickFormCustom(
     'select_form',
@@ -281,9 +273,7 @@ $selLim = $form->addElement(
 );
 $selLim->setSelected($limit);
 
-/*
- * Element we need when we reload the page
- */
+// Element we need when we reload the page
 $form->addElement('hidden', 'p');
 $form->addElement('hidden', 'search');
 $form->addElement('hidden', 'num');
@@ -292,18 +282,12 @@ $form->addElement('hidden', 'type');
 $form->addElement('hidden', 'sort_types');
 $form->setDefaults(array("p" => $p, "search" => $search, "num" => $num));
 
-/*
- * Init QuickForm
- */
+// Init QuickForm
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 
-if (isset($_GET['host_name'])) {
-    $host_name = $_GET['host_name'];
-} elseif (!isset($host_name) || $host_name == "") {
-    $host_name = null;
-}
-isset($_GET["status"]) ? $status = $_GET["status"] : $status = null;
+$host_name = $_GET['host_name'] ?? null;
+$status = $_GET["status"] ?? null;
 isset($order) ? true : $order = null;
 
 $tpl->assign("host_name", $host_name);

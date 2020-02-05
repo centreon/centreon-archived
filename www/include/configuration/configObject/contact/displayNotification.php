@@ -82,13 +82,12 @@ $style = "one";
 
 $groups = "''";
 if (isset($_POST["contact"])) {
-    $contact_id = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
+    $contactId = (int)htmlentities($_POST["contact"], ENT_QUOTES, "UTF-8");
 } else {
-    $contact_id = 0;
-    $formData = array('contact' => $contact_id);
+    $contactId = 0;
 }
 
-$formData = array('contact' => $contact_id);
+$formData = array('contact' => $contactId);
 
 /*
  * Create select form
@@ -102,8 +101,8 @@ $form->setDefaults($formData);
  * Host escalations
  */
 $elemArrHostEsc = array();
-if ($contact_id) {
-    $hostEscResources = $oNotification->getNotifications(2, $contact_id);
+if ($contactId) {
+    $hostEscResources = $oNotification->getNotifications(2, $contactId);
 }
 if (isset($hostEscResources)) {
     foreach ($hostEscResources as $hostId => $hostName) {
@@ -122,8 +121,8 @@ $tpl->assign("elemArrHostEsc", $elemArrHostEsc);
  * Service escalations
  */
 $elemArrSvcEsc = array();
-if ($contact_id) {
-    $svcEscResources = $oNotification->getNotifications(3, $contact_id);
+if ($contactId) {
+    $svcEscResources = $oNotification->getNotifications(3, $contactId);
 }
 if (isset($svcEscResources)) {
     foreach ($svcEscResources as $hostId => $hostTab) {
@@ -144,8 +143,8 @@ $tpl->assign("elemArrSvcEsc", $elemArrSvcEsc);
  * Hosts
  */
 $elemArrHost = array();
-if ($contact_id) {
-    $hostResources = $oNotification->getNotifications(0, $contact_id);
+if ($contactId) {
+    $hostResources = $oNotification->getNotifications(0, $contactId);
 }
 if (isset($hostResources)) {
     foreach ($hostResources as $hostId => $hostName) {
@@ -163,8 +162,8 @@ $tpl->assign("elemArrHost", $elemArrHost);
  * Services
  */
 $elemArrSvc = array();
-if ($contact_id) {
-    $svcResources = $oNotification->getNotifications(1, $contact_id);
+if ($contactId) {
+    $svcResources = $oNotification->getNotifications(1, $contactId);
 }
 if (isset($svcResources)) {
     foreach ($svcResources as $hostId => $hostTab) {
@@ -199,6 +198,6 @@ $tpl->assign('msgSelect', _("Please select a user in order to view his notificat
 $tpl->assign('msgdisable', _("The selected user is not enable."));
 $tpl->assign('p', $p);
 $tpl->assign('i', $i);
-$tpl->assign('contact', $contact_id);
+$tpl->assign('contact', $contactId);
 $tpl->assign('labels', $labels);
 $tpl->display("displayNotification.ihtml");

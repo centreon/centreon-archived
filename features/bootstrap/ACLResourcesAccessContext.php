@@ -262,7 +262,6 @@ class ACLResourcesAccessContext extends CentreonContext
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
-
     }
 
     /**
@@ -374,7 +373,8 @@ class ACLResourcesAccessContext extends CentreonContext
     {
         $this->currentPage = new ACLResourceConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['acl_name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -548,7 +548,8 @@ class ACLResourcesAccessContext extends CentreonContext
     {
         $this->currentPage = new ACLResourceConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['acl_name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

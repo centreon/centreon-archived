@@ -2,6 +2,18 @@
 $help = array();
 
 /**
+ * Centreon statistics
+ */
+$help['tip_send_statistics'] = dgettext(
+    'help',
+    'I agree to participate to the Centreon Customer Experience Improvement Program whereby anonymous information ' .
+    'about the usage of this server may be sent to Centreon. This information will solely be used to improve the ' .
+    'software user experience. I will be able to opt-out at anytime. Refer to ' .
+    '<a style="text-decoration: underline" href="http://ceip.centreon.com/">ceip.centreon.com</a> ' .
+    ' for further details.'
+);
+
+/**
  * Centreon information
  */
 
@@ -21,20 +33,23 @@ $help['tip_graph_per_page_for_performances'] = dgettext('help', 'Number of perfo
 $help['tip_select_paginagion_size'] = dgettext('help', 'The number elements loaded in async select.');
 
 
-
 /**
  * Sessions Properties
  */
 
-$help['tip_sessions_expiration_time'] = dgettext('help', 'Life duration of sessions.');
+$help['tip_sessions_expiration_time'] = dgettext(
+    'help',
+    'Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value set ' .
+    'in your php centreon.ini file.'
+);
 
 /**
  * Refresh Properties
  */
 
 $help['tip_refresh_interval'] = dgettext('help', 'Refresh interval.');
-$help['tip_refresh_interval_for_statistics'] = dgettext('help', 'Refresh interval used for statistics (top counters).');
-$help['tip_refresh_interval_for_monitoring'] = dgettext('help', 'Refresh interval used in monitoring consoles.');
+$help['tip_refresh_interval_for_statistics'] = dgettext('help', 'Refresh interval used for statistics (top counters). Minimum value: 10');
+$help['tip_refresh_interval_for_monitoring'] = dgettext('help', 'Refresh interval used in monitoring consoles. Minimum value: 10');
 $help['tip_first_refresh_delay_for_statistics'] = dgettext(
     'help',
     'First refresh delay for statistics (top counters).'
@@ -53,6 +68,16 @@ $help['tip_display_template'] = dgettext('help', 'CSS theme.');
 
 $help['tip_sort_problems_by'] = dgettext('help', 'Default sort in monitoring consoles.');
 $help['tip_order_sort_problems'] = dgettext('help', 'Default order in monitoring consoles.');
+
+/**
+ * Notification
+ */
+
+$help['tip_notification_inheritance'] = dgettext(
+    'help',
+    'Notification inheritance for hosts and services. Vertical for the legacy mode, Close for the first valid object '
+    . 'and Cumulative for all valid object.'
+);
 
 /**
  * Authentication properties
@@ -98,6 +123,46 @@ $help['sso_username_pattern'] = dgettext(
 $help['sso_username_replace'] = dgettext(
     'help',
     'The string to replace.'
+);
+
+/**
+ * Keycloak
+ */
+$help['keycloak_enable'] = dgettext(
+    'help',
+    'Enable login with Keycloak.'
+);
+$help['keycloak_mode'] = dgettext(
+    'help',
+    'Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems.'
+);
+$help['keycloak_trusted_clients'] = dgettext(
+    'help',
+    'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['keycloak_blacklist_clients'] = dgettext(
+    'help',
+    'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['keycloak_url'] = dgettext(
+    'help',
+    'Your Keycloak server url (with "/auth").'
+);
+$help['keycloak_redirect_url'] = dgettext(
+    'help',
+    'Your Keycloak redirect url (this server).'
+);
+$help['keycloak_realm'] = dgettext(
+    'help',
+    'Your Keycloak Realm name.'
+);
+$help['keycloak_client_id'] = dgettext(
+    'help',
+    'Your Keycloak client ID.'
+);
+$help['keycloak_client_secret'] = dgettext(
+    'help',
+    'Your Keycloak client secret.'
 );
 
 /**

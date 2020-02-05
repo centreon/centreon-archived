@@ -20,7 +20,7 @@ To start to monitor your equipment set:
 * The name of object in **Host Name** entry field
 * Describe your object in **Alias** entry field
 * Set the IP address of DNS in **IP Address / DNS** entry field
-* Click on **+ Add a new entry** button and select **generic-host**
+* Click on **+ Add a new entry** button and select **generic-active-host**
 * Click on **Yes** button for **Create Services linked to the Template too** field
 
 .. image:: /_static/images/quick_start/add_host_form.png

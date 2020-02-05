@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,42 +37,47 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-$search = '';
-if ((isset($_POST['searchSG']) && $_POST['searchSG']) || isset($centreon->sg_sg_search)) {
-    if (isset($_POST['searchSG']) && $_POST['searchSG']) {
-        $search = $_POST['searchSG'];
-        $centreon->sg_sg_search = $_POST['searchSG'];
-    } else {
-        $search = $centreon->sg_sg_search;
-    }
+$search = filter_var(
+    $_POST['searchSG'] ?? $_GET['searchSG'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-    $DBRESULT = $pearDB->query("SELECT COUNT(*) FROM servicegroup " .
-        "WHERE (sg_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR sg_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')" .
-        $acl->queryBuilder('AND', 'sg_id', $sgString));
+if (isset($_POST['searchSG']) || isset($_GET['searchSG'])) {
+    //saving filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]["search"] = $search;
 } else {
-    $DBRESULT = $pearDB->query("SELECT COUNT(*)
-                                FROM servicegroup " .
-        $acl->queryBuilder('WHERE', 'sg_id', $sgString));
+    //restoring saved values
+    $search = $centreon->historySearch[$url]["search"] ?? null;
 }
 
-$tmp = $DBRESULT->fetchRow();
-$rows = $tmp["COUNT(*)"];
+if ($search) {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
+        "WHERE (sg_name LIKE '%" . $search . "%' " .
+        "OR sg_alias LIKE '%" . $search . "%') " .
+        $acl->queryBuilder('AND', 'sg_id', $sgString) .
+        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
+} else {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
+        $acl->queryBuilder('WHERE', 'sg_id', $sgString) .
+        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
+}
 
-include("./include/common/checkPagination.php");
+$dbResult = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-/*
- * Smarty template Init
- */
+include "./include/common/checkPagination.php";
+
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 $tpl->assign("headerMenu_name", _("Name"));
@@ -80,44 +85,31 @@ $tpl->assign("headerMenu_desc", _("Description"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-if ($search) {
-    $rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
-        "WHERE (sg_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR sg_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') " .
-        $acl->queryBuilder('AND', 'sg_id', $sgString) .
-        " ORDER BY sg_name
-           LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
-        $acl->queryBuilder('WHERE', 'sg_id', $sgString) .
-        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
-}
-
-$DBRESULT = $pearDB->query($rq);
-
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $sg = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $sg['sg_id'] . "]");
     $moptions = "";
     if ($sg["sg_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&sg_id=" . $sg['sg_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Disabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&sg_id=" . $sg['sg_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Enabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" " .
@@ -126,7 +118,7 @@ for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeSecure($sg["sg_name"]),
-        "RowMenu_link" => "?p=" . $p . "&o=c&sg_id=" . $sg['sg_id'],
+        "RowMenu_link" => "main.php?p=" . $p . "&o=c&sg_id=" . $sg['sg_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure($sg["sg_alias"]),
         "RowMenu_status" => $sg["sg_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $sg["sg_activate"] ? "service_ok" : "service_critical",
@@ -137,23 +129,23 @@ for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -208,9 +200,7 @@ $o2->setValue(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchSG', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

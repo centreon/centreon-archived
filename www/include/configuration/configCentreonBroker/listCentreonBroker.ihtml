@@ -21,8 +21,6 @@
                 {$msg.options} {$form.o1.html}
                 &nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-                &nbsp;&nbsp;&nbsp;
-                <a href="?p=6090901" class="btc bt_info">{$msg.addWizard}</a>
             </td>
             { else }
             <td>&nbsp;</td>
@@ -35,7 +33,12 @@
     </table>
     <table class="ListTable">
         <tr class="ListHeader">
-            <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+            <td class="ListColHeaderPicker">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <label class="empty-label" for="checkall"></label>
+                </div>
+            </td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderLeft">{$headerMenu_desc}</td>
             <td class="ListColHeaderCenter">{$headerMenu_inputs}</td>
@@ -64,8 +67,6 @@
                 {$msg.options} {$form.o2.html}
                 &nbsp;&nbsp;&nbsp;
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-                &nbsp;&nbsp;&nbsp;
-                <a href="?p=6090901" class="btc bt_info">{$msg.addWizard}</a>
             </td>
             { else }
             <td>&nbsp;</td>

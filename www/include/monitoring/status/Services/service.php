@@ -102,7 +102,7 @@ if (empty($filters['search']) && isset($centreon->historySearchService[$url])) {
     $centreon->historySearchService[$url] = $filters['search'];
 }
 
-if (empty($filters['output_search']) && isset($centreon->historySearchSOutput[$url])) {
+if (empty($filters['output_search']) && isset($centreon->historySearchOutput[$url])) {
     $filters['output_search'] = $centreon->historySearchOutput[$url];
 } else {
     $centreon->historySearchOutput[$url] = $filters['output_search'];
@@ -228,8 +228,6 @@ $tpl->assign("mon_status_information", _("Status information"));
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
-$sDefaultOrder = "0";
-
 if (!isset($_GET['o'])) {
     $sSetOrderInMemory = "1";
 } else {
@@ -253,6 +251,9 @@ $tpl->assign("tab_order", $tab_order);
 $action_list = array();
 $action_list[] = _("More actions...");
 
+$informationsService = $dependencyInjector['centreon_remote.informations_service'];
+$serverIsMaster = $informationsService->serverIsMaster();
+
 /*
  * Showing actions allowed for current user
  */
@@ -269,16 +270,16 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["service_disacknowledgement"])) {
         $action_list[71] = _("Services : Disacknowledge");
     }
-    if (isset($authorized_actions["service_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_notifications"])) {
         $action_list[80] = _("Services : Enable Notification");
     }
-    if (isset($authorized_actions["service_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_notifications"])) {
         $action_list[81] = _("Services : Disable Notification");
     }
-    if (isset($authorized_actions["service_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_checks"])) {
         $action_list[90] = _("Services : Enable Check");
     }
-    if (isset($authorized_actions["service_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["service_checks"])) {
         $action_list[91] = _("Services : Disable Check");
     }
     if (isset($authorized_actions["service_schedule_downtime"])) {
@@ -296,16 +297,16 @@ if (isset($authorized_actions) && $allActions == false) {
     if (isset($authorized_actions["host_disacknowledgement"])) {
         $action_list[73] = _("Hosts : Disacknowledge");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[82] = _("Hosts : Enable Notification");
     }
-    if (isset($authorized_actions["host_notifications"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_notifications"])) {
         $action_list[83] = _("Hosts : Disable Notification");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[92] = _("Hosts : Enable Check");
     }
-    if (isset($authorized_actions["host_checks"])) {
+    if ($serverIsMaster && isset($authorized_actions["host_checks"])) {
         $action_list[93] = _("Hosts : Disable Check");
     }
     if (isset($authorized_actions["host_schedule_downtime"])) {
@@ -316,19 +317,28 @@ if (isset($authorized_actions) && $allActions == false) {
     $action_list[4] = _("Services : Schedule immediate check (Forced)");
     $action_list[70] = _("Services : Acknowledge");
     $action_list[71] = _("Services : Disacknowledge");
-    $action_list[80] = _("Services : Enable Notification");
-    $action_list[81] = _("Services : Disable Notification");
-    $action_list[90] = _("Services : Enable Check");
-    $action_list[91] = _("Services : Disable Check");
+
+    if ($serverIsMaster) {
+        $action_list[80] = _("Services : Enable Notification");
+        $action_list[81] = _("Services : Disable Notification");
+        $action_list[90] = _("Services : Enable Check");
+        $action_list[91] = _("Services : Disable Check");
+    }
+
     $action_list[74] = _("Services : Set Downtime");
+
     $action_list[94] = _("Hosts : Schedule immediate check");
     $action_list[95] = _("Hosts : Schedule immediate check (Forced)");
     $action_list[72] = _("Hosts : Acknowledge");
     $action_list[73] = _("Hosts : Disacknowledge");
-    $action_list[82] = _("Hosts : Enable Notification");
-    $action_list[83] = _("Hosts : Disable Notification");
-    $action_list[92] = _("Hosts : Enable Check");
-    $action_list[93] = _("Hosts : Disable Check");
+
+    if ($serverIsMaster) {
+        $action_list[82] = _("Hosts : Enable Notification");
+        $action_list[83] = _("Hosts : Disable Notification");
+        $action_list[92] = _("Hosts : Enable Check");
+        $action_list[93] = _("Hosts : Disable Check");
+    }
+
     $action_list[75] = _("Hosts : Set Downtime");
 }
 
@@ -395,6 +405,22 @@ if ($o == "svc") {
     }
 }
 
+$serviceStatusFromO = isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))
+    ? $_GET['o']
+    : null;
+$defaultStatusService =  $_GET['statusService']
+    ?? $_POST['statusService']
+    ?? $serviceStatusFromO
+    ?: $_SESSION['monitoring_service_status']
+    ?? 'svc_unhandled';
+$o = $defaultStatusService;
+$form->setDefaults(array('statusFilter' => $defaultStatusService));
+
+$defaultStatusFilter = $_GET['statusFilter']
+    ?? $_POST['statusFilter']
+    ?? $_SESSION['monitoring_service_status_filter']
+    ?? '';
+
 $form->addElement(
     'select',
     'statusFilter',
@@ -402,10 +428,7 @@ $form->addElement(
     $statusList,
     array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
 );
-if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status_filter'])) {
-    $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
-    $sDefaultOrder = "1";
-}
+$form->setDefaults(['statusFilter' => $defaultStatusFilter]);
 
 $form->addElement(
     'select',
@@ -414,16 +437,7 @@ $form->addElement(
     $statusService,
     array('id' => 'statusService', 'onChange' => "statusServices(this.value);")
 );
-
-/* Get default service status by GET */
-if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
-    $form->setDefaults(array('statusService' => $_GET['o']));
-    /* Get default service status in SESSION */
-} elseif ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status'])) {
-    $o = $_SESSION['monitoring_service_status'];
-    $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));
-    $sDefaultOrder = "1";
-}
+$form->setDefaults(['statusService' => $defaultStatusService]);
 
 $criticality = new CentreonCriticality($pearDB);
 $crits = $criticality->getList(null, "level", 'ASC', null, null, true);
@@ -479,13 +493,14 @@ $tpl->display("service.ihtml");
     function updateSelect() {
         var oldStatus = jQuery('#statusFilter').val();
         var opts = document.getElementById('statusFilter').options;
+        var newTypeOrder = null;
         if (jQuery('#statusService').val() == 'svcpb' || jQuery('#statusService').val() == 'svc_unhandled') {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
             opts[opts.length] = new Option(warning, "warning");
             opts[opts.length] = new Option(critical, "critical");
             opts[opts.length] = new Option(unknown, "unknown");
-            change_type_order(tabSortPb['champ']);
+            newTypeOrder = tabSortPb['champ'];
         } else {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
@@ -494,14 +509,17 @@ $tpl->display("service.ihtml");
             opts[opts.length] = new Option(critical, "critical");
             opts[opts.length] = new Option(unknown, "unknown");
             opts[opts.length] = new Option(pending, "pending");
-            change_type_order(tabSortAll['champ']);
+            newTypeOrder = tabSortAll['champ'];
         }
 
+        // We define the statusFilter before calling ajax
         if (jQuery("#statusFilter option[value='" + oldStatus + "']").length > 0) {
             jQuery("#statusFilter option[value='" + oldStatus + "']").prop('selected', true);
         } else {
             jQuery("#statusFilter option[value='']").prop('selected', true);
         }
+
+        change_type_order(newTypeOrder);
     }
 
 
@@ -509,41 +527,21 @@ $tpl->display("service.ihtml");
 
     jQuery(function () {
         preInit();
-        /* Disable to prevent double Ajax call*/
-        //updateSelect();
     });
 
     function preInit() {
-        _keyPrefix = '<?php echo $keyPrefix; ?>';
-        _sid = '<?php echo $sid ?>';
-        _tm = <?php echo $tM ?>;
-        _o = '<?php echo $o; ?>';
-        _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
-        sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
+        _keyPrefix = '<?= $keyPrefix; ?>';
+        _tm = <?= $tM ?>;
+        _o = '<?= $o; ?>';
+        _defaultStatusFilter = '<?= $defaultStatusFilter; ?>';
+        _defaultStatusService = '<?= $defaultStatusService; ?>';
+        sSetOrderInMemory = '<?= $sSetOrderInMemory; ?>';
 
-        if (_sDefaultOrder == "0") {
-            if (_o == 'svc') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
-                jQuery("#statusFilter option[value='']").prop('selected', true);
-            } else if (_o == 'svc_ok') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
-                jQuery("#statusFilter option[value='ok']").prop('selected', true);
-            } else if (_o == 'svc_warning') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
-                jQuery("#statusFilter option[value='warning']").prop('selected', true);
-            } else if (_o == 'svc_critical') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
-                jQuery("#statusFilter option[value='critical']").prop('selected', true);
-            } else if (_o == 'svc_unknown') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
-                jQuery("#statusFilter option[value='unknown']").prop('selected', true);
-            } else if (_o == 'svc_pending') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
-                jQuery("#statusFilter option[value='pending']").prop('selected', true);
-            } else {
-                jQuery("#statusService option[value='svc_unhandled']").prop('selected', true);
-                jQuery("#statusFilter option[value='']").prop('selected', true);
-            }
+        if (_defaultStatusService !== '') {
+            jQuery("#statusService option[value='" + _defaultStatusService + "']").prop('selected', true);
+        }
+        if (_defaultStatusFilter !== '') {
+            jQuery("#statusFilter option[value='" + _defaultStatusFilter + "']").prop('selected', true);
         }
         filterStatus(document.getElementById('statusFilter').value, 1);
     }
@@ -556,17 +554,15 @@ $tpl->display("service.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function statusServices(value, isInit) {
         _o = value;
-        window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
     }
 </script>

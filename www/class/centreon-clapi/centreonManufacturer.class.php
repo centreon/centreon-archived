@@ -146,9 +146,7 @@ class CentreonManufacturer extends CentreonObject
      */
     public function getName($id)
     {
-        $this->object->setCache(true);
         $name = $this->object->getParameters($id, array($this->object->getUniqueLabelField()));
-        $this->object->setCache(false);
         return $name[$this->object->getUniqueLabelField()];
     }
 
@@ -161,9 +159,7 @@ class CentreonManufacturer extends CentreonObject
      */
     public function getId($name)
     {
-        $this->object->setCache(true);
         $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($name));
-        $this->object->setCache(false);
         if (!count($ids)) {
             throw new CentreonClapiException("Unknown instance");
         }

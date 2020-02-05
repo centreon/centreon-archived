@@ -40,31 +40,41 @@ if (!isset($centreon)) {
 include("./include/common/autoNumLimit.php");
 include_once("./class/centreonUtils.class.php");
 
-$search = '';
-if (isset($_POST['searchM']) && $_POST['searchM']) {
-    $search = $_POST['searchM'];
-    $res = $pearDB->query(
-        "SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation "
-        . "WHERE (img_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' "
-        . "OR dir_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') "
-        . "AND img_img_id = img_id AND dir_dir_parent_id = dir_id"
+$search = null;
+if (isset($_POST['searchM'])) {
+    $centreon->historySearch[$url] = CentreonUtils::escapeSecure(
+        $_POST['searchM'],
+        CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
     );
-} else {
-    $res = $pearDB->query(
-        "SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation "
-        . "WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id"
+    $search = $centreon->historySearch[$url];
+} elseif (isset($_GET['searchM'])) {
+    $centreon->historySearch[$url] = CentreonUtils::escapeSecure(
+        $_GET['searchM'],
+        CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
     );
+    $search = $centreon->historySearch[$url];
+} elseif (isset($centreon->historySearch[$url])) {
+    $search = $centreon->historySearch[$url];
 }
-$tmp = $res->fetchRow();
-$rows = $tmp["COUNT(*)"];
+
+$rq = "SELECT SQL_CALC_FOUND_ROWS * FROM view_img_dir "
+    . "LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id "
+    . "LEFT JOIN view_img ON img_img_id = img_id ";
+if ($search) {
+    $rq .= "WHERE (img_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' "
+        . "OR dir_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') ";
+}
+$rq .= "ORDER BY dir_alias, img_name LIMIT " . $num * $limit . ", " . $limit;
+
+$res = $pearDB->query($rq);
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
 
 /*
  * Smarty template Init
  */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($path, new Smarty());
 
 /*
  * start header menu
@@ -73,25 +83,6 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Directory"));
 $tpl->assign("headerMenu_img", _("Image"));
 $tpl->assign("headerMenu_comment", _("Comment"));
-
-if ($search) {
-    $rq =
-        "SELECT * FROM view_img_dir "
-        . "LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id "
-        . "LEFT JOIN view_img ON img_img_id = img_id "
-        . "WHERE (img_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' "
-        . "OR dir_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') "
-        . "ORDER BY dir_alias, img_name "
-        . "LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq =
-        "SELECT * FROM view_img_dir "
-        . "LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id "
-        . "LEFT JOIN view_img ON img_img_id = img_id "
-        . "ORDER BY dir_alias, img_name "
-        . "LIMIT " . $num * $limit . ", " . $limit;
-}
-$res = $pearDB->query($rq);
 
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
@@ -105,9 +96,15 @@ for ($i = 0; $elem = $res->fetchRow(); $i++) {
         $selectedDirElem->setAttribute("onclick", "setSubNodes(this, 'select[" . $elem['dir_id'] . "-')");
         $rowOpt = array(
             "RowMenu_select" => $selectedDirElem->toHtml(),
-            "RowMenu_DirLink" => "?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
-            "RowMenu_dir" => $elem["dir_name"],
-            "RowMenu_dir_cmnt" => $elem["dir_comment"],
+            "RowMenu_DirLink" => "main.php?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
+            "RowMenu_dir" => CentreonUtils::escapeSecure(
+                $elem["dir_name"],
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            ),
+            "RowMenu_dir_cmnt" => CentreonUtils::escapeSecure(
+                $elem["dir_comment"],
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            ),
             "RowMenu_empty" => _("Empty directory"),
             "counter" => 0
         );
@@ -120,20 +117,29 @@ for ($i = 0; $elem = $res->fetchRow(); $i++) {
         } else {
             $searchOpt = "";
         }
-        $selectedImgElem = $form->addElement('checkbox', "select[" . $elem['dir_id'] . "-" . $elem['img_id'] . "]");
+        $selectedImgElem = $form->addElement(
+            'checkbox',
+            "select[" . $elem['dir_id'] . "-" . $elem['img_id'] . "]"
+        );
         $rowOpt = array(
             "RowMenu_select" => $selectedImgElem->toHtml(),
-            "RowMenu_ImgLink" => "?p=" . $p . "&o=ci&img_id=" . $elem['img_id'],
-            "RowMenu_DirLink" => "?p=" . $p . "&o=cd&dir_id=" . $elem['dir_id'],
-            "RowMenu_dir" => $elem["dir_name"],
+            "RowMenu_ImgLink" => "main.php?p=$p&o=ci&img_id={$elem['img_id']}",
+            "RowMenu_DirLink" => "main.php?p=$p&o=cd&dir_id={$elem['dir_id']}",
+            "RowMenu_dir" => CentreonUtils::escapeSecure(
+                $elem["dir_name"],
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+            ),
             "RowMenu_img" => CentreonUtils::escapeSecure(
-                html_entity_decode($elem["dir_alias"] . "/" . $elem["img_path"], ENT_QUOTES, "UTF-8")
+                html_entity_decode($elem["dir_alias"] . "/" . $elem["img_path"], ENT_QUOTES, "UTF-8"),
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
             ),
             "RowMenu_name" => CentreonUtils::escapeSecure(
-                html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8")
+                html_entity_decode($elem["img_name"], ENT_QUOTES, "UTF-8"),
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
             ),
             "RowMenu_comment" => CentreonUtils::escapeSecure(
-                html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8")
+                html_entity_decode($elem["img_comment"], ENT_QUOTES, "UTF-8"),
+                CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
             )
         );
         $elemArr[$elem['dir_id']]["elem"][$i] = $rowOpt;
@@ -148,7 +154,7 @@ $tpl->assign("elemArr", $elemArr);
 $tpl->assign(
     'msg',
     array(
-        "addL" => "?p=" . $p . "&o=a",
+        "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
         "delConfirm" => _("Do you confirm the deletion ?")
     )
@@ -196,7 +202,11 @@ $tpl->assign(
 
     </SCRIPT>
 <?php
-$actions = array(null => _("More actions"), "d" => _("Delete"), "m" => _("Move images"));
+$actions = array(
+    null => _("More actions"),
+    IMAGE_DELETE => _("Delete"),
+    IMAGE_MOVE => _("Move images")
+);
 $form->addElement('select', 'o1', null, $actions, array('onchange' => "javascript:submitO('o1');"));
 $form->addElement('select', 'o2', null, $actions, array('onchange' => "javascript:submitO('o2');"));
 $form->setDefaults(array('o1' => null));

@@ -35,30 +35,97 @@
 
 namespace CentreonLegacy\Core\Configuration;
 
+use CentreonModule\Infrastructure\Source\ModuleSource;
+use CentreonModule\Infrastructure\Source\WidgetSource;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * Service provide configuration data
+ */
 class Configuration
 {
+    const CENTREON_PATH = 'centreon_path';
+
     /**
-     *
-     * @var array
+     * @var array the global configuration
      */
     protected $configuration;
 
     /**
-     *
-     * @param array $configuration
+     * @var string the centreon path
      */
-    public function __construct($configuration) {
+    protected $centreonPath;
+
+    /**
+     * @var Finder
+     */
+    protected $finder;
+
+    /**
+     *
+     * @param array $configuration the global configuration (mainly database)
+     * @param string $centreonPath the centreon directory path
+     */
+    public function __construct(array $configuration, string $centreonPath, Finder $finder)
+    {
         $this->configuration = $configuration;
+        $this->centreonPath = $centreonPath;
+        $this->finder = $finder;
     }
 
-    public function get($key)
+    /**
+     * Get configuration parameter by key
+     *
+     * @param string $key the key parameter to get
+     * @return string the parameter value
+     */
+    public function get(string $key)
     {
         $value = null;
 
-        if (isset($this->configuration[$key])) {
+        // specific case for centreon path which is not stored in $conf_centreon
+        if ($key === static::CENTREON_PATH) {
+            $value = $this->centreonPath;
+        } elseif (isset($this->configuration[$key])) {
             $value = $this->configuration[$key];
         }
 
         return $value;
+    }
+
+    public function getFinder() : ?Finder
+    {
+        return $this->finder;
+    }
+
+    public function getModulePath() : string
+    {
+        return $this->centreonPath . ModuleSource::PATH;
+    }
+
+    public function getWidgetPath() : string
+    {
+        return $this->centreonPath . WidgetSource::PATH;
+    }
+
+    /**
+     * Locate all yml files in src/ModuleFolder/config/ and parse them to array
+     * @var string $moduleFolder
+     * @return array
+     */
+    public function getModuleConfig(string $moduleFolder) : array
+    {
+        $configVars = [];
+        $filesIterator = $this->getFinder()
+            ->files()
+            ->name('*.yml')
+            ->depth('== 0')
+            ->in($moduleFolder . '/config');
+        foreach ($filesIterator as $file) {
+            $configVars = array_merge($configVars, Yaml::parseFile($file->getPathName()));
+        }
+
+        return $configVars;
     }
 }

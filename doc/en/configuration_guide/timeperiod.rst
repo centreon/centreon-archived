@@ -17,7 +17,7 @@ Time periods apply to two types of actions:
 Configuration
 *************
 
-The configuration of time periods is done in the menu: **Configuration ==> Users ==> Time periods**.
+The configuration of time periods is done in the menu: **Configuration > Users > Time periods**.
 
 Basic options 
 =============
@@ -75,17 +75,5 @@ For each exceptional day, you will need to define a time period. The table below
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 |     monday -2         |       00:00-24:00       |   All day every second to the last Monday of the month          |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
-
-Extended Settings
-=================
-
-In the extended settings, it is possible to **include** or to **exclude** periods in the definition of the object. 
-
-Example of application: Let us take two time periods:
-
-* One period is defined as 24 hours a day / 7 days a week, called **24x7**
-* Another which covers the office opening hours, called **working_hours**
-
-To obtain the office closing hours, we simply have to create a time period in which we include the period **24x7** and from which we exclude the **working_hours** period.
 
 .. |navigate_plus|      image:: /images/navigate_plus.png

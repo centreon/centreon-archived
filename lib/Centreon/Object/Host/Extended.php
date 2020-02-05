@@ -103,8 +103,4 @@ class Centreon_Object_Host_Extended extends Centreon_Object
         }
         return $params;
     }
-
-    public function duplicate()
-    {
-    }
 }

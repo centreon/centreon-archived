@@ -12,7 +12,7 @@ if (isset($_SESSION['step'])) {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="Content-Style-Type" content="text/css">
-    <title><?php echo _('Centreon Installation');?></title>
+    <title><?php echo _('Centreon Installation'); ?></title>
     <link rel="shortcut icon" href="../img/favicon.ico">
     <link rel="stylesheet" href="../Themes/Centreon-2/style.css" type="text/css">
     <link rel="stylesheet" href="./install.css" type="text/css">
@@ -21,30 +21,30 @@ if (isset($_SESSION['step'])) {
     <script type="text/javascript" src="../include/common/javascript/jquery/jquery-ui.js"></script>
     <script type="text/javascript">jQuery.noConflict();</script>
     <script type='text/javascript'>
-        jQuery(function() {
+        jQuery().ready(function () {
             var curstep = <?php echo $step;?>;
-            jQuery('#installationContent').load('./step_upgrade/step'+curstep+'.php');
+            jQuery('#installationContent').load('./step_upgrade/step' + curstep + '.php');
         });
 
         /**
-        * Go back to previous page
-        *
-        * @param int stepNumber
-        * @return void
-        */
+         * Go back to previous page
+         *
+         * @param int stepNumber
+         * @return void
+         */
         function jumpTo(stepNumber) {
-            jQuery('#installationContent').load('./step_upgrade/step'+stepNumber+'.php');
+            jQuery('#installationContent').load('./step_upgrade/step' + stepNumber + '.php');
         }
 
         /**
-        * Do background process
-        *
-        * @param boolean async
-        * @param string url
-        * @param array data
-        * @param function callbackOnSuccess
-        * @return void
-        */
+         * Do background process
+         *
+         * @param boolean async
+         * @param string url
+         * @param array data
+         * @param function callbackOnSuccess
+         * @return void
+         */
         function doProcess(async, url, data, callbackOnSuccess) {
             jQuery.ajax({
                 type: 'POST',
@@ -57,8 +57,8 @@ if (isset($_SESSION['step'])) {
     </script>
 </head>
 <body rightmargin="0" topmargin="0" leftmargin="0">
-    <div id='installationFrame'>
-        <div id='installationContent'></div>
-    </div>
+<div id='installationFrame'>
+    <div id='installationContent'></div>
+</div>
 </body>
 </html>

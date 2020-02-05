@@ -17,13 +17,11 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Pimple\Psr11\Container;
 use \Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
-use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
-use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class WidgetTest extends \PHPUnit_Framework_TestCase
+class WidgetTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;
@@ -123,7 +121,7 @@ class WidgetTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWidgetPath()
     {
-        $widget = new Widget($this->container, $this->information, 'MyWidget', $this->utils);
+        $widget = new Widget(new Container($this->container), $this->information, 'MyWidget', $this->utils);
         $path = $widget->getWidgetPath('MyWidget');
 
         $this->assertEquals($path, '/');

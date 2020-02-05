@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -58,47 +58,47 @@ $path = "./include/Administration/parameters/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
     case "engine":
-        require_once $path."engine/form.php" ;
+        require_once $path . "engine/form.php" ;
         break;
     case "snmp":
-        require_once $path."snmp/form.php" ;
+        require_once $path . "snmp/form.php" ;
         break;
     case "rrdtool":
-        require_once $path."rrdtool/form.php" ;
+        require_once $path . "rrdtool/form.php" ;
         break;
     case "ldap":
-        require_once $path."ldap/ldap.php" ;
+        require_once $path . "ldap/ldap.php" ;
         break;
     case "debug":
-        require_once $path."debug/form.php" ;
+        require_once $path . "debug/form.php" ;
         break;
     case "general":
-        require_once $path."general/form.php" ;
+        require_once $path . "general/form.php" ;
         break;
     case "css":
-        require_once $path."css/form.php" ;
+        require_once $path . "css/form.php" ;
         break;
     case "storage":
-        require_once $path."centstorage/form.php" ;
+        require_once $path . "centstorage/form.php" ;
         break;
     case "centcore":
-        require_once $path.'centcore/centcore.php';
+        require_once $path . 'centcore/centcore.php';
         break;
     case "knowledgeBase":
-        require_once $path.'knowledgeBase/formKnowledgeBase.php';
+        require_once $path . 'knowledgeBase/formKnowledgeBase.php';
         break;
     case "api":
-        require_once $path.'api/api.php';
+        require_once $path . 'api/api.php';
         break;
     case "backup":
         require_once $path . 'backup/formBackup.php';
         break;
     default:
-        require_once $path."general/form.php" ;
+        require_once $path . "general/form.php" ;
         break;
 }

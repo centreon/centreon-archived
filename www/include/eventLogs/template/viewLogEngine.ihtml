@@ -24,13 +24,18 @@
             <td>
                 <h4>{t}From{/t}</h4>
                 {$form.StartDate.html}
-                {$form.StartTime.html} 
+                {$form.StartTime.html}
+                {$form.alternativeDateStartDate.html}
                 <h4>{t}To{/t}</h4>
                 {$form.EndDate.html}
                 {$form.EndTime.html}
+                {$form.alternativeDateEndDate.html}
             </td>			
             <td style='white-space:nowrap;'>{$form.graph.html}</td>
         </tr>
+        <div>
+            {$form.hidden}
+        </div>
     </form>
 </table>
 </div>
@@ -39,3 +44,7 @@
     <div id="openid">
     </div>
 </div>
+<script>
+    /* initializing datepicker and the alternative format field */
+    initDatepicker("datepicker", "mm/dd/yy", null);
+</script>

@@ -15,14 +15,7 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_interval_length">&nbsp;{$form.interval_length.label}</td><td class="FormRowValue">{$form.interval_length.html}&nbsp;{$seconds}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_images_directory">&nbsp;{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_plugins_directory">&nbsp;{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
-				
-		<tr class="list_lvl_1">
-          <td class="ListColLvl1_name" colspan="2">
-            <h4>{$genOpt_Correlation_script}</h4>
-          </td>
-        </tr>		
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_start_script_for_correlator_engine">&nbsp;{$form.broker_correlator_script.label}</td><td class="FormRowValue">{$form.broker_correlator_script.html}</td></tr>
-		
+
 		<tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
             <h4>{$genOpt_mailer_path}</h4>

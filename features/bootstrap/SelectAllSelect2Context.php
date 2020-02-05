@@ -77,8 +77,6 @@ class SelectAllSelect2Context extends CentreonContext
                 return $context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
             }
         );
-
-
     }
 
     /**
