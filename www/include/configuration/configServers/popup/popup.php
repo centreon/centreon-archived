@@ -181,7 +181,7 @@ modules:
     cmd_file: "/var/lib/centreon/centcore.cmd"
     cache_dir: "/var/cache/centreon/"
     cache_dir_trap: "/etc/snmp/centreon_traps/"
-    remote_dir: "/var/lib/centreon/remote-data/"
+    remote_dir: "/var/cache/centreon/config/remote-data/"
 
   - name: engine
     package: gorgone::modules::centreon::engine::hooks
