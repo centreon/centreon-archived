@@ -69,8 +69,8 @@ switch ($o) {
         require_once($path . "AddSvcComment.php");
         break;
     case "ds":
-        if (isset($_GET["select"])) {
-            foreach ($_GET["select"] as $key => $value) {
+        if (isset($_POST["select"])) {
+            foreach ($_POST["select"] as $key => $value) {
                 $res = explode(';', urldecode($key));
                 DeleteComment($res[0], array($res[1] . ';' . $res[2] => 'on'));
             }
