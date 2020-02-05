@@ -32,6 +32,15 @@ use JMS\Serializer\Exception\ValidationFailedException;
 interface AcknowledgementServiceInterface extends ContactFilterInterface
 {
     /**
+     * Find one acknowledgement.
+     *
+     * @param int $acknowledgementId Acknowledgement id
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    public function findOneAcknowledgement(int $acknowledgementId): ?Acknowledgement;
+
+    /**
      * Find all acknowledgements.
      *
      * @return Acknowledgement[]

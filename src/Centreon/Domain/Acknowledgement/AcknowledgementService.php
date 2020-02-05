@@ -111,6 +111,20 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
+    public function findOneAcknowledgement(int $acknowledgementId): ?Acknowledgement
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->acknowledgementRepository->findOneAcknowledgementForAdminUser($acknowledgementId);
+        } else {
+            return $this->acknowledgementRepository
+                ->filterByAccessGroups($this->accessGroups)
+                ->findOneAcknowledgementForNonAdminUser($acknowledgementId);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findAcknowledgements(): array
     {
         if ($this->contact->isAdmin()) {
