@@ -121,7 +121,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 ['addApiVersion', 10]
             ],
             KernelEvents::EXCEPTION => [
-                ['onKernelException', 10]
+                ['onKernelException', -10]
             ]
         ];
     }
