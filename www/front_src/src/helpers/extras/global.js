@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-functions/prefer-arrow-functions */
 /* eslint-disable no-multi-assign */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-continue */

@@ -20,7 +20,7 @@
     <phpunit bootstrap="tests/php/bootstrap.php" codecoverage="true">
       <formatter type="plain" usefile="false"/>
       <formatter type="xml" outfile="${builddir}/phpunit.xml"/>
-      <formatter type="clover" outfile="${builddir}/coverage.xml"/>
+      <formatter type="clover" outfile="${builddir}/coverage-be.xml"/>
       <batchtest>
         <fileset dir="tests/php/">
           <include name="**/**/**/*Test.php" />
@@ -38,7 +38,7 @@
     <exec executable="./vendor/bin/phpcs" dir="./">
       <arg value="--standard=ruleset.xml" />
       <arg value="--report=checkstyle" />
-      <arg value="--report-file=${builddir}/checkstyle.xml" />
+      <arg value="--report-file=${builddir}/checkstyle-be.xml" />
       <arg value="./" />
     </exec>
   </target>
