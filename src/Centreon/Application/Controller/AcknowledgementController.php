@@ -60,22 +60,22 @@ class AcknowledgementController extends AbstractFOSRestController
     }
 
     /**
-     * Entry point to find the last hosts acknowledgements.
+     * Entry point to find the hosts acknowledgements.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts/acknowledgements",
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findLastHostAcknowledgement")
+     *     name="monitoring.acknowledgement.findHostsAcknowledgements")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findLastHostAcknowledgement(RequestParametersInterface $requestParameters): View
+    public function findHostsAcknowledgements(RequestParametersInterface $requestParameters): View
     {
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
-            ->findLastHostsAcknowledgements();
+            ->findHostsAcknowledgements();
 
         $context = (new Context())->setGroups(['ack_main']);
 
@@ -88,23 +88,85 @@ class AcknowledgementController extends AbstractFOSRestController
     }
 
     /**
-     * Entry point to find the last services acknowledgements.
+     * Entry point to find acknowledgements linked to a host.
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Get(
+     *     "/monitoring/hosts/{hostId}/acknowledgements",
+     *     requirements={"hostId"="\d+"},
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.findAcknowledgementsByHost")
+     * @param RequestParametersInterface $requestParameters
+     * @param int $hostId
+     * @return View
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByHost(RequestParametersInterface $requestParameters, int $hostId): View
+    {
+        $hostsAcknowledgements = $this->acknowledgementService
+            ->filterByContact($this->getUser())
+            ->findAcknowledgementsByHost($hostId);
+
+        $context = (new Context())->setGroups(['ack_main']);
+
+        return $this->view([
+            'result' => $hostsAcknowledgements,
+            'meta' => [
+                'pagination' => $requestParameters->toArray()
+            ]
+        ])->setContext($context);
+    }
+
+    /**
+     * Entry point to find the services acknowledgements.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/services/acknowledgements",
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findLastServiceAcknowledgement")
+     *     name="monitoring.acknowledgement.findServicesAcknowledgements")
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findLastServiceAcknowledgement(RequestParametersInterface $requestParameters): View
+    public function findServicesAcknowledgements(RequestParametersInterface $requestParameters): View
     {
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
-            ->findLastServicesAcknowledgements();
+            ->findServicesAcknowledgements();
+        $context = (new Context())->setGroups(['ack_main', 'ack_service']);
+
+        return $this->view([
+            'result' => $servicesAcknowledgements,
+            'meta' => [
+                'pagination' => $requestParameters->toArray()
+            ]
+        ])->setContext($context);
+    }
+
+    /**
+     * Entry point to find acknowledgements linked to a service.
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Get(
+     *     "/monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements",
+     *     requirements={"hostId"="\d+", "serviceId"="\d+"},
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.findAcknowledgementsByService")
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByService(
+        RequestParametersInterface $requestParameters,
+        int $hostId,
+        int $serviceId
+    ): View {
+        $servicesAcknowledgements = $this->acknowledgementService
+            ->filterByContact($this->getUser())
+            ->findAcknowledgementsByService($hostId, $serviceId);
         $context = (new Context())->setGroups(['ack_main', 'ack_service']);
 
         return $this->view([
@@ -173,12 +235,12 @@ class AcknowledgementController extends AbstractFOSRestController
      *     "/monitoring/hosts/{hostId}/acknowledgements",
      *     requirements={"hostId"="\d+"},
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.disacknowledgeHostAcknowledgement")
+     *     name="monitoring.acknowledgement.disacknowledgeHost")
      * @param int $hostId Host id for which we want to cancel the acknowledgement
      * @return View
      * @throws \Exception
      */
-    public function disacknowledgeHostAcknowledgement(int $hostId): View
+    public function disacknowledgeHost(int $hostId): View
     {
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
@@ -186,7 +248,7 @@ class AcknowledgementController extends AbstractFOSRestController
         }
         $this->acknowledgementService
             ->filterByContact($contact)
-            ->disacknowledgeHostAcknowledgement($hostId);
+            ->disacknowledgeHost($hostId);
         return $this->view();
     }
 
@@ -198,13 +260,13 @@ class AcknowledgementController extends AbstractFOSRestController
      *     "/monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements",
      *     requirements={"hostId"="\d+", "serviceId"="\d+"},
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.disacknowledgeServiceAcknowledgement")
+     *     name="monitoring.acknowledgement.disacknowledgeService")
      * @param int $hostId Host id linked to service
      * @param int $serviceId Service Id for which we want to cancel the acknowledgement
      * @return View
      * @throws \Exception
      */
-    public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): View
+    public function disacknowledgeService(int $hostId, int $serviceId): View
     {
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
@@ -213,7 +275,7 @@ class AcknowledgementController extends AbstractFOSRestController
 
         $this->acknowledgementService
             ->filterByContact($contact)
-            ->disacknowledgeServiceAcknowledgement($hostId, $serviceId);
+            ->disacknowledgeService($hostId, $serviceId);
         return $this->view();
     }
 

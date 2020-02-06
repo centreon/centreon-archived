@@ -37,6 +37,25 @@ interface AcknowledgementRepositoryInterface
     public function filterByAccessGroups(?array $accessGroups): self;
 
     /**
+     * Find the latest service acknowledgement.
+     *
+     * @param int $hostId Host id linked to the service
+     * @param int $serviceId Service id for which we want the latest acknowledgement
+     * @return Acknowledgement|null
+     * @throws \Exception
+     */
+    public function findLatestServiceAcknowledgement(int $hostId, int $serviceId): ?Acknowledgement;
+
+    /**
+     * Find the latest host acknowledgement.
+     *
+     * @param int $hostId Host id for which we want to find the lastest acknowledgement
+     * @return Acknowledgement|null
+     * @throws \Exception
+     */
+    public function findLatestHostAcknowledgement(int $hostId): ?Acknowledgement;
+
+    /**
      * Find one acknowledgement **without taking into account** the ACLs of user.
      *
      * @param int $acknowledgementId Acknowledgement id
@@ -71,41 +90,41 @@ interface AcknowledgementRepositoryInterface
     public function findAcknowledgementsForNonAdminUser(): array;
 
     /**
-     * Find the latest acknowledgement of all hosts.
+     * Find acknowledgements of all hosts.
      *
      * @return Acknowledgement[]
      * @throws \Exception
      * @throws RequestParametersTranslatorException
      */
-    public function findLatestAcknowledgementOfAllHosts();
+    public function findHostsAcknowledgements();
 
     /**
-     * Find the latest acknowledgement of all services.
+     * Find acknowledgements of all services.
      *
      * @return Acknowledgement[]
      * @throws \Exception
      * @throws RequestParametersTranslatorException
      */
-    public function findLatestAcknowledgementOfAllServices();
+    public function findServicesAcknowledgements();
 
     /**
-     * Find the latest service acknowledgement.
+     * Find host acknowledgements.
+     *
+     * @param int $hostId Host id for which we want to find the acknowledgements
+     * @return Acknowledgement[]
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByHost(int $hostId): array;
+
+    /**
+     * Find service acknowledgements.
      *
      * @param int $hostId Host id linked to the service
-     * @param int $serviceId Service id for which we want the latest acknowledgement
-     * @return Acknowledgement|null
+     * @param int $serviceId Service id for which we want the acknowledgements
+     * @return Acknowledgement[]
      * @throws \Exception
      */
-    public function findLatestServiceAcknowledgement(int $hostId, int $serviceId): ?Acknowledgement;
-
-    /**
-     * Find the latest host acknowledgement.
-     *
-     * @param int $hostId Host id for which we want to find the lastest acknowledgement
-     * @return Acknowledgement|null
-     * @throws \Exception
-     */
-    public function findLatestHostAcknowledgement(int $hostId): ?Acknowledgement;
+    public function findAcknowledgementsByService(int $hostId, int $serviceId): array;
 
     /**
      * Indicates whether the contact is an admin or not.
