@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -60,12 +60,14 @@ $_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;
 // Set Default Poller
 $obj->getDefaultFilters();
 
-// Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+/*
+ * Check Arguments From GET request
+ */
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'svcOVSG_pb']]);
 $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
-//if instance value is not set, displaying all active pollers linked resources
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 30]]);
+//if instance value is not set, displaying all active pollers' linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 $hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
@@ -76,11 +78,13 @@ $grouplistStr = $obj->access->getAccessGroupsString();
 
 //saving bound values
 $queryValues = [];
+$filterRq2 = '';
 
 //Get Host status
-$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name AS host_name, hgm.hostgroup_id, " .
-    "h.state hs, h.icon_image " .
-    "FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT
+    hg.name AS alias, h.host_id id, h.name AS host_name, hgm.hostgroup_id, h.state hs, h.icon_image
+    FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
@@ -88,70 +92,71 @@ $rq1 .= "WHERE h.host_id = hgm.host_id " .
     "AND hgm.hostgroup_id = hg.hostgroup_id " .
     "AND h.enabled = '1' " .
     "AND h.name NOT LIKE '_Module_%' ";
+
 if (!$obj->is_admin) {
     $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
         $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " .
         $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 }
-if ($instance != -1) {
+if ($instance !== -1) {
     $rq1 .= " AND h.instance_id = :instance ";
-    $queryValues[':instance'] = [
+    $queryValues['instance'] = [
         PDO::PARAM_INT => (int)$instance
     ];
 }
-if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
+if (substr($o, -3) === '_pb') {
     $rq1 .= " AND h.host_id IN (" .
         "SELECT s.host_id FROM services s " .
         "WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
-}
-if ($o == "svcOVHG_ack_0") {
+    $filterRq2 = " AND s.state != 0 AND s.state != 4";
+} elseif (substr($o, -6) === '_ack_0') {
     $rq1 .= " AND h.host_id IN (" .
         "SELECT s.host_id FROM services s " .
         "WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
-}
-if ($o == "svcOVHG_ack_1") {
+    $filterRq2 =  " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0";
+} elseif (substr($o, -6) === '_ack_1') {
     $rq1 .= " AND h.host_id IN (" .
         "SELECT s.host_id FROM services s " .
         "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+    $filterRq2 = " AND s.acknowledged = 1";
 }
 if ($search != "") {
     $rq1 .= " AND h.name LIKE :search";
-    $queryValues[':search'] = [
+    $queryValues['search'] = [
         PDO::PARAM_STR => "%" . $search . "%"
     ];
 }
 if ($hostgroup !== "") {
     $rq1 .= " AND hg.name LIKE :hgName";
-    $queryValues[':hgName'] = [
+    $queryValues['hgName'] = [
         PDO::PARAM_STR => $hostgroup
     ];
 }
-$rq1 .= " AND h.enabled = 1 ORDER BY :sort_type, host_name ";
-("ASC" != $order) ? $rq1 .= "DESC" : $rq1 .= "ASC";
+$rq1 .= " AND h.enabled = 1 ORDER BY :sort_type, host_name " . $order;
 $rq1 .= " LIMIT :numLimit, :limit";
-$queryValues[':sort_type'] = [
+$queryValues['sort_type'] = [
     PDO::PARAM_STR => $sort_type
 ];
-$queryValues[':numLimit'] = [
+$queryValues['numLimit'] = [
     PDO::PARAM_INT => (int)($num * $limit)
 ];
-$queryValues[':limit'] = [
+$queryValues['limit'] = [
     PDO::PARAM_INT => (int)$limit
 ];
 
-$DBRESULT = $obj->DBC->prepare($rq1);
+$dbResult = $obj->DBC->prepare($rq1);
 foreach ($queryValues as $bindId => $bindData) {
     foreach ($bindData as $bindType => $bindValue) {
-        $DBRESULT->bindValue($bindId, $bindValue, $bindType);
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
     }
 }
-$DBRESULT->execute();
+$dbResult->execute();
 
 $tabH = [];
 $tabHG = [];
 $tab_finalH = [];
 $numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
-while ($ndo = $DBRESULT->fetch()) {
+while ($ndo = $dbResult->fetch()) {
     if (!isset($tab_finalH[$ndo["alias"]])) {
         $tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => []);
     }
@@ -161,60 +166,53 @@ while ($ndo = $DBRESULT->fetch()) {
     $tabH[$ndo["host_name"]] = $ndo["id"];
     $tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 // Resetting $queryValues
 $queryValues = [];
 
 // Get Services status
-$rq1 = "SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs, " .
+$rq2 = "SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs, " .
     "(CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri " .
     "FROM services s, hosts h ";
 if (!$obj->is_admin) {
-    $rq1 .= ", centreon_acl ";
+    $rq2 .= ", centreon_acl ";
 }
-$rq1 .= "WHERE h.host_id = s.host_id " .
+$rq2 .= "WHERE h.host_id = s.host_id " .
     "AND h.name NOT LIKE '_Module_%' " .
     "AND h.enabled = '1' " .
     "AND s.enabled = '1' ";
-$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
+$rq2 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
     $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id") .
-    $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
-if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
-    $rq1 .= " AND s.state != 0 AND s.state != 4";
-}
-if ($o == "svcgrid_ack_1" || $o == "svcOVHG_ack_1") {
-    $rq1 .= " AND s.acknowledged = 1";
-}
-if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
-    $rq1 .= " AND s.acknowledged = 0";
-}
+    $obj->access->queryBuilder("AND", "group_id", $grouplistStr) .
+    $filterRq2;
+
 if ($search != "") {
-    $rq1 .= " AND h.name LIKE :search";
+    $rq2 .= " AND h.name LIKE :search";
     $queryValues[":search"] = [
         PDO::PARAM_STR => "%" . $search . "%"
     ];
 }
 if ($instance != -1) {
-    $rq1 .= " AND h.instance_id = :instance ";
+    $rq2 .= " AND h.instance_id = :instance ";
     $queryValues[":instance"] = [
         PDO::PARAM_INT => $instance
     ];
 }
-$rq1 .= " ORDER BY tri ASC, s.description ASC";
+$rq2 .= " ORDER BY tri ASC, s.description ASC";
 
 $tabService = [];
 $tabHost = [];
 
-$DBRESULT = $obj->DBC->prepare($rq1);
+$dbResult = $obj->DBC->prepare($rq2);
 foreach ($queryValues as $bindId => $bindData) {
     foreach ($bindData as $bindType => $bindValue) {
-        $DBRESULT->bindValue($bindId, $bindValue, $bindType);
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
     }
 }
-$DBRESULT->execute();
+$dbResult->execute();
 
-while ($ndo = $DBRESULT->fetch()) {
+while ($ndo = $dbResult->fetch()) {
     if (!isset($tabService[$ndo["host_name"]])) {
         $tabService[$ndo["host_name"]] = [];
     }
@@ -224,7 +222,7 @@ while ($ndo = $DBRESULT->fetch()) {
     $tabService[$ndo["host_name"]]["tab_svc"][$ndo["description"]] = $ndo["svcs"];
     $tabHost[$ndo["host_name"]] = $ndo["service_id"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 // Begin XML Generation
 $obj->XML = new CentreonXML();

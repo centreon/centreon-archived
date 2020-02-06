@@ -21,18 +21,16 @@ class Hook extends Component {
     const LoadableHooks = [];
     for (const [hook, parameters] of Object.entries(hooks)) {
       if (hook === path) {
-        for (const parameter of parameters) {
-          const LoadableHook = React.lazy(() =>
-            dynamicImport(basename, parameter),
-          );
-          LoadableHooks.push(
-            <LoadableHook
-              key={`hook_${parameter.js}`}
-              centreonAxios={centreonAxios}
-              {...rest}
-            />,
-          );
-        }
+        const LoadableHook = React.lazy(() =>
+          dynamicImport(basename, parameters),
+        );
+        LoadableHooks.push(
+          <LoadableHook
+            key={`hook_${parameters.js}`}
+            centreonAxios={centreonAxios}
+            {...rest}
+          />,
+        );
       }
     }
 
