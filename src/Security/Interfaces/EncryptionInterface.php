@@ -40,6 +40,7 @@ interface EncryptionInterface
      * @see Security::$firstKey
      * @see Security::$secondKey
      * @return string Encrypted data
+     * @throws \Exception
      */
     public function crypt(string $data): string;
 
@@ -66,6 +67,7 @@ interface EncryptionInterface
      *
      * @param string $input Data to be decrypted
      * @return string|null Data decrypted if successful otherwise null
+     * @throws \Exception
      */
     public function decrypt(string $input): ?string;
 }

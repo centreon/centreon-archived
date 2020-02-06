@@ -26,12 +26,12 @@ use Security\Interfaces\EncryptionInterface;
 class Encryption implements EncryptionInterface
 {
     /**
-     * @var string First secure key
+     * @var string|null First secure key
      */
     private $firstKey;
 
     /**
-     * @var string Second secure key
+     * @var string|null Second secure key
      */
     private $secondKey;
 
@@ -40,14 +40,29 @@ class Encryption implements EncryptionInterface
      */
     public function crypt(string $data): string
     {
+        if ($this->firstKey === null) {
+            throw new \Exception('First key not defined');
+        }
+        if ($this->secondKey === null) {
+            throw new \Exception('Second key not defined');
+        }
         $firstKey = base64_decode($this->firstKey);
         $secondKey = base64_decode($this->secondKey);
 
         $method = "aes-256-cbc";
         $ivLength = openssl_cipher_iv_length($method);
+        if ($ivLength === false) {
+            throw new \Exception('Error when retrieving the cipher length', 10);
+        }
         $iv = openssl_random_pseudo_bytes($ivLength);
+        if ($iv === false) {
+            throw new \Exception('Error on generated string of bytes', 11);
+        }
 
         $firstEncrypted = openssl_encrypt($data, $method, $firstKey, OPENSSL_RAW_DATA, $iv);
+        if ($firstEncrypted === false) {
+            throw new \Exception('Error on the encrypted string', 12);
+        }
         $secondEncrypted = hash_hmac('sha3-512', $firstEncrypted, $secondKey, true);
 
         return base64_encode($iv . $secondEncrypted . $firstEncrypted);
@@ -58,6 +73,12 @@ class Encryption implements EncryptionInterface
      */
     public function decrypt(string $input): ?string
     {
+        if ($this->firstKey === null) {
+            throw new \Exception('First key not defined');
+        }
+        if ($this->secondKey === null) {
+            throw new \Exception('Second key not defined');
+        }
         $firstKey = base64_decode($this->firstKey);
         $secondKey = base64_decode($this->secondKey);
 
@@ -65,9 +86,18 @@ class Encryption implements EncryptionInterface
 
         $method = "aes-256-cbc";
         $ivLength = openssl_cipher_iv_length($method);
+        if ($ivLength === false) {
+            throw new \Exception('Error when retrieving the cipher length', 20);
+        }
 
         $iv = substr($mix, 0, $ivLength);
+        if ($iv === false) {
+            throw new \Exception('Error during the decryption process', 21);
+        }
         $secondEncrypted = substr($mix, $ivLength, 64);
+        if ($secondEncrypted === false) {
+            throw new \Exception('Error during the decryption process', 22);
+        }
         if ($secondEncrypted === false) {
             return null;
         }
@@ -106,9 +136,14 @@ class Encryption implements EncryptionInterface
     /**
      * @inheritDoc
      */
-    static public function generateRandomString(int $length = 64): string
+    public static function generateRandomString(int $length = 64): string
     {
-        return substr(base64_encode(openssl_random_pseudo_bytes($length)), 0, $length);
+        $randomBytes = openssl_random_pseudo_bytes($length);
+        if ($randomBytes === false) {
+            throw new \Exception('Error when generating random bytes', 30);
+        }
+        $encodedRandomBytes = base64_encode($randomBytes);
+        return substr($encodedRandomBytes, 0, $length);
     }
 
     /**
@@ -119,7 +154,7 @@ class Encryption implements EncryptionInterface
      */
     public function __destruct()
     {
-        $this->firstKey = 0;
-        $this->secondKey = 0;
+        $this->firstKey = null;
+        $this->secondKey = null;
     }
 }
