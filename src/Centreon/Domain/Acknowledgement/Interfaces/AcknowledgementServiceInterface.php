@@ -90,6 +90,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     /**
      * Adds a host acknowledgement.
      *
+     * @param int $hostId
      * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
@@ -97,11 +98,13 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws \Exception
      * @throws ValidationFailedException
      */
-    public function addHostAcknowledgement(Acknowledgement $acknowledgement): void;
+    public function addHostAcknowledgement(int $hostId, Acknowledgement $acknowledgement): void;
 
     /**
      * Adds a service acknowledgement.
      *
+     * @param int $hostId
+     * @param int $serviceId
      * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
@@ -109,7 +112,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws \Exception
      * @throws ValidationFailedException
      */
-    public function addServiceAcknowledgement(Acknowledgement $acknowledgement): void;
+    public function addServiceAcknowledgement(int $hostId, int $serviceId, Acknowledgement $acknowledgement): void;
 
     /**
      * Disacknowledge a host.

@@ -139,7 +139,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function addHostAcknowledgement(Acknowledgement $acknowledgement): void
+    public function addHostAcknowledgement(int $hostId, Acknowledgement $acknowledgement): void
     {
         // We validate the acknowledgement instance
         $errors = $this->validator->validate(
@@ -151,7 +151,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new ValidationFailedException($errors);
         }
 
-        $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
+        $host = $this->monitoringRepository->findOneHost($hostId);
         if (is_null($host)) {
             throw new AcknowledgementException('Host of acknowledgement not found');
         }
@@ -162,7 +162,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function addServiceAcknowledgement(Acknowledgement $acknowledgement): void
+    public function addServiceAcknowledgement(int $hostId, int $serviceId, Acknowledgement $acknowledgement): void
     {
         // We validate the acknowledgement instance
         $errors = $this->validator->validate(
@@ -174,17 +174,12 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new ValidationFailedException($errors);
         }
 
-        $service = $this->monitoringRepository->findOneService(
-            $acknowledgement->getHostId(),
-            $acknowledgement->getServiceId()
-        );
+        $service = $this->monitoringRepository->findOneService($hostId, $serviceId);
         if (is_null($service)) {
             throw new AcknowledgementException('Service not found');
         }
 
-        $host = $this->monitoringRepository->findOneHost(
-            $acknowledgement->getHostId()
-        );
+        $host = $this->monitoringRepository->findOneHost($hostId);
         if (is_null($host)) {
             throw new AcknowledgementException('Host not found');
         }

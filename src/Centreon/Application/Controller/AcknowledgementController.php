@@ -182,7 +182,7 @@ class AcknowledgementController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Post(
-     *     "/monitoring/hosts/acknowledgements",
+     *     "/monitoring/hosts/{hostId}/acknowledgements",
      *     condition="request.attributes.get('version.is_beta') == true",
      *     name="monitoring.acknowledgement.addHostAcknowledgement")
      * @param Request $request
@@ -194,7 +194,8 @@ class AcknowledgementController extends AbstractFOSRestController
     public function addHostAcknowledgement(
         Request $request,
         EntityValidator $entityValidator,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        int $hostId
     ): View {
         /**
          * @var $contact Contact
@@ -222,7 +223,57 @@ class AcknowledgementController extends AbstractFOSRestController
             );
             $this->acknowledgementService
                 ->filterByContact($contact)
-                ->addHostAcknowledgement($acknowledgement);
+                ->addHostAcknowledgement($hostId, $acknowledgement);
+            return $this->view();
+        }
+    }
+
+    /**
+     * Entry point to add a service acknowledgement.
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Post(
+     *     "/monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements",
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.addServiceAcknowledgement")
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function addServiceAcknowledgement(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer,
+        int $hostId,
+        int $serviceId
+    ): View {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $errors = $entityValidator->validateEntity(
+            Acknowledgement::class,
+            json_decode($request->getContent(), true),
+            AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
+            false // To show errors on not expected fields
+        );
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        } else {
+            /**
+             * @var $acknowledgement Acknowledgement
+             */
+            $acknowledgement = $serializer->deserialize(
+                $request->getContent(),
+                Acknowledgement::class,
+                'json'
+            );
+            $this->acknowledgementService
+                ->filterByContact($contact)
+                ->addServiceAcknowledgement($hostId, $serviceId, $acknowledgement);
             return $this->view();
         }
     }
@@ -277,54 +328,6 @@ class AcknowledgementController extends AbstractFOSRestController
             ->filterByContact($contact)
             ->disacknowledgeService($hostId, $serviceId);
         return $this->view();
-    }
-
-    /**
-     * Entry point to add a service acknowledgement.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/services/acknowledgements",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.addServiceAcknowledgement")
-     * @param Request $request
-     * @param EntityValidator $entityValidator
-     * @param SerializerInterface $serializer
-     * @return View
-     * @throws \Exception
-     */
-    public function addServiceAcknowledgement(
-        Request $request,
-        EntityValidator $entityValidator,
-        SerializerInterface $serializer
-    ): View {
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
-        $errors = $entityValidator->validateEntity(
-            Acknowledgement::class,
-            json_decode($request->getContent(), true),
-            AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
-            false // To show errors on not expected fields
-        );
-        if ($errors->count() > 0) {
-            throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var $acknowledgement Acknowledgement
-             */
-            $acknowledgement = $serializer->deserialize(
-                $request->getContent(),
-                Acknowledgement::class,
-                'json'
-            );
-            $this->acknowledgementService
-                ->filterByContact($contact)
-                ->addServiceAcknowledgement($acknowledgement);
-            return $this->view();
-        }
     }
 
     /**

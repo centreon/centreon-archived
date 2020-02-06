@@ -177,20 +177,46 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             . 'WHERE ack.host_id = :host_id
               AND ack.service_id = 0';
 
-        $request = $this->translateDbName($request);
-        $statement = $this->db->prepare($request);
+        $this->sqlRequestTranslator->addSearchValue('host_id', [\PDO::PARAM_INT => $hostId]);
 
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->execute();
+        return $this->processListingRequest($request);
+    }
 
-        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $acknowledgements[] = EntityCreator::createEntityByArray(
-                Acknowledgement::class,
-                $result
-            );
+    /**
+     * {@inheritDoc}
+     * @throws \PDOException
+     */
+    public function findAcknowledgementsByService(int $hostId, int $serviceId): array
+    {
+        $acknowledgements = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $acknowledgements;
         }
 
-        return $acknowledgements;
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = ack2.host_id
+                  AND acl.service_id = ack2.service_id
+                INNER JOIN `:db`.`acl_groups` acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = \'1\'
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+
+        $request =
+            'SELECT ack.*, contact.contact_id AS author_id
+            FROM `:dbstg`.acknowledgements ack
+            INNER JOIN `:db`.contact
+              ON contact.contact_alias = ack.author'
+            . $accessGroupFilter
+            . 'WHERE ack.host_id = :host_id
+            AND ack.service_id = :service_id';
+
+        $this->sqlRequestTranslator->addSearchValue('host_id', [\PDO::PARAM_INT => $hostId]);
+        $this->sqlRequestTranslator->addSearchValue('service_id', [\PDO::PARAM_INT => $serviceId]);
+
+        return $this->processListingRequest($request);
     }
 
     /**
@@ -286,58 +312,8 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
                 $result
             );
         }
+
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws \PDOException
-     */
-    public function findAcknowledgementsByService(int $hostId, int $serviceId): array
-    {
-        $acknowledgements = [];
-
-        if ($this->hasNotEnoughRightsToContinue()) {
-            return $acknowledgements;
-        }
-
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = ack2.host_id
-                  AND acl.service_id = ack2.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
-
-        $request =
-            'SELECT ack.*, contact.contact_id AS author_id
-        FROM `:dbstg`.acknowledgements ack
-        INNER JOIN `:db`.contact
-          ON contact.contact_alias = ack.author
-        WHERE ack.acknowledgement_id = (
-          SELECT ack2.acknowledgement_id
-          FROM `:dbstg`.acknowledgements ack2'
-            . $accessGroupFilter
-            . 'WHERE ack2.host_id = :host_id
-            AND ack2.service_id = :service_id)';
-
-        $request = $this->translateDbName($request);
-        $statement = $this->db->prepare($request);
-
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
-        $statement->execute();
-
-        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $acknowledgements[] = EntityCreator::createEntityByArray(
-                Acknowledgement::class,
-                $result
-            );
-        }
-
-        return $acknowledgements;
     }
 
     /**
@@ -380,47 +356,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             . $accessGroupFilter
             . 'WHERE ack.service_id ' . (($type === self::TYPE_HOST_ACKNOWLEDGEMENT) ? ' = 0' : ' != 0');
 
-        // Added the sub request of the search parameter
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-
-        $request .= !is_null($searchRequest)
-            ? ' AND ' . $searchRequest
-            : ' ';
-
-        $request = $this->translateDbName($request);
-
-        // Added the sub request of the sort parameter
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $request .= !is_null($sortRequest)
-            ? $sortRequest
-            : ' ORDER BY ack.host_id, ack.service_id, ack.entry_time DESC';
-
-        // Added the sub request of the pagination parameter
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
-
-        $statement = $this->db->prepare($request);
-
-        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $type = key($data);
-            $value = $data[$type];
-            $statement->bindValue($key, $value, $type);
-        }
-
-        $statement->execute();
-
-        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $acknowledgements[] = EntityCreator::createEntityByArray(
-                Acknowledgement::class,
-                $result
-            );
-        }
-
-        $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
-
-        return $acknowledgements;
+        return $this->processListingRequest($request);
     }
 
     /**
@@ -552,7 +488,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
               AND srv.host_id = hosts.host_id'
             . $aclRequest;
 
-        return $this->processRequest($request);
+        return $this->processListingRequest($request);
     }
 
     /**
@@ -593,7 +529,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      * @return Acknowledgement[]
      * @throws \Exception
      */
-    private function processRequest(string $request): array
+    private function processListingRequest(string $request): array
     {
         $request = $this->translateDbName($request);
 
@@ -603,7 +539,9 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY ack.entry_time DESC';
+        $request .= !is_null($sortRequest)
+            ? $sortRequest
+            : ' ORDER BY ack.host_id, ack.service_id, ack.entry_time DESC';
 
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
