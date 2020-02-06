@@ -138,14 +138,15 @@ class MonitoringServer
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var int SSH port SSH port of this server
+     * @var int Communication type used by the Gorgone daemon installed on this server
      */
-    private $sshPort;
+    private $gorgoneCommunicationType;
 
     /**
-     * @var string|null
+     * @Serializer\Groups({"monitoringserver_main"})
+     * @var int Port used by the Gorgone daemon installed on this server
      */
-    private $sshPrivateKey;
+    private $gorgonePort;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
@@ -185,7 +186,7 @@ class MonitoringServer
      * @Serializer\Groups({"monitoringserver_main"})
      * @var bool Indicates whether Remote Servers are used as SSH proxies
      */
-    private $remoteServerCentcoreSshProxy = true;
+    private $remoteServerUseAsProxy = true;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
@@ -520,36 +521,36 @@ class MonitoringServer
     /**
      * @return int
      */
-    public function getSshPort(): int
+    public function getGorgoneCommunicationType(): int
     {
-        return $this->sshPort;
+        return $this->gorgoneCommunicationType;
     }
 
     /**
-     * @param int $sshPort
+     * @param int $gorgoneCommunicationType
      * @return MonitoringServer
      */
-    public function setSshPort(int $sshPort): MonitoringServer
+    public function setGorgoneCommunicationType(int $gorgoneCommunicationType): MonitoringServer
     {
-        $this->sshPort = $sshPort;
+        $this->gorgoneCommunicationType = $gorgoneCommunicationType;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return int
      */
-    public function getSshPrivateKey(): ?string
+    public function getGorgonePort(): int
     {
-        return $this->sshPrivateKey;
+        return $this->gorgonePort;
     }
 
     /**
-     * @param string|null $sshPrivateKey
+     * @param int $gorgonePort
      * @return MonitoringServer
      */
-    public function setSshPrivateKey(?string $sshPrivateKey): MonitoringServer
+    public function setGorgonePort(int $gorgonePort): MonitoringServer
     {
-        $this->sshPrivateKey = $sshPrivateKey;
+        $this->gorgonePort = $gorgonePort;
         return $this;
     }
 
@@ -664,18 +665,18 @@ class MonitoringServer
     /**
      * @return bool
      */
-    public function isRemoteServerCentcoreSshProxy(): bool
+    public function isRemoteServerUseAsProxy(): bool
     {
-        return $this->remoteServerCentcoreSshProxy;
+        return $this->remoteServerUseAsProxy;
     }
 
     /**
-     * @param bool $remoteServerCentcoreSshProxy
+     * @param bool $remoteServerUseAsProxy
      * @return MonitoringServer
      */
-    public function setRemoteServerCentcoreSshProxy(bool $remoteServerCentcoreSshProxy): MonitoringServer
+    public function setRemoteServerUseAsProxy(bool $remoteServerUseAsProxy): MonitoringServer
     {
-        $this->remoteServerCentcoreSshProxy = $remoteServerCentcoreSshProxy;
+        $this->remoteServerUseAsProxy = $remoteServerUseAsProxy;
         return $this;
     }
 
