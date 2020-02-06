@@ -329,7 +329,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     $statusCode
                 )
             );
-        } elseif (!$errorIsBeforeController) {
+        } else {
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -352,7 +352,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
-            } elseif($event->getException() instanceof AccessDeniedException) {
+            } elseif ($event->getException() instanceof AccessDeniedException) {
                 $httpCode = $event->getException()->getCode();
                 $errorMessage = null;
             } elseif (get_class($event->getException()) == \Exception::class) {
