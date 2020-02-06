@@ -7735,14 +7735,6 @@ msgstr "Archivo de configuracion principal"
 msgid "Temp File"
 msgstr "Archivo temporal"
 
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:165
-msgid "Check result directory"
-msgstr "Directorio en caché"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:166
-msgid "Max Check Result File Age"
-msgstr "Edad máxima del archivo de caché"
-
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:171
 msgid "Monitoring system User"
 msgstr "Sistema de supervisión del usuario"
@@ -8436,10 +8428,6 @@ msgstr "directorios"
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:873
 msgid "Host Check Options"
 msgstr "Opciones de control de host"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:875
-msgid "Result Cache"
-msgstr "Resultados de caching"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:876
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:642
