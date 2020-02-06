@@ -8,7 +8,7 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {Array} accumulator of allowed pages
  */
-function getAllowedPages(acc, item) {
+const getAllowedPages = (acc, item) => {
   for (const parameter of ['groups', 'children']) {
     if (item[parameter]) {
       acc = item[parameter].reduce(getAllowedPages, acc);
@@ -22,7 +22,7 @@ function getAllowedPages(acc, item) {
   }
 
   return acc;
-}
+};
 
 const getNavigationItems = (state) => state.navigation.items;
 

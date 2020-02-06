@@ -19,12 +19,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { I18n } from 'react-redux-i18n';
 
-import IconHeader from '@centreon/ui/Icon/IconHeader';
-import IconNumber from '@centreon/ui/Icon/IconNumber';
-import IconToggleSubmenu from '@centreon/ui/Icon/IconToggleSubmenu';
-import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
-import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
-import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
+import {
+  IconHeader,
+  IconNumber,
+  IconToggleSubmenu,
+  SubmenuHeader,
+  SubmenuItem,
+  SubmenuItems,
+} from '@centreon/ui';
 
 import styles from '../header/header.scss';
 import axios from '../../axios';
