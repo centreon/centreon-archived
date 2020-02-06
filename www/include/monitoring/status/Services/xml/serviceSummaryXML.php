@@ -95,21 +95,13 @@ $rq1 .= "WHERE hosts.name NOT LIKE '_Module_%' AND hosts.enabled = 1 "
     . $obj->access->queryBuilder("AND", "hosts.host_id", "centreon_acl.host_id") . " "
     . $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr) . " ";
 
-if ($o == "svcgrid_pb" ||
-    $o == "svcOV_pb" ||
-    $o == "svcSum_pb" ||
-    $o == "svcgrid_ack_0" ||
-    $o == "svcOV_ack_0" ||
-    $o == "svcSum_ack_0"
-) {
+if (substr($o, -3) === '_pb' || substr($o, -6) === '_ack_0') {
     $rq1 .= "AND hosts.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.state != 0 "
         . "AND s.state != 4 "
         . "AND s.enabled = 1) ";
-}
-
-if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1" || $o == "svcSum_ack_1") {
+} elseif (substr($o, -6) === '_ack_1') {
     $rq1 .= "AND hosts.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.acknowledged = '1' "
@@ -168,27 +160,18 @@ $obj->XML->writeElement("p", $p);
 $obj->XML->endElement();
 
 $ct = 0;
-$tab_final = [];
-$dbResultNDO1 = $obj->DBC->query($rq1);
-$dbResultNDO1 = $obj->DBC->prepare($rq1);
-foreach ($queryValues as $bindId => $bindData) {
-    foreach ($bindData as $bindType => $bindValue) {
-        $dbResult->bindValue($bindId, $bindValue, $bindType);
+$tabFinal = [];
+while ($ndo = $dbResult->fetch()) {
+    $tabFinal[$ndo["name"]]["nb_service_k"] = 0;
+    $tabFinal[$ndo["name"]]["host_id"] = $ndo["host_id"];
+    if (substr($o, 0, 6) !== 'svcSum') {
+        $tabFinal[$ndo["name"]]["nb_service_k"] = $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 0, $obj);
     }
-}
-$dbResultNDO1->execute();
-
-while ($ndo = $dbResultNDO1->fetch()) {
-    $tab_final[$ndo["name"]]["nb_service_k"] = 0;
-    $tab_final[$ndo["name"]]["host_id"] = $ndo["host_id"];
-    if ($o != "svcSum_pb" && $o != "svcSum_ack_1" && $o != "svcSum_ack_0") {
-        $tab_final[$ndo["name"]]["nb_service_k"] = $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 0, $obj);
-    }
-    $tab_final[$ndo["name"]]["nb_service_w"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 1, $obj);
-    $tab_final[$ndo["name"]]["nb_service_c"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 2, $obj);
-    $tab_final[$ndo["name"]]["nb_service_u"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 3, $obj);
-    $tab_final[$ndo["name"]]["nb_service_p"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 4, $obj);
-    $tab_final[$ndo["name"]]["cs"] = $ndo["state"];
+    $tabFinal[$ndo["name"]]["nb_service_w"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 1, $obj);
+    $tabFinal[$ndo["name"]]["nb_service_c"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 2, $obj);
+    $tabFinal[$ndo["name"]]["nb_service_u"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 3, $obj);
+    $tabFinal[$ndo["name"]]["nb_service_p"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 4, $obj);
+    $tabFinal[$ndo["name"]]["cs"] = $ndo["state"];
 
     if (isset($ndo["icon_image"]) && $ndo["icon_image"] != "") {
         $tabIcone[$ndo["name"]] = $ndo["icon_image"];
@@ -197,7 +180,7 @@ while ($ndo = $dbResultNDO1->fetch()) {
     }
 }
 
-foreach ($tab_final as $host_name => $tab) {
+foreach ($tabFinal as $host_name => $tab) {
     $obj->XML->startElement("l");
     $obj->XML->writeAttribute("class", $obj->getNextLineClass());
     $obj->XML->writeElement("o", $ct++);

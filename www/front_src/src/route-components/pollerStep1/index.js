@@ -52,7 +52,4 @@ const mapStateToProps = ({ pollerForm }) => ({
 const mapDispatchToProps = {
   setPollerWizard,
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerStepOneRoute);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerStepOneRoute);

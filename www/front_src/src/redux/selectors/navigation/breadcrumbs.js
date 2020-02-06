@@ -63,75 +63,72 @@ function getBreadcrumbStep(item) {
 
 const getNavigationItems = (state) => state.navigation.items;
 
-const breadcrumbsSelector = createSelector(
-  getNavigationItems,
-  (navItems) => {
-    const breadcrumbs = {};
+const breadcrumbsSelector = createSelector(getNavigationItems, (navItems) => {
+  const breadcrumbs = {};
 
-    // build level 1 breadcrumbs
-    navItems.forEach((itemLvl1) => {
-      const stepLvl1 = getBreadcrumbStep(itemLvl1);
-      if (stepLvl1 === null) {
-        return;
-      }
-      breadcrumbs[stepLvl1.link] = [
-        {
-          label: stepLvl1.label,
-          link: stepLvl1.link,
-        },
-      ];
+  // build level 1 breadcrumbs
+  navItems.forEach((itemLvl1) => {
+    const stepLvl1 = getBreadcrumbStep(itemLvl1);
+    if (stepLvl1 === null) {
+      return;
+    }
+    breadcrumbs[stepLvl1.link] = [
+      {
+        label: stepLvl1.label,
+        link: stepLvl1.link,
+      },
+    ];
 
-      // build level 2 breadcrumbs
-      if (itemLvl1.children) {
-        itemLvl1.children.forEach((itemLvl2) => {
-          const stepLvl2 = getBreadcrumbStep(itemLvl2);
-          if (stepLvl2 === null) {
-            return;
-          }
-          breadcrumbs[stepLvl2.link] = [
-            {
-              label: stepLvl1.label,
-              link: stepLvl1.link,
-            },
-            {
-              label: stepLvl2.label,
-              link: stepLvl2.link,
-            },
-          ];
+    // build level 2 breadcrumbs
+    if (itemLvl1.children) {
+      itemLvl1.children.forEach((itemLvl2) => {
+        const stepLvl2 = getBreadcrumbStep(itemLvl2);
+        if (stepLvl2 === null) {
+          return;
+        }
+        breadcrumbs[stepLvl2.link] = [
+          {
+            label: stepLvl1.label,
+            link: stepLvl1.link,
+          },
+          {
+            label: stepLvl2.label,
+            link: stepLvl2.link,
+          },
+        ];
 
-          // build level 3 breadcrumbs
-          if (itemLvl2.groups) {
-            itemLvl2.groups.forEach((groupLvl3) => {
-              if (groupLvl3.children) {
-                groupLvl3.children.forEach((itemLvl3) => {
-                  const stepLvl3 = getBreadcrumbStep(itemLvl3);
-                  if (stepLvl3 === null) {
-                    return;
-                  }
-                  breadcrumbs[stepLvl3.link] = [
-                    {
-                      label: stepLvl1.label,
-                      link: stepLvl1.link,
-                    },
-                    {
-                      label: stepLvl2.label,
-                      link: stepLvl2.link,
-                    },
-                    {
-                      label: stepLvl3.label,
-                      link: stepLvl3.link,
-                    },
-                  ];
-                });
-              }
-            });
-          }
-        });
-      }
-    });
+        // build level 3 breadcrumbs
+        if (itemLvl2.groups) {
+          itemLvl2.groups.forEach((groupLvl3) => {
+            if (groupLvl3.children) {
+              groupLvl3.children.forEach((itemLvl3) => {
+                const stepLvl3 = getBreadcrumbStep(itemLvl3);
+                if (stepLvl3 === null) {
+                  return;
+                }
+                breadcrumbs[stepLvl3.link] = [
+                  {
+                    label: stepLvl1.label,
+                    link: stepLvl1.link,
+                  },
+                  {
+                    label: stepLvl2.label,
+                    link: stepLvl2.link,
+                  },
+                  {
+                    label: stepLvl3.label,
+                    link: stepLvl3.link,
+                  },
+                ];
+              });
+            }
+          });
+        }
+      });
+    }
+  });
 
-    return breadcrumbs;
-  },
-);
+  return breadcrumbs;
+});
 
 export default breadcrumbsSelector;

@@ -41,17 +41,11 @@ require_once './class/centreonDuration.class.php';
 include_once './include/monitoring/common-Func.php';
 include_once './include/monitoring/external_cmd/cmd.php';
 
-/*
- * Init Continue Value
- */
+// Init Continue Value
 $continue = true;
 
-/*
- * DB Connect
- */
+// DB Connect
 include_once './class/centreonDB.class.php';
-
-
 
 if (!isset($_GET["cmd"])
     && isset($_POST["cmd"])

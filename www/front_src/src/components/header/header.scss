@@ -455,3 +455,30 @@
     top: 0;
   }
 }
+
+.wrapper {
+  display: flex;
+}
+.submenu {
+  &-toggle {
+    display: none;
+    position: absolute;
+    left: 0px;
+    background-color: #232f39;
+    padding: 10px;
+    top: 100%;
+    z-index: 99;
+    box-sizing: border-box;
+    text-align: left;
+    width: 100%;
+    &-active {
+      display: block;
+    }
+  }
+}
+.wrap-middle-icon {
+  display: flex;
+}
+.link {
+  text-decoration: none;
+}

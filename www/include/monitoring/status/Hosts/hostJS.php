@@ -209,7 +209,7 @@ if (isset($_GET["acknowledge"])) {
         setTimeout(mainLoopHost, 250);
     }
 
-    function initM(_time_reload, _sid, _o) {
+    function initM(_time_reload, _o) {
 
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
@@ -234,11 +234,11 @@ if (isset($_GET["acknowledge"])) {
 
         _time =<?php echo $time; ?>;
         if (_on) {
-            goM(_time_reload, _sid, _o);
+            goM(_time_reload, _o);
         }
     }
 
-    function goM(_time_reload, _sid, _o) {
+    function goM(_time_reload, _o) {
         if (_on == 0) {
             return;
         }
@@ -269,7 +269,7 @@ if (isset($_GET["acknowledge"])) {
         if (_timeoutID) { // Kill next execution if in queue
             clearTimeout(_timeoutID);
         }
-        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
 
@@ -307,7 +307,7 @@ if (isset($_GET["acknowledge"])) {
                 }
             }
 
-            var url = './include/monitoring/external_cmd/popup/popup.php?sid=' + _sid + '&o=' + _o + '&p=' + _p +
+            var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p=' + _p +
                 '&cmd=' + cmd + _getVar;
 
             var popin = jQuery('<div>');
