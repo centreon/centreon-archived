@@ -176,8 +176,6 @@ paths:
   /monitoring/resources:
     get:
       tags:
-        - Host
-        - Service
         - Resource
       summary: "List all resources including hosts and services"
       description: |
