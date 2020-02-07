@@ -139,8 +139,8 @@ Les menus sont hiérarchisés de la manière suivante :
 
 .. warning::
     L’accès au menu d’édition des commandes, ainsi que l’accès au menu d’édition des traps SNMP peut être très dangereux.
-    En effet, l’utilisateur peut créer des commandes pouvant favoriser la création de failles de sécurité (RCE). Ne
-    donnez cet accès qu’à des personnes dignes de confiance.
+    En effet, l’utilisateur privilégié peut créer des commandes pouvant favoriser la création de failles de sécurité (RCE).
+    Ne donnez cet accès qu’à des personnes dignes de confiance.
 
 Pour ajouter un filtre d'accès aux menus :
 

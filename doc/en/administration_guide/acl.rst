@@ -140,8 +140,8 @@ The menus are ranked as follows:
 
 .. warning::
     Accessing the command editing menu, as well as accessing the SNMP trap editing menu can be very dangerous. Indeed,
-    the user can create commands that can allow the creation of security breaches (RCE). Only give this access to
-    people you can trust.
+    the privileged user can create commands that can allow the creation of security breaches (RCE). Only give this
+    access to people you can trust.
 
 To add an access filter to the menus:
 
