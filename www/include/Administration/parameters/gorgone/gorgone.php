@@ -66,7 +66,7 @@ $form->addElement('password', 'gorgone_api_password', _("Password of Gorgone API
 $form->addElement(
     'checkbox',
     'gorgone_api_ssl',
-    _("Use SSH for Gorgone API"),
+    _("Use SSL for Gorgone API"),
     null
 );
 $form->setDefaults(1);
