@@ -111,7 +111,7 @@ class Service
     private $iconImageAlt;
 
     /**
-     * @Serializer\Groups({"service_full"})
+     * @Serializer\Groups({"service_main","service_full"})
      * @Desc(column="acknowledged", modifier="setAcknowledged")
      * @var bool
      */
@@ -132,7 +132,7 @@ class Service
     private $isChecked;
 
     /**
-     * @Serializer\Groups({"service_full"})
+     * @Serializer\Groups({"service_main","service_full"})
      * @var int|null
      */
     private $scheduledDowntimeDepth;
@@ -233,6 +233,12 @@ class Service
      * @var int ('1' => 'HARD', '0' => 'SOFT')
      */
     private $stateType;
+
+    /**
+     * @Serializer\Groups({"service_main", "service_full"})
+     * @var int
+     */
+    private $criticality;
 
     /**
      * @return int
@@ -823,6 +829,24 @@ class Service
     public function setStateType(int $stateType): Service
     {
         $this->stateType = $stateType;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int|null $criticality
+     * @return Service
+     */
+    public function setCriticality(?int $criticality): Service
+    {
+        $this->criticality = $criticality;
         return $this;
     }
 }

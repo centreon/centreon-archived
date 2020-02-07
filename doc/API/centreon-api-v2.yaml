@@ -191,6 +191,9 @@ paths:
         * poller.id
         * service.display_name
         * host_group.id
+        * host.is_acknowledged
+        * host.downtime
+        * host.criticality
       parameters:
         - $ref: '#/components/parameters/ShowService'
         - $ref: '#/components/parameters/Search'
@@ -259,6 +262,8 @@ paths:
         * service.state
         * service_group.id
         * poller.id
+        * service.downtime
+        * service.criticality
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -1742,6 +1747,14 @@ components:
               type: string
               description: Timezone used for dates
               example: ':Europe/Paris'
+            scheduled_downtime_depth:
+              type: integer
+              description: "Is there scheduled downtime for host or not (1 or 0)"
+              example: 0
+            criticality:
+              type: integer
+              description: "Host criticality level (for display purposes)"
+              example: 10
     Monitoring.HostWithService:
       type: object
       properties:
@@ -1832,6 +1845,10 @@ components:
                   * `0` - SOFT
                   * `1` - HARD
               example: 1
+            criticality:
+              type: integer
+              description: "Service criticality level (for display purposes)"
+              example: 10
     Monitoring.ServiceFull:
       allOf:
         - $ref: '#/components/schemas/Monitoring.ServiceMain'
