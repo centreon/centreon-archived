@@ -75,7 +75,6 @@ describe('PollerFormStepTwo', () => {
 
     fireEvent.change(masterSelect, { target: { value: '1' } });
 
-    expect(container.firstChild).toMatchSnapshot();
     expect(queryByName(container, 'linked_remote_slaves')).toBeInTheDocument();
   });
 });
