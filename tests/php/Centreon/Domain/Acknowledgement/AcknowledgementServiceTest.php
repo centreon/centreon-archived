@@ -21,6 +21,8 @@
 namespace Tests\Centreon\Domain\Acknowledgement;
 
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterface;
 use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
@@ -31,6 +33,7 @@ use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolation;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Acknowledgement\AcknowledgementException;
 use PHPUnit\Framework\TestCase;
 
@@ -38,6 +41,9 @@ class AcknowledgementServiceTest extends TestCase
 {
     protected $adminContact;
     protected $aclContact;
+
+    protected $host;
+    protected $service;
 
     protected $hostAcknowledgement;
     protected $serviceAcknowledgement;
@@ -61,6 +67,12 @@ class AcknowledgementServiceTest extends TestCase
             ->setId(2)
             ->setName('contact')
             ->setAdmin(false);
+
+        $this->host = (new Host())
+            ->setId(1);
+
+        $this->service = (new Service())
+            ->setId(1);
 
         $this->hostAcknowledgement = (new Acknowledgement())
             ->setId(1)
@@ -114,7 +126,7 @@ class AcknowledgementServiceTest extends TestCase
      */
     public function testFindOneAcknowledgementWithAdminUser()
     {
-        $this->acknowledgementRepository->expects(self::any())
+        $this->acknowledgementRepository->expects($this->once())
             ->method('findOneAcknowledgementForAdminUser')
             ->willReturn($this->hostAcknowledgement);
 
@@ -136,7 +148,7 @@ class AcknowledgementServiceTest extends TestCase
      */
     public function testFindOneAcknowledgementWithAclUser()
     {
-        $this->acknowledgementRepository->expects(self::any())
+        $this->acknowledgementRepository->expects($this->once())
             ->method('findOneAcknowledgementForNonAdminUser')
             ->willReturn($this->serviceAcknowledgement);
 
@@ -153,12 +165,12 @@ class AcknowledgementServiceTest extends TestCase
         $this->assertEquals($acknowledgement, $this->serviceAcknowledgement);
     }
 
-     /**
+    /**
      * test findAcknowledgements with admin user
      */
     public function testFindAcknowledgementsWithAdminUser()
     {
-        $this->acknowledgementRepository->expects(self::any())
+        $this->acknowledgementRepository->expects($this->once())
             ->method('findAcknowledgementsForAdminUser')
             ->willReturn([$this->hostAcknowledgement]);
 
@@ -180,7 +192,7 @@ class AcknowledgementServiceTest extends TestCase
      */
     public function testFindAcknowledgementsWithAclUser()
     {
-        $this->acknowledgementRepository->expects(self::any())
+        $this->acknowledgementRepository->expects($this->once())
             ->method('findAcknowledgementsForNonAdminUser')
             ->willReturn([$this->serviceAcknowledgement]);
 
@@ -202,7 +214,7 @@ class AcknowledgementServiceTest extends TestCase
      */
     public function testAddHostAcknowledgementNotValidated()
     {
-        $this->entityValidator->expects(self::any())
+        $this->entityValidator->expects($this->once())
             ->method('validate')
             ->willReturn($this->violationList);
 
@@ -223,10 +235,10 @@ class AcknowledgementServiceTest extends TestCase
      */
     public function testAddHostAcknowledgementNotFoundHost()
     {
-        $this->entityValidator->expects(self::any())
+        $this->entityValidator->expects($this->once())
             ->method('validate')
             ->willReturn(new ConstraintViolationList([]));
-        $this->monitoringRepository->expects(self::any())
+        $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
             ->willReturn(null);
 
@@ -238,7 +250,413 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
-        $this->expectException(AcknowledgementException::class);
+        $this->expectException(EntityNotFoundException::class);
         $acknowledgementService->addHostAcknowledgement(10, $this->hostAcknowledgement);
+    }
+
+    /**
+     * test addHostAcknowledgement which succeed
+     */
+    public function testAddHostAcknowledgementWhichSucceed()
+    {
+        $this->entityValidator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList([]));
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->engineService->expects($this->once())
+            ->method('addHostAcknowledgement')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->assertNull($acknowledgementService->addHostAcknowledgement(10, $this->hostAcknowledgement));
+    }
+
+    /**
+     * test addServiceAcknowledgement which is not validated
+     */
+    public function testAddServiceAcknowledgementNotValidated()
+    {
+        $this->entityValidator->expects($this->once())
+            ->method('validate')
+            ->willReturn($this->violationList);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(ValidationFailedException::class);
+        $acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement);
+    }
+
+    /**
+     * test addServiceAcknowledgement whith not found service
+     */
+    public function testAddServiceAcknowledgementNotFoundService()
+    {
+        $this->entityValidator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList([]));
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(EntityNotFoundException::class);
+        $acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement);
+    }
+
+    /**
+     * test addServiceAcknowledgement whith not found host
+     */
+    public function testAddServiceAcknowledgementNotFoundHost()
+    {
+        $this->entityValidator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList([]));
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(EntityNotFoundException::class);
+        $acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement);
+    }
+
+    /**
+     * test addServiceAcknowledgement which succeed
+     */
+    public function testAddServiceAcknowledgementWhichSucceed()
+    {
+        $this->entityValidator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList([]));
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->engineService->expects($this->once())
+            ->method('addServiceAcknowledgement')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->assertNull($acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement));
+    }
+
+    /**
+     * test findHostsAcknowledgements
+     */
+    public function testFindHostsAcknowledgements()
+    {
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findHostsAcknowledgements')
+            ->willReturn([$this->hostAcknowledgement]);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $acknowledgement = $acknowledgementService->findHostsAcknowledgements();
+        $this->assertEquals($acknowledgement, [$this->hostAcknowledgement]);
+    }
+
+    /**
+     * test findServicesAcknowledgements
+     */
+    public function testFindServicesAcknowledgements()
+    {
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findServicesAcknowledgements')
+            ->willReturn([$this->serviceAcknowledgement]);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $acknowledgement = $acknowledgementService->findServicesAcknowledgements();
+        $this->assertEquals($acknowledgement, [$this->serviceAcknowledgement]);
+    }
+
+    /**
+     * test findAcknowledgementsByHost
+     */
+    public function testFindAcknowledgementsByHost()
+    {
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findAcknowledgementsByHost')
+            ->willReturn([$this->hostAcknowledgement]);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $acknowledgement = $acknowledgementService->findAcknowledgementsByHost(1);
+        $this->assertEquals($acknowledgement, [$this->hostAcknowledgement]);
+    }
+
+    /**
+     * test findAcknowledgementsByService
+     */
+    public function testFindAcknowledgementsByService()
+    {
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findAcknowledgementsByService')
+            ->willReturn([$this->serviceAcknowledgement]);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $acknowledgement = $acknowledgementService->findAcknowledgementsByService(1, 1);
+        $this->assertEquals($acknowledgement, [$this->serviceAcknowledgement]);
+    }
+
+    /**
+     * test disacknowledgeHost with not found host
+     */
+    public function testDisacknowledgeHostNotFoundHost()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(EntityNotFoundException::class);
+        $acknowledgementService->disacknowledgeHost(1);
+    }
+
+    /**
+     * test disacknowledgeHost with not found acknowledgement
+     */
+    public function testDisacknowledgeHostNotFoundAcknowledgement()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findLatestHostAcknowledgement')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(AcknowledgementException::class);
+        $acknowledgementService->disacknowledgeHost(1);
+    }
+
+    /**
+     * test disacknowledgeHost which is already disacknowledge
+     */
+    public function testDisacknowledgeHostAlreadyDisacknowledged()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $hostAcknowledgement = $this->hostAcknowledgement->setDeletionTime(new \DateTime());
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findLatestHostAcknowledgement')
+            ->willReturn($hostAcknowledgement);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(AcknowledgementException::class);
+        $acknowledgementService->disacknowledgeHost(1);
+    }
+
+    /**
+     * test disacknowledgeHost which succeed
+     */
+    public function testDisacknowledgeHostSucceed()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findLatestHostAcknowledgement')
+            ->willReturn($this->hostAcknowledgement);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->assertNull($acknowledgementService->disacknowledgeHost(1));
+    }
+
+    /**
+     * test disacknowledgeService with not found service
+     */
+    public function testDisacknowledgeServiceNotFoundService()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneservice')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(EntityNotFoundException::class);
+        $acknowledgementService->disacknowledgeService(1, 1);
+    }
+
+    /**
+     * test disacknowledgeService with not found acknowledgement
+     */
+    public function testDisacknowledgeServiceNotFoundAcknowledgement()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findLatestServiceAcknowledgement')
+            ->willReturn(null);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(AcknowledgementException::class);
+        $acknowledgementService->disacknowledgeService(1, 1);
+    }
+
+    /**
+     * test disacknowledgeService which is already disacknowledge
+     */
+    public function testDisacknowledgeServiceAlreadyDisacknowledged()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $serviceAcknowledgement = $this->serviceAcknowledgement->setDeletionTime(new \DateTime());
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findLatestServiceAcknowledgement')
+            ->willReturn($serviceAcknowledgement);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->expectException(AcknowledgementException::class);
+        $acknowledgementService->disacknowledgeService(1, 1);
+    }
+
+    /**
+     * test disacknowledgeService which succeed
+     */
+    public function testDisacknowledgeServiceSucceed()
+    {
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->acknowledgementRepository->expects($this->once())
+            ->method('findLatestServiceAcknowledgement')
+            ->willReturn($this->hostAcknowledgement);
+
+        $acknowledgementService = new AcknowledgementService(
+            $this->acknowledgementRepository,
+            $this->accessGroupRepository,
+            $this->monitoringRepository,
+            $this->engineService,
+            $this->entityValidator
+        );
+
+        $this->assertNull($acknowledgementService->disacknowledgeService(1, 1));
     }
 }

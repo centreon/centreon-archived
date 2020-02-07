@@ -151,7 +151,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
 
         $host = $this->monitoringRepository->findOneHost($hostId);
         if (is_null($host)) {
-            throw new AcknowledgementException('Host of acknowledgement not found');
+            throw new EntityNotFoundException('Host not found');
         }
 
         $this->engineService->addHostAcknowledgement($acknowledgement, $host);
@@ -174,12 +174,12 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
 
         $service = $this->monitoringRepository->findOneService($hostId, $serviceId);
         if (is_null($service)) {
-            throw new AcknowledgementException('Service not found');
+            throw new EntityNotFoundException('Service not found');
         }
 
         $host = $this->monitoringRepository->findOneHost($hostId);
         if (is_null($host)) {
-            throw new AcknowledgementException('Host not found');
+            throw new EntityNotFoundException('Host not found');
         }
         $service->setHost($host);
 
