@@ -72,7 +72,7 @@ $server = $dbResult->fetch();
 //get gorgone api informations
 $gorgoneApi = array();
 $dbResult = $pearDB->query('SELECT * from options WHERE `key` LIKE "gorgone%"');
-while ( $row = $dbResult->fetch()){
+while ($row = $dbResult->fetch()) {
     $gorgoneApi[$row['key']] = $row['value'];
 }
 
@@ -83,69 +83,58 @@ if (empty($server['remote_id']) && empty($server['list_remote_server_id'])) {
     $dbResult = $pearDB->query($query);
     $parents = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
 } else {
+    $dbResult = $pearDB->query($query);
     $parents = array($server['remote_id']);
     if (!empty($server['list_remote_server_id'])) {
         $remote = explode(',', $server['list_remote_server_id']);
         $parents = array_merge($parents, $remote);
     }
+    $query = 'SELECT `id` FROM nagios_server WHERE `ns_activate` = "1" AND `id` IN (' . implode(',', $parents) . ')';
+    $dbResult = $pearDB->query($query);
+    $parents = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
 }
 
-$tokens = array();
-foreach ($parents as $serverId) {
-
-    $url = $gorgoneApi['gorgone_api_ssl'] == 1 ? 'https' : 'http' . '://' .
-        $gorgoneApi['gorgone_api_address'] . ':' . $gorgoneApi['gorgone_api_port'] .
-        '/api/nodes/' . $serverId . '/internal/thumbprint';
-    try {
-        $curl = new \CentreonRestHttp;
-        $tokens[$serverId] = $curl->call(
-            $url
-        );
-    } catch (\Exception $e) {
-        echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
-            . $url . ".\n";
-        echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
-    }
-}
-
-$chrono = 60;
-$thumbprintsData = array();
-
-foreach ($tokens as $serverId => $token) {
-    $url = $gorgoneApi['gorgone_api_ssl'] == 1 ? 'https' : 'http' . '://' .
-        $gorgoneApi['gorgone_api_address'] . ':' . $gorgoneApi['gorgone_api_port'] .
-        '/api/nodes/' . $serverId . '/log/' . $token["token"];
-    $error = true;
-    while (($chrono > 0) && $error) {
-        try {
-            $curl = new \CentreonRestHttp;
-            $log = $curl->call(
-                $url
-            );
-            if (!isset($log["error"])) {
-                $thumbprintsData[] = $log;
-                $error = false;
-            }
-        } catch (\Exception $e) {
-            echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on " . $url . ".\n";
-            echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
-        }
-        sleep(2);
-        $chrono -= 2;
-    }
-}
-
+$kernel = App\Kernel::createForWeb();
+/**
+ * @var $gorgoneService \Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface
+ */
+$gorgoneService = $kernel->getContainer()->get(\Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface::class);
 $thumbprints = '';
 $dataError = '';
 $gorgoneError = false;
-foreach ($thumbprintsData as $data) {
-    if (json_decode($data["data"][0]["data"])->message == 'ok') {
+$timeout = 0;
+
+foreach ($parents as $serverId) {
+    $lastActionLog = null;
+    $thumbprintCommand = new \Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand($serverId);
+    $gorgoneResponse = $gorgoneService->send($thumbprintCommand);
+    // check if we have log for 30 s every 2s
+    do {
+        $lastActionLog = $gorgoneResponse->getLastActionLog();
+        sleep(2);
+        $timeout += 2;
+    } while (
+        ($lastActionLog == null || $lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_BEGIN) &&
+        $timeout <= 30
+    );
+
+    if ($timeout > 30) {
+        // add 10 s for the next server
+        $timeout -= 10;
+        $gorgoneError = true;
+        $dataError .= '
+    - error : TimeOut error for poller ' . $serverId . ' We can\'t get log';
+        continue;
+    }
+
+    $thummprintReponse = json_decode($lastActionLog->getData(), true);
+    if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
         $thumbprints .= '
-    - key: ' . json_decode($data["data"][0]["data"])->data->thumbprint;
+      - key: ' . $thummprintReponse['data']['thumbprint'];
     } else {
         $gorgoneError = true;
         $dataError .= '
-    - error : ' . json_decode($data["data"][0]["data"])->message;
+      - error : Poller ' . $serverId . ' : ' . $thummprintReponse['message'];
     }
 }
 
@@ -155,64 +144,64 @@ if (!empty($dataError)) {
     //config for remote
     $config = 'name: gorgoned-' . $server['name'] . '
 description: Configuration for remote server ' . $server['name'] . '
-gorgonecore:
-  id: ' . $server['id'] . '
-  external_com_type: tcp
-  external_com_path: "*:' . $server['gorgone_port'] . '"
-  authorized_clients: ' . $thumbprints . '
-  privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
-  pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
-modules:
-  - name: action
-    package: gorgone::modules::core::action::hooks
-    enable: true
+gorgone:
+  gorgonecore:
+    id: ' . $server['id'] . '
+    external_com_type: tcp
+    external_com_path: "*:' . $server['gorgone_port'] . '"
+    authorized_clients: ' . $thumbprints . '
+    privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
+    pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
+  modules:
+    - name: action
+      package: gorgone::modules::core::action::hooks
+      enable: true
     
-  - name: nodes
-    package: gorgone::modules::centreon::nodes::hooks
-    enable: true
+    - name: nodes
+      package: gorgone::modules::centreon::nodes::hooks
+      enable: true
     
-  - name: proxy
-    package: gorgone::modules::core::proxy::hooks
-    enable: true
+    - name: proxy
+      package: gorgone::modules::core::proxy::hooks
+      enable: true
 
-  - name: legacycmd
-    package: gorgone::modules::centreon::legacycmd::hooks
-    enable: true
-    cmd_file: "/var/lib/centreon/centcore.cmd"
-    cache_dir: "/var/cache/centreon/"
-    cache_dir_trap: "/etc/snmp/centreon_traps/"
-    remote_dir: "/var/cache/centreon/config/remote-data/"
+    - name: legacycmd
+      package: gorgone::modules::centreon::legacycmd::hooks
+      enable: true
+      cmd_file: "/var/lib/centreon/centcore.cmd"
+      cache_dir: "/var/cache/centreon/"
+      cache_dir_trap: "/etc/snmp/centreon_traps/"
+      remote_dir: "/var/cache/centreon/config/remote-data/"
 
-  - name: engine
-    package: gorgone::modules::centreon::engine::hooks
-    enable: true
-    command_file: "' . $server['command_file'] . '"
+    - name: engine
+      package: gorgone::modules::centreon::engine::hooks
+      enable: true
+      command_file: "' . $server['command_file'] . '"
 
 ';
 } else {
     //config for poller
     $config = 'name:  gorgoned-' . $server['name'] . '
 description: Configuration for poller ' . $server['name'] . '
-gorgonecore:
-  id: ' . $server['id'] . '
-  external_com_type: tcp
-  external_com_path: "*:' . $server['gorgone_port'] . '"
-  authorized_clients: ' . $thumbprints . '
-  privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
-  pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
-modules:
-  - name: action
-    package: gorgone::modules::core::action::hooks
-    enable: true
+gorgone:
+  gorgonecore:
+    id: ' . $server['id'] . '
+    external_com_type: tcp
+    external_com_path: "*:' . $server['gorgone_port'] . '"
+    authorized_clients: ' . $thumbprints . '
+    privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
+    pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
+  modules:
+    - name: action
+      package: gorgone::modules::core::action::hooks
+      enable: true
 
-  - name: engine
-    package: gorgone::modules::centreon::engine::hooks
-    enable: true
-    command_file: "' . $server['command_file'] . '"
+    - name: engine
+      package: gotrgone::modules::centreon::engine::hooks
+      enable: true
+      command_file: "' . $server['command_file'] . '"
 ';
 }
-
-$args = json_encode($server, JSON_PRETTY_PRINT);
 
 $tpl->assign('args', $config);
 $tpl->assign('gorgoneError', $gorgoneError);
