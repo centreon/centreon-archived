@@ -211,8 +211,6 @@ $form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 $form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 $form->addElement('text', 'cfg_file', _("Object Configuration File"), $attrsText2);
 $form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
-$form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
-$form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
 
 /* *****************************************************
  * User / Groups
@@ -258,11 +256,6 @@ $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("Yes"
 $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("No"), '0');
 $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("Default"), '2');
 $form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'use_check_result_path', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'use_check_result_path', null, _("No"), '0');
-$form->addGroup($nagTab, 'use_check_result_path', _("Status"), '&nbsp;');
 
 /* *****************************************************
  * Log Rotation Method
@@ -988,7 +981,6 @@ if ($valid) {
     $tpl->assign('ExternalCommandes', _("External Commands"));
     $tpl->assign('HostCheckOptions', _("Host Check Options"));
     $tpl->assign('ServiceCheckOptions', _("Service Check Options"));
-    $tpl->assign('ResultCache', _("Result Cache"));
     $tpl->assign('EventHandler', _("Event Handler"));
     $tpl->assign('Freshness', _("Freshness"));
     $tpl->assign('FlappingOptions', _("Flapping Options"));

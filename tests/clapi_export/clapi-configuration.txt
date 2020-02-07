@@ -529,7 +529,6 @@ ENGINECFG;setparam;Centreon Engine Central;log_file;/var/log/centreon-engine/cen
 ENGINECFG;setparam;Centreon Engine Central;cfg_dir;/etc/centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/centengine.tmp
 ENGINECFG;setparam;Centreon Engine Central;status_file;/var/log/centreon-engine/status.dat
-ENGINECFG;setparam;Centreon Engine Central;use_check_result_path;0
 ENGINECFG;setparam;Centreon Engine Central;nagios_user;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;nagios_group;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;enable_notifications;1
