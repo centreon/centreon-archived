@@ -117,7 +117,6 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             return $this->acknowledgementRepository->findOneAcknowledgementForAdminUser($acknowledgementId);
         } else {
             return $this->acknowledgementRepository
-                ->filterByAccessGroups($this->accessGroups)
                 ->findOneAcknowledgementForNonAdminUser($acknowledgementId);
         }
     }
@@ -131,7 +130,6 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             return $this->acknowledgementRepository->findAcknowledgementsForAdminUser();
         } else {
             return $this->acknowledgementRepository
-                ->filterByAccessGroups($this->accessGroups)
                 ->findAcknowledgementsForNonAdminUser();
         }
     }

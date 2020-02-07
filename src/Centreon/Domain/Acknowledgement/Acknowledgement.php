@@ -72,6 +72,13 @@ class Acknowledgement
     private $hostId;
 
     /**
+     * @Serializer\Groups({"ack_service"})
+     * @Serializer\Type("integer")
+     * @var int|null Service id
+     */
+    private $serviceId;
+
+    /**
      * @Serializer\Groups({"ack_main"})
      * @Desc(column="instance_id", modifier="setPollerId")
      * @Serializer\Type("integer")
@@ -102,13 +109,6 @@ class Acknowledgement
      * @var bool
      */
     private $isSticky;
-
-    /**
-     * @Serializer\Groups({"ack_service"})
-     * @Serializer\Type("integer")
-     * @var int|null Service id
-     */
-    private $serviceId;
 
     /**
      * @Serializer\Groups({"ack_main"})*
@@ -233,6 +233,24 @@ class Acknowledgement
     }
 
     /**
+     * @return int
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int $serviceId|null
+     * @return Acknowledgement
+     */
+    public function setServiceId(?int $serviceId): Acknowledgement
+    {
+        $this->serviceId = $serviceId;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getPollerId(): ?int
@@ -301,24 +319,6 @@ class Acknowledgement
     public function setSticky(bool $isSticky): Acknowledgement
     {
         $this->isSticky = $isSticky;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getServiceId(): ?int
-    {
-        return $this->serviceId;
-    }
-
-    /**
-     * @param int $serviceId|null
-     * @return Acknowledgement
-     */
-    public function setServiceId(?int $serviceId): Acknowledgement
-    {
-        $this->serviceId = $serviceId;
         return $this;
     }
 
