@@ -36,6 +36,22 @@ class Encryption implements EncryptionInterface
     private $secondKey;
 
     /**
+     * @var string Encryption method use to encrypt/decrypt data
+     */
+    private $encryptionMethod;
+
+    /**
+     * @var string Hashing method use to hash/unhash data during
+     */
+    private $hashingAlgorithm;
+
+    public function __construct(string $encryptionMethod = 'aes-256-cbc', string $hashingAlgorithm = 'sha3-512')
+    {
+        $this->encryptionMethod = $encryptionMethod;
+        $this->hashingAlgorithm = $hashingAlgorithm;
+    }
+
+    /**
      * @inheritDoc
      */
     public function crypt(string $data): string
@@ -46,11 +62,8 @@ class Encryption implements EncryptionInterface
         if ($this->secondKey === null) {
             throw new \Exception('Second key not defined');
         }
-        $firstKey = base64_decode($this->firstKey);
-        $secondKey = base64_decode($this->secondKey);
 
-        $method = "aes-256-cbc";
-        $ivLength = openssl_cipher_iv_length($method);
+        $ivLength = openssl_cipher_iv_length($this->encryptionMethod);
         if ($ivLength === false) {
             throw new \Exception('Error when retrieving the cipher length', 10);
         }
@@ -59,13 +72,12 @@ class Encryption implements EncryptionInterface
             throw new \Exception('Error on generated string of bytes', 11);
         }
 
-        $firstEncrypted = openssl_encrypt($data, $method, $firstKey, OPENSSL_RAW_DATA, $iv);
-        if ($firstEncrypted === false) {
+        $encryptedFirstPart = openssl_encrypt($data, $this->encryptionMethod, $this->firstKey, OPENSSL_RAW_DATA, $iv);
+        if ($encryptedFirstPart === false) {
             throw new \Exception('Error on the encrypted string', 12);
         }
-        $secondEncrypted = hash_hmac('sha3-512', $firstEncrypted, $secondKey, true);
-
-        return base64_encode($iv . $secondEncrypted . $firstEncrypted);
+        $encryptedSecondPart = hash_hmac($this->hashingAlgorithm, $encryptedFirstPart, $this->secondKey, true);
+        return base64_encode($iv . $encryptedSecondPart . $encryptedFirstPart);
     }
 
     /**
@@ -79,13 +91,10 @@ class Encryption implements EncryptionInterface
         if ($this->secondKey === null) {
             throw new \Exception('Second key not defined');
         }
-        $firstKey = base64_decode($this->firstKey);
-        $secondKey = base64_decode($this->secondKey);
 
         $mix = base64_decode($input);
 
-        $method = "aes-256-cbc";
-        $ivLength = openssl_cipher_iv_length($method);
+        $ivLength = openssl_cipher_iv_length($this->encryptionMethod);
         if ($ivLength === false) {
             throw new \Exception('Error when retrieving the cipher length', 20);
         }
@@ -94,21 +103,21 @@ class Encryption implements EncryptionInterface
         if ($iv === false) {
             throw new \Exception('Error during the decryption process', 21);
         }
-        $secondEncrypted = substr($mix, $ivLength, 64);
-        if ($secondEncrypted === false) {
+
+        $encryptedFirstPart = substr($mix, $ivLength + 64);
+        if ($encryptedFirstPart === false) {
+            return null;
+        }
+
+        $encryptedSecondPart = substr($mix, $ivLength, 64);
+        if ($encryptedSecondPart === false) {
             throw new \Exception('Error during the decryption process', 22);
         }
-        if ($secondEncrypted === false) {
-            return null;
-        }
-        $firstEncrypted = substr($mix, $ivLength + 64);
-        if ($firstEncrypted === false) {
-            return null;
-        }
-        $data = openssl_decrypt($firstEncrypted, $method, $firstKey, OPENSSL_RAW_DATA, $iv);
+
+        $data = openssl_decrypt($encryptedFirstPart, $this->encryptionMethod, $this->firstKey, OPENSSL_RAW_DATA, $iv);
         if ($data !== false) {
-            $secondEncryptedNew = hash_hmac('sha3-512', $firstEncrypted, $secondKey, true);
-            if (hash_equals($secondEncrypted, $secondEncryptedNew)) {
+            $secondEncryptedNew = hash_hmac($this->hashingAlgorithm, $encryptedFirstPart, $this->secondKey, true);
+            if (hash_equals($encryptedSecondPart, $secondEncryptedNew)) {
                 return $data;
             }
         }
@@ -120,7 +129,7 @@ class Encryption implements EncryptionInterface
      */
     public function setSecondKey(string $secondKey): EncryptionInterface
     {
-        $this->secondKey = $secondKey;
+        $this->secondKey = base64_decode($secondKey);
         return $this;
     }
 
@@ -129,7 +138,7 @@ class Encryption implements EncryptionInterface
      */
     public function setFirstKey(string $firstKey): EncryptionInterface
     {
-        $this->firstKey = $firstKey;
+        $this->firstKey = base64_decode($firstKey);
         return $this;
     }
 

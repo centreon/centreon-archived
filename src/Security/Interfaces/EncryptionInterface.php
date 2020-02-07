@@ -30,6 +30,7 @@ interface EncryptionInterface
      *
      * @param int $length Length of the generated string
      * @return string
+     * @throws \Exception
      */
     public static function generateRandomString(int $length = 64): string;
 
