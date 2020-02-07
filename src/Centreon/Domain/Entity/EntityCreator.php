@@ -49,7 +49,8 @@ class EntityCreator
      *
      * @param string $className Class name to create
      * @param array $data Data used to fill the new object entity
-     * @param string|null $prefix
+     * @param string|null $prefix The prefix is used to retrieve only certain records when the table contains data
+     * from more than one entity
      * @return mixed Return an new instance of the class
      * @throws \Exception
      */
@@ -72,7 +73,8 @@ class EntityCreator
      * Create an entity and complete it according to the data array
      *
      * @param array $data Array that contains the data that will be used to complete entity
-     * @param string|null $prefix
+     * @param string|null $prefix The prefix is used to retrieve only certain records when the table contains data
+     * from more than one entity
      * @return mixed Return an instance of class according to the class name given into constructor
      * @throws AnnotationException
      * @throws \ReflectionException
