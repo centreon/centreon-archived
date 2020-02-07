@@ -70,6 +70,13 @@ $form->addElement(
     null
 );
 $form->setDefaults(1);
+$form->addElement(
+    'checkbox',
+    'gorgone_api_allow_self_signed',
+    _("self signed certificate"),
+    null
+);
+$form->setDefaults(1);
 
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');

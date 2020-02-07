@@ -57,6 +57,13 @@
             </td>
             <td class="FormRowValue">{$form.gorgone_api_ssl.html}</td>
         </tr>
+        <tr class="list_two">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="gorgone_api_allow_self_signed">
+                {$form.gorgone_api_allow_self_signed.label}
+            </td>
+            <td class="FormRowValue">{$form.gorgone_api_allow_self_signed.html}</td>
+        </tr>
     </table>
     {if !$valid}
         <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>

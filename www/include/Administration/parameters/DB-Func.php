@@ -321,6 +321,11 @@ function updateGorgoneConfigData($db, $form, $centreon)
         'gorgone_api_ssl',
         $ret['gorgone_api_ssl'] ?? '0'
     );
+    updateOption(
+        $db,
+        'gorgone_api_allow_self_signed',
+        $ret['gorgone_api_allow_self_signed'] ?? '0'
+    );
     $centreon->initOptGen($db);
 }
 
