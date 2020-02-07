@@ -137,7 +137,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function addHostAcknowledgement(int $hostId, Acknowledgement $acknowledgement): void
+    public function addHostAcknowledgement(Acknowledgement $acknowledgement): void
     {
         // We validate the acknowledgement instance
         $errors = $this->validator->validate(
@@ -149,7 +149,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new ValidationFailedException($errors);
         }
 
-        $host = $this->monitoringRepository->findOneHost($hostId);
+        $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
         if (is_null($host)) {
             throw new EntityNotFoundException('Host not found');
         }
@@ -160,7 +160,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function addServiceAcknowledgement(int $hostId, int $serviceId, Acknowledgement $acknowledgement): void
+    public function addServiceAcknowledgement(Acknowledgement $acknowledgement): void
     {
         // We validate the acknowledgement instance
         $errors = $this->validator->validate(
@@ -172,12 +172,15 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new ValidationFailedException($errors);
         }
 
-        $service = $this->monitoringRepository->findOneService($hostId, $serviceId);
+        $service = $this->monitoringRepository->findOneService(
+            $acknowledgement->getHostId(),
+            $acknowledgement->getServiceId()
+        );
         if (is_null($service)) {
             throw new EntityNotFoundException('Service not found');
         }
 
-        $host = $this->monitoringRepository->findOneHost($hostId);
+        $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
         if (is_null($host)) {
             throw new EntityNotFoundException('Host not found');
         }

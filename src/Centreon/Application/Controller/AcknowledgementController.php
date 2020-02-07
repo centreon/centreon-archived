@@ -73,6 +73,11 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function findHostsAcknowledgements(RequestParametersInterface $requestParameters): View
     {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findHostsAcknowledgements();
@@ -103,6 +108,11 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function findAcknowledgementsByHost(RequestParametersInterface $requestParameters, int $hostId): View
     {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByHost($hostId);
@@ -132,6 +142,11 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function findServicesAcknowledgements(RequestParametersInterface $requestParameters): View
     {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findServicesAcknowledgements();
@@ -164,6 +179,11 @@ class AcknowledgementController extends AbstractFOSRestController
         int $hostId,
         int $serviceId
     ): View {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByService($hostId, $serviceId);
@@ -221,9 +241,10 @@ class AcknowledgementController extends AbstractFOSRestController
                 Acknowledgement::class,
                 'json'
             );
+            $acknowledgement->setHostId($hostId);
             $this->acknowledgementService
                 ->filterByContact($contact)
-                ->addHostAcknowledgement($hostId, $acknowledgement);
+                ->addHostAcknowledgement($acknowledgement);
             return $this->view();
         }
     }
@@ -271,9 +292,12 @@ class AcknowledgementController extends AbstractFOSRestController
                 Acknowledgement::class,
                 'json'
             );
+            $acknowledgement
+                ->setHostId($hostId)
+                ->setServiceId($serviceId);
             $this->acknowledgementService
                 ->filterByContact($contact)
-                ->addServiceAcknowledgement($hostId, $serviceId, $acknowledgement);
+                ->addServiceAcknowledgement($acknowledgement);
             return $this->view();
         }
     }
@@ -346,7 +370,10 @@ class AcknowledgementController extends AbstractFOSRestController
     public function findOneAcknowledgement(int $acknowledgementId): View
     {
         $contact = $this->getUser();
-        if ($contact === null) {
+        if (!$contact->isAdmin()
+            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
+                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
+        ) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
         $acknowledgement = $this->acknowledgementService
@@ -379,7 +406,10 @@ class AcknowledgementController extends AbstractFOSRestController
     public function findAcknowledgements(RequestParametersInterface $requestParameters): View
     {
         $contact = $this->getUser();
-        if ($contact === null) {
+        if (!$contact->isAdmin()
+            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
+                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
+        ) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
         $acknowledgements = $this->acknowledgementService

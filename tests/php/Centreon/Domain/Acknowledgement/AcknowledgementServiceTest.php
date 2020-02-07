@@ -227,7 +227,7 @@ class AcknowledgementServiceTest extends TestCase
         );
 
         $this->expectException(ValidationFailedException::class);
-        $acknowledgementService->addHostAcknowledgement(1, $this->serviceAcknowledgement);
+        $acknowledgementService->addHostAcknowledgement($this->serviceAcknowledgement);
     }
 
     /**
@@ -251,7 +251,7 @@ class AcknowledgementServiceTest extends TestCase
         );
 
         $this->expectException(EntityNotFoundException::class);
-        $acknowledgementService->addHostAcknowledgement(10, $this->hostAcknowledgement);
+        $acknowledgementService->addHostAcknowledgement($this->hostAcknowledgement);
     }
 
     /**
@@ -277,7 +277,7 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
-        $this->assertNull($acknowledgementService->addHostAcknowledgement(10, $this->hostAcknowledgement));
+        $this->assertNull($acknowledgementService->addHostAcknowledgement($this->hostAcknowledgement));
     }
 
     /**
@@ -298,7 +298,7 @@ class AcknowledgementServiceTest extends TestCase
         );
 
         $this->expectException(ValidationFailedException::class);
-        $acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement);
+        $acknowledgementService->addServiceAcknowledgement($this->serviceAcknowledgement);
     }
 
     /**
@@ -322,7 +322,7 @@ class AcknowledgementServiceTest extends TestCase
         );
 
         $this->expectException(EntityNotFoundException::class);
-        $acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement);
+        $acknowledgementService->addServiceAcknowledgement($this->serviceAcknowledgement);
     }
 
     /**
@@ -349,7 +349,7 @@ class AcknowledgementServiceTest extends TestCase
         );
 
         $this->expectException(EntityNotFoundException::class);
-        $acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement);
+        $acknowledgementService->addServiceAcknowledgement($this->serviceAcknowledgement);
     }
 
     /**
@@ -378,7 +378,7 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
-        $this->assertNull($acknowledgementService->addServiceAcknowledgement(1, 1, $this->serviceAcknowledgement));
+        $this->assertNull($acknowledgementService->addServiceAcknowledgement($this->serviceAcknowledgement));
     }
 
     /**
