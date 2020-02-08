@@ -238,7 +238,6 @@ class EntityValidator
          * @var $violation ConstraintViolationInterface
          */
         $violationCodes = [];
-        $violationNumber = count($violations);
         foreach ($violations as $index => $violation) {
             if (!array_key_exists($violation->getPropertyPath(), $violationCodes)
                 || (
