@@ -106,12 +106,12 @@ class Encryption implements EncryptionInterface
 
         $encryptedFirstPart = substr($mix, $ivLength + 64);
         if ($encryptedFirstPart === false) {
-            return null;
+            throw new \Exception('Error during the decryption process', 22);
         }
 
         $encryptedSecondPart = substr($mix, $ivLength, 64);
         if ($encryptedSecondPart === false) {
-            throw new \Exception('Error during the decryption process', 22);
+            throw new \Exception('Error during the decryption process', 23);
         }
 
         $data = openssl_decrypt($encryptedFirstPart, $this->encryptionMethod, $this->firstKey, OPENSSL_RAW_DATA, $iv);

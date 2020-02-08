@@ -239,8 +239,7 @@ class EntityValidator
          */
         $violationCodes = [];
         $violationNumber = count($violations);
-        for ($index = 0; $index < $violationNumber; $index++) {
-            $violation = $violations[$index];
+        foreach ($violations as $index => $violation) {
             if (!array_key_exists($violation->getPropertyPath(), $violationCodes)
                 || (
                     isset($violationCodes[$violation->getPropertyPath()])
