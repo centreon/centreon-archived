@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer;
 
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
-class MonitoringServer
+class MonitoringServer implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
     public const SERIALIZER_GROUP_MAIN = 'monitoringserver_main';
@@ -40,7 +40,6 @@ class MonitoringServer
     private $name;
 
     /**
-     * @Desc(column="localhost", modifier="setLocalhost")
      * @var bool Indicates whether it's the localhost server
      */
     private $isLocalhost = false;
@@ -56,13 +55,11 @@ class MonitoringServer
     private $lastRestart;
 
     /**
-     * @Desc(column="ns_ip_address", modifier="setAddress")
      * @var string|null IP address of server
      */
     private $address;
 
     /**
-     * @Desc(column="ns_activate", modifier="setActivate")
      * @var bool Indicates whether the server configuration is activated
      */
     private $isActivate = true;
@@ -171,6 +168,18 @@ class MonitoringServer
      * @var bool Indicates whether the monitoring configuration has changed since last restart
      */
     private $isUpdated = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'localhost' => 'setLocalhost',
+            'ns_ip_address' => 'setAddress',
+            'ns_activate' => 'setActivate',
+        ];
+    }
 
     /**
      * @return int

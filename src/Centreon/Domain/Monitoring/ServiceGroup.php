@@ -22,21 +22,20 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class representing a record of a service group in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class ServiceGroup
+class ServiceGroup implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
     public const SERIALIZER_GROUP_MAIN = 'sg_main';
     public const SERIALIZER_GROUP_WITH_HOST = 'sg_with_host';
 
     /**
-     * @Desc(column="servicegroup_id", modifier="setId")
      * @var int
      */
     private $id;
@@ -50,6 +49,16 @@ class ServiceGroup
      * @var string|null
      */
     private $name;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'servicegroup_id' => 'setId',
+        ];
+    }
 
     /**
      * @return int

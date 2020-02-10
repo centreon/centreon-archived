@@ -22,14 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class representing a record of a host in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class Host
+class Host implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
     public const SERIALIZER_GROUP_MIN = 'host_min';
@@ -43,13 +43,11 @@ class Host
     public const STATUS_UNREACHABLE = 2;
 
     /**
-     * @Desc(column="host_id", modifier="setId")
      * @var int Id of host
      */
     private $id;
 
     /**
-     * @Desc(column="instance_id", modifier="setPollerId")
      * @var int Poller id
      */
     private $pollerId;
@@ -68,8 +66,8 @@ class Host
      * @var bool|null
      */
     private $activeChecks;
+
     /**
-     * @Desc(column="address", modifier="setAddressIp")
      * @var string|null Ip address or domain name
      */
     private $addressIp;
@@ -283,6 +281,18 @@ class Host
      * @var int|null
      */
     private $criticality;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'host_id' => 'setId',
+            'instance_id' => 'setPollerId',
+            'address' => 'setAddressIp',
+        ];
+    }
 
     /**
      * @return int

@@ -22,14 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class representing a record of a service in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class Service
+class Service implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
     public const SERIALIZER_GROUP_MIN = 'service_min';
@@ -38,7 +38,6 @@ class Service
     public const SERIALIZER_GROUP_WITH_HOST = 'service_with_host';
 
     /**
-     * @Desc(column="service_id", modifier="setId")
      * @var int Unique index
      */
     private $id;
@@ -104,19 +103,16 @@ class Service
     private $iconImageAlt;
 
     /**
-     * @Desc(column="acknowledged", modifier="setAcknowledged")
      * @var bool
      */
     private $isAcknowledged;
 
     /**
-     * @Desc(column="active_checks", modifier="setActiveCheck")
      * @var bool
      */
     private $isActiveCheck;
 
     /**
-     * @Desc(column="checked", modifier="setChecked")
      * @var bool
      */
     private $isChecked;
@@ -192,7 +188,6 @@ class Service
     private $output;
 
     /**
-     * @Desc(column="perfdata", modifier="setPerformanceData")
      * @var string
      */
     private $performanceData;
@@ -211,6 +206,20 @@ class Service
      * @var int
      */
     private $criticality;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'service_id' => 'setId',
+            'acknowledged' => 'setAcknowledged',
+            'active_checks' => 'setActiveCheck',
+            'checked' => 'setChecked',
+            'perfdata' => 'setPerformanceData',
+        ];
+    }
 
     /**
      * @return int

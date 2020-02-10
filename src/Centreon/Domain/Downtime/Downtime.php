@@ -22,13 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Downtime;
 
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class Downtime
  * @package Centreon\Domain\Downtime
  */
-class Downtime
+class Downtime implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
     public const SERIALIZER_GROUP_MAIN = 'downtime_main';
@@ -39,7 +39,6 @@ class Downtime
     public const TYPE_SERVICE_DOWNTIME = 1;
 
     /**
-     * @Desc(column="downtime_id", modifier="setId")
      * @var int|null Unique id
      */
     private $id;
@@ -65,13 +64,11 @@ class Downtime
     private $serviceId;
 
     /**
-     * @Desc(column="cancelled", modifier="setCancelled")
      * @var bool Indicates if this downtime have been cancelled
      */
     private $isCancelled;
 
     /**
-     * @Desc(column="comment_data", modifier="setComment")
      * @var string|null Comments
      */
     private $comment;
@@ -97,13 +94,11 @@ class Downtime
     private $internalId;
 
     /**
-     * @Desc(column="fixed", modifier="setFixed")
      * @var boolean Indicates either the downtime is fixed or not
      */
     private $isFixed;
 
     /**
-     * @Desc(column="instance_id", modifier="setPollerId")
      * @var int|null Poller id
      */
     private $pollerId;
@@ -124,10 +119,24 @@ class Downtime
     private $actualEndTime;
 
     /**
-     * @Desc(column="started", modifier="setStarted")
      * @var bool Indicates if this downtime have started
      */
     private $isStarted;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'downtime_id' => 'setId',
+            'cancelled' => 'setCancelled',
+            'comment_data' => 'setComment',
+            'fixed' => 'setFixed',
+            'instance_id' => 'setPollerId',
+            'started' => 'setStarted',
+        ];
+    }
 
     /**
      * @return int|null

@@ -22,21 +22,20 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class representing a record of a host group in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class HostGroup
+class HostGroup implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
     public const SERIALIZER_GROUP_MAIN = 'hg_main';
     public const SERIALIZER_GROUP_WITH_HOST = 'hg_with_host';
 
     /**
-     * @Desc(column="hostgroup_id", modifier="setId")
      * @var int
      */
     private $id;
@@ -50,6 +49,16 @@ class HostGroup
      * @var string|null
      */
     private $name;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'hostgroup_id' => 'setId',
+        ];
+    }
 
     /**
      * @return int

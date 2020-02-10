@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Acknowledgement;
 
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
-class Acknowledgement
+class Acknowledgement implements EntityDescriptorMetadataInterface
 {
     // Groups for serilizing
     public const SERIALIZER_GROUP_MAIN = 'ack_main';
@@ -35,7 +35,6 @@ class Acknowledgement
     public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
 
     /**
-     * @Desc(column="acknowledgement_id", modifier="setId")
      * @var int
      */
     private $id;
@@ -46,7 +45,6 @@ class Acknowledgement
     private $authorId;
 
     /**
-     * @Desc(column="comment_data", modifier="setComment")
      * @var string|null
      */
     private $comment;
@@ -67,25 +65,21 @@ class Acknowledgement
     private $hostId;
 
     /**
-     * @Desc(column="instance_id", modifier="setPollerId")
      * @var int|null Poller Id
      */
     private $pollerId;
 
     /**
-     * @Desc(column="notify_contacts", modifier="setNotifyContacts")
      * @var bool Indicates if the contacts must to be notify
      */
     private $isNotifyContacts;
 
     /**
-     * @Desc(column="persistent_comment", modifier="setPersistentComment")
      * @var bool Indicates this acknowledgement will be maintained in the case of a restart of the scheduler
      */
     private $isPersistentComment;
 
     /**
-     * @Desc(column="sticky", modifier="setSticky")
      * @var bool
      */
     private $isSticky;
@@ -99,6 +93,21 @@ class Acknowledgement
      * @var int State of this acknowledgment
      */
     private $state;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'acknowledgement_id' => 'setId',
+            'comment_data' => 'setComment',
+            'instance_id' => 'setPollerId',
+            'notify_contacts' => 'setNotifyContacts',
+            'persistent_comment' => 'setPersistentComment',
+            'sticky' => 'setSticky',
+        ];
+    }
 
     /**
      * @return int|null
