@@ -284,10 +284,6 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-
-//$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick" => "goPopup();"));
-
-
 $tpl->assign(
     "notice",
     _("Only services, servicegroups, hosts and hostgroups are taken in " .
