@@ -25,11 +25,10 @@ namespace Centreon\Application\Controller\Configuration;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Proxy\Proxy;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Centreon\Application\Controller\AbstractController;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -39,7 +38,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *
  * @package Centreon\Application\Controller\Configuration
  */
-class ProxyController extends AbstractFOSRestController
+class ProxyController extends AbstractController
 {
     /**
      * @var ProxyServiceInterface
@@ -57,13 +56,13 @@ class ProxyController extends AbstractFOSRestController
     }
 
     /**
-     * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     *
      * @return View
      * @throws \Exception
      */
     public function getProxy(): View
     {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
         if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
@@ -71,8 +70,6 @@ class ProxyController extends AbstractFOSRestController
     }
 
     /**
-     * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     *
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -84,6 +81,8 @@ class ProxyController extends AbstractFOSRestController
         EntityValidator $entityValidator,
         SerializerInterface $serializer
     ): View {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
         if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }

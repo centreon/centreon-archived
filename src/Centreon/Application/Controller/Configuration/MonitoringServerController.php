@@ -25,9 +25,8 @@ namespace Centreon\Application\Controller\Configuration;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Centreon\Application\Controller\AbstractController;
 use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 
 /**
@@ -35,7 +34,7 @@ use Centreon\Domain\MonitoringServer\MonitoringServer;
  *
  * @package Centreon\Application\Controller
  */
-class MonitoringServerController extends AbstractFOSRestController
+class MonitoringServerController extends AbstractController
 {
     /**
      * @var MonitoringServerServiceInterface
@@ -54,14 +53,14 @@ class MonitoringServerController extends AbstractFOSRestController
     /**
      * Entry point to find the last hosts acknowledgements.
      *
-     * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findServer(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
         $server = $this->monitoringServerService->findServers();
         $context = (new Context())->setGroups([
             MonitoringServer::SERIALIZER_GROUP_MAIN,

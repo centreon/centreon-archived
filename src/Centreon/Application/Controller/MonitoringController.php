@@ -25,9 +25,7 @@ namespace Centreon\Application\Controller;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
@@ -37,7 +35,7 @@ use Centreon\Domain\Monitoring\HostGroup;
 /**
  * @package Centreon\Application\Controller
  */
-class MonitoringController extends AbstractFOSRestController
+class MonitoringController extends AbstractController
 {
     /**
      * @var MonitoringServiceInterface
@@ -84,14 +82,14 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
      * @throws \Exception
      */
     public function getServices(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $services = $this->monitoring
             ->filterByContact($this->getUser())
             ->findServices();
@@ -113,14 +111,14 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a service group
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
      * @throws \Exception
      */
     public function getServicesByServiceGroups(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
         $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
 
@@ -160,14 +158,14 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a host group.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
      * @throws \Exception
      */
     public function getHostGroups(RequestParametersInterface $requestParameters)
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
         $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
 
@@ -207,14 +205,14 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time hosts.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
      * @throws \Exception
      */
     public function getHosts(RequestParametersInterface $requestParameters)
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
         $hosts = $this->monitoring
             ->filterByContact($this->getUser())
@@ -240,14 +238,14 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get a real time host.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param int $hostId Host id
      * @return View
      * @throws \Exception
      */
     public function getOneHost(int $hostId)
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $host = $this->monitoring
             ->filterByContact($this->getUser())
             ->findOneHost($hostId);
@@ -269,8 +267,6 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a host.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param int $hostId Host id for which we want to get all services
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -278,6 +274,8 @@ class MonitoringController extends AbstractFOSRestController
      */
     public function getServicesByHost(int $hostId, RequestParametersInterface $requestParameters)
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $this->monitoring->filterByContact($this->getUser());
 
         if (!$this->monitoring->isHostExists($hostId)) {

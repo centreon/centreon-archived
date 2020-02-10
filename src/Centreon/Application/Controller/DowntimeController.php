@@ -29,11 +29,9 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,7 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @package Centreon\Infrastructure\Downtime\Controller
  */
-class DowntimeController extends AbstractFOSRestController
+class DowntimeController extends AbstractController
 {
 
     /**
@@ -63,9 +61,7 @@ class DowntimeController extends AbstractFOSRestController
     }
 
     /**
-     *  Entry point to add a host downtime
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * Entry point to add a host downtime
      *
      * @param Request $request
      * @param JsonValidatorInterface $jsonValidator
@@ -82,6 +78,8 @@ class DowntimeController extends AbstractFOSRestController
         int $hostId,
         string $version
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var Contact $contact
          */
@@ -130,9 +128,7 @@ class DowntimeController extends AbstractFOSRestController
     }
 
     /**
-     *  Entry point to add a service downtime
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * Entry point to add a service downtime
      *
      * @param Request $request
      * @param JsonValidatorInterface $jsonValidator
@@ -151,6 +147,8 @@ class DowntimeController extends AbstractFOSRestController
         int $serviceId,
         string $version
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var Contact $contact
          */
@@ -194,14 +192,14 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to find the last hosts downtimes.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findHostDowntimes(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if ($contact === null) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -225,14 +223,14 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to find the last services downtimes.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findServiceDowntimes(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if ($contact === null) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -257,8 +255,6 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to find the last downtimes linked to a service.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId Host id linked to this service
      * @param int $serviceId Service id for which we want to find downtimes
@@ -270,6 +266,8 @@ class DowntimeController extends AbstractFOSRestController
         int $hostId,
         int $serviceId
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if ($contact === null) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -300,14 +298,14 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to find one host downtime.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param int $downtimeId Downtime id to find
      * @return View
      * @throws \Exception
      */
     public function findOneDowntime(int $downtimeId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if ($contact === null) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -333,14 +331,14 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to find the last downtimes.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findDowntimes(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if ($contact === null) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -365,8 +363,6 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to find the last downtimes linked to a host.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId Host id for which we want to find downtimes
      * @return View
@@ -374,6 +370,8 @@ class DowntimeController extends AbstractFOSRestController
      */
     public function findDowntimesByHost(RequestParametersInterface $requestParameters, int $hostId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if ($contact === null) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -410,14 +408,14 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to cancel one downtime.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     *
      * @param int $downtimeId Downtime id to cancel
      * @return View
      * @throws \Exception
      */
     public function cancelOneDowntime(int $downtimeId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var Contact $contact
          */
