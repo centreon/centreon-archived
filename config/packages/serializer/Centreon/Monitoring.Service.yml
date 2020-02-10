@@ -64,6 +64,7 @@ Centreon\Domain\Monitoring\Service:
         isAcknowledged:
             type: bool
             groups:
+                - 'service_main'
                 - 'service_full'
         isActiveCheck:
             type: bool
@@ -76,6 +77,7 @@ Centreon\Domain\Monitoring\Service:
         scheduledDowntimeDepth:
             type: int
             groups:
+                - 'service_main'
                 - 'service_full'
         lastCheck:
             type: DateTime
@@ -142,6 +144,11 @@ Centreon\Domain\Monitoring\Service:
             groups:
                 - 'service_full'
         stateType:
+            type: int
+            groups:
+                - 'service_main'
+                - 'service_full'
+        criticality:
             type: int
             groups:
                 - 'service_main'

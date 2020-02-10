@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +28,7 @@ use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 
 /**
  * This class is designed to manage all requests concerning pollers
@@ -61,7 +63,9 @@ class MonitoringServerController extends AbstractFOSRestController
     public function findServer(RequestParametersInterface $requestParameters): View
     {
         $server = $this->monitoringServerService->findServers();
-        $context = (new Context())->setGroups(['monitoringserver_main']);
+        $context = (new Context())->setGroups([
+            MonitoringServer::SERIALIZER_GROUP_MAIN,
+        ]);
 
         return $this->view([
             'result' => $server,

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use JMS\Serializer\Annotation as Serializer;
 use Centreon\Domain\Annotation\EntityDescriptor as Desc;
 
 /**
@@ -31,21 +31,22 @@ use Centreon\Domain\Annotation\EntityDescriptor as Desc;
  */
 class HostGroup
 {
+    // Groups for serilizing
+    public const SERIALIZER_GROUP_MAIN = 'hg_main';
+    public const SERIALIZER_GROUP_WITH_HOST = 'hg_with_host';
+
     /**
-     * @Serializer\Groups({"hg_main"})
      * @Desc(column="hostgroup_id", modifier="setId")
      * @var int
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"hg_with_host"})
      * @var Host[]
      */
     private $hosts = [];
 
     /**
-     * @Serializer\Groups({"hg_main"})
      * @var string|null
      */
     private $name;

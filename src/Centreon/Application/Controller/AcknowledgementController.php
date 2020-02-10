@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,14 +74,16 @@ class AcknowledgementController extends AbstractFOSRestController
             ->filterByContact($this->getUser())
             ->findLastHostsAcknowledgements();
 
-        $context = (new Context())->setGroups(['ack_main']);
+        $context = (new Context())->setGroups([
+                Acknowledgement::SERIALIZER_GROUP_MAIN,
+            ]);
 
         return $this->view([
-            'result' => $hostsAcknowledgments,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
-            ]
-        ])->setContext($context);
+                'result' => $hostsAcknowledgments,
+                'meta' => [
+                    'pagination' => $requestParameters->toArray(),
+                ],
+            ])->setContext($context);
     }
 
     /**
@@ -97,14 +100,18 @@ class AcknowledgementController extends AbstractFOSRestController
         $servicesAcknowledgments = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findLastServicesAcknowledgements();
-        $context = (new Context())->setGroups(['ack_main', 'ack_service']);
+
+        $context = (new Context())->setGroups([
+                Acknowledgement::SERIALIZER_GROUP_MAIN,
+                Acknowledgement::SERIALIZER_GROUP_SERVICE,
+            ]);
 
         return $this->view([
-            'result' => $servicesAcknowledgments,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
-            ]
-        ])->setContext($context);
+                'result' => $servicesAcknowledgments,
+                'meta' => [
+                    'pagination' => $requestParameters->toArray(),
+                ],
+            ])->setContext($context);
     }
 
     /**
@@ -136,22 +143,25 @@ class AcknowledgementController extends AbstractFOSRestController
             AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACK,
             false // To avoid error message for missing fields
         );
+
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var $acknowledgement Acknowledgement
-             */
-            $acknowledgement = $serializer->deserialize(
-                $request->getContent(),
-                Acknowledgement::class,
-                'json'
-            );
-            $this->acknowledgementService
-                ->filterByContact($contact)
-                ->addHostAcknowledgement($acknowledgement);
-            return $this->view();
         }
+
+        /**
+         * @var $acknowledgement Acknowledgement
+         */
+        $acknowledgement = $serializer->deserialize(
+            $request->getContent(),
+            Acknowledgement::class,
+            'json'
+        );
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->addHostAcknowledgement($acknowledgement);
+
+        return $this->view();
     }
 
     /**
@@ -166,12 +176,15 @@ class AcknowledgementController extends AbstractFOSRestController
     public function disacknowledgeHostAcknowledgement(int $hostId): View
     {
         $contact = $this->getUser();
+
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
+
         $this->acknowledgementService
             ->filterByContact($contact)
             ->disacknowledgeHostAcknowledgement($hostId);
+
         return $this->view();
     }
 
@@ -188,6 +201,7 @@ class AcknowledgementController extends AbstractFOSRestController
     public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): View
     {
         $contact = $this->getUser();
+
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
@@ -195,6 +209,7 @@ class AcknowledgementController extends AbstractFOSRestController
         $this->acknowledgementService
             ->filterByContact($contact)
             ->disacknowledgeServiceAcknowledgement($hostId, $serviceId);
+
         return $this->view();
     }
 
@@ -225,21 +240,24 @@ class AcknowledgementController extends AbstractFOSRestController
             AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
             false // To show errors on not expected fields
         );
+
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var $acknowledgement Acknowledgement
-             */
-            $acknowledgement = $serializer->deserialize(
-                $request->getContent(),
-                Acknowledgement::class,
-                'json'
-            );
-            $this->acknowledgementService
-                ->filterByContact($contact)
-                ->addServiceAcknowledgement($acknowledgement);
-            return $this->view();
         }
+
+        $acknowledgement = $serializer->deserialize(
+            $request->getContent(),
+            Acknowledgement::class,
+            'json'
+        );
+
+        /**
+         * @var $acknowledgement Acknowledgement
+         */
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->addServiceAcknowledgement($acknowledgement);
+
+        return $this->view();
     }
 }

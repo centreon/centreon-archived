@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -209,7 +210,9 @@ class DowntimeController extends AbstractFOSRestController
             ->filterByContact($contact)
             ->findHostDowntimes();
 
-        $context = (new Context())->setGroups(['downtime_main']);
+        $context = (new Context())->setGroups([
+            Downtime::SERIALIZER_GROUP_MAIN,
+        ]);
 
         return $this->view([
             'result' => $hostsDowntime,
@@ -238,7 +241,10 @@ class DowntimeController extends AbstractFOSRestController
             ->filterByContact($contact)
             ->findServicesDowntimes();
 
-        $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
+        $context = (new Context())->setGroups([
+            Downtime::SERIALIZER_GROUP_MAIN,
+            Downtime::SERIALIZER_GROUP_SERVICE,
+        ]);
 
         return $this->view([
             'result' => $servicesDowntimes,
@@ -275,7 +281,10 @@ class DowntimeController extends AbstractFOSRestController
                 ->filterByContact($contact)
                 ->findDowntimesByService($hostId, $serviceId);
 
-            $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
+            $context = (new Context())->setGroups([
+                Downtime::SERIALIZER_GROUP_MAIN,
+                Downtime::SERIALIZER_GROUP_SERVICE,
+            ]);
 
             return $this->view([
                 'result' => $downtimesByHost,
@@ -309,7 +318,10 @@ class DowntimeController extends AbstractFOSRestController
 
         if ($downtime !== null) {
             $context = (new Context())
-                ->setGroups(['downtime_main', 'downtime_service'])
+                ->setGroups([
+                    Downtime::SERIALIZER_GROUP_MAIN,
+                    Downtime::SERIALIZER_GROUP_SERVICE,
+                ])
                 ->enableMaxDepth();
 
             return $this->view($downtime)->setContext($context);
@@ -322,7 +334,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to find the last downtimes.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * 
+     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
@@ -337,7 +349,10 @@ class DowntimeController extends AbstractFOSRestController
             ->filterByContact($contact)
             ->findDowntimes();
 
-        $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
+        $context = (new Context())->setGroups([
+                Downtime::SERIALIZER_GROUP_MAIN,
+                Downtime::SERIALIZER_GROUP_SERVICE,
+            ]);
 
         return $this->view([
             'result' => $hostsDowntime,
@@ -371,7 +386,14 @@ class DowntimeController extends AbstractFOSRestController
                 ->filterByContact($contact)
                 ->findDowntimesByHost($hostId, $withServices);
 
-            $contextGroups = $withServices ? ['downtime_main', 'downtime_service'] : ['downtime_main'];
+            $contextGroups = $withServices
+                ? [
+                    Downtime::SERIALIZER_GROUP_MAIN,
+                    Downtime::SERIALIZER_GROUP_SERVICE,
+                ]
+                : [
+                    Downtime::SERIALIZER_GROUP_MAIN,
+                ];
             $context = (new Context())->setGroups($contextGroups)->enableMaxDepth();
 
             return $this->view([

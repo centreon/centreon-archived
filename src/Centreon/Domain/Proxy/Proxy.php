@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Proxy;
 
-use JMS\Serializer\Annotation as Serializer;
-
 /**
  * This class is designed to represent a proxy configuration.
  *
@@ -31,25 +30,21 @@ use JMS\Serializer\Annotation as Serializer;
 class Proxy
 {
     /**
-     * @Serializer\Type("string")
      * @var string|null
      */
     private $url;
 
     /**
-     * @Serializer\Type("integer")
      * @var int|null
      */
     private $port;
 
     /**
-     * @Serializer\Type("string")
      * @var string|null
      */
     private $user;
 
     /**
-     * @Serializer\Type("string")
      * @var string|null
      */
     private $password;

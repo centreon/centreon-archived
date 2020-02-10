@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +29,10 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\HostGroup;
 
 /**
  * @package Centreon\Application\Controller
@@ -63,15 +68,17 @@ class MonitoringController extends AbstractFOSRestController
             ->filterByContact($this->getUser())
             ->findOneService($hostId, $serviceId);
 
-        if ($service !== null) {
-            $context = (new Context())
-                ->setGroups(['service_full'])
-                ->enableMaxDepth();
-
-            return $this->view($service)->setContext($context);
-        } else {
+        if ($service === null) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
+
+        $context = (new Context())
+            ->setGroups([
+                Service::SERIALIZER_GROUP_FULL,
+            ])
+            ->enableMaxDepth();
+
+        return $this->view($service)->setContext($context);
     }
 
     /**
@@ -90,15 +97,17 @@ class MonitoringController extends AbstractFOSRestController
             ->findServices();
 
         $context = (new Context())
-            ->setGroups(['service_main', 'service_with_host', 'host_min'])
+            ->setGroups([
+                Service::SERIALIZER_GROUP_MAIN,
+                Service::SERIALIZER_GROUP_WITH_HOST,
+                Host::SERIALIZER_GROUP_MIN,
+             ])
             ->enableMaxDepth();
 
-        return $this->view(
-            [
-                'result' => $services,
-                'meta' => $requestParameters->toArray()
-            ]
-        )->setContext($context);
+        return $this->view([
+            'result' => $services,
+            'meta' => $requestParameters->toArray()
+        ])->setContext($context);
     }
 
     /**
@@ -115,17 +124,23 @@ class MonitoringController extends AbstractFOSRestController
         $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
         $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
 
-        $contexts = ['sg_main'];
-
-        $contextsWithHosts = ['sg_with_host', 'host_min'];
-        $contextsWithService = ['host_with_services', 'service_min'];
+        $contexts = [
+            ServiceGroup::SERIALIZER_GROUP_MAIN,
+        ];
 
         if ($withServices) {
             $withHost = true;
-            $contexts = array_merge($contexts, $contextsWithService);
+            $contexts = array_merge($contexts, [
+                Host::SERIALIZER_GROUP_WITH_SERVICES,
+                Service::SERIALIZER_GROUP_MIN,
+            ]);
         }
+
         if ($withHost) {
-            $contexts = array_merge($contexts, $contextsWithHosts);
+            $contexts = array_merge($contexts, [
+                ServiceGroup::SERIALIZER_GROUP_WITH_HOST,
+                Host::SERIALIZER_GROUP_MIN,
+            ]);
         }
 
         $servicesByServiceGroups = $this->monitoring
@@ -136,12 +151,10 @@ class MonitoringController extends AbstractFOSRestController
             ->setGroups($contexts)
             ->enableMaxDepth();
 
-        return $this->view(
-            [
+        return $this->view([
                 'result' => $servicesByServiceGroups,
                 'meta' => $requestParameters->toArray()
-            ]
-        )->setContext($context);
+            ])->setContext($context);
     }
 
     /**
@@ -158,17 +171,23 @@ class MonitoringController extends AbstractFOSRestController
         $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
         $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
 
-        $contexts = ['hg_main'];
-
-        $contextsWithHosts = ['hg_with_host', 'host_min'];
-        $contextsWithService = ['host_with_services', 'service_min'];
+        $contexts = [
+            HostGroup::SERIALIZER_GROUP_MAIN,
+        ];
 
         if ($withServices) {
             $withHost = true;
-            $contexts = array_merge($contexts, $contextsWithService);
+            $contexts = array_merge($contexts, [
+                Host::SERIALIZER_GROUP_WITH_SERVICES,
+                Service::SERIALIZER_GROUP_MIN,
+            ]);
         }
+
         if ($withHost) {
-            $contexts = array_merge($contexts, $contextsWithHosts);
+            $contexts = array_merge($contexts, [
+                HostGroup::SERIALIZER_GROUP_WITH_HOST,
+                Host::SERIALIZER_GROUP_MIN,
+            ]);
         }
 
         $hostGroups = $this->monitoring
@@ -179,12 +198,10 @@ class MonitoringController extends AbstractFOSRestController
             ->setGroups($contexts)
             ->enableMaxDepth();
 
-        return $this->view(
-            [
+        return $this->view([
                 'result' => $hostGroups,
                 'meta' => $requestParameters->toArray()
-            ]
-        )->setContext($context);
+            ])->setContext($context);
     }
 
     /**
@@ -203,20 +220,21 @@ class MonitoringController extends AbstractFOSRestController
             ->filterByContact($this->getUser())
             ->findHosts($withServices);
 
-        $parametersGroup = ['host_main'];
+        $contexts = [
+            Host::SERIALIZER_GROUP_MAIN
+        ];
 
         if ($withServices) {
-            $parametersGroup[] = 'host_with_services';
-            $parametersGroup[] = 'service_min';
+            $contexts = array_merge($contexts, [
+                Host::SERIALIZER_GROUP_WITH_SERVICES,
+                Service::SERIALIZER_GROUP_MIN,
+            ]);
         }
-        $context = (new Context())->setGroups($parametersGroup);
 
-        return $this->view(
-            [
+        return $this->view([
                 'result' => $hosts,
                 'meta' => $requestParameters->toArray()
-            ]
-        )->setContext($context);
+            ])->setContext((new Context())->setGroups($contexts));
     }
 
     /**
@@ -234,15 +252,18 @@ class MonitoringController extends AbstractFOSRestController
             ->filterByContact($this->getUser())
             ->findOneHost($hostId);
 
-        if ($host !== null) {
-            $context = (new Context())
-                ->setGroups(['host_full', 'service_min'])
-                ->enableMaxDepth();
-
-            return $this->view($host)->setContext($context);
-        } else {
+        if ($host === null) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
+
+        $context = (new Context())
+            ->setGroups([
+                    Host::SERIALIZER_GROUP_FULL,
+                    Service::SERIALIZER_GROUP_MIN,
+            ])
+            ->enableMaxDepth();
+
+        return $this->view($host)->setContext($context);
     }
 
     /**
@@ -259,21 +280,19 @@ class MonitoringController extends AbstractFOSRestController
     {
         $this->monitoring->filterByContact($this->getUser());
 
-        if ($this->monitoring->isHostExists($hostId)) {
-            $services = $this->monitoring->findServicesByHost($hostId);
-
-            $context = (new Context())
-                ->setGroups(['service_main'])
-                ->enableMaxDepth();
-
-            return $this->view(
-                [
-                    'result' => $services,
-                    'meta' => $requestParameters->toArray()
-                ]
-            )->setContext($context);
-        } else {
+        if (!$this->monitoring->isHostExists($hostId)) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
+
+        $context = (new Context())
+            ->setGroups([
+                Service::SERIALIZER_GROUP_MAIN,
+            ])
+            ->enableMaxDepth();
+
+        return $this->view([
+                'result' => $this->monitoring->findServicesByHost($hostId),
+                'meta' => $requestParameters->toArray()
+            ])->setContext($context);
     }
 }
