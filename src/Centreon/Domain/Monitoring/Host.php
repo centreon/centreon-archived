@@ -275,13 +275,11 @@ class Host
     private $timezone;
 
     /**
-     * @Serializer\Groups({"host_main","host_full"})
      * @var int|null
      */
     private $scheduledDowntimeDepth;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
     private $criticality;
