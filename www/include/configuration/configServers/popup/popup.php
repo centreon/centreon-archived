@@ -142,65 +142,44 @@ if (!empty($dataError)) {
     $config = $dataError;
 } elseif (in_array($server['ns_ip_address'], $remotesServerIPs)) {
     //config for remote
-    $config = 'name: gorgoned-' . $server['name'] . '
-description: Configuration for remote server ' . $server['name'] . '
-gorgone:
-  gorgonecore:
-    id: ' . $server['id'] . '
-    external_com_type: tcp
-    external_com_path: "*:' . $server['gorgone_port'] . '"
-    authorized_clients: ' . $thumbprints . '
-    privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
-    pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
-  modules:
-    - name: action
-      package: gorgone::modules::core::action::hooks
-      enable: true
-    
-    - name: nodes
-      package: gorgone::modules::centreon::nodes::hooks
-      enable: true
-    
-    - name: proxy
-      package: gorgone::modules::core::proxy::hooks
-      enable: true
-
-    - name: legacycmd
-      package: gorgone::modules::centreon::legacycmd::hooks
-      enable: true
-      cmd_file: "/var/lib/centreon/centcore.cmd"
-      cache_dir: "/var/cache/centreon/"
-      cache_dir_trap: "/etc/snmp/centreon_traps/"
-      remote_dir: "/var/cache/centreon/config/remote-data/"
-
-    - name: engine
-      package: gorgone::modules::centreon::engine::hooks
-      enable: true
-      command_file: "' . $server['command_file'] . '"
-
-';
+    $config = file_get_contents('./remote.yaml');
+    $config = str_replace(
+        array(
+            '__SERVERNAME__',
+            '__SERVERID__',
+            '__GORGONEPORT_',
+            '__THUMBPRINT__',
+            '__COMMAND__'
+        ),
+        array(
+            $server['name'],
+            $server['id'],
+            $server['gorgone_port'],
+            $thumbprints,
+            $server['command_file']
+        ),
+        $config
+    );
 } else {
     //config for poller
-    $config = 'name:  gorgoned-' . $server['name'] . '
-description: Configuration for poller ' . $server['name'] . '
-gorgone:
-  gorgonecore:
-    id: ' . $server['id'] . '
-    external_com_type: tcp
-    external_com_path: "*:' . $server['gorgone_port'] . '"
-    authorized_clients: ' . $thumbprints . '
-    privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
-    pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
-  modules:
-    - name: action
-      package: gorgone::modules::core::action::hooks
-      enable: true
-
-    - name: engine
-      package: gotrgone::modules::centreon::engine::hooks
-      enable: true
-      command_file: "' . $server['command_file'] . '"
-';
+    $config = file_get_contents('./poller.yaml');
+    $config = str_replace(
+        array(
+            '__SERVERNAME__',
+            '__SERVERID__',
+            '__GORGONEPORT_',
+            '__THUMBPRINT__',
+            '__COMMAND__'
+        ),
+        array(
+            $server['name'],
+            $server['id'],
+            $server['gorgone_port'],
+            $thumbprints,
+            $server['command_file']
+        ),
+        $config
+    );
 }
 
 $tpl->assign('args', $config);
