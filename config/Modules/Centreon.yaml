@@ -1,3 +1,10 @@
+jms_serializer:
+    metadata:
+        directories:
+            centreon:
+                namespace_prefix: "Centreon\\Domain"
+                path: '%kernel.root_dir%/../config/packages/serializer/Centreon'
+
 parameters:
     api.header: "Api-Version"
     api.version.latest: "2.0"
