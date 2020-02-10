@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Annotation;
+namespace Centreon\Domain\Service;
 
-/**
- * Entity description used to define the setter method for a specific column.
- *
- * @Annotation
- * @Target({"PROPERTY"})
- */
-class EntityDescriptor
+interface EntityDescriptorMetadataInterface
 {
     /**
-     * @var string Name of the column
+     * Entity descriptor used to define the setter method for a specific column.
+     *
+     * @return array
      */
-    public $column;
-
-    /**
-     * @var string Name of the setter method
-     */
-    public $modifier;
+    public static function loadEntityDescriptorMetadata(): array;
 }

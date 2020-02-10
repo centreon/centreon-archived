@@ -23,6 +23,7 @@ namespace Centreon\Domain\Entity;
 
 use Centreon\Domain\Annotation\EntityDescriptor;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 use ReflectionClass;
 
 class EntityCreator
@@ -203,6 +204,17 @@ class EntityCreator
                 ? $annotation->column
                 : $this->convertCamelCaseToSnakeCase($property->getName());
             $this->entityDescriptors[$key] = $annotation;
+        }
+
+        // load entity descriptor data via static method with metadata
+        if ($reflectionClass->isSubclassOf(EntityDescriptorMetadataInterface::class)) {
+            foreach ($this->className::loadEntityDescriptorMetadata() as $column => $modifier) {
+                $descriptor = new EntityDescriptor;
+                $descriptor->column = $key;
+                $descriptor->modifier = $modifier;
+
+                $this->entityDescriptors[$column] = $descriptor;
+            }
         }
     }
 
