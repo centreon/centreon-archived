@@ -603,7 +603,7 @@ paths:
     delete:
       tags:
         - Acknowledgement
-      summary: "Cancel an acknowledgement on host"
+      summary: "Cancel an acknowledgement on a host"
       parameters:
         - $ref: '#/components/parameters/HostId'
       responses:
