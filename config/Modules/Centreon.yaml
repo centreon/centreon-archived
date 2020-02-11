@@ -27,6 +27,13 @@ services:
             - method: setStorageDbName
               arguments: ['%database_dbstg%']
 
+    # Encryption
+    Security\Interfaces\EncryptionInterface:
+        class: Security\Encryption
+        calls:
+            - method: setFirstKey
+              arguments: ['%env(APP_SECRET)%']
+
     # JSON Validator
     Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface:
         class: Centreon\Domain\Service\JsonValidator\Validator
