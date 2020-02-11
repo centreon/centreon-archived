@@ -37,7 +37,8 @@
  *
  * @param className string : tag class name
  * @param altFormat string : format of the alternative field
- * @param defaultDate string : datepicker parameter of the setDate
+ * @param defaultDate string : GMT YYYY-MM-DDTHH:mm:ss timestamp
+ * @todo following 2 parameters seem to never be used, to remove ?
  * @param idName string : tag id of the displayed field
  * @param timestampToSet int : timestamp used to make a new date using the user localization and format
  */
@@ -48,11 +49,15 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
 
     setUserFormat();
 
+    var timezone = localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess();
+
     if (typeof(idName) == "undefined" || typeof(timestampToSet) == "undefined") {
 
-        // manage timezone : set +/- 1 day
-        if (defaultDate == "0" && localStorage.getItem('realTimezone')) {
-            defaultDate = new Date(moment().tz(localStorage.getItem('realTimezone')).format("YYYY-MM-DD"));
+        // generate default date in proper timezone
+        if (defaultDate == "0") {
+            defaultDate = moment().tz(timezone);
+        } else {
+            defaultDate = moment(defaultDate).tz(timezone);
         }
 
         // initializing all the displayed and the hidden datepickers
@@ -62,17 +67,20 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
             var altName = jQuery(this).attr("name");
             if (typeof(altName) != "undefined") {
                 var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
-                var value = $(this) && $(this).val() ? $(this).val() : defaultDate;
+                // $(this).val(), if exists, is a GMT YYYY-MM-DDTHH:mm:ss timestamp, for example with PHP : gmdate("Y-m-d\TH:i:s")
+                var value = $(this) && $(this).val() ? moment($(this).val()).tz(timezone) : defaultDate;
                 jQuery(this).datepicker({
                     //formatting the hidden fields using a specific format
                     altField: alternativeField,
                     altFormat: altFormat
-                }).datepicker("setDate", value)
+                //datepicker date format elements : d, m, y, yy - moment date format elements :  D, M, YY, YYYY
+                }).datepicker("setDate", value.format($(this).datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY')));
             } else {
                 alert("Fatal : attribute name not found for the class " + className);
                 jQuery(this).datepicker();
             }
         });
+    // @todo section then seems to never be used, to remove ?
     } else {
         // setting the displayed and hidden fields with a timestamp value sent from the backend
         var alternativeField = "input[name=alternativeDate" + idName + "]";
@@ -135,27 +143,25 @@ function turnOffEvents() {
 }
 
 function updateEndTime() {
-    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
-    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
-    if (start > end) {
+    var start = moment($('[name="alternativeDateStart"]').val() + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    var end = moment($('[name="alternativeDateEnd"]').val() + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+    if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
-        var e = new Date();
-        e.setTime(start.getTime() + 7200000); //microseconds
-        $(".datepicker").last().datepicker("setDate", e);
-        $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        start.add($('#duration').val(), $('#duration_scale').val());
+        $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY')));
+        $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
         turnOnEvents();
     }
 }
 
 function updateStartTime() {
-    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
-    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
-    if (start > end) {
+    var start = moment($('[name="alternativeDateStart"]').val() + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    var end = moment($('[name="alternativeDateEnd"]').val() + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+    if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
-        var e = new Date();
-        e.setTime(end.getTime() - 7200000); //microseconds
-        $(".datepicker").first().datepicker("setDate", e);
-        $(".timepicker").first().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        end.subtract($('#duration').val(), $('#duration_scale').val());
+        $(".datepicker").first().datepicker("setDate", end.format($(".datepicker").first().datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY')));
+        $(".timepicker").first().timepicker("setTime", end.format("HH:mm"));
         turnOnEvents();
     }
 }
