@@ -78,7 +78,7 @@ The pull request must comply with certain requirements which are set out in the 
 [PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md)
 
 > **Notice**: A pull request which contains more than the described modifications or contains more than one issue will
-be rejected. Please take care of the description and open one pull request per issue.
+be rejected. Kindly write a detailed description and open one pull request per issue.
 
 If the PR matches the expected requirements, it will be added to a refinement session with the developement team and the product owner.
 If everything is clear enough, the PR will integrate the development workflow and will be merged if it successfully passes our Continous Integration's acceptance tests.
