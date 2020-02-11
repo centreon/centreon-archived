@@ -1,6 +1,31 @@
 ====================
+Centreon Web 19.10.7
+====================
+
+Bug Fixes
+---------
+
+* [Charts] Problem using zoom in when having timezone (PR #8286)
+* [Source install] Several files are not copied in centreon directory
+* [Status Details] "Display details" strange behaviour when "Summary" selected in by Hostgroup page (PR #8265)
+* [UI] Add nowrap style to badge class to avoid wrap in dense typeface environments like chinese (PR #8314)
+
+Security
+--------
+
+* Do not expose session ID identifier in URL (PR #8291)
+
+Technical
+---------
+
+* Remove all unused front-end code
+
+====================
 Centreon Web 19.10.6
 ====================
+
+Bug Fixes
+---------
 
 * [Status Details] Services shown as CRITICAL while OK (PR #8253)
 * [Status Details] Cannot empty "Hostgroup" drop-down list in "Services by Hostgroup" (PR #8257)
