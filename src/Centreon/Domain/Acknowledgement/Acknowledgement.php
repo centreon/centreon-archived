@@ -111,14 +111,14 @@ class Acknowledgement
     private $isSticky;
 
     /**
-     * @Serializer\Groups({"ack_main"})*
+     * @Serializer\Groups({"ack_main"})
      * @Serializer\Type("integer")
      * @var int State of this acknowledgement
      */
     private $state;
 
     /**
-     * @Serializer\Groups({"ack_main"})*
+     * @Serializer\Groups({"ack_main"})
      * @Serializer\Type("integer")
      * @var int State of this acknowledgement
      */
