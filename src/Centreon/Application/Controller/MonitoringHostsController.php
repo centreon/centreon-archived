@@ -31,9 +31,10 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
+ * Responsible for all routes under /monitoring/hosts/
  * @package Centreon\Application\Controller
  */
-class MonitoringController extends AbstractFOSRestController
+class MonitoringHostsController extends AbstractFOSRestController
 {
     /**
      * @var MonitoringServiceInterface
@@ -78,82 +79,6 @@ class MonitoringController extends AbstractFOSRestController
         } else {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
-    }
-
-    /**
-     * Entry point to get all real time services.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
-     *
-     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
-     * @throws \Exception
-     */
-    public function getServices(RequestParametersInterface $requestParameters): View
-    {
-        $services = $this->monitoring
-            ->filterByContact($this->getUser())
-            ->findServices();
-
-        $context = (new Context())
-            ->setGroups(['service_main', 'service_with_host', 'host_min'])
-            ->enableMaxDepth();
-
-        return $this->view(
-            [
-                'result' => $services,
-                'meta' => $requestParameters->toArray()
-            ]
-        )->setContext($context);
-    }
-
-    /**
-     * Entry point to get all real time services based on a service group
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/servicegroups",
-     *     condition="request.attributes.get('version.is_beta') == true")
-     *
-     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
-     * @throws \Exception
-     */
-    public function getServicesByServiceGroups(RequestParametersInterface $requestParameters): View
-    {
-        $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
-        $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
-
-        $contexts = ['sg_main'];
-
-        $contextsWithHosts = ['sg_with_host', 'host_min'];
-        $contextsWithService = ['host_with_services', 'service_min'];
-
-        if ($withServices) {
-            $withHost = true;
-            $contexts = array_merge($contexts, $contextsWithService);
-        }
-        if ($withHost) {
-            $contexts = array_merge($contexts, $contextsWithHosts);
-        }
-
-        $servicesByServiceGroups = $this->monitoring
-            ->filterByContact($this->getUser())
-            ->findServiceGroups($withHost, $withServices);
-
-        $context = (new Context())
-            ->setGroups($contexts)
-            ->enableMaxDepth();
-
-        return $this->view(
-            [
-                'result' => $servicesByServiceGroups,
-                'meta' => $requestParameters->toArray()
-            ]
-        )->setContext($context);
     }
 
     /**
@@ -294,6 +219,43 @@ class MonitoringController extends AbstractFOSRestController
             return $this->view(
                 [
                     'result' => $services,
+                    'meta' => $requestParameters->toArray()
+                ]
+            )->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+    }
+
+    /**
+     * Entry point to get all servicegroups attached to host-service
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Get(
+     *     "/monitoring/hosts/{hostId}/services/{serviceId}/servicegroups",
+     *     condition="request.attributes.get('version.is_beta') == true")
+     *
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws \Exception
+     */
+    public function getServiceGroupsByHostAndService(
+        int $hostId,
+        int $serviceId,
+        RequestParametersInterface $requestParameters
+    ): View {
+        $this->monitoring->filterByContact($this->getUser());
+
+        if ($this->monitoring->isServiceExists($hostId, $serviceId)) {
+            $serviceGroups = $this->monitoring->findServiceGroupsByHostAndService($hostId, $serviceId);
+
+            $context = (new Context())
+                ->setGroups(['sg_main'])
+                ->enableMaxDepth();
+
+            return $this->view(
+                [
+                    'result' => $serviceGroups,
                     'meta' => $requestParameters->toArray()
                 ]
             )->setContext($context);
