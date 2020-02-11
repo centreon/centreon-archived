@@ -584,7 +584,7 @@ paths:
     post:
       tags:
         - Acknowledgement
-      summary: "Add an acknowledgement on host"
+      summary: "Add an acknowledgement on chosen host"
       parameters:
         - $ref: '#/components/parameters/HostId'
       requestBody:
