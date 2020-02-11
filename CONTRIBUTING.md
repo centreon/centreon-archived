@@ -81,7 +81,7 @@ The pull request must comply with certain requirements which are set out in the 
 be rejected. Kindly write a detailed description and open one pull request per issue.
 
 If the pull request matches the expected requirements, it will be added to a refinement session with the development team and the product owner.
-If everything is clear enough, the PR will integrate the development workflow and will be merged if it successfully passes our Continous Integration's acceptance tests.
+If everything is clear, the pull request will be integrated to the development workflow and will be merged if it successfully passes our Continuous Integration's acceptance tests.
 Afterwards, our Quality Assurance team will test it again to avoid any regressions before the pull request is released.
 
 If the development team needs more details, they will contact you about the pull request. Please stay tuned.
