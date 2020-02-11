@@ -89,8 +89,6 @@ function enableNagiosInDB($nagiosId = null)
         $pearDB->query($query);
         $centreon->CentreonLogAction->insertLog("poller", $activate['id'], $activate['name'], "enable");
     }
-
-    $centreon->Nagioscfg = array();
 }
 
 /**
@@ -127,7 +125,6 @@ function disableNagiosInDB($nagiosId = null)
         $dbResult = $pearDB->query($query);
         $poller = $dbResult->fetch();
 
-        $centreon->Nagioscfg = array();
         $centreon->CentreonLogAction->insertLog("poller", $poller['id'], $poller['name'], "disable");
     }
 }
@@ -1160,9 +1157,7 @@ function insertNagios($ret = array(), $brokerTab = array())
             . $nagios_id["MAX(nagios_id)"]
             . "' AND nagios_server_id = '" . $ret['nagios_server_id'] . "'"
         );
-        $centreon->Nagioscfg = array();
         $dbResult = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-        $centreon->Nagioscfg = $dbResult->fetch();
         $dbResult->closeCursor();
     }
 
