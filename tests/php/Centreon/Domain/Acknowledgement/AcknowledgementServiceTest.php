@@ -326,7 +326,7 @@ class AcknowledgementServiceTest extends TestCase
     }
 
     /**
-     * test addServiceAcknowledgement whith not found host
+     * test addServiceAcknowledgement with not found host
      */
     public function testAddServiceAcknowledgementNotFoundHost()
     {
