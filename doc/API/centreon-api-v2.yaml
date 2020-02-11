@@ -647,7 +647,7 @@ paths:
     post:
       tags:
         - Acknowledgement
-      summary: "Add an acknowledgement on service"
+      summary: "Add an acknowledgement on chosen service"
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
