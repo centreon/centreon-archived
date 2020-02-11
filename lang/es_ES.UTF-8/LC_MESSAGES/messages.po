@@ -12930,6 +12930,18 @@ msgstr ""
 "Este host no existe en la configuración de Centreon. \n"
 "Por favor, vuelva a cargar la configuración."
 
+#: centreon-web/www/include/monitoring/objectDetails/common-func.php
+msgid "Unable to retrieve command"
+msgstr "No se puede recuperar el comando"
+
+#: centreon-web/www/include/monitoring/objectDetails/common-func.php
+msgid "Unable to retrieve executed command"
+msgstr "No se puede recuperar el comando ejecutado"
+
+#: centreon-web/www/include/monitoring/objectDetails/common-func.php
+msgid "Unable to hide passwords in command"
+msgstr "No se pueden ocultar las contraseñas en el comando"
+
 #: centreon-web/www/include/monitoring/comments/AddHostComment.php:101
 msgid "Add a comment for Host"
 msgstr "Añadir un comentario para un anfitrión"

@@ -5260,6 +5260,18 @@ msgstr "Visualizar registros para o serviço %s"
 msgid "The related host no longer exists in Centreon configuration. Please reload the configuration."
 msgstr "O host relacionado não existe mais na configuração do Centreon. Por favor, recarregue a configuração."
 
+#: centreon-web/www/include/monitoring/objectDetails/common-func.php
+msgid "Unable to retrieve command"
+msgstr "Não foi possível recuperar o comando"
+
+#: centreon-web/www/include/monitoring/objectDetails/common-func.php
+msgid "Unable to retrieve executed command"
+msgstr "Não foi possível recuperar o comando executado"
+
+#: centreon-web/www/include/monitoring/objectDetails/common-func.php
+msgid "Unable to hide passwords in command"
+msgstr "Não foi possível ocultar senhas no comando"
+
 #: centreon-web/www/include/views/virtualMetrics/formVirtualMetrics.php:62
 msgid "Host list"
 msgstr "Lista de Host"

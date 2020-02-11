@@ -56,21 +56,29 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
 
     // Get command line with macro
     $sth = $pearDB->prepare("SELECT command_line FROM command WHERE command_name = :command_name");
-    $sth->bindParam(':command_name', $commandName, PDO::PARAM_STR);
+    $sth->bindParam(':command_name', preg_replace('/!.*/', '', $commandName), PDO::PARAM_STR);
     $sth->execute();
-    $row = $sth->fetchRow();
+    $row = $sth->fetch();
     $commandLineWithMacros = $row['command_line'];
+    if (strlen($commandLineWithMacros) === 0) {
+        return _('Unable to retrieve command') . ": '" . $commandName . "'";
+    }
 
     // Get executed command lines
-    $sth = $pearDBStorage->prepare("SELECT host_id, check_command, command_line
-        FROM services
+    $sth = $pearDBStorage->prepare("SELECT command_line FROM services
         WHERE host_id = :host_id
-        AND service_id = :service_id");
+        AND service_id = :service_id
+        AND check_command = :check_command"
+    );
     $sth->bindParam(':host_id', $hostId, PDO::PARAM_INT);
     $sth->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
+    $sth->bindParam(':check_command', $commandName, PDO::PARAM_STR);
     $sth->execute();
-    $row = $sth->fetchRow();
+    $row = $sth->fetch();
     $commandLineExecuted = $row['command_line'];
+    if (strlen($commandLineExecuted) === 0) {
+        return _('Unable to retrieve executed command');
+    }
 
     // Get list of templates
     $arrtSvcTpl = getListTemplates($pearDB, $serviceId);
@@ -79,8 +87,8 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
         $arrSvcTplID[] = $svc['service_id'];
     }
 
-    // Get list of custom macros from services and templates
-    $query = "SELECT svc_macro_name "
+    // Get custom macros from services and templates
+    $query = "SELECT svc_macro_name, svc_macro_value "
         . "FROM on_demand_macro_service "
         . "WHERE is_password = 1 "
         . "AND svc_svc_id IN (";
@@ -91,24 +99,40 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
             $query .= ', :svc_id' . $i;
         }
     }
-    $query .= ")";
+    $query .= ") ORDER BY svc_macro_name, LENGTH(svc_macro_value) DESC";
     $sth = $pearDB->prepare($query);
     for ($i = 0; $i < count($arrSvcTplID); $i++) {
         $sth->bindParam(':svc_id' . $i, $arrSvcTplID[$i], PDO::PARAM_INT);
     }
     $sth->execute();
 
-    $arrServiceMacroPassword = array();
-    while ($row = $sth->fetchRow()) {
-        $arrServiceMacroPassword = array_merge(
-            $arrServiceMacroPassword,
-            array($row['svc_macro_name'])
-        );
+    $currentMacro = "";
+    $replacedMacros = 0;
+    $replacedExecuted = 0;
+    while ($row = $sth->fetch()) {
+        if (strcmp($currentMacro, $row['svc_macro_name']) !== 0) {
+            if ($replacedMacros != $replacedExecuted) {
+                break;
+            } else {
+                $currentMacro = $row['svc_macro_name'];
+                $commandLineWithMacros = str_replace($row['svc_macro_name'],
+                    '$pw', $commandLineWithMacros, $replacedMacros);
+                $replacedExecuted = 0;
+            }
+        }
+        if ($replacedMacros > 0) {
+            $commandLineExecuted = str_replace($row['svc_macro_value'], '$pw', $commandLineExecuted, $r);
+            $replacedExecuted += $r;
+        }
+    }
+    // Be sure to replace password strings the required amount of times, otherwise we could give clues to find it
+    if ($replacedMacros != $replacedExecuted) {
+        return _('Unable to hide passwords in command');
     }
 
     // Get custom macros from hosts and templates
     $arrHostTplID = getHostsTemplates($hostId);
-    $query = "SELECT host_macro_name "
+    $query = "SELECT host_macro_name, host_macro_value "
         . "FROM on_demand_macro_host "
         . "WHERE is_password = 1 "
         . "AND host_host_id IN (";
@@ -119,51 +143,41 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
             $query .= ', :host_id' . $i;
         }
     }
-    $query .= ")";
+    $query .= ") ORDER BY host_macro_name, LENGTH(host_macro_value) DESC";
     $sth = $pearDB->prepare($query);
     for ($i = 0; $i < count($arrHostTplID); $i++) {
         $sth->bindParam(':host_id' . $i, $arrHostTplID[$i], PDO::PARAM_INT);
     }
     $sth->execute();
 
-    $arrHostMacroPassword = array();
-    while ($row = $sth->fetchRow()) {
-        $arrHostMacroPassword = array_merge(
-            $arrHostMacroPassword,
-            array($row['host_macro_name'])
-        );
-    }
-
-    $command = '';
-    $patternMacro = '';
-    $aCommandLineWithMacros = explode(' ', $commandLineWithMacros);
-    $aCommandLineExecuted = explode(' ', $commandLineExecuted);
-    $arrMacroPassword = array_merge($arrServiceMacroPassword, $arrHostMacroPassword);
-    $patternMacro = implode('|', $arrMacroPassword);
-    $patternMacro = str_replace('$', '\\$', $patternMacro);
-
-    if (count($arrMacroPassword) && preg_match('/(' . $patternMacro . ')/', $commandLineWithMacros)) {
-        if (count($aCommandLineWithMacros) == count($aCommandLineExecuted)) {
-            for ($i = 0; $i < count($aCommandLineWithMacros); $i++) {
-                if (preg_match_all('/(' . $patternMacro . ')/', $aCommandLineWithMacros[$i], $matches)) {
-                    $pattern = $aCommandLineWithMacros[$i];
-                    foreach ($matches as $match) {
-                        if ($arrMacroPassword[$match[0]]) {
-                            $pattern = preg_replace($match, $pattern);
-                        }
-                    }
-                    $command .= ' ' . preg_replace('/\$_(HOST|SERVICE)[a-zA-Z0-9_-]+\$/', '***', $pattern);
-                } else {
-                    $command .= ' ' . $aCommandLineExecuted[$i];
-                }
+    $currentMacro = "";
+    $replacedMacros = 0;
+    $replacedExecuted = 0;
+    while ($row = $sth->fetch()) {
+        if (strcmp($currentMacro, $row['host_macro_name']) != 0) {
+            if ($replacedMacros != $replacedExecuted) {
+                break;
+            } else {
+                $currentMacro = $row['host_macro_name'];
+                $commandLineWithMacros = str_replace($row['host_macro_name'],
+                    '$pw', $commandLineWithMacros, $replacedMacros);
+                $replacedExecuted = 0;
             }
-            return preg_replace('/^ /', '', $command);
-        } else {
-            return _('Unable to hide passwords in command');
         }
-    } else {
-        return $commandLineExecuted;
+        if ($replacedMacros > 0) {
+            $commandLineExecuted = str_replace($row['host_macro_value'], '$pw', $commandLineExecuted, $r);
+            $replacedExecuted += $r;
+        }
     }
+    // Be sure to replace password strings the required amount of times, otherwise we could give clues to find it
+    if ($replacedMacros != $replacedExecuted) {
+        return _('Unable to hide passwords in command');
+    }
+
+    // Also hide as much as possible passwords from Centreon Plugins options which may be used in non-password macros
+    $commandLineExecuted = preg_replace('/(--([0-9a-z]+-)*password=)[^ ]+/', '$1$pw', $commandLineExecuted);
+
+    return $commandLineExecuted;
 }
 
 /**
@@ -187,7 +201,7 @@ function getHostsTemplates($hostId)
         return array($hostId);
     } else {
         $arrHostTpl = array();
-        while ($row = $sth->fetchRow()) {
+        while ($row = $sth->fetch()) {
             $arrHostTpl = array_merge(
                 $arrHostTpl,
                 getHostsTemplates($row['host_tpl_id'])
