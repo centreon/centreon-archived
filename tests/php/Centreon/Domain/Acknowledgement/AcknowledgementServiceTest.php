@@ -210,7 +210,7 @@ class AcknowledgementServiceTest extends TestCase
     }
 
     /**
-     * test addHostAcknowledgement which is not validated
+     * test addHostAcknowledgement which is not valid (eg: missing hostId)
      */
     public function testAddHostAcknowledgementNotValidated()
     {
