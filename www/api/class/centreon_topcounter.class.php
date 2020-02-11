@@ -51,7 +51,7 @@ class CentreonTopCounter extends CentreonWebService
     /**
      * @var int
      */
-    protected $refreshTime = 60;
+    protected $refreshTime;
 
     protected $hasAccessToTopCounter = false;
 
@@ -91,7 +91,7 @@ class CentreonTopCounter extends CentreonWebService
      */
     private function initRefreshInterval()
     {
-        $refreshInterval = 15;
+        $refreshInterval = 60;
 
         $query = 'SELECT `value` FROM options WHERE `key` = "AjaxTimeReloadStatistic"';
         $res = $this->pearDB->query($query);
@@ -600,8 +600,7 @@ class CentreonTopCounter extends CentreonWebService
             'ok' => $row['up_total'],
             'pending' => $row['pending_total'],
             'total' => $row['up_total'] + $row['pending_total'] + $row['down_total'] + $row['unreachable_total'],
-            'refreshTime' => $this->refreshTime,
-            'time' => time()
+            'refreshTime' => $this->refreshTime
         );
 
         CentreonSession::writeSessionClose('topCounterHostStatus', $result);
@@ -677,8 +676,7 @@ class CentreonTopCounter extends CentreonWebService
             'pending' => $row['pending_total'],
             'total' => $row['ok_total'] + $row['pending_total'] + $row['critical_total'] + $row['unknown_total'] +
                 $row['warning_total'],
-            'refreshTime' => $this->refreshTime,
-            'time' => time()
+            'refreshTime' => $this->refreshTime
         );
 
         CentreonSession::writeSessionClose('topCounterServiceStatus', $result);
