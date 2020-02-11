@@ -52,12 +52,6 @@ if (isset($_GET['select'])) {
 $path = _CENTREON_PATH_ . "/www/include/monitoring/external_cmd/popup/";
 
 /*
- * Init GMT
- */
-$centreonGMT = new CentreonGMT($pearDB);
-$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-
-/*
  * Smarty template Init
  */
 $tpl = new Smarty();
@@ -134,11 +128,6 @@ $form->addElement(
     _("*The timezone used is configured on your user settings")
 );
 
-$gmt = $centreonGMT->getMyGMT();
-if (!$gmt) {
-    $gmt = date_default_timezone_get();
-}
-
 $form->addElement(
     'text',
     'duration',
@@ -150,6 +139,17 @@ $form->addElement(
     )
 );
 $defaultDuration = 7200;
+$defaultScale = 's';
+if (isset($centreon->optGen['monitoring_dwt_duration']) &&
+    $centreon->optGen['monitoring_dwt_duration']
+) {
+    $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
+    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
+        $centreon->optGen['monitoring_dwt_duration_scale']
+    ) {
+        $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
+    }
+}
 $form->setDefaults(array('duration' => $defaultDuration));
 
 $scaleChoices = array(
@@ -164,16 +164,11 @@ $form->addElement(
     _("Scale of time"),
     $scaleChoices,
     array(
-        'id' => 'duration_scale'
+        'id' => 'duration_scale',
+        'disabled' => 'true'
     )
 );
-$form->setDefaults(array('duration_scale' => 's'));
-$form->setDefaults(
-    array(
-        "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
-        "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt)
-    )
-);
+$form->setDefaults(array('duration_scale' => $defaultScale));
 
 $chckbox[] = $form->addElement(
     'checkbox',
@@ -252,7 +247,6 @@ $form->addElement(
         'class' => 'alternativeDate'
     )
 );
-
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

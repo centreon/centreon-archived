@@ -61,10 +61,12 @@
 </form>
 {literal}
 <script type="text/javascript">
-    /* initializing datepicker and the alternative format field */
-    initDatepicker("datepicker", "mm/dd/yy", "0");
-
+    jQuery(".timepicker").each(function () {
+        $(this).val(moment().tz(localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess()).format("HH:mm"));
+    });
     jQuery(".timepicker").timepicker();
+    initDatepicker();
     turnOnEvents();
+    updateEndTime();
 </script>
 {/literal}
