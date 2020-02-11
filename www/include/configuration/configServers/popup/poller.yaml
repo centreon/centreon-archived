@@ -14,6 +14,6 @@ gorgone:
       enable: true
 
     - name: engine
-      package: gotrgone::modules::centreon::engine::hooks
+      package: gorgone::modules::centreon::engine::hooks
       enable: true
       command_file: "__COMMAND__"
