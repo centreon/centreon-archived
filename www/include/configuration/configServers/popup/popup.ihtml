@@ -4,7 +4,7 @@
     {if $gorgoneError == '0'}
 	<p style="text-align: center;">{$gorgoneError}
         <strong>
-            Replace the '/etc/centreon/config.d/20-gorgoned.yaml' configuration file on your server {$serverIp}
+            Replace the '/etc/centreon-gorgone/config.d/40-gorgoned.yaml' configuration file on your server {$serverIp}
             by the following configuration :
         </strong>
     </p>
