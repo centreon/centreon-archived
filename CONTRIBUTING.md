@@ -86,7 +86,7 @@ Afterwards, our Quality Assurance team will test it again to avoid any regressio
 
 If the development team needs more details, they will contact you about the pull request. Please stay tuned.
 
-> **Warning**: Any pull request that does not respect those requirements will be legitimately rejected ! In addition,
+> **Warning**: Any pull request that does not respect the requirements will ultimately be rejected ! In addition,
 if you are asked to do so, you must help us understand your changes or behavior, and respond to us within 8 days.
 
 > **Notice**: We inspired ourselves with another open source project we use, to better communicate on your work :
