@@ -93,4 +93,4 @@ oWAyTvK/VwbB77CTz1yTUSE=
 
 ## Bug bounty
 
-We don't have any bug bounty program but this this something we are thinking about.
+We don't have a bug bounty program but this is something we are thinking about.
