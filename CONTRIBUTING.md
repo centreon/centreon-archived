@@ -89,7 +89,7 @@ If the development team needs more details, they will contact you about the pull
 > **Warning**: Any pull request that does not respect the requirements will ultimately be rejected ! In addition,
 if you are asked to do so, you must help us understand your changes or behavior, and respond to us within 8 days.
 
-> **Notice**: We inspired ourselves with another open source project we use, to better communicate on your work :
+> **Notice**: We used another open source project's contribution model as inspiration to provide better communication on your pull request's status :
 Visual Studio Code.
 
 
