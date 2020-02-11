@@ -667,7 +667,7 @@ paths:
     delete:
       tags:
         - Acknowledgement
-      summary: "Cancel an acknowledgement on service"
+      summary: "Cancel an acknowledgement on a service"
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
