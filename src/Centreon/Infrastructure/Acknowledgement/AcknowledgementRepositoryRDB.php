@@ -381,7 +381,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     }
 
     /**
-     * Find one acknowledgement tacking into account or not the ACLs.
+     * Find one acknowledgement taking into account or not the ACLs.
      *
      * @param int $downtimeId Acknowledgement id
      * @param bool $isAdmin Indicates whether user is an admin
