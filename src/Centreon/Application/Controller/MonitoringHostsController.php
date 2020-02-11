@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -180,7 +179,6 @@ class MonitoringController extends AbstractController
                 Service::SERIALIZER_GROUP_MIN,
             ]);
         }
-
         if ($withHost) {
             $contexts = array_merge($contexts, [
                 HostGroup::SERIALIZER_GROUP_WITH_HOST,
@@ -292,5 +290,42 @@ class MonitoringController extends AbstractController
                 'result' => $this->monitoring->findServicesByHost($hostId),
                 'meta' => $requestParameters->toArray()
             ])->setContext($context);
+    }
+
+    /**
+     * Entry point to get all servicegroups attached to host-service
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Get(
+     *     "/monitoring/hosts/{hostId}/services/{serviceId}/servicegroups",
+     *     condition="request.attributes.get('version.is_beta') == true")
+     *
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws \Exception
+     */
+    public function getServiceGroupsByHostAndService(
+        int $hostId,
+        int $serviceId,
+        RequestParametersInterface $requestParameters
+    ): View {
+        $this->monitoring->filterByContact($this->getUser());
+
+        if ($this->monitoring->isServiceExists($hostId, $serviceId)) {
+            $serviceGroups = $this->monitoring->findServiceGroupsByHostAndService($hostId, $serviceId);
+
+            $context = (new Context())
+                ->setGroups(['sg_main'])
+                ->enableMaxDepth();
+
+            return $this->view(
+                [
+                    'result' => $serviceGroups,
+                    'meta' => $requestParameters->toArray()
+                ]
+            )->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
     }
 }
