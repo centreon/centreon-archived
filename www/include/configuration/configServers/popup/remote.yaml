@@ -4,7 +4,7 @@ gorgone:
   gorgonecore:
     id: __SERVERID__
     external_com_type: tcp
-    external_com_path: "*:__GORGONEPORT_"
+    external_com_path: "*:__GORGONEPORT__"
     authorized_clients: __THUMBPRINT__
     privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
     pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"

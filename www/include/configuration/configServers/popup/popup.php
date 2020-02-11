@@ -133,7 +133,7 @@ if (!empty($dataError)) {
         array(
             '__SERVERNAME__',
             '__SERVERID__',
-            '__GORGONEPORT_',
+            '__GORGONEPORT__',
             '__THUMBPRINT__',
             '__COMMAND__'
         ),
@@ -153,7 +153,7 @@ if (!empty($dataError)) {
         array(
             '__SERVERNAME__',
             '__SERVERID__',
-            '__GORGONEPORT_',
+            '__GORGONEPORT__',
             '__THUMBPRINT__',
             '__COMMAND__'
         ),
