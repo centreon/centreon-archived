@@ -134,7 +134,7 @@ The menus are ranked as follows:
     select the **Read / Write** option for each submenu.
 
 .. note::
-    To access to a level of menu ‘n-1’, the user must have access to the menu of level ‘n’ otherwise he will not be able
+    To access an ‘n-1’ menu level, the user must have access to the ‘n’ menu level, otherwise he will not be able
     to view the menu via the interface. If this is not the case the user will have to access directly to the page
     concerned via a direct link (autologin, etc.).
 
