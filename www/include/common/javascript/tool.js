@@ -44,7 +44,7 @@ function checkItem(element, toCheck)
 		var element = document.Form[element.name];
 		var value = 0;
 		if (toCheck) {
-			value = 1;
+			value = 2;
 		}
 		for (var j = 0; j < element.length; j++) {
 			if (element[j].value == value) {

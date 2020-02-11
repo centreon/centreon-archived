@@ -129,7 +129,18 @@ Les menus sont hiérarchisés de la manière suivante :
 * Les menus contextuels de niveau 4 (Supervision > Services > Par hôtes / détails > Problems)
 
 .. note::
-    Pour accéder à un niveau de menu 'n-1', l'utilisateur doit avoir accès au menu de niveau 'n' sinon ce dernier ne pourra pas visualiser le menu au travers de l'interface. Dans le cas contraire, l'utilisateur devra accéder directement à la page concernée via un lien direct (autologin, ...).
+    Par défaut, l’accès est donné en lecture seule (**Read Only**). Si vous souhaitez autoriser vos utilisateurs à
+    modifier la configuration, il faudra sélectionner l’option **Read/Write** pour chaque sous menu.
+
+.. note::
+    Pour accéder à un niveau de menu 'n-1', l'utilisateur doit avoir accès au menu de niveau 'n' sinon ce dernier ne
+    pourra pas visualiser le menu au travers de l'interface. Dans le cas contraire, l'utilisateur devra accéder
+    directement à la page concernée via un lien direct (autologin, ...).
+
+.. warning::
+    L’accès au menu d’édition des commandes, ainsi que l’accès au menu d’édition des traps SNMP peut être très dangereux.
+    En effet, un utilisateur privilégié peut créer des commandes pouvant permettre la création de failles de sécurité (RCE).
+    Ne donnez cet accès qu’à des personnes dignes de confiance.
 
 Pour ajouter un filtre d'accès aux menus :
 
