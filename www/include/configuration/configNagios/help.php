@@ -67,25 +67,6 @@ $help["temp_file"] = dgettext(
     . "uses when updating comment data, status data, etc. "
     . "The file is deleted when it is no longer needed."
 );
-$help["check_result_path"] = dgettext(
-    "help",
-    "This options determines which directory Monitoring Engine will use to temporarily "
-    . "store host and service check results before they are processed. This directory "
-    . "should not be used to store any other files, as Monitoring Engine will periodically "
-    . "clean this directory of old file. Make sure that only a single instance of "
-    . "Monitoring Engine has access to the check result path. If multiple instances of "
-    . "Monitoring Engine have their check result path set to the same directory, "
-    . "you will run into problems with check results being processed (incorrectly) "
-    . "by the wrong instance of Monitoring Engine!"
-);
-$help["max_check_result_file_age"] = dgettext(
-    "help",
-    "This options determines the maximum age in seconds that Monitoring Engine "
-    . "will consider check result files found in the check_result_path directory to be valid. "
-    . "Check result files that are older that this threshold will be deleted by Monitoring Engine "
-    . "and the check results they contain will not be processed. By using a value of zero (0) "
-    . "with this option, Monitoring Engine will process all check result files."
-);
 $help["Monitoring Engine_user"] = dgettext(
     "help",
     "This is used to set the effective user that the Monitoring Engine process should run as. "
@@ -918,10 +899,6 @@ $help["Monitoring Engine_server_id"] = dgettext(
 $help["log_pid"] = dgettext(
     "help",
     "Enable the possibility to log pid information in engine log file (option only for Centreon Engine)"
-);
-$help["use_check_result_path"] = dgettext(
-    "help",
-    "This option enable or disable compatibility mode to use check result path."
 );
 
 /*
