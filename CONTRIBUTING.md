@@ -82,7 +82,7 @@ be rejected. Kindly write a detailed description and open one pull request per i
 
 If the pull request matches the expected requirements, it will be added to a refinement session with the development team and the product owner.
 If everything is clear enough, the PR will integrate the development workflow and will be merged if it successfully passes our Continous Integration's acceptance tests.
-Then our Quality Assurance team will test it, again, to avoid any regression before being able to release it.
+Afterwards, our Quality Assurance team will test it again to avoid any regressions before the pull request is released.
 
 If the development team needs more details, they will contact you on the pull request. Please stay tuned.
 
