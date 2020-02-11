@@ -80,12 +80,11 @@ The pull request must comply with certain requirements which are set out in the 
 > **Notice**: A pull request which contains more than the described modifications or contains more than one issue will
 be rejected. Please take care of the description and open one pull request per issue.
 
-If the PR matches the expected requirements, it will be added to a refinement session with the dev team and the
-product owner.
-If everything is clear enough, the PR will integrate the dev processes and will be merged if it successfully passes our CI's acceptance tests
+If the PR matches the expected requirements, it will be added to a refinement session with the developement team and the product owner.
+If everything is clear enough, the PR will integrate the development workflow and will be merged if it successfully passes our Continous Integration's acceptance tests.
 Then our Quality Assurance team will test it, again, to avoid any regression before being able to release it.
 
-If the dev team needs more details, they will contact you on the pull request. Please stay tuned.
+If the development team needs more details, they will contact you on the pull request. Please stay tuned.
 
 > **Warning**: Any pull request that does not respect those requirements will be legitimately rejected ! In addition,
 if you are asked to do so, you must help us understand your changes or behavior, and respond to us within 8 days.
@@ -99,11 +98,11 @@ Here are the labels and descriptions we may add to your work.
 | Label                             | Reason |
 | :-----                            | :------ |
 | ```pr/external```                 | The first badge |
-| ```status/accepted```             | The dev team has approved your modifications |
+| ```status/accepted```             | The development team has approved your modifications |
 | ```status/implemented```          | The PR has been added or may have already been released in next version |
 | ```status/duplicate```            | Another PR is already open |
 | ```status/invalid```              | The requirements are not met |
-| ```status/in-backlog```           | The dev team has groomed your proposition and will work on it soon |
+| ```status/in-backlog```           | The development team has groomed your proposition and will work on it soon |
 | ```status/could-not-reproduce```  | The dev was unable to reproduce the use-case and may need more information |
 | ```status/needs-attention```      | This PR is on hold. The reason is specified in the issue |
 | ```status/needs-merge```          | A dev needs to merge your work |
