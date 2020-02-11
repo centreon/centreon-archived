@@ -151,12 +151,12 @@
 {literal}
 
 <script type="text/javascript">
-
-    initDatepicker("datepicker", "mm/dd/yy", "0");
-
-    $(document).ready(function() {
-        turnOnEvents();
+    jQuery(".timepicker").each(function () {
+        $(this).val(moment().tz(localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess()).format("HH:mm"));
     });
-
+    jQuery(".timepicker").timepicker();
+    initDatepicker();
+    turnOnEvents();
+    updateEndTime();
 </script>
 {/literal}

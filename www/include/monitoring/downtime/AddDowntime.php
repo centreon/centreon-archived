@@ -37,16 +37,10 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 
-/*
- * Init GMT class
- */
-$centreonGMT = new CentreonGMT($pearDB);
-$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 $hostAclId = preg_split('/,/', str_replace("'", "", $hostStr));
 
@@ -287,6 +281,17 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     );
 
     $defaultDuration = 7200;
+    $defaultScale = 's';
+    if (isset($centreon->optGen['monitoring_dwt_duration']) &&
+        $centreon->optGen['monitoring_dwt_duration']
+    ) {
+        $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
+        if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
+            $centreon->optGen['monitoring_dwt_duration_scale']
+        ) {
+            $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
+        }
+    }
     $form->setDefaults(array('duration' => $defaultDuration));
 
     $form->addElement(
@@ -296,11 +301,6 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days")),
         array('id' => 'duration_scale')
     );
-    $defaultScale = 's';
-    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
-        $centreon->optGen['monitoring_dwt_duration_scale']) {
-        $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
-    }
     $form->setDefaults(array('duration_scale' => $defaultScale));
 
     $withServices[] = $form->createElement('radio', 'with_services', null, _("Yes"), '1');
@@ -316,13 +316,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addRule('comment', _("Required Field"), 'required');
 
     $data = array();
-    $gmt = $centreonGMT->getMyGMT();
-    if (!$gmt) {
-        $gmt = date_default_timezone_get();
-    }
 
-    $data["start_time"] = $centreonGMT->getDate("G:i", time(), $gmt);
-    $data["end_time"] = $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt);
     $data["host_or_hg"] = 1;
     $data["with_services"] = $centreon->optGen['monitoring_dwt_svc'];
 
@@ -578,12 +572,15 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
     function setDurationField() {
         var durationField = jQuery('#duration');
+        var durationScaleField = jQuery('#duration_scale');
         var fixedCb = jQuery('#fixed');
 
         if (fixedCb.prop("checked") == true) {
-            durationField.disabled = true;
+            durationField.attr('disabled', true);
+            durationScaleField.attr('disabled', true);
         } else {
-            durationField.disabled = false;
+            durationField.removeAttr('disabled');
+            durationScaleField.removeAttr('disabled');
         }
     }
 </script>
