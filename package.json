@@ -23,7 +23,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.7.7",
-    "@centreon/frontend-core": "centreon/frontend-core#enhance-webpack-config",
+    "@centreon/frontend-core": "centreon/frontend-core",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^8.0.6",
     "awesome-typescript-loader": "^5.2.1",
