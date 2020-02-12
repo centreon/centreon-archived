@@ -43,6 +43,7 @@ class EntityValidator
     public const ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_HOST_ACK = ['add_host_ack'];
     public const ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_SERVICE_ACK = ['add_service_ack'];
     public const DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME = ['Default'];
+
     /**
      * @var ValidatorInterface
      */
