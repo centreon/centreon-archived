@@ -29,3 +29,8 @@ UPDATE topology SET topology_url_opt = '&o=gorgone', topology_name = 'Gorgone' W
 UPDATE options SET `key` = 'debug_gorgone' WHERE `key` = 'debug_centcore';
 DELETE FROM `options` WHERE `key` = 'enable_perfdata_sync';
 DELETE FROM `options` WHERE `key` = 'enable_logs_sync';
+-- gorgone API default
+INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_address', '127.0.0.1');
+INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_port', '8085');
+INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_ssl', '0');
+INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_allow_self_signed', '1');

@@ -146,7 +146,7 @@ $tpl->assign("headerMenu_options", _("Options"));
 $ACLString = $centreon->user->access->queryBuilder('WHERE', 'id', $pollerstring);
 
 $query = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default " .
-    "FROM `nagios_server` " . $ACLString . " " .
+    ", gorgone_communication_type FROM `nagios_server` " . $ACLString . " " .
     ($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE ") . $LCASearch : "") .
     " ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
 $dbResult = $pearDB->query($query);
@@ -257,27 +257,29 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $style = ($i % 2) ? "two" : "one";
 
     $elemArr[$i] = [
-        'MenuClass'                  => "list_{$style}",
-        'RowMenu_select'             => $selectedElements->toHtml(),
-        'RowMenu_name'               => $config['name'],
-        'RowMenu_ip_address'         => $config['ns_ip_address'],
-        'RowMenu_link'               => "main.php?p={$p}&o=c&server_id={$config['id']}",
-        'RowMenu_type'               => $serverType,
-        'RowMenu_is_running'         => $isRunning ? _('Yes') : _('No'),
-        'RowMenu_is_runningFlag'     => $nagiosInfo[$config['id']]['is_currently_running'],
-        'RowMenu_is_default'         => $config['is_default'] ? _('Yes') : _('No'),
-        'RowMenu_hasChanged'         => $confChangedMessage,
-        "RowMenu_pid"                => $pollerProcessId,
-        'RowMenu_hasChangedFlag'     => $hasChanged,
-        'RowMenu_version'            => $version,
-        'RowMenu_uptime'             => $uptime,
-        'RowMenu_lastUpdateTime'     => $updateTime,
+        'MenuClass' => "list_{$style}",
+        'RowMenu_select' => $selectedElements->toHtml(),
+        'RowMenu_name' => $config['name'],
+        'RowMenu_ip_address' => $config['ns_ip_address'],
+        'RowMenu_server_id' => $config['id'],
+        'RowMenu_gorgone_protocol' => $config['gorgone_communication_type'],
+        'RowMenu_link' => "main.php?p={$p}&o=c&server_id={$config['id']}",
+        'RowMenu_type' => $serverType,
+        'RowMenu_is_running' => $isRunning ? _('Yes') : _('No'),
+        'RowMenu_is_runningFlag' => $nagiosInfo[$config['id']]['is_currently_running'],
+        'RowMenu_is_default' => $config['is_default'] ? _('Yes') : _('No'),
+        'RowMenu_hasChanged' => $confChangedMessage,
+        "RowMenu_pid" => $pollerProcessId,
+        'RowMenu_hasChangedFlag' => $hasChanged,
+        'RowMenu_version' => $version,
+        'RowMenu_uptime' => $uptime,
+        'RowMenu_lastUpdateTime' => $updateTime,
         'RowMenu_lastUpdateTimeFlag' => $lastUpdateTimeFlag,
-        'RowMenu_status'             => $config['ns_activate'] ? _('Enabled') : _('Disabled'),
-        'RowMenu_badge'              => $config['ns_activate'] ? 'service_ok' : 'service_critical',
-        'RowMenu_statusVal'          => $config['ns_activate'],
-        'RowMenu_cfg_id'             => ($cfg_id == -1) ? '' : $cfg_id['nagios_id'],
-        'RowMenu_options'            => $moptions
+        'RowMenu_status' => $config['ns_activate'] ? _('Enabled') : _('Disabled'),
+        'RowMenu_badge' => $config['ns_activate'] ? 'service_ok' : 'service_critical',
+        'RowMenu_statusVal' => $config['ns_activate'],
+        'RowMenu_cfg_id' => ($cfg_id == -1) ? '' : $cfg_id['nagios_id'],
+        'RowMenu_options' => $moptions
     ];
 }
 $tpl->assign("elemArr", $elemArr);

@@ -48,7 +48,7 @@ class Kernel extends BaseKernel
     public static function createForWeb(): Kernel
     {
         if (static::$instance === null) {
-            include_once '../config/bootstrap.php';
+            include_once __DIR__ . '/../config/bootstrap.php';
             if ($_SERVER['APP_DEBUG']) {
                 umask(0000);
 
