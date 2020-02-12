@@ -233,6 +233,7 @@ class MonitoringHostsController extends AbstractFOSRestController
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts/{hostId}/services/{serviceId}/servicegroups",
+     *     requirements={"hostId"="\d+", "serviceId"="\d+"},
      *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
