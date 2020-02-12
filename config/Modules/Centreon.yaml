@@ -1,3 +1,10 @@
+jms_serializer:
+    metadata:
+        directories:
+            centreon:
+                namespace_prefix: "Centreon\\Domain"
+                path: '%kernel.root_dir%/../config/packages/serializer/Centreon'
+
 parameters:
     api.header: "Api-Version"
     api.version.latest: "2.0"
@@ -26,6 +33,13 @@ services:
               arguments: ['%database_db%']
             - method: setStorageDbName
               arguments: ['%database_dbstg%']
+
+    # Encryption
+    Security\Interfaces\EncryptionInterface:
+        class: Security\Encryption
+        calls:
+            - method: setFirstKey
+              arguments: ['%env(APP_SECRET)%']
 
     # JSON Validator
     Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface:

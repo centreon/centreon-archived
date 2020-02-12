@@ -1,0 +1,68 @@
+Centreon\Domain\Downtime\Downtime:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'downtime_main'
+        entryTime:
+            type: DateTime
+            groups:
+                - 'downtime_main'
+        authorId:
+            type: int
+            groups:
+                - 'downtime_main'
+        hostId:
+            type: int
+            groups:
+                - 'downtime_main'
+        serviceId:
+            type: int
+            groups:
+                - 'downtime_service'
+        isCancelled:
+            type: bool
+            groups:
+                - 'downtime_main'
+        comment:
+            type: string
+            groups:
+                - 'downtime_main'
+        deletionTime:
+            type: DateTime
+            groups:
+                - 'downtime_main'
+        duration:
+            type: DateTime
+            groups:
+                - 'downtime_main'
+        endTime:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'downtime_main'
+        internalId:
+            type: int
+        isFixed:
+            type: bool
+            groups:
+                - 'downtime_main'
+        pollerId:
+            type: int
+            groups:
+                - 'downtime_main'
+        startTime:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'downtime_main'
+        actualStartTime:
+            type: DateTime
+            groups:
+                - 'downtime_main'
+        actualEndTime:
+            type: DateTime
+            groups:
+                - 'downtime_main'
+        isStarted:
+            type: bool
+            groups:
+                - 'downtime_main'

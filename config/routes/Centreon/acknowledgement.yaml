@@ -1,0 +1,29 @@
+centreon_application_acknowledgement_findlasthostacknowledgement:
+    methods: GET
+    path: /acknowledgements/hosts
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findLastHostAcknowledgement'
+
+centreon_application_acknowledgement_findlastserviceacknowledgement:
+    methods: GET
+    path: /acknowledgements/services
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findLastServiceAcknowledgement'
+
+centreon_application_acknowledgement_addhostacknowledgement:
+    methods: POST
+    path: /acknowledgements/hosts
+    controller: 'Centreon\Application\Controller\AcknowledgementController::addHostAcknowledgement'
+
+centreon_application_acknowledgement_disacknowledgehostacknowledgement:
+    methods: DELETE
+    path: /acknowledgements/hosts/{hostId}
+    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeHostAcknowledgement'
+
+centreon_application_acknowledgement_disacknowledgeserviceacknowledgement:
+    methods: DELETE
+    path: /acknowledgements/hosts/{hostId}/services/{serviceId}
+    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeServiceAcknowledgement'
+
+centreon_application_acknowledgement_addserviceacknowledgement:
+    methods: POST
+    path: /acknowledgements/services
+    controller: 'Centreon\Application\Controller\AcknowledgementController::addServiceAcknowledgement'

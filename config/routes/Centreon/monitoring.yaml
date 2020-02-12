@@ -1,0 +1,43 @@
+centreon_application_monitoring_getservices:
+    methods: GET
+    path: /monitoring/services
+    controller: 'Centreon\Application\Controller\MonitoringController::getServices'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_getservicesbyservicegroups:
+    methods: GET
+    path: /monitoring/servicegroups
+    controller: 'Centreon\Application\Controller\MonitoringController::getServicesByServiceGroups'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_gethostgroups:
+    methods: GET
+    path: /monitoring/hostgroups
+    controller: 'Centreon\Application\Controller\MonitoringController::getHostGroups'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_gethosts:
+    methods: GET
+    path: /monitoring/hosts
+    controller: 'Centreon\Application\Controller\MonitoringController::getHosts'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_getonehost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}
+    requirements:
+        hostId: '\d+'
+    controller: 'Centreon\Application\Controller\MonitoringController::getOneHost'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_getservicesbyhost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services
+    controller: 'Centreon\Application\Controller\MonitoringController::getServicesByHost'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_getoneservice:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}
+    controller: 'Centreon\Application\Controller\MonitoringController::getOneService'
+    condition: "request.attributes.get('version.is_beta') == true"

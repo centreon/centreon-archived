@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,137 +22,121 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Downtime;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class Downtime
  * @package Centreon\Domain\Downtime
  */
-class Downtime
+class Downtime implements EntityDescriptorMetadataInterface
 {
+    // Groups for serilizing
+    public const SERIALIZER_GROUP_MAIN = 'downtime_main';
+    public const SERIALIZER_GROUP_SERVICE = 'downtime_service';
+
+    // Types
     public const TYPE_HOST_DOWNTIME = 0;
     public const TYPE_SERVICE_DOWNTIME = 1;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Desc(column="downtime_id", modifier="setId")
-     * @Serializer\Type("integer")
      * @var int|null Unique id
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Creation date
      */
     private $entryTime;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Serializer\Type("integer")
      * @var int|null Author id who sent this downtime
      */
     private $authorId;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Serializer\Type("integer")
      * @var int|null Host id linked to this downtime
      */
     private $hostId;
 
     /**
-     * @Serializer\Groups({"downtime_service"})
-     * @Serializer\Type("integer")
      * @var int|null Service id linked to this downtime
      */
     private $serviceId;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Desc(column="cancelled", modifier="setCancelled")
-     * @Serializer\Type("boolean")
      * @var bool Indicates if this downtime have been cancelled
      */
     private $isCancelled;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Desc(column="comment_data", modifier="setComment")
-     * @Serializer\Type("string")
      * @var string|null Comments
      */
     private $comment;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Date when this downtime have been deleted
      */
     private $deletionTime;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Serializer\Type("integer")
      * @var int|null Duration of the downtime corresponding to endTime - startTime (in seconds)
      */
     private $duration;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Serializer\Type("DateTime<'Y-m-d\TH:i:sP'>")
      * @var \DateTime|null End date of the downtime
      */
     private $endTime;
 
     /**
-     * @Serializer\Type("integer")
      * @var int|null (used to cancel a downtime)
      */
     private $internalId;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Desc(column="fixed", modifier="setFixed")
-     * @Serializer\Type("boolean")
      * @var boolean Indicates either the downtime is fixed or not
      */
     private $isFixed;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Desc(column="instance_id", modifier="setPollerId")
-     * @Serializer\Type("integer")
      * @var int|null Poller id
      */
     private $pollerId;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Serializer\Type("DateTime<'Y-m-d\TH:i:sP'>")
      * @var \DateTime|null Start date of the downtime
      */
     private $startTime;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Actual start date of the downtime
      */
     private $actualStartTime;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Actual end date of the downtime
      */
     private $actualEndTime;
 
     /**
-     * @Serializer\Groups({"downtime_main"})
-     * @Desc(column="started", modifier="setStarted")
-     * @Serializer\Type("boolean")
      * @var bool Indicates if this downtime have started
      */
     private $isStarted;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'downtime_id' => 'setId',
+            'cancelled' => 'setCancelled',
+            'comment_data' => 'setComment',
+            'fixed' => 'setFixed',
+            'instance_id' => 'setPollerId',
+            'started' => 'setStarted',
+        ];
+    }
 
     /**
      * @return int|null
