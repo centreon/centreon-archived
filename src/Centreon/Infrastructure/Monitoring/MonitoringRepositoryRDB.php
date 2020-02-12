@@ -1102,7 +1102,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): ?array
     {
-
         $serviceGroups = [];
 
         if ($this->hasNotEnoughRightsToContinue()) {
