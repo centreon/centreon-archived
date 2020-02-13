@@ -8,7 +8,7 @@ Receive SNMP traps with Centreon
 
 This section presents the different stages in order to monitor equipment using SNMP traps.
 
-Import of SNMP traps
+Import SNMP traps from a MIB file
 ====================
 
 To import SNMP traps, you must follow the following steps:
@@ -16,10 +16,10 @@ To import SNMP traps, you must follow the following steps:
 #. Create a Manufacturer linked to the SNMP trap that you created, see this :ref:`section <configuration_advanced_snmptrapds_manufacturer>`
 #. Import MiB in the Centreon web interface, see this :ref:`section <configuration_advanced_snmptrapds_mibimport>`
 
-When import a MiB file, it's possible that dependencies are necessary. In order to find the dependencies of your MIB, you must open your MIB file using a standard text editor, then:
+Prior to importing a certain MiB file, it may happen that a number of dependencies need to be met. In order to find the dependencies of your MIB, you must open your MIB file using a standard text editor, then:
 
-#. Locate the line that starts with IMPORTS
-#. All dependencies required to import your MIB file are after the keyword **FROM**
+#. Locate the line that starts with **IMPORTS**
+#. Verify all the required dependencies to import your MIB file after the keyword **FROM**
 
 Eg. :
 
@@ -32,56 +32,50 @@ Once the import is complete, it is necessary to modify the definition of the tra
 #. Go into the menu **Configuration > SNMP Traps**
 #. Click on the trap you want to modify.
 
-Depending on the associated trap message, change the default status of the service. In case the status of the service depends on the received message, use the advanced matching mode.
+Depending on the associated trap message, change the **Default Status** of the service to be submitted to the monitoring engine and mark the option **Submit result**. If the status of the service depends on the contents of the received message, you may need to parse it using the options **Advanced matching mode** and **Advanced matching rules**.
 
 Create a passive service template
 =================================
 
-To facilitate the configuration of services using SNMP traps, it is more convenient to create a passive service template. In this way, when creating a service there will be more than inherit the service from this model and link the trap or SNMP traps linked to this service.
+In order to facilitate the configuration of services using SNMP traps, it is more convenient to create a passive service template. This passive service template will speed up the configuration process because you can reuse it to configure any other services that rely on SNMP traps. The only difference will be the SNMP traps that you link to the actual service. To create the passive service template, you have to:
 
-#. Go in the menu **Configuration > Services**
-#. In the left menu click on **Templates**
+#. Go to the menu **Configuration > Services > Templates**
 #. Click on **Add**
 
-The table below summarizes all the attributes of a passive service template:
+The table below summarizes all the required attributes of a passive service template:
 
-+--------------------------------------+--------------------------------------------+
-| Attributes                           | Description                                |
-+======================================+============================================+
-| **Service Configuration** Tab                                                     |
-+--------------------------------------+--------------------------------------------+
-| Alias                                | TRAP                                       |
-+--------------------------------------+--------------------------------------------+
-| Service Template Name                | generic-passive-service                    |
-+--------------------------------------+--------------------------------------------+
-| Check Period                         | 24x7                                       |
-+--------------------------------------+--------------------------------------------+
-| Check Command                        | check_centreon_dummy                       |
-+--------------------------------------+--------------------------------------------+
-| Args                                 | Status : 0                                 |
-|                                      | Output : "No trap since 24 hours"          |
-+--------------------------------------+--------------------------------------------+
-| Max Check Attempts                   | 1                                          |
-+--------------------------------------+--------------------------------------------+
-| Active Checks Enabled                | No                                         |
-+--------------------------------------+--------------------------------------------+
-| Passive Checks Enabled               | Yes                                        |
-+--------------------------------------+--------------------------------------------+
-| **Data Processing** Tab                                                           |
-+--------------------------------------+--------------------------------------------+
-| Check Freshness                      | TRAP                                       |
-+--------------------------------------+--------------------------------------------+
-| Freshness Threshold                  | 86400 (24 hours)                           |
-+--------------------------------------+--------------------------------------------+
++--------------------------------------+--------------------------------------------------+
+| Attributes                           | Description                                      |
++======================================+==================================================+
+| **Service Configuration** Tab                                                           |
++--------------------------------------+--------------------------------------------------+
+| Alias                                | TRAP                                             |
++--------------------------------------+--------------------------------------------------+
+| Service Template Name                | generic-passive-service                          |
++--------------------------------------+--------------------------------------------------+
+| Custom Macros                        | * DUMMYSTATUS: OK                                |
+|                                      | * DUMMYOUTPUT: No traps for the last 24 hours    |
++--------------------------------------+--------------------------------------------------+
+| **Data Processing** Tab                                                                 |
++--------------------------------------+--------------------------------------------------+
+| Check Freshness                      | Yes                                              |
++--------------------------------------+--------------------------------------------------+
+| Freshness Threshold                  | 86400 (24 hours)                                 |
++--------------------------------------+--------------------------------------------------+
 
 .. note::
-   The check_centreon_dummy plugin will be called if no trap is received within 24 hours.
+   The command App-Monitoring-Centreon-Service-Dummy (inherited from the generic-passive-service **Service Template**) will be called if additional traps are not received within 24 hours.
 
 Service creation
 ================
 
-Then create the service and associate it with the passive service template.
-You just have to go to the **Relations** tab and linked in the field **Service Trap Relation**, SNMP traps that can change the status of the service.
+Finally, create a new service and associate it with:
+
+* the passive service template;
+* the SNMP traps.
+
+In the **General Information** tab, modify the **Template** field to include your recently created passive service template.
+In order to associate the service with the SNMP trap(s), just go to the **Relations** tab and use the field **Service Trap Relation** to add all SNMP traps that can change the status of the service.
 
 Now :ref:`Generate configuration files <configuration_advanced_snmptrapds_generate_configuration>` to apply changes.
 
@@ -357,7 +351,7 @@ CentCore
 ========
 
 CentCore daemon must be running to forward information from Centreontrapd to the monitoring engine as an external command.
-Enable the debug mode via **Administration > Options > Debug** menu and restart process.
+Enable the debug mode via **Administration > Parameters > Debug** menu and restart the process.
 
 .. note::
     You can edit debug severity level in **/etc/sysconfig/centcore** file.
