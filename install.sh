@@ -20,7 +20,7 @@
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
 # Developed by : Julien Mathis - Romain Le Merlus
-# Contributors	: Guillaume Watteeux - Maximilien Bersoult
+# Contributors : Guillaume Watteeux - Maximilien Bersoult
 #
 ###################################################################
 # This program is free software; you can redistribute it and/or
@@ -432,4 +432,3 @@ __EOT__
 
 
 exit 0
-
