@@ -10,6 +10,7 @@ module.exports = merge(baseConfig, extractCssConfig, {
   output: {
     path: path.resolve(`${__dirname}/www/static`),
     publicPath: './static/',
+    library: ['name'],
   },
   optimization: {
     splitChunks: {
