@@ -414,6 +414,10 @@ fi
 purge_centreon_tmp_dir "silent"
 server=$(hostname -f)
 
+# Replace global variables
+
+
+
 ${CAT} << __EOT__
 ###############################################################################
 #                                                                             #

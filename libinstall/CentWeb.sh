@@ -202,7 +202,7 @@ log "INFO" "$( gettext "Copying www/install/insertBaseConf.sql in final director
 cp $TMP_DIR/work/www/install/insertBaseConf.sql \
     $TMP_DIR/final/www/install/insertBaseConf.sql >> "$LOG_FILE" 2>&1
 
-### Chagne Macro for sql update file
+### Change Macro for sql update file
 macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREON_ENGINE_CONNECTORS@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "Update*.sql" "file_sql_temp"
 
@@ -229,13 +229,13 @@ check_result $flg_error "$(gettext "Change macros for sql update files")"
 ### Step 2.0: Change right on Centreon WebFront
 
 ## use this step to change macros on php file...
-macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@,@PHP_BIN@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.php" "file_php_temp"
-
+find_macros_in_dir "$macros" "$TMP_DIR/src/" "bin" "*" "file_bin_temp"
 log "INFO" "$(gettext "Apply macros")"
 
 flg_error=0
-${CAT} "$file_php_temp" | while read file ; do
+${CAT} "$file_php_temp" "$file_bin_temp" | while read file ; do
     log "MACRO" "$(gettext "Change macro for") : $file"
     [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
         mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
@@ -245,11 +245,13 @@ ${CAT} "$file_php_temp" | while read file ; do
         -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
         -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
         -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+        -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
         $TMP_DIR/src/$file > $TMP_DIR/work/$file
         [ $? -ne 0 ] && flg_error=1
     log "MACRO" "$(gettext "Copy in final dir") : $file"
     cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
 done
+
 check_result $flg_error "$(gettext "Change macros for php files")"
 
 macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
