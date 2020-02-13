@@ -75,7 +75,6 @@ const ReactRouter = ({
 
   console.log(`Pages: ${JSON.stringify(pages)}`);
 
-
   return (
     <Suspense fallback={null}>
       <Switch>
