@@ -62,7 +62,6 @@ class CheckController extends AbstractController
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
      * @param int $hostId
-     * @param string $version
      * @return View
      * @throws \Exception
      */
@@ -70,8 +69,7 @@ class CheckController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer,
-        int $hostId,
-        string $version
+        int $hostId
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -120,7 +118,6 @@ class CheckController extends AbstractController
      * @param SerializerInterface $serializer
      * @param int $hostId
      * @param int $serviceId
-     * @param string $version
      * @return View
      * @throws \Exception
      */
@@ -129,8 +126,7 @@ class CheckController extends AbstractController
         EntityValidator $entityValidator,
         SerializerInterface $serializer,
         int $hostId,
-        int $serviceId,
-        string $version
+        int $serviceId
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -152,7 +148,7 @@ class CheckController extends AbstractController
         );
         $check
             ->setHostId($hostId)
-            ->setServiceId($hostId)
+            ->setServiceId($serviceId)
             ->setCheckTime(new \DateTime());
 
         $errors = $entityValidator->validate(

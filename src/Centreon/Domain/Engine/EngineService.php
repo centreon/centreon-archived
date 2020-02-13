@@ -421,11 +421,11 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             throw new EngineException('Host name cannot be empty');
         }
 
-        if (empty($service->getDescription)) {
+        if (empty($service->getDescription())) {
             throw new EngineException('Service description cannot be empty');
         }
 
-        $commandName = $check->isForced() ? 'SCHEDULE_FORCED_SERVICE_CHECK' : 'SCHEDULE_SERVICE_CHECK';
+        $commandName = $check->isForced() ? 'SCHEDULE_FORCED_SVC_CHECK' : 'SCHEDULE_SVC_CHECK';
 
         $command = sprintf(
             '%s;%s;%s;%d',

@@ -142,6 +142,7 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
         if (is_null($service)) {
             throw new EntityNotFoundException('Service not found');
         }
+        $service->setHost($host);
 
         $this->engineService->scheduleServiceCheck($check, $service);
     }

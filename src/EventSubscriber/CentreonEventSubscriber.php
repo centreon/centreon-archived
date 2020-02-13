@@ -337,6 +337,10 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
             if ($event->getException() instanceof EntityNotFoundException) {
                 $errorMessage = null;
+                $errorMessage = json_encode([
+                    'code' => $errorCode,
+                    'message' => $event->getException()->getMessage()
+                ]);
                 $httpCode = Response::HTTP_NOT_FOUND;
             } elseif ($event->getException() instanceof ValidationFailedException) {
                 $errorMessage = json_encode([
