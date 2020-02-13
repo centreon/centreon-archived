@@ -40,4 +40,15 @@ interface CheckServiceInterface extends ContactFilterInterface
      * @throws ValidationFailedException
      */
     public function checkHost(Check $check): void;
+
+    /**
+     * Adds a service check.
+     *
+     * @param Check $check Service check to schedule
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     * @throws ValidationFailedException
+     */
+    public function checkService(Check $check): void;
 }

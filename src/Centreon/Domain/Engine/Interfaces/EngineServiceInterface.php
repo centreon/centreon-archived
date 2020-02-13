@@ -125,4 +125,13 @@ interface EngineServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function scheduleHostCheck(Check $check, Host $host): void;
+
+    /**
+     * Schedule a service check.
+     *
+     * @param Check $check Check to schedule
+     * @param Service $service Service on which check is scheduled
+     * @throws \Exception
+     */
+    public function scheduleServiceCheck(Check $check, Service $service): void;
 }

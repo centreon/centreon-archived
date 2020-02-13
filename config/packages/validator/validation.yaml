@@ -89,23 +89,23 @@ Centreon\Domain\Check\Check:
         hostId:
             - Type:
                 type: integer
-                groups: [Default]
+                groups: [Default, check_host, check_service]
             - NotNull:
-                groups: [Default]
+                groups: [Default, check_host, check_service]
         serviceId:
             - Type:
                 type: integer
-                groups: [Default]
+                groups: [Default, check_service]
             - NotNull:
-                groups: [Default]
+                groups: [Default, check_service]
         checkTime:
             - Type:
                 type: DateTime
-                groups: [Default]
+                groups: [Default, check_host, check_service]
         isForced:
             - Type:
                 type: boolean
-                groups: [Default]
+                groups: [Default, check_host, check_service]
 
 
 # Used to validate the Proxy entity

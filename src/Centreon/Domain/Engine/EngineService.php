@@ -402,6 +402,44 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
     }
 
     /**
+     * @inheritDoc
+     */
+    public function scheduleServiceCheck(Check $check, Service $service): void
+    {
+        // We validate the check instance
+        $errors = $this->validator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_SERVICE_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        if (empty($service->getHost()->getName())) {
+            throw new EngineException('Host name cannot be empty');
+        }
+
+        if (empty($service->getDescription)) {
+            throw new EngineException('Service description cannot be empty');
+        }
+
+        $commandName = $check->isForced() ? 'SCHEDULE_FORCED_SERVICE_CHECK' : 'SCHEDULE_SERVICE_CHECK';
+
+        $command = sprintf(
+            '%s;%s;%s;%d',
+            $commandName,
+            $service->getHost()->getName(),
+            $service->getDescription(),
+            $check->getCheckTime()
+        );
+
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
+        $this->engineRepository->sendExternalCommand($commandFull);
+    }
+
+    /**
      * Create the command header for external commands
      *
      * @param int $pollerId Id of the poller

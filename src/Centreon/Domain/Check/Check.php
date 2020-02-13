@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Check;
 
-use JMS\Serializer\Annotation as Serializer;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
-class Check
+class Check implements EntityDescriptorMetadataInterface
 {
     public const TYPE_HOST_CHECK = 0;
     public const TYPE_SERVICE_CHECK = 1;
@@ -33,32 +33,37 @@ class Check
     public const VALIDATION_GROUPS_SERVICE_CHECK = ['check_service'];
 
     /**
-     * @Serializer\Groups({"check_main"})
-     * @Serializer\Type("integer")
      * @var int Host id
      */
     private $hostId;
 
     /**
-     * @Serializer\Groups({"check_service"})
-     * @Serializer\Type("integer")
      * @var int|null Service id
      */
     private $serviceId;
 
     /**
-     * @Serializer\Groups({"check_main"})
-     * @Serializer\Type("DateTime<'Y-m-d\TH:i:sP'>")
      * @var \DateTime
      */
     private $checkTime;
 
     /**
-     * @Serializer\Groups({"check_main"})
-     * @Serializer\Type("boolean")
      * @var bool
      */
     private $isForced = true;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'host_id' => 'setHostId',
+            'service_id' => 'setServiceId',
+            'check_time' => 'setCheckTime',
+            'is_forced' => 'setForced',
+        ];
+    }
 
     /**
      * @return int

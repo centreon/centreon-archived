@@ -26,12 +26,10 @@ use Centreon\Domain\Check\Check;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,7 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @package Centreon\Application\Controller
  */
-class CheckController extends AbstractFOSRestController
+class CheckController extends AbstractController
 {
     /**
      * @var CheckServiceInterface
@@ -58,13 +56,8 @@ class CheckController extends AbstractFOSRestController
     }
 
     /**
-     * Entry point to check a hostt.
+     * Entry point to check a host.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/hosts/{hostId}/check",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true")
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -80,6 +73,8 @@ class CheckController extends AbstractFOSRestController
         int $hostId,
         string $version
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var $contact Contact
          */
@@ -88,9 +83,21 @@ class CheckController extends AbstractFOSRestController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $errors = $entityValidator->validateEntity(
-            Check::class,
-            json_decode($request->getContent(), true),
+        /**
+         * @var $check Check
+         */
+        $check = $serializer->deserialize(
+            $request->getContent(),
+            (string) Check::class,
+            'json'
+        );
+        $check
+            ->setHostId($hostId)
+            ->setCheckTime(new \DateTime());
+
+        $errors = $entityValidator->validate(
+            $check,
+            null,
             Check::VALIDATION_GROUPS_HOST_CHECK
         );
 
@@ -98,21 +105,69 @@ class CheckController extends AbstractFOSRestController
             throw new ValidationFailedException($errors);
         }
 
+        $this->checkService
+            ->filterByContact($contact)
+            ->checkHost($check);
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to check a service.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @param int $hostId
+     * @param int $serviceId
+     * @param string $version
+     * @return View
+     * @throws \Exception
+     */
+    public function checkService(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer,
+        int $hostId,
+        int $serviceId,
+        string $version
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_CHECK)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         /**
          * @var $check Check
          */
         $check = $serializer->deserialize(
             $request->getContent(),
-            Check::class,
+            (string) Check::class,
             'json'
         );
         $check
             ->setHostId($hostId)
+            ->setServiceId($hostId)
             ->setCheckTime(new \DateTime());
+
+        $errors = $entityValidator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_SERVICE_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
 
         $this->checkService
             ->filterByContact($contact)
-            ->checkHost($check);
+            ->checkService($check);
 
         return $this->view();
     }

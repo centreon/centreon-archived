@@ -1,0 +1,10 @@
+Centreon\Domain\Check\Check:
+    properties:
+        hostId:
+            type: int
+        serviceId:
+            type: int
+        checkTime:
+            type: DateTime
+        isForced:
+            type: bool

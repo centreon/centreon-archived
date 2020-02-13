@@ -116,4 +116,33 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
 
         $this->engineService->scheduleHostCheck($check, $host);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkService(Check $check): void
+    {
+        // We validate the check instance
+        $errors = $this->validator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_SERVICE_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $host = $this->monitoringRepository->findOneHost($check->getHostId());
+        if (is_null($host)) {
+            throw new EntityNotFoundException('Host not found');
+        }
+
+        $service = $this->monitoringRepository->findOneService($check->getHostId(), $check->getServiceId());
+        if (is_null($service)) {
+            throw new EntityNotFoundException('Service not found');
+        }
+
+        $this->engineService->scheduleServiceCheck($check, $service);
+    }
 }
