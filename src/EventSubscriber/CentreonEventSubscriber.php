@@ -336,9 +336,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
 
             if ($event->getException() instanceof EntityNotFoundException) {
-                $errorMessage = null;
                 $errorMessage = json_encode([
-                    'code' => $errorCode,
+                    'code' => Response::HTTP_NOT_FOUND,
                     'message' => $event->getException()->getMessage()
                 ]);
                 $httpCode = Response::HTTP_NOT_FOUND;
