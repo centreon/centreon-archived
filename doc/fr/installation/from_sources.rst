@@ -323,14 +323,14 @@ Définition des chemins d'installation
     ------------------------------------------------------------------------
 
     Where is your Centreon directory ?
-    default to [/usr/share/centreon]
+    default to [/usr/local/centreon]
     > /usr/share/centreon
     Path /usr/share/centreon                                   OK
 
     ::
 
     Where is your Centreon log directory ?
-    default to [/usr/share/centreon/log]
+    default to [/usr/local/centreon/log]
     > /var/log/centreon
 
     Do you want me to create this directory ? [/var/log/centreon]
@@ -703,7 +703,7 @@ Installation du système de gestion des traps SNMP (CentreonTrapD)
     /etc/snmp                                                  OK
 
     Where is your CentreonTrapd binaries directory ?
-    default to [/usr/share/centreon/bin]
+    default to [/usr/local/centreon/bin]
     > /usr/share/centreon/bin
     /usr/share/centreon/bin                                    OK
 
