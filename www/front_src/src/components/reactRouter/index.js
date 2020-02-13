@@ -60,60 +60,64 @@ const LoadableComponents = ({
 };
 
 // Component to manage internal react pages
-const ReactRouter = ({
-  isNavigationFetched,
-  allowedPages,
-  fetched,
-  history,
-  pages,
-}) => {
-  if (!isNavigationFetched || !fetched) {
-    return null;
-  }
+const ReactRouter = React.memo(
+  ({ isNavigationFetched, allowedPages, fetched, history, pages }) => {
+    if (!isNavigationFetched || !fetched) {
+      return null;
+    }
 
-  console.log('reactRouter rendered');
-
-  console.log(`Pages: ${JSON.stringify(pages)}`);
-
-  return (
-    <Suspense fallback={null}>
-      <Switch>
-        {reactRoutes.map(({ path, comp: Comp, ...rest }) => (
-          <Route
-            key={path}
-            path={path}
-            exact
-            render={(renderProps) => (
-              <div className={styles['react-page']}>
-                {allowedPages.includes(path) ? (
-                  <BreadcrumbWrapper path={path}>
-                    <Comp {...renderProps} />
-                  </BreadcrumbWrapper>
-                ) : (
-                  <NotAllowedPage {...renderProps} />
-                )}
-              </div>
-            )}
-            {...rest}
+    return (
+      <Suspense fallback={null}>
+        <Switch>
+          {reactRoutes.map(({ path, comp: Comp, ...rest }) => (
+            <Route
+              key={path}
+              path={path}
+              exact
+              render={(renderProps) => (
+                <div className={styles['react-page']}>
+                  {allowedPages.includes(path) ? (
+                    <BreadcrumbWrapper path={path}>
+                      <Comp {...renderProps} />
+                    </BreadcrumbWrapper>
+                  ) : (
+                    <NotAllowedPage {...renderProps} />
+                  )}
+                </div>
+              )}
+              {...rest}
+            />
+          ))}
+          <LoadableComponents
+            history={history}
+            isNavigationFetched={isNavigationFetched}
+            allowedPages={allowedPages}
+            pages={pages}
           />
-        ))}
-        <LoadableComponents
-          history={history}
-          isNavigationFetched={isNavigationFetched}
-          allowedPages={allowedPages}
-          pages={pages}
-        />
-        {fetched && (
-          <Route
-            component={
-              NotAllowedPage // wait external components are fetched to avoid quick display of "not allowed" page
-            }
-          />
-        )}
-      </Switch>
-    </Suspense>
-  );
-};
+          {fetched && (
+            <Route
+              component={
+                NotAllowedPage // wait external components are fetched to avoid quick display of "not allowed" page
+              }
+            />
+          )}
+        </Switch>
+      </Suspense>
+    );
+  },
+  (previousProps, nextProps) => {
+    const {
+      pages: previousPages,
+      allowedPages: previousAllowedPages,
+    } = previousProps;
+    const { pages: nextPages, allowedPages: nextAllowedPages } = nextProps;
+
+    return (
+      JSON.stringify(previousPages) === JSON.stringify(nextPages) &&
+      JSON.stringify(previousAllowedPages) === JSON.stringify(nextAllowedPages)
+    );
+  },
+);
 
 const mapStateToProps = (state) => ({
   isNavigationFetched: state.navigation.fetched,
