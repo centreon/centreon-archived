@@ -26,4 +26,7 @@ return [
     Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Nelmio\CorsBundle\NelmioCorsBundle::class => ['all' => true],
+    // need to be installed dev requirements  packages
+    'Symfony\\Bundle\\TwigBundle\\TwigBundle' => ['dev' => true, 'test' => true],
+    'Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle' => ['dev' => true, 'test' => true],
 ];

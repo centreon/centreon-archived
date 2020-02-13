@@ -13,3 +13,8 @@ UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 202
 
 -- Add unified view page entry
 INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Resources (beta)', '/monitoring/resources', '1', '1', 2, 201, 1, 1);
+
+-- Delete legacy engine parameters
+ALTER TABLE `cfg_nagios` DROP COLUMN `check_result_path`;
+ALTER TABLE `cfg_nagios` DROP COLUMN `use_check_result_path`;
+ALTER TABLE `cfg_nagios` DROP COLUMN `max_check_result_file_age`;

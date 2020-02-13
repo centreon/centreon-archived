@@ -121,7 +121,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'host.state' => 'h.state',
             'poller.id' => 'h.instance_id',
             'service.display_name' => 'srv.display_name',
-            'host_group.id' => 'hg.hostgroup_id']);
+            'host_group.id' => 'hg.hostgroup_id',
+            'host.is_acknowledged' => 'h.acknowledged',
+            'host.downtime' => 'h.scheduled_downtime_depth',
+            'host.criticality' => 'cv.value'
+        ]);
 
         $accessGroupFilter = $this->isAdmin()
             ? ''
@@ -136,6 +140,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
               h.*,
+              cv.value AS criticality,
               i.name AS instance_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
@@ -149,7 +154,9 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               ON srv.host_id = h.host_id
               AND srv.enabled = \'1\'
             LEFT JOIN `:dbstg`.`hosts_hostgroups` hg
-              ON hg.host_id = h.host_id';
+              ON hg.host_id = h.host_id
+            LEFT JOIN `:dbstg`.`customvariables` cv
+            ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = \'CRITICALITY_LEVEL\')';
 
         $request = $this->translateDbName($request);
 
@@ -572,6 +579,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'service.output' => 'srv.output',
             'service.state' => 'srv.state',
             'service_group.id' => 'ssg.servicegroup_id',
+            'service.downtime' => 'srv.scheduled_downtime_depth',
+            'service.criticality' => 'cv.value'
         ]);
 
         $accessGroupFilter = $this->isAdmin()
@@ -588,6 +597,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
               srv.*,
               h.host_id, h.alias AS host_alias, h.name AS host_name,
+              cv.value as criticality,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS host_display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS host_state
             FROM `:dbstg`.services srv'
@@ -605,7 +615,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               ON hg.hostgroup_id = hhg.hostgroup_id
             LEFT JOIN :dbstg.services_servicegroups ssg
               ON ssg.service_id = srv.service_id
-              AND ssg.host_id = h.host_id';
+              AND ssg.host_id = h.host_id
+            LEFT JOIN :dbstg.customvariables cv
+              ON (cv.service_id = srv.service_id
+              AND cv.host_id IS NULL AND cv.name = \'CRITICALITY_LEVEL\')';
 
         $request = $this->translateDbName($request);
 

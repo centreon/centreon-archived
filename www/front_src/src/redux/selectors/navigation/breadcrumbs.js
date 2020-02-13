@@ -5,18 +5,17 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {String} build URL
  */
-function getUrl(item) {
-  return item.is_react
+const getUrl = (item) =>
+  item.is_react
     ? item.url
     : `/main.php?p=${item.page}${item.options !== null ? item.options : ''}`;
-}
 
 /**
  * loop on each group/child to get first url
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-function findFirstUrl(item) {
+const findFirstUrl = (item) => {
   if (item.url) {
     return getUrl(item);
   }
@@ -30,28 +29,28 @@ function findFirstUrl(item) {
   }
 
   return item.children ? getFirstUrlInChildren(item) : undefined;
-}
+};
 
 /**
  * find first URL in children prop
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-function getFirstUrlInChildren(item) {
+const getFirstUrlInChildren = (item) => {
   if (!item.children) {
     return undefined;
   }
 
   const childrenWithUrl = item.children.find(findFirstUrl);
   return childrenWithUrl ? findFirstUrl(childrenWithUrl) : undefined;
-}
+};
 
 /**
  * get breadcrumb step information from an entry
  * @param Object item
  * @return {Object|null} breadcrumb step information
  */
-function getBreadcrumbStep(item) {
+const getBreadcrumbStep = (item) => {
   const availableUrl = item.url ? getUrl(item) : findFirstUrl(item);
   return availableUrl
     ? {
@@ -59,7 +58,7 @@ function getBreadcrumbStep(item) {
         link: availableUrl,
       }
     : null;
-}
+};
 
 const getNavigationItems = (state) => state.navigation.items;
 

@@ -21,10 +21,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Annotation;
 
-use Doctrine\Common\Annotations\Annotation;
-use Doctrine\Common\Annotations\Annotation\Required;
-use Doctrine\Common\Annotations\Annotation\Target;
-
 /**
  * Entity description used to define the setter method for a specific column.
  *

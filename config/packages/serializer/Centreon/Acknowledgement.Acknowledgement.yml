@@ -1,0 +1,50 @@
+Centreon\Domain\Acknowledgement\Acknowledgement:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'ack_main'
+        authorId:
+            type: int
+            groups:
+                - 'ack_main'
+        comment:
+            type: string
+            groups:
+                - 'ack_main'
+        deletionTime:
+            type: DateTime
+            groups:
+                - 'ack_main'
+        entryTime:
+            type: DateTime
+            groups:
+                - 'ack_main'
+        hostId:
+            type: int
+            groups:
+                - 'ack_main'
+        pollerId:
+            type: int
+            groups:
+                - 'ack_main'
+        isNotifyContacts:
+            type: bool
+            groups:
+                - 'ack_main'
+        isPersistentComment:
+            type: bool
+            groups:
+                - 'ack_main'
+        isSticky:
+            type: bool
+            groups:
+                - 'ack_main'
+        serviceId:
+            type: int
+            groups:
+                - 'ack_service'
+        state:
+            type: int
+            groups:
+                - 'ack_main'

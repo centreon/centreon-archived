@@ -1,0 +1,9 @@
+centreon_application_authentication_login:
+    methods: POST
+    path: /login
+    controller: 'Centreon\Application\Controller\AuthenticationController::login'
+
+centreon_application_authentication_logout:
+    methods: GET
+    path: /logout
+    controller: 'Centreon\Application\Controller\AuthenticationController::logout'
