@@ -19,6 +19,7 @@ const LoadableHooks = ({ history, hooks, path, ...rest }) => {
     <>
       {Object.entries(hooks)
         .filter(([hook]) => hook === path)
+        // eslint-disable-next-line no-unused-vars
         .map(([_, parameters]) => {
           const LoadableHook = React.lazy(() =>
             dynamicImport(basename, parameters),
