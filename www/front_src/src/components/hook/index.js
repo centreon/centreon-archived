@@ -2,47 +2,52 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/prop-types */
 
-import React, { Component, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
 
+const LoadableHooks = ({ history, hooks, path, ...rest }) => {
+  const basename = history.createHref({
+    pathname: '/',
+    search: '',
+    hash: '',
+  });
+
+  return (
+    <>
+      {Object.entries(hooks)
+        .filter(([hook]) => hook === path)
+        .map(([_, parameters]) => {
+          const LoadableHook = React.lazy(() =>
+            dynamicImport(basename, parameters),
+          );
+
+          return (
+            <LoadableHook
+              key={`hook_${parameters.js}`}
+              centreonAxios={centreonAxios}
+              {...rest}
+            />
+          );
+        })}
+    </>
+  );
+};
+
 // class to dynamically import component from modules
-class Hook extends Component {
-  getLoadableHooks = () => {
-    const { history, hooks, path, ...rest } = this.props;
-    const basename = history.createHref({
-      pathname: '/',
-      search: '',
-      hash: '',
-    });
-
-    const LoadableHooks = [];
-    for (const [hook, parameters] of Object.entries(hooks)) {
-      if (hook === path) {
-        const LoadableHook = React.lazy(() =>
-          dynamicImport(basename, parameters),
-        );
-        LoadableHooks.push(
-          <LoadableHook
-            key={`hook_${parameters.js}`}
-            centreonAxios={centreonAxios}
-            {...rest}
-          />,
-        );
-      }
-    }
-
-    return LoadableHooks;
-  };
-
-  render() {
-    const LoadableHooks = this.getLoadableHooks();
-
-    return <Suspense fallback={null}>{LoadableHooks}</Suspense>;
-  }
-}
+const Hook = React.memo(
+  (props) => {
+    return (
+      <Suspense fallback={null}>
+        <LoadableHooks {...props} />
+      </Suspense>
+    );
+  },
+  ({ hooks: previousHooks }, { hooks: nextHooks }) =>
+    JSON.stringify(previousHooks) === JSON.stringify(nextHooks),
+);
 
 const mapStateToProps = ({ externalComponents }) => ({
   hooks: externalComponents.hooks,
