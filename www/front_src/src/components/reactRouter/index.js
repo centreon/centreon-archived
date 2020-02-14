@@ -105,18 +105,12 @@ const ReactRouter = React.memo(
       </Suspense>
     );
   },
-  (previousProps, nextProps) => {
-    const {
-      pages: previousPages,
-      allowedPages: previousAllowedPages,
-    } = previousProps;
-    const { pages: nextPages, allowedPages: nextAllowedPages } = nextProps;
-
-    return (
-      JSON.stringify(previousPages) === JSON.stringify(nextPages) &&
-      JSON.stringify(previousAllowedPages) === JSON.stringify(nextAllowedPages)
-    );
-  },
+  (previousProps, nextProps) =>
+    JSON.stringify(previousProps.pages) === JSON.stringify(nextProps.pages) &&
+    JSON.stringify(previousProps.allowedPages) ===
+      JSON.stringify(nextProps.allowedPages) &&
+    previousProps.fetched === nextProps.fetched &&
+    previousProps.isNavigationFetched === nextProps.isNavigationFetched,
 );
 
 const mapStateToProps = (state) => ({
