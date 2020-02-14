@@ -175,8 +175,7 @@ cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
 cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package-lock.json $TMP_DIR/final
-cp -f $TMP_DIR/src/.env $TMP_DIR/final
-cp -f $TMP_DIR/src/.env.local.php $TMP_DIR/final
+cp -f $TMP_DIR/src/.env* $TMP_DIR/final
 cp -Rf $TMP_DIR/src/src $TMP_DIR/final
 
 ## Prepare and copy composer module
@@ -278,6 +277,13 @@ ${CAT} "$file_php_temp" "$file_bin_temp" | while read file ; do
 done
 
 check_result $flg_error "$(gettext "Change macros for php files")"
+
+## create a random APP_SECRET key
+HEX_KEY=($(dd if=/dev/urandom bs=32 count=1 status=none | $PHP_BIN -r "echo bin2hex(fread(STDIN, 32));"))
+sed -i "s/%APP_SECRET%/$HEX_KEY/g" $INSTALL_DIR_CENTREON/.env*
+
+
+
 
 macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
 find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php*" "file_php_config_temp"
@@ -415,11 +421,8 @@ check_result $? "$(gettext "Change right for install directory")"
 cp -f $TMP_DIR/final/bootstrap.php $INSTALL_DIR_CENTREON/bootstrap.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
 
-cp -f $TMP_DIR/final/.env $INSTALL_DIR_CENTREON/.env >> "$LOG_FILE" 2>&1
-$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env
-
-cp -f $TMP_DIR/final/.env.local.php $INSTALL_DIR_CENTREON/.env.local.php >> "$LOG_FILE" 2>&1
-$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env.local.php
+cp -f $TMP_DIR/final/.env* $INSTALL_DIR_CENTREON >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env*
 
 cp -f $TMP_DIR/final/container.php $INSTALL_DIR_CENTREON/container.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/container.php
