@@ -169,7 +169,6 @@ $obj->XML->endElement();
 
 $ct = 0;
 $tab_final = [];
-$dbResultNDO1 = $obj->DBC->query($rq1);
 $dbResultNDO1 = $obj->DBC->prepare($rq1);
 foreach ($queryValues as $bindId => $bindData) {
     foreach ($bindData as $bindType => $bindValue) {
