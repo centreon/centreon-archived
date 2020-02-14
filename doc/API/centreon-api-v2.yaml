@@ -1475,7 +1475,7 @@ components:
           properties:
             id:
               type: integer
-              format: int64
+              format: int32
               description: "ID of the image"
               example: 12
             name:
