@@ -1473,6 +1473,11 @@ components:
         icon:
           type: object
           properties:
+            id:
+              type: integer
+              format: int64
+              description: "ID of the image"
+              example: 12
             name:
               type: string
               description: "Name of the icon"
