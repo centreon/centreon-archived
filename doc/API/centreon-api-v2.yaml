@@ -1459,7 +1459,7 @@ components:
           example: "service"
         id:
           type: integer
-          format: int64
+          format: int32
           description: "ID of the resource"
           example: 12
         name:
