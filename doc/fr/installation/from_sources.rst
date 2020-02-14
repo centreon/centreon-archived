@@ -704,7 +704,7 @@ Installation du système de gestion des traps SNMP (CentreonTrapD)
 
     Where is your CentreonTrapd binaries directory ?
     default to [/usr/share/centreon/bin]
-    > /usr/share/centreon/bin
+    >
     /usr/share/centreon/bin                                    OK
 
     Finding Apache user :                                      www-data

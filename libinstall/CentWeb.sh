@@ -175,7 +175,8 @@ cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
 cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package-lock.json $TMP_DIR/final
-cp -f $TMP_DIR/src/.env* $TMP_DIR/final
+cp -f $TMP_DIR/src/.env $TMP_DIR/final
+cp -f $TMP_DIR/src/.env.local.php $TMP_DIR/final
 cp -Rf $TMP_DIR/src/src $TMP_DIR/final
 
 ## Prepare and copy composer module
@@ -250,13 +251,17 @@ ${CAT} "$file_sql_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for sql update files")"
 
-### Step 2.0: Change right on Centreon WebFront
+### Step 2.0: Change right on Centreon WebFront and replace macros
+
+## create a random APP_SECRET key
+HEX_KEY=($(dd if=/dev/urandom bs=32 count=1 status=none | $PHP_BIN -r "echo bin2hex(fread(STDIN, 32));"))
+log "INFO" "$(gettext "Generated a random key") : $HEX_KEY"
 
 ## use this step to change macros on php file...
 macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@,@PHP_BIN@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.php" "file_php_temp"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "bin" "*" "file_bin_temp"
-log "INFO" "$(gettext "Apply macros")"
+log "INFO" "$(gettext "Apply macros on php files")"
 
 flg_error=0
 ${CAT} "$file_php_temp" "$file_bin_temp" | while read file ; do
@@ -275,23 +280,16 @@ ${CAT} "$file_php_temp" "$file_bin_temp" | while read file ; do
     log "MACRO" "$(gettext "Copy in final dir") : $file"
     cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
 done
-
 check_result $flg_error "$(gettext "Change macros for php files")"
 
-## create a random APP_SECRET key
-HEX_KEY=($(dd if=/dev/urandom bs=32 count=1 status=none | $PHP_BIN -r "echo bin2hex(fread(STDIN, 32));"))
-sed -i "s/%APP_SECRET%/$HEX_KEY/g" $INSTALL_DIR_CENTREON/.env*
-
-
-
-
-macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@,%APP_SECRET%"
 find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php*" "file_php_config_temp"
+find_macros_in_dir "$macros" "$TMP_DIR/src/" "." ".env*" "file_env_temp"
 
-log "INFO" "$(gettext "Apply macros")"
+log "INFO" "$(gettext "Apply macros on env and config files")"
 
 flg_error=0
-${CAT} "$file_php_config_temp" | while read file ; do
+${CAT} "$file_php_config_temp" "$file_env_temp" | while read file ; do
         log "MACRO" "$(gettext "Change macro for") : $file"
         [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
                 mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
@@ -301,12 +299,13 @@ ${CAT} "$file_php_config_temp" | while read file ; do
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
                 -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
                 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+                -e 's|%APP_SECRET%|'"$HEX_KEY"'|g' \
                 $TMP_DIR/src/$file > $TMP_DIR/work/$file
                 [ $? -ne 0 ] && flg_error=1
         log "MACRO" "$(gettext "Copy in final dir") : $file"
         cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
 done
-check_result $flg_error "$(gettext "Change macros for php config file")"
+check_result $flg_error "$(gettext "Change macros for php env and config file")"
 
 ### Step 2.1 : replace macro for perl binary
 
@@ -334,7 +333,7 @@ ${CAT} "$file_perl_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for perl binary")"
 
-### Step 3: Change right on monitoringengine_/etc/centreon folder
+### Step 3: Change right on monitoring engine /etc/centreon folder
 log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 flg_error=0
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -350,7 +349,7 @@ find "$MONITORINGENGINE_ETC" -type f -print | \
 [ $? -ne 0 ] && flg_error=1
 check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 
-### Change right to broker_/etc/centreon-broker folder
+### Change right to broker /etc/centreon-broker folder
 log "INFO" "$(gettext "Change right on ") $BROKER_ETC"
 flg_error=0
 if [ -z "$BROKER_USER" ]; then
@@ -421,8 +420,11 @@ check_result $? "$(gettext "Change right for install directory")"
 cp -f $TMP_DIR/final/bootstrap.php $INSTALL_DIR_CENTREON/bootstrap.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
 
-cp -f $TMP_DIR/final/.env* $INSTALL_DIR_CENTREON >> "$LOG_FILE" 2>&1
-$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env*
+cp -f $TMP_DIR/final/.env $INSTALL_DIR_CENTREON/.env >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env
+
+cp -f $TMP_DIR/final/.env.local.php $INSTALL_DIR_CENTREON/.env.local.php >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env.local.php
 
 cp -f $TMP_DIR/final/container.php $INSTALL_DIR_CENTREON/container.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/container.php
@@ -620,11 +622,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Install centreonSyncArchives")"
 
 ## Install generateSqlLite
-log "INFO" "$(gettext "Prepare generateSqlLite")"
-cp $TMP_DIR/src/bin/generateSqlLite \
-    $TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Prepare generateSqlLite")"
-
 log "INFO" "$(gettext "Install generateSqlLite")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -m 755 \
@@ -641,22 +638,12 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Install changeRrdDsName.pl")"
 
 ## Install binaries for check indexes
-log "INFO" "$(gettext "Prepare export-mysql-indexes")"
-cp $TMP_DIR/src/bin/export-mysql-indexes \
-    $TMP_DIR/final/bin/export-mysql-indexes >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Prepare export-mysql-indexes")"
-
 log "INFO" "$(gettext "Install export-mysql-indexes")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -m 755 \
     $TMP_DIR/final/bin/export-mysql-indexes \
     $CENTREON_BINDIR/export-mysql-indexes >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install export-mysql-indexes")"
-
-log "INFO" "$(gettext "Prepare import-mysql-indexes")"
-cp $TMP_DIR/src/bin/import-mysql-indexes \
-    $TMP_DIR/final/bin/import-mysql-indexes >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Prepare import-mysql-indexes")"
 
 log "INFO" "$(gettext "Install import-mysql-indexes")"
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -666,11 +653,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Install import-mysql-indexes")"
 
 # Install Centreon CLAPI command line
-log "INFO" "$(gettext "Prepare clapi binary")"
-cp $TMP_DIR/src/bin/centreon \
-    $TMP_DIR/final/bin/centreon >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Prepare clapi binary")"
-
 log "INFO" "$(gettext "Install clapi binary")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -m 755 \
@@ -750,4 +732,3 @@ createConfFile
 createCentreonInstallConf
 
 ## wait sql inject script....
-

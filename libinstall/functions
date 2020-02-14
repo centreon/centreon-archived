@@ -2126,7 +2126,7 @@ check_broker_user()
 #----
 copyInTempFile()
 {
-	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www api libinstall .env bootstrap.php container.php composer.json package.json package-lock.json"
+	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www api libinstall .env .env.local.php bootstrap.php container.php composer.json package.json package-lock.json"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then
@@ -2401,7 +2401,7 @@ clean_sudo() {
 #----
 ## Find file with macro in directory.
 ## @param	macro (separate with comma)
-## @param 	directory where to find
+## @param 	folder where to find
 ## @param	sub directory to find
 ## @param	file to search (possible to use pattern)
 ## @param	variable where define a list of file (temporary file)
