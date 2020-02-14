@@ -97,10 +97,13 @@ while ($DBRESULT->rowCount() && $elem = $DBRESULT->fetchRow()) {
  */
 $tab_create_menu = array();
 foreach ($tab_menu as $key => $val) {
-    if (!isset($tab_css[$tab_menu[$key]["topology_page"]])) {
-        $rq = "INSERT INTO `css_color_menu` ( `id_css_color_menu` , `menu_nb` , `css_name` )" .
-                "VALUES ( NULL , ".$tab_menu[$key]["topology_page"].", '".$css_default."' )";
-        $DBRESULT = $pearDB->query($rq);
+    if ((int)$tab_menu[$key]["topology_page"] && !isset($tab_css[$tab_menu[$key]["topology_page"]]))) {
+        $css_default = filter_var($css_default, FILTER_SANITIZE_STRING);
+        $rq = "INSERT INTO `css_color_menu` ( `id_css_color_menu` , `menu_nb` , `css_name` 
+            VALUES ( NULL , " . (int)$tab_menu[$key]["topology_page"] . ", '" . $css_default . "' )";
+        $dbResult = $pearDB->prepare($rq);
+        $dbResult->bindValue(':cssDefault', $css_default, \PDO::PARAM_STR);
+        $dbResult->execute();
     }
 }
 
