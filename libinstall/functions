@@ -1674,6 +1674,7 @@ createConfFile() {
 \$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
 \$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
 \$conf_centreon['centreon_log'] = "$CENTREON_LOG";
+\$conf_centreon['centreon_cachedir'] = "$CENTREON_CACHEDIR";
 \$conf_centreon['centreon_varlib'] = "$CENTREON_VARLIB";
 \$conf_centreon['centreon_group'] = "$CENTREON_GROUP";
 \$conf_centreon['centreon_user'] = "$CENTREON_USER";
