@@ -52,6 +52,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
@@ -121,7 +122,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 ['addApiVersion', 10]
             ],
             KernelEvents::EXCEPTION => [
-                ['onKernelException', 10]
+                ['onKernelException', -10]
             ]
         ];
     }
@@ -328,7 +329,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     $statusCode
                 )
             );
-        } elseif (!$errorIsBeforeController) {
+        } else {
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -351,6 +352,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
+            } elseif ($event->getException() instanceof AccessDeniedException) {
+                $httpCode = $event->getException()->getCode();
+                $errorMessage = null;
             } elseif (get_class($event->getException()) == \Exception::class) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +29,9 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,7 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @package Centreon\Application\Controller
  */
-class AcknowledgementController extends AbstractFOSRestController
+class AcknowledgementController extends AbstractController
 {
     /**
      * @var AcknowledgementServiceInterface
@@ -62,45 +60,38 @@ class AcknowledgementController extends AbstractFOSRestController
     /**
      * Entry point to find the hosts acknowledgements.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/acknowledgements",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findHostsAcknowledgements")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findHostsAcknowledgements(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
         $hostsAcknowledgements = $this->acknowledgementService
-            ->filterByContact($this->getUser())
+            ->filterByContact($contact)
             ->findHostsAcknowledgements();
 
-        $context = (new Context())->setGroups(['ack_main']);
+        $context = (new Context())->setGroups([
+            Acknowledgement::SERIALIZER_GROUP_MAIN,
+        ]);
 
         return $this->view([
             'result' => $hostsAcknowledgements,
             'meta' => [
-                'pagination' => $requestParameters->toArray()
-            ]
+                'pagination' => $requestParameters->toArray(),
+            ],
         ])->setContext($context);
     }
 
     /**
      * Entry point to find acknowledgements linked to a host.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/acknowledgements",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findAcknowledgementsByHost")
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId
      * @return View
@@ -108,6 +99,8 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function findAcknowledgementsByHost(RequestParametersInterface $requestParameters, int $hostId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -130,18 +123,14 @@ class AcknowledgementController extends AbstractFOSRestController
     /**
      * Entry point to find the services acknowledgements.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/services/acknowledgements",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findServicesAcknowledgements")
-     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findServicesAcknowledgements(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -162,13 +151,6 @@ class AcknowledgementController extends AbstractFOSRestController
 
     /**
      * Entry point to find acknowledgements linked to a service.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements",
-     *     requirements={"hostId"="\d+", "serviceId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findAcknowledgementsByService")
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
@@ -200,11 +182,6 @@ class AcknowledgementController extends AbstractFOSRestController
     /**
      * Entry point to add a host acknowledgement.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/hosts/{hostId}/acknowledgements",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.addHostAcknowledgement")
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -217,6 +194,8 @@ class AcknowledgementController extends AbstractFOSRestController
         SerializerInterface $serializer,
         int $hostId
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var $contact Contact
          */
@@ -230,33 +209,31 @@ class AcknowledgementController extends AbstractFOSRestController
             AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACK,
             false // To avoid error message for missing fields
         );
+
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var $acknowledgement Acknowledgement
-             */
-            $acknowledgement = $serializer->deserialize(
-                $request->getContent(),
-                Acknowledgement::class,
-                'json'
-            );
-            $acknowledgement->setHostId($hostId);
-            $this->acknowledgementService
-                ->filterByContact($contact)
-                ->addHostAcknowledgement($acknowledgement);
-            return $this->view();
         }
+
+        /**
+         * @var $acknowledgement Acknowledgement
+         */
+        $acknowledgement = $serializer->deserialize(
+            $request->getContent(),
+            Acknowledgement::class,
+            'json'
+        );
+        $acknowledgement->setHostId($hostId);
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->addHostAcknowledgement($acknowledgement);
+
+        return $this->view();
     }
 
     /**
      * Entry point to add a service acknowledgement.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.addServiceAcknowledgement")
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -270,6 +247,8 @@ class AcknowledgementController extends AbstractFOSRestController
         int $hostId,
         int $serviceId
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -283,59 +262,54 @@ class AcknowledgementController extends AbstractFOSRestController
         );
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var $acknowledgement Acknowledgement
-             */
-            $acknowledgement = $serializer->deserialize(
-                $request->getContent(),
-                Acknowledgement::class,
-                'json'
-            );
-            $acknowledgement
-                ->setHostId($hostId)
-                ->setServiceId($serviceId);
-            $this->acknowledgementService
-                ->filterByContact($contact)
-                ->addServiceAcknowledgement($acknowledgement);
-            return $this->view();
         }
+
+        /**
+         * @var $acknowledgement Acknowledgement
+         */
+        $acknowledgement = $serializer->deserialize(
+            $request->getContent(),
+            Acknowledgement::class,
+            'json'
+        );
+        $acknowledgement
+            ->setHostId($hostId)
+            ->setServiceId($serviceId);
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->addServiceAcknowledgement($acknowledgement);
+
+        return $this->view();
     }
 
     /**
      * Entry point to disacknowledge an acknowledgement.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/monitoring/hosts/{hostId}/acknowledgements",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.disacknowledgeHost")
      * @param int $hostId Host id for which we want to cancel the acknowledgement
      * @return View
      * @throws \Exception
      */
     public function disacknowledgeHost(int $hostId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
+
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
+
         $this->acknowledgementService
             ->filterByContact($contact)
             ->disacknowledgeHost($hostId);
+
         return $this->view();
     }
 
     /**
      * Entry point to remove a service acknowledgement.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements",
-     *     requirements={"hostId"="\d+", "serviceId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.disacknowledgeService")
      * @param int $hostId Host id linked to service
      * @param int $serviceId Service Id for which we want to cancel the acknowledgement
      * @return View
@@ -343,7 +317,10 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function disacknowledgeService(int $hostId, int $serviceId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
+
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
@@ -351,24 +328,21 @@ class AcknowledgementController extends AbstractFOSRestController
         $this->acknowledgementService
             ->filterByContact($contact)
             ->disacknowledgeService($hostId, $serviceId);
+
         return $this->view();
     }
 
     /**
      * Entry point to find one acknowledgement.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/acknowledgements/{acknowledgementId}",
-     *     requirements={"acknowledgementId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findOneAcknowledgement")
      * @param int $acknowledgementId Acknowledgement id to find
      * @return View
      * @throws \Exception
      */
     public function findOneAcknowledgement(int $acknowledgementId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if (!$contact->isAdmin()
             && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
@@ -394,17 +368,14 @@ class AcknowledgementController extends AbstractFOSRestController
     /**
      * Entry point to find all acknowledgements.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/acknowledgements",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.acknowledgement.findAcknowledgements")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findAcknowledgements(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if (!$contact->isAdmin()
             && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
