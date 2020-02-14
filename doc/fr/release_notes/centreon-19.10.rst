@@ -9,6 +9,7 @@ Bug Fixes
 * [Source install] Several files are not copied in centreon directory
 * [Status Details] "Display details" strange behaviour when "Summary" selected in by Hostgroup page (PR #8265)
 * [UI] Add nowrap style to badge class to avoid wrap in dense typeface environments like chinese (PR #8314)
+* [Mobile] Third level menus are not accessible (PR #8320)
 
 Security
 --------
