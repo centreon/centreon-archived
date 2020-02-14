@@ -1552,7 +1552,7 @@ components:
           properties:
             id:
               type: integer
-              format: int64
+              format: int32
               description: "ID of the severity"
               example: 12
             name:
