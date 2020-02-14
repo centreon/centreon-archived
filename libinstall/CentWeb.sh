@@ -163,7 +163,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     "$CENTREON_CACHEDIR" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_CACHEDIR"
 
-## Copy Web Front Source in final
+## Copy Web Front and Backend Sources in final folder
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
 cp -Rf $TMP_DIR/src/api $TMP_DIR/final
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
@@ -176,6 +176,7 @@ cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package-lock.json $TMP_DIR/final
 cp -f $TMP_DIR/src/.env $TMP_DIR/final
+cp -f $TMP_DIR/src/.env.local.php $TMP_DIR/final
 cp -Rf $TMP_DIR/src/src $TMP_DIR/final
 
 ## Prepare and copy composer module
@@ -416,6 +417,9 @@ $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
 
 cp -f $TMP_DIR/final/.env $INSTALL_DIR_CENTREON/.env >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env
+
+cp -f $TMP_DIR/final/.env.local.php $INSTALL_DIR_CENTREON/.env.local.php >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env.local.php
 
 cp -f $TMP_DIR/final/container.php $INSTALL_DIR_CENTREON/container.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/container.php
