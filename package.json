@@ -26,6 +26,7 @@
     "@centreon/frontend-core": "centreon/frontend-core",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^8.0.6",
+    "@types/react-router": "^5.1.4",
     "awesome-typescript-loader": "^5.2.1",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
@@ -65,6 +66,7 @@
   },
   "dependencies": {
     "@centreon/ui": "centreon/centreon-ui",
+    "@material-ui/core": "^4.9.2",
     "axios": "^0.19.0",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.6.1",

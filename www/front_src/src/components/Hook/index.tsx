@@ -1,14 +1,24 @@
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable react/prop-types */
-
 import React, { Suspense } from 'react';
+
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
+
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
 
-const LoadableHooks = ({ history, hooks, path, ...rest }) => {
+interface Props {
+  history;
+  hooks;
+  path;
+}
+
+const LoadableHooks = ({
+  history,
+  hooks,
+  path,
+  ...rest
+}: Props): JSX.Element => {
   const basename = history.createHref({
     pathname: '/',
     search: '',
@@ -19,27 +29,21 @@ const LoadableHooks = ({ history, hooks, path, ...rest }) => {
     <>
       {Object.entries(hooks)
         .filter(([hook]) => hook === path)
-        // eslint-disable-next-line no-unused-vars
         .map(([_, parameters]) => {
-          const LoadableHook = React.lazy(() =>
+          const HookComponent = React.lazy(() =>
             dynamicImport(basename, parameters),
           );
 
           return (
-            <LoadableHook
-              key={`hook_${parameters.js}`}
-              centreonAxios={centreonAxios}
-              {...rest}
-            />
+            <HookComponent key={path} centreonAxios={centreonAxios} {...rest} />
           );
         })}
     </>
   );
 };
 
-// class to dynamically import component from modules
 const Hook = React.memo(
-  (props) => {
+  (props: Props) => {
     return (
       <Suspense fallback={null}>
         <LoadableHooks {...props} />
@@ -47,10 +51,10 @@ const Hook = React.memo(
     );
   },
   ({ hooks: previousHooks }, { hooks: nextHooks }) =>
-    JSON.stringify(previousHooks) === JSON.stringify(nextHooks),
+    isEqual(previousHooks, nextHooks),
 );
 
-const mapStateToProps = ({ externalComponents }) => ({
+const mapStateToProps = ({ externalComponents }): {} => ({
   hooks: externalComponents.hooks,
 });
 
