@@ -134,14 +134,14 @@ copyInTempFile 2>>$LOG_FILE
 
 ## InstallCentreon
 
-# change right centreon_log directory
+# change rights centreon_log directory
 log "INFO" "$(gettext "Change right on") $CENTREON_LOG"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     "$CENTREON_LOG" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_LOG"
 
-# change right on successful installations files
+# change rights on successful installations files
 log "INFO" "$(gettext "Change right on") $CENTREON_VARLIB/installs"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
@@ -149,12 +149,19 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 chmod -R g+rwxs $CENTREON_VARLIB/installs
 check_result $? "$(gettext "Change right on") $CENTREON_VARLIB/installs"
 
-# change right on centreon etc
+# change rights on centreon etc
 log "INFO" "$(gettext "Change right on") $CENTREON_ETC"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     "$CENTREON_ETC" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_ETC"
+
+# change rights on centreon cache folder
+log "INFO" "$(gettext "Change right on") $CENTREON_CACHEDIR"
+$INSTALL_DIR/cinstall $cinstall_opts \
+    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+    "$CENTREON_CACHEDIR" >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right on") $CENTREON_CACHEDIR"
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
@@ -320,7 +327,7 @@ ${CAT} "$file_perl_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for perl binary")"
 
-### Step 3: Change right on monitoringengine_etcdir
+### Step 3: Change right on monitoringengine_/etc/centreon folder
 log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 flg_error=0
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -336,7 +343,7 @@ find "$MONITORINGENGINE_ETC" -type f -print | \
 [ $? -ne 0 ] && flg_error=1
 check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC"
 
-### Change right to broker_etcdir
+### Change right to broker_/etc/centreon-broker folder
 log "INFO" "$(gettext "Change right on ") $BROKER_ETC"
 flg_error=0
 if [ -z "$BROKER_USER" ]; then
@@ -368,7 +375,7 @@ if [ "$upgrade" = "1" ]; then
     check_result $? "$(gettext "All users are disconnected")"
 fi
 
-### Step 4: Copy final stuff in system directoy
+### Step 4: Copy final stuff in system folder
 echo_info "$(gettext "Copy CentWeb in system directory")"
 $INSTALL_DIR/cinstall $cinstall \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
