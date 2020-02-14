@@ -1522,7 +1522,7 @@ components:
                 * `4` - PENDING
               example: 0
             name:
-              type: integer
+              type: string
               description: |
                 resource status name
                 * UP
