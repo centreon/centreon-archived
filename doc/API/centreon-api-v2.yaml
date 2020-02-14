@@ -1550,6 +1550,11 @@ components:
         severity:
           type: object
           properties:
+            id:
+              type: integer
+              format: int64
+              description: "ID of the severity"
+              example: 12
             name:
               type: string
               description: "Name of the severity"
