@@ -310,7 +310,7 @@ class MonitoringHostsController extends AbstractController
             $serviceGroups = $this->monitoring->findServiceGroupsByHostAndService($hostId, $serviceId);
 
             $context = (new Context())
-                ->setGroups(['sg_main'])
+                ->setGroups([ServiceGroup::SERIALIZER_GROUP_MAIN])
                 ->enableMaxDepth();
 
             return $this->view(
