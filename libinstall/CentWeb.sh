@@ -135,33 +135,33 @@ copyInTempFile 2>>$LOG_FILE
 ## InstallCentreon
 
 # change rights centreon_log directory
-log "INFO" "$(gettext "Change right on") $CENTREON_LOG"
+log "INFO" "$(gettext "Modify rights on") $CENTREON_LOG"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     "$CENTREON_LOG" >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right on") $CENTREON_LOG"
+check_result $? "$(gettext "Modify rights on") $CENTREON_LOG"
 
 # change rights on successful installations files
-log "INFO" "$(gettext "Change right on") $CENTREON_VARLIB/installs"
+log "INFO" "$(gettext "Modify rights on") $CENTREON_VARLIB/installs"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     "$CENTREON_VARLIB/installs" >> "$LOG_FILE" 2>&1
 chmod -R g+rwxs $CENTREON_VARLIB/installs
-check_result $? "$(gettext "Change right on") $CENTREON_VARLIB/installs"
+check_result $? "$(gettext "Modify rights on") $CENTREON_VARLIB/installs"
 
 # change rights on centreon etc
-log "INFO" "$(gettext "Change right on") $CENTREON_ETC"
+log "INFO" "$(gettext "Modify rights on") $CENTREON_ETC"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     "$CENTREON_ETC" >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right on") $CENTREON_ETC"
+check_result $? "$(gettext "Modify rights on") $CENTREON_ETC"
 
 # change rights on centreon cache folder
-log "INFO" "$(gettext "Change right on") $CENTREON_CACHEDIR"
+log "INFO" "$(gettext "Modify rights on") $CENTREON_CACHEDIR"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     "$CENTREON_CACHEDIR" >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right on") $CENTREON_CACHEDIR"
+check_result $? "$(gettext "Modify rights on") $CENTREON_CACHEDIR"
 
 ## Copy Web Front and Backend Sources in final folder
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
@@ -251,7 +251,7 @@ ${CAT} "$file_sql_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for sql update files")"
 
-### Step 2.0: Change right on Centreon WebFront and replace macros
+### Step 2.0: Modify rights on Centreon WebFront and replace macros
 
 ## create a random APP_SECRET key
 HEX_KEY=($(dd if=/dev/urandom bs=32 count=1 status=none | $PHP_BIN -r "echo bin2hex(fread(STDIN, 32));"))
@@ -285,7 +285,6 @@ check_result $flg_error "$(gettext "Change macros for php files")"
 macros="@CENTREON_ETC@,@CENTREON_CACHEDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@,%APP_SECRET%"
 find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php*" "file_php_config_temp"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "." ".env*" "file_env_temp"
-
 log "INFO" "$(gettext "Apply macros on env and config files")"
 
 flg_error=0
@@ -333,8 +332,8 @@ ${CAT} "$file_perl_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for perl binary")"
 
-### Step 3: Change right on monitoring engine /etc/centreon folder
-log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC"
+### Step 3: Modify rights on monitoring engine /etc/centreon folder
+log "INFO" "$(gettext "Modify rights on") $MONITORINGENGINE_ETC"
 flg_error=0
 $INSTALL_DIR/cinstall $cinstall_opts \
     -g "$MONITORINGENGINE_GROUP" -d 775 \
@@ -347,10 +346,10 @@ find "$MONITORINGENGINE_ETC" -type f -print | \
 find "$MONITORINGENGINE_ETC" -type f -print | \
     xargs -I '{}' ${CHOWN} "$MONITORINGENGINE_USER":"$MONITORINGENGINE_GROUP" '{}' >> "$LOG_FILE" 2>&1
 [ $? -ne 0 ] && flg_error=1
-check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC"
+check_result $flg_error "$(gettext "Modify rights on") $MONITORINGENGINE_ETC"
 
-### Change right to broker /etc/centreon-broker folder
-log "INFO" "$(gettext "Change right on ") $BROKER_ETC"
+### Modify rights to broker /etc/centreon-broker folder
+log "INFO" "$(gettext "Modify rights on ") $BROKER_ETC"
 flg_error=0
 if [ -z "$BROKER_USER" ]; then
     BROKER_USER=$MONITORINGENGINE_USER
@@ -372,7 +371,7 @@ if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
     find "$BROKER_ETC" -type f -print | \
         xargs -I '{}' ${CHOWN} "$BROKER_USER":"$BROKER_GROUP" '{}' >> "$LOG_FILE" 2>&1
     [ $? -ne 0 ] && flg_error=1
-    check_result $flg_error "$(gettext "Change right on") $BROKER_ETC"
+    check_result $flg_error "$(gettext "Modify rights on") $BROKER_ETC"
 fi
 
 if [ "$upgrade" = "1" ]; then
@@ -403,9 +402,9 @@ $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
 cp -Rf $TMP_DIR/final/api $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/api
 
-log "INFO" "$(gettext "Change right for install directory")"
+log "INFO" "$(gettext "Modify rights for install directory")"
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/install/
-check_result $? "$(gettext "Change right for install directory")"
+check_result $? "$(gettext "Modify rights for install directory")"
 
 [ ! -d "$INSTALL_DIR_CENTREON/www/modules" ] && \
     $INSTALL_DIR/cinstall $cinstall_opts \
@@ -469,9 +468,9 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     $TMP_DIR/final/GPL_LIB/* $INSTALL_DIR_CENTREON/GPL_LIB/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install libraries")"
 
-log "INFO" "$(gettext "Add right for Smarty cache and compile")"
+log "INFO" "$(gettext "Add rights for Smarty cache and compile")"
 $CHMOD -R g+w $INSTALL_DIR_CENTREON/GPL_LIB/SmartyCache
-check_result $? "$(gettext "Write right to Smarty Cache")"
+check_result $? "$(gettext "Write rights to Smarty Cache")"
 
 ## Cron stuff
 ## need to add stuff for Unix system... (freeBSD...)
@@ -527,21 +526,21 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     $TMP_DIR/final/cron/* $INSTALL_DIR_CENTREON/cron/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
-log "INFO" "$(gettext "Change right for eventReportBuilder")"
+log "INFO" "$(gettext "Modify rights for eventReportBuilder")"
 ${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/eventReportBuilder >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for eventReportBuilder")"
+check_result $? "$(gettext "Modify rights for eventReportBuilder")"
 
-log "INFO" "$(gettext "Change right for dashboardBuilder")"
+log "INFO" "$(gettext "Modify rights for dashboardBuilder")"
 ${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for dashboardBuilder")"
+check_result $? "$(gettext "Modify rights for dashboardBuilder")"
 
-log "INFO" "$(gettext "Change right for centreon-backup.pl")"
+log "INFO" "$(gettext "Modify rights for centreon-backup.pl")"
 ${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-backup.pl >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for centreon-backup.pl")"
+check_result $? "$(gettext "Modify rights for centreon-backup.pl")"
 
-log "INFO" "$(gettext "Change right for centreon-backup-mysql.sh")"
+log "INFO" "$(gettext "Modify rights for centreon-backup-mysql.sh")"
 ${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-backup-mysql.sh >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for centreon-backup-mysql.sh")"
+check_result $? "$(gettext "Modify rights for centreon-backup-mysql.sh")"
 
 ## Logrotate
 log "INFO" "$(gettext "Change macros for centreon.logrotate")"

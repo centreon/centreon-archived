@@ -35,7 +35,6 @@ go back to [Step 01] and install the prerequisites::
     #                         Centreon (www.centreon.com)                         #
     #                          Thanks for using Centreon                          #
     #                                                                             #
-    #                                   vYY.MM.x                                  #
     #                                                                             #
     #                               infos@centreon.com                            #
     #                                                                             #

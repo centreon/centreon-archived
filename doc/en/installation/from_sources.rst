@@ -216,7 +216,7 @@ Change directory: ::
 
     $ cd centreon-web-YY.MM.x
 
-Run the installation script: ::
+Run the installation script as a root user or using 'sudo': ::
 
     $ ./install.sh -i
 
@@ -244,7 +244,6 @@ process: ::
     #                         Centreon (www.centreon.com)                         #
     #                          Thanks for using Centreon                          #
     #                                                                             #
-    #                                    vYY.MM.x                                 #
     #                                                                             #
     #                              infos@centreon.com                             #
     #                                                                             #
@@ -311,7 +310,7 @@ Answer [y] to all the questions: ::
 Definition of installation paths
 --------------------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
             Start CentWeb Installation
@@ -319,10 +318,8 @@ Definition of installation paths
 
     Where is your Centreon directory ?
     default to [/usr/share/centreon]
-    > /usr/share/centreon
+    >
     Path /usr/share/centreon                                   OK
-
-    ::
 
     Where is your Centreon log directory ?
     default to [/var/log/centreon]
@@ -352,14 +349,7 @@ Definition of installation paths
     [y/n], default to [n]:
     > y
     Path /var/lib/centreon                                     OK
-
-    Where is rrdtool
-    default to [/usr/bin/rrdtool]
-    > /opt/rrdtool-broker/bin/rrdtool
-    /opt/rrdtool-broker/bin/rrdtool                            OK
-
-    ::
-
+    /usr/bin/rrdtool                                           OK
     /usr/bin/mail                                              OK
 
     Where is your php binary ?
@@ -368,8 +358,8 @@ Definition of installation paths
     /usr/bin/php                                               OK
 
     Where is PEAR [PEAR.php]
-    default to [/usr/share/pear/PEAR.php]
-    > /usr/share/php/PEAR.php
+    default to [/usr/share/php/PEAR.php]
+    >
     Path /usr/share/php/PEAR.php                               OK
     /usr/bin/perl                                              OK
     Composer dependencies are installed                        OK
@@ -378,6 +368,8 @@ Definition of installation paths
     Conf centreon already enabled
     Finding Apache user :                                      www-data
     Finding Apache group :                                     www-data
+
+> **Notice**: If the PHP FPM folder is not found, you'll be asked to specify the path to the 'conf.d' file. For Ubuntu, using the PHP v 7.3 eg : /etc/php/7.3/fpm/pool.d/
 
 Centreon user and group
 -----------------------
@@ -415,7 +407,7 @@ the user will likely be *centreon-broker*. ::
 Monitoring logs directory
 -------------------------
 
-::
+    ::
 
     What is the Monitoring engine log directory ?[/var/log/centreon-engine]
     default to [/var/log/centreon-engine]
@@ -431,7 +423,7 @@ Monitoring logs directory
 Sudo configuration
 ------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
     	  Configure Sudo
@@ -471,7 +463,7 @@ Sudo configuration
 Apache configuration
 --------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
       	  Configure Apache server
@@ -492,7 +484,7 @@ Apache configuration
 PHP FPM configuration
 ---------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
       	  Configure PHP FPM service
@@ -508,23 +500,28 @@ PHP FPM configuration
     Do you want to reload PHP FPM service ?
     [y/n], default to [n]:
     > y
-    Reloading PHP FPM service                                  OK
+
+    Do you want to reload PHP FPM service ?
+    [y/n], default to [n]:
+    > y
     Preparing Centreon temporary files
-    Change right on /var/log/centreon                          OK
-    Change right on /etc/centreon                              OK
+    Modify rights on /var/log/centreon                          OK
+    Modify rights on /var/lib/centreon/installs                 OK
+    Modify rights on /etc/centreon                              OK
+    Modify rights on /var/cache/centreon                        OK
     Change macros for insertBaseConf.sql                       OK
     Change macros for sql update files                         OK
     Change macros for php files                                OK
-    Change macros for php config file                          OK
+    Change macros for php env and config file                  OK
     Change macros for perl binary                              OK
-    Change right on /etc/centreon-engine                       OK
+    Modify rights on /etc/centreon-engine                       OK
     Add group centreon-broker to user www-data                 OK
     Add group centreon-broker to user centreon-engine          OK
     Add group centreon to user centreon-broker                 OK
-    Change right on /etc/centreon-broker                       OK
-    Copy CentWeb in system directory                           OK
+    Modify rights on /etc/centreon-broker                       OK
+    Copy CentWeb in system directory
     Install CentWeb (web front of centreon)                    OK
-    Change right for install directory                         OK
+    Modify rights for install directory                         OK
     Install libraries                                          OK
     Write right to Smarty Cache                                OK
     Change macros for centreon.cron                            OK
@@ -533,10 +530,10 @@ PHP FPM configuration
     Change macros for downtimeManager.php                      OK
     Change macros for centreon-backup.pl                       OK
     Install cron directory                                     OK
-    Change right for eventReportBuilder                        OK
-    Change right for dashboardBuilder                          OK
-    Change right for centreon-backup.pl                        OK
-    Change right for centreon-backup-mysql.pl                  OK
+    Modify rights for eventReportBuilder                        OK
+    Modify rights for dashboardBuilder                          OK
+    Modify rights for centreon-backup.pl                        OK
+    Modify rights for centreon-backup-mysql.sh                  OK
     Change macros for centreon.logrotate                       OK
     Install Centreon logrotate.d file                          OK
     Prepare centFillTrapDB                                     OK
@@ -549,21 +546,17 @@ PHP FPM configuration
     Install centreonSyncPlugins                                OK
     Prepare centreonSyncArchives                               OK
     Install centreonSyncArchives                               OK
-    Prepare generateSqlLite                                    OK
     Install generateSqlLite                                    OK
     Install changeRrdDsName.pl                                 OK
-    Prepare export-mysql-indexes                               OK
     Install export-mysql-indexes                               OK
-    Prepare import-mysql-indexes                               OK
     Install import-mysql-indexes                               OK
-    Prepare clapi binary                                       OK
     Install clapi binary                                       OK
     Centreon Web Perl lib installed                            OK
 
 Pear module installation
 ------------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
     Pear Modules
@@ -574,10 +567,12 @@ Pear module installation
     Date                            1.4.6       1.4.7          OK
     All PEAR modules                                           OK
 
+> **Notice**: If the modules are not installed or up-to-date, you will be offered to do so.
+
 Configuration file installation
 -------------------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
     		  Centreon Post Install
@@ -585,10 +580,10 @@ Configuration file installation
     Create /usr/share/centreon/www/install/install.conf.php    OK
     Create /etc/centreon/instCentWeb.conf                      OK
 
-Performance data component (Centstorage) installation
+Performance data component (CentStorage) installation
 -----------------------------------------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
     	  Starting CentStorage Installation
@@ -617,17 +612,17 @@ Performance data component (Centstorage) installation
     install www/install/createTablesCentstorage.sql            OK
     Creating Centreon Directory '/var/lib/centreon/status'     OK
     Creating Centreon Directory '/var/lib/centreon/metrics'    OK
-    Change right : /var/run/centreon                           OK
+    Modify rights : /var/run/centreon                           OK
     Install logAnalyserBroker                                  OK
     Install nagiosPerfTrace                                    OK
     Change macros for centstorage.cron                         OK
     Install CentStorage cron                                   OK
     Create /etc/centreon/instCentStorage.conf                  OK
 
-Poller communication subsystem (Centcore) installation
+Poller communication subsystem (CentCore) installation
 ------------------------------------------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
     	  Starting CentCore Installation
@@ -639,8 +634,8 @@ Poller communication subsystem (Centcore) installation
     Preparing Centreon temporary files
     /tmp/centreon-setup exists, it will be moved...
     Copy CentCore in binary directory                          OK
-    Change right : /var/run/centreon                           OK
-    Change right : /var/lib/centreon                           OK
+    Modify rights : /var/run/centreon                           OK
+    Modify rights : /var/lib/centreon                           OK
     Change macros for centcore.logrotate                       OK
     Install Centreon Core logrotate.d file                     OK
     Replace CentCore init script Macro                         OK
@@ -661,7 +656,7 @@ Poller communication subsystem (Centcore) installation
 Plugin installation
 -------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
     	  Starting Centreon Plugins Installation
@@ -682,7 +677,7 @@ Plugin installation
 Centreon SNMP trap management installation
 ------------------------------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
      	  Starting CentreonTrapD Installation
@@ -759,8 +754,7 @@ Once composer is installed, go to the centreon directory
 Macro modifications
 -------------------
 
-Macros may not have been properly replaced. Run the following commands to
-correct their values: ::
+> **Notice**: Macros may not have been properly replaced. Run the following commands to correct their values: ::
 
     $ sed -i -e 's/_CENTREON_PATH_PLACEHOLDER_/centreon/g' /usr/share/centreon/www/index.html
     $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/centreon
