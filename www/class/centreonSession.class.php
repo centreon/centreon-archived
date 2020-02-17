@@ -74,7 +74,7 @@ class CentreonSession
      * @param  string $key   session attribute
      * @param  mixed  $value session value to save
      */
-    public function writeSessionClose($key, $value)
+    public static function writeSessionClose($key, $value)
     {
         session_start();
         $_SESSION[$key] = $value;

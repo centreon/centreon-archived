@@ -237,14 +237,14 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-		$DBRESULT_Nagioscfg = $pearDB->query(
-		    'SELECT cfg_dir FROM cfg_nagios, nagios_server
-		     WHERE nagios_server.id = cfg_nagios.nagios_server_id
-		     AND nagios_server.localhost = '1'
-		     ORDER BY cfg_nagios.nagios_activate
-		     DESC LIMIT 1'
-		);
-		$Nagioscfg = $DBRESULT_Nagioscfg->fetchRow();
+                 $DBRESULT_Nagioscfg = $pearDB->query(
+                    "SELECT cfg_dir FROM cfg_nagios, nagios_server
+                    WHERE nagios_server.id = cfg_nagios.nagios_server_id
+                    AND nagios_server.localhost = '1'
+                    ORDER BY cfg_nagios.nagios_activate
+                    DESC LIMIT 1"
+                );
+                $Nagioscfg = $DBRESULT_Nagioscfg->fetchRow();
 
                 if (!is_dir($Nagioscfg["cfg_dir"])) {
                     throw new Exception(

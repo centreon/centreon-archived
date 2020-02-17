@@ -600,7 +600,8 @@ class CentreonTopCounter extends CentreonWebService
             'ok' => $row['up_total'],
             'pending' => $row['pending_total'],
             'total' => $row['up_total'] + $row['pending_total'] + $row['down_total'] + $row['unreachable_total'],
-            'refreshTime' => $this->refreshTime
+            'refreshTime' => $this->refreshTime,
+            'time' => time()
         );
 
         CentreonSession::writeSessionClose('topCounterHostStatus', $result);
@@ -676,7 +677,8 @@ class CentreonTopCounter extends CentreonWebService
             'pending' => $row['pending_total'],
             'total' => $row['ok_total'] + $row['pending_total'] + $row['critical_total'] + $row['unknown_total'] +
                 $row['warning_total'],
-            'refreshTime' => $this->refreshTime
+            'refreshTime' => $this->refreshTime,
+            'time' => time()
         );
 
         CentreonSession::writeSessionClose('topCounterServiceStatus', $result);
