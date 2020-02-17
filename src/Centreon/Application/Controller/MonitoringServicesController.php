@@ -53,12 +53,6 @@ class MonitoringServicesController extends AbstractController
 
     /**
      * Entry point to get all real time services.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
-     *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
      * @throws \Exception
@@ -83,12 +77,6 @@ class MonitoringServicesController extends AbstractController
 
     /**
      * Entry point to get all real time services based on a service group
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/servicegroups",
-     *     condition="request.attributes.get('version.is_beta') == true")
-     *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
      * @throws \Exception
