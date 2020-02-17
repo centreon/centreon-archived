@@ -1118,9 +1118,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 ' INNER JOIN `:db`.acl_resources_sg_relations sgr
                     ON sgr.sg_id = sg.servicegroup_id
                 INNER JOIN `:db`.acl_resources res
-                    ON res.acl_res_id = sgr.acl_res_id
+                    ON (res.acl_res_id = sgr.acl_res_id OR res.all_servicegroups = \'1\')
                     AND res.acl_res_activate = \'1\'
-                    OR res.all_servicegroups = \'1\'
                 INNER JOIN `:db`.acl_res_group_relations rgr
                     ON rgr.acl_res_id = res.acl_res_id
                 INNER JOIN `:db`.acl_groups grp
