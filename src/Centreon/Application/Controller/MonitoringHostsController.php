@@ -34,7 +34,7 @@ use Centreon\Domain\Monitoring\HostGroup;
 /**
  * @package Centreon\Application\Controller
  */
-class MonitoringController extends AbstractController
+class MonitoringHostsController extends AbstractController
 {
     /**
      * @var MonitoringServiceInterface
@@ -294,12 +294,6 @@ class MonitoringController extends AbstractController
 
     /**
      * Entry point to get all servicegroups attached to host-service
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/servicegroups",
-     *     requirements={"hostId"="\d+", "serviceId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View

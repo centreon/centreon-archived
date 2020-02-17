@@ -34,7 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Responsible for all routes under /monitoring/services/
  * @package Centreon\Application\Controller
  */
-class MonitoringServicesController extends AbstractFOSRestController
+class MonitoringServicesController extends AbstractController
 {
     /**
      * @var MonitoringServiceInterface
