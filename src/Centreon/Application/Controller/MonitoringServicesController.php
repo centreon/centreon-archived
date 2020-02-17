@@ -22,7 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -65,7 +68,7 @@ class MonitoringServicesController extends AbstractController
             ->findServices();
 
         $context = (new Context())
-            ->setGroups(['service_main', 'service_with_host', 'host_min'])
+            ->setGroups([Service::SERIALIZER_GROUP_MAIN, Service::SERIALIZER_GROUP_WITH_HOST, Host::SERIALIZER_GROUP_MIN])
             ->enableMaxDepth();
 
         return $this->view(
@@ -87,10 +90,10 @@ class MonitoringServicesController extends AbstractController
         $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
         $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
 
-        $contexts = ['sg_main'];
+        $contexts = [ServiceGroup::SERIALIZER_GROUP_MAIN];
 
-        $contextsWithHosts = ['sg_with_host', 'host_min'];
-        $contextsWithService = ['host_with_services', 'service_min'];
+        $contextsWithHosts = [ServiceGroup::SERIALIZER_GROUP_WITH_HOST, Host::SERIALIZER_GROUP_MIN];
+        $contextsWithService = [Host::SERIALIZER_GROUP_WITH_SERVICES, Service::SERIALIZER_GROUP_MIN];
 
         if ($withServices) {
             $withHost = true;
