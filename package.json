@@ -67,6 +67,7 @@
   "dependencies": {
     "@centreon/ui": "centreon/centreon-ui",
     "@material-ui/core": "^4.9.2",
+    "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.0",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.6.1",
