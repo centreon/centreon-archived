@@ -38,7 +38,6 @@ use PHPUnit\Framework\TestCase;
 class MetricControllerTest extends TestCase
 {
     protected $adminContact;
-    protected $aclContact;
 
     protected $host;
     protected $service;
