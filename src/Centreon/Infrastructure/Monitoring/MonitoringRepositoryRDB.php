@@ -1098,9 +1098,9 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @param int $hostId
      * @param int $serviceId
-     * @return array|null
+     * @return array
      */
-    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): ?array
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array
     {
         $serviceGroups = [];
 

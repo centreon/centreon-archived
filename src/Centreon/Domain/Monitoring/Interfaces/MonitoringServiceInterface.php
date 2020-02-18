@@ -112,4 +112,12 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function isServiceExists(int $hostId, int $serviceId): bool;
+
+    /**
+     * Find all service groups by host and service ids
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 }
