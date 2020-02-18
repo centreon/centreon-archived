@@ -97,4 +97,44 @@ class MetricController extends AbstractController
 
         return $this->view($metrics);
     }
+
+    /**
+     * Entry point to get service status
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return View
+     * @throws \Exception
+     */
+    public function getServiceStatus(
+        int $hostId,
+        int $serviceId,
+        \DateTime $start,
+        \DateTime $end
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        $this->monitoringService->filterByContact($contact);
+
+        $host = $this->monitoringService->findOneHost($hostId);
+        if (is_null($host)) {
+            throw new EntityNotFoundException('Host not found');
+        }
+
+        $service = $this->monitoringService->findOneService($hostId, $serviceId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException('Service not found');
+        }
+        $service->setHost($host);
+
+        $status = $this->metricService
+            ->filterByContact($contact)
+            ->findStatusByService($service, $start, $end);
+
+        return $this->view($status);
+    }
 }

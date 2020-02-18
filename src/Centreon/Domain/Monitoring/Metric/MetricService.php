@@ -93,4 +93,12 @@ class MetricService extends AbstractCentreonService implements MetricServiceInte
     {
         return $this->metricRepository->findMetricsByService($service, $start, $end);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findStatusByService(Service $service, \DateTime $start, \DateTime $end): array
+    {
+        return $this->metricRepository->findStatusByService($service, $start, $end);
+    }
 }

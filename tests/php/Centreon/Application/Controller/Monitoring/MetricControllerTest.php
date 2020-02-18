@@ -70,6 +70,12 @@ class MetricControllerTest extends TestCase
             'metrics' => [],
             'times' => [],
         ];
+        $this->status = [
+            'critical' => [],
+            'wraning' => [],
+            'ok' => [],
+            'unknown' => [],
+        ];
 
         $this->start = new \DateTime('2020-02-18T00:00:00');
         $this->end = new \DateTime('2020-02-18T12:00:00');
@@ -165,6 +171,71 @@ class MetricControllerTest extends TestCase
         $this->assertEquals(
             $metrics,
             View::create($this->metrics, null, [])
+        );
+    }
+
+    /**
+     * test getServiceStatus with not found host
+     */
+    public function testGetServiceStatusNotFoundHost()
+    {
+        $this->monitoringService->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn(null);
+
+        $metricController = new MetricController($this->metricService, $this->monitoringService);
+        $metricController->setContainer($this->container);
+
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Host not found');
+        $metricController->getServiceStatus(1, 1, $this->start, $this->end);
+    }
+
+    /**
+     * test getServiceStatus with not found service
+     */
+    public function testGetServiceStatusNotFoundService()
+    {
+        $this->monitoringService->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->monitoringService->expects($this->once())
+            ->method('findOneService')
+            ->willReturn(null);
+
+        $metricController = new MetricController($this->metricService, $this->monitoringService);
+        $metricController->setContainer($this->container);
+
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Service not found');
+        $metricController->getServiceStatus(1, 1, $this->start, $this->end);
+    }
+
+    /**
+     * test getServiceStatus which succeed
+     */
+    public function testGetServiceStatusSucceed()
+    {
+        $this->monitoringService->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($this->host);
+        $this->monitoringService->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($this->service);
+        $this->metricService->expects($this->once())
+            ->method('filterByContact')
+            ->willReturn($this->metricService);
+        $this->metricService->expects($this->once())
+            ->method('findStatusByService')
+            ->willReturn($this->status);
+
+        $metricController = new MetricController($this->metricService, $this->monitoringService);
+        $metricController->setContainer($this->container);
+
+        $status = $metricController->getServiceStatus(1, 1, $this->start, $this->end);
+        $this->assertEquals(
+            $status,
+            View::create($this->status, null, [])
         );
     }
 }

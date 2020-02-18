@@ -40,18 +40,21 @@ final class MetricRepositoryLegacy implements MetricRepositoryInterface
     private $contact;
 
     /**
+     * @var DatabaseConnection
+     */
+    private $db;
+
+    /**
      * MetricRepositoryLegacy constructor.
      *
      * @param DatabaseConnection $pdo
      */
     public function __construct(DatabaseConnection $db)
     {
+        $this->db = $db;
+
         global $pearDB;
-        $pearDB = new \CentreonDB(
-            $db->getCentreonDbName(),
-            3,
-            true
-        );
+        $pearDB = new \CentreonDB('centreon', 3, true);
     }
 
     /**
@@ -72,5 +75,21 @@ final class MetricRepositoryLegacy implements MetricRepositoryInterface
         $graph->addServiceMetrics($service->getHost()->getId(), $service->getId());
 
         return $graph->getGraph($start->getTimestamp(), $end->getTimestamp());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findStatusByService(Service $service, \DateTime $start, \DateTime $end): array
+    {
+        $dbStorage = new \CentreonDB('centstorage', 3, true);
+        $indexData = \CentreonGraphStatus::getIndexId(
+            $service->getHost()->getId(),
+            $service->getId(),
+            $dbStorage
+        );
+        $graph = new \CentreonGraphStatus($indexData, $start->getTimestamp(), $end->getTimestamp());
+
+        return $graph->getData(200);
     }
 }

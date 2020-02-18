@@ -66,6 +66,13 @@ class MetricServiceTest extends TestCase
             'times' => [],
         ];
 
+        $this->status = [
+            'critical' => [],
+            'wraning' => [],
+            'ok' => [],
+            'unknown' => [],
+        ];
+
         $this->start = new \DateTime('2020-02-18T00:00:00');
         $this->end = new \DateTime('2020-02-18T12:00:00');
 
@@ -92,5 +99,25 @@ class MetricServiceTest extends TestCase
 
         $metrics = $metricService->findMetricsByService($this->service, $this->start, $this->end);
         $this->assertEquals($metrics, $this->metrics);
+    }
+
+    /**
+     * test findStatusByService with admin user
+     */
+    public function testFindStatusByService()
+    {
+        $this->metricRepository->expects($this->once())
+            ->method('findStatusByService')
+            ->willReturn($this->status);
+
+        $metricService = new MetricService(
+            $this->monitoringRepository,
+            $this->metricRepository,
+            $this->accessGroupRepository
+        );
+        $metricService->filterByContact($this->adminContact);
+
+        $status = $metricService->findStatusByService($this->service, $this->start, $this->end);
+        $this->assertEquals($status, $this->status);
     }
 }

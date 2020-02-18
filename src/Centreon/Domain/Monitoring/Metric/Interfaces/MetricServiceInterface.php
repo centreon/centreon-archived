@@ -37,4 +37,15 @@ interface MetricServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function findMetricsByService(Service $service, \DateTime $start, \DateTime $end): array;
+
+    /**
+     * Find status data linked to a service.
+     *
+     * @param Service $service
+     * @param \DateTime $start start date
+     * @param \DateTime $end end date
+     * @return array
+     * @throws \Exception
+     */
+    public function findStatusByService(Service $service, \DateTime $start, \DateTime $end): array;
 }

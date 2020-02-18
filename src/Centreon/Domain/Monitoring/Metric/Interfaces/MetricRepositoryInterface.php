@@ -39,6 +39,17 @@ interface MetricRepositoryInterface
     public function findMetricsByService(Service $service, \DateTime $start, \DateTime $end): array;
 
     /**
+     * Find status data linked to a service.
+     *
+     * @param Service $service
+     * @param \Datetime $start start date
+     * @param \Datetime $end end date
+     * @return array
+     * @throws \Exception
+     */
+    public function findStatusByService(Service $service, \DateTime $start, \DateTime $end): array;
+
+    /**
      * @param ContactInterface $contact
      * @return MonitoringRepositoryInterface
      */

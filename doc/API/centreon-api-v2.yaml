@@ -1239,6 +1239,97 @@ paths:
           description: "Host or service not found"
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/status/start/{start}/end/{end}:
+    get:
+      tags:
+        - Metrics
+      summary: 'Get service status data'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - in: path
+          name: start
+          description: 'start of the interval (ISO8601)'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T00:00:00'
+        - in: path
+          name: end
+          description: 'end of the interval (ISO8601)'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T12:00:00'
+      description: 'Get status data from a service between given interval'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  critical:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+                  warning:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+                  ok:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+                  unknown:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: "Host or service not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
