@@ -500,10 +500,6 @@ PHP FPM configuration
     Do you want to reload PHP FPM service ?
     [y/n], default to [n]:
     > y
-
-    Do you want to reload PHP FPM service ?
-    [y/n], default to [n]:
-    > y
     Preparing Centreon temporary files
     Modify rights on /var/log/centreon                          OK
     Modify rights on /var/lib/centreon/installs                 OK
