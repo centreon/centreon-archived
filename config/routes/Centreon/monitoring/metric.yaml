@@ -1,0 +1,10 @@
+monitoring.metric.getServiceMetrics:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/metrics/start/{start}/end/{end}
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+        start: '\S+'
+        end: '\S+'
+    controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceMetrics'
+    condition: "request.attributes.get('version.is_beta') == true"
