@@ -7,4 +7,3 @@ monitoring.metric.getServiceMetrics:
         start: '\S+'
         end: '\S+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceMetrics'
-    condition: "request.attributes.get('version.is_beta') == true"

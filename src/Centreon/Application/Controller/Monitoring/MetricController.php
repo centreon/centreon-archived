@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller\Monitoring;
 
 use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use FOS\RestBundle\View\View;
@@ -68,7 +67,6 @@ class MetricController extends AbstractController
      * @throws \Exception
      */
     public function getServiceMetrics(
-        RequestParametersInterface $requestParameters,
         int $hostId,
         int $serviceId,
         \DateTime $start,
