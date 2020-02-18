@@ -4,7 +4,6 @@ centreon_application_check_checkHost:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\CheckController::checkHost'
-    condition: "request.attributes.get('version.is_beta') == true"
 
 centreon_application_check_checkService:
     methods: POST
@@ -13,4 +12,3 @@ centreon_application_check_checkService:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\CheckController::checkService'
-    condition: "request.attributes.get('version.is_beta') == true"
