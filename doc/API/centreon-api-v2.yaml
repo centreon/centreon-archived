@@ -375,6 +375,37 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/hostgroups:
+    get:
+      tags:
+        - Host Group
+      summary: "List all host groups by host id"
+      description: |
+        List all the host groups in real-time monitoring by host id.
+
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hostgroups:
     get:
       tags:
