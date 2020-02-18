@@ -47,3 +47,9 @@ centreon_application_monitoring_getservicegroupsbyhostandservice:
     path: /monitoring/hosts/{hostId}/services/{serviceId}/servicegroups
     controller: 'Centreon\Application\Controller\MonitoringHostsController::getServiceGroupsByHostAndService'
     condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_gethostgroupsbyhost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/hostgroups
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getHostGroupsByHost'
+    condition: "request.attributes.get('version.is_beta') == true"
