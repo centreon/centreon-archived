@@ -86,7 +86,7 @@ class CheckController extends AbstractController
          */
         $check = $serializer->deserialize(
             $request->getContent(),
-            (string) Check::class,
+            Check::class,
             'json'
         );
         $check
@@ -143,7 +143,7 @@ class CheckController extends AbstractController
          */
         $check = $serializer->deserialize(
             $request->getContent(),
-            (string) Check::class,
+            Check::class,
             'json'
         );
         $check
