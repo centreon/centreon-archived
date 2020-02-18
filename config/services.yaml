@@ -41,5 +41,8 @@ services:
         class: Centreon\Domain\Entity\EntityValidator
         arguments: ['%validation_path%']
 
+    Pimple\Container:
+        factory: ['Centreon\LegacyContainer', 'getInstance']
+
 imports:
     resource: './Modules/*.yaml'
