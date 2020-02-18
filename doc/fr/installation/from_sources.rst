@@ -490,7 +490,7 @@ Configuration du serveur Apache
 Configuration de PHP FPM
 ------------------------
 
-::
+    ::
 
     ------------------------------------------------------------------------
       	  Configure PHP FPM service
@@ -499,7 +499,7 @@ Configuration de PHP FPM
     Do you want to add Centreon PHP FPM sub configuration file ?
     [y/n], default to [n]:
     > y
-    Creating directory /var/lib/centroen/sessions              OK
+    Creating directory /var/lib/centreon/sessions              OK
     Create 'etc/php/7.2/fpm/pool.d/centreon.conf'              OK
     Configuring PHP FPM                                        OK
 
@@ -508,21 +508,21 @@ Configuration de PHP FPM
     > y
     Reloading PHP FPM service                                  OK
     Preparing Centreon temporary files
-    Modify rights on /var/log/centreon                          OK
-    Modify rights on /etc/centreon                              OK
+    Modify rights on /var/log/centreon                         OK
+    Modify rights on /etc/centreon                             OK
     Change macros for insertBaseConf.sql                       OK
     Change macros for sql update files                         OK
     Change macros for php files                                OK
     Change macros for php config file                          OK
     Change macros for perl binary                              OK
-    Modify rights on /etc/centreon-engine                       OK
+    Modify rights on /etc/centreon-engine                      OK
     Add group centreon-broker to user www-data                 OK
     Add group centreon-broker to user centreon-engine          OK
     Add group centreon to user centreon-broker                 OK
-    Modify rights on /etc/centreon-broker                       OK
+    Modify rights on /etc/centreon-broker                      OK
     Copy CentWeb in system directory                           OK
     Install CentWeb (web front of centreon)                    OK
-    Modify rights for install directory                         OK
+    Modify rights for install directory                        OK
     Install libraries                                          OK
     Write right to Smarty Cache                                OK
     Change macros for centreon.cron                            OK
@@ -531,10 +531,10 @@ Configuration de PHP FPM
     Change macros for downtimeManager.php                      OK
     Change macros for centreon-backup.pl                       OK
     Install cron directory                                     OK
-    Modify rights for eventReportBuilder                        OK
-    Modify rights for dashboardBuilder                          OK
-    Modify rights for centreon-backup.pl                        OK
-    Modify rights for centreon-backup-mysql.pl                  OK
+    Modify rights for eventReportBuilder                       OK
+    Modify rights for dashboardBuilder                         OK
+    Modify rights for centreon-backup.pl                       OK
+    Modify rights for centreon-backup-mysql.pl                 OK
     Change macros for centreon.logrotate                       OK
     Install Centreon logrotate.d file                          OK
     Prepare centFillTrapDB                                     OK
@@ -617,7 +617,7 @@ Installation du composant CentStorage
     install www/install/createTablesCentstorage.sql            OK
     Creating Centreon Directory '/var/lib/centreon/status'     OK
     Creating Centreon Directory '/var/lib/centreon/metrics'    OK
-    Modify rights : /var/run/centreon                           OK
+    Modify rights : /var/run/centreon                          OK
     Install logAnalyserBroker                                  OK
     Install nagiosPerfTrace                                    OK
     Change macros for centstorage.cron                         OK
@@ -639,8 +639,8 @@ Installation du composant CentCore
     Preparing Centreon temporary files
     /tmp/centreon-setup exists, it will be moved...
     Copy CentCore in binary directory                          OK
-    Modify rights : /var/run/centreon                           OK
-    Modify rights : /var/lib/centreon                           OK
+    Modify rights : /var/run/centreon                          OK
+    Modify rights : /var/lib/centreon                          OK
     Change macros for centcore.logrotate                       OK
     Install Centreon Core logrotate.d file                     OK
     Replace CentCore init script Macro                         OK
