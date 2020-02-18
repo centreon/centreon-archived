@@ -1,2 +1,0 @@
-autodiscovery:
-    resource: '../../www/modules/centreon-autodiscovery-server/routes/CentreonAutoDiscovery.yaml'

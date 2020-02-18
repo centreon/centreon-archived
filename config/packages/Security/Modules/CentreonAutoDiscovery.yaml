@@ -1,3 +1,0 @@
-security:
-  access_control:
-    - { path: ^/modifier, roles: ROLE_API_CONFIGURATION }
