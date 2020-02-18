@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-restricted-syntax */
+
 import { createSelector } from 'reselect';
 
 /**
@@ -6,7 +9,7 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {Array} accumulator of react routes
  */
-function findReactRoutes(acc, item) {
+const findReactRoutes = (acc, item) => {
   for (const parameter of ['groups', 'children']) {
     if (item[parameter]) {
       acc = item[parameter].reduce(findReactRoutes, acc);
@@ -18,7 +21,7 @@ function findReactRoutes(acc, item) {
   }
 
   return acc;
-}
+};
 
 const getNavigationItems = (state) => state.navigation.items;
 

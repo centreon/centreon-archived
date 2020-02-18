@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable camelcase */
 /* eslint-disable no-return-assign */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable radix */
@@ -11,14 +13,23 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import * as yup from 'yup';
-import numeral from "numeral";
+import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Translate } from 'react-redux-i18n';
 import { connect } from 'react-redux';
-import axios from '../../axios';
+import { I18n } from 'react-redux-i18n';
+
+import {
+  IconHeader,
+  IconNumber,
+  IconToggleSubmenu,
+  SubmenuHeader,
+  SubmenuItem,
+  SubmenuItems,
+} from '@centreon/ui';
 
 import styles from '../header/header.scss';
+import axios from '../../axios';
 
 const numberFormat = yup
   .number()
@@ -80,7 +91,7 @@ class HostMenu extends Component {
       });
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     const { refreshTime } = nextProps;
     const { intervalApplied } = this.state;
     if (refreshTime && !intervalApplied) {
@@ -122,190 +133,126 @@ class HostMenu extends Component {
 
     return (
       <div
-        className={classnames(styles['wrap-right-hosts'], {
-          [styles['submenu-active']]: toggled,
-        })}
+        className={`${styles.wrapper} wrap-right-hosts`}
+        ref={(host) => (this.host = host)}
       >
-        <Link
-          to="/main.php?p=20202&o=h_down&search="
-          className={classnames(
-            styles['wrap-middle-icon'],
-            styles.round,
-            styles['round-small'],
-            {
-              [styles[data.down.unhandled > 0 ? 'red' : 'red-bordered']]: true,
-            },
-          )}
-        >
-          <span className={styles.number}>
-            <span id="count-host-down">
-              {numeral(data.down.unhandled).format('0a')}
-            </span>
-          </span>
-        </Link>
-        <Link
-          to="/main.php?p=20202&o=h_unreachable&search="
-          className={classnames(
-            styles['wrap-middle-icon'],
-            styles.round,
-            styles['round-small'],
-            {
-              [styles[
-                data.unreachable.unhandled > 0
-                  ? 'gray-dark'
-                  : 'gray-dark-bordered'
-              ]]: true,
-            },
-          )}
-        >
-          <span className={styles.number}>
-            <span id="count-host-unreachable">
-              {numeral(data.unreachable.unhandled).format('0a')}
-            </span>
-          </span>
-        </Link>
-        <Link
-          to="/main.php?p=20202&o=h_up&search="
-          className={classnames(
-            styles['wrap-middle-icon'],
-            styles.round,
-            styles['round-small'],
-            { [styles[data.ok > 0 ? 'green' : 'green-bordered']]: true },
-          )}
-        >
-          <span className={styles.number}>
-            <span id="count-host-up">{numeral(data.ok).format('0a')}</span>
-          </span>
-        </Link>
-        <div ref={(host) => (this.host = host)}>
-          <span
-            className={classnames(styles['wrap-right-icon'], styles.hosts)}
-            onClick={this.toggle.bind(this)}
+        <SubmenuHeader submenuType="top" active={toggled}>
+          <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20202&o=h_down&search="
           >
-            <span className={classnames(styles.iconmoon, styles['icon-hosts'])}>
-              {data.pending > 0 ? (
-                <span className={styles['custom-icon']} />
-              ) : null}
-            </span>
-            <span className={styles['wrap-right-icon__name']}>
-              <Translate value="Hosts" />
-            </span>
-          </span>
-          <span
-            className={styles['toggle-submenu-arrow']}
-            onClick={this.toggle.bind(this)}
+            <IconNumber
+              iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
+              iconColor="red"
+              iconNumber={
+                <span id="count-host-down">
+                  {numeral(data.down.unhandled).format('0a')}
+                </span>
+              }
+            />
+          </Link>
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20202&o=h_unreachable&search="
           >
-            {this.props.children}
-          </span>
-          <div className={classnames(styles.submenu, styles.host)}>
-            <div className={styles['submenu-inner']}>
-              <ul
-                className={classnames(
-                  styles['submenu-items'],
-                  styles['list-unstyled'],
-                )}
+            <IconNumber
+              iconType={`${
+                data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
+              iconColor="gray-dark"
+              iconNumber={
+                <span id="count-host-unreachable">
+                  {numeral(data.unreachable.unhandled).format('0a')}
+                </span>
+              }
+            />
+          </Link>
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20202&o=h_up&search="
+          >
+            <IconNumber
+              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
+              iconColor="green"
+              iconNumber={
+                <span id="count-host-up">{numeral(data.ok).format('0a')}</span>
+              }
+            />
+          </Link>
+          <IconToggleSubmenu
+            iconType="arrow"
+            ref={this.setWrapperRef}
+            rotate={toggled}
+            onClick={this.toggle}
+          />
+          <div
+            className={classnames(styles['submenu-toggle'], {
+              [styles['submenu-toggle-active']]: toggled,
+            })}
+          >
+            <SubmenuItems>
+              <Link
+                to="/main.php?p=20202&o=h&search="
+                className={styles.link}
+                onClick={this.toggle}
               >
-                <li className={styles['submenu-item']}>
-                  <Link
-                    to="/main.php?p=20202&o=h&search="
-                    className={styles['submenu-item-link']}
-                  >
-                    <div onClick={this.toggle}>
-                      <Translate value="All" />
-                      <span className={styles['submenu-count']}>
-                        {numeral(data.total).format()}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles['submenu-item']}>
-                  <Link
-                    to="/main.php?p=20202&o=h_down&search="
-                    className={styles['submenu-item-link']}
-                  >
-                    <div onClick={this.toggle}>
-                      <span
-                        className={classnames(
-                          styles['dot-colored'],
-                          styles.red,
-                        )}
-                      >
-                        <Translate value="Down" />
-                      </span>
-                      <span className={styles['submenu-count']}>
-                        {numeral(data.down.unhandled).format()}
-                        {'/'}
-                        {numeral(data.down.total).format()}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles['submenu-item']}>
-                  <Link
-                    to="/main.php?p=20202&o=h_unreachable&search="
-                    className={styles['submenu-item-link']}
-                  >
-                    <div onClick={this.toggle}>
-                      <span
-                        className={classnames(
-                          styles['dot-colored'],
-                          styles.gray,
-                        )}
-                      >
-                        <Translate value="Unreachable" />
-                      </span>
-                      <span className={styles['submenu-count']}>
-                        {numeral(data.unreachable.unhandled).format()}
-                        {'/'}
-                        {numeral(data.unreachable.total).format()}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles['submenu-item']}>
-                  <Link
-                    to="/main.php?p=20202&o=h_up&search="
-                    className={styles['submenu-item-link']}
-                  >
-                    <div onClick={this.toggle}>
-                      <span
-                        className={classnames(
-                          styles['dot-colored'],
-                          styles.green,
-                        )}
-                      >
-                        <Translate value="Up" />
-                      </span>
-                      <span className={styles['submenu-count']}>
-                        {numeral(data.ok).format()}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles['submenu-item']}>
-                  <Link
-                    to="/main.php?p=20202&o=h_pending&search="
-                    className={styles['submenu-item-link']}
-                  >
-                    <div onClick={this.toggle}>
-                      <span
-                        className={classnames(
-                          styles['dot-colored'],
-                          styles.blue,
-                        )}
-                      >
-                        <Translate value="Pending" />
-                      </span>
-                      <span className={styles['submenu-count']}>
-                        {numeral(data.pending).format()}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              </ul>
-            </div>
+                <SubmenuItem
+                  submenuTitle={I18n.t('All')}
+                  submenuCount={numeral(data.total).format()}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_down&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="red"
+                  submenuTitle={I18n.t('Critical')}
+                  submenuCount={`${numeral(data.down.unhandled).format(
+                    '0a',
+                  )}/${numeral(data.down.total).format('0a')}`}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_unreachable&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="gray"
+                  submenuTitle={I18n.t('Unreachable')}
+                  submenuCount={`${numeral(data.unreachable.unhandled).format(
+                    '0a',
+                  )}/${numeral(data.unreachable.total).format('0a')}`}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_up&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="green"
+                  submenuTitle={I18n.t('Up')}
+                  submenuCount={numeral(data.ok).format()}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_pending&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="blue"
+                  submenuTitle={I18n.t('Pending')}
+                  submenuCount={numeral(data.pending).format()}
+                />
+              </Link>
+            </SubmenuItems>
           </div>
-        </div>
+        </SubmenuHeader>
       </div>
     );
   }
@@ -319,10 +266,7 @@ const mapStateToProps = ({ intervals }) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(HostMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(HostMenu);
 
 HostMenu.propTypes = {
   refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])

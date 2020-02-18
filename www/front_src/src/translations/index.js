@@ -12,7 +12,7 @@ const userService = axios(
   'internal.php?object=centreon_topcounter&action=user',
 );
 
-export default function setTranslations(store, callback) {
+export default (store, callback) => {
   const localePromise = userService.get();
   const translationsPromise = translationService.get();
 
@@ -32,4 +32,4 @@ export default function setTranslations(store, callback) {
         window.location.href = 'index.php?disconnect=1';
       }
     });
-}
+};

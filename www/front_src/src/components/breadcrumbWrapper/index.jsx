@@ -1,10 +1,14 @@
-import React, { useMemo, useCallback } from 'react';
+/* eslint-disable no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
+
+import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb } from '@centreon/ui';
 import breadcrumbsSelector from '../../redux/selectors/navigation/breadcrumbs';
 
-function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }) {
-  const getBreadcrumbPath = useCallback((breadcrumbs, path) => {
+const BreadcrumbWrapper = ({ breadcrumbs, path, children, ...others }) => {
+  const getBreadcrumbPath = (breadcrumbs, path) => {
     if (breadcrumbs[path]) {
       return breadcrumbs[path];
     }
@@ -17,7 +21,7 @@ function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }) {
     }
 
     return [];
-  });
+  };
 
   const breadcrumbPath = useMemo(() => getBreadcrumbPath(breadcrumbs, path), [
     breadcrumbs,
@@ -31,7 +35,7 @@ function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }) {
       {children}
     </>
   );
-}
+};
 
 const mapStateToProps = (state) => ({
   breadcrumbs: breadcrumbsSelector(state),

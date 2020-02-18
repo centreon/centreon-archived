@@ -4,7 +4,7 @@ info:
   description: |
     # New features
     + Added real-time monitoring for hosts and services
-    + Added acknowledgment for hosts and services
+    + Added acknowledgement for hosts and services
     + Added downtimes for hosts and services
     + Added the list of monitoring server configurations
     + Added the proxy configuration
@@ -56,7 +56,7 @@ tags:
   - name: Service
   - name: Host Group
   - name: Service Group
-  - name: Acknowledgment
+  - name: Acknowledgement
   - name: Downtime
 security:
   - Token: []
@@ -191,6 +191,9 @@ paths:
         * poller.id
         * service.display_name
         * host_group.id
+        * host.is_acknowledged
+        * host.downtime
+        * host.criticality
       parameters:
         - $ref: '#/components/parameters/ShowService'
         - $ref: '#/components/parameters/Search'
@@ -259,6 +262,8 @@ paths:
         * service.state
         * service_group.id
         * poller.id
+        * service.downtime
+        * service.criticality
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -437,11 +442,11 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /acknowledgments/hosts:
+  /monitoring/acknowledgements:
     get:
       tags:
-        - Acknowledgment
-      summary: "List the latest acknowledgment of each host"
+        - Acknowledgement
+      summary: "List all acknowledgements"
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -459,7 +464,117 @@ paths:
                     type: array
                     items:
                       allOf:
-                        - $ref: '#/components/schemas/Acknowledgment.Host'
+                        - $ref: '#/components/schemas/Acknowledgement.Host'
+                        - $ref: '#/components/schemas/Acknowledgement.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/acknowledgements/{acknowledgement_id}:
+    get:
+      tags:
+        - Acknowledgement
+      summary: "Display one acknowledgement"
+      description: "Display one acknowledgement."
+      parameters:
+        - $ref: '#/components/parameters/AcknowledgementId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement.Service'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/acknowledgements:
+    get:
+      tags:
+        - Acknowledgement
+      summary: "List all hosts acknowledgements"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Acknowledgement.Host'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/acknowledgements:
+    get:
+      tags:
+        - Acknowledgement
+      summary: "List all services acknowledgements"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Acknowledgement.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/acknowledgements:
+    get:
+      tags:
+        - Acknowledgement
+      summary: "List all acknowledgements of a host"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/HostId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Acknowledgement.Host'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -468,14 +583,16 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       tags:
-        - Acknowledgment
-      summary: "Add an acknowledgment on host"
+        - Acknowledgement
+      summary: "Add an acknowledgement on chosen host"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Host.Add'
+              $ref: '#/components/schemas/Acknowledgement.Host.Add'
       responses:
         '204':
           description: "Command Sent"
@@ -483,11 +600,10 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /acknowledgments/hosts/{host_id}:
     delete:
       tags:
-        - Acknowledgment
-      summary: "Cancel an acknowledgment on host"
+        - Acknowledgement
+      summary: "Cancel an acknowledgement on a host"
       parameters:
         - $ref: '#/components/parameters/HostId'
       responses:
@@ -497,16 +613,18 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /acknowledgments/services:
+  /monitoring/hosts/{host_id}/services/{service_id}/acknowledgements:
     get:
       tags:
-        - Acknowledgment
-      summary: "List the latest acknowledgment of each service"
+        - Acknowledgement
+      summary: "List all acknowledgements of a service"
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
       responses:
         '200':
           description: "OK"
@@ -519,7 +637,7 @@ paths:
                     type: array
                     items:
                       allOf:
-                        - $ref: '#/components/schemas/Acknowledgment.Service'
+                        - $ref: '#/components/schemas/Acknowledgement.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -528,14 +646,17 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       tags:
-        - Acknowledgment
-      summary: "Add an acknowledgment on service"
+        - Acknowledgement
+      summary: "Add an acknowledgement on chosen service"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Service.Add'
+              $ref: '#/components/schemas/Acknowledgement.Service.Add'
       responses:
         '204':
           description: "Command Sent"
@@ -543,11 +664,10 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /acknowledgments/hosts/{host_id}/services/{service_id}:
     delete:
       tags:
-        - Acknowledgment
-      summary: "Cancel an acknowledgment on service"
+        - Acknowledgement
+      summary: "Cancel an acknowledgement on a service"
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
@@ -803,14 +923,14 @@ paths:
         - Downtime
       summary: "Add a downtime on a host"
       description: "Add a downtime on a host."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Downtime.Host.Add'
-      parameters:
-        - $ref: '#/components/parameters/HostId'
       responses:
         '204':
           description: "Command Sent"
@@ -977,6 +1097,15 @@ components:
         type: integer
         format: int64
         example: 5
+    AcknowledgementId:
+      in: path
+      name: acknowledgement_id
+      description: "ID of the acknowledgement"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 227
     DowntimeId:
       in: path
       name: downtime_id
@@ -1205,31 +1334,31 @@ components:
           type: boolean
           description: "Indicates whether the server configuration is activated"
           example: true
-    Acknowledgment.Host:
+    Acknowledgement.Host:
       type: object
       properties:
         id:
           type: integer
           format: int64
-          description: "ID of the acknowledgment"
+          description: "ID of the acknowledgement"
           example: 34
         author_id:
           type: integer
           format: int64
-          description: "ID of the contact who requested an acknowledgment"
+          description: "ID of the contact who requested an acknowledgement"
           example: 3
         comment:
           type: string
-          description: "Short description of the acknowledgment"
+          description: "Short description of the acknowledgement"
           example: "Acknowledged by admin"
         deletion_time:
           type: string
           format: date-time
-          description: "Date of the request for cancellation of the acknowledgment (ISO8601)"
+          description: "Date of the request for cancellation of the acknowledgement (ISO8601)"
         entry_time:
           type: string
           format: date-time
-          description: "Date of the request for acknowledgment (ISO8601)"
+          description: "Date of the request for acknowledgement (ISO8601)"
         host_id:
           type: integer
           format: int64
@@ -1246,11 +1375,11 @@ components:
           example: false
         is_persistent_comment:
           type: boolean
-          description: "Indicates whether acknowledgment is maintained in the case of a restart of the scheduler"
+          description: "Indicates whether acknowledgement is maintained in the case of a restart of the scheduler"
           example: true
         is_sticky:
           type: boolean
-          description: "Indicates whether acknowledgment is maintained in the case of a change of status"
+          description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
         state:
           type: integer
@@ -1260,9 +1389,9 @@ components:
              * `2` - CRITICAL
              * `3` - UNKNOWN
           example: 1
-    Acknowledgment.Service:
+    Acknowledgement.Service:
       allOf:
-        - $ref: '#/components/schemas/Acknowledgment.Host'
+        - $ref: '#/components/schemas/Acknowledgement.Host'
         - type: object
           properties:
             service_id:
@@ -1270,40 +1399,28 @@ components:
               format: int64
               description: "ID of the service"
               example: 5
-    Acknowledgment.Host.Add:
+    Acknowledgement.Host.Add:
       type: object
       properties:
         comment:
           type: string
-          description: "Short description of the acknowledgment"
+          description: "Short description of the acknowledgement"
           example: "Acknowledged by admin"
-        host_id:
-          type: integer
-          format: int64
-          description: "ID of the host"
-          example: 12
         is_notify_contacts:
           type: boolean
           description: "Indicates whether notification is sent to the contacts linked to the host or service"
           example: false
         is_persistent_comment:
           type: boolean
-          description: "Indicates whether acknowledgment is maintained in the case of a restart of the scheduler"
+          description: "Indicates whether acknowledgement is maintained in the case of a restart of the scheduler"
           example: true
         is_sticky:
           type: boolean
-          description: "Indicates whether acknowledgment is maintained in the case of a change of status"
+          description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
-    Acknowledgment.Service.Add:
+    Acknowledgement.Service.Add:
       allOf:
-        - $ref: '#/components/schemas/Acknowledgment.Host.Add'
-        - type: object
-          properties:
-            service_id:
-              type: integer
-              format: int64
-              description: "ID of the service"
-              example: 5
+        - $ref: '#/components/schemas/Acknowledgement.Host.Add'
     Downtime.Host.Add:
       allOf:
         - $ref: '#/components/schemas/Downtime.Service.Add'
@@ -1630,6 +1747,14 @@ components:
               type: string
               description: Timezone used for dates
               example: ':Europe/Paris'
+            scheduled_downtime_depth:
+              type: integer
+              description: "Is there scheduled downtime for host or not (1 or 0)"
+              example: 0
+            criticality:
+              type: integer
+              description: "Host criticality level (for display purposes)"
+              example: 10
     Monitoring.HostWithService:
       type: object
       properties:
@@ -1720,6 +1845,10 @@ components:
                   * `0` - SOFT
                   * `1` - HARD
               example: 1
+            criticality:
+              type: integer
+              description: "Service criticality level (for display purposes)"
+              example: 10
     Monitoring.ServiceFull:
       allOf:
         - $ref: '#/components/schemas/Monitoring.ServiceMain'

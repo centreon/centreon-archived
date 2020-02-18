@@ -8137,14 +8137,6 @@ msgstr "Fichier de configuration principal"
 msgid "Temp File"
 msgstr "Fichier temporaire"
 
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:165
-msgid "Check result directory"
-msgstr "Répertoire des mises en cache"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:166
-msgid "Max Check Result File Age"
-msgstr "Age maximal du fichier de mise en cache"
-
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:171
 msgid "Monitoring system User"
 msgstr "Utilisateur system de supervision"
@@ -8846,10 +8838,6 @@ msgstr "Répertoires"
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:873
 msgid "Host Check Options"
 msgstr "Options de contrôle des hôtes"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:875
-msgid "Result Cache"
-msgstr "Mise en cache des résultats"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:876
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:642
@@ -14701,21 +14689,6 @@ msgstr "Configurer les collecteurs"
 
 msgid "services"
 msgstr "services"
-
-msgid "Critical services"
-msgstr "Services critiques"
-
-msgid "Warning services"
-msgstr "Services en alertes"
-
-msgid "Unknown services"
-msgstr "Services inconnus"
-
-msgid "Ok services"
-msgstr "Services Ok"
-
-msgid "Pending services"
-msgstr "Services en attente"
 
 msgid "Edit profile"
 msgstr "Editer le profil"

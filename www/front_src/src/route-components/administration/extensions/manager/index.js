@@ -18,7 +18,7 @@ import {
   ExtensionDetailsPopup,
   ExtensionDeletePopup,
 } from '@centreon/ui';
-import Hook from '../../../../components/hook';
+import Hook from '../../../../components/Hook';
 
 import axios from '../../../../axios';
 import { fetchNavigationData } from '../../../../redux/actions/navigationActions';
@@ -27,10 +27,8 @@ import { fetchExternalComponents } from '../../../../redux/actions/externalCompo
 class ExtensionsRoute extends Component {
   state = {
     extensions: {
-      result: {
-        module: { entities: [] },
-        widget: { entities: [] },
-      },
+      module: { entities: [] },
+      widget: { entities: [] },
     },
     widgetsActive: true,
     modulesActive: true,
@@ -407,8 +405,6 @@ class ExtensionsRoute extends Component {
       });
   };
 
-  versionClicked = () => { };
-
   render() {
     const {
       extensions,
@@ -488,14 +484,14 @@ class ExtensionsRoute extends Component {
           <Button
             label={`${
               installed &&
-                not_installed &&
-                updated &&
-                search.length === 0 &&
-                ((modulesActive && widgetsActive) ||
-                  (!modulesActive && !widgetsActive))
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
                 ? 'Update all'
                 : 'Update selection'
-              }`}
+            }`}
             buttonType="regular"
             customClass="mr-2"
             color="orange"
@@ -512,14 +508,14 @@ class ExtensionsRoute extends Component {
           <Button
             label={`${
               installed &&
-                not_installed &&
-                updated &&
-                search.length === 0 &&
-                ((modulesActive && widgetsActive) ||
-                  (!modulesActive && !widgetsActive))
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
                 ? 'Install all'
                 : 'Install selection'
-              }`}
+            }`}
             buttonType="regular"
             customClass="mr-2"
             color="green"
@@ -532,39 +528,39 @@ class ExtensionsRoute extends Component {
           />
           <Hook path="/administration/extensions/manager/button" />
         </Wrapper>
-        {extensions && !nothingShown ? (
+        {extensions.result && !nothingShown ? (
           <>
             {extensions.result.module &&
-              (!modulesActive || (modulesActive && widgetsActive)) ? (
-                <ExtensionsHolder
-                  onCardClicked={this.activateExtensionsDetails}
-                  onDelete={this.toggleDeleteModal}
-                  onInstall={this.installById}
-                  onUpdate={this.updateById}
-                  title="Modules"
-                  type="module"
-                  updating={extensionsUpdatingStatus}
-                  installing={extensionsInstallingStatus}
-                  entities={extensions.result.module.entities}
-                />
-              ) : null}
+            (!modulesActive || (modulesActive && widgetsActive)) ? (
+              <ExtensionsHolder
+                onCardClicked={this.activateExtensionsDetails}
+                onDelete={this.toggleDeleteModal}
+                onInstall={this.installById}
+                onUpdate={this.updateById}
+                title="Modules"
+                type="module"
+                updating={extensionsUpdatingStatus}
+                installing={extensionsInstallingStatus}
+                entities={extensions.result.module.entities}
+              />
+            ) : null}
             {extensions.result.widget &&
-              (!widgetsActive || (modulesActive && widgetsActive)) ? (
-                <ExtensionsHolder
-                  onCardClicked={this.activateExtensionsDetails}
-                  onDelete={this.toggleDeleteModal}
-                  onInstall={this.installById}
-                  onUpdate={this.updateById}
-                  titleColor="blue"
-                  hrTitleColor="blue"
-                  hrColor="blue"
-                  title="Widgets"
-                  type="widget"
-                  updating={extensionsUpdatingStatus}
-                  installing={extensionsInstallingStatus}
-                  entities={extensions.result.widget.entities}
-                />
-              ) : null}
+            (!widgetsActive || (modulesActive && widgetsActive)) ? (
+              <ExtensionsHolder
+                onCardClicked={this.activateExtensionsDetails}
+                onDelete={this.toggleDeleteModal}
+                onInstall={this.installById}
+                onUpdate={this.updateById}
+                titleColor="blue"
+                hrTitleColor="blue"
+                hrColor="blue"
+                title="Widgets"
+                type="widget"
+                updating={extensionsUpdatingStatus}
+                installing={extensionsInstallingStatus}
+                entities={extensions.result.widget.entities}
+              />
+            ) : null}
           </>
         ) : null}
 
@@ -573,7 +569,6 @@ class ExtensionsRoute extends Component {
             type={modalDetailsType}
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
-            onVersionClicked={this.versionClicked}
             onInstallClicked={this.installById}
             onDeleteClicked={this.deleteById}
             onUpdateClicked={this.updateById}
@@ -598,16 +593,10 @@ const mapDispatchToProps = (dispatch) => {
     reloadNavigation: () => {
       // batch actions to avoid useless multiple rendering
       dispatch(
-        batchActions([
-          fetchNavigationData(),
-          fetchExternalComponents()
-        ]),
+        batchActions([fetchNavigationData(), fetchExternalComponents()]),
       );
     },
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(ExtensionsRoute);
+export default connect(null, mapDispatchToProps)(ExtensionsRoute);

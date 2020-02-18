@@ -16,22 +16,22 @@ export const history = createBrowserHistory({
   basename: `/${paths[1] ? paths[1] : ''}`,
 });
 
-const createAppStore = (options, initialState = {}) => {
+const createAppStore = (initialState = {}) => {
   const middlewares = [
     routerMiddleware(history),
     thunk,
-    sagaMiddleware,
     batchDispatchMiddleware,
+    sagaMiddleware,
   ];
 
-  const store = createStore(
-    createRootReducer(history),
-    initialState,
-    compose(
-      applyMiddleware(...middlewares),
-      window.devToolsExtension ? window.devToolsExtension() : (f) => f,
-    ),
-  );
+  const composeEnhancers =
+    typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+      : compose;
+
+  const enhancer = composeEnhancers(applyMiddleware(...middlewares));
+
+  const store = createStore(createRootReducer(history), initialState, enhancer);
 
   sagaMiddleware.run(sagas);
   return store;

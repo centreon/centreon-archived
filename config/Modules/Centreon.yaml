@@ -1,3 +1,10 @@
+jms_serializer:
+    metadata:
+        directories:
+            centreon:
+                namespace_prefix: "Centreon\\Domain"
+                path: '%kernel.root_dir%/../config/packages/serializer/Centreon'
+
 parameters:
     api.header: "Api-Version"
     api.version.latest: "2.0"
@@ -101,7 +108,7 @@ services:
 
     # API Acknowledgement
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterface:
-        class: Centreon\Infrastructure\Acknowledgement\AcknowledgmentRepositoryRDB
+        class: Centreon\Infrastructure\Acknowledgement\AcknowledgementRepositoryRDB
 
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
         class: Centreon\Domain\Acknowledgement\AcknowledgementService

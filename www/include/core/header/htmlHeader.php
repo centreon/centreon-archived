@@ -204,7 +204,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                         if (isset($_GET["acknowledge"])) {
                             $obis .= '_ack_' . $_GET["acknowledge"];
                         }
-                        print "\tsetTimeout('initM($tM, \"$sid\", \"$obis\")', 0);";
+                        print "\tsetTimeout('initM($tM, \"$obis\")', 0);";
                     }
                 } elseif ($topology_js['init']) {
                     echo "if (typeof " . $topology_js['init'] . " == 'function') {";

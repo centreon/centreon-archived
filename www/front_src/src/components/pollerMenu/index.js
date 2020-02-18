@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable radix */
@@ -123,7 +124,7 @@ class PollerMenu extends Component {
       });
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     const { refreshTime } = nextProps;
     const { intervalApplied } = this.state;
     if (refreshTime && !intervalApplied) {
@@ -297,17 +298,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
 
 PollerMenu.propTypes = {
-  allowedPages: PropTypes.arrayOf(
-    PropTypes.string
-  ).isRequired,
-  refreshTime: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.bool
-  ]).isRequired,
+  allowedPages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
+    .isRequired,
 };

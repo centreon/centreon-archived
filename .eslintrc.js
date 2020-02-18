@@ -1,1 +1,3 @@
-module.exports = require('@centreon/eslint-config-centreon');
+module.exports = {
+  extends: './node_modules/@centreon/frontend-core/eslint/typescript'
+};
