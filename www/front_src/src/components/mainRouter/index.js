@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import ReactRouter from '../reactRouter';
+import ReactRouter from '../ReactRouter';
 import LegacyRoute from '../../route-components/legacyRoute';
 
 // main router to handle switch between legacy routes and react pages
