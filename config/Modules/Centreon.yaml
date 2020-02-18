@@ -108,7 +108,7 @@ services:
 
     # API Acknowledgement
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterface:
-        class: Centreon\Infrastructure\Acknowledgement\AcknowledgmentRepositoryRDB
+        class: Centreon\Infrastructure\Acknowledgement\AcknowledgementRepositoryRDB
 
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
         class: Centreon\Domain\Acknowledgement\AcknowledgementService
