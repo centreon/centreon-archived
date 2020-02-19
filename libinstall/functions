@@ -1,14 +1,29 @@
 #!/bin/sh
-
 #----
 ## @Synopsis	This file contains functions to be used by Centreon install scripts
 ## @Copyright	Copyright 2008, Guillaume Watteeux
+## @Copyright	Copyright 2008-2020, Centreon
 ## @Licence	GPLv2
 ## This file contains functions to be used by Centreon install scripts
 #----
-
-#################################
-# SVN: $Id$
+## Centreon is developed with GPL Licence 2.0
+##
+## GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+##
+## Developed by : Julien Mathis - Romain Le Merlus
+## Contributors : Guillaume Watteeux - Maximilien Bersoult
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+##    For information : infos@centreon.com
 
 # debug ?
 #set -x
@@ -332,39 +347,39 @@ answer_with_createdir() {
 ## @return 0    end
 #----
 answer_with_createfile() {
-        local message=$1
-        local default=$2
-        local var_ref=$3
-        local res="not_define"
-        local first=0
-        while [ ! -f "$res" ] ; do
-                [ $first -eq 1 ] && echo_passed "$(gettext "File $res does not exists.")" "$critical"
-                echo -e "\n$message"
-                [ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
-                echo -en "> "
-                read res
-                if [ -z "$res" ] ; then
-                        [ "$default" != "NO_DEFAULT" ] && res=$default
+    local message=$1
+    local default=$2
+    local var_ref=$3
+    local res="not_define"
+    local first=0
+    while [ ! -f "$res" ] ; do
+        [ $first -eq 1 ] && echo_passed "$(gettext "File $res does not exists.")" "$critical"
+        echo -e "\n$message"
+        [ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
+        echo -en "> "
+        read res
+        if [ -z "$res" ] ; then
+            [ "$default" != "NO_DEFAULT" ] && res=$default
+        fi
+        if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
+            echo_passed  "$(gettext "You select slash...")"
+            res="not_define"
+        else
+            first=1
+            [ -f "$res" ] && break
+            yes_no_default "$(gettext "Do you want me to create this file ?") [$res]"
+            if [ $? -eq 0 ] ; then
+                touch $res
+                if [ $? -ne 0 ] ; then
+                    echo_passed "$(gettext "Could not create file.")" "$critical"
+                    #continue
                 fi
-                if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
-                        echo_passed  "$(gettext "You select slash...")"
-                        res="not_define"
-                else
-                        first=1
-                        [ -f "$res" ] && break
-                        yes_no_default "$(gettext "Do you want me to create this file ?") [$res]"
-                        if [ $? -eq 0 ] ; then
-                                touch $res
-                                if [ $? -ne 0 ] ; then
-                                        echo_passed "$(gettext "Could not create file.")" "$critical"
-                                        #continue
-                                fi
-                                log "INFO" "$(gettext "Creating") : $res"
-                        fi
-                fi
-        done
-        eval $var_ref=$res
-        return 0
+                log "INFO" "$(gettext "Creating") : $res"
+            fi
+        fi
+    done
+    eval $var_ref=$res
+    return 0
 }
 
 #----
@@ -1621,19 +1636,37 @@ createConfFile() {
 	${CAT} << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
 /*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
  *
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
  *
- * For information : contact@centreon.com
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
  */
 
 \$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
@@ -1641,6 +1674,7 @@ createConfFile() {
 \$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
 \$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
 \$conf_centreon['centreon_log'] = "$CENTREON_LOG";
+\$conf_centreon['centreon_cachedir'] = "$CENTREON_CACHEDIR";
 \$conf_centreon['centreon_varlib'] = "$CENTREON_VARLIB";
 \$conf_centreon['centreon_group'] = "$CENTREON_GROUP";
 \$conf_centreon['centreon_user'] = "$CENTREON_USER";
@@ -2092,7 +2126,7 @@ check_broker_user()
 #----
 copyInTempFile()
 {
-	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www api libinstall .env bootstrap.php container.php composer.json package.json package-lock.json"
+	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www api libinstall .env .env.local.php bootstrap.php container.php composer.json package.json package-lock.json"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then
@@ -2249,7 +2283,7 @@ find_OS() {
 #----
 ## use this function to clean and exit centreon install
 ## This function use <@function purge_centreon_tmp_dir> function.
-## TODO: Need to add fonctionnality
+## TODO: Need to add functionality
 ##      - delete install file
 ##      - restore inital rigth
 ##      - ...
@@ -2367,10 +2401,10 @@ clean_sudo() {
 #----
 ## Find file with macro in directory.
 ## @param	macro (separate with comma)
-## @param 	directoty where to find
+## @param 	folder where to find
 ## @param	sub directory to find
 ## @param	file to search (possible to use pattern)
-## @param	variable where define a list of file (temporaty file)
+## @param	variable where define a list of file (temporary file)
 ## @Globals	LOG_FILE, TMP_DIR
 #----
 find_macros_in_dir() {
@@ -2394,6 +2428,7 @@ find_macros_in_dir() {
 	eval $var_ref=$file_out_tmp
 	return 0
 }
+
 
 #----
 ## Check result and print a message
