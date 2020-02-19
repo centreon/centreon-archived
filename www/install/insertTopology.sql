@@ -184,6 +184,9 @@ INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_p
 -- Insert Extensions Manager entry
 INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`) VALUES ('Manager', '/administration/extensions/manager', '1', '1', 507, 50709, 1);
 
+-- Add unified view page entry
+INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Resources (beta)', '/monitoring/resources', '1', '1', 2, 201, 1, 1);
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
