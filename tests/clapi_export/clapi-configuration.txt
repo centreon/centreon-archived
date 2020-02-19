@@ -549,7 +549,6 @@ ENGINECFG;setparam;Centreon Engine Central;log_file;/var/log/centreon-engine/cen
 ENGINECFG;setparam;Centreon Engine Central;cfg_dir;/etc/centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/centengine.tmp
 ENGINECFG;setparam;Centreon Engine Central;status_file;/var/log/centreon-engine/status.dat
-ENGINECFG;setparam;Centreon Engine Central;use_check_result_path;0
 ENGINECFG;setparam;Centreon Engine Central;nagios_user;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;nagios_group;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;enable_notifications;1
@@ -634,7 +633,6 @@ ENGINECFG;setparam;Centreon Engine Central_1;log_file;/var/log/centreon-engine/c
 ENGINECFG;setparam;Centreon Engine Central_1;cfg_dir;/etc/centreon-engine
 ENGINECFG;setparam;Centreon Engine Central_1;temp_file;/var/log/centreon-engine/centengine.tmp
 ENGINECFG;setparam;Centreon Engine Central_1;status_file;/var/log/centreon-engine/status.dat
-ENGINECFG;setparam;Centreon Engine Central_1;use_check_result_path;0
 ENGINECFG;setparam;Centreon Engine Central_1;nagios_user;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central_1;nagios_group;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central_1;enable_notifications;1
@@ -5029,6 +5027,7 @@ HOST;setparam;Centreon-Server;timezone;0
 HOST;setparam;Centreon-Server;host_locked;0
 HOST;setparam;Centreon-Server;host_register;1
 HOST;setparam;Centreon-Server;host_activate;1
+HOST;addparent;Centreon-Server;test_host
 HOST;addtemplate;Centreon-Server;generic-host
 HOST;addtemplate;test_host;my_htpl-test
 STPL;ADD;generic-service;generic-service;

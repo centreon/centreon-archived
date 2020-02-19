@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,218 +22,204 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class representing a record of a service in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class Service
+class Service implements EntityDescriptorMetadataInterface
 {
+    // Groups for serilizing
+    public const SERIALIZER_GROUP_MIN = 'service_min';
+    public const SERIALIZER_GROUP_MAIN = 'service_main';
+    public const SERIALIZER_GROUP_FULL = 'service_full';
+    public const SERIALIZER_GROUP_WITH_HOST = 'service_with_host';
+
     /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
-     * @Desc(column="service_id", modifier="setId")
      * @var int Unique index
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var int
      */
     private $checkAttempt;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var string|null
      */
     private $checkCommand;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var float|null
      */
     private $checkInterval;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var string|null
      */
     private $checkPeriod;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var int|null
      */
     private $checkType;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var string|null
      */
     private $commandLine;
 
     /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
      * @var string
      */
     private $description;
 
     /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
      * @var string
      */
     private $displayName;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var float|null
      */
     private $executionTime;
 
     /**
-     * @Serializer\Groups({"service_with_host"})
      * @var Host|null
      */
     private $host;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var string|null
      */
     private $iconImage;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var string|null
      */
     private $iconImageAlt;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="acknowledged", modifier="setAcknowledged")
      * @var bool
      */
     private $isAcknowledged;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="active_checks", modifier="setActiveCheck")
      * @var bool
      */
     private $isActiveCheck;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="checked", modifier="setChecked")
      * @var bool
      */
     private $isChecked;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var int|null
      */
     private $scheduledDowntimeDepth;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var \DateTime|null
      */
     private $lastCheck;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var \DateTime|null
      */
     private $lastHardStateChange;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var \DateTime|null
      */
     private $lastNotification;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var \DateTime|null
      */
     private $lastTimeCritical;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var \DateTime|null
      */
     private $lastTimeOk;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var \DateTime|null
      */
     private $lastTimeUnknown;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var \DateTime|null
      */
     private $lastTimeWarning;
 
     /**
      * @var \DateTime|null
-     * @Serializer\Groups({"service_full"})
      */
     private $lastUpdate;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var \DateTime|null
      */
     private $lastStateChange;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var float|null
      */
     private $latency;
 
     /**
      * @var int
-     * @Serializer\Groups({"service_main", "service_full"})
      */
     private $maxCheckAttempts;
 
     /**
      * @var \DateTime
-     * @Serializer\Groups({"service_full"})
      */
     private $nextCheck;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var string
      */
     private $output;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="perfdata", modifier="setPerformanceData")
      * @var string
      */
     private $performanceData;
 
     /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
      * @var int ['0' => 'OK', '1' => 'WARNING', '2' => 'CRITICAL', '3' => 'UNKNOWN', '4' => 'PENDING']
      */
     private $state;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var int ('1' => 'HARD', '0' => 'SOFT')
      */
     private $stateType;
+
+    /**
+     * @var int
+     */
+    private $criticality;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'service_id' => 'setId',
+            'acknowledged' => 'setAcknowledged',
+            'active_checks' => 'setActiveCheck',
+            'checked' => 'setChecked',
+            'perfdata' => 'setPerformanceData',
+        ];
+    }
 
     /**
      * @return int
@@ -823,6 +810,24 @@ class Service
     public function setStateType(int $stateType): Service
     {
         $this->stateType = $stateType;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int|null $criticality
+     * @return Service
+     */
+    public function setCriticality(?int $criticality): Service
+    {
+        $this->criticality = $criticality;
         return $this;
     }
 }

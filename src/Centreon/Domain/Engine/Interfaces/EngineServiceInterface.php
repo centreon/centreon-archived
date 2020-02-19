@@ -63,7 +63,7 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function scheduleForcedHostCheck(Host $host): void;
 
     /**
-     * Disacknowledge a host acknowledgement.
+     * Disacknowledge a host.
      *
      * @param Host $host Host to disacknowledge
      * @throws EngineException
@@ -72,7 +72,7 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function disacknowledgeHost(Host $host): void;
 
     /**
-     * Disacknowledge a service acknowledgement.
+     * Disacknowledge a service.
      *
      * @param Service $service Service to disacknowledge
      * @throws EngineException

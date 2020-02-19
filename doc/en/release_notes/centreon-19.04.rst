@@ -1,3 +1,51 @@
+=====================
+Centreon Web 19.04.10
+=====================
+
+Bugfix
+------
+
+* [Status Details] "Display details" strange behaviour when "Summary" selected in by Hostgroup page (PR #8265)
+* [Charts] Problem using zoom in when having timezone (PR #8286)
+
+Security
+--------
+
+* Do not expose session ID identifier in URL (PR #8291)
+
+====================
+Centreon Web 19.04.9
+====================
+
+Bugfix
+------
+
+* [Status Details] Services shown as CRITICAL while OK (PR #8253)
+* [Status Details] Cannot empty "Hostgroup" drop-down list in "Services by Hostgroup" (PR #8257)
+* [Autologin] Access to URI with arguments (PR #8262)
+* [Configuration] Check command --help display won't work (PR #8255 and #8268)
+* [Event Logs] Filter on disabled objects (PR #8238)
+* [Services Grid] Filters not used correctly (PR #8260)
+* [Monitoring] Service status filter is not saved (PR #8256)
+
+====================
+Centreon Web 19.04.8
+====================
+
+Bugfix
+------
+
+* [Clapi] fix overlapping in clapi export (PR/#8191 fixes #7562)
+* [Custom View] fix display for user with no widget preferences (PR #8158 fixes #7875)
+* [Web] Issue with random blank pages (PR/#8187,#8193)
+
+
+Security
+--------
+
+* [Service Discovery] cron should be run by centreon user (PR #8062 fixes #7921)
+* [Web] bump terser-webpack-plugin to 1.4.2
+
 ====================
 Centreon Web 19.04.7
 ====================

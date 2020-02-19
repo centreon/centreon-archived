@@ -113,6 +113,8 @@ activate	                     Whether or not host is enabled
 
 active_checks_enabled	             Whether or not active checks are enabled
 
+acknowledgement_timeout            Acknowledgement timeout (in seconds)
+
 address	                             Host IP Address
 
 alias	                             Alias
@@ -224,6 +226,8 @@ action_url	                     Action URL
 activate	                     Whether or not host is enabled
 
 active_checks_enabled	             Whether or not active checks are enabled
+
+acknowledgement_timeout            Acknowledgement timeout (in seconds)
 
 address	                             Host IP Address
 

@@ -161,7 +161,7 @@ var countConnections = {
             var target = entry[1] + entry[2] + '[' + argument.target + ']';
             var entryValue = document.getElementsByName(target)[1].value.replace(",", ".");
 
-            if (entryValue == '' || typeof entryValue == "string" || entryValue < 1) {
+            if (entryValue == '' || isNaN(entryValue) || entryValue < 1) {
                 document.getElementsByName(target)[1].value = 1;
             } else {
                 document.getElementsByName(target)[1].value = Math.trunc(entryValue);

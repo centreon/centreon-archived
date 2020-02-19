@@ -13,12 +13,6 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         entryTime:
             - Type:
                 type: integer
-        hostId:
-            - Type:
-                type: integer
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
         pollerId:
             - Type:
                 type: integer
@@ -41,12 +35,6 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
                 groups: [Default, add_host_ack, add_service_ack]
             - NotNull:
                 groups: [Default, add_host_ack, add_service_ack]
-        serviceId:
-            - Type:
-                type: integer
-                groups: [Default, add_service_ack]
-            - NotNull:
-                groups: [add_service_ack]
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
@@ -82,3 +70,25 @@ Centreon\Domain\Downtime\Downtime:
         pollerId:
             - Type:
                 type: integer
+
+# Used to validate the Proxy entity
+Centreon\Domain\Proxy\Proxy:
+    properties:
+        url:
+            - Type:
+                  type: string
+            - NotNull: ~
+        port:
+            - Type:
+                  type: integer
+            - PositiveOrZero: ~
+            - LessThanOrEqual: 65535
+            - NotNull: ~
+        user:
+            - Type:
+                  type: string
+            - NotNull: ~
+        password:
+            - Type:
+                  type: string
+            - NotNull: ~

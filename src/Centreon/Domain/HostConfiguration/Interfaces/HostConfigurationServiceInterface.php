@@ -21,9 +21,17 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
-use Centreon\Domain\HostConfiguration\HostConfiguration;
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostConfigurationException;
 
 interface HostConfigurationServiceInterface
 {
-    public function addHost(HostConfiguration $host): int;
+    /**
+     * Add a host.
+     *
+     * @param Host $host
+     * @return int
+     * @throws HostConfigurationException
+     */
+    public function addHost (Host $host): int;
 }

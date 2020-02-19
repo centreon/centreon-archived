@@ -21,9 +21,17 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
-use Centreon\Domain\HostConfiguration\HostConfiguration;
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\Repository\RepositoryException;
 
 interface HostConfigurationRepositoryInterface
 {
-    public function addHost(HostConfiguration $host): int;
+    /**
+     * Add a host
+     *
+     * @param Host $host Host to add
+     * @return int Return the new host id
+     * @throws RepositoryException
+     */
+    public function addHost(Host $host): int;
 }

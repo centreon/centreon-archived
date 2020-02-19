@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -76,7 +76,7 @@ $obj->setInstanceHistory($instance);
 
 $_SESSION['monitoring_service_groups'] = $sgSearch;
 
-// Prepare pagination
+// Filter on state
 $s_search = "";
 
 // Display service problems
@@ -104,6 +104,7 @@ if (!$obj->is_admin) {
 
 $query .= "WHERE sgm.servicegroup_id = sg.servicegroup_id
     AND sgm.host_id = h.host_id
+    AND h.host_id = s.host_id
     AND sgm.service_id = s.service_id ";
 
 // filter elements with acl (host, service, servicegroup)
@@ -133,10 +134,7 @@ if ($hSearch != "") {
         \PDO::PARAM_STR => "%" . $hSearch . "%"
     ];
 }
-$query .= $h_search;
-
-// Service search
-$query .= $s_search;
+$query .= $h_search . $s_search;
 
 // Poller search
 if ($instance != -1) {
@@ -206,7 +204,7 @@ if ($numRows > 0) {
     $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name,
         sg.name AS alias,
         h.name AS host_name,
-        h.state as host_state,
+        h.state AS host_state,
         h.icon_image, h.host_id, s.state, s.description, s.service_id,
         (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
         FROM servicegroups sg, services_servicegroups sgm, services s, hosts h ";
@@ -217,6 +215,7 @@ if ($numRows > 0) {
 
     $query2 .= "WHERE sgm.servicegroup_id = sg.servicegroup_id
         AND sgm.host_id = h.host_id
+        AND h.host_id = s.host_id
         AND sgm.service_id = s.service_id ";
 
     // filter elements with acl (host, service, servicegroup)

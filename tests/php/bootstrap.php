@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+/**
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,40 @@
  *
  */
 
-require dirname(__DIR__) . '/../vendor/autoload.php';
+// mock path constants to redirect to base centreon directory
+$mockedPathConstants = ['_CENTREON_PATH_', '_CENTREON_ETC_', '_CENTREON_LOG_', '_CENTREON_CACHEDIR_'];
+foreach ($mockedPathConstants as $mockedPathConstant) {
+    if (!defined($mockedPathConstant)) {
+        define($mockedPathConstant, realpath(__DIR__ . '/../../') . '/');
+    }
+}
+
+// mock variable constants to redirect to base centreon directory
+$mockedVarConstants = ['hostCentreon', 'hostCentstorage', 'user', 'password', 'db', 'dbcstg', 'port'];
+foreach ($mockedVarConstants as $mockedVarConstant) {
+    if (!defined($mockedVarConstant)) {
+        define($mockedVarConstant, '');
+    }
+}
+
+// Disable warnings for PEAR.
+error_reporting(E_ALL & ~E_STRICT);
+
+require_once realpath(__DIR__ . '/polyfill.php');
+$loader = require realpath(__DIR__ . '/../../vendor/autoload.php');
+
+Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+
+if (!function_exists('loadDependencyInjector')) {
+    // Mock DB manager
+    \Tests\Centreon\DependencyInjector::getInstance()[Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
+        new Centreon\Test\Mock\CentreonDBManagerService;
+
+    function loadDependencyInjector()
+    {
+        return \Tests\Centreon\DependencyInjector::getInstance();
+    }
+}
 
 $_SERVER['APP_ENV'] = 'dev';
 $_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? 'prod' !== $_SERVER['APP_ENV'];

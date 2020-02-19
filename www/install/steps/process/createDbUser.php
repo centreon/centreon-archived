@@ -97,11 +97,12 @@ try {
 
     // checking mysql version before trying to alter the password plugin
     $prepareCheckVersion = $link->query($checkMysqlVersion);
+    $versionName = $versionNumber = "";
     while ($row = $prepareCheckVersion->fetch()) {
-        if (!isset($versionNumber) && $row['Variable_name'] === "version") {
-            $versionNumber = $row['version'];
-        } elseif (!isset($versionName) && $row['Variable_name'] === "version_comment") {
-            $versionName = $row['version_comment'];
+        if ($row['Variable_name'] === "version") {
+            $versionNumber = $row['Variable_name'];
+        } elseif ($row['Variable_name'] === "version_comment") {
+            $versionName = $row['Variable_name'];
         }
     }
     if ((strpos($versionName, "MariaDB") !== false && version_compare($versionNumber, '10.2.0') >= 0)

@@ -1,4 +1,66 @@
 ====================
+Centreon Web 19.10.7
+====================
+
+Bug Fixes
+---------
+
+* [Charts] Problem using zoom in when having timezone (PR #8286)
+* [Source install] Several files are not copied in centreon directory
+* [Status Details] "Display details" strange behaviour when "Summary" selected in by Hostgroup page (PR #8265)
+* [UI] Add nowrap style to badge class to avoid wrap in dense typeface environments like chinese (PR #8314)
+* [Mobile] Third level menus are not accessible (PR #8320)
+
+Security
+--------
+
+* Do not expose session ID identifier in URL (PR #8291)
+
+Technical
+---------
+
+* Remove all unused front-end code
+
+====================
+Centreon Web 19.10.6
+====================
+
+Bug Fixes
+---------
+
+* [Status Details] Services shown as CRITICAL while OK (PR #8253)
+* [Status Details] Cannot empty "Hostgroup" drop-down list in "Services by Hostgroup" (PR #8257)
+* [Autologin] Access to URI with arguments (PR #8262)
+* [Configuration] Check command --help display won't work (PR #8255 and #8268)
+* [Event Logs] Filter on disabled objects (PR #8238)
+* [Services Grid] Filters not used correctly (PR #8260)
+
+====================
+Centreon Web 19.10.5
+====================
+
+Bug Fixes
+---------
+
+* [Install] Check MariaDB version before using ALTER USER (PR/#8068)
+* [Install] Update libinstall scripts (PR/#8180, PR/#8188)
+* [Status Details] "Display details" not working when "Summary" selected (PR/#8200)
+* [Traps] Cannot save trap configuration (PR/#8165, PR/#8169)
+* [Clapi] Fix overlapping in clapi export (PR/#8191 fixes #7562)
+* [Clapi] Add parameters for HOST object (PR/#8085)
+* [API] Improve consistency of getparam (PR/#8201)
+* [Custom View] fix display for user with no widget preferences (PR #8159 fixes #7875)
+* [Web] Issue with random blank pages (PR/#8187,#8193)
+* [Web] Search in media page does not work (PR/#8203)
+* [Web] Improve authentication messages in login.log (PR/#7943)
+
+Security
+--------
+
+* [Web] Bump terser-webpack-plugin to 1.4.2 (PR/#8182)
+* [Web] Upgrade handlebars dependencies (PR/#8224)
+
+====================
 Centreon Web 19.10.4
 ====================
 

@@ -1,54 +1,46 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation ; either version 2 of the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
- * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give Centreon
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * For more information : contact@centreon.com
- *
  *
  */
 
 namespace Centreon\Domain\Entity;
 
+use Symfony\Component\Serializer\Annotation as Serializer;
 use ReflectionClass;
 
 class Image
 {
 
-    const TABLE = 'view_img';
+    public const TABLE = 'view_img';
+    public const MEDIA_DIR = 'img/media/';
+    public const SERIALIZER_GROUP_LIST = 'image-list';
 
     /**
+     * @Serializer\SerializedName("id")
+     * @Serializer\Groups({Image::SERIALIZER_GROUP_LIST})
      * @var int
      */
     private $img_id;
 
     /**
+     * @Serializer\SerializedName("name")
+     * @Serializer\Groups({Image::SERIALIZER_GROUP_LIST})
      * @var string
      */
     private $img_name;
@@ -76,6 +68,12 @@ class Image
         $this->imageDir = new ImageDir();
     }
 
+    /**
+     * Load data in entity
+     *
+     * @param string $prop
+     * @param string $val
+     */
     public function __set($prop, $val)
     {
         try {
@@ -96,9 +94,31 @@ class Image
     }
 
     /**
-     * @return int
+     * Alias of getImgId
+     *
+     * @return int|null
      */
-    public function getImgId(): int
+    public function getId(): ?int
+    {
+        return $this->getImgId();
+    }
+
+    /**
+     * @Serializer\Groups({Image::SERIALIZER_GROUP_LIST})
+     * @Serializer\SerializedName("preview")
+     * @return string
+     */
+    public function getPreview(): string
+    {
+        return static::MEDIA_DIR
+            . $this->getImageDir()->getDirName()
+            . '/' . $this->getImgPath();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getImgId(): ?int
     {
         return $this->img_id;
     }
@@ -106,15 +126,15 @@ class Image
     /**
      * @param int $img_id
      */
-    public function setImgId(int $img_id): void
+    public function setImgId(int $id): void
     {
-        $this->img_id = $img_id;
+        $this->img_id = $id;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getImgName(): string
+    public function getImgName(): ?string
     {
         return $this->img_name;
     }
@@ -122,15 +142,15 @@ class Image
     /**
      * @param string $img_name
      */
-    public function setImgName(string $img_name): void
+    public function setImgName(string $name = null): void
     {
-        $this->img_name = $img_name;
+        $this->img_name = $name;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getImgPath(): string
+    public function getImgPath(): ?string
     {
         return $this->img_path;
     }
@@ -138,15 +158,15 @@ class Image
     /**
      * @param string $img_path
      */
-    public function setImgPath(string $img_path): void
+    public function setImgPath(string $path = null): void
     {
-        $this->img_path = $img_path;
+        $this->img_path = $path;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getImgComment(): string
+    public function getImgComment(): ?string
     {
         return $this->img_comment;
     }
@@ -154,9 +174,9 @@ class Image
     /**
      * @param string $img_comment
      */
-    public function setImgComment(string $img_comment): void
+    public function setImgComment(string $comment = null): void
     {
-        $this->img_comment = $img_comment;
+        $this->img_comment = $comment;
     }
 
     /**
@@ -170,7 +190,7 @@ class Image
     /**
      * @param ImageDir $imageDir
      */
-    public function setImageDir(ImageDir $imageDir): void
+    public function setImageDir(ImageDir $imageDir = null): void
     {
         $this->imageDir = $imageDir;
     }
@@ -182,32 +202,32 @@ class Image
     /**
      * @param int $dir_id
      */
-    public function setDirId(int $dir_id): void
+    public function setDirId(int $dirId = null): void
     {
-        $this->getImageDir()->setDirId($dir_id);
+        $this->getImageDir()->setDirId($dirId);
     }
 
-       /**
+    /**
      * @param string $dir_name
      */
-    public function setDirName(string $dir_name): void
+    public function setDirName(string $dirName = null): void
     {
-        $this->getImageDir()->setDirName($dir_name);
+        $this->getImageDir()->setDirName($dirName);
     }
 
     /**
      * @param string $dir_alias
      */
-    public function setDirAlias(string $dir_alias): void
+    public function setDirAlias(string $dirAlias = null): void
     {
-        $this->getImageDir()->setDirAlias($dir_alias);
+        $this->getImageDir()->setDirAlias($dirAlias);
     }
 
     /**
      * @param string $dir_comment
      */
-    public function setDirComment(string $dir_comment): void
+    public function setDirComment(string $dirComment = null): void
     {
-        $this->getImageDir()->setDirComment($dir_comment);
+        $this->getImageDir()->setDirComment($dirComment);
     }
 }

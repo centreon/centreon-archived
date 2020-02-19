@@ -46,7 +46,7 @@ class ExtendedHost
     /**
      * @var string|null
      */
-    private $notesActionsUrl;
+    private $actionsUrl;
 
     /**
      * @return int
@@ -123,18 +123,18 @@ class ExtendedHost
     /**
      * @return string|null
      */
-    public function getNotesActionsUrl(): ?string
+    public function getActionsUrl(): ?string
     {
-        return $this->notesActionsUrl;
+        return $this->actionsUrl;
     }
 
     /**
-     * @param string|null $notesActionsUrl
+     * @param string|null $actionsUrl
      * @return ExtendedHost
      */
-    public function setNotesActionsUrl(?string $notesActionsUrl): ExtendedHost
+    public function setActionsUrl(?string $actionsUrl): ExtendedHost
     {
-        $this->notesActionsUrl = $notesActionsUrl;
+        $this->actionsUrl = $actionsUrl;
         return $this;
     }
 }

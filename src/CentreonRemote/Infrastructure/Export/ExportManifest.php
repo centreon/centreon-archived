@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -29,10 +30,10 @@ use Exception;
  */
 class ExportManifest
 {
-    const EXPORT_FILE = 'manifest.json';
-    const ERR_CODE_MANIFEST_NOT_FOUND = 1001;
-    const ERR_CODE_MANIFEST_WRONG_FORMAT = 1002;
-    const ERR_CODE_INCOMPATIBLE_VERSIONS = 1005;
+    public const EXPORT_FILE = 'manifest.json';
+    public const ERR_CODE_MANIFEST_NOT_FOUND = 1001;
+    public const ERR_CODE_MANIFEST_WRONG_FORMAT = 1002;
+    public const ERR_CODE_INCOMPATIBLE_VERSIONS = 1005;
 
     /**
      * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
@@ -111,7 +112,7 @@ class ExportManifest
         if (!version_compare($centralVersion, $remoteVersion, '==')) {
             throw new Exception(
                 sprintf(
-                    'The version of the Central %s and of the Remote %s are incompatible',
+                    'The version of the Central "%s" and of the Remote "%s" are incompatible',
                     $this->data['version'],
                     $this->version
                 ),
