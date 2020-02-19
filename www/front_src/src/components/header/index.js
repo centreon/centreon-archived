@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import styles from './header.scss';
 
-import Hook from '../hook';
+import Hook from '../Hook';
 
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
 

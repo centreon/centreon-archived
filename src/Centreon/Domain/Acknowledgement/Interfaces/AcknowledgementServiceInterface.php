@@ -32,13 +32,30 @@ use JMS\Serializer\Exception\ValidationFailedException;
 interface AcknowledgementServiceInterface extends ContactFilterInterface
 {
     /**
+     * Find one acknowledgement.
+     *
+     * @param int $acknowledgementId Acknowledgement id
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    public function findOneAcknowledgement(int $acknowledgementId): ?Acknowledgement;
+
+    /**
+     * Find all acknowledgements.
+     *
+     * @return Acknowledgement[]
+     * @throws \Exception
+     */
+    public function findAcknowledgements(): array;
+
+    /**
      * Find all acknowledgements of all hosts.
      *
      * @return Acknowledgement[]
      * @throws RequestParametersTranslatorException
      * @throws \Exception
      */
-    public function findLastHostsAcknowledgements(): array;
+    public function findHostsAcknowledgements(): array;
 
     /**
      * Find all acknowledgements of all services.
@@ -47,12 +64,33 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws RequestParametersTranslatorException
      * @throws \Exception
      */
-    public function findLastServicesAcknowledgements(): array;
+    public function findServicesAcknowledgements(): array;
+
+    /**
+     * Find all acknowledgements by host id.
+     *
+     * @param int $hostId
+     * @return Acknowledgement[]
+     * @throws RequestParametersTranslatorException
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByHost(int $hostId): array;
+
+    /**
+     * Find all acknowledgements by host id and service id.
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return Acknowledgement[]
+     * @throws RequestParametersTranslatorException
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByService(int $hostId, int $serviceId): array;
 
     /**
      * Adds a host acknowledgement.
      *
-     * @param Acknowledgement $acknowledgement Host acknowledgment to add
+     * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
      * @throws EntityNotFoundException
@@ -64,7 +102,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     /**
      * Adds a service acknowledgement.
      *
-     * @param Acknowledgement $acknowledgement Host acknowledgment to add
+     * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
      * @throws EntityNotFoundException
@@ -74,17 +112,17 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function addServiceAcknowledgement(Acknowledgement $acknowledgement): void;
 
     /**
-     * Disacknowledge a host acknowledgement.
+     * Disacknowledge a host.
      *
      * @param int $hostId Host id of acknowledgement to be cancelled
      * @throws EngineException
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function disacknowledgeHostAcknowledgement(int $hostId): void;
+    public function disacknowledgeHost(int $hostId): void;
 
     /**
-     * Disacknowledge a service acknowledgement.
+     * Disacknowledge a service.
      *
      * @param int $hostId Host id linked to the service
      * @param int $serviceId Service id of acknowledgement to be cancelled
@@ -92,5 +130,5 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): void;
+    public function disacknowledgeService(int $hostId, int $serviceId): void;
 }
