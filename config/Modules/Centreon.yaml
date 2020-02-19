@@ -119,3 +119,13 @@ services:
 
     Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface:
         class: Centreon\Infrastructure\Proxy\ProxyRepositoryRDB
+
+    # Monitoring resources
+    Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
+        class: Centreon\Domain\Monitoring\ResourceService
+
+    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\ResourceRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
