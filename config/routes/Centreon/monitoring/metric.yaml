@@ -7,6 +7,7 @@ monitoring.metric.getServiceMetrics:
         start: '\S+'
         end: '\S+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceMetrics'
+    condition: "request.attributes.get('version') >= 2.0"
 
 monitoring.metric.getServiceStatus:
     methods: GET
@@ -17,3 +18,4 @@ monitoring.metric.getServiceStatus:
         start: '\S+'
         end: '\S+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceStatus'
+    condition: "request.attributes.get('version') >= 2.0"
