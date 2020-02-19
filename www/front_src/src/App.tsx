@@ -7,19 +7,20 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React, { Component, ReactNode } from 'react';
+
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
+import { ThemeProvider } from '@centreon/ui';
 import Header from './components/header';
-import { history } from './store';
 
+import { history } from './store';
 import NavigationComponent from './components/navigation';
 import Tooltip from './components/tooltip';
 import Footer from './components/footer';
 import MainRouter from './components/mainRouter';
 import axios from './axios';
-
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 
 import styles from './App.scss';
@@ -115,31 +116,36 @@ class App extends Component<Props, State> {
 
     return (
       <ConnectedRouter history={history}>
-        <div className={styles.wrapper}>
-          {!min && <NavigationComponent />}
-          <Tooltip />
-          <div id="content" className={contentStyles.content}>
-            {!min && <Header />}
-            <div
-              id="fullscreen-wrapper"
-              className={contentStyles['fullscreen-wrapper']}
-            >
-              <Fullscreen
-                enabled={this.state.isFullscreenEnabled}
-                onClose={this.removeFullscreenParams}
-                onChange={(isFullscreenEnabled): void => {
-                  this.setState({ isFullscreenEnabled });
-                }}
+        <ThemeProvider>
+          <div className={styles.wrapper}>
+            {!min && <NavigationComponent />}
+            <Tooltip />
+            <div id="content" className={contentStyles.content}>
+              {!min && <Header />}
+              <div
+                id="fullscreen-wrapper"
+                className={contentStyles['fullscreen-wrapper']}
               >
-                <div className={styles['main-content']}>
-                  <MainRouter />
-                </div>
-              </Fullscreen>
+                <Fullscreen
+                  enabled={this.state.isFullscreenEnabled}
+                  onClose={this.removeFullscreenParams}
+                  onChange={(isFullscreenEnabled): void => {
+                    this.setState({ isFullscreenEnabled });
+                  }}
+                >
+                  <div className={styles['main-content']}>
+                    <MainRouter />
+                  </div>
+                </Fullscreen>
+              </div>
+              {!min && <Footer />}
             </div>
-            {!min && <Footer />}
+            <span
+              className={footerStyles['full-screen']}
+              onClick={this.goFull}
+            />
           </div>
-          <span className={footerStyles['full-screen']} onClick={this.goFull} />
-        </div>
+        </ThemeProvider>
       </ConnectedRouter>
     );
   }
