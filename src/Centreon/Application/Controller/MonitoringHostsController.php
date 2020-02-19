@@ -291,4 +291,18 @@ class MonitoringHostsController extends AbstractController
             'meta' => $requestParameters->toArray()
         ])->setContext($context);
     }
+
+    /**
+     * Entry point to get all hostgroups.
+     *
+     * @param int hostId Id of host to search hostgroups for
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws \Exception
+     */
+    public function getHostGroupsByHost(int $hostId, RequestParametersInterface $requestParameters)
+    {
+        $requestParameters->setSearch("{\"host.id\":$hostId}");
+        return $this->getHostGroups($requestParameters);
+    }
 }
