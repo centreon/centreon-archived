@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1093,6 +1093,112 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         return $servicesByServiceGroupId;
+    }
+
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array
+    {
+        $serviceGroups = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $serviceGroups;
+        }
+
+        $sqlExtraParameters = [];
+        $subRequest = '';
+        if (!$this->isAdmin()) {
+            $sqlExtraParameters = [':contact_id' => [\PDO::PARAM_INT => $this->contact->getId()]];
+
+            // Not an admin, we must to filter on contact
+            $subRequest .=
+                ' INNER JOIN `:db`.acl_resources_sg_relations sgr
+                    ON sgr.sg_id = sg.servicegroup_id
+                INNER JOIN `:db`.acl_resources res
+                    ON (res.acl_res_id = sgr.acl_res_id OR res.all_servicegroups = \'1\')
+                    AND res.acl_res_activate = \'1\'
+                INNER JOIN `:db`.acl_res_group_relations rgr
+                    ON rgr.acl_res_id = res.acl_res_id
+                INNER JOIN `:db`.acl_groups grp
+                    ON grp.acl_group_id IN ('
+                . $this->accessGroupIdToString($this->accessGroups)
+                . ') AND grp.acl_group_activate = \'1\'
+                    AND grp.acl_group_id = rgr.acl_group_id
+                LEFT JOIN `:db`.acl_group_contacts_relations gcr
+                    ON gcr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.acl_group_contactgroups_relations gcgr
+                    ON gcgr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                    ON cgcr.contactgroup_cg_id = gcgr.cg_cg_id
+                    AND cgcr.contact_contact_id = :contact_id 
+                    OR gcr.contact_contact_id = :contact_id';
+        }
+
+        $subRequest .=
+            ' INNER JOIN `:dbstg`.services_servicegroups ssg 
+                    ON ssg.servicegroup_id = sg.servicegroup_id
+                INNER JOIN `:dbstg`.hosts h
+                    ON h.host_id = ssg.host_id';
+        $subRequest .=
+            ' LEFT JOIN `:dbstg`.`services` srv
+                      ON srv.service_id = ssg.service_id
+                      AND srv.host_id = h.host_id
+                      AND srv.enabled = \'1\'';
+
+        if (!$this->isAdmin()) {
+            $subRequest .=
+                ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                        ON acl.host_id = h.host_id
+                        AND acl.service_id = srv.service_id
+                        AND acl.group_id = grp.acl_group_id';
+        }
+
+        //define where clause to filter by host and service
+        $subRequest .= ' WHERE srv.service_id = :serviceId AND srv.host_id = :hostId';
+
+        $request =
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.* 
+            FROM `:dbstg`.`servicegroups` sg ' . $subRequest;
+        $request = $this->translateDbName($request);
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY sg.name ASC';
+
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+
+        $statement = $this->db->prepare($request);
+
+        // We bind extra parameters according to access rights
+        foreach ($sqlExtraParameters as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+
+        //bind where clause without search parameters
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+
+        $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+            (int)$result->fetchColumn()
+        );
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $serviceGroups[] = EntityCreator::createEntityByArray(
+                ServiceGroup::class,
+                $result
+            );
+        }
+
+        return $serviceGroups;
     }
 
     private function isAdmin(): bool
