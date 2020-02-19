@@ -65,6 +65,11 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     private $hostId;
 
     /**
+     * @var int|null Service id
+     */
+    private $serviceId;
+
+    /**
      * @var int|null Poller Id
      */
     private $pollerId;
@@ -85,14 +90,14 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     private $isSticky;
 
     /**
-     * @var int|null Service id
-     */
-    private $serviceId;
-
-    /**
-     * @var int State of this acknowledgment
+     * @var int State of this acknowledgement
      */
     private $state;
+
+    /**
+     * @var int Type of this acknowledgement
+     */
+    private $type;
 
     /**
      * {@inheritdoc}
@@ -218,6 +223,24 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     }
 
     /**
+     * @return int
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int $serviceId|null
+     * @return Acknowledgement
+     */
+    public function setServiceId(?int $serviceId): Acknowledgement
+    {
+        $this->serviceId = $serviceId;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getPollerId(): ?int
@@ -292,24 +315,6 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     /**
      * @return int
      */
-    public function getServiceId(): ?int
-    {
-        return $this->serviceId;
-    }
-
-    /**
-     * @param int $serviceId|null
-     * @return Acknowledgement
-     */
-    public function setServiceId(?int $serviceId): Acknowledgement
-    {
-        $this->serviceId = $serviceId;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getState(): int
     {
         return $this->state;
@@ -322,6 +327,24 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     public function setState(int $state): Acknowledgement
     {
         $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     * @return Acknowledgement
+     */
+    public function setType(int $type): Acknowledgement
+    {
+        $this->type = $type;
         return $this;
     }
 }
