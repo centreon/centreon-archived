@@ -59,6 +59,7 @@ Cliquez sur **Next**.
     
         [mysqld]
         innodb_file_per_table=1
+        open_files_limit=32000
     
     4. Redémarrez le service mysql: ::
     
