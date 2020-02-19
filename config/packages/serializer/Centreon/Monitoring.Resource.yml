@@ -41,7 +41,7 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
         severity:
-            type: Centreon\Domain\Monitoring\Severity
+            type: Centreon\Domain\Monitoring\ResourceSeverity
             groups:
                 - 'resource_main'
         impactedResourcesCount:

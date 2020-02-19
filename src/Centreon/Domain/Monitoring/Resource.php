@@ -25,6 +25,7 @@ namespace Centreon\Domain\Monitoring;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Domain\Monitoring\ResourceSeverity;
 use DateTime;
 
 /**
@@ -88,7 +89,7 @@ class Resource
     private $acknowledged;
 
     /**
-     * @var \Centreon\Domain\Monitoring\Icon|null
+     * @var \Centreon\Domain\Monitoring\ResourceSeverity|null
      */
     private $severity;
 
@@ -139,6 +140,7 @@ class Resource
             static::SERIALIZER_GROUP_PARENT,
             Icon::SERIALIZER_GROUP_MAIN,
             ResourceStatus::SERIALIZER_GROUP_MAIN,
+            ResourceSeverity::SERIALIZER_GROUP_MAIN,
         ];
     }
 
@@ -250,12 +252,12 @@ class Resource
         return $this;
     }
 
-    public function getSeverity(): ?Icon
+    public function getSeverity(): ?ResourceSeverity
     {
         return $this->severity;
     }
 
-    public function setSeverity(?Icon $severity): self
+    public function setSeverity(?ResourceSeverity $severity): self
     {
         $this->severity = $severity;
 

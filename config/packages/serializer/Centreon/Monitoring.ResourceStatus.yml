@@ -1,6 +1,6 @@
 Centreon\Domain\Monitoring\ResourceStatus:
     properties:
-        id:
+        code:
             type: int
             groups:
                 - 'resource_status_main'

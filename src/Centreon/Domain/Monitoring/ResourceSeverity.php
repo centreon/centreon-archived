@@ -25,41 +25,58 @@ namespace Centreon\Domain\Monitoring;
 /**
  * @package Centreon\Domain\Monitoring
  */
-class ResourceStatus
+class ResourceSeverity
 {
     // Groups for serilizing
-    public const SERIALIZER_GROUP_MAIN = 'resource_status_main';
+    public const SERIALIZER_GROUP_MAIN = 'resource_severity_main';
 
     /**
-     * @var string
+     * @var int
      */
-    private $code;
+    private $level;
 
     /**
      * @var string
      */
     private $name;
 
-    public function getCode(): ?int
+    /**
+     * @var string
+     */
+    private $url;
+
+    public function getLevel(): ?int
     {
-        return $this->code;
+        return $this->level;
     }
 
-    public function setCode(?int $code): self
+    public function setLevel(?int $level): self
     {
-        $this->code = $code;
+        $this->level = $level;
 
         return $this;
     }
 
     public function getName(): ?string
     {
-        return $this->name ? _($this->name) : $this->name;
+        return $this->name;
     }
 
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): self
+    {
+        $this->url = $url;
 
         return $this;
     }

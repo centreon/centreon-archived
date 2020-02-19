@@ -1,9 +1,5 @@
 Centreon\Domain\Monitoring\Icon:
     properties:
-        id:
-            type: int
-            groups:
-                - 'icon_main'
         name:
             type: string
             groups:
