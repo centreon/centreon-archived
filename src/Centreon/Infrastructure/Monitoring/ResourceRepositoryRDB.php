@@ -35,7 +35,6 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
-use PDO;
 
 /**
  * Database repository for the real time monitoring of services and host.
@@ -44,16 +43,6 @@ use PDO;
  */
 final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements ResourceRepositoryInterface
 {
-    /**
-     * @var string Name of the configuration database
-     */
-    private $centreonDbName;
-
-    /**
-     * @var string Name of the storage database
-     */
-    private $storageDbName;
-
     /**
      * @var AccessGroup[] List of access group used to filter the requests
      */
@@ -116,14 +105,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'status' => 'resource.status_id',
         ]);
 
-        /*
-            . 'resource.id, resource.type, resource.name, resource.detailsUrl, resource.icon, '
-            . 'resource.parent, resource.status, resource.inDowntime, resource.acknowledged, '
-            . 'resource.severity, resource.impactedResourcesCount, resource.actionUrl, '
-            . 'IF(resource.lastStatusChange, FROM_UNIXTIME(resource.lastStatusChange), NULL) AS `lastStatusChange`, resource.tries, '
-            . 'IF(resource.lastCheck, FROM_UNIXTIME(resource.lastCheck), NULL) AS `lastCheck`, resource.information '
-         */
-
         $collector = new StatementCollector;
         $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS '
             . 'resource.id, resource.type, resource.name, resource.action_url, resource.details_url, '
@@ -173,9 +154,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
     protected function preapreQueryForServiceResources(StatementCollector $collector): string
     {
-        $collector->addValue(':serviceCustomVariablesName', 'CRITICALITY_LEVEL');
-
-        return "SELECT
+        $sql = "SELECT
 		CONCAT('S', s.service_id) AS `id`,
         'service' AS `type`,
         s.service_id AS `origin_id`,
@@ -211,8 +190,17 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 		s.last_check AS `last_check`,
 		s.output AS `information`
         FROM `:dbstg`.`services` AS s
-        INNER JOIN `:dbstg`.`hosts` sh ON sh.host_id = s.host_id AND sh.state = 0
-        LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
+        INNER JOIN `:dbstg`.`hosts` sh ON sh.host_id = s.host_id AND sh.state = 0";
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
+                  AND service_acl.service_id = s.service_id
+                  AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+        }
+
+        // get Severity level, name, icon
+        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
             AND service_cvl.service_id = s.service_id
             AND service_cvl.name = :serviceCustomVariablesName
         LEFT JOIN `:db`.`service_categories_relation` AS scr ON scr.service_service_id = s.service_id
@@ -221,15 +209,18 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             AND sc.icon_id IS NOT NULL
         LEFT JOIN `:db`.`view_img` AS service_vi ON service_vi.img_id = sc.icon_id
         LEFT JOIN `:db`.`view_img_dir_relation` AS service_vidr ON service_vidr.img_img_id = service_vi.img_id
-        LEFT JOIN `:db`.`view_img_dir` AS service_vid ON service_vid.dir_id = service_vidr.dir_dir_parent_id
-        GROUP BY s.service_id";
+        LEFT JOIN `:db`.`view_img_dir` AS service_vid ON service_vid.dir_id = service_vidr.dir_dir_parent_id';
+
+        $collector->addValue(':serviceCustomVariablesName', 'CRITICALITY_LEVEL');
+
+        $sql .= ' GROUP BY s.service_id';
+
+        return $sql;
     }
 
     protected function preapreQueryForHostResources(StatementCollector $collector): string
     {
-        $collector->addValue(':hostCustomVariablesName', 'CRITICALITY_LEVEL');
-
-        return "SELECT
+        $sql = "SELECT
 		CONCAT('H', h.host_id) AS `id`,
         'host' AS `type`,
         h.host_id AS `origin_id`,
@@ -263,8 +254,17 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         END) AS `tries`,
 		h.last_check AS `last_check`,
 		h.output AS `information`
-        FROM `:dbstg`.`hosts` AS h
-        LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
+        FROM `:dbstg`.`hosts` AS h";
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS host_acl ON host_acl.host_id = h.host_id
+                  AND host_acl.service_id IS NULL
+                  AND host_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+        }
+
+        // get Severity level, name, icon
+        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
             AND host_cvl.service_id = 0
             AND host_cvl.name = :hostCustomVariablesName
         LEFT JOIN `:db`.`hostcategories_relation` AS hcr ON hcr.host_host_id = h.host_id
@@ -273,9 +273,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             AND hc.icon_id IS NOT NULL
         LEFT JOIN `:db`.`view_img` AS host_vi ON host_vi.img_id = hc.icon_id
         LEFT JOIN `:db`.`view_img_dir_relation` AS host_vidr ON host_vidr.img_img_id = host_vi.img_id
-        LEFT JOIN `:db`.`view_img_dir` AS host_vid ON host_vid.dir_id = host_vidr.dir_dir_parent_id
-        GROUP BY h.host_id
-";
+        LEFT JOIN `:db`.`view_img_dir` AS host_vid ON host_vid.dir_id = host_vidr.dir_dir_parent_id';
+
+        $collector->addValue(':hostCustomVariablesName', 'CRITICALITY_LEVEL');
+
+        $sql .= ' GROUP BY h.host_id';
+
+        return $sql;
     }
 
     protected function parseResource(array $data): Resource
