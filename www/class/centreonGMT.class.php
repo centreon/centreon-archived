@@ -110,7 +110,7 @@ class CentreonGMT
      */
     public function getGMTList()
     {
-        if (!is_null($this->timezoneById)) {
+        if (is_null($this->timezoneById)) {
             $this->getList();
         }
         return $this->timezoneById;
@@ -133,7 +133,7 @@ class CentreonGMT
      */
     public function getMyTimezone()
     {
-        if (!is_null($this->timezoneById)) {
+        if (is_null($this->timezoneById)) {
             $this->getList();
         }
 
@@ -576,7 +576,7 @@ class CentreonGMT
     public function getActiveTimezone($gmt)
     {
         $sTimezone = "";
-        if (!is_null($this->timezoneById)) {
+        if (is_null($this->timezoneById)) {
             $this->getList();
         }
 
