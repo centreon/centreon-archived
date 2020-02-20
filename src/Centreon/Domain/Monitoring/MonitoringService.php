@@ -105,10 +105,10 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false, int $hostId = null): array
     {
         // Find hosts groups only
-        $hostGroups = $this->monitoringRepository->findHostGroups();
+        $hostGroups = $this->monitoringRepository->findHostGroups($hostId);
 
         if (!empty($hostGroups)) {
             $hostIds = [];

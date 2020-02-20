@@ -67,11 +67,12 @@ interface MonitoringRepositoryInterface
     public function findHostsByServiceGroups(array $servicesGroupsIds): array;
 
     /**
-     * Find all services grouped by host groups
+     * Find all hostgroups with option to provide host id
      *
+     * @param int $hostId Id of host to filter hostgroups by
      * @return HostGroup[]
      */
-    public function findHostGroups(): array;
+    public function findHostGroups(?int $hostId): array;
 
     /**
      * Find one host based on its id and according to ACL.
