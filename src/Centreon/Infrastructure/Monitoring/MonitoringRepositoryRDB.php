@@ -444,9 +444,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $statement->bindValue($key, $value, $type);
         }
 
-        //bind the host id to search for it if provided
-        $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-
+        if (!empty($hostId)){
+            //bind the host id to search for it if provided
+            $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        }
+        
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
