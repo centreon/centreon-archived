@@ -181,7 +181,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 		service_cvl.value AS `severity_level`,
 		sc.sc_name AS `severity_name`,
 		CONCAT(service_vid.dir_alias, IF(service_vid.dir_alias, '/', NULL), service_vi.img_path) AS `severity_url`,
-		NULL AS `impacted_resources_count`,
+		0 AS `impacted_resources_count`,
 		s.last_state_change AS `last_status_change`,
 		CONCAT(s.check_attempt, '/', s.max_check_attempts, ' ', CASE
             WHEN s.state_type = 1 THEN 'H'
@@ -253,7 +253,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 		host_cvl.value AS `severity_level`,
 		hc.hc_comment AS `severity_name`,
 		CONCAT(host_vid.dir_alias, '/', host_vi.img_path) AS `severity_url`,
-		NULL AS `impacted_resources_count`,
+		(SELECT COUNT(DISTINCT host_s.service_id)
+            FROM `:dbstg`.`services` AS host_s
+            WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
+        ) AS `impacted_resources_count`,
 		h.last_state_change AS `last_status_change`,
 		CONCAT(h.check_attempt, '/', h.max_check_attempts, ' ', CASE
             WHEN h.state_type = 1 THEN 'H'
