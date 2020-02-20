@@ -190,7 +190,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 		s.last_check AS `last_check`,
 		s.output AS `information`
         FROM `:dbstg`.`services` AS s
-        INNER JOIN `:dbstg`.`hosts` sh ON sh.host_id = s.host_id AND sh.state = 0";
+        INNER JOIN `:dbstg`.`hosts` sh ON sh.host_id = s.host_id AND sh.state = 0
+            AND sh.name NOT LIKE :serviceModule
+            AND sh.enabled = 1";
+        $collector->addValue(':serviceModule', '_Module_%');
 
         // set ACL limitations
         if (!$this->isAdmin()) {
@@ -213,6 +216,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector->addValue(':serviceCustomVariablesName', 'CRITICALITY_LEVEL');
 
+        // show active services only
+        $sql .= ' WHERE s.enabled = 1';
+
+        // group by the service ID to preventing the duplication
         $sql .= ' GROUP BY s.service_id';
 
         return $sql;
@@ -277,6 +284,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector->addValue(':hostCustomVariablesName', 'CRITICALITY_LEVEL');
 
+        // show active hosts and aren't related to some module
+        $sql .= ' WHERE h.enabled = 1 AND h.name NOT LIKE :hostModule';
+
+        $collector->addValue(':hostModule', '_Module_%');
+
+        // prevent duplication
         $sql .= ' GROUP BY h.host_id';
 
         return $sql;
