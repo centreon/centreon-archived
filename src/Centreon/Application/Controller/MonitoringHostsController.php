@@ -307,6 +307,7 @@ class MonitoringHostsController extends AbstractController
         $this->monitoring->filterByContact($this->getUser());
 
         if (!$this->monitoring->isHostExists($hostId)) {
+
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
 
