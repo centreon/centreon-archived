@@ -125,7 +125,11 @@ if (isset($_GET["disconnect"])) {
  */
 if (isset($_SESSION["centreon"])) {
     $centreon = &$_SESSION["centreon"];
-    header('Location: main.php');
+    $headerRedirection = "main.php";
+    if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+        $headerRedirection .= "?p=" . $centreon->user->default_page;
+    }
+    header('Location: ' . $headerRedirection);
 }
 
 /*
