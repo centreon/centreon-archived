@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Typography, makeStyles, Button, Paper } from '@material-ui/core';
 import {
@@ -6,13 +6,12 @@ import {
   HelpOutline as IconHelp,
 } from '@material-ui/icons';
 
-import {
-  TABLE_COLUMN_TYPES,
-  Listing,
-  SelectField,
-  SearchField,
-} from '@centreon/ui';
+import { Listing, SelectField, SearchField } from '@centreon/ui';
+
 import { labelResourceName, labelSearch } from './translatedLabels';
+import { listResources } from './api';
+import { Listing as ListingEntity } from './models';
+import columns from './columns';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -41,12 +40,17 @@ const FilterBox = ({ children }: FilterBoxProps): JSX.Element => (
 
 const noOp = (): void => undefined;
 
-const configuration = [
-  { id: 'status', label: 'Status', type: TABLE_COLUMN_TYPES.string },
-];
-
 const Resources = (): JSX.Element => {
   const classes = useStyles();
+
+  const [listing, setListing] = useState<ListingEntity>({
+    result: [],
+    meta: { page: 1, total: 0, limit: 10 },
+  });
+
+  useEffect(() => {
+    listResources().then((retrievedListing) => setListing(retrievedListing));
+  }, []);
 
   return (
     <div className={classes.page}>
@@ -60,7 +64,7 @@ const Resources = (): JSX.Element => {
           </FilterBox>
           <FilterBox>
             <SelectField
-              options={[{ id: 0, name: 'Centreon default' }]}
+              options={[{ id: 0, name: 'Unhandled problems' }]}
               selectedOptionId={0}
             />
           </FilterBox>
@@ -79,15 +83,15 @@ const Resources = (): JSX.Element => {
       </Paper>
       <div className={classes.listing}>
         <Listing
-          columnConfiguration={configuration}
-          currentPage={0}
-          limit={10}
+          columnConfiguration={columns}
+          tableData={listing.result}
+          currentPage={listing.meta.page - 1}
+          limit={listing.meta.limit}
           onDelete={noOp}
           onSort={noOp}
           onDuplicate={noOp}
           onPaginationLimitChanged={noOp}
-          tableRows={0}
-          tableData={[]}
+          totalRows={listing.meta.total}
           selectedRows={[]}
           checkable
         />
