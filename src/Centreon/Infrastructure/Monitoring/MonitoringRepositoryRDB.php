@@ -351,7 +351,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         //if the filter is for specific host id, remove it from search parameters
-        if (!empty($hostId)){
+        if (!empty($hostId)) {
             $shouldJoinHost = true;
             unset($hostConcordanceArray['host.id']);
         }
@@ -413,7 +413,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
 
         //if host id is provided, filter results by it
-        if (!empty($hostId)){
+        if (!empty($hostId)) {
             $searchByHostIdQuery = !is_null($searchRequest) ? ' AND h.host_id = :hostId' : ' WHERE h.host_id = :hostId';
         } else {
             $searchByHostIdQuery = '';
@@ -444,7 +444,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $statement->bindValue($key, $value, $type);
         }
 
-        if (!empty($hostId)){
+        if (!empty($hostId)) {
             //bind the host id to search for it if provided
             $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
         }
