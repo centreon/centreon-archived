@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
-import { Box, Typography, makeStyles, Button, Paper } from '@material-ui/core';
-import {
-  Settings as IconSettings,
-  HelpOutline as IconHelp,
-} from '@material-ui/icons';
+import { Typography, makeStyles, Paper, Grid } from '@material-ui/core';
 
-import { Listing, SelectField, SearchField } from '@centreon/ui';
+import { Listing, SelectField } from '@centreon/ui';
 
-import { labelResourceName, labelSearch } from './translatedLabels';
 import { listResources } from './api';
 import { Listing as ListingEntity } from './models';
 import columns from './columns';
@@ -20,8 +15,8 @@ const useStyles = makeStyles((theme) => ({
   iconSettings: {
     color: theme.palette.primary.main,
   },
-  filter: {
-    padding: theme.spacing(1),
+  filterBox: {
+    padding: theme.spacing(2),
     backgroundColor: theme.palette.common.white,
   },
   listing: {
@@ -29,14 +24,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
 }));
-
-interface FilterBoxProps {
-  children: React.ReactNode;
-}
-
-const FilterBox = ({ children }: FilterBoxProps): JSX.Element => (
-  <Box m={1}>{children}</Box>
-);
 
 const noOp = (): void => undefined;
 
@@ -54,32 +41,22 @@ const Resources = (): JSX.Element => {
 
   return (
     <div className={classes.page}>
-      <Paper elevation={1} className={classes.filter}>
-        <Box display="flex" alignItems="center">
-          <FilterBox>
+      <Paper elevation={1} className={classes.filterBox}>
+        <Grid container direction="column" spacing={1}>
+          <Grid item>
             <Typography variant="h6">Filter</Typography>
-          </FilterBox>
-          <FilterBox>
-            <IconSettings className={classes.iconSettings} />
-          </FilterBox>
-          <FilterBox>
-            <SelectField
-              options={[{ id: 0, name: 'Unhandled problems' }]}
-              selectedOptionId={0}
-            />
-          </FilterBox>
-          <FilterBox>
-            <SearchField
-              EndAdornment={(): JSX.Element => <IconHelp />}
-              placeholder={labelResourceName}
-            />
-          </FilterBox>
-          <FilterBox>
-            <Button variant="contained" color="primary" disabled>
-              {labelSearch}
-            </Button>
-          </FilterBox>
-        </Box>
+          </Grid>
+          <Grid item>
+            <Grid spacing={2} container alignItems="center">
+              <Grid item>
+                <SelectField
+                  options={[{ id: 0, name: 'Unhandled problems' }]}
+                  selectedOptionId={0}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </Paper>
       <div className={classes.listing}>
         <Listing

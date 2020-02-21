@@ -24,6 +24,7 @@
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
     "@centreon/frontend-core": "centreon/frontend-core",
+    "@svgr/webpack": "^5.1.0",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^9.4.0",
     "@types/react-router": "^5.1.4",
