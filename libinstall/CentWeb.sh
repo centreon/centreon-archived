@@ -496,23 +496,6 @@ check_result $? "$(gettext "Install Centreon cron.d file")"
 ## cron binary
 cp -R $TMP_DIR/src/cron/ $TMP_DIR/final/
 
-log "INFO" "$(gettext "Change macros for centAcl.php")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-    $TMP_DIR/src/cron/centAcl.php > $TMP_DIR/work/cron/centAcl.php
-check_result $? "$(gettext "Change macros for centAcl.php")"
-
-cp -f $TMP_DIR/work/cron/centAcl.php \
-    $TMP_DIR/final/cron/centAcl.php >> "$LOG_FILE" 2>&1
-
-log "INFO" "$(gettext "Change macros for downtimeManager.php")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-    -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-    $TMP_DIR/src/cron/downtimeManager.php > $TMP_DIR/work/cron/downtimeManager.php
-check_result $? "$(gettext "Change macros for downtimeManager.php")"
-
-cp -f $TMP_DIR/work/cron/downtimeManager.php \
-    $TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
-
 log "INFO" "$(gettext "Change macros for centreon-backup.pl")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
     $TMP_DIR/src/cron/centreon-backup.pl > $TMP_DIR/work/cron/centreon-backup.pl
@@ -524,7 +507,7 @@ cp -f $TMP_DIR/work/cron/centreon-backup.pl \
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
-    $TMP_DIR/final/cron/* $INSTALL_DIR_CENTREON/cron/ >> "$LOG_FILE" 2>&1
+    $TMP_DIR/work/cron/* $INSTALL_DIR_CENTREON/cron/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
 log "INFO" "$(gettext "Modify rights for eventReportBuilder")"
