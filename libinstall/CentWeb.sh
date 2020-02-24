@@ -497,6 +497,7 @@ cp -R $TMP_DIR/src/cron/ $TMP_DIR/final/
 
 log "INFO" "$(gettext "Change macros for centAcl.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+    -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
     $TMP_DIR/src/cron/centAcl.php > $TMP_DIR/work/cron/centAcl.php
 check_result $? "$(gettext "Change macros for centAcl.php")"
 
@@ -506,6 +507,7 @@ cp -f $TMP_DIR/work/cron/centAcl.php \
 log "INFO" "$(gettext "Change macros for downtimeManager.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
     -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+    -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
     $TMP_DIR/src/cron/downtimeManager.php > $TMP_DIR/work/cron/downtimeManager.php
 check_result $? "$(gettext "Change macros for downtimeManager.php")"
 
@@ -514,6 +516,7 @@ cp -f $TMP_DIR/work/cron/downtimeManager.php \
 
 log "INFO" "$(gettext "Change macros for centreon-backup.pl")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+    -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
     $TMP_DIR/src/cron/centreon-backup.pl > $TMP_DIR/work/cron/centreon-backup.pl
 check_result $? "$(gettext "Change macros for centreon-backup.pl")"
 
