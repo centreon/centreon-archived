@@ -131,7 +131,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.tries, resource.last_check, resource.information '
             . 'FROM (('
-            . $this->preapreQueryForServiceResources($collector, $filterState)
+            . $this->prepareQueryForServiceResources($collector, $filterState)
             . ') UNION ALL ('
             . $this->prepareQueryForHostResources($collector, $filterState)
             . ')) AS  `resource`');
