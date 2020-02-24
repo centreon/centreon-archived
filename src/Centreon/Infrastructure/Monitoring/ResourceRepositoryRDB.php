@@ -258,7 +258,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return $sql;
     }
 
-    protected function preapreQueryForHostResources(StatementCollector $collector, ?array $filterState): string
+    protected function prepareQueryForHostResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
 		CONCAT('H', h.host_id) AS `id`,
