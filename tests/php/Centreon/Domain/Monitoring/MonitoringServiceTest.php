@@ -310,4 +310,73 @@ class MonitoringServiceTest extends TestCase
         $isHostExist = $monitoringService->isHostExists($host->getId());
         $this->assertfalse($isHostExist);
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function testIsServiceExist()
+    {
+        $host = (new Host())
+            ->setId(1)
+            ->setDisplayName('test');
+
+        $service = (new Service())
+            ->setId(1)
+            ->setHost($host);
+
+        $repository = $this->createMock(MonitoringRepositoryInterface::class);
+
+        $repository->expects(self::any())
+            ->method('findOneService')
+            ->with($host->getId(), $service->getId())
+            ->willReturn($service, null);
+
+        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+        $monitoringService = new MonitoringService($repository, $accessGroup);
+
+        $exists = $monitoringService->isServiceExists($host->getId(), $service->getId());
+        $this->assertTrue($exists);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function findServiceGroupsByHostAndService()
+    {
+        $service = (new Service())
+            ->setId(1)
+            ->setDisplayName('test');
+
+        $host = (new Host())
+            ->setId(2)
+            ->setDisplayName('test');
+        $host->addService($service);
+
+        $serviceGroup = (new ServiceGroup())
+            ->setId(3)
+            ->setHosts([$host]);
+
+        $repository = $this->createMock(MonitoringRepositoryInterface::class);
+
+        $repository->expects(self::any())
+            ->method('findServiceGroupsByHostAndService')
+            ->with($host->getId(), $service->getId())
+            ->willReturn([$serviceGroup]); // values returned for the all next tests
+
+        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+
+        $monitoringService = new MonitoringService($repository, $accessGroup);
+        /**
+         * @var ServiceGroup[] $servicesGroupsFound
+         */
+        $servicesGroupsFound = $monitoringService->findServiceGroupsByHostAndService($host->getId(), $service->getId());
+        $this->assertCount(
+            1,
+            $servicesGroupsFound,
+            "Error, this method must relay the 'findServiceGroupsByHostAndService' method of the monitoring repository"
+        );
+        $this->assertEquals($serviceGroup->getId(), $servicesGroupsFound[0]->getId());
+        $this->assertEquals($host->getId(), $serviceGroup->getHosts()[0]->getId());
+        $this->assertEquals($service->getId(), $serviceGroup->getHosts()[0]->getServices()[0]->getId());
+    }
 }

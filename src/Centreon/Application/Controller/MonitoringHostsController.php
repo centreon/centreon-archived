@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -35,7 +34,7 @@ use Centreon\Domain\Monitoring\HostGroup;
 /**
  * @package Centreon\Application\Controller
  */
-class MonitoringController extends AbstractController
+class MonitoringHostsController extends AbstractController
 {
     /**
      * @var MonitoringServiceInterface
@@ -99,7 +98,7 @@ class MonitoringController extends AbstractController
                 Service::SERIALIZER_GROUP_MAIN,
                 Service::SERIALIZER_GROUP_WITH_HOST,
                 Host::SERIALIZER_GROUP_MIN,
-             ])
+            ])
             ->enableMaxDepth();
 
         return $this->view([
@@ -150,9 +149,9 @@ class MonitoringController extends AbstractController
             ->enableMaxDepth();
 
         return $this->view([
-                'result' => $servicesByServiceGroups,
-                'meta' => $requestParameters->toArray()
-            ])->setContext($context);
+            'result' => $servicesByServiceGroups,
+            'meta' => $requestParameters->toArray()
+        ])->setContext($context);
     }
 
     /**
@@ -180,7 +179,6 @@ class MonitoringController extends AbstractController
                 Service::SERIALIZER_GROUP_MIN,
             ]);
         }
-
         if ($withHost) {
             $contexts = array_merge($contexts, [
                 HostGroup::SERIALIZER_GROUP_WITH_HOST,
@@ -197,9 +195,9 @@ class MonitoringController extends AbstractController
             ->enableMaxDepth();
 
         return $this->view([
-                'result' => $hostGroups,
-                'meta' => $requestParameters->toArray()
-            ])->setContext($context);
+            'result' => $hostGroups,
+            'meta' => $requestParameters->toArray()
+        ])->setContext($context);
     }
 
     /**
@@ -230,9 +228,9 @@ class MonitoringController extends AbstractController
         }
 
         return $this->view([
-                'result' => $hosts,
-                'meta' => $requestParameters->toArray()
-            ])->setContext((new Context())->setGroups($contexts));
+            'result' => $hosts,
+            'meta' => $requestParameters->toArray()
+        ])->setContext((new Context())->setGroups($contexts));
     }
 
     /**
@@ -256,8 +254,8 @@ class MonitoringController extends AbstractController
 
         $context = (new Context())
             ->setGroups([
-                    Host::SERIALIZER_GROUP_FULL,
-                    Service::SERIALIZER_GROUP_MIN,
+                Host::SERIALIZER_GROUP_FULL,
+                Service::SERIALIZER_GROUP_MIN,
             ])
             ->enableMaxDepth();
 
@@ -289,8 +287,8 @@ class MonitoringController extends AbstractController
             ->enableMaxDepth();
 
         return $this->view([
-                'result' => $this->monitoring->findServicesByHost($hostId),
-                'meta' => $requestParameters->toArray()
-            ])->setContext($context);
+            'result' => $this->monitoring->findServicesByHost($hostId),
+            'meta' => $requestParameters->toArray()
+        ])->setContext($context);
     }
 }
