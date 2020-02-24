@@ -38,7 +38,7 @@ class ResourceSeverity
     private $level;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
