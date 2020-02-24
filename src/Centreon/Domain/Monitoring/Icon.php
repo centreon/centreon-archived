@@ -42,11 +42,18 @@ class Icon
      */
     private $url;
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string|null $name
+     * @return \Centreon\Domain\Monitoring\Icon
+     */
     public function setName(?string $name): self
     {
         $this->name = $name;
@@ -54,11 +61,18 @@ class Icon
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
+    /**
+     * @param string|null $url
+     * @return \Centreon\Domain\Monitoring\Icon
+     */
     public function setUrl(?string $url): self
     {
         $this->url = $url;

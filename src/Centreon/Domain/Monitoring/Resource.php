@@ -144,11 +144,18 @@ class Resource
         ];
     }
 
+    /**
+     * @return string|null
+     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
+    /**
+     * @param string|null $id
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setId(?string $id): self
     {
         $this->id = $id;
@@ -156,11 +163,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getType(): ?string
     {
         return $this->type;
     }
 
+    /**
+     * @param string|null $type
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setType(?string $type): self
     {
         $this->type = $type;
@@ -168,11 +182,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string|null $name
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setName(?string $name): self
     {
         $this->name = $name;
@@ -180,11 +201,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDetailsUrl(): ?string
     {
         return $this->detailsUrl;
     }
 
+    /**
+     * @param string|null $detailsUrl
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setDetailsUrl(?string $detailsUrl): self
     {
         $this->detailsUrl = $detailsUrl ?: null;
@@ -192,11 +220,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return \Centreon\Domain\Monitoring\Icon|null
+     */
     public function getIcon(): ?Icon
     {
         return $this->icon;
     }
 
+    /**
+     * @param \Centreon\Domain\Monitoring\Icon|null $icon
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setIcon(?Icon $icon): self
     {
         $this->icon = $icon;
@@ -204,11 +239,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return \Centreon\Domain\Monitoring\Resource|null
+     */
     public function getParent(): ?Resource
     {
         return $this->parent;
     }
 
+    /**
+     * @param \Centreon\Domain\Monitoring\Resource|null $parent
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setParent(?Resource $parent): self
     {
         $this->parent = $parent;
@@ -216,11 +258,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return \Centreon\Domain\Monitoring\ResourceStatus|null
+     */
     public function getStatus(): ?ResourceStatus
     {
         return $this->status;
     }
 
+    /**
+     * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setStatus(?ResourceStatus $status): self
     {
         $this->status = $status;
@@ -228,11 +277,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getInDowntime(): ?bool
     {
         return $this->inDowntime;
     }
 
+    /**
+     * @param bool|null $inDowntime
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setInDowntime(?bool $inDowntime): self
     {
         $this->inDowntime = $inDowntime;
@@ -240,11 +296,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getAcknowledged(): ?bool
     {
         return $this->acknowledged;
     }
 
+    /**
+     * @param bool|null $acknowledged
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setAcknowledged(?bool $acknowledged): self
     {
         $this->acknowledged = $acknowledged;
@@ -252,11 +315,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return \Centreon\Domain\Monitoring\ResourceSeverity|null
+     */
     public function getSeverity(): ?ResourceSeverity
     {
         return $this->severity;
     }
 
+    /**
+     * @param \Centreon\Domain\Monitoring\ResourceSeverity|null $severity
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setSeverity(?ResourceSeverity $severity): self
     {
         $this->severity = $severity;
@@ -264,11 +334,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getImpactedResourcesCount(): ?int
     {
         return $this->impactedResourcesCount;
     }
 
+    /**
+     * @param int|null $impactedResourcesCount
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setImpactedResourcesCount(?int $impactedResourcesCount): self
     {
         $this->impactedResourcesCount = $impactedResourcesCount ?: 0;
@@ -276,11 +353,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getActionUrl(): ?string
     {
         return $this->actionUrl;
     }
 
+    /**
+     * @param string|null $actionUrl
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setActionUrl(?string $actionUrl): self
     {
         $this->actionUrl = $actionUrl ?: null;
@@ -288,11 +372,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getChartUrl(): ?string
     {
         return $this->chartUrl;
     }
 
+    /**
+     * @param string|null $chartUrl
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setChartUrl(?string $chartUrl): self
     {
         $this->chartUrl = $chartUrl ?: null;
@@ -300,11 +391,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return \DateTime|null
+     */
     public function getLastStatusChange(): ?DateTime
     {
         return $this->lastStatusChange;
     }
 
+    /**
+     * @param \DateTime|null $lastStatusChange
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setLastStatusChange(?DateTime $lastStatusChange): self
     {
         $this->lastStatusChange = $lastStatusChange;
@@ -312,11 +410,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getTries(): ?string
     {
         return $this->tries;
     }
 
+    /**
+     * @param string|null $tries
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setTries(?string $tries): self
     {
         $this->tries = $tries;
@@ -324,11 +429,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return \DateTime|null
+     */
     public function getLastCheck(): ?DateTime
     {
         return $this->lastCheck;
     }
 
+    /**
+     * @param \DateTime|null $lastCheck
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setLastCheck(?DateTime $lastCheck): self
     {
         $this->lastCheck = $lastCheck;
@@ -336,11 +448,18 @@ class Resource
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getInformation(): ?string
     {
         return $this->information;
     }
 
+    /**
+     * @param string|null $information
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     public function setInformation(?string $information): self
     {
         $this->information = trim($information);

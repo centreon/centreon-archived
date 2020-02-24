@@ -42,11 +42,18 @@ class ResourceStatus
      */
     private $name;
 
+    /**
+     * @return int|null
+     */
     public function getCode(): ?int
     {
         return $this->code;
     }
 
+    /**
+     * @param int|null $code
+     * @return \Centreon\Domain\Monitoring\ResourceStatus
+     */
     public function setCode(?int $code): self
     {
         $this->code = $code;
@@ -54,11 +61,18 @@ class ResourceStatus
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name ? _($this->name) : $this->name;
     }
 
+    /**
+     * @param string|null $name
+     * @return \Centreon\Domain\Monitoring\ResourceStatus
+     */
     public function setName(?string $name): self
     {
         $this->name = $name;
