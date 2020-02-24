@@ -32,7 +32,7 @@ class ResourceServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testindResources()
+    public function testFindResources()
     {
         $resource = (new Resource())
             ->setId(1)
