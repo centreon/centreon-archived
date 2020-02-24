@@ -1058,6 +1058,336 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
+    get:
+      tags:
+        - Metrics
+      summary: 'Get service metrics data'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - in: path
+          name: start
+          description: 'start of the interval (ISO8601)'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T00:00:00'
+        - in: path
+          name: end
+          description: 'end of the interval (ISO8601)'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T12:00:00'
+      description: 'Get metrics data from a service between given interval'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  global:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        description: title of the graph
+                        example: graph title
+                      start:
+                        type: integer
+                        description: timestamp of the start interval
+                        example: 1581987121
+                      end:
+                        type: integer
+                        description: timestamp of the end interval
+                        example: 1581987721
+                      vertical-label:
+                        type: string
+                        description: vertical label (should not be used cause multiple y-axis possible)
+                        example: Value
+                      base:
+                        type: string
+                        description: base scale
+                        example: '1024'
+                      width:
+                        type: string
+                        description: width of the graph (should not be used)
+                        example: '550'
+                      height:
+                        type: string
+                        description: height of the graph (should not be used)
+                        example: '140'
+                      lower-limit:
+                        type: string
+                        description: lower value of the graph
+                        example: '0'
+                      scaled:
+                        type: integer
+                        description: if the graph needs to be automatically scaled
+                        example: 1
+                      multiple_services:
+                        type: boolean
+                        description: if multiple services are selected (always false)
+                        example: false
+                  metrics:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        index_id:
+                          type: string
+                          description: index id in centreon_storage.index_data table
+                          example: '4'
+                        metric_id:
+                          type: string
+                          description: metric id in centreon_storage.metrics table
+                          example: '29'
+                        metric:
+                          type: string
+                          description: name of the metric
+                          example: cpu
+                        metric_legend:
+                          type: string
+                          description: name of the metric in legend
+                          example: cpu
+                        unit:
+                          type: string
+                          description: metric unit
+                          example: '%'
+                        hidden:
+                          type: integer
+                          description: if the metric is hidden
+                          example: 0
+                        min:
+                          type: string
+                          description: min value
+                          example: '0'
+                        max:
+                          type: string
+                          description: max value
+                          example: '100'
+                        virtual:
+                          type: integer
+                          description: if the metric is virtual
+                          example: 0
+                        ds_data:
+                          type: object
+                          description: metric line properties
+                          properties:
+                            ds_min:
+                              type: string
+                              description: minimum value
+                              example: '1'
+                            ds_max:
+                              type: string
+                              description: maximum value
+                              example: '1'
+                            ds_minmax_int:
+                              type: string
+                              nullable: true
+                              description: unknown
+                              example: null
+                            ds_last:
+                              type: string
+                              description: last value
+                              example: '1'
+                            ds_average:
+                              type: string
+                              description: average value
+                              example: '1'
+                            ds_total:
+                              type: string
+                              nullable: true
+                              description: unknown
+                              example: null
+                            ds_tickness:
+                              type: string
+                              description: unknown
+                              example: '1'
+                            ds_color_line_mode:
+                              type: string
+                              description: unknown
+                              example: '1'
+                            ds_color_line:
+                              type: string
+                              description: color of the line
+                              example: '#666600'
+                        legend:
+                          type: string
+                          description: metric name in legend
+                          example: cpu (%)
+                        stack:
+                          type: integer
+                          description: if the metric is stacked with other metrics
+                          example: 0
+                        warn:
+                          type: string
+                          nullable: true
+                          description: warning threshold
+                          example: null
+                        warn_low:
+                          type: string
+                          nullable: true
+                          description: low warning threshold
+                          example: null
+                        crit:
+                          type: string
+                          nullable: true
+                          description: critical threshold
+                          example: null
+                        crit_low:
+                          type: string
+                          nullable: true
+                          description: low critical threshold
+                          example: null
+                        ds_color_area_warn:
+                          type: string
+                          description: color of the area under warning threshold
+                          example: '#ff9a13'
+                        ds_color_area_crit:
+                          type: string
+                          description: color of the area under critical threshold
+                          example: '#e00b3d'
+                        ds_order:
+                          type: integer
+                          description: order used for stacking
+                          example: 0
+                        data:
+                          type: array
+                          items:
+                            type: float
+                            description: value of the metric
+                          example:
+                            - 1.0
+                            - null
+                            - 1.0
+                        prints:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: string
+                              description: label to display in legend
+                              example: 'Last:1.00'
+                        minimum_value:
+                          type: float
+                          description: minimum value
+                          example: 1.0
+                        maximum_value:
+                          type: float
+                          description: maximum value
+                          example: 1.0
+                  times:
+                    type: array
+                    items:
+                      type: integer
+                      description: timestamp
+                    example:
+                      - 1581987121
+                      - 1581987181
+                      - 1581987241
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: "Host or service not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/status/start/{start}/end/{end}:
+    get:
+      tags:
+        - Metrics
+      summary: 'Get service status data'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - in: path
+          name: start
+          description: 'start of the interval (ISO8601)'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T00:00:00'
+        - in: path
+          name: end
+          description: 'end of the interval (ISO8601)'
+          required: true
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T12:00:00'
+      description: 'Get status data from a service between given interval'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  critical:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+                  warning:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+                  ok:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+                  unknown:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: integer
+                          description: start time (timestamp)
+                          example: 1581987121
+                        end:
+                          type: integer
+                          description: end time (timestamp)
+                          example: 1581987181
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: "Host or service not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
