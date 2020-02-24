@@ -507,7 +507,7 @@ Configuration de PHP FPM
     [y/n], default to [n]:
     > y
     Reloading PHP FPM service                                  OK
-    Preparing Centreon temporary files
+    Preparing Centreon temporary files                         OK
     Modify rights on /var/log/centreon                         OK
     Modify rights on /etc/centreon                             OK
     Change macros for insertBaseConf.sql                       OK

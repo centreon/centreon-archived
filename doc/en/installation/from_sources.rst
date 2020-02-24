@@ -515,7 +515,7 @@ PHP FPM configuration
     Add group centreon-broker to user centreon-engine          OK
     Add group centreon to user centreon-broker                 OK
     Modify rights on /etc/centreon-broker                      OK
-    Copy CentWeb in system directory
+    Copy CentWeb in system directory                           OK
     Install CentWeb (web front of centreon)                    OK
     Modify rights for install directory                        OK
     Install libraries                                          OK
