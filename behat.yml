@@ -101,8 +101,12 @@ default:
       paths: [ "%paths.base%/features/DowntimeStartAndStop.feature" ]
       contexts: [ DowntimeStartAndStopContext ]
 
-    downtime_dst:
-      paths: [ "%paths.base%/features/DowntimeDST.feature" ]
+    downtime_dst_realtime:
+      paths: [ "%paths.base%/features/DowntimeDST/Realtime.feature" ]
+      contexts: [ DowntimeDSTContext ]
+
+    downtime_dst_recurrent:
+      paths: [ "%paths.base%/features/DowntimeDST/Recurrent.feature" ]
       contexts: [ DowntimeDSTContext ]
 
     downtime_recurrent:
@@ -133,8 +137,16 @@ default:
       paths: [ "%paths.base%/features/Ldap.feature" ]
       contexts: [ LdapContext ]
 
-    custom_views:
-      paths: [ "%paths.base%/features/CustomViews.feature" ]
+    custom_views_locked:
+      paths: [ "%paths.base%/features/CustomViews/Locked.feature" ]
+      contexts: [ CustomViewsContext ]
+
+    custom_views_unlocked:
+      paths: [ "%paths.base%/features/CustomViews/Unlocked.feature" ]
+      contexts: [ CustomViewsContext ]
+
+    custom_views_public:
+      paths: [ "%paths.base%/features/CustomViews/Public.feature" ]
       contexts: [ CustomViewsContext ]
 
     host_template_configuration:
