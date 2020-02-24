@@ -244,7 +244,7 @@ try {
                     ORDER BY cfg_nagios.nagios_activate
                     DESC LIMIT 1"
                 );
-                $Nagioscfg = $DBRESULT_Nagioscfg->fetchRow();
+                $Nagioscfg = $DBRESULT_Nagioscfg->fetch();
 
                 if (!is_dir($Nagioscfg["cfg_dir"])) {
                     throw new Exception(
