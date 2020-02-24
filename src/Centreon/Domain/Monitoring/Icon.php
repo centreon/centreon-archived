@@ -23,6 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 /**
+ * Class representing a record of a icon in the repository.
+ *
  * @package Centreon\Domain\Monitoring
  */
 class Icon

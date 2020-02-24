@@ -29,7 +29,7 @@ use Centreon\Domain\Monitoring\ResourceSeverity;
 use DateTime;
 
 /**
- * Resource model
+ * Class representing a record of a resource in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
