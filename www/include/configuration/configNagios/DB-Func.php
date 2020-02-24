@@ -1157,8 +1157,6 @@ function insertNagios($ret = array(), $brokerTab = array())
             . $nagios_id["MAX(nagios_id)"]
             . "' AND nagios_server_id = '" . $ret['nagios_server_id'] . "'"
         );
-        $dbResult = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-        $dbResult->closeCursor();
     }
 
     /* Prepare value for changelog */
