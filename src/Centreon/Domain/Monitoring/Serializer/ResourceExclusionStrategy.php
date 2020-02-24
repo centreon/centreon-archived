@@ -29,7 +29,7 @@ use JMS\Serializer\Context;
 use Centreon\Domain\Monitoring\Resource;
 
 /**
- * Resource model
+ * Exclusion strategy for resource list to skip applying of SERIALIZER_GROUP_MAIN on the parent object
  *
  * @package Centreon\Domain\Monitoring
  */
