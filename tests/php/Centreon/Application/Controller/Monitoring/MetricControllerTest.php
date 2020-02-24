@@ -88,11 +88,11 @@ class MetricControllerTest extends TestCase
             ->method('isGranted')
             ->willReturn(true);
         $token = $this->createMock(TokenInterface::class);
-        $token->expects($this->once())
+        $token->expects($this->exactly(2))
             ->method('getUser')
             ->willReturn('admin');
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $tokenStorage->expects($this->once())
+        $tokenStorage->expects($this->exactly(2))
             ->method('getToken')
             ->willReturn($token);
 
@@ -100,13 +100,14 @@ class MetricControllerTest extends TestCase
         $this->container->expects($this->any())
             ->method('has')
             ->willReturn(true);
-        $this->container->expects($this->exactly(2))
+        $this->container->expects($this->exactly(3))
             ->method('get')
             ->withConsecutive(
                 [$this->equalTo('security.authorization_checker')],
+                [$this->equalTo('security.token_storage')],
                 [$this->equalTo('security.token_storage')]
             )
-            ->willReturnOnConsecutiveCalls($authorizationChecker, $tokenStorage);
+            ->willReturnOnConsecutiveCalls($authorizationChecker, $tokenStorage, $tokenStorage);
     }
 
     /**
@@ -122,7 +123,7 @@ class MetricControllerTest extends TestCase
         $metricController->setContainer($this->container);
 
         $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage('Host not found');
+        $this->expectExceptionMessage('Host 1 not found');
         $metricController->getServiceMetrics(1, 1, $this->start, $this->end);
     }
 
@@ -142,7 +143,7 @@ class MetricControllerTest extends TestCase
         $metricController->setContainer($this->container);
 
         $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage('Service not found');
+        $this->expectExceptionMessage('Service 1 not found');
         $metricController->getServiceMetrics(1, 1, $this->start, $this->end);
     }
 
@@ -187,7 +188,7 @@ class MetricControllerTest extends TestCase
         $metricController->setContainer($this->container);
 
         $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage('Host not found');
+        $this->expectExceptionMessage('Host 1 not found');
         $metricController->getServiceStatus(1, 1, $this->start, $this->end);
     }
 
@@ -207,7 +208,7 @@ class MetricControllerTest extends TestCase
         $metricController->setContainer($this->container);
 
         $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage('Service not found');
+        $this->expectExceptionMessage('Service 1 not found');
         $metricController->getServiceStatus(1, 1, $this->start, $this->end);
     }
 

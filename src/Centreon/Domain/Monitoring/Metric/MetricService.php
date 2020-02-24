@@ -54,6 +54,7 @@ class MetricService extends AbstractCentreonService implements MetricServiceInte
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository
+     * @param MetricRepositoryInterface $metricRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(

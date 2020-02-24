@@ -25,8 +25,9 @@ namespace Centreon\Application\Controller\Monitoring;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use FOS\RestBundle\View\View;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use FOS\RestBundle\View\View;
 
 /**
  * This class is design to manage all API REST about metric requests
@@ -49,6 +50,7 @@ class MetricController extends AbstractController
      * MetricController constructor.
      *
      * @param MetricServiceInterface $metricService
+     * @param MonitoringServiceInterface $monitoringService
      */
     public function __construct(
         MetricServiceInterface $metricService,
@@ -59,10 +61,40 @@ class MetricController extends AbstractController
     }
 
     /**
+     * find a service from host id and service id
+     *
+     * @return Service if the service is found
+     * @throws EntityNotFoundException if the host or service is not found
+     */
+    private function findService(int $hostId, int $serviceId): Service
+    {
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        $this->monitoringService->filterByContact($contact);
+
+        $host = $this->monitoringService->findOneHost($hostId);
+        if (is_null($host)) {
+            throw new EntityNotFoundException("Host {$hostId} not found");
+        }
+
+        $service = $this->monitoringService->findOneService($hostId, $serviceId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException("Service {$serviceId} not found");
+        }
+        $service->setHost($host);
+
+        return $service;
+    }
+
+    /**
      * Entry point to get service metrics
      *
      * @param int $hostId
      * @param int $serviceId
+     * @param \DateTime $start
+     * @param \DateTime $end
      * @return View
      * @throws \Exception
      */
@@ -78,18 +110,8 @@ class MetricController extends AbstractController
          * @var $contact Contact
          */
         $contact = $this->getUser();
-        $this->monitoringService->filterByContact($contact);
 
-        $host = $this->monitoringService->findOneHost($hostId);
-        if (is_null($host)) {
-            throw new EntityNotFoundException('Host not found');
-        }
-
-        $service = $this->monitoringService->findOneService($hostId, $serviceId);
-        if (is_null($service)) {
-            throw new EntityNotFoundException('Service not found');
-        }
-        $service->setHost($host);
+        $service = $this->findService($hostId, $serviceId);
 
         $metrics = $this->metricService
             ->filterByContact($contact)
@@ -103,6 +125,8 @@ class MetricController extends AbstractController
      *
      * @param int $hostId
      * @param int $serviceId
+     * @param \DateTime $start
+     * @param \DateTime $end
      * @return View
      * @throws \Exception
      */
@@ -118,18 +142,8 @@ class MetricController extends AbstractController
          * @var $contact Contact
          */
         $contact = $this->getUser();
-        $this->monitoringService->filterByContact($contact);
 
-        $host = $this->monitoringService->findOneHost($hostId);
-        if (is_null($host)) {
-            throw new EntityNotFoundException('Host not found');
-        }
-
-        $service = $this->monitoringService->findOneService($hostId, $serviceId);
-        if (is_null($service)) {
-            throw new EntityNotFoundException('Service not found');
-        }
-        $service->setHost($host);
+        $service = $this->findService($hostId, $serviceId);
 
         $status = $this->metricService
             ->filterByContact($contact)
