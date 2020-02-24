@@ -33,7 +33,7 @@ class ResourceSeverity
     public const SERIALIZER_GROUP_MAIN = 'resource_severity_main';
 
     /**
-     * @var int
+     * @var int|null
      */
     private $level;
 
