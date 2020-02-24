@@ -747,17 +747,6 @@ Once composer is installed, go to the centreon directory
 
     composer install --no-dev --optimize-autoloader
 
-Macro modifications
--------------------
-
-> **Notice**: Macros may not have been properly replaced. Run the following commands to correct their values: ::
-
-    $ sed -i -e 's/_CENTREON_PATH_PLACEHOLDER_/centreon/g' /usr/share/centreon/www/index.html
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/centreon
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/export-mysql-indexes
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/generateSqlLite
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/import-mysql-indexes
-
 Javascript dependencies installation
 ------------------------------------
 
