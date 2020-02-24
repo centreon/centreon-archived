@@ -1137,6 +1137,7 @@ paths:
                               example: '1'
                             ds_minmax_int:
                               type: string
+                              nullable: true
                               description: unknown
                               example: null
                             ds_last:
@@ -1149,6 +1150,7 @@ paths:
                               example: '1'
                             ds_total:
                               type: string
+                              nullable: true
                               description: unknown
                               example: null
                             ds_tickness:
@@ -1173,18 +1175,22 @@ paths:
                           example: 0
                         warn:
                           type: string
+                          nullable: true
                           description: warning threshold
                           example: null
                         warn_low:
                           type: string
+                          nullable: true
                           description: low warning threshold
                           example: null
                         crit:
                           type: string
+                          nullable: true
                           description: critical threshold
                           example: null
                         crit_low:
                           type: string
+                          nullable: true
                           description: low critical threshold
                           example: null
                         ds_color_area_warn:
