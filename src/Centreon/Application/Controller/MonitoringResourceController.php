@@ -53,6 +53,10 @@ class MonitoringResourceController extends AbstractController
 
         $resutl = [];
 
+        if (!$data) {
+            return $resutl;
+        }
+
         try {
             $resutl = (array)json_decode($data);
         } catch (\Exception $e) {
