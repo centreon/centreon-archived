@@ -38,7 +38,7 @@ class Icon
     private $name;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $url;
 
