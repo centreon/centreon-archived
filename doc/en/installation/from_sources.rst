@@ -500,7 +500,8 @@ PHP FPM configuration
     Do you want to reload PHP FPM service ?
     [y/n], default to [n]:
     > y
-    Preparing Centreon temporary files
+    Reloading PHP FPM service                                  OK
+    Preparing Centreon temporary files                         OK
     Modify rights on /var/log/centreon                         OK
     Modify rights on /var/lib/centreon/installs                OK
     Modify rights on /etc/centreon                             OK
@@ -515,7 +516,7 @@ PHP FPM configuration
     Add group centreon-broker to user centreon-engine          OK
     Add group centreon to user centreon-broker                 OK
     Modify rights on /etc/centreon-broker                      OK
-    Copy CentWeb in system directory
+    Copy CentWeb in system directory                           OK
     Install CentWeb (web front of centreon)                    OK
     Modify rights for install directory                        OK
     Install libraries                                          OK
