@@ -28,6 +28,7 @@ use FOS\RestBundle\View\View;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\ResourceService;
 
 /**
  * Resource APIs for the Unified View page
@@ -36,10 +37,30 @@ use Centreon\Domain\Monitoring\Resource;
  */
 class MonitoringResourceController extends AbstractController
 {
+
+    public const EXTRA_PARAMETER_STATE = 'state';
+
     /**
      * @var \Centreon\Domain\Monitoring\ResourceService
      */
     protected $resource;
+
+    protected static function parseExtraParameter(
+        RequestParametersInterface $requestParameters,
+        string $parameterName
+    ): array {
+        $data = $requestParameters->getExtraParameter($parameterName);
+
+        $resutl = [];
+
+        try {
+            $resutl = (array)json_decode($data);
+        } catch (\Exception $e) {
+            $resutl = [];
+        }
+
+        return $resutl;
+    }
 
     public function __construct(ResourceServiceInterface $resource)
     {
@@ -55,16 +76,25 @@ class MonitoringResourceController extends AbstractController
     public function list(RequestParametersInterface $requestParameters): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-        
+
+        $filterState = [];
+        foreach ($this->parseExtraParameter($requestParameters, static::EXTRA_PARAMETER_STATE) as $state) {
+            if (!in_array($state, ResourceService::STATES)) {
+                continue;
+            }
+
+            $filterState[] = $state;
+        }
+
         $context = (new Context())
             ->setGroups(Resource::contextGroupsForListing())
             ->enableMaxDepth();
-        
+
         $context->addExclusionStrategy(new ResourceExclusionStrategy);
 
         return $this->view([
             'result' => $this->resource->filterByContact($this->getUser())
-                ->findResources(),
+                ->findResources($filterState),
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
     }

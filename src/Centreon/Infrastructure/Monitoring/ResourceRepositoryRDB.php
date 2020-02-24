@@ -31,6 +31,7 @@ use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
+use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
@@ -91,7 +92,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
-    public function findResources(): array
+    public function findResources(?array $filterState): array
     {
         $resources = [];
 
@@ -100,9 +101,22 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         $this->sqlRequestTranslator->setConcordanceArray([
-            'id' => 'resourece.id',
-            'name' => 'resourece.name',
-            'status' => 'resource.status_id',
+            'id' => 'resource.id',
+            'name' => 'resource.name',
+            'type' => 'resource.type',
+            'status_code' => 'resource.status_code',
+            'status' => 'resource.status_name',
+            'action_url' => 'resource.action_url',
+            'details_url' => 'resource.details_url',
+            'parent_name' => 'resource.parent_name',
+            'severity_level' => 'resource.severity_level',
+            'in_downtime' => 'resource.in_downtime',
+            'acknowledged' => 'resource.acknowledged',
+            'impacted_resources_count' => 'resource.impacted_resources_count',
+            'last_status_change' => 'resource.last_status_change',
+            'tries' => 'resource.tries',
+            'last_check' => 'resource.last_check',
+            'information' => 'resource.information',
         ]);
 
         $collector = new StatementCollector;
@@ -117,21 +131,24 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.tries, resource.last_check, resource.information '
             . 'FROM (('
-            . $this->preapreQueryForServiceResources($collector)
+            . $this->preapreQueryForServiceResources($collector, $filterState)
             .') UNION ALL ('
-            . $this->preapreQueryForHostResources($collector)
+            . $this->preapreQueryForHostResources($collector, $filterState)
             .')) AS  `resource`');
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $collector->addValue($key, current($data), key($data));
+        }
         $request .= $searchRequest ? $searchRequest : '';
 
         // Group
         $request .= ' GROUP BY resource.id';
 
         // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $request .= $sortRequest ? $sortRequest : ' ORDER BY resource.status_code ASC';
+        $request .= $this->sqlRequestTranslator->translateSortParameterToSql()
+            ?: ' ORDER BY resource.status_name DESC, resource.name ASC';
 
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
@@ -152,7 +169,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return $resources;
     }
 
-    protected function preapreQueryForServiceResources(StatementCollector $collector): string
+    protected function preapreQueryForServiceResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
 		CONCAT('S', s.service_id) AS `id`,
@@ -219,13 +236,29 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // show active services only
         $sql .= ' WHERE s.enabled = 1';
 
+        // apply the state filter to SQL query
+        if ($filterState && !in_array(ResourceServiceInterface::STATE_ALL, $filterState)) {
+            if (in_array(ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS, $filterState)
+                && !in_array(ResourceServiceInterface::STATE_RESOURCES_PROBLEMS, $filterState)) {
+                $sql .= ' AND (s.state != 0 AND s.state != 4)';
+            } elseif (in_array(ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS, $filterState)) {
+                $sql .= " AND (s.state_type = '1'"
+                    . " AND s.acknowledged = 0"
+                    . " AND s.scheduled_downtime_depth = 0"
+                    . " AND sh.acknowledged = 0"
+                    . " AND sh.scheduled_downtime_depth = 0"
+                    . " AND s.state != 0"
+                    . " AND s.state != 4)";
+            }
+        }
+
         // group by the service ID to preventing the duplication
         $sql .= ' GROUP BY s.service_id';
 
         return $sql;
     }
 
-    protected function preapreQueryForHostResources(StatementCollector $collector): string
+    protected function preapreQueryForHostResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
 		CONCAT('H', h.host_id) AS `id`,
@@ -291,6 +324,20 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql .= ' WHERE h.enabled = 1 AND h.name NOT LIKE :hostModule';
 
         $collector->addValue(':hostModule', '_Module_%');
+
+        // apply the state filter to SQL query
+        if ($filterState && !in_array(ResourceServiceInterface::STATE_ALL, $filterState)) {
+            if (in_array(ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS, $filterState)
+                && !in_array(ResourceServiceInterface::STATE_RESOURCES_PROBLEMS, $filterState)) {
+                $sql .= ' AND (h.state != 0 AND h.state != 4)';
+            } elseif (in_array(ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS, $filterState)) {
+                $sql .= " AND (h.state_type = '1'"
+                    . " AND h.acknowledged = 0"
+                    . " AND h.scheduled_downtime_depth = 0"
+                    . " AND h.state != 0"
+                    . " AND h.state != 4)";
+            }
+        }
 
         // prevent duplication
         $sql .= ' GROUP BY h.host_id';

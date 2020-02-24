@@ -25,10 +25,35 @@ namespace Centreon\Domain\Monitoring\Interfaces;
 interface ResourceServiceInterface
 {
     /**
+     * Non-ok status in hard state , not acknowledged & not in downtime
+     */
+    public const STATE_UNHANDLED_PROBLEMS = 'unhandled_problems';
+
+    /**
+     * Non-ok status in hard state
+     */
+    public const STATE_RESOURCES_PROBLEMS = 'resources_problems';
+
+    /**
+     * All status & resources
+     */
+    public const STATE_ALL = 'all';
+
+    /**
+     * List of all states
+     */
+    public const STATES = [
+        self::STATE_UNHANDLED_PROBLEMS,
+        self::STATE_RESOURCES_PROBLEMS,
+        self::STATE_ALL,
+    ];
+
+    /**
      * Find all resources.
      *
+     * @param array $filterState
      * @return \Centreon\Domain\Monitoring\Resource[]
      * @throws \Exception
      */
-    public function findResources(): array;
+    public function findResources(?array $filterState): array;
 }
