@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react';
 
+import axios from 'axios';
+
 import { Typography, makeStyles, Paper, Grid } from '@material-ui/core';
 
-import { Listing, SelectField } from '@centreon/ui';
+import {
+  Listing,
+  SelectField,
+  withErrorSnackbar,
+  useErrorSnackbar,
+} from '@centreon/ui';
 
 import { listResources } from './api';
-import { Listing as ListingEntity } from './models';
+import {
+  Listing as ListingEntity,
+  Resource,
+  unhandledProblemsFilter,
+  resourcesProblemFilter,
+  allFilter,
+} from './models';
 import columns from './columns';
+import { labelFilter } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -30,28 +44,79 @@ const noOp = (): void => undefined;
 const Resources = (): JSX.Element => {
   const classes = useStyles();
 
-  const [listing, setListing] = useState<ListingEntity>({
-    result: [],
-    meta: { page: 1, total: 0, limit: 10 },
-  });
+  const [listing, setListing] = useState<ListingEntity<Resource> | undefined>(
+    undefined,
+  );
+  const [filterId, setFilterId] = useState('unhandled_problems');
+  const [sort, setSort] = useState<{ [orderBy: string]: string }>({});
+  const [loading, setLoading] = useState(true);
+  const { showError } = useErrorSnackbar();
+  const [tokenSource] = useState(axios.CancelToken.source());
+
+  const load = (): void => {
+    setLoading(true);
+    listResources({ state: filterId, sort }, { cancelToken: tokenSource.token })
+      .then((retrievedListing) => setListing(retrievedListing))
+      .catch((error) => {
+        showError(error.message);
+      })
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    listResources().then((retrievedListing) => setListing(retrievedListing));
+    return (): void => {
+      tokenSource.cancel();
+    };
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [filterId]);
+
+  useEffect(() => {
+    if (!sort) {
+      return;
+    }
+
+    load();
+  }, [sort]);
+
+  const changeFilterId = (event): void => {
+    setFilterId(event.target.value);
+  };
+
+  const changeSort = ({ order, orderBy }): void => {
+    setSort({ [orderBy]: order });
+  };
+
+  const getSortf = (): string => {
+    const [sorto] = Object.keys(sort);
+
+    return sorto;
+  };
+
+  const getSorto = (): string => {
+    return sort[getSortf()];
+  };
 
   return (
     <div className={classes.page}>
       <Paper elevation={1} className={classes.filterBox}>
         <Grid container direction="column" spacing={1}>
           <Grid item>
-            <Typography variant="h6">Filter</Typography>
+            <Typography variant="h6">{labelFilter}</Typography>
           </Grid>
           <Grid item>
             <Grid spacing={2} container alignItems="center">
               <Grid item>
                 <SelectField
-                  options={[{ id: 0, name: 'Unhandled problems' }]}
-                  selectedOptionId={0}
+                  options={[
+                    unhandledProblemsFilter,
+                    resourcesProblemFilter,
+                    allFilter,
+                  ]}
+                  selectedOptionId={filterId}
+                  onChange={changeFilterId}
                 />
               </Grid>
             </Grid>
@@ -60,15 +125,18 @@ const Resources = (): JSX.Element => {
       </Paper>
       <div className={classes.listing}>
         <Listing
+          loading={loading}
           columnConfiguration={columns}
-          tableData={listing.result}
-          currentPage={listing.meta.page - 1}
-          limit={listing.meta.limit}
+          tableData={listing?.result}
+          currentPage={listing ? listing.meta.page - 1 : 0}
+          limit={listing?.meta.limit}
           onDelete={noOp}
-          onSort={noOp}
+          onSort={changeSort}
           onDuplicate={noOp}
           onPaginationLimitChanged={noOp}
-          totalRows={listing.meta.total}
+          sortf={getSortf()}
+          sorto={getSorto()}
+          totalRows={listing?.meta.total}
           selectedRows={[]}
           checkable
         />
@@ -77,4 +145,4 @@ const Resources = (): JSX.Element => {
   );
 };
 
-export default Resources;
+export default withErrorSnackbar(Resources);

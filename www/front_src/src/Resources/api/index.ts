@@ -1,6 +1,7 @@
-import axios from 'axios';
-import { resourceEndpoint } from './endpoint';
-import { Listing } from '../models';
+import axios, { AxiosRequestConfig } from 'axios';
+
+import { buildResourcesEndpoint } from './endpoint';
+import { ResourceListing } from '../models';
 
 const mockEndpoint = 'http://localhost:5000/centreon/api/v2/';
 
@@ -9,8 +10,13 @@ const api = axios.create({
   baseURL: mockEndpoint,
 });
 
-const getData = (endpoint) => api.get(endpoint).then(({ data }) => data);
+const getData = ({ endpoint, requestParams }): Promise<ResourceListing> =>
+  api.get(endpoint, requestParams).then(({ data }) => data);
 
-const listResources = (): Promise<Listing> => getData(resourceEndpoint);
+const listResources = (
+  endpointParams,
+  requestParams: AxiosRequestConfig = {},
+): Promise<ResourceListing> =>
+  getData({ endpoint: buildResourcesEndpoint(endpointParams), requestParams });
 
 export { listResources };

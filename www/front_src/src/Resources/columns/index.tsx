@@ -10,6 +10,8 @@ import {
   labelStatus,
   labelDuration,
   labelTries,
+  labelInformation,
+  labelState,
 } from '../translatedLabels';
 
 import IconDowntime from './icons/Downtime';
@@ -153,7 +155,7 @@ const columns = [
     id: 'duration',
     label: labelDuration,
     type: TABLE_COLUMN_TYPES.string,
-    getFormattedString: ({ last_status_change }): string => last_status_change,
+    getFormattedString: ({ duration }): string => duration,
   },
   {
     id: 'tries',
@@ -169,13 +171,13 @@ const columns = [
   },
   {
     id: 'information',
-    label: 'Information',
+    label: labelInformation,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ information }): string => information,
   },
   {
     id: 'state',
-    label: 'State',
+    label: labelState,
     type: TABLE_COLUMN_TYPES.component,
     Component: StateColumn,
     clickable: false,
