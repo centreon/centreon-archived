@@ -129,7 +129,7 @@ class Resource
     private $information;
 
     /**
-     * Get prepared list of groups for the context 
+     * Get prepared list of groups for the context
      *
      * @return array
      */

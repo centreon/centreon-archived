@@ -348,22 +348,22 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     protected function parseResource(array $data): Resource
     {
         $resource = EntityCreator::createEntityByArray(
-                Resource::class,
-                $data
+            Resource::class,
+            $data
         );
 
         // parse ResourceStatus object
         $resource->setStatus(EntityCreator::createEntityByArray(
-                ResourceStatus::class,
-                $data,
-                'status_'
+            ResourceStatus::class,
+            $data,
+            'status_'
         ));
 
         // parse Icon object
         $icon = EntityCreator::createEntityByArray(
-                Icon::class,
-                $data,
-                'icon_'
+            Icon::class,
+            $data,
+            'icon_'
         );
 
         if ($icon->getUrl()) {
@@ -372,9 +372,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         // parse severity Icon object
         $severity = EntityCreator::createEntityByArray(
-                ResourceSeverity::class,
-                $data,
-                'severity_'
+            ResourceSeverity::class,
+            $data,
+            'severity_'
         );
 
         if ($severity->getLevel() || $severity->getName() || $severity->getUrl()) {
@@ -383,16 +383,16 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         // parse parent Resource object
         $parent = EntityCreator::createEntityByArray(
-                Resource::class,
-                $data,
-                'parent_'
+            Resource::class,
+            $data,
+            'parent_'
         );
 
         if ($parent->getId()) {
             $parentIcon = EntityCreator::createEntityByArray(
-                    Icon::class,
-                    $data,
-                    'parent_icon_'
+                Icon::class,
+                $data,
+                'parent_icon_'
             );
 
             if ($parentIcon->getUrl()) {
