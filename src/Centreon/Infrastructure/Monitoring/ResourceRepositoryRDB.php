@@ -133,7 +133,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'FROM (('
             . $this->preapreQueryForServiceResources($collector, $filterState)
             . ') UNION ALL ('
-            . $this->preapreQueryForHostResources($collector, $filterState)
+            . $this->prepareQueryForHostResources($collector, $filterState)
             . ')) AS  `resource`');
 
         // Search
