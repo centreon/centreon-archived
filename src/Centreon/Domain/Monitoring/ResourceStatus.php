@@ -38,7 +38,7 @@ class ResourceStatus
     private $code;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
