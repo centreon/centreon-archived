@@ -507,7 +507,7 @@ Configuration de PHP FPM
     [y/n], default to [n]:
     > y
     Reloading PHP FPM service                                  OK
-    Preparing Centreon temporary files
+    Preparing Centreon temporary files                         OK
     Modify rights on /var/log/centreon                         OK
     Modify rights on /etc/centreon                             OK
     Change macros for insertBaseConf.sql                       OK
@@ -755,17 +755,6 @@ Une fois que composer est installé, rendez-vous dans les répertoires Centreon
 (habituellement **/usr/share/centreon/**) et exécutez la commande suivante : ::
 
     $ composer install --no-dev --optimize-autoloader
-
-Modification des macro
-----------------------
-
-> **Notice**: Il se peut que des macros n'aient pas été remplacées. Exécutez les commandes suivantes pour corriger leurs valeurs : ::
-
-    $ sed -i -e 's/_CENTREON_PATH_PLACEHOLDER_/centreon/g' /usr/share/centreon/www/index.html
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/centreon
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/export-mysql-indexes
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/generateSqlLite
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/import-mysql-indexes
 
 Installation des dépendances Javascript
 ---------------------------------------

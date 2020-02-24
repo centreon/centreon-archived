@@ -500,7 +500,8 @@ PHP FPM configuration
     Do you want to reload PHP FPM service ?
     [y/n], default to [n]:
     > y
-    Preparing Centreon temporary files
+    Reloading PHP FPM service                                  OK
+    Preparing Centreon temporary files                         OK
     Modify rights on /var/log/centreon                         OK
     Modify rights on /var/lib/centreon/installs                OK
     Modify rights on /etc/centreon                             OK
@@ -515,7 +516,7 @@ PHP FPM configuration
     Add group centreon-broker to user centreon-engine          OK
     Add group centreon to user centreon-broker                 OK
     Modify rights on /etc/centreon-broker                      OK
-    Copy CentWeb in system directory
+    Copy CentWeb in system directory                           OK
     Install CentWeb (web front of centreon)                    OK
     Modify rights for install directory                        OK
     Install libraries                                          OK
@@ -746,17 +747,6 @@ Once composer is installed, go to the centreon directory
 (usually **/usr/share/centreon/**) and run the following command: ::
 
     composer install --no-dev --optimize-autoloader
-
-Macro modifications
--------------------
-
-> **Notice**: Macros may not have been properly replaced. Run the following commands to correct their values: ::
-
-    $ sed -i -e 's/_CENTREON_PATH_PLACEHOLDER_/centreon/g' /usr/share/centreon/www/index.html
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/centreon
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/export-mysql-indexes
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/generateSqlLite
-    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/import-mysql-indexes
 
 Javascript dependencies installation
 ------------------------------------
