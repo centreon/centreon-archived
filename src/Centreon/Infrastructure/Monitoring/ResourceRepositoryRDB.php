@@ -169,7 +169,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return $resources;
     }
 
-    protected function preapreQueryForServiceResources(StatementCollector $collector, ?array $filterState): string
+    protected function prepareQueryForServiceResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
 		CONCAT('S', s.service_id) AS `id`,
