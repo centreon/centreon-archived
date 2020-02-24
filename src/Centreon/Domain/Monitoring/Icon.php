@@ -33,7 +33,7 @@ class Icon
     public const SERIALIZER_GROUP_MAIN = 'icon_main';
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
