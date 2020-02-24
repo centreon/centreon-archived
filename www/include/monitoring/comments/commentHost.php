@@ -39,37 +39,34 @@
 if (!isset($oreon)) {
     exit();
 }
+$contactId = $_GET["contact_id"] ?? $_POST["contact_id"] ?? null;
 
-    isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
-    isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
-    $cG ? $contact_id = $cG : $contact_id = $cP;
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
-    $form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+/*
+ * Path to the configuration folder
+ */
+$path = "./include/monitoring/comments/";
 
-    /*
-	 * Path to the configuration dir
-	 */
-    $path = "./include/monitoring/comments/";
-
-    /*
-	 * PHP functions
-	 */
-    require_once "./include/common/common-Func.php";
-    require_once "./include/monitoring/comments/common-Func.php";
-    require_once "./include/monitoring/external_cmd/functions.php";
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
+require_once "./include/monitoring/comments/common-Func.php";
+require_once "./include/monitoring/external_cmd/functions.php";
 
 switch ($o) {
-    case "ah":
-        require_once($path."AddHostComment.php");
-        break;
-    case "dh":
-        DeleteComment("HOST", isset($_GET["select"]) ? $_GET["select"] : array());
-        require_once($path."viewHostComment.php");
-        break;
-    case "vh":
-        require_once($path."viewHostComment.php");
-        break;
-    default:
-        require_once($path."viewHostComment.php");
-        break;
+case "ah":
+    require_once($path . "AddHostComment.php");
+    break;
+case "dh":
+    DeleteComment("HOST", $_GET["select"] ?? array());
+    require_once($path . "viewHostComment.php");
+    break;
+case "vh":
+    require_once($path . "viewHostComment.php");
+    break;
+default:
+    require_once($path . "viewHostComment.php");
+    break;
 }
