@@ -26,7 +26,6 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricRepositoryInterface;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Infrastructure\DatabaseConnection;
-use DateTime;
 
 /**
  * Repository to get metrics data from legacy centreon classes
@@ -41,21 +40,19 @@ final class MetricRepositoryLegacy implements MetricRepositoryInterface
     private $contact;
 
     /**
-     * @var DatabaseConnection
+     * @var \CentreonDB
      */
-    private $db;
+    private $dbStorage;
 
     /**
      * MetricRepositoryLegacy constructor.
-     *
-     * @param DatabaseConnection $pdo
      */
-    public function __construct(DatabaseConnection $db)
+    public function __construct()
     {
-        $this->db = $db;
-
         global $pearDB;
         $pearDB = new \CentreonDB('centreon', 3, true);
+
+        $this->dbStorage = new \CentreonDB('centstorage', 3, true);
     }
 
     /**
@@ -83,11 +80,10 @@ final class MetricRepositoryLegacy implements MetricRepositoryInterface
      */
     public function findStatusByService(Service $service, \DateTime $start, \DateTime $end): array
     {
-        $dbStorage = new \CentreonDB('centstorage', 3, true);
         $indexData = \CentreonGraphStatus::getIndexId(
             $service->getHost()->getId(),
             $service->getId(),
-            $dbStorage
+            $this->dbStorage
         );
         $graph = new \CentreonGraphStatus($indexData, $start->getTimestamp(), $end->getTimestamp());
 
