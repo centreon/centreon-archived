@@ -1,6 +1,6 @@
 ################################################################################
-# Copyright 2005-2017 Centreon
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# Copyright 2005-2020 Centreon
+# Centreon is developed by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 
 # This program is free software; you can redistribute it and/or modify it under 
@@ -950,7 +950,7 @@ sub syncTraps($) {
                 if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
                     $remote_server = $self->getServerConfig($ns_server->{remote_id});
                     $port = checkSSHPort($remote_server->{ssh_port});
-                    $cmd = "$self->{scp} -r -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $remote_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
+                    $cmd = "$self->{scp} -r -P $port /etc/snmp/centreon_traps/$id $remote_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
                 } else {
                     $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{ns_ip_address}:$ns_server->{snmp_trapd_path_conf} 2>&1";
                 }
