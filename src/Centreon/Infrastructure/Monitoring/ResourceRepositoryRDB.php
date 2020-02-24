@@ -119,7 +119,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'information' => 'resource.information',
         ]);
 
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
         $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS '
             . 'resource.id, resource.type, resource.name, resource.action_url, resource.details_url, '
             . 'resource.status_code, resource.status_name, ' // status
@@ -132,9 +132,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.tries, resource.last_check, resource.information '
             . 'FROM (('
             . $this->preapreQueryForServiceResources($collector, $filterState)
-            .') UNION ALL ('
+            . ') UNION ALL ('
             . $this->preapreQueryForHostResources($collector, $filterState)
-            .')) AS  `resource`');
+            . ')) AS  `resource`');
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();

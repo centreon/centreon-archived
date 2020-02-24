@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -150,7 +151,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\''
             . $accessGroupFilter
-            .' LEFT JOIN `:dbstg`.`services` srv
+            . ' LEFT JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
               AND srv.enabled = \'1\'
             LEFT JOIN `:dbstg`.`hosts_hostgroups` hg
@@ -233,7 +234,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\''
             . $accessGroupFilter
-            .' LEFT JOIN `:dbstg`.`services` srv
+            . ' LEFT JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
               AND srv.enabled = \'1\'
             LEFT JOIN `:dbstg`.`hosts_hostgroups` hg
@@ -399,7 +400,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             }
         }
 
-        $request ='SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.* FROM `:dbstg`.`hostgroups` hg ' . $subRequest;
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.* FROM `:dbstg`.`hostgroups` hg ' . $subRequest;
         $request = $this->translateDbName($request);
 
         // Search
