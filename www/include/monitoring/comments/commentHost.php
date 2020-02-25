@@ -59,17 +59,17 @@ require_once "./include/monitoring/comments/common-Func.php";
 require_once "./include/monitoring/external_cmd/functions.php";
 
 switch ($o) {
-case "ah":
-    require_once($path . "AddHostComment.php");
-    break;
-case "dh":
-    DeleteComment("HOST", $select);
-    require_once($path . "viewHostComment.php");
-    break;
-case "vh":
-    require_once($path . "viewHostComment.php");
-    break;
-default:
-    require_once($path . "viewHostComment.php");
-    break;
+    case "ah":
+        require_once($path . "AddHostComment.php");
+        break;
+    case "dh":
+        DeleteComment("HOST", $select);
+        require_once($path . "viewHostComment.php");
+        break;
+    case "vh":
+        require_once($path . "viewHostComment.php");
+        break;
+    default:
+        require_once($path . "viewHostComment.php");
+        break;
 }
