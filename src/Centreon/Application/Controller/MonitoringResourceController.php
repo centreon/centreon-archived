@@ -94,7 +94,7 @@ class MonitoringResourceController extends AbstractController
             ->setGroups(Resource::contextGroupsForListing())
             ->enableMaxDepth();
 
-        $context->addExclusionStrategy(new ResourceExclusionStrategy);
+        $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
         return $this->view([
             'result' => $this->resource->filterByContact($this->getUser())
