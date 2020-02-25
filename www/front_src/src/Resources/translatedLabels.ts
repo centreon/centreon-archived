@@ -12,4 +12,5 @@ export const labelStatus = I18n.t('Status');
 export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
 export const labelState = I18n.t('State');
+export const labelStateFilter = I18n.t('State filter');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');

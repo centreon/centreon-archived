@@ -12,6 +12,7 @@ export interface Icon {
 export interface Parent {
   name: string;
   icon: Icon | null;
+  status: Status;
 }
 
 export interface Status {
@@ -36,6 +37,7 @@ export interface Resource {
   last_check: string;
   information: string;
   severity?: Severity;
+  short_name: string;
 }
 
 interface ListingMeta {
@@ -53,8 +55,10 @@ export interface Listing<TEntity> {
 
 export type ResourceListing = Listing<Resource>;
 
+export type FilterId = 'unhandled_problems' | 'resources_problems' | 'all';
+
 export interface Filter {
-  id: 'unhandled_problems' | 'resources_problems' | 'all';
+  id: FilterId;
   name: string;
 }
 

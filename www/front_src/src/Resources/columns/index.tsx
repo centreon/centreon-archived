@@ -15,26 +15,32 @@ import {
 } from '../translatedLabels';
 
 import IconDowntime from './icons/Downtime';
+import { Resource } from '../models';
 
 interface ColumnProps {
-  row;
+  row: Resource;
   Cell: ({ children, width }: { children; width? }) => JSX.Element;
   isRowSelected: boolean;
   style;
   onClick;
 }
 
-const SeverityColumn = ({ Cell }: ColumnProps): JSX.Element => {
+const SeverityColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
   return (
-    <Cell width={50}>
-      <StatusChip label="1" statusCode={StatusCode.None} />
+    <Cell>
+      {row.severity && (
+        <StatusChip
+          label={row.severity.level.toString()}
+          statusCode={StatusCode.None}
+        />
+      )}
     </Cell>
   );
 };
 
 const StatusColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
   return (
-    <Cell width={150}>
+    <Cell>
       <StatusChip label={row.status.name} statusCode={row.status.code} />
     </Cell>
   );
@@ -63,7 +69,7 @@ const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
           <>
             <Grid item xs={1} />
             <Grid item xs={1}>
-              <StatusChip statusCode={StatusCode.UpOrOk} />
+              <StatusChip statusCode={row.parent.status.code} />
             </Grid>
             <Grid item xs={10}>
               {row.parent.name}

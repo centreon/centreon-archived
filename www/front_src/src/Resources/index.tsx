@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import isEmpty from 'lodash/isEmpty';
 
 import { Typography, makeStyles, Paper, Grid } from '@material-ui/core';
 
@@ -18,9 +19,10 @@ import {
   unhandledProblemsFilter,
   resourcesProblemFilter,
   allFilter,
+  ResourceListing,
 } from './models';
 import columns from './columns';
-import { labelFilter } from './translatedLabels';
+import { labelFilter, labelStateFilter } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -44,19 +46,29 @@ const noOp = (): void => undefined;
 const Resources = (): JSX.Element => {
   const classes = useStyles();
 
-  const [listing, setListing] = useState<ListingEntity<Resource> | undefined>(
-    undefined,
-  );
+  const [listing, setListing] = useState<ResourceListing>();
   const [filterId, setFilterId] = useState('unhandled_problems');
-  const [sort, setSort] = useState<{ [orderBy: string]: string }>({});
+  const [sorto, setSorto] = useState<string>();
+  const [sortf, setSortf] = useState<string>();
+  const [limit, setLimit] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
+
   const [loading, setLoading] = useState(true);
+
   const { showError } = useErrorSnackbar();
   const [tokenSource] = useState(axios.CancelToken.source());
 
   const load = (): void => {
     setLoading(true);
-    listResources({ state: filterId, sort }, { cancelToken: tokenSource.token })
-      .then((retrievedListing) => setListing(retrievedListing))
+    const sort = sortf ? { [sortf]: sorto } : undefined;
+
+    listResources(
+      { state: filterId, sort, limit, page },
+      { cancelToken: tokenSource.token },
+    )
+      .then((retrievedListing) => {
+        setListing(retrievedListing);
+      })
       .catch((error) => {
         showError(error.message);
       })
@@ -71,32 +83,23 @@ const Resources = (): JSX.Element => {
 
   useEffect(() => {
     load();
-  }, [filterId]);
-
-  useEffect(() => {
-    if (!sort) {
-      return;
-    }
-
-    load();
-  }, [sort]);
+  }, [filterId, sortf, sorto, page, limit]);
 
   const changeFilterId = (event): void => {
     setFilterId(event.target.value);
   };
 
   const changeSort = ({ order, orderBy }): void => {
-    setSort({ [orderBy]: order });
+    setSortf(orderBy);
+    setSorto(order);
   };
 
-  const getSortf = (): string => {
-    const [sorto] = Object.keys(sort);
-
-    return sorto;
+  const changeLimit = ({ target }): void => {
+    setLimit(Number(target.value));
   };
 
-  const getSorto = (): string => {
-    return sort[getSortf()];
+  const changePage = (_, updatedPage): void => {
+    setPage(updatedPage + 1);
   };
 
   return (
@@ -117,6 +120,7 @@ const Resources = (): JSX.Element => {
                   ]}
                   selectedOptionId={filterId}
                   onChange={changeFilterId}
+                  ariaLabel={labelStateFilter}
                 />
               </Grid>
             </Grid>
@@ -133,12 +137,12 @@ const Resources = (): JSX.Element => {
           onDelete={noOp}
           onSort={changeSort}
           onDuplicate={noOp}
-          onPaginationLimitChanged={noOp}
-          sortf={getSortf()}
-          sorto={getSorto()}
+          onPaginationLimitChanged={changeLimit}
+          onPaginate={changePage}
+          sortf={sortf}
+          sorto={sorto}
           totalRows={listing?.meta.total}
-          selectedRows={[]}
-          checkable
+          checkable={false}
         />
       </div>
     </div>
