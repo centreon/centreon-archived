@@ -117,7 +117,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function getList(): array
     {
-        return $this->postGetRemotesList();
+        $list = [];
+        foreach ($this->postGetRemotesList() as $row) {
+            $row['id'] = (int)$row['id'];
+            $list[] = $row;
+        }
+
+        return $list;
     }
 
     /**
