@@ -113,6 +113,10 @@ services:
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
         class: Centreon\Domain\Acknowledgement\AcknowledgementService
 
+    # Metric
+    Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface:
+        class: Centreon\Domain\Monitoring\Metric\MetricService
+
     # Proxy configuration
     Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface:
         class: Centreon\Domain\Proxy\ProxyService

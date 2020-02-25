@@ -119,6 +119,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'host.name' => 'h.name',
             'host.alias' => 'h.alias',
             'host.address' => 'h.address',
+            'host.last_state_change' => 'h.last_state_change',
             'host.state' => 'h.state',
             'poller.id' => 'h.instance_id',
             'service.display_name' => 'srv.display_name',
@@ -319,7 +320,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findHostGroups(): array
+    public function findHostGroups(?int $hostId): array
     {
         $hostGroups = [];
 
@@ -350,6 +351,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $shouldJoinHost = true;
             $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $hostConcordanceArray);
         }
+
+        //if the filter is for specific host id, remove it from search parameters
+        if (null !== $hostId) {
+            $shouldJoinHost = true;
+            unset($hostConcordanceArray['host.id']);
+        }
+
         $this->sqlRequestTranslator->setConcordanceArray($hostGroupConcordanceArray);
 
         $sqlExtraParameters = [];
@@ -405,7 +413,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        //if host id is provided, filter results by it
+        if (null !== $hostId) {
+            $searchByHostIdQuery = !is_null($searchRequest) ? ' AND h.host_id = :hostId' : ' WHERE h.host_id = :hostId';
+        } else {
+            $searchByHostIdQuery = '';
+        }
+
         $request .= !is_null($searchRequest) ? $searchRequest : '';
+        $request .= $searchByHostIdQuery;
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
@@ -428,6 +445,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
         }
+
+        if (null !== $hostId) {
+            //bind the host id to search for it if provided
+            $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        }
+        
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -571,12 +594,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'host.name' => 'h.name',
             'host.alias' => 'h.alias',
             'host.address' => 'h.address',
+            'host.last_state_change' => 'h.last_state_change',
             'host.state' => 'h.state',
             'host_group.id' => 'hhg.hostgroup_id',
             'poller.id' => 'i.instance_id',
             'service.description' => 'srv.description',
             'service.display_name' => 'srv.display_name',
             'service.is_acknowledged' => 'srv.acknowledged',
+            'service.last_state_change' => 'srv.last_state_change',
             'service.output' => 'srv.output',
             'service.state' => 'srv.state',
             'service_group.id' => 'ssg.servicegroup_id',

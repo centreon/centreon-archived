@@ -44,10 +44,11 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param bool $withHosts Indicates whether hosts groups must be completed with their hosts
      * @param bool $withServices Indicates whether hosts must be completed with their services
+     * @param int $hostId Return only hostgroups for specific host null by default
      * @return HostGroup[]
      * @throws \Exception
      */
-    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array;
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false, int $hostId = null): array;
 
     /**
      * Find a host based on his ID.

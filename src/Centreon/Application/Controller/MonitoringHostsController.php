@@ -291,4 +291,40 @@ class MonitoringHostsController extends AbstractController
             'meta' => $requestParameters->toArray()
         ])->setContext($context);
     }
+
+    /**
+     * Entry point to get all hostgroups.
+     *
+     * @param int hostId Id of host to search hostgroups for
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws \Exception
+     */
+    public function getHostGroupsByHost(int $hostId, RequestParametersInterface $requestParameters)
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $this->monitoring->filterByContact($this->getUser());
+
+        if (!$this->monitoring->isHostExists($hostId)) {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+
+        $contexts = [
+            HostGroup::SERIALIZER_GROUP_MAIN,
+        ];
+
+        $hostGroups = $this->monitoring
+            ->filterByContact($this->getUser())
+            ->findHostGroups(true, false, $hostId);
+
+        $context = (new Context())
+            ->setGroups($contexts)
+            ->enableMaxDepth();
+
+        return $this->view([
+            'result' => $hostGroups,
+            'meta' => $requestParameters->toArray()
+        ])->setContext($context);
+    }
 }

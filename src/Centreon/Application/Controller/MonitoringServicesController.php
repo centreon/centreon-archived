@@ -65,7 +65,11 @@ class MonitoringServicesController extends AbstractController
             ->findServices();
 
         $context = (new Context())
-            ->setGroups([Service::SERIALIZER_GROUP_MAIN, Service::SERIALIZER_GROUP_WITH_HOST, Host::SERIALIZER_GROUP_MIN])
+            ->setGroups([
+                Service::SERIALIZER_GROUP_MAIN,
+                Service::SERIALIZER_GROUP_WITH_HOST,
+                Host::SERIALIZER_GROUP_MIN
+            ])
             ->enableMaxDepth();
 
         return $this->view(
