@@ -29,7 +29,7 @@ namespace Centreon\Domain\Monitoring;
  */
 class Icon
 {
-    // Groups for serilizing
+    // Groups for serializing
     public const SERIALIZER_GROUP_MAIN = 'icon_main';
 
     /**
