@@ -74,7 +74,7 @@ switch ($o) {
         if (!empty($select)) {
             foreach ($select as $key => $value) {
                 $res = explode(';', urldecode($key));
-                DeleteComment($res[0], array((int)$res[1] . ';' . (int)$res[2] => 'on'));
+                DeleteComment($res[0], [(int)$res[1] . ';' . (int)$res[2] => 'on']);
             }
         }
         require_once($path . "listComment.php");
