@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-function DeleteComment($type = null, $hosts = array())
+function DeleteComment($type = null, $hosts = [])
 {
     if (!isset($type) || !is_array($hosts)) {
         return;
