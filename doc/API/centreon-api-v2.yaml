@@ -1058,6 +1058,53 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/check:
+    post:
+      tags:
+        - Check
+      summary: "Check host"
+      description: "Schedule immediate check on chosen host"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Host'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/check:
+    post:
+      tags:
+        - Check
+      summary: "Check service"
+      description: "Schedule immediate check on chosen service"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
     get:
       tags:
@@ -1909,6 +1956,17 @@ components:
               type: integer
               description: "ID of the service on which the downtime is set"
               example : 5
+    Check.Host:
+      type: object
+      properties:
+        is_forced:
+          type: boolean
+          required: false
+          description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
+          example: true
+    Check.Service:
+      allOf:
+        - $ref: '#/components/schemas/Check.Host'
     Monitoring.HostGroup:
       type: object
       properties:

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Service\JsonValidator\Interfaces;
 
-use Centreon\Domain\Service\JsonValidator\Validator;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 interface JsonValidatorInterface

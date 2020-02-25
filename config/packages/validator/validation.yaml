@@ -71,6 +71,31 @@ Centreon\Domain\Downtime\Downtime:
             - Type:
                 type: integer
 
+# Used to validate the Check entity
+Centreon\Domain\Check\Check:
+    properties:
+        hostId:
+            - Type:
+                type: integer
+                groups: [Default, check_host, check_service]
+            - NotNull:
+                groups: [Default, check_host, check_service]
+        serviceId:
+            - Type:
+                type: integer
+                groups: [Default, check_service]
+            - NotNull:
+                groups: [Default, check_service]
+        checkTime:
+            - Type:
+                type: DateTime
+                groups: [Default, check_host, check_service]
+        isForced:
+            - Type:
+                type: boolean
+                groups: [Default, check_host, check_service]
+
+
 # Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:
     properties:
