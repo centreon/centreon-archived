@@ -79,14 +79,14 @@ class Resource
     private $status;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    private $inDowntime;
+    private $inDowntime = false;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    private $acknowledged;
+    private $acknowledged = false;
 
     /**
      * @var \Centreon\Domain\Monitoring\ResourceSeverity|null
@@ -94,9 +94,9 @@ class Resource
     private $severity;
 
     /**
-     * @var int|null
+     * @var int
      */
-    private $impactedResourcesCount;
+    private $impactedResourcesCount = 0;
 
     /**
      * @var string|null
@@ -278,18 +278,18 @@ class Resource
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getInDowntime(): ?bool
+    public function getInDowntime(): bool
     {
         return $this->inDowntime;
     }
 
     /**
-     * @param bool|null $inDowntime
+     * @param bool $inDowntime
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setInDowntime(?bool $inDowntime): self
+    public function setInDowntime(bool $inDowntime): self
     {
         $this->inDowntime = $inDowntime;
 
@@ -297,18 +297,18 @@ class Resource
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function getAcknowledged(): ?bool
+    public function getAcknowledged(): bool
     {
         return $this->acknowledged;
     }
 
     /**
-     * @param bool|null $acknowledged
+     * @param bool $acknowledged
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setAcknowledged(?bool $acknowledged): self
+    public function setAcknowledged(bool $acknowledged): self
     {
         $this->acknowledged = $acknowledged;
 

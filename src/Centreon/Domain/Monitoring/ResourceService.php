@@ -45,7 +45,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
-     * @param \Centreon\Domain\Monitoring\Interfaces\MonitoringResourceRepositoryInterface $resourceRepository
+     * @param ResourceRepositoryInterface $resourceRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(

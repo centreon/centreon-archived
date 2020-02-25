@@ -169,6 +169,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return $resources;
     }
 
+    /**
+     * Preapre SQL query for services
+     *
+     * @param \Centreon\Infrastructure\CentreonLegacyDB\StatementCollector $collector
+     * @param array $filterState
+     * @return string
+     */
     protected function prepareQueryForServiceResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
@@ -258,6 +265,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return $sql;
     }
 
+    /**
+     * Preapre SQL query for hosts
+     *
+     * @param \Centreon\Infrastructure\CentreonLegacyDB\StatementCollector $collector
+     * @param array $filterState
+     * @return string
+     */
     protected function prepareQueryForHostResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
@@ -345,6 +359,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return $sql;
     }
 
+    /**
+     * Parse array data from DB into Resource model
+     *
+     * @param array $data
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
     protected function parseResource(array $data): Resource
     {
         $resource = EntityCreator::createEntityByArray(
@@ -405,6 +425,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return $resource;
     }
 
+    /**
+     * Check if the contact is admin
+     *
+     * @return bool
+     */
     private function isAdmin(): bool
     {
         return ($this->contact !== null)
