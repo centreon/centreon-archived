@@ -61,6 +61,7 @@ In this case, you only need to define a password for the user accessing the Cent
     
         [mysqld]
         innodb_file_per_table=1
+        open_files_limit=32000
     
     4. Restart the mysql service::
 

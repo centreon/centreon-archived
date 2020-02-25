@@ -1,5 +1,5 @@
 centreon:
-    resource: "./Centreon/*.yaml"
+    resource: "./Centreon/**/*.yaml"
     prefix: /centreon/api/{version}
     defaults:
         version: "beta"
