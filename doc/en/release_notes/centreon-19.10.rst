@@ -10,6 +10,7 @@ Bug Fixes
 * [Install] remove harcoded version in source install (#8332)
 * [Install] source installation script fixes (#8341)
 * [Install] replace macro in cron files (#8359)
+* [Web] correct delete comments (#8367)
 
 Security
 --------
