@@ -39,8 +39,11 @@
 if (!isset($oreon)) {
     exit();
 }
-$contactId = $_GET["contact_id"] ?? $_POST["contact_id"] ?? null;
-
+$contactId = filter_var(
+    $_GET["contact_id"] ?? $_POST["contact_id"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+$select = $_GET["select"] ?? $_POST["select"] ?? [];
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
@@ -60,7 +63,7 @@ case "ah":
     require_once($path . "AddHostComment.php");
     break;
 case "dh":
-    DeleteComment("HOST", $_GET["select"] ?? array());
+    DeleteComment("HOST", $select);
     require_once($path . "viewHostComment.php");
     break;
 case "vh":

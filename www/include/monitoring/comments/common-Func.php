@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 
 function DeleteComment($type = null, $hosts = array())
 {
-    if (!isset($type)) {
+    if (!isset($type) || !is_array($hosts)) {
         return;
     }
     global $pearDB;
@@ -47,8 +47,8 @@ function DeleteComment($type = null, $hosts = array())
 
     foreach ($hosts as $key => $value) {
         $res = preg_split("/\;/", $key);
-        $res[0] = filter_var($key[0] ?? 0, FILTER_VALIDATE_INT);
-        $res[1] = filter_var($key[1] ?? 0, FILTER_VALIDATE_INT);
+        $res[0] = filter_var($res[0] ?? 0, FILTER_VALIDATE_INT);
+        $res[1] = filter_var($res[1] ?? 0, FILTER_VALIDATE_INT);
         write_command(" DEL_" . $type . "_COMMENT;" . $res[1], GetMyHostPoller($pearDB, $res[0]));
     }
 }

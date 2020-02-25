@@ -41,7 +41,7 @@ $contactId = filter_var(
     $_GET["contact_id"] ?? $_POST["contact_id"] ?? 0,
     FILTER_VALIDATE_INT
 );
-$select = $_GET["select"] ?? $_POST["select"] ?? '';
+$select = $_GET["select"] ?? $_POST["select"] ?? [];
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
