@@ -1,0 +1,16 @@
+centreon_application_check_checkHost:
+    methods: POST
+    path: /monitoring/hosts/{hostId}/check
+    requirements:
+        hostId: '\d+'
+    controller: 'Centreon\Application\Controller\CheckController::checkHost'
+    condition: "request.attributes.get('version') >= 2.0"
+
+centreon_application_check_checkService:
+    methods: POST
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/check
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    controller: 'Centreon\Application\Controller\CheckController::checkService'
+    condition: "request.attributes.get('version') >= 2.0"

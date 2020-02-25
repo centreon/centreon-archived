@@ -254,7 +254,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 ON actions.acl_action_id = agar.acl_action_id
             LEFT JOIN `:db`.acl_actions_rules rules
                 ON rules.acl_action_rule_id = actions.acl_action_id
-            WHERE contact.contact_id = :contact_id 
+            WHERE contact.contact_id = :contact_id
                 AND rules.acl_action_name IS NOT NULL
             ORDER BY contact.contact_id, rules.acl_action_name';
 
@@ -299,6 +299,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     private function addActionRule(Contact $contact, string $ruleName): void
     {
         switch ($ruleName) {
+            case 'host_schedule_check':
+            case 'host_schedule_forced_check':
+                $contact->addRole(Contact::ROLE_HOST_CHECK);
+                break;
+            case 'service_schedule_check':
+            case 'service_schedule_forced_check':
+                $contact->addRole(Contact::ROLE_SERVICE_CHECK);
+                break;
             case 'host_acknowledgement':
                 $contact->addRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
                 break;

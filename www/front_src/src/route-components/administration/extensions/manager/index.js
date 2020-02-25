@@ -18,7 +18,7 @@ import {
   ExtensionDetailsPopup,
   ExtensionDeletePopup,
 } from '@centreon/ui';
-import Hook from '../../../../components/hook';
+import Hook from '../../../../components/Hook';
 
 import axios from '../../../../axios';
 import { fetchNavigationData } from '../../../../redux/actions/navigationActions';

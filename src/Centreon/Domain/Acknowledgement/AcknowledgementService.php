@@ -111,6 +111,32 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
+    public function findOneAcknowledgement(int $acknowledgementId): ?Acknowledgement
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->acknowledgementRepository->findOneAcknowledgementForAdminUser($acknowledgementId);
+        } else {
+            return $this->acknowledgementRepository
+                ->findOneAcknowledgementForNonAdminUser($acknowledgementId);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgements(): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->acknowledgementRepository->findAcknowledgementsForAdminUser();
+        } else {
+            return $this->acknowledgementRepository
+                ->findAcknowledgementsForNonAdminUser();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function addHostAcknowledgement(Acknowledgement $acknowledgement): void
     {
         // We validate the acknowledgement instance
@@ -125,7 +151,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
 
         $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
         if (is_null($host)) {
-            throw new AcknowledgementException('Host of acknowledgement not found');
+            throw new EntityNotFoundException('Host not found');
         }
 
         $this->engineService->addHostAcknowledgement($acknowledgement, $host);
@@ -151,14 +177,12 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             $acknowledgement->getServiceId()
         );
         if (is_null($service)) {
-            throw new AcknowledgementException('Service of acknowledgement not found');
+            throw new EntityNotFoundException('Service not found');
         }
 
-        $host = $this->monitoringRepository->findOneHost(
-            $acknowledgement->getHostId()
-        );
+        $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
         if (is_null($host)) {
-            throw new AcknowledgementException('Host of acknowledgement not found');
+            throw new EntityNotFoundException('Host not found');
         }
         $service->setHost($host);
 
@@ -168,23 +192,39 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function findLastHostsAcknowledgements(): array
+    public function findHostsAcknowledgements(): array
     {
-        return $this->acknowledgementRepository->findLatestAcknowledgementOfAllHosts();
+        return $this->acknowledgementRepository->findHostsAcknowledgements();
     }
 
     /**
      * @inheritDoc
      */
-    public function findLastServicesAcknowledgements(): array
+    public function findServicesAcknowledgements(): array
     {
-        return $this->acknowledgementRepository->findLatestAcknowledgementOfAllServices();
+        return $this->acknowledgementRepository->findServicesAcknowledgements();
     }
 
     /**
      * @inheritDoc
      */
-    public function disacknowledgeHostAcknowledgement(int $hostId): void
+    public function findAcknowledgementsByHost(int $hostId): array
+    {
+        return $this->acknowledgementRepository->findAcknowledgementsByHost($hostId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgementsByService(int $hostId, int $serviceId): array
+    {
+        return $this->acknowledgementRepository->findAcknowledgementsByService($hostId, $serviceId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function disacknowledgeHost(int $hostId): void
     {
         $host = $this->monitoringRepository->findOneHost($hostId);
         if (is_null($host)) {
@@ -203,7 +243,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): void
+    public function disacknowledgeService(int $hostId, int $serviceId): void
     {
         $service = $this->monitoringRepository->findOneService($hostId, $serviceId);
         if (is_null($service)) {

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +25,16 @@ namespace Centreon\Application\Controller\Configuration;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Centreon\Application\Controller\AbstractController;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 
 /**
  * This class is designed to manage all requests concerning pollers
  *
  * @package Centreon\Application\Controller
  */
-class MonitoringServerController extends AbstractFOSRestController
+class MonitoringServerController extends AbstractController
 {
     /**
      * @var MonitoringServerServiceInterface
@@ -53,19 +53,18 @@ class MonitoringServerController extends AbstractFOSRestController
     /**
      * Entry point to find the last hosts acknowledgements.
      *
-     * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/configuration/monitoring-servers",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="configuration.monitoring-servers.findServer")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findServer(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
         $server = $this->monitoringServerService->findServers();
-        $context = (new Context())->setGroups(['monitoringserver_main']);
+        $context = (new Context())->setGroups([
+            MonitoringServer::SERIALIZER_GROUP_MAIN,
+        ]);
 
         return $this->view([
             'result' => $server,

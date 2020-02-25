@@ -58,7 +58,7 @@ if (!isset($centreon) ||
 ) {
     exit();
 }
-if (isset(session_id())) {
+if (session_id()) {
     $res = $pearDB->prepare("SELECT * FROM `session` WHERE `session_id` = :sid");
     $res->bindValue(':sid', session_id(), PDO::PARAM_STR);
     $res->execute();

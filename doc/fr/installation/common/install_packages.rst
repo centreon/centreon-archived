@@ -139,7 +139,7 @@ cette option dans /etc/my.cnf *ne fonctionnera pas*.
 **Pour MariaDB** : ::
 
     # mkdir -p  /etc/systemd/system/mariadb.service.d/
-    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/centreon.conf
     # systemctl daemon-reload
     # systemctl restart mysql
 
