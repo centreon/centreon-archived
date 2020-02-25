@@ -43,10 +43,11 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param bool $withHosts Indicates whether hosts groups must be completed with their hosts
      * @param bool $withServices Indicates whether hosts must be completed with their services
+     * @param int $hostId Return only hostgroups for specific host null by default
      * @return HostGroup[]
      * @throws \Exception
      */
-    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array;
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false, int $hostId = null): array;
 
     /**
      * Find a host based on his ID.
@@ -102,4 +103,22 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function isHostExists(int $hostId): bool;
+
+    /**
+     * Indicates whether a service exists.
+     *
+     * @param int $hostId Host id to find
+     * @param int $serviceId Service id to find
+     * @return bool
+     * @throws \Exception
+     */
+    public function isServiceExists(int $hostId, int $serviceId): bool;
+
+    /**
+     * Find all service groups by host and service ids
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 }

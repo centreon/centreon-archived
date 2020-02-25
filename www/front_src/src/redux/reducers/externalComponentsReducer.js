@@ -1,9 +1,8 @@
 import * as actions from '../actions/externalComponentsActions';
 
-// by default, no one external page and hook
 const initialState = {
-  pages: [],
-  hooks: [],
+  pages: {},
+  hooks: {},
   fetched: false,
 };
 

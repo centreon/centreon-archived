@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { StylesProvider } from '@material-ui/styles';
 import Header from './components/header';
 import { history } from './store';
 
@@ -115,38 +114,33 @@ class App extends Component<Props, State> {
     const min = this.getMinArgument();
 
     return (
-      <StylesProvider injectFirst>
-        <ConnectedRouter history={history}>
-          <div className={styles.wrapper}>
-            {!min && <NavigationComponent />}
-            <Tooltip />
-            <div id="content" className={contentStyles.content}>
-              {!min && <Header />}
-              <div
-                id="fullscreen-wrapper"
-                className={contentStyles['fullscreen-wrapper']}
+      <ConnectedRouter history={history}>
+        <div className={styles.wrapper}>
+          {!min && <NavigationComponent />}
+          <Tooltip />
+          <div id="content" className={contentStyles.content}>
+            {!min && <Header />}
+            <div
+              id="fullscreen-wrapper"
+              className={contentStyles['fullscreen-wrapper']}
+            >
+              <Fullscreen
+                enabled={this.state.isFullscreenEnabled}
+                onClose={this.removeFullscreenParams}
+                onChange={(isFullscreenEnabled): void => {
+                  this.setState({ isFullscreenEnabled });
+                }}
               >
-                <Fullscreen
-                  enabled={this.state.isFullscreenEnabled}
-                  onClose={this.removeFullscreenParams}
-                  onChange={(isFullscreenEnabled): void => {
-                    this.setState({ isFullscreenEnabled });
-                  }}
-                >
-                  <div className={styles['main-content']}>
-                    <MainRouter />
-                  </div>
-                </Fullscreen>
-              </div>
-              {!min && <Footer />}
+                <div className={styles['main-content']}>
+                  <MainRouter />
+                </div>
+              </Fullscreen>
             </div>
-            <span
-              className={footerStyles['full-screen']}
-              onClick={this.goFull}
-            />
+            {!min && <Footer />}
           </div>
-        </ConnectedRouter>
-      </StylesProvider>
+          <span className={footerStyles['full-screen']} onClick={this.goFull} />
+        </div>
+      </ConnectedRouter>
     );
   }
 }

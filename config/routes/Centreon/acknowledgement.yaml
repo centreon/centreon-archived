@@ -1,29 +1,66 @@
-centreon_application_acknowledgement_findlasthostacknowledgement:
+centreon_application_acknowledgement_findhostsacknowledgements:
     methods: GET
-    path: /acknowledgements/hosts
-    controller: 'Centreon\Application\Controller\AcknowledgementController::findLastHostAcknowledgement'
+    path: /monitoring/hosts/acknowledgements
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findHostsAcknowledgements'
 
-centreon_application_acknowledgement_findlastserviceacknowledgement:
+centreon_application_acknowledgement_findservicesacknowledgements:
     methods: GET
-    path: /acknowledgements/services
-    controller: 'Centreon\Application\Controller\AcknowledgementController::findLastServiceAcknowledgement'
+    path: /monitoring/services/acknowledgements
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findServicesAcknowledgements'
+
+centreon_application_acknowledgement_findacknowledgementsbyhost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/acknowledgements
+    requirements:
+        hostId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgementsByHost'
 
 centreon_application_acknowledgement_addhostacknowledgement:
     methods: POST
-    path: /acknowledgements/hosts
+    path: /monitoring/hosts/{hostId}/acknowledgements
+    requirements:
+        hostId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::addHostAcknowledgement'
 
-centreon_application_acknowledgement_disacknowledgehostacknowledgement:
+centreon_application_acknowledgement_disacknowledgehost:
     methods: DELETE
-    path: /acknowledgements/hosts/{hostId}
-    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeHostAcknowledgement'
+    path: /monitoring/hosts/{hostId}/acknowledgements
+    requirements:
+        hostId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeHost'
 
-centreon_application_acknowledgement_disacknowledgeserviceacknowledgement:
-    methods: DELETE
-    path: /acknowledgements/hosts/{hostId}/services/{serviceId}
-    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeServiceAcknowledgement'
+centreon_application_acknowledgement_findacknowledgementsbyservice:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgementsByService'
 
 centreon_application_acknowledgement_addserviceacknowledgement:
     methods: POST
-    path: /acknowledgements/services
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::addServiceAcknowledgement'
+
+centreon_application_acknowledgement_disacknowledgeservice:
+    methods: DELETE
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeService'
+
+centreon_application_acknowledgement_findacknowledgements:
+    methods: GET
+    path: /monitoring/acknowledgements
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgements'
+
+centreon_application_acknowledgement_findoneacknowledgement:
+    methods: GET
+    path: /monitoring/acknowledgements/{acknowledgementId}
+    requirements:
+        acknowledgementId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findOneAcknowledgement'
