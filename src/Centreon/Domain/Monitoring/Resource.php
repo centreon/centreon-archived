@@ -35,7 +35,7 @@ use DateTime;
  */
 class Resource
 {
-    // Groups for serilizing
+    // Groups for serializing
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
 
