@@ -132,7 +132,7 @@ const Resources = (): JSX.Element => {
           loading={loading}
           columnConfiguration={columns}
           tableData={listing?.result}
-          currentPage={listing ? listing.meta.page - 1 : 0}
+          currentPage={page - 1}
           limit={listing?.meta.limit}
           onDelete={noOp}
           onSort={changeSort}

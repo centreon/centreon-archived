@@ -15,10 +15,6 @@ import { Resource } from './models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const baseEndpoint = 'monitoring/resources';
-const defaultPageAndLimitParams = 'page=1&limit=10';
-const defaultListingEndpoint = `${baseEndpoint}?state=["unhandled_problems]&${defaultPageAndLimitParams}`;
-
 const getEndpoint = ({
   state = 'unhandled_problems',
   sortBy = undefined,
@@ -32,6 +28,7 @@ const getEndpoint = ({
   page?: number;
   limit?: number;
 }): string => {
+  const baseEndpoint = 'monitoring/resources';
   const sortParam = sortBy ? `&sort_by={"${sortBy}":"${sortOrder}"}` : '';
 
   return `${baseEndpoint}?state=["${state}"]${sortParam}&page=${page}&limit=${limit}`;
@@ -71,25 +68,25 @@ const fillEntities = (): Array<Resource> => {
   }));
 };
 
+const entities = fillEntities();
+const retrievedListing = {
+  result: entities,
+  meta: {
+    page: 1,
+    limit: 10,
+    search: {},
+    sort_by: {},
+    total: entities.length,
+  },
+};
+
 describe(Resources, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
   });
 
   beforeEach(() => {
-    const entities = fillEntities();
-    mockedAxios.get.mockResolvedValue({
-      data: {
-        result: entities,
-        meta: {
-          page: 1,
-          limit: 10,
-          search: {},
-          sort_by: {},
-          total: entities.length,
-        },
-      },
-    });
+    mockedAxios.get.mockResolvedValue({ data: retrievedListing });
   });
 
   it('lists with unhnandled_problems state by default', async () => {
@@ -97,7 +94,7 @@ describe(Resources, () => {
 
     await wait(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        defaultListingEndpoint,
+        getEndpoint({}),
         cancelTokenRequestParam,
       ),
     );
@@ -112,7 +109,7 @@ describe(Resources, () => {
 
     await wait(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        'monitoring/resources?state=["resources_problems"]',
+        getEndpoint({ state: 'resources_problems' }),
         cancelTokenRequestParam,
       ),
     );
@@ -121,7 +118,7 @@ describe(Resources, () => {
 
     await wait(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        'monitoring/resources?state=["all"]',
+        getEndpoint({ state: 'all' }),
         cancelTokenRequestParam,
       ),
     );
@@ -160,12 +157,28 @@ describe(Resources, () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
+    mockedAxios.get.mockReset();
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedListing,
+        meta: { ...retrievedListing.meta, page: 2 },
+      },
+    });
+
     fireEvent.click(getByLabelText('Next Page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getEndpoint({ page: 2 }),
       cancelTokenRequestParam,
     );
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedListing,
+        meta: { ...retrievedListing.meta, page: 1 },
+      },
+    });
 
     fireEvent.click(getByLabelText('Previous Page'));
 
@@ -174,6 +187,13 @@ describe(Resources, () => {
       cancelTokenRequestParam,
     );
 
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedListing,
+        meta: { ...retrievedListing.meta, page: 4 },
+      },
+    });
+
     fireEvent.click(getByLabelText('Last Page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -181,10 +201,30 @@ describe(Resources, () => {
       cancelTokenRequestParam,
     );
 
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedListing,
+        meta: { ...retrievedListing.meta, page: 4 },
+      },
+    });
+
     fireEvent.click(getByLabelText('First Page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getEndpoint({ page: 1 }),
+      cancelTokenRequestParam,
+    );
+  });
+
+  it('executes a limit request when the rows per page value is changed', () => {
+    const { getByDisplayValue } = render(<Resources />);
+
+    fireEvent.change(getByDisplayValue('10'), {
+      target: { value: '20' },
+    });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      getEndpoint({ limit: 20 }),
       cancelTokenRequestParam,
     );
   });
