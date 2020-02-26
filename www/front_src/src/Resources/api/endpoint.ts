@@ -1,5 +1,3 @@
-import isNull from 'lodash/isNull';
-
 const resourcesEndpoint = 'monitoring/resources';
 
 const buildParam = ({ name, value }): string => {
@@ -7,7 +5,6 @@ const buildParam = ({ name, value }): string => {
 };
 
 const buildResourcesEndpoint = ({ state, sort, page, limit }): string => {
-  console.log(limit);
   const params = [
     {
       name: 'state',

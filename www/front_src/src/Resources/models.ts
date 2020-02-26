@@ -28,7 +28,7 @@ export interface Resource {
   id: string;
   name: string;
   icon?: Icon;
-  parent: Parent;
+  parent?: Parent;
   status: Status;
   acknowledged: boolean;
   in_downtime: boolean;

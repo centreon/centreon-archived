@@ -142,6 +142,7 @@ const columns = [
     type: TABLE_COLUMN_TYPES.component,
     Component: SeverityColumn,
     clickable: false,
+    sortable: false,
   },
   {
     id: 'status',
@@ -149,6 +150,7 @@ const columns = [
     type: TABLE_COLUMN_TYPES.component,
     Component: StatusColumn,
     clickable: false,
+    sortable: false,
   },
   {
     id: 'resources',
@@ -156,6 +158,7 @@ const columns = [
     type: TABLE_COLUMN_TYPES.component,
     Component: ResourcesColumn,
     clickable: false,
+    sortable: false,
   },
   {
     id: 'duration',
@@ -170,7 +173,7 @@ const columns = [
     getFormattedString: ({ tries }): string => tries,
   },
   {
-    id: 'lastCheck',
+    id: 'last_check',
     label: 'Last check',
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ last_check }): string => last_check,
@@ -187,6 +190,7 @@ const columns = [
     type: TABLE_COLUMN_TYPES.component,
     Component: StateColumn,
     clickable: false,
+    sortable: false,
   },
 ];
 
