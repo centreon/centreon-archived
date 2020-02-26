@@ -142,6 +142,7 @@ Centreon\Domain\Monitoring\Service:
         state:
             type: int
             groups:
+                - 'service_main'
                 - 'service_full'
         stateType:
             type: int

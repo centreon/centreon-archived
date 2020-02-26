@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,11 +68,12 @@ interface MonitoringRepositoryInterface
     public function findHostsByServiceGroups(array $servicesGroupsIds): array;
 
     /**
-     * Find all services grouped by host groups
+     * Find all hostgroups with option to provide host id
      *
+     * @param int $hostId Id of host to filter hostgroups by
      * @return HostGroup[]
      */
-    public function findHostGroups(): array;
+    public function findHostGroups(?int $hostId): array;
 
     /**
      * Find one host based on its id and according to ACL.

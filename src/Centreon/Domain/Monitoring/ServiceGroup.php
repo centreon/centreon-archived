@@ -82,7 +82,7 @@ class ServiceGroup implements EntityDescriptorMetadataInterface
      * @param Host $host
      * @return ServiceGroup
      */
-    public function addHost(Host $host):ServiceGroup
+    public function addHost(Host $host): ServiceGroup
     {
         $this->hosts[] = $host;
         return $this;
