@@ -67,7 +67,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@centreon/ui": "centreon/centreon-ui#adapt-styles-for-unfied-view",
+    "@centreon/ui": "centreon/centreon-ui",
     "@material-ui/core": "^4.9.4",
     "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.2",
