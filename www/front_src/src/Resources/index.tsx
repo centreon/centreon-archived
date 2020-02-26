@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
-import isEmpty from 'lodash/isEmpty';
 
 import { Typography, makeStyles, Paper, Grid } from '@material-ui/core';
 
@@ -14,8 +13,6 @@ import {
 
 import { listResources } from './api';
 import {
-  Listing as ListingEntity,
-  Resource,
   unhandledProblemsFilter,
   resourcesProblemFilter,
   allFilter,
