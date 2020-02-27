@@ -326,7 +326,7 @@ class RequestParameters implements RequestParametersInterface
      */
     public function setSearch(string $search): void
     {
-        $search = json_decode($search ?? '{}');
+        $search = json_decode($search ?? '{}', true);
         $this->search = (array) $search;
         $this->fixSchema();
     }
