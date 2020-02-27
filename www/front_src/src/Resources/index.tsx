@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { Typography, makeStyles, Paper, Grid } from '@material-ui/core';
+import { Typography, makeStyles, Paper, Grid, Button } from '@material-ui/core';
+import { HelpOutline as IconHelp } from '@material-ui/icons';
 
 import {
   Listing,
   SelectField,
   withErrorSnackbar,
   useErrorSnackbar,
+  SearchField,
 } from '@centreon/ui';
 
 import { listResources } from './api';
@@ -19,7 +21,7 @@ import {
   ResourceListing,
 } from './models';
 import columns from './columns';
-import { labelFilter, labelStateFilter } from './translatedLabels';
+import { labelFilter, labelStateFilter, labelSearch } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -49,6 +51,7 @@ const Resources = (): JSX.Element => {
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>();
 
   const [loading, setLoading] = useState(true);
 
@@ -60,7 +63,7 @@ const Resources = (): JSX.Element => {
     const sort = sortf ? { [sortf]: sorto } : undefined;
 
     listResources(
-      { state: filterId, sort, limit, page },
+      { state: filterId, sort, limit, page, search },
       { cancelToken: tokenSource.token },
     )
       .then((retrievedListing) => {
@@ -80,7 +83,7 @@ const Resources = (): JSX.Element => {
 
   useEffect(() => {
     load();
-  }, [filterId, sortf, sorto, page, limit]);
+  }, [filterId, sortf, sorto, page, limit, search]);
 
   const changeFilterId = (event): void => {
     setFilterId(event.target.value);
@@ -91,23 +94,27 @@ const Resources = (): JSX.Element => {
     setSorto(order);
   };
 
-  const changeLimit = ({ target }): void => {
-    setLimit(Number(target.value));
+  const changeLimit = (event): void => {
+    setLimit(Number(event.target.value));
   };
 
   const changePage = (_, updatedPage): void => {
     setPage(updatedPage + 1);
   };
 
+  const changeSearch = (event): void => {
+    setSearch(event.target.value);
+  };
+
   return (
     <div className={classes.page}>
       <Paper elevation={1} className={classes.filterBox}>
-        <Grid container direction="column" spacing={1}>
+        <Grid container direction="column">
           <Grid item>
             <Typography variant="h6">{labelFilter}</Typography>
           </Grid>
           <Grid item>
-            <Grid spacing={2} container alignItems="center">
+            <Grid spacing={2} container direction="row" alignItems="center">
               <Grid item>
                 <SelectField
                   options={[
@@ -119,6 +126,18 @@ const Resources = (): JSX.Element => {
                   onChange={changeFilterId}
                   ariaLabel={labelStateFilter}
                 />
+              </Grid>
+              <Grid item>
+                <SearchField
+                  EndAdornment={(): JSX.Element => <IconHelp />}
+                  value={search}
+                  onChange={changeSearch}
+                />
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="primary">
+                  {labelSearch}
+                </Button>
               </Grid>
             </Grid>
           </Grid>
