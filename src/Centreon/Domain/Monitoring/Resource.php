@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Monitoring\Icon;
-use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
 use DateTime;

@@ -47,13 +47,18 @@ class RequestParameters implements RequestParametersInterface
     const OPERATOR_GREATER_THAN_OR_EQUAL = '$ge';
     const OPERATOR_LIKE = '$lk';
     const OPERATOR_NOT_LIKE = '$nk';
+    const OPERATOR_REGEXP = '$rg';
     const OPERATOR_IN = '$in';
     const OPERATOR_NOT_IN = '$ni';
 
     const AGGREGATE_OPERATOR_OR = '$or';
     const AGGREGATE_OPERATOR_AND = '$and';
-    const CONCORDANCE_MODE_STRICT = 1;
+
     const CONCORDANCE_MODE_NO_STRICT = 0;
+    const CONCORDANCE_MODE_STRICT = 1;
+
+    const CONCORDANCE_ERRMODE_SILENT = 0;
+    const CONCORDANCE_ERRMODE_EXCEPTION = 1;
 
     private $authorizedOrders = [self::ORDER_ASC, self::ORDER_DESC];
 
@@ -64,6 +69,11 @@ class RequestParameters implements RequestParametersInterface
      * Used in the data repository classes.
      */
     private $concordanceStrictMode = self::CONCORDANCE_MODE_NO_STRICT;
+
+    /**
+     * @var int Indicates error behaviour when there unknown search parameters in strict mode.
+     */
+    private $concordanceErrorMode = self::CONCORDANCE_ERRMODE_EXCEPTION;
 
     /**
      * @var array Array representing fields to search for
@@ -99,14 +109,6 @@ class RequestParameters implements RequestParametersInterface
     }
 
     /**
-     * @return int
-     */
-    public function getConcordanceStrictMode(): int
-    {
-        return $this->concordanceStrictMode;
-    }
-
-    /**
      * @inheritDoc
      */
     public function getExtraParameter(string $parameterName)
@@ -120,34 +122,58 @@ class RequestParameters implements RequestParametersInterface
     /**
      * @inheritDoc
      */
-    public function setConcordanceStrictMode(int $concordanceStrictMode): void
+    public function getConcordanceStrictMode(): int
+    {
+        return $this->concordanceStrictMode;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return RequestParameters
+     */
+    public function setConcordanceStrictMode(int $concordanceStrictMode): self
     {
         $this->concordanceStrictMode = $concordanceStrictMode;
+        return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function findSearchParameter(string $keyToFind, array $parameters): ?string
+    public function getConcordanceErrorMode(): int
+    {
+        return $this->concordanceErrorMode;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return RequestParameters
+     */
+    public function setConcordanceErrorMode(int $concordanceErrorMode): self
+    {
+        $this->concordanceErrorMode = $concordanceErrorMode;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasSearchParameter(string $keyToFind, array $parameters): bool
     {
         foreach ($parameters as $key => $value) {
             if ($key === $keyToFind) {
-                if (is_object($value)) {
-                    $value = (array)$value;
-                    return $value[key($value)];
-                } else {
-                    return $value;
-                }
+                return true;
             } else {
                 if (is_array($value) || is_object($value)) {
                     $value = (array) $value;
-                    if (($value = $this->findSearchParameter($keyToFind, $value)) !== null) {
-                        return $value;
+                    if ($this->hasSearchParameter($keyToFind, $value)) {
+                        return true;
                     }
                 }
             }
         }
-        return null;
+
+        return false;
     }
 
     /**
@@ -166,6 +192,7 @@ class RequestParameters implements RequestParametersInterface
             self::OPERATOR_GREATER_THAN_OR_EQUAL,
             self::OPERATOR_LIKE,
             self::OPERATOR_NOT_LIKE,
+            self::OPERATOR_REGEXP,
             self::OPERATOR_IN,
             self::OPERATOR_NOT_IN
         ];

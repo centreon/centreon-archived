@@ -34,18 +34,34 @@ interface RequestParametersInterface
     public function addExtraParameter(string $parameterName, $value): void;
 
     /**
-     * Find the search parameter.
+     * check if a search parameter exists.
      *
      * @param string $keyToFind Name of the search parameter
      * @param array $parameters List of parameters
      * @return string|null Returns the value of the search parameter
      */
-    public function findSearchParameter(string $keyToFind, array $parameters): ?string;
+    public function hasSearchParameter(string $keyToFind, array $parameters): bool;
 
     /**
      * @return int
      */
     public function getConcordanceStrictMode(): int;
+
+    /**
+     * @param int $concordanceStrictMode
+     */
+    public function setConcordanceStrictMode(int $concordanceStrictMode);
+
+    /**
+     * @return int
+     */
+    public function getConcordanceErrorMode(): int;
+
+    /**
+     * Set error mode (exception or silent)
+     * @param int $concordanceErrorMode
+     */
+    public function setConcordanceErrorMode(int $concordanceErrorMode);
 
     /**
      * Returns the value of the extra parameter.
@@ -89,11 +105,6 @@ interface RequestParametersInterface
      * @return bool
      */
     public function isSearchParameterDefined(string $parameter): bool;
-
-    /**
-     * @param int $concordanceStrictMode
-     */
-    public function setConcordanceStrictMode(int $concordanceStrictMode): void;
 
     /**
      * @param int $limit Number of records per page
