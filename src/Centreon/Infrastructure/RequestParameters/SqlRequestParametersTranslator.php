@@ -149,7 +149,6 @@ class SqlRequestParametersTranslator
         if (!empty($search) && is_array($search)) {
             $whereQuery .= $this->createDatabaseQuery($search);
         }
-        var_dump($whereQuery);
         return !empty($whereQuery) ? ' WHERE ' . $whereQuery : null;
     }
 
