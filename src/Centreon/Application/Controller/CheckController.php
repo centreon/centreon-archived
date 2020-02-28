@@ -56,6 +56,69 @@ class CheckController extends AbstractController
     }
 
     /**
+     * Entry point to check multiple hosts.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function checkHosts(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_CHECK)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $context = DeserializationContext::create()->setGroups(['check_bulk', 'resource_id_main']);
+        $context->increaseDepth();
+        $context->increaseDepth();
+
+        /**
+         * @var $check Check
+         */
+        $check = $serializer->deserialize(
+            $request->getContent(),
+            Check::class,
+            'json',
+            $context
+        );
+        var_dump($check->getIds());
+        throw new \Exception();
+
+        /*
+        $check
+            ->setHostId($hostId)
+            ->setCheckTime(new \DateTime());
+
+        $errors = $entityValidator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_HOST_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $this->checkService
+            ->filterByContact($contact)
+            ->checkHost($check);
+            */
+
+        return $this->view();
+    }
+
+    /**
      * Entry point to check a host.
      *
      * @param Request $request

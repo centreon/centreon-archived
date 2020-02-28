@@ -1,0 +1,10 @@
+Centreon\Domain\Monitoring\ResourceId:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'resource_id_main'
+        parent_id:
+            type: int
+            groups:
+                - 'resource_id_main'

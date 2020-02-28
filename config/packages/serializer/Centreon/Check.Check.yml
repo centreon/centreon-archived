@@ -2,9 +2,23 @@ Centreon\Domain\Check\Check:
     properties:
         hostId:
             type: int
+            groups:
+                - 'check_main'
         serviceId:
             type: int
+            groups:
+                - 'check_main'
         checkTime:
             type: DateTime
+            groups:
+                - 'check_main'
+                - 'check_bulk'
         isForced:
             type: bool
+            groups:
+                - 'check_main'
+                - 'check_bulk'
+        ids:
+            type: array<Centreon\Domain\Monitoring\ResourceId>
+            groups:
+                - 'check_bulk'

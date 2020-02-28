@@ -53,6 +53,11 @@ class Check implements EntityDescriptorMetadataInterface
     private $isForced = true;
 
     /**
+     * @var Centreon\Domain\Monitoring\ResourceId[]
+     */
+    private $ids;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -134,6 +139,24 @@ class Check implements EntityDescriptorMetadataInterface
     public function setForced(bool $isForced): Check
     {
         $this->isForced = $isForced;
+        return $this;
+    }
+
+    /**
+     * @return Centreon\Domain\Monitoring\ResourceId[]
+     */
+    public function getIds(): array
+    {
+        return $this->ids;
+    }
+
+    /**
+     * @param Centreon\Domain\Monitoring\ResourceId[] $ids
+     * @return Check
+     */
+    public function setIds(array $ids): Check
+    {
+        $this->ids = $ids;
         return $this;
     }
 }
