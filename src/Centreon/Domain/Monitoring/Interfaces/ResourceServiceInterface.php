@@ -51,9 +51,9 @@ interface ResourceServiceInterface
     /**
      * Find all resources.
      *
-     * @param array $filterState
+     * @param string $filterState
      * @return \Centreon\Domain\Monitoring\Resource[]
      * @throws \Exception
      */
-    public function findResources(?array $filterState): array;
+    public function findResources(?string $filterState): array;
 }

@@ -45,27 +45,9 @@ class MonitoringResourceController extends AbstractController
      */
     protected $resource;
 
-    protected static function parseExtraParameter(
-        RequestParametersInterface $requestParameters,
-        string $parameterName
-    ): array {
-        $data = $requestParameters->getExtraParameter($parameterName);
-
-        $resutl = [];
-
-        if (!$data) {
-            return $resutl;
-        }
-
-        try {
-            $resutl = (array)json_decode($data);
-        } catch (\Exception $e) {
-            $resutl = [];
-        }
-
-        return $resutl;
-    }
-
+    /**
+     * @param ResourceServiceInterface $resource
+     */
     public function __construct(ResourceServiceInterface $resource)
     {
         $this->resource = $resource;
@@ -81,13 +63,10 @@ class MonitoringResourceController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $filterState = [];
-        foreach ($this->parseExtraParameter($requestParameters, static::EXTRA_PARAMETER_STATE) as $state) {
-            if (!in_array($state, ResourceService::STATES)) {
-                continue;
-            }
-
-            $filterState[] = $state;
+        // set filter for state
+        $filterState = $requestParameters->getExtraParameter(static::EXTRA_PARAMETER_STATE);
+        if (!$filterState || !in_array($filterState, ResourceService::STATES)) {
+            $filterState = ResourceService::STATE_ALL;
         }
 
         $context = (new Context())

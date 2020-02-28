@@ -75,7 +75,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     /**
      * {@inheritDoc}
      */
-    public function findResources(?array $filterState): array
+    public function findResources(?string $filterState): array
     {
         return $this->resourceRepository->findResources($filterState);
     }

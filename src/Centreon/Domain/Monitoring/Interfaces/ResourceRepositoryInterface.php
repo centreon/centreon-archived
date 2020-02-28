@@ -27,8 +27,8 @@ interface ResourceRepositoryInterface
     /**
      * Find all resources.
      *
-     * @param array $filterState
+     * @param string $filterState
      * @return \Centreon\Domain\Monitoring\Resource[]
      */
-    public function findResources(?array $filterState): array;
+    public function findResources(?string $filterState): array;
 }
