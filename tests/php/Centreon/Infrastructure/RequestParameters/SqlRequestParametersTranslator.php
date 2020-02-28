@@ -27,7 +27,7 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use PHPUnit\Framework\TestCase;
 
-class CheckServiceTest extends TestCase
+class SqlRequestParametersTranslatorTest extends TestCase
 {
     protected $requestParameters;
 
