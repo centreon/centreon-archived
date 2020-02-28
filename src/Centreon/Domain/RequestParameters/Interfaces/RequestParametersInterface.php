@@ -34,7 +34,7 @@ interface RequestParametersInterface
     public function addExtraParameter(string $parameterName, $value): void;
 
     /**
-     * check if a search parameter exists.
+     * Check if a search parameter exists.
      *
      * @param string $keyToFind Name of the search parameter
      * @param array $parameters List of parameters
