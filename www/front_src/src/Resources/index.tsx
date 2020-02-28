@@ -21,7 +21,12 @@ import {
   ResourceListing,
 } from './models';
 import columns from './columns';
-import { labelFilter, labelStateFilter, labelSearch } from './translatedLabels';
+import {
+  labelFilter,
+  labelStateFilter,
+  labelSearch,
+  labelResourceName,
+} from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -138,6 +143,7 @@ const Resources = (): JSX.Element => {
                   EndAdornment={(): JSX.Element => <IconHelp />}
                   value={searchFieldValue || ''}
                   onChange={changeSearchFieldValue}
+                  placeholder={labelResourceName}
                 />
               </Grid>
               <Grid item>

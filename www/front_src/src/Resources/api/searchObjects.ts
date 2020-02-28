@@ -17,7 +17,7 @@ interface SearchObject {
 }
 
 interface SearchParam {
-  $or: Array<{ [field: SearchableField]: { $lk: string } }>;
+  $or: Array<{ [field in SearchableField]?: { $lk: string } }>;
 }
 
 const getFoundSearchObjects = (searchValue: string): Array<SearchObject> => {
@@ -49,7 +49,7 @@ const getSearchParam = (searchValue: string): SearchParam | undefined => {
 
   return {
     $or: searchObjectsToSend.map(({ field, value }) => ({
-      [field]: { $lk: `${value}` },
+      [field]: { $lk: `%${value}%` },
     })),
   };
 };
