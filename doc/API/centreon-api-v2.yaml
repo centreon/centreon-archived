@@ -609,6 +609,23 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Hosts.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/services/acknowledgements:
     get:
       tags:
@@ -634,6 +651,23 @@ paths:
                         - $ref: '#/components/schemas/Acknowledgement.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Services.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -906,6 +940,23 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add an downtime on multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Hosts.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/services/downtimes:
     get:
       tags:
@@ -954,6 +1005,23 @@ paths:
                         - $ref: '#/components/schemas/Downtime.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add an downtime on multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Services.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1089,6 +1157,42 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/check:
+    post:
+      tags:
+        - Check
+      summary: "Check multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Hosts'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/check:
+    post:
+      tags:
+        - Check
+      summary: "Check multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Services'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1882,9 +1986,17 @@ components:
           type: boolean
           description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
+    Acknowledgement.Hosts.Add:
+      allOf:
+        - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+        - $ref: '#/components/schemas/Bulk.Resources.Ids'
     Acknowledgement.Service.Add:
       allOf:
         - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+    Acknowledgement.Services.Add:
+      allOf:
+        - $ref: '#/components/schemas/Acknowledgement.Service.Add'
+        - $ref: '#/components/schemas/Bulk.Resources.Ids'
     Downtime.Host.Add:
       allOf:
         - $ref: '#/components/schemas/Downtime.Service.Add'
@@ -1894,6 +2006,10 @@ components:
               type: boolean
               description: "Indicates whether we should add the downtime on the host-related services"
               example: true
+    Downtime.Hosts.Add:
+      allOf:
+        - $ref: '#/components/schemas/Downtime.Host.Add'
+        - $ref: '#/components/schemas/Bulk.Resources.Ids'
     Downtime.Service.Add:
       type: object
       properties:
@@ -1921,6 +2037,10 @@ components:
           type: string
           description: "Comment of the downtime"
           example: "Downtime set by admin"
+    Downtime.Services.Add:
+      allOf:
+        - $ref: '#/components/schemas/Downtime.Service.Add'
+        - $ref: '#/components/schemas/Bulk.Resources.Ids'
     Downtime.Host:
       type: object
       properties:
@@ -1999,9 +2119,17 @@ components:
           required: false
           description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
           example: true
+    Check.Hosts:
+      allOf:
+        - $ref: '#/components/schemas/Check.Host'
+        - $ref: '#/components/schemas/Bulk.Resources.Ids'
     Check.Service:
       allOf:
         - $ref: '#/components/schemas/Check.Host'
+    Check.Services:
+      allOf:
+        - $ref: '#/components/schemas/Check.Service'
+        - $ref: '#/components/schemas/Bulk.Resources.Ids'
     Monitoring.ResourceMain:
       type: object
       properties:
@@ -2561,6 +2689,33 @@ components:
       properties:
         hosts:
           $ref: '#/components/schemas/Monitoring.HostMin'
+    Bulk.Resources.Ids:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Bulk.Resources.Id'
+      example:
+        - parent_id: 5
+          id: 12
+        - parent_id: 5
+          id: 13
+    Bulk.Resources.Id:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the resource"
+          example: 12
+        parent_id:
+          type: integer
+          format: int64
+          nullable: true
+          description: "ID of the parent resource (eg: host id)"
+          example: 5
     Configuration.Proxy:
       type: object
       properties:
