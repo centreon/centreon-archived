@@ -209,7 +209,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $serviceConcordances = array_reduce(
             array_keys($this->serviceConcordances),
-            function($acc, $concordanceKey) {
+            function ($acc, $concordanceKey) {
                 if (preg_match('/^service\./', $concordanceKey)) {
                     $acc[] = $concordanceKey;
                 }
