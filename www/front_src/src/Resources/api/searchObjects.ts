@@ -16,11 +16,15 @@ interface SearchObject {
   value: string;
 }
 
+interface SearchParam {
+  $or: Array<{ [field: SearchableField]: { $lk: string } }>;
+}
+
 const getFoundSearchObjects = (searchValue: string): Array<SearchObject> => {
   const searchOptionMatches = searchOptions.map((searchOption) => {
-    const pattern = searchOption.replace('.', '\\.');
+    const pattern = `${searchOption.replace('.', '\\.')}:([^\\s]+)`;
 
-    const [searchOptionMatch] = searchValue.match(pattern);
+    const [, searchOptionMatch] = searchValue.match(pattern) || [];
 
     return { field: searchOption, value: searchOptionMatch };
   });
@@ -32,7 +36,10 @@ const getDefaultSearchObjects = (value): Array<SearchObject> => {
   return searchOptions.map((searchOption) => ({ field: searchOption, value }));
 };
 
-const getSearchParam = (searchValue: string) => {
+const getSearchParam = (searchValue: string): SearchParam | undefined => {
+  if (!searchValue) {
+    return undefined;
+  }
   const foundSearchObjects = getFoundSearchObjects(searchValue);
 
   const searchObjectsToSend =

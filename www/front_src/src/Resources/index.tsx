@@ -51,6 +51,8 @@ const Resources = (): JSX.Element => {
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
+
+  const [searchFieldValue, setSearchFieldValue] = useState<string>();
   const [search, setSearch] = useState<string>();
 
   const [loading, setLoading] = useState(true);
@@ -102,8 +104,12 @@ const Resources = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const changeSearch = (event): void => {
-    setSearch(event.target.value);
+  const changeSearchFieldValue = (event): void => {
+    setSearchFieldValue(event.target.value);
+  };
+
+  const doSearch = (): void => {
+    setSearch(searchFieldValue);
   };
 
   return (
@@ -130,12 +136,17 @@ const Resources = (): JSX.Element => {
               <Grid item>
                 <SearchField
                   EndAdornment={(): JSX.Element => <IconHelp />}
-                  value={search}
-                  onChange={changeSearch}
+                  value={searchFieldValue || ''}
+                  onChange={changeSearchFieldValue}
                 />
               </Grid>
               <Grid item>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!searchFieldValue}
+                  onClick={doSearch}
+                >
                   {labelSearch}
                 </Button>
               </Grid>
