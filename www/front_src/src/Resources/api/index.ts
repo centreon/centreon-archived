@@ -4,7 +4,7 @@ import { buildResourcesEndpoint } from './endpoint';
 import { ResourceListing } from '../models';
 
 const api = axios.create({
-  baseURL: './api/v2/',
+  baseURL: './api/beta/',
 });
 
 const getData = ({ endpoint, requestParams }): Promise<ResourceListing> =>
