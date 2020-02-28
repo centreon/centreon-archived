@@ -59,6 +59,47 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     private $contact;
 
+    /**
+     * @var array Association of resource search parameters
+     */
+    private $resourceConcordances = [
+        'id' => 'resource.id',
+        'name' => 'resource.name',
+        'type' => 'resource.type',
+        'status_code' => 'resource.status_code',
+        'status' => 'resource.status_name',
+        'action_url' => 'resource.action_url',
+        'details_url' => 'resource.details_url',
+        'parent_name' => 'resource.parent_name',
+        'severity_level' => 'resource.severity_level',
+        'in_downtime' => 'resource.in_downtime',
+        'acknowledged' => 'resource.acknowledged',
+        'impacted_resources_count' => 'resource.impacted_resources_count',
+        'last_status_change' => 'resource.last_status_change',
+        'tries' => 'resource.tries',
+        'last_check' => 'resource.last_check',
+        'information' => 'resource.information',
+    ];
+
+    /**
+     * @var array Association of host search parameters
+     */
+    private $hostConcordances = [
+        'host.name' => 'h.name',
+        'host.alias' => 'h.alias',
+        'host.address' => 'h.address',
+    ];
+
+    /**
+     * @var array Association of service search parameters
+     */
+    private $serviceConcordances = [
+        'host.name' => 'sh.name',
+        'host.alias' => 'sh.alias',
+        'host.address' => 'sh.address',
+        'service.description' => 's.description',
+    ];
+
     public function __construct(DatabaseConnection $pdo)
     {
         $this->db = $pdo;
@@ -74,9 +115,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $this->sqlRequestTranslator = $sqlRequestTranslator;
         $this->sqlRequestTranslator
             ->getRequestParameters()
-            ->setConcordanceStrictMode(
-                RequestParameters::CONCORDANCE_MODE_STRICT
-            );
+            ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT)
+            ->setConcordanceErrorMode(RequestParameters::CONCORDANCE_ERRMODE_SILENT);
     }
 
     /**
@@ -100,27 +140,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             return $resources;
         }
 
-        $this->sqlRequestTranslator->setConcordanceArray([
-            'id' => 'resource.id',
-            'name' => 'resource.name',
-            'type' => 'resource.type',
-            'status_code' => 'resource.status_code',
-            'status' => 'resource.status_name',
-            'action_url' => 'resource.action_url',
-            'details_url' => 'resource.details_url',
-            'parent_name' => 'resource.parent_name',
-            'severity_level' => 'resource.severity_level',
-            'in_downtime' => 'resource.in_downtime',
-            'acknowledged' => 'resource.acknowledged',
-            'impacted_resources_count' => 'resource.impacted_resources_count',
-            'last_status_change' => 'resource.last_status_change',
-            'tries' => 'resource.tries',
-            'last_check' => 'resource.last_check',
-            'information' => 'resource.information',
-        ]);
-
         $collector = new StatementCollector();
-        $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS '
+        $request = 'SELECT SQL_CALC_FOUND_ROWS '
             . 'resource.id, resource.type, resource.name, resource.action_url, resource.details_url, '
             . 'resource.status_code, resource.status_name, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
@@ -130,13 +151,20 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.tries, resource.last_check, resource.information '
-            . 'FROM (('
-            . $this->prepareQueryForServiceResources($collector, $filterState)
-            . ') UNION ALL ('
-            . $this->prepareQueryForHostResources($collector, $filterState)
-            . ')) AS  `resource`');
+            . 'FROM ('
+            . '(' . $this->prepareQueryForServiceResources($collector, $filterState) . ') ';
+
+        // do not get hosts if a service filter is given
+        if (!$this->hasServiceFilter()) {
+            $request .= 'UNION ALL (' . $this->prepareQueryForHostResources($collector, $filterState) . ')';
+        }
+
+        $request .=') AS `resource`';
+
+        $request = $this->translateDbName($request);
 
         // Search
+        $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $collector->addValue($key, current($data), key($data));
@@ -170,60 +198,92 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     }
 
     /**
-     * Preapre SQL query for services
+     * Check if a service filter is given in request parameters
      *
-     * @param \Centreon\Infrastructure\CentreonLegacyDB\StatementCollector $collector
+     * @return bool
+     */
+    private function hasServiceFilter()
+    {
+        $requestParameters = $this->sqlRequestTranslator->getRequestParameters();
+        $search = $requestParameters->getSearch();
+
+        $serviceConcordances = array_reduce(
+            array_keys($this->serviceConcordances),
+            function ($acc, $concordanceKey) {
+                if (preg_match('/^service\./', $concordanceKey)) {
+                    $acc[] = $concordanceKey;
+                }
+                return $acc;
+            },
+            []
+        );
+
+        foreach ($serviceConcordances as $serviceConcordance) {
+            if ($requestParameters->hasSearchParameter($serviceConcordance, $search)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Prepare SQL query for services
+     *
+     * @param StatementCollector $collector
      * @param array $filterState
      * @return string
      */
     protected function prepareQueryForServiceResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
-		CONCAT('S', s.service_id) AS `id`,
-        'service' AS `type`,
-        s.service_id AS `origin_id`,
-		s.description AS `name`,
-		s.action_url AS `action_url`,
-		s.notes_url AS `details_url`,
-		s.icon_image_alt AS `icon_name`,
-		s.icon_image AS `icon_url`,
-		CONCAT('H', sh.host_id) AS `parent_id`,
-		sh.name AS `parent_name`,
-		sh.notes_url AS `parent_details_url`,
-		sh.icon_image_alt AS `parent_icon_name`,
-		sh.icon_image AS `parent_icon_url`,
-		s.state AS `status_code`,
-		CASE
-            WHEN s.state = 0 THEN 'OK'
-            WHEN s.state = 1 THEN 'WARNING'
-            WHEN s.state = 2 THEN 'CRITICAL'
-            WHEN s.state = 3 THEN 'UNKNOWN'
-            WHEN s.state = 4 THEN 'PENDING'
-        END AS `status_name`,
-		s.scheduled_downtime_depth AS `in_downtime`,
-		s.acknowledged AS `acknowledged`,
-		service_cvl.value AS `severity_level`,
-		sc.sc_name AS `severity_name`,
-		CONCAT(service_vid.dir_alias, IF(service_vid.dir_alias, '/', NULL), service_vi.img_path) AS `severity_url`,
-		0 AS `impacted_resources_count`,
-		s.last_state_change AS `last_status_change`,
-		CONCAT(s.check_attempt, '/', s.max_check_attempts, ' ', CASE
-            WHEN s.state_type = 1 THEN 'H'
-            WHEN s.state_type = 1 THEN 'S'
-        END) AS `tries`,
-		s.last_check AS `last_check`,
-		s.output AS `information`
-        FROM `:dbstg`.`services` AS s
-        INNER JOIN `:dbstg`.`hosts` sh ON sh.host_id = s.host_id AND sh.state = 0
-            AND sh.name NOT LIKE :serviceModule
-            AND sh.enabled = 1";
+            s.service_id AS `id`,
+            'service' AS `type`,
+            s.service_id AS `origin_id`,
+            s.description AS `name`,
+            s.action_url AS `action_url`,
+            s.notes_url AS `details_url`,
+            s.icon_image_alt AS `icon_name`,
+            s.icon_image AS `icon_url`,
+            sh.host_id AS `parent_id`,
+            sh.name AS `parent_name`,
+            sh.notes_url AS `parent_details_url`,
+            sh.icon_image_alt AS `parent_icon_name`,
+            sh.icon_image AS `parent_icon_url`,
+            s.state AS `status_code`,
+            CASE
+                WHEN s.state = 0 THEN 'OK'
+                WHEN s.state = 1 THEN 'WARNING'
+                WHEN s.state = 2 THEN 'CRITICAL'
+                WHEN s.state = 3 THEN 'UNKNOWN'
+                WHEN s.state = 4 THEN 'PENDING'
+            END AS `status_name`,
+            s.scheduled_downtime_depth AS `in_downtime`,
+            s.acknowledged AS `acknowledged`,
+            service_cvl.value AS `severity_level`,
+            sc.sc_name AS `severity_name`,
+            CONCAT(service_vid.dir_alias, IF(service_vid.dir_alias, '/', NULL), service_vi.img_path) AS `severity_url`,
+            0 AS `impacted_resources_count`,
+            s.last_state_change AS `last_status_change`,
+            CONCAT(s.check_attempt, '/', s.max_check_attempts, ' ', CASE
+                WHEN s.state_type = 1 THEN 'H'
+                WHEN s.state_type = 1 THEN 'S'
+            END) AS `tries`,
+            s.last_check AS `last_check`,
+            s.output AS `information`
+            FROM `:dbstg`.`services` AS s
+            INNER JOIN `:dbstg`.`hosts` sh
+                ON sh.host_id = s.host_id
+                AND sh.state = 0
+                AND sh.name NOT LIKE :serviceModule
+                AND sh.enabled = 1";
         $collector->addValue(':serviceModule', '_Module_%');
 
         // set ACL limitations
         if (!$this->isAdmin()) {
             $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                  AND service_acl.service_id = s.service_id
-                  AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
         }
 
         // get Severity level, name, icon
@@ -240,8 +300,14 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector->addValue(':serviceCustomVariablesName', 'CRITICALITY_LEVEL');
 
+        $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        $sql .= $searchRequest;
+        $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
+
         // show active services only
-        $sql .= ' WHERE s.enabled = 1';
+        $sql .= ' s.enabled = 1';
 
         // apply the state filter to SQL query
         if ($filterState && !in_array(ResourceServiceInterface::STATE_ALL, $filterState)) {
@@ -266,16 +332,16 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     }
 
     /**
-     * Preapre SQL query for hosts
+     * Prepare SQL query for hosts
      *
-     * @param \Centreon\Infrastructure\CentreonLegacyDB\StatementCollector $collector
+     * @param StatementCollector $collector
      * @param array $filterState
      * @return string
      */
     protected function prepareQueryForHostResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
-		CONCAT('H', h.host_id) AS `id`,
+		h.host_id AS `id`,
         'host' AS `type`,
         h.host_id AS `origin_id`,
 		h.name AS `name`,
@@ -334,8 +400,14 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector->addValue(':hostCustomVariablesName', 'CRITICALITY_LEVEL');
 
+        $this->sqlRequestTranslator->setConcordanceArray($this->hostConcordances);
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        $sql .= $searchRequest;
+        $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
+
         // show active hosts and aren't related to some module
-        $sql .= ' WHERE h.enabled = 1 AND h.name NOT LIKE :hostModule';
+        $sql .= ' h.enabled = 1 AND h.name NOT LIKE :hostModule';
 
         $collector->addValue(':hostModule', '_Module_%');
 
