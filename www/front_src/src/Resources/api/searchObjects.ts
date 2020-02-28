@@ -49,7 +49,7 @@ const getSearchParam = (searchValue: string): SearchParam | undefined => {
 
   return {
     $or: searchObjectsToSend.map(({ field, value }) => ({
-      [field]: { $lk: `%${value}%` },
+      [field]: { $lk: `${value}` },
     })),
   };
 };

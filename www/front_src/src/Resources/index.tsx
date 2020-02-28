@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { Typography, makeStyles, Paper, Grid, Button } from '@material-ui/core';
-import { HelpOutline as IconHelp } from '@material-ui/icons';
 
 import {
   Listing,
@@ -27,6 +26,7 @@ import {
   labelSearch,
   labelResourceName,
 } from './translatedLabels';
+import SearchHelpTooltip from './SearchHelpTooltip';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -140,7 +140,7 @@ const Resources = (): JSX.Element => {
               </Grid>
               <Grid item>
                 <SearchField
-                  EndAdornment={(): JSX.Element => <IconHelp />}
+                  EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
                   value={searchFieldValue || ''}
                   onChange={changeSearchFieldValue}
                   placeholder={labelResourceName}

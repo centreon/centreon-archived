@@ -12,6 +12,21 @@ export const labelSeverity = I18n.t('Severity');
 export const labelStatus = I18n.t('Status');
 export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
+export const labelSearchOnFields = I18n.t(
+  'The search is done on the following resource fields:',
+);
+export const labelSearchByHostAliasEndingWith = I18n.t(
+  "To search hosts with alias ending with the string '-server', you can type:",
+);
+export const labelSearchByHostName = I18n.t(
+  'For instance, to search by host name, you can type:',
+);
+export const labelSearchByServiceStartingWith = I18n.t(
+  "To search services with a description starting with the string 'centreon', you can type:",
+);
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
+export const labelUsePartialQuery = I18n.t(
+  "It's also possible to use a partial query for the search value, by wrapping it into a '%' character. For instance:",
+);
