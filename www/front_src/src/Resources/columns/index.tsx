@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Grid, Typography, Avatar, makeStyles, fade } from '@material-ui/core';
 import { Person as IconAcknowledged } from '@material-ui/icons';
+import { lime, purple } from '@material-ui/core/colors';
 
 import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
 
@@ -88,12 +89,12 @@ const useStateChipStyles = makeStyles((theme) => ({
     height: theme.spacing(4),
   },
   acknowledged: {
-    backgroundColor: fade('#AE9500', 0.1),
-    color: '#AE9500',
+    backgroundColor: fade(lime[900], 0.1),
+    color: lime[900],
   },
   downtime: {
-    backgroundColor: fade('#C117FF', 0.1),
-    color: '#C117FF',
+    backgroundColor: fade(purple[500], 0.1),
+    color: purple[500],
   },
 }));
 

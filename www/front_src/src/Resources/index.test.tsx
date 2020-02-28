@@ -116,7 +116,7 @@ describe(Resources, () => {
     );
   });
 
-  it('executes a list request with selected state filter when state filter is changed', async () => {
+  it('executes a listing request with selected state filter when state filter is changed', async () => {
     const { getByText } = render(<Resources />);
 
     await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
@@ -140,7 +140,7 @@ describe(Resources, () => {
     );
   });
 
-  it('sends a listing request with sort_by param when a sortable column is clicked', async () => {
+  it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
     const { getByText } = render(<Resources />);
 
     await wait(() => {
@@ -166,7 +166,7 @@ describe(Resources, () => {
       });
   });
 
-  it('sends a listing request with an updated page param when a change page action is clicked', async () => {
+  it('executes a listing request with an updated page param when a change page action is clicked', async () => {
     const { getByLabelText } = render(<Resources />);
 
     await wait(() => {
@@ -246,7 +246,7 @@ describe(Resources, () => {
   });
 
   searchableFields.forEach((searchableField) => {
-    it(`executes a listing request with a search param containing ${searchableField} when ${searchableField} is typed in the SearchField`, () => {
+    it(`executes a listing request with a search param containing ${searchableField} when ${searchableField} is typed in the search field`, () => {
       const { getByPlaceholderText, getByText } = render(<Resources />);
 
       const fieldSearchValue = 'foobar';
@@ -266,7 +266,7 @@ describe(Resources, () => {
     });
   });
 
-  it('executes a listing request with a search param containing all searchable fields if no searchable field is directly specified', () => {
+  it('executes a listing request with a search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', () => {
     const { getByPlaceholderText, getByText } = render(<Resources />);
 
     const searchValue = 'foobar';

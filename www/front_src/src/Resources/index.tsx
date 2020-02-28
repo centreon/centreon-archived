@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { Typography, makeStyles, Paper, Grid, Button } from '@material-ui/core';
+import { lime, purple } from '@material-ui/core/colors';
 
 import {
   Listing,
@@ -116,6 +117,14 @@ const Resources = (): JSX.Element => {
   const doSearch = (): void => {
     setSearch(searchFieldValue);
   };
+
+  const rowColorConditions = [
+    {
+      condition: ({ acknowledged }): boolean => acknowledged,
+      color: purple[500],
+    },
+    { condition: ({ in_downtime }): boolean => in_downtime, color: lime[900] },
+  ];
 
   return (
     <div className={classes.page}>
