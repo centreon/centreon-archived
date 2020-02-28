@@ -9,6 +9,7 @@ const routeMap = {
   pollerList: '/main.php?p=60901',
   extensionsManagerPage: '/administration/extensions/manager',
   notAllowedPage: '/not-allowed',
+  resources: '/monitoring/resources',
 };
 
 export default routeMap;
