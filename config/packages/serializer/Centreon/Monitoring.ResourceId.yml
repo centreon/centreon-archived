@@ -4,7 +4,7 @@ Centreon\Domain\Monitoring\ResourceId:
             type: int
             groups:
                 - 'resource_id_main'
-        parent_id:
+        parentId:
             type: int
             groups:
                 - 'resource_id_main'
