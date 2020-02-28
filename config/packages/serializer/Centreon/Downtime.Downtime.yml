@@ -33,7 +33,7 @@ Centreon\Domain\Downtime\Downtime:
             groups:
                 - 'downtime_main'
         duration:
-            type: DateTime
+            type: int
             groups:
                 - 'downtime_main'
         endTime:

@@ -113,9 +113,23 @@ services:
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
         class: Centreon\Domain\Acknowledgement\AcknowledgementService
 
+    # Metric
+    Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface:
+        class: Centreon\Domain\Monitoring\Metric\MetricService
+
     # Proxy configuration
     Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface:
         class: Centreon\Domain\Proxy\ProxyService
 
     Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface:
         class: Centreon\Infrastructure\Proxy\ProxyRepositoryRDB
+
+    # Monitoring resources
+    Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
+        class: Centreon\Domain\Monitoring\ResourceService
+
+    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\ResourceRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']

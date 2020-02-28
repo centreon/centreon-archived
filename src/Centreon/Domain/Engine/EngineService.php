@@ -23,6 +23,7 @@ namespace Centreon\Domain\Engine;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Check\Check;
 use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
@@ -364,6 +365,77 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         $preCommand = sprintf('DEL_%s_DOWNTIME;%d', $suffix, $downtime->getInternalId());
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
         $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
+        $this->engineRepository->sendExternalCommand($commandFull);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function scheduleHostCheck(Check $check, Host $host): void
+    {
+        // We validate the check instance
+        $errors = $this->validator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_HOST_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        if (empty($host->getName())) {
+            throw new EngineException('Host name can not be empty');
+        }
+
+        $commandName = $check->isForced() ? 'SCHEDULE_FORCED_HOST_CHECK' : 'SCHEDULE_HOST_CHECK';
+
+        $command = sprintf(
+            '%s;%s;%d',
+            $commandName,
+            $host->getName(),
+            $check->getCheckTime()
+        );
+
+        $commandFull = $this->createCommandHeader($host->getPollerId()) . $command;
+        $this->engineRepository->sendExternalCommand($commandFull);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function scheduleServiceCheck(Check $check, Service $service): void
+    {
+        // We validate the check instance
+        $errors = $this->validator->validate(
+            $check,
+            null,
+            Check::VALIDATION_GROUPS_SERVICE_CHECK
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        if (empty($service->getHost()->getName())) {
+            throw new EngineException('Host name cannot be empty');
+        }
+
+        if (empty($service->getDescription())) {
+            throw new EngineException('Service description cannot be empty');
+        }
+
+        $commandName = $check->isForced() ? 'SCHEDULE_FORCED_SVC_CHECK' : 'SCHEDULE_SVC_CHECK';
+
+        $command = sprintf(
+            '%s;%s;%s;%d',
+            $commandName,
+            $service->getHost()->getName(),
+            $service->getDescription(),
+            $check->getCheckTime()
+        );
+
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 

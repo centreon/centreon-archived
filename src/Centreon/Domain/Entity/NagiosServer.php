@@ -27,16 +27,23 @@ use PDO;
 
 class NagiosServer implements Mapping\MetadataInterface
 {
+    public const SERIALIZER_GROUP_REMOTE_LIST = 'nagios-server-remote-list';
     public const SERIALIZER_GROUP_LIST = 'nagios-server-list';
 
     /**
-     * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_LIST})
+     * @Serializer\Groups({
+     *     NagiosServer::SERIALIZER_GROUP_REMOTE_LIST,
+     *     NagiosServer::SERIALIZER_GROUP_LIST
+     * })
      * @var int
      */
     private $id;
 
     /**
-     * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_LIST})
+     * @Serializer\Groups({
+     *     NagiosServer::SERIALIZER_GROUP_REMOTE_LIST,
+     *     NagiosServer::SERIALIZER_GROUP_LIST
+     * })
      * @var string
      */
     private $name;
@@ -60,6 +67,8 @@ class NagiosServer implements Mapping\MetadataInterface
     private $lastRestart;
 
     /**
+     * @Serializer\SerializedName("ip")
+     * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_REMOTE_LIST})
      * @var string
      */
     private $nsIpAddress;
