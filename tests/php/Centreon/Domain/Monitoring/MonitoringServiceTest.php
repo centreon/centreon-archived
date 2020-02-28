@@ -408,7 +408,7 @@ class MonitoringServiceTest extends TestCase
         $this->assertCount(
             1,
             $timelineEventsFound,
-            "Error, this method must relay the 'findServiceGroupsByHostAndService' method of the monitoring repository"
+            "Error, this method must relay the 'findTimelineEvents' method of the timeline repository"
         );
     }
 }
