@@ -25,6 +25,7 @@ namespace Centreon\Domain\Monitoring\Interfaces;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\Model\BaseTimelineEvent;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
 
@@ -122,4 +123,14 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @return array
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
+
+    /**
+     * Find all timeline events for given service by host and service id
+     *
+     * @param int $hostid
+     * @param int $serviceId
+     * @return BaseTimelineEvent[]
+     * @throws \Exception
+     */
+    public function findTimelineEvents(int $hostid, int $serviceId): array;
 }

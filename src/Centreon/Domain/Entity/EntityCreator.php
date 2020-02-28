@@ -237,7 +237,7 @@ class EntityCreator
         if ($reflectionClass->isSubclassOf(EntityDescriptorMetadataInterface::class)) {
             foreach ($this->className::loadEntityDescriptorMetadata() as $column => $modifier) {
                 $descriptor = new EntityDescriptor;
-                $descriptor->column = $key;
+                $descriptor->column = $column;
                 $descriptor->modifier = $modifier;
 
                 $this->entityDescriptors[$column] = $descriptor;

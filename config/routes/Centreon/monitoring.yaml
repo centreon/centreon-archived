@@ -53,3 +53,15 @@ centreon_application_monitoring_gethostgroupsbyhost:
     path: /monitoring/hosts/{hostId}/hostgroups
     controller: 'Centreon\Application\Controller\MonitoringHostsController::getHostGroupsByHost'
     condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_gettimelinebyhostandservice:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/timeline
+    controller: 'Centreon\Application\Controller\MonitoringServicesController::getServiceTimeline'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_gettimelinebyhost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/timeline
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getHostTimeline'
+    condition: "request.attributes.get('version.is_beta') == true"
