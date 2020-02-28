@@ -8,7 +8,7 @@ const buildResourcesEndpoint = ({ state, sort, page, limit }): string => {
   const params = [
     {
       name: 'state',
-      value: [state],
+      value: state,
     },
     { name: 'sort_by', value: sort },
     { name: 'page', value: page },

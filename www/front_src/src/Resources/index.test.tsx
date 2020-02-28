@@ -31,7 +31,7 @@ const getEndpoint = ({
   const baseEndpoint = 'monitoring/resources';
   const sortParam = sortBy ? `&sort_by={"${sortBy}":"${sortOrder}"}` : '';
 
-  return `${baseEndpoint}?state=["${state}"]${sortParam}&page=${page}&limit=${limit}`;
+  return `${baseEndpoint}?state="${state}"${sortParam}&page=${page}&limit=${limit}`;
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };

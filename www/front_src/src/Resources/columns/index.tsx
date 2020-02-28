@@ -12,6 +12,7 @@ import {
   labelTries,
   labelInformation,
   labelState,
+  labelLastCheck,
 } from '../translatedLabels';
 
 import IconDowntime from './icons/Downtime';
@@ -174,7 +175,7 @@ const columns = [
   },
   {
     id: 'last_check',
-    label: 'Last check',
+    label: labelLastCheck,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ last_check }): string => last_check,
   },
