@@ -1591,7 +1591,7 @@ components:
           type: string
           description: "Type of the resource"
           example: "service|host"
-        short_name:
+        short_type:
           type: string
           description: "Short name of the resource type"
           example: "s|h"
@@ -1676,7 +1676,7 @@ components:
                 url:
                   type: string
                   description: "Url of the icon"
-                  example: "./img/media/topology/firewall.png"
+                  example: "/img/media/topology/firewall.png"
         status:
           type: object
           properties:
@@ -1707,10 +1707,12 @@ components:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
+        downtime_endpoint: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
+        acknowledgement_endpoint: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
           properties:
@@ -1730,7 +1732,7 @@ components:
             url:
               type: string
               description: "Url of the severity icon"
-              example: "./img/media/severity1.png"
+              example: "/img/media/severity1.png"
         impacted_resources_count:
           type: integer
           description: "count of impacted resources"
