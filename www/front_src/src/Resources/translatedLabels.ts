@@ -3,6 +3,7 @@ import { I18n } from 'react-redux-i18n';
 export const labelAll = I18n.t('All');
 export const labelDuration = I18n.t('Duration');
 export const labelFilter = I18n.t('Filter');
+export const labelLastCheck = I18n.t('Last check');
 export const labelResourceName = I18n.t('Resource name');
 export const labelResourceProblems = I18n.t('Resource problems');
 export const labelResources = I18n.t('Resources');

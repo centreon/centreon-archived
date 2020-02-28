@@ -12,9 +12,10 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { ThemeProvider } from '@centreon/ui';
-import Header from './components/header';
 
+import { ThemeProvider } from '@centreon/ui';
+
+import Header from './components/header';
 import { history } from './store';
 import NavigationComponent from './components/navigation';
 import Tooltip from './components/tooltip';
