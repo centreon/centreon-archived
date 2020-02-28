@@ -1470,6 +1470,44 @@ paths:
           description: "Host or service not found"
         '500':
           $ref: '#/components/responses/InternalServerError'
+
+  /monitoring/hosts/{host_id}/timeline:
+    get:
+      tags:
+        - Timeline
+      summary: "List events related to a host"
+      description: |
+        List all events for a given host
+
+        The available parameters to **search** / **sort_by** are:
+
+        * date
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.TimelineEvent'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -2627,3 +2665,21 @@ components:
         - port
         - user
         - password
+    Monitoring.TimelineEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of Event (L - log, C - Comment, A - Acknowledgement, D - Downtime"
+          example: "C"
+        id:
+          type: string
+          description: "Concatinated ID of Type + Object ID"
+          example: "C25"
+        date:
+          type: string
+          format: date-time
+          description: "The date the event was created (ISO8601)"
+        object:
+          type: object
+          description: "The detailed object properties of above types"
