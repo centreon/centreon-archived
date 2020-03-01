@@ -120,10 +120,13 @@ const Resources = (): JSX.Element => {
 
   const rowColorConditions = [
     {
-      condition: ({ acknowledged }): boolean => acknowledged,
+      condition: ({ in_downtime }): boolean => in_downtime,
       color: purple[500],
     },
-    { condition: ({ in_downtime }): boolean => in_downtime, color: lime[900] },
+    {
+      condition: ({ acknowledged }): boolean => acknowledged,
+      color: lime[900],
+    },
   ];
 
   return (
@@ -175,6 +178,7 @@ const Resources = (): JSX.Element => {
           columnConfiguration={columns}
           tableData={listing?.result}
           currentPage={page - 1}
+          rowColorConditions={rowColorConditions}
           limit={listing?.meta.limit}
           onDelete={noOp}
           onSort={changeSort}
