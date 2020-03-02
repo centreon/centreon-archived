@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Check;
 
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
+use Centreon\Domain\Monitoring\ResourceId;
 
 class Check implements EntityDescriptorMetadataInterface
 {
@@ -53,9 +54,9 @@ class Check implements EntityDescriptorMetadataInterface
     private $isForced = true;
 
     /**
-     * @var Centreon\Domain\Monitoring\ResourceId[]
+     * @var \Centreon\Domain\Monitoring\ResourceId[]
      */
-    private $ids;
+    private $resourceIds;
 
     /**
      * {@inheritdoc}
@@ -143,20 +144,20 @@ class Check implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return Centreon\Domain\Monitoring\ResourceId[]
+     * @return ResourceId[]
      */
-    public function getIds(): array
+    public function getResourceIds(): array
     {
-        return $this->ids;
+        return $this->resourceIds;
     }
 
     /**
-     * @param Centreon\Domain\Monitoring\ResourceId[] $ids
+     * @param ResourceId[] $resourceIds
      * @return Check
      */
-    public function setIds(array $ids): Check
+    public function setResourceIds(array $resourceIds): Check
     {
-        $this->ids = $ids;
+        $this->resourceIds = $resourceIds;
         return $this;
     }
 }

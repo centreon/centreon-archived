@@ -1,0 +1,2 @@
+Centreon\Domain\Check\Checks:
+    type: array<Centreon\Domain\Check\Check>

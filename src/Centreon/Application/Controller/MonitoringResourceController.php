@@ -37,8 +37,13 @@ use Centreon\Domain\Monitoring\ResourceService;
  */
 class MonitoringResourceController extends AbstractController
 {
-
     public const EXTRA_PARAMETER_STATE = 'state';
+
+    // Groups for serialization
+    public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
+
+    // Groups for validation
+    public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
      * @var \Centreon\Domain\Monitoring\ResourceService

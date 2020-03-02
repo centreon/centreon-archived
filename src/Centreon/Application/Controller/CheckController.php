@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\Controller\MonitoringResourceController;
+use Centreon\Domain\Check\Checks;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Centreon\Domain\Contact\Contact;
@@ -40,6 +42,22 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CheckController extends AbstractController
 {
+    // Groups for serialization
+    public const SERIALIZER_GROUP_MAIN = 'check_main';
+    public const SERIALIZER_GROUP_BULK = 'check_bulk';
+    public const SERIALIZER_GROUPS_BULK_HOST = [
+        self::SERIALIZER_GROUP_BULK,
+        MonitoringResourceController::SERIALIZER_GROUP_MAIN,
+    ];
+
+    // Groups for validation
+    public const VALIDATION_GROUP_MAIN = 'check_main';
+    public const VALIDATION_GROUP_BULK = 'check_bulk';
+    public const VALIDATION_GROUPS_BULK_HOST = [
+        self::VALIDATION_GROUP_BULK,
+        MonitoringResourceController::VALIDATION_GROUP_MAIN,
+    ];
+
     /**
      * @var CheckServiceInterface
      */
@@ -79,41 +97,42 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $context = DeserializationContext::create()->setGroups(['check_bulk', 'resource_id_main']);
-        $context->increaseDepth();
-        $context->increaseDepth();
-
-        /**
-         * @var $check Check
-         */
-        $check = $serializer->deserialize(
-            $request->getContent(),
+        $errors = $entityValidator->validateEntity(
             Check::class,
-            'json',
-            $context
-        );
-        var_dump($check->getIds());
-        throw new \Exception();
-
-        /*
-        $check
-            ->setHostId($hostId)
-            ->setCheckTime(new \DateTime());
-
-        $errors = $entityValidator->validate(
-            $check,
-            null,
-            Check::VALIDATION_GROUPS_HOST_CHECK
+            json_decode((string)$request->getContent(), true),
+            self::VALIDATION_GROUPS_BULK_HOST,
+            false,
+            true
         );
 
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
         }
 
-        $this->checkService
-            ->filterByContact($contact)
-            ->checkHost($check);
-            */
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_BULK_HOST);
+
+        /**
+         * @var $check Check
+         */
+        $check = $serializer->deserialize(
+            $request->getContent(),
+            Checks::class,
+            'json',
+            $context
+        );
+
+        $this->checkService->filterByContact($contact);
+
+        $checkTime = new \DateTime();
+        foreach ($bulkCheck->getResourceIds() as $resourceId) {
+            $check = $bulkCheck;
+            $check
+              ->setResourceIds([])
+              ->setHostId($resourceId->getId())
+              ->setCheckTime($checkTime);
+
+            $this->checkService->checkHost($check);
+        }
 
         return $this->view();
     }

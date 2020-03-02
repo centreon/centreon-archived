@@ -51,8 +51,8 @@ class ResourceId
     }
 
     /**
-     * @param int|null $id
-     * @return \Centreon\Domain\Monitoring\ResourceId
+     * @param int $id
+     * @return ResourceId
      */
     public function setId(int $id): self
     {
@@ -71,7 +71,7 @@ class ResourceId
 
     /**
      * @param int|null $parentId
-     * @return \Centreon\Domain\Monitoring\ResourceId
+     * @return ResourceId
      */
     public function setParentId(?int $parentId): self
     {
