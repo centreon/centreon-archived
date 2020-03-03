@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +23,15 @@ declare(strict_types=1);
 namespace Centreon\Domain\Engine;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Check\Check;
+use Centreon\Domain\Downtime\DowntimeService;
 use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
 
@@ -45,31 +47,24 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
      * @var EngineRepositoryInterface
      */
     private $engineRepository;
+
     /**
      * @var EntityValidator
      */
     private $validator;
 
     /**
-     * @var AccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
      * CentCoreService constructor.
      *
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param EngineRepositoryInterface $engineRepository
      * @param EntityValidator $validator
      */
     public function __construct(
-        AccessGroupRepositoryInterface $accessGroupRepository,
         EngineRepositoryInterface $engineRepository,
         EntityValidator $validator
     ) {
         $this->engineRepository = $engineRepository;
         $this->validator = $validator;
-        $this->accessGroupRepository = $accessGroupRepository;
     }
 
     /**
@@ -88,7 +83,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         $errors = $this->validator->getValidator()->validate(
             $acknowledgement,
             null,
-            EntityValidator::ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_HOST_ACK
+            AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACK
         );
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
@@ -123,7 +118,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $errors = $this->validator->getValidator()->validate(
                 $acknowledgement,
                 null,
-                EntityValidator::ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_SERVICE_ACK
+                AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK
             );
             if ($errors->count() > 0) {
                 throw new ValidationFailedException($errors);
@@ -205,7 +200,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $errors = $this->validator->getValidator()->validate(
                 $downtime,
                 null,
-                EntityValidator::DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME
+                DowntimeService::VALIDATION_GROUPS_ADD_DOWNTIME
             );
             if ($errors->count() > 0) {
                 throw new ValidationFailedException($errors);

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +35,11 @@ use JMS\Serializer\Exception\ValidationFailedException;
 
 class AcknowledgementService extends AbstractCentreonService implements AcknowledgementServiceInterface
 {
-    public const VALIDATION_GROUPS_ADD_HOST_ACK = ['add_host_ack'];
-    public const VALIDATION_GROUPS_ADD_SERVICE_ACK = ['add_service_ack'];
+    // validation groups
+    public const VALIDATION_GROUPS_ADD_HOST_ACKS = ['Default', 'add_host_acks'];
+    public const VALIDATION_GROUPS_ADD_SERVICE_ACKS = ['Default', 'add_service_acks'];
+    public const VALIDATION_GROUPS_ADD_HOST_ACK = ['Default', 'add_host_ack'];
+    public const VALIDATION_GROUPS_ADD_SERVICE_ACK = ['Default', 'add_service_ack'];
 
     /**
      * @var AcknowledgementRepositoryInterface
@@ -149,7 +153,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new ValidationFailedException($errors);
         }
 
-        $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
+        $host = $this->monitoringRepository->findOneHost($acknowledgement->getResourceId());
         if (is_null($host)) {
             throw new EntityNotFoundException('Host not found');
         }
@@ -173,14 +177,14 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         }
 
         $service = $this->monitoringRepository->findOneService(
-            $acknowledgement->getHostId(),
-            $acknowledgement->getServiceId()
+            $acknowledgement->getParentResourceId(),
+            $acknowledgement->getResourceId()
         );
         if (is_null($service)) {
             throw new EntityNotFoundException('Service not found');
         }
 
-        $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
+        $host = $this->monitoringRepository->findOneHost($acknowledgement->getParentResourceId());
         if (is_null($host)) {
             throw new EntityNotFoundException('Host not found');
         }

@@ -42,22 +42,118 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DowntimeController extends AbstractController
 {
+    // Groups for serialization
+    public const SERIALIZER_GROUPS_HOST = ['check_host'];
+    public const SERIALIZER_GROUPS_SERVICE = ['check_service'];
 
     /**
      * @var DowntimeServiceInterface
      */
     private $downtimeService;
+
     /**
      * @var MonitoringServiceInterface
      */
     private $monitoringService;
 
+    /**
+     * DowntimeController constructor.
+     *
+     * @param DowntimeServiceInterface $downtimeService
+     * @param MonitoringServiceInterface $monitoringService
+     */
     public function __construct(
         DowntimeServiceInterface $downtimeService,
         MonitoringServiceInterface $monitoringService
     ) {
         $this->downtimeService = $downtimeService;
         $this->monitoringService = $monitoringService;
+    }
+
+    /**
+     * Entry point to add multiple host downtimes
+     *
+     * @param Request $request
+     * @param JsonValidatorInterface $jsonValidator
+     * @param SerializerInterface $serializer
+     * @param int $hostId Host id for which we want to add a downtime
+     * @param string $version
+     * @return View
+     * @throws \Exception
+     */
+    public function addHostDowntimes(
+        Request $request,
+        JsonValidatorInterface $jsonValidator,
+        SerializerInterface $serializer,
+        int $hostId,
+        string $version
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+        $errors = $jsonValidator
+            ->forVersion($version)
+            ->validate((string) $request->getContent(), 'add_downtime');
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $postData = json_decode((string) $request->getContent(), true);
+        $showService = $postData['show_services'] ?? false;
+        $this->monitoringService->filterByContact($contact);
+        $host = $this->monitoringService->findOneHost($hostId);
+
+        if ($host === null) {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+
+        $this->downtimeService->filterByContact($contact);
+
+        /**
+         * @var Downtime[] $downtimes
+         */
+        $downtimes = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . Downtime::class . '>',
+            'json'
+        );
+
+        foreach ($downtimes as $downtime) {
+            /*
+            $errors = $entityValidator->validate(
+                $downtime,
+                null,
+                Check::VALIDATION_GROUPS_HOST_CHECK
+            );
+            */
+
+            if ($errors->count() > 0) {
+                throw new ValidationFailedException($errors);
+            }
+
+            try {
+                $this->downtimeService->addHostDowntime($downtime, $host);
+
+                if ($showService === true) {
+                    $services = $this->monitoringService->findServicesByHost($hostId);
+                    foreach ($services as $service) {
+                        $service->setHost($host);
+                    }
+                    $this->downtimeService->addServicesDowntime($downtime, $services);
+                }
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
     }
 
     /**
@@ -110,7 +206,7 @@ class DowntimeController extends AbstractController
          * @var Downtime $downtime
          */
         $downtime = $serializer->deserialize(
-            (string)$request->getContent(),
+            (string) $request->getContent(),
             Downtime::class,
             'json'
         );
@@ -153,7 +249,7 @@ class DowntimeController extends AbstractController
          * @var Contact $contact
          */
         $contact = $this->getUser();
-        if ($contact === null || (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME))) {
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 

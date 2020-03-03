@@ -1,40 +1,37 @@
 Centreon\Domain\Acknowledgement\Acknowledgement:
     properties:
-        authorId:
-            - Type:
-                type: integer
-            - NotNull: ~
         comment:
             - Type:
                 type: string
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                  groups: [Default, add_host_ack, add_service_ack]
-        entryTime:
-            - Type:
-                type: integer
-        pollerId:
-            - Type:
-                type: integer
             - NotNull: ~
         isNotifyContacts:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull: ~
         isPersistentComment:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull: ~
         isSticky:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull: ~
+        resourceId:
+            - Type:
+                type: int
+                groups: [add_host_acks, add_service_acks]
+            - GreaterThan:
+                value: 0
+                groups: [add_host_acks, add_service_acks]
             - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+                groups: [add_host_acks, add_service_acks]
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [add_service_acks]
+            - GreaterThan:
+                value: 0
+                groups: [ add_service_acks]
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:

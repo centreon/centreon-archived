@@ -53,7 +53,7 @@ class CheckController extends AbstractController
     /**
      * CheckController constructor.
      *
-     * @param CheckServiceInterface $acknowledgementService
+     * @param CheckServiceInterface $checkService
      */
     public function __construct(CheckServiceInterface $checkService)
     {
@@ -90,7 +90,7 @@ class CheckController extends AbstractController
          * @var $checks Check[]
          */
         $checks = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             'array<' . Check::class . '>',
             'json',
             $context
@@ -152,7 +152,7 @@ class CheckController extends AbstractController
          * @var $checks Check[]
          */
         $checks = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             'array<' . Check::class . '>',
             'json',
             $context
@@ -216,7 +216,7 @@ class CheckController extends AbstractController
          * @var $check Check
          */
         $check = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             Check::class,
             'json',
             $context
@@ -276,7 +276,7 @@ class CheckController extends AbstractController
          * @var $check Check
          */
         $check = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             Check::class,
             'json',
             $context

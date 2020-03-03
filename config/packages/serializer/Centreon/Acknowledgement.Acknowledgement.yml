@@ -2,49 +2,33 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
     properties:
         id:
             type: int
-            groups:
-                - 'ack_main'
-        authorId:
-            type: int
-            groups:
-                - 'ack_main'
-        comment:
-            type: string
-            groups:
-                - 'ack_main'
-        deletionTime:
-            type: DateTime
-            groups:
-                - 'ack_main'
-        entryTime:
-            type: DateTime
-            groups:
-                - 'ack_main'
-        hostId:
-            type: int
-            groups:
-                - 'ack_main'
         pollerId:
             type: int
-            groups:
-                - 'ack_main'
-        isNotifyContacts:
-            type: bool
-            groups:
-                - 'ack_main'
-        isPersistentComment:
-            type: bool
-            groups:
-                - 'ack_main'
-        isSticky:
-            type: bool
-            groups:
-                - 'ack_main'
+        hostId:
+            type: int
+            groups: ['ack_host', 'ack_service']
         serviceId:
             type: int
-            groups:
-                - 'ack_service'
+            groups: ['ack_service']
+        resourceId:
+            type: int
+            groups: ['ack_hosts', 'ack_services']
+        parentResourceId:
+            type: int
+            groups: ['ack_services']
+        authorId:
+            type: int
+        comment:
+            type: string
+        deletionTime:
+            type: DateTime
+        entryTime:
+            type: DateTime
+        isNotifyContacts:
+            type: bool
+        isPersistentComment:
+            type: bool
+        isSticky:
+            type: bool
         state:
             type: int
-            groups:
-                - 'ack_main'
