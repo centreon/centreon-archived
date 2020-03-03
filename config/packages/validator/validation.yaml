@@ -77,23 +77,22 @@ Centreon\Domain\Check\Check:
         checkTime:
             - Type:
                 type: DateTime
-                groups: [Default, check_bulk]
+                groups: [Default, check_host, check_service]
         isForced:
             - Type:
                 type: boolean
-                groups: [Default, check_bulk]
+                groups: [Default, check_host, check_service]
         id:
             - Type:
                 type: int
-                groups: [check_bulk]
+                groups: [Default, check_host, check_service]
+            - GreaterThan: 0
+            - NotNull: ~
         parentId:
             - Type:
                 type: int
-                groups: [check_bulk]
-        type:
-            - Type:
-                type: string
-                groups: [check_bulk]
+                groups: [Default, check_service]
+            - GreaterThan: 0
 
 # Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:

@@ -1,2 +1,4 @@
 Centreon\Domain\Check\Checks:
-    type: array<Centreon\Domain\Check\Check>
+    - Type:
+        type: array<Centreon\Domain\Check\Check>
+        groups: [Default, check_bulk]

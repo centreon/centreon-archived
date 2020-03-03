@@ -1987,16 +1987,20 @@ components:
           description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
     Acknowledgement.Hosts.Add:
-      allOf:
-        - $ref: '#/components/schemas/Acknowledgement.Host.Add'
-        - $ref: '#/components/schemas/Bulk.Resources.Ids'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Acknowledgement.Service.Add:
       allOf:
         - $ref: '#/components/schemas/Acknowledgement.Host.Add'
     Acknowledgement.Services.Add:
-      allOf:
-        - $ref: '#/components/schemas/Acknowledgement.Service.Add'
-        - $ref: '#/components/schemas/Bulk.Resources.Ids'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Acknowledgement.Service.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Host.Add:
       allOf:
         - $ref: '#/components/schemas/Downtime.Service.Add'
@@ -2007,9 +2011,11 @@ components:
               description: "Indicates whether we should add the downtime on the host-related services"
               example: true
     Downtime.Hosts.Add:
-      allOf:
-        - $ref: '#/components/schemas/Downtime.Host.Add'
-        - $ref: '#/components/schemas/Bulk.Resources.Ids'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Downtime.Host.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Service.Add:
       type: object
       properties:
@@ -2038,9 +2044,11 @@ components:
           description: "Comment of the downtime"
           example: "Downtime set by admin"
     Downtime.Services.Add:
-      allOf:
-        - $ref: '#/components/schemas/Downtime.Service.Add'
-        - $ref: '#/components/schemas/Bulk.Resources.Ids'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Downtime.Service.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Host:
       type: object
       properties:
@@ -2120,16 +2128,20 @@ components:
           description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
           example: true
     Check.Hosts:
-      allOf:
-        - $ref: '#/components/schemas/Check.Host'
-        - $ref: '#/components/schemas/Bulk.Resources.Ids'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Check.Host'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Check.Service:
       allOf:
         - $ref: '#/components/schemas/Check.Host'
     Check.Services:
-      allOf:
-        - $ref: '#/components/schemas/Check.Service'
-        - $ref: '#/components/schemas/Bulk.Resources.Ids'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Check.Service'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Monitoring.ResourceMain:
       type: object
       properties:
@@ -2689,20 +2701,7 @@ components:
       properties:
         hosts:
           $ref: '#/components/schemas/Monitoring.HostMin'
-    Bulk.Resources.Ids:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            allOf:
-              - $ref: '#/components/schemas/Bulk.Resources.Id'
-      example:
-        - parent_id: 5
-          id: 12
-        - parent_id: 5
-          id: 13
-    Bulk.Resources.Id:
+    Bulk.Resource.Id:
       type: object
       properties:
         id:
