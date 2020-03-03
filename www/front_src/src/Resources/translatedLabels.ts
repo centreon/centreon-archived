@@ -33,5 +33,5 @@ export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
 export const labelUsePartialQuery = I18n.t(
-  "It's also possible to use a partial query for the search value, by wrapping it into a '%' character. For instance:",
+  "It's also possible to use a partial query for the search value, by using a regular expression, for instance:",
 );

@@ -36,7 +36,7 @@ const getEndpoint = ({
   const sortParam = sortBy ? `&sort_by={"${sortBy}":"${sortOrder}"}` : '';
   const searchParam = search
     ? `&search={"$or":[${search.map(
-        ({ field, value }) => `{"${field}":{"$lk":"${value}"}}`,
+        ({ field, value }) => `{"${field}":{"$rg":"${value}"}}`,
       )}]}`
     : '';
 
