@@ -158,13 +158,13 @@ function testExistence($name = null): bool
  */
 function isValidIpAddress($ipAddress): bool
 {
-    if (preg_match('/^([0-9a-fA-F]{4}|0)(\:([0-9a-fA-F]{4}|0)){7}$/', $ipAddress)
-        || preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $ipAddress)
-        || preg_match('/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]+)\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/', $ipAddress)
+    if (!preg_match('/^([0-9a-fA-F]{4}|0)(\:([0-9a-fA-F]{4}|0)){7}$/', $ipAddress)
+        && !(preg_match('/^[0-9\.]+$/', $ipAddress) && preg_match('/^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/', $ipAddress))
+        && !(!preg_match('/^[0-9\.]+$/', $ipAddress) && preg_match('/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]+)\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/', $ipAddress))
     ) {
-        return true;
-    } else {
         return false;
+    } else {
+        return true;
     }
 }
 
