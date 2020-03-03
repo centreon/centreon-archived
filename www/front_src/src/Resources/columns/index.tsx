@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, makeStyles } from '@material-ui/core';
 
 import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
 
@@ -15,6 +15,12 @@ import {
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
+
+const useStyles = makeStyles((theme) => ({
+  resourceDetailsCell: {
+    padding: theme.spacing(0.5),
+  },
+}));
 
 export interface ColumnProps {
   row: Resource;
@@ -46,10 +52,12 @@ const StatusColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
 };
 
 const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+  const classes = useStyles();
+
   return (
     <Cell>
-      <Grid container alignItems="center" justify="center">
-        <Grid item xs={2}>
+      <Grid container spacing={1} className={classes.resourceDetailsCell}>
+        <Grid item>
           {row.icon ? (
             <img
               src={row.icon.url}
@@ -61,19 +69,17 @@ const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
             <StatusChip label={row.short_name} statusCode={StatusCode.None} />
           )}
         </Grid>
-        <Grid item xs={10}>
+        <Grid item>
           <Typography>{row.name}</Typography>
         </Grid>
         {row.parent && (
-          <>
+          <Grid container spacing={1}>
             <Grid item xs={1} />
-            <Grid item xs={1}>
+            <Grid item>
               <StatusChip statusCode={row.parent.status.code} />
             </Grid>
-            <Grid item xs={10}>
-              {row.parent.name}
-            </Grid>
-          </>
+            <Grid item>{row.parent.name}</Grid>
+          </Grid>
         )}
       </Grid>
     </Cell>

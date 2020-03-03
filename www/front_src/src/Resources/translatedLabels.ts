@@ -1,19 +1,25 @@
 import { I18n } from 'react-redux-i18n';
 
+export const labelAcknowledged = I18n.t('acknowledged');
 export const labelAll = I18n.t('All');
 export const labelAuthor = I18n.t('Author');
 export const labelComment = I18n.t('Comment');
 export const labelDuration = I18n.t('Duration');
 export const labelEndTime = I18n.t('End time');
+export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
 export const labelFixed = I18n.t('Fixed');
+export const labelInDowntime = I18n.t('in downtime');
 export const labelLastCheck = I18n.t('Last check');
+export const labelNo = I18n.t('No');
+export const labelPersistent = I18n.t('Persistent');
 export const labelResourceName = I18n.t('Resource name');
 export const labelResourceProblems = I18n.t('Resource problems');
 export const labelResources = I18n.t('Resources');
 export const labelSearch = I18n.t('Search');
 export const labelSeverity = I18n.t('Severity');
 export const labelStatus = I18n.t('Status');
+export const labelSticky = I18n.t('Sticky');
 export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
 export const labelSearchOnFields = I18n.t(
@@ -35,3 +41,5 @@ export const labelUnhandledProblems = I18n.t('Unhandled problems');
 export const labelUsePartialQuery = I18n.t(
   "It's also possible to use a partial query for the search value, by using a regular expression, for instance:",
 );
+export const labelYes = I18n.t('Yes');
+export const labelSomethingWentWrong = I18n.t('Oops, something went wrong');

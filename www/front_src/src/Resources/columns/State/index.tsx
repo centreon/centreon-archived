@@ -1,33 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import {
-  Grid,
-  Avatar,
-  makeStyles,
-  fade,
-  Tooltip,
-  TableContainer,
-  TableRow,
-  Paper,
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-} from '@material-ui/core';
+import { Grid, Avatar, makeStyles, fade, Tooltip } from '@material-ui/core';
 import { Person as IconAcknowledged } from '@material-ui/icons';
 import { lime, purple } from '@material-ui/core/colors';
-import { Skeleton } from '@material-ui/lab';
 
 import IconDowntime from '../icons/Downtime';
 import { ColumnProps } from '..';
-import {
-  labelFixed,
-  labelAuthor,
-  labelStartTime,
-  labelEndTime,
-  labelComment,
-} from '../../translatedLabels';
-import { getData } from '../../api';
+import DowntimeDetailsTable from './DetailsTable/Downtime';
+import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
+import { labelInDowntime, labelAcknowledged } from '../../translatedLabels';
+import { Resource } from '../../models';
 
 const useStyles = makeStyles((theme) => ({
   stateChip: {
@@ -48,96 +30,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface DetailsTableProps {
+interface StateChipProps {
   endpoint: string;
-  columns: Array<string>;
+  className: string;
+  Icon: React.SFC;
+  DetailsTable: React.SFC<{ endpoint: string }>;
+  ariaLabel: string;
 }
 
-interface DowntimeDetails {
-  author: string;
-  fixed: boolean;
-  start_time: string;
-  end_time: string;
-  comment: string;
-}
-
-const DetailsTable = <TDetails extends {}>({
+const StateChip = ({
   endpoint,
-  columns,
-}: DetailsTableProps): JSX.Element => {
-  const [details, setDetails] = useState<TDetails | null>();
-
-  useEffect(() => {
-    getData<TDetails>({ endpoint })
-      .then((retrievedDetails) => setDetails(retrievedDetails))
-      .catch(() => {
-        setDetails(null);
-      });
-  }, []);
-
-  const loading = details === undefined;
-  const error = details === null;
-  const success = !loading && !error;
-
-  return (
-    <TableContainer component={Paper}>
-      <Table size="small">
-        <TableHead>
-          <TableRow component="head">
-            {columns.map((column) => (
-              <TableCell>{column}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            {loading && <Skeleton height={20} animation="wave" />}
-            {success &&
-              columns.map((column) => <TableCell>{details[column]}</TableCell>)}
-            {error && <TableCell>oops!</TableCell>}
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
-
-const DowntimeDetailsTable = ({ endpoint }): JSX.Element => {
-  const columns = [
-    labelAuthor,
-    labelFixed,
-    labelStartTime,
-    labelEndTime,
-    labelComment,
-  ];
-
-  return (
-    <DetailsTable<DowntimeDetails> columns={columns} endpoint={endpoint} />
-  );
-};
-
-const DowntimeChip = ({ endpoint }): JSX.Element => {
+  className,
+  Icon,
+  DetailsTable,
+  ariaLabel,
+}: StateChipProps): JSX.Element => {
   const classes = useStyles();
 
   return (
     <Tooltip
-      title={<DowntimeDetailsTable endpoint={endpoint} />}
+      placement="left"
+      title={<DetailsTable endpoint={endpoint} />}
       classes={{ tooltip: classes.tooltip }}
+      enterDelay={0}
     >
-      <Avatar className={`${classes.stateChip} ${classes.downtime}`}>
-        <IconDowntime />
+      <Avatar
+        className={`${classes.stateChip} ${className}`}
+        aria-label={ariaLabel}
+      >
+        <Icon />
       </Avatar>
     </Tooltip>
   );
 };
 
-const AcknowledgedChip = (): JSX.Element => {
+const DowntimeChip = ({ resource }: { resource: Resource }): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Avatar className={`${classes.stateChip} ${classes.acknowledged}`}>
-      <IconAcknowledged />
-    </Avatar>
+    <StateChip
+      endpoint={resource.downtime_endpoint as string}
+      className={classes.downtime}
+      ariaLabel={`${resource.name} ${labelInDowntime}`}
+      DetailsTable={DowntimeDetailsTable}
+      Icon={IconDowntime}
+    />
+  );
+};
+
+const AcknowledgedChip = ({
+  resource,
+}: {
+  resource: Resource;
+}): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <StateChip
+      endpoint={resource.acknowledgement_endpoint as string}
+      className={classes.acknowledged}
+      ariaLabel={`${resource.name} ${labelAcknowledged}`}
+      DetailsTable={AcknowledgementDetailsTable}
+      Icon={IconAcknowledged}
+    />
   );
 };
 
@@ -147,12 +102,12 @@ const StateColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
       <Grid container spacing={1}>
         {row.in_downtime && (
           <Grid item>
-            <DowntimeChip endpoint={row.downtime_endpoint} />
+            <DowntimeChip resource={row} />
           </Grid>
         )}
         {row.acknowledged && (
           <Grid item>
-            <AcknowledgedChip />
+            <AcknowledgedChip resource={row} />
           </Grid>
         )}
       </Grid>

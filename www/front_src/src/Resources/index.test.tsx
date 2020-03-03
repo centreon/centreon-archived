@@ -11,11 +11,15 @@ import {
   labelAll,
   labelResourceName,
   labelSearch,
+  labelInDowntime,
+  labelAcknowledged,
 } from './translatedLabels';
 import columns from './columns';
 import { Resource } from './models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+jest.mock('./columns/icons/Downtime');
 
 const getEndpoint = ({
   state = 'unhandled_problems',
@@ -67,8 +71,10 @@ const fillEntities = (): Array<Resource> => {
       code: 0,
       name: 'OK',
     },
-    acknowledged: false,
-    in_downtime: false,
+    acknowledged: index % 2 === 0,
+    acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,
+    in_downtime: index % 3 === 0,
+    downtime_endpoint: `/monitoring/downtime/${index}`,
     duration: '1m',
     last_check: '1m',
     tries: '1',
@@ -102,10 +108,10 @@ describe(Resources, () => {
   });
 
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValue({ data: retrievedListing });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
   });
 
-  it('lists with unhnandled_problems state by default', async () => {
+  it('executes a listing request with unhnandled_problems state by default', async () => {
     render(<Resources />);
 
     await wait(() =>
@@ -121,6 +127,8 @@ describe(Resources, () => {
 
     await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
 
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
     selectOption(getByText(labelUnhandledProblems), labelResourceProblems);
 
     await wait(() =>
@@ -129,6 +137,8 @@ describe(Resources, () => {
         cancelTokenRequestParam,
       ),
     );
+
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
     selectOption(getByText(labelResourceProblems), labelAll);
 
@@ -150,12 +160,16 @@ describe(Resources, () => {
     columns
       .filter(({ sortable }) => sortable !== false)
       .forEach(({ id, label }) => {
+        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
         fireEvent.click(getByText(label));
 
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getEndpoint({ sortBy: id, sortOrder: 'desc' }),
           cancelTokenRequestParam,
         );
+
+        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
         fireEvent.click(getByText(label));
 
@@ -172,8 +186,6 @@ describe(Resources, () => {
     await wait(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
-
-    mockedAxios.get.mockReset();
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
@@ -235,6 +247,8 @@ describe(Resources, () => {
   it('executes a listing request with a limit param when the rows per page value is changed', () => {
     const { getByDisplayValue } = render(<Resources />);
 
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
     fireEvent.change(getByDisplayValue('10'), {
       target: { value: '20' },
     });
@@ -254,6 +268,8 @@ describe(Resources, () => {
       fireEvent.change(getByPlaceholderText(labelResourceName), {
         target: { value: `${searchableField}:${fieldSearchValue}` },
       });
+
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
       fireEvent.click(getByText(labelSearch));
 
@@ -275,6 +291,8 @@ describe(Resources, () => {
       target: { value: searchValue },
     });
 
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
     fireEvent.click(getByText(labelSearch));
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -286,5 +304,83 @@ describe(Resources, () => {
       }),
       cancelTokenRequestParam,
     );
+  });
+
+  it('displays downtime details when the downtime state chip is hovered', async () => {
+    const { getByLabelText, getByText } = render(<Resources />);
+
+    const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
+
+    await wait(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        author_name: 'admin',
+        start_time: '2020-02-28T09:16:16',
+        end_time: '2020-02-28T09:18:16',
+        is_fixed: true,
+        comment: 'Set by admin',
+      },
+    });
+
+    const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
+
+    fireEvent.mouseEnter(getByLabelText(chipLabel));
+    fireEvent.mouseOver(getByLabelText(chipLabel));
+
+    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    expect(mockedAxios.get).toHaveBeenLastCalledWith(
+      entityInDowntime?.downtime_endpoint,
+      cancelTokenRequestParam,
+    );
+
+    expect(getByText('admin')).toBeInTheDocument();
+    expect(getByText('Yes')).toBeInTheDocument();
+    expect(getByText('02/28/2020 9:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020 9:18')).toBeInTheDocument();
+    expect(getByText('Set by admin')).toBeInTheDocument();
+  });
+
+  it('displays acknowledgement details when an acknowledged state chip is hovered', async () => {
+    const { getByLabelText, getByText } = render(<Resources />);
+
+    const acknowledgedEntity = entities.find(
+      ({ acknowledged }) => acknowledged,
+    );
+
+    await wait(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        author_name: 'admin',
+        entry_time: '2020-02-28T09:16:16',
+        is_persistent: true,
+        is_sticky: false,
+        comment: 'Set by admin',
+      },
+    });
+
+    const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
+
+    fireEvent.mouseEnter(getByLabelText(chipLabel));
+    fireEvent.mouseOver(getByLabelText(chipLabel));
+
+    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    expect(mockedAxios.get).toHaveBeenLastCalledWith(
+      acknowledgedEntity?.acknowledgement_endpoint,
+      cancelTokenRequestParam,
+    );
+
+    expect(getByText('admin')).toBeInTheDocument();
+    expect(getByText('02/28/2020 9:16')).toBeInTheDocument();
+    expect(getByText('Yes')).toBeInTheDocument();
+    expect(getByText('No')).toBeInTheDocument();
+    expect(getByText('Set by admin')).toBeInTheDocument();
   });
 });
