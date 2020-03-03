@@ -120,10 +120,12 @@ const Resources = (): JSX.Element => {
 
   const rowColorConditions = [
     {
+      name: 'inDowntime',
       condition: ({ in_downtime }): boolean => in_downtime,
       color: purple[500],
     },
     {
+      name: 'acknowledged',
       condition: ({ acknowledged }): boolean => acknowledged,
       color: lime[900],
     },

@@ -1,8 +1,12 @@
 import { I18n } from 'react-redux-i18n';
 
 export const labelAll = I18n.t('All');
+export const labelAuthor = I18n.t('Author');
+export const labelComment = I18n.t('Comment');
 export const labelDuration = I18n.t('Duration');
+export const labelEndTime = I18n.t('End time');
 export const labelFilter = I18n.t('Filter');
+export const labelFixed = I18n.t('Fixed');
 export const labelLastCheck = I18n.t('Last check');
 export const labelResourceName = I18n.t('Resource name');
 export const labelResourceProblems = I18n.t('Resource problems');
@@ -24,6 +28,7 @@ export const labelSearchByHostName = I18n.t(
 export const labelSearchByServiceStartingWith = I18n.t(
   "To search services with a description starting with the string 'centreon', you can type:",
 );
+export const labelStartTime = I18n.t('Start time');
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');

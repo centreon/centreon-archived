@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { Grid, Typography, Avatar, makeStyles, fade } from '@material-ui/core';
-import { Person as IconAcknowledged } from '@material-ui/icons';
-import { lime, purple } from '@material-ui/core/colors';
+import { Grid, Typography } from '@material-ui/core';
 
 import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
 
@@ -15,11 +13,10 @@ import {
   labelState,
   labelLastCheck,
 } from '../translatedLabels';
-
-import IconDowntime from './icons/Downtime';
 import { Resource } from '../models';
+import StateColumn from './State';
 
-interface ColumnProps {
+export interface ColumnProps {
   row: Resource;
   Cell: ({ children, width }: { children; width? }) => JSX.Element;
   isRowSelected: boolean;
@@ -77,60 +74,6 @@ const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
               {row.parent.name}
             </Grid>
           </>
-        )}
-      </Grid>
-    </Cell>
-  );
-};
-
-const useStateChipStyles = makeStyles((theme) => ({
-  stateChip: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-  },
-  acknowledged: {
-    backgroundColor: fade(lime[900], 0.1),
-    color: lime[900],
-  },
-  downtime: {
-    backgroundColor: fade(purple[500], 0.1),
-    color: purple[500],
-  },
-}));
-
-const DowntimeChip = (): JSX.Element => {
-  const classes = useStateChipStyles();
-
-  return (
-    <Avatar className={`${classes.stateChip} ${classes.downtime}`}>
-      <IconDowntime />
-    </Avatar>
-  );
-};
-
-const AcknowledgedChip = (): JSX.Element => {
-  const classes = useStateChipStyles();
-
-  return (
-    <Avatar className={`${classes.stateChip} ${classes.acknowledged}`}>
-      <IconAcknowledged />
-    </Avatar>
-  );
-};
-
-const StateColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
-  return (
-    <Cell width={80}>
-      <Grid container spacing={1}>
-        {row.in_downtime && (
-          <Grid item>
-            <DowntimeChip />
-          </Grid>
-        )}
-        {row.acknowledged && (
-          <Grid item>
-            <AcknowledgedChip />
-          </Grid>
         )}
       </Grid>
     </Cell>

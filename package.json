@@ -70,6 +70,7 @@
     "@centreon/ui": "centreon/centreon-ui",
     "@material-ui/core": "^4.9.4",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.45",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.7.0",

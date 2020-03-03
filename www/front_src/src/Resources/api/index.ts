@@ -7,7 +7,7 @@ const api = axios.create({
   baseURL: 'http://localhost:5000/api/beta/',
 });
 
-const getData = ({ endpoint, requestParams }): Promise<ResourceListing> =>
+const getData = <TData>({ endpoint, requestParams }): Promise<TData> =>
   api.get(endpoint, requestParams).then(({ data }) => data);
 
 const listResources = (
@@ -16,4 +16,4 @@ const listResources = (
 ): Promise<ResourceListing> =>
   getData({ endpoint: buildResourcesEndpoint(endpointParams), requestParams });
 
-export { listResources };
+export { listResources, getData };
