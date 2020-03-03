@@ -17,7 +17,7 @@ interface SearchObject {
 }
 
 interface SearchParam {
-  $or: Array<{ [field in SearchableField]?: { $lk: string } }>;
+  $or: Array<{ [field in SearchableField]?: { $rg: string } }>;
 }
 
 const getFoundSearchObjects = (searchValue: string): Array<SearchObject> => {
