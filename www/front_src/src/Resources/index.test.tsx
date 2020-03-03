@@ -9,6 +9,8 @@ import {
   labelUnhandledProblems,
   labelResourceProblems,
   labelAll,
+  labelResourceName,
+  labelSearch,
 } from './translatedLabels';
 import columns from './columns';
 import { Resource } from './models';
@@ -21,17 +23,24 @@ const getEndpoint = ({
   sortOrder = undefined,
   page = 1,
   limit = 10,
+  search = undefined,
 }: {
   state?: string;
   sortBy?: string;
   sortOrder?: string;
   page?: number;
   limit?: number;
+  search?: Array<{ field: string; value: string }>;
 }): string => {
   const baseEndpoint = 'monitoring/resources';
   const sortParam = sortBy ? `&sort_by={"${sortBy}":"${sortOrder}"}` : '';
+  const searchParam = search
+    ? `&search={"$or":[${search.map(
+        ({ field, value }) => `{"${field}":{"$rg":"${value}"}}`,
+      )}]}`
+    : '';
 
-  return `${baseEndpoint}?state="${state}"${sortParam}&page=${page}&limit=${limit}`;
+  return `${baseEndpoint}?state="${state}"${sortParam}&page=${page}&limit=${limit}${searchParam}`;
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -79,6 +88,13 @@ const retrievedListing = {
     total: entities.length,
   },
 };
+
+const searchableFields = [
+  'host.name',
+  'host.alias',
+  'host.address',
+  'service.description',
+];
 
 describe(Resources, () => {
   afterEach(() => {
@@ -216,7 +232,7 @@ describe(Resources, () => {
     );
   });
 
-  it('executes a limit request when the rows per page value is changed', () => {
+  it('executes a listing request with a limit param when the rows per page value is changed', () => {
     const { getByDisplayValue } = render(<Resources />);
 
     fireEvent.change(getByDisplayValue('10'), {
@@ -225,6 +241,49 @@ describe(Resources, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       getEndpoint({ limit: 20 }),
+      cancelTokenRequestParam,
+    );
+  });
+
+  searchableFields.forEach((searchableField) => {
+    it(`executes a listing request with a search param containing ${searchableField} when ${searchableField} is typed in the SearchField`, () => {
+      const { getByPlaceholderText, getByText } = render(<Resources />);
+
+      const fieldSearchValue = 'foobar';
+
+      fireEvent.change(getByPlaceholderText(labelResourceName), {
+        target: { value: `${searchableField}:${fieldSearchValue}` },
+      });
+
+      fireEvent.click(getByText(labelSearch));
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({
+          search: [{ field: searchableField, value: fieldSearchValue }],
+        }),
+        cancelTokenRequestParam,
+      );
+    });
+  });
+
+  it('executes a listing request with a search param containing all searchable fields if no searchable field is directly specified', () => {
+    const { getByPlaceholderText, getByText } = render(<Resources />);
+
+    const searchValue = 'foobar';
+
+    fireEvent.change(getByPlaceholderText(labelResourceName), {
+      target: { value: searchValue },
+    });
+
+    fireEvent.click(getByText(labelSearch));
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      getEndpoint({
+        search: searchableFields.map((searchableField) => ({
+          field: searchableField,
+          value: searchValue,
+        })),
+      }),
       cancelTokenRequestParam,
     );
   });
