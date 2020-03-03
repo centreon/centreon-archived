@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Tooltip } from '@material-ui/core';
+import { Tooltip, makeStyles } from '@material-ui/core';
 import { HelpOutline as IconHelp } from '@material-ui/icons';
 
 import {
@@ -10,6 +10,12 @@ import {
   labelSearchByServiceStartingWith,
   labelSearchByHostAliasEndingWith,
 } from './translatedLabels';
+
+const useStyles = makeStyles((theme) => ({
+  tooltip: {
+    fontSize: theme.typography.pxToRem(12),
+  },
+}));
 
 const Content = (): JSX.Element => (
   <>
@@ -29,10 +35,14 @@ const Content = (): JSX.Element => (
   </>
 );
 
-const SearchHelpTooltip = (): JSX.Element => (
-  <Tooltip title={<Content />}>
-    <IconHelp />
-  </Tooltip>
-);
+const SearchHelpTooltip = (): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <Tooltip title={<Content />} classes={{ tooltip: classes.tooltip }}>
+      <IconHelp />
+    </Tooltip>
+  );
+};
 
 export default SearchHelpTooltip;
