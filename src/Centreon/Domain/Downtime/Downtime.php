@@ -30,9 +30,9 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
  */
 class Downtime implements EntityDescriptorMetadataInterface
 {
-    // Groups for serilizing
-    public const SERIALIZER_GROUP_MAIN = 'downtime_main';
-    public const SERIALIZER_GROUP_SERVICE = 'downtime_service';
+    // Groups for serialization
+    public const SERIALIZER_GROUPS_MAIN = ['Default', 'downtime_host'];
+    public const SERIALIZER_GROUPS_SERVICE = ['Default', 'downtime_service'];
 
     // Types
     public const TYPE_HOST_DOWNTIME = 0;
@@ -62,6 +62,16 @@ class Downtime implements EntityDescriptorMetadataInterface
      * @var int|null Service id linked to this downtime
      */
     private $serviceId;
+
+    /**
+     * @var int Resource id
+     */
+    private $resourceId;
+
+    /**
+     * @var int|null Parent resource id
+     */
+    private $parentResourceId;
 
     /**
      * @var bool Indicates if this downtime have been cancelled
@@ -122,6 +132,11 @@ class Downtime implements EntityDescriptorMetadataInterface
      * @var bool Indicates if this downtime have started
      */
     private $isStarted;
+
+    /**
+     * @var bool Indicates if this downtime should be applied to linked services
+     */
+    private $withServices = false;
 
     /**
      * {@inheritdoc}
@@ -216,6 +231,42 @@ class Downtime implements EntityDescriptorMetadataInterface
     public function setServiceId(?int $serviceId): void
     {
         $this->serviceId = $serviceId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResourceId(): int
+    {
+        return $this->resourceId;
+    }
+
+    /**
+     * @param int $resourceId
+     * @return Acknowledgement
+     */
+    public function setResourceId(int $resourceId): Downtime
+    {
+        $this->resourceId = $resourceId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getParentResourceId(): ?int
+    {
+        return $this->parentResourceId;
+    }
+
+    /**
+     * @param int|null $parentResourceId
+     * @return Acknowledgement
+     */
+    public function setParentResourceId(?int $parentResourceId): Downtime
+    {
+        $this->parentResourceId = $parentResourceId;
+        return $this;
     }
 
     /**
@@ -408,5 +459,21 @@ class Downtime implements EntityDescriptorMetadataInterface
     public function setStarted(bool $isStarted): void
     {
         $this->isStarted = $isStarted;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithServices(): bool
+    {
+        return $this->withServices;
+    }
+
+    /**
+     * @param bool $withServices
+     */
+    public function setWithServices(bool $withServices): void
+    {
+        $this->withServices = $withServices;
     }
 }

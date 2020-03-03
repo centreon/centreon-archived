@@ -200,26 +200,35 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $errors = $this->validator->getValidator()->validate(
                 $downtime,
                 null,
-                DowntimeService::VALIDATION_GROUPS_ADD_DOWNTIME
+                DowntimeService::VALIDATION_GROUPS_ADD_HOST_DOWNTIME
             );
             if ($errors->count() > 0) {
                 throw new ValidationFailedException($errors);
             }
         }
 
-        $preCommand = sprintf(
-            'SCHEDULE_HOST_DOWNTIME;%s;%d;%d;%d;0;%d;%s;%s',
-            $host->getName(),
-            $downtime->getStartTime()->getTimestamp(),
-            $downtime->getEndTime()->getTimestamp(),
-            (int) $downtime->isFixed(),
-            $downtime->getDuration(),
-            $this->contact->getAlias(),
-            $downtime->getComment()
-        );
-        $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
-        $this->engineRepository->sendExternalCommand($commandFull);
+        $commandNames = ['SCHEDULE_HOST_DOWNTIME'];
+        if ($downtime->isWithServices()) {
+            $commandNames[] = 'SCHEDULE_HOST_SVC_DOWNTIME';
+        }
+
+        $commands = [];
+        foreach ($commandNames as $commandName) {
+            $preCommand = sprintf(
+                '%s;%s;%d;%d;%d;0;%d;%s;%s',
+                $commandName,
+                $host->getName(),
+                $downtime->getStartTime()->getTimestamp(),
+                $downtime->getEndTime()->getTimestamp(),
+                (int) $downtime->isFixed(),
+                $downtime->getDuration(),
+                $this->contact->getAlias(),
+                $downtime->getComment()
+            );
+            $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
+            $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
+        }
+        $this->engineRepository->sendExternalCommands($commands);
     }
 
     /**
@@ -239,7 +248,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $errors = $this->validator->getValidator()->validate(
                 $downtime,
                 null,
-                EntityValidator::DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME
+                DowntimeService::VALIDATION_GROUPS_ADD_SERVICE_DOWNTIME
             );
             if ($errors->count() > 0) {
                 throw new ValidationFailedException($errors);
@@ -289,7 +298,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         $errors = $this->validator->getValidator()->validate(
             $downtime,
             null,
-            EntityValidator::DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME
+            DowntimeService::VALIDATION_GROUPS_ADD_DOWNTIME
         );
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);

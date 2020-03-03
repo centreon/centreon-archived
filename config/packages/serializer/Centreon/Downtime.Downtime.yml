@@ -2,67 +2,46 @@ Centreon\Domain\Downtime\Downtime:
     properties:
         id:
             type: int
-            groups:
-                - 'downtime_main'
         entryTime:
             type: DateTime
-            groups:
-                - 'downtime_main'
         authorId:
             type: int
-            groups:
-                - 'downtime_main'
         hostId:
             type: int
-            groups:
-                - 'downtime_main'
+            groups: ['downtime_host', 'downtime_service']
         serviceId:
             type: int
-            groups:
-                - 'downtime_service'
+            groups: ['downtime_service']
+        resourceId:
+            type: int
+            groups: ['downtime_hosts', 'downtime_services']
+        parentResourceId:
+            type: int
+            groups: ['downtime_services']
         isCancelled:
             type: bool
-            groups:
-                - 'downtime_main'
         comment:
             type: string
-            groups:
-                - 'downtime_main'
         deletionTime:
             type: DateTime
-            groups:
-                - 'downtime_main'
         duration:
             type: int
-            groups:
-                - 'downtime_main'
         endTime:
             type: DateTime<'Y-m-d\TH:i:sP'>
-            groups:
-                - 'downtime_main'
         internalId:
             type: int
         isFixed:
             type: bool
-            groups:
-                - 'downtime_main'
         pollerId:
             type: int
-            groups:
-                - 'downtime_main'
         startTime:
             type: DateTime<'Y-m-d\TH:i:sP'>
-            groups:
-                - 'downtime_main'
         actualStartTime:
             type: DateTime
-            groups:
-                - 'downtime_main'
         actualEndTime:
             type: DateTime
-            groups:
-                - 'downtime_main'
         isStarted:
             type: bool
-            groups:
-                - 'downtime_main'
+        withServices:
+            type: bool
+            groups: ['downtime_host_add']

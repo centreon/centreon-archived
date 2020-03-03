@@ -40,7 +40,8 @@ use Centreon\Domain\Service\AbstractCentreonService;
  */
 class DowntimeService extends AbstractCentreonService implements DowntimeServiceInterface
 {
-    public const VALIDATION_GROUPS_ADD_DOWNTIME = ['Default'];
+    public const VALIDATION_GROUPS_ADD_HOST_DOWNTIME = ['Default', 'downtime_host', 'downtime_host_add'];
+    public const VALIDATION_GROUPS_ADD_SERVICE_DOWNTIME = ['Default', 'downtime_service'];
 
     /**
      * @var AccessGroupRepositoryInterface
