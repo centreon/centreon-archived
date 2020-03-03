@@ -23,8 +23,8 @@ const Content = (): JSX.Element => (
     <p>{`${labelSearchByHostName} host.name:hostname`}</p>
     <p>{labelUsePartialQuery}</p>
     <ul>
-      <li>{`${labelSearchByServiceStartingWith} service.description:centreon%`}</li>
-      <li>{`${labelSearchByHostAliasEndingWith} host.alias:%-server`}</li>
+      <li>{`${labelSearchByServiceStartingWith} service.description:^centreon`}</li>
+      <li>{`${labelSearchByHostAliasEndingWith} host.alias:(fr|us)-server`}</li>
     </ul>
   </>
 );
