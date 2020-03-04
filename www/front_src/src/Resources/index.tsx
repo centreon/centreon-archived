@@ -2,44 +2,21 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { Typography, makeStyles, Paper, Grid, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { lime, purple } from '@material-ui/core/colors';
 
-import {
-  Listing,
-  SelectField,
-  withErrorSnackbar,
-  useErrorSnackbar,
-  SearchField,
-} from '@centreon/ui';
+import { Listing, withErrorSnackbar, useErrorSnackbar } from '@centreon/ui';
 
 import { listResources } from './api';
-import {
-  unhandledProblemsFilter,
-  resourcesProblemFilter,
-  allFilter,
-  ResourceListing,
-} from './models';
+import { ResourceListing, Filter as FilterModel } from './models';
 import columns from './columns';
-import {
-  labelFilter,
-  labelStateFilter,
-  labelSearch,
-  labelResourceName,
-} from './translatedLabels';
-import SearchHelpTooltip from './SearchHelpTooltip';
+import Filter from './Filter';
 
 const useStyles = makeStyles((theme) => ({
   page: {
     backgroundColor: theme.palette.background.default,
   },
-  iconSettings: {
-    color: theme.palette.primary.main,
-  },
-  filterBox: {
-    padding: theme.spacing(2),
-    backgroundColor: theme.palette.common.white,
-  },
+
   listing: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
@@ -52,14 +29,17 @@ const Resources = (): JSX.Element => {
   const classes = useStyles();
 
   const [listing, setListing] = useState<ResourceListing>();
-  const [filterId, setFilterId] = useState('unhandled_problems');
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
+  const [filterId, setFilterId] = useState('unhandled_problems');
   const [searchFieldValue, setSearchFieldValue] = useState<string>();
   const [search, setSearch] = useState<string>();
+  const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>();
+  const [states, setStates] = useState<Array<FilterModel>>();
+  const [statuses, setStatuses] = useState<Array<FilterModel>>();
 
   const [loading, setLoading] = useState(true);
 
@@ -93,10 +73,6 @@ const Resources = (): JSX.Element => {
     load();
   }, [filterId, sortf, sorto, page, limit, search]);
 
-  const changeFilterId = (event): void => {
-    setFilterId(event.target.value);
-  };
-
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
     setSorto(order);
@@ -110,12 +86,20 @@ const Resources = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const changeSearchFieldValue = (event): void => {
-    setSearchFieldValue(event.target.value);
+  const changeFilter = (event): void => {
+    setFilterId(event.target.value);
   };
 
-  const doSearch = (): void => {
-    setSearch(searchFieldValue);
+  const changeResourceTypes = (_, updatedResourceTypes): void => {
+    setStates(updatedResourceTypes);
+  };
+
+  const changeStates = (_, updatedStates): void => {
+    setStates(updatedStates);
+  };
+
+  const changeStatuses = (_, updatedStatuses): void => {
+    setStatuses(updatedStatuses);
   };
 
   const rowColorConditions = [
@@ -133,47 +117,15 @@ const Resources = (): JSX.Element => {
 
   return (
     <div className={classes.page}>
-      <Paper elevation={1} className={classes.filterBox}>
-        <Grid container direction="column">
-          <Grid item>
-            <Typography variant="h6">{labelFilter}</Typography>
-          </Grid>
-          <Grid item>
-            <Grid spacing={2} container direction="row" alignItems="center">
-              <Grid item>
-                <SelectField
-                  options={[
-                    unhandledProblemsFilter,
-                    resourcesProblemFilter,
-                    allFilter,
-                  ]}
-                  selectedOptionId={filterId}
-                  onChange={changeFilterId}
-                  ariaLabel={labelStateFilter}
-                />
-              </Grid>
-              <Grid item>
-                <SearchField
-                  EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
-                  value={searchFieldValue || ''}
-                  onChange={changeSearchFieldValue}
-                  placeholder={labelResourceName}
-                />
-              </Grid>
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={!searchFieldValue}
-                  onClick={doSearch}
-                >
-                  {labelSearch}
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Paper>
+      <Filter
+        onFilterChange={changeFilter}
+        filterId={filterId}
+        selectedResourceTypes={resourceTypes}
+        onResourceTypeChange={changeResourceTypes}
+        selectedStates={states}
+        onStatesChange={changeStates}
+        onStatusesChange={changeStatuses}
+      />
       <div className={classes.listing}>
         <Listing
           loading={loading}

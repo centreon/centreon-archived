@@ -9,6 +9,7 @@ export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
 export const labelFixed = I18n.t('Fixed');
+export const labelHost = I18n.t('Host');
 export const labelInDowntime = I18n.t('in downtime');
 export const labelLastCheck = I18n.t('Last check');
 export const labelNo = I18n.t('No');
@@ -34,10 +35,13 @@ export const labelSearchByHostName = I18n.t(
 export const labelSearchByServiceStartingWith = I18n.t(
   "To search services with a description starting with the string 'centreon', you can type:",
 );
+export const labelService = I18n.t('Service');
 export const labelStartTime = I18n.t('Start time');
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
+export const labelTypeOfResource = I18n.t('Type of resource');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
+export const labelUnhandled = I18n.t('Unhandled');
 export const labelUsePartialQuery = I18n.t(
   "It's also possible to use a partial query for the search value, by using a regular expression, for instance:",
 );
