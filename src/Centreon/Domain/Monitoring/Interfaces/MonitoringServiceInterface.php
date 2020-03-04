@@ -28,6 +28,7 @@ use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Model\BaseTimelineEvent;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Monitoring\TimelineEvent;
 
 interface MonitoringServiceInterface extends ContactFilterInterface
 {
@@ -129,7 +130,7 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param int $hostid
      * @param int $serviceId
-     * @return BaseTimelineEvent[]
+     * @return TimelineEvent[]
      * @throws \Exception
      */
     public function findTimelineEvents(int $hostid, int $serviceId): array;
