@@ -36,6 +36,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
+use CentreonDuration;
 
 /**
  * Database repository for the real time monitoring of services and host.
@@ -71,6 +72,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'action_url' => 'resource.action_url',
         'details_url' => 'resource.details_url',
         'parent_name' => 'resource.parent_name',
+        'parent_status' => 'resource.parent_status_name',
         'severity_level' => 'resource.severity_level',
         'in_downtime' => 'resource.in_downtime',
         'acknowledged' => 'resource.acknowledged',
@@ -149,11 +151,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.name, resource.action_url, resource.details_url, '
+            . 'resource.id, resource.type, resource.short_type, resource.name, '
+            . 'resource.details_url, resource.action_url, '
             . 'resource.status_code, resource.status_name, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.parent_id, resource.parent_name, resource.parent_details_url, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
+            . 'resource.parent_status_code, resource.parent_status_name, ' // parent status
             . 'resource.severity_level, resource.severity_url, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
@@ -249,6 +253,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql = "SELECT
             s.service_id AS `id`,
             'service' AS `type`,
+            's' AS `short_type`,
             s.service_id AS `origin_id`,
             sh.host_id AS `host_id`,
             s.description AS `name`,
@@ -261,6 +266,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             sh.notes_url AS `parent_details_url`,
             sh.icon_image_alt AS `parent_icon_name`,
             sh.icon_image AS `parent_icon_url`,
+            sh.state AS `parent_status_code`,
+            CASE
+                WHEN sh.state = 0 THEN 'UP'
+                WHEN sh.state = 1 THEN 'DOWN'
+                WHEN sh.state = 2 THEN 'UNREACHABLE'
+                WHEN sh.state = 3 THEN 'PENDING'
+            END AS `parent_status_name`,
             s.state AS `status_code`,
             CASE
                 WHEN s.state = 0 THEN 'OK'
@@ -276,10 +288,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             CONCAT(service_vid.dir_alias, IF(service_vid.dir_alias, '/', NULL), service_vi.img_path) AS `severity_url`,
             0 AS `impacted_resources_count`,
             s.last_state_change AS `last_status_change`,
-            CONCAT(s.check_attempt, '/', s.max_check_attempts, ' ', CASE
+            CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
                 WHEN s.state_type = 1 THEN 'S'
-            END) AS `tries`,
+            END, ')') AS `tries`,
             s.last_check AS `last_check`,
             s.output AS `information`
             FROM `:dbstg`.`services` AS s
@@ -357,44 +369,47 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     protected function prepareQueryForHostResources(StatementCollector $collector, ?string $filterState): string
     {
         $sql = "SELECT
-		h.host_id AS `id`,
-        'host' AS `type`,
-        h.host_id AS `origin_id`,
-        h.host_id AS `host_id`,
-		h.name AS `name`,
-		h.action_url AS `action_url`,
-		h.notes_url AS `details_url`,
-		h.icon_image_alt AS `icon_name`,
-		h.icon_image AS `icon_url`,
-		NULL AS `parent_id`,
-		NULL AS `parent_name`,
-		NULL AS `parent_details_url`,
-		NULL AS `parent_icon_name`,
-		NULL AS `parent_icon_url`,
-		h.state AS `status_code`,
-		CASE
-            WHEN h.state = 0 THEN 'UP'
-            WHEN h.state = 1 THEN 'DOWN'
-            WHEN h.state = 2 THEN 'UNREACHABLE'
-            WHEN h.state = 3 THEN 'PENDING'
-        END AS `status_name`,
-		h.scheduled_downtime_depth AS `in_downtime`,
-		h.acknowledged AS `acknowledged`,
-		host_cvl.value AS `severity_level`,
-		hc.hc_comment AS `severity_name`,
-		CONCAT(host_vid.dir_alias, '/', host_vi.img_path) AS `severity_url`,
-		(SELECT COUNT(DISTINCT host_s.service_id)
-            FROM `:dbstg`.`services` AS host_s
-            WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
-        ) AS `impacted_resources_count`,
-		h.last_state_change AS `last_status_change`,
-		CONCAT(h.check_attempt, '/', h.max_check_attempts, ' ', CASE
-            WHEN h.state_type = 1 THEN 'H'
-            WHEN h.state_type = 1 THEN 'S'
-        END) AS `tries`,
-		h.last_check AS `last_check`,
-		h.output AS `information`
-        FROM `:dbstg`.`hosts` AS h";
+            h.host_id AS `id`,
+            'host' AS `type`,
+            'h' AS `short_type`,
+            h.host_id AS `origin_id`,
+            h.host_id AS `host_id`,
+            h.name AS `name`,
+            h.action_url AS `action_url`,
+            h.notes_url AS `details_url`,
+            h.icon_image_alt AS `icon_name`,
+            h.icon_image AS `icon_url`,
+            NULL AS `parent_id`,
+            NULL AS `parent_name`,
+            NULL AS `parent_details_url`,
+            NULL AS `parent_icon_name`,
+            NULL AS `parent_icon_url`,
+            NULL AS `parent_status_code`,
+            NULL AS `parent_status_name`,
+            h.state AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN 'UP'
+                WHEN h.state = 1 THEN 'DOWN'
+                WHEN h.state = 2 THEN 'UNREACHABLE'
+                WHEN h.state = 3 THEN 'PENDING'
+            END AS `status_name`,
+            h.scheduled_downtime_depth AS `in_downtime`,
+            h.acknowledged AS `acknowledged`,
+            host_cvl.value AS `severity_level`,
+            hc.hc_comment AS `severity_name`,
+            CONCAT(host_vid.dir_alias, '/', host_vi.img_path) AS `severity_url`,
+            (SELECT COUNT(DISTINCT host_s.service_id)
+                FROM `:dbstg`.`services` AS host_s
+                WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
+            ) AS `impacted_resources_count`,
+            h.last_state_change AS `last_status_change`,
+            CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', CASE
+                WHEN h.state_type = 1 THEN 'H'
+                WHEN h.state_type = 1 THEN 'S'
+            END, ')') AS `tries`,
+            h.last_check AS `last_check`,
+            h.output AS `information`
+            FROM `:dbstg`.`hosts` AS h";
 
         // set ACL limitations
         if (!$this->isAdmin()) {
@@ -509,6 +524,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             }
 
             $resource->setParent($parent);
+        }
+
+        // calculating of the duration
+        if ($resource->getLastStatusChange()) {
+            $resource->setDuration(
+                CentreonDuration::toString(time() - $resource->getLastStatusChange()->getTimestamp())
+            );
         }
 
         return $resource;
