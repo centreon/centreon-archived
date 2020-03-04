@@ -232,13 +232,9 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
     }
 
     /**
-     * Add a downtime on a list of services.
-     *
-     * @param Downtime $downtime Downtime to add
-     * @param Service[] $services List of service for which we want to add a downtime
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function addServicesDowntime(Downtime $downtime, array $services): void
+    public function addServiceDowntime(Downtime $downtime, Service $service): void
     {
         if (empty($this->contact->getAlias())) {
             throw new EngineException('The contact alias is empty');
@@ -255,68 +251,15 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             }
         }
 
-        if (empty($services)) {
-            throw new EngineException('The list of services is empty');
-        }
-        $commandsToSend = [];
-        foreach ($services as $service) {
-            if ($service->getHost() == null) {
-                throw new EngineException('The host of service (id: '. $service->getId() . ') is not defined');
-            }
-            if (empty($service->getHost()->getName())) {
-                throw new EngineException('Host name of service (id: '. $service->getId() . ') can not be empty');
-            }
-            if (empty($service->getDescription())) {
-                throw new EngineException('The description of service (id: '. $service->getId() . ') can not be empty');
-            }
-            $preCommand = sprintf(
-                'SCHEDULE_SVC_DOWNTIME;%s;%s;%d;%d;%d;0;%d;%s;%s',
-                $service->getHost()->getName(),
-                $service->getDescription(),
-                $downtime->getStartTime()->getTimestamp(),
-                $downtime->getEndTime()->getTimestamp(),
-                (int) $downtime->isFixed(),
-                $downtime->getDuration(),
-                $this->contact->getAlias(),
-                $downtime->getComment()
-            );
-            $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-            $commandsToSend[] = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
-        }
-
-        if (!empty($commandsToSend)) {
-            $this->engineRepository->sendExternalCommands($commandsToSend);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addServiceDowntime(Downtime $downtime, Service $service): void
-    {
-        // We validate the downtime instance
-        $errors = $this->validator->getValidator()->validate(
-            $downtime,
-            null,
-            DowntimeService::VALIDATION_GROUPS_ADD_DOWNTIME
-        );
-        if ($errors->count() > 0) {
-            throw new ValidationFailedException($errors);
-        }
-
-        if (empty($this->contact->getAlias())) {
-            throw new EngineException('The contact alias is empty');
-        }
-        if (empty($service->getHost())) {
-            throw new EngineException('The host of service is not defined');
+        if ($service->getHost() == null) {
+            throw new EngineException('The host of service (id: '. $service->getId() . ') is not defined');
         }
         if (empty($service->getHost()->getName())) {
-            throw new EngineException('Host name can not be empty');
+            throw new EngineException('Host name of service (id: '. $service->getId() . ') can not be empty');
         }
         if (empty($service->getDescription())) {
-            throw new EngineException('The service description can not be empty');
+            throw new EngineException('The description of service (id: '. $service->getId() . ') can not be empty');
         }
-
         $preCommand = sprintf(
             'SCHEDULE_SVC_DOWNTIME;%s;%s;%d;%d;%d;0;%d;%s;%s',
             $service->getHost()->getName(),
@@ -329,8 +272,9 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $downtime->getComment()
         );
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
-        $this->engineRepository->sendExternalCommand($commandFull);
+        $command = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
+
+        $this->engineRepository->sendExternalCommand($command);
     }
 
     /**
@@ -392,17 +336,23 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             throw new EngineException('Host name can not be empty');
         }
 
-        $commandName = $check->isForced() ? 'SCHEDULE_FORCED_HOST_CHECK' : 'SCHEDULE_HOST_CHECK';
+        $commandNames = [$check->isForced() ? 'SCHEDULE_FORCED_HOST_CHECK' : 'SCHEDULE_HOST_CHECK'];
+        if ($check->isWithServices()) {
+            $commandNames[] = $check->isForced() ? 'SCHEDULE_FORCED_HOST_SVC_CHECKS' : 'SCHEDULE_HOST_SVC_CHECKS';
+        }
 
-        $command = sprintf(
-            '%s;%s;%d',
-            $commandName,
-            $host->getName(),
-            $check->getCheckTime()
-        );
-
-        $commandFull = $this->createCommandHeader($host->getPollerId()) . $command;
-        $this->engineRepository->sendExternalCommand($commandFull);
+        $commands = [];
+        foreach ($commandNames as $commandName) {
+            $preCommand = sprintf(
+                '%s;%s;%d',
+                $commandName,
+                $host->getName(),
+                $check->getCheckTime()
+            );
+            $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
+            $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
+        }
+        $this->engineRepository->sendExternalCommands($commands);
     }
 
     /**

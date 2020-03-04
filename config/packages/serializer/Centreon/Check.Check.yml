@@ -6,9 +6,12 @@ Centreon\Domain\Check\Check:
         isForced:
             type: bool
             groups: [Default, check_host, check_service]
-        id:
+        resourceId:
             type: int
             groups: [Default, check_host, check_service]
-        parentId:
+        parentResourceId:
             type: int
             groups: [Default, check_service]
+        withServices:
+            type: bool
+            groups: ['check_host_add']

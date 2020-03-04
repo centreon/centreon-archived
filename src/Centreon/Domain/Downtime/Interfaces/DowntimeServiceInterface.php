@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,22 +93,22 @@ interface DowntimeServiceInterface
     public function findDowntimesByService(int $hostId, int $serviceId): array;
 
     /**
-     * Add a downtime on a host.
+     * Add a downtime on multiple hosts.
      *
      * @param Downtime $downtime Downtime to add
-     * @param Host $host Host for which we want to add the downtime
+     * @param Host $host Host to add a downtime
      * @throws \Exception
      */
     public function addHostDowntime(Downtime $downtime, Host $host): void;
 
     /**
-     * Add a downtime for each given service.
+     * Add a downtime on multiple services.
      *
      * @param Downtime $downtime Downtime to add for each service
-     * @param Service[] $services Services list (the host property of each service must to be correctly defined)
+     * @param Service $service Service (the host property of each service must to be correctly defined)
      * @throws \Exception
      */
-    public function addServicesDowntime(Downtime $downtime, array $services): void;
+    public function addServiceDowntime(Downtime $downtime, Service $service): void;
 
     /**
      * Cancel one downtime.

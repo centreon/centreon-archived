@@ -32,3 +32,6 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
             type: bool
         state:
             type: int
+        withServices:
+            type: bool
+            groups: ['ack_host_add']

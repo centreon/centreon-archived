@@ -29,6 +29,7 @@ use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
@@ -109,9 +110,9 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     /**
      * @inheritDoc
      */
-    public function addServicesDowntime(Downtime $downtime, array $services): void
+    public function addServiceDowntime(Downtime $downtime, Service $service): void
     {
-        $this->engineService->addServicesDowntime($downtime, $services);
+        $this->engineService->addServiceDowntime($downtime, $service);
     }
 
     /**

@@ -1986,6 +1986,10 @@ components:
           type: boolean
           description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
+        with_services:
+          type: boolean
+          description: "Indicates whether we should add the downtime on the host-related services"
+          example: true
     Acknowledgement.Hosts.Add:
       type: array
       items:
@@ -2704,12 +2708,12 @@ components:
     Bulk.Resource.Id:
       type: object
       properties:
-        id:
+        resource_id:
           type: integer
           format: int64
           description: "ID of the resource"
           example: 12
-        parent_id:
+        parent_resource_id:
           type: integer
           format: int64
           nullable: true

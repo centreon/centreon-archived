@@ -110,6 +110,11 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     private $type;
 
     /**
+     * @var bool Indicates if this downtime should be applied to linked services
+     */
+    private $withServices = false;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -392,5 +397,21 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     {
         $this->type = $type;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithServices(): bool
+    {
+        return $this->withServices;
+    }
+
+    /**
+     * @param bool $withServices
+     */
+    public function setWithServices(bool $withServices): void
+    {
+        $this->withServices = $withServices;
     }
 }

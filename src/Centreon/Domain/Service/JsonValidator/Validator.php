@@ -45,6 +45,8 @@ class Validator implements JsonValidatorInterface
 
     private const VERSION_DEFAULT = 'default';
 
+    private const COMPONENTS_REFERENCE = '$components';
+
     /**
      * @var JsonSchemaValidator
      */
@@ -172,8 +174,8 @@ class Validator implements JsonValidatorInterface
         array $definitionsToPopulate,
         array $versionedDefinitions
     ): array {
-        if (array_key_exists('components', $versionedDefinitions)) {
-            $definitionsToPopulate['components'] = $versionedDefinitions['components'];
+        if (array_key_exists(self::COMPONENTS_REFERENCE, $versionedDefinitions)) {
+            $definitionsToPopulate[self::COMPONENTS_REFERENCE] = $versionedDefinitions[self::COMPONENTS_REFERENCE];
         }
 
         return $definitionsToPopulate;

@@ -44,6 +44,7 @@ class CheckController extends AbstractController
     // Groups for serialization
     public const SERIALIZER_GROUPS_HOST = ['check_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['check_service'];
+    public const SERIALIZER_GROUPS_HOST_ADD = ['check_host', 'check_host_add'];
 
     /**
      * @var CheckServiceInterface
@@ -84,7 +85,7 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST);
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST_ADD);
 
         /**
          * @var $checks Check[]

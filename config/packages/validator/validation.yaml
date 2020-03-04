@@ -31,7 +31,10 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
                 groups: [add_service_acks]
             - GreaterThan:
                 value: 0
-                groups: [ add_service_acks]
+                groups: [add_service_acks]
+        withServices:
+            - Type:
+                type: boolean
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
@@ -79,17 +82,20 @@ Centreon\Domain\Check\Check:
             - Type:
                 type: boolean
                 groups: [Default, check_host, check_service]
-        id:
+        resourceId:
             - Type:
                 type: int
                 groups: [Default, check_host, check_service]
             - GreaterThan: 0
             - NotNull: ~
-        parentId:
+        parentResourceId:
             - Type:
                 type: int
                 groups: [Default, check_service]
             - GreaterThan: 0
+        withServices:
+            - Type:
+                type: boolean
 
 # Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:

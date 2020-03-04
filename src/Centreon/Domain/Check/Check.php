@@ -30,12 +30,12 @@ class Check
     /**
      * @var int Resource id
      */
-    private $id;
+    private $resourceId;
 
     /**
-     * @var int|null Resource parent id
+     * @var int|null Parent resource id
      */
-    private $parentId;
+    private $parentResourceId;
 
     /**
      * @var \DateTime
@@ -48,38 +48,43 @@ class Check
     private $isForced = true;
 
     /**
+     * @var bool Indicates if this downtime should be applied to linked services
+     */
+    private $withServices = false;
+
+    /**
      * @return int
      */
-    public function getId(): int
+    public function getResourceId(): int
     {
-        return $this->id;
+        return $this->resourceId;
     }
 
     /**
-     * @param int $id
+     * @param int $resourceId
      * @return Check
      */
-    public function setId(int $id): Check
+    public function setResourceId(int $resourceId): Check
     {
-        $this->id = $id;
+        $this->resourceId = $resourceId;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getParentId(): ?int
+    public function getParentResourceId(): ?int
     {
-        return $this->parentId;
+        return $this->parentResourceId;
     }
 
     /**
-     * @param int|null $parentId
+     * @param int|null $parentResourceId
      * @return Check
      */
-    public function setParentId(?int $parentId): Check
+    public function setParentResourceId(?int $parentResourceId): Check
     {
-        $this->parentId = $parentId;
+        $this->parentResourceId = $parentResourceId;
         return $this;
     }
 
@@ -117,5 +122,21 @@ class Check
     {
         $this->isForced = $isForced;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithServices(): bool
+    {
+        return $this->withServices;
+    }
+
+    /**
+     * @param bool $withServices
+     */
+    public function setWithServices(bool $withServices): void
+    {
+        $this->withServices = $withServices;
     }
 }

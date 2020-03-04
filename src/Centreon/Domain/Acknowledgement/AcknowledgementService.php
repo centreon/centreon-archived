@@ -159,6 +159,14 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         }
 
         $this->engineService->addHostAcknowledgement($acknowledgement, $host);
+
+        if ($acknowledgement->isWithServices()) {
+            $services = $this->monitoringRepository->findServicesByHost($host->getId());
+            foreach ($services as $service) {
+                $service->setHost($host);
+                $this->engineService->addServiceAcknowledgement($acknowledgement, $service);
+            }
+        }
     }
 
     /**
