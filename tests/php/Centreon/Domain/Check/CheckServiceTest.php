@@ -72,11 +72,11 @@ class CheckServiceTest extends TestCase
             ->setId(1);
 
         $this->hostCheck = (new Check())
-            ->setId(1);
+            ->setResourceId(1);
 
         $this->serviceCheck = (new Check())
-            ->setId(1)
-            ->setParentId(1);
+            ->setResourceId(1)
+            ->setParentResourceId(1);
 
         $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);

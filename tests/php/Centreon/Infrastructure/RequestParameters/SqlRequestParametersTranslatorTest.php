@@ -178,9 +178,6 @@ class SqlRequestParametersTranslatorTest extends TestCase
                 'host.name' => 'ASC',
                 'host.alias' => 'DESC',
             ]);
-        $this->requestParameters->expects($this->exactly(2))
-            ->method('getLimit')
-            ->willReturn(10);
         $sqlRequestParametersTranslator = new SqlRequestParametersTranslator($this->requestParameters);
         $sqlRequestParametersTranslator->setConcordanceArray([
             'host.name' => 'h.name',
