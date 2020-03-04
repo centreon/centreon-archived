@@ -24,6 +24,9 @@ module.exports = merge(baseConfig, extractCssConfig, {
       filename: '../index.html',
     }),
   ],
+  resolve: {
+    extensions: ['.svg'],
+  },
   module: {
     rules: [
       { parser: { system: false } },
@@ -38,6 +41,10 @@ module.exports = merge(baseConfig, extractCssConfig, {
             },
           },
         ],
+      },
+      {
+        test: /\.icon.svg$/,
+        use: ['@svgr/webpack'],
       },
       {
         test: /\.(bmp|png|jpg|jpeg|gif|svg)$/,

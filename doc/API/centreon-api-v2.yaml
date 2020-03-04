@@ -2152,7 +2152,11 @@ components:
         type:
           type: string
           description: "Type of the resource"
-          example: "service"
+          example: "service|host"
+        short_type:
+          type: string
+          description: "Short name of the resource type"
+          example: "s|h"
         id:
           type: integer
           format: int32
@@ -2198,6 +2202,32 @@ components:
               type: string
               description: "Parent resource url to details page"
               example: "/monitoring/host/12"
+            status:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  description: |
+                    resource status code
+                    * `0` - UP or OK
+                    * `1` - DOWN or WARNING
+                    * `2` - UNREACHABLE or CRITICAL
+                    * `3` - UNKNOWN
+                    * `4` - PENDING
+                  example: 0
+                name:
+                  type: string
+                  description: |
+                    resource status name
+                    * UP
+                    * DOWN
+                    * UNREACHABLE
+                    * PENDING
+                    * OK
+                    * WARNING
+                    * CRITICAL
+                    * UNKNOWN
+                  example: "UP"
             icon:
               type: object
               properties:
@@ -2208,7 +2238,7 @@ components:
                 url:
                   type: string
                   description: "Url of the icon"
-                  example: "/media/linux.png"
+                  example: "/img/media/topology/firewall.png"
         status:
           type: object
           properties:
@@ -2239,10 +2269,12 @@ components:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
+        downtime_endpoint: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
+        acknowledgement_endpoint: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
           properties:
@@ -2251,6 +2283,10 @@ components:
               format: int32
               description: "ID of the severity"
               example: 12
+            level:
+              type: integer
+              description: "level of the severity"
+              example: 1
             name:
               type: string
               description: "Name of the severity"
@@ -2258,7 +2294,7 @@ components:
             url:
               type: string
               description: "Url of the severity icon"
-              example: "/media/severity1.png"
+              example: "/img/media/severity1.png"
         impacted_resources_count:
           type: integer
           description: "count of impacted resources"
@@ -2271,6 +2307,10 @@ components:
           type: string
           description: "URL of the chart linked to the resource"
           example: "/monitoring/chart/host/1/service/2"
+        duration:
+          type: string
+          description: "Duration since last status change"
+          example: "2h 3m"
         last_status_change:
           type: string
           format: date-time
