@@ -1968,6 +1968,21 @@ components:
               description: "ID of the service"
               example: 5
     Acknowledgement.Host.Add:
+      allOf:
+        - $ref: '#/components/schemas/Acknowledgement.Service.Add'
+        - type: object
+          properties:
+            with_services:
+              type: boolean
+              description: "Indicates whether we should add the downtime on the host-related services"
+              example: true
+    Acknowledgement.Hosts.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
+    Acknowledgement.Service.Add:
       type: object
       properties:
         comment:
@@ -1986,19 +2001,6 @@ components:
           type: boolean
           description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
-        with_services:
-          type: boolean
-          description: "Indicates whether we should add the downtime on the host-related services"
-          example: true
-    Acknowledgement.Hosts.Add:
-      type: array
-      items:
-        allOf:
-          - $ref: '#/components/schemas/Acknowledgement.Host.Add'
-          - $ref: '#/components/schemas/Bulk.Resource.Id'
-    Acknowledgement.Service.Add:
-      allOf:
-        - $ref: '#/components/schemas/Acknowledgement.Host.Add'
     Acknowledgement.Services.Add:
       type: array
       items:
