@@ -30,14 +30,14 @@ class ExtensionsRoute extends Component {
       module: { entities: [] },
       widget: { entities: [] },
     },
-    widgetsActive: true,
-    modulesActive: true,
+    widgetsActive: false,
+    modulesActive: false,
     modalDetailsActive: false,
     modalDetailsLoading: false,
     modalDetailsType: 'module',
-    not_installed: true,
-    installed: true,
-    updated: true,
+    not_installed: false,
+    installed: false,
+    updated: false,
     search: '',
     deleteToggled: false,
     deletingEntity: false,
@@ -71,11 +71,11 @@ class ExtensionsRoute extends Component {
   clearFilters = () => {
     this.setState(
       {
-        widgetsActive: true,
-        modulesActive: true,
-        not_installed: true,
-        installed: true,
-        updated: true,
+        widgetsActive: false,
+        modulesActive: false,
+        not_installed: false,
+        installed: false,
+        updated: false,
         nothingShown: false,
         search: '',
       },
@@ -105,6 +105,7 @@ class ExtensionsRoute extends Component {
 
   getAllEntitiesByVersionParam = (param, equals, callback) => {
     const { modulesActive, widgetsActive } = this.state;
+    console.log(modulesActive, widgetsActive)
     if (
       (!modulesActive && !widgetsActive) ||
       (modulesActive && widgetsActive)
@@ -126,7 +127,7 @@ class ExtensionsRoute extends Component {
           );
         },
       );
-    } else if (widgetsActive) {
+    } else if (modulesActive) {
       this.getEntitiesByKeyAndVersionParam(
         param,
         equals,
@@ -137,7 +138,7 @@ class ExtensionsRoute extends Component {
           }
         },
       );
-    } else if (modulesActive) {
+    } else if (widgetsActive) {
       // inverted because of inverse logic for switchers on/off false/true
       this.getEntitiesByKeyAndVersionParam(
         param,
@@ -330,19 +331,20 @@ class ExtensionsRoute extends Component {
     } else if (!installed && !not_installed && !updated) {
       callback(params, nothingShown);
     } else {
-      if (!updated) {
+      if (updated) {
         params += '&updated=false';
       }
       if (!installed && not_installed) {
-        params += '&installed=true';
-      } else if (installed && !not_installed) {
         params += '&installed=false';
+      } else if (installed && !not_installed) {
+        params += '&installed=true';
       }
       callback(params, nothingShown);
     }
   };
 
   getData = (callback) => {
+    console.log(this.state)
     this.getParsedGETParamsForExtensions((params, nothingShown) => {
       this.setState({
         nothingShown,
@@ -531,7 +533,7 @@ class ExtensionsRoute extends Component {
         {extensions.result && !nothingShown ? (
           <>
             {extensions.result.module &&
-            (!modulesActive || (modulesActive && widgetsActive)) ? (
+            (modulesActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}
@@ -545,7 +547,7 @@ class ExtensionsRoute extends Component {
               />
             ) : null}
             {extensions.result.widget &&
-            (!widgetsActive || (modulesActive && widgetsActive)) ? (
+            (widgetsActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}
