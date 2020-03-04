@@ -59,7 +59,13 @@ try {
         ])
         recordIssues(
           enabledForFailure: true,
-          tools: [checkStyle(pattern: 'codestyle-be.xml'), esLint(pattern: 'codestyle-fe.xml')],
+          tools: [checkStyle(pattern: 'codestyle-be.xml')],
+          referenceJobName: 'centreon-web/master'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          tools: [esLint(pattern: 'codestyle-fe.xml')],
           referenceJobName: 'centreon-web/master'
         )
 
