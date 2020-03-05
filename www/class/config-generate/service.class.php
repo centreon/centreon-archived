@@ -476,12 +476,6 @@ class Service extends AbstractService
 
     protected function clean(&$service)
     {
-        #if ($service['contact_from_host'] == 1) {
-        #    $service['contacts'] = null;
-        #    $service['contact_groups'] = null;
-        #    $service['contact_from_host'] = 0;
-        #}
-
         if ($service['severity_from_host'] == 1) {
             unset($service['macros']['_CRITICALITY_LEVEL']);
             unset($service['macros']['_CRITICALITY_ID']);
