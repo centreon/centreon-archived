@@ -16,7 +16,7 @@ import DetailsTable, {
 interface AcknoweldgementDetails {
   author_name: string;
   entry_time: string;
-  is_persistent: string;
+  is_persistent_comment: string;
   is_sticky: string;
   comment: string;
 }
@@ -36,8 +36,8 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
     },
     {
       label: labelPersistent,
-      getFormattedString: ({ is_persistent }): string =>
-        getYesNoLabel(is_persistent),
+      getFormattedString: ({ is_persistent_comment }): string =>
+        getYesNoLabel(is_persistent_comment),
     },
     {
       label: labelSticky,

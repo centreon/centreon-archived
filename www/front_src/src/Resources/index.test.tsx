@@ -359,7 +359,7 @@ describe(Resources, () => {
       data: {
         author_name: 'admin',
         entry_time: '2020-02-28T09:16:16',
-        is_persistent: true,
+        is_persistent_comment: true,
         is_sticky: false,
         comment: 'Set by admin',
       },
