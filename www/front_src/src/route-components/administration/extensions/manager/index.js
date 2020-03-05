@@ -105,7 +105,6 @@ class ExtensionsRoute extends Component {
 
   getAllEntitiesByVersionParam = (param, equals, callback) => {
     const { modulesActive, widgetsActive } = this.state;
-    console.log(modulesActive, widgetsActive)
     if (
       (!modulesActive && !widgetsActive) ||
       (modulesActive && widgetsActive)
@@ -344,7 +343,6 @@ class ExtensionsRoute extends Component {
   };
 
   getData = (callback) => {
-    console.log(this.state)
     this.getParsedGETParamsForExtensions((params, nothingShown) => {
       this.setState({
         nothingShown,
