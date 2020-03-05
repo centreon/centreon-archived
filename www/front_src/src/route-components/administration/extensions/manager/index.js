@@ -139,7 +139,7 @@ class ExtensionsRoute extends Component {
         },
       );
     } else if (widgetsActive) {
-      // inverted because of inverse logic for switchers on/off false/true
+      // inverted because of inverse logic for switchs on/off false/true
       this.getEntitiesByKeyAndVersionParam(
         param,
         equals,
@@ -436,24 +436,24 @@ class ExtensionsRoute extends Component {
             filterKey: 'search',
           }}
           onChange={this.onChange.bind(this)}
-          switchers={[
+          switchs={[
             [
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
-                switcherTitle: 'Status',
-                switcherStatus: 'Not installed',
+                switchTitle: 'Status',
+                switchStatus: 'Not installed',
                 value: not_installed,
                 filterKey: 'not_installed',
               },
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
-                switcherStatus: 'Installed',
+                switchStatus: 'Installed',
                 value: installed,
                 filterKey: 'installed',
               },
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
-                switcherStatus: 'Outdated',
+                switchStatus: 'Outdated',
                 value: updated,
                 filterKey: 'updated',
               },
@@ -461,14 +461,14 @@ class ExtensionsRoute extends Component {
             [
               {
                 customClass: 'container__col-sm-3 container__col-xs-4',
-                switcherTitle: 'Type',
-                switcherStatus: 'Module',
+                switchTitle: 'Type',
+                switchStatus: 'Module',
                 value: modulesActive,
                 filterKey: 'modulesActive',
               },
               {
                 customClass: 'container__col-sm-3 container__col-xs-4',
-                switcherStatus: 'Widget',
+                switchStatus: 'Widget',
                 value: widgetsActive,
                 filterKey: 'widgetsActive',
               },
