@@ -264,7 +264,7 @@ try {
                 foreach (glob($nagiosCFGPath . $host["id"] . "/*.cfg") as $filename) {
                     $succeded = @copy(
                         $filename,
-                        rtrim($Nagioscfg["cfg_dir"], "/") . '/' . basename($filename)
+                        rtrim($nagiosCfg["cfg_dir"], "/") . '/' . basename($filename)
                     );
                     if (!$succeded) {
                         throw new Exception(
