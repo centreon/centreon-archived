@@ -542,7 +542,7 @@ class Service extends AbstractService
         if (!isset($this->service_cache[$serviceId]) || is_null($this->service_cache[$serviceId])) {
             return null;
         }
-        // We skip anomalydetection services
+        // We skip anomalydetection services represented by enum value '3'
         if ($this->service_cache[$serviceId]['register'] === '3') {
             return null;
         }
