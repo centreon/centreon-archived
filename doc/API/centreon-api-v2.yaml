@@ -200,13 +200,13 @@ paths:
         * tries
         * last_check
         * information
-        * host.group
-        * host.group.id
 
         Only for **searching**:
 
         ---
 
+        * host.group
+        * host.group.id
         * host.name
         * host.alias
         * host.address
