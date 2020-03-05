@@ -237,23 +237,23 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-                 $DBRESULT_Nagioscfg = $pearDB->query(
+                 $dbResult = $pearDB->query(
                     "SELECT cfg_dir FROM cfg_nagios, nagios_server
                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
                     AND nagios_server.localhost = '1'
                     ORDER BY cfg_nagios.nagios_activate
                     DESC LIMIT 1"
                 );
-                $Nagioscfg = $DBRESULT_Nagioscfg->fetch();
+                $nagiosCfg = $dbResult->fetch();
 
-                if (!is_dir($Nagioscfg["cfg_dir"])) {
+                if (!is_dir($nagiosCfg["cfg_dir"])) {
                     throw new Exception(
                         sprintf(
                             _(
                                 "Could not find configuration directory '%s' for monitoring engine '%s'.
                                  Please check it's path or create it"
                             ),
-                            $Nagioscfg["cfg_dir"],
+                            $nagiosCfg["cfg_dir"],
                             $host['name']
                         )
                     );
@@ -278,7 +278,7 @@ try {
                             )
                         );
                     } else {
-                        @chmod(rtrim($Nagioscfg["cfg_dir"], "/") . '/' . basename($filename), 0664);
+                        @chmod(rtrim($nagiosCfg["cfg_dir"], "/") . '/' . basename($filename), 0664);
                     }
                 }
                 /*
