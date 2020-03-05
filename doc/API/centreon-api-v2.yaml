@@ -183,13 +183,46 @@ paths:
 
         The available parameters to **search** / **sort_by** are:
 
+        * id
+        * name
+        * type
+        * status_code
+        * status
+        * action_url
+        * details_url
+        * parent_name
+        * parent_status
+        * severity_level
+        * in_downtime
+        * acknowledged
+        * impacted_resources_count
+        * last_status_change
+        * tries
+        * last_check
+        * information
+        * host.group
+        * host.group.id
+
+        Only for **searching**:
+
+        ---
+
         * host.name
+        * host.alias
+        * host.address
         * service.description
+        * service.group
+        * service.group.id
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/ResourceFilterType'
+        - $ref: '#/components/parameters/ResourceFilterState'
+        - $ref: '#/components/parameters/ResourceFilterStatus'
+        - $ref: '#/components/parameters/ResourceFilterHostgroupId'
+        - $ref: '#/components/parameters/ResourceFilterServicegroupId'
       responses:
         '200':
           description: "OK"
@@ -1591,6 +1624,61 @@ components:
       schema:
         type: object
         example: '{"host.name":"ASC"}'
+    ResourceFilterType:
+      in: query
+      name: types
+      required: false
+      description: "Filter the resources by type"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [service, host]
+        example: '["host"]'
+    ResourceFilterState:
+      in: query
+      name: states
+      required: false
+      description: "Filter the resources by state"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [unhandled_problems, resources_problems, in_downtime, acknowledged, all]
+        example: '["in_downtime", "acknowledged"]'
+    ResourceFilterStatus:
+      in: query
+      name: statuses
+      required: false
+      description: "Filter the resources by status"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
+        example: '["OK", "UP", "PENDING"]'
+    ResourceFilterHostgroupId:
+      in: query
+      name: hostgroup_ids
+      required: false
+      description: "Filter the resources by host group ID"
+      schema:
+        type: array
+        items:
+            type: int
+            format: int64
+        example: '[13, 22, 31]'
+    ResourceFilterServicegroupId:
+      in: query
+      name: hostgroup_ids
+      required: false
+      description: "Filter the resources by host group ID"
+      schema:
+        type: array
+        items:
+            type: int
+            format: int64
+        example: '[2033]'
     ShowHost:
       in: query
       name: show_host
