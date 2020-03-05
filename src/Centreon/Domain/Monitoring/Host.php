@@ -1202,9 +1202,11 @@ class Host implements EntityDescriptorMetadataInterface
 
     /**
      * @param float|null $percentStateChange
+     * @return Host
      */
-    public function setPercentStateChange(?float $percentStateChange): void
+    public function setPercentStateChange(?float $percentStateChange): Host
     {
         $this->percentStateChange = $percentStateChange;
+        return $this;
     }
 }
