@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { Typography, makeStyles, Paper, Grid, Button } from '@material-ui/core';
+import { lime, purple } from '@material-ui/core/colors';
 
 import {
   Listing,
@@ -117,6 +118,19 @@ const Resources = (): JSX.Element => {
     setSearch(searchFieldValue);
   };
 
+  const rowColorConditions = [
+    {
+      name: 'inDowntime',
+      condition: ({ in_downtime }): boolean => in_downtime,
+      color: purple[500],
+    },
+    {
+      name: 'acknowledged',
+      condition: ({ acknowledged }): boolean => acknowledged,
+      color: lime[900],
+    },
+  ];
+
   return (
     <div className={classes.page}>
       <Paper elevation={1} className={classes.filterBox}>
@@ -166,6 +180,7 @@ const Resources = (): JSX.Element => {
           columnConfiguration={columns}
           tableData={listing?.result}
           currentPage={page - 1}
+          rowColorConditions={rowColorConditions}
           limit={listing?.meta.limit}
           onDelete={noOp}
           onSort={changeSort}

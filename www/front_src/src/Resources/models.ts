@@ -30,7 +30,9 @@ export interface Resource {
   icon?: Icon;
   parent?: Parent;
   status: Status;
+  downtime_endpoint?: string;
   acknowledged: boolean;
+  acknowledgement_endpoint?: string;
   in_downtime: boolean;
   duration: string;
   tries: string;
