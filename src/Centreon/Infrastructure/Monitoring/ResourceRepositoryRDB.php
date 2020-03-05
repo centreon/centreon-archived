@@ -349,44 +349,44 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     protected function prepareQueryForHostResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
-        h.host_id AS `id`,
-        'host' AS `type`,
-        h.host_id AS `origin_id`,
-        h.name AS `name`,
-        h.action_url AS `action_url`,
-        h.notes_url AS `details_url`,
-        h.icon_image_alt AS `icon_name`,
-        h.icon_image AS `icon_url`,
-        NULL AS `parent_id`,
-        NULL AS `parent_name`,
-        NULL AS `parent_details_url`,
-        NULL as `parent_status_code`,
-        NULL as `parent_status_name`,
-        NULL AS `parent_icon_name`,
-        NULL AS `parent_icon_url`,
-        h.state AS `status_code`,
-        CASE
-            WHEN h.state = 0 THEN 'UP'
-            WHEN h.state = 1 THEN 'DOWN'
-            WHEN h.state = 2 THEN 'UNREACHABLE'
-            WHEN h.state = 3 THEN 'PENDING'
-        END AS `status_name`,
-        h.scheduled_downtime_depth AS `in_downtime`,
-        h.acknowledged AS `acknowledged`,
-        host_cvl.value AS `severity_level`,
-        hc.hc_comment AS `severity_name`,
-        CONCAT(host_vid.dir_alias, '/', host_vi.img_path) AS `severity_url`,
-        (SELECT COUNT(DISTINCT host_s.service_id)
-            FROM `:dbstg`.`services` AS host_s
-            WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
-        ) AS `impacted_resources_count`,
-        h.last_state_change AS `last_status_change`,
-        CONCAT(h.check_attempt, '/', h.max_check_attempts, ' ', CASE
-            WHEN h.state_type = 1 THEN 'H'
-            WHEN h.state_type = 1 THEN 'S'
-        END) AS `tries`,
-        h.last_check AS `last_check`,
-        h.output AS `information`
+            h.host_id AS `id`,
+            'host' AS `type`,
+            h.host_id AS `origin_id`,
+            h.name AS `name`,
+            h.action_url AS `action_url`,
+            h.notes_url AS `details_url`,
+            h.icon_image_alt AS `icon_name`,
+            h.icon_image AS `icon_url`,
+            NULL AS `parent_id`,
+            NULL AS `parent_name`,
+            NULL AS `parent_details_url`,
+            NULL as `parent_status_code`,
+            NULL as `parent_status_name`,
+            NULL AS `parent_icon_name`,
+            NULL AS `parent_icon_url`,
+            h.state AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN 'UP'
+                WHEN h.state = 1 THEN 'DOWN'
+                WHEN h.state = 2 THEN 'UNREACHABLE'
+                WHEN h.state = 3 THEN 'PENDING'
+            END AS `status_name`,
+            h.scheduled_downtime_depth AS `in_downtime`,
+            h.acknowledged AS `acknowledged`,
+            host_cvl.value AS `severity_level`,
+            hc.hc_comment AS `severity_name`,
+            CONCAT(host_vid.dir_alias, '/', host_vi.img_path) AS `severity_url`,
+            (SELECT COUNT(DISTINCT host_s.service_id)
+                FROM `:dbstg`.`services` AS host_s
+                WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
+            ) AS `impacted_resources_count`,
+            h.last_state_change AS `last_status_change`,
+            CONCAT(h.check_attempt, '/', h.max_check_attempts, ' ', CASE
+                WHEN h.state_type = 1 THEN 'H'
+                WHEN h.state_type = 1 THEN 'S'
+            END) AS `tries`,
+            h.last_check AS `last_check`,
+            h.output AS `information`
         FROM `:dbstg`.`hosts` AS h";
 
         // set ACL limitations
