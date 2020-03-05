@@ -27,8 +27,18 @@ interface ResourceRepositoryInterface
     /**
      * Find all resources.
      *
-     * @param array $filterState
+     * @param string[] $types
+     * @param string[] $states
+     * @param string[] $statuses
+     * @param int[] $hostgroupIds
+     * @param int[] $servicegroupIds
      * @return \Centreon\Domain\Monitoring\Resource[]
      */
-    public function findResources(?array $filterState): array;
+    public function findResources(
+        ?array $types,
+        ?array $states,
+        ?array $statuses,
+        ?array $hostgroupIds,
+        ?array $servicegroupIds
+    ): array;
 }
