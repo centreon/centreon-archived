@@ -143,8 +143,6 @@ if (!isset($centreon) || !is_object($centreon)) {
 /*
  * Init different elements we need in a lot of pages
  */
-unset($centreon->Nagioscfg);
-$centreon->initNagiosCFG($pearDB);
 unset($centreon->optGen);
 $centreon->initOptGen($pearDB);
 

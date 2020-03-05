@@ -281,11 +281,6 @@ if (!$session->rowCount()) {
  * Add Timezone for current user.
  */
     $timezone = $CentreonGMT->getMyTimezone();
-    $timezone = trim($timezone);
-    if (empty($timezone)) {
-        $timezone = date_default_timezone_get();
-    }
-        
     $command_line = "export TZ='".$timezone."' ; ".$command_line;
 
     /*
