@@ -68,6 +68,19 @@ class CentreonSession
         session_regenerate_id(true);
     }
 
+    /**
+     * Write value in php session and close it
+     *
+     * @param  string $key   session attribute
+     * @param  mixed  $value session value to save
+     */
+    public static function writeSessionClose($key, $value)
+    {
+        session_start();
+        $_SESSION[$key] = $value;
+        session_write_close();
+    }
+
     public function s_unset()
     {
         session_unset();
@@ -88,8 +101,8 @@ class CentreonSession
     /**
      * Check user session status
      *
-     * @param string $sessionId Session id to check
-     * @param CentreonDB $db
+     * @param  string        $sessionId Session id to check
+     * @param  CentreonDB    $db
      * @return int
      * @throws PDOException
      */
