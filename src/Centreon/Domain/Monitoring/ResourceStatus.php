@@ -29,7 +29,7 @@ namespace Centreon\Domain\Monitoring;
  */
 class ResourceStatus
 {
-    // Groups for serilizing
+    // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_status_main';
 
     /**

@@ -1,4 +1,11 @@
 Centreon\Domain\Monitoring\Resource:
+    virtual_properties:
+        getShortType:
+            name: short_type
+            serialized_name: short_type
+            type: string
+            groups:
+                - 'resource_main'
     properties:
         id:
             type: string
@@ -32,6 +39,7 @@ Centreon\Domain\Monitoring\Resource:
             type: Centreon\Domain\Monitoring\ResourceStatus
             groups:
                 - 'resource_main'
+                - 'resource_parent'
         inDowntime:
             type: bool
             groups:

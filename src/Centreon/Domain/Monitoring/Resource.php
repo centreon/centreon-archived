@@ -184,6 +184,14 @@ class Resource
     /**
      * @return string|null
      */
+    public function getShortType(): ?string
+    {
+        return !empty($this->type) ? substr($this->type, 0, 1) : null;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;

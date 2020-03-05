@@ -146,6 +146,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.status_code, resource.status_name, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.parent_id, resource.parent_name, resource.parent_details_url, ' // parent
+            . 'resource.parent_status_code, resource.parent_status_name, ' // status
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             . 'resource.severity_level, resource.severity_url, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
@@ -248,6 +249,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             sh.host_id AS `parent_id`,
             sh.name AS `parent_name`,
             sh.notes_url AS `parent_details_url`,
+            sh.state AS `parent_status_code`,
+            CASE
+                WHEN sh.state = 0 THEN 'UP'
+                WHEN sh.state = 1 THEN 'DOWN'
+                WHEN sh.state = 2 THEN 'UNREACHABLE'
+                WHEN sh.state = 3 THEN 'PENDING'
+            END AS `parent_status_name`,
             sh.icon_image_alt AS `parent_icon_name`,
             sh.icon_image AS `parent_icon_url`,
             s.state AS `status_code`,
@@ -352,6 +360,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 		NULL AS `parent_id`,
 		NULL AS `parent_name`,
 		NULL AS `parent_details_url`,
+        NULL as `parent_status_code`,
+        NULL as `parent_status_name`,
 		NULL AS `parent_icon_name`,
 		NULL AS `parent_icon_url`,
 		h.state AS `status_code`,
@@ -489,6 +499,16 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
             if ($parentIcon->getUrl()) {
                 $parent->setIcon($parentIcon);
+            }
+
+            $parentStatus = EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $data,
+                'parent_status_'
+            );
+
+            if ($parentStatus->getName()) {
+                $parent->setStatus($parentStatus);
             }
 
             $resource->setParent($parent);
