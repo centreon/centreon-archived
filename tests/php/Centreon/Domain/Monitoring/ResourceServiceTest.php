@@ -53,7 +53,7 @@ class ResourceServiceTest extends TestCase
 
         $resourceService = new ResourceService($repository, $accessGroup, $router);
 
-        $resourcesFound = $resourceService->findResources(ResourceServiceInterface::STATE_ALL);
+        $resourcesFound = $resourceService->findResources([ResourceServiceInterface::STATE_ALL]);
         $this->assertCount(
             1,
             $resourcesFound,
