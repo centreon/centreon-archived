@@ -16,7 +16,7 @@ import DetailsTable, {
 interface AcknoweldgementDetails {
   author_name: string;
   entry_time: string;
-  is_persistent: string;
+  is_persistent_comment: string;
   is_sticky: string;
   comment: string;
 }
