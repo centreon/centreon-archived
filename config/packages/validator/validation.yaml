@@ -35,6 +35,7 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         withServices:
             - Type:
                 type: boolean
+                groups: [add_host_acks, add_host_ack]
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
