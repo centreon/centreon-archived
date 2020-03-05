@@ -51,7 +51,7 @@ interface ListingMeta {
 }
 
 export interface Listing<TEntity> {
-  result: TEntity;
+  result: Array<TEntity>;
   meta: ListingMeta;
 }
 

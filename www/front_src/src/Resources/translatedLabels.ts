@@ -10,6 +10,7 @@ export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
 export const labelFixed = I18n.t('Fixed');
 export const labelHost = I18n.t('Host');
+export const labelHostGroup = I18n.t('Host group');
 export const labelInDowntime = I18n.t('in downtime');
 export const labelLastCheck = I18n.t('Last check');
 export const labelNo = I18n.t('No');

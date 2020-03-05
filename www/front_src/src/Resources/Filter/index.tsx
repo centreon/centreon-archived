@@ -12,6 +12,7 @@ import {
   labelTypeOfResource,
   labelState,
   labelStatus,
+  labelHostGroup,
 } from '../translatedLabels';
 import {
   unhandledProblemsFilter,
@@ -20,6 +21,7 @@ import {
 } from '../models';
 import SearchHelpTooltip from '../SearchHelpTooltip';
 import { states, resourceTypes, statuses } from './filterParams';
+import ConnectedAutocompleteField from './ConnectedAutocompleteField';
 
 const useStyles = makeStyles((theme) => ({
   filterBox: {
@@ -40,8 +42,8 @@ const Filter = ({
   onStatesChange,
   selectedStatuses,
   onStatusesChange,
-  // selectedHostGroups,
-  // onHostgroupsChange,
+  selectedHostGroups,
+  onHostgroupsChange,
   // selectedGroups,
   // onServiceGroupsChange,
 }) => {
@@ -112,6 +114,15 @@ const Filter = ({
                 label={labelStatus}
                 onChange={onStatusesChange}
                 defaultValue={selectedStatuses || []}
+              />
+            </Grid>
+            <Grid item>
+              <ConnectedAutocompleteField
+                endpoint="/monitoring/hostgroups?limit=10"
+                searchField="host.name"
+                label={labelHostGroup}
+                onChange={onHostgroupsChange}
+                defaultValue={selectedHostGroups || []}
               />
             </Grid>
           </Grid>
