@@ -53,6 +53,27 @@ class MonitoringResourceController extends AbstractController
         $this->resource = $resource;
     }
 
+    protected static function parseExtraParameter(
+        RequestParametersInterface $requestParameters,
+        string $parameterName
+    ): array {
+        $data = $requestParameters->getExtraParameter($parameterName);
+
+        $resutl = [];
+
+        if (!$data) {
+            return $resutl;
+        }
+
+        try {
+            $resutl = (array)json_decode($data);
+        } catch (\Exception $e) {
+            $resutl = [];
+        }
+
+        return $resutl;
+    }
+
     /**
      * List all the resources in real-time monitoring : hosts and services.
      *
@@ -64,9 +85,17 @@ class MonitoringResourceController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         // set filter for state
-        $filterState = $requestParameters->getExtraParameter(static::EXTRA_PARAMETER_STATE);
-        if (!$filterState || !in_array($filterState, ResourceService::STATES)) {
-            $filterState = ResourceService::STATE_ALL;
+        $filterState = [];
+        foreach ($this->parseExtraParameter($requestParameters, static::EXTRA_PARAMETER_STATE) as $state) {
+            if (!in_array($state, ResourceService::STATES)) {
+                continue;
+            }
+
+            $filterState[] = $state;
+        }
+
+        if (!$filterState) {
+            $filterState = [ResourceService::STATE_ALL];
         }
 
         $context = (new Context())

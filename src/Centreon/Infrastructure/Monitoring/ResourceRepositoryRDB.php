@@ -141,7 +141,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
-    public function findResources(?string $filterState): array
+    public function findResources(?array $filterState): array
     {
         $resources = [];
 
@@ -245,10 +245,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * Prepare SQL query for services
      *
      * @param StatementCollector $collector
-     * @param string $filterState
+     * @param array $filterState
      * @return string
      */
-    protected function prepareQueryForServiceResources(StatementCollector $collector, ?string $filterState): string
+    protected function prepareQueryForServiceResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
             s.service_id AS `id`,
@@ -338,19 +338,29 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql .= ' s.enabled = 1';
 
         // apply the state filter to SQL query
-        switch ($filterState) {
-            case ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS:
-                $sql .= " AND (s.state_type = '1'"
+        if ($filterState && !in_array(ResourceServiceInterface::STATE_ALL, $filterState)) {
+            $sqlState = [];
+            $sqlStateCatalog = [
+                ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(s.state_type = '1'"
                     . " AND s.acknowledged = 0"
                     . " AND s.scheduled_downtime_depth = 0"
                     . " AND sh.acknowledged = 0"
                     . " AND sh.scheduled_downtime_depth = 0"
                     . " AND s.state != 0"
-                    . " AND s.state != 4)";
-                break;
-            case ResourceServiceInterface::STATE_RESOURCES_PROBLEMS:
-                $sql .= ' AND (s.state != 0 AND s.state != 4)';
-                break;
+                    . " AND s.state != 4)",
+                ResourceServiceInterface::STATE_RESOURCES_PROBLEMS => '(s.state != 0 AND s.state != 4)',
+                ResourceServiceInterface::STATE_IN_DOWNTIME => '(s.scheduled_downtime_depth = 1'
+                    . ' OR sh.scheduled_downtime_depth = 1)',
+                ResourceServiceInterface::STATE_ACKNOWLEDGED => '(s.acknowledged = 1 OR sh.acknowledged = 1)',
+            ];
+
+            foreach ($filterState as $state) {
+                $sqlState[] = $sqlStateCatalog[$state];
+            }
+
+            if ($sqlState) {
+                $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
+            }
         }
 
         // group by the service ID to preventing the duplication
@@ -363,10 +373,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * Prepare SQL query for hosts
      *
      * @param StatementCollector $collector
-     * @param string $filterState
+     * @param array $filterState
      * @return string
      */
-    protected function prepareQueryForHostResources(StatementCollector $collector, ?string $filterState): string
+    protected function prepareQueryForHostResources(StatementCollector $collector, ?array $filterState): string
     {
         $sql = "SELECT
             h.host_id AS `id`,
@@ -444,17 +454,26 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $collector->addValue(':hostModule', '_Module_%');
 
         // apply the state filter to SQL query
-        switch ($filterState) {
-            case ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS:
-                $sql .= " AND (h.state_type = '1'"
+        if ($filterState && !in_array(ResourceServiceInterface::STATE_ALL, $filterState)) {
+            $sqlState = [];
+            $sqlStateCatalog = [
+                ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(h.state_type = '1'"
                     . " AND h.acknowledged = 0"
                     . " AND h.scheduled_downtime_depth = 0"
                     . " AND h.state != 0"
-                    . " AND h.state != 4)";
-                break;
-            case ResourceServiceInterface::STATE_RESOURCES_PROBLEMS:
-                $sql .= ' AND (h.state != 0 AND h.state != 4)';
-                break;
+                    . " AND h.state != 4)",
+                ResourceServiceInterface::STATE_RESOURCES_PROBLEMS => '(h.state != 0 AND h.state != 4)',
+                ResourceServiceInterface::STATE_IN_DOWNTIME => 'h.scheduled_downtime_depth = 1',
+                ResourceServiceInterface::STATE_ACKNOWLEDGED => 'h.acknowledged = 1',
+            ];
+
+            foreach ($filterState as $state) {
+                $sqlState[] = $sqlStateCatalog[$state];
+            }
+
+            if ($sqlState) {
+                $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
+            }
         }
 
         // prevent duplication

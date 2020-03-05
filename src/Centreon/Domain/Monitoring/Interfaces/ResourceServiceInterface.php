@@ -35,6 +35,16 @@ interface ResourceServiceInterface
     public const STATE_RESOURCES_PROBLEMS = 'resources_problems';
 
     /**
+     * Resources in downtime
+     */
+    public const STATE_IN_DOWNTIME = 'in_downtime';
+
+    /**
+     * Acknowledged resources
+     */
+    public const STATE_ACKNOWLEDGED = 'acknowledged';
+
+    /**
      * All status & resources
      */
     public const STATE_ALL = 'all';
@@ -45,15 +55,17 @@ interface ResourceServiceInterface
     public const STATES = [
         self::STATE_UNHANDLED_PROBLEMS,
         self::STATE_RESOURCES_PROBLEMS,
+        self::STATE_IN_DOWNTIME,
+        self::STATE_ACKNOWLEDGED,
         self::STATE_ALL,
     ];
 
     /**
      * Find all resources.
      *
-     * @param string $filterState
+     * @param array $filterState
      * @return \Centreon\Domain\Monitoring\Resource[]
      * @throws \Exception
      */
-    public function findResources(?string $filterState): array;
+    public function findResources(?array $filterState): array;
 }
