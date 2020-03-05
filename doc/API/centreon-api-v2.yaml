@@ -1708,9 +1708,9 @@ components:
         example: '[13, 22, 31]'
     ResourceFilterServicegroupId:
       in: query
-      name: hostgroup_ids
+      name: servicegroup_ids
       required: false
-      description: "Filter the resources by host group ID"
+      description: "Filter the resources by service group ID"
       schema:
         type: array
         items:
