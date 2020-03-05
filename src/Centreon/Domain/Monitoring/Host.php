@@ -1186,10 +1186,12 @@ class Host implements EntityDescriptorMetadataInterface
 
     /**
      * @param bool|null $flapping
+     * @return Host
      */
-    public function setFlapping(?bool $flapping): void
+    public function setFlapping(?bool $flapping): Host
     {
         $this->flapping = $flapping;
+        return $this;
     }
 
     /**
