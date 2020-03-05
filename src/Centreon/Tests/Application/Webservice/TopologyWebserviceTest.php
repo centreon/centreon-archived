@@ -44,6 +44,7 @@ use Centreon\Tests\Resource\Traits;
 use Centreon\Tests\Resource\Dependency;
 use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
+use Centreon\Tests\Resource\CheckPoint;
 use Centreon\ServiceProvider;
 use CentreonUser;
 
@@ -92,10 +93,22 @@ class TopologyWebserviceTest extends TestCase
 
     public function testGetGetTopologyByPage()
     {
+        $marker = __METHOD__;
+        $checkpoint = (new CheckPoint)
+            ->add($marker);
+
         $_GET['topology_page'] = 1;
-        $this->db->addResultSet("SELECT * FROM `topology` WHERE `topology_page` = :id", [['k']]);
+        $this->db->addResultSet(
+            "SELECT * FROM `topology` WHERE `topology_page` = :id",
+            [['k']],
+            null,
+            function () use ($checkpoint, $marker) {
+                $checkpoint->mark($marker);
+            }
+        );
 
         $this->webservice->getGetTopologyByPage();
+        $checkpoint->assert($this);
     }
 
     /**

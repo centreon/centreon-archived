@@ -40,10 +40,12 @@
 		<div class='portlet invisible-portlet'></div>
 	</div>
 	{else}
-
 		<div class="info_box">
             <h4><img src='./img/icones/16x16/help_button.png'> {$error_msg}</h4>
         </div>
-
 	{/if}
 </div>
+
+<script type="text/javascript">
+	{include file='./widgetScript.js'}
+</script>

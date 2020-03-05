@@ -548,6 +548,7 @@ p.description a, p.description a:visited {
     font-size: 10px;
     font-weight: bold;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .badge a            {
@@ -2789,4 +2790,50 @@ ul.module_list {
   display: inline-block;
   white-space: nowrap;
   margin-right: 10px;
+}
+
+#installationContent .accordion {
+  background-color: #d6d5d5;
+  color: #444;
+  cursor: pointer;
+  padding: 5px;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+#contentwrapper div.section {
+  padding: 0 10px;
+}
+
+#contentwrapper > div:not(:nth-child(2)) div.section {
+  display: none;
+  padding: 0 10px;
+  background-color: #d6d5d5;
+  overflow: hidden;
+}
+
+.accordion h1:hover {
+  background-color: #c3c3c3;
+  cursor: pointer;
+}
+
+.portlet-header {
+    height: 14px;
+}
+
+.portlet-header input {
+    padding-bottom: 0;
+    padding-top: 0;
+    border: 0;
+    background-color: rgba(239,239,239, 0.8);
+    width: auto;
+    line-height: 13px;
+}
+
+.portlet-header form {
+    padding: 0;
+    margin: 0;
+    line-height: 14px;
 }

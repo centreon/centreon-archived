@@ -65,7 +65,7 @@ class EntityMock implements Mapping\MetadataInterface
     }
 
     /**
-     * @param type $id
+     * @param string|int $id
      * @return void
      */
     public function setId($id): void

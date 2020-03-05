@@ -25,6 +25,16 @@ Be sure that you have fully backed up your environment for the following servers
 Upgrading the Centreon Central Server
 *************************************
 
+Updating the operating system
+=============================
+
+Remember to update your operating system via the command: ::
+
+    # yum update
+
+.. note::
+    Accept all GPG keys and consider rebooting your server if a kernel update is proposed.
+
 Upgrading the Centreon Repository
 =================================
 
@@ -57,6 +67,9 @@ The PHP timezone should be set. Run the command: ::
 
 .. note::
     Change **Europe/Paris** to your timezone.
+
+.. warning::
+    Don't forget your php-fpm specific configuration that you may have set in the /etc/opt/rh/rh-php71/php.ini and/or /etc/opt/rh/rh-php71/php-fpm.d/centreon.conf
 
 Run the following commands: ::
 

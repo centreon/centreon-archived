@@ -50,7 +50,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
@@ -83,7 +85,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     const DEFAULT_API_HEADER_NAME = "version";
 
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     private $container;
 
@@ -107,9 +109,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
-     * @return array The event names to listen to
+     * @return mixed[] The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [
@@ -120,7 +122,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 ['addApiVersion', 10]
             ],
             KernelEvents::EXCEPTION => [
-                ['onKernelException', 10]
+                ['onKernelException', -10]
             ]
         ];
     }
@@ -130,7 +132,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      *
      * @param ResponseEvent $event
      */
-    public function addApiVersion(ResponseEvent $event)
+    public function addApiVersion(ResponseEvent $event): void
     {
         $defaultApiVersion = self::DEFAULT_API_VERSION;
         $defaultApiHeaderName = self::DEFAULT_API_HEADER_NAME;
@@ -197,7 +199,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     }
                 }
             }
-            $this->requestParameters->setSearch(json_encode($search));
+            if ($json = json_encode($search)) {
+                $this->requestParameters->setSearch($json);
+            }
         }
 
         /**
@@ -228,7 +232,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      *
      * @param RequestEvent $event
      */
-    public function defineApiVersionInAttributes(RequestEvent $event)
+    public function defineApiVersionInAttributes(RequestEvent $event): void
     {
         if ($this->container->hasParameter('api.version.latest')) {
             $latestVersion = $this->container->getParameter('api.version.latest');
@@ -283,7 +287,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      *
      * @param ExceptionEvent $event
      */
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         $flagController = 'Controller';
         $errorIsBeforeController = true;
@@ -304,10 +308,16 @@ class CentreonEventSubscriber implements EventSubscriberInterface
          * we create a custom error message.
          * If we don't do that a HTML error will appeared.
          */
-        if ($errorIsBeforeController && $event->getException()->getCode() !== 403) {
-            $errorCode = $event->getException()->getCode() > 0
-                ? $event->getException()->getCode()
-                : Response::HTTP_INTERNAL_SERVER_ERROR;
+        if ($errorIsBeforeController) {
+            if ($event->getException()->getCode() !== 403) {
+                $errorCode = $event->getException()->getCode() > 0
+                    ? $event->getException()->getCode()
+                    : Response::HTTP_INTERNAL_SERVER_ERROR;
+                $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            } else {
+                $errorCode = $event->getException()->getCode();
+                $statusCode = Response::HTTP_FORBIDDEN;
+            }
 
             // Manage exception outside controllers
             $event->setResponse(
@@ -316,17 +326,20 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                         'code' => $errorCode,
                         'message' => $event->getException()->getMessage()
                     ]),
-                    Response::HTTP_INTERNAL_SERVER_ERROR
+                    $statusCode
                 )
             );
-        } elseif (!$errorIsBeforeController) {
+        } else {
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
             $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
 
             if ($event->getException() instanceof EntityNotFoundException) {
-                $errorMessage = null;
+                $errorMessage = json_encode([
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'message' => $event->getException()->getMessage()
+                ]);
                 $httpCode = Response::HTTP_NOT_FOUND;
             } elseif ($event->getException() instanceof ValidationFailedException) {
                 $errorMessage = json_encode([
@@ -342,6 +355,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
+            } elseif ($event->getException() instanceof AccessDeniedException) {
+                $httpCode = $event->getException()->getCode();
+                $errorMessage = null;
             } elseif (get_class($event->getException()) == \Exception::class) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,

@@ -41,7 +41,7 @@ if ($configFile !== false) {
 
 require_once dirname(__FILE__) . '/backend.class.php';
 require_once dirname(__FILE__) . '/abstract/object.class.php';
-require_once dirname(__FILE__) . '/abstract/objectXML.class.php';
+require_once dirname(__FILE__) . '/abstract/objectJSON.class.php';
 require_once dirname(__FILE__) . '/hosttemplate.class.php';
 require_once dirname(__FILE__) . '/command.class.php';
 require_once dirname(__FILE__) . '/timeperiod.class.php';
@@ -65,7 +65,6 @@ require_once dirname(__FILE__) . '/meta_service.class.php';
 require_once dirname(__FILE__) . '/resource.class.php';
 require_once dirname(__FILE__) . '/engine.class.php';
 require_once dirname(__FILE__) . '/broker.class.php';
-require_once dirname(__FILE__) . '/correlation.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
 
 class Generate
@@ -180,7 +179,6 @@ class Generate
         Resource::getInstance($this->dependencyInjector)->reset();
         Engine::getInstance($this->dependencyInjector)->reset();
         Broker::getInstance($this->dependencyInjector)->reset();
-        Correlation::getInstance($this->dependencyInjector)->reset();
         $this->resetModuleObjects();
     }
 
@@ -200,13 +198,6 @@ class Generate
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->backend_instance->initPath($this->current_poller['id'], 2);
-        # Correlation files are always generated on central poller
-        if (Correlation::getInstance($this->dependencyInjector)->hasCorrelation()) {
-            Correlation::getInstance($this->dependencyInjector)->generateFromPollerId(
-                $this->current_poller['id'],
-                $this->current_poller['localhost']
-            );
-        }
         $this->generateModuleObjects(2);
         Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);

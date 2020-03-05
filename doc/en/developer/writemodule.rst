@@ -10,10 +10,10 @@ and the uninstallation of modules (*Administration > Modules*). To
 make the module appears on this page, its directory must be placed
 inside Centreon's ``modules/`` directory. Example::
 
-  /usr/local/centreon/www/modules/module-Dummy
+  /usr/share/centreon/www/modules/dummy
 
 An empty module template can be found inside `Centreon's repository
-<http://svn.centreon.com/trunk/module-Dummy>`_.
+<https://github.com/centreon/centreon-dummy>`_.
 
 *****
 Basis
@@ -26,7 +26,7 @@ The essential elements your module's directory must contain are presented below 
   // Short module's name. Must be equal to your module's directory name
   $module_conf['dummy']['name'] = "dummy"; 
   // Full module's name
-  $module_conf['dummy']['rname'] = "Dummy Module";
+  $module_conf['dummy']['rname'] = "Dummy Example Module";
   // Module's version
   $module_conf['dummy']['mod_release'] = "2.0"; 
   // Additional information
@@ -35,65 +35,49 @@ The essential elements your module's directory must contain are presented below 
   $module_conf['dummy']['is_removeable'] = "1"; 
   // Module author's name
   $module_conf['dummy']['author'] = "Centreon Team"; 
-  // 1: the module executes an SQL file for installation and/or uninstallation
-  // 0: the module doesn't execute any SQL file
-  $module_conf['dummy']['sql_files'] = "1"; 
-  // 1: the module executes a PHP file for installation and/or uninstallation
-  // 0: the module doesn't execute any SQL file
-  $module_conf['dummy']['php_files'] = "1"; 
 
-**[infos > infos.txt]**
+**[php / install.php]**
 
-This file can contain various information about your module.
+This PHP file is executed at module installation if existing.
 
-**[php > install.php]**
+**[php / uninstall.php]**
 
-This PHP file is executed at module installation if it is configured
-inside the *conf.php* file.
+This PHP file is executed at module uninstallation if existing.
 
-**[php > uninstall.php]**
+**[sql / install.sql]**
 
-This PHP file is executed at module uninstallation if it is configured
-inside the *conf.php* file.
+This SQL file is executed during the module installation if existing.
+If you want your module to be available from Centreon menus, you must
+insert new entries into the ``topology`` table of the ``centreon``
+database. An example is available inside the ``Dummy`` module.
 
-**[sql > install.sql]**
+**[sql / uninstall.sql]**
 
-This SQL file is executed during the module installation if it is
-configured inside the *conf.php* file. If you want your module to be
-available from Centreon menus, you must insert new entries into the
-``topology`` table of the ``centreon`` database. An example is
-available inside the ``Dummy`` module.
+This SQL file is executed during the module uninstallation if existing.
+It should also remove your module from Centreon menus.
 
-**[sql > uninstall.sql]**
-
-This SQL file is executed during the module uninstallation if it is
-configured inside the *conf.php* file. It can also remove your module
-from Centreon menus.
-
-**[generate_files > \*.php]**
+**[generate_files / \*.php]**
 
 The PHP files contained inside the ``generate_files`` directory will
 be executed during the monitoring engine configuration files generation (inside
 *Configuration > Monitoring Engines*). Those files must generate
 configuration files.
 
-**[UPGRADE > dummy-x.x > sql > upgrade.sql]**
+**[update / x.y.z / sql / upgrade.sql]**
 
 Centreon provides an upgrade system for modules. To use it, just add a
-directory under ``UPGRADE`` named using the following pattern:
-``<module name>-<version>``. When clicking on the upgrade button,
-Centreon will search for scripts to execute, following the logical
-order of versions.
+directory under ``upgrade`` named by the target version. When clicking
+on the upgrade button from the interface, Centreon will search for
+scripts to execute, ordering version following PHP's *version_compare()*
+function.
 
 For example, if the version 1.0 of the dummy module is installed and
 the following directories exist::
 
-  $ ls UPGRADE
-  dummy-1.1 dummy-1.2
+  $ ls upgrade
+  1.1 1.2
 
-Centreon will execute the scripts in the following order : 1.1, 1.2. A
-configuration file in each upgrade directory is present in order to
-allow (or not) the execution.
+Centreon will execute the scripts in the following order : 1.1, 1.2.
 
 You're free to organize the remaining files (your module's content) as
 you like.

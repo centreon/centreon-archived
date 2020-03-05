@@ -38,7 +38,6 @@ namespace Centreon\Tests\Resource\Dependency;
 
 use Pimple\Container;
 use Centreon\ServiceProvider;
-use Centreon\Test\Mock\CentreonDBManagerService;
 
 /**
  * Container provider for Centreon\Infrastructure\Service\CentreonDBManagerService
@@ -66,7 +65,7 @@ trait CentreonDbManagerDependencyTrait
      */
     public function setUpCentreonDbManager(Container $container)
     {
-
-        $container[ServiceProvider::CENTREON_DB_MANAGER] = new CentreonDBManagerService;
+        $container[ServiceProvider::CENTREON_DB_MANAGER] =
+            loadDependencyInjector()[ServiceProvider::CENTREON_DB_MANAGER];
     }
 }

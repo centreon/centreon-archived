@@ -113,6 +113,7 @@ INSTANCE;setparam;Central;centreonconnector_path;/usr/lib64/centreon-connector
 INSTANCE;setparam;Central;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;Central;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
 INSTANCE;setparam;Central;remote_server_centcore_ssh_proxy;1
+INSTANCE;setparam;Central;updated;0
 INSTANCE;ADD;test_poller;127.0.0.1;22
 INSTANCE;setparam;test_poller;localhost;0
 INSTANCE;setparam;test_poller;is_default;0
@@ -132,6 +133,7 @@ INSTANCE;setparam;test_poller;centreonconnector_path;/usr/lib64/centreon-connect
 INSTANCE;setparam;test_poller;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;test_poller;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
 INSTANCE;setparam;test_poller;remote_server_centcore_ssh_proxy;1
+INSTANCE;setparam;test_poller;updated;0
 TP;ADD;24x7;Always
 TP;setparam;24x7;tp_sunday;00:00-24:00
 TP;setparam;24x7;tp_monday;00:00-24:00
@@ -431,10 +433,9 @@ RESOURCECFG;setparam;2;activate;1
 RESOURCECFG;ADD;$USER1$;/usr/lib64/nagios/plugins;Central;Nagios Plugins Path
 RESOURCECFG;setparam;1;activate;1
 CENTBROKERCFG;ADD;central-broker-master;Central
-CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.xml
+CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.json
 CENTBROKERCFG;SETPARAM;central-broker-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
-CENTBROKERCFG;SETPARAM;central-broker-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;1;type;ipv4
@@ -490,10 +491,9 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;3;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;check_replication;no
 CENTBROKERCFG;ADD;central-module-master;Central
-CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.xml
+CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.json
 CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-engine
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
-CENTBROKERCFG;SETPARAM;central-module-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
 CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
 CENTBROKERCFG;SETLOGGER;central-module-master;1;type;file
@@ -514,10 +514,9 @@ CENTBROKERCFG;SETOUTPUT;central-module-master;1;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;tls;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;compression;no
 CENTBROKERCFG;ADD;central-rrd-master;Central
-CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.xml
+CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.json
 CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
-CENTBROKERCFG;SETPARAM;central-rrd-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;type;ipv4
@@ -550,7 +549,6 @@ ENGINECFG;setparam;Centreon Engine Central;log_file;/var/log/centreon-engine/cen
 ENGINECFG;setparam;Centreon Engine Central;cfg_dir;/etc/centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/centengine.tmp
 ENGINECFG;setparam;Centreon Engine Central;status_file;/var/log/centreon-engine/status.dat
-ENGINECFG;setparam;Centreon Engine Central;use_check_result_path;0
 ENGINECFG;setparam;Centreon Engine Central;nagios_user;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;nagios_group;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;enable_notifications;1
@@ -629,13 +627,12 @@ ENGINECFG;setparam;Centreon Engine Central;debug_verbosity;2
 ENGINECFG;setparam;Centreon Engine Central;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central;enable_macros_filter;0
-ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
+ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
 ENGINECFG;ADD;Centreon Engine Central_1;test_poller;Centreon Engine
 ENGINECFG;setparam;Centreon Engine Central_1;log_file;/var/log/centreon-engine/centengine.log
 ENGINECFG;setparam;Centreon Engine Central_1;cfg_dir;/etc/centreon-engine
 ENGINECFG;setparam;Centreon Engine Central_1;temp_file;/var/log/centreon-engine/centengine.tmp
 ENGINECFG;setparam;Centreon Engine Central_1;status_file;/var/log/centreon-engine/status.dat
-ENGINECFG;setparam;Centreon Engine Central_1;use_check_result_path;0
 ENGINECFG;setparam;Centreon Engine Central_1;nagios_user;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central_1;nagios_group;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central_1;enable_notifications;1
@@ -714,7 +711,7 @@ ENGINECFG;setparam;Centreon Engine Central_1;debug_verbosity;2
 ENGINECFG;setparam;Centreon Engine Central_1;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central_1;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central_1;enable_macros_filter;0
-ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
+ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
 CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n
@@ -5030,6 +5027,7 @@ HOST;setparam;Centreon-Server;timezone;0
 HOST;setparam;Centreon-Server;host_locked;0
 HOST;setparam;Centreon-Server;host_register;1
 HOST;setparam;Centreon-Server;host_activate;1
+HOST;addparent;Centreon-Server;test_host
 HOST;addtemplate;Centreon-Server;generic-host
 HOST;addtemplate;test_host;my_htpl-test
 STPL;ADD;generic-service;generic-service;

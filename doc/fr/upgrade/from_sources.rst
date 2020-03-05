@@ -35,7 +35,6 @@ revenir à l'étape [Step 01] et installer les prérequis : ::
     #                         Centreon (www.centreon.com)                         #
     #                          Thanks for using Centreon                          #
     #                                                                             #
-    #                                    vYY.MM.x                                 #
     #                                                                             #
     #                               infos@centreon.com                            #
     #                                                                             #
@@ -111,13 +110,13 @@ Le chemin vers les binaires de centreon : ::
 Le chemin des données supplémentaires de Centreon Web : ::
 
    Where is your Centreon data information directory
-   default to [/usr/local/centreon/data]
+   default to [/usr/share/centreon/data]
    >
 
-   Do you want me to create this directory ? [/usr/local/centreon/data]
+   Do you want me to create this directory ? [/usr/share/centreon/data]
    [y/n], default to [n]:
    > y
-   Path /usr/local/centreon/data
+   Path /usr/share/centreon/data
    /usr/bin/composer                                          OK
    /usr/bin/perl                                              OK
    Check PHP version                                          OK
@@ -271,7 +270,7 @@ Configuration d'Apache
    ------------------------------------------------------------------------
    		Centreon Post Install
    ------------------------------------------------------------------------
-   Create /usr/local/centreon/www/install/install.conf.php    OK
+   Create /usr/share/centreon/www/install/install.conf.php    OK
    Create /etc/centreon/instCentWeb.conf                      OK
 
 Mise à jour de Centreon Storage

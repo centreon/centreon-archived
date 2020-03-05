@@ -23,6 +23,8 @@ namespace Centreon\Domain\Engine\Interfaces;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Check\Check;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
@@ -62,7 +64,7 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function scheduleForcedHostCheck(Host $host): void;
 
     /**
-     * Disacknowledge a host acknowledgement.
+     * Disacknowledge a host.
      *
      * @param Host $host Host to disacknowledge
      * @throws EngineException
@@ -71,11 +73,65 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function disacknowledgeHost(Host $host): void;
 
     /**
-     * Disacknowledge a service acknowledgement.
+     * Disacknowledge a service.
      *
      * @param Service $service Service to disacknowledge
      * @throws EngineException
      * @throws \Exception
      */
     public function disacknowledgeService(Service $service): void;
+
+    /**
+     * Add a downtime on a host.
+     *
+     * @param Downtime $downtime Downtime to add on the host
+     * @param Host $host Host for which we want to add the downtime
+     * @throws \Exception
+     */
+    public function addHostDowntime(Downtime $downtime, Host $host): void;
+
+    /**
+     * Add a downtime on a service.
+     *
+     * @param Downtime $downtime Downtime to add
+     * @param Service $service Service for which we want to add a downtime
+     * @throws \Exception
+     */
+    public function addServiceDowntime(Downtime $downtime, Service $service): void;
+
+    /**
+     * Add a downtime on a list of services.
+     *
+     * @param Downtime $downtime Downtime to add
+     * @param Service[] $services List of service for which we want to add a downtime
+     * @throws \Exception
+     */
+    public function addServicesDowntime(Downtime $downtime, array $services): void;
+
+    /**
+     * Cancel a downtime.
+     *
+     * @param Downtime $downtime Downtime to cancel
+     * @param Host $host Downtime-related host
+     * @throws \Exception
+     */
+    public function cancelDowntime(Downtime $downtime, Host $host): void;
+
+    /**
+     * Schedule a host check.
+     *
+     * @param Check $check Check to schedule
+     * @param Host $host Host on which check is scheduled
+     * @throws \Exception
+     */
+    public function scheduleHostCheck(Check $check, Host $host): void;
+
+    /**
+     * Schedule a service check.
+     *
+     * @param Check $check Check to schedule
+     * @param Service $service Service on which check is scheduled
+     * @throws \Exception
+     */
+    public function scheduleServiceCheck(Check $check, Service $service): void;
 }

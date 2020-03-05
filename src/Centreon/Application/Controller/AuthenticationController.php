@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -22,9 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -53,9 +54,6 @@ class AuthenticationController extends AbstractFOSRestController
      * annotation Rest\View(populateDefaultVars=false), otherwise it's not
      * necessary).
      *
-     * @Rest\Post("/login")
-     * @Rest\View(populateDefaultVars=false)
-     *
      * @param Request $request
      * @return array
      * @throws \Exception
@@ -68,32 +66,32 @@ class AuthenticationController extends AbstractFOSRestController
         } catch (\Exception $ex) {
             // We don't propagate this error
         }
+
         $contentBody = json_decode($request->getContent(), true);
         $username = $contentBody['security']['credentials']['login'] ?? '';
         $password = $contentBody['security']['credentials']['password'] ?? '';
         $contact = $this->auth->findContactByCredentials($username, $password);
-        if (null !== $contact) {
-            return [
-                'contact'=> [
-                    'id' => $contact->getId(),
-                    'name' => $contact->getName(),
-                    'alias' => $contact->getAlias(),
-                    'email' => $contact->getEmail(),
-                    'is_admin' => $contact->isAdmin()
-                ],
-                'security' => [
-                    'token' => $this->auth->generateToken($contact->getAlias())
-                ]
-            ];
+
+        if (!$contact) {
+            throw new HttpException(Response::HTTP_UNAUTHORIZED, "Invalid credentials");
         }
-        throw new HttpException(401, "Invalid credentials");
+
+        return $this->json([
+            'contact' => [
+                'id' => $contact->getId(),
+                'name' => $contact->getName(),
+                'alias' => $contact->getAlias(),
+                'email' => $contact->getEmail(),
+                'is_admin' => $contact->isAdmin()
+            ],
+            'security' => [
+                'token' => $this->auth->generateToken($contact->getAlias())
+            ]
+        ]);
     }
 
     /**
      * Entry point used to delete an existing authentication token.
-     *
-     * @Rest\Get("/logout")
-     * @Rest\View(populateDefaultVars=false)
      *
      * @param Request $request
      * @return array
@@ -107,12 +105,16 @@ class AuthenticationController extends AbstractFOSRestController
         } catch (\Exception $ex) {
             // We don't propagate this error
         }
+
         try {
             $token = $request->headers->get('X-AUTH-TOKEN');
             $this->auth->logout($token);
-            return ['message' => 'Successful logout'];
+
+            return $this->json([
+                'message' => 'Successful logout'
+            ]);
         } catch (\Exception $ex) {
-            throw new \RestException($ex->getMessage());
+            throw new \RestException($ex->getMessage(), $ex->getCode(), $ex);
         }
     }
 }

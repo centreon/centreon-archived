@@ -145,12 +145,8 @@ class HostGroup extends AbstractObject
      */
     public function reset($createfile = false): void
     {
+        $this->hg = [];
         parent::reset($createfile);
-        foreach ($this->hg as &$value) {
-            if (!is_null($value)) {
-                $value['members'] = [];
-            }
-        }
     }
 
     /**

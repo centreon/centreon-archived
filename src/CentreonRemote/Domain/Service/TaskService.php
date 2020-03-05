@@ -158,7 +158,8 @@ class TaskService
             } else {
                 $url = ($httpMethod ?? 'http') . '://' . $serverIp . ($httpPort ? ':' . $httpPort : '');
             }
-            $url .= '/' . $centreonFolder . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
+            $url .= '/' . $centreonFolder
+                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
 
             $result = $this->centreonRestHttp->call(
                 $url,
@@ -184,8 +185,10 @@ class TaskService
      */
     public function getStatusByParent(int $parentId)
     {
-        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)
+        $task = $this->getDbManager()->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
             ->findOneByParentId($parentId);
+
         return $task ? $task->getStatus() : null;
     }
 
@@ -199,12 +202,19 @@ class TaskService
      */
     public function updateStatus(string $taskId, string $status)
     {
-        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDbManager()
+            ->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
+            ->findOneById($taskId);
+
         if (!in_array($status, $task->getStatuses())) {
             return false;
         }
 
-        $result = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->updateStatus($status, $taskId);
+        $result = $this->getDbManager()
+            ->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
+            ->updateStatus($status, $taskId);
         return $result;
     }
 }

@@ -56,7 +56,6 @@ echo _("Enable or not debug messages logging.");
 echo _("Enable or not error messages logging.");
 echo _("Name of the input or output object that will act as failover.");
 echo _("File where Centreon Broker statistics will be stored");
-echo _("Path to the correlation file which holds host, services, dependencies and parenting definitions.");
 echo _("IP address or hostname of the host to connect to (leave blank for listening mode).");
 echo _("Enable or not informational messages logging.");
 echo _("Whether or not Broker should create entries in the index_data table.
@@ -84,7 +83,6 @@ echo _("Public certificate file path when TLS encryption is used.");
 echo _("The maximum queries per transaction before commit.");
 echo _("The transaction timeout before running commit.");
 echo _("The interval between check if some metrics must be rebuild. The default value is 300s");
-echo _("File where correlation state will be stored during correlation engine restart");
 echo _("Time in seconds to wait between each connection attempt.");
 echo _("RRD file directory, for example /var/lib/centreon/status");
 echo _("It should be enabled to control whether or not Centreon Broker
@@ -92,3 +90,4 @@ echo _("It should be enabled to control whether or not Centreon Broker
 echo _("Enable TLS encryption.");
 echo _("This can be used to disable graph update and therefore reduce I/O");
 echo _("This can be used to disable graph update and therefore reduce I/O");
+echo _("Usually cpus/2.");

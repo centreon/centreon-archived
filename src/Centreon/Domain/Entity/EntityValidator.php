@@ -40,6 +40,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EntityValidator
 {
+    public const ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_HOST_ACK = ['add_host_ack'];
+    public const ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_SERVICE_ACK = ['add_service_ack'];
+    public const DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME = ['Default'];
+
     /**
      * @var ValidatorInterface
      */
@@ -48,6 +52,10 @@ class EntityValidator
      * @var bool
      */
     private $allowExtraFields;
+    /**
+     * @var bool
+     */
+    private $allowMissingFields;
 
     /**
      * EntityValidator constructor.
@@ -104,22 +112,26 @@ class EntityValidator
      * @param string $entityName Entity name
      * @param array $dataToValidate Data to validate
      * @param array $groups Rule groups
-     * @param bool $allowExtraFields If TRUE, errors will show on not expected fields
+     * @param bool $allowExtraFields If TRUE, errors will show on not expected fields (by default)
+     * @param bool $allowMissingFields If FALSE, errors will show on missing fields (by default)
      * @return ConstraintViolationListInterface
      */
     public function validateEntity(
         string $entityName,
         array $dataToValidate,
         array $groups = ['Default'],
-        bool $allowExtraFields = true
+        bool $allowExtraFields = true,
+        bool $allowMissingFields = false
     ): ConstraintViolationListInterface {
         if (empty($groups)) {
             $groups[] = Constraint::DEFAULT_GROUP;
         }
         $this->allowExtraFields = $allowExtraFields;
+        $this->allowMissingFields = $allowMissingFields;
         $violations = new ConstraintViolationList();
         if ($this->hasValidatorFor($entityName)) {
             $assertCollection = $this->getConstraints($entityName, $groups, true);
+
             $violations->addAll(
                 $this->validator->validate(
                     $dataToValidate,
@@ -208,7 +220,8 @@ class EntityValidator
         if ($firstCall) {
             return new Collection([
                 'fields' => $constraints,
-                'allowExtraFields' => $this->allowExtraFields
+                'allowExtraFields' => $this->allowExtraFields,
+                'allowMissingFields' => $this->allowMissingFields
             ]);
         } else {
             return new Collection($constraints);
@@ -222,14 +235,18 @@ class EntityValidator
     private function removeDuplicatedViolation(
         ConstraintViolationListInterface $violations
     ): ConstraintViolationListInterface {
-        $violationCodes = [];
         /**
          * @var $violation ConstraintViolationInterface
          */
-        for ($index = 0; $index < count($violations); $index++) {
-            $violation = $violations[$index];
-            if (!in_array($violation->getCode(), $violationCodes)) {
-                $violationCodes[] = $violation->getCode();
+        $violationCodes = [];
+        foreach ($violations as $index => $violation) {
+            if (!array_key_exists($violation->getPropertyPath(), $violationCodes)
+                || (
+                    isset($violationCodes[$violation->getPropertyPath()])
+                    && !in_array($violation->getCode(), $violationCodes[$violation->getPropertyPath()])
+                    )
+            ) {
+                $violationCodes[$violation->getPropertyPath()][] = $violation->getCode();
             } else {
                 $violations->remove($index);
             }
@@ -268,13 +285,13 @@ class EntityValidator
         /**
          * @var $violation ConstraintViolationInterface
          */
-        for ($index = 0; $index < count($violations); $index++) {
-            $violation = $violations[$index];
+        foreach ($violations as $violation) {
             if (!empty($errorMessages)) {
                 $errorMessages .= "\n";
             }
             $propertyName = $violation->getPropertyPath();
             if ($propertyName[0] == '[' && $propertyName[strlen($propertyName) - 1] == ']') {
+                $propertyName = str_replace('][', '.', $propertyName);
                 $propertyName = substr($propertyName, 1, -1);
             }
             $errorMessages .= sprintf(

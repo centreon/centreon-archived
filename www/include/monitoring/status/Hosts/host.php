@@ -431,7 +431,6 @@ $tpl->display("host.ihtml");
 
     function preInit() {
         _keyPrefix = '<?= $keyPrefix; ?>';
-        _sid = '<?= $sid ?>';
         _tm = <?= $tM ?>;
         _o = '<?= $o; ?>';
         _sDefaultOrder = '<?= $sDefaultOrder; ?>';
@@ -469,12 +468,12 @@ $tpl->display("host.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function statusHosts(value, isInit) {

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-shadow */
@@ -7,7 +8,7 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import styles from './header.scss';
 
-import Hook from '../hook';
+import Hook from '../Hook';
 
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
 
@@ -64,7 +65,4 @@ const mapDispatchToProps = {
   setRefreshIntervals,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TopHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(TopHeader);

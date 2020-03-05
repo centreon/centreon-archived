@@ -45,6 +45,10 @@ include_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 $centreonDbName = $conf_centreon['db'];
 $centreonLog = new CentreonLog();
 
+/*
+ * Define the period between two update in second for LDAP user/contactgroup
+ */
+define('LDAP_UPDATE_PERIOD', 3600);
 
 /**
  * CentAcl script
@@ -78,10 +82,7 @@ try {
     if (empty($data)) {
         try {
             // at first run (eg: after the install), data may be missing.
-            $pearDB->query(
-                "INSERT INTO cron_operation (name, system, activate)
-                VALUES ('centAcl.php', '1', '1')"
-            );
+            $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
         } catch (\PDOException $e) {
             programExit("Error can't insert centAcl values in the `cron_operation` table.");
         }
@@ -110,9 +111,31 @@ try {
         programExit($errorMessage);
     }
 
-    $resourceCache = array();
+    /**
+     * Sync ACL with LDAP's contactgroup
+     * If the LDAP is enabled and the last check is greater than the update period
+     *
+     * @TODO : Synchronize LDAP with contacts data in background to avoid it at login
+     */
+    $ldapEnable = '0';
+    $ldapLastUpdate = 0;
+    $queryOptions = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
+    $res = $pearDB->query($queryOptions);
+    while ($row = $res->fetch()) {
+        switch ($row['key']) {
+            case 'ldap_auth_enable':
+                $ldapEnable = $row['value'];
+                break;
+            case 'ldap_last_acl_update':
+                $ldapLastUpdate = $row['value'];
+                break;
+        }
+    }
+    if ($ldapEnable === '1' && $ldapLastUpdate < (time() - LDAP_UPDATE_PERIOD)) {
+        $cgObj->syncWithLdap();
+    }
 
-    /** **********************************************
+    /**
      * Check expected contact data sync on login with the LDAP, depending on last sync time and own sync interval
      */
     $pearDB->beginTransaction();
@@ -143,14 +166,11 @@ try {
         programExit("Error when updating LDAP's reference date for next synchronization");
     }
 
-    // @TODO : Synchronize LDAP with contacts data in background to avoid it at login
-    $cgObj->syncWithLdap();
-
-    /** **********************************************
+    /**
      * Remove data from old groups (deleted groups)
      */
-    $aclGroupToDelete = "SELECT DISTINCT acl_group_id " .
-        "FROM " . $centreonDbName . ".acl_groups WHERE acl_group_activate = '1'";
+    $aclGroupToDelete = "SELECT DISTINCT acl_group_id
+        FROM " . $centreonDbName . ".acl_groups WHERE acl_group_activate = '1'";
     $aclGroupToDelete2 = "SELECT DISTINCT acl_group_id FROM " . $centreonDbName . ".acl_res_group_relations";
     $pearDB->beginTransaction();
     try {
@@ -165,7 +185,7 @@ try {
         );
     }
 
-    /** ***********************************************
+    /**
      * Check if some ACL have global options selected for
      * all the resources
      */
@@ -181,7 +201,6 @@ try {
         /**
          * Add Hosts
          */
-
         if ($row['all_hosts']) {
             $pearDB->beginTransaction();
             try {
@@ -218,7 +237,6 @@ try {
                 );
             }
         }
-
 
         /**
          * Add Hostgroups
@@ -284,7 +302,7 @@ try {
                 while ($rowData = $res1->fetch()) {
                     $stmt = $pearDB->prepare(
                         "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id)
-                        VALUES (:sgIg, :aclResId)"
+                        VALUES (:sgId, :aclResId)"
                     );
                     $stmt->bindValue(':sgId', $rowData['sg_id'], \PDO::PARAM_INT);
                     $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
@@ -316,7 +334,6 @@ try {
      *  if no : go away.
      *  if yes : let's go to build cache and update database
      */
-
     $tabGroups = array();
     $dbResult1 = $pearDB->query(
         "SELECT DISTINCT acl_groups.acl_group_id
@@ -333,9 +350,8 @@ try {
 
     if (count($tabGroups)) {
 
-        /** ***********************************************
+        /**
          *  Cache for hosts and host Templates
-         *
          */
         $hostTemplateCache = [];
         $res = $pearDB->query(
@@ -357,7 +373,7 @@ try {
         }
         unset($h);
 
-        /** ***********************************************
+        /**
          * Cache for host poller relation
          */
         $hostPollerCache = array();
@@ -371,7 +387,7 @@ try {
             $hostPollerCache[$row['nagios_server_id']][$row['host_host_id']] = $row['host_host_id'];
         }
 
-        /** ***********************************************
+        /**
          * Get all included Hosts
          */
         $hostIncCache = [];
@@ -386,7 +402,7 @@ try {
             $hostIncCache[$h["acl_res_id"]][$h["host_host_id"]] = 1;
         }
 
-        /** ***********************************************
+        /**
          * Get all excluded Hosts
          */
         $hostExclCache = [];
@@ -401,7 +417,7 @@ try {
             $hostExclCache[$h["acl_res_id"]][$h["host_host_id"]] = 1;
         }
 
-        /** ***********************************************
+        /**
          * Service Cache
          */
         $svcCache = [];
@@ -413,7 +429,7 @@ try {
             $svcCache[$s["service_id"]] = 1;
         }
 
-        /** ***********************************************
+        /**
          * Host Host relation
          */
         $hostHGRelation = [];
@@ -426,7 +442,7 @@ try {
         }
         unset($hg);
 
-        /** ***********************************************
+        /**
          * Host Service relation
          */
         $hsRelation = [];
@@ -453,7 +469,7 @@ try {
         }
         $dbResult->closeCursor();
 
-        /** ***********************************************
+        /**
          * Create Service template model Cache
          */
         $svcTplCache = [];
@@ -522,17 +538,18 @@ try {
         // Prepare statement
         $deleteHandler = $pearDBO->prepare("DELETE FROM centreon_acl WHERE group_id = ?");
 
-        /** ***********************************************
+        /**
          * Begin to build ACL
          */
         $cpt = 0;
+        $resourceCache = array();
         foreach ($tabGroups as $aclGroupId) {
             /*
              * Delete old data for this group
              */
             $deleteHandler->execute(array($aclGroupId));
 
-            /** ***********************************************
+            /**
              * Select
              */
             $dbResult2 = $pearDB->prepare(
@@ -743,7 +760,7 @@ try {
         }
     }
 
-    /*
+    /**
      * Remove lock
      */
     $dbResult = $pearDB->prepare(

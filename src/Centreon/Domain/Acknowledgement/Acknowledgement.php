@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -21,101 +22,97 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Acknowledgement;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
-class Acknowledgement
+class Acknowledgement implements EntityDescriptorMetadataInterface
 {
+    // Groups for serilizing
+    public const SERIALIZER_GROUP_MAIN = 'ack_main';
+    public const SERIALIZER_GROUP_SERVICE = 'ack_service';
+
+    // Types
     public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
     public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="acknowledgement_id", modifier="setId")
-     * @Serializer\Type("integer")
      * @var int
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Serializer\Type("integer")
      * @var int|null
      */
     private $authorId;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="comment_data", modifier="setComment")
-     * @Serializer\Type("string")
      * @var string|null
      */
     private $comment;
 
     /**
-     * @Serializer\Groups({"ack_main"})
      * @var \DateTime|null
      */
     private $deletionTime;
 
     /**
-     * @Serializer\Groups({"ack_main"})
      * @var \DateTime
      */
     private $entryTime;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Serializer\Type("integer")
      * @var int Host id
      */
     private $hostId;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="instance_id", modifier="setPollerId")
-     * @Serializer\Type("integer")
-     * @var int|null Poller Id
-     */
-    private $pollerId;
-
-    /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="notify_contacts", modifier="setNotifyContacts")
-     * @Serializer\Type("boolean")
-     * @var bool Indicates if the contacts must to be notify
-     */
-    private $isNotifyContacts;
-
-    /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="persistent_comment", modifier="setPersistentComment")
-     * @Serializer\Type("boolean")
-     * @var bool Indicates this acknowledgement will be maintained in the case of a restart of the scheduler
-     */
-    private $isPersistentComment;
-
-    /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="sticky", modifier="setSticky")
-     * @Serializer\Type("boolean")
-     * @var bool
-     */
-    private $isSticky;
-
-    /**
-     * @Serializer\Groups({"ack_service"})
-     * @Serializer\Type("integer")
      * @var int|null Service id
      */
     private $serviceId;
 
     /**
-     * @Serializer\Groups({"ack_main"})*
-     * @Serializer\Type("integer")
-     * @var int State of this acknowledgment
+     * @var int|null Poller Id
+     */
+    private $pollerId;
+
+    /**
+     * @var bool Indicates if the contacts must to be notify
+     */
+    private $isNotifyContacts;
+
+    /**
+     * @var bool Indicates this acknowledgement will be maintained in the case of a restart of the scheduler
+     */
+    private $isPersistentComment;
+
+    /**
+     * @var bool
+     */
+    private $isSticky;
+
+    /**
+     * @var int State of this acknowledgement
      */
     private $state;
+
+    /**
+     * @var int Type of this acknowledgement
+     */
+    private $type;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'acknowledgement_id' => 'setId',
+            'comment_data' => 'setComment',
+            'instance_id' => 'setPollerId',
+            'notify_contacts' => 'setNotifyContacts',
+            'persistent_comment' => 'setPersistentComment',
+            'sticky' => 'setSticky',
+        ];
+    }
 
     /**
      * @return int|null
@@ -226,6 +223,24 @@ class Acknowledgement
     }
 
     /**
+     * @return int
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int $serviceId|null
+     * @return Acknowledgement
+     */
+    public function setServiceId(?int $serviceId): Acknowledgement
+    {
+        $this->serviceId = $serviceId;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getPollerId(): ?int
@@ -300,24 +315,6 @@ class Acknowledgement
     /**
      * @return int
      */
-    public function getServiceId(): ?int
-    {
-        return $this->serviceId;
-    }
-
-    /**
-     * @param int $serviceId|null
-     * @return Acknowledgement
-     */
-    public function setServiceId(?int $serviceId): Acknowledgement
-    {
-        $this->serviceId = $serviceId;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getState(): int
     {
         return $this->state;
@@ -330,6 +327,24 @@ class Acknowledgement
     public function setState(int $state): Acknowledgement
     {
         $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     * @return Acknowledgement
+     */
+    public function setType(int $type): Acknowledgement
+    {
+        $this->type = $type;
         return $this;
     }
 }

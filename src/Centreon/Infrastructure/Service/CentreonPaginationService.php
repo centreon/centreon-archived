@@ -56,6 +56,11 @@ class CentreonPaginationService
     protected $db;
 
     /**
+     * @var \Symfony\Component\Serializer\Serializer
+     */
+    protected $serializer;
+
+    /**
      * @var mixed
      */
     protected $filters;
@@ -91,6 +96,11 @@ class CentreonPaginationService
     protected $dataRepresenter;
 
     /**
+     * @var array|null
+     */
+    protected $context;
+
+    /**
      * List of required services
      *
      * @return array
@@ -99,6 +109,7 @@ class CentreonPaginationService
     {
         return [
             ServiceProvider::CENTREON_DB_MANAGER,
+            ServiceProvider::SERIALIZER,
         ];
     }
 
@@ -110,6 +121,7 @@ class CentreonPaginationService
     public function __construct(ContainerInterface $container)
     {
         $this->db = $container->get(ServiceProvider::CENTREON_DB_MANAGER);
+        $this->serializer = $container->get(ServiceProvider::SERIALIZER);
     }
 
     /**
@@ -242,19 +254,37 @@ class CentreonPaginationService
     }
 
     /**
+     * Set the Serializer context and if the context is different from null value
+     * the list of entities will be normalized
+     *
+     * @param array $context
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
+     */
+    public function setContext(array $context = null): self
+    {
+        $this->context = $context;
+
+        return $this;
+    }
+
+    /**
      * Get paginated list
      *
      * @return \Centreon\Application\DataRepresenter\Listing
      */
     public function getListing(): DataRepresenter\Listing
     {
-        $entities = $this->db
-            ->getRepository($this->repository)
+        $repository = $this->db->getRepository($this->repository);
+
+        $entities = $repository
             ->getPaginationList($this->filters, $this->limit, $this->offset, $this->ordering, $this->extras);
 
-        $total = $this->db
-            ->getRepository($this->repository)
-            ->getPaginationListTotal();
+        $total = $repository->getPaginationListTotal();
+
+        // Serialize list of entities
+        if ($this->context !== null) {
+            $entities = $this->serializer->normalize($entities, null, $this->context);
+        }
 
         $result = new DataRepresenter\Listing($entities, $total, $this->offset, $this->limit, $this->dataRepresenter);
 

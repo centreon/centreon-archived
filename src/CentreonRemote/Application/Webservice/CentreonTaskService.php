@@ -261,7 +261,8 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         /*
          * make sure only authorized master can create task
          */
-        $authorizedMaster = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)
+        $authorizedMaster = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(InformationsRepository::class)
             ->getOneByKey('authorizedMaster');
         $authorizedMasterTab = explode(',', $authorizedMaster->getValue());
 

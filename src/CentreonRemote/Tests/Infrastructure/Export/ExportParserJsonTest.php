@@ -57,14 +57,26 @@ class ExportParserJsonTest extends TestCase
         $result = $this->parser->parse('vfs://tmp/test.json');
 
         $this->assertEquals([], $result);
+    }
 
+    /**
+     * @covers \CentreonRemote\Infrastructure\Export\ExportParserJson::parse
+     */
+    public function testParse2()
+    {
         // add file
         $this->fs->get('/tmp')->add('test1.json', new File('{"key":"val"}'));
 
         $result = $this->parser->parse('vfs://tmp/test1.json');
 
         $this->assertEquals(['key' => 'val'], $result);
+    }
 
+    /**
+     * @covers \CentreonRemote\Infrastructure\Export\ExportParserJson::parse
+     */
+    public function testParse3()
+    {
         // add file with macros
         $this->fs->get('/tmp')->add('test2.json', new File('{"key":"@val@"}'));
 
@@ -86,7 +98,13 @@ class ExportParserJsonTest extends TestCase
         $this->parser->dump([], 'vfs://tmp/test.json');
 
         $this->assertFileNotExists('vfs://tmp/test.json');
+    }
 
+    /**
+     * @covers \CentreonRemote\Infrastructure\Export\ExportParserJson::dump
+     */
+    public function testDump2()
+    {
         $this->parser->dump(['key' => 'val'], 'vfs://tmp/test.json');
 
         $this->assertFileExists('vfs://tmp/test.json');

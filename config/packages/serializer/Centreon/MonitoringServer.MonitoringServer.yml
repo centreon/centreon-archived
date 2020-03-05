@@ -1,0 +1,98 @@
+Centreon\Domain\MonitoringServer\MonitoringServer:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'monitoringserver_main'
+        name:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        isLocalhost:
+            type: bool
+            groups:
+                - 'monitoringserver_main'
+        isDefault:
+            type: bool
+            groups:
+                - 'monitoringserver_main'
+        lastRestart:
+            type: DateTime
+            groups:
+                - 'monitoringserver_main'
+        address:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        isActivate:
+            type: bool
+            groups:
+                - 'monitoringserver_main'
+        engineStartCommand:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        engineStopCommand:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        engineRestartCommand:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        engineReloadCommand:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        nagiosBin:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        nagiostatsBin:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        brokerReloadCommand:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        centreonbrokerCfgPath:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        centreonbrokerModulePath:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        centreonconnectorPath:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        sshPort:
+            type: int
+            groups:
+                - 'monitoringserver_main'
+        initScriptCentreontrapd:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        snmpTrapdPathConf:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        centreonbrokerLogsPath:
+            type: string
+            groups:
+                - 'monitoringserver_main'
+        remoteId:
+            type: int
+            groups:
+                - 'monitoringserver_main'
+        remoteServerCentcoreSshProxy:
+            type: bool
+            groups:
+                - 'monitoringserver_main'
+        isUpdated:
+            type: bool
+            groups:
+                - 'monitoringserver_main'

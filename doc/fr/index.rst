@@ -1,11 +1,6 @@
 Bienvenue dans la documentation Centreon !
 ==========================================
 
-.. warning::
-    **Centreon 19.10 est actuellement en version bêta, n'installez pas cette version sur votre environnement de production !!!**
-
-Centreon est un logiciel open source qui vous permet de superviser l'ensemble des éléments de votre système d'informations.
-
 Sommaire :
 
 .. toctree::

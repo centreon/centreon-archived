@@ -87,9 +87,7 @@ class SqlRequestParametersTranslator
                     if (is_object($searchRequests)) {
                         $searchRequests = (array) $searchRequests;
                     }
-                    if (is_numeric($searchRequests) || is_bool($searchRequests) || !empty($searchRequests)) {
-                        $databaseSubQuery = $this->createQueryOnKeyValue($key, $searchRequests);
-                    }
+                    $databaseSubQuery = $this->createQueryOnKeyValue($key, $searchRequests);
                 }
             }
             if (!empty($databaseQuery)) {
@@ -149,7 +147,6 @@ class SqlRequestParametersTranslator
         $whereQuery = '';
         $search = $this->requestParameters->getSearch();
         if (!empty($search) && is_array($search)) {
-            $this->searchValues = [];
             $whereQuery .= $this->createDatabaseQuery($search);
         }
         return !empty($whereQuery) ? ' WHERE ' . $whereQuery : null;
@@ -181,7 +178,7 @@ class SqlRequestParametersTranslator
     /**
      *
      * @param string $key Key representing the entity to search
-     * @param $valueOrArray String value or array representing the value to search.
+     * @param mixed $valueOrArray Mixed value or array representing the value to search.
      * @return string Part of the database query.
      * @throws RequestParametersTranslatorException
      */
@@ -195,14 +192,27 @@ class SqlRequestParametersTranslator
             throw new RequestParametersTranslatorException('The parameter \''. $key . '\' is not allowed');
         }
         if (is_array($valueOrArray)) {
-            $searchOperator = key($valueOrArray);
+            $searchOperator = (string) key($valueOrArray);
             $mixedValue = $valueOrArray[$searchOperator];
         } else {
             $searchOperator = RequestParameters::DEFAULT_SEARCH_OPERATOR;
             $mixedValue = $valueOrArray;
         }
 
-        if ($searchOperator === RequestParameters::OPERATOR_IN
+        if ($mixedValue === null) {
+            if ($searchOperator === RequestParameters::OPERATOR_EQUAL) {
+                $bindKey = 'NULL';
+            } elseif ($searchOperator === RequestParameters::OPERATOR_NOT_EQUAL) {
+                $bindKey = 'NOT NULL';
+            } else {
+                throw new RequestParametersTranslatorException(
+                    'The value "null" is only supported by the operators '
+                    . RequestParameters::OPERATOR_EQUAL
+                    . ' and '
+                    . RequestParameters::OPERATOR_NOT_EQUAL
+                );
+            }
+        } elseif ($searchOperator === RequestParameters::OPERATOR_IN
             || $searchOperator === RequestParameters::OPERATOR_NOT_IN
         ) {
             if (is_array($mixedValue)) {
@@ -229,8 +239,9 @@ class SqlRequestParametersTranslator
                 } elseif (is_bool($mixedValue)) {
                     $type = \PDO::PARAM_BOOL;
                 }
-                $bindKey = '(:value_' . (count($this->searchValues) + 1) . ')';
+                $bindKey = ':value_' . (count($this->searchValues) + 1);
                 $this->searchValues[$bindKey] = [$type => $mixedValue];
+                $bindKey = '(' . $bindKey . ')';
             }
         } elseif ($searchOperator === RequestParameters::OPERATOR_LIKE
             || $searchOperator === RequestParameters::OPERATOR_NOT_LIKE
@@ -254,7 +265,7 @@ class SqlRequestParametersTranslator
             (array_key_exists($key, $this->concordanceArray)
                 ? $this->concordanceArray[$key]
                 : $key),
-            $this->translateSearchOperator($searchOperator),
+            ($mixedValue !== null) ? $this->translateSearchOperator($searchOperator) : 'IS',
             $bindKey
         );
     }
@@ -333,6 +344,17 @@ class SqlRequestParametersTranslator
     public function setConcordanceArray(array $concordanceArray): void
     {
         $this->concordanceArray = $concordanceArray;
+    }
+
+    /**
+     * Add a search value
+     *
+     * @param string $key Key
+     * @param array $value Array [type_value => value]
+     */
+    public function addSearchValue(string $key, array $value): void
+    {
+        $this->searchValues[$key] = $value;
     }
 
     /**

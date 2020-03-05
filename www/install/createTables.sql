@@ -421,7 +421,6 @@ CREATE TABLE `cfg_centreonbroker` (
   `command_file` varchar(255),
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
-  `correlation_activate` enum('0','1') DEFAULT '0',
   `daemon` TINYINT(1),
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -453,9 +452,6 @@ CREATE TABLE `cfg_nagios` (
   `cfg_dir` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
-  `check_result_path` varchar(255) DEFAULT NULL,
-  `use_check_result_path` enum('0','1') DEFAULT '0',
-  `max_check_result_file_age` varchar(255) DEFAULT NULL,
   `status_update_interval` int(11) DEFAULT NULL,
   `nagios_user` varchar(255) DEFAULT NULL,
   `nagios_group` varchar(255) DEFAULT NULL,
@@ -1636,6 +1632,7 @@ CREATE TABLE `nagios_server` (
   `centreonbroker_logs_path` VARCHAR(255),
   `remote_id` int(11) NULL,
   `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1',
+  `updated` enum('1','0') NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

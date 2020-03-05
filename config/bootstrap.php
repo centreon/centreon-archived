@@ -44,9 +44,15 @@ $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] =
     (int) $_SERVER['APP_DEBUG']
     || filter_var($_SERVER['APP_DEBUG'], FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
 
-$conf_centreon = [];
-include_once dirname(__DIR__) . "/config/centreon.config.php";
-(new Dotenv(false))->populate($constants);
+if (!isset($GLOBALS['constants']) && !isset($GLOBALS['conf_centreon'])) {
+    $constants = [];
+    $conf_centreon = [];
+    include_once dirname(__DIR__) . "/config/centreon.config.php";
+    (new Dotenv(false))->populate($constants);
+    (new Dotenv(false))->populate($conf_centreon);
+} else {
+    (new Dotenv(false))->populate($GLOBALS['constants']);
+    (new Dotenv(false))->populate($GLOBALS['conf_centreon']);
+}
 
 include_once dirname(__DIR__) . "/container.php";
-(new Dotenv(false))->populate($conf_centreon);

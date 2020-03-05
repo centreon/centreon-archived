@@ -108,8 +108,13 @@ $aTypeAffichageLevel2 = array(
         }
 
         function displayingLevel1(val) {
+            var sel2 = document.getElementById("typeDisplay2").value;
             _o = val;
-            if (_o == 'svcOV') {
+            if (sel2 != '') {
+                _o += "_" + sel2;
+            }
+
+            if (val == 'svcOV') {
                 _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
                 _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
             } else {
@@ -117,14 +122,13 @@ $aTypeAffichageLevel2 = array(
                 _addrXSL = "./include/monitoring/status/Services/xsl/serviceSummary.xsl";
             }
             monitoring_refresh();
-
         }
 
         function displayingLevel2(val) {
             var sel1 = document.getElementById("typeDisplay").value;
-            _o = "svcSum";
+            _o = sel1;
             if (val != '') {
-                _o = _o + "_" + val;
+                _o += "_" + val;
             }
 
             monitoring_refresh();

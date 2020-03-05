@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,12 +37,18 @@ if (!isset($centreon)) {
     exit();
 }
 
-function DeleteComment($type, $hosts = array())
+function DeleteComment($type = null, $hosts = [])
 {
+    if (!isset($type) || !is_array($hosts)) {
+        return;
+    }
     global $pearDB;
+    $type = filter_var($type ?? '', FILTER_SANITIZE_STRING);
 
     foreach ($hosts as $key => $value) {
         $res = preg_split("/\;/", $key);
+        $res[0] = filter_var($res[0] ?? 0, FILTER_VALIDATE_INT);
+        $res[1] = filter_var($res[1] ?? 0, FILTER_VALIDATE_INT);
         write_command(" DEL_" . $type . "_COMMENT;" . $res[1], GetMyHostPoller($pearDB, $res[0]));
     }
 }

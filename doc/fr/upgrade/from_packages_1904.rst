@@ -27,6 +27,17 @@ des sauvegardes de l’ensemble des serveurs centraux de votre plate-forme :
 Mise à jour du serveur Centreon Central
 ***************************************
 
+Mise à jour du système d’exploitation
+=====================================
+
+Pensez à mettre à jour votre système d'exploitation via la commande : ::
+
+    # yum update
+
+.. note::
+    Acceptez toutes les clés GPG proposées et pensez a redémarrer votre serveur si une mise à jour du noyau est
+    proposée.
+
 Mise à jour des dépôts
 ======================
 
@@ -65,6 +76,9 @@ suivante : ::
 
 .. note::
     Changez **Europe/Paris** par votre fuseau horaire.
+ 
+.. warning::
+    N'oubliez pas de reporter les configurations spécifiques qui peuvent être configurées dans /etc/opt/rh/rh-php71/php.ini et/ou /etc/opt/rh/rh-php71/php-fpm.d/centreon.conf
 
 Réalisez les actions suivantes : ::
 

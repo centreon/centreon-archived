@@ -317,7 +317,7 @@ class RequestParameters implements RequestParametersInterface
      */
     public function setSort(string $sortRequest): void
     {
-        $sortRequestToAnalyze = json_decode($sortRequest ?? self::DEFAULT_SEARCH, true);
+        $sortRequestToAnalyze = json_decode($sortRequest ?? self::DEFAULT_SEARCH_OPERATOR, true);
         if (!is_array($sortRequestToAnalyze)) {
             if ($sortRequest[0] != '{') {
                 $this->sort = [$sortRequest => self::DEFAULT_ORDER];

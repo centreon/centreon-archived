@@ -25,6 +25,7 @@ use Centreon\Domain\Exception\ContactDisabledException;
 use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
+use Security\ContactBySession;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -179,7 +180,8 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
         if ($contact->isActive() === false) {
             throw new ContactDisabledException();
         }
-        return $contact;
+        // It's an internal API call, so this contact has all roles
+        return new ContactBySession($contact);
     }
 
     /**

@@ -185,7 +185,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
 
         switch ($s) {
             case 'all':
-                $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id ' .
+                $queryService = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, service_id, host_id, service_activate ' .
                     'FROM ( ' .
                     '( SELECT DISTINCT CONCAT(h.host_name, " - ", s.service_description) ' .
                     'as fullname, s.service_id, h.host_id, s.service_activate ' .

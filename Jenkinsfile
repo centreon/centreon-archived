@@ -2,7 +2,7 @@
 ** Variables.
 */
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
-def serie = '19.10'
+def serie = '20.04'
 def maintenanceBranch = "${serie}.x"
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
@@ -22,6 +22,11 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
+    // git repository is stored for the Sonar analysis below.
+    if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+      sh 'tar czf centreon-web-git.tar.gz centreon-web'
+      stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
+    }
     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
@@ -34,7 +39,7 @@ stage('Source') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
-    featureFiles = sh(script: 'ls -1 centreon-web/features | grep .feature', returnStdout: true).split()
+    featureFiles = sh(script: 'find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
   }
 }
 
@@ -44,14 +49,25 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
-        junit 'ut.xml,jest-test-results.xml'
+        junit 'ut-be.xml,ut-fe.xml'
         if (currentBuild.result == 'UNSTABLE')
           currentBuild.result = 'FAILURE'
         step([
           $class: 'CloverPublisher',
           cloverReportDir: '.',
-          cloverReportFileName: 'coverage.xml'
+          cloverReportFileName: 'coverage-be.xml'
         ])
+        recordIssues(
+          enabledForFailure: true,
+          tools: [checkStyle(pattern: 'codestyle-be.xml')],
+          referenceJobName: 'centreon-web/master'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          tools: [esLint(pattern: 'codestyle-fe.xml')],
+          referenceJobName: 'centreon-web/master'
+        )
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
@@ -71,15 +87,9 @@ try {
           ])
         }
 
-        step([
-          $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
-          pattern: 'codestyle.xml',
-          usePreviousBuildAsReference: true,
-          useDeltaValues: true,
-          failedNewAll: '0'
-        ])
-
         if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+          unstash 'git-sources'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
           withSonarQubeEnv('SonarQube') {
             sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
           }

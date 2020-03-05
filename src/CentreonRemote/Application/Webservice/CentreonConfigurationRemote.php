@@ -3,10 +3,7 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
-use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use Centreon\Domain\Entity\Task;
-use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
-use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 /**
@@ -75,6 +72,61 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
+     * @OA\Get(
+     *   path="/internal.php?object=centreon_configuration_remote&action=list",
+     *   description="Get list with connected remotes",
+     *   tags={"centreon_configuration_remote"},
+     *   security={{"Session": {}}},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_configuration_remote"},
+     *          default="centreon_configuration_remote"
+     *       ),
+     *       description="the name of the API object class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getRemotesList"},
+     *          default="getRemotesList"
+     *       ),
+     *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON with the IPs of connected remotes",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="id", type="string"),
+     *          @OA\Property(property="ip", type="string"),
+     *          @OA\Property(property="name", type="string")
+     *       )
+     *   )
+     * )
+     *
+     * Get list with connected remotes
+     *
+     * @return array
+     * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
+     */
+    public function getList(): array
+    {
+        $list = [];
+        foreach ($this->postGetRemotesList() as $row) {
+            $row['id'] = (int)$row['id'];
+            $list[] = $row;
+        }
+
+        return $list;
+    }
+
+    /**
      * @OA\Post(
      *   path="/internal.php?object=centreon_configuration_remote&action=getRemotesList",
      *   description="Get list with connected remotes",
@@ -116,7 +168,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Get list with connected remotes
      *
      * @return array
-     * @example ['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']
+     * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
     public function postGetRemotesList(): array
     {
@@ -264,11 +316,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         // validate form fields
         WizardConfigurationRequestValidator::validate();
 
-        /** @var $pollerConfigurationService LinkedPollerConfigurationService */
         $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
-        /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
-        /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
         // extract HTTP method and port from form or database if registered
