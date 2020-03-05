@@ -36,7 +36,7 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
     },
     {
       label: labelPersistent,
-      getFormattedString: ({ is_persistent }): string =>
+      getFormattedString: ({ is_persistent_comment }): string =>
         getYesNoLabel(is_persistent_comment),
     },
     {
