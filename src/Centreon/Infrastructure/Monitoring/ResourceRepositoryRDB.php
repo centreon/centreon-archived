@@ -29,6 +29,7 @@ use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
@@ -141,7 +142,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
-    public function findResources(?array $filterState): array
+    public function findResources(ResourceFilter $filter): array
     {
         $resources = [];
 
@@ -163,11 +164,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.tries, resource.last_check, resource.information '
             . 'FROM ('
-            . '(' . $this->prepareQueryForServiceResources($collector, $filterState) . ') ';
+            . '(' . $this->prepareQueryForServiceResources($collector, $filter) . ') ';
 
         // do not get hosts if a service filter is given
         if (!$this->hasServiceFilter()) {
-            $request .= 'UNION ALL (' . $this->prepareQueryForHostResources($collector, $filterState) . ')';
+            $request .= 'UNION ALL (' . $this->prepareQueryForHostResources($collector, $filter) . ')';
         }
 
         $request .= ') AS `resource`'
@@ -245,10 +246,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * Prepare SQL query for services
      *
      * @param StatementCollector $collector
-     * @param array $filterState
+     * @param ResourceFilter $filter
      * @return string
      */
-    protected function prepareQueryForServiceResources(StatementCollector $collector, ?array $filterState): string
+    protected function prepareQueryForServiceResources(StatementCollector $collector, ResourceFilter $filter): string
     {
         $sql = "SELECT
             s.service_id AS `id`,
@@ -338,7 +339,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql .= ' s.enabled = 1';
 
         // apply the state filter to SQL query
-        if ($filterState && !in_array(ResourceServiceInterface::STATE_ALL, $filterState)) {
+        if ($filter->getStates() && !in_array(ResourceServiceInterface::STATE_ALL, $filter->getStates())) {
             $sqlState = [];
             $sqlStateCatalog = [
                 ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(s.state_type = '1'"
@@ -354,7 +355,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 ResourceServiceInterface::STATE_ACKNOWLEDGED => '(s.acknowledged = 1 OR sh.acknowledged = 1)',
             ];
 
-            foreach ($filterState as $state) {
+            foreach ($filter->getStates() as $state) {
                 $sqlState[] = $sqlStateCatalog[$state];
             }
 
@@ -373,10 +374,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * Prepare SQL query for hosts
      *
      * @param StatementCollector $collector
-     * @param array $filterState
+     * @param ResourceFilter $filter
      * @return string
      */
-    protected function prepareQueryForHostResources(StatementCollector $collector, ?array $filterState): string
+    protected function prepareQueryForHostResources(StatementCollector $collector, ResourceFilter $filter): string
     {
         $sql = "SELECT
             h.host_id AS `id`,
@@ -454,7 +455,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $collector->addValue(':hostModule', '_Module_%');
 
         // apply the state filter to SQL query
-        if ($filterState && !in_array(ResourceServiceInterface::STATE_ALL, $filterState)) {
+        if ($filter->getStates() && !in_array(ResourceServiceInterface::STATE_ALL, $filter->getStates())) {
             $sqlState = [];
             $sqlStateCatalog = [
                 ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(h.state_type = '1'"
@@ -467,7 +468,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 ResourceServiceInterface::STATE_ACKNOWLEDGED => 'h.acknowledged = 1',
             ];
 
-            foreach ($filterState as $state) {
+            foreach ($filter->getStates() as $state) {
                 $sqlState[] = $sqlStateCatalog[$state];
             }
 

@@ -22,23 +22,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Monitoring\ResourceFilter;
+
 interface ResourceRepositoryInterface
 {
     /**
      * Find all resources.
      *
-     * @param string[] $types
-     * @param string[] $states
-     * @param string[] $statuses
-     * @param int[] $hostgroupIds
-     * @param int[] $servicegroupIds
+     * @param ResourceFilter $filter
      * @return \Centreon\Domain\Monitoring\Resource[]
      */
-    public function findResources(
-        ?array $types,
-        ?array $states,
-        ?array $statuses,
-        ?array $hostgroupIds,
-        ?array $servicegroupIds
-    ): array;
+    public function findResources(ResourceFilter $filter): array;
 }

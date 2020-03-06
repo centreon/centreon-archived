@@ -27,6 +27,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\Monitoring\ResourceFilter;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -84,9 +85,9 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     /**
      * {@inheritDoc}
      */
-    public function findResources(?array $filterState): array
+    public function findResources(ResourceFilter $filter): array
     {
-        $list = $this->resourceRepository->findResources($filterState);
+        $list = $this->resourceRepository->findResources($filter);
 
         // set paths to endpoints
         foreach ($list as $resource) {

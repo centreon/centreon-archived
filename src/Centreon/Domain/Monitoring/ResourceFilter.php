@@ -20,11 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Interfaces;
+namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Monitoring\ResourceFilter;
-
-interface ResourceServiceInterface
+/**
+ * 
+ *
+ * @package Centreon\Domain\Monitoring
+ */
+class ResourceFilter
 {
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
@@ -97,11 +100,122 @@ interface ResourceServiceInterface
     ];
 
     /**
-     * Find all resources.
-     *
-     * @param ResourceFilter $filter
-     * @return \Centreon\Domain\Monitoring\Resource[]
-     * @throws \Exception
+     * @var string[]
      */
-    public function findResources(ResourceFilter $filter): array;
+    private $types = [];
+
+    /**
+     * @var string[]
+     */
+    private $states = [];
+
+    /**
+     * @var string[]
+     */
+    private $statuses = [];
+
+    /**
+     * @var int[]
+     */
+    private $hostgroupIds = [];
+
+    /**
+     * @var int[]
+     */
+    private $servicegroupIds = [];
+
+    /**
+     * @return string[]
+     */
+    public function getTypes(): array
+    {
+        return $this->types;
+    }
+
+    /**
+     * @param string[] $types
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setTypes(array $types): self
+    {
+        $this->types = $types;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getStates(): array
+    {
+        return $this->states;
+    }
+
+    /**
+     * @param string[] $states
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setStates(array $states): self
+    {
+        $this->states = $states;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getStatuses(): array
+    {
+        return $this->states;
+    }
+
+    /**
+     * @param string[] $statuses
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setStatuses(array $statuses): self
+    {
+        $this->statuses = $statuses;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getHostgroupIds(): array
+    {
+        return $this->hostgroupIds;
+    }
+
+    /**
+     * @param int[] $hostgroupIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setHostgroupIds(array $hostgroupIds): self
+    {
+        $this->hostgroupIds = $hostgroupIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getServicegroupIds(): array
+    {
+        return $this->servicegroupIds;
+    }
+
+    /**
+     * @param int[] $servicegroupIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setServicegroupIds(array $servicegroupIds): self
+    {
+        $this->servicegroupIds = $servicegroupIds;
+
+        return $this;
+    }
 }
