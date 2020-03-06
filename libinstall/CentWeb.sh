@@ -120,6 +120,7 @@ add_group "$CENTREON_USER" "$WEB_GROUP"
 
 ## Configure Gorgone user and group
 add_group "$CENTREON_USER" "$GORGONE_GROUP"
+add_group "$WEB_USER" "$GORGONE_GROUP"
 add_group "$GORGONE_USER" "$CENTREON_GROUP"
 add_group "$GORGONE_USER" "$BROKER_GROUP"
 add_group "$GORGONE_USER" "$ENGINE_GROUP"
