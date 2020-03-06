@@ -30,6 +30,7 @@
 #set -x
 
 ###### Mandatory step
+# locate gorgone
 echo -e "\n$line"
 echo -e "\t$(gettext "Check mandatory gorgone service status")"
 echo -e "$line"
@@ -42,9 +43,9 @@ if [ "$?" -eq 1 ] ; then
     echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
     exit 1
 fi
-
-# locate gorgone
 locate_centreon_gorgone
+check_gorgone_user
+check_gorgone_group
 
 echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"

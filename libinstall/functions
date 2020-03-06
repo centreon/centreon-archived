@@ -2089,6 +2089,54 @@ check_broker_user()
 	return 0
 }
 
+
+#----
+## Ask for gorgone user
+## @Globals	GORGONE_USER, DEFAULT_GORGONE_USER
+#----
+check_gorgone_user()
+{
+	local groups="$GORGONE_GROUP"
+	local description="Centreon Gorgone user"
+	if [ -n "$GORGONE_USER" ] ; then
+		user_test "$GORGONE_USER"
+		if [ $? -ne 0 ] ; then
+			user_create "$GORGONE_USER" "$groups" "$description" "$home"
+			if [ $? -ne 0 ] ; then
+				GORGONE_USER=""
+			fi
+		fi
+	fi
+	if [ -z "$GORGONE_USER" ] ; then
+		answer_with_createuser "$(gettext "What is the Gorgone user ?") [$DEFAULT_GORGONE_USER]" "$DEFAULT_GORGONE_USER" "GORGONE_USER" "$groups" "$description" "$home"
+	fi
+	log "INFO" "$(gettext "Gorgone user") : $GORGONE_USER"
+	return 0
+}
+
+#----
+## Ask for gorgone group, and create it if not exists
+## @Globals	GORGONE_GROUP, DEFAULT_GORGONE_GROUP
+#----
+check_gorgone_group()
+{
+	if [ -n "$GORGONE_GROUP" ] ; then
+		group_test "$GORGONE_GROUP"
+		if [ $? -ne 0 ] ; then
+			group_create "$GORGONE_GROUP"
+			if [ $? -ne 0 ] ; then
+				GORGONE_GROUP=""
+			fi
+		fi
+	fi
+	if [ -z "$GORGONE_GROUP" ] ; then
+		answer_with_creategroup "$(gettext "What is the Gorgone group ?") [$DEFAULT_GORGONE_GROUP]"
+		"$DEFAULT_GORGONE_GROUP" "GORGONE_GROUP"
+	fi
+	log "INFO" "$(gettext "Centreon group") : $GORGONE_GROUP"
+	return 0
+}
+
 #----
 ## Copy Source directory on temporary working directory
 ## Copy Source directory and prepare work and final
@@ -2430,12 +2478,12 @@ add_group() {
 	local user=$1
 	local group=$2
 	if [ -z "$user" -o -z "$group" ]; then
-		echo_failure "$(gettext "Add group $group to user $user")" "$fail"
+		echo_failure "$(gettext "Could not add group '$group' to user '$user'")" "$fail"
 		return 1
 	fi
 	usermod -a -G $group $user &>/dev/null
 	local ret=$?
-	check_result $ret "$(gettext "Add group $group to user $user")"
+	check_result $ret "$(gettext "Add group '$group' to user '$user'")"
 	return $ret
 }
 
