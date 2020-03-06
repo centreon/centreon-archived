@@ -1,9 +1,3 @@
-import {
-  labelUnhandledProblems,
-  labelResourceProblems,
-  labelAll,
-} from './translatedLabels';
-
 export interface Icon {
   url: string;
   name: string;
@@ -56,25 +50,3 @@ export interface Listing<TEntity> {
 }
 
 export type ResourceListing = Listing<Resource>;
-
-export type FilterId = 'unhandled_problems' | 'resources_problems' | 'all';
-
-export interface Filter {
-  id: FilterId;
-  name: string;
-}
-
-export const unhandledProblemsFilter: Filter = {
-  id: 'unhandled_problems',
-  name: labelUnhandledProblems,
-};
-
-export const resourcesProblemFilter: Filter = {
-  id: 'resources_problems',
-  name: labelResourceProblems,
-};
-
-export const allFilter: Filter = {
-  id: 'all',
-  name: labelAll,
-};

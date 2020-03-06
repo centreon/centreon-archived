@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { AutocompleteField } from '@centreon/ui';
+import { AutocompleteField, AutocompleteFieldProps } from '@centreon/ui';
 
 import { Listing } from '../models';
 import useCancelTokenSource from '../useCancelTokenSource';
@@ -11,49 +11,57 @@ interface Entity {
   name: string;
 }
 
+interface Props {
+  baseEndpoint: string;
+  getSearchEndpoint: (searchField: string) => string;
+}
+
 const ConnectedAutocompleteField = ({
-  endpoint,
-  searchField,
+  baseEndpoint,
+  getSearchEndpoint,
   ...props
-}): JSX.Element => {
+}: Props & AutocompleteFieldProps): JSX.Element => {
   const [options, setOptions] = useState<Array<Entity>>();
   const [open, setOpen] = useState(false);
-  // const [autocompleteText, setAutocompleteText] = useState<string>();
+  const [loading, setLoading] = useState(true);
 
   const { token, cancel } = useCancelTokenSource();
 
-  const loadOptions = (searchParams = ''): void => {
+  const loadOptions = (endpoint): void => {
+    setLoading(true);
     getData<Listing<Entity>>({
-      endpoint: `${endpoint}${searchParams}`,
+      endpoint,
       requestParams: { token },
     })
       .then((retrievedOptions) => {
-        console.log(retrievedOptions);
-        // setOptions(retrievedOptions.result);
+        setOptions(retrievedOptions.result);
       })
-      .catch(() => setOptions([]));
+      .catch(() => setOptions([]))
+      .finally(() => setLoading(false));
   };
 
   const changeText = (event): void => {
-    const searchParams = `&search={"${searchField}":"$lk":"${event.target.value}}"`;
-
-    loadOptions(searchParams);
+    loadOptions(getSearchEndpoint(event.target.value));
   };
 
-  const doOpen = () => {
+  const doOpen = (): void => {
     setOpen(true);
   };
 
-  const close = () => {
+  const close = (): void => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    return (): void => cancel();
+  }, []);
 
   useEffect(() => {
     if (!open) {
       return;
     }
-    loadOptions();
-    return (): void => cancel();
+
+    loadOptions(baseEndpoint);
   }, [open]);
 
   return (
@@ -62,6 +70,7 @@ const ConnectedAutocompleteField = ({
       onClose={close}
       options={options || []}
       onTextChange={changeText}
+      loading={loading}
       {...props}
     />
   );

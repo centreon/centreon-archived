@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Paper, Grid, Typography, Button, makeStyles } from '@material-ui/core';
 
@@ -13,29 +13,39 @@ import {
   labelState,
   labelStatus,
   labelHostGroup,
+  labelServiceGroup,
+  labelClearAll,
 } from '../translatedLabels';
 import {
   unhandledProblemsFilter,
-  resourcesProblemFilter,
+  resourceProblemsFilter,
   allFilter,
-} from '../models';
+  states,
+  resourceTypes,
+  statuses,
+  filterById,
+} from './models';
 import SearchHelpTooltip from '../SearchHelpTooltip';
-import { states, resourceTypes, statuses } from './filterParams';
+
 import ConnectedAutocompleteField from './ConnectedAutocompleteField';
+import {
+  buildHostGroupsEndpoint,
+  buildServiceGroupsEndpoint,
+} from '../api/endpoint';
 
 const useStyles = makeStyles((theme) => ({
   filterBox: {
     padding: theme.spacing(2),
     backgroundColor: theme.palette.common.white,
   },
+  autocompleteField: {
+    width: 275,
+  },
 }));
 
 const Filter = ({
-  filterId,
   search,
-  onSearchChange,
   onSearchRequest,
-  onFilterChange,
   selectedResourceTypes,
   onResourceTypeChange,
   selectedStates,
@@ -44,10 +54,26 @@ const Filter = ({
   onStatusesChange,
   selectedHostGroups,
   onHostgroupsChange,
-  // selectedGroups,
-  // onServiceGroupsChange,
-}) => {
+  selectedServiceGroups,
+  onServiceGroupsChange,
+}): JSX.Element => {
   const classes = useStyles();
+
+  const [searchFieldValue, setSearchFieldValue] = useState<string>();
+  const [filter, setFilter] = useState(unhandledProblemsFilter);
+
+  const changeSearchFieldValue = (event): void => {
+    setSearchFieldValue(event.target.value);
+  };
+
+  const requestSearch = (): void => {
+    onSearchRequest(searchFieldValue);
+  };
+
+  const changeFilter = (event): void => {
+    const filterId = event.target.value;
+    setFilter(filterById[filterId]);
+  };
 
   return (
     <Paper elevation={1} className={classes.filterBox}>
@@ -61,19 +87,19 @@ const Filter = ({
               <SelectField
                 options={[
                   unhandledProblemsFilter,
-                  resourcesProblemFilter,
+                  resourceProblemsFilter,
                   allFilter,
                 ]}
-                selectedOptionId={filterId}
-                onChange={onFilterChange}
+                selectedOptionId={filter.id}
+                onChange={changeFilter}
                 ariaLabel={labelStateFilter}
               />
             </Grid>
             <Grid item>
               <SearchField
                 EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
-                value={search || ''}
-                onChange={onSearchChange}
+                value={searchFieldValue || ''}
+                onChange={changeSearchFieldValue}
                 placeholder={labelResourceName}
               />
             </Grid>
@@ -81,8 +107,8 @@ const Filter = ({
               <Button
                 variant="contained"
                 color="primary"
-                disabled={!search}
-                onClick={onSearchRequest}
+                disabled={!searchFieldValue && !search}
+                onClick={requestSearch}
               >
                 {labelSearch}
               </Button>
@@ -93,37 +119,63 @@ const Filter = ({
           <Grid spacing={2} container direction="row" alignItems="center">
             <Grid item>
               <AutocompleteField
-                style={{ width: 275 }}
+                className={classes.autocompleteField}
                 options={resourceTypes}
                 label={labelTypeOfResource}
                 onChange={onResourceTypeChange}
-                defaultValue={selectedResourceTypes || []}
+                value={selectedResourceTypes || filter.criterias.resourceTypes}
               />
             </Grid>
             <Grid item>
               <AutocompleteField
+                className={classes.autocompleteField}
                 options={states}
                 label={labelState}
                 onChange={onStatesChange}
-                defaultValue={selectedStates || []}
+                value={selectedStates || filter.criterias.states}
               />
             </Grid>
             <Grid item>
               <AutocompleteField
+                className={classes.autocompleteField}
                 options={statuses}
                 label={labelStatus}
                 onChange={onStatusesChange}
-                defaultValue={selectedStatuses || []}
+                value={selectedStatuses || filter.criterias.statuses}
               />
             </Grid>
             <Grid item>
               <ConnectedAutocompleteField
-                endpoint="/monitoring/hostgroups?limit=10"
-                searchField="host.name"
+                className={classes.autocompleteField}
+                baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
+                getSearchEndpoint={(searchValue): string =>
+                  buildHostGroupsEndpoint({
+                    limit: 10,
+                    search: `name:^${searchValue}`,
+                  })
+                }
                 label={labelHostGroup}
                 onChange={onHostgroupsChange}
-                defaultValue={selectedHostGroups || []}
+                value={selectedHostGroups || []}
               />
+            </Grid>
+            <Grid item>
+              <ConnectedAutocompleteField
+                className={classes.autocompleteField}
+                baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
+                getSearchEndpoint={(searchValue): string =>
+                  buildServiceGroupsEndpoint({
+                    limit: 10,
+                    search: `name:^${searchValue}`,
+                  })
+                }
+                label={labelServiceGroup}
+                onChange={onServiceGroupsChange}
+                value={selectedServiceGroups || []}
+              />
+            </Grid>
+            <Grid item>
+              <Button color="primary">{labelClearAll}</Button>
             </Grid>
           </Grid>
         </Grid>

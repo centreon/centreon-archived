@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { makeStyles, Typography, Paper, Grid, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
 import { lime, purple } from '@material-ui/core/colors';
 
@@ -35,12 +35,12 @@ const Resources = (): JSX.Element => {
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
-  const [filterId, setFilterId] = useState('unhandled_problems');
-  const [searchFieldValue, setSearchFieldValue] = useState<string>();
   const [search, setSearch] = useState<string>();
   const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>();
   const [states, setStates] = useState<Array<FilterModel>>();
   const [statuses, setStatuses] = useState<Array<FilterModel>>();
+  const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
+  const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
 
   const [loading, setLoading] = useState(true);
 
@@ -52,7 +52,7 @@ const Resources = (): JSX.Element => {
     const sort = sortf ? { [sortf]: sorto } : undefined;
 
     listResources(
-      { state: filterId, sort, limit, page, search },
+      { state: 'all', sort, limit, page, search },
       { cancelToken: tokenSource.token },
     )
       .then((retrievedListing) => {
@@ -72,7 +72,11 @@ const Resources = (): JSX.Element => {
 
   useEffect(() => {
     load();
-  }, [filterId, sortf, sorto, page, limit, search]);
+  }, [sortf, sorto, page, limit, search]);
+
+  const doSearch = (value): void => {
+    setSearch(value);
+  };
 
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
@@ -87,12 +91,8 @@ const Resources = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const changeFilter = (event): void => {
-    setFilterId(event.target.value);
-  };
-
   const changeResourceTypes = (_, updatedResourceTypes): void => {
-    setStates(updatedResourceTypes);
+    setResourceTypes(updatedResourceTypes);
   };
 
   const changeStates = (_, updatedStates): void => {
@@ -101,6 +101,14 @@ const Resources = (): JSX.Element => {
 
   const changeStatuses = (_, updatedStatuses): void => {
     setStatuses(updatedStatuses);
+  };
+
+  const changeHostGroups = (_, updatedHostGroups): void => {
+    setHostGroups(updatedHostGroups);
+  };
+
+  const changeServiceGroups = (_, updatedServiceGroups): void => {
+    setServiceGroups(updatedServiceGroups);
   };
 
   const rowColorConditions = [
@@ -119,13 +127,18 @@ const Resources = (): JSX.Element => {
   return (
     <div className={classes.page}>
       <Filter
-        onFilterChange={changeFilter}
-        filterId={filterId}
         selectedResourceTypes={resourceTypes}
         onResourceTypeChange={changeResourceTypes}
         selectedStates={states}
         onStatesChange={changeStates}
+        selectedStatuses={statuses}
         onStatusesChange={changeStatuses}
+        onSearchRequest={doSearch}
+        onHostgroupsChange={changeHostGroups}
+        selectedHostGroups={hostGroups}
+        onServiceGroupsChange={changeServiceGroups}
+        selectedServiceGroups={serviceGroups}
+        search={search}
       />
       <div className={classes.listing}>
         <Listing

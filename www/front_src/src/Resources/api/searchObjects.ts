@@ -1,26 +1,16 @@
-type SearchableField =
-  | 'host.name'
-  | 'host.alias'
-  | 'host.address'
-  | 'service.description';
-
-const searchOptions: Array<SearchableField> = [
-  'host.name',
-  'host.alias',
-  'host.address',
-  'service.description',
-];
-
 interface SearchObject {
-  field: SearchableField;
+  field: string;
   value: string;
 }
 
 interface SearchParam {
-  $or: Array<{ [field in SearchableField]?: { $rg: string } }>;
+  $or: Array<{ [field: string]: { $rg: string } }>;
 }
 
-const getFoundSearchObjects = (searchValue: string): Array<SearchObject> => {
+const getFoundSearchObjects = ({
+  searchValue,
+  searchOptions,
+}): Array<SearchObject> => {
   const searchOptionMatches = searchOptions.map((searchOption) => {
     const pattern = `${searchOption.replace('.', '\\.')}:([^\\s]+)`;
 
@@ -32,20 +22,32 @@ const getFoundSearchObjects = (searchValue: string): Array<SearchObject> => {
   return searchOptionMatches.filter(({ value }) => value);
 };
 
-const getDefaultSearchObjects = (value): Array<SearchObject> => {
-  return searchOptions.map((searchOption) => ({ field: searchOption, value }));
+const getDefaultSearchObjects = ({
+  searchValue,
+  searchOptions,
+}): Array<SearchObject> => {
+  return searchOptions.map((searchOption) => ({
+    field: searchOption,
+    value: searchValue,
+  }));
 };
 
-const getSearchParam = (searchValue: string): SearchParam | undefined => {
+const getSearchParam = ({
+  searchValue,
+  searchOptions,
+}): SearchParam | undefined => {
   if (!searchValue) {
     return undefined;
   }
-  const foundSearchObjects = getFoundSearchObjects(searchValue);
+  const foundSearchObjects = getFoundSearchObjects({
+    searchValue,
+    searchOptions,
+  });
 
   const searchObjectsToSend =
     foundSearchObjects.length > 0
       ? foundSearchObjects
-      : getDefaultSearchObjects(searchValue);
+      : getDefaultSearchObjects({ searchValue, searchOptions });
 
   return {
     $or: searchObjectsToSend.map(({ field, value }) => ({
