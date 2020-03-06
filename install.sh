@@ -288,7 +288,7 @@ if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
     log "INFO" "$(gettext "Created perl library directory")"
 fi
 
-## resquest centreon_www
+## request centreon_www
 if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : Centreon Web Front"
 	if [ "$?" -eq 0 ] ; then
@@ -299,16 +299,7 @@ if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 	fi
 fi
 
-## resquest centreon_centcore
-if [ "$PROCESS_CENTCORE" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon CentCore"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTCORE="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon CentCore"
-	fi
-fi
-
-## resquest centreon_plugins
+## request centreon_plugins
 if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : Centreon Nagios Plugins"
 	if [ "$?" -eq 0 ] ; then
@@ -317,7 +308,7 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then
 	fi
 fi
 
-## resquest centreon_snmp_traps
+## request centreon_snmp_traps
 if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : CentreonTrapd process"
 	if [ "$?" -eq 0 ] ; then
