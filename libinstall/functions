@@ -2165,8 +2165,7 @@ check_gorgone_group()
 		fi
 	fi
 	if [ -z "$GORGONE_GROUP" ] ; then
-		answer_with_creategroup "$(gettext "What is the Gorgone group ?") [$DEFAULT_GORGONE_GROUP]"
-		"$DEFAULT_GORGONE_GROUP" "GORGONE_GROUP"
+		answer_with_creategroup "$(gettext "What is the Gorgone group ?") [$DEFAULT_GORGONE_GROUP]" "$DEFAULT_GORGONE_GROUP" "GORGONE_GROUP"
 	fi
 	log "INFO" "$(gettext "Centreon group") : $GORGONE_GROUP"
 	return 0
