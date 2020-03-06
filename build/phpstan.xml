@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle>
+<file name="src\Centreon\Application\Controller\AcknowledgementController.php">
+  <error line="202" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
+  <error line="220" column="1" severity="error" message="PHPDoc tag @var has invalid value ($acknowledgement Acknowledgement): Unexpected token &quot;$acknowledgement&quot;, expected type at offset 20" />
+  <error line="225" column="1" severity="error" message="Cannot call method setHostId() on array|bool|float|int|object|string." />
+  <error line="270" column="1" severity="error" message="PHPDoc tag @var has invalid value ($acknowledgement Acknowledgement): Unexpected token &quot;$acknowledgement&quot;, expected type at offset 20" />
+  <error line="275" column="1" severity="error" message="Cannot call method setHostId() on array|bool|float|int|object|string." />
+</file>
+<file name="src\Centreon\Application\Controller\AuthenticationController.php">
+  <error line="79" column="1" severity="error" message="Method Centreon\Application\Controller\AuthenticationController::login() should return array but returns Symfony\Component\HttpFoundation\JsonResponse." />
+  <error line="113" column="1" severity="error" message="Method Centreon\Application\Controller\AuthenticationController::logout() should return array but returns Symfony\Component\HttpFoundation\JsonResponse." />
+</file>
+<file name="src\Centreon\Application\Controller\CheckController.php">
+  <error line="53" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $acknowledgementService" />
+  <error line="79" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
+  <error line="87" column="1" severity="error" message="PHPDoc tag @var has invalid value ($check Check): Unexpected token &quot;$check&quot;, expected type at offset 20" />
+  <error line="92" column="1" severity="error" message="Cannot call method setHostId() on array|bool|float|int|object|string." />
+  <error line="136" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
+  <error line="144" column="1" severity="error" message="PHPDoc tag @var has invalid value ($check Check): Unexpected token &quot;$check&quot;, expected type at offset 20" />
+  <error line="149" column="1" severity="error" message="Cannot call method setHostId() on array|bool|float|int|object|string." />
+</file>
+<file name="src\Centreon\Application\Controller\DowntimeController.php">
+  <error line="87" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Contact\Contact and null will always evaluate to false." />
+  <error line="156" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Contact\Contact and null will always evaluate to false." />
+  <error line="423" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Contact\Contact and null will always evaluate to false." />
+</file>
+<file name="src\Centreon\Application\Controller\MonitoringHostsController.php">
+  <error line="303" column="1" severity="error" message="PHPDoc tag @param has invalid value (int hostId Id of host to search hostgroups for): Unexpected token &quot;hostId&quot;, expected variable at offset 71" />
+</file>
+<file name="src\Centreon\Application\Controller\Monitoring\MetricController.php">
+  <error line="74" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
+  <error line="112" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
+  <error line="144" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
+</file>
+<file name="src\Centreon\Application\DataRepresenter\Entity.php">
+  <error line="75" column="1" severity="error" message="PHPDoc tag @param has invalid value ($object): Unexpected token &quot;$object&quot;, expected type at offset 18" />
+</file>
+<file name="src\Centreon\Application\DataRepresenter\Topology\NavigationList.php">
+  <error line="61" column="1" severity="error" message="PHPDoc tag @param has invalid value (array): Unexpected token &quot;\n     &quot;, expected variable at offset 47" />
+  <error line="119" column="1" severity="error" message="PHPDoc tag @param has invalid value ($entities array of topologies): Unexpected token &quot;$entities&quot;, expected type at offset 78" />
+  <error line="139" column="1" severity="error" message="PHPDoc tag @param has invalid value ($entities): Unexpected token &quot;$entities&quot;, expected type at offset 61" />
+  <error line="139" column="1" severity="error" message="PHPDoc tag @param has invalid value ($groups): Unexpected token &quot;$groups&quot;, expected type at offset 86" />
+  <error line="224" column="1" severity="error" message="PHPDoc tag @param has invalid value ($naviList): Unexpected token &quot;$naviList&quot;, expected type at offset 100" />
+</file>
+<file name="src\Centreon\Application\Validation\CentreonValidatorTranslator.php">
+  <error line="77" column="1" severity="error" message="Method Centreon\Application\Validation\CentreonValidatorTranslator::transChoice() should return string but return statement is missing." />
+  <error line="99" column="1" severity="error" message="Method Centreon\Application\Validation\CentreonValidatorTranslator::getLocale() should return string but return statement is missing." />
+</file>
+<file name="src\Centreon\Application\Webservice\AclGroupWebservice.php">
+  <error line="142" column="1" severity="error" message="PHPDoc tag @return with type array is incompatible with native type Centreon\Application\DataRepresenter\Response." />
+  <error line="162" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\AclGroupWebservice::$services." />
+</file>
+<file name="src\Centreon\Application\Webservice\CentreonI18n.php">
+  <error line="69" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\CentreonI18n::$services." />
+  <error line="86" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\CentreonI18n::$services." />
+</file>
+<file name="src\Centreon\Application\Webservice\ContactGroupsWebservice.php">
+  <error line="142" column="1" severity="error" message="PHPDoc tag @return with type array is incompatible with native type Centreon\Application\DataRepresenter\Response." />
+  <error line="164" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\ContactGroupsWebservice::$services." />
+</file>
+<file name="src\Centreon\Application\Webservice\ImagesWebservice.php">
+  <error line="142" column="1" severity="error" message="PHPDoc tag @return with type array is incompatible with native type Centreon\Application\DataRepresenter\Response." />
+  <error line="162" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\ImagesWebservice::$services." />
+</file>
+<file name="src\Centreon\Application\Webservice\OpenApiWebservice.php">
+  <error line="86" column="1" severity="error" message="PHPDoc tag @return has invalid value ([]): Unexpected token &quot;[&quot;, expected type at offset 978" />
+  <error line="92" column="1" severity="error" message="Constant _CENTREON_PATH_ not found." />
+</file>
+<file name="src\Centreon\Domain\Acknowledgement\AcknowledgementService.php">
+  <error line="93" column="1" severity="error" message="PHPDoc tag @return with type Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface is not subtype of native type Centreon\Domain\Acknowledgement\AcknowledgementService." />
+</file>
+<file name="src\Centreon\Domain\Check\CheckService.php">
+  <error line="82" column="1" severity="error" message="PHPDoc tag @return with type Centreon\Domain\Check\Interfaces\CheckServiceInterface is not subtype of native type Centreon\Domain\Check\CheckService." />
+</file>
+<file name="src\Centreon\Domain\Engine\EngineService.php">
+  <error line="196" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Monitoring\Host and null will always evaluate to false." />
+</file>
+<file name="src\Centreon\Domain\Entity\EntityCreator.php">
+  <error line="128" column="1" severity="error" message="Call to an undefined method ReflectionType::getName()." />
+  <error line="226" column="1" severity="error" message="PHPDoc tag @var has invalid value ($annotation EntityDescriptor): Unexpected token &quot;$annotation&quot;, expected type at offset 24" />
+  <error line="240" column="1" severity="error" message="Variable $key might not be defined." />
+</file>
+<file name="src\Centreon\Domain\Entity\EntityValidator.php">
+  <error line="85" column="1" severity="error" message="PHPDoc tag @var has invalid value ($yamlConfigurationFiles \SplFileInfo): Unexpected token &quot;$yamlConfigurationFiles&quot;, expected type at offset 32" />
+  <error line="153" column="1" severity="error" message="PHPDoc tag @param has invalid value ($object): Unexpected token &quot;$object&quot;, expected type at offset 18" />
+  <error line="179" column="1" severity="error" message="PHPDoc tag @var has invalid value ($metadata \Symfony\Component\Validator\Mapping\ClassMetadata): Unexpected token &quot;$metadata&quot;, expected type at offset 20" />
+  <error line="181" column="1" severity="error" message="Call to an undefined method Symfony\Component\Validator\Mapping\MetadataInterface::getConstrainedProperties()." />
+  <error line="182" column="1" severity="error" message="Call to an undefined method Symfony\Component\Validator\Mapping\MetadataInterface::getPropertyMetadata()." />
+  <error line="241" column="1" severity="error" message="PHPDoc tag @var has invalid value ($violation ConstraintViolationInterface): Unexpected token &quot;$violation&quot;, expected type at offset 20" />
+  <error line="288" column="1" severity="error" message="PHPDoc tag @var has invalid value ($violation ConstraintViolationInterface): Unexpected token &quot;$violation&quot;, expected type at offset 20" />
+</file>
+<file name="src\Centreon\Domain\Entity\Image.php">
+  <error line="84" column="1" severity="error" message="Variable $ref might not be defined." />
+  <error line="129" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $img_id" />
+  <error line="145" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $img_name" />
+  <error line="161" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $img_path" />
+  <error line="177" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $img_comment" />
+  <error line="205" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $dir_id" />
+  <error line="213" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $dir_name" />
+  <error line="221" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $dir_alias" />
+  <error line="229" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $dir_comment" />
+</file>
+<file name="src\Centreon\Domain\Entity\Task.php">
+  <error line="145" column="1" severity="error" message="Method Centreon\Domain\Entity\Task::getParams() should return string but returns array." />
+  <error line="153" column="1" severity="error" message="Property Centreon\Domain\Entity\Task::$params (array) does not accept string." />
+  <error line="209" column="1" severity="error" message="PHPDoc tag @param has invalid value ($callback): Unexpected token &quot;$callback&quot;, expected type at offset 65" />
+  <error line="209" column="1" severity="error" message="PHPDoc tag @param has invalid value ($input): Unexpected token &quot;$input&quot;, expected type at offset 44" />
+</file>
+<file name="src\Centreon\Domain\Monitoring\Metric\Interfaces\MetricRepositoryInterface.php">
+  <error line="56" column="1" severity="error" message="PHPDoc tag @return with type Centreon\Domain\Monitoring\Metric\Interfaces\MonitoringRepositoryInterface is not subtype of native type Centreon\Domain\Monitoring\Metric\Interfaces\MetricRepositoryInterface." />
+  <error line="56" column="1" severity="error" message="Return typehint of method Centreon\Domain\Monitoring\Metric\Interfaces\MetricRepositoryInterface::setContact() has invalid type Centreon\Domain\Monitoring\Metric\Interfaces\MonitoringRepositoryInterface." />
+</file>
+<file name="src\Centreon\Domain\Monitoring\MonitoringService.php">
+  <error line="190" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
+  <error line="196" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
+  <error line="197" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
+  <error line="197" column="1" severity="error" message="Call to an undefined method Servicegroup::setHosts()." />
+  <error line="210" column="1" severity="error" message="PHPDoc tag @var has invalid value ($services Service[]): Unexpected token &quot;$services&quot;, expected type at offset 28" />
+  <error line="221" column="1" severity="error" message="PHPDoc tag @var has invalid value ($serviceGroup ServiceGroup): Unexpected token &quot;$serviceGroup&quot;, expected type at offset 28" />
+  <error line="222" column="1" severity="error" message="Call to an undefined method Servicegroup::getHosts()." />
+  <error line="223" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
+  <error line="224" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
+  <error line="227" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
+  <error line="235" column="1" severity="error" message="Method Centreon\Domain\Monitoring\MonitoringService::findServiceGroups() should return array&lt;Centreon\Domain\Monitoring\ServiceGroup&gt; but returns array&lt;Servicegroup&gt;." />
+  <error line="259" column="1" severity="error" message="Call to an undefined method Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface::findServiceGroupsByHostAndService()." />
+</file>
+<file name="src\Centreon\Domain\Monitoring\Service.php">
+  <error line="317" column="1" severity="error" message="PHPDoc tag @return with type string|null is not subtype of native type string." />
+  <error line="522" column="1" severity="error" message="PHPDoc tag @param for parameter $scheduledDowntimeDepth with type int|null is not subtype of native type int." />
+  <error line="612" column="1" severity="error" message="PHPDoc tag @return with type Centreon\Domain\Monitoring\Service|null is not subtype of native type Centreon\Domain\Monitoring\Service." />
+</file>
+<file name="src\Centreon\Domain\Repository\CfgCentreonBrokerRepository.php">
+  <error line="55" column="1" severity="error" message="PHPDoc tag @param has invalid value (int pollerId the poller id): Unexpected token &quot;pollerId&quot;, expected variable at offset 67" />
+</file>
+<file name="src\Centreon\Domain\Repository\CommandRepository.php">
+  <error line="160" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $ids" />
+</file>
+<file name="src\Centreon\Domain\Repository\DowntimeRepository.php">
+  <error line="66" column="1" severity="error" message="Method Centreon\Domain\Repository\DowntimeRepository::getFilterSql() should return string but returns array." />
+</file>
+<file name="src\Centreon\Domain\Repository\ImagesRepository.php">
+  <error line="67" column="1" severity="error" message="Ternary operator condition is always true." />
+</file>
+<file name="src\Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInfoInterface.php">
+  <error line="23" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $brokerInfoEntity" />
+</file>
+<file name="src\Centreon\Domain\Repository\TopologyRepository.php">
+  <error line="106" column="1" severity="error" message="Call to an undefined method PDOStatement::fetchRow()." />
+  <error line="113" column="1" severity="error" message="Call to an undefined method PDOStatement::fetchRow()." />
+  <error line="139" column="1" severity="error" message="Call to an undefined method PDOStatement::fetchRow()." />
+</file>
+<file name="src\Centreon\Domain\Repository\TrapRepository.php">
+  <error line="16" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $pollerId" />
+</file>
+<file name="src\Centreon\Domain\Security\AuthenticationService.php">
+  <error line="58" column="1" severity="error" message="Property Centreon\Domain\Security\AuthenticationService::$contactRepository (Symfony\Component\Security\Core\User\UserProviderInterface) does not accept Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface." />
+  <error line="67" column="1" severity="error" message="Call to an undefined method Symfony\Component\Security\Core\User\UserProviderInterface::findByName()." />
+  <error line="77" column="1" severity="error" message="Call to an undefined method Symfony\Component\Security\Core\User\UserProviderInterface::findByName()." />
+</file>
+<file name="src\Centreon\Domain\Service\BrokerConfigurationService.php">
+  <error line="34" column="1" severity="error" message="Parameter $brokerInfoEntities of method Centreon\Domain\Service\BrokerConfigurationService::addFlow() has invalid typehint type Centreon\Domain\Service\CfgCentreonBrokerInfo." />
+  <error line="42" column="1" severity="error" message="Call to method setConfigId() on an unknown class Centreon\Domain\Service\CfgCentreonBrokerInfo." />
+  <error line="43" column="1" severity="error" message="Call to method setConfigGroup() on an unknown class Centreon\Domain\Service\CfgCentreonBrokerInfo." />
+  <error line="44" column="1" severity="error" message="Call to method setConfigGroupId() on an unknown class Centreon\Domain\Service\CfgCentreonBrokerInfo." />
+</file>
+<file name="src\Centreon\Domain\Service\FrontendComponentService.php">
+  <error line="64" column="1" severity="error" message="Access to an undefined property Centreon\Domain\Service\FrontendComponentService::$services." />
+  <error line="106" column="1" severity="error" message="Access to an undefined property Centreon\Domain\Service\FrontendComponentService::$services." />
+</file>
+<file name="src\Centreon\Infrastructure\Acknowledgement\AcknowledgementRepositoryRDB.php">
+  <error line="391" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $downtimeId" />
+</file>
+<file name="src\Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter.php">
+  <error line="109" column="1" severity="error" message="Negated boolean expression is always false." />
+  <error line="179" column="1" severity="error" message="Method Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter::insert() should return int but returns string." />
+</file>
+<file name="src\Centreon\Infrastructure\CentreonLegacyDB\EntityPersister.php">
+  <error line="60" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $entity" />
+</file>
+<file name="src\Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata.php">
+  <error line="74" column="1" severity="error" message="PHPDoc tag @return with type self is not subtype of native type Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata." />
+  <error line="74" column="1" severity="error" message="Return typehint of method Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata::setTableName() has invalid type self." />
+  <error line="101" column="1" severity="error" message="PHPDoc tag @return with type self is not subtype of native type Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata." />
+  <error line="107" column="1" severity="error" message="Return typehint of method Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata::add() has invalid type self." />
+  <error line="201" column="1" severity="error" message="PHPDoc tag @return with type int|null is not subtype of native type int." />
+</file>
+<file name="src\Centreon\Infrastructure\Event\EventDispatcher.php">
+  <error line="67" column="1" severity="error" message="PHPDoc tag @var has invalid value ([]): Unexpected token &quot;[&quot;, expected type at offset 16" />
+</file>
+<file name="src\Centreon\Infrastructure\Monitoring\Metric\MetricRepositoryLegacy.php">
+  <error line="61" column="1" severity="error" message="Return typehint of method Centreon\Infrastructure\Monitoring\Metric\MetricRepositoryLegacy::setContact() has invalid type Centreon\Domain\Monitoring\Metric\Interfaces\MonitoringRepositoryInterface." />
+  <error line="90" column="1" severity="error" message="Method CentreonGraphStatus::getData() invoked with 1 parameter, 0 required." />
+</file>
+<file name="src\Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB.php">
+  <error line="867" column="1" severity="error" message="Right side of || is always false." />
+  <error line="875" column="1" severity="error" message="If condition is always false." />
+</file>
+<file name="src\Centreon\Infrastructure\Security\AccessGroupRepositoryRDB.php">
+  <error line="58" column="1" severity="error" message="Call to function is_null() with int will always evaluate to false." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\CentcoreConfigService.php">
+  <error line="126" column="1" severity="error" message="Variable $result might not be defined." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\CentreonClapiService.php">
+  <error line="66" column="1" severity="error" message="Array (array&lt;object&gt;) does not accept string." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\CentreonDBManagerService.php">
+  <error line="31" column="1" severity="error" message="Property Centreon\Infrastructure\Service\CentreonDBManagerService::$manager (Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter) does not accept array&lt;string, Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter&gt;." />
+  <error line="41" column="1" severity="error" message="Call to function array_key_exists() with string and Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter will always evaluate to false." />
+  <error line="55" column="1" severity="error" message="Cannot access offset string on Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter." />
+  <error line="60" column="1" severity="error" message="Cannot access offset string on Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\CentreonPaginationService.php">
+  <error line="187" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $offset" />
+  <error line="279" column="1" severity="error" message="Call to an undefined method Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository::getPaginationList()." />
+  <error line="282" column="1" severity="error" message="Call to an undefined method Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository::getPaginationListTotal()." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\CentreonWebserviceService.php">
+  <error line="57" column="1" severity="error" message="PHPDoc tag @return with type self is not subtype of native type Centreon\Infrastructure\Service\CentreonWebserviceService." />
+  <error line="57" column="1" severity="error" message="Return typehint of method Centreon\Infrastructure\Service\CentreonWebserviceService::add() has invalid type self." />
+  <error line="74" column="1" severity="error" message="Array (array&lt;object&gt;) does not accept string." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\Traits\ServiceContainerTrait.php (in context of class Centreon\Infrastructure\Service\CentreonClapiService)">
+  <error line="30" column="1" severity="error" message="Method Centreon\Infrastructure\Service\CentreonClapiService::get() should return string but returns object." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\Traits\ServiceContainerTrait.php (in context of class Centreon\Infrastructure\Service\CentreonWebserviceService)">
+  <error line="30" column="1" severity="error" message="Method Centreon\Infrastructure\Service\CentreonWebserviceService::get() should return string but returns object." />
+</file>
+<file name="src\Centreon\Infrastructure\Service\UploadFileService.php">
+  <error line="55" column="1" severity="error" message="Constructor of class Centreon\Infrastructure\Service\UploadFileService has an unused parameter $services." />
+  <error line="57" column="1" severity="error" message="Property Centreon\Infrastructure\Service\UploadFileService::$filesRequest (string) does not accept array|null." />
+  <error line="87" column="1" severity="error" message="Call to function array_key_exists() with string and string will always evaluate to false." />
+  <error line="91" column="1" severity="error" message="Unreachable statement - code above always terminates." />
+</file>
+<file name="src\Centreon\Infrastructure\Webservice\DependenciesTrait.php (in context of class Centreon\Application\Webservice\AclGroupWebservice)">
+  <error line="66" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\AclGroupWebservice::$services." />
+  <error line="76" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\AclGroupWebservice::$services." />
+</file>
+<file name="src\Centreon\Infrastructure\Webservice\DependenciesTrait.php (in context of class Centreon\Application\Webservice\ContactGroupsWebservice)">
+  <error line="66" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\ContactGroupsWebservice::$services." />
+  <error line="76" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\ContactGroupsWebservice::$services." />
+</file>
+<file name="src\Centreon\Infrastructure\Webservice\DependenciesTrait.php (in context of class Centreon\Application\Webservice\ImagesWebservice)">
+  <error line="66" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\ImagesWebservice::$services." />
+  <error line="76" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\ImagesWebservice::$services." />
+</file>
+<file name="src\Centreon\ServiceProvider.php">
+  <error line="114" column="1" severity="error" message="Expression &quot;$pimple['translator']&quot; on a separate line does not do anything." />
+  <error line="224" column="1" severity="error" message="Class Centreon\Domain\Service\BrokerConfigurationService does not have a constructor and must be instantiated without any parameters." />
+</file>
+<file name="src\Centreon\Tests\Application\DataRepresenter\Topology\NavigationListTest.php">
+  <error line="0" column="1" severity="error" message="Class Centreon\Tests\Application\DataRepresenter\NavigationListTest was not found while trying to analyse it - autoloading is probably not configured properly." />
+</file>
+<file name="src\Centreon\Tests\Application\Validation\CentreonValidatorFactoryTest.php">
+  <error line="0" column="1" severity="error" message="Class Centreon\Tests\Application\DataRepresenter\CentreonValidatorFactoryTest was not found while trying to analyse it - autoloading is probably not configured properly." />
+</file>
+<file name="src\Centreon\Tests\Application\Validation\CentreonValidatorTranslatorTest.php">
+  <error line="0" column="1" severity="error" message="Class Centreon\Tests\Application\DataRepresenter\CentreonValidatorTranslatorTest was not found while trying to analyse it - autoloading is probably not configured properly." />
+</file>
+<file name="src\Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest.php">
+  <error line="62" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$container." />
+  <error line="63" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$executionContext." />
+  <error line="68" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$validator." />
+  <error line="77" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$validator." />
+  <error line="83" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$repository." />
+  <error line="84" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$repoMethod." />
+  <error line="85" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$fieldAccessor." />
+  <error line="102" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$container." />
+  <error line="108" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$executionContext." />
+  <error line="112" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$message." />
+  <error line="121" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$fields." />
+  <error line="143" column="1" severity="error" message="Access to undefined constant PHPUnit\Framework\MockObject\MockObject::NOT_VALID_REPO_CALLBACK." />
+  <error line="173" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$validator." />
+  <error line="190" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest::$validator." />
+</file>
+<file name="src\Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest.php">
+  <error line="62" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$container." />
+  <error line="63" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$executionContext." />
+  <error line="68" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+  <error line="77" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+  <error line="86" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$fields." />
+  <error line="88" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+  <error line="97" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$errorPath." />
+  <error line="99" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+  <error line="108" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$fields." />
+  <error line="110" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+  <error line="116" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$fields." />
+  <error line="118" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+  <error line="124" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$repository." />
+  <error line="125" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$fields." />
+  <error line="137" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$repositoryMethod." />
+  <error line="146" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$container." />
+  <error line="153" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$executionContext." />
+  <error line="157" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$message." />
+  <error line="166" column="1" severity="error" message="Access to an undefined property PHPUnit\Framework\MockObject\MockObject::$fields." />
+  <error line="188" column="1" severity="error" message="Access to undefined constant PHPUnit\Framework\MockObject\MockObject::NOT_UNIQUE_ERROR." />
+  <error line="218" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+  <error line="235" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest::$validator." />
+</file>
+<file name="src\Centreon\Tests\Application\Webservice\AclGroupWebserviceTest.php">
+  <error line="51" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\AclGroupWebserviceTest::$webservice." />
+  <error line="59" column="1" severity="error" message="Call to an undefined method PHPUnit\Framework\MockObject\MockObject::setDi()." />
+</file>
+<file name="src\Centreon\Tests\Application\Webservice\CentreonFrontendComponentTest.php">
+  <error line="72" column="1" severity="error" message="Call to an undefined method Centreon\Domain\Service\FrontendComponentService::method()." />
+  <error line="75" column="1" severity="error" message="Call to an undefined method Centreon\Domain\Service\FrontendComponentService::method()." />
+  <error line="80" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonFrontendComponentTest::$webservice." />
+  <error line="88" column="1" severity="error" message="Call to an undefined method PHPUnit\Framework\MockObject\MockObject::setDi()." />
+  <error line="93" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonFrontendComponentTest::$webservice." />
+  <error line="99" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonFrontendComponentTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Application\Webservice\CentreonI18nTest.php">
+  <error line="57" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonI18nTest::$container." />
+  <error line="61" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonI18nTest::$webservice." />
+  <error line="69" column="1" severity="error" message="Call to an undefined method PHPUnit\Framework\MockObject\MockObject::setDi()." />
+  <error line="80" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonI18nTest::$container." />
+  <error line="84" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonI18nTest::$webservice." />
+  <error line="92" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonI18nTest::$container." />
+  <error line="98" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonI18nTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest.php">
+  <error line="51" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest::$webservice." />
+  <error line="59" column="1" severity="error" message="Call to an undefined method PHPUnit\Framework\MockObject\MockObject::setDi()." />
+</file>
+<file name="src\Centreon\Tests\Application\Webservice\ImagesWebserviceTest.php">
+  <error line="51" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ImagesWebserviceTest::$webservice." />
+  <error line="59" column="1" severity="error" message="Call to an undefined method PHPUnit\Framework\MockObject\MockObject::setDi()." />
+</file>
+<file name="src\Centreon\Tests\Application\Webservice\TopologyWebserviceTest.php">
+  <error line="64" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$container." />
+  <error line="65" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$db." />
+  <error line="69" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="79" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$container." />
+  <error line="79" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="91" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="97" column="1" severity="error" message="Result of method Centreon\Tests\Resource\CheckPoint::add() (void) is used." />
+  <error line="101" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$db." />
+  <error line="106" column="1" severity="error" message="Cannot call method mark() on void." />
+  <error line="110" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="111" column="1" severity="error" message="Cannot call method assert() on void." />
+  <error line="120" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$db." />
+  <error line="122" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="134" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="142" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$container." />
+  <error line="144" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="159" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$container." />
+  <error line="163" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$container." />
+  <error line="168" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+  <error line="186" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$container." />
+  <error line="190" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$container." />
+  <error line="195" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Domain\Repository\AclGroupRepositoryTest.php">
+  <error line="49" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Domain\Repository\AclGroupRepositoryTest::$db." />
+</file>
+<file name="src\Centreon\Tests\Domain\Repository\ServiceRepositoryTest.php">
+  <error line="53" column="1" severity="error" message="Property Centreon\Tests\Domain\Repository\ServiceRepositoryTest::$db (Centreon\Test\Mock\CentreonDB) does not accept default value of type array." />
+</file>
+<file name="src\Centreon\Tests\Domain\Service\I18nTest.php">
+  <error line="80" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Domain\Service\I18nTest::$translation." />
+  <error line="89" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Domain\Service\I18nTest::$translation." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest.php">
+  <error line="56" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$db." />
+  <error line="57" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="58" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="65" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="74" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="81" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="92" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$db." />
+  <error line="110" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="119" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="134" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="156" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="179" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="193" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$db." />
+  <error line="207" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="221" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="243" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="257" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$db." />
+  <error line="275" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$dbAdapter." />
+  <error line="303" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="311" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$db." />
+  <error line="311" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="321" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$db." />
+  <error line="321" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+  <error line="355" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\CentreonDBAdapterTest::$manager." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadataTest.php">
+  <error line="48" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadataTest::$metadata." />
+  <error line="54" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadataTest::$metadata." />
+  <error line="59" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadataTest::$metadata." />
+  <error line="64" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadataTest::$metadata." />
+  <error line="69" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadataTest::$metadata." />
+  <error line="78" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadataTest::$metadata." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest.php">
+  <error line="55" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$db." />
+  <error line="56" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$manager." />
+  <error line="57" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$repository." />
+  <error line="70" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$repository." />
+  <error line="76" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$repository." />
+  <error line="83" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$repository." />
+  <error line="86" column="1" severity="error" message="Cannot call method add() on void." />
+  <error line="86" column="1" severity="error" message="Result of method Centreon\Tests\Resource\CheckPoint::add() (void) is used." />
+  <error line="91" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$db." />
+  <error line="146" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\CentreonLegacyDB\ServiceEntityRepositoryTest::$repository." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest.php">
+  <error line="51" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="51" column="1" severity="error" message="Cannot call method add() on void." />
+  <error line="51" column="1" severity="error" message="Result of method Centreon\Tests\Resource\CheckPoint::add() (void) is used." />
+  <error line="57" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="60" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="62" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="66" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="70" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="74" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="76" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="80" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="82" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="88" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="93" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="95" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="100" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="108" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="120" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="125" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$checkPoint." />
+  <error line="137" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+  <error line="150" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Provider\AutoloadServiceProviderTest::$finder." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\Service\CentreonDBManagerServiceTest.php">
+  <error line="57" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\CentreonDBManagerServiceTest::$db1." />
+  <error line="58" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\CentreonDBManagerServiceTest::$db2." />
+  <error line="73" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\CentreonDBManagerServiceTest::$db1." />
+  <error line="80" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\CentreonDBManagerServiceTest::$db2." />
+  <error line="89" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\CentreonDBManagerServiceTest::$db1." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\Service\CentreonPaginationServiceTest.php">
+  <error line="60" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\CentreonPaginationServiceTest::$container." />
+  <error line="77" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\CentreonPaginationServiceTest::$container." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\Service\UploadFileServiceTest.php">
+  <error line="51" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$filesRequest." />
+  <error line="83" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$service." />
+  <error line="89" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$service." />
+  <error line="93" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$filesRequest." />
+  <error line="97" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$service." />
+  <error line="107" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$service." />
+  <error line="113" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$service." />
+  <error line="128" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Infrastructure\Service\UploadFileServiceTest::$service." />
+</file>
+<file name="src\Centreon\Tests\Infrastructure\Webservice\WebServiceAbstractTest.php">
+  <error line="0" column="1" severity="error" message="Class Centreon\Tests\Infrastructure\CentreonLegacyDB\WebServiceAbstractTest was not found while trying to analyse it - autoloading is probably not configured properly." />
+</file>
+<file name="src\Centreon\Tests\Resource\CheckPoint.php">
+  <error line="69" column="1" severity="error" message="PHPDoc tag @return with type void is incompatible with native type Centreon\Tests\Resource\CheckPoint." />
+  <error line="73" column="1" severity="error" message="Method Centreon\Tests\Resource\CheckPoint::add() with return type void returns $this(Centreon\Tests\Resource\CheckPoint) but should not return anything." />
+  <error line="82" column="1" severity="error" message="PHPDoc tag @param has invalid value ($name): Unexpected token &quot;$name&quot;, expected type at offset 55" />
+</file>
+<file name="src\Centreon\Tests\Resource\Dependency\CentreonDbManagerDependencyTrait.php (in context of class Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest)">
+  <error line="69" column="1" severity="error" message="Function loadDependencyInjector not found." />
+</file>
+<file name="src\Centreon\Tests\Resource\Dependency\CentreonDbManagerDependencyTrait.php (in context of class Centreon\Tests\Application\Validation\Validator\UniqueEntityValidatorTest)">
+  <error line="69" column="1" severity="error" message="Function loadDependencyInjector not found." />
+</file>
+<file name="src\Centreon\Tests\Resource\Dependency\CentreonDbManagerDependencyTrait.php (in context of class Centreon\Tests\Application\Webservice\TopologyWebserviceTest)">
+  <error line="69" column="1" severity="error" message="Function loadDependencyInjector not found." />
+</file>
+<file name="src\Centreon\Tests\Resource\Dependency\CentreonDbManagerDependencyTrait.php (in context of class Centreon\Tests\Infrastructure\Service\CentreonPaginationServiceTest)">
+  <error line="69" column="1" severity="error" message="Function loadDependencyInjector not found." />
+</file>
+<file name="src\Centreon\Tests\Resource\Mock\ClapiMock.php">
+  <error line="51" column="1" severity="error" message="Constructor of class Centreon\Tests\Resource\Mock\ClapiMock has an unused parameter $di." />
+</file>
+<file name="src\Centreon\Tests\Resource\Mock\RepositoryMock.php">
+  <error line="62" column="1" severity="error" message="Return typehint of method Centreon\Tests\Resource\Mock\RepositoryMock::findOneBy() has invalid type Centreon\Test\Mock\EntityMock." />
+  <error line="73" column="1" severity="error" message="PHPDoc tag @param for parameter $object with type Centreon\Test\Mock\EntityMock is not subtype of native type Centreon\Tests\Resource\Mock\EntityMock." />
+  <error line="73" column="1" severity="error" message="Parameter $object of method Centreon\Tests\Resource\Mock\RepositoryMock::validateEntity() has invalid typehint type Centreon\Test\Mock\EntityMock." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\PaginationListTrait.php (in context of class Centreon\Tests\Domain\Repository\AclGroupRepositoryTest)">
+  <error line="66" column="1" severity="error" message="Call to an undefined method Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface::getEntityPersister()." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceAuthorizePublicTrait.php (in context of class Centreon\Tests\Application\Webservice\CentreonFrontendComponentTest)">
+  <error line="59" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonFrontendComponentTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceAuthorizePublicTrait.php (in context of class Centreon\Tests\Application\Webservice\CentreonI18nTest)">
+  <error line="59" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\CentreonI18nTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceAuthorizePublicTrait.php (in context of class Centreon\Tests\Application\Webservice\TopologyWebserviceTest)">
+  <error line="59" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\TopologyWebserviceTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceAuthorizeRestApiTrait.php (in context of class Centreon\Tests\Application\Webservice\AclGroupWebserviceTest)">
+  <error line="59" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\AclGroupWebserviceTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceAuthorizeRestApiTrait.php (in context of class Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest)">
+  <error line="59" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceAuthorizeRestApiTrait.php (in context of class Centreon\Tests\Application\Webservice\ImagesWebserviceTest)">
+  <error line="59" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ImagesWebserviceTest::$webservice." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceExecuteTestTrait.php (in context of class Centreon\Tests\Application\Webservice\AclGroupWebserviceTest)">
+  <error line="74" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\AclGroupWebserviceTest::$webservice." />
+  <error line="93" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $callback" />
+  <error line="102" column="1" severity="error" message="Cannot call method add() on void." />
+  <error line="102" column="1" severity="error" message="Result of method Centreon\Tests\Resource\CheckPoint::add() (void) is used." />
+  <error line="106" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\AclGroupWebserviceTest::$db." />
+  <error line="155" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $method" />
+  <error line="157" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\AclGroupWebserviceTest::$webservice." />
+  <error line="171" column="1" severity="error" message="Function loadDependencyInjector not found." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceExecuteTestTrait.php (in context of class Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest)">
+  <error line="74" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest::$webservice." />
+  <error line="93" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $callback" />
+  <error line="102" column="1" severity="error" message="Cannot call method add() on void." />
+  <error line="102" column="1" severity="error" message="Result of method Centreon\Tests\Resource\CheckPoint::add() (void) is used." />
+  <error line="106" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest::$db." />
+  <error line="155" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $method" />
+  <error line="157" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ContactGroupsWebserviceTest::$webservice." />
+  <error line="171" column="1" severity="error" message="Function loadDependencyInjector not found." />
+</file>
+<file name="src\Centreon\Tests\Resource\Traits\WebServiceExecuteTestTrait.php (in context of class Centreon\Tests\Application\Webservice\ImagesWebserviceTest)">
+  <error line="74" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ImagesWebserviceTest::$webservice." />
+  <error line="93" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $callback" />
+  <error line="102" column="1" severity="error" message="Cannot call method add() on void." />
+  <error line="102" column="1" severity="error" message="Result of method Centreon\Tests\Resource\CheckPoint::add() (void) is used." />
+  <error line="106" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ImagesWebserviceTest::$db." />
+  <error line="155" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $method" />
+  <error line="157" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Application\Webservice\ImagesWebserviceTest::$webservice." />
+  <error line="171" column="1" severity="error" message="Function loadDependencyInjector not found." />
+</file>
+</checkstyle>
