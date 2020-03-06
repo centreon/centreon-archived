@@ -120,7 +120,7 @@ class DowntimeEventObject extends Downtime implements EventObjectInterface, Enti
             'started' => 'setStarted',
             'cancelled' => 'setCancelled',
             'fixed' => 'setFixed',
-            'delition_time' => 'setDelitionTime',
+            'deletion_time' => 'setDeletionTime',
         ];
     }
 }
