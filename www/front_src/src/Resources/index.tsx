@@ -66,7 +66,15 @@ const Resources = (): JSX.Element => {
     const sort = sortf ? { [sortf]: sorto } : undefined;
 
     listResources(
-      { states, statuses, resourceTypes, sort, limit, page, search },
+      {
+        states: states.map(({ name }) => name),
+        statuses: statuses.map(({ name }) => name),
+        resourceTypes: resourceTypes.map(({ name }) => name),
+        sort,
+        limit,
+        page,
+        search,
+      },
       { cancelToken: tokenSource.token },
     )
       .then((retrievedListing) => {

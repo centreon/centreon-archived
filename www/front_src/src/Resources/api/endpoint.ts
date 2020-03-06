@@ -70,7 +70,14 @@ const buildResourcesEndpoint = (params): string => {
   return buildEndpoint({
     baseEndpoint: resourcesEndpoint,
     ...searchOptions,
-    params: listingParams,
+    params: [
+      ...listingParams,
+      { name: 'states', value: params.states },
+      { name: 'resourceTypes', value: params.resourceTypes },
+      { name: 'statuses', value: params.statuses },
+      { name: 'host_group_ids', value: params.hostGroupIds },
+      { name: 'service_group_ids', value: params.serviceGroupIds },
+    ],
   });
 };
 
@@ -92,14 +99,7 @@ const buildServiceGroupsEndpoint = (params): string => {
   return buildEndpoint({
     baseEndpoint: serviceGroupsEndpoint,
     ...searchOptions,
-    params: [
-      ...getListingParams(params),
-      { name: 'states', value: params.state },
-      { name: 'resourceTypes', value: params.resourceTypes },
-      { name: 'statuses', value: params.statuses },
-      { name: 'host_group_ids', value: params.hostGroupIds },
-      { name: 'service_group_ids', value: params.serviceGroupIds },
-    ],
+    params: [...getListingParams(params)],
   });
 };
 
