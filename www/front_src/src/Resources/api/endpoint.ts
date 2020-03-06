@@ -1,13 +1,10 @@
-import { getSearchParam } from './searchObjects';
+import { getSearchParam, SearchParam } from './searchObjects';
+import { Filter } from '../Filter/models';
 
 const monitoringEndpoint = 'monitoring';
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
-
-const buildParam = ({ name, value }): string => {
-  return `${name}=${JSON.stringify(value)}`;
-};
 
 interface ListingParams {
   state?: string;
@@ -17,23 +14,29 @@ interface ListingParams {
   search?: string;
 }
 
-const buildListingEndpoint = ({
-  baseEndpoint,
-  state,
+interface Param {
+  name: string;
+  value?: string | number | SearchParam;
+}
+
+const buildParam = ({ name, value }): string => {
+  return `${name}=${JSON.stringify(value)}`;
+};
+
+const buildParams = (params): Array<string> =>
+  params
+    .filter(({ value }) => value !== undefined)
+    .map(buildParam)
+    .join('&');
+
+const getListingParams = ({
   sort,
   page,
   limit,
   search,
   searchOptions,
-}: ListingParams & {
-  baseEndpoint: string;
-  searchOptions: Array<string>;
-}): string => {
-  const params = [
-    {
-      name: 'state',
-      value: state,
-    },
+}): Array<Param> => {
+  return [
     { name: 'sort_by', value: sort },
     { name: 'page', value: page },
     { name: 'limit', value: limit },
@@ -41,15 +44,20 @@ const buildListingEndpoint = ({
       name: 'search',
       value: getSearchParam({ searchValue: search, searchOptions }),
     },
-  ]
-    .filter(({ value }) => value !== undefined)
-    .map(buildParam)
-    .join('&');
-
-  return `${baseEndpoint}?${params}`;
+  ];
 };
 
-const buildResourcesEndpoint = (params: ListingParams): string => {
+const buildEndpoint = ({ baseEndpoint, params }): string => {
+  return `${baseEndpoint}?${buildParams(params)}`;
+};
+
+interface FilterParams {
+  states?: Array<Filter>;
+  resourceTypes?: Array<Filter>;
+  statuses?: Array<Fiter>;
+}
+
+const buildResourcesEndpoint = (params): string => {
   const searchOptions = [
     'host.name',
     'host.alias',
@@ -57,30 +65,41 @@ const buildResourcesEndpoint = (params: ListingParams): string => {
     'service.description',
   ];
 
-  return buildListingEndpoint({
+  const listingParams = getListingParams(params);
+
+  return buildEndpoint({
     baseEndpoint: resourcesEndpoint,
-    searchOptions,
-    ...params,
+    ...searchOptions,
+    params: listingParams,
   });
 };
 
-const buildHostGroupsEndpoint = (params: ListingParams): string => {
+const buildHostGroupsEndpoint = (params): string => {
   const searchOptions = ['name'];
 
-  return buildListingEndpoint({
+  const listingParams = getListingParams(params);
+
+  return buildEndpoint({
     baseEndpoint: hostgroupsEndpoint,
-    searchOptions,
-    ...params,
+    ...searchOptions,
+    params: listingParams,
   });
 };
 
-const buildServiceGroupsEndpoint = (params: ListingParams): string => {
+const buildServiceGroupsEndpoint = (params): string => {
   const searchOptions = ['name'];
 
-  return buildListingEndpoint({
+  return buildEndpoint({
     baseEndpoint: serviceGroupsEndpoint,
-    searchOptions,
-    ...params,
+    ...searchOptions,
+    params: [
+      ...getListingParams(params),
+      { name: 'states', value: params.state },
+      { name: 'resourceTypes', value: params.resourceTypes },
+      { name: 'statuses', value: params.statuses },
+      { name: 'host_group_ids', value: params.hostGroupIds },
+      { name: 'service_group_ids', value: params.serviceGroupIds },
+    ],
   });
 };
 

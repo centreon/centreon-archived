@@ -9,9 +9,14 @@ import { lime, purple } from '@material-ui/core/colors';
 import { Listing, withErrorSnackbar, useErrorSnackbar } from '@centreon/ui';
 
 import { listResources } from './api';
-import { ResourceListing, Filter as FilterModel } from './models';
+import { ResourceListing } from './models';
 import columns from './columns';
 import Filter from './Filter';
+import {
+  filterById,
+  unhandledProblemsFilter,
+  Filter as FilterModel,
+} from './Filter/models';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -26,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
 
 const noOp = (): void => undefined;
 
+const defaultFilter = unhandledProblemsFilter;
+
 const Resources = (): JSX.Element => {
   const classes = useStyles();
 
@@ -35,10 +42,17 @@ const Resources = (): JSX.Element => {
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
+  const [filter, setFilter] = useState(defaultFilter);
   const [search, setSearch] = useState<string>();
-  const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>();
-  const [states, setStates] = useState<Array<FilterModel>>();
-  const [statuses, setStatuses] = useState<Array<FilterModel>>();
+  const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>(
+    defaultFilter.criterias.resourceTypes,
+  );
+  const [states, setStates] = useState<Array<FilterModel>>(
+    defaultFilter.criterias.states,
+  );
+  const [statuses, setStatuses] = useState<Array<FilterModel>>(
+    defaultFilter.criterias.statuses,
+  );
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
 
@@ -52,7 +66,7 @@ const Resources = (): JSX.Element => {
     const sort = sortf ? { [sortf]: sorto } : undefined;
 
     listResources(
-      { state: 'all', sort, limit, page, search },
+      { states, statuses, resourceTypes, sort, limit, page, search },
       { cancelToken: tokenSource.token },
     )
       .then((retrievedListing) => {
@@ -72,7 +86,18 @@ const Resources = (): JSX.Element => {
 
   useEffect(() => {
     load();
-  }, [sortf, sorto, page, limit, search]);
+  }, [
+    sortf,
+    sorto,
+    page,
+    limit,
+    search,
+    states,
+    statuses,
+    resourceTypes,
+    hostGroups,
+    serviceGroups,
+  ]);
 
   const doSearch = (value): void => {
     setSearch(value);
@@ -111,6 +136,11 @@ const Resources = (): JSX.Element => {
     setServiceGroups(updatedServiceGroups);
   };
 
+  const changeFilter = (event): void => {
+    const filterId = event.target.value;
+    setFilter(filterById[filterId]);
+  };
+
   const rowColorConditions = [
     {
       name: 'inDowntime',
@@ -127,6 +157,8 @@ const Resources = (): JSX.Element => {
   return (
     <div className={classes.page}>
       <Filter
+        filter={filter}
+        onFilterChange={changeFilter}
         selectedResourceTypes={resourceTypes}
         onResourceTypeChange={changeResourceTypes}
         selectedStates={states}

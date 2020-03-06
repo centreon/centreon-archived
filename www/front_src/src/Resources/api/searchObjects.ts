@@ -3,8 +3,8 @@ interface SearchObject {
   value: string;
 }
 
-interface SearchParam {
-  $or: Array<{ [field: string]: { $rg: string } }>;
+export interface SearchParam {
+  $and: Array<{ [field: string]: { $rg: string } }>;
 }
 
 const getFoundSearchObjects = ({
@@ -50,7 +50,7 @@ const getSearchParam = ({
       : getDefaultSearchObjects({ searchValue, searchOptions });
 
   return {
-    $or: searchObjectsToSend.map(({ field, value }) => ({
+    $and: searchObjectsToSend.map(({ field, value }) => ({
       [field]: { $rg: `${value}` },
     })),
   };

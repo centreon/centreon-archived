@@ -44,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Filter = ({
+  filter,
+  onFilterChange,
   search,
   onSearchRequest,
   selectedResourceTypes,
@@ -60,7 +62,6 @@ const Filter = ({
   const classes = useStyles();
 
   const [searchFieldValue, setSearchFieldValue] = useState<string>();
-  const [filter, setFilter] = useState(unhandledProblemsFilter);
 
   const changeSearchFieldValue = (event): void => {
     setSearchFieldValue(event.target.value);
@@ -68,11 +69,6 @@ const Filter = ({
 
   const requestSearch = (): void => {
     onSearchRequest(searchFieldValue);
-  };
-
-  const changeFilter = (event): void => {
-    const filterId = event.target.value;
-    setFilter(filterById[filterId]);
   };
 
   return (
@@ -91,7 +87,7 @@ const Filter = ({
                   allFilter,
                 ]}
                 selectedOptionId={filter.id}
-                onChange={changeFilter}
+                onChange={onFilterChange}
                 ariaLabel={labelStateFilter}
               />
             </Grid>
@@ -123,7 +119,7 @@ const Filter = ({
                 options={resourceTypes}
                 label={labelTypeOfResource}
                 onChange={onResourceTypeChange}
-                value={selectedResourceTypes || filter.criterias.resourceTypes}
+                value={selectedResourceTypes || []}
               />
             </Grid>
             <Grid item>
@@ -132,7 +128,7 @@ const Filter = ({
                 options={states}
                 label={labelState}
                 onChange={onStatesChange}
-                value={selectedStates || filter.criterias.states}
+                value={selectedStates || []}
               />
             </Grid>
             <Grid item>
@@ -141,7 +137,7 @@ const Filter = ({
                 options={statuses}
                 label={labelStatus}
                 onChange={onStatusesChange}
-                value={selectedStatuses || filter.criterias.statuses}
+                value={selectedStatuses || []}
               />
             </Grid>
             <Grid item>
