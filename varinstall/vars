@@ -58,3 +58,5 @@ DEFAULT_MONITORINGENGINE_INIT_SCRIPT="centengine"
 DEFAULT_BROKER_USER="centreon-broker"
 DEFAULT_BROKER_ETC="/etc/centreon-broker"
 DEFAULT_PHP_FPM_SERVICE="fpm-php"
+DEFAULT_CENTREON_SPOOL="/var/spool/centreon/"
+CENTREON_SPOOL_SSH=`eval echo "~$CENTREON_USER"`

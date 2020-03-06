@@ -136,6 +136,13 @@ add_group "$WEB_USER" "$MONITORINGENGINE_GROUP"
 add_group "$CENTREON_USER" "$MONITORINGENGINE_GROUP"
 add_group "$CENTREON_USER" "$WEB_GROUP"
 
+## Configure Gorgone user and group
+add_group "$CENTREON_USER" "$GORGONE_GROUP"
+add_group "$GORGONE_USER" "$CENTREON_GROUP"
+add_group "$GORGONE_USER" "$BROKER_GROUP"
+add_group "$GORGONE_USER" "$ENGINE_GROUP"
+add_group "$GORGONE_USER" "$WEB_GROUP"
+
 ## Config Sudo
 # I think this process move on CentCore install...
 configureSUDO "$INSTALL_DIR_CENTREON/examples"
@@ -743,6 +750,11 @@ while [ "$pear_module" -eq 0 ] ; do
         pear_module="1"
     fi
 done
+
+## Copy pollers SSH keys (in case of upgrade) to the new "user" gorgone
+if [ -z $inst_upgrade_dir ] ; then
+    copy_ssh_keys_to_gorgone
+fi
 
 ## Create configfile for web install
 createConfFile
