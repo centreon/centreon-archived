@@ -29,6 +29,23 @@
 # debug ?
 #set -x
 
+###### Mandatory step
+echo -e "\n$line"
+echo -e "\t$(gettext "Check mandatory gorgone service status")"
+echo -e "$line"
+
+yes_no_default "$(gettext "Is the Gorgone module already installed?")"
+if [ "$?" -eq 1 ] ; then
+    echo_failure "$(gettext "Gorgone is required.\nPlease install it before launching this script")\n" "$fail"
+    echo -e "\n$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
+    echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
+    echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
+    exit 1
+fi
+
+# locate gorgone
+locate_centreon_gorgone
+
 echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
@@ -43,8 +60,7 @@ if [ "$?" -eq 1 ] ; then
   fi
 fi
 
-###### Require
-#################################
+###### Mandatory step
 ## Create install_dir_centreon
 locate_centreon_installdir
 # Create an examples directory to save all important templates and config

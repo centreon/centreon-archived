@@ -676,6 +676,21 @@ locate_centreon_plugins() {
     log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
 }
 
+#----
+## Define where is centreon gorgone module
+## @Globals     GORGONE_VARLIB, DEFAULT_GORGONE_VARLIB
+#----
+locate_centreon_gorgone() {
+    testdir_clean "$GORGONE_VARLIB" "GORGONE_VARLIB"
+    if [ -z "$GORGONE_VARLIB" ] ; then
+        answer "$(gettext "Where is your gorgone module folder ?")" "$DEFAULT_GORGONE_VARLIB"
+        "GORGONE_VARLIB"
+        echo_success "$(gettext "Path" ) $GORGONE_VARLIB" "$ok"
+    fi
+    GORGONE_VARLIB=`trim ${GORGONE_VARLIB%/}`
+    export GORGONE_VARLIB
+    log "INFO" "GORGONE_VARLIB: $GORGONE_VARLIB"
+}
 
 locate_monitoringengine_etc()
 {
