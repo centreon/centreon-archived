@@ -178,14 +178,27 @@ class SqlRequestParametersTranslatorTest extends TestCase
                 'host.name' => 'ASC',
                 'host.alias' => 'DESC',
             ]);
+        $this->requestParameters->expects($this->exactly(1))
+            ->method('getPage')
+            ->willReturn(1);
+        $this->requestParameters->expects($this->exactly(2))
+            ->method('getLimit')
+            ->willReturn(10);
+
         $sqlRequestParametersTranslator = new SqlRequestParametersTranslator($this->requestParameters);
         $sqlRequestParametersTranslator->setConcordanceArray([
             'host.name' => 'h.name',
             'host.alias' => 'h.description',
         ]);
 
-        $order = $sqlRequestParametersTranslator->translateSortParameterToSql();
+        $this->assertEquals(
+            ' LIMIT 0, 10',
+            $sqlRequestParametersTranslator->translatePaginationToSql()
+        );
 
-        $this->assertEquals(' ORDER BY h.name ASC, h.description DESC', $order);
+        $this->assertEquals(
+            ' ORDER BY h.name ASC, h.description DESC',
+            $sqlRequestParametersTranslator->translateSortParameterToSql()
+        );
     }
 }
