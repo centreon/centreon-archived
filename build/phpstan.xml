@@ -7,10 +7,6 @@
   <error line="270" column="1" severity="error" message="PHPDoc tag @var has invalid value ($acknowledgement Acknowledgement): Unexpected token &quot;$acknowledgement&quot;, expected type at offset 20" />
   <error line="275" column="1" severity="error" message="Cannot call method setHostId() on array|bool|float|int|object|string." />
 </file>
-<file name="src\Centreon\Application\Controller\AuthenticationController.php">
-  <error line="79" column="1" severity="error" message="Method Centreon\Application\Controller\AuthenticationController::login() should return array but returns Symfony\Component\HttpFoundation\JsonResponse." />
-  <error line="113" column="1" severity="error" message="Method Centreon\Application\Controller\AuthenticationController::logout() should return array but returns Symfony\Component\HttpFoundation\JsonResponse." />
-</file>
 <file name="src\Centreon\Application\Controller\CheckController.php">
   <error line="53" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $acknowledgementService" />
   <error line="79" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
@@ -19,11 +15,6 @@
   <error line="136" column="1" severity="error" message="PHPDoc tag @var has invalid value ($contact Contact): Unexpected token &quot;$contact&quot;, expected type at offset 20" />
   <error line="144" column="1" severity="error" message="PHPDoc tag @var has invalid value ($check Check): Unexpected token &quot;$check&quot;, expected type at offset 20" />
   <error line="149" column="1" severity="error" message="Cannot call method setHostId() on array|bool|float|int|object|string." />
-</file>
-<file name="src\Centreon\Application\Controller\DowntimeController.php">
-  <error line="87" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Contact\Contact and null will always evaluate to false." />
-  <error line="156" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Contact\Contact and null will always evaluate to false." />
-  <error line="423" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Contact\Contact and null will always evaluate to false." />
 </file>
 <file name="src\Centreon\Application\Controller\MonitoringHostsController.php">
   <error line="303" column="1" severity="error" message="PHPDoc tag @param has invalid value (int hostId Id of host to search hostgroups for): Unexpected token &quot;hostId&quot;, expected variable at offset 71" />
@@ -73,9 +64,6 @@
 <file name="src\Centreon\Domain\Check\CheckService.php">
   <error line="82" column="1" severity="error" message="PHPDoc tag @return with type Centreon\Domain\Check\Interfaces\CheckServiceInterface is not subtype of native type Centreon\Domain\Check\CheckService." />
 </file>
-<file name="src\Centreon\Domain\Engine\EngineService.php">
-  <error line="196" column="1" severity="error" message="Strict comparison using === between Centreon\Domain\Monitoring\Host and null will always evaluate to false." />
-</file>
 <file name="src\Centreon\Domain\Entity\EntityCreator.php">
   <error line="128" column="1" severity="error" message="Call to an undefined method ReflectionType::getName()." />
   <error line="226" column="1" severity="error" message="PHPDoc tag @var has invalid value ($annotation EntityDescriptor): Unexpected token &quot;$annotation&quot;, expected type at offset 24" />
@@ -102,8 +90,6 @@
   <error line="229" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $dir_comment" />
 </file>
 <file name="src\Centreon\Domain\Entity\Task.php">
-  <error line="145" column="1" severity="error" message="Method Centreon\Domain\Entity\Task::getParams() should return string but returns array." />
-  <error line="153" column="1" severity="error" message="Property Centreon\Domain\Entity\Task::$params (array) does not accept string." />
   <error line="209" column="1" severity="error" message="PHPDoc tag @param has invalid value ($callback): Unexpected token &quot;$callback&quot;, expected type at offset 65" />
   <error line="209" column="1" severity="error" message="PHPDoc tag @param has invalid value ($input): Unexpected token &quot;$input&quot;, expected type at offset 44" />
 </file>
@@ -122,7 +108,6 @@
   <error line="223" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
   <error line="224" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
   <error line="227" column="1" severity="error" message="Call to an undefined method Servicegroup::getId()." />
-  <error line="235" column="1" severity="error" message="Method Centreon\Domain\Monitoring\MonitoringService::findServiceGroups() should return array&lt;Centreon\Domain\Monitoring\ServiceGroup&gt; but returns array&lt;Servicegroup&gt;." />
   <error line="259" column="1" severity="error" message="Call to an undefined method Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface::findServiceGroupsByHostAndService()." />
 </file>
 <file name="src\Centreon\Domain\Monitoring\Service.php">
@@ -136,12 +121,6 @@
 <file name="src\Centreon\Domain\Repository\CommandRepository.php">
   <error line="160" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $ids" />
 </file>
-<file name="src\Centreon\Domain\Repository\DowntimeRepository.php">
-  <error line="66" column="1" severity="error" message="Method Centreon\Domain\Repository\DowntimeRepository::getFilterSql() should return string but returns array." />
-</file>
-<file name="src\Centreon\Domain\Repository\ImagesRepository.php">
-  <error line="67" column="1" severity="error" message="Ternary operator condition is always true." />
-</file>
 <file name="src\Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInfoInterface.php">
   <error line="23" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $brokerInfoEntity" />
 </file>
@@ -154,7 +133,6 @@
   <error line="16" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $pollerId" />
 </file>
 <file name="src\Centreon\Domain\Security\AuthenticationService.php">
-  <error line="58" column="1" severity="error" message="Property Centreon\Domain\Security\AuthenticationService::$contactRepository (Symfony\Component\Security\Core\User\UserProviderInterface) does not accept Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface." />
   <error line="67" column="1" severity="error" message="Call to an undefined method Symfony\Component\Security\Core\User\UserProviderInterface::findByName()." />
   <error line="77" column="1" severity="error" message="Call to an undefined method Symfony\Component\Security\Core\User\UserProviderInterface::findByName()." />
 </file>
@@ -170,10 +148,6 @@
 </file>
 <file name="src\Centreon\Infrastructure\Acknowledgement\AcknowledgementRepositoryRDB.php">
   <error line="391" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $downtimeId" />
-</file>
-<file name="src\Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter.php">
-  <error line="109" column="1" severity="error" message="Negated boolean expression is always false." />
-  <error line="179" column="1" severity="error" message="Method Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter::insert() should return int but returns string." />
 </file>
 <file name="src\Centreon\Infrastructure\CentreonLegacyDB\EntityPersister.php">
   <error line="60" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $entity" />
@@ -192,24 +166,8 @@
   <error line="61" column="1" severity="error" message="Return typehint of method Centreon\Infrastructure\Monitoring\Metric\MetricRepositoryLegacy::setContact() has invalid type Centreon\Domain\Monitoring\Metric\Interfaces\MonitoringRepositoryInterface." />
   <error line="90" column="1" severity="error" message="Method CentreonGraphStatus::getData() invoked with 1 parameter, 0 required." />
 </file>
-<file name="src\Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB.php">
-  <error line="867" column="1" severity="error" message="Right side of || is always false." />
-  <error line="875" column="1" severity="error" message="If condition is always false." />
-</file>
-<file name="src\Centreon\Infrastructure\Security\AccessGroupRepositoryRDB.php">
-  <error line="58" column="1" severity="error" message="Call to function is_null() with int will always evaluate to false." />
-</file>
 <file name="src\Centreon\Infrastructure\Service\CentcoreConfigService.php">
   <error line="126" column="1" severity="error" message="Variable $result might not be defined." />
-</file>
-<file name="src\Centreon\Infrastructure\Service\CentreonClapiService.php">
-  <error line="66" column="1" severity="error" message="Array (array&lt;object&gt;) does not accept string." />
-</file>
-<file name="src\Centreon\Infrastructure\Service\CentreonDBManagerService.php">
-  <error line="31" column="1" severity="error" message="Property Centreon\Infrastructure\Service\CentreonDBManagerService::$manager (Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter) does not accept array&lt;string, Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter&gt;." />
-  <error line="41" column="1" severity="error" message="Call to function array_key_exists() with string and Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter will always evaluate to false." />
-  <error line="55" column="1" severity="error" message="Cannot access offset string on Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter." />
-  <error line="60" column="1" severity="error" message="Cannot access offset string on Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter." />
 </file>
 <file name="src\Centreon\Infrastructure\Service\CentreonPaginationService.php">
   <error line="187" column="1" severity="error" message="PHPDoc tag @param references unknown parameter: $offset" />
@@ -219,19 +177,9 @@
 <file name="src\Centreon\Infrastructure\Service\CentreonWebserviceService.php">
   <error line="57" column="1" severity="error" message="PHPDoc tag @return with type self is not subtype of native type Centreon\Infrastructure\Service\CentreonWebserviceService." />
   <error line="57" column="1" severity="error" message="Return typehint of method Centreon\Infrastructure\Service\CentreonWebserviceService::add() has invalid type self." />
-  <error line="74" column="1" severity="error" message="Array (array&lt;object&gt;) does not accept string." />
-</file>
-<file name="src\Centreon\Infrastructure\Service\Traits\ServiceContainerTrait.php (in context of class Centreon\Infrastructure\Service\CentreonClapiService)">
-  <error line="30" column="1" severity="error" message="Method Centreon\Infrastructure\Service\CentreonClapiService::get() should return string but returns object." />
-</file>
-<file name="src\Centreon\Infrastructure\Service\Traits\ServiceContainerTrait.php (in context of class Centreon\Infrastructure\Service\CentreonWebserviceService)">
-  <error line="30" column="1" severity="error" message="Method Centreon\Infrastructure\Service\CentreonWebserviceService::get() should return string but returns object." />
 </file>
 <file name="src\Centreon\Infrastructure\Service\UploadFileService.php">
   <error line="55" column="1" severity="error" message="Constructor of class Centreon\Infrastructure\Service\UploadFileService has an unused parameter $services." />
-  <error line="57" column="1" severity="error" message="Property Centreon\Infrastructure\Service\UploadFileService::$filesRequest (string) does not accept array|null." />
-  <error line="87" column="1" severity="error" message="Call to function array_key_exists() with string and string will always evaluate to false." />
-  <error line="91" column="1" severity="error" message="Unreachable statement - code above always terminates." />
 </file>
 <file name="src\Centreon\Infrastructure\Webservice\DependenciesTrait.php (in context of class Centreon\Application\Webservice\AclGroupWebservice)">
   <error line="66" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\AclGroupWebservice::$services." />
@@ -246,7 +194,6 @@
   <error line="76" column="1" severity="error" message="Access to an undefined property Centreon\Application\Webservice\ImagesWebservice::$services." />
 </file>
 <file name="src\Centreon\ServiceProvider.php">
-  <error line="114" column="1" severity="error" message="Expression &quot;$pimple['translator']&quot; on a separate line does not do anything." />
   <error line="224" column="1" severity="error" message="Class Centreon\Domain\Service\BrokerConfigurationService does not have a constructor and must be instantiated without any parameters." />
 </file>
 <file name="src\Centreon\Tests\Application\DataRepresenter\Topology\NavigationListTest.php">
@@ -354,9 +301,6 @@
 <file name="src\Centreon\Tests\Domain\Repository\AclGroupRepositoryTest.php">
   <error line="49" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Domain\Repository\AclGroupRepositoryTest::$db." />
 </file>
-<file name="src\Centreon\Tests\Domain\Repository\ServiceRepositoryTest.php">
-  <error line="53" column="1" severity="error" message="Property Centreon\Tests\Domain\Repository\ServiceRepositoryTest::$db (Centreon\Test\Mock\CentreonDB) does not accept default value of type array." />
-</file>
 <file name="src\Centreon\Tests\Domain\Service\I18nTest.php">
   <error line="80" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Domain\Service\I18nTest::$translation." />
   <error line="89" column="1" severity="error" message="Access to an undefined property Centreon\Tests\Domain\Service\I18nTest::$translation." />
@@ -456,7 +400,6 @@
 </file>
 <file name="src\Centreon\Tests\Resource\CheckPoint.php">
   <error line="69" column="1" severity="error" message="PHPDoc tag @return with type void is incompatible with native type Centreon\Tests\Resource\CheckPoint." />
-  <error line="73" column="1" severity="error" message="Method Centreon\Tests\Resource\CheckPoint::add() with return type void returns $this(Centreon\Tests\Resource\CheckPoint) but should not return anything." />
   <error line="82" column="1" severity="error" message="PHPDoc tag @param has invalid value ($name): Unexpected token &quot;$name&quot;, expected type at offset 55" />
 </file>
 <file name="src\Centreon\Tests\Resource\Dependency\CentreonDbManagerDependencyTrait.php (in context of class Centreon\Tests\Application\Validation\Validator\RepositoryCallbackValidatorTest)">
