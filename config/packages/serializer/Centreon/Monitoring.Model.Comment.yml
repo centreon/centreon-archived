@@ -1,0 +1,27 @@
+Centreon\Domain\Monitoring\Model\Comment:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'comment_event_list'
+                - 'comment_event_full'
+        entryTime:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'comment_event_list'
+                - 'comment_event_full'
+        data:
+            type: string
+            groups:
+                - 'comment_event_list'
+                - 'comment_event_full'
+        author:
+            type: string
+            groups:
+                - 'comment_event_list'
+                - 'comment_event_full'
+        persistent:
+            type: int
+            groups:
+                - 'comment_event_list'
+                - 'comment_event_full'

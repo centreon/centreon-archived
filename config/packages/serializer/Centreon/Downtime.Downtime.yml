@@ -4,10 +4,12 @@ Centreon\Domain\Downtime\Downtime:
             type: int
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         entryTime:
             type: DateTime
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         authorId:
             type: int
             groups:
@@ -24,28 +26,34 @@ Centreon\Domain\Downtime\Downtime:
             type: bool
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         comment:
             type: string
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         deletionTime:
             type: DateTime
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         duration:
             type: int
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         endTime:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         internalId:
             type: int
         isFixed:
             type: bool
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         pollerId:
             type: int
             groups:
@@ -54,15 +62,19 @@ Centreon\Domain\Downtime\Downtime:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         actualStartTime:
             type: DateTime
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         actualEndTime:
             type: DateTime
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
         isStarted:
             type: bool
             groups:
                 - 'downtime_main'
+                - 'downtime_event_list'
