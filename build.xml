@@ -48,7 +48,7 @@
       <arg value="analyse" />
       <arg value="./src/Centreon" />
       <arg value="--level" />
-      <arg value="4" />
+      <arg value="2" />
       <arg value="--error-format" />
       <arg value="checkstyle" />
       <arg value="--no-interaction" />
