@@ -29,24 +29,6 @@
 # debug ?
 #set -x
 
-###### Mandatory step
-# locate gorgone
-echo -e "\n$line"
-echo -e "\t$(gettext "Check mandatory gorgone service status")"
-echo -e "$line"
-
-yes_no_default "$(gettext "Is the Gorgone module already installed?")"
-if [ "$?" -eq 1 ] ; then
-    echo_failure "$(gettext "Gorgone is required.\nPlease install it before launching this script")\n" "$fail"
-    echo -e "\n$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
-    echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
-    echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
-    exit 1
-fi
-locate_centreon_gorgone
-check_gorgone_user
-check_gorgone_group
-
 echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
@@ -752,7 +734,7 @@ while [ "$pear_module" -eq 0 ] ; do
 done
 
 ## Copy pollers SSH keys (in case of upgrade) to the new "user" gorgone
-if [ -z $inst_upgrade_dir ] ; then
+if [ -z $upgrade ] ; then
     copy_ssh_keys_to_gorgone
 fi
 
