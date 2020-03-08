@@ -23,10 +23,8 @@ import {
   states,
   resourceTypes,
   statuses,
-  filterById,
 } from './models';
 import SearchHelpTooltip from '../SearchHelpTooltip';
-
 import ConnectedAutocompleteField from './ConnectedAutocompleteField';
 import {
   buildHostGroupsEndpoint,
@@ -58,6 +56,7 @@ const Filter = ({
   onHostgroupsChange,
   selectedServiceGroups,
   onServiceGroupsChange,
+  onClearAll,
 }): JSX.Element => {
   const classes = useStyles();
 
@@ -171,7 +170,9 @@ const Filter = ({
               />
             </Grid>
             <Grid item>
-              <Button color="primary">{labelClearAll}</Button>
+              <Button color="primary" onClick={onClearAll}>
+                {labelClearAll}
+              </Button>
             </Grid>
           </Grid>
         </Grid>

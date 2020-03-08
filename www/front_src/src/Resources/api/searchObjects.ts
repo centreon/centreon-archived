@@ -1,10 +1,18 @@
+import isEmpty from 'lodash/isEmpty';
+
 interface SearchObject {
   field: string;
   value: string;
 }
 
-export interface SearchParam {
-  $and: Array<{ [field: string]: { $rg: string } }>;
+type SearchPatterns = Array<{ [field: string]: { $rg: string } }>;
+
+export interface OrSearchParam {
+  $or: SearchPatterns;
+}
+
+interface AndSearchParam {
+  $and: SearchPatterns;
 }
 
 const getFoundSearchObjects = ({
@@ -22,20 +30,10 @@ const getFoundSearchObjects = ({
   return searchOptionMatches.filter(({ value }) => value);
 };
 
-const getDefaultSearchObjects = ({
-  searchValue,
-  searchOptions,
-}): Array<SearchObject> => {
-  return searchOptions.map((searchOption) => ({
-    field: searchOption,
-    value: searchValue,
-  }));
-};
-
 const getSearchParam = ({
   searchValue,
   searchOptions,
-}): SearchParam | undefined => {
+}): OrSearchParam | AndSearchParam | undefined => {
   if (!searchValue) {
     return undefined;
   }
@@ -44,14 +42,17 @@ const getSearchParam = ({
     searchOptions,
   });
 
-  const searchObjectsToSend =
-    foundSearchObjects.length > 0
-      ? foundSearchObjects
-      : getDefaultSearchObjects({ searchValue, searchOptions });
+  if (!isEmpty(foundSearchObjects)) {
+    return {
+      $and: foundSearchObjects.map(({ field, value }) => ({
+        [field]: { $rg: `${value}` },
+      })),
+    };
+  }
 
   return {
-    $and: searchObjectsToSend.map(({ field, value }) => ({
-      [field]: { $rg: `${value}` },
+    $or: searchOptions.map((searchOption) => ({
+      [searchOption]: { $rg: `${searchValue}` },
     })),
   };
 };

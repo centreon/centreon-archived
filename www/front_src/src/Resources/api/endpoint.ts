@@ -1,4 +1,6 @@
-import { getSearchParam, SearchParam } from './searchObjects';
+import isEmpty from 'lodash/isEmpty';
+
+import { getSearchParam, OrSearchParam } from './searchObjects';
 import { Filter } from '../Filter/models';
 
 const monitoringEndpoint = 'monitoring';
@@ -16,7 +18,7 @@ interface ListingParams {
 
 interface Param {
   name: string;
-  value?: string | number | SearchParam;
+  value?: string | number | OrSearchParam;
 }
 
 const buildParam = ({ name, value }): string => {
@@ -25,7 +27,7 @@ const buildParam = ({ name, value }): string => {
 
 const buildParams = (params): Array<string> =>
   params
-    .filter(({ value }) => value !== undefined)
+    .filter(({ value }) => value !== undefined && !isEmpty(value))
     .map(buildParam)
     .join('&');
 
@@ -54,7 +56,7 @@ const buildEndpoint = ({ baseEndpoint, params }): string => {
 interface FilterParams {
   states?: Array<Filter>;
   resourceTypes?: Array<Filter>;
-  statuses?: Array<Fiter>;
+  statuses?: Array<Filter>;
 }
 
 const buildResourcesEndpoint = (params): string => {
@@ -65,11 +67,10 @@ const buildResourcesEndpoint = (params): string => {
     'service.description',
   ];
 
-  const listingParams = getListingParams(params);
+  const listingParams = getListingParams({ searchOptions, ...params });
 
   return buildEndpoint({
     baseEndpoint: resourcesEndpoint,
-    ...searchOptions,
     params: [
       ...listingParams,
       { name: 'states', value: params.states },
@@ -84,11 +85,10 @@ const buildResourcesEndpoint = (params): string => {
 const buildHostGroupsEndpoint = (params): string => {
   const searchOptions = ['name'];
 
-  const listingParams = getListingParams(params);
+  const listingParams = getListingParams({ searchOptions, ...params });
 
   return buildEndpoint({
     baseEndpoint: hostgroupsEndpoint,
-    ...searchOptions,
     params: listingParams,
   });
 };
@@ -98,8 +98,7 @@ const buildServiceGroupsEndpoint = (params): string => {
 
   return buildEndpoint({
     baseEndpoint: serviceGroupsEndpoint,
-    ...searchOptions,
-    params: [...getListingParams(params)],
+    params: [...getListingParams({ searchOptions, ...params })],
   });
 };
 

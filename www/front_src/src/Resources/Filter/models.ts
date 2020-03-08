@@ -7,6 +7,14 @@ import {
   labelInDowntime,
   labelHost,
   labelService,
+  labelOk,
+  labelUp,
+  labelWarning,
+  labelDown,
+  labelCritical,
+  labelUnreachable,
+  labelUnknown,
+  labelPending,
 } from '../translatedLabels';
 
 export interface Filter {
@@ -14,28 +22,36 @@ export interface Filter {
   name: string;
 }
 
-const unhandledProblemsState = {
+export type FilterGroup = {
+  criterias: {
+    resourceTypes: Array<Filter>;
+    states: Array<Filter>;
+    statuses: Array<Filter>;
+  };
+} & Filter;
+
+const unhandledState = {
   id: 'unhandled_problems',
   name: labelUnhandled,
 };
 const acknowledgedState = { id: 'acknowledged', name: labelAcknowledged };
 const inDowntimeState = { id: 'in_downtime', name: labelInDowntime };
 
-const states = [unhandledProblemsState, acknowledgedState, inDowntimeState];
+const states = [unhandledState, acknowledgedState, inDowntimeState];
 
 const hostResourceType = { id: 'host', name: labelHost };
 const serviceResourceType = { id: 'service', name: labelService };
 
 const resourceTypes = [hostResourceType, serviceResourceType];
 
-const okStatus = { id: 'OK', name: 'Ok' };
-const upStatus = { id: 'UP', name: 'Up' };
-const warningStatus = { id: 'WARNING', name: 'Warning' };
-const downStatus = { id: 'DOWN', name: 'Down' };
-const criticalStatus = { id: 'CRITICAL', name: 'Critical' };
-const unreachableStatus = { id: 'UNREACHABLE', name: 'Unreachable' };
-const unknownStatus = { id: 'UNKNOWN', name: 'Unknown' };
-const pendingStatus = { id: 'PENDING', name: 'Pending' };
+const okStatus = { id: 'ok', name: labelOk };
+const upStatus = { id: 'up', name: labelUp };
+const warningStatus = { id: 'warning', name: labelWarning };
+const downStatus = { id: 'down', name: labelDown };
+const criticalStatus = { id: 'critical', name: labelCritical };
+const unreachableStatus = { id: 'unreachable', name: labelUnreachable };
+const unknownStatus = { id: 'unknown', name: labelUnknown };
+const pendingStatus = { id: 'pending', name: labelPending };
 
 const statuses = [
   okStatus,
@@ -58,12 +74,12 @@ const allFilter = {
   },
 };
 
-const unhandledProblemsFilter = {
+const unhandledProblemsFilter: FilterGroup = {
   id: 'unhandled_problems',
   name: labelUnhandledProblems,
   criterias: {
     resourceTypes,
-    states: [unhandledProblemsState],
+    states: [unhandledState],
     statuses: [
       warningStatus,
       downStatus,
@@ -74,12 +90,12 @@ const unhandledProblemsFilter = {
   },
 };
 
-const resourceProblemsFilter = {
+const resourceProblemsFilter: FilterGroup = {
   id: 'resource_problems',
   name: labelResourceProblems,
   criterias: {
     resourceTypes,
-    states: [unhandledProblemsState],
+    states: [unhandledState],
     statuses: [
       warningStatus,
       downStatus,
@@ -88,11 +104,6 @@ const resourceProblemsFilter = {
       unknownStatus,
     ],
   },
-};
-
-const emptyFilter = {
-  id: 'empty',
-  label: '',
 };
 
 const filterById = {
@@ -103,7 +114,6 @@ const filterById = {
 
 export {
   allFilter,
-  emptyFilter,
   unhandledProblemsFilter,
   resourceProblemsFilter,
   resourceTypes,
