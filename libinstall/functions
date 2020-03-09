@@ -676,6 +676,20 @@ locate_centreon_plugins() {
     log "INFO" "CENTREON_PLUGINS: $CENTREON_PLUGINS"
 }
 
+#----
+## Define where is centreon gorgone module
+## @Globals     GORGONE_VARLIB, DEFAULT_GORGONE_VARLIB
+#----
+locate_gorgone_varlib() {
+    testdir_clean "$GORGONE_VARLIB" "GORGONE_VARLIB"
+    if [ -z "$GORGONE_VARLIB" ] ; then
+        answer "$(gettext "Where is your gorgone module folder ?")" "$DEFAULT_GORGONE_VARLIB" "GORGONE_VARLIB"
+        echo_success "$(gettext "Path" ) $GORGONE_VARLIB" "$ok"
+    fi
+    GORGONE_VARLIB=`trim ${GORGONE_VARLIB%/}`
+    export GORGONE_VARLIB
+    log "INFO" "GORGONE_VARLIB: $GORGONE_VARLIB"
+}
 
 locate_monitoringengine_etc()
 {
@@ -1216,6 +1230,45 @@ configureApache() {
     else
         echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
     fi
+}
+
+#----
+## Copy ssh keys to gorgone and add proper rights
+#----
+copy_ssh_keys_to_gorgone() {
+    if [ ! -d $GORGONE_VARLIB ] ; then
+        mkdir -p $GORGONE_VARLIB/.ssh
+        if [ "$?" -nq 0 ] ; then
+            echo_failure "$(gettext "Cannot create the subfolder $GORGONE_VARLIB/.ssh")" "$fail"
+            return 1
+        fi
+    fi
+
+    if [ -z $CENTREON_SPOOL_SSH ] ; then
+        echo_failure "$(gettext "Cannot find the '.ssh' folder in the $CENTREON_USER home folder")" "$fail"
+        return 1
+    fi
+
+    cp -Rf $CENTREON_SPOOL_SSH $GORGONE_VARLIB/.ssh
+    if [ "$?" -nq 0 ] ; then
+        echo_failure "$(gettext "Cannot move the SSH keys to $GORGONE_VARLIB/.ssh")" "$fail"
+        return 1
+    fi
+
+    ${CHOWN} -R $GORGONE_USER:$GORGONE_GROUP $GORGONE_VARLIB/.ssh
+    if [ "$?" -nq 0 ] ; then
+        echo_failure "$(gettext "Cannot modify the owner of the files in $GORGONE_VARLIB/.ssh folder to $GORGONE_USER:$GORGONE_GROUP")" "$fail"
+        return 1
+    fi
+
+    ${CHMOD} 600 $GORGONE_VARLIB/.ssh/id_rsa
+    if [ "$?" -nq 0 ] ; then
+        echo_failure "$(gettext "Cannot modify the rights of files in folder $GORGONE_VARLIB/.ssh")" "$fail"
+        return 1
+    fi
+
+    echo_success "$(gettext "Copy SSH keys to $GORGONE_VARLIB/.ssh")" "$ok"
+    return 0
 }
 
 #----
@@ -2074,6 +2127,47 @@ check_broker_user()
 	return 0
 }
 
+
+#----
+## Ask for gorgone user
+## @Globals	GORGONE_USER, DEFAULT_GORGONE_USER
+#----
+check_gorgone_user()
+{
+	local groups="$GORGONE_GROUP"
+	local description="Centreon Gorgone user"
+	if [ -n "$GORGONE_USER" ] ; then
+		user_test "$GORGONE_USER"
+	fi
+	if [ -z "$GORGONE_USER" ] ; then
+		answer_with_testuser "$(gettext "What is the Gorgone user ?") [$DEFAULT_GORGONE_USER]" "$DEFAULT_GORGONE_USER" "GORGONE_USER"
+	fi
+	log "INFO" "$(gettext "Gorgone user") : $GORGONE_USER"
+	return 0
+}
+
+#----
+## Ask for gorgone group, and create it if not exists
+## @Globals	GORGONE_GROUP, DEFAULT_GORGONE_GROUP
+#----
+check_gorgone_group()
+{
+	if [ -n "$GORGONE_GROUP" ] ; then
+		group_test "$GORGONE_GROUP"
+		if [ $? -ne 0 ] ; then
+			group_create "$GORGONE_GROUP"
+			if [ $? -ne 0 ] ; then
+				GORGONE_GROUP=""
+			fi
+		fi
+	fi
+	if [ -z "$GORGONE_GROUP" ] ; then
+		answer_with_creategroup "$(gettext "What is the Gorgone group ?") [$DEFAULT_GORGONE_GROUP]" "$DEFAULT_GORGONE_GROUP" "GORGONE_GROUP"
+	fi
+	log "INFO" "$(gettext "Centreon group") : $GORGONE_GROUP"
+	return 0
+}
+
 #----
 ## Copy Source directory on temporary working directory
 ## Copy Source directory and prepare work and final
@@ -2415,7 +2509,7 @@ add_group() {
 	local user=$1
 	local group=$2
 	if [ -z "$user" -o -z "$group" ]; then
-		echo_failure "$(gettext "Add group $group to user $user")" "$fail"
+		echo_failure "$(gettext "Could not add group $group to user $user")" "$fail"
 		return 1
 	fi
 	usermod -a -G $group $user &>/dev/null

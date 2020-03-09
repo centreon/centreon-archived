@@ -189,7 +189,7 @@ ${CAT} << __EOT__
 #                               infos@centreon.com                            #
 #                                                                             #
 #                   Make sure you have installed and configured               #
-#                   sudo - sed - php - apache - rrdtool - mysql               #
+#          centreon-gorgone sudo - sed - php - apache - rrdtool - mysql       #
 #                                                                             #
 ###############################################################################
 __EOT__
@@ -218,6 +218,24 @@ for binary in $BINARIES; do
 		echo_success "${binary}" "$ok"
 	fi
 done
+
+###### Mandatory step
+# locate gorgone
+echo -e "\n$line"
+echo -e "\t$(gettext "Check mandatory gorgone service status")"
+echo -e "$line"
+
+yes_no_default "$(gettext "Is the Gorgone module already installed?")"
+if [ "$?" -ne 0 ] ; then
+    echo_failure "$(gettext "Gorgone is required.\nPlease install it before launching this script")\n" "$fail"
+    echo -e "\n$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
+    echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
+    echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
+    exit 1
+fi
+locate_gorgone_varlib
+check_gorgone_user
+check_gorgone_group
 
 # Script stop if one binary wasn't found
 if [ "$binary_fail" -eq 1 ] ; then
@@ -263,11 +281,13 @@ if [ "$upgrade" -eq 1 ] ; then
 	fi
 fi
 
-if [ "$silent_install" -ne 1 ] ; then 
+if [ "$silent_install" -ne 1 ] ; then
 	echo "$line"
 	echo -e "\t$(gettext "Please choose what you want to install")"
 	echo "$line"
 fi
+
+export upgrade
 
 ## init install process
 # I prefer split install script.
@@ -278,7 +298,6 @@ fi
 ## For a moment, isn't possible to install standalone CentStorage daemon
 ## without CentWeb
 [ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE="0"
-[ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE="2"
 [ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS="2"
 [ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS="2"
 
@@ -288,7 +307,7 @@ if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
     log "INFO" "$(gettext "Created perl library directory")"
 fi
 
-## resquest centreon_www
+## request centreon_www
 if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : Centreon Web Front"
 	if [ "$?" -eq 0 ] ; then
@@ -299,16 +318,7 @@ if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 	fi
 fi
 
-## resquest centreon_centcore
-if [ "$PROCESS_CENTCORE" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon CentCore"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTCORE="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon CentCore"
-	fi
-fi
-
-## resquest centreon_plugins
+## request centreon_plugins
 if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : Centreon Nagios Plugins"
 	if [ "$?" -eq 0 ] ; then
@@ -317,7 +327,7 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then
 	fi
 fi
 
-## resquest centreon_snmp_traps
+## request centreon_snmp_traps
 if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : CentreonTrapd process"
 	if [ "$?" -eq 0 ] ; then
