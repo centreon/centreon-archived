@@ -33,14 +33,6 @@ class ResourceFilter
     public const TYPE_HOST = 'host';
 
     /**
-     * List of all types
-     */
-    public const TYPES = [
-        self::TYPE_HOST,
-        self::TYPE_SERVICE,
-    ];
-
-    /**
      * Non-ok status in hard state , not acknowledged & not in downtime
      */
     public const STATE_UNHANDLED_PROBLEMS = 'unhandled_problems';
@@ -65,17 +57,6 @@ class ResourceFilter
      */
     public const STATE_ALL = 'all';
 
-    /**
-     * List of all states
-     */
-    public const STATES = [
-        self::STATE_UNHANDLED_PROBLEMS,
-        self::STATE_RESOURCES_PROBLEMS,
-        self::STATE_IN_DOWNTIME,
-        self::STATE_ACKNOWLEDGED,
-        self::STATE_ALL,
-    ];
-
     public const STATUS_OK = 'OK';
     public const STATUS_UP = 'UP';
     public const STATUS_WARNING = 'WARNING';
@@ -84,20 +65,6 @@ class ResourceFilter
     public const STATUS_UNREACHABLE = 'UNREACHABLE';
     public const STATUS_UNKNOWN = 'UNKNOWN';
     public const STATUS_PENDING = 'PENDING';
-
-    /**
-     * List of all types
-     */
-    public const STATUSES = [
-        self::STATUS_OK,
-        self::STATUS_UP,
-        self::STATUS_WARNING,
-        self::STATUS_DOWN,
-        self::STATUS_CRITICAL,
-        self::STATUS_UNREACHABLE,
-        self::STATUS_UNKNOWN,
-        self::STATUS_PENDING,
-    ];
 
     /**
      * @var string[]
@@ -125,6 +92,15 @@ class ResourceFilter
     private $servicegroupIds = [];
 
     /**
+     * @param string $type
+     * @return bool
+     */
+    public function hasType(string $type): bool
+    {
+        return in_array($type, $this->types);
+    }
+
+    /**
      * @return string[]
      */
     public function getTypes(): array
@@ -144,6 +120,15 @@ class ResourceFilter
     }
 
     /**
+     * @param string $state
+     * @return bool
+     */
+    public function hasState(string $state): bool
+    {
+        return in_array($state, $this->states);
+    }
+
+    /**
      * @return string[]
      */
     public function getStates(): array
@@ -160,6 +145,15 @@ class ResourceFilter
         $this->states = $states;
 
         return $this;
+    }
+
+    /**
+     * @param string $state
+     * @return bool
+     */
+    public function hasStatus(string $status): bool
+    {
+        return in_array($status, $this->statuses);
     }
 
     /**
