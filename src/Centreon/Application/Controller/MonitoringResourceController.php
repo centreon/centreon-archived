@@ -42,6 +42,19 @@ use Centreon\Domain\Monitoring\ResourceFilter;
 class MonitoringResourceController extends AbstractController
 {
     /**
+     * List of external parameters for list action
+     *
+     * @var array
+     */
+    public const EXTRA_PARAMETERS_LIST = [
+        'types',
+        'states',
+        'statuses',
+        'hostgroup_ids',
+        'servicegroup_ids',
+    ];
+
+    /**
      * @var \Centreon\Domain\Monitoring\ResourceService
      */
     protected $resource;
@@ -72,7 +85,13 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        // set default values of filter data
         $filterData = [];
+        foreach (static::EXTRA_PARAMETERS_LIST as $param) {
+            $filterData[$param] = [];
+        }
+
+        // load filter data with the query parameters
         foreach ($request->query as $param => $data) {
             $value = null;
 
@@ -89,6 +108,7 @@ class MonitoringResourceController extends AbstractController
             $filterData[$param] = $value;
         }
 
+        // validate the filter data
         $errors = $entityValidator->validateEntity(
             ResourceFilter::class,
             $filterData,
@@ -100,6 +120,7 @@ class MonitoringResourceController extends AbstractController
             throw new ValidationFailedException($errors);
         }
 
+        // Parse the filter data into filter object
         $filter = $serializer->deserialize(
             json_encode($filterData),
             ResourceFilter::class,
