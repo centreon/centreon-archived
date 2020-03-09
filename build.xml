@@ -2,7 +2,7 @@
 <project name="centreon-web" basedir="." default="main">
   <property name="builddir" value="./build"/>
   <property name="relativepath" value="./"/>
-  <resolvepath propertyName="absolutepath" file="${relativepath}"/>
+  <resolvepath propertyName="absolutepath" file="${relativepath}/src/Centreon"/>
 
   <target name="prepare">
     <mkdir dir="${builddir}"/>
@@ -46,9 +46,10 @@
   </target>
 
   <target name="phpstan" depends="prepare">
+    <echo message="${absolutepath}" />
     <exec executable="./vendor/bin/phpstan" output="${builddir}/phpstan.xml">
       <arg value="analyse" />
-      <arg value="${absolutepath}/src/Centreon" />
+      <arg value="${absolutepath}" />
       <arg value="--level" />
       <arg value="2" />
       <arg value="--error-format" />
