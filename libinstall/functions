@@ -1239,7 +1239,7 @@ copy_ssh_keys_to_gorgone() {
     if [ ! -d $GORGONE_VARLIB ] ; then
         mkdir -p $GORGONE_VARLIB/.ssh
         if [ "$?" -nq 0 ] ; then
-            echo_failure "$(gettext "Cannot create the surfolder $GORGONE_VARLIB/.ssh")" "$fail"
+            echo_failure "$(gettext "Cannot create the subfolder $GORGONE_VARLIB/.ssh")" "$fail"
             return 1
         fi
     fi
