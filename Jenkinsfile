@@ -59,6 +59,7 @@ try {
         ])
         recordIssues(
           enabledForFailure: true,
+          aggregatingResults: true,
           tools: [
             checkStyle(pattern: 'codestyle-be.xml'),
             checkStyle(pattern: 'phpstan.xml')
