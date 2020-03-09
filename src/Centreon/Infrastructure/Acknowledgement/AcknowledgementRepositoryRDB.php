@@ -318,6 +318,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     /**
      * Generic function to find acknowledgement.
      *
+     * @param int $toto Type of acknowledgement
      * @return Acknowledgement[]
      * @throws \Exception
      * @throws \PDOException
