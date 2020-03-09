@@ -59,7 +59,10 @@ try {
         ])
         recordIssues(
           enabledForFailure: true,
-          tools: [checkStyle(pattern: '(phpstan|codestyle-be).xml')],
+          tools: [
+            checkStyle(pattern: 'codestyle-be.xml'),
+            checkStyle(pattern: 'phpstan.xml')
+          ],
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
