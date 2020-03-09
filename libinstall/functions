@@ -2138,15 +2138,9 @@ check_gorgone_user()
 	local description="Centreon Gorgone user"
 	if [ -n "$GORGONE_USER" ] ; then
 		user_test "$GORGONE_USER"
-		if [ $? -ne 0 ] ; then
-			user_create "$GORGONE_USER" "$groups" "$description" "$home"
-			if [ $? -ne 0 ] ; then
-				GORGONE_USER=""
-			fi
-		fi
 	fi
 	if [ -z "$GORGONE_USER" ] ; then
-		answer_with_createuser "$(gettext "What is the Gorgone user ?") [$DEFAULT_GORGONE_USER]" "$DEFAULT_GORGONE_USER" "GORGONE_USER" "$groups" "$description" "$home"
+		answer_with_testuser "$(gettext "What is the Gorgone user ?") [$DEFAULT_GORGONE_USER]" "$DEFAULT_GORGONE_USER" "GORGONE_USER"
 	fi
 	log "INFO" "$(gettext "Gorgone user") : $GORGONE_USER"
 	return 0
