@@ -76,6 +76,8 @@ try {
     while (!feof($file)) {
         $line = fgets($file);
         if (strpos($line, "CENTREON_CACHEDIR") !== false) {
+            //remove superfluous carriage return
+            $line = preg_replace("/\r|\n/", "", $line);
             $line = explode("=", $line);
             $pattern[] = '/--CENTREON_CACHEDIR--/';
             // if no value is found, a default value is required
