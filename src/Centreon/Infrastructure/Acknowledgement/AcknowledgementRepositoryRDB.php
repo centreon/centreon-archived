@@ -318,7 +318,6 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     /**
      * Generic function to find acknowledgement.
      *
-     * @param int $type Type of acknowledgement
      * @return Acknowledgement[]
      * @throws \Exception
      * @throws \PDOException
@@ -336,7 +335,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             ? ' '
             : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = ack.host_id'
-                .  (($type == self::TYPE_SERVICE_ACKNOWLEDGEMENT) ? ' AND acl.service_id = ack.service_id ' : '')
+                .  (($type === self::TYPE_SERVICE_ACKNOWLEDGEMENT) ? ' AND acl.service_id = ack.service_id ' : '')
                 . ' INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
