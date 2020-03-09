@@ -163,12 +163,21 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.tries, resource.last_check, resource.information '
-            . 'FROM ('
-            . '(' . $this->prepareQueryForServiceResources($collector, $filter) . ') ';
+            . 'FROM (';
+
+        $subRequests = [];
+
+        if (!$filter->getTypes() || $filter->hasType(ResourceFilter::TYPE_HOST)) {
+            $subRequests[] = '(' . $this->prepareQueryForServiceResources($collector, $filter) . ') ';
+        }
 
         // do not get hosts if a service filter is given
-        if (!$this->hasServiceFilter()) {
-            $request .= 'UNION ALL (' . $this->prepareQueryForHostResources($collector, $filter) . ')';
+        if ((!$filter->getTypes() || $filter->hasType(ResourceFilter::TYPE_SERVICE)) && !$this->hasServiceFilter()) {
+            $subRequests[] = '(' . $this->prepareQueryForHostResources($collector, $filter) . ')';
+        }
+
+        if ($subRequests) {
+            $request .= implode('UNION ALL ', $subRequests);
         }
 
         $request .= ') AS `resource`'
@@ -339,7 +348,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql .= ' s.enabled = 1';
 
         // apply the state filter to SQL query
-        if ($filter->getStates() && !in_array(ResourceServiceInterface::STATE_ALL, $filter->getStates())) {
+        if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
             $sqlState = [];
             $sqlStateCatalog = [
                 ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(s.state_type = '1'"
@@ -455,7 +464,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $collector->addValue(':hostModule', '_Module_%');
 
         // apply the state filter to SQL query
-        if ($filter->getStates() && !in_array(ResourceServiceInterface::STATE_ALL, $filter->getStates())) {
+        if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
             $sqlState = [];
             $sqlStateCatalog = [
                 ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(h.state_type = '1'"
