@@ -98,15 +98,9 @@ class MonitoringResourceController extends AbstractController
                 continue;
             }
 
-            $value = null;
-
-            if ($data && is_string($data) && ($data{0} === '{' || $data{0} === '[')) {
-                try {
-                    $value = json_decode($data, true);
-                } catch (\Exception $e) {
-                    $value = $data;
-                }
-            } else {
+            try {
+                $value = json_decode($data, true);
+            } catch (\Exception $e) {
                 $value = $data;
             }
 

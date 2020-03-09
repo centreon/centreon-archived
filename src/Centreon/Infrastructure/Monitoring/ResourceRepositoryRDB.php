@@ -270,6 +270,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * Check if the filters are compatible to extract services
      *
+     * @param ResourceFilter $filter
      * @return bool
      */
     private function hasServiceFilter(ResourceFilter $filter): bool
@@ -289,6 +290,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * Check if the filters are compatible to extract hosts
      *
+     * @param ResourceFilter $filter
      * @return bool
      */
     private function hasHostFilter(ResourceFilter $filter): bool
