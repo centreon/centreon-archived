@@ -72,10 +72,10 @@ const buildResourcesEndpoint = (params): string => {
     params: [
       ...listingParams,
       { name: 'states', value: params.states },
-      { name: 'resourceTypes', value: params.resourceTypes },
+      { name: 'types', value: params.resourceTypes },
       { name: 'statuses', value: params.statuses },
-      { name: 'host_group_ids', value: params.hostGroupIds },
-      { name: 'service_group_ids', value: params.serviceGroupIds },
+      { name: 'hostgroup_ids', value: params.hostGroupIds },
+      { name: 'servicegroup_ids', value: params.serviceGroupIds },
     ],
   });
 };

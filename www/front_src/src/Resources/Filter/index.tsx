@@ -23,6 +23,8 @@ import {
   states,
   resourceTypes,
   statuses,
+  Filter as FilterModel,
+  FilterGroup,
 } from './models';
 import SearchHelpTooltip from '../SearchHelpTooltip';
 import ConnectedAutocompleteField from './ConnectedAutocompleteField';
@@ -36,28 +38,50 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     backgroundColor: theme.palette.common.white,
   },
+  filterGroup: {
+    minWidth: 250,
+  },
   autocompleteField: {
-    width: 275,
+    minWidth: 250,
+    maxWidth: 400,
   },
 }));
 
+interface Props {
+  filter: FilterGroup;
+  onFilterGroupChange: (event) => void;
+  currentSearch?: string;
+  onSearchRequest: (event) => void;
+  selectedResourceTypes: Array<FilterModel>;
+  onResourceTypesChange: (event, types) => void;
+  selectedStates: Array<FilterModel>;
+  onStatesChange: (_, states) => void;
+  selectedStatuses: Array<FilterModel>;
+  onStatusesChange: (_, statuses) => void;
+  selectedHostGroups?: Array<FilterModel>;
+  onHostGroupsChange: (_, hostGroups) => void;
+  selectedServiceGroups?: Array<FilterModel>;
+  onServiceGroupsChange: (_, serviceGroups) => void;
+  onClearAll: () => void;
+}
+
 const Filter = ({
   filter,
-  onFilterChange,
-  search,
+  onFilterGroupChange,
+  currentSearch,
   onSearchRequest,
   selectedResourceTypes,
-  onResourceTypeChange,
+  onResourceTypesChange,
   selectedStates,
   onStatesChange,
   selectedStatuses,
   onStatusesChange,
   selectedHostGroups,
-  onHostgroupsChange,
+  onHostGroupsChange,
   selectedServiceGroups,
   onServiceGroupsChange,
   onClearAll,
-}): JSX.Element => {
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   const [searchFieldValue, setSearchFieldValue] = useState<string>();
@@ -70,6 +94,20 @@ const Filter = ({
     onSearchRequest(searchFieldValue);
   };
 
+  const getHostGroupSearchEndpoint = (searchValue): string => {
+    return buildHostGroupsEndpoint({
+      limit: 10,
+      search: `name:^${searchValue}`,
+    });
+  };
+
+  const getServiceGroupSearchEndpoint = (searchValue): string => {
+    return buildServiceGroupsEndpoint({
+      limit: 10,
+      search: `name:^${searchValue}`,
+    });
+  };
+
   return (
     <Paper elevation={1} className={classes.filterBox}>
       <Grid container direction="column" spacing={2}>
@@ -80,13 +118,14 @@ const Filter = ({
           <Grid spacing={2} container direction="row" alignItems="center">
             <Grid item>
               <SelectField
+                className={classes.filterGroup}
                 options={[
                   unhandledProblemsFilter,
                   resourceProblemsFilter,
                   allFilter,
                 ]}
                 selectedOptionId={filter.id}
-                onChange={onFilterChange}
+                onChange={onFilterGroupChange}
                 ariaLabel={labelStateFilter}
               />
             </Grid>
@@ -102,7 +141,7 @@ const Filter = ({
               <Button
                 variant="contained"
                 color="primary"
-                disabled={!searchFieldValue && !search}
+                disabled={!searchFieldValue && !currentSearch}
                 onClick={requestSearch}
               >
                 {labelSearch}
@@ -117,7 +156,7 @@ const Filter = ({
                 className={classes.autocompleteField}
                 options={resourceTypes}
                 label={labelTypeOfResource}
-                onChange={onResourceTypeChange}
+                onChange={onResourceTypesChange}
                 value={selectedResourceTypes || []}
               />
             </Grid>
@@ -143,14 +182,9 @@ const Filter = ({
               <ConnectedAutocompleteField
                 className={classes.autocompleteField}
                 baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
-                getSearchEndpoint={(searchValue): string =>
-                  buildHostGroupsEndpoint({
-                    limit: 10,
-                    search: `name:^${searchValue}`,
-                  })
-                }
+                getSearchEndpoint={getHostGroupSearchEndpoint}
                 label={labelHostGroup}
-                onChange={onHostgroupsChange}
+                onChange={onHostGroupsChange}
                 value={selectedHostGroups || []}
               />
             </Grid>
@@ -158,12 +192,7 @@ const Filter = ({
               <ConnectedAutocompleteField
                 className={classes.autocompleteField}
                 baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
-                getSearchEndpoint={(searchValue): string =>
-                  buildServiceGroupsEndpoint({
-                    limit: 10,
-                    search: `name:^${searchValue}`,
-                  })
-                }
+                getSearchEndpoint={getServiceGroupSearchEndpoint}
                 label={labelServiceGroup}
                 onChange={onServiceGroupsChange}
                 value={selectedServiceGroups || []}

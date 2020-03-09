@@ -61,6 +61,8 @@ const getEndpoint = ({
   states = defaultStates,
   statuses = defaultStatuses,
   resourceTypes = defaultResourceTypes,
+  hostGroupsIds = undefined,
+  serviceGroupIds = undefined,
 }: EndpointParams): string => {
   const baseEndpoint = 'monitoring/resources';
   const sortParam = sortBy ? `&sort_by={"${sortBy}":"${sortOrder}"}` : '';
@@ -72,11 +74,17 @@ const getEndpoint = ({
 
   const statesParam = states ? `&states=${buildParam(states)}` : '';
   const resourceTypesParam = resourceTypes
-    ? `&resourceTypes=${buildParam(resourceTypes)}`
+    ? `&types=${buildParam(resourceTypes)}`
     : '';
   const statusesParam = statuses ? `&statuses=${buildParam(statuses)}` : '';
+  const hostGroupsIdsParam = hostGroupsIds
+    ? `&hostgroup_ids=${buildParam(hostGroupsIds)}`
+    : '';
+  const serviceGroupIdsParam = serviceGroupIds
+    ? `&servicegroup_ids=${buildParam(serviceGroupIds)}`
+    : '';
 
-  return `${baseEndpoint}?page=${page}&limit=${limit}${sortParam}${searchParam}${statesParam}${resourceTypesParam}${statusesParam}`;
+  return `${baseEndpoint}?page=${page}&limit=${limit}${sortParam}${searchParam}${statesParam}${resourceTypesParam}${statusesParam}${hostGroupsIdsParam}${serviceGroupIdsParam}`;
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };

@@ -193,20 +193,20 @@ const Resources = (): JSX.Element => {
     <div className={classes.page}>
       <Filter
         filter={filter}
-        onFilterChange={changeFilter}
+        onFilterGroupChange={changeFilter}
         selectedResourceTypes={resourceTypes}
-        onResourceTypeChange={changeResourceTypes}
+        onResourceTypesChange={changeResourceTypes}
         selectedStates={states}
         onStatesChange={changeStates}
         selectedStatuses={statuses}
         onStatusesChange={changeStatuses}
         onSearchRequest={doSearch}
-        onHostgroupsChange={changeHostGroups}
+        onHostGroupsChange={changeHostGroups}
         selectedHostGroups={hostGroups}
         onServiceGroupsChange={changeServiceGroups}
         selectedServiceGroups={serviceGroups}
         onClearAll={clearAllFilters}
-        search={search}
+        currentSearch={search}
       />
       <div className={classes.listing}>
         <Listing
