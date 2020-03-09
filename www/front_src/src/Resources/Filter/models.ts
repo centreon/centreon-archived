@@ -68,9 +68,9 @@ const allFilter = {
   id: 'all',
   name: labelAll,
   criterias: {
-    resourceTypes,
-    states,
-    statuses,
+    resourceTypes: [],
+    states: [],
+    statuses: [],
   },
 };
 
@@ -78,15 +78,9 @@ const unhandledProblemsFilter: FilterGroup = {
   id: 'unhandled_problems',
   name: labelUnhandledProblems,
   criterias: {
-    resourceTypes,
+    resourceTypes: [],
     states: [unhandledState],
-    statuses: [
-      warningStatus,
-      downStatus,
-      criticalStatus,
-      unreachableStatus,
-      unknownStatus,
-    ],
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
   },
 };
 
@@ -94,15 +88,9 @@ const resourceProblemsFilter: FilterGroup = {
   id: 'resource_problems',
   name: labelResourceProblems,
   criterias: {
-    resourceTypes,
-    states: [unhandledState],
-    statuses: [
-      warningStatus,
-      downStatus,
-      criticalStatus,
-      unreachableStatus,
-      unknownStatus,
-    ],
+    resourceTypes: [],
+    states: [],
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
   },
 };
 

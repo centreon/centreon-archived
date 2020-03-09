@@ -1,5 +1,3 @@
-import isEmpty from 'lodash/isEmpty';
-
 import { getSearchParam, OrSearchParam } from './searchObjects';
 import { Filter } from '../Filter/models';
 
@@ -27,7 +25,7 @@ const buildParam = ({ name, value }): string => {
 
 const buildParams = (params): Array<string> =>
   params
-    .filter(({ value }) => value !== undefined && !isEmpty(value))
+    .filter(({ value }) => value !== undefined && value !== [])
     .map(buildParam)
     .join('&');
 
@@ -39,9 +37,9 @@ const getListingParams = ({
   searchOptions,
 }): Array<Param> => {
   return [
-    { name: 'sort_by', value: sort },
     { name: 'page', value: page },
     { name: 'limit', value: limit },
+    { name: 'sort_by', value: sort },
     {
       name: 'search',
       value: getSearchParam({ searchValue: search, searchOptions }),
