@@ -19,7 +19,7 @@
         "behat/behat": "^3.3",
         "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
         "phpunit/phpunit": "^7.5",
-        "squizlabs/php_codesniffer": "^2.9",
+        "squizlabs/php_codesniffer": "^3.5",
         "phing/phing": "3.0.0-alpha3",
         "behat/mink-extension": "^2.2",
         "behat/mink-selenium2-driver": "^1.3",

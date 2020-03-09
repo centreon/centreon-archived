@@ -328,8 +328,8 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     {
         $acknowledgements = [];
 
-        if ($this->hasNotEnoughRightsToContinue()) {
-            return $acknowledgements;
+        if ($this->hasNotEnoughRightsToContinue() == false) {
+            return $acknowledgements; 
         }
 
         $accessGroupFilter = $this->isAdmin()
