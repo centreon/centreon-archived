@@ -24,6 +24,7 @@ namespace Tests\Centreon\Domain\Monitoring;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -53,7 +54,7 @@ class ResourceServiceTest extends TestCase
 
         $resourceService = new ResourceService($repository, $accessGroup, $router);
 
-        $resourcesFound = $resourceService->findResources([ResourceServiceInterface::STATE_ALL]);
+        $resourcesFound = $resourceService->findResources(new ResourceFilter());
         $this->assertCount(
             1,
             $resourcesFound,

@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 /**
- * 
+ * Filter model for resource repository
  *
  * @package Centreon\Domain\Monitoring
  */
@@ -66,6 +66,21 @@ class ResourceFilter
     public const STATUS_UNKNOWN = 'UNKNOWN';
     public const STATUS_PENDING = 'PENDING';
 
+    public const MAP_STATUS_SERVICE = [
+        self::STATUS_OK => 0,
+        self::STATUS_WARNING => 1,
+        self::STATUS_CRITICAL => 2,
+        self::STATUS_UNKNOWN => 3,
+        self::STATUS_PENDING => 4,
+    ];
+
+    public const MAP_STATUS_HOST = [
+        self::STATUS_UP => 0,
+        self::STATUS_DOWN => 1,
+        self::STATUS_UNREACHABLE => 2,
+        self::STATUS_PENDING => 3,
+    ];
+
     /**
      * @var string[]
      */
@@ -90,6 +105,28 @@ class ResourceFilter
      * @var int[]
      */
     private $servicegroupIds = [];
+
+    /**
+     * Transform result by map
+     *
+     * @param array $list
+     * @param array $map
+     * @return array
+     */
+    public function map(array $list, array $map): array
+    {
+        $result = [];
+
+        foreach ($list as $value) {
+            if (!array_key_exists($value, $map)) {
+                continue;
+            }
+
+            $result[] = $map[$value];
+        }
+
+        return $result;
+    }
 
     /**
      * @param string $type
@@ -161,7 +198,7 @@ class ResourceFilter
      */
     public function getStatuses(): array
     {
-        return $this->states;
+        return $this->statuses;
     }
 
     /**

@@ -93,6 +93,11 @@ class MonitoringResourceController extends AbstractController
 
         // load filter data with the query parameters
         foreach ($request->query as $param => $data) {
+            // skip pagination parameters
+            if (in_array($param, ['search', 'limit', 'page', 'sort_by'])) {
+                continue;
+            }
+
             $value = null;
 
             if ($data && is_string($data) && ($data{0} === '{' || $data{0} === '[')) {

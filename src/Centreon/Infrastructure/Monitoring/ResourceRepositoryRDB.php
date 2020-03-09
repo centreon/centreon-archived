@@ -38,6 +38,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use CentreonDuration;
+use PDO;
 
 /**
  * Database repository for the real time monitoring of services and host.
@@ -167,12 +168,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $subRequests = [];
 
-        if (!$filter->getTypes() || $filter->hasType(ResourceFilter::TYPE_HOST)) {
+        if ($this->hasServiceFilter($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForServiceResources($collector, $filter) . ') ';
         }
 
         // do not get hosts if a service filter is given
-        if ((!$filter->getTypes() || $filter->hasType(ResourceFilter::TYPE_SERVICE)) && !$this->hasServiceFilter()) {
+        if ($this->hasHostFilter($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForHostResources($collector, $filter) . ')';
         }
 
@@ -194,6 +195,21 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $collector->addValue($key, current($data), key($data));
         }
         $request .= $searchRequest ? $searchRequest : '';
+
+        // apply the service group filter to SQL query
+        if ($filter->getHostgroupIds()) {
+            $groupList = [];
+
+            foreach ($filter->getHostgroupIds() as $index => $groupId) {
+                $key = ":resourceHostgroupId_{$index}";
+
+                $groupList[] = $key;
+                $collector->addValue($key, $groupId, PDO::PARAM_INT);
+            }
+
+            $request .= ($searchRequest ? ' AND ' : ' WHERE ')
+                . 'hg.hostgroup_id IN (' . implode(', ', $groupList) . ')';
+        }
 
         // Group
         $request .= ' GROUP BY resource.id';
@@ -226,7 +242,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      *
      * @return bool
      */
-    private function hasServiceFilter()
+    private function hasServiceSearch()
     {
         $requestParameters = $this->sqlRequestTranslator->getRequestParameters();
         $search = $requestParameters->getSearch();
@@ -249,6 +265,46 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         return false;
+    }
+
+    /**
+     * Check if the filters are compatible to extract services
+     *
+     * @return bool
+     */
+    private function hasServiceFilter(ResourceFilter $filter): bool
+    {
+        if (($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) ||
+            ($filter->getStatuses() && !ResourceFilter::map(
+                $filter->getStatuses(),
+                ResourceFilter::MAP_STATUS_SERVICE
+            ))
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if the filters are compatible to extract hosts
+     *
+     * @return bool
+     */
+    private function hasHostFilter(ResourceFilter $filter): bool
+    {
+        if ($this->hasServiceSearch() ||
+            ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_HOST)) ||
+            ($filter->getStatuses() && !ResourceFilter::map(
+                $filter->getStatuses(),
+                ResourceFilter::MAP_STATUS_HOST
+            )) ||
+            $filter->getServicegroupIds()
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -368,9 +424,36 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $sqlState[] = $sqlStateCatalog[$state];
             }
 
-            if ($sqlState) {
-                $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
+            $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
+        }
+
+        // apply the status filter to SQL query
+        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_SERVICE);
+        if ($statuses) {
+            $statusList = [];
+
+            foreach ($statuses as $index => $status) {
+                $key = ":serviceStatuses_{$index}";
+
+                $statusList[] = $key;
+                $collector->addValue($key, $status, PDO::PARAM_INT);
             }
+
+            $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
+        }
+
+        // apply the service group filter to SQL query
+        if ($filter->getServicegroupIds()) {
+            $groupList = [];
+
+            foreach ($filter->getServicegroupIds() as $index => $groupId) {
+                $key = ":serviceServicegroupId_{$index}";
+
+                $groupList[] = $key;
+                $collector->addValue($key, $groupId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND sg.servicegroup_id IN (' . implode(', ', $groupList) . ')';
         }
 
         // group by the service ID to preventing the duplication
@@ -486,6 +569,21 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             }
         }
 
+        // apply the status filter to SQL query
+        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_HOST);
+        if ($statuses) {
+            $statusList = [];
+
+            foreach ($statuses as $index => $status) {
+                $key = ":hostStatuses_{$index}";
+
+                $statusList[] = $key;
+                $collector->addValue($key, $status, PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND h.state IN (' . implode(', ', $statusList) . ')';
+        }
+
         // prevent duplication
         $sql .= ' GROUP BY h.host_id';
 
@@ -551,6 +649,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             if ($parentIcon->getUrl()) {
                 $parent->setIcon($parentIcon);
             }
+
+            $parentStatus = EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $data,
+                'parent_status_'
+            );
+            $parent->setStatus($parentStatus);
 
             $resource->setParent($parent);
         }
