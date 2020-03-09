@@ -1,4 +1,15 @@
 ====================
+Centreon Web 19.10.9
+====================
+
+Bug Fixes
+---------
+
+* [LDAP] Sync user deletion from groups (PR #8287)
+* [Top Counters] Use session cache to store results (PR #8189)
+* [Configuration] Geo coordinates of hosts not exported to Remote Server (PR #8390)
+
+====================
 Centreon Web 19.10.8
 ====================
 
