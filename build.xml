@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="centreon-web" basedir="." default="main">
   <property name="builddir" value="./build"/>
+  <property name="relativepath" value="./"/>
+  <resolvepath propertyName="absolutepath" file="${relativepath}"/>
 
   <target name="prepare">
     <mkdir dir="${builddir}"/>
@@ -46,7 +48,7 @@
   <target name="phpstan" depends="prepare">
     <exec executable="./vendor/bin/phpstan" output="${builddir}/phpstan.xml">
       <arg value="analyse" />
-      <arg value="./src/Centreon" />
+      <arg value="${absolutepath}/src/Centreon" />
       <arg value="--level" />
       <arg value="2" />
       <arg value="--error-format" />
