@@ -78,7 +78,7 @@ class AutoloadServiceProvider
             ->files()
             ->name('ServiceProvider.php')
             ->depth('== 1')
-            ->in(__DIR__ . '/../../../src')
+            ->in(__DIR__ . '/../../../../src')
         ;
 
         foreach ($serviceProviders as $serviceProvider) {
