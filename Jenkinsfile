@@ -82,7 +82,7 @@ try {
             commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
             violationConfigs: [
-              [parser: 'CHECKSTYLE', pattern: '.*/codestyle.xml$', reporter: 'Checkstyle']
+              [parser: 'CHECKSTYLE', pattern: '.*/(codestyle|phpstan).xml$', reporter: 'Checkstyle']
             ]
           ])
         }
