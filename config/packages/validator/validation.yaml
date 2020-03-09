@@ -144,3 +144,35 @@ Centreon\Domain\Monitoring\ResourceFilter:
                     - all
                 multiple: true
                 groups: [Default]
+        statuses:
+            - Type:
+                type: array
+                groups: [Default]
+            - Choice:
+                choices:
+                    - OK
+                    - UP
+                    - WARNING
+                    - DOWN
+                    - CRITICAL
+                    - UNREACHABLE
+                    - UNKNOWN
+                    - PENDING
+                multiple: true
+                groups: [Default]
+        hostgroupIds:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: int
+                    groups: [Default]
+        servicegroupIds:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: int
+                    groups: [Default]
