@@ -183,13 +183,46 @@ paths:
 
         The available parameters to **search** / **sort_by** are:
 
+        * id
+        * name
+        * type
+        * status_code
+        * status
+        * action_url
+        * details_url
+        * parent_name
+        * parent_status
+        * severity_level
+        * in_downtime
+        * acknowledged
+        * impacted_resources_count
+        * last_status_change
+        * tries
+        * last_check
+        * information
+
+        Only for **searching**:
+
+        ---
+
+        * host.group
+        * host.group.id
         * host.name
+        * host.alias
+        * host.address
         * service.description
+        * service.group
+        * service.group.id
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/ResourceFilterType'
+        - $ref: '#/components/parameters/ResourceFilterState'
+        - $ref: '#/components/parameters/ResourceFilterStatus'
+        - $ref: '#/components/parameters/ResourceFilterHostgroupId'
+        - $ref: '#/components/parameters/ResourceFilterServicegroupId'
       responses:
         '200':
           description: "OK"
@@ -1470,6 +1503,44 @@ paths:
           description: "Host or service not found"
         '500':
           $ref: '#/components/responses/InternalServerError'
+
+  /monitoring/hosts/{host_id}/timeline:
+    get:
+      tags:
+        - Timeline
+      summary: "List events related to a host"
+      description: |
+        List all events for a given host
+
+        The available parameters to **search** / **sort_by** are:
+
+        * date
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.TimelineEvent'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -1591,6 +1662,61 @@ components:
       schema:
         type: object
         example: '{"host.name":"ASC"}'
+    ResourceFilterType:
+      in: query
+      name: types
+      required: false
+      description: "Filter the resources by type"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [service, host]
+        example: '["host"]'
+    ResourceFilterState:
+      in: query
+      name: states
+      required: false
+      description: "Filter the resources by state"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [unhandled_problems, resources_problems, in_downtime, acknowledged, all]
+        example: '["in_downtime", "acknowledged"]'
+    ResourceFilterStatus:
+      in: query
+      name: statuses
+      required: false
+      description: "Filter the resources by status"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
+        example: '["OK", "UP", "PENDING"]'
+    ResourceFilterHostgroupId:
+      in: query
+      name: hostgroup_ids
+      required: false
+      description: "Filter the resources by host group ID"
+      schema:
+        type: array
+        items:
+            type: int
+            format: int64
+        example: '[13, 22, 31]'
+    ResourceFilterServicegroupId:
+      in: query
+      name: servicegroup_ids
+      required: false
+      description: "Filter the resources by service group ID"
+      schema:
+        type: array
+        items:
+            type: int
+            format: int64
+        example: '[2033]'
     ShowHost:
       in: query
       name: show_host
@@ -2691,3 +2817,21 @@ components:
         - port
         - user
         - password
+    Monitoring.TimelineEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of Event (L - log, C - Comment, A - Acknowledgement, D - Downtime"
+          example: "C"
+        id:
+          type: string
+          description: "Concatinated ID of Type + Object ID"
+          example: "C25"
+        date:
+          type: string
+          format: date-time
+          description: "The date the event was created (ISO8601)"
+        object:
+          type: object
+          description: "The detailed object properties of above types"

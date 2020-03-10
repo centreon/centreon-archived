@@ -22,8 +22,21 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Monitoring\ResourceFilter;
+
 interface ResourceServiceInterface
 {
+    public const TYPE_SERVICE = 'service';
+    public const TYPE_HOST = 'host';
+
+    /**
+     * List of all types
+     */
+    public const TYPES = [
+        self::TYPE_HOST,
+        self::TYPE_SERVICE,
+    ];
+
     /**
      * Non-ok status in hard state , not acknowledged & not in downtime
      */
@@ -33,6 +46,16 @@ interface ResourceServiceInterface
      * Non-ok status in hard state
      */
     public const STATE_RESOURCES_PROBLEMS = 'resources_problems';
+
+    /**
+     * Resources in downtime
+     */
+    public const STATE_IN_DOWNTIME = 'in_downtime';
+
+    /**
+     * Acknowledged resources
+     */
+    public const STATE_ACKNOWLEDGED = 'acknowledged';
 
     /**
      * All status & resources
@@ -45,15 +68,40 @@ interface ResourceServiceInterface
     public const STATES = [
         self::STATE_UNHANDLED_PROBLEMS,
         self::STATE_RESOURCES_PROBLEMS,
+        self::STATE_IN_DOWNTIME,
+        self::STATE_ACKNOWLEDGED,
         self::STATE_ALL,
+    ];
+
+    public const STATUS_OK = 'OK';
+    public const STATUS_UP = 'UP';
+    public const STATUS_WARNING = 'WARNING';
+    public const STATUS_DOWN = 'DOWN';
+    public const STATUS_CRITICAL = 'CRITICAL';
+    public const STATUS_UNREACHABLE = 'UNREACHABLE';
+    public const STATUS_UNKNOWN = 'UNKNOWN';
+    public const STATUS_PENDING = 'PENDING';
+
+    /**
+     * List of all types
+     */
+    public const STATUSES = [
+        self::STATUS_OK,
+        self::STATUS_UP,
+        self::STATUS_WARNING,
+        self::STATUS_DOWN,
+        self::STATUS_CRITICAL,
+        self::STATUS_UNREACHABLE,
+        self::STATUS_UNKNOWN,
+        self::STATUS_PENDING,
     ];
 
     /**
      * Find all resources.
      *
-     * @param array $filterState
+     * @param ResourceFilter $filter
      * @return \Centreon\Domain\Monitoring\Resource[]
      * @throws \Exception
      */
-    public function findResources(?array $filterState): array;
+    public function findResources(ResourceFilter $filter): array;
 }
