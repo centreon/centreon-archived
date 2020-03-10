@@ -1300,7 +1300,7 @@ create_gorgone_configuration_structure() {
             return 1
         fi
     fi
-    log "INFO" "GORGONE_CONFIG/config.d: $GORGONE_CONFIG/config.d"
+    log "INFO" "GORGONE_CONFIG/config.d: $conf_folder"
 
     # gorgone's config.yaml
     destination="$GORGONE_CONFIG/config.yaml"
