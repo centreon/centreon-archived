@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #----
 ## @Synopsis	This file contains functions to be used by Centreon install scripts
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -691,6 +691,22 @@ locate_gorgone_varlib() {
     log "INFO" "GORGONE_VARLIB: $GORGONE_VARLIB"
 }
 
+#----
+## Define where is centreon gorgone configuration folder
+## @Globals     GORGONE_CONFIG, DEFAULT_GORGONE_CONFIG
+#----
+locate_gorgone_config() {
+    testdir_clean "$GORGONE_CONFIG" "GORGONE_CONFIG"
+    if [ -z "$GORGONE_CONFIG" ] ; then
+        answer "$(gettext "Where is your gorgone configuration folder ?")" "$DEFAULT_GORGONE_CONFIG" "GORGONE_CONFIG"
+        echo_success "$(gettext "Path" ) $GORGONE_CONFIG" "$ok"
+    fi
+    GORGONE_CONFIG=`trim ${GORGONE_CONFIG%/}`
+    export GORGONE_CONFIG
+    log "INFO" "GORGONE_CONFIG: $GORGONE_CONFIG"
+}
+
+
 locate_monitoringengine_etc()
 {
 	if [ -z "$MONITORINGENGINE_ETC" ]; then
@@ -1237,7 +1253,7 @@ configureApache() {
 #----
 copy_ssh_keys_to_gorgone() {
     if [ ! -d $GORGONE_VARLIB ] ; then
-        mkdir -p $GORGONE_VARLIB/.ssh
+        mkdir -p "$GORGONE_VARLIB/.ssh"
         if [ $? -ne 0 ] ; then
             echo_failure "$(gettext "Cannot create the subfolder $GORGONE_VARLIB/.ssh")" "$fail"
             return 1
@@ -1249,25 +1265,104 @@ copy_ssh_keys_to_gorgone() {
         return 1
     fi
 
-    cp -Rf $CENTREON_SPOOL_SSH $GORGONE_VARLIB/.ssh
+    cp -Rf "$CENTREON_SPOOL_SSH" "$GORGONE_VARLIB/.ssh"
     if [ $? -ne 0 ] ; then
         echo_failure "$(gettext "Cannot move the SSH keys to $GORGONE_VARLIB/.ssh")" "$fail"
         return 1
     fi
 
-    ${CHOWN} -R $GORGONE_USER:$GORGONE_GROUP $GORGONE_VARLIB/.ssh
+    ${CHOWN} -R "$GORGONE_USER:$GORGONE_GROUP" "$GORGONE_VARLIB/.ssh"
     if [ $? -ne 0 ] ; then
         echo_failure "$(gettext "Cannot modify the owner of the files in $GORGONE_VARLIB/.ssh folder to $GORGONE_USER:$GORGONE_GROUP")" "$fail"
         return 1
     fi
 
-    ${CHMOD} 600 $GORGONE_VARLIB/.ssh/id_rsa
+    ${CHMOD} "600" "$GORGONE_VARLIB/.ssh/id_rsa"
     if [ $? -ne 0 ] ; then
         echo_failure "$(gettext "Cannot modify the rights of files in folder $GORGONE_VARLIB/.ssh")" "$fail"
         return 1
     fi
 
     echo_success "$(gettext "Copy SSH keys to $GORGONE_VARLIB/.ssh")" "$ok"
+    return 0
+}
+
+#----
+## Create gorgone configuration folders
+#----
+create_gorgone_configuration_structure() {
+    ## create the required gorgone configuration structure
+    if [ ! -d "$GORGONE_CONFIG/config.d" ] ; then
+        conf_folder="$GORGONE_CONFIG/config.d"
+        mkdir -p "$conf_folder"
+        if [ $? -ne 0 ] ; then
+            echo_failure "$(gettext "Cannot create the subfolder") $conf_folder" "$fail"
+            return 1
+        fi
+    fi
+    log "INFO" "GORGONE_CONFIG/config.d: $GORGONE_CONFIG/config.d"
+
+    # gorgone's config.yaml
+    destination="$GORGONE_CONFIG/config.yaml"
+    if [ -e $destination ] ; then
+        yes_no_default "$(gettext "The configuration is already created. Do you want to overwrite it ?")"
+        if [ $? -ne 0 ] ; then
+            echo_info "If needed, please update $destination" "$passed"
+        else
+            ${CAT} <<- __EOT__ > $destination
+name: config.yaml
+description: Configuration brought by Centreon Gorgone
+configuration: !include $conf_folder/*.yaml
+__EOT__
+
+            echo_success "Create gorgone config.yaml" "$ok"
+        fi
+    fi
+
+    # gorgone's config.d/30-centreon.yaml
+    destination="$conf_folder/30-centreon.yaml"
+    if [ -e $destination ] ; then
+        yes_no_default "$(gettext "The configuration is already created. Do you want to overwrite it ?")"
+        if [ $? -ne 0 ] ; then
+            echo_info "If needed, please update $destination" "$passed"
+        else
+            ${CAT} <<- __EOT__ > $destination
+name: centreon.yaml
+description: Configure Centreon Gorgone to work with Centreon Web.
+centreon: !include $CENTREON_ETC/config.d/*.yaml
+__EOT__
+
+            echo_success "Create gorgone 30-centreon.yaml" "$ok"
+        fi
+    fi
+
+    ## create the required centreon configuration structure
+    if [ ! -d "$CENTREON_ETC/config.d" ] ; then
+        mkdir "$CENTREON_ETC/config.d"
+        if [ $? -ne 0 ] ; then
+            echo_failure "$(gettext "Cannot create the subfolder") $CENTREON_ETC/config.d" "$fail"
+            return 1
+        fi
+    fi
+    log "INFO" "CENTREON_ETC/config.d: $CENTREON_ETC/config.d"
+
+    # centreon's config.yaml
+    destination="$CENTREON_ETC/config.yaml"
+    if [ -e $destination ] ; then
+        yes_no_default "$(gettext "The configuration is already created. Do you want to overwrite it ?")"
+        if [ $? -ne 0 ] ; then
+            echo_info "If needed, please update $destination" "$passed"
+        else
+            ${CAT} <<__EOT__ > $destination
+name: config.yaml
+description: Configuration for Central server
+configuration: !include config.d/*.yaml
+__EOT__
+
+            echo_success "Create centreon config.yaml" "$ok"
+        fi
+    fi
+    echo_success "$(gettext "Gorgone configuration structure")" "$ok"
     return 0
 }
 
@@ -2182,9 +2277,9 @@ copyInTempFile()
 		echo_passed "$TMP_DIR $(gettext "exists, it will be moved...")"
 		mv $TMP_DIR $TMP_DIR.`date +%Y%m%d-%k%m%S`
 	fi
-	mkdir -p $TMP_DIR/src
-	mkdir -p $TMP_DIR/work
-	mkdir -p $TMP_DIR/final
+	mkdir -p "$TMP_DIR/src"
+	mkdir -p "$TMP_DIR/work"
+	mkdir -p "$TMP_DIR/final"
 
 	for folder in $srclistcp ; do
 		log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $TMP_DIR/src/"

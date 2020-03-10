@@ -735,10 +735,16 @@ while [ "$pear_module" -eq 0 ] ; do
     fi
 done
 
+#----
+## Gorgone specific tasks
+#----
 ## Copy pollers SSH keys (in case of upgrade) to the new "user" gorgone
 if [ "$upgrade" = "1" ]; then
     copy_ssh_keys_to_gorgone
 fi
+## Create gorgone's configuration structure
+create_gorgone_configuration_structure
+
 
 ## Create configfile for web install
 createConfFile
