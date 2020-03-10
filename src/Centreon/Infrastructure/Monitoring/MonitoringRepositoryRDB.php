@@ -1290,7 +1290,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
      * @param int $serviceId
      * @return array
      */
-    public function findAcknowledgements(int $hostId, int $serviceId)
+    public function findAcknowledgements(int $hostId, int $serviceId): array
     {
         $acks = [];
 
