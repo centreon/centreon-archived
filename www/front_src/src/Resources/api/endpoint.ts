@@ -6,15 +6,6 @@ const monitoringEndpoint = `${baseEndpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
-
-interface ListingParams {
-  state?: string;
-  sort?: string;
-  page?: number;
-  limit?: number;
-  search?: string;
-}
-
 interface Param {
   name: string;
   value?: string | number | OrSearchParam;
@@ -51,12 +42,6 @@ const getListingParams = ({
 const buildEndpoint = ({ baseEndpoint, params }): string => {
   return `${baseEndpoint}?${buildParams(params)}`;
 };
-
-interface FilterParams {
-  states?: Array<Filter>;
-  resourceTypes?: Array<Filter>;
-  statuses?: Array<Filter>;
-}
 
 const buildResourcesEndpoint = (params): string => {
   const searchOptions = [
