@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -315,21 +316,21 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
         return null;
     }
 
-    /** 
+    /**
      * Generic function to find acknowledgement.
      *
-     * @param int $toto Type of acknowledgement
+     * @param int $type Type of acknowledgement
      * @return Acknowledgement[]
      * @throws \Exception
-     * @throws \PDOException 
+     * @throws \PDOException
      * @throws RequestParametersTranslatorException
      */
     private function findAcknowledgementsOf(int $type = self::TYPE_HOST_ACKNOWLEDGEMENT): array
     {
         $acknowledgements = [];
 
-        if ($this->hasNotEnoughRightsToContinue() == false) {
-            return $acknowledgements; 
+        if ($this->hasNotEnoughRightsToContinue() === false) {
+            return $acknowledgements;
         }
 
         $accessGroupFilter = $this->isAdmin()

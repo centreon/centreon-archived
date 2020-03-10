@@ -26,7 +26,7 @@
         "adlawson/vfs": "^0.12.1",
         "zircote/swagger-php": "^3.0",
         "symfony/phpunit-bridge": "^4.3",
-        "centreon/centreon-test-lib": "dev-MON-4910-phpstan#e0c5705ede21324dbb15b67c6560258644d8a382",
+        "centreon/centreon-test-lib": "dev-master",
         "sensiolabs/security-checker": "^6.0",
         "symfony/var-dumper": "4.3.*",
         "symfony/profiler-pack": "^1.0",

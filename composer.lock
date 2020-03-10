@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05addd0e9aa74e865b7cb48932f749bf",
+    "content-hash": "cc067977da057580438a941c8609afbd",
     "packages": [
         {
             "name": "curl/curl",
@@ -4768,22 +4768,21 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-MON-4910-phpstan",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "e0c5705ede21324dbb15b67c6560258644d8a382"
+                "reference": "cfaddd20c3341fcd7a5c8271dd816e5820572d83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/e0c5705ede21324dbb15b67c6560258644d8a382",
-                "reference": "e0c5705ede21324dbb15b67c6560258644d8a382",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/cfaddd20c3341fcd7a5c8271dd816e5820572d83",
+                "reference": "cfaddd20c3341fcd7a5c8271dd816e5820572d83",
                 "shasum": ""
             },
             "require": {
                 "behat/behat": "^3.0",
-                "guzzlehttp/guzzle": "~6.0",
-                "phpstan/phpstan": "^0.12.14"
+                "guzzlehttp/guzzle": "~6.0"
             },
             "suggest": {
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
@@ -4794,8 +4793,7 @@
                 "psr-4": {
                     "Centreon\\Test\\Behat\\": "src/behat",
                     "Centreon\\Test\\Mock\\": "src/mock",
-                    "Centreon\\Test\\Traits\\": "src/traits",
-                    "Centreon\\PHPStan\\": "src/PHPStan"
+                    "Centreon\\Test\\Traits\\": "src/traits"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4815,7 +4813,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-03-10T12:57:35+00:00"
+            "time": "2020-02-24T08:45:43+00:00"
         },
         {
             "name": "container-interop/container-interop",
