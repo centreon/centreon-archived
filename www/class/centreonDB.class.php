@@ -39,8 +39,8 @@ if ($configFile !== false) {
     require_once $configFile;
 }
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDBStatement.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
+require_once __DIR__ . '/centreonDBStatement.class.php';
+require_once __DIR__ . '/centreonLog.class.php';
 
 /**
  * Class CentreonDB used to manage DB connection
