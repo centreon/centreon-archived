@@ -123,7 +123,7 @@ add_group "$CENTREON_USER" "$GORGONE_GROUP"
 add_group "$WEB_USER" "$GORGONE_GROUP"
 add_group "$GORGONE_USER" "$CENTREON_GROUP"
 add_group "$GORGONE_USER" "$BROKER_GROUP"
-add_group "$GORGONE_USER" "$ENGINE_GROUP"
+add_group "$GORGONE_USER" "$MONITORINGENGINE_GROUP"
 add_group "$GORGONE_USER" "$WEB_GROUP"
 
 ## Config Sudo
@@ -735,7 +735,7 @@ while [ "$pear_module" -eq 0 ] ; do
 done
 
 ## Copy pollers SSH keys (in case of upgrade) to the new "user" gorgone
-if [ -z $upgrade ] ; then
+if [ "$upgrade" = "1" ]; then
     copy_ssh_keys_to_gorgone
 fi
 

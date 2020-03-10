@@ -1238,7 +1238,7 @@ configureApache() {
 copy_ssh_keys_to_gorgone() {
     if [ ! -d $GORGONE_VARLIB ] ; then
         mkdir -p $GORGONE_VARLIB/.ssh
-        if [ "$?" -nq 0 ] ; then
+        if [ $? -ne 0 ] ; then
             echo_failure "$(gettext "Cannot create the subfolder $GORGONE_VARLIB/.ssh")" "$fail"
             return 1
         fi
@@ -1250,19 +1250,19 @@ copy_ssh_keys_to_gorgone() {
     fi
 
     cp -Rf $CENTREON_SPOOL_SSH $GORGONE_VARLIB/.ssh
-    if [ "$?" -nq 0 ] ; then
+    if [ $? -ne 0 ] ; then
         echo_failure "$(gettext "Cannot move the SSH keys to $GORGONE_VARLIB/.ssh")" "$fail"
         return 1
     fi
 
     ${CHOWN} -R $GORGONE_USER:$GORGONE_GROUP $GORGONE_VARLIB/.ssh
-    if [ "$?" -nq 0 ] ; then
+    if [ $? -ne 0 ] ; then
         echo_failure "$(gettext "Cannot modify the owner of the files in $GORGONE_VARLIB/.ssh folder to $GORGONE_USER:$GORGONE_GROUP")" "$fail"
         return 1
     fi
 
     ${CHMOD} 600 $GORGONE_VARLIB/.ssh/id_rsa
-    if [ "$?" -nq 0 ] ; then
+    if [ $? -ne 0 ] ; then
         echo_failure "$(gettext "Cannot modify the rights of files in folder $GORGONE_VARLIB/.ssh")" "$fail"
         return 1
     fi
