@@ -855,7 +855,7 @@ class Service implements EntityDescriptorMetadataInterface
      * @param Downtime[] $downtimes
      * @return Service
      */
-    public function setDowntimes(array $downtimes): Service
+    public function setDowntimes(array $downtimes): self
     {
         $this->downtimes = $downtimes;
         return $this;
