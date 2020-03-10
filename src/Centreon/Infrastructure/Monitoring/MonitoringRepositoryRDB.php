@@ -1274,7 +1274,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
         $statement->execute();
 
-        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $downtimes[] = EntityCreator::createEntityByArray(
                 Downtime::class,
                 $result
