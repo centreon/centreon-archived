@@ -2,5 +2,5 @@ parameters:
   paths:
     - %currentWorkingDirectory%/src/Centreon/Infrastructure/Acknowledgement
 services:
-	errorFormatter.absolute:
-		class: Centreon\PHPStan\AbsolutePathErrorFormatter
+  errorFormatter.absolute:
+    class: Centreon\PHPStan\AbsolutePathErrorFormatter
