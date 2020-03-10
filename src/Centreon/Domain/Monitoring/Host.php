@@ -1208,7 +1208,7 @@ class Host implements EntityDescriptorMetadataInterface
      * @param Acknowledgement|null $acknowledgement
      * @return Host
      */
-    public function setAcknowledgement(?Acknowledgement $acknowledgement): Host
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
         return $this;
