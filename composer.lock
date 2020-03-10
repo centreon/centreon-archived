@@ -4772,12 +4772,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "0b61bd3884d7600e54325f299ba121d30ec8f2bb"
+                "reference": "91556c8b0fba302dd4835784284fd45f93d60899"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/0b61bd3884d7600e54325f299ba121d30ec8f2bb",
-                "reference": "0b61bd3884d7600e54325f299ba121d30ec8f2bb",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/91556c8b0fba302dd4835784284fd45f93d60899",
+                "reference": "91556c8b0fba302dd4835784284fd45f93d60899",
                 "shasum": ""
             },
             "require": {
@@ -4815,7 +4815,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-03-10T08:34:23+00:00"
+            "time": "2020-03-10T08:57:50+00:00"
         },
         {
             "name": "container-interop/container-interop",
