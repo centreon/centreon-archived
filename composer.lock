@@ -4548,12 +4548,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/Mink.git",
-                "reference": "b2e031b747be637236c55f3158e4da280427bfa3"
+                "reference": "ccef1987654e9c2fd0600ce68711ac668ad330eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/Mink/zipball/b2e031b747be637236c55f3158e4da280427bfa3",
-                "reference": "b2e031b747be637236c55f3158e4da280427bfa3",
+                "url": "https://api.github.com/repos/minkphp/Mink/zipball/ccef1987654e9c2fd0600ce68711ac668ad330eb",
+                "reference": "ccef1987654e9c2fd0600ce68711ac668ad330eb",
                 "shasum": ""
             },
             "require": {
@@ -4561,7 +4561,9 @@
                 "symfony/css-selector": "^2.7|^3.0|^4.0"
             },
             "require-dev": {
-                "symfony/phpunit-bridge": "^4.2"
+                "phpunit/phpunit": "^4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20",
+                "symfony/debug": "^2.7|^3.0|^4.0",
+                "symfony/phpunit-bridge": "^3.4.38 || ^5.0.5"
             },
             "suggest": {
                 "behat/mink-browserkit-driver": "extremely fast headless driver for Symfony\\Kernel-based apps (Sf2, Silex)",
@@ -4599,7 +4601,7 @@
                 "testing",
                 "web"
             ],
-            "time": "2020-03-06T06:18:25+00:00"
+            "time": "2020-03-10T12:33:27+00:00"
         },
         {
             "name": "behat/mink-extension",
@@ -4772,17 +4774,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "cfaddd20c3341fcd7a5c8271dd816e5820572d83"
+                "reference": "867fa7e1b7ce1a85ffd8efe9ea1e7f1b3afecfc9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/cfaddd20c3341fcd7a5c8271dd816e5820572d83",
-                "reference": "cfaddd20c3341fcd7a5c8271dd816e5820572d83",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/867fa7e1b7ce1a85ffd8efe9ea1e7f1b3afecfc9",
+                "reference": "867fa7e1b7ce1a85ffd8efe9ea1e7f1b3afecfc9",
                 "shasum": ""
             },
             "require": {
                 "behat/behat": "^3.0",
-                "guzzlehttp/guzzle": "~6.0"
+                "guzzlehttp/guzzle": "~6.0",
+                "phpstan/phpstan": "^0.12.14"
             },
             "suggest": {
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
@@ -4793,7 +4796,8 @@
                 "psr-4": {
                     "Centreon\\Test\\Behat\\": "src/behat",
                     "Centreon\\Test\\Mock\\": "src/mock",
-                    "Centreon\\Test\\Traits\\": "src/traits"
+                    "Centreon\\Test\\Traits\\": "src/traits",
+                    "Centreon\\PHPStan\\": "src/PHPStan"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4813,7 +4817,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-02-24T08:45:43+00:00"
+            "time": "2020-03-10T14:09:49+00:00"
         },
         {
             "name": "container-interop/container-interop",
