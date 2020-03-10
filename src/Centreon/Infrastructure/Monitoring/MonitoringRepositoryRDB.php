@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring;
 
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -512,11 +514,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                     $row
                 );
 
+                //get services for host
                 $servicesByHost = $this->findServicesByHosts([$hostId]);
 
-                $host->setServices(
-                    $servicesByHost[$hostId]
-                );
+                $host->setServices($servicesByHost[$hostId]);
+
+                //get downtimes for host
+                $downtimes = $this->findDowntimes($hostId, 0);
+                    $host->setDowntimes($downtimes);
+
+                //get active acknowledgment for host
+                $acknowledgements = $this->findAcknowledgements($hostId, 0);
+
+                if (!empty($acknowledgements)) {
+                    $host->setAcknowledgement($acknowledgements[0]);
+                }
 
                 return $host;
             } else {
@@ -566,7 +578,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         if ($statement->execute()) {
             if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                return EntityCreator::createEntityByArray(
+                $service = EntityCreator::createEntityByArray(
                     Service::class,
                     $row
                 );
@@ -576,6 +588,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         } else {
             throw new \Exception('Bad SQL request');
         }
+
+        //get downtimes for service
+        $downtimes = $this->findDowntimes($hostId, $serviceId);
+        $service->setDowntimes($downtimes);
+
+        //get active acknowledgment for service
+        $acknowledgements = $this->findAcknowledgements($hostId, $serviceId);
+
+        if (!empty($acknowledgements)) {
+            $service->setAcknowledgement($acknowledgements[0]);
+        }
+
+        return $service;
     }
 
     /**
@@ -1225,6 +1250,71 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         return $serviceGroups;
+    }
+
+    /**
+     * Find downtimes for host or service
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findDowntimes(int $hostId, int $serviceId)
+    {
+        $downtimes = [];
+
+        if (empty($hostId)) {
+            return $downtimes;
+        }
+
+        $sql = 'SELECT * FROM `:dbstg`.`downtimes` WHERE host_id = :hostId AND service_id = :serviceId ' .
+                'AND deletion_time IS NULL';
+        $request = $this->translateDbName($sql);
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $downtimes[] = EntityCreator::createEntityByArray(
+                Downtime::class,
+                $result
+            );
+        }
+
+        return $downtimes;
+    }
+
+    /**
+     * Find acknowledgements for host or service
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findAcknowledgements(int $hostId, int $serviceId)
+    {
+        $acks = [];
+
+        if (empty($hostId)) {
+            return $acks;
+        }
+
+        $sql = 'SELECT * FROM `:dbstg`.`acknowledgements` WHERE host_id = :hostId AND service_id = :serviceId ' .
+                'AND deletion_time IS NULL ORDER BY entry_time DESC';
+
+        $request = $this->translateDbName($sql);
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $acks[] = EntityCreator::createEntityByArray(
+                Acknowledgement::class,
+                $result
+            );
+        }
+
+        return $acks;
     }
 
     private function isAdmin(): bool
