@@ -2158,6 +2158,14 @@ components:
               type: boolean
               description: "Indicates whether notifications are sent when the host is unreachable"
               example: false
+            flapping:
+              type: boolean
+              description: "Is the host flapping or not"
+              example: false
+            percent_state_change:
+              type: float
+              description: "Percent state change since last check"
+              example: 3.5
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
