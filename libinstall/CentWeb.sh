@@ -118,14 +118,6 @@ add_group "$WEB_USER" "$MONITORINGENGINE_GROUP"
 add_group "$CENTREON_USER" "$MONITORINGENGINE_GROUP"
 add_group "$CENTREON_USER" "$WEB_GROUP"
 
-## Configure Gorgone user and group
-add_group "$CENTREON_USER" "$GORGONE_GROUP"
-add_group "$WEB_USER" "$GORGONE_GROUP"
-add_group "$GORGONE_USER" "$CENTREON_GROUP"
-add_group "$GORGONE_USER" "$BROKER_GROUP"
-add_group "$GORGONE_USER" "$MONITORINGENGINE_GROUP"
-add_group "$GORGONE_USER" "$WEB_GROUP"
-
 ## Config Sudo
 # I think this process move on CentCore install...
 configureSUDO "$INSTALL_DIR_CENTREON/examples"
@@ -367,6 +359,15 @@ else
     add_group "$MONITORINGENGINE_USER" "$BROKER_GROUP"
     add_group "$BROKER_USER" "$CENTREON_GROUP"
 fi
+
+## Configure Gorgone user and group
+add_group "$CENTREON_USER" "$GORGONE_GROUP"
+add_group "$WEB_USER" "$GORGONE_GROUP"
+add_group "$GORGONE_USER" "$CENTREON_GROUP"
+add_group "$GORGONE_USER" "$BROKER_GROUP"
+add_group "$GORGONE_USER" "$MONITORINGENGINE_GROUP"
+add_group "$GORGONE_USER" "$WEB_GROUP"
+
 if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
     $INSTALL_DIR/cinstall $cinstall_opts \
         -g "$BROKER_GROUP" -d 775 \
