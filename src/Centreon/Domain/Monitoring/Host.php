@@ -1190,7 +1190,7 @@ class Host implements EntityDescriptorMetadataInterface
      * @param Downtime[] $downtimes
      * @return Host
      */
-    public function setDowntimes(array $downtimes): Host
+    public function setDowntimes(array $downtimes): self
     {
         $this->downtimes = $downtimes;
         return $this;
