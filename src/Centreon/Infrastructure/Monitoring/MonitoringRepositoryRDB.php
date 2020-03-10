@@ -1258,7 +1258,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
      * @param int $serviceId
      * @return array
      */
-    public function findDowntimes(int $hostId, int $serviceId)
+    public function findDowntimes(int $hostId, int $serviceId): array
     {
         $downtimes = [];
 
