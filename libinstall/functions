@@ -1292,8 +1292,8 @@ copy_ssh_keys_to_gorgone() {
 #----
 create_gorgone_configuration_structure() {
     ## create the required gorgone configuration structure
-    if [ ! -d "$GORGONE_CONFIG/config.d" ] ; then
-        conf_folder="$GORGONE_CONFIG/config.d"
+    conf_folder="$GORGONE_CONFIG/config.d"
+    if [ ! -d "$conf_folder" ] ; then
         mkdir -p "$conf_folder"
         if [ $? -ne 0 ] ; then
             echo_failure "$(gettext "Cannot create the subfolder") $conf_folder" "$fail"
