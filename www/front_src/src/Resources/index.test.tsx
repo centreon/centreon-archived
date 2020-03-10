@@ -46,7 +46,7 @@ interface EndpointParams {
   serviceGroupIds?: Array<number>;
 }
 
-const defaultStatuses = ['warning', 'down', 'critical', 'unknown'];
+const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
@@ -64,7 +64,8 @@ const getEndpoint = ({
   hostGroupsIds = undefined,
   serviceGroupIds = undefined,
 }: EndpointParams): string => {
-  const baseEndpoint = 'monitoring/resources';
+  const baseEndpoint = './api/beta';
+  const endpoint = `${baseEndpoint}/monitoring/resources`;
   const sortParam = sortBy ? `&sort_by={"${sortBy}":"${sortOrder}"}` : '';
   const searchParam = search
     ? `&search={"${search.mode}":[${search.fieldPatterns.map(
@@ -72,11 +73,12 @@ const getEndpoint = ({
       )}]}`
     : '';
 
-  const statesParam = states ? `&states=${buildParam(states)}` : '';
-  const resourceTypesParam = resourceTypes
-    ? `&types=${buildParam(resourceTypes)}`
-    : '';
-  const statusesParam = statuses ? `&statuses=${buildParam(statuses)}` : '';
+  const statesParam =
+    states.length !== 0 ? `&states=${buildParam(states)}` : '';
+  const resourceTypesParam =
+    resourceTypes.length !== 0 ? `&types=${buildParam(resourceTypes)}` : '';
+  const statusesParam =
+    statuses.length !== 0 ? `&statuses=${buildParam(statuses)}` : '';
   const hostGroupsIdsParam = hostGroupsIds
     ? `&hostgroup_ids=${buildParam(hostGroupsIds)}`
     : '';
@@ -84,7 +86,7 @@ const getEndpoint = ({
     ? `&servicegroup_ids=${buildParam(serviceGroupIds)}`
     : '';
 
-  return `${baseEndpoint}?page=${page}&limit=${limit}${sortParam}${searchParam}${statesParam}${resourceTypesParam}${statusesParam}${hostGroupsIdsParam}${serviceGroupIdsParam}`;
+  return `${endpoint}?page=${page}&limit=${limit}${sortParam}${searchParam}${statesParam}${resourceTypesParam}${statusesParam}${hostGroupsIdsParam}${serviceGroupIdsParam}`;
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -176,7 +178,7 @@ describe(Resources, () => {
     {
       filterGroup: labelResourceProblems,
       criterias: {
-        statuses: ['warning', 'down', 'critical', 'unknown'],
+        statuses: defaultStatuses,
         states: [],
         resourceTypes: [],
       },
@@ -230,7 +232,7 @@ describe(Resources, () => {
       filterName: labelStatus,
       optionToSelect: labelOk,
       endpointParamChanged: {
-        statuses: [...defaultStatuses, 'ok'],
+        statuses: [...defaultStatuses, 'OK'],
       },
     },
     {
@@ -277,7 +279,8 @@ describe(Resources, () => {
 
         await wait(() => {
           const [selectedOption] = getAllByText(optionToSelect);
-          fireEvent.click(selectedOption);
+
+          return fireEvent.click(selectedOption);
         });
 
         expect(mockedAxios.get).toHaveBeenCalledWith(

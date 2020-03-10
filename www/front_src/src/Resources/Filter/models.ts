@@ -44,14 +44,14 @@ const serviceResourceType = { id: 'service', name: labelService };
 
 const resourceTypes = [hostResourceType, serviceResourceType];
 
-const okStatus = { id: 'ok', name: labelOk };
-const upStatus = { id: 'up', name: labelUp };
-const warningStatus = { id: 'warning', name: labelWarning };
-const downStatus = { id: 'down', name: labelDown };
-const criticalStatus = { id: 'critical', name: labelCritical };
-const unreachableStatus = { id: 'unreachable', name: labelUnreachable };
-const unknownStatus = { id: 'unknown', name: labelUnknown };
-const pendingStatus = { id: 'pending', name: labelPending };
+const okStatus = { id: 'OK', name: labelOk };
+const upStatus = { id: 'UP', name: labelUp };
+const warningStatus = { id: 'WARNING', name: labelWarning };
+const downStatus = { id: 'DOWN', name: labelDown };
+const criticalStatus = { id: 'CRITICAL', name: labelCritical };
+const unreachableStatus = { id: 'UNREACHABLE', name: labelUnreachable };
+const unknownStatus = { id: 'UNKNOWN', name: labelUnknown };
+const pendingStatus = { id: 'PENDING', name: labelPending };
 
 const statuses = [
   okStatus,

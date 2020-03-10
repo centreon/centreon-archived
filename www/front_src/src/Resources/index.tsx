@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core';
 
 import { lime, purple } from '@material-ui/core/colors';
 
-import { Listing, withErrorSnackbar, useErrorSnackbar } from '@centreon/ui';
+import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
 import { ResourceListing } from './models';
@@ -59,7 +59,10 @@ const Resources = (): JSX.Element => {
 
   const [loading, setLoading] = useState(true);
 
-  const { showError } = useErrorSnackbar();
+  const { showMessage } = useSnackbar();
+  const showError = (message): void =>
+    showMessage({ message, severity: Severity.error });
+
   const [tokenSource] = useState(axios.CancelToken.source());
 
   const load = (): void => {
@@ -231,4 +234,4 @@ const Resources = (): JSX.Element => {
   );
 };
 
-export default withErrorSnackbar(Resources);
+export default withSnackbar(Resources);

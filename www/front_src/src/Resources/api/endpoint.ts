@@ -1,7 +1,8 @@
 import { getSearchParam, OrSearchParam } from './searchObjects';
 import { Filter } from '../Filter/models';
 
-const monitoringEndpoint = 'monitoring';
+const baseEndpoint = './api/beta';
+const monitoringEndpoint = `${baseEndpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
@@ -25,7 +26,7 @@ const buildParam = ({ name, value }): string => {
 
 const buildParams = (params): Array<string> =>
   params
-    .filter(({ value }) => value !== undefined && value !== [])
+    .filter(({ value }) => value !== undefined && value.length !== 0)
     .map(buildParam)
     .join('&');
 

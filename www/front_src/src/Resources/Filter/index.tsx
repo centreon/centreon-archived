@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 
 import { Paper, Grid, Typography, Button, makeStyles } from '@material-ui/core';
 
-import { AutocompleteField, SelectField, SearchField } from '@centreon/ui';
+import {
+  AutocompleteField,
+  ConnectedAutocompleteField,
+  SelectField,
+  SearchField,
+  SelectEntry,
+} from '@centreon/ui';
 
 import {
   labelFilter,
@@ -27,7 +33,6 @@ import {
   FilterGroup,
 } from './models';
 import SearchHelpTooltip from '../SearchHelpTooltip';
-import ConnectedAutocompleteField from './ConnectedAutocompleteField';
 import {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
@@ -108,6 +113,8 @@ const Filter = ({
     });
   };
 
+  const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
+
   return (
     <Paper elevation={1} className={classes.filterBox}>
       <Grid container direction="column" spacing={2}>
@@ -126,7 +133,7 @@ const Filter = ({
                 ]}
                 selectedOptionId={filter.id}
                 onChange={onFilterGroupChange}
-                ariaLabel={labelStateFilter}
+                aria-label={labelStateFilter}
               />
             </Grid>
             <Grid item>
@@ -183,6 +190,7 @@ const Filter = ({
                 className={classes.autocompleteField}
                 baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
                 getSearchEndpoint={getHostGroupSearchEndpoint}
+                getOptionsFromResult={getOptionsFromResult}
                 label={labelHostGroup}
                 onChange={onHostGroupsChange}
                 value={selectedHostGroups || []}
@@ -195,6 +203,7 @@ const Filter = ({
                 getSearchEndpoint={getServiceGroupSearchEndpoint}
                 label={labelServiceGroup}
                 onChange={onServiceGroupsChange}
+                getOptionsFromResult={getOptionsFromResult}
                 value={selectedServiceGroups || []}
               />
             </Grid>
