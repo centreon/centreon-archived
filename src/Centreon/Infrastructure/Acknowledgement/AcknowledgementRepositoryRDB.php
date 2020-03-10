@@ -315,13 +315,13 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
         return null;
     }
 
-    /**
+    /** 
      * Generic function to find acknowledgement.
      *
      * @param int $toto Type of acknowledgement
      * @return Acknowledgement[]
      * @throws \Exception
-     * @throws \PDOException
+     * @throws \PDOException 
      * @throws RequestParametersTranslatorException
      */
     private function findAcknowledgementsOf(int $type = self::TYPE_HOST_ACKNOWLEDGEMENT): array
