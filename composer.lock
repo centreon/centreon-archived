@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c72268a8d8476cdb71d9505e82e81eb",
+    "content-hash": "1ac0da2bd1553916c8fb36b0d3c96474",
     "packages": [
         {
             "name": "curl/curl",
@@ -4772,12 +4772,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "9f355fd26e32e8fe2cdcbf43f4c3a0d26320050b"
+                "reference": "135804328de7005e57f95dc0a377ec80387aba98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/9f355fd26e32e8fe2cdcbf43f4c3a0d26320050b",
-                "reference": "9f355fd26e32e8fe2cdcbf43f4c3a0d26320050b",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/135804328de7005e57f95dc0a377ec80387aba98",
+                "reference": "135804328de7005e57f95dc0a377ec80387aba98",
                 "shasum": ""
             },
             "require": {
@@ -4815,7 +4815,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-03-10T10:32:28+00:00"
+            "time": "2020-03-10T10:49:07+00:00"
         },
         {
             "name": "container-interop/container-interop",
