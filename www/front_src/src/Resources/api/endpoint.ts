@@ -1,11 +1,11 @@
 import { getSearchParam, OrSearchParam } from './searchObjects';
-import { Filter } from '../Filter/models';
 
-const baseEndpoint = './api/beta';
-const monitoringEndpoint = `${baseEndpoint}/monitoring`;
+const endpoint = './api/beta';
+const monitoringEndpoint = `${endpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
+
 interface Param {
   name: string;
   value?: string | number | OrSearchParam;
