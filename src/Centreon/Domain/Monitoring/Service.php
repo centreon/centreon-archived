@@ -873,7 +873,7 @@ class Service implements EntityDescriptorMetadataInterface
      * @param Acknowledgement|null $acknowledgement
      * @return Service
      */
-    public function setAcknowledgement(?Acknowledgement $acknowledgement): Service
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
         return $this;
