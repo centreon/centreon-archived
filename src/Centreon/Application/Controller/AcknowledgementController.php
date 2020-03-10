@@ -27,6 +27,7 @@ use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
@@ -77,9 +78,7 @@ class AcknowledgementController extends AbstractController
             ->filterByContact($contact)
             ->findHostsAcknowledgements();
 
-        $context = (new Context())->setGroups([
-            Acknowledgement::SERIALIZER_GROUP_MAIN,
-        ]);
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
 
         return $this->view([
             'result' => $hostsAcknowledgements,
@@ -110,7 +109,7 @@ class AcknowledgementController extends AbstractController
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByHost($hostId);
 
-        $context = (new Context())->setGroups(['ack_main']);
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
 
         return $this->view([
             'result' => $hostsAcknowledgements,
@@ -139,7 +138,7 @@ class AcknowledgementController extends AbstractController
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findServicesAcknowledgements();
-        $context = (new Context())->setGroups(['ack_main', 'ack_service']);
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
 
         return $this->view([
             'result' => $servicesAcknowledgements,
@@ -169,7 +168,7 @@ class AcknowledgementController extends AbstractController
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByService($hostId, $serviceId);
-        $context = (new Context())->setGroups(['ack_main', 'ack_service']);
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
 
         return $this->view([
             'result' => $servicesAcknowledgements,
@@ -180,11 +179,124 @@ class AcknowledgementController extends AbstractController
     }
 
     /**
+     * Entry point to add multiple host acknowledgements.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function addHostAcknowledgements(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var $acknowledgements Acknowledgement[]
+         */
+        $acknowledgements = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . Acknowledgement::class . '>',
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        foreach ($acknowledgements as $acknowledgement) {
+            $errors = $entityValidator->validate(
+                $acknowledgement,
+                null,
+                AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACKS
+            );
+
+            if ($errors->count() > 0) {
+                throw new ValidationFailedException($errors);
+            }
+
+            try {
+                $this->acknowledgementService->addHostAcknowledgement($acknowledgement);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to add multiple service acknowledgements.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function addServiceAcknowledgements(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var $acknowledgements Acknowledgement[]
+         */
+        $acknowledgements = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . Acknowledgement::class . '>',
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        foreach ($acknowledgements as $acknowledgement) {
+            $errors = $entityValidator->validate(
+                $acknowledgement,
+                null,
+                AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACKS
+            );
+
+            if ($errors->count() > 0) {
+                throw new ValidationFailedException($errors);
+            }
+
+            try {
+                $this->acknowledgementService->addServiceAcknowledgement($acknowledgement);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
      * Entry point to add a host acknowledgement.
      *
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
+     * @param int $hostId
      * @return View
      * @throws \Exception
      */
@@ -222,7 +334,7 @@ class AcknowledgementController extends AbstractController
             Acknowledgement::class,
             'json'
         );
-        $acknowledgement->setHostId($hostId);
+        $acknowledgement->setResourceId($hostId);
 
         $this->acknowledgementService
             ->filterByContact($contact)
@@ -260,6 +372,7 @@ class AcknowledgementController extends AbstractController
             AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
             false // To show errors on not expected fields
         );
+
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
         }
@@ -273,8 +386,8 @@ class AcknowledgementController extends AbstractController
             'json'
         );
         $acknowledgement
-            ->setHostId($hostId)
-            ->setServiceId($serviceId);
+            ->setParentResourceId($hostId)
+            ->setResourceId($serviceId);
 
         $this->acknowledgementService
             ->filterByContact($contact)
@@ -356,7 +469,7 @@ class AcknowledgementController extends AbstractController
 
         if ($acknowledgement !== null) {
             $context = (new Context())
-                ->setGroups(['ack_main', 'ack_service'])
+                ->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE)
                 ->enableMaxDepth();
 
             return $this->view($acknowledgement)->setContext($context);
@@ -387,7 +500,7 @@ class AcknowledgementController extends AbstractController
             ->filterByContact($contact)
             ->findAcknowledgements();
 
-        $context = (new Context())->setGroups(['ack_main', 'ack_service']);
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
 
         return $this->view([
             'result' => $acknowledgements,

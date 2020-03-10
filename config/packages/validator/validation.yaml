@@ -1,40 +1,41 @@
 Centreon\Domain\Acknowledgement\Acknowledgement:
     properties:
-        authorId:
-            - Type:
-                type: integer
-            - NotNull: ~
         comment:
             - Type:
                 type: string
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                  groups: [Default, add_host_ack, add_service_ack]
-        entryTime:
-            - Type:
-                type: integer
-        pollerId:
-            - Type:
-                type: integer
             - NotNull: ~
         isNotifyContacts:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull: ~
         isPersistentComment:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull: ~
         isSticky:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull: ~
+        resourceId:
+            - Type:
+                type: int
+                groups: [add_host_acks, add_service_acks]
+            - GreaterThan:
+                value: 0
+                groups: [add_host_acks, add_service_acks]
             - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+                groups: [add_host_acks, add_service_acks]
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [add_service_acks]
+            - GreaterThan:
+                value: 0
+                groups: [add_service_acks]
+        withServices:
+            - Type:
+                type: boolean
+                groups: [add_host_acks, add_host_ack]
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
@@ -74,18 +75,6 @@ Centreon\Domain\Downtime\Downtime:
 # Used to validate the Check entity
 Centreon\Domain\Check\Check:
     properties:
-        hostId:
-            - Type:
-                type: integer
-                groups: [Default, check_host, check_service]
-            - NotNull:
-                groups: [Default, check_host, check_service]
-        serviceId:
-            - Type:
-                type: integer
-                groups: [Default, check_service]
-            - NotNull:
-                groups: [Default, check_service]
         checkTime:
             - Type:
                 type: DateTime
@@ -94,7 +83,20 @@ Centreon\Domain\Check\Check:
             - Type:
                 type: boolean
                 groups: [Default, check_host, check_service]
-
+        resourceId:
+            - Type:
+                type: int
+                groups: [Default, check_host, check_service]
+            - GreaterThan: 0
+            - NotNull: ~
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [Default, check_service]
+            - GreaterThan: 0
+        withServices:
+            - Type:
+                type: boolean
 
 # Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:

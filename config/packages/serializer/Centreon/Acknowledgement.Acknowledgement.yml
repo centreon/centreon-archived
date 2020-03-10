@@ -5,54 +5,75 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
             groups:
                 - 'ack_main'
                 - 'ack_event_list'
+        pollerId:
+            type: int
+        hostId:
+            type: int
+            groups:
+                - 'ack_host'
+                - 'ack_service'
+        serviceId:
+            type: int
+            groups:
+                - 'ack_service'
+        resourceId:
+            type: int
+            groups:
+                - 'ack_hosts'
+                - 'ack_services'
+        parentResourceId:
+            type: int
+            groups:
+                - 'ack_services'
         authorId:
             type: int
             groups:
+                - 'Default'
                 - 'ack_main'
+                - 'ack_event_list'
         comment:
             type: string
             groups:
+                - 'Default'
                 - 'ack_main'
                 - 'ack_event_list'
         deletionTime:
             type: DateTime
             groups:
+                - 'Default'
                 - 'ack_main'
                 - 'ack_event_list'
         entryTime:
             type: DateTime
             groups:
+                - 'Default'
                 - 'ack_main'
                 - 'ack_event_list'
-        hostId:
-            type: int
-            groups:
-                - 'ack_main'
-        pollerId:
-            type: int
-            groups:
-                - 'ack_main'
         isNotifyContacts:
             type: bool
             groups:
+                - 'Default'
                 - 'ack_main'
                 - 'ack_event_list'
         isPersistentComment:
             type: bool
             groups:
+                - 'Default'
                 - 'ack_main'
                 - 'ack_event_list'
         isSticky:
             type: bool
             groups:
+                - 'Default'
                 - 'ack_main'
                 - 'ack_event_list'
-        serviceId:
-            type: int
-            groups:
-                - 'ack_service'
         state:
             type: int
             groups:
+                - 'Default'
                 - 'ack_main'
                 - 'ack_event_list'
+        withServices:
+            type: bool
+            groups:
+                - 'ack_host_add'

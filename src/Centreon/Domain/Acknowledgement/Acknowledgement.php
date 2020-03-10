@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 class Acknowledgement implements EntityDescriptorMetadataInterface
 {
-    // Groups for serilizing
-    public const SERIALIZER_GROUP_MAIN = 'ack_main';
-    public const SERIALIZER_GROUP_SERVICE = 'ack_service';
+    // Groups for serialization
+    public const SERIALIZER_GROUPS_HOST = ['Default', 'ack_host'];
+    public const SERIALIZER_GROUPS_SERVICE = ['Default', 'ack_service'];
 
     // Types
     public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
@@ -38,6 +38,21 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
      * @var int
      */
     private $id;
+
+    /**
+     * @var int
+     */
+    private $pollerId;
+
+    /**
+     * @var int
+     */
+    private $hostId;
+
+    /**
+     * @var int
+     */
+    private $serviceId;
 
     /**
      * @var int|null
@@ -60,19 +75,14 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     private $entryTime;
 
     /**
-     * @var int Host id
+     * @var int Resource id
      */
-    private $hostId;
+    private $resourceId;
 
     /**
-     * @var int|null Service id
+     * @var int|null Parent resource id
      */
-    private $serviceId;
-
-    /**
-     * @var int|null Poller Id
-     */
-    private $pollerId;
+    private $parentResourceId;
 
     /**
      * @var bool Indicates if the contacts must to be notify
@@ -98,6 +108,11 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
      * @var int Type of this acknowledgement
      */
     private $type;
+
+    /**
+     * @var bool Indicates if this downtime should be applied to linked services
+     */
+    private $withServices = false;
 
     /**
      * {@inheritdoc}
@@ -129,6 +144,60 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     public function setId(int $id): Acknowledgement
     {
         $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPollerId(): ?int
+    {
+        return $this->pollerId;
+    }
+
+    /**
+     * @param int $pollerId
+     * @return Acknowledgement
+     */
+    public function setPollerId(int $pollerId): Acknowledgement
+    {
+        $this->pollerId = $pollerId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHostId(): ?int
+    {
+        return $this->hostId;
+    }
+
+    /**
+     * @param int $hostId
+     * @return Acknowledgement
+     */
+    public function setHostId(int $hostId): Acknowledgement
+    {
+        $this->hostId = $hostId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int $serviceId
+     * @return Acknowledgement
+     */
+    public function setServiceId(int $serviceId): Acknowledgement
+    {
+        $this->serviceId = $serviceId;
         return $this;
     }
 
@@ -207,54 +276,36 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     /**
      * @return int
      */
-    public function getHostId(): int
+    public function getResourceId(): int
     {
-        return $this->hostId;
+        return $this->resourceId;
     }
 
     /**
-     * @param int $hostId
+     * @param int $resourceId
      * @return Acknowledgement
      */
-    public function setHostId(int $hostId): Acknowledgement
+    public function setResourceId(int $resourceId): Acknowledgement
     {
-        $this->hostId = $hostId;
+        $this->resourceId = $resourceId;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getServiceId(): ?int
+    public function getParentResourceId(): ?int
     {
-        return $this->serviceId;
+        return $this->parentResourceId;
     }
 
     /**
-     * @param int $serviceId|null
+     * @param int|null $parentResourceId
      * @return Acknowledgement
      */
-    public function setServiceId(?int $serviceId): Acknowledgement
+    public function setParentResourceId(?int $parentResourceId): Acknowledgement
     {
-        $this->serviceId = $serviceId;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getPollerId(): ?int
-    {
-        return $this->pollerId;
-    }
-
-    /**
-     * @param int|null $pollerId
-     * @return Acknowledgement
-     */
-    public function setPollerId(?int $pollerId): Acknowledgement
-    {
-        $this->pollerId = $pollerId;
+        $this->parentResourceId = $parentResourceId;
         return $this;
     }
 
@@ -346,5 +397,21 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     {
         $this->type = $type;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithServices(): bool
+    {
+        return $this->withServices;
+    }
+
+    /**
+     * @param bool $withServices
+     */
+    public function setWithServices(bool $withServices): void
+    {
+        $this->withServices = $withServices;
     }
 }
