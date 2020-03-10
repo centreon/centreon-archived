@@ -1,0 +1,46 @@
+Centreon\Domain\Monitoring\Model\Log:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'
+        output:
+            type: string
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'
+        createTime:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'
+        status:
+            type: string
+            accessor:
+                getter: getStatusText
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'
+        type:
+            type: string
+            accessor:
+                getter: getTypeText
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'
+        retry:
+            type: int
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'
+        contact:
+            type: string
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'
+        command:
+            type: string
+            groups:
+                - 'log_event_list'
+                - 'log_event_full'

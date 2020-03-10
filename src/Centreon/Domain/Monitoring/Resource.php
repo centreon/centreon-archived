@@ -55,6 +55,11 @@ class Resource
     /**
      * @var string|null
      */
+    private $shortType;
+
+    /**
+     * @var string|null
+     */
     private $name;
 
     /**
@@ -88,6 +93,16 @@ class Resource
     private $acknowledged = false;
 
     /**
+     * @var string|null
+     */
+    private $downtimeEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $acknowledgementEndpoint;
+
+    /**
      * @var \Centreon\Domain\Monitoring\ResourceSeverity|null
      */
     private $severity;
@@ -111,6 +126,11 @@ class Resource
      * @var \DateTime|null
      */
     private $lastStatusChange;
+
+    /**
+     * @var string|null
+     */
+    private $duration;
 
     /**
      * @var string|null
@@ -158,6 +178,25 @@ class Resource
     public function setId(?string $id): self
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getShortType(): ?string
+    {
+        return $this->shortType;
+    }
+
+    /**
+     * @param string|null $shortType
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setShortType(?string $shortType): self
+    {
+        $this->shortType = $shortType;
 
         return $this;
     }
@@ -315,6 +354,44 @@ class Resource
     }
 
     /**
+     * @return string|null
+     */
+    public function getDowntimeEndpoint(): ?string
+    {
+        return $this->downtimeEndpoint;
+    }
+
+    /**
+     * @param string $downtimeEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setDowntimeEndpoint(string $downtimeEndpoint): self
+    {
+        $this->downtimeEndpoint = $downtimeEndpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAcknowledgementEndpoint(): ?string
+    {
+        return $this->acknowledgementEndpoint;
+    }
+
+    /**
+     * @param string $acknowledgementEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setAcknowledgementEndpoint(string $acknowledgementEndpoint): self
+    {
+        $this->acknowledgementEndpoint = $acknowledgementEndpoint;
+
+        return $this;
+    }
+
+    /**
      * @return \Centreon\Domain\Monitoring\ResourceSeverity|null
      */
     public function getSeverity(): ?ResourceSeverity
@@ -405,6 +482,25 @@ class Resource
     public function setLastStatusChange(?DateTime $lastStatusChange): self
     {
         $this->lastStatusChange = $lastStatusChange;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDuration(): ?string
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param string|null $duration
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setDuration(?string $duration): self
+    {
+        $this->duration = $duration;
 
         return $this;
     }

@@ -22,10 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\Monitoring\ResourceFilter;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -45,15 +47,23 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $router;
+
+    /**
      * @param ResourceRepositoryInterface $resourceRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param UrlGeneratorInterface $router
      */
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        UrlGeneratorInterface $router
     ) {
         $this->resourceRepository = $resourceRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->router = $router;
     }
 
     /**
@@ -75,8 +85,30 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     /**
      * {@inheritDoc}
      */
-    public function findResources(?array $filterState): array
+    public function findResources(ResourceFilter $filter): array
     {
-        return $this->resourceRepository->findResources($filterState);
+        $list = $this->resourceRepository->findResources($filter);
+
+        // set paths to endpoints
+        foreach ($list as $resource) {
+            $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
+            $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
+            $parameters = [
+                'hostId' => $resource->getId(),
+            ];
+
+            if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
+                $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
+                $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
+
+                $parameters['hostId'] = $resource->getParent()->getId();
+                $parameters['serviceId'] = $resource->getId();
+            }
+
+            $resource->setAcknowledgementEndpoint($this->router->generate($routeNameAcknowledgement, $parameters));
+            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
+        }
+
+        return $list;
     }
 }

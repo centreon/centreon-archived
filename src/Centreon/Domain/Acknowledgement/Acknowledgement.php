@@ -70,7 +70,7 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     private $deletionTime;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $entryTime;
 
@@ -256,18 +256,18 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getEntryTime(): \DateTime
+    public function getEntryTime(): ?\DateTime
     {
         return $this->entryTime;
     }
 
     /**
-     * @param \DateTime $entryTime
+     * @param \DateTime|null $entryTime
      * @return Acknowledgement
      */
-    public function setEntryTime(\DateTime $entryTime): Acknowledgement
+    public function setEntryTime(?\DateTime $entryTime): Acknowledgement
     {
         $this->entryTime = $entryTime;
         return $this;

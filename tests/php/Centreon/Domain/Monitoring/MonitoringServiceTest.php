@@ -22,12 +22,15 @@
 namespace Tests\Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Monitoring\Entity\CommentEventObject;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Monitoring\TimelineEvent;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -379,5 +382,33 @@ class MonitoringServiceTest extends TestCase
         $this->assertEquals($serviceGroup->getId(), $servicesGroupsFound[0]->getId());
         $this->assertEquals($host->getId(), $serviceGroup->getHosts()[0]->getId());
         $this->assertEquals($service->getId(), $serviceGroup->getHosts()[0]->getServices()[0]->getId());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function findTimelineEvents()
+    {
+        $commentObject = new CommentEventObject();
+        $timelineEvent = new TimelineEvent($commentObject);
+        $repository = $this->createMock(TimelineRepositoryInterface::class);
+
+        $repository->expects(self::any())
+            ->method('findTimelineEvents')
+            ->with(2, 2)
+            ->willReturn([$timelineEvent]); // values returned for the all next tests
+
+        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+
+        $monitoringService = new MonitoringService($repository, $accessGroup);
+        /**
+         * @var TimelineEvent[] $timelineEventsFound
+         */
+        $timelineEventsFound = $monitoringService->findTimelineEvents(2, 2);
+        $this->assertCount(
+            1,
+            $timelineEventsFound,
+            "Error, this method must relay the 'findTimelineEvents' method of the timeline repository"
+        );
     }
 }

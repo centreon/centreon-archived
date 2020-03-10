@@ -25,10 +25,14 @@ namespace Centreon\Application\Controller;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
+use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\Exception\ValidationFailedException;
+use Symfony\Component\HttpFoundation\Request;
+use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Resource;
-use Centreon\Domain\Monitoring\ResourceService;
+use Centreon\Domain\Monitoring\ResourceFilter;
 
 /**
  * Resource APIs for the Unified View page
@@ -37,7 +41,18 @@ use Centreon\Domain\Monitoring\ResourceService;
  */
 class MonitoringResourceController extends AbstractController
 {
-    public const EXTRA_PARAMETER_STATE = 'state';
+    /**
+     * List of external parameters for list action
+     *
+     * @var array
+     */
+    public const EXTRA_PARAMETERS_LIST = [
+        'types',
+        'states',
+        'statuses',
+        'hostgroup_ids',
+        'servicegroup_ids',
+    ];
 
     // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
@@ -50,27 +65,9 @@ class MonitoringResourceController extends AbstractController
      */
     protected $resource;
 
-    protected static function parseExtraParameter(
-        RequestParametersInterface $requestParameters,
-        string $parameterName
-    ): array {
-        $data = $requestParameters->getExtraParameter($parameterName);
-
-        $resutl = [];
-
-        if (!$data) {
-            return $resutl;
-        }
-
-        try {
-            $resutl = (array)json_decode($data);
-        } catch (\Exception $e) {
-            $resutl = [];
-        }
-
-        return $resutl;
-    }
-
+    /**
+     * @param ResourceServiceInterface $resource
+     */
     public function __construct(ResourceServiceInterface $resource)
     {
         $this->resource = $resource;
@@ -79,21 +76,55 @@ class MonitoringResourceController extends AbstractController
     /**
      * List all the resources in real-time monitoring : hosts and services.
      *
-     * @param \Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface $requestParameters
+     * @param RequestParametersInterface $requestParameters
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityValidator $entityValidator
      * @return View
      */
-    public function list(RequestParametersInterface $requestParameters): View
-    {
+    public function list(
+        RequestParametersInterface $requestParameters,
+        Request $request,
+        SerializerInterface $serializer,
+        EntityValidator $entityValidator
+    ): View {
+        // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $filterState = [];
-        foreach ($this->parseExtraParameter($requestParameters, static::EXTRA_PARAMETER_STATE) as $state) {
-            if (!in_array($state, ResourceService::STATES)) {
+        // set default values of filter data
+        $filterData = [];
+        foreach (static::EXTRA_PARAMETERS_LIST as $param) {
+            $filterData[$param] = [];
+        }
+
+        // load filter data with the query parameters
+        foreach ($request->query as $param => $data) {
+            // skip pagination parameters
+            if (in_array($param, ['search', 'limit', 'page', 'sort_by'])) {
                 continue;
             }
 
-            $filterState[] = $state;
+            $filterData[$param] = json_decode($data, true) ?: $data;
         }
+
+        // validate the filter data
+        $errors = $entityValidator->validateEntity(
+            ResourceFilter::class,
+            $filterData,
+            ['Default'],
+            false // We don't allow extra fields
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        // Parse the filter data into filter object
+        $filter = $serializer->deserialize(
+            json_encode($filterData),
+            ResourceFilter::class,
+            'json'
+        );
 
         $context = (new Context())
             ->setGroups(Resource::contextGroupsForListing())
@@ -103,7 +134,7 @@ class MonitoringResourceController extends AbstractController
 
         return $this->view([
             'result' => $this->resource->filterByContact($this->getUser())
-                ->findResources($filterState),
+                ->findResources($filter),
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
     }

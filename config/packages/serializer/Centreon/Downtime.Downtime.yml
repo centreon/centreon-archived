@@ -2,46 +2,89 @@ Centreon\Domain\Downtime\Downtime:
     properties:
         id:
             type: int
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         entryTime:
             type: DateTime
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         authorId:
             type: int
         hostId:
             type: int
-            groups: ['downtime_host', 'downtime_service']
+            groups:
+                - 'downtime_host'
+                - 'downtime_service'
         serviceId:
             type: int
-            groups: ['downtime_service']
+            groups:
+                - 'downtime_service'
         resourceId:
             type: int
-            groups: ['downtime_hosts', 'downtime_services']
+            groups:
+                - 'downtime_hosts'
+                - 'downtime_services'
         parentResourceId:
             type: int
-            groups: ['downtime_services']
+            groups:
+                - 'downtime_services'
         isCancelled:
             type: bool
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         comment:
             type: string
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         deletionTime:
             type: DateTime
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         duration:
             type: int
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         endTime:
             type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         internalId:
             type: int
         isFixed:
             type: bool
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         pollerId:
             type: int
         startTime:
             type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         actualStartTime:
             type: DateTime
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         actualEndTime:
             type: DateTime
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         isStarted:
             type: bool
+            groups:
+                - 'downtime_main'
+                - 'downtime_event_list'
         withServices:
             type: bool
-            groups: ['downtime_host_add']
+            groups:
+                - 'downtime_host_add'
