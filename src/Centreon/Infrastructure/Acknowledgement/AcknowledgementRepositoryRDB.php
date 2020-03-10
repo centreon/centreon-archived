@@ -329,7 +329,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     {
         $acknowledgements = [];
 
-        if ($this->hasNotEnoughRightsToContinue() === false) {
+        if ($this->hasNotEnoughRightsToContinue()) {
             return $acknowledgements;
         }
 
