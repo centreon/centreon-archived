@@ -99,8 +99,8 @@ class MonitoringResourceController extends AbstractController
             }
 
             try {
-                $value = json_decode($data, true);
-            } catch (\Exception $e) {
+                $value = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
                 $value = $data;
             }
 
