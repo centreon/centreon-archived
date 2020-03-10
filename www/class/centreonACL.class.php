@@ -2022,7 +2022,13 @@ class CentreonACL
     }
 
     /**
-     * Get Services in servicesgroups from ACL and configuration DB
+     * Get all services linked to a servicegroup regarding ACL
+     *
+     * @param int $sg_id servicegroup id
+     * @param mixed $broker
+     * @param mixed $options
+     * @access public
+     * @return array
      */
     public function getServiceServiceGroupAclConf($sg_id, $broker = null, $options = null)
     {
@@ -2058,6 +2064,14 @@ class CentreonACL
                 . "AND $db_name_acl.centreon_acl.host_id = host.host_id "
                 . "AND $db_name_acl.centreon_acl.service_id = service.service_id ";
         }
+        /*
+         * Using the centreon_storage database to get the information
+         * where the services_servicegroups table provides "resolved" dependencies
+         * for possible components of the servicegroup which can be:
+         *     - simple services
+         *     - service templates
+         *     - hostgroup services
+         */
         $query = $request['select'] . $request['simpleFields'] . " "
             . "FROM ( "
             . "SELECT " . $request['fields'] . " "
