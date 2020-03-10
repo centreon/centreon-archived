@@ -14445,7 +14445,7 @@ msgid "IP address or hostname"
 msgstr "Endereço IP ou nome do host"
 
 msgid "Use SSL/TLS"
-msgstr "Use SSL / TLS"
+msgstr "Use SSL/TLS"
 
 msgid "Allow self signed certificate"
 msgstr "Permitir certificado autoassinado"

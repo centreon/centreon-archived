@@ -14291,7 +14291,7 @@ msgid "IP address or hostname"
 msgstr "Dirección IP o nombre de host"
 
 msgid "Use SSL/TLS"
-msgstr "Use SSL / TLS"
+msgstr "Use SSL/TLS"
 
 msgid "Allow self signed certificate"
 msgstr "Permitir certificado autofirmado"
