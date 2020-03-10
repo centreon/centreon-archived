@@ -15,6 +15,7 @@ import {
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
+import GraphColumn from './Graph';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -108,6 +109,14 @@ const columns = [
     label: labelResources,
     type: TABLE_COLUMN_TYPES.component,
     Component: ResourcesColumn,
+    clickable: false,
+    sortable: false,
+  },
+  {
+    id: 'graph',
+    label: '',
+    type: TABLE_COLUMN_TYPES.component,
+    Component: GraphColumn,
     clickable: false,
     sortable: false,
   },
