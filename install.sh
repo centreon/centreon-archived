@@ -34,14 +34,6 @@
 ##
 ##    For information : infos@centreon.com
 #
-# Todo list
-# - upgrade process 
-# -- 1.x --> 2.x
-# -- 2.x --> 2.x+1
-# -- on upgrade, overwrite existing ? backup ? 
-
-# Debug
-#set -x
 
 #----
 ## Usage information for install.sh
@@ -183,13 +175,12 @@ define_specific_binary_vars
 ${CAT} << __EOT__
 ###############################################################################
 #                                                                             #
-#                         Centreon (www.centreon.com)                         #
-#                          Thanks for using Centreon                          #
+#                           Centreon (www.centreon.com)                       #
 #                                                                             #
 #                               infos@centreon.com                            #
 #                                                                             #
 #                   Make sure you have installed and configured               #
-#          centreon-gorgone sudo - sed - php - apache - rrdtool - mysql       #
+#         centreon-gorgone - sudo - sed - php - apache - rrdtool - mysql      #
 #                                                                             #
 ###############################################################################
 __EOT__
@@ -410,19 +401,31 @@ server=$(hostname -f)
 # Replace global variables
 
 ${CAT} << __EOT__
+
 ###############################################################################
+#                                                                             #
+#                         Thanks for using Centreon.                          #
+#                          -----------------------                            #
 #                                                                             #
 #                 Go to the URL : http://$server/centreon/                    #
 #                   	     to finish the setup                              #
 #                                                                             #
-#           Report bugs at https://github.com/centreon/centreon/issues        #
+#                Please read the documentation available here :               #
+#                         documentation.centreon.com                          #
 #                                                                             #
-#                         Thanks for using Centreon.                          #
-#                          -----------------------                            #
-#                        Contact : infos@centreon.com                         #
+#      ------------------------------------------------------------------     #
+#                                                                             #
+#         Report bugs at https://github.com/centreon/centreon/issues          #
+#                                                                             #
+#                        Contact : contact@centreon.com                       #
 #                          http://www.centreon.com                            #
 #                                                                             #
+#                          -----------------------                            #
+#              For security issues, please read our security policy           #
+#              https://github.com/centreon/centreon/security/policy           #
+#                                                                             #
 ###############################################################################
+
 __EOT__
 
 
