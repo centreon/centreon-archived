@@ -2495,10 +2495,14 @@ components:
           type: string
           description: "action URL of the resource"
           example: http://mediawiki/host/central
-        chart_url:
+        status_graph_endpoint:
           type: string
-          description: "URL of the chart linked to the resource"
-          example: "/monitoring/chart/host/1/service/2"
+          description: "URL of the status chart linked to the resource"
+          example: "/monitoring/hosts/1/services/2/status/start/{start_date}/end/{end_date}"
+        metrics_graph_endpoint:
+          type: string
+          description: "URL of the metrics chart linked to the resource"
+          example: "/monitoring/hosts/1/services/2/metrics/start/{start_date}/end/{end_date}"
         duration:
           type: string
           description: "Duration since last status change"
@@ -2519,6 +2523,7 @@ components:
           type: string
           description: "Output of the resource"
           example: "OK - Ping is ok"
+        
     Monitoring.HostGroup:
       type: object
       properties:
