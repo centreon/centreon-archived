@@ -36,6 +36,7 @@
 
 namespace Centreon\Application\Validation;
 
+use Centreon\Application\Validation\Validator\Interfaces\CentreonValidatorInterface;
 use Pimple\Psr11\ServiceLocator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
@@ -73,11 +74,17 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
 
         if (!isset($this->validators[$className])) {
             if (class_exists($className)) {
-                // validator as a class with dependencies
-                $this->validators[$className] = new $className(new ServiceLocator(
-                    $this->container,
-                    method_exists($className, 'dependencies') ? $className::dependencies() : []
-                ));
+                // validator as a class with dependencies from centreon
+                if (in_array(CentreonValidatorInterface::class, class_implements($className))) {
+                    $this->validators[$className] = new $className(new ServiceLocator(
+                        $this->container,
+                        method_exists($className, 'dependencies') ? $className::dependencies() : []
+                    ));
+                } else {
+                    // validator as a class with empty property accessor
+                    $this->validators[$className] = new $className;
+                }
+
             } elseif (in_array($className, $this->container->keys())) {
                 // validator as a service
                 $this->validators[$className] = $this->container[$className];
