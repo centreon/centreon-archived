@@ -52,28 +52,28 @@ $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Modify Gorgone options"));
 
 // Gorgone Options
-$form->addElement('checkbox', 'enable_broker_stats', _("Enable Broker Statistics Collection"));
+$form->addElement('checkbox', 'enable_broker_stats', _("Enable Broker statistics collection"));
 $form->addElement('text', 'gorgone_cmd_timeout', _("Timeout value for Gorgone commands"), $attrsText2);
 $form->addRule('gorgone_cmd_timeout', _('Must be a number'), 'numeric');
 $form->addElement('text', 'gorgone_illegal_characters', _("Illegal characters for Gorgone commands"), $attrsText);
 
 // API
-$form->addElement('text', 'gorgone_api_address', _("Address of Gorgone API"), $attrsText);
-$form->addElement('text', 'gorgone_api_port', _("Port of Gorgone API"), $attrsText2);
+$form->addElement('text', 'gorgone_api_address', _("IP address or hostname"), $attrsText);
+$form->addElement('text', 'gorgone_api_port', _("Port"), $attrsText2);
 $form->addRule('gorgone_api_port', _('Must be a number'), 'numeric');
-$form->addElement('text', 'gorgone_api_username', _("Username of Gorgone API"), $attrsText);
-$form->addElement('password', 'gorgone_api_password', _("Password of Gorgone API"), $attrsText);
+$form->addElement('text', 'gorgone_api_username', _("Username"), $attrsText);
+$form->addElement('password', 'gorgone_api_password', _("Password"), $attrsText);
 $form->addElement(
     'checkbox',
     'gorgone_api_ssl',
-    _("Use SSL for Gorgone API"),
+    _("Use SSL/TLS"),
     null
 );
 $form->setDefaults(1);
 $form->addElement(
     'checkbox',
     'gorgone_api_allow_self_signed',
-    _("self signed certificate"),
+    _("Allow self signed certificate"),
     null
 );
 $form->setDefaults(1);
@@ -132,8 +132,6 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign("gorgone_properties", _("Gorgone properties"));
-$tpl->assign("gorgone_options", _("Gorgone Options"));
 $tpl->assign('valid', $valid);
 
 $tpl->display("gorgone.ihtml");

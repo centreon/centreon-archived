@@ -2581,6 +2581,9 @@ msgstr "Iniciar sesión"
 msgid "Password"
 msgstr "Contraseña"
 
+msgid "Username"
+msgstr "Nombre de usuario"
+
 #: centreon-web/www/install/steps/step5.php:80
 msgid "Confirm password"
 msgstr "confirmar la contraseña"
@@ -4029,7 +4032,7 @@ msgstr "Cambiar las opciones de Centcore"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:61
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
-msgid "Enable Broker Statistics Collection"
+msgid "Enable Broker statistics collection"
 msgstr "Habilitar la recuperación de archivos de estadísticas de componentes de Centreon Broker"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
@@ -14283,3 +14286,12 @@ msgstr "Adjunte Remote Servers adicionales"
 
 #~ msgid "This value needs to be an integer lesser than"
 #~ msgstr ""
+
+msgid "IP address or hostname"
+msgstr "Dirección IP o nombre de host"
+
+msgid "Use SSL/TLS"
+msgstr "Use SSL/TLS"
+
+msgid "Allow self signed certificate"
+msgstr "Permitir certificado autofirmado"
