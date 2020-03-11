@@ -1270,7 +1270,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $sql = 'SELECT * FROM `:dbstg`.`downtimes` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL AND (NOW() BETWEEN FROM_UNIXTIME(actual_start_time) AND FROM_UNIXTIME(actual_end_time)) ORDER BY entry_time DESC';
+                'AND deletion_time IS NULL AND (NOW() BETWEEN FROM_UNIXTIME(actual_start_time) ' .
+                'AND FROM_UNIXTIME(actual_end_time)) ORDER BY entry_time DESC';
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
         $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
