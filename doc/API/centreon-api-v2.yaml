@@ -2523,7 +2523,6 @@ components:
           type: string
           description: "Output of the resource"
           example: "OK - Ping is ok"
-        
     Monitoring.HostGroup:
       type: object
       properties:
