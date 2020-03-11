@@ -4307,7 +4307,7 @@ msgstr "Modifier les options de Centcore"
 #: centreon-web/www/include/Administration/parameters/api/api.php:61
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
 msgid "Enable Broker statistics collection"
-msgstr "Activer la récupération des fichiers de statistiques des composants Broker"
+msgstr "Activer la récupération des fichiers de statistiques Broker"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
