@@ -82,7 +82,7 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
                     ));
                 } else {
                     // validator as a class with empty property accessor
-                    $this->validators[$className] = new $className;
+                    $this->validators[$className] = new $className();
                 }
             } elseif (in_array($className, $this->container->keys())) {
                 // validator as a service
