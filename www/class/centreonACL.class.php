@@ -2083,7 +2083,7 @@ class CentreonACL
             . "FROM ( "
             . "SELECT " . $request['fields'] . " "
             . "FROM " . $db_name_acl . ".services_servicegroups, service, host" . $from_acl . " "
-            . "WHERE servicegroup_id = " . CentreonDB::escape((int)$sgId) . " "
+            . "WHERE servicegroup_id = " . $sgId . " "
             . "AND host.host_id = services_servicegroups.host_id "
             . "AND service.service_id = services_servicegroups.service_id "
             . "AND service.service_activate = '1' AND host.host_activate = '1'"
