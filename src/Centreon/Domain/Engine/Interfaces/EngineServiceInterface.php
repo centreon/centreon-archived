@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,31 +83,22 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function disacknowledgeService(Service $service): void;
 
     /**
-     * Add a downtime on a host.
+     * Add a downtime on multiple hosts.
      *
      * @param Downtime $downtime Downtime to add on the host
-     * @param Host $host Host for which we want to add the downtime
+     * @param Host $hosts Host for which we want to add the downtime
      * @throws \Exception
      */
     public function addHostDowntime(Downtime $downtime, Host $host): void;
 
     /**
-     * Add a downtime on a service.
+     * Add a downtime on multiple services.
      *
      * @param Downtime $downtime Downtime to add
-     * @param Service $service Service for which we want to add a downtime
+     * @param Service[] $services Service for which we want to add a downtime
      * @throws \Exception
      */
     public function addServiceDowntime(Downtime $downtime, Service $service): void;
-
-    /**
-     * Add a downtime on a list of services.
-     *
-     * @param Downtime $downtime Downtime to add
-     * @param Service[] $services List of service for which we want to add a downtime
-     * @throws \Exception
-     */
-    public function addServicesDowntime(Downtime $downtime, array $services): void;
 
     /**
      * Cancel a downtime.

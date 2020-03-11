@@ -229,3 +229,11 @@ Centreon\Domain\Monitoring\Host:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
             groups:
                 - 'host_full'
+        flapping:
+            type: bool
+            groups:
+                - 'host_full'
+        percentStateChange:
+            type: double
+            groups:
+                - 'host_full'

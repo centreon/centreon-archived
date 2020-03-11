@@ -26,6 +26,7 @@ use Centreon\Domain\Check\Check;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -40,6 +41,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CheckController extends AbstractController
 {
+    // Groups for serialization
+    public const SERIALIZER_GROUPS_HOST = ['check_host'];
+    public const SERIALIZER_GROUPS_SERVICE = ['check_service'];
+    public const SERIALIZER_GROUPS_HOST_ADD = ['check_host', 'check_host_add'];
+
     /**
      * @var CheckServiceInterface
      */
@@ -48,11 +54,135 @@ class CheckController extends AbstractController
     /**
      * CheckController constructor.
      *
-     * @param CheckServiceInterface $acknowledgementService
+     * @param CheckServiceInterface $checkService
      */
     public function __construct(CheckServiceInterface $checkService)
     {
         $this->checkService = $checkService;
+    }
+
+    /**
+     * Entry point to check multiple hosts.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function checkHosts(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_CHECK)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST_ADD);
+
+        /**
+         * @var $checks Check[]
+         */
+        $checks = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . Check::class . '>',
+            'json',
+            $context
+        );
+
+        $this->checkService->filterByContact($contact);
+
+        $checkTime = new \DateTime();
+        foreach ($checks as $check) {
+            $check->setCheckTime($checkTime);
+
+            $errors = $entityValidator->validate(
+                $check,
+                null,
+                Check::VALIDATION_GROUPS_HOST_CHECK
+            );
+
+            if ($errors->count() > 0) {
+                throw new ValidationFailedException($errors);
+            }
+
+            try {
+                $this->checkService->checkHost($check);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to check multiple services.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function checkServices(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_CHECK)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
+
+        /**
+         * @var $checks Check[]
+         */
+        $checks = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . Check::class . '>',
+            'json',
+            $context
+        );
+
+        $this->checkService->filterByContact($contact);
+
+        $checkTime = new \DateTime();
+        foreach ($checks as $check) {
+            $check->setCheckTime($checkTime);
+
+            $errors = $entityValidator->validate(
+                $check,
+                null,
+                Check::VALIDATION_GROUPS_SERVICE_CHECK
+            );
+
+            if ($errors->count() > 0) {
+                throw new ValidationFailedException($errors);
+            }
+
+            try {
+                $this->checkService->checkService($check);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
     }
 
     /**
@@ -81,16 +211,19 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST);
+
         /**
          * @var $check Check
          */
         $check = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             Check::class,
-            'json'
+            'json',
+            $context
         );
         $check
-            ->setHostId($hostId)
+            ->setId($hostId)
             ->setCheckTime(new \DateTime());
 
         $errors = $entityValidator->validate(
@@ -138,17 +271,20 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
+
         /**
          * @var $check Check
          */
         $check = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             Check::class,
-            'json'
+            'json',
+            $context
         );
         $check
-            ->setHostId($hostId)
-            ->setServiceId($serviceId)
+            ->setParentId($hostId)
+            ->setId($serviceId)
             ->setCheckTime(new \DateTime());
 
         $errors = $entityValidator->validate(

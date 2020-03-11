@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,8 +82,9 @@ class AcknowledgementServiceTest extends TestCase
             ->setDeletionTime(null)
             ->setEntryTime(new \Datetime())
             ->setHostId(1)
-            ->setServiceId(1)
             ->setPollerId(1)
+            ->setResourceId(1)
+            ->setParentResourceId(null)
             ->setNotifyContacts(true)
             ->setPersistentComment(true)
             ->setSticky(true)
@@ -96,8 +98,10 @@ class AcknowledgementServiceTest extends TestCase
             ->setDeletionTime(null)
             ->setEntryTime(new \Datetime())
             ->setHostId(1)
-            ->setServiceId(0)
+            ->setServiceId(1)
             ->setPollerId(1)
+            ->setResourceId(1)
+            ->setParentResourceId(1)
             ->setNotifyContacts(true)
             ->setPersistentComment(true)
             ->setSticky(true)

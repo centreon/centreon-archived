@@ -672,7 +672,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND ssg.host_id = h.host_id
             LEFT JOIN :dbstg.customvariables cv
               ON (cv.service_id = srv.service_id
-              AND cv.host_id IS NULL AND cv.name = \'CRITICALITY_LEVEL\')';
+              AND cv.host_id = srv.host_id AND cv.name = \'CRITICALITY_LEVEL\')';
 
         $request = $this->translateDbName($request);
 

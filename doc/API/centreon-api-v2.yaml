@@ -642,6 +642,23 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Hosts.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/services/acknowledgements:
     get:
       tags:
@@ -667,6 +684,23 @@ paths:
                         - $ref: '#/components/schemas/Acknowledgement.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Services.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -939,6 +973,23 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add an downtime on multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Hosts.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/services/downtimes:
     get:
       tags:
@@ -987,6 +1038,23 @@ paths:
                         - $ref: '#/components/schemas/Downtime.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add an downtime on multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Services.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1122,6 +1190,42 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/check:
+    post:
+      tags:
+        - Check
+      summary: "Check multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Hosts'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/check:
+    post:
+      tags:
+        - Check
+      summary: "Check multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Services'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1708,9 +1812,9 @@ components:
         example: '[13, 22, 31]'
     ResourceFilterServicegroupId:
       in: query
-      name: hostgroup_ids
+      name: servicegroup_ids
       required: false
-      description: "Filter the resources by host group ID"
+      description: "Filter the resources by service group ID"
       schema:
         type: array
         items:
@@ -2054,6 +2158,21 @@ components:
               description: "ID of the service"
               example: 5
     Acknowledgement.Host.Add:
+      allOf:
+        - $ref: '#/components/schemas/Acknowledgement.Service.Add'
+        - type: object
+          properties:
+            with_services:
+              type: boolean
+              description: "Indicates whether we should add the downtime on the host-related services"
+              example: true
+    Acknowledgement.Hosts.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
+    Acknowledgement.Service.Add:
       type: object
       properties:
         comment:
@@ -2072,9 +2191,12 @@ components:
           type: boolean
           description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
-    Acknowledgement.Service.Add:
-      allOf:
-        - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+    Acknowledgement.Services.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Acknowledgement.Service.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Host.Add:
       allOf:
         - $ref: '#/components/schemas/Downtime.Service.Add'
@@ -2084,6 +2206,12 @@ components:
               type: boolean
               description: "Indicates whether we should add the downtime on the host-related services"
               example: true
+    Downtime.Hosts.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Downtime.Host.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Service.Add:
       type: object
       properties:
@@ -2111,6 +2239,12 @@ components:
           type: string
           description: "Comment of the downtime"
           example: "Downtime set by admin"
+    Downtime.Services.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Downtime.Service.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Host:
       type: object
       properties:
@@ -2189,9 +2323,21 @@ components:
           required: false
           description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
           example: true
+    Check.Hosts:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Check.Host'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Check.Service:
       allOf:
         - $ref: '#/components/schemas/Check.Host'
+    Check.Services:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Check.Service'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Monitoring.ResourceMain:
       type: object
       properties:
@@ -2500,6 +2646,14 @@ components:
               type: boolean
               description: "Indicates whether notifications are sent when the host is unreachable"
               example: false
+            flapping:
+              type: boolean
+              description: "Is the host flapping or not"
+              example: false
+            percent_state_change:
+              type: float
+              description: "Percent state change since last check"
+              example: 3.5
             downtimes:
               type: array
               items:
@@ -2807,6 +2961,20 @@ components:
       properties:
         hosts:
           $ref: '#/components/schemas/Monitoring.HostMin'
+    Bulk.Resource.Id:
+      type: object
+      properties:
+        resource_id:
+          type: integer
+          format: int64
+          description: "ID of the resource"
+          example: 12
+        parent_resource_id:
+          type: integer
+          format: int64
+          nullable: true
+          description: "ID of the parent resource (eg: host id)"
+          example: 5
     Configuration.Proxy:
       type: object
       properties:
