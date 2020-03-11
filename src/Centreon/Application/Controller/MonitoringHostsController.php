@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Entity\AckEventObject;
 use Centreon\Domain\Monitoring\Entity\CommentEventObject;
 use Centreon\Domain\Monitoring\Entity\DowntimeEventObject;
@@ -77,6 +79,8 @@ class MonitoringHostsController extends AbstractController
         $context = (new Context())
             ->setGroups([
                 Service::SERIALIZER_GROUP_FULL,
+                Acknowledgement::SERIALIZER_GROUPS_SERVICE,
+                Downtime::SERIALIZER_GROUPS_SERVICE
             ])
             ->enableMaxDepth();
 
@@ -261,6 +265,8 @@ class MonitoringHostsController extends AbstractController
             ->setGroups([
                 Host::SERIALIZER_GROUP_FULL,
                 Service::SERIALIZER_GROUP_MIN,
+                Acknowledgement::SERIALIZER_GROUPS_HOST,
+                Downtime::SERIALIZER_GROUPS_MAIN
             ])
             ->enableMaxDepth();
 

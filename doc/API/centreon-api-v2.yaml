@@ -2654,6 +2654,14 @@ components:
               type: float
               description: "Percent state change since last check"
               example: 3.5
+            downtimes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Downtime.Host'
+            acknowledgement:
+              type: object
+              properties:
+                $ref: '#/components/schemas/Acknowledgement.Host'
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
@@ -2940,6 +2948,14 @@ components:
               type: integer
               description: "Number of scheduled downtimes the service is currently in"
               example: 0
+            downtimes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Downtime.Service'
+            acknowledgement:
+              type: object
+              properties:
+                $ref: '#/components/schemas/Acknowledgement.Service'
     Monitoring.ServiceWithHost:
       type: object
       properties:
