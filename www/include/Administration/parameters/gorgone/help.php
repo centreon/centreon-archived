@@ -11,7 +11,7 @@ $help['tip_gorgone_cmd_timeout'] = dgettext(
 $help['tip_enable_broker_stats'] = dgettext(
     'help',
     'Enable Centreon Broker statistics collection into the central server.'
-    . ' Be carefull: if disabled, Broker statistics will not be'
+    . ' Be careful: if disabled, Broker statistics will not be'
     . ' available into Home > Broker statistics.'
 );
 $help['tip_gorgone_illegal_characters'] = dgettext(
