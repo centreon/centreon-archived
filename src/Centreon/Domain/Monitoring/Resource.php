@@ -26,6 +26,7 @@ use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
 use DateTime;
+use CentreonDuration;
 
 /**
  * Class representing a record of a resource in the repository.
@@ -51,11 +52,6 @@ class Resource
      * @var string|null
      */
     private $type;
-
-    /**
-     * @var string|null
-     */
-    private $shortType;
 
     /**
      * @var string|null
@@ -130,11 +126,6 @@ class Resource
     /**
      * @var string|null
      */
-    private $duration;
-
-    /**
-     * @var string|null
-     */
     private $tries;
 
     /**
@@ -166,6 +157,42 @@ class Resource
     /**
      * @return string|null
      */
+    public function getShortType(): ?string
+    {
+        return $this->type ? $this->type{0} : null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDuration(): ?string
+    {
+        $result = null;
+
+        if ($this->getLastCheck()) {
+            $result = CentreonDuration::toString(time() - $this->getLastStatusChange()->getTimestamp());
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastCheckAsString(): ?string
+    {
+        $result = null;
+
+        if ($this->getLastCheck()) {
+            $result = CentreonDuration::toString(time() - $this->getLastCheck()->getTimestamp());
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getId(): ?string
     {
         return $this->id;
@@ -178,25 +205,6 @@ class Resource
     public function setId(?string $id): self
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getShortType(): ?string
-    {
-        return $this->shortType;
-    }
-
-    /**
-     * @param string|null $shortType
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setShortType(?string $shortType): self
-    {
-        $this->shortType = $shortType;
 
         return $this;
     }
@@ -482,25 +490,6 @@ class Resource
     public function setLastStatusChange(?DateTime $lastStatusChange): self
     {
         $this->lastStatusChange = $lastStatusChange;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDuration(): ?string
-    {
-        return $this->duration;
-    }
-
-    /**
-     * @param string|null $duration
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setDuration(?string $duration): self
-    {
-        $this->duration = $duration;
 
         return $this;
     }
