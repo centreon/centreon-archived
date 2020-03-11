@@ -524,10 +524,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                     $host->setDowntimes($downtimes);
 
                 //get active acknowledgment for host
-                $acknowledgements = $this->findAcknowledgements($hostId, 0);
-
-                if (!empty($acknowledgements)) {
-                    $host->setAcknowledgement($acknowledgements[0]);
+                if ($host->getAcknowledged()) {
+                    $acknowledgements = $this->findAcknowledgements($hostId, 0);
+                    if (!empty($acknowledgements)) {
+                        $host->setAcknowledgement($acknowledgements[0]);
+                    }
                 }
 
                 return $host;
@@ -594,10 +595,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $service->setDowntimes($downtimes);
 
         //get active acknowledgment for service
-        $acknowledgements = $this->findAcknowledgements($hostId, $serviceId);
+        if ($service->isAcknowledged()) {
+            $acknowledgements = $this->findAcknowledgements($hostId, $serviceId);
 
-        if (!empty($acknowledgements)) {
-            $service->setAcknowledgement($acknowledgements[0]);
+            if (!empty($acknowledgements)) {
+                $service->setAcknowledgement($acknowledgements[0]);
+            }
         }
 
         return $service;
@@ -1267,7 +1270,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $sql = 'SELECT * FROM `:dbstg`.`downtimes` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL ORDER BY entry_time DESC LIMIT 500';
+                'AND deletion_time IS NULL AND (NOW() BETWEEN FROM_UNIXTIME(actual_start_time) AND FROM_UNIXTIME(actual_end_time)) ORDER BY entry_time DESC';
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
         $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
@@ -1299,7 +1302,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $sql = 'SELECT * FROM `:dbstg`.`acknowledgements` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL ORDER BY entry_time DESC LIMIT 500';
+                'AND deletion_time IS NULL ORDER BY entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
