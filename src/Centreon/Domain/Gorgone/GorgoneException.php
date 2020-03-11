@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -17,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone;
 

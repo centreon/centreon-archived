@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -26,9 +27,9 @@ use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
-use Centreon\Domain\Gorgone\Interfaces\ServiceInterface;
+use Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface;
 
-class GorgoneService implements ServiceInterface
+class GorgoneService implements GorgoneServiceInterface
 {
     /**
      * @var ResponseRepositoryInterface

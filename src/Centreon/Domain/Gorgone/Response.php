@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -62,7 +63,7 @@ class Response implements ResponseInterface
     /**
      * @var ResponseRepositoryInterface
      */
-    static private $staticResponseRepository;
+    private static $staticResponseRepository;
 
     /**
      * @var ResponseRepositoryInterface
@@ -118,10 +119,23 @@ class Response implements ResponseInterface
 
     /**
      * @return ActionLog[]
+     * @throws \Exception
      * @see Response::$actionLogs
      */
     public function getActionLogs(): array
     {
+        $this->actionLogs = [];
+        $rawResponse = $this->responseRepository->getResponse($this->command);
+        $jsonResponse = json_decode($rawResponse, true);
+        $this->error = $jsonResponse['error'] ?? null;
+        $this->token = (string) $jsonResponse['token'];
+
+        if ($this->error === null) {
+            foreach ($jsonResponse['data'] as $key => $responseData) {
+                $this->actionLogs[$key] = ActionLog::create($responseData);
+            }
+        }
+        $this->message = ((string) $jsonResponse['message'] ?? null);
         return $this->actionLogs;
     }
 
@@ -131,20 +145,7 @@ class Response implements ResponseInterface
      */
     public function getLastActionLog(): ?ActionLog
     {
-        if (empty($this->actionLogs)) {
-            $rawResponse = $this->responseRepository->getResponse($this->command);
-            $jsonResponse = json_decode($rawResponse, true);
-            $this->error = $jsonResponse['error'] ?? null;
-            $this->token = (string) $jsonResponse['token'];
-
-            if ($this->error === null) {
-                $this->actionLogs = [];
-                foreach ($jsonResponse['data'] as $key => $responseData) {
-                    $this->actionLogs[$key] = ActionLog::create($responseData);
-                }
-            }
-            $this->message = ((string) $jsonResponse['message'] ?? null);
-        }
+        $this->getActionLogs();
         return $this->actionLogs[count($this->actionLogs) - 1] ?? null;
     }
 

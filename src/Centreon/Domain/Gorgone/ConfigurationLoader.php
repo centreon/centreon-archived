@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +47,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
     private $optionService;
 
     /**
-     * @var array<string, string> Parameters of the Gorgone server
+     * @var array<string, string|null> Parameters of the Gorgone server
      */
     private $gorgoneParameters;
 
@@ -144,6 +145,8 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
 
     /**
      * Loads configuration of the Gorgone server
+     *
+     * @throws \Exception
      */
     private function loadConfiguration(): void
     {
@@ -163,6 +166,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
             $this->isOptionsLoaded = true;
         } catch (\Exception $ex) {
             $this->isOptionsLoaded = false;
+            throw $ex;
         }
     }
 }

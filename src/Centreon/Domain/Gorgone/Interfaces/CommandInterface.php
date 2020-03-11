@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -53,9 +54,9 @@ interface CommandInterface
     /**
      * Returns the body of the request that will be sent to the Gorgone server.
      *
-     * @return string Body of the request
+     * @return string|null Body of the request
      */
-    public function getBodyRequest(): string;
+    public function getBodyRequest(): ?string;
 
     /**
      * Returns the monitoring instance id for which this command is intended.

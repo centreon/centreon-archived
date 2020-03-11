@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Gorgone\Interfaces;
 
@@ -26,6 +28,7 @@ interface ConfigurationLoaderApiInterface
      * Indicates whether the connection to the Gorgone server used a self-signed certificate
      *
      * @return bool
+     * @throws \Exception
      */
     public function isSecureConnectionSelfSigned(): bool;
 
@@ -33,6 +36,7 @@ interface ConfigurationLoaderApiInterface
      * Returns the IP address of the Gorgone server
      *
      * @return string|null IP address
+     * @throws \Exception
      */
     public function getApiIpAddress(): ?string;
 
@@ -40,6 +44,7 @@ interface ConfigurationLoaderApiInterface
      * Returns the connection port of the Gorgone server
      *
      * @return int|null Connection port
+     * @throws \Exception
      */
     public function getApiPort(): ?int;
 
@@ -47,6 +52,7 @@ interface ConfigurationLoaderApiInterface
      * Returns the API password of the Gorgone server
      *
      * @return string|null API password of the Gorgone server
+     * @throws \Exception
      */
     public function getApiPassword(): ?string;
 
@@ -54,6 +60,7 @@ interface ConfigurationLoaderApiInterface
      * Returns the delay before the connection timeout
      *
      * @return int Timeout (in seconds)
+     * @throws \Exception
      */
     public function getCommandTimeout(): int;
 
@@ -61,6 +68,7 @@ interface ConfigurationLoaderApiInterface
      * Indicates whether the connection to the Gorgone server is secure
      *
      * @return bool
+     * @throws \Exception
      */
     public function isApiConnectionSecure(): bool;
 
@@ -68,6 +76,7 @@ interface ConfigurationLoaderApiInterface
      * Returns the API username of the Gorgone server
      *
      * @return string|null API username of the Gorgone server
+     * @throws \Exception
      */
     public function getApiUsername(): ?string;
 }

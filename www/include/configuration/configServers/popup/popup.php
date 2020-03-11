@@ -90,38 +90,43 @@ $dataError = '';
 $gorgoneError = false;
 $timeout = 0;
 
-foreach ($parents as $serverId) {
-    $lastActionLog = null;
-    $thumbprintCommand = new \Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand($serverId);
-    $gorgoneResponse = $gorgoneService->send($thumbprintCommand);
-    // check if we have log for 30 s every 2s
-    do {
-        $lastActionLog = $gorgoneResponse->getLastActionLog();
-        sleep(2);
-        $timeout += 2;
-    } while (
-        ($lastActionLog == null || $lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_BEGIN) &&
-        $timeout <= 30
-    );
+try {
+    foreach ($parents as $serverId) {
+        $lastActionLog = null;
+        $thumbprintCommand = new \Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand($serverId);
+        $gorgoneResponse = $gorgoneService->send($thumbprintCommand);
+        // check if we have log for 30 s every 2s
+        do {
+            $lastActionLog = $gorgoneResponse->getLastActionLog();
+            sleep(2);
+            $timeout += 2;
+        } while (
+            ($lastActionLog == null || $lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_BEGIN) &&
+            $timeout <= 30
+        );
 
-    if ($timeout > 30) {
-        // add 10 s for the next server
-        $timeout -= 10;
-        $gorgoneError = true;
-        $dataError .= '
-    - error : TimeOut error for poller ' . $serverId . ' We can\'t get log';
-        continue;
-    }
+        if ($timeout > 30) {
+            // add 10 s for the next server
+            $timeout -= 10;
+            $gorgoneError = true;
+            $dataError .= '
+    - error : TimeOut error for poller '.$serverId.' We can\'t get log';
+            continue;
+        }
 
-    $thummprintReponse = json_decode($lastActionLog->getData(), true);
-    if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
-        $thumbprints .= '
-      - key: ' . $thummprintReponse['data']['thumbprint'];
-    } else {
-        $gorgoneError = true;
-        $dataError .= '
-      - error : Poller ' . $serverId . ' : ' . $thummprintReponse['message'];
+        $thummprintReponse = json_decode($lastActionLog->getData(), true);
+        if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
+            $thumbprints .= '
+      - key: '.$thummprintReponse['data']['thumbprint'];
+        } else {
+            $gorgoneError = true;
+            $dataError .= '
+      - error : Poller '.$serverId.' : '.$thummprintReponse['message'];
+        }
     }
+} catch (\Exception $ex) {
+    $gorgoneError = true;
+    $dataError = $ex->getMessage();
 }
 
 if (!empty($dataError)) {

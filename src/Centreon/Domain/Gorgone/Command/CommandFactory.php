@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -28,7 +29,7 @@ class CommandFactory
     /**
      * @var array<CommandInterface> GorgoneCommandInterface[]
      */
-    static private $commands = [];
+    private static $commands = [];
 
     /**
      * @param CommandInterface $command Command to add
