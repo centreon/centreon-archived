@@ -68,6 +68,14 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_main'
+        statusGraphEndpoint:
+            type: string
+            groups:
+                - 'resource_main'
+        performanceGraphEndpoint:
+            type: string
+            groups:
+                - 'resource_main'
         severity:
             type: Centreon\Domain\Monitoring\ResourceSeverity
             groups:

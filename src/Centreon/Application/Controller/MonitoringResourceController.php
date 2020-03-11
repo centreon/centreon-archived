@@ -33,6 +33,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Resource APIs for the Unified View page
@@ -66,11 +67,18 @@ class MonitoringResourceController extends AbstractController
     protected $resource;
 
     /**
-     * @param ResourceServiceInterface $resource
+     * @var UrlGeneratorInterface
      */
-    public function __construct(ResourceServiceInterface $resource)
+    protected $router;
+
+    /**
+     * @param ResourceServiceInterface $resource
+     * @param UrlGeneratorInterface $router
+     */
+    public function __construct(ResourceServiceInterface $resource, UrlGeneratorInterface $router)
     {
         $this->resource = $resource;
+        $this->router = $router;
     }
 
     /**
@@ -132,9 +140,36 @@ class MonitoringResourceController extends AbstractController
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
+        $resources = $this->resource->filterByContact($this->getUser())
+            ->findResources($filter);
+
+        foreach ($resources as $resource) {
+            if ($resource->getParent() != null) {
+                $parameters = [
+                    'hostId' => $resource->getParent()->getId(),
+                    'serviceId' => $resource->getId(),
+                ];
+
+                // set service performance graph endpoint from metrics controller
+                $resource->setPerformanceGraphEndpoint(
+                    $this->router->generate(
+                        'monitoring.metric.getServicePerformanceMetrics',
+                        $parameters
+                    )
+                );
+
+                // set service status graph endpoint from metrics controller
+                $resource->setStatusGraphEndpoint(
+                    $this->router->generate(
+                        'monitoring.metric.getServiceStatusMetrics',
+                        $parameters
+                    )
+                );
+            }
+        }
+
         return $this->view([
-            'result' => $this->resource->filterByContact($this->getUser())
-                ->findResources($filter),
+            'result' => $resources,
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
     }

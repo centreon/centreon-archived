@@ -2489,9 +2489,9 @@ components:
           type: string
           description: "URL of the status chart linked to the resource"
           example: "/monitoring/hosts/1/services/2/metrics/status"
-        metrics_graph_endpoint:
+        performance_graph_endpoint:
           type: string
-          description: "URL of the metrics chart linked to the resource"
+          description: "URL of the performance chart linked to the resource"
           example: "/monitoring/hosts/1/services/2/metrics/performance"
         duration:
           type: string
