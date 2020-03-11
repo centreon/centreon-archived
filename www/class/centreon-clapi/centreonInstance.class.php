@@ -136,6 +136,7 @@ class CentreonInstance extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
+        // Check IPv6, IPv4 and FQDN format
         if ($params[1] == 'ns_ip_address' && !preg_match('/^([0-9a-fA-F]{4}|0)(\:([0-9a-fA-F]{4}|0)){7}$/', $params[2])
             && !(preg_match('/^[0-9\.]+$/', $params[2]) && preg_match('/^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/', $params[2]))
             && !(!preg_match('/^[0-9\.]+$/', $params[2]) && preg_match('/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]+)\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/', $params[2]))
