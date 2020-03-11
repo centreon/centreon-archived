@@ -33,13 +33,13 @@
  *
  */
 
-require_once _CENTREON_PATH_."www/class/centreonDuration.class.php";
-require_once _CENTREON_PATH_."www/class/centreonGMT.class.php";
-require_once _CENTREON_PATH_."www/class/centreonACL.class.php";
-require_once _CENTREON_PATH_."www/class/centreonHost.class.php";
-require_once _CENTREON_PATH_."www/class/centreonService.class.php";
-require_once _CENTREON_PATH_."www/class/centreonSession.class.php";
-require_once _CENTREON_PATH_."www/include/common/common-Func.php";
+require_once __DIR__ . '/centreonDuration.class.php';
+require_once __DIR__ . '/centreonGMT.class.php';
+require_once __DIR__ . '/centreonACL.class.php';
+require_once __DIR__ . '/centreonHost.class.php';
+require_once __DIR__ . '/centreonService.class.php';
+require_once __DIR__ . '/centreonSession.class.php';
+require_once __DIR__ . '/../include/common/common-Func.php';
 
 /**
  * Singleton Class for topological sorting

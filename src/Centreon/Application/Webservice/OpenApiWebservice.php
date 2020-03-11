@@ -89,7 +89,7 @@ class OpenApiWebservice extends Webservice\WebServiceAbstract implements
             return;
         }
 
-        $openapi = \OpenApi\scan(_CENTREON_PATH_ . 'src/');
+        $openapi = \OpenApi\scan(__DIR__ . '/../../../');
 
         echo $openapi->toYaml();
         exit;

@@ -33,10 +33,10 @@
  *
  */
 
-require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonCommand.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonLogAction.class.php';
+require_once __DIR__ . '/centreonInstance.class.php';
+require_once __DIR__ . '/centreonService.class.php';
+require_once __DIR__ . '/centreonCommand.class.php';
+require_once __DIR__ . '/centreonLogAction.class.php';
 
 /*
  *  Class that contains various methods for managing hosts

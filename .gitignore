@@ -37,6 +37,8 @@ config/centreon.config.php
 coverage-report/
 centreon-build/
 secret
+build/*
+build/coverage/*
 
 ###> symfony/framework-bundle ###
 /.env.local

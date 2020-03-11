@@ -39,9 +39,9 @@ if ($configFile !== false) {
     require_once $configFile;
 }
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once __DIR__ . '/centreonDB.class.php';
 require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
-require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
+require_once __DIR__ . '/../include/common/common-Func.php';
 
 /*
  *  This class allows the user to send external commands to Nagios
