@@ -1277,7 +1277,7 @@ copy_ssh_keys_to_gorgone() {
         return 1
     fi
 
-    ${CHMOD} "600" "$GORGONE_VARLIB/.ssh/id_rsa"
+    ${CHMOD} 600 "$GORGONE_VARLIB/.ssh/id_rsa"
     if [ $? -ne 0 ] ; then
         echo_failure "$(gettext "Cannot modify the rights of files in folder $GORGONE_VARLIB/.ssh")" "$fail"
         return 1
