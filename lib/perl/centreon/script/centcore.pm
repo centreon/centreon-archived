@@ -1753,8 +1753,10 @@ sub run {
                 while (<FILE>){
                     $self->parseRequest($_);
                 }
-                close(FILE);                
-                $self->{logger}->writeLogError("Error When removing ".$self->{cmdFile}."_read file : $!") if (!unlink($self->{cmdFile}."_read"));
+                close(FILE);
+                if (!unlink($self->{cmdFile}."_read")) {
+                    $self->{logger}->writeLogError("Error When removing " . $self->{cmdFile} . "_read file : $!");
+                }
 
                 foreach my $poller (keys(%{$self->{commandBuffer}})) {
                     if (length($self->{commandBuffer}{$poller}) != 0) {
