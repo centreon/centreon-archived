@@ -2066,9 +2066,7 @@ class CentreonACL
         }
 
         // Making sure that the id provided is a real int
-        $option = array (
-            'default' => 0
-        );
+        $option = ['default' => 0];
         $sgId = filter_var($sgId, FILTER_VALIDATE_INT, $option);
 
         /*
