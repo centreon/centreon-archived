@@ -2024,13 +2024,13 @@ class CentreonACL
     /**
      * Get all services linked to a servicegroup regarding ACL
      *
-     * @param int $sg_id servicegroup id
+     * @param int $sgId servicegroup id
      * @param mixed $broker
      * @param mixed $options
      * @access public
      * @return array
      */
-    public function getServiceServiceGroupAclConf($sg_id, $broker = null, $options = null)
+    public function getServiceServiceGroupAclConf($sgId, $broker = null, $options = null)
     {
         $services = array();
 
@@ -2064,6 +2064,13 @@ class CentreonACL
                 . "AND $db_name_acl.centreon_acl.host_id = host.host_id "
                 . "AND $db_name_acl.centreon_acl.service_id = service.service_id ";
         }
+
+        // Making sure that the id provided is a real int
+        $option = array (
+            'default' => 0
+        );
+        $sgId = filter_var($sgId, FILTER_VALIDATE_INT, $option);
+
         /*
          * Using the centreon_storage database to get the information
          * where the services_servicegroups table provides "resolved" dependencies
@@ -2075,10 +2082,11 @@ class CentreonACL
         $query = $request['select'] . $request['simpleFields'] . " "
             . "FROM ( "
             . "SELECT " . $request['fields'] . " "
-            . "FROM " .$db_name_acl . ".services_servicegroups, service, host" . $from_acl . " "
-            . "WHERE servicegroup_id = " . CentreonDB::escape($sg_id) . " "
+            . "FROM " . $db_name_acl . ".services_servicegroups, service, host" . $from_acl . " "
+            . "WHERE servicegroup_id = " . CentreonDB::escape((int)$sgId) . " "
             . "AND host.host_id = services_servicegroups.host_id "
-            . "AND service.service_id = services_servicegroups.service_id"
+            . "AND service.service_id = services_servicegroups.service_id "
+            . "AND service.service_activate = '1' AND host.host_activate = '1'"
             . $where_acl . " "
             . ") as t ";
 
