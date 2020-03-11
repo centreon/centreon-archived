@@ -2513,8 +2513,8 @@ components:
           example: "3/3 (H)"
         last_check:
           type: string
-          format: date-time
-          description: "Date of the last check (ISO8601)"
+          description: "Duration since last check"
+          example: "1h 45m"
         information:
           type: string
           description: "Output of the resource"
