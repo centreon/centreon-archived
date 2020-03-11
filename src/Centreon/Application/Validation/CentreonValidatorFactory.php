@@ -84,7 +84,6 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
                     // validator as a class with empty property accessor
                     $this->validators[$className] = new $className;
                 }
-
             } elseif (in_array($className, $this->container->keys())) {
                 // validator as a service
                 $this->validators[$className] = $this->container[$className];
