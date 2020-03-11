@@ -326,6 +326,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
+        // Check IPv6, IPv4 and FQDN format
         if (!preg_match('/^([0-9a-fA-F]{4}|0)(\:([0-9a-fA-F]{4}|0)){7}$/', $serverIP)
             && !(preg_match('/^[0-9\.]+$/', $serverIP) && preg_match('/^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/', $serverIP))
             && !(!preg_match('/^[0-9\.]+$/', $serverIP) && preg_match('/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]+)\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/', $serverIP))
