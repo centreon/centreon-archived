@@ -4325,7 +4325,7 @@ msgid "Use SSL/TLS"
 msgstr "Utiliser SSL/TLS"
 
 msgid "Allow self signed certificate"
-msgstr "Autorise les certificats auto-signés"
+msgstr "Autoriser les certificats auto-signés"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
