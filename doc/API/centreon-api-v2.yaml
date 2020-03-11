@@ -1749,7 +1749,7 @@ components:
         example: '2020-02-18T00:00:00'
     MetricEndDate:
       in: query
-      name: start
+      name: end
       required: false
       description: "End date of metrics (default date is current date)"
       schema:
