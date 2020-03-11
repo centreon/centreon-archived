@@ -43,5 +43,19 @@
     </exec>
   </target>
 
+  <target name="phpstan" depends="prepare">
+    <exec executable="./vendor/bin/phpstan" output="${builddir}/phpstan.xml">
+      <arg value="analyse" />
+      <arg value="-c" />
+      <arg value="phpstan.neon" />
+      <arg value="--level" />
+      <arg value="4" />
+      <arg value="--error-format" />
+      <arg value="absolute" />
+      <arg value="--no-interaction" />
+      <arg value="--no-progress" />
+    </exec>
+  </target>
+
   <target name="main"></target>
 </project>
