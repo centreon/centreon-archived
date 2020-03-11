@@ -1277,30 +1277,16 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance:
     get:
       tags:
         - Metrics
-      summary: 'Get service metrics data'
+      summary: 'Get service performance data'
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
-        - in: path
-          name: start
-          description: 'start of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T00:00:00'
-        - in: path
-          name: end
-          description: 'end of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T12:00:00'
+        - $ref: '#/components/parameters/MetricStartDate'
+        - $ref: '#/components/parameters/MetricEndDate'
       description: 'Get metrics data from a service between given interval'
       responses:
         '200':
@@ -1516,7 +1502,7 @@ paths:
           description: "Host or service not found"
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/status/start/{start}/end/{end}:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/status:
     get:
       tags:
         - Metrics
@@ -1524,22 +1510,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
-        - in: path
-          name: start
-          description: 'start of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T00:00:00'
-        - in: path
-          name: end
-          description: 'end of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T12:00:00'
+        - $ref: '#/components/parameters/MetricStartDate'
+        - $ref: '#/components/parameters/MetricEndDate'
       description: 'Get status data from a service between given interval'
       responses:
         '200':
@@ -1766,6 +1738,24 @@ components:
       schema:
         type: object
         example: '{"host.name":"ASC"}'
+    MetricStartDate:
+      in: query
+      name: start
+      required: false
+      description: "Start date of metrics (default date is 24 hours in the past)"
+      schema:
+        type: string
+        format: date-time
+        example: '2020-02-18T00:00:00'
+    MetricEndDate:
+      in: query
+      name: start
+      required: false
+      description: "End date of metrics (default date is current date)"
+      schema:
+        type: string
+        format: date-time
+        example: '2020-02-19T00:00:00'
     ResourceFilterType:
       in: query
       name: types
@@ -2498,11 +2488,11 @@ components:
         status_graph_endpoint:
           type: string
           description: "URL of the status chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/status/start/{start_date}/end/{end_date}"
+          example: "/monitoring/hosts/1/services/2/metrics/status"
         metrics_graph_endpoint:
           type: string
           description: "URL of the metrics chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/metrics/start/{start_date}/end/{end_date}"
+          example: "/monitoring/hosts/1/services/2/metrics/performance"
         duration:
           type: string
           description: "Duration since last status change"
