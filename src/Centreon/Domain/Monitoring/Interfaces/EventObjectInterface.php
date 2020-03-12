@@ -32,7 +32,7 @@ interface EventObjectInterface
 
     /**
      * Make sure every implementation has a type
-     * @return int
+     * @return string
      */
     public function getEventType(): string;
 

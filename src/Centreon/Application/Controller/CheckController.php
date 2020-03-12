@@ -78,7 +78,7 @@ class CheckController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_CHECK)) {
@@ -88,7 +88,7 @@ class CheckController extends AbstractController
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST_ADD);
 
         /**
-         * @var $checks Check[]
+         * @var Check[] $checks
          */
         $checks = $serializer->deserialize(
             (string) $request->getContent(),
@@ -140,7 +140,7 @@ class CheckController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_CHECK)) {
@@ -150,7 +150,7 @@ class CheckController extends AbstractController
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
 
         /**
-         * @var $checks Check[]
+         * @var Check[] $checks
          */
         $checks = $serializer->deserialize(
             (string) $request->getContent(),
@@ -204,7 +204,7 @@ class CheckController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_CHECK)) {
@@ -214,7 +214,7 @@ class CheckController extends AbstractController
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST);
 
         /**
-         * @var $check Check
+         * @var Check $check
          */
         $check = $serializer->deserialize(
             (string) $request->getContent(),
@@ -264,7 +264,7 @@ class CheckController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_CHECK)) {
@@ -274,7 +274,7 @@ class CheckController extends AbstractController
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
 
         /**
-         * @var $check Check
+         * @var Check $check
          */
         $check = $serializer->deserialize(
             (string) $request->getContent(),

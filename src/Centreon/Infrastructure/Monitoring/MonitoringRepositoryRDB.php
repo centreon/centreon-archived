@@ -452,7 +452,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             //bind the host id to search for it if provided
             $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
         }
-        
+
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -856,7 +856,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $hostConcordanceArray);
         }
 
-        $shouldJoinService = false;
         if (count(array_intersect($searchParameters, array_keys($serviceConcordanceArray))) > 0) {
             $shouldJoinHost = true;
             $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $serviceConcordanceArray);
@@ -893,21 +892,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         // This join will only be added if a search parameter corresponding to one of the host parameter
-        if ($shouldJoinHost || $shouldJoinService) {
+        if ($shouldJoinHost) {
             $subRequest .=
                 ' INNER JOIN `:dbstg`.services_servicegroups ssg 
                     ON ssg.servicegroup_id = sg.servicegroup_id
                     AND ssg.service_id = srv.service_id
                 INNER JOIN `:dbstg`.hosts h
                     ON h.host_id = ssg.host_id';
-
-            if ($shouldJoinService) {
-                $subRequest .=
-                    'LEFT JOIN `:dbstg`.`services` srv
-                      ON srv.service_id = ssg.service_id
-                      AND srv.host_id = h.host_id
-                      AND srv.enabled = \'1\'';
-            }
 
             if (!$this->isAdmin()) {
                 $subRequest .=

@@ -218,7 +218,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                 // First, we will sort services by service groups and hosts
                 $servicesByServiceGroupAndHost = [];
                 /**
-                 * @var $services Service[]
+                 * @var Service[] $services
                  */
                 foreach ($servicesByServiceGroup as $serviceGroupId => $services) {
                     foreach ($services as $service) {
@@ -229,11 +229,12 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
                 // Next, we will linked services to host
                 /**
-                 * @var $serviceGroup ServiceGroup
+                 * @var ServiceGroup $serviceGroup
                  */
                 foreach ($serviceGroups as $serviceGroup) {
                     foreach ($serviceGroup->getHosts() as $host) {
-                        if (array_key_exists($serviceGroup->getId(), $servicesByServiceGroupAndHost)
+                        if (
+                            array_key_exists($serviceGroup->getId(), $servicesByServiceGroupAndHost)
                             && array_key_exists($host->getId(), $servicesByServiceGroupAndHost[$serviceGroup->getId()])
                         ) {
                             $host->setServices(

@@ -113,7 +113,7 @@ class ResourceFilter
      * @param array $map
      * @return array
      */
-    public function map(array $list, array $map): array
+    public static function map(array $list, array $map): array
     {
         $result = [];
 
@@ -185,7 +185,7 @@ class ResourceFilter
     }
 
     /**
-     * @param string $state
+     * @param string $status
      * @return bool
      */
     public function hasStatus(string $status): bool

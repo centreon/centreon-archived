@@ -61,7 +61,7 @@ class MonitoringResourceController extends AbstractController
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
-     * @var \Centreon\Domain\Monitoring\ResourceService
+     * @var ResourceServiceInterface
      */
     protected $resource;
 

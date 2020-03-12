@@ -33,4 +33,10 @@ interface ResourceRepositoryInterface
      * @return \Centreon\Domain\Monitoring\Resource[]
      */
     public function findResources(ResourceFilter $filter): array;
+
+    /**
+     * @param ContactInterface $contact
+     * @return ResourceRepositoryInterface
+     */
+    public function setContact(ContactInterface $contact): self;
 }

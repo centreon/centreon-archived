@@ -421,7 +421,6 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
                 break;
             default:
                 throw new \Exception('Incorrect Event Type');
-                break;
         }
 
         return $eventClass;

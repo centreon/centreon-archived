@@ -253,7 +253,7 @@ class DowntimeController extends AbstractController
         $this->downtimeService->filterByContact($contact);
 
         /**
-         * @var Downtime[] $downtimes
+         * @var Downtime[] $downtime
          */
         $downtime = $serializer->deserialize(
             (string) $request->getContent(),

@@ -40,7 +40,7 @@ interface TimelineRepositoryInterface
 
     /**
      * @param ContactInterface $contact
-     * @return MonitoringRepositoryInterface
+     * @return self
      */
     public function setContact(ContactInterface $contact): self;
 

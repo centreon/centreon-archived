@@ -37,7 +37,7 @@ use Centreon\Domain\Monitoring\ResourceFilter;
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
     /**
-     * @var \Centreon\Domain\Monitoring\Interfaces\MonitoringResourceRepositoryInterface
+     * @var \Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface
      */
     private $resourceRepository;
 

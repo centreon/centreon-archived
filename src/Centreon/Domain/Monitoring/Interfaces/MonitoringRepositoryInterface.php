@@ -62,7 +62,7 @@ interface MonitoringRepositoryInterface
      * Find the hosts of the services groups ids given.
      *
      * @param array $servicesGroupsIds List of services groups Ids for which we want to retrieve the hosts
-     * @return array [serviceGroupId => hostId,...]
+     * @return Host[] [serviceGroupId => hostId,...]
      * @throws \Exception
      */
     public function findHostsByServiceGroups(array $servicesGroupsIds): array;
@@ -97,7 +97,7 @@ interface MonitoringRepositoryInterface
     /**
      * Find all services grouped by service groups
      *
-     * @return \Servicegroup[]
+     * @return Servicegroup[]
      * @throws \Exception
      */
     public function findServiceGroups(): array;
@@ -150,4 +150,11 @@ interface MonitoringRepositoryInterface
      * @throws \Exception
      */
     public function findServicesByServiceGroups(array $serviceGroups): array;
+
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 }

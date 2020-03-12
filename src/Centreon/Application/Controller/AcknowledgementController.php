@@ -195,7 +195,7 @@ class AcknowledgementController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
@@ -203,7 +203,7 @@ class AcknowledgementController extends AbstractController
         }
 
         /**
-         * @var $acknowledgements Acknowledgement[]
+         * @var Acknowledgement[] $acknowledgements
          */
         $acknowledgements = $serializer->deserialize(
             (string) $request->getContent(),
@@ -251,7 +251,7 @@ class AcknowledgementController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
@@ -259,7 +259,7 @@ class AcknowledgementController extends AbstractController
         }
 
         /**
-         * @var $acknowledgements Acknowledgement[]
+         * @var Acknowledgement[] $acknowledgements
          */
         $acknowledgements = $serializer->deserialize(
             (string) $request->getContent(),
@@ -309,7 +309,7 @@ class AcknowledgementController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
@@ -327,7 +327,7 @@ class AcknowledgementController extends AbstractController
         }
 
         /**
-         * @var $acknowledgement Acknowledgement
+         * @var Acknowledgement $acknowledgement
          */
         $acknowledgement = $serializer->deserialize(
             $request->getContent(),
@@ -378,7 +378,7 @@ class AcknowledgementController extends AbstractController
         }
 
         /**
-         * @var $acknowledgement Acknowledgement
+         * @var Acknowledgement $acknowledgement
          */
         $acknowledgement = $serializer->deserialize(
             $request->getContent(),
@@ -457,7 +457,8 @@ class AcknowledgementController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $contact = $this->getUser();
-        if (!$contact->isAdmin()
+        if (
+            !$contact->isAdmin()
             && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
                 || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
         ) {
@@ -490,7 +491,8 @@ class AcknowledgementController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $contact = $this->getUser();
-        if (!$contact->isAdmin()
+        if (
+            !$contact->isAdmin()
             && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
                 || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
         ) {

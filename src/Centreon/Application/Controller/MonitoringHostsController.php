@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -308,7 +309,7 @@ class MonitoringHostsController extends AbstractController
      *
      * @param int hostId Id of host to search hostgroups for
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
+     * @return \FOS\RestBundle\View\View
      * @throws \Exception
      */
     public function getHostGroupsByHost(int $hostId, RequestParametersInterface $requestParameters)

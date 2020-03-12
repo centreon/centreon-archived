@@ -326,7 +326,7 @@ class Service implements EntityDescriptorMetadataInterface
     /**
      * @return string|null
      */
-    public function getCommandLine(): string
+    public function getCommandLine(): ?string
     {
         return $this->commandLine;
     }
@@ -528,7 +528,7 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @param int|null $scheduledDowntimeDepth
+     * @param int $scheduledDowntimeDepth
      * @return Service
      */
     public function setScheduledDowntimeDepth(int $scheduledDowntimeDepth): Service
@@ -618,7 +618,7 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @param \DateTime $nextCheck
+     * @param \DateTime|null $nextCheck
      * @return Service|null
      */
     public function setNextCheck(?\DateTime $nextCheck): Service

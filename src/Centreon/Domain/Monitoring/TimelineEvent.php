@@ -79,7 +79,7 @@ class TimelineEvent
 
     /**
      * @param EventObjectInterface $object
-     * @return TimelineEvent
+     * @return void
      */
     public function setObject(EventObjectInterface $object): void
     {

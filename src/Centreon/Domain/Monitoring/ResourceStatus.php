@@ -33,7 +33,7 @@ class ResourceStatus
     public const SERIALIZER_GROUP_MAIN = 'resource_status_main';
 
     /**
-     * @var string|null
+     * @var int|null
      */
     private $code;
 
