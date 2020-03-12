@@ -680,13 +680,12 @@ locate_centreon_plugins() {
 ## @Globals     GORGONE_VARLIB, DEFAULT_GORGONE_VARLIB
 #----
 locate_gorgone_varlib() {
-    testdir_clean "$GORGONE_VARLIB" "GORGONE_VARLIB"
     if [ -z "$GORGONE_VARLIB" ] ; then
-        answer "$(gettext "Where is your gorgone module folder ?")" "$DEFAULT_GORGONE_VARLIB" "GORGONE_VARLIB"
-        echo_success "$(gettext "Path" ) $GORGONE_VARLIB" "$ok"
+        answer_with_testdir "$(gettext "Where is your gorgone module folder ?") [$DEFAULT_GORGONE_VARLIB]" "$DEFAULT_GORGONE_VARLIB" "GORGONE_VARLIB"
     fi
     GORGONE_VARLIB=`trim ${GORGONE_VARLIB%/}`
     export GORGONE_VARLIB
+    echo_success "$(gettext "Path" ) $GORGONE_VARLIB" "$ok"
     log "INFO" "GORGONE_VARLIB: $GORGONE_VARLIB"
 }
 
@@ -695,10 +694,8 @@ locate_gorgone_varlib() {
 ## @Globals     GORGONE_CONFIG, DEFAULT_GORGONE_CONFIG
 #----
 locate_gorgone_config() {
-    testdir_clean "$GORGONE_CONFIG" "GORGONE_CONFIG"
     if [ -z "$GORGONE_CONFIG" ] ; then
-        answer "$(gettext "Where is your gorgone configuration folder ?")" "$DEFAULT_GORGONE_CONFIG" "GORGONE_CONFIG"
-        echo_success "$(gettext "Path" ) $GORGONE_CONFIG" "$ok"
+        answer_with_testdir "$(gettext "Where is your gorgone configuration folder ?") [$DEFAULT_GORGONE_CONFIG]" "$DEFAULT_GORGONE_CONFIG" "GORGONE_CONFIG"
     fi
     GORGONE_CONFIG=`trim ${GORGONE_CONFIG%/}`
     export GORGONE_CONFIG

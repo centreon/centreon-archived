@@ -30,6 +30,16 @@
 #set -x
 
 echo -e "\n$line"
+echo -e "\t$(gettext "Gorgone module Installation")"
+echo -e "$line"
+
+# locate gorgone
+locate_gorgone_varlib
+locate_gorgone_config
+check_gorgone_user
+check_gorgone_group
+
+echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
 

@@ -211,7 +211,7 @@ for binary in $BINARIES; do
 done
 
 ###### Mandatory step
-# locate gorgone
+# ask if gorgone have already been installed
 echo -e "\n$line"
 echo -e "\t$(gettext "Check mandatory gorgone service status")"
 echo -e "$line"
@@ -224,10 +224,6 @@ if [ "$?" -ne 0 ] ; then
     echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
     exit 1
 fi
-locate_gorgone_varlib
-locate_gorgone_config
-check_gorgone_user
-check_gorgone_group
 
 # Script stop if one binary wasn't found
 if [ "$binary_fail" -eq 1 ] ; then
