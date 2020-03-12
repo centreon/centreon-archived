@@ -252,13 +252,13 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         }
 
         if ($service->getHost() == null) {
-            throw new EngineException('The host of service (id: '. $service->getId() . ') is not defined');
+            throw new EngineException('The host of service (id: ' . $service->getId() . ') is not defined');
         }
         if (empty($service->getHost()->getName())) {
-            throw new EngineException('Host name of service (id: '. $service->getId() . ') can not be empty');
+            throw new EngineException('Host name of service (id: ' . $service->getId() . ') can not be empty');
         }
         if (empty($service->getDescription())) {
-            throw new EngineException('The description of service (id: '. $service->getId() . ') can not be empty');
+            throw new EngineException('The description of service (id: ' . $service->getId() . ') can not be empty');
         }
         $preCommand = sprintf(
             'SCHEDULE_SVC_DOWNTIME;%s;%s;%d;%d;%d;0;%d;%s;%s',
