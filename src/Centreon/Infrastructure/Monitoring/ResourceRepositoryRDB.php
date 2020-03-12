@@ -685,7 +685,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
-    public function setContact(ContactInterface $contact): self
+    public function setContact(ContactInterface $contact): ResourceRepositoryInterface
     {
         $this->contact = $contact;
 
