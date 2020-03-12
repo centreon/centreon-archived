@@ -102,14 +102,14 @@ const Filter = ({
   const getHostGroupSearchEndpoint = (searchValue): string => {
     return buildHostGroupsEndpoint({
       limit: 10,
-      search: `name:^${searchValue}`,
+      search: `name:${searchValue}`,
     });
   };
 
   const getServiceGroupSearchEndpoint = (searchValue): string => {
     return buildServiceGroupsEndpoint({
       limit: 10,
-      search: `name:^${searchValue}`,
+      search: `name:${searchValue}`,
     });
   };
 
