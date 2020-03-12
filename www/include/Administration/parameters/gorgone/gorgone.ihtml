@@ -9,7 +9,7 @@
         </tr>
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
-            <h4>{t}Gorgone Options{/t}</h4>
+            <h4>{t}Common Options{/t}</h4>
           </td>
         </tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_broker_stats">&nbsp;{$form.enable_broker_stats.label}</td><td class="FormRowValue">{$form.enable_broker_stats.html}</td></tr>
@@ -24,18 +24,18 @@
         </tr>
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
-                <h4>{t}Gorgone API{/t}</h4>
+                <h4>{t}API Options{/t}</h4>
             </td>
         </tr>
         <tr class="list_one">
             <td class="FormRowField">
                 <img class="helpTooltip" name="tip_gorgone_api_address">&nbsp;{$form.gorgone_api_address.label}
             </td>
-            <td class="FormRowValue">{$form.gorgone_api_address.html}&nbsp</td>
+            <td class="FormRowValue">{$form.gorgone_api_address.html}</td>
         </tr>
         <tr class="list_two">
             <td class="FormRowField">
-                <img class="helpTooltip" name="tip_gorgone_api_port">{$form.gorgone_api_port.label}
+                <img class="helpTooltip" name="tip_gorgone_api_port">&nbsp;{$form.gorgone_api_port.label}
             </td>
             <td class="FormRowValue">{$form.gorgone_api_port.html}</td>
         </tr>
@@ -47,7 +47,7 @@
         </tr>
         <tr class="list_two">
             <td class="FormRowField">
-                <img class="helpTooltip" name="tip_gorgone_api_password">{$form.gorgone_api_password.label}
+                <img class="helpTooltip" name="tip_gorgone_api_password">&nbsp;{$form.gorgone_api_password.label}
             </td>
             <td class="FormRowValue">{$form.gorgone_api_password.html}</td>
         </tr>
@@ -59,7 +59,7 @@
         </tr>
         <tr class="list_two">
             <td class="FormRowField">
-                <img class="helpTooltip" name="gorgone_api_allow_self_signed">
+                <img class="helpTooltip" name="tip_gorgone_api_allow_self_signed">
                 {$form.gorgone_api_allow_self_signed.label}
             </td>
             <td class="FormRowValue">{$form.gorgone_api_allow_self_signed.html}</td>

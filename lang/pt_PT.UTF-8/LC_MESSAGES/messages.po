@@ -5816,6 +5816,9 @@ msgstr "Login:"
 msgid "Password"
 msgstr "Senha"
 
+msgid "Username"
+msgstr "Nome do usuário"
+
 #: centreon-web/www/include/core/login/login.php:55
 msgid "Connect"
 msgstr "Conectar"
@@ -6230,7 +6233,7 @@ msgstr "Modificar opções do Centcore"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
 #: centreon-web/www/include/Administration/parameters/api/api.php:59
-msgid "Enable Broker Statistics Collection"
+msgid "Enable Broker statistics collection"
 msgstr "Ativa coleção de statisticas do Broker"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
@@ -14437,3 +14440,12 @@ msgstr "Anexar Remote Server adicionais"
 
 #~ msgid "This value needs to be an integer lesser than"
 #~ msgstr ""
+
+msgid "IP address or hostname"
+msgstr "Endereço IP ou nome do host"
+
+msgid "Use SSL/TLS"
+msgstr "Use SSL/TLS"
+
+msgid "Allow self signed certificate"
+msgstr "Permitir certificado autoassinado"

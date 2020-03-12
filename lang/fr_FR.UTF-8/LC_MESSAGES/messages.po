@@ -2820,6 +2820,9 @@ msgstr "Login"
 msgid "Password"
 msgstr "Mot de passe"
 
+msgid "Username"
+msgstr "Utilisateur"
+
 #: centreon-web/www/install/steps/step5.php:80
 msgid "Confirm password"
 msgstr "Confirmer le mot de passe"
@@ -4303,10 +4306,8 @@ msgstr "Modifier les options de Centcore"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:61
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
-msgid "Enable Broker Statistics Collection"
-msgstr ""
-"Activer la récupération des fichiers de statistiques des composants Centreon "
-"Broker"
+msgid "Enable Broker statistics collection"
+msgstr "Activer la récupération des fichiers de statistiques Broker"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
@@ -4316,6 +4317,15 @@ msgstr "Temps maximum d'exécution des commandes Gorgone"
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:62
 msgid "Illegal characters for Gorgone commands"
 msgstr "Caractères illégaux pour les commandes Gorgone"
+
+msgid "IP address or hostname"
+msgstr "Adresse IP ou nom d'hôte"
+
+msgid "Use SSL/TLS"
+msgstr "Utiliser SSL/TLS"
+
+msgid "Allow self signed certificate"
+msgstr "Autoriser les certificats auto-signés"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
