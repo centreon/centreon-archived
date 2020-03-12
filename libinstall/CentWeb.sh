@@ -718,7 +718,7 @@ while [ "$pear_module" -eq 0 ] ; do
                 if [ "$first" -eq 0 ] ; then
                     echo_info "$(gettext "Unable to upgrade PEAR modules. You seem to have a connection problem.")"
                 fi
-                yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
+                yes_no_default "$(gettext "Do you want to install/upgrade your PEAR modules")" "$yes"
                 [ "$?" -eq 0 ] && PEAR_AUTOINST=1
             fi
         if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then

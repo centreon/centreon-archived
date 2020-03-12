@@ -218,8 +218,8 @@ echo -e "$line"
 
 yes_no_default "$(gettext "Is the Gorgone module already installed?")"
 if [ "$?" -ne 0 ] ; then
-    echo_failure "$(gettext "Gorgone is required.\nPlease install it before launching this script")\n" "$fail"
-    echo -e "\t$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
+    echo_failure "\n$(gettext "Gorgone is required.\nPlease install it before launching this script")" "$fail"
+    echo -e "\n\t$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
     echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
     echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
     exit 1
