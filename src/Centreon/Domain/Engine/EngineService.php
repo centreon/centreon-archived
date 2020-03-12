@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +23,15 @@ declare(strict_types=1);
 namespace Centreon\Domain\Engine;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Check\Check;
+use Centreon\Domain\Downtime\DowntimeService;
 use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
 
@@ -45,31 +47,24 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
      * @var EngineRepositoryInterface
      */
     private $engineRepository;
+
     /**
      * @var EntityValidator
      */
     private $validator;
 
     /**
-     * @var AccessGroupRepositoryInterface
-     */
-    private $accessGroupRepository;
-
-    /**
      * CentCoreService constructor.
      *
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param EngineRepositoryInterface $engineRepository
      * @param EntityValidator $validator
      */
     public function __construct(
-        AccessGroupRepositoryInterface $accessGroupRepository,
         EngineRepositoryInterface $engineRepository,
         EntityValidator $validator
     ) {
         $this->engineRepository = $engineRepository;
         $this->validator = $validator;
-        $this->accessGroupRepository = $accessGroupRepository;
     }
 
     /**
@@ -88,7 +83,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         $errors = $this->validator->getValidator()->validate(
             $acknowledgement,
             null,
-            EntityValidator::ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_HOST_ACK
+            AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACK
         );
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
@@ -123,7 +118,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $errors = $this->validator->getValidator()->validate(
                 $acknowledgement,
                 null,
-                EntityValidator::ACKNOWLEDGEMENT_VALIDATION_GROUPS_ADD_SERVICE_ACK
+                AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK
             );
             if ($errors->count() > 0) {
                 throw new ValidationFailedException($errors);
@@ -205,36 +200,41 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $errors = $this->validator->getValidator()->validate(
                 $downtime,
                 null,
-                EntityValidator::DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME
+                DowntimeService::VALIDATION_GROUPS_ADD_HOST_DOWNTIME
             );
             if ($errors->count() > 0) {
                 throw new ValidationFailedException($errors);
             }
         }
 
-        $preCommand = sprintf(
-            'SCHEDULE_HOST_DOWNTIME;%s;%d;%d;%d;0;%d;%s;%s',
-            $host->getName(),
-            $downtime->getStartTime()->getTimestamp(),
-            $downtime->getEndTime()->getTimestamp(),
-            (int) $downtime->isFixed(),
-            $downtime->getDuration(),
-            $this->contact->getAlias(),
-            $downtime->getComment()
-        );
-        $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
-        $this->engineRepository->sendExternalCommand($commandFull);
+        $commandNames = ['SCHEDULE_HOST_DOWNTIME'];
+        if ($downtime->isWithServices()) {
+            $commandNames[] = 'SCHEDULE_HOST_SVC_DOWNTIME';
+        }
+
+        $commands = [];
+        foreach ($commandNames as $commandName) {
+            $preCommand = sprintf(
+                '%s;%s;%d;%d;%d;0;%d;%s;%s',
+                $commandName,
+                $host->getName(),
+                $downtime->getStartTime()->getTimestamp(),
+                $downtime->getEndTime()->getTimestamp(),
+                (int) $downtime->isFixed(),
+                $downtime->getDuration(),
+                $this->contact->getAlias(),
+                $downtime->getComment()
+            );
+            $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
+            $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
+        }
+        $this->engineRepository->sendExternalCommands($commands);
     }
 
     /**
-     * Add a downtime on a list of services.
-     *
-     * @param Downtime $downtime Downtime to add
-     * @param Service[] $services List of service for which we want to add a downtime
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function addServicesDowntime(Downtime $downtime, array $services): void
+    public function addServiceDowntime(Downtime $downtime, Service $service): void
     {
         if (empty($this->contact->getAlias())) {
             throw new EngineException('The contact alias is empty');
@@ -244,75 +244,22 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $errors = $this->validator->getValidator()->validate(
                 $downtime,
                 null,
-                EntityValidator::DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME
+                DowntimeService::VALIDATION_GROUPS_ADD_SERVICE_DOWNTIME
             );
             if ($errors->count() > 0) {
                 throw new ValidationFailedException($errors);
             }
         }
 
-        if (empty($services)) {
-            throw new EngineException('The list of services is empty');
-        }
-        $commandsToSend = [];
-        foreach ($services as $service) {
-            if ($service->getHost() == null) {
-                throw new EngineException('The host of service (id: '. $service->getId() . ') is not defined');
-            }
-            if (empty($service->getHost()->getName())) {
-                throw new EngineException('Host name of service (id: '. $service->getId() . ') can not be empty');
-            }
-            if (empty($service->getDescription())) {
-                throw new EngineException('The description of service (id: '. $service->getId() . ') can not be empty');
-            }
-            $preCommand = sprintf(
-                'SCHEDULE_SVC_DOWNTIME;%s;%s;%d;%d;%d;0;%d;%s;%s',
-                $service->getHost()->getName(),
-                $service->getDescription(),
-                $downtime->getStartTime()->getTimestamp(),
-                $downtime->getEndTime()->getTimestamp(),
-                (int) $downtime->isFixed(),
-                $downtime->getDuration(),
-                $this->contact->getAlias(),
-                $downtime->getComment()
-            );
-            $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-            $commandsToSend[] = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
-        }
-
-        if (!empty($commandsToSend)) {
-            $this->engineRepository->sendExternalCommands($commandsToSend);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addServiceDowntime(Downtime $downtime, Service $service): void
-    {
-        // We validate the downtime instance
-        $errors = $this->validator->getValidator()->validate(
-            $downtime,
-            null,
-            EntityValidator::DOWNTIME_VALIDATION_GROUPS_ADD_DOWNTIME
-        );
-        if ($errors->count() > 0) {
-            throw new ValidationFailedException($errors);
-        }
-
-        if (empty($this->contact->getAlias())) {
-            throw new EngineException('The contact alias is empty');
-        }
-        if (empty($service->getHost())) {
-            throw new EngineException('The host of service is not defined');
+        if ($service->getHost() == null) {
+            throw new EngineException('The host of service (id: '. $service->getId() . ') is not defined');
         }
         if (empty($service->getHost()->getName())) {
-            throw new EngineException('Host name can not be empty');
+            throw new EngineException('Host name of service (id: '. $service->getId() . ') can not be empty');
         }
         if (empty($service->getDescription())) {
-            throw new EngineException('The service description can not be empty');
+            throw new EngineException('The description of service (id: '. $service->getId() . ') can not be empty');
         }
-
         $preCommand = sprintf(
             'SCHEDULE_SVC_DOWNTIME;%s;%s;%d;%d;%d;0;%d;%s;%s',
             $service->getHost()->getName(),
@@ -325,8 +272,9 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $downtime->getComment()
         );
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
-        $this->engineRepository->sendExternalCommand($commandFull);
+        $command = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
+
+        $this->engineRepository->sendExternalCommand($command);
     }
 
     /**
@@ -388,17 +336,23 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             throw new EngineException('Host name can not be empty');
         }
 
-        $commandName = $check->isForced() ? 'SCHEDULE_FORCED_HOST_CHECK' : 'SCHEDULE_HOST_CHECK';
+        $commandNames = [$check->isForced() ? 'SCHEDULE_FORCED_HOST_CHECK' : 'SCHEDULE_HOST_CHECK'];
+        if ($check->isWithServices()) {
+            $commandNames[] = $check->isForced() ? 'SCHEDULE_FORCED_HOST_SVC_CHECKS' : 'SCHEDULE_HOST_SVC_CHECKS';
+        }
 
-        $command = sprintf(
-            '%s;%s;%d',
-            $commandName,
-            $host->getName(),
-            $check->getCheckTime()
-        );
-
-        $commandFull = $this->createCommandHeader($host->getPollerId()) . $command;
-        $this->engineRepository->sendExternalCommand($commandFull);
+        $commands = [];
+        foreach ($commandNames as $commandName) {
+            $preCommand = sprintf(
+                '%s;%s;%d',
+                $commandName,
+                $host->getName(),
+                $check->getCheckTime()
+            );
+            $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
+            $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
+        }
+        $this->engineRepository->sendExternalCommands($commands);
     }
 
     /**

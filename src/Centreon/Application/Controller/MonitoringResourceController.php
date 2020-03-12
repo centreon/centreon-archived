@@ -54,6 +54,12 @@ class MonitoringResourceController extends AbstractController
         'servicegroup_ids',
     ];
 
+    // Groups for serialization
+    public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
+
+    // Groups for validation
+    public const VALIDATION_GROUP_MAIN = 'resource_id_main';
+
     /**
      * @var \Centreon\Domain\Monitoring\ResourceService
      */

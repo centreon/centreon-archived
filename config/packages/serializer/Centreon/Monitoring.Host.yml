@@ -221,3 +221,19 @@ Centreon\Domain\Monitoring\Host:
             groups:
                 - 'host_main'
                 - 'host_full'
+        downtimes:
+            type: array<Centreon\Domain\Downtime\Downtime>
+            groups:
+                - 'host_full'
+        acknowledgement:
+            type: Centreon\Domain\Acknowledgement\Acknowledgement
+            groups:
+                - 'host_full'
+        flapping:
+            type: bool
+            groups:
+                - 'host_full'
+        percentStateChange:
+            type: double
+            groups:
+                - 'host_full'

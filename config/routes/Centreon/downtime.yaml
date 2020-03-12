@@ -1,3 +1,15 @@
+monitoring.downtime.addHostDowntimes:
+    methods: POST
+    path: /monitoring/hosts/downtimes
+    controller: 'Centreon\Application\Controller\DowntimeController::addHostDowntimes'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+monitoring.downtime.addServiceDowntimes:
+    methods: POST
+    path: /monitoring/services/downtimes
+    controller: 'Centreon\Application\Controller\DowntimeController::addServiceDowntimes'
+    condition: "request.attributes.get('version.is_beta') == true"
+
 monitoring.downtime.addHostDowntime:
     methods: POST
     path: /monitoring/hosts/{hostId}/downtimes

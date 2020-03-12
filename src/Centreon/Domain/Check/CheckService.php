@@ -109,7 +109,7 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
             throw new ValidationFailedException($errors);
         }
 
-        $host = $this->monitoringRepository->findOneHost($check->getHostId());
+        $host = $this->monitoringRepository->findOneHost($check->getResourceId());
         if (is_null($host)) {
             throw new EntityNotFoundException('Host not found');
         }
@@ -133,12 +133,12 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
             throw new ValidationFailedException($errors);
         }
 
-        $host = $this->monitoringRepository->findOneHost($check->getHostId());
+        $host = $this->monitoringRepository->findOneHost($check->getParentResourceId());
         if (is_null($host)) {
             throw new EntityNotFoundException('Host not found');
         }
 
-        $service = $this->monitoringRepository->findOneService($check->getHostId(), $check->getServiceId());
+        $service = $this->monitoringRepository->findOneService($check->getParentResourceId(), $check->getResourceId());
         if (is_null($service)) {
             throw new EntityNotFoundException('Service not found');
         }

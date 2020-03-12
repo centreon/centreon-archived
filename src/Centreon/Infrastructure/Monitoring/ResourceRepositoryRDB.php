@@ -153,7 +153,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.short_type, resource.name, '
+            . 'resource.id, resource.type, resource.name, '
             . 'resource.details_url, resource.action_url, '
             . 'resource.status_code, resource.status_name, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
@@ -177,9 +177,14 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $subRequests[] = '(' . $this->prepareQueryForHostResources($collector, $filter) . ')';
         }
 
-        if ($subRequests) {
-            $request .= implode('UNION ALL ', $subRequests);
+        if (!$subRequests) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(0);
+
+            return [];
         }
+
+        $request .= implode('UNION ALL ', $subRequests);
+        unset($subRequests);
 
         $request .= ') AS `resource`'
             // Join the host groups
@@ -321,7 +326,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql = "SELECT
             s.service_id AS `id`,
             'service' AS `type`,
-            's' AS `short_type`,
             s.service_id AS `origin_id`,
             sh.host_id AS `host_id`,
             s.description AS `name`,
@@ -476,7 +480,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql = "SELECT
             h.host_id AS `id`,
             'host' AS `type`,
-            'h' AS `short_type`,
             h.host_id AS `origin_id`,
             h.host_id AS `host_id`,
             h.name AS `name`,
@@ -660,13 +663,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $parent->setStatus($parentStatus);
 
             $resource->setParent($parent);
-        }
-
-        // calculating of the duration
-        if ($resource->getLastStatusChange()) {
-            $resource->setDuration(
-                CentreonDuration::toString(time() - $resource->getLastStatusChange()->getTimestamp())
-            );
         }
 
         return $resource;

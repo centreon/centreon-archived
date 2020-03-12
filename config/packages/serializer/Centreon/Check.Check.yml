@@ -1,10 +1,17 @@
 Centreon\Domain\Check\Check:
     properties:
-        hostId:
-            type: int
-        serviceId:
-            type: int
         checkTime:
             type: DateTime
+            groups: [Default, check_host, check_service]
         isForced:
             type: bool
+            groups: [Default, check_host, check_service]
+        resourceId:
+            type: int
+            groups: [Default, check_host, check_service]
+        parentResourceId:
+            type: int
+            groups: [Default, check_service]
+        withServices:
+            type: bool
+            groups: ['check_host_add']

@@ -127,7 +127,7 @@ Centreon\Domain\Monitoring\Service:
                 - 'service_main'
                 - 'service_full'
         nextCheck:
-            type: int
+            type: DateTime
             groups:
                 - 'service_full'
         output:
@@ -153,4 +153,12 @@ Centreon\Domain\Monitoring\Service:
             type: int
             groups:
                 - 'service_main'
+                - 'service_full'
+        downtimes:
+            type: array<Centreon\Domain\Downtime\Downtime>
+            groups:
+                - 'service_full'
+        acknowledgement:
+            type: Centreon\Domain\Acknowledgement\Acknowledgement
+            groups:
                 - 'service_full'

@@ -183,12 +183,12 @@ class SqlRequestParametersTranslator
      * @return string Part of the database query.
      * @throws RequestParametersTranslatorException
      */
-    private function createQueryOnKeyValue(string $key, $valueOrArray): string {
+    private function createQueryOnKeyValue(string $key, $valueOrArray): string
+    {
         if ($this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
             && !key_exists($key, $this->concordanceArray)
         ) {
-            if (
-                $this->requestParameters->getConcordanceErrorMode() === RequestParameters::CONCORDANCE_ERRMODE_EXCEPTION
+            if ($this->requestParameters->getConcordanceErrorMode() === RequestParameters::CONCORDANCE_ERRMODE_EXCEPTION
             ) {
                 throw new RequestParametersTranslatorException('The parameter \''. $key . '\' is not allowed');
             }

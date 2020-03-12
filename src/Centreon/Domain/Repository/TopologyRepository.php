@@ -55,7 +55,7 @@ class TopologyRepository extends ServiceEntityRepository
      */
     public function disableMenus(): bool
     {
-        $sql = file_get_contents(_CENTREON_PATH_ . '/src/Centreon/Infrastructure/Resources/sql/disablemenus.sql');
+        $sql = file_get_contents(__DIR__ . '/../../Infrastructure/Resources/sql/disablemenus.sql');
         $stmt = $this->db->prepare($sql);
         return $stmt->execute();
     }
@@ -67,7 +67,7 @@ class TopologyRepository extends ServiceEntityRepository
      */
     public function enableMenus(): bool
     {
-        $sql = file_get_contents(_CENTREON_PATH_ . '/src/Centreon/Infrastructure/Resources/sql/enablemenus.sql');
+        $sql = file_get_contents(__DIR__ . '/../../Infrastructure/Resources/sql/enablemenus.sql');
         $stmt = $this->db->prepare($sql);
         return $stmt->execute();
     }

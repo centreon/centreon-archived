@@ -1,4 +1,23 @@
 Centreon\Domain\Monitoring\Resource:
+    virtual_properties:
+        getDuration:
+            name: getDuration
+            serialized_name: duration
+            type: string
+            groups:
+                - 'resource_main'
+        getLastCheckAsString:
+            name: getLastCheckAsString
+            serialized_name: last_check
+            type: string
+            groups:
+                - 'resource_main'
+        getShortType:
+            name: getShortType
+            serialized_name: short_type
+            type: string
+            groups:
+                - 'resource_main'
     properties:
         id:
             type: string
@@ -6,10 +25,6 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
                 - 'resource_parent'
         type:
-            type: string
-            groups:
-                - 'resource_main'
-        shortType:
             type: string
             groups:
                 - 'resource_main'
@@ -73,16 +88,8 @@ Centreon\Domain\Monitoring\Resource:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'resource_main'
-        duration:
-            type: string
-            groups:
-                - 'resource_main'
         tries:
             type: string
-            groups:
-                - 'resource_main'
-        lastCheck:
-            type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'resource_main'
         information:
