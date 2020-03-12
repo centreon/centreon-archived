@@ -76,7 +76,7 @@ const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
           <Grid container spacing={1}>
             <Grid item xs={1} />
             <Grid item>
-              <StatusChip statusCode={row.parent.status.code} />
+              <StatusChip statusCode={row.parent?.status?.code || 0} />
             </Grid>
             <Grid item>{row.parent.name}</Grid>
           </Grid>

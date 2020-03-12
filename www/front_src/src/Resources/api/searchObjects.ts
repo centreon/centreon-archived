@@ -1,26 +1,24 @@
-type SearchableField =
-  | 'host.name'
-  | 'host.alias'
-  | 'host.address'
-  | 'service.description';
-
-const searchOptions: Array<SearchableField> = [
-  'host.name',
-  'host.alias',
-  'host.address',
-  'service.description',
-];
+import isEmpty from 'lodash/isEmpty';
 
 interface SearchObject {
-  field: SearchableField;
+  field: string;
   value: string;
 }
 
-interface SearchParam {
-  $or: Array<{ [field in SearchableField]?: { $rg: string } }>;
+type SearchPatterns = Array<{ [field: string]: { $rg: string } }>;
+
+export interface OrSearchParam {
+  $or: SearchPatterns;
 }
 
-const getFoundSearchObjects = (searchValue: string): Array<SearchObject> => {
+interface AndSearchParam {
+  $and: SearchPatterns;
+}
+
+const getFoundSearchObjects = ({
+  searchValue,
+  searchOptions,
+}): Array<SearchObject> => {
   const searchOptionMatches = searchOptions.map((searchOption) => {
     const pattern = `${searchOption.replace('.', '\\.')}:([^\\s]+)`;
 
@@ -32,24 +30,29 @@ const getFoundSearchObjects = (searchValue: string): Array<SearchObject> => {
   return searchOptionMatches.filter(({ value }) => value);
 };
 
-const getDefaultSearchObjects = (value): Array<SearchObject> => {
-  return searchOptions.map((searchOption) => ({ field: searchOption, value }));
-};
-
-const getSearchParam = (searchValue: string): SearchParam | undefined => {
+const getSearchParam = ({
+  searchValue,
+  searchOptions,
+}): OrSearchParam | AndSearchParam | undefined => {
   if (!searchValue) {
     return undefined;
   }
-  const foundSearchObjects = getFoundSearchObjects(searchValue);
+  const foundSearchObjects = getFoundSearchObjects({
+    searchValue,
+    searchOptions,
+  });
 
-  const searchObjectsToSend =
-    foundSearchObjects.length > 0
-      ? foundSearchObjects
-      : getDefaultSearchObjects(searchValue);
+  if (!isEmpty(foundSearchObjects)) {
+    return {
+      $and: foundSearchObjects.map(({ field, value }) => ({
+        [field]: { $rg: `${value}` },
+      })),
+    };
+  }
 
   return {
-    $or: searchObjectsToSend.map(({ field, value }) => ({
-      [field]: { $rg: `${value}` },
+    $or: searchOptions.map((searchOption) => ({
+      [searchOption]: { $rg: `${searchValue}` },
     })),
   };
 };

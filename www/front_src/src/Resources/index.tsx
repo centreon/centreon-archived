@@ -2,44 +2,28 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { Typography, makeStyles, Paper, Grid, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
+
 import { lime, purple } from '@material-ui/core/colors';
 
-import {
-  Listing,
-  SelectField,
-  withErrorSnackbar,
-  useErrorSnackbar,
-  SearchField,
-} from '@centreon/ui';
+import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
-import {
-  unhandledProblemsFilter,
-  resourcesProblemFilter,
-  allFilter,
-  ResourceListing,
-} from './models';
+import { ResourceListing } from './models';
 import columns from './columns';
+import Filter from './Filter';
 import {
-  labelFilter,
-  labelStateFilter,
-  labelSearch,
-  labelResourceName,
-} from './translatedLabels';
-import SearchHelpTooltip from './SearchHelpTooltip';
+  filterById,
+  unhandledProblemsFilter,
+  Filter as FilterModel,
+  FilterGroup,
+} from './Filter/models';
 
 const useStyles = makeStyles((theme) => ({
   page: {
     backgroundColor: theme.palette.background.default,
   },
-  iconSettings: {
-    color: theme.palette.primary.main,
-  },
-  filterBox: {
-    padding: theme.spacing(2),
-    backgroundColor: theme.palette.common.white,
-  },
+
   listing: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
@@ -48,22 +32,37 @@ const useStyles = makeStyles((theme) => ({
 
 const noOp = (): void => undefined;
 
+const defaultFilter = unhandledProblemsFilter;
+const { criterias } = defaultFilter;
+const defaultResourceTypes = criterias?.resourceTypes;
+const defaultStatuses = criterias?.statuses;
+const defaultStates = criterias?.states;
+
 const Resources = (): JSX.Element => {
   const classes = useStyles();
 
   const [listing, setListing] = useState<ResourceListing>();
-  const [filterId, setFilterId] = useState('unhandled_problems');
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
-  const [searchFieldValue, setSearchFieldValue] = useState<string>();
+  const [filter, setFilter] = useState(defaultFilter);
   const [search, setSearch] = useState<string>();
+  const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>(
+    defaultResourceTypes,
+  );
+  const [states, setStates] = useState<Array<FilterModel>>(defaultStates);
+  const [statuses, setStatuses] = useState<Array<FilterModel>>(defaultStatuses);
+  const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
+  const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
 
   const [loading, setLoading] = useState(true);
 
-  const { showError } = useErrorSnackbar();
+  const { showMessage } = useSnackbar();
+  const showError = (message): void =>
+    showMessage({ message, severity: Severity.error });
+
   const [tokenSource] = useState(axios.CancelToken.source());
 
   const load = (): void => {
@@ -71,7 +70,17 @@ const Resources = (): JSX.Element => {
     const sort = sortf ? { [sortf]: sorto } : undefined;
 
     listResources(
-      { state: filterId, sort, limit, page, search },
+      {
+        states: states.map(({ id }) => id),
+        statuses: statuses.map(({ id }) => id),
+        resourceTypes: resourceTypes.map(({ id }) => id),
+        hostGroupIds: hostGroups?.map(({ id }) => id),
+        serviceGroupIds: serviceGroups?.map(({ id }) => id),
+        sort,
+        limit,
+        page,
+        search,
+      },
       { cancelToken: tokenSource.token },
     )
       .then((retrievedListing) => {
@@ -91,10 +100,21 @@ const Resources = (): JSX.Element => {
 
   useEffect(() => {
     load();
-  }, [filterId, sortf, sorto, page, limit, search]);
+  }, [
+    sortf,
+    sorto,
+    page,
+    limit,
+    search,
+    states,
+    statuses,
+    resourceTypes,
+    hostGroups,
+    serviceGroups,
+  ]);
 
-  const changeFilterId = (event): void => {
-    setFilterId(event.target.value);
+  const doSearch = (value): void => {
+    setSearch(value);
   };
 
   const changeSort = ({ order, orderBy }): void => {
@@ -110,12 +130,53 @@ const Resources = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const changeSearchFieldValue = (event): void => {
-    setSearchFieldValue(event.target.value);
+  const setEmptyFilter = (): void => {
+    setFilter({ id: '', name: '' } as FilterGroup);
   };
 
-  const doSearch = (): void => {
-    setSearch(searchFieldValue);
+  const changeResourceTypes = (_, updatedResourceTypes): void => {
+    setResourceTypes(updatedResourceTypes);
+    setEmptyFilter();
+  };
+
+  const changeStates = (_, updatedStates): void => {
+    setStates(updatedStates);
+    setEmptyFilter();
+  };
+
+  const changeStatuses = (_, updatedStatuses): void => {
+    setStatuses(updatedStatuses);
+    setEmptyFilter();
+  };
+
+  const changeHostGroups = (_, updatedHostGroups): void => {
+    setHostGroups(updatedHostGroups);
+  };
+
+  const changeServiceGroups = (_, updatedServiceGroups): void => {
+    setServiceGroups(updatedServiceGroups);
+  };
+
+  const changeFilter = (event): void => {
+    const filterId = event.target.value;
+
+    const updatedFilter = filterById[filterId];
+    setFilter(updatedFilter);
+
+    if (!updatedFilter.criterias) {
+      return;
+    }
+
+    setResourceTypes(updatedFilter.criterias.resourceTypes);
+    setStatuses(updatedFilter.criterias.statuses);
+    setStates(updatedFilter.criterias.states);
+  };
+
+  const clearAllFilters = (): void => {
+    setFilter(defaultFilter);
+    setResourceTypes(defaultFilter.criterias.resourceTypes);
+    setStatuses(defaultFilter.criterias.statuses);
+    setStates(defaultFilter.criterias.states);
   };
 
   const rowColorConditions = [
@@ -133,47 +194,23 @@ const Resources = (): JSX.Element => {
 
   return (
     <div className={classes.page}>
-      <Paper elevation={1} className={classes.filterBox}>
-        <Grid container direction="column">
-          <Grid item>
-            <Typography variant="h6">{labelFilter}</Typography>
-          </Grid>
-          <Grid item>
-            <Grid spacing={2} container direction="row" alignItems="center">
-              <Grid item>
-                <SelectField
-                  options={[
-                    unhandledProblemsFilter,
-                    resourcesProblemFilter,
-                    allFilter,
-                  ]}
-                  selectedOptionId={filterId}
-                  onChange={changeFilterId}
-                  ariaLabel={labelStateFilter}
-                />
-              </Grid>
-              <Grid item>
-                <SearchField
-                  EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
-                  value={searchFieldValue || ''}
-                  onChange={changeSearchFieldValue}
-                  placeholder={labelResourceName}
-                />
-              </Grid>
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={!searchFieldValue}
-                  onClick={doSearch}
-                >
-                  {labelSearch}
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Paper>
+      <Filter
+        filter={filter}
+        onFilterGroupChange={changeFilter}
+        selectedResourceTypes={resourceTypes}
+        onResourceTypesChange={changeResourceTypes}
+        selectedStates={states}
+        onStatesChange={changeStates}
+        selectedStatuses={statuses}
+        onStatusesChange={changeStatuses}
+        onSearchRequest={doSearch}
+        onHostGroupsChange={changeHostGroups}
+        selectedHostGroups={hostGroups}
+        onServiceGroupsChange={changeServiceGroups}
+        selectedServiceGroups={serviceGroups}
+        onClearAll={clearAllFilters}
+        currentSearch={search}
+      />
       <div className={classes.listing}>
         <Listing
           loading={loading}
@@ -197,4 +234,4 @@ const Resources = (): JSX.Element => {
   );
 };
 
-export default withErrorSnackbar(Resources);
+export default withSnackbar(Resources);

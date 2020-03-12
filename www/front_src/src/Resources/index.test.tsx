@@ -6,13 +6,20 @@ import UserEvent from '@testing-library/user-event';
 
 import Resources from '.';
 import {
-  labelUnhandledProblems,
-  labelResourceProblems,
-  labelAll,
   labelResourceName,
   labelSearch,
   labelInDowntime,
   labelAcknowledged,
+  labelTypeOfResource,
+  labelHost,
+  labelState,
+  labelStatus,
+  labelOk,
+  labelHostGroup,
+  labelServiceGroup,
+  labelUnhandledProblems,
+  labelResourceProblems,
+  labelAll,
 } from './translatedLabels';
 import columns from './columns';
 import { Resource } from './models';
@@ -21,30 +28,65 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('./columns/icons/Downtime');
 
+interface SearchParam {
+  mode: '$or' | '$and';
+  fieldPatterns: Array<{ field: string; value: string }>;
+}
+
+interface EndpointParams {
+  sortBy?: string;
+  sortOrder?: string;
+  page?: number;
+  limit?: number;
+  search?: SearchParam;
+  states?: Array<string>;
+  statuses?: Array<string>;
+  resourceTypes?: Array<string>;
+  hostGroupsIds?: Array<number>;
+  serviceGroupIds?: Array<number>;
+}
+
+const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
+const defaultResourceTypes = [];
+const defaultStates = ['unhandled_problems'];
+
+const buildParam = (param): string => JSON.stringify(param);
+
 const getEndpoint = ({
-  state = 'unhandled_problems',
   sortBy = undefined,
   sortOrder = undefined,
   page = 1,
   limit = 10,
   search = undefined,
-}: {
-  state?: string;
-  sortBy?: string;
-  sortOrder?: string;
-  page?: number;
-  limit?: number;
-  search?: Array<{ field: string; value: string }>;
-}): string => {
-  const baseEndpoint = 'monitoring/resources';
+  states = defaultStates,
+  statuses = defaultStatuses,
+  resourceTypes = defaultResourceTypes,
+  hostGroupsIds = undefined,
+  serviceGroupIds = undefined,
+}: EndpointParams): string => {
+  const baseEndpoint = './api/beta';
+  const endpoint = `${baseEndpoint}/monitoring/resources`;
   const sortParam = sortBy ? `&sort_by={"${sortBy}":"${sortOrder}"}` : '';
   const searchParam = search
-    ? `&search={"$or":[${search.map(
+    ? `&search={"${search.mode}":[${search.fieldPatterns.map(
         ({ field, value }) => `{"${field}":{"$rg":"${value}"}}`,
       )}]}`
     : '';
 
-  return `${baseEndpoint}?state="${state}"${sortParam}&page=${page}&limit=${limit}${searchParam}`;
+  const statesParam =
+    states.length !== 0 ? `&states=${buildParam(states)}` : '';
+  const resourceTypesParam =
+    resourceTypes.length !== 0 ? `&types=${buildParam(resourceTypes)}` : '';
+  const statusesParam =
+    statuses.length !== 0 ? `&statuses=${buildParam(statuses)}` : '';
+  const hostGroupsIdsParam = hostGroupsIds
+    ? `&hostgroup_ids=${buildParam(hostGroupsIds)}`
+    : '';
+  const serviceGroupIdsParam = serviceGroupIds
+    ? `&servicegroup_ids=${buildParam(serviceGroupIds)}`
+    : '';
+
+  return `${endpoint}?page=${page}&limit=${limit}${sortParam}${searchParam}${statesParam}${resourceTypesParam}${statusesParam}${hostGroupsIdsParam}${serviceGroupIdsParam}`;
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -102,6 +144,16 @@ const searchableFields = [
   'service.description',
 ];
 
+const linuxServersHostGroup = {
+  id: 0,
+  name: 'Linux-servers',
+};
+
+const webAccessService = {
+  id: 1,
+  name: 'Web-access',
+};
+
 describe(Resources, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
@@ -111,7 +163,7 @@ describe(Resources, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
   });
 
-  it('executes a listing request with unhnandled_problems state by default', async () => {
+  it('executes a listing request with "Unhandled problems" filter group by default', async () => {
     render(<Resources />);
 
     await wait(() =>
@@ -122,33 +174,122 @@ describe(Resources, () => {
     );
   });
 
-  it('executes a listing request with selected state filter when state filter is changed', async () => {
-    const { getByText } = render(<Resources />);
+  [
+    {
+      filterGroup: labelResourceProblems,
+      criterias: {
+        statuses: defaultStatuses,
+        states: [],
+        resourceTypes: [],
+      },
+    },
+    {
+      filterGroup: labelAll,
+      criterias: {
+        statuses: [],
+        states: [],
+        resourceTypes: [],
+      },
+    },
+  ].forEach(({ filterGroup, criterias }) => {
+    it(`executes a listing request with "${filterGroup}" params when "${filterGroup}" filter group is set`, async () => {
+      const { getByText } = render(<Resources />);
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+      await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-    selectOption(getByText(labelUnhandledProblems), labelResourceProblems);
+      // @material-ui Select uses a Popover that needs special handling to update options.
+      selectOption(getByText(labelUnhandledProblems), filterGroup);
 
-    await wait(() =>
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        getEndpoint({ state: 'resources_problems' }),
-        cancelTokenRequestParam,
-      ),
-    );
-
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-
-    selectOption(getByText(labelResourceProblems), labelAll);
-
-    await wait(() =>
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        getEndpoint({ state: 'all' }),
-        cancelTokenRequestParam,
-      ),
-    );
+      await wait(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({
+            resourceTypes: criterias.resourceTypes,
+            states: criterias.states,
+            statuses: criterias.statuses,
+          }),
+          cancelTokenRequestParam,
+        ),
+      );
+    });
   });
+
+  [
+    {
+      filterName: labelTypeOfResource,
+      optionToSelect: labelHost,
+      endpointParamChanged: { resourceTypes: ['host'] },
+    },
+    {
+      filterName: labelState,
+      optionToSelect: labelAcknowledged,
+      endpointParamChanged: {
+        states: [...defaultStates, 'acknowledged'],
+      },
+    },
+    {
+      filterName: labelStatus,
+      optionToSelect: labelOk,
+      endpointParamChanged: {
+        statuses: [...defaultStatuses, 'OK'],
+      },
+    },
+    {
+      filterName: labelHostGroup,
+      optionToSelect: linuxServersHostGroup.name,
+      selectEndpointMockAction: (): void => {
+        mockedAxios.get.mockResolvedValueOnce({
+          data: { result: [linuxServersHostGroup] },
+        });
+      },
+      endpointParamChanged: {
+        hostGroupsIds: [linuxServersHostGroup.id],
+      },
+    },
+    {
+      filterName: labelServiceGroup,
+      optionToSelect: webAccessService.name,
+      selectEndpointMockAction: (): void => {
+        mockedAxios.get.mockResolvedValueOnce({
+          data: { result: [webAccessService] },
+        });
+      },
+      endpointParamChanged: {
+        serviceGroupIds: [webAccessService.id],
+      },
+    },
+  ].forEach(
+    ({
+      filterName,
+      optionToSelect,
+      endpointParamChanged,
+      selectEndpointMockAction,
+    }) => {
+      it(`executes a listing request with selected "${filterName}" filter options when it's changed`, async () => {
+        const { getAllByText } = render(<Resources />);
+
+        await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+        selectEndpointMockAction?.();
+        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+        const [filterToChange] = getAllByText(filterName);
+        fireEvent.click(filterToChange);
+
+        await wait(() => {
+          const [selectedOption] = getAllByText(optionToSelect);
+
+          return fireEvent.click(selectedOption);
+        });
+
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({ ...endpointParamChanged }),
+          cancelTokenRequestParam,
+        );
+      });
+    },
+  );
 
   it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
     const { getByText } = render(<Resources />);
@@ -260,7 +401,7 @@ describe(Resources, () => {
   });
 
   searchableFields.forEach((searchableField) => {
-    it(`executes a listing request with a search param containing ${searchableField} when ${searchableField} is typed in the search field`, () => {
+    it(`executes a listing request with an "$and" search param containing ${searchableField} when ${searchableField} is typed in the search field`, () => {
       const { getByPlaceholderText, getByText } = render(<Resources />);
 
       const fieldSearchValue = 'foobar';
@@ -275,14 +416,19 @@ describe(Resources, () => {
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         getEndpoint({
-          search: [{ field: searchableField, value: fieldSearchValue }],
+          search: {
+            mode: '$and',
+            fieldPatterns: [
+              { field: searchableField, value: fieldSearchValue },
+            ],
+          },
         }),
         cancelTokenRequestParam,
       );
     });
   });
 
-  it('executes a listing request with a search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', () => {
+  it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', () => {
     const { getByPlaceholderText, getByText } = render(<Resources />);
 
     const searchValue = 'foobar';
@@ -297,10 +443,13 @@ describe(Resources, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       getEndpoint({
-        search: searchableFields.map((searchableField) => ({
-          field: searchableField,
-          value: searchValue,
-        })),
+        search: {
+          mode: '$or',
+          fieldPatterns: searchableFields.map((searchableField) => ({
+            field: searchableField,
+            value: searchValue,
+          })),
+        },
       }),
       cancelTokenRequestParam,
     );
