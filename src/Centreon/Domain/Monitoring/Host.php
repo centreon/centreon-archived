@@ -283,6 +283,16 @@ class Host implements EntityDescriptorMetadataInterface
     private $criticality;
 
     /**
+     * @var bool|null
+     */
+    private $flapping;
+
+    /**
+     * @var double|null
+     */
+    private $percentStateChange;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -1163,6 +1173,42 @@ class Host implements EntityDescriptorMetadataInterface
     public function setCriticality(?int $criticality): Host
     {
         $this->criticality = $criticality;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return Host
+     */
+    public function setFlapping(?bool $flapping): Host
+    {
+        $this->flapping = $flapping;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPercentStateChange(): ?float
+    {
+        return $this->percentStateChange;
+    }
+
+    /**
+     * @param float|null $percentStateChange
+     * @return Host
+     */
+    public function setPercentStateChange(?float $percentStateChange): Host
+    {
+        $this->percentStateChange = $percentStateChange;
         return $this;
     }
 }

@@ -239,8 +239,9 @@ class SqlRequestParametersTranslator
                 } elseif (is_bool($mixedValue)) {
                     $type = \PDO::PARAM_BOOL;
                 }
-                $bindKey = '(:value_' . (count($this->searchValues) + 1) . ')';
+                $bindKey = ':value_' . (count($this->searchValues) + 1);
                 $this->searchValues[$bindKey] = [$type => $mixedValue];
+                $bindKey = '(' . $bindKey . ')';
             }
         } elseif ($searchOperator === RequestParameters::OPERATOR_LIKE
             || $searchOperator === RequestParameters::OPERATOR_NOT_LIKE

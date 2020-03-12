@@ -22,6 +22,11 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
+    // git repository is stored for the Sonar analysis below.
+    if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+      sh 'tar czf centreon-web-git.tar.gz centreon-web'
+      stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
+    }
     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
@@ -54,7 +59,17 @@ try {
         ])
         recordIssues(
           enabledForFailure: true,
-          tools: [checkStyle(pattern: 'codestyle-be.xml'), esLint(pattern: 'codestyle-fe.xml')],
+          aggregatingResults: true,
+          tools: [
+            checkStyle(pattern: 'codestyle-be.xml'),
+            checkStyle(pattern: 'phpstan.xml')
+          ],
+          referenceJobName: 'centreon-web/master'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          tools: [esLint(pattern: 'codestyle-fe.xml')],
           referenceJobName: 'centreon-web/master'
         )
 
@@ -71,12 +86,16 @@ try {
             commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
             violationConfigs: [
-              [parser: 'CHECKSTYLE', pattern: '.*/codestyle.xml$', reporter: 'Checkstyle']
+              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
+              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle'],
+              [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
             ]
           ])
         }
 
         if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+          unstash 'git-sources'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
           withSonarQubeEnv('SonarQube') {
             sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
           }

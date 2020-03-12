@@ -1,6 +1,9 @@
 #generic development files
 www/index.html
 
+#api html documentation
+doc/API/centreon-api-v2.html
+
 #backend development and project files
 .idea/
 vendor/
@@ -34,6 +37,8 @@ config/centreon.config.php
 coverage-report/
 centreon-build/
 secret
+build/*
+build/coverage/*
 
 ###> symfony/framework-bundle ###
 /.env.local

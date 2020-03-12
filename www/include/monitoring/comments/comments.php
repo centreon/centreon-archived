@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,9 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
-isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
-$cG ? $contact_id = $cG : $contact_id = $cP;
+$contactId = filter_var(
+    $_GET["contact_id"] ?? $_POST["contact_id"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+$select = $_GET["select"] ?? $_POST["select"] ?? [];
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
@@ -69,10 +71,10 @@ switch ($o) {
         require_once($path . "AddSvcComment.php");
         break;
     case "ds":
-        if (isset($_GET["select"])) {
-            foreach ($_GET["select"] as $key => $value) {
+        if (!empty($select)) {
+            foreach ($select as $key => $value) {
                 $res = explode(';', urldecode($key));
-                DeleteComment($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                DeleteComment($res[0], [(int)$res[1] . ';' . (int)$res[2] => 'on']);
             }
         }
         require_once($path . "listComment.php");

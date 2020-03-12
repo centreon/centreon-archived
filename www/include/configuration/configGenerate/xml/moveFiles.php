@@ -237,14 +237,23 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-                if (!is_dir($centreon->Nagioscfg["cfg_dir"])) {
+                 $dbResult = $pearDB->query(
+                    "SELECT cfg_dir FROM cfg_nagios, nagios_server
+                    WHERE nagios_server.id = cfg_nagios.nagios_server_id
+                    AND nagios_server.localhost = '1'
+                    ORDER BY cfg_nagios.nagios_activate
+                    DESC LIMIT 1"
+                );
+                $nagiosCfg = $dbResult->fetch();
+
+                if (!is_dir($nagiosCfg["cfg_dir"])) {
                     throw new Exception(
                         sprintf(
                             _(
                                 "Could not find configuration directory '%s' for monitoring engine '%s'.
                                  Please check it's path or create it"
                             ),
-                            $centreon->Nagioscfg["cfg_dir"],
+                            $nagiosCfg["cfg_dir"],
                             $host['name']
                         )
                     );
@@ -255,7 +264,7 @@ try {
                 foreach (glob($nagiosCFGPath . $host["id"] . "/*.cfg") as $filename) {
                     $succeded = @copy(
                         $filename,
-                        rtrim($centreon->Nagioscfg["cfg_dir"], "/") . '/' . basename($filename)
+                        rtrim($nagiosCfg["cfg_dir"], "/") . '/' . basename($filename)
                     );
                     if (!$succeded) {
                         throw new Exception(
@@ -269,7 +278,7 @@ try {
                             )
                         );
                     } else {
-                        @chmod(rtrim($centreon->Nagioscfg["cfg_dir"], "/") . '/' . basename($filename), 0664);
+                        @chmod(rtrim($nagiosCfg["cfg_dir"], "/") . '/' . basename($filename), 0664);
                     }
                 }
                 /*

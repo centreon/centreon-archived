@@ -30,7 +30,8 @@
         "phpstan/phpstan": "^0.12.11",
         "sensiolabs/security-checker": "^6.0",
         "symfony/var-dumper": "4.3.*",
-        "symfony/profiler-pack": "^1.0"
+        "symfony/profiler-pack": "^1.0",
+        "phpstan/phpstan": "^0.12.14"
     },
     "require": {
         "php": ">=7.1.3",
