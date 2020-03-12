@@ -133,6 +133,7 @@
                         if (module.install) {
                             jQuery('label[for="module_' + module.module + '"]').addClass('md-label-green');
                             jQuery("input[type=checkbox]#module_" + module.module).attr('disabled', 'disabled');
+                            jQuery("input[type=checkbox]#module_" + module.module).prop('checked', 'checked');
                         }
                     });
                 }

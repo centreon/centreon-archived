@@ -44,7 +44,39 @@ if (isset($parameters['modules'])) {
     $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
     $utils = $utilsFactory->newUtils();
     $moduleFactory = new \CentreonLegacy\Core\Module\Factory($dependencyInjector, $utils);
+
     foreach ($parameters['modules'] as $module) {
+        /* If the selected module is already installed (as dependency for example)
+         * then we can skip the installation process
+         */
+        if ($result['modules'][$module]['install']) {
+            continue;
+        }
+        /* retrieving the module's information stored in the conf.php
+         * configuration file
+         */
+        $information = $moduleFactory->newInformation();
+        $moduleInformation = $information->getConfiguration($module);
+        /* if the selected module has dependencies defined in its configuration file
+         * then we need to install them before installing the selected module to
+         * ensure its correct installation
+         */
+        if (isset($moduleInformation['dependencies'])) {
+            foreach ($moduleInformation['dependencies'] as $dependency) {
+                // If the dependency is already installed skip install
+                if ($result['modules'][$dependency]['install']) {
+                    continue;
+                }
+                $installer = $moduleFactory->newInstaller($dependency);
+                $id = $installer->install();
+                $install = ($id) ? true : false;
+                $result['modules'][] = array(
+                    'module' => $dependency,
+                    'install' => $install
+                );
+            }
+        }
+        // installing the selected module
         $installer = $moduleFactory->newInstaller($module);
         $id = $installer->install();
         $install = ($id) ? true : false;
