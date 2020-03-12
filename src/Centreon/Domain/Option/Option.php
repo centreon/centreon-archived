@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -29,7 +30,7 @@ class Option
     private $name;
 
     /**
-     * @var string Option value
+     * @var string|null Option value
      */
     private $value;
 
@@ -54,20 +55,20 @@ class Option
     }
 
     /**
-     * @return string
+     * @return string|null
      * @see Option::$value
      */
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }
 
     /**
-     * @param string $value
+     * @param string|null $value
      * @return Option
      * @see Option::$value
      */
-    public function setValue(string $value): Option
+    public function setValue(?string $value): Option
     {
         $this->value = $value;
         return $this;

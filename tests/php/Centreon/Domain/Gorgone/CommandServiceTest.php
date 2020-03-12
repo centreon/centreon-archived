@@ -27,9 +27,6 @@ use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
 use Centreon\Domain\Gorgone\Response;
 use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
-use Centreon\Domain\Option\Interfaces\OptionRepositoryInterface;
-use Centreon\Infrastructure\Gorgone\CommandRepositoryAPI;
-use Centreon\Infrastructure\Gorgone\ResponseRepositoryAPI;
 use PHPUnit\Framework\TestCase;
 
 class CommandServiceTest extends TestCase

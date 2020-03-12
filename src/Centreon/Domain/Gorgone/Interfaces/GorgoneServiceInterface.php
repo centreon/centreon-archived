@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -21,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
-interface ServiceInterface
+interface GorgoneServiceInterface
 {
     /**
      * Send a command to the Gorgone server and retrieve an instance of the

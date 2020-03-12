@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -36,13 +37,20 @@ trait BasicCommand
     private $monitoringInstanceId;
 
     /**
+     * @var string|null
+     */
+    private $bodyRequest;
+
+    /**
      * We create a command for a specific poller.
      *
      * @param int $pollerId Poller id for which this command is intended
+     * @param string|null $bodyRequest
      */
-    public function __construct(int $pollerId)
+    public function __construct(int $pollerId, string $bodyRequest = null)
     {
         $this->monitoringInstanceId = $pollerId;
+        $this->bodyRequest = $bodyRequest;
     }
 
     /**

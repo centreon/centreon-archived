@@ -23,7 +23,7 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand;
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
-use Centreon\Domain\Gorgone\Interfaces\ServiceInterface;
+use Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -36,11 +36,11 @@ use FOS\RestBundle\View\View;
 class GorgoneController extends AbstractFOSRestController
 {
     /**
-     * @var ServiceInterface
+     * @var GorgoneServiceInterface
      */
     private $gorgoneService;
 
-    public function __construct(ServiceInterface $gorgoneService)
+    public function __construct(GorgoneServiceInterface $gorgoneService)
     {
         $this->gorgoneService = $gorgoneService;
     }
