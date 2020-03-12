@@ -11,6 +11,7 @@ import {
   Legend,
 } from 'recharts';
 import filesize from 'filesize';
+import format from 'date-fns/format';
 
 import { BarChart as IconBarChart } from '@material-ui/icons';
 
@@ -43,17 +44,12 @@ const Graph = ({ endpoint }) => {
     );
   };
 
-  const getBase = (unit) => {
-    const base1024 = [
-      'B',
-      'bytes',
-      'bytespersecond',
-      'B/s',
-      'B/sec',
-      'o',
-      'octets',
-    ];
-    if (base1024.includes(unit)) {
+  const getBase = (unit): 2 | 10 => {
+    if (
+      ['B', 'bytes', 'bytespersecond', 'B/s', 'B/sec', 'o', 'octets'].includes(
+        unit,
+      )
+    ) {
       return 2;
     }
 
@@ -71,18 +67,23 @@ const Graph = ({ endpoint }) => {
 
   return (
     <ComposedChart
-      width={500}
-      height={400}
+      style={{ backgroundColor: 'white' }}
+      width={475}
+      height={350}
       data={data}
       margin={{
         top: 10,
-        right: 30,
+        right: 0,
         left: 0,
-        bottom: 0,
+        bottom: 10,
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="time" />
+      <XAxis
+        dataKey="time"
+        tickFormatter={(tick): string =>
+          format(new Date(Number(tick) * 1000), 'HH:mm')}
+      />
       {/* <YAxis /> */}
       {getUnits().map((unit, index) => (
         <YAxis
@@ -90,8 +91,11 @@ const Graph = ({ endpoint }) => {
           key={unit}
           orientation={index === 0 ? 'left' : 'right'}
           tickFormatter={(tick) => {
-            console.log(tick);
-            return unit === '' ? tick : filesize(tick, { base: getBase(unit) });
+            return unit === ''
+              ? tick
+              : filesize(tick, {
+                  base: getBase(unit),
+                }).replace('B', '');
           }}
         />
       ))}
@@ -116,7 +120,10 @@ const Graph = ({ endpoint }) => {
           />
         ),
       )}
-      <Legend />
+      <Legend
+        iconType="square"
+        formatter={(value) => <span style={{ color: 'black' }}>{value}</span>}
+      />
     </ComposedChart>
   );
 };
