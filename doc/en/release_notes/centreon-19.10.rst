@@ -1,4 +1,34 @@
 ====================
+Centreon Web 19.10.9
+====================
+
+Bug Fixes
+---------
+
+* [LDAP] Sync user deletion from groups (PR #8287)
+* [Top Counters] Use session cache to store results (PR #8189)
+* [Configuration] Geo coordinates of hosts not exported to Remote Server (PR #8390)
+
+====================
+Centreon Web 19.10.8
+====================
+
+Bug Fixes
+---------
+
+* [Documentation] Typos fixed in the documentation (#8336) (#8364)
+* [Documentation] Remove useless checks (#8360)
+* [Install] remove harcoded version in source install (#8332)
+* [Install] source installation script fixes (#8341)
+* [Install] replace macro in cron files (#8359)
+* [Web] correct delete comments (#8367)
+
+Security
+--------
+
+* [ACL] set read only access by default instead of read/write (#8317)
+
+====================
 Centreon Web 19.10.7
 ====================
 

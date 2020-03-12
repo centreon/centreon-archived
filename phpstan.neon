@@ -1,0 +1,6 @@
+parameters:
+  paths:
+    - %currentWorkingDirectory%/src/Centreon
+services:
+  errorFormatter.absolute:
+    class: Centreon\PHPStan\AbsolutePathErrorFormatter
