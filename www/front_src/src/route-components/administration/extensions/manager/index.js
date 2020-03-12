@@ -434,7 +434,7 @@ class ExtensionsRoute extends Component {
             filterKey: 'search',
           }}
           onChange={this.onChange.bind(this)}
-          switchs={[
+          switches={[
             [
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
