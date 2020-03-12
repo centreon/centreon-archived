@@ -66,7 +66,7 @@ const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
               height={21}
             />
           ) : (
-            <StatusChip label={row.short_name} statusCode={StatusCode.None} />
+            <StatusChip label={row.short_type} statusCode={StatusCode.None} />
           )}
         </Grid>
         <Grid item>

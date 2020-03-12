@@ -33,7 +33,7 @@ export interface Resource {
   last_check: string;
   information: string;
   severity?: Severity;
-  short_name: string;
+  short_type: string;
 }
 
 interface ListingMeta {

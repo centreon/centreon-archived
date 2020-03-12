@@ -120,7 +120,7 @@ const fillEntities = (): Array<Resource> => {
     duration: '1m',
     last_check: '1m',
     tries: '1',
-    short_name: 's',
+    short_type: 's',
     information: `Entity ${index}`,
   }));
 };
