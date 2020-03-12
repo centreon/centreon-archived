@@ -37,6 +37,10 @@
 
 namespace Centreon\Application\Validation\Validator\Interfaces;
 
+/**
+ * Purpose of this is to identify custom Centreon Validators, which may need additional dependencies
+ * Interface CentreonValidatorInterface
+ */
 interface CentreonValidatorInterface
 {
 
