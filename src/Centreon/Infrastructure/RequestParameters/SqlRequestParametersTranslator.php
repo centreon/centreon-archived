@@ -185,12 +185,15 @@ class SqlRequestParametersTranslator
      */
     private function createQueryOnKeyValue(string $key, $valueOrArray): string
     {
-        if ($this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
+        if (
+            $this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
             && !key_exists($key, $this->concordanceArray)
         ) {
-            if ($this->requestParameters->getConcordanceErrorMode() === RequestParameters::CONCORDANCE_ERRMODE_EXCEPTION
+            if (
+                $this->requestParameters
+                    ->getConcordanceErrorMode() === RequestParameters::CONCORDANCE_ERRMODE_EXCEPTION
             ) {
-                throw new RequestParametersTranslatorException('The parameter \''. $key . '\' is not allowed');
+                throw new RequestParametersTranslatorException("The parameter '{$key}' is not allowed");
             }
             return '';
         }
@@ -246,7 +249,8 @@ class SqlRequestParametersTranslator
                 $this->searchValues[$bindKey] = [$type => $mixedValue];
                 $bindKey = '(' . $bindKey . ')';
             }
-        } elseif ($searchOperator === RequestParameters::OPERATOR_LIKE
+        } elseif (
+            $searchOperator === RequestParameters::OPERATOR_LIKE
             || $searchOperator === RequestParameters::OPERATOR_NOT_LIKE
             || $searchOperator === RequestParameters::OPERATOR_REGEXP
         ) {

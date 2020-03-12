@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,40 +26,40 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
 class RequestParameters implements RequestParametersInterface
 {
-    const NAME_FOR_LIMIT = 'limit';
-    const NAME_FOR_PAGE = 'page';
-    const NAME_FOR_SEARCH = 'search';
-    const NAME_FOR_SORT = 'sort_by';
-    const NAME_FOR_TOTAL = 'total';
+    public const NAME_FOR_LIMIT = 'limit';
+    public const NAME_FOR_PAGE = 'page';
+    public const NAME_FOR_SEARCH = 'search';
+    public const NAME_FOR_SORT = 'sort_by';
+    public const NAME_FOR_TOTAL = 'total';
 
-    const ORDER_ASC = 'ASC';
-    const ORDER_DESC = 'DESC';
-    const DEFAULT_ORDER = self::ORDER_ASC;
+    public const ORDER_ASC = 'ASC';
+    public const ORDER_DESC = 'DESC';
+    public const DEFAULT_ORDER = self::ORDER_ASC;
 
-    const DEFAULT_LIMIT = 10;
-    const DEFAULT_PAGE = 1;
-    const DEFAULT_SEARCH_OPERATOR = self::OPERATOR_EQUAL;
+    public const DEFAULT_LIMIT = 10;
+    public const DEFAULT_PAGE = 1;
+    public const DEFAULT_SEARCH_OPERATOR = self::OPERATOR_EQUAL;
 
-    const OPERATOR_EQUAL = '$eq';
-    const OPERATOR_NOT_EQUAL = '$neq';
-    const OPERATOR_LESS_THAN = '$lt';
-    const OPERATOR_LESS_THAN_OR_EQUAL = '$le';
-    const OPERATOR_GREATER_THAN = '$gt';
-    const OPERATOR_GREATER_THAN_OR_EQUAL = '$ge';
-    const OPERATOR_LIKE = '$lk';
-    const OPERATOR_NOT_LIKE = '$nk';
-    const OPERATOR_REGEXP = '$rg';
-    const OPERATOR_IN = '$in';
-    const OPERATOR_NOT_IN = '$ni';
+    public const OPERATOR_EQUAL = '$eq';
+    public const OPERATOR_NOT_EQUAL = '$neq';
+    public const OPERATOR_LESS_THAN = '$lt';
+    public const OPERATOR_LESS_THAN_OR_EQUAL = '$le';
+    public const OPERATOR_GREATER_THAN = '$gt';
+    public const OPERATOR_GREATER_THAN_OR_EQUAL = '$ge';
+    public const OPERATOR_LIKE = '$lk';
+    public const OPERATOR_NOT_LIKE = '$nk';
+    public const OPERATOR_REGEXP = '$rg';
+    public const OPERATOR_IN = '$in';
+    public const OPERATOR_NOT_IN = '$ni';
 
-    const AGGREGATE_OPERATOR_OR = '$or';
-    const AGGREGATE_OPERATOR_AND = '$and';
+    public const AGGREGATE_OPERATOR_OR = '$or';
+    public const AGGREGATE_OPERATOR_AND = '$and';
 
-    const CONCORDANCE_MODE_NO_STRICT = 0;
-    const CONCORDANCE_MODE_STRICT = 1;
+    public const CONCORDANCE_MODE_NO_STRICT = 0;
+    public const CONCORDANCE_MODE_STRICT = 1;
 
-    const CONCORDANCE_ERRMODE_SILENT = 0;
-    const CONCORDANCE_ERRMODE_EXCEPTION = 1;
+    public const CONCORDANCE_ERRMODE_SILENT = 0;
+    public const CONCORDANCE_ERRMODE_EXCEPTION = 1;
 
     private $authorizedOrders = [self::ORDER_ASC, self::ORDER_DESC];
 

@@ -130,14 +130,16 @@ class Validator implements JsonValidatorInterface
          * First of all, we look for definitions according to the given version.
          * otherwise, we look for the default definitions.
          */
-        if (array_key_exists($this->version, $this->definitions)
+        if (
+            array_key_exists($this->version, $this->definitions)
             && array_key_exists($modelName, $this->definitions[$this->version])
         ) {
             $definitionsToUseForValidation = $this->populateComponentsToDefinitions(
                 $this->definitions[$this->version][$modelName],
                 $this->definitions[self::VERSION_DEFAULT]
             );
-        } elseif (array_key_exists(self::VERSION_DEFAULT, $this->definitions)
+        } elseif (
+            array_key_exists(self::VERSION_DEFAULT, $this->definitions)
             && array_key_exists($modelName, $this->definitions[self::VERSION_DEFAULT])
         ) {
             $definitionsToUseForValidation = $this->populateComponentsToDefinitions(
@@ -148,7 +150,7 @@ class Validator implements JsonValidatorInterface
 
         if (empty($definitionsToUseForValidation)) {
             throw new \Exception(
-                'The definition model "' . $modelName. '" to validate the JSON does not exist or is empty'
+                'The definition model "' . $modelName . '" to validate the JSON does not exist or is empty'
             );
         }
 

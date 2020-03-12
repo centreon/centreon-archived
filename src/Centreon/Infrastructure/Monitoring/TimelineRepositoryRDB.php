@@ -198,7 +198,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     {
         $sql = "SELECT
 		CONCAT('L', l.log_id) AS `eventId`,
-        '". LogEventObject::EVENTTYPE ."' AS `eventType`,
+        '" . LogEventObject::EVENTTYPE . "' AS `eventType`,
         l.log_id AS `id`,
 		l.output AS `output`,
 		l.ctime AS `timestamp`,
@@ -250,7 +250,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     {
         $sql = "SELECT
 		CONCAT('C', c.comment_id) AS `eventId`,
-        '". CommentEventObject::EVENTTYPE ."' AS `eventType`,
+        '" . CommentEventObject::EVENTTYPE . "' AS `eventType`,
         c.comment_id AS `id`,
 		c.data AS `output`,
 		c.entry_time AS `timestamp`,
@@ -302,7 +302,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     {
         $sql = "SELECT
 		CONCAT('D', d.downtime_id) AS `eventId`,
-        '". DowntimeEventObject::EVENTTYPE ."' AS `eventType`,
+        '" . DowntimeEventObject::EVENTTYPE . "' AS `eventType`,
         d.downtime_id AS `id`,
 		d.comment_data AS `output`,
 		d.entry_time AS `timestamp`,
@@ -354,11 +354,10 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         StatementCollector $collector,
         int $hostId,
         int $serviceId = null
-    ): string {
-    
+    ): string {    
         $sql = "SELECT
 		CONCAT('A', a.acknowledgement_id) AS `eventId`,
-        '". AckEventObject::EVENTTYPE ."' AS `eventType`,
+        '" . AckEventObject::EVENTTYPE . "' AS `eventType`,
         a.acknowledgement_id AS `id`,
 		a.comment_data AS `output`,
 		a.entry_time AS `timestamp`,
