@@ -8,6 +8,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
 } from 'recharts';
 import filesize from 'filesize';
 
@@ -83,17 +84,19 @@ const Graph = ({ endpoint }) => {
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="time" />
       {/* <YAxis /> */}
-      <Tooltip />
       {getUnits().map((unit, index) => (
         <YAxis
-          yAxisId={index}
+          yAxisId={unit === '' ? 'n/a' : unit}
           key={unit}
           orientation={index === 0 ? 'left' : 'right'}
-          tickFormatter={(tick) => filesize(tick, { base: getBase(unit) })}
+          tickFormatter={(tick) => {
+            console.log(tick);
+            return unit === '' ? tick : filesize(tick, { base: getBase(unit) });
+          }}
         />
       ))}
 
-      {graphData?.metrics.map(({ metric, ds_data }, index) =>
+      {graphData?.metrics.map(({ metric, ds_data, unit }, index) =>
         ds_data.ds_filled ? (
           <Area
             type="monotone"
@@ -101,6 +104,7 @@ const Graph = ({ endpoint }) => {
             stackId={index}
             stroke={ds_data.ds_color_line}
             fill={fade(ds_data.ds_color_area, 0.8)}
+            yAxisId={unit === '' ? 'n/a' : unit}
           />
         ) : (
           <Line
@@ -108,9 +112,11 @@ const Graph = ({ endpoint }) => {
             dataKey={metric}
             stroke={ds_data.ds_color_line}
             dot={false}
+            yAxisId={unit === '' ? 'n/a' : unit}
           />
         ),
       )}
+      <Legend />
     </ComposedChart>
   );
 };
