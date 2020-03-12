@@ -218,7 +218,8 @@ class SqlRequestParametersTranslator
                     . RequestParameters::OPERATOR_NOT_EQUAL
                 );
             }
-        } elseif ($searchOperator === RequestParameters::OPERATOR_IN
+        } elseif (
+            $searchOperator === RequestParameters::OPERATOR_IN
             || $searchOperator === RequestParameters::OPERATOR_NOT_IN
         ) {
             if (is_array($mixedValue)) {

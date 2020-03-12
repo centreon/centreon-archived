@@ -354,7 +354,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         StatementCollector $collector,
         int $hostId,
         int $serviceId = null
-    ): string {    
+    ): string {
         $sql = "SELECT
 		CONCAT('A', a.acknowledgement_id) AS `eventId`,
         '" . AckEventObject::EVENTTYPE . "' AS `eventType`,
