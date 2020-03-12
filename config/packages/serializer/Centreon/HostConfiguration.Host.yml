@@ -1,0 +1,38 @@
+Centreon\Domain\HostConfiguration\Host:
+  properties:
+    id:
+      type: int
+      groups:
+        - 'host_conf_min'
+    name:
+      type: string
+      groups:
+        - 'host_conf_min'
+        - 'host_mapper_simulation'
+    alias:
+      type: string
+      groups:
+        - 'host_conf_min'
+        - 'host_mapper_simulation'
+    ipAddress:
+      type: string
+      groups:
+        - 'host_conf_full'
+        - 'host_mapper_simulation'
+    comment:
+      type: string
+      groups:
+        - 'host_conf_full'
+    geoCoords:
+      type: string
+      groups:
+        - 'host_conf_full'
+    isActivate:
+      type: bool
+      groups:
+        - 'host_conf_full'
+    extendedHost:
+      type: "Centreon\\Domain\\HostConfiguration\\ExtendedHost"
+      groups:
+        - 'host_conf_full'
+        - 'host_mapper_simulation'
