@@ -1291,38 +1291,18 @@ copy_ssh_keys_to_gorgone() {
 ## Create gorgone configuration folders
 #----
 create_gorgone_configuration_structure() {
-    ## create the required gorgone configuration structure
+    ## check the required gorgone configuration structure
     conf_folder="$GORGONE_CONFIG/config.d"
     if [ ! -d "$conf_folder" ] ; then
-        mkdir -p "$conf_folder"
-        if [ $? -ne 0 ] ; then
-            echo_failure "$(gettext "Cannot create the subfolder") $conf_folder" "$fail"
-            return 1
-        fi
-    fi
-    log "INFO" "GORGONE_CONFIG/config.d: $conf_folder"
-
-    # gorgone's config.yaml
-    destination="$GORGONE_CONFIG/config.yaml"
-    if [ -e $destination ] ; then
-        yes_no_default "$(gettext "The configuration is already created. Do you want to overwrite it ?")"
-        if [ $? -ne 0 ] ; then
-            echo_info "$(gettext "If needed, please update") $destination" "$passed"
-        else
-            ${CAT} <<- __EOT__ > $destination
-name: config.yaml
-description: Configuration brought by Centreon Gorgone
-configuration: !include $conf_folder/*.yaml
-__EOT__
-
-            echo_success "$(gettext "Create gorgone config.yaml")" "$ok"
-        fi
+        echo_failure "$(gettext "Gorgone configuration folder is missing") $conf_folder" "$fail"
+        echo_failure "$(gettext "Please reinstall Gorgone service")" "$fail"
+        return 1
     fi
 
     # gorgone's config.d/30-centreon.yaml
     destination="$conf_folder/30-centreon.yaml"
     if [ -e $destination ] ; then
-        yes_no_default "$(gettext "The configuration is already created. Do you want to overwrite it ?")"
+        yes_no_default "$(gettext "A configuration file already exists. Do you want to overwrite it ?")"
         if [ $? -ne 0 ] ; then
             echo_info "$(gettext "If needed, please update") $destination" "$passed"
         else
@@ -1332,7 +1312,7 @@ description: Configure Centreon Gorgone to work with Centreon Web.
 centreon: !include $CENTREON_ETC/config.d/*.yaml
 __EOT__
 
-            echo_success "$(gettext "Create gorgone 30-centreon.yaml")" "$ok"
+            echo_success "$(gettext "Create gorgone's 30-centreon.yaml file")" "$ok"
         fi
     fi
 
@@ -1344,12 +1324,12 @@ __EOT__
             return 1
         fi
     fi
-    log "INFO" "CENTREON_ETC/config.d: $CENTREON_ETC/config.d"
+    echo_success "$(gettext "Create centreon config folders")" "$ok"
 
     # centreon's config.yaml
     destination="$CENTREON_ETC/config.yaml"
     if [ -e $destination ] ; then
-        yes_no_default "$(gettext "The configuration is already created. Do you want to overwrite it ?")"
+        yes_no_default "$(gettext "A configuration file already exists. Do you want to overwrite it ?")"
         if [ $? -ne 0 ] ; then
             echo_info "$(gettext "If needed, please update") $destination" "$passed"
         else
