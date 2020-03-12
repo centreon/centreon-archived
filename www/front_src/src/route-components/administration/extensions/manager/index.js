@@ -138,7 +138,7 @@ class ExtensionsRoute extends Component {
         },
       );
     } else if (widgetsActive) {
-      // inverted because of inverse logic for switchs on/off false/true
+      // inverted because of inverse logic for switches on/off false/true
       this.getEntitiesByKeyAndVersionParam(
         param,
         equals,
