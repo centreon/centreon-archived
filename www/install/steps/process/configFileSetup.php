@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -37,11 +38,11 @@ session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../functions.php';
 
-$return = array(
+$return = [
     'id' => 'configfile',
     'result' => 1,
-    'msg' => ''
-);
+    'msg' => '',
+];
 
 $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
@@ -64,7 +65,7 @@ $patterns = [
     '/--CENTREON_CACHEDIR--/',
     '/--DBPORT--/',
     '/--INSTANCEMODE--/',
-    '/--CENTREON_VARLIB--/'
+    '/--CENTREON_VARLIB--/',
 ];
 
 $replacements = [
@@ -77,7 +78,7 @@ $replacements = [
     $configuration['centreon_cachedir'],
     $parameters['port'],
     "central",
-    $configuration['centreon_varlib']
+    $configuration['centreon_varlib'],
 ];
 
 $centreonEtcPath = rtrim($configuration['centreon_etc'], '/');

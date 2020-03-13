@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -57,7 +58,8 @@ class GorgoneController extends AbstractFOSRestController
      *     "/gorgone/pollers/{pollerId}/commands/{commandName}",
      *     condition="request.attributes.get('version') == 2.0")
      * @param string $commandName Name of the Gorgone command
-     * @param int $pollerId Id of the poller for which this command is intended
+     * @param int    $pollerId    Id of the poller for which this command is intended
+     *
      * @return View
      * @throws \Exception
      */
@@ -65,6 +67,7 @@ class GorgoneController extends AbstractFOSRestController
     {
         $command = $this->createFromName($commandName, $pollerId);
         $gorgoneResponse = $this->gorgoneService->send($command);
+
         return $this->view([
             'token' => $gorgoneResponse->getCommand() !== null
                 ? $gorgoneResponse->getCommand()->getToken()
@@ -78,8 +81,9 @@ class GorgoneController extends AbstractFOSRestController
      * @Rest\Get(
      *     "/gorgone/pollers/{pollerId}/responses/{token}",
      *     condition="request.attributes.get('version') == 2.0")
-     * @param int $pollerId Id of the poller for which the command is intended
-     * @param string $token Token of the command attributed by the Gorgone server
+     * @param int    $pollerId Id of the poller for which the command is intended
+     * @param string $token    Token of the command attributed by the Gorgone server
+     *
      * @return View
      */
     public function getResponses(int $pollerId, string $token): View
@@ -90,9 +94,10 @@ class GorgoneController extends AbstractFOSRestController
         $responseTemplate = ($gorgoneResponse->getError() !== null)
             ? ['error' => $gorgoneResponse->getError()]
             : [];
+
         return $this->view(array_merge($responseTemplate, [
             'message' => $gorgoneResponse->getMessage(),
-            'token' =>$gorgoneResponse->getToken(),
+            'token' => $gorgoneResponse->getToken(),
             'data' => $gorgoneResponse->getActionLogs()
         ]));
     }
@@ -101,7 +106,8 @@ class GorgoneController extends AbstractFOSRestController
      * Check whether the command type exists or not.
      *
      * @param string $commandType Type of the command (ex: thumbprint, ...)
-     * @param int $pollerId Id of the poller for which the command is intended
+     * @param int    $pollerId    Id of the poller for which the command is intended
+     *
      * @return CommandInterface
      */
     private function createFromName(string $commandType, int $pollerId): CommandInterface

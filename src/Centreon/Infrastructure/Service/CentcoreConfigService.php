@@ -1,12 +1,18 @@
 <?php
+
 namespace Centreon\Infrastructure\Service;
 
+/**
+ * Class CentcoreConfigService
+ *
+ * @package Centreon\Infrastructure\Service
+ */
 class CentcoreConfigService
 {
 
-    const CONF_WEB = 'instCentWeb.conf';
+    public const CONF_WEB = 'instCentWeb.conf';
 
-    const MACROS_DELIMITER_TEMPLATE = '@%s@';
+    public const MACROS_DELIMITER_TEMPLATE = '@%s@';
 
     /**
      * @var array

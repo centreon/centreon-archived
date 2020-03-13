@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2016-2020 Centreon (http://www.centreon.com/)
  *
@@ -56,7 +57,7 @@ $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();
 
 //get gorgone api informations
-$gorgoneApi = array();
+$gorgoneApi = [];
 $dbResult = $pearDB->query('SELECT * from options WHERE `key` LIKE "gorgone%"');
 while ($row = $dbResult->fetch()) {
     $gorgoneApi[$row['key']] = $row['value'];
@@ -70,7 +71,7 @@ if (empty($server['remote_id']) && empty($server['list_remote_server_id'])) {
     $parents = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
 } else {
     $dbResult = $pearDB->query($query);
-    $parents = array($server['remote_id']);
+    $parents = [$server['remote_id']];
     if (!empty($server['list_remote_server_id'])) {
         $remote = explode(',', $server['list_remote_server_id']);
         $parents = array_merge($parents, $remote);
@@ -110,18 +111,18 @@ try {
             $timeout -= 10;
             $gorgoneError = true;
             $dataError .= '
-    - error : TimeOut error for poller '.$serverId.' We can\'t get log';
+    - error : TimeOut error for poller ' . $serverId . ' We can\'t get log';
             continue;
         }
 
         $thummprintReponse = json_decode($lastActionLog->getData(), true);
         if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
             $thumbprints .= '
-      - key: '.$thummprintReponse['data']['thumbprint'];
+      - key: ' . $thummprintReponse['data']['thumbprint'];
         } else {
             $gorgoneError = true;
             $dataError .= '
-      - error : Poller '.$serverId.' : '.$thummprintReponse['message'];
+      - error : Poller ' . $serverId . ' : ' . $thummprintReponse['message'];
         }
     }
 } catch (\Exception $ex) {
@@ -135,40 +136,40 @@ if (!empty($dataError)) {
     //config for remote
     $config = file_get_contents('./remote.yaml');
     $config = str_replace(
-        array(
+        [
             '__SERVERNAME__',
             '__SERVERID__',
             '__GORGONEPORT__',
             '__THUMBPRINT__',
-            '__COMMAND__'
-        ),
-        array(
+            '__COMMAND__',
+        ],
+        [
             $server['name'],
             $server['id'],
             $server['gorgone_port'],
             $thumbprints,
-            $server['command_file']
-        ),
+            $server['command_file'],
+        ],
         $config
     );
 } else {
     //config for poller
     $config = file_get_contents('./poller.yaml');
     $config = str_replace(
-        array(
+        [
             '__SERVERNAME__',
             '__SERVERID__',
             '__GORGONEPORT__',
             '__THUMBPRINT__',
-            '__COMMAND__'
-        ),
-        array(
+            '__COMMAND__',
+        ],
+        [
             $server['name'],
             $server['id'],
             $server['gorgone_port'],
             $thumbprints,
-            $server['command_file']
-        ),
+            $server['command_file'],
+        ],
         $config
     );
 }
