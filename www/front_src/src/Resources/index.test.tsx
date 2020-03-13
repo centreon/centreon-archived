@@ -466,11 +466,15 @@ describe(Resources, () => {
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
-        author_name: 'admin',
-        start_time: '2020-02-28T09:16:16',
-        end_time: '2020-02-28T09:18:16',
-        is_fixed: true,
-        comment: 'Set by admin',
+        result: [
+          {
+            author_name: 'admin',
+            start_time: '2020-02-28T09:16:16',
+            end_time: '2020-02-28T09:18:16',
+            is_fixed: true,
+            comment: 'Set by admin',
+          },
+        ],
       },
     });
 
@@ -506,11 +510,15 @@ describe(Resources, () => {
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
-        author_name: 'admin',
-        entry_time: '2020-02-28T09:16:16',
-        is_persistent_comment: true,
-        is_sticky: false,
-        comment: 'Set by admin',
+        result: [
+          {
+            author_name: 'admin',
+            entry_time: '2020-02-28T09:16:16',
+            is_persistent_comment: true,
+            is_sticky: false,
+            comment: 'Set by admin',
+          },
+        ],
       },
     });
 
