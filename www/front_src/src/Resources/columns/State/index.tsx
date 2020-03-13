@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Grid, makeStyles, fade } from '@material-ui/core';
-import { Person as IconAcknowledged } from '@material-ui/icons';
+import IconAcknowledged from '@material-ui/icons/Person';
 import { lime, purple } from '@material-ui/core/colors';
 
 import IconDowntime from '../icons/Downtime';

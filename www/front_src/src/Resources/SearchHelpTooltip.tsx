@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Tooltip, makeStyles } from '@material-ui/core';
-import { HelpOutline as IconHelp } from '@material-ui/icons';
+import IconHelp from '@material-ui/icons/HelpOutline';
 
 import {
   labelSearchOnFields,

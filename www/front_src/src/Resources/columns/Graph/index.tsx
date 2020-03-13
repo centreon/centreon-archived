@@ -13,7 +13,7 @@ import filesize from 'filesize';
 import format from 'date-fns/format';
 
 import { fade, makeStyles, CircularProgress } from '@material-ui/core';
-import { BarChart as IconBarChart } from '@material-ui/icons';
+import IconBarChart from '@material-ui/icons/BarChart';
 
 import { useCancelTokenSource } from '@centreon/ui';
 
