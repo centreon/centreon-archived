@@ -63,7 +63,7 @@
         "ext-json": "*",
         "justinrainbow/json-schema": "^5.2",
         "ext-openssl": "*",
-        "symfony/http-client": "4.3.*"
+        "symfony/http-client": "4.4.*"
     },
     "autoload": {
         "psr-4": {
