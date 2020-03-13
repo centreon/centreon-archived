@@ -101,7 +101,7 @@ services:
     # Engine
     Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface:
         class: Centreon\Infrastructure\Engine\EngineRepositoryFile
-        arguments: ['%centreon_var_lib%/centcore.cmd']
+        arguments: ['%centreon_var_lib%/centcore']
 
     Centreon\Domain\Engine\Interfaces\EngineServiceInterface:
         class: Centreon\Domain\Engine\EngineService
