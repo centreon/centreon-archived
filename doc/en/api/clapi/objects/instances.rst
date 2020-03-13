@@ -37,7 +37,7 @@ Status            *1* if poller is running, *0* otherwise
 
 Init script       Init script path
 
-Monitoring Engine Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*...
+Monitoring Engine Engine used on poller: *CENTREON-ENGINE*
 
 Bin               Path of the Scheduler binary
 
