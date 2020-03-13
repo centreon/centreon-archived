@@ -34,14 +34,6 @@
 ##
 ##    For information : infos@centreon.com
 #
-# Todo list
-# - upgrade process 
-# -- 1.x --> 2.x
-# -- 2.x --> 2.x+1
-# -- on upgrade, overwrite existing ? backup ? 
-
-# Debug
-#set -x
 
 #----
 ## Usage information for install.sh
@@ -183,13 +175,12 @@ define_specific_binary_vars
 ${CAT} << __EOT__
 ###############################################################################
 #                                                                             #
-#                         Centreon (www.centreon.com)                         #
-#                          Thanks for using Centreon                          #
+#                           Centreon (www.centreon.com)                       #
 #                                                                             #
 #                               infos@centreon.com                            #
 #                                                                             #
 #                   Make sure you have installed and configured               #
-#          centreon-gorgone sudo - sed - php - apache - rrdtool - mysql       #
+#         centreon-gorgone - sudo - sed - php - apache - rrdtool - mysql      #
 #                                                                             #
 ###############################################################################
 __EOT__
@@ -220,22 +211,19 @@ for binary in $BINARIES; do
 done
 
 ###### Mandatory step
-# locate gorgone
+# ask if gorgone have already been installed
 echo -e "\n$line"
 echo -e "\t$(gettext "Check mandatory gorgone service status")"
 echo -e "$line"
 
 yes_no_default "$(gettext "Is the Gorgone module already installed?")"
 if [ "$?" -ne 0 ] ; then
-    echo_failure "$(gettext "Gorgone is required.\nPlease install it before launching this script")\n" "$fail"
-    echo -e "\n$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
+    echo_failure "\n$(gettext "Gorgone is required.\nPlease install it before launching this script")" "$fail"
+    echo -e "\n\t$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
     echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
     echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
     exit 1
 fi
-locate_gorgone_varlib
-check_gorgone_user
-check_gorgone_group
 
 # Script stop if one binary wasn't found
 if [ "$binary_fail" -eq 1 ] ; then
@@ -409,19 +397,31 @@ server=$(hostname -f)
 # Replace global variables
 
 ${CAT} << __EOT__
+
 ###############################################################################
+#                                                                             #
+#                         Thanks for using Centreon.                          #
+#                          -----------------------                            #
 #                                                                             #
 #                 Go to the URL : http://$server/centreon/                    #
 #                   	     to finish the setup                              #
 #                                                                             #
-#           Report bugs at https://github.com/centreon/centreon/issues        #
+#                Please read the documentation available here :               #
+#                         documentation.centreon.com                          #
 #                                                                             #
-#                         Thanks for using Centreon.                          #
-#                          -----------------------                            #
-#                        Contact : infos@centreon.com                         #
+#      ------------------------------------------------------------------     #
+#                                                                             #
+#         Report bugs at https://github.com/centreon/centreon/issues          #
+#                                                                             #
+#                        Contact : contact@centreon.com                       #
 #                          http://www.centreon.com                            #
 #                                                                             #
+#                          -----------------------                            #
+#              For security issues, please read our security policy           #
+#              https://github.com/centreon/centreon/security/policy           #
+#                                                                             #
 ###############################################################################
+
 __EOT__
 
 

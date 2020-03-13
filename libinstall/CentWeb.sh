@@ -30,6 +30,16 @@
 #set -x
 
 echo -e "\n$line"
+echo -e "\t$(gettext "Gorgone module Installation")"
+echo -e "$line"
+
+# locate gorgone
+locate_gorgone_varlib
+locate_gorgone_config
+check_gorgone_user
+check_gorgone_group
+
+echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
 
@@ -117,14 +127,6 @@ get_primary_group "$MONITORINGENGINE_USER" "MONITORINGENGINE_GROUP"
 add_group "$WEB_USER" "$MONITORINGENGINE_GROUP"
 add_group "$CENTREON_USER" "$MONITORINGENGINE_GROUP"
 add_group "$CENTREON_USER" "$WEB_GROUP"
-
-## Configure Gorgone user and group
-add_group "$CENTREON_USER" "$GORGONE_GROUP"
-add_group "$WEB_USER" "$GORGONE_GROUP"
-add_group "$GORGONE_USER" "$CENTREON_GROUP"
-add_group "$GORGONE_USER" "$BROKER_GROUP"
-add_group "$GORGONE_USER" "$MONITORINGENGINE_GROUP"
-add_group "$GORGONE_USER" "$WEB_GROUP"
 
 ## Config Sudo
 # I think this process move on CentCore install...
@@ -367,6 +369,15 @@ else
     add_group "$MONITORINGENGINE_USER" "$BROKER_GROUP"
     add_group "$BROKER_USER" "$CENTREON_GROUP"
 fi
+
+## Configure Gorgone user and group
+add_group "$CENTREON_USER" "$GORGONE_GROUP"
+add_group "$WEB_USER" "$GORGONE_GROUP"
+add_group "$GORGONE_USER" "$CENTREON_GROUP"
+add_group "$GORGONE_USER" "$BROKER_GROUP"
+add_group "$GORGONE_USER" "$MONITORINGENGINE_GROUP"
+add_group "$GORGONE_USER" "$WEB_GROUP"
+
 if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
     $INSTALL_DIR/cinstall $cinstall_opts \
         -g "$BROKER_GROUP" -d 775 \
@@ -717,7 +728,7 @@ while [ "$pear_module" -eq 0 ] ; do
                 if [ "$first" -eq 0 ] ; then
                     echo_info "$(gettext "Unable to upgrade PEAR modules. You seem to have a connection problem.")"
                 fi
-                yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
+                yes_no_default "$(gettext "Do you want to install/upgrade your PEAR modules")" "$yes"
                 [ "$?" -eq 0 ] && PEAR_AUTOINST=1
             fi
         if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
@@ -734,10 +745,16 @@ while [ "$pear_module" -eq 0 ] ; do
     fi
 done
 
+#----
+## Gorgone specific tasks
+#----
 ## Copy pollers SSH keys (in case of upgrade) to the new "user" gorgone
 if [ "$upgrade" = "1" ]; then
     copy_ssh_keys_to_gorgone
 fi
+## Create gorgone's configuration structure
+create_gorgone_configuration_structure
+
 
 ## Create configfile for web install
 createConfFile
