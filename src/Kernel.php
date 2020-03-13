@@ -27,6 +27,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
+/**
+ * Class Kernel
+ *
+ * @package App
+ */
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
@@ -45,6 +50,9 @@ class Kernel extends BaseKernel
 
     private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
+    /**
+     * @return \App\Kernel
+     */
     public static function createForWeb(): Kernel
     {
         if (static::$instance === null) {
@@ -60,6 +68,12 @@ class Kernel extends BaseKernel
         return static::$instance;
     }
 
+    /**
+     * Kernel constructor.
+     *
+     * @param string $environment
+     * @param bool   $debug
+     */
     public function __construct(string $environment, bool $debug)
     {
         parent::__construct($environment, $debug);
@@ -71,6 +85,9 @@ class Kernel extends BaseKernel
         }
     }
 
+    /**
+     * @return iterable
+     */
     public function registerBundles(): iterable
     {
         $contents = require $this->getProjectDir().'/config/bundles.php';
@@ -81,22 +98,36 @@ class Kernel extends BaseKernel
         }
     }
 
+    /**
+     * @return string
+     */
     public function getProjectDir(): string
     {
         return \dirname(__DIR__);
     }
 
+    /**
+     * @return string
+     */
     public function getCacheDir()
     {
         return $this->cacheDir;
     }
 
+    /**
+     * @return string
+     */
     public function getLogDir()
     {
         return $this->logDir;
     }
 
-
+    /**
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param \Symfony\Component\Config\Loader\LoaderInterface        $loader
+     *
+     * @throws \Exception
+     */
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
         $container->addResource(new FileResource($this->getProjectDir().'/config/bundles.php'));
@@ -109,6 +140,11 @@ class Kernel extends BaseKernel
         $loader->load($confDir.'/{services}_'.$this->environment.self::CONFIG_EXTS, 'glob');
     }
 
+    /**
+     * @param \Symfony\Component\Routing\RouteCollectionBuilder $routes
+     *
+     * @throws \Symfony\Component\Config\Exception\LoaderLoadException
+     */
     protected function configureRoutes(RouteCollectionBuilder $routes): void
     {
         $confDir = $this->getProjectDir().'/config';

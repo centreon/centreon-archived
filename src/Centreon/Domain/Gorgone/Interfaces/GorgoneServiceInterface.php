@@ -22,11 +22,16 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
+/**
+ * Interface GorgoneServiceInterface
+ *
+ * @package Centreon\Domain\Gorgone\Interfaces
+ */
 interface GorgoneServiceInterface
 {
     /**
      * Send a command to the Gorgone server and retrieve an instance of the
-     * response which allowed to get all action logs.
+     * response which allow to get all action logs.
      *
      * @param CommandInterface $command Command to send
      * @return ResponseInterface Returns a response containing the command sent.

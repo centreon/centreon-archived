@@ -22,6 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Option;
 
+/**
+ * Class Option
+ *
+ * @package Centreon\Domain\Option
+ */
 class Option
 {
     /**

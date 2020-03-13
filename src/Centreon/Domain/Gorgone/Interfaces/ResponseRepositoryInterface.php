@@ -22,6 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
+/**
+ * Interface ResponseRepositoryInterface
+ *
+ * @package Centreon\Domain\Gorgone\Interfaces
+ */
 interface ResponseRepositoryInterface
 {
     /**

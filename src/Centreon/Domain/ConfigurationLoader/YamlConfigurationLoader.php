@@ -38,6 +38,11 @@ class YamlConfigurationLoader
      */
     private $configurationFile;
 
+    /**
+     * YamlConfigurationLoader constructor.
+     *
+     * @param string $configurationFile
+     */
     public function __construct(string $configurationFile)
     {
         $this->configurationFile = $configurationFile;

@@ -40,6 +40,11 @@ class GorgoneController extends AbstractFOSRestController
      */
     private $gorgoneService;
 
+    /**
+     * GorgoneController constructor.
+     *
+     * @param \Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface $gorgoneService
+     */
     public function __construct(GorgoneServiceInterface $gorgoneService)
     {
         $this->gorgoneService = $gorgoneService;

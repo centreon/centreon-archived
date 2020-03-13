@@ -24,6 +24,11 @@ namespace Centreon\Domain\Option\Interfaces;
 
 use Centreon\Domain\Option\Option;
 
+/**
+ * Interface OptionServiceInterface
+ *
+ * @package Centreon\Domain\Option\Interfaces
+ */
 interface OptionServiceInterface
 {
     /**
