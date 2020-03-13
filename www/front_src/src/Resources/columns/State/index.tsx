@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Avatar, makeStyles, fade, Tooltip } from '@material-ui/core';
+import { Grid, makeStyles, fade } from '@material-ui/core';
 import { Person as IconAcknowledged } from '@material-ui/icons';
 import { lime, purple } from '@material-ui/core/colors';
 
@@ -10,12 +10,9 @@ import DowntimeDetailsTable from './DetailsTable/Downtime';
 import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import { labelInDowntime, labelAcknowledged } from '../../translatedLabels';
 import { Resource } from '../../models';
+import HoverChip from '../HoverChip';
 
-const useStyles = makeStyles((theme) => ({
-  stateChip: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-  },
+const useStyles = makeStyles(() => ({
   acknowledged: {
     backgroundColor: fade(lime[900], 0.1),
     color: lime[900],
@@ -45,22 +42,10 @@ const StateChip = ({
   DetailsTable,
   ariaLabel,
 }: StateChipProps): JSX.Element => {
-  const classes = useStyles();
-
   return (
-    <Tooltip
-      placement="left"
-      title={<DetailsTable endpoint={endpoint} />}
-      classes={{ tooltip: classes.tooltip }}
-      enterDelay={0}
-    >
-      <Avatar
-        className={`${classes.stateChip} ${className}`}
-        aria-label={ariaLabel}
-      >
-        <Icon />
-      </Avatar>
-    </Tooltip>
+    <HoverChip className={className} ariaLabel={ariaLabel} Icon={Icon}>
+      <DetailsTable endpoint={endpoint} />
+    </HoverChip>
   );
 };
 

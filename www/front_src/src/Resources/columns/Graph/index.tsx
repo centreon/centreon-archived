@@ -7,27 +7,66 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   Legend,
 } from 'recharts';
 import filesize from 'filesize';
 import format from 'date-fns/format';
 
+import { fade, makeStyles, CircularProgress } from '@material-ui/core';
 import { BarChart as IconBarChart } from '@material-ui/icons';
 
 import { useCancelTokenSource } from '@centreon/ui';
 
-import { fade } from '@material-ui/core';
 import { labelGraph } from '../../translatedLabels';
 import HoverChip from '../HoverChip';
 import { getData } from '../../api';
+import { ColumnProps } from '..';
 
-const Graph = ({ endpoint }) => {
+const graphHeight = 350;
+const graphWidth = 475;
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.palette.common.white,
+    height: graphHeight,
+    width: graphWidth,
+  },
+  graph: {
+    margin: 'auto',
+  },
+  legend: {
+    color: theme.palette.common.black,
+  },
+}));
+
+interface Props {
+  endpoint: string;
+}
+
+interface Metric {
+  data: Array<number>;
+  ds_data;
+  metric: string;
+  unit: string;
+}
+
+interface GraphData {
+  global;
+  metrics: Array<Metric>;
+  times: Array<string>;
+}
+
+const Graph = ({ endpoint }: Props): JSX.Element => {
   const { cancel, token } = useCancelTokenSource();
-  const [graphData, setGraphData] = React.useState();
+  const [graphData, setGraphData] = React.useState<GraphData>();
+
+  const classes = useStyles();
 
   React.useEffect(() => {
-    getData<Array<unknown>>({
+    getData<Array<GraphData>>({
       endpoint,
       requestParams: { cancelToken: token },
     }).then((retrievedGraphData) => setGraphData(retrievedGraphData[0]));
@@ -35,108 +74,129 @@ const Graph = ({ endpoint }) => {
   }, []);
 
   const getMetricDataForTimeIndex = (timeIndex) => {
-    return graphData.metrics.reduce(
-      (metricByName, { metric, data }) => ({
+    return graphData?.metrics.reduce((metricByName, { metric, data }) => {
+      const dataForTimeIndex = data[timeIndex];
+      const lowerLimit =
+        graphData.global['lower-limit'] || dataForTimeIndex - 1;
+
+      return {
         ...metricByName,
-        [metric]: data[timeIndex],
-      }),
-      {},
-    );
+        ...(dataForTimeIndex > lowerLimit
+          ? { [metric]: dataForTimeIndex }
+          : null),
+      };
+    }, {});
   };
 
   const getBase = (unit): 2 | 10 => {
-    if (
-      ['B', 'bytes', 'bytespersecond', 'B/s', 'B/sec', 'o', 'octets'].includes(
-        unit,
-      )
-    ) {
-      return 2;
-    }
+    const base2Units = [
+      'B',
+      'bytes',
+      'bytespersecond',
+      'B/s',
+      'B/sec',
+      'o',
+      'octets',
+    ];
 
-    return 10;
+    return base2Units.includes(unit) ? 2 : 10;
   };
 
-  const data = graphData
-    ? graphData.times.map((time, timeIndex) => {
-        return { time, ...getMetricDataForTimeIndex(timeIndex) };
-      })
-    : [];
+  const data =
+    graphData?.times.map((time, timeIndex) => {
+      return { time, ...getMetricDataForTimeIndex(timeIndex) };
+    }) ?? [];
 
-  const getUnits = () =>
-    graphData ? [...new Set(graphData.metrics.map(({ unit }) => unit))] : [];
+  const getUnits = (): Array<string> => [
+    ...new Set(graphData?.metrics?.map(({ unit }) => unit)),
+  ];
+
+  const yAxisFormatter = ({ tick, unit }): string =>
+    unit === ''
+      ? tick
+      : filesize(tick, { base: getBase(unit) }).replace('B', '');
+
+  const xAxisFormatter = (tick): string =>
+    format(new Date(Number(tick) * 1000), 'HH:mm');
+
+  const YAxes =
+    getUnits().length < 3 ? (
+      getUnits().map((unit, index) => (
+        <YAxis
+          yAxisId={unit}
+          key={unit}
+          unit={unit}
+          orientation={index === 0 ? 'left' : 'right'}
+          tickFormatter={(tick): string => yAxisFormatter({ tick, unit })}
+        />
+      ))
+    ) : (
+      <YAxis />
+    );
+
+  const legendFormatter = (value): JSX.Element => (
+    <span className={classes.legend}>{value}</span>
+  );
+
+  const loading = graphData === undefined;
 
   return (
-    <ComposedChart
-      style={{ backgroundColor: 'white' }}
-      width={475}
-      height={350}
-      data={data}
-      margin={{
-        top: 10,
-        right: 0,
-        left: 0,
-        bottom: 10,
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-        dataKey="time"
-        tickFormatter={(tick): string =>
-          format(new Date(Number(tick) * 1000), 'HH:mm')}
-      />
-      {/* <YAxis /> */}
-      {getUnits().map((unit, index) => (
-        <YAxis
-          yAxisId={unit === '' ? 'n/a' : unit}
-          key={unit}
-          orientation={index === 0 ? 'left' : 'right'}
-          tickFormatter={(tick) => {
-            return unit === ''
-              ? tick
-              : filesize(tick, {
-                  base: getBase(unit),
-                }).replace('B', '');
-          }}
-        />
-      ))}
-
-      {graphData?.metrics.map(({ metric, ds_data, unit }, index) =>
-        ds_data.ds_filled ? (
-          <Area
-            type="monotone"
-            dataKey={metric}
-            stackId={index}
-            stroke={ds_data.ds_color_line}
-            fill={fade(ds_data.ds_color_area, 0.8)}
-            yAxisId={unit === '' ? 'n/a' : unit}
-          />
-        ) : (
-          <Line
-            type="monotone"
-            dataKey={metric}
-            stroke={ds_data.ds_color_line}
-            dot={false}
-            yAxisId={unit === '' ? 'n/a' : unit}
-          />
-        ),
+    <div className={classes.container}>
+      {loading ? (
+        <CircularProgress size={60} color="primary" />
+      ) : (
+        <ComposedChart
+          className={classes.graph}
+          width={graphWidth}
+          height={graphHeight}
+          data={data}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" tickFormatter={xAxisFormatter} />
+          {YAxes}
+          {graphData?.metrics.map(({ metric, ds_data, unit }, index) =>
+            ds_data.ds_filled ? (
+              <Area
+                key={metric}
+                type="monotone"
+                dataKey={metric}
+                stackId={index}
+                stroke={ds_data.ds_color_line}
+                fill={fade(
+                  ds_data.ds_color_area,
+                  ds_data.ds_transparency * 0.01,
+                )}
+                yAxisId={unit}
+              />
+            ) : (
+              <Line
+                key={metric}
+                type="monotone"
+                dataKey={metric}
+                stroke={ds_data.ds_color_line}
+                dot={false}
+                yAxisId={unit}
+              />
+            ),
+          )}
+          <Legend iconType="square" formatter={legendFormatter} />
+        </ComposedChart>
       )}
-      <Legend
-        iconType="square"
-        formatter={(value) => <span style={{ color: 'black' }}>{value}</span>}
-      />
-    </ComposedChart>
+    </div>
   );
 };
 
-const GraphColumn = ({ Cell, row }): JSX.Element => {
+const GraphColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
   return (
-    <Cell>
-      <HoverChip
-        ariaLabel={labelGraph}
-        Icon={(): JSX.Element => <IconBarChart />}
-      >
-        <Graph endpoint="http://localhost:5000/api/beta/graph" />
-      </HoverChip>
+    <Cell width={50}>
+      {row.graph_endpoint && (
+        <HoverChip
+          ariaLabel={labelGraph}
+          Icon={(): JSX.Element => <IconBarChart />}
+        >
+          <Graph endpoint={row.graph_endpoint} />
+        </HoverChip>
+      )}
     </Cell>
   );
 };

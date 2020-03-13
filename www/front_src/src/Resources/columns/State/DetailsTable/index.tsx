@@ -40,7 +40,7 @@ export interface DetailsTableProps {
   columns: Array<Column>;
 }
 
-const DetailsTable = <TDetails extends { result }>({
+const DetailsTable = <TDetails extends unknown>({
   endpoint,
   columns,
 }: DetailsTableProps): JSX.Element => {
