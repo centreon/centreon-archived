@@ -100,7 +100,7 @@ class HostGroup implements EntityDescriptorMetadataInterface
      * @param Host $host
      * @return HostGroup
      */
-    public function addHost(Host $host):HostGroup
+    public function addHost(Host $host): HostGroup
     {
         $this->hosts[] = $host;
         return $this;

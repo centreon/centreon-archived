@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
@@ -291,6 +293,16 @@ class Host implements EntityDescriptorMetadataInterface
      * @var double|null
      */
     private $percentStateChange;
+
+    /**
+     * @var Downtime[]
+     */
+    private $downtimes = [];
+
+    /**
+     * @var Acknowledgement|null
+     */
+    private $acknowledgement;
 
     /**
      * {@inheritdoc}
@@ -1209,6 +1221,42 @@ class Host implements EntityDescriptorMetadataInterface
     public function setPercentStateChange(?float $percentStateChange): Host
     {
         $this->percentStateChange = $percentStateChange;
+        return $this;
+    }
+
+    /**
+     * @return Downtime[]
+     */
+    public function getDowntimes(): array
+    {
+        return $this->downtimes;
+    }
+
+    /**
+     * @param Downtime[] $downtimes
+     * @return Host
+     */
+    public function setDowntimes(array $downtimes): self
+    {
+        $this->downtimes = $downtimes;
+        return $this;
+    }
+
+    /**
+     * @return Acknowledgement|null
+     */
+    public function getAcknowledgement(): ?Acknowledgement
+    {
+        return $this->acknowledgement;
+    }
+
+    /**
+     * @param Acknowledgement|null $acknowledgement
+     * @return Host
+     */
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
+    {
+        $this->acknowledgement = $acknowledgement;
         return $this;
     }
 }

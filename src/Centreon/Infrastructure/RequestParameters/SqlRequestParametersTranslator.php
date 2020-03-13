@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +36,7 @@ class SqlRequestParametersTranslator
      * @var array $concordanceArray Concordance table between the search column
      * and the real column name in the database. ['id' => 'my_table_id', ...]
      */
-    private $concordanceArray;
+    private $concordanceArray = [];
 
     private $searchValues = [];
 
@@ -104,7 +105,7 @@ class SqlRequestParametersTranslator
                 $databaseQuery .= $databaseSubQuery;
             }
         }
-        return count($search) > 1
+        return count($search) > 1 && !empty($databaseQuery)
             ? '(' . $databaseQuery . ')'
             : $databaseQuery;
     }
@@ -182,14 +183,19 @@ class SqlRequestParametersTranslator
      * @return string Part of the database query.
      * @throws RequestParametersTranslatorException
      */
-    private function createQueryOnKeyValue(
-        string $key,
-        $valueOrArray
-    ): string {
-        if ($this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
+    private function createQueryOnKeyValue(string $key, $valueOrArray): string
+    {
+        if (
+            $this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
             && !key_exists($key, $this->concordanceArray)
         ) {
-            throw new RequestParametersTranslatorException('The parameter \''. $key . '\' is not allowed');
+            if (
+                $this->requestParameters
+                    ->getConcordanceErrorMode() === RequestParameters::CONCORDANCE_ERRMODE_EXCEPTION
+            ) {
+                throw new RequestParametersTranslatorException("The parameter '{$key}' is not allowed");
+            }
+            return '';
         }
         if (is_array($valueOrArray)) {
             $searchOperator = (string) key($valueOrArray);
@@ -212,7 +218,8 @@ class SqlRequestParametersTranslator
                     . RequestParameters::OPERATOR_NOT_EQUAL
                 );
             }
-        } elseif ($searchOperator === RequestParameters::OPERATOR_IN
+        } elseif (
+            $searchOperator === RequestParameters::OPERATOR_IN
             || $searchOperator === RequestParameters::OPERATOR_NOT_IN
         ) {
             if (is_array($mixedValue)) {
@@ -243,8 +250,10 @@ class SqlRequestParametersTranslator
                 $this->searchValues[$bindKey] = [$type => $mixedValue];
                 $bindKey = '(' . $bindKey . ')';
             }
-        } elseif ($searchOperator === RequestParameters::OPERATOR_LIKE
+        } elseif (
+            $searchOperator === RequestParameters::OPERATOR_LIKE
             || $searchOperator === RequestParameters::OPERATOR_NOT_LIKE
+            || $searchOperator === RequestParameters::OPERATOR_REGEXP
         ) {
             $type = \PDO::PARAM_STR;
             $bindKey = ':value_' . (count($this->searchValues) + 1);
@@ -310,6 +319,8 @@ class SqlRequestParametersTranslator
                 return 'LIKE';
             case RequestParameters::OPERATOR_NOT_LIKE:
                 return 'NOT LIKE';
+            case RequestParameters::OPERATOR_REGEXP:
+                return 'REGEXP';
             case RequestParameters::OPERATOR_LESS_THAN:
                 return '<';
             case RequestParameters::OPERATOR_LESS_THAN_OR_EQUAL:

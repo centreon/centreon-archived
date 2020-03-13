@@ -1,0 +1,98 @@
+Centreon\Domain\Monitoring\Resource:
+    virtual_properties:
+        getDuration:
+            name: getDuration
+            serialized_name: duration
+            type: string
+            groups:
+                - 'resource_main'
+        getLastCheckAsString:
+            name: getLastCheckAsString
+            serialized_name: last_check
+            type: string
+            groups:
+                - 'resource_main'
+        getShortType:
+            name: getShortType
+            serialized_name: short_type
+            type: string
+            groups:
+                - 'resource_main'
+    properties:
+        id:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        type:
+            type: string
+            groups:
+                - 'resource_main'
+        name:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        detailsUrl:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        icon:
+            type: Centreon\Domain\Monitoring\Icon
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        parent:
+            type: Centreon\Domain\Monitoring\Resource
+            groups:
+                - 'resource_main'
+        status:
+            type: Centreon\Domain\Monitoring\ResourceStatus
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        inDowntime:
+            type: bool
+            groups:
+                - 'resource_main'
+        acknowledged:
+            type: bool
+            groups:
+                - 'resource_main'
+        downtimeEndpoint:
+            type: string
+            groups:
+                - 'resource_main'
+        acknowledgementEndpoint:
+            type: string
+            groups:
+                - 'resource_main'
+        severity:
+            type: Centreon\Domain\Monitoring\ResourceSeverity
+            groups:
+                - 'resource_main'
+        impactedResourcesCount:
+            type: int
+            groups:
+                - 'resource_main'
+        actionUrl:
+            type: string
+            groups:
+                - 'resource_main'
+        chartUrl:
+            type: string
+            groups:
+                - 'resource_main'
+        lastStatusChange:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'resource_main'
+        tries:
+            type: string
+            groups:
+                - 'resource_main'
+        information:
+            type: string
+            groups:
+                - 'resource_main'

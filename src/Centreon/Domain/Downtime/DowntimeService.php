@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +29,7 @@ use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
@@ -39,7 +41,8 @@ use Centreon\Domain\Service\AbstractCentreonService;
  */
 class DowntimeService extends AbstractCentreonService implements DowntimeServiceInterface
 {
-    public const VALIDATION_GROUPS_ADD_DOWNTIME = ['Default'];
+    public const VALIDATION_GROUPS_ADD_HOST_DOWNTIME = ['Default', 'downtime_host', 'downtime_host_add'];
+    public const VALIDATION_GROUPS_ADD_SERVICE_DOWNTIME = ['Default', 'downtime_service'];
 
     /**
      * @var AccessGroupRepositoryInterface
@@ -107,9 +110,9 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     /**
      * @inheritDoc
      */
-    public function addServicesDowntime(Downtime $downtime, array $services): void
+    public function addServiceDowntime(Downtime $downtime, Service $service): void
     {
-        $this->engineService->addServicesDowntime($downtime, $services);
+        $this->engineService->addServiceDowntime($downtime, $service);
     }
 
     /**

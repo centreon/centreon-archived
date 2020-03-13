@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -21,7 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Monitoring\Entity\AckEventObject;
+use Centreon\Domain\Monitoring\Entity\CommentEventObject;
+use Centreon\Domain\Monitoring\Entity\DowntimeEventObject;
+use Centreon\Domain\Monitoring\Entity\LogEventObject;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\TimelineEvent;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
@@ -72,6 +80,8 @@ class MonitoringHostsController extends AbstractController
         $context = (new Context())
             ->setGroups([
                 Service::SERIALIZER_GROUP_FULL,
+                Acknowledgement::SERIALIZER_GROUPS_SERVICE,
+                Downtime::SERIALIZER_GROUPS_SERVICE
             ])
             ->enableMaxDepth();
 
@@ -256,6 +266,8 @@ class MonitoringHostsController extends AbstractController
             ->setGroups([
                 Host::SERIALIZER_GROUP_FULL,
                 Service::SERIALIZER_GROUP_MIN,
+                Acknowledgement::SERIALIZER_GROUPS_HOST,
+                Downtime::SERIALIZER_GROUPS_MAIN
             ])
             ->enableMaxDepth();
 
@@ -297,7 +309,7 @@ class MonitoringHostsController extends AbstractController
      *
      * @param int hostId Id of host to search hostgroups for
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
+     * @return \FOS\RestBundle\View\View
      * @throws \Exception
      */
     public function getHostGroupsByHost(int $hostId, RequestParametersInterface $requestParameters)
@@ -326,5 +338,44 @@ class MonitoringHostsController extends AbstractController
             'result' => $hostGroups,
             'meta' => $requestParameters->toArray()
         ])->setContext($context);
+    }
+
+
+    /**
+     * Entry point to get timeline for a host
+     * @param int $hostId id of host
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws \Exception
+     */
+    public function getHostTimeline(
+        int $hostId,
+        RequestParametersInterface $requestParameters
+    ): View {
+
+        $this->monitoring->filterByContact($this->getUser());
+
+        if ($this->monitoring->isHostExists($hostId)) {
+            $timeline = $this->monitoring->findTimelineEvents($hostId, 0);
+
+            $context = (new Context())
+                ->setGroups([
+                    LogEventObject::SERIALIZER_GROUP_LIST,
+                    CommentEventObject::SERIALIZER_GROUP_LIST,
+                    DowntimeEventObject::SERIALIZER_GROUP_LIST,
+                    AckEventObject::SERIALIZER_GROUP_LIST,
+                    TimelineEvent::SERIALIZER_GROUP_LIST,
+                ])
+                ->enableMaxDepth();
+
+            return $this->view(
+                [
+                    'result' => $timeline,
+                    'meta' => $requestParameters->toArray()
+                ]
+            )->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
     }
 }
