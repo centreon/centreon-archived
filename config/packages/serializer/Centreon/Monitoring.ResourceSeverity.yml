@@ -1,0 +1,14 @@
+Centreon\Domain\Monitoring\ResourceSeverity:
+    properties:
+        level:
+            type: int
+            groups:
+                - 'resource_severity_main'
+        name:
+            type: string
+            groups:
+                - 'resource_severity_main'
+        url:
+            type: string
+            groups:
+                - 'resource_severity_main'

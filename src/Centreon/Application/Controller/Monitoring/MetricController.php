@@ -69,7 +69,7 @@ class MetricController extends AbstractController
     private function findService(int $hostId, int $serviceId): Service
     {
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         $this->monitoringService->filterByContact($contact);
@@ -107,7 +107,7 @@ class MetricController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
 
@@ -139,7 +139,7 @@ class MetricController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
 

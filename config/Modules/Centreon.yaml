@@ -127,3 +127,21 @@ services:
     Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface:
         class: Centreon\Domain\Gorgone\GorgoneService
         public: true
+
+
+    # Monitoring resources
+    Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
+        class: Centreon\Domain\Monitoring\ResourceService
+
+    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\ResourceRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
+    # Monitoring Timeline
+    Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\TimelineRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']

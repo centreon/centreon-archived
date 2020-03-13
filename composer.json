@@ -28,7 +28,7 @@
         "symfony/phpunit-bridge": "^4.3",
         "centreon/centreon-test-lib": "dev-master",
         "sensiolabs/security-checker": "^6.0",
-        "symfony/var-dumper": "4.3.*",
+        "symfony/var-dumper": "4.4.*",
         "symfony/profiler-pack": "^1.0",
         "phpstan/phpstan": "^0.12.14"
     },
@@ -47,19 +47,19 @@
         "friendsofsymfony/rest-bundle": "^2.5",
         "jms/serializer-bundle": "^2.4",
         "sensio/framework-extra-bundle": "^5.3",
-        "symfony/console": "4.3.*",
-        "symfony/dotenv": "4.3.*",
+        "symfony/console": "4.4.*",
+        "symfony/dotenv": "4.4.*",
         "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "4.3.*",
+        "symfony/framework-bundle": "4.4.*",
         "symfony/security-bundle": "^4.3",
-        "symfony/yaml": "4.3.*",
-        "symfony/options-resolver": "4.3.*",
+        "symfony/yaml": "4.4.*",
+        "symfony/options-resolver": "4.4.*",
         "symfony/serializer-pack": "^1.0",
         "symfony/maker-bundle": "^1.11",
         "nelmio/cors-bundle": "^1.5",
-        "symfony/validator": "4.3.*",
-        "symfony/translation": "4.3.*",
-        "symfony/expression-language": "4.3.*",
+        "symfony/validator": "4.4.*",
+        "symfony/translation": "4.4.*",
+        "symfony/expression-language": "4.4.*",
         "ext-json": "*",
         "justinrainbow/json-schema": "^5.2",
         "ext-openssl": "*",
@@ -102,12 +102,14 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "4.3.*"
+            "require": "4.4.*"
         }
     },
     "scripts": {
         "auto-scripts": {
-            "security-checker security:check": "script"
+            "security-checker security:check": "script",
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         }
     }
 }
