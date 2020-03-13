@@ -49,8 +49,6 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-// isset($_GET["host"]) ? $id = $_GET["host"] : $id = "NULL";
-// isset($_POST["host"]) ? $id = $_POST["host"] : htmlentities($id, ENT_QUOTES, "UTF-8");
 $id = filter_var($_GET['host'], FILTER_VALIDATE_INT) ?? filter_var($_POST['host'], FILTER_VALIDATE_INT);
 /*
  * Formulary
