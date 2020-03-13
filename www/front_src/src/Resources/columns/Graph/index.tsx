@@ -59,6 +59,10 @@ interface GraphData {
   times: Array<string>;
 }
 
+interface MetricData {
+  [metric: string]: string;
+}
+
 const Graph = ({ endpoint }: Props): JSX.Element => {
   const { cancel, token } = useCancelTokenSource();
   const [graphData, setGraphData] = React.useState<GraphData>();
@@ -73,7 +77,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
     return (): void => cancel();
   }, []);
 
-  const getMetricDataForTimeIndex = (timeIndex) => {
+  const getMetricDataForTimeIndex = (timeIndex): MetricData | undefined => {
     return graphData?.metrics.reduce((metricByName, { metric, data }) => {
       const dataForTimeIndex = data[timeIndex];
       const lowerLimit =
