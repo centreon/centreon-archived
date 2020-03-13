@@ -211,7 +211,7 @@ for binary in $BINARIES; do
 done
 
 ###### Mandatory step
-# ask if gorgone have already been installed
+# ask if gorgone is already installed
 echo -e "\n$line"
 echo -e "\t$(gettext "Check mandatory gorgone service status")"
 echo -e "$line"
