@@ -159,7 +159,7 @@ function testExistence($name = null): bool
 function isValidIpAddress($ipAddress): bool
 {
     // Check IPv6, IPv4 and FQDN format
-    if (! filter_var($ipAddress, FILTER_VALIDATE_DOMAIN) && !filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+    if (!filter_var($ipAddress, FILTER_VALIDATE_DOMAIN) && !filter_var($ipAddress, FILTER_VALIDATE_IP)) {
         return false;
     } else {
         return true;
