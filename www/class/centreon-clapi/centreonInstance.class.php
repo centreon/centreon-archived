@@ -110,7 +110,8 @@ class CentreonInstance extends CentreonObject
         $addParams['ssh_port'] = $params[self::ORDER_SSH_PORT];
 
         // Check IPv6, IPv4 and FQDN format
-        if (!filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_DOMAIN)
+        if (
+            !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_DOMAIN)
             && !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_IP)
         ) {
             throw new CentreonClapiException(self::INCORRECTIPADDRESS);
