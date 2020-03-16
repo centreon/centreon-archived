@@ -52,9 +52,13 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting hostgroup to report
  */
-isset($_GET["item"]) ? $id = $_GET["item"] : $id = "NULL";
-isset($_POST["item"]) ? $id = $_POST["item"] : $id;
-isset($_POST["search"]) ? $search = $_POST["search"] : "";
+if (isset($_GET['item'])) {
+    $id = filter_var($_GET['item'], FILTER_VALIDATE_INT);
+} elseif (isset($_POST['item'])) {
+    $id = filter_var($_POST['item'], FILTER_VALIDATE_INT);
+} else {
+    $id = false;
+}
 
 /*
  * Formulary
@@ -122,14 +126,14 @@ if (isset($id)) {
 /*
  * Set hostgroup id with period selection form
  */
-if ($id != "NULL") {
+if ($id !== false) {
     $formPeriod->addElement('hidden', 'item', $id);
 }
 
 /*
  * Stats Display for selected hostgroup
  */
-if (isset($id) && $id != "NULL") {
+if ($id !== false) {
     /*
      * Getting periods values
      */
@@ -195,7 +199,7 @@ $tpl->assign('formItem', $renderer->toArray());
 /*
  * Ajax timeline and CSV export initialization
  */
-if (isset($id) && $id != "NULL") {
+if ($id !== false) {
     /*
      * CSV export
      */
