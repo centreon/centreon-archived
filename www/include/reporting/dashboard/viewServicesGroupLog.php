@@ -45,9 +45,13 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service group to report
  */
-isset($_GET["item"]) ? $id = $_GET["item"] : $id = "NULL";
-isset($_POST["item"]) ? $id = $_POST["item"] : $id;
-isset($_POST["search"]) ? $search = $_POST["search"] : "";
+if (isset($_GET['item'])) {
+    $id = filter_var($_GET['item'], FILTER_VALIDATE_INT);
+} elseif (isset($_POST['item'])) {
+    $id = filter_var($_POST['item'], FILTER_VALIDATE_INT);
+} else {
+    $id = false;
+}
 
 /*
  * FORMS
@@ -55,7 +59,7 @@ isset($_POST["search"]) ? $search = $_POST["search"] : "";
 
 $form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
-$items = getAllServicesgroupsForReporting($search);
+$items = getAllServicesgroupsForReporting();
 $form->addElement(
     'select',
     'item',
@@ -109,7 +113,7 @@ $formPeriod->addElement(
 /*
  * Set servicegroup id with period selection form
  */
-if ($id != "NULL") {
+if ($id !== false) {
     $formPeriod->addElement(
         'hidden',
         'item',
@@ -120,7 +124,7 @@ if ($id != "NULL") {
 /*
  * Stats Display for selected services group
  */
-if (isset($id) && $id != "NULL") {
+if ($id !== false) {
     /*
      * Getting periods values
      */
@@ -188,7 +192,7 @@ $tpl->assign('formItem', $renderer->toArray());
 /*
  * Ajax timeline and CSV export initialization
  */
-if (isset($id) && $id != "NULL") {
+if ($id !== false) {
     /*
      * CSV export
      */
