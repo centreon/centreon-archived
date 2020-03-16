@@ -327,7 +327,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
         // Check IPv6, IPv4 and FQDN format
-        if (! filter_var($serverIP, FILTER_VALIDATE_DOMAIN) && !filter_var($serverIP, FILTER_VALIDATE_IP)) {
+        if (!filter_var($serverIP, FILTER_VALIDATE_DOMAIN) && !filter_var($serverIP, FILTER_VALIDATE_IP)) {
             return ['error' => true, 'message' => "Invalid IP address"];
         }
 
