@@ -55,7 +55,7 @@ BASE_DIR=$(dirname $0)
 BASE_DIR=$( cd $BASE_DIR; pwd )
 export BASE_DIR
 if [ -z "${BASE_DIR#/}" ] ; then
-	echo -e "I think it is not right to have Centreon source on slash"
+	echo -e "You cannot select the filesystem root folder"
 	exit 1
 fi
 INSTALL_DIR="$BASE_DIR/libinstall"
