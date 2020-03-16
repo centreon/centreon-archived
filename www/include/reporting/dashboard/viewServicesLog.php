@@ -45,10 +45,8 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service to report
  */
-isset($_GET["host_id"]) ? $host_id = $_GET["host_id"] : $host_id = "NULL";
-isset($_POST["host_id"]) ? $host_id = $_POST["host_id"] : $host_id;
-isset($_GET["item"]) ? $service_id = $_GET["item"] : $service_id = "NULL";
-isset($_POST["item"]) ? $service_id = $_POST["item"] : $service_id;
+$host_id = filter_var($_GET['host_id'], FILTER_VALIDATE_INT) ?? filter_var($_POST['host_id']);
+$service_id = filter_var($_GET['item'], FILTER_VALIDATE_INT) ?? filter_var($_POST['item']);
 
 /*
  * FORMS
@@ -115,7 +113,7 @@ $formPeriod->addElement(
 /*
  * Set service id with period selection form
  */
-if ($service_id != "NULL" && $host_id != "NULL") {
+if ($service_id !== false && $host_id !== false) {
     $formPeriod->addElement(
         'hidden',
         'item',
@@ -137,7 +135,7 @@ if ($service_id != "NULL" && $host_id != "NULL") {
 /*
  * Stats Display for selected service
  */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
+if ($host_id !== false && $service_id !== false) {
     /*
      * Getting periods values
      */
@@ -193,7 +191,7 @@ $tpl->assign('formItem', $renderer->toArray());
 /*
  * Ajax timeline and CSV export initialization
  */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
+if ($host_id !== false && $service_id !== false) {
     /*
      * CSV Export
      */
