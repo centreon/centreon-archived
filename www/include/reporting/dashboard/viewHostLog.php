@@ -37,10 +37,6 @@ if (!isset($centreon)) {
     exit;
 }
 
-if (!isset($search)) {
-    $search = "";
-}
-
 /*
  * Required files
  */
@@ -68,7 +64,7 @@ $formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=" . $p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-$hosts = getAllHostsForReporting($is_admin, $lcaHoststr, $search);
+$hosts = getAllHostsForReporting($is_admin, $lcaHoststr);
 $selHost = $formHost->addElement(
     'select',
     'host',

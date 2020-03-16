@@ -40,10 +40,6 @@ if (!isset($oreon)) {
     exit;
 }
 
-if (!isset($search)) {
-    $search = "";
-}
-
 /*
  * Required files
  */
@@ -69,7 +65,7 @@ if (isset($_GET['item'])) {
 
 $form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
-$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search);
+$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr);
 $select = $form->addElement(
     'select',
     'item',
