@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
+import IconAcknowledge from '@material-ui/icons/Person';
 
 import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
 
@@ -12,6 +13,7 @@ import {
   labelInformation,
   labelState,
   labelLastCheck,
+  labelAcknowledge,
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
@@ -25,65 +27,77 @@ const useStyles = makeStyles((theme) => ({
 
 export interface ColumnProps {
   row: Resource;
-  Cell: ({ children, width }: { children; width? }) => JSX.Element;
   isRowSelected: boolean;
+  isHovered: boolean;
   style;
   onClick;
 }
 
-const SeverityColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const SeverityColumn = ({ row }: ColumnProps): JSX.Element | undefined => {
   return (
-    <Cell>
-      {row.severity && (
-        <StatusChip
-          label={row.severity.level.toString()}
-          statusCode={StatusCode.None}
-        />
-      )}
-    </Cell>
+    row.severity && (
+      <StatusChip
+        label={row.severity.level.toString()}
+        statusCode={StatusCode.None}
+      />
+    )
   );
 };
 
-const StatusColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const StatusColumnOnHover = ({
+  row,
+}: Pick<ColumnProps, 'row'>): JSX.Element => {
   return (
-    <Cell>
-      <StatusChip label={row.status.name} statusCode={row.status.code} />
-    </Cell>
+    <>
+      <IconButton
+        size="small"
+        color="primary"
+        aria-label={`${labelAcknowledge} ${row.name}`}
+      >
+        <IconAcknowledge />
+      </IconButton>
+      <StatusChip label={row.status.name[0]} statusCode={row.status.code} />
+    </>
   );
 };
 
-const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const StatusColumn = ({ row, isHovered }: ColumnProps): JSX.Element => {
+  return isHovered ? (
+    <StatusColumnOnHover row={row} />
+  ) : (
+    <StatusChip
+      style={{ width: 100 }}
+      label={row.status.name}
+      statusCode={row.status.code}
+    />
+  );
+};
+
+const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Cell>
-      <Grid container spacing={1} className={classes.resourceDetailsCell}>
-        <Grid item>
-          {row.icon ? (
-            <img
-              src={row.icon.url}
-              alt={row.icon.name}
-              width={21}
-              height={21}
-            />
-          ) : (
-            <StatusChip label={row.short_type} statusCode={StatusCode.None} />
-          )}
-        </Grid>
-        <Grid item>
-          <Typography>{row.name}</Typography>
-        </Grid>
-        {row.parent && (
-          <Grid container spacing={1}>
-            <Grid item xs={1} />
-            <Grid item>
-              <StatusChip statusCode={row.parent?.status?.code || 0} />
-            </Grid>
-            <Grid item>{row.parent.name}</Grid>
-          </Grid>
+    <Grid container spacing={1} className={classes.resourceDetailsCell}>
+      <Grid item>
+        {row.icon ? (
+          <img src={row.icon.url} alt={row.icon.name} width={21} height={21} />
+        ) : (
+          <StatusChip label={row.short_type} statusCode={StatusCode.None} />
         )}
       </Grid>
-    </Cell>
+      <Grid item>
+        <Typography>{row.name}</Typography>
+      </Grid>
+      {row.parent && (
+        <Grid container spacing={1}>
+          <Grid item xs={1} />
+          <Grid item>
+            <StatusChip statusCode={row.parent?.status?.code || 0} />
+          </Grid>
+          <Grid item>{row.parent.name}</Grid>
+        </Grid>
+      )}
+    </Grid>
   );
 };
 
@@ -103,6 +117,7 @@ const columns = [
     Component: StatusColumn,
     clickable: false,
     sortable: false,
+    width: 120,
   },
   {
     id: 'resources',
@@ -119,6 +134,7 @@ const columns = [
     Component: GraphColumn,
     clickable: false,
     sortable: false,
+    width: 50,
   },
   {
     id: 'duration',
@@ -151,6 +167,7 @@ const columns = [
     Component: StateColumn,
     clickable: false,
     sortable: false,
+    width: 80,
   },
 ];
 

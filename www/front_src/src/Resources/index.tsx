@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core';
-
 import { lime, purple } from '@material-ui/core/colors';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
@@ -18,6 +17,7 @@ import {
   Filter as FilterModel,
   FilterGroup,
 } from './Filter/models';
+import Actions from './Actions';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -213,6 +213,7 @@ const Resources = (): JSX.Element => {
       />
       <div className={classes.listing}>
         <Listing
+          Actions={<Actions />}
           loading={loading}
           columnConfiguration={columns}
           tableData={listing?.result}

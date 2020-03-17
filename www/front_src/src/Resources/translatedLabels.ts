@@ -1,6 +1,7 @@
 import { I18n } from 'react-redux-i18n';
 
 export const labelAcknowledged = I18n.t('Acknowledged');
+export const labelAcknowledge = I18n.t('Acknowledge');
 export const labelAll = I18n.t('All');
 export const labelAuthor = I18n.t('Author');
 export const labelComment = I18n.t('Comment');
