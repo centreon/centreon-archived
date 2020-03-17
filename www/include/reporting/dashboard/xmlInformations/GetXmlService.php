@@ -43,7 +43,7 @@ if (isset($_SESSION['centreon'])) {
 
 if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
     /* Validate the type of request arguments for security */
-    if (!is_numeric($_GET['id']) || !is_numeric($_GET['host_id'])) {
+    if (filter_var($_GET['id'], FILTER_VALIDATE_INT) === false || filter_var($_GET['host_id'], FILTER_VALIDATE_INT) === false) {
         $buffer->writeElement('error', 'Bad id format');
         $buffer->endElement();
         header('Content-Type: text/xml');
@@ -53,7 +53,18 @@ if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
 
     $color = array();
     foreach ($_GET["color"] as $key => $value) {
-        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
+        $color[$key] = filter_var($value, FILTER_VALIDATE_REGEXP, [
+            'options' => [
+                'regexp' => "/^#[0-9a-fA-F]{3,6}$/",
+            ]
+        ]);
+        if ($color[$key] === false) {
+            $buffer->writeElement('error', 'Bad color format');
+            $buffer->endElement();
+            header('Content-Type: text/xml');
+            $buffer->output();
+            exit;
+        }
     }
 
     /* Get ACL if user is not admin */

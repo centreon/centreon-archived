@@ -37,7 +37,7 @@ require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
 if (isset($_GET["id"]) && isset($_GET["color"])) {
     /* Validate the type of request arguments for security */
-    if (!is_numeric($_GET['id'])) {
+    if (filter_var($_GET['id'], FILTER_VALIDATE_INT) === false) {
         $buffer->writeElement('error', 'Bad id format');
         $buffer->endElement();
         header('Content-Type: text/xml');
@@ -47,7 +47,18 @@ if (isset($_GET["id"]) && isset($_GET["color"])) {
 
     $color = array();
     foreach ($_GET["color"] as $key => $value) {
-        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
+        $color[$key] = filter_var($value, FILTER_VALIDATE_REGEXP, [
+            'options' => [
+                'regexp' => "/^#[0-9a-fA-F]{3,6}$/",
+            ]
+        ]);
+        if ($color[$key] === false) {
+            $buffer->writeElement('error', 'Bad color format');
+            $buffer->endElement();
+            header('Content-Type: text/xml');
+            $buffer->output();
+            exit;
+        }
     }
 
     $hosts_id = $centreon->user->access->getHostHostGroupAclConf($_GET["id"], "broker");
