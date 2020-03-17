@@ -69,21 +69,21 @@ if (isset($parameters['modules'])) {
                 }
                 $installer = $moduleFactory->newInstaller($dependency);
                 $id = $installer->install();
-                $install = ($id) ? true : false;
-                $result['modules'][] = array(
+                $install = $id ? true : false;
+                $result['modules'][$dependency] = [
                     'module' => $dependency,
-                    'install' => $install
-                );
+                    'install' => $install,
+                ];
             }
         }
         // installing the selected module
         $installer = $moduleFactory->newInstaller($module);
         $id = $installer->install();
-        $install = ($id) ? true : false;
-        $result['modules'][] = array(
+        $install = $id ? true : false;
+        $result['modules'][$module] = [
             'module' => $module,
-            'install' => $install
-        );
+            'install' => $install,
+        ];
     }
 }
 
@@ -95,7 +95,7 @@ if (isset($parameters['widgets'])) {
         $installer = $widgetFactory->newInstaller($widget);
         $id = $installer->install();
         $install = ($id) ? true : false;
-        $result['widgets'][] = array(
+        $result['widgets'][$widget] = array(
             'widget' => $widget,
             'install' => $install
         );
