@@ -79,15 +79,41 @@ locate_perl
 
 ## Check PHP version
 check_php_version
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+if [ "$?" -eq 1 ] ; then
+    echo_info "\n\t$(gettext "Your php version does not meet the requirements")"
+
+    echo -e "\t$(gettext "Please read the documentation available here") : documentation.centreon.com"
+    echo -e "\n\t$(gettext "Installation aborted")"
+
+    purge_centreon_tmp_dir
+    exit 1
+fi
 
 ## Check composer dependencies (if vendor directory exists)
 check_composer_dependencies
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+if [ "$?" -eq 1 ] ; then
+    echo_info "\n\t$(gettext "You must first install the composer's dependencies")"
+
+    echo -e "\n\t$(gettext "composer install --no-dev --optimize-autoloader")"
+    echo -e "\t$(gettext "Please read the documentation available here") : documentation.centreon.com"
+
+    echo -e "\n\t$(gettext "Installation aborted")"
+    purge_centreon_tmp_dir
+    exit 1
+fi
 
 ## Check frontend application (if www/static directory exists)
 check_frontend_application
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+if [ "$?" -eq 1 ] ; then
+    echo_info "\n\t$(gettext "You must first build the frontend application")"
+
+    echo -e "\n\t$(gettext "Using npm install and then npm build")"
+    echo -e "\t$(gettext "Please read the documentation available here") : documentation.centreon.com"
+
+    echo -e "\n\t$(gettext "Installation aborted")"
+    purge_centreon_tmp_dir
+    exit 1
+fi
 
 ## Config apache
 check_httpd_directory
@@ -217,8 +243,6 @@ cp -Rf $TMP_DIR/src/libinstall/{functions,cinstall,gettext} \
   $TMP_DIR/final/libinstall/ >> "$LOG_FILE" 2>&1
 
 ## Prepare insertBaseConf.sql
-#echo -e "$(gettext "In process")"
-### Step 1:
 ## Change Macro on sql file
 log "INFO" "$(gettext "Change macros for insertBaseConf.sql")"
 ${SED} -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
@@ -717,7 +741,7 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 ## Prepare to install all pear modules needed.
 # use check_pear.php script
 echo -e "\n$line"
-echo -e "$(gettext "Pear Modules")"
+echo -e "\t$(gettext "Pear Modules")"
 echo -e "$line"
 pear_module="0"
 first=1
@@ -748,14 +772,20 @@ done
 #----
 ## Gorgone specific tasks
 #----
+echo "$line"
+echo -e "\t$(gettext "Achieve gorgone's module integration")"
+echo "$line"
 ## Copy pollers SSH keys (in case of upgrade) to the new "user" gorgone
 if [ "$upgrade" = "1" ]; then
+
     copy_ssh_keys_to_gorgone
 fi
 ## Create gorgone's configuration structure
 create_gorgone_configuration_structure
 
-
+echo "$line"
+echo -e "\t$(gettext "Create configuration and installation files")"
+echo "$line"
 ## Create configfile for web install
 createConfFile
 

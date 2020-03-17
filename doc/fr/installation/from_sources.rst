@@ -274,7 +274,6 @@ Approbation de la licence
 -------------------------
 
 ::
-
     This General Public License does not permit incorporating your program into
     proprietary programs.  If your program is a subroutine library, you may
     consider it more useful to permit linking proprietary applications with the
@@ -315,8 +314,7 @@ Répondez [y] à toutes les questions ::
 Définition des chemins d'installation
 -------------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
             Start CentWeb Installation
     ------------------------------------------------------------------------
@@ -335,7 +333,7 @@ Définition des chemins d'installation
     > y
     Path /var/log/centreon                                     OK
 
-    ::
+::
 
     Where is your Centreon etc directory ?
     default to [/etc/centreon]
@@ -412,8 +410,7 @@ l'utilisateur sera vraisemblablement *centreon-broker*.  ::
 Répertoire des journaux d'évènements
 ------------------------------------
 
-    ::
-
+::
     What is the Monitoring engine log directory ?[/var/log/centreon-engine]
     default to [/var/log/centreon-engine]
     >
@@ -428,8 +425,7 @@ Répertoire des journaux d'évènements
 Configuration des droits sudo
 -----------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Configure Sudo
     ------------------------------------------------------------------------
@@ -470,8 +466,7 @@ Configuration des droits sudo
 Configuration du serveur Apache
 -------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
       	  Configure Apache server
     ------------------------------------------------------------------------
@@ -490,8 +485,7 @@ Configuration du serveur Apache
 Configuration de PHP FPM
 ------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
       	  Configure PHP FPM service
     ------------------------------------------------------------------------
@@ -561,8 +555,7 @@ Configuration de PHP FPM
 Installation des modules pear
 -----------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     Pear Modules
     ------------------------------------------------------------------------
@@ -577,8 +570,7 @@ Installation des modules pear
 Installation du fichier de configuration
 ----------------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     		  Centreon Post Install
     ------------------------------------------------------------------------
@@ -588,8 +580,7 @@ Installation du fichier de configuration
 Installation du composant CentStorage
 -------------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Starting CentStorage Installation
     ------------------------------------------------------------------------
@@ -627,8 +618,7 @@ Installation du composant CentStorage
 Installation du composant CentCore
 ----------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Starting CentCore Installation
     ------------------------------------------------------------------------
@@ -655,8 +645,7 @@ Installation du composant CentCore
 Installation des plugins
 ------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Starting Centreon Plugins Installation
     ------------------------------------------------------------------------
@@ -676,8 +665,7 @@ Installation des plugins
 Installation du système de gestion des traps SNMP (CentreonTrapD)
 -----------------------------------------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
      	  Starting CentreonTrapD Installation
     ------------------------------------------------------------------------
