@@ -50,7 +50,7 @@ if (isset($_GET['host'])) {
 } elseif (isset($_POST['host'])) {
     $id = filter_var($_POST['host'], FILTER_VALIDATE_INT);
 } else {
-    $id= false;
+    $id = false;
 }
 
 /*
