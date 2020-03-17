@@ -22,6 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
+/**
+ * Interface CommandRepositoryInterface
+ * Describes management of external commands sent to gorgone
+ *
+ * @package Centreon\Domain\Gorgone\Interfaces
+ */
 interface CommandRepositoryInterface
 {
     /**
