@@ -45,13 +45,9 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-if (isset($_GET['host'])) {
-    $id = filter_var($_GET['host'], FILTER_VALIDATE_INT);
-} elseif (isset($_POST['host'])) {
-    $id = filter_var($_POST['host'], FILTER_VALIDATE_INT);
-} else {
-    $id = false;
-}
+$id = filter_var(
+    $_GET['host'] ?? $_POST['host'] ?? false, FILTER_VALIDATE_INT
+);
 
 /*
  * Formulary
@@ -123,13 +119,9 @@ if ($id !== false) {
         'host',
         $id
     );
-}
 
-/*
- * Stats Display for selected host
- */
-if ($id !== false) {
     /*
+     * Stats Display for selected host
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
@@ -170,25 +162,9 @@ if ($id !== false) {
     $tpl->assign("period", $period);
     $tpl->assign("host_id", $id);
     $tpl->assign("Alert", _("Alert"));
-}
-$tpl->assign("resumeTitle", _("Host state"));
 
-/*
- * Rendering Forms
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formPeriod->accept($renderer);
-$tpl->assign('formPeriod', $renderer->toArray());
-
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formHost->accept($renderer);
-$tpl->assign('formHost', $renderer->toArray());
-
-/*
- * Ajax TimeLine and CSV export initialization
- */
-if ($id !== false) {
     /*
+     * Ajax TimeLine and CSV export initialization
      * CSV export
      */
     $tpl->assign(
@@ -215,4 +191,17 @@ if ($id !== false) {
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
+$tpl->assign("resumeTitle", _("Host state"));
+
+/*
+ * Rendering Forms
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formPeriod->accept($renderer);
+$tpl->assign('formPeriod', $renderer->toArray());
+
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formHost->accept($renderer);
+$tpl->assign('formHost', $renderer->toArray());
+
 $tpl->display("template/viewHostLog.ihtml");

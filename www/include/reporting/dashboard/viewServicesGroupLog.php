@@ -45,14 +45,9 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service group to report
  */
-if (isset($_GET['item'])) {
-    $id = filter_var($_GET['item'], FILTER_VALIDATE_INT);
-} elseif (isset($_POST['item'])) {
-    $id = filter_var($_POST['item'], FILTER_VALIDATE_INT);
-} else {
-    $id = false;
-}
-
+$id = filter_var(
+    $_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT
+);
 /*
  * FORMS
  */
@@ -111,21 +106,17 @@ $formPeriod->addElement(
 );
 
 /*
- * Set servicegroup id with period selection form
- */
+* Set servicegroup id with period selection form
+*/
 if ($id !== false) {
     $formPeriod->addElement(
         'hidden',
         'item',
         $id
     );
-}
 
-/*
- * Stats Display for selected services group
- */
-if ($id !== false) {
     /*
+     * Stats Display for selected services group
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
@@ -174,26 +165,9 @@ if ($id !== false) {
     $formPeriod->setDefaults(array('period' => $period));
     $tpl->assign('id', $id);
     $tpl->assign('Alert', _("Alert"));
-}
-$tpl->assign('resumeTitle', _("Service group state"));
-$tpl->assign('p', $p);
 
-/*
- * Rendering forms
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formPeriod->accept($renderer);
-$tpl->assign('formPeriod', $renderer->toArray());
-
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
-
-/*
- * Ajax timeline and CSV export initialization
- */
-if ($id !== false) {
     /*
+     * Ajax timeline and CSV export initialization
      * CSV export
      */
     $tpl->assign(
@@ -223,5 +197,18 @@ if ($id !== false) {
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
+$tpl->assign('resumeTitle', _("Service group state"));
+$tpl->assign('p', $p);
+
+/*
+ * Rendering forms
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formPeriod->accept($renderer);
+$tpl->assign('formPeriod', $renderer->toArray());
+
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('formItem', $renderer->toArray());
 
 $tpl->display("template/viewServicesGroupLog.ihtml");
