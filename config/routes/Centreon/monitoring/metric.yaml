@@ -19,3 +19,21 @@ monitoring.metric.getServiceStatus:
         end: '\S+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceStatus'
     condition: "request.attributes.get('version') >= 2.0"
+
+monitoring.metric.getServicePerformanceMetrics:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/metrics/performance
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServicePerformanceMetrics'
+    condition: "request.attributes.get('version') >= 2.0"
+
+monitoring.metric.getServiceStatusMetrics:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/metrics/status
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceStatusMetrics'
+    condition: "request.attributes.get('version') >= 2.0"

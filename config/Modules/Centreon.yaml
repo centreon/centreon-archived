@@ -101,7 +101,7 @@ services:
     # Engine
     Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface:
         class: Centreon\Infrastructure\Engine\EngineRepositoryFile
-        arguments: ['%centreon_var_lib%/centcore.cmd']
+        arguments: ['%centreon_var_lib%/centcore']
 
     Centreon\Domain\Engine\Interfaces\EngineServiceInterface:
         class: Centreon\Domain\Engine\EngineService
@@ -123,3 +123,20 @@ services:
 
     Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface:
         class: Centreon\Infrastructure\Proxy\ProxyRepositoryRDB
+
+    # Monitoring resources
+    Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
+        class: Centreon\Domain\Monitoring\ResourceService
+
+    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\ResourceRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
+    # Monitoring Timeline
+    Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\TimelineRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']

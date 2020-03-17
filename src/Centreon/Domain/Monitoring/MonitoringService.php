@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,7 @@ namespace Centreon\Domain\Monitoring;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 
@@ -45,15 +47,22 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     private $accessGroupRepository;
 
     /**
+     * @var TimelineRepositoryInterface
+     */
+    private $timelineRepository;
+
+    /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        TimelineRepositoryInterface $timelineRepository = null
     ) {
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->timelineRepository = $timelineRepository;
     }
 
     /**
@@ -68,6 +77,10 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         $accessGroups = $this->accessGroupRepository->findByContact($contact);
 
         $this->monitoringRepository
+            ->setContact($this->contact)
+            ->filterByAccessGroups($accessGroups);
+
+        $this->timelineRepository
             ->setContact($this->contact)
             ->filterByAccessGroups($accessGroups);
 
@@ -205,7 +218,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                 // First, we will sort services by service groups and hosts
                 $servicesByServiceGroupAndHost = [];
                 /**
-                 * @var $services Service[]
+                 * @var Service[] $services
                  */
                 foreach ($servicesByServiceGroup as $serviceGroupId => $services) {
                     foreach ($services as $service) {
@@ -216,11 +229,12 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
                 // Next, we will linked services to host
                 /**
-                 * @var $serviceGroup ServiceGroup
+                 * @var ServiceGroup $serviceGroup
                  */
                 foreach ($serviceGroups as $serviceGroup) {
                     foreach ($serviceGroup->getHosts() as $host) {
-                        if (array_key_exists($serviceGroup->getId(), $servicesByServiceGroupAndHost)
+                        if (
+                            array_key_exists($serviceGroup->getId(), $servicesByServiceGroupAndHost)
                             && array_key_exists($host->getId(), $servicesByServiceGroupAndHost[$serviceGroup->getId()])
                         ) {
                             $host->setServices(
@@ -257,6 +271,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array
     {
         return $this->monitoringRepository->findServiceGroupsByHostAndService($hostId, $serviceId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findTimelineEvents(int $hostid, int $serviceId): array
+    {
+        return $this->timelineRepository->findTimelineEventsByHostAndService($hostid, $serviceId);
     }
 
     /**

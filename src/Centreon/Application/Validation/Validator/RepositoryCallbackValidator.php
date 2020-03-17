@@ -44,8 +44,9 @@ use Symfony\Component\Validator\Constraints\CallbackValidator;
 use Psr\Container\ContainerInterface;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\ServiceProvider;
+use Centreon\Application\Validation\Validator\Interfaces\CentreonValidatorInterface;
 
-class RepositoryCallbackValidator extends CallbackValidator
+class RepositoryCallbackValidator extends CallbackValidator implements CentreonValidatorInterface
 {
 
     /**

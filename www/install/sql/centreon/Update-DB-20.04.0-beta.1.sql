@@ -11,6 +11,9 @@ UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204
 UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 20209;
 UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
 
+-- Add unified view page entry
+INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Events view (beta)', '/monitoring/events', '1', '1', 1, 104, 1, 2);
+
 -- Delete legacy engine parameters
 ALTER TABLE `cfg_nagios` DROP COLUMN `check_result_path`;
 ALTER TABLE `cfg_nagios` DROP COLUMN `use_check_result_path`;

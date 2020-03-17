@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -21,7 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring;
 
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -151,7 +154,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\''
             . $accessGroupFilter
-            .' LEFT JOIN `:dbstg`.`services` srv
+            . ' LEFT JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
               AND srv.enabled = \'1\'
             LEFT JOIN `:dbstg`.`hosts_hostgroups` hg
@@ -234,7 +237,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\''
             . $accessGroupFilter
-            .' LEFT JOIN `:dbstg`.`services` srv
+            . ' LEFT JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
               AND srv.enabled = \'1\'
             LEFT JOIN `:dbstg`.`hosts_hostgroups` hg
@@ -407,7 +410,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             }
         }
 
-        $request ='SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.* FROM `:dbstg`.`hostgroups` hg ' . $subRequest;
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.* FROM `:dbstg`.`hostgroups` hg ' . $subRequest;
         $request = $this->translateDbName($request);
 
         // Search
@@ -449,7 +452,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             //bind the host id to search for it if provided
             $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
         }
-        
+
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -511,11 +514,22 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                     $row
                 );
 
+                //get services for host
                 $servicesByHost = $this->findServicesByHosts([$hostId]);
 
-                $host->setServices(
-                    $servicesByHost[$hostId]
-                );
+                $host->setServices($servicesByHost[$hostId]);
+
+                //get downtimes for host
+                $downtimes = $this->findDowntimes($hostId, 0);
+                    $host->setDowntimes($downtimes);
+
+                //get active acknowledgment for host
+                if ($host->getAcknowledged()) {
+                    $acknowledgements = $this->findAcknowledgements($hostId, 0);
+                    if (!empty($acknowledgements)) {
+                        $host->setAcknowledgement($acknowledgements[0]);
+                    }
+                }
 
                 return $host;
             } else {
@@ -565,7 +579,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         if ($statement->execute()) {
             if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                return EntityCreator::createEntityByArray(
+                $service = EntityCreator::createEntityByArray(
                     Service::class,
                     $row
                 );
@@ -575,6 +589,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         } else {
             throw new \Exception('Bad SQL request');
         }
+
+        //get downtimes for service
+        $downtimes = $this->findDowntimes($hostId, $serviceId);
+        $service->setDowntimes($downtimes);
+
+        //get active acknowledgment for service
+        if ($service->isAcknowledged()) {
+            $acknowledgements = $this->findAcknowledgements($hostId, $serviceId);
+
+            if (!empty($acknowledgements)) {
+                $service->setAcknowledgement($acknowledgements[0]);
+            }
+        }
+
+        return $service;
     }
 
     /**
@@ -643,7 +672,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND ssg.host_id = h.host_id
             LEFT JOIN :dbstg.customvariables cv
               ON (cv.service_id = srv.service_id
-              AND cv.host_id IS NULL AND cv.name = \'CRITICALITY_LEVEL\')';
+              AND cv.host_id = srv.host_id AND cv.name = \'CRITICALITY_LEVEL\')';
 
         $request = $this->translateDbName($request);
 
@@ -827,7 +856,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $hostConcordanceArray);
         }
 
-        $shouldJoinService = false;
         if (count(array_intersect($searchParameters, array_keys($serviceConcordanceArray))) > 0) {
             $shouldJoinHost = true;
             $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $serviceConcordanceArray);
@@ -864,21 +892,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         // This join will only be added if a search parameter corresponding to one of the host parameter
-        if ($shouldJoinHost || $shouldJoinService) {
+        if ($shouldJoinHost) {
             $subRequest .=
                 ' INNER JOIN `:dbstg`.services_servicegroups ssg 
                     ON ssg.servicegroup_id = sg.servicegroup_id
                     AND ssg.service_id = srv.service_id
                 INNER JOIN `:dbstg`.hosts h
                     ON h.host_id = ssg.host_id';
-
-            if ($shouldJoinService) {
-                $subRequest .=
-                    'LEFT JOIN `:dbstg`.`services` srv
-                      ON srv.service_id = ssg.service_id
-                      AND srv.host_id = h.host_id
-                      AND srv.enabled = \'1\'';
-            }
 
             if (!$this->isAdmin()) {
                 $subRequest .=
@@ -1224,6 +1244,72 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         return $serviceGroups;
+    }
+
+    /**
+     * Find downtimes for host or service
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findDowntimes(int $hostId, int $serviceId): array
+    {
+        $downtimes = [];
+
+        if (empty($hostId)) {
+            return $downtimes;
+        }
+
+        $sql = 'SELECT * FROM `:dbstg`.`downtimes` WHERE host_id = :hostId AND service_id = :serviceId ' .
+                'AND deletion_time IS NULL AND (NOW() BETWEEN FROM_UNIXTIME(actual_start_time) ' .
+                'AND FROM_UNIXTIME(actual_end_time)) ORDER BY entry_time DESC';
+        $request = $this->translateDbName($sql);
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $downtimes[] = EntityCreator::createEntityByArray(
+                Downtime::class,
+                $result
+            );
+        }
+
+        return $downtimes;
+    }
+
+    /**
+     * Find acknowledgements for host or service
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findAcknowledgements(int $hostId, int $serviceId): array
+    {
+        $acks = [];
+
+        if (empty($hostId)) {
+            return $acks;
+        }
+
+        $sql = 'SELECT * FROM `:dbstg`.`acknowledgements` WHERE host_id = :hostId AND service_id = :serviceId ' .
+                'AND deletion_time IS NULL ORDER BY entry_time DESC';
+
+        $request = $this->translateDbName($sql);
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $acks[] = EntityCreator::createEntityByArray(
+                Acknowledgement::class,
+                $result
+            );
+        }
+
+        return $acks;
     }
 
     private function isAdmin(): bool
