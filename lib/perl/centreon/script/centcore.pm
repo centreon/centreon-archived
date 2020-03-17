@@ -1754,7 +1754,7 @@ sub run {
                     $self->parseRequest($_);
                 }
                 close(FILE);
-                if (!unlink($self->{cmdFile}."_read")) {
+                if (!unlink($self->{cmdFile} . "_read")) {
                     $self->{logger}->writeLogError("Error When removing " . $self->{cmdFile} . "_read file : $!");
                 }
 
