@@ -4,7 +4,7 @@
 
 import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb } from '@centreon/ui';
+import { Breadcrumb } from './Breadcrumb';
 import breadcrumbsSelector from '../../redux/selectors/navigation/breadcrumbs';
 
 const BreadcrumbWrapper = ({ breadcrumbs, path, children, ...others }) => {
