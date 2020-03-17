@@ -1242,7 +1242,7 @@ configureApache() {
 ## Copy ssh keys to gorgone and add proper rights
 #----
 copy_ssh_keys_to_gorgone() {
-    if [ ! -d $GORGONE_VARLIB ] ; then
+    if [ ! -d "$GORGONE_VARLIB/.ssh" ] ; then
         mkdir -p "$GORGONE_VARLIB/.ssh"
         if [ $? -ne 0 ] ; then
             echo_failure "$(gettext "Cannot create the subfolder $GORGONE_VARLIB/.ssh")" "$fail"

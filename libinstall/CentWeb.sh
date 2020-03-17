@@ -92,7 +92,7 @@ fi
 ## Check composer dependencies (if vendor directory exists)
 check_composer_dependencies
 if [ "$?" -eq 1 ] ; then
-    echo_info "\n\t$(gettext "You must first install the composer dependencies")"
+    echo_info "\n\t$(gettext "You must first install the composer's dependencies")"
 
     echo -e "\n\t$(gettext "composer install --no-dev --optimize-autoloader")"
     echo -e "\t$(gettext "Please read the documentation available here") : documentation.centreon.com"
