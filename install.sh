@@ -157,7 +157,7 @@ if [ "$_tmp_install_opts" -eq 0 ] ; then
 fi
 
 #Export variable for all programs
-export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir
+export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir upgrade
 
 ## init LOG_FILE
 # backup old log file...
@@ -240,10 +240,11 @@ if [ "$silent_install" -ne 1 ] ; then
 
 	yes_no_default "$(gettext "Do you accept GPL license ?")" 
 	if [ "$?" -ne 0 ] ; then 
-		echo_info "$(gettext "You do not agree to GPL license ? Okay... have a nice day.")"
+		echo_info "As you did not accept the license, we cannot continue."
+		log "INFO" "Installation aborted - License not accepted"
 		exit 1
 	else
-		log "INFO" "$(gettext "You accepted GPL license")"
+		log "INFO" "Accepted the license"
 	fi
 else 
 	if [ "$upgrade" -eq 0 ] ; then
@@ -263,7 +264,7 @@ if [ "$upgrade" -eq 1 ] ; then
 		echo_info "$(gettext "You seem to have an existing Centreon.")\n"
 		yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
 		if [ "$?" -eq 0 ] ; then
-			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)"
+			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)" "$ok"
 			use_upgrade_files="1"
 		fi
 	fi
@@ -274,8 +275,6 @@ if [ "$silent_install" -ne 1 ] ; then
 	echo -e "\t$(gettext "Please choose what you want to install")"
 	echo "$line"
 fi
-
-export upgrade
 
 ## init install process
 # I prefer split install script.
