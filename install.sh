@@ -110,7 +110,7 @@ LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 if [ "${FORCE_NO_ROOT:-0}" -ne 0 ]; then
 	USERID=$(id -u)
 	if [ "$USERID" != "0" ]; then
-	    echo -e "$(gettext "You must exec with root user")"
+	    echo -e "$(gettext "You must launch this script using a root user")"
 	    exit 1
 	fi
 fi
@@ -240,7 +240,7 @@ if [ "$silent_install" -ne 1 ] ; then
 
 	yes_no_default "$(gettext "Do you accept GPL license ?")" 
 	if [ "$?" -ne 0 ] ; then 
-		echo_info "As you did not accept the license, we cannot continue."
+		echo_info "$(gettext "As you did not accept the license, we cannot continue.")"
 		log "INFO" "Installation aborted - License not accepted"
 		exit 1
 	else

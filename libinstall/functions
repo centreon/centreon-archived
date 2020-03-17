@@ -226,7 +226,7 @@ yes_no_default() {
     local default=${2:-$no}
     local res="not_define"
     while [ "$res" != "$yes" ] && [ "$res" != "$no" ] && [ ! -z "$res" ] ; do
-        echo -e "\n$message\n$(gettext "[y/n], default to [$default]:")"
+        echo -e "\n$message\n$(gettext "[y/n], default to") [$default]:"
         echo -en "> "
         read res
         [ -z "$res" ] && res="$default"
@@ -249,7 +249,7 @@ answer() {
     local first=0
     while [ '!' -z "$res" ] ; do
         echo -e "\n$message"
-        [ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
+        [ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
         echo -en "> "
         read res
         if [ -z "$res" ] ; then
@@ -275,16 +275,16 @@ answer_with_testdir() {
     local res="not_define"
     local first=0
     while [ ! -d "$res" ] ; do
-        [ $first -eq 1 ] && echo_passed "$(gettext "$res is not a directory or does not exist.")" "$critical"
+        [ $first -eq 1 ] && echo_passed "$res $(gettext "is not a directory or does not exist.")" "$critical"
         echo -e "\n$message"
-        [ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
+        [ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
         echo -en "> "
         read res
         if [ -z "$res" ] ; then
             [ "$default" != "NO_DEFAULT" ] && res=$default
         fi
         if [ -z ${res#/} ] ; then
-            echo_passed  "$(gettext "You select slash...")"
+            echo_passed  "$(gettext "You cannot select slash")"
             res="not_define"
         else
             first=1
@@ -318,7 +318,7 @@ answer_with_createdir() {
             [ "$default" != "NO_DEFAULT" ] && res=$default
         fi
         if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
-            echo_passed  "$(gettext "You select slash...")"
+            echo_passed  "$(gettext "You cannot select slash")"
             res="not_define"
         else
             first=1
@@ -362,7 +362,7 @@ answer_with_createfile() {
             [ "$default" != "NO_DEFAULT" ] && res=$default
         fi
         if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
-            echo_passed  "$(gettext "You select slash...")"
+            echo_passed  "$(gettext "You cannot select slash")"
             res="not_define"
         else
             first=1
@@ -371,7 +371,7 @@ answer_with_createfile() {
             if [ $? -eq 0 ] ; then
                 touch $res
                 if [ $? -ne 0 ] ; then
-                    echo_passed "$(gettext "Could not create file.")" "$critical"
+                    echo_passed "$(gettext "Could not create the file.")" "$critical"
                     #continue
                 fi
                 log "INFO" "$(gettext "Creating") : $res"
@@ -576,7 +576,6 @@ dir_test_create() {
             return 1
         fi
         echo_success "$(gettext "Creating directory") $dirname" "$ok"
-        log "INFO" "$(gettext "Creating directory") $dirname"
     fi
     return 0
 }
@@ -597,7 +596,6 @@ user_create() {
         return 1
     fi
     echo_success "$(gettext "Creating user") $username ($description)" "$ok"
-    log "INFO" "$(gettext "Creating user") $username"
     return 0
 }
 
@@ -614,7 +612,6 @@ group_create() {
         return 1
     fi
     echo_success "$(gettext "Creating group") $groupname" "$ok"
-    log "INFO" "$(gettext "Creating group") $groupname"
     return 0
 }
 
@@ -1367,7 +1364,6 @@ reload_service_apache() {
         service="apache2"
     else
         echo_warning "$(gettext "Unable to reload Apache server")" "$warning"
-        log "WARN" "$(gettext "Unable to reload Apache server")"
     fi
 
     log "DEBUG" "$(gettext "use") : $service"
@@ -1444,7 +1440,7 @@ __EOT__
     if [ -e $directory/centreon.apache.conf ] ; then
         return 0
     else
-        log "INFO" "$(gettext "Problem when I generate an apache configuration")"
+        log "INFO" "$(gettext "Problem when generating apache configuration")"
         return 1
     fi
 }
@@ -1561,7 +1557,7 @@ __EOT__
     if [ -e $directory/centreon.php-fpm.conf ] ; then
         return 0
     else
-        log "INFO" "$(gettext "Problem when I generate an PHP FPM configuration")"
+        log "INFO" "$(gettext "Problem when generating PHP FPM configuration")"
         return 1
     fi
 }
@@ -1587,7 +1583,6 @@ reload_service_php_fpm() {
 
     if [ "$service_reloaded" -eq 0 ] ; then
         echo_warning "$(gettext "Unable to reload PHP FPM service")" "$warning"
-        log "WARN" "$(gettext "Unable to reload PHP FPM service")"
     fi
 }
 
@@ -1644,7 +1639,7 @@ __EOT__
     if [ -e $directory/centreon.sudo ] ; then
         return 0
     else
-        log "INFO" "$(gettext "Problem when I generate a sudo configuration")"
+        log "INFO" "$(gettext "Problem when generating sudo configuration")"
         return 1
     fi
 }
@@ -1718,7 +1713,7 @@ configureSUDO() {
             echo_passed "$(gettext "Please configure your sudo with this example"):\n\t $dir_conf/centreon.sudo" "$passed"
         fi
     fi
-    log "INFO" "$(gettext "Please configure your sudo with this example"): $dir_conf/centreon.sudo"
+    log "INFO" "$(gettext "Please configure your sudo using this example"): $dir_conf/centreon.sudo"
     return 0
 }
 
@@ -1801,7 +1796,7 @@ createConfFile() {
 __EOT__
 
     echo "?>" >> $INSTALL_DIR_CENTREON_CONF
-    log "INFO" "$(gettext "Change right on") : $INSTALL_DIR_CENTREON_CONF"
+    log "INFO" "$(gettext "Change rights on") : $INSTALL_DIR_CENTREON_CONF"
     ${CHOWN} $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
     echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
 }
@@ -2245,7 +2240,7 @@ copyInTempFile() {
     mkdir -p "$TMP_DIR/final"
 
     for folder in $srclistcp ; do
-        log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $TMP_DIR/src/"
+        log "INFO" "$(gettext "Copy") $BASE_DIR/$folder $(gettext "to") $TMP_DIR/src/"
         cp -Rf $BASE_DIR/$folder $TMP_DIR/src/
     done
 }
@@ -2396,18 +2391,18 @@ find_OS() {
 ##      - ...
 #----
 clean_and_exit() {
-  local trap_sig=${1:-0}
-  if [ $trap_sig -eq 0 ] ; then
-    echo -e "$(gettext "\nTrap interrupt, Centreon'll exit now and clean install")"
-    yes_no_default "$(gettext "Do you really want to quit Centreon install process ? ")" "$no"
-    if [ $? -eq 1 ] ; then
-      echo "$(gettext "Continue...")"
-      return 1
+    local trap_sig=${1:-0}
+    if [ $trap_sig -eq 0 ] ; then
+        echo -e "$(gettext "\nTrap interrupt, Centreon'll exit now and clean install")"
+        yes_no_default "$(gettext "Do you really want to quit Centreon install process ? ")" "$no"
+        if [ $? -eq 1 ] ; then
+            echo "$(gettext "Continue...")"
+            return 1
+        fi
     fi
-  fi
     log "EXIT" "$(gettext "Exit Centreon install")"
-  [ -n "$SUDO_FILE" -a $upgrade -eq 0 ] && clean_sudo "$SUDO_FILE" 0
-  purge_centreon_tmp_dir "silent"
+    [ -n "$SUDO_FILE" -a $upgrade -eq 0 ] && clean_sudo "$SUDO_FILE" 0
+    purge_centreon_tmp_dir "silent"
     exit 1
 }
 
