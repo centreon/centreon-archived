@@ -55,7 +55,7 @@ if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
     foreach ($_GET["color"] as $key => $value) {
         $color[$key] = filter_var($value, FILTER_VALIDATE_REGEXP, [
             'options' => [
-                'regexp' => "/^#[0-9a-fA-F]{3,6}$/",
+                'regexp' => "/^#[0-9a-fA-F]{6}$/",
             ]
         ]);
         if ($color[$key] === false) {
