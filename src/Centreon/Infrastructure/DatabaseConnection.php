@@ -61,6 +61,13 @@ class DatabaseConnection extends \PDO
         parent::__construct($dsn, $login, $password, $options);
     }
 
+    public function prepare($statement, array $driver_options = array())
+    {
+
+        return parent::prepare($statement, $driver_options);
+    }
+
+
     /**
      * @return string
      */
