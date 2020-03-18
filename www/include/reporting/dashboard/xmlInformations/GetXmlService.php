@@ -57,7 +57,10 @@ if ($color === false || count($_GET['color']) !== count($color)){
     exit;
 }
 
-if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false && filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT) !== false) {
+if (
+    filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false 
+    && filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT) !== false
+) {
     /* Get ACL if user is not admin */
     $isAdmin = $centreon->user->admin;
     $accessService = true;
