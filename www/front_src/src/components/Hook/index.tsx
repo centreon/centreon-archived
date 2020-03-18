@@ -28,8 +28,8 @@ const LoadableHooks = ({
   return (
     <>
       {Object.entries(hooks)
-        .filter(([hook]) => hook === path)
-        .map(([, parameters]) => {
+        .filter(([hook]) => hook.includes(path))
+        .map(([_, parameters]) => {
           const HookComponent = React.lazy(() =>
             dynamicImport(basename, parameters),
           );

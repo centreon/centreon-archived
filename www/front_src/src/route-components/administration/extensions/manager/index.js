@@ -526,7 +526,7 @@ class ExtensionsRoute extends Component {
               'extensionsInstallingStatus',
             )}
           />
-          <Hook path="/administration/extensions/manager/button" />
+          <Hook path="/administration/extensions/manager" />
         </Wrapper>
         {extensions.result && !nothingShown ? (
           <>
