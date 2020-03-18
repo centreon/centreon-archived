@@ -191,7 +191,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
 };
 
 const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
-  if (!row.graph_performance_endpoint) {
+  if (!row.performance_graph_endpoint) {
     return null;
   }
   return (
@@ -199,7 +199,7 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
       ariaLabel={labelGraph}
       Icon={(): JSX.Element => <IconBarChart />}
     >
-      <Graph endpoint={row.graph_performance_endpoint} />
+      <Graph endpoint={row.performance_graph_endpoint} />
     </HoverChip>
   );
 };
