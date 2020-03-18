@@ -1,5 +1,4 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const merge = require('webpack-merge');
 const path = require('path');
 
@@ -24,7 +23,6 @@ module.exports = merge(baseConfig, extractCssConfig, {
       template: './www/front_src/public/index.html',
       filename: '../index.html',
     }),
-    new BundleAnalyzerPlugin(),
   ],
   module: {
     rules: [
