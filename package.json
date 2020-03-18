@@ -78,6 +78,7 @@
     "date-fns": "^2.11.0",
     "dom-serializer": "^0.2.2",
     "filesize": "^6.1.0",
+    "formik": "^2.1.4",
     "install": "^0.13.0",
     "loaders.css": "^0.1.2",
     "moment-timezone": "^0.5.28",

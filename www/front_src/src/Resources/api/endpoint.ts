@@ -5,6 +5,10 @@ const monitoringEndpoint = `${endpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
+const hostEndpoint = `${monitoringEndpoint}/hosts`;
+const hostAcknowledgementEndpoint = `${hostEndpoint}/acknwoledgement`;
+const serviceEndpoint = `${monitoringEndpoint}/services`;
+const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgement`;
 
 interface Param {
   name: string;
@@ -90,4 +94,6 @@ export {
   buildResourcesEndpoint,
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
+  hostAcknowledgementEndpoint,
+  serviceAcknowledgementEndpoint,
 };

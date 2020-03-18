@@ -8,7 +8,7 @@ import { lime, purple } from '@material-ui/core/colors';
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
-import { ResourceListing } from './models';
+import { ResourceListing, Resource } from './models';
 import columns from './columns';
 import Filter from './Filter';
 import {
@@ -42,6 +42,12 @@ const Resources = (): JSX.Element => {
   const classes = useStyles();
 
   const [listing, setListing] = useState<ResourceListing>();
+  const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
+    [],
+  );
+  const [resourcesToAcknowledge, setResourcesToAcknowledge] = useState<
+    Array<Resource>
+  >([]);
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
@@ -179,6 +185,10 @@ const Resources = (): JSX.Element => {
     setStates(defaultFilter.criterias.states);
   };
 
+  const selectResources = (resources): void => {
+    setSelectedResources(resources);
+  };
+
   const rowColorConditions = [
     {
       name: 'inDowntime',
@@ -214,7 +224,7 @@ const Resources = (): JSX.Element => {
       <div className={classes.listing}>
         <Listing
           checkable
-          Actions={<Actions />}
+          Actions={<Actions selectedResources={selectedResources} />}
           loading={loading}
           columnConfiguration={columns}
           tableData={listing?.result}
@@ -229,6 +239,8 @@ const Resources = (): JSX.Element => {
           sortf={sortf}
           sorto={sorto}
           totalRows={listing?.meta.total}
+          onSelectRows={selectResources}
+          selectedRows={selectedResources}
         />
       </div>
     </div>

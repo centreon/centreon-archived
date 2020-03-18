@@ -66,7 +66,7 @@ const StatusColumn = ({ row, isHovered }: ColumnProps): JSX.Element => {
     <StatusColumnOnHover row={row} />
   ) : (
     <StatusChip
-      style={{ width: 100 }}
+      style={{ width: 120 }}
       label={row.status.name}
       statusCode={row.status.code}
     />
@@ -117,7 +117,7 @@ const columns = [
     Component: StatusColumn,
     clickable: false,
     sortable: false,
-    width: 120,
+    width: 125,
   },
   {
     id: 'resources',
