@@ -17,6 +17,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 namespace App;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -62,9 +63,10 @@ class Kernel extends BaseKernel
 
                 Debug::enable();
             }
-            static::$instance = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+            static::$instance = new Kernel($_SERVER['APP_ENV'], (bool)$_SERVER['APP_DEBUG']);
             static::$instance->boot();
         }
+
         return static::$instance;
     }
 
@@ -147,7 +149,7 @@ class Kernel extends BaseKernel
      */
     protected function configureRoutes(RouteCollectionBuilder $routes): void
     {
-        $confDir = $this->getProjectDir().'/config';
+        $confDir = $this->getProjectDir() . '/config';
 
         $routes->import($confDir . '/{routes}/' . $this->environment . '/**/*' . self::CONFIG_EXTS, '/', 'glob');
         $routes->import($confDir . '/{routes}/*' . self::CONFIG_EXTS, '/', 'glob');
