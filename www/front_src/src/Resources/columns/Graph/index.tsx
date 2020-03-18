@@ -193,12 +193,12 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
 const GraphColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
   return (
     <Cell width={50}>
-      {row.graph_endpoint && (
+      {row.performance_graph_endpoint && (
         <HoverChip
           ariaLabel={labelGraph}
           Icon={(): JSX.Element => <IconBarChart />}
         >
-          <Graph endpoint={row.graph_endpoint} />
+          <Graph endpoint={row.performance_graph_endpoint} />
         </HoverChip>
       )}
     </Cell>
