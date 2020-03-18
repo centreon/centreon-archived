@@ -1753,14 +1753,17 @@ sub run {
                 while (<FILE>){
                     $self->parseRequest($_);
                 }
+                close(FILE);
+                if (!unlink($self->{cmdFile} . "_read")) {
+                    $self->{logger}->writeLogError("Error When removing " . $self->{cmdFile} . "_read file : $!");
+                }
+
                 foreach my $poller (keys(%{$self->{commandBuffer}})) {
                     if (length($self->{commandBuffer}{$poller}) != 0) {
                         $self->sendExternalCommand($poller, $self->{commandBuffer}{$poller});
                         $self->{commandBuffer}{$poller} = "";
                     }
                 }
-                close(FILE);
-                $self->{logger}->writeLogError("Error When removing ".$self->{cmdFile}."_read file : $!") if (!unlink($self->{cmdFile}."_read"));
             }
         }
 
@@ -1773,18 +1776,19 @@ sub run {
                         while (<FILE>){
                             $self->parseRequest($_);
                         }
-                        foreach my $poller (keys(%{$self->{commandBuffer}})) {
-                            if (length($self->{commandBuffer}{$poller}) != 0) {
-                                $self->sendExternalCommand($poller, $self->{commandBuffer}{$poller});
-                                $self->{commandBuffer}{$poller} = "";
-                            }
-                        }
                         close(FILE);
                         $self->{logger}->writeLogError("Error When removing ".$self->{cmdDir}.$file."_read file : $!") if (!unlink($self->{cmdDir}.$file."_read"));
                     }
                 }
             }
             closedir $dh;
+
+            foreach my $poller (keys(%{$self->{commandBuffer}})) {
+                if (length($self->{commandBuffer}{$poller}) != 0) {
+                    $self->sendExternalCommand($poller, $self->{commandBuffer}{$poller});
+                    $self->{commandBuffer}{$poller} = "";
+                }
+            }
         }
 
         if (defined($self->{timeSyncPerf}) && $self->{timeSyncPerf}) {
