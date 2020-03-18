@@ -9,9 +9,10 @@ import AcknowledgeForm from './forms/Acknowledge';
 
 interface Props {
   selectedResources: Array<Resource>;
+  onSuccess;
 }
 
-const Actions = ({ selectedResources }: Props): JSX.Element => {
+const Actions = ({ selectedResources, onSuccess }: Props): JSX.Element => {
   const [resourcesToAcknowledge, setResourcesToAcknoweledge] = React.useState<
     Array<Resource>
   >([]);
@@ -24,8 +25,9 @@ const Actions = ({ selectedResources }: Props): JSX.Element => {
     setResourcesToAcknoweledge([]);
   };
 
-  const confirmAcknowledge = (): void => {
-    // TODO;
+  const resetAcknowledgeAndSucceed = (): void => {
+    resetAcknowledge();
+    onSuccess();
   };
 
   const hasSelectedResources = selectedResources.length > 0;
@@ -44,6 +46,7 @@ const Actions = ({ selectedResources }: Props): JSX.Element => {
       <AcknowledgeForm
         resources={resourcesToAcknowledge}
         onClose={resetAcknowledge}
+        onSuccess={resetAcknowledgeAndSucceed}
       />
     </>
   );

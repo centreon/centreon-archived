@@ -16,31 +16,42 @@ const listResources = (
 ): Promise<ResourceListing> =>
   getData({ endpoint: buildResourcesEndpoint(endpointParams), requestParams });
 
-const getResourceParams = ({ id, comment, notify, parent_id }) => ({
+interface ResourceParams {
+  resource_id: string;
+  comment: string;
+  is_notify_contacts: boolean;
+  is_persistent_comment: boolean;
+  is_sticky: boolean;
+  parent_resource_id?: string;
+}
+
+const toResourceParams = ({ id, comment, notify, parent }): ResourceParams => ({
   comment,
-  is_notify: notify,
+  is_notify_contacts: notify,
   is_persistent_comment: true,
   is_sticky: true,
   resource_id: id,
-  parent_resource_id: parent_id,
+  parent_resource_id: parent?.id,
 });
 
 const acknowledgeResources = ({
   resources,
   cancelToken,
 }): Promise<Array<AxiosResponse>> => {
-  const hostParams = resources
-    .filter(({ type }) => type === 'host')
-    .map((resource) => getResourceParams(resource));
-
-  const serviceParams = resources
-    .filter(({ type }) => type === 'service')
-    .map((resource) => getResourceParams(resource));
+  console.log('batar');
+  const getResourceParamsForType = (resourceType): Array<ResourceParams> =>
+    resources.filter(({ type }) => type === resourceType).map(toResourceParams);
 
   return axios.all(
     [
-      { params: hostParams, endpoint: hostAcknowledgementEndpoint },
-      { params: serviceParams, endpoint: serviceAcknowledgementEndpoint },
+      {
+        params: getResourceParamsForType('host'),
+        endpoint: hostAcknowledgementEndpoint,
+      },
+      {
+        params: getResourceParamsForType('service'),
+        endpoint: serviceAcknowledgementEndpoint,
+      },
     ]
       .filter(({ params }) => params.length > 0)
       .map(({ endpoint, params }) =>

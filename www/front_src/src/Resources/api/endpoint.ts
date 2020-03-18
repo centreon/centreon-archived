@@ -6,9 +6,9 @@ const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 const hostEndpoint = `${monitoringEndpoint}/hosts`;
-const hostAcknowledgementEndpoint = `${hostEndpoint}/acknwoledgement`;
+const hostAcknowledgementEndpoint = `${hostEndpoint}/acknowledgements`;
 const serviceEndpoint = `${monitoringEndpoint}/services`;
-const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgement`;
+const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgements`;
 
 interface Param {
   name: string;

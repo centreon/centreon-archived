@@ -20,6 +20,7 @@ interface Props {
   errors?;
   values;
   handleChange;
+  submitting: boolean;
 }
 
 const DialogAcknowledge = ({
@@ -29,6 +30,7 @@ const DialogAcknowledge = ({
   onConfirm,
   errors,
   values,
+  submitting,
   handleChange,
 }: Props): JSX.Element => {
   return (
@@ -41,6 +43,7 @@ const DialogAcknowledge = ({
       onCancel={onCancel}
       onConfirm={onConfirm}
       confirmDisabled={!canConfirm}
+      submitting={submitting}
     >
       <Grid direction="column" container spacing={2}>
         <Grid>

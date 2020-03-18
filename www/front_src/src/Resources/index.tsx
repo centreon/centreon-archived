@@ -45,9 +45,6 @@ const Resources = (): JSX.Element => {
   const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
     [],
   );
-  const [resourcesToAcknowledge, setResourcesToAcknowledge] = useState<
-    Array<Resource>
-  >([]);
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
@@ -189,6 +186,11 @@ const Resources = (): JSX.Element => {
     setSelectedResources(resources);
   };
 
+  const confirmAndLoad = (): void => {
+    load();
+    selectResources([]);
+  };
+
   const rowColorConditions = [
     {
       name: 'inDowntime',
@@ -201,6 +203,10 @@ const Resources = (): JSX.Element => {
       color: lime[900],
     },
   ];
+
+  const ResourceActions = (
+    <Actions selectedResources={selectedResources} onSuccess={confirmAndLoad} />
+  );
 
   return (
     <div className={classes.page}>
@@ -224,7 +230,7 @@ const Resources = (): JSX.Element => {
       <div className={classes.listing}>
         <Listing
           checkable
-          Actions={<Actions selectedResources={selectedResources} />}
+          Actions={ResourceActions}
           loading={loading}
           columnConfiguration={columns}
           tableData={listing?.result}
