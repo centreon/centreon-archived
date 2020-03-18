@@ -260,7 +260,13 @@ function Transformation() {
 		}
 		
 		var change = function() {
-                    if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
+            if (
+                xmlRequest.readyState == 4
+                && xmlRequest.responseXML
+                && xsltRequest.status == 200
+                && xsltRequest.readyState == 4
+                && xsltRequest.responseText
+            ) {
                             if (transformed) {
                                     return;
                             }
