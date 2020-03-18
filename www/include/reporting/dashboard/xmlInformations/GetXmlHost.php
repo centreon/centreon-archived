@@ -42,39 +42,30 @@ if (isset($_SESSION['centreon'])) {
     exit;
 }
 
-if (isset($_GET["id"]) && isset($_GET["color"])) {
-    /* Validate the type of request arguments for security */
-    if (filter_var($_GET['id'], FILTER_VALIDATE_INT) === false) {
-        $buffer->writeElement('error', 'Bad id format');
-        $buffer->endElement();
-        header('Content-Type: text/xml');
-        $buffer->output();
-        exit;
-    }
+$color = array_filter($_GET['color'] ?? false, function($oneColor) {
+    return filter_var($oneColor, FILTER_VALIDATE_REGEXP, [
+        'options' => [
+            'regexp' => "/^#[[:xdigit:]]{6}$/"
+        ]
+    ]);
+}); 
+$color = $color ?? false;
+if ($color === false || count($_GET['color']) !== count($color)){
+    $buffer->writeElement('error', 'Bad color format');
+    $buffer->endElement();
+    header('Content-Type: text/xml');
+    $buffer->output();
+    exit;
+}
 
-    $color = array();
-    foreach ($_GET["color"] as $key => $value) {
-        $color[$key] = filter_var($value, FILTER_VALIDATE_REGEXP, [
-            'options' => [
-                'regexp' => "/^#[0-9a-fA-F]{3,6}$/",
-            ]
-        ]);
-        if ($color[$key] === false) {
-            $buffer->writeElement('error', 'Bad color format');
-            $buffer->endElement();
-            header('Content-Type: text/xml');
-            $buffer->output();
-            exit;
-        }
-    }
-
+if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
     /* Get ACL if user is not admin */
     $isAdmin = $centreon->user->admin;
     $accessHost = true;
     if (!$isAdmin) {
         $userId = $centreon->user->user_id;
         $acl = new CentreonACL($userId, $isAdmin);
-        if (!$acl->checkHost($_GET["id"])) {
+        if (!$acl->checkHost($_GET['id'])) {
             $accessHost = false;
         }
     }
@@ -93,7 +84,11 @@ if (isset($_GET["id"]) && isset($_GET["color"])) {
         $buffer->writeElement("error", "Cannot access to host information");
     }
 } else {
-    $buffer->writeElement("error", "error");
+    $buffer->writeElement('error', 'Bad id format');
+    $buffer->endElement();
+    header('Content-Type: text/xml');
+    $buffer->output();
+    exit;
 }
 
 $buffer->endElement();
