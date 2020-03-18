@@ -13,8 +13,8 @@ Show
 In order to list available instances, use the **SHOW** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a show 
-  id;name;localhost;ip address;activate;status;init script;monitoring engine;bin;stats bin;perfdata;ssh port
-  1;Central;1;127.0.0.1;1;0;/etc/init.d/nagios;NAGIOS;/usr/local/nagios/bin/nagios;/usr/local/nagios/bin/nagiostats;/usr/local/nagios/var/service-perfdata;22
+  id;name;localhost;ip address;activate;status;init script;monitoring engine;bin;stats bin;perfdata;gorgone protocol;gorgone port
+  1;Central;1;127.0.0.1;1;0;/etc/init.d/nagios;NAGIOS;/usr/local/nagios/bin/nagios;/usr/local/nagios/bin/nagiostats;/usr/local/nagios/var/service-perfdata;ZMQ;5556
   [...]
 
 
@@ -23,29 +23,31 @@ Columns are the following:
 ================= ================================================================
 Column	          Description
 ================= ================================================================
-ID	          ID
+ID                ID
 
-Name	          Name
+Name              Name
 
-Localhost	  *1* if it is the main poller, *0* otherwise
+Localhost         *1* if it is the main poller, *0* otherwise
 
-IP Address	  IP address of the poller
+IP Address        IP address of the poller
 
-Activate	  *1* if poller is enabled, *0* otherwise
+Activate          *1* if poller is enabled, *0* otherwise
 
-Status	          *1* if poller is running, *0* otherwise
+Status            *1* if poller is running, *0* otherwise
 
-Init script	  Init script path
+Init script       Init script path
 
-Monitoring Engine Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*...
+Monitoring Engine Engine used on poller: *CENTREON-ENGINE*
 
-Bin	          Path of the Scheduler binary
+Bin               Path of the Scheduler binary
 
-Stats Bin	  Path of the Nagios Stats binary
+Stats Bin         Path of the Nagios Stats binary
 
-Perfdata	  Path of perfdata file
+Perfdata          Path of perfdata file
 
-SSH Port	  SSH Port
+Gorgone protocol  Gorgone communication type (ZMQ, SSH)
+
+Gorgone Port      Gorgone Port
 ================= ================================================================
 
 
@@ -54,17 +56,20 @@ Add
 
 In order to add an instance you use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;22;NAGIOS" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;ZMQ;5556;NAGIOS"
 
 Required fields are:
 
 =================== =====================================================
 Column	            Description
 =================== =====================================================
-Name	
-Address	            IP address of the poller
+Name                Name of the poller
 
-SSH Port	    SSH port
+Address             IP address of the poller
+
+Gorgone protocol    Gorgone communication type (ZMQ, SSH)
+
+Gorgone Port        Gorgone port
 
 Monitoring Engine   Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*
 =================== =====================================================
@@ -124,7 +129,9 @@ nagios_bin                 Path of the Scheduler binary
 
 nagiostats_bin             Path of the Nagios Stats binary
 
-ssh_port                   SSH Port
+gorgone_communication_type Gorgone communication type (ZMQ, SSH)
+
+gorgone_port               Gorgone Port
 
 broker_reload_command      Command to reload Centreon Broker process
 

@@ -323,13 +323,7 @@ Then generate the Remote Server configuration from the central Centreon server.
 
 3. Missing files in /etc/centreon
 
-Check that **/etc/centreon** includes the following files and that they are not empty:
-
-* instCentCore.conf
-* instCentPlugins.conf
-* instCentWeb.conf
-
-If missing or empty, copy them from the Central Server.
+Check that **/etc/centreon/instCentWeb.conf** file is not empty. If missing or empty, copy it from the Central Server.
 
 Purge the import tasks table: ::
 

@@ -53,7 +53,7 @@ ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Resources;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Centreon UI;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Monitoring;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;CentCore;
+ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Gorgone;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;My Account;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;LDAP;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;RRDTool;
@@ -94,7 +94,7 @@ ACLACTION;GRANT;Simple User;host_schedule_check;
 ACLACTION;GRANT;Simple User;host_schedule_forced_check;
 ACLACTION;GRANT;Simple User;host_schedule_downtime;
 ACLACTION;GRANT;Simple User;host_comment;
-INSTANCE;ADD;Central;127.0.0.1;22
+INSTANCE;ADD;Central;127.0.0.1;1;5556
 INSTANCE;setparam;Central;localhost;1
 INSTANCE;setparam;Central;is_default;0
 INSTANCE;setparam;Central;ns_activate;1
@@ -112,28 +112,8 @@ INSTANCE;setparam;Central;centreonbroker_module_path;/usr/share/centreon/lib/cen
 INSTANCE;setparam;Central;centreonconnector_path;/usr/lib64/centreon-connector
 INSTANCE;setparam;Central;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;Central;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
-INSTANCE;setparam;Central;remote_server_centcore_ssh_proxy;1
+INSTANCE;setparam;Central;remote_server_use_as_proxy;1
 INSTANCE;setparam;Central;updated;0
-INSTANCE;ADD;test_poller;127.0.0.1;22
-INSTANCE;setparam;test_poller;localhost;0
-INSTANCE;setparam;test_poller;is_default;0
-INSTANCE;setparam;test_poller;ns_activate;0
-INSTANCE;setparam;test_poller;ns_status;0
-INSTANCE;setparam;test_poller;engine_start_command;service centengine start
-INSTANCE;setparam;test_poller;engine_stop_command;service centengine stop
-INSTANCE;setparam;test_poller;engine_restart_command;service centengine restart
-INSTANCE;setparam;test_poller;engine_reload_command;service centengine reload
-INSTANCE;setparam;test_poller;nagios_bin;/usr/sbin/centengine
-INSTANCE;setparam;test_poller;nagiostats_bin;/usr/sbin/centenginestats
-INSTANCE;setparam;test_poller;nagios_perfdata;/var/log/centreon-engine/service-perfdata
-INSTANCE;setparam;test_poller;broker_reload_command;service cbd reload
-INSTANCE;setparam;test_poller;centreonbroker_cfg_path;/etc/centreon-broker
-INSTANCE;setparam;test_poller;centreonbroker_module_path;/usr/share/centreon/lib/centreon-broker
-INSTANCE;setparam;test_poller;centreonconnector_path;/usr/lib64/centreon-connector
-INSTANCE;setparam;test_poller;init_script_centreontrapd;centreontrapd
-INSTANCE;setparam;test_poller;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
-INSTANCE;setparam;test_poller;remote_server_centcore_ssh_proxy;1
-INSTANCE;setparam;test_poller;updated;0
 TP;ADD;24x7;Always
 TP;setparam;24x7;tp_sunday;00:00-24:00
 TP;setparam;24x7;tp_monday;00:00-24:00
@@ -628,90 +608,6 @@ ENGINECFG;setparam;Centreon Engine Central;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central;enable_macros_filter;0
 ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
-ENGINECFG;ADD;Centreon Engine Central_1;test_poller;Centreon Engine
-ENGINECFG;setparam;Centreon Engine Central_1;log_file;/var/log/centreon-engine/centengine.log
-ENGINECFG;setparam;Centreon Engine Central_1;cfg_dir;/etc/centreon-engine
-ENGINECFG;setparam;Centreon Engine Central_1;temp_file;/var/log/centreon-engine/centengine.tmp
-ENGINECFG;setparam;Centreon Engine Central_1;status_file;/var/log/centreon-engine/status.dat
-ENGINECFG;setparam;Centreon Engine Central_1;nagios_user;centreon-engine
-ENGINECFG;setparam;Centreon Engine Central_1;nagios_group;centreon-engine
-ENGINECFG;setparam;Centreon Engine Central_1;enable_notifications;1
-ENGINECFG;setparam;Centreon Engine Central_1;execute_service_checks;1
-ENGINECFG;setparam;Centreon Engine Central_1;accept_passive_service_checks;1
-ENGINECFG;setparam;Centreon Engine Central_1;execute_host_checks;2
-ENGINECFG;setparam;Centreon Engine Central_1;accept_passive_host_checks;2
-ENGINECFG;setparam;Centreon Engine Central_1;enable_event_handlers;1
-ENGINECFG;setparam;Centreon Engine Central_1;log_rotation_method;d
-ENGINECFG;setparam;Centreon Engine Central_1;log_archive_path;/var/log/centreon-engine/archives/
-ENGINECFG;setparam;Centreon Engine Central_1;check_external_commands;1
-ENGINECFG;setparam;Centreon Engine Central_1;command_check_interval;1s
-ENGINECFG;setparam;Centreon Engine Central_1;command_file;/var/lib/centreon-engine/rw/centengine.cmd
-ENGINECFG;setparam;Centreon Engine Central_1;lock_file;/var/lock/subsys/centengine.lock
-ENGINECFG;setparam;Centreon Engine Central_1;retain_state_information;1
-ENGINECFG;setparam;Centreon Engine Central_1;state_retention_file;/var/log/centreon-engine/retention.dat
-ENGINECFG;setparam;Centreon Engine Central_1;retention_update_interval;60
-ENGINECFG;setparam;Centreon Engine Central_1;use_retained_program_state;1
-ENGINECFG;setparam;Centreon Engine Central_1;use_retained_scheduling_info;1
-ENGINECFG;setparam;Centreon Engine Central_1;use_syslog;0
-ENGINECFG;setparam;Centreon Engine Central_1;log_notifications;1
-ENGINECFG;setparam;Centreon Engine Central_1;log_service_retries;1
-ENGINECFG;setparam;Centreon Engine Central_1;log_host_retries;1
-ENGINECFG;setparam;Centreon Engine Central_1;log_event_handlers;1
-ENGINECFG;setparam;Centreon Engine Central_1;log_external_commands;1
-ENGINECFG;setparam;Centreon Engine Central_1;log_passive_checks;2
-ENGINECFG;setparam;Centreon Engine Central_1;sleep_time;0.2
-ENGINECFG;setparam;Centreon Engine Central_1;service_inter_check_delay_method;s
-ENGINECFG;setparam;Centreon Engine Central_1;service_interleave_factor;s
-ENGINECFG;setparam;Centreon Engine Central_1;max_concurrent_checks;400
-ENGINECFG;setparam;Centreon Engine Central_1;max_service_check_spread;5
-ENGINECFG;setparam;Centreon Engine Central_1;check_result_reaper_frequency;5
-ENGINECFG;setparam;Centreon Engine Central_1;interval_length;60
-ENGINECFG;setparam;Centreon Engine Central_1;auto_reschedule_checks;2
-ENGINECFG;setparam;Centreon Engine Central_1;use_aggressive_host_checking;1
-ENGINECFG;setparam;Centreon Engine Central_1;enable_flap_detection;0
-ENGINECFG;setparam;Centreon Engine Central_1;low_service_flap_threshold;25.0
-ENGINECFG;setparam;Centreon Engine Central_1;high_service_flap_threshold;50.0
-ENGINECFG;setparam;Centreon Engine Central_1;low_host_flap_threshold;25.0
-ENGINECFG;setparam;Centreon Engine Central_1;high_host_flap_threshold;50.0
-ENGINECFG;setparam;Centreon Engine Central_1;soft_state_dependencies;0
-ENGINECFG;setparam;Centreon Engine Central_1;service_check_timeout;60
-ENGINECFG;setparam;Centreon Engine Central_1;host_check_timeout;12
-ENGINECFG;setparam;Centreon Engine Central_1;event_handler_timeout;30
-ENGINECFG;setparam;Centreon Engine Central_1;notification_timeout;30
-ENGINECFG;setparam;Centreon Engine Central_1;ocsp_timeout;5
-ENGINECFG;setparam;Centreon Engine Central_1;ochp_timeout;5
-ENGINECFG;setparam;Centreon Engine Central_1;perfdata_timeout;5
-ENGINECFG;setparam;Centreon Engine Central_1;obsess_over_services;0
-ENGINECFG;setparam;Centreon Engine Central_1;obsess_over_hosts;2
-ENGINECFG;setparam;Centreon Engine Central_1;process_performance_data;0
-ENGINECFG;setparam;Centreon Engine Central_1;host_perfdata_file_mode;2
-ENGINECFG;setparam;Centreon Engine Central_1;service_perfdata_file_mode;2
-ENGINECFG;setparam;Centreon Engine Central_1;check_for_orphaned_services;0
-ENGINECFG;setparam;Centreon Engine Central_1;check_for_orphaned_hosts;0
-ENGINECFG;setparam;Centreon Engine Central_1;check_service_freshness;1
-ENGINECFG;setparam;Centreon Engine Central_1;check_host_freshness;2
-ENGINECFG;setparam;Centreon Engine Central_1;date_format;euro
-ENGINECFG;setparam;Centreon Engine Central_1;illegal_object_name_chars;~!$%^&*"|'<>?,()=
-ENGINECFG;setparam;Centreon Engine Central_1;illegal_macro_output_chars;`~$^&"|'<>
-ENGINECFG;setparam;Centreon Engine Central_1;use_regexp_matching;2
-ENGINECFG;setparam;Centreon Engine Central_1;use_true_regexp_matching;2
-ENGINECFG;setparam;Centreon Engine Central_1;admin_email;admin@localhost
-ENGINECFG;setparam;Centreon Engine Central_1;admin_pager;admin
-ENGINECFG;setparam;Centreon Engine Central_1;nagios_activate;1
-ENGINECFG;setparam;Centreon Engine Central_1;event_broker_options;-1
-ENGINECFG;setparam;Centreon Engine Central_1;enable_predictive_host_dependency_checks;2
-ENGINECFG;setparam;Centreon Engine Central_1;enable_predictive_service_dependency_checks;2
-ENGINECFG;setparam;Centreon Engine Central_1;cached_host_check_horizon;60
-ENGINECFG;setparam;Centreon Engine Central_1;use_large_installation_tweaks;2
-ENGINECFG;setparam;Centreon Engine Central_1;enable_environment_macros;2
-ENGINECFG;setparam;Centreon Engine Central_1;debug_file;/var/log/centreon-engine/centengine.debug
-ENGINECFG;setparam;Centreon Engine Central_1;debug_level;0
-ENGINECFG;setparam;Centreon Engine Central_1;debug_level_opt;0
-ENGINECFG;setparam;Centreon Engine Central_1;debug_verbosity;2
-ENGINECFG;setparam;Centreon Engine Central_1;cfg_file;centengine.cfg
-ENGINECFG;setparam;Centreon Engine Central_1;log_pid;1
-ENGINECFG;setparam;Centreon Engine Central_1;enable_macros_filter;0
-ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
 CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n

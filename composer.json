@@ -62,7 +62,8 @@
         "symfony/expression-language": "4.4.*",
         "ext-json": "*",
         "justinrainbow/json-schema": "^5.2",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "symfony/http-client": "4.4.*"
     },
     "autoload": {
         "psr-4": {
