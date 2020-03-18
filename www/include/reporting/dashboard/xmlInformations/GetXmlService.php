@@ -57,7 +57,7 @@ if (empty($color) || count($_GET['color']) !== count($color)) {
 }
 
 if (
-    filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false 
+    filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false
     && filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT) !== false
 ) {
     /* Get ACL if user is not admin */
