@@ -213,6 +213,7 @@ const Resources = (): JSX.Element => {
       />
       <div className={classes.listing}>
         <Listing
+          checkable
           Actions={<Actions />}
           loading={loading}
           columnConfiguration={columns}
@@ -228,7 +229,6 @@ const Resources = (): JSX.Element => {
           sortf={sortf}
           sorto={sorto}
           totalRows={listing?.meta.total}
-          checkable={false}
         />
       </div>
     </div>
