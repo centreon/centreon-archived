@@ -80,8 +80,7 @@ class YamlConfigurationLoader
         array $configuration,
         string $currentDirectory,
         string $historyLoadedFile
-    ): array
-    {
+    ): array {
         foreach ($configuration as $key => $value) {
             if (is_array($value)) {
                 $configuration[$key] = $this->iterateConfiguration($value, $currentDirectory, $historyLoadedFile);

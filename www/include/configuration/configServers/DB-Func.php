@@ -58,8 +58,7 @@ function getAvailableSuffixIds(
     string $serverName,
     int $numberOf,
     string $separator = '_'
-): array
-{
+): array {
 
     if ($numberOf < 0) {
         return [];
