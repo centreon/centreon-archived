@@ -99,6 +99,16 @@ class Resource
     private $acknowledgementEndpoint;
 
     /**
+     * @var string|null
+     */
+    private $statusGraphEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $performanceGraphEndpoint;
+
+    /**
      * @var \Centreon\Domain\Monitoring\ResourceSeverity|null
      */
     private $severity;
@@ -169,7 +179,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastCheck()) {
+        if ($this->getLastStatusChange()) {
             $result = CentreonDuration::toString(time() - $this->getLastStatusChange()->getTimestamp());
         }
 
@@ -395,6 +405,44 @@ class Resource
     public function setAcknowledgementEndpoint(string $acknowledgementEndpoint): self
     {
         $this->acknowledgementEndpoint = $acknowledgementEndpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatusGraphEndpoint(): ?string
+    {
+        return $this->statusGraphEndpoint;
+    }
+
+    /**
+     * @param string $statusGraphEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setStatusGraphEndpoint(string $statusGraphEndpoint): self
+    {
+        $this->statusGraphEndpoint = $statusGraphEndpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPerformanceGraphEndpoint(): ?string
+    {
+        return $this->performanceGraphEndpoint;
+    }
+
+    /**
+     * @param string $performanceGraphEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setPerformanceGraphEndpoint(string $performanceGraphEndpoint): self
+    {
+        $this->performanceGraphEndpoint = $performanceGraphEndpoint;
 
         return $this;
     }
