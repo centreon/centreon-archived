@@ -42,15 +42,14 @@ if (isset($_SESSION['centreon'])) {
     exit;
 }
 
-$color = array_filter($_GET['color'] ?? false, function($oneColor) {
+$color = array_filter($_GET['color'] ?? [], function ($oneColor) {
     return filter_var($oneColor, FILTER_VALIDATE_REGEXP, [
         'options' => [
             'regexp' => "/^#[[:xdigit:]]{6}$/"
         ]
     ]);
-}); 
-$color = $color ?? false;
-if ($color === false || count($_GET['color']) !== count($color)){
+});
+if (empty($color) || count($_GET['color']) !== count($color)) {
     $buffer->writeElement('error', 'Bad color format');
     $buffer->endElement();
     header('Content-Type: text/xml');

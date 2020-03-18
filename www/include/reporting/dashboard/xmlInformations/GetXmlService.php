@@ -41,15 +41,14 @@ if (isset($_SESSION['centreon'])) {
     exit;
 }
 
-$color = array_filter($_GET['color'] ?? false, function($oneColor) {
+$color = array_filter($_GET['color'] ?? [], function ($oneColor) {
     return filter_var($oneColor, FILTER_VALIDATE_REGEXP, [
         'options' => [
             'regexp' => "/^#[[:xdigit:]]{6}$/"
         ]
     ]);
-}); 
-$color = $color ?? false;
-if ($color === false || count($_GET['color']) !== count($color)){
+});
+if (empty($color) || count($_GET['color']) !== count($color)) {
     $buffer->writeElement('error', 'Bad color format');
     $buffer->endElement();
     header('Content-Type: text/xml');
@@ -57,7 +56,10 @@ if ($color === false || count($_GET['color']) !== count($color)){
     exit;
 }
 
-if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false && filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT) !== false) {
+if (
+    filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false 
+    && filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT) !== false
+) {
     /* Get ACL if user is not admin */
     $isAdmin = $centreon->user->admin;
     $accessService = true;

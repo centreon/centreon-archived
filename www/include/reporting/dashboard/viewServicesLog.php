@@ -45,12 +45,8 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service to report
  */
-$host_id = filter_var(
-    $_GET['host_id'] ?? $_POST['host_id'] ?? false, FILTER_VALIDATE_INT
-);
-$service_id = filter_var(
-    $_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT
-);
+$host_id = filter_var($_GET['host_id'] ?? $_POST['host_id'] ?? false, FILTER_VALIDATE_INT);
+$service_id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * FORMS

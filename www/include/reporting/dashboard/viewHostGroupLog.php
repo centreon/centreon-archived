@@ -48,9 +48,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting hostgroup to report
  */
-$id = filter_var(
-    $_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT
-);
+$id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
 /*
  * Formulary
  *
