@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -21,12 +22,37 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\MonitoringServer\MonitoringServer;
+
+/***
+ * This class is designed to represent a host configuration.
+ *
+ * @package Centreon\Domain\HostConfiguration
+ */
 class Host
 {
     /**
-     * @var int
+     * Host template
+     */
+    public const TYPE_HOST_TEMPLATE = 0;
+    /**
+     * Host
+     */
+    public const TYPE_HOST = 1;
+    /**
+     * Host meta
+     */
+    public const TYPE_META = 2;
+
+    /**
+     * @var int|null
      */
     private $id;
+
+    /**
+     * @var MonitoringServer|null
+     */
+    private $monitoringServer;
 
     /**
      * @var string|null
@@ -37,6 +63,11 @@ class Host
      * @var string|null
      */
     private $alias;
+
+    /**
+     * @var string|null Host display name
+     */
+    private $displayName;
 
     /**
      * @var string|null
@@ -59,23 +90,41 @@ class Host
     private $isActivate = true;
 
     /**
+     * @var int Host type
+     * @see Host::TYPE_HOST_TEMPLATE (0)
+     * @see Host::TYPE_HOST (1)
+     * @see Host::TYPE_META (2)
+     */
+    private $type = self::TYPE_HOST;
+
+    /**
      * @var ExtendedHost|null
      */
     private $extendedHost;
 
     /**
-     * @return int
+     * @var Host[] Host templates
      */
-    public function getId(): int
+    private $template = [];
+
+    /**
+     * @var HostMacro[]
+     */
+    private $macros = [];
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return Host
      */
-    public function setId(int $id): Host
+    public function setId(?int $id): Host
     {
         $this->id = $id;
         return $this;
@@ -114,6 +163,24 @@ class Host
     public function setAlias(?string $alias): Host
     {
         $this->alias = $alias;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    /**
+     * @param string|null $displayName
+     * @return Host
+     */
+    public function setDisplayName(?string $displayName): Host
+    {
+        $this->displayName = $displayName;
         return $this;
     }
 
@@ -204,6 +271,100 @@ class Host
     public function setExtendedHost(?ExtendedHost $extendedHost): Host
     {
         $this->extendedHost = $extendedHost;
+        return $this;
+    }
+
+    /**
+     * @return MonitoringServer|null
+     */
+    public function getMonitoringServer(): ?MonitoringServer
+    {
+        return $this->monitoringServer;
+    }
+
+    /**
+     * @param MonitoringServer|null $monitoringServer
+     * @return Host
+     */
+    public function setMonitoringServer(?MonitoringServer $monitoringServer): Host
+    {
+        $this->monitoringServer = $monitoringServer;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType(int $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return Host[]
+     */
+    public function getTemplate(): array
+    {
+        return $this->template;
+    }
+
+    /**
+     * @param Host[] $template
+     * @return Host
+     */
+    public function setTemplate(array $template): Host
+    {
+        $this->template = $template;
+        return $this;
+    }
+
+    /**
+     * Add a host template.
+     *
+     * @param Host $hostTemplate
+     * @return Host
+     */
+    public function addTemplate(Host $hostTemplate): Host
+    {
+        $this->template[] = $hostTemplate;
+        return $this;
+    }
+
+    /**
+     * @return HostMacro[]
+     */
+    public function getMacros(): array
+    {
+        return $this->macros;
+    }
+
+    /**
+     * @param HostMacro[] $macros
+     * @return Host
+     */
+    public function setMacros(array $macros): Host
+    {
+        $this->macros = $macros;
+        return $this;
+    }
+
+    /**
+     * Add a host macro.
+     *
+     * @param HostMacro $hostMacro Host macro to be added
+     * @return Host
+     */
+    public function addMacro(HostMacro $hostMacro): Host
+    {
+        $this->macros[] = $hostMacro;
         return $this;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -29,11 +30,6 @@ class ExtendedHost
     private $id;
 
     /**
-     * @var int
-     */
-    private $hostId;
-
-    /**
      * @var string|null
      */
     private $notes;
@@ -46,7 +42,7 @@ class ExtendedHost
     /**
      * @var string|null
      */
-    private $actionsUrl;
+    private $actionUrl;
 
     /**
      * @return int
@@ -63,24 +59,6 @@ class ExtendedHost
     public function setId(int $id): ExtendedHost
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHostId(): int
-    {
-        return $this->hostId;
-    }
-
-    /**
-     * @param int $hostId
-     * @return ExtendedHost
-     */
-    public function setHostId(int $hostId): ExtendedHost
-    {
-        $this->hostId = $hostId;
         return $this;
     }
 
@@ -123,18 +101,18 @@ class ExtendedHost
     /**
      * @return string|null
      */
-    public function getActionsUrl(): ?string
+    public function getActionUrl(): ?string
     {
-        return $this->actionsUrl;
+        return $this->actionUrl;
     }
 
     /**
-     * @param string|null $actionsUrl
+     * @param string|null $actionUrl
      * @return ExtendedHost
      */
-    public function setActionsUrl(?string $actionsUrl): ExtendedHost
+    public function setActionUrl(?string $actionUrl): ExtendedHost
     {
-        $this->actionsUrl = $actionsUrl;
+        $this->actionUrl = $actionUrl;
         return $this;
     }
 }

@@ -30,12 +30,12 @@ class MonitoringServer implements EntityDescriptorMetadataInterface
     public const SERIALIZER_GROUP_MAIN = 'monitoringserver_main';
 
     /**
-     * @var int Unique id of server
+     * @var int|null Unique id of server
      */
     private $id;
 
     /**
-     * @var string Name of server
+     * @var string|null Name of server
      */
     private $name;
 
@@ -182,36 +182,36 @@ class MonitoringServer implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return MonitoringServer
      */
-    public function setId(int $id): MonitoringServer
+    public function setId(?int $id): MonitoringServer
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return MonitoringServer
      */
-    public function setName(string $name): MonitoringServer
+    public function setName(?string $name): MonitoringServer
     {
         $this->name = $name;
         return $this;
