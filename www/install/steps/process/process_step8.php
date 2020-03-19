@@ -69,7 +69,8 @@ if (isset($parameters['modules'])) {
                 // If the dependency is already installed skip install
                 if (
                     isset($result['modules'][$dependency]['install'])
-                    $result['modules'][$dependency]['install'] === true) {
+                    && $result['modules'][$dependency]['install'] === true
+                ) {
                     continue;
                 }
                 $installer = $moduleFactory->newInstaller($dependency);
