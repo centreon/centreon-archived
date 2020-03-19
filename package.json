@@ -70,9 +70,9 @@
   },
   "dependencies": {
     "@centreon/ui": "centreon/centreon-ui",
-    "@material-ui/core": "^4.9.5",
+    "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.45",
+    "@material-ui/lab": "^4.0.0-alpha.46",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.8.0",
