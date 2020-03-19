@@ -256,7 +256,7 @@ if (!$session->rowCount()) {
     $rrd_time2 = str_replace(":", "\:", $rrd_time2);
     $command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 
-    $command_line = $centreon->optGen["rrdtool_path_bin"] . $command_line . " 2>&1";
+    $command_line = $centreon->optGen["rrdtool_path_bin"] . escapeshellarg($command_line) . " 2>&1";
 
     $command_line .= " LINE1:ok#19EE11:\"Ok\" ";
     $command_line .= " LINE1:warn#F8C706:\"Warning\" ";
