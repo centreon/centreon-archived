@@ -49,7 +49,8 @@ if (isset($parameters['modules'])) {
         /* If the selected module is already installed (as dependency for example)
          * then we can skip the installation process
          */
-        if (isset($result['modules'][$module]['install']) &&
+        if (
+            isset($result['modules'][$module]['install'])
             && $result['modules'][$module]['install'] === true
         ) {
             continue;
