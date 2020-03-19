@@ -592,31 +592,31 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    /monitoring/acknowledgements/disacknowledge:
-      post:
-        tags:
-          - Acknowledgement
-        summary: "Mass disacknowledge resources"
+  /monitoring/acknowledgements/disacknowledge:
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Mass disacknowledge resources"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
-                        - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
-        responses:
-          '204':
-            description: "OK"
-          '403':
-            $ref: '#/components/responses/Forbidden'
-          '500':
-            $ref: '#/components/responses/InternalServerError'
+              type: object
+              properties:
+                body:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+                      - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      responses:
+        '204':
+          description: "OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/acknowledgements/{acknowledgement_id}:
     get:
       tags:
