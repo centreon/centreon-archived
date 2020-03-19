@@ -51,22 +51,22 @@ import {
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
 
-const ExpansionPanelSummary = withStyles({
+const ExpansionPanelSummary = withStyles((theme) => ({
   root: {
-    padding: '0px 24px 0 8px',
+    padding: theme.spacing(0, 3, 0, 1),
     minHeight: 'auto',
     '&$expanded': {
       minHeight: 'auto',
     },
   },
   content: {
-    margin: '8px 0',
+    margin: theme.spacing(1, 0),
     '&$expanded': {
-      margin: '8px 0',
+      margin: theme.spacing(1, 0),
     },
   },
   expanded: {},
-})(MuiExpansionPanelSummary);
+}))(MuiExpansionPanelSummary);
 
 const ExpansionPanelDetails = withStyles((theme) => ({
   root: {

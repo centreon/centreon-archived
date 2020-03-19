@@ -35,6 +35,7 @@ export interface Resource {
   information: string;
   severity?: Severity;
   short_type: string;
+  performance_graph_endpoint?: string;
 }
 
 interface ListingMeta {

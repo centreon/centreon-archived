@@ -14,6 +14,7 @@ export const labelFilter = I18n.t('Filter');
 export const labelCriterias = I18n.t('Criterias');
 export const labelShowCriteriasFilters = I18n.t('Show criterias filters');
 export const labelFixed = I18n.t('Fixed');
+export const labelGraph = I18n.t('Graph');
 export const labelHost = I18n.t('Host');
 export const labelHostGroup = I18n.t('Host group');
 export const labelInDowntime = I18n.t('In downtime');
