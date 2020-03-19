@@ -383,7 +383,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
-                AND sh.state = 0
                 AND sh.name NOT LIKE :serviceModule
                 AND sh.enabled = 1";
         $collector->addValue(':serviceModule', '_Module_%');
