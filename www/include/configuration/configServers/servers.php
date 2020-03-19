@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,23 +54,23 @@ $dupNbr = filter_var_array(
 
 // Path to the configuration dir
 $path = "./include/configuration/configServers/";
-    
+
 // PHP functions
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
-    
-        /* Set the real page */
+
+/* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
 $serverResult =
     $centreon->user->access->getPollerAclConf(
-        array(
-            'fields' => array('id', 'name', 'last_restart'),
-            'order'  => array('name'),
-            'keys'   => array('id')
-        )
+        [
+            'fields' => ['id', 'name', 'last_restart'],
+            'order' => ['name'],
+            'keys' => ['id'],
+        ]
     );
 
 $instanceObj = new CentreonInstance($pearDB);
@@ -93,11 +94,7 @@ if ($action !== false) {
 
 switch ($o) {
     case SERVER_ADD:
-        require_once($path . "formServers.php");
-        break;
     case SERVER_WATCH:
-        require_once($path . "formServers.php");
-        break;
     case SERVER_MODIFY:
         require_once($path . "formServers.php");
         break;
@@ -123,8 +120,7 @@ switch ($o) {
         if (!in_array(false, $select)) {
             deleteServerInDB($select);
         }
-        require_once($path . "listServers.php");
-        break;
+        //then require the same file than default
     default:
         require_once($path . "listServers.php");
         break;
