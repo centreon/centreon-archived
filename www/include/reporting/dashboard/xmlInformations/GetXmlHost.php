@@ -57,14 +57,14 @@ if (empty($color) || count($_GET['color']) !== count($color)) {
     exit;
 }
 
-if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
+if (($id = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT)) !== false) {
     /* Get ACL if user is not admin */
     $isAdmin = $centreon->user->admin;
     $accessHost = true;
     if (!$isAdmin) {
         $userId = $centreon->user->user_id;
         $acl = new CentreonACL($userId, $isAdmin);
-        if (!$acl->checkHost($_GET['id'])) {
+        if (!$acl->checkHost($id)) {
             $accessHost = false;
         }
     }
@@ -73,7 +73,7 @@ if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
         /* Use "like" instead of "=" to avoid mysql bug on partitioned tables */
         $query = 'SELECT  * FROM `log_archive_host` WHERE host_id LIKE :id ORDER BY date_start DESC';
         $stmt = $pearDBO->prepare($query);
-        $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         while ($row = $stmt->fetch()) {
@@ -84,10 +84,6 @@ if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
     }
 } else {
     $buffer->writeElement('error', 'Bad id format');
-    $buffer->endElement();
-    header('Content-Type: text/xml');
-    $buffer->output();
-    exit;
 }
 
 $buffer->endElement();

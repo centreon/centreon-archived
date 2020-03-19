@@ -57,8 +57,8 @@ if (empty($color) || count($_GET['color']) !== count($color)) {
 }
 
 if (
-    filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false 
-    && filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT) !== false
+    ($id = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT)) !== false 
+    && ($host_id = filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT)) !== false
 ) {
     /* Get ACL if user is not admin */
     $isAdmin = $centreon->user->admin;
@@ -66,7 +66,7 @@ if (
     if (!$isAdmin) {
         $userId = $centreon->user->user_id;
         $acl = new CentreonACL($userId, $isAdmin);
-        if (!$acl->checkService($_GET['id'])) {
+        if (!$acl->checkService($id)) {
             $accessService = false;
         }
     }
@@ -79,8 +79,8 @@ if (
             'AND service_id LIKE :service_id ' .
             'ORDER BY date_start DESC';
         $stmt = $pearDBO->prepare($query);
-        $stmt->bindValue(':host_id', $_GET['host_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':service_id', $_GET['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':host_id', $host_id, PDO::PARAM_INT);
+        $stmt->bindValue(':service_id', $id, PDO::PARAM_INT);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
             fillBuffer($statesTab, $row, $color);
@@ -90,12 +90,7 @@ if (
     }
 } else {
     $buffer->writeElement('error', 'Bad id format');
-    $buffer->endElement();
-    header('Content-Type: text/xml');
-    $buffer->output();
-    exit;
 }
 $buffer->endElement();
-
 header('Content-Type: text/xml');
 $buffer->output();

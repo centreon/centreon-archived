@@ -50,8 +50,8 @@ if (empty($color) || count($_GET['color']) !== count($color)) {
     exit;
 }
 
-if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
-    $hosts_id = $centreon->user->access->getHostHostGroupAclConf($_GET['id'], "broker");
+if (($id = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT)) !== false) {
+    $hosts_id = $centreon->user->access->getHostHostGroupAclConf($id, "broker");
     if (count($hosts_id) > 0) {
         $rq = 'SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, '
             . 'sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, '
@@ -69,13 +69,8 @@ if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
     }
 } else {
     $buffer->writeElement('error', 'Bad id format');
-    $buffer->endElement();
-    header('Content-Type: text/xml');
-    $buffer->output();
-    exit;
 }
+
 $buffer->endElement();
-
 header('Content-Type: text/xml');
-
 $buffer->output();

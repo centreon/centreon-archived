@@ -50,8 +50,8 @@ if (empty($color) || count($_GET['color']) !== count($color)) {
     exit;
 }
 
-if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
-    $services = getServiceGroupActivateServices($_GET['id']);
+if (($id = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT)) !== false) {
+    $services = getServiceGroupActivateServices($id);
     if (count($services) > 0) {
         $host_ids = array();
         $service_ids = array();
@@ -79,12 +79,8 @@ if (filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT) !== false) {
     }
 } else {
     $buffer->writeElement('error', 'Bad id format');
-    $buffer->endElement();
-    header('Content-Type: text/xml');
-    $buffer->output();
-    exit;
 }
-$buffer->endElement();
 
+$buffer->endElement();
 header('Content-Type: text/xml');
 $buffer->output();
