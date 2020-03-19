@@ -49,7 +49,8 @@ if (isset($parameters['modules'])) {
         /* If the selected module is already installed (as dependency for example)
          * then we can skip the installation process
          */
-        if ($result['modules'][$module]['install']) {
+        if (isset($result['modules'][$module]['install']) &&
+            $result['modules'][$module]['install'] === true) {
             continue;
         }
         /* retrieving the module's information stored in the conf.php
@@ -64,7 +65,8 @@ if (isset($parameters['modules'])) {
         if (isset($moduleInformation['dependencies'])) {
             foreach ($moduleInformation['dependencies'] as $dependency) {
                 // If the dependency is already installed skip install
-                if ($result['modules'][$dependency]['install']) {
+                if (isset($result['modules'][$dependency]['install']) &&
+                    $result['modules'][$dependency]['install'] === true) {
                     continue;
                 }
                 $installer = $moduleFactory->newInstaller($dependency);
