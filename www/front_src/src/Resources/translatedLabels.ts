@@ -11,6 +11,7 @@ export const labelDuration = I18n.t('Duration');
 export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
+export const labelCriterias = I18n.t('Criterias');
 export const labelFixed = I18n.t('Fixed');
 export const labelHost = I18n.t('Host');
 export const labelHostGroup = I18n.t('Host group');
