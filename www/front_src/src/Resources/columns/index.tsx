@@ -25,6 +25,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export interface Column {
+  id: string;
+  getFormattedString?: (details) => string;
+  label: string;
+  type: number;
+  Component?: (props) => JSX.Element | null;
+  sortable?: boolean;
+  width?: number;
+}
+
 export interface ColumnProps {
   row: Resource;
   isRowSelected: boolean;
@@ -33,14 +43,15 @@ export interface ColumnProps {
   onClick;
 }
 
-const SeverityColumn = ({ row }: ColumnProps): JSX.Element | undefined => {
+const SeverityColumn = ({ row }: ColumnProps): JSX.Element | null => {
+  if (!row.severity) {
+    return null;
+  }
   return (
-    row.severity && (
-      <StatusChip
-        label={row.severity.level.toString()}
-        statusCode={StatusCode.None}
-      />
-    )
+    <StatusChip
+      label={row.severity.level.toString()}
+      statusCode={StatusCode.None}
+    />
   );
 };
 
@@ -114,13 +125,12 @@ const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
   );
 };
 
-const getColumns = (actions) => [
+const getColumns = (actions): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
     type: TABLE_COLUMN_TYPES.component,
     Component: SeverityColumn,
-    clickable: false,
     sortable: false,
   },
   {
@@ -128,7 +138,6 @@ const getColumns = (actions) => [
     label: labelStatus,
     type: TABLE_COLUMN_TYPES.component,
     Component: StatusColumn(actions),
-    clickable: false,
     sortable: false,
     width: 125,
   },
@@ -137,7 +146,6 @@ const getColumns = (actions) => [
     label: labelResources,
     type: TABLE_COLUMN_TYPES.component,
     Component: ResourcesColumn,
-    clickable: false,
     sortable: false,
   },
   {
@@ -145,7 +153,6 @@ const getColumns = (actions) => [
     label: '',
     type: TABLE_COLUMN_TYPES.component,
     Component: GraphColumn,
-    clickable: false,
     sortable: false,
     width: 50,
   },
@@ -178,7 +185,6 @@ const getColumns = (actions) => [
     label: labelState,
     type: TABLE_COLUMN_TYPES.component,
     Component: StateColumn,
-    clickable: false,
     sortable: false,
     width: 80,
   },
