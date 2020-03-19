@@ -63,10 +63,14 @@ function getStatusDBDir($pearDBO)
  * Verify start and end date
  */
 
-$start = (!isset($_GET["start"])) ? time() - (60 * 60 * 48) : $_GET["start"];
-$end = (!isset($_GET["end"])) ? time() : $_GET["end"];
+$start = !isset($_GET["start"])
+    ? time() - (60 * 60 * 48)
+    : filter_input('start', FILTER_VALIDATE_INT, ['options' => ['default' => false]]);
+$end = !isset($_GET["end"])
+    ? time()
+    : filter_input('end', FILTER_VALIDATE_INT), ['options' => ['default' => false]]);
 
-if (false === is_numeric($start) || false === is_numeric($end)) {
+if (false === $start || false === $end) {
     header('HTTP/1.1 406 Not Acceptable');
     exit();
 }
@@ -78,9 +82,17 @@ if (isset($_GET['template_id']) && false === is_numeric($_GET['template_id'])) {
 $len = $end - $start;
 
 // Verify if session is active
+if (!session_id()) {
+    exit();
+}
 $sid = session_id();
 
-$session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '" . $sid . "'");
+$session = $pearDB->prepare(
+    "SELECT * FROM `session` WHERE session_id = :sid"
+);
+$session->bindValue(':sid', $sid, PDO::PARAM_INT);
+$session->execute();
+
 if (!$session->rowCount()) {
     $image = imagecreate(250, 100);
     $fond = imagecolorallocate($image, 0xEF, 0xF2, 0xFB);
@@ -108,13 +120,17 @@ if (!$session->rowCount()) {
     // Get index information to have acces to graph
 
     if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])) {
-        $DBRESULT = $pearDBO->query("SELECT * FROM index_data
-            WHERE `id` = '" . $pearDB->escape($_GET["index"]) . "' LIMIT 1");
+        $DBRESULT = $pearDBO->query(
+            "SELECT * FROM index_data
+            WHERE `id` = '" . $pearDB->escape($_GET["index"]) . "' LIMIT 1"
+        );
     } else {
         $pearDBO->query("SET NAMES 'utf8'");
-        $DBRESULT = $pearDBO->query("SELECT * FROM index_data
+        $DBRESULT = $pearDBO->query(
+            "SELECT * FROM index_data
             WHERE host_name = '" . $pearDB->escape($_GET["host_name"]) . "'
-            AND `service_description` = '" . $pearDB->escape($_GET["service_description"]) . "' LIMIT 1");
+            AND `service_description` = '" . $pearDB->escape($_GET["service_description"]) . "' LIMIT 1"
+        );
     }
 
     $index_data_ODS = $DBRESULT->fetchRow();
