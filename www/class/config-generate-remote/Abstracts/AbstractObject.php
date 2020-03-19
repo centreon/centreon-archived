@@ -162,9 +162,9 @@ abstract class AbstractObject
         $append = '';
         for ($i = 0; $i < count($this->attributesWrite); $i++) {
             if (isset($object[$this->attributesWrite[$i]]) && strlen($object[$this->attributesWrite[$i]])) {
-                $line .= $append . $object[$this->attributesWrite[$i]];
+                $line .= $append . '"' . str_replace('"', '""', $object[$this->attributesWrite[$i]]) . '"';
             } else {
-                $line .= $append . 'NULL';
+                $line .= $append . '\N';
             }
             $append = $this->fieldSeparatorInfile;
         }
