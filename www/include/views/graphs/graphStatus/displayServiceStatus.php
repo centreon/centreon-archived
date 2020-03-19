@@ -274,7 +274,7 @@ if (!$session->rowCount()) {
     $command_line = "export TZ='" . $timezone . "' ; " . $command_line;
 
     // Escale special char
-    $command_line = escape_command("$command_line");
+    $command_line = escapeshellarg("$command_line");
 
     if ($centreon->optGen["debug_rrdtool"] == "1") {
         error_log(
