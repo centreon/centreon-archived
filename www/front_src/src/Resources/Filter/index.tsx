@@ -204,7 +204,7 @@ const Filter = ({
                 })}
                 onClick={toggleExpand}
                 aria-expanded={expanded}
-                aria-label="show more"
+                aria-label="show criterias filters"
               >
                 <ExpandMoreIcon color="primary" />
               </IconButton>
