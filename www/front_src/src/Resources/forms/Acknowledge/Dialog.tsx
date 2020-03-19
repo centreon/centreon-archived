@@ -10,10 +10,12 @@ import {
   labelComment,
   labelNotify,
   labelNotifyHelpCaption,
+  labelAcknowledgeServices,
 } from '../../translatedLabels';
+import { Resource } from '../../models';
 
 interface Props {
-  open: boolean;
+  resources: Array<Resource>;
   canConfirm: boolean;
   onCancel;
   onConfirm;
@@ -25,7 +27,7 @@ interface Props {
 }
 
 const DialogAcknowledge = ({
-  open,
+  resources,
   canConfirm,
   onCancel,
   onConfirm,
@@ -35,6 +37,10 @@ const DialogAcknowledge = ({
   handleChange,
   loading,
 }: Props): JSX.Element => {
+  const open = resources.length > 0;
+
+  const hasHosts = resources.find((resource) => resource.type === 'host');
+
   return (
     <Dialog
       labelCancel={labelCancel}
@@ -48,8 +54,8 @@ const DialogAcknowledge = ({
       submitting={submitting}
     >
       {loading && <Loader fullContent />}
-      <Grid direction="column" container spacing={2}>
-        <Grid>
+      <Grid direction="column" container spacing={1}>
+        <Grid item>
           <TextField
             value={values.comment}
             onChange={handleChange('comment')}
@@ -61,24 +67,44 @@ const DialogAcknowledge = ({
             helperText={errors?.comment}
           />
         </Grid>
-        <Grid item>
-          <Grid container direction="column">
-            <Grid item container xs alignItems="center">
-              <Grid item xs={1}>
-                <Checkbox onChange={handleChange('notify')} />
-              </Grid>
-              <Grid item xs>
-                <Typography>{labelNotify}</Typography>
-              </Grid>
+        <Grid container item direction="column">
+          <Grid item container xs alignItems="center">
+            <Grid item xs={1}>
+              <Checkbox
+                inputProps={{ 'aria-label': labelNotify }}
+                color="primary"
+                value={values.notify}
+                onChange={handleChange('notify')}
+              />
             </Grid>
-            <Grid item container xs>
-              <Grid item xs={1} />
-              <Grid item xs>
-                <FormHelperText>{labelNotifyHelpCaption}</FormHelperText>
-              </Grid>
+            <Grid item xs>
+              <Typography>{labelNotify}</Typography>
+            </Grid>
+          </Grid>
+          <Grid item container xs>
+            <Grid item xs={1} />
+            <Grid item xs>
+              <FormHelperText>{labelNotifyHelpCaption}</FormHelperText>
             </Grid>
           </Grid>
         </Grid>
+        {hasHosts && (
+          <Grid container item direction="column">
+            <Grid item container xs alignItems="center">
+              <Grid item xs={1}>
+                <Checkbox
+                  inputProps={{ 'aria-label': labelAcknowledgeServices }}
+                  color="primary"
+                  value={values.acknowledgeAttachedResources}
+                  onChange={handleChange('acknowledgeAttachedResources')}
+                />
+              </Grid>
+              <Grid item xs>
+                <Typography>{labelAcknowledgeServices}</Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
       </Grid>
     </Dialog>
   );

@@ -24,15 +24,23 @@ interface ResourceParams {
   is_persistent_comment: boolean;
   is_sticky: boolean;
   parent_resource_id?: string;
+  with_services?: boolean;
 }
 
-const toResourceParams = ({ id, comment, notify, parent }): ResourceParams => ({
+const toResourceParams = ({
+  id,
+  comment,
+  notify,
+  parent,
+  acknowledgeAttachedResources,
+}): ResourceParams => ({
   comment,
   is_notify_contacts: notify,
   is_persistent_comment: true,
   is_sticky: true,
   resource_id: id,
   parent_resource_id: parent?.id,
+  with_services: acknowledgeAttachedResources,
 });
 
 const acknowledgeResources = ({

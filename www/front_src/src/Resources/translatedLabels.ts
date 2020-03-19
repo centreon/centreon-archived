@@ -2,6 +2,10 @@ import { I18n } from 'react-redux-i18n';
 
 export const labelAcknowledged = I18n.t('Acknowledged');
 export const labelAcknowledge = I18n.t('Acknowledge');
+export const labelAcknowledgedBy = I18n.t('Acknowledged by');
+export const labelAcknowledgeServices = I18n.t(
+  'Acknowledge services attached to host',
+);
 export const labelAll = I18n.t('All');
 export const labelAuthor = I18n.t('Author');
 export const labelComment = I18n.t('Comment');
@@ -25,6 +29,7 @@ export const labelNotifyHelpCaption = I18n.t(
   'If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged',
 );
 export const labelOk = I18n.t('Ok');
+export const labelOpen = I18n.t('Open');
 export const labelPersistent = I18n.t('Persistent');
 export const labelPending = I18n.t('Pending');
 export const labelRequired = I18n.t('Required');

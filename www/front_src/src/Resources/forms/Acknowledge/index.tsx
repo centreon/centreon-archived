@@ -9,6 +9,7 @@ import {
   labelRequired,
   labelSomethingWentWrong,
   labelSuccessfullyAcknowledged,
+  labelAcknowledgedBy,
 } from '../../translatedLabels';
 import DialogAcknowledge from './Dialog';
 import { Resource } from '../../models';
@@ -33,31 +34,18 @@ const AcknowledgeForm = ({
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
-  const [username, setUsername] = React.useState<string>();
-
-  const hasResources = resources.length > 0;
-
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  React.useEffect(() => {
-    if (!hasResources) {
-      return;
-    }
-
-    getUser(token)
-      .then((user) => setUsername(user.username))
-      .catch(() => showError(labelSomethingWentWrong));
-  }, [hasResources]);
-
-  React.useEffect(() => (): void => cancel(), []);
+  const [loaded, setLoaded] = React.useState(false);
 
   const form = useFormik({
     initialValues: {
       comment: '',
       notify: false,
+      acknowledgeAttachedResources: false,
     },
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
@@ -78,20 +66,38 @@ const AcknowledgeForm = ({
     validationSchema,
   });
 
+  const hasResources = resources.length > 0;
+
+  React.useEffect(() => {
+    if (!hasResources) {
+      return;
+    }
+
+    getUser(token)
+      .then((user) =>
+        form.setFieldValue(
+          'comment',
+          `${labelAcknowledgedBy} ${user.username}`,
+        ),
+      )
+      .catch(() => showError(labelSomethingWentWrong))
+      .finally(() => setLoaded(true));
+  }, [hasResources]);
+
+  React.useEffect(() => (): void => cancel(), []);
+
   return (
-    <>
-      <DialogAcknowledge
-        open={hasResources}
-        onConfirm={form.submitForm}
-        onCancel={onClose}
-        canConfirm={form.isValid}
-        errors={form.errors}
-        values={form.values}
-        handleChange={form.handleChange}
-        submitting={form.isSubmitting}
-        loading={username === undefined}
-      />
-    </>
+    <DialogAcknowledge
+      resources={resources}
+      onConfirm={form.submitForm}
+      onCancel={onClose}
+      canConfirm={form.isValid}
+      errors={form.errors}
+      values={form.values}
+      handleChange={form.handleChange}
+      submitting={form.isSubmitting}
+      loading={!loaded}
+    />
   );
 };
 
