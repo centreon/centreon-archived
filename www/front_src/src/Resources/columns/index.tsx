@@ -29,14 +29,16 @@ export interface ColumnProps {
   onClick;
 }
 
-const SeverityColumn = ({ row }: ColumnProps): JSX.Element | undefined => {
+const SeverityColumn = ({ row }: ColumnProps): JSX.Element => {
   return (
-    row.severity && (
-      <StatusChip
-        label={row.severity.level.toString()}
-        statusCode={StatusCode.None}
-      />
-    )
+    <>
+      {row.severity && (
+        <StatusChip
+          label={row.severity.level.toString()}
+          statusCode={StatusCode.None}
+        />
+      )}
+    </>
   );
 };
 

@@ -33,6 +33,7 @@ import {
   labelHostGroup,
   labelServiceGroup,
   labelClearAll,
+  labelShowCriteriasFilters,
 } from '../translatedLabels';
 import {
   unhandledProblemsFilter,
@@ -204,7 +205,7 @@ const Filter = ({
                 })}
                 onClick={toggleExpand}
                 aria-expanded={expanded}
-                aria-label="show criterias filters"
+                aria-label={labelShowCriteriasFilters}
               >
                 <ExpandMoreIcon color="primary" />
               </IconButton>

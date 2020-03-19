@@ -20,6 +20,7 @@ import {
   labelUnhandledProblems,
   labelResourceProblems,
   labelAll,
+  labelShowCriteriasFilters,
 } from './translatedLabels';
 import columns from './columns';
 import { Resource } from './models';
@@ -104,6 +105,14 @@ export const selectOption = (element, optionText): void => {
   UserEvent.click(listItem);
 };
 
+const expandCriteriasFilters = (): void => {
+  const toggleButton = document.body.querySelector(
+    `[aria-label="${labelShowCriteriasFilters}"]`,
+  ) as HTMLElement;
+
+  UserEvent.click(toggleButton);
+};
+
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
@@ -161,6 +170,20 @@ describe(Resources, () => {
 
   beforeEach(() => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+  });
+
+  it('expands criterias filters', async () => {
+    const { queryByText } = render(<Resources />);
+
+    await wait(() => {
+      expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+    });
+
+    expandCriteriasFilters();
+
+    await wait(() => {
+      expect(queryByText(labelTypeOfResource)).toBeVisible();
+    });
   });
 
   it('executes a listing request with "Unhandled problems" filter group by default', async () => {
