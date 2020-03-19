@@ -67,7 +67,8 @@ if (isset($parameters['modules'])) {
         if (isset($moduleInformation['dependencies'])) {
             foreach ($moduleInformation['dependencies'] as $dependency) {
                 // If the dependency is already installed skip install
-                if (isset($result['modules'][$dependency]['install']) &&
+                if (
+                    isset($result['modules'][$dependency]['install'])
                     $result['modules'][$dependency]['install'] === true) {
                     continue;
                 }
