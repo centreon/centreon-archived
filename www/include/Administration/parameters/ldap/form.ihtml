@@ -33,7 +33,7 @@
 		</td>
 		<td class="FormRowValue">{$form.ldap_auto_sync.html}</td>
 	</tr>
-	{if hideSyncInterval != 1}
+	{if $hideSyncInterval != 1}
 		<tr class="list_one" id="ldap_sync_interval">
 			<td class="FormRowField">
 				<img class="helpTooltip" name="ldap_sync_interval" />
