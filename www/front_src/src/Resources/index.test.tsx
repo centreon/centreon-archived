@@ -113,6 +113,7 @@ const fillEntities = (): Array<Resource> => {
     status: {
       code: 0,
       name: 'OK',
+      severity_code: 5,
     },
     acknowledged: index % 2 === 0,
     acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,

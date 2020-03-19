@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 
-import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
+import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
 import {
   labelResources,
@@ -35,7 +35,7 @@ const SeverityColumn = ({ row }: ColumnProps): JSX.Element => {
       {row.severity && (
         <StatusChip
           label={row.severity.level.toString()}
-          statusCode={StatusCode.None}
+          severityCode={SeverityCode.None}
         />
       )}
     </>
@@ -43,7 +43,12 @@ const SeverityColumn = ({ row }: ColumnProps): JSX.Element => {
 };
 
 const StatusColumn = ({ row }: ColumnProps): JSX.Element => {
-  return <StatusChip label={row.status.name} statusCode={row.status.code} />;
+  return (
+    <StatusChip
+      label={row.status.name}
+      severityCode={row.status.severity_code}
+    />
+  );
 };
 
 const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
@@ -55,7 +60,7 @@ const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
         {row.icon ? (
           <img src={row.icon.url} alt={row.icon.name} width={21} height={21} />
         ) : (
-          <StatusChip label={row.short_type} statusCode={StatusCode.None} />
+          <StatusChip label={row.short_type} severityCode={SeverityCode.None} />
         )}
       </Grid>
       <Grid item>
@@ -65,7 +70,7 @@ const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
         <Grid container spacing={1}>
           <Grid item xs={1} />
           <Grid item>
-            <StatusChip statusCode={row.parent?.status?.code || 0} />
+            <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
           </Grid>
           <Grid item>{row.parent.name}</Grid>
         </Grid>

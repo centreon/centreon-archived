@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 'auto',
     padding: theme.spacing(1),
     transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
+      duration: 0,
     }),
   },
   expandOpenButton: {
