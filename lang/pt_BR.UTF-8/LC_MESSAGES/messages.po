@@ -5815,6 +5815,9 @@ msgstr "Login:"
 msgid "Password"
 msgstr "Senha"
 
+msgid "Username"
+msgstr "Nome do usuário"
+
 #: centreon-web/www/include/core/login/login.php:55
 msgid "Connect"
 msgstr "Conectar"
@@ -6206,8 +6209,8 @@ msgid "LDAP User Import debug"
 msgstr "Depuração de importação de usuários LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Depuração do motor do Centcore"
+msgid "Centreon Gorgone debug"
+msgstr "Depuração do Centreon Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -6229,13 +6232,13 @@ msgstr "Modificar opções do Centcore"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
 #: centreon-web/www/include/Administration/parameters/api/api.php:59
-msgid "Enable Broker Statistics Collection"
+msgid "Enable Broker statistics collection"
 msgstr "Ativa coleção de statisticas do Broker"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
 #: centreon-web/www/include/Administration/parameters/api/api.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Tempo máximo para comandos do Centcore"
+msgid "Timeout value for Gorgone commands"
+msgstr "Tempo máximo para comandos do Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:61
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:107
@@ -7824,8 +7827,8 @@ msgid "Server Information"
 msgstr "Informações do servidor"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:135
-msgid "SSH Information"
-msgstr "Informações SSH"
+msgid "Gorgone Information"
+msgstr "Informações Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:136
 msgid "Monitoring Engine Information"
@@ -11994,8 +11997,8 @@ msgstr "Os arquivos SQL estão localizados em %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:87
 #, php-format
-msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
-msgstr ""
+#~ msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+#~ msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
@@ -14436,3 +14439,12 @@ msgstr "Anexar Remote Server adicionais"
 
 #~ msgid "This value needs to be an integer lesser than"
 #~ msgstr ""
+
+msgid "IP address or hostname"
+msgstr "Endereço IP ou nome do host"
+
+msgid "Use SSL/TLS"
+msgstr "Use SSL/TLS"
+
+msgid "Allow self signed certificate"
+msgstr "Permitir certificado autoassinado"

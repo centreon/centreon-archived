@@ -138,12 +138,12 @@ class NagiosServer implements Mapping\MetadataInterface
     /**
      * @var int
      */
-    private $sshPort;
+    private $gorgoneCommunicationType;
 
     /**
-     * @var string
+     * @var int
      */
-    private $sshPrivateKey;
+    private $gorgonePort;
 
     /**
      * @var string
@@ -178,7 +178,7 @@ class NagiosServer implements Mapping\MetadataInterface
     /**
      * @var string
      */
-    private $remoteServerCentcoreSshProxy;
+    private $remoteServerUseAsProxy;
 
     /**
      * {@inheritdoc}
@@ -204,15 +204,15 @@ class NagiosServer implements Mapping\MetadataInterface
             ->add('centreonbrokerCfgPath', 'centreonbroker_cfg_path')
             ->add('centreonbrokerModulePath', 'centreonbroker_module_path')
             ->add('centreonconnectorPath', 'centreonconnector_path')
-            ->add('sshPort', 'ssh_port', PDO::PARAM_INT)
-            ->add('sshPrivateKey', 'ssh_private_key')
+            ->add('gorgoneCommunicationType', 'gorgone_communication_type', PDO::PARAM_INT)
+            ->add('gorgonePort', 'gorgone_port', PDO::PARAM_INT)
             ->add('initScriptCentreontrapd', 'init_script_centreontrapd')
             ->add('snmpTrapdPathConf', 'snmp_trapd_path_conf')
             ->add('engineName', 'engine_name')
             ->add('engineVersion', 'engine_version')
             ->add('centreonbrokerLogsPath', 'centreonbroker_logs_path')
             ->add('remoteId', 'remote_id', PDO::PARAM_INT)
-            ->add('remoteServerCentcoreSshProxy', 'remote_server_centcore_ssh_proxy');
+            ->add('remoteServerUseAsProxy', 'remote_server_use_as_proxy');
     }
 
     /**
@@ -380,17 +380,17 @@ class NagiosServer implements Mapping\MetadataInterface
     /**
      * @return int|null
      */
-    public function getSshPort(): ?int
+    public function getGorgoneCommunicationType(): ?int
     {
-        return $this->sshPort;
+        return $this->gorgoneCommunicationType;
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getSshPrivateKey(): ?string
+    public function getGorgonePort(): ?int
     {
-        return $this->sshPrivateKey;
+        return $this->gorgonePort;
     }
 
     /**
@@ -444,9 +444,9 @@ class NagiosServer implements Mapping\MetadataInterface
     /**
      * @return string|null
      */
-    public function getRemoteServerCentcoreSshProxy(): ?string
+    public function getRemoteServerUseAsProxy(): ?string
     {
-        return $this->remoteServerCentcoreSshProxy;
+        return $this->remoteServerUseAsProxy;
     }
 
     /**
@@ -594,21 +594,21 @@ class NagiosServer implements Mapping\MetadataInterface
     }
 
     /**
-     * @param string|int $sshPort
+     * @param string|int $gorgoneCommunicationType
      * @return void
      */
-    public function setSshPort($sshPort = null): void
+    public function setGorgoneCommunicationType($gorgoneCommunicationType = null): void
     {
-        $this->sshPort = (int)$sshPort;
+        $this->gorgoneCommunicationType = (int)$gorgoneCommunicationType;
     }
 
     /**
-     * @param string $sshPrivateKey
+     * @param string|int $gorgonePort
      * @return void
      */
-    public function setSshPrivateKey(string $sshPrivateKey = null): void
+    public function setGorgonePort($gorgonePort = null): void
     {
-        $this->sshPrivateKey = $sshPrivateKey;
+        $this->gorgonePort = (int)$gorgonePort;
     }
 
     /**
@@ -666,11 +666,11 @@ class NagiosServer implements Mapping\MetadataInterface
     }
 
     /**
-     * @param string $remoteServerCentcoreSshProxy
+     * @param string $remoteServerUseAsProxy
      * @return void
      */
-    public function setRemoteServerCentcoreSshProxy(string $remoteServerCentcoreSshProxy = null): void
+    public function setRemoteServerUseAsProxy(string $remoteServerUseAsProxy = null): void
     {
-        $this->remoteServerCentcoreSshProxy = $remoteServerCentcoreSshProxy;
+        $this->remoteServerUseAsProxy = $remoteServerUseAsProxy;
     }
 }

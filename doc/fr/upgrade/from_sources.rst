@@ -72,8 +72,7 @@ Chargement des paramètres d'installation précédents : ::
     [y/n], default to [y]:
     > y
 
-    Using:  /etc/centreon/instCentCore.conf
-    /etc/centreon/instCentPlugins.conf
+    Using:  /etc/centreon/instCentPlugins.conf
     /etc/centreon/instCentStorage.conf
     /etc/centreon/instCentWeb.conf
 
@@ -338,11 +337,6 @@ De nouvelle informations sont nécessaires : ::
    > y
    CentCore init script installed                             OK
    CentCore default script installed                          OK
-
-   Do you want me to install CentCore run level ?
-   [y/n], default to [n]:
-   > y
-   Create /etc/centreon/instCentCore.conf                     OK
 
 Mise à jour des sondes Centreon
 -------------------------------

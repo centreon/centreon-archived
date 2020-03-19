@@ -140,8 +140,12 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0'),
-('centcore_illegal_characters', '`'),
-('inheritance_mode', '3');
+('gorgone_illegal_characters', '`'),
+('inheritance_mode', '3'),
+('gorgone_api_address', '127.0.0.1'),
+('gorgone_api_port', '8085'),
+('gorgone_api_ssl', '0'),
+('gorgone_api_allow_self_signed', '1');
 
 --
 -- Contenu de la table `giv_components_template`
