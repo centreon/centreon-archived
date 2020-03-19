@@ -77,12 +77,8 @@ if (isset($_GET['template_id']) && false === is_numeric($_GET['template_id'])) {
 
 $len = $end - $start;
 
-/*
- * Verify if session is active
- */
-
+// Verify if session is active
 $sid = session_id();
-//$sid = $pearDB->escape($_GET['session_id']);
 
 $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '" . $sid . "'");
 if (!$session->rowCount()) {
@@ -93,33 +89,23 @@ if (!$session->rowCount()) {
 
     exit;
 } else {
-/*
- * Get GMT for current user
- */
+    // Get GMT for current user
     $CentreonGMT = new CentreonGMT($pearDB);
     $CentreonGMT->getMyGMTFromSession($sid, $pearDB);
 
-/*
- * Get Values
- */
+    // Get Values
     $session_value = $session->fetchRow();
     $session->closeCursor();
 
-/*
- * Connect to ods
- */
+    // Connect to ods
     $pearDBO = new CentreonDB("centstorage");
     $RRDdatabase_path = getStatusDBDir($pearDBO);
 
-/*
- * Get Graphs size
- */
+    // Get Graphs size
     $width = 500;
     $height = 120;
 
-/*
- * Get index information to have acces to graph
- */
+    // Get index information to have acces to graph
 
     if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])) {
         $DBRESULT = $pearDBO->query("SELECT * FROM index_data
@@ -142,9 +128,7 @@ if (!$session->rowCount()) {
     }
     $DBRESULT->closeCursor();
 
-/*
- * Create command line
- */
+    // Create command line
     if (isset($_GET["flagperiod"]) && $_GET["flagperiod"] == 0) {
         if ($CentreonGMT->used()) {
             $start = $CentreonGMT->getUTCDate($start);
@@ -154,9 +138,7 @@ if (!$session->rowCount()) {
 
     $command_line = " graph - --start=" . $start . " --end=" . $end;
 
-/*
- * get all template infos
- */
+    // get all template infos
     if (!is_numeric($template_id)) {
         exit();
     }
@@ -210,9 +192,7 @@ if (!$session->rowCount()) {
 
     $command_line .= "--title='" . $sdesc . " graph on " . $hname . "' --vertical-label='Status' ";
 
-/*
- * Init Graph Template Value
- */
+    // Init Graph Template Value
     if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"]) {
         $command_line .= "--color CANVAS" . $GraphTemplate["bg_grid_color"] . " ";
     }
@@ -253,10 +233,7 @@ if (!$session->rowCount()) {
     $command_line .= " AREA:ok#19EE11 ";
     $command_line .= " AREA:unk#FFFFFF ";
 
-/*
- * Add comment start and end time inf graph footer.
- */
-
+    // Add comment start and end time inf graph footer.
     $rrd_time = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start));
     $rrd_time = str_replace(":", "\:", $rrd_time);
     $rrd_time2 = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $end));
@@ -276,15 +253,11 @@ if (!$session->rowCount()) {
     $command_line .= " GPRINT:v1:MAX:\"Max\:%7.2lf%s\"";
     $command_line .= " GPRINT:v1:AVERAGE:\"Average\:%7.2lf%s\\l\"";
 
-/*
- * Add Timezone for current user.
- */
+    // Add Timezone for current user.
     $timezone = $CentreonGMT->getMyTimezone();
     $command_line = "export TZ='" . $timezone . "' ; " . $command_line;
 
-/*
- * Escale special char
- */
+    // Escale special char
     $command_line = escape_command("$command_line");
 
     if ($centreon->optGen["debug_rrdtool"] == "1") {
