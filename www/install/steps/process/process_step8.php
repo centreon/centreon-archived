@@ -50,7 +50,8 @@ if (isset($parameters['modules'])) {
          * then we can skip the installation process
          */
         if (isset($result['modules'][$module]['install']) &&
-            $result['modules'][$module]['install'] === true) {
+            && $result['modules'][$module]['install'] === true
+        ) {
             continue;
         }
         /* retrieving the module's information stored in the conf.php
