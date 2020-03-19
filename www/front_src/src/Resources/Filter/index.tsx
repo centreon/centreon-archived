@@ -1,15 +1,15 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
 
-import clsx from 'clsx';
-
 import {
-  Paper,
   Grid,
-  Collapse,
-  IconButton,
   Typography,
   Button,
   makeStyles,
+  ExpansionPanel,
+  ExpansionPanelSummary as MuiExpansionPanelSummary,
+  ExpansionPanelDetails as MuiExpansionPanelDetails,
+  withStyles,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -51,6 +51,29 @@ import {
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
 
+const ExpansionPanelSummary = withStyles({
+  root: {
+    padding: '0px 24px 0 8px',
+    minHeight: 'auto',
+    '&$expanded': {
+      minHeight: 'auto',
+    },
+  },
+  content: {
+    margin: '8px 0',
+    '&$expanded': {
+      margin: '8px 0',
+    },
+  },
+  expanded: {},
+})(MuiExpansionPanelSummary);
+
+const ExpansionPanelDetails = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(1),
+  },
+}))(MuiExpansionPanelDetails);
+
 const useStyles = makeStyles((theme) => ({
   filterBox: {
     padding: theme.spacing(1),
@@ -70,21 +93,15 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 200,
     maxWidth: 400,
   },
-  expandButton: {
-    float: 'right',
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    padding: theme.spacing(1),
-    transition: theme.transitions.create('transform', {
-      duration: 0,
-    }),
-  },
-  expandOpenButton: {
-    transform: 'rotate(180deg)',
-  },
   collapseWrapper: {
+    margin: 0,
     padding: theme.spacing(1),
+    '&$expanded': {
+      margin: 0,
+      padding: theme.spacing(1),
+    },
   },
+  expanded: {},
 }));
 
 interface Props {
@@ -148,143 +165,131 @@ const Filter = ({
     });
   };
 
-  const [expanded, setExpanded] = useState<boolean>(false);
-
-  const toggleExpand = (): void => {
-    setExpanded(!expanded);
-  };
-
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
   return (
-    <Paper elevation={1} className={classes.filterBox}>
-      <Grid container direction="column" spacing={2}>
-        <Grid item>
-          <Grid spacing={2} container direction="row" alignItems="center">
-            <Grid item>
-              <Typography className={classes.filterLineLabel} variant="h6">
-                {labelFilter}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <SelectField
-                className={classes.filterGroup}
-                options={[
-                  unhandledProblemsFilter,
-                  resourceProblemsFilter,
-                  allFilter,
-                ]}
-                selectedOptionId={filter.id}
-                onChange={onFilterGroupChange}
-                aria-label={labelStateFilter}
-              />
-            </Grid>
-            <Grid item>
-              <SearchField
-                className={classes.searchField}
-                EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
-                value={searchFieldValue || ''}
-                onChange={changeSearchFieldValue}
-                placeholder={labelResourceName}
-              />
-            </Grid>
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!searchFieldValue && !currentSearch}
-                onClick={requestSearch}
-              >
-                {labelSearch}
-              </Button>
-            </Grid>
-            <Grid item style={{ flex: 1 }}>
-              <IconButton
-                className={clsx(classes.expandButton, {
-                  [classes.expandOpenButton]: expanded,
-                })}
-                onClick={toggleExpand}
-                aria-expanded={expanded}
-                aria-label={labelShowCriteriasFilters}
-              >
-                <ExpandMoreIcon color="primary" />
-              </IconButton>
-            </Grid>
+    <ExpansionPanel>
+      <ExpansionPanelSummary
+        expandIcon={
+          <ExpandMoreIcon
+            color="primary"
+            aria-label={labelShowCriteriasFilters}
+          />
+        }
+      >
+        <Grid
+          spacing={2}
+          container
+          direction="row"
+          alignItems="center"
+          onClick={(e): void => {
+            e.stopPropagation();
+          }}
+          style={{ cursor: 'default' }}
+        >
+          <Grid item>
+            <Typography className={classes.filterLineLabel} variant="h6">
+              {labelFilter}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <SelectField
+              className={classes.filterGroup}
+              options={[
+                unhandledProblemsFilter,
+                resourceProblemsFilter,
+                allFilter,
+              ]}
+              selectedOptionId={filter.id}
+              onChange={onFilterGroupChange}
+              aria-label={labelStateFilter}
+            />
+          </Grid>
+          <Grid item>
+            <SearchField
+              className={classes.searchField}
+              EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
+              value={searchFieldValue || ''}
+              onChange={changeSearchFieldValue}
+              placeholder={labelResourceName}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!searchFieldValue && !currentSearch}
+              onClick={requestSearch}
+            >
+              {labelSearch}
+            </Button>
           </Grid>
         </Grid>
-        <Grid item style={{ padding: 0 }}>
-          <Collapse
-            in={expanded}
-            classes={{ wrapper: classes.collapseWrapper }}
-          >
-            <Grid spacing={2} container direction="row" alignItems="center">
-              <Grid item>
-                <Typography
-                  className={classes.filterLineLabel}
-                  variant="subtitle1"
-                >
-                  {labelCriterias}
-                </Typography>
-              </Grid>
-              <Grid item>
-                <AutocompleteField
-                  className={classes.autocompleteField}
-                  options={resourceTypes}
-                  label={labelTypeOfResource}
-                  onChange={onResourceTypesChange}
-                  value={selectedResourceTypes || []}
-                />
-              </Grid>
-              <Grid item>
-                <AutocompleteField
-                  className={classes.autocompleteField}
-                  options={states}
-                  label={labelState}
-                  onChange={onStatesChange}
-                  value={selectedStates || []}
-                />
-              </Grid>
-              <Grid item>
-                <AutocompleteField
-                  className={classes.autocompleteField}
-                  options={statuses}
-                  label={labelStatus}
-                  onChange={onStatusesChange}
-                  value={selectedStatuses || []}
-                />
-              </Grid>
-              <Grid item>
-                <ConnectedAutocompleteField
-                  className={classes.autocompleteField}
-                  baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
-                  getSearchEndpoint={getHostGroupSearchEndpoint}
-                  getOptionsFromResult={getOptionsFromResult}
-                  label={labelHostGroup}
-                  onChange={onHostGroupsChange}
-                  value={selectedHostGroups || []}
-                />
-              </Grid>
-              <Grid item>
-                <ConnectedAutocompleteField
-                  className={classes.autocompleteField}
-                  baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
-                  getSearchEndpoint={getServiceGroupSearchEndpoint}
-                  label={labelServiceGroup}
-                  onChange={onServiceGroupsChange}
-                  getOptionsFromResult={getOptionsFromResult}
-                  value={selectedServiceGroups || []}
-                />
-              </Grid>
-              <Grid item>
-                <Button color="primary" onClick={onClearAll}>
-                  {labelClearAll}
-                </Button>
-              </Grid>
-            </Grid>
-          </Collapse>
+      </ExpansionPanelSummary>
+      <ExpansionPanelDetails>
+        <Grid spacing={2} container direction="row" alignItems="center">
+          <Grid item>
+            <Typography className={classes.filterLineLabel} variant="subtitle1">
+              {labelCriterias}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <AutocompleteField
+              className={classes.autocompleteField}
+              options={resourceTypes}
+              label={labelTypeOfResource}
+              onChange={onResourceTypesChange}
+              value={selectedResourceTypes || []}
+            />
+          </Grid>
+          <Grid item>
+            <AutocompleteField
+              className={classes.autocompleteField}
+              options={states}
+              label={labelState}
+              onChange={onStatesChange}
+              value={selectedStates || []}
+            />
+          </Grid>
+          <Grid item>
+            <AutocompleteField
+              className={classes.autocompleteField}
+              options={statuses}
+              label={labelStatus}
+              onChange={onStatusesChange}
+              value={selectedStatuses || []}
+            />
+          </Grid>
+          <Grid item>
+            <ConnectedAutocompleteField
+              className={classes.autocompleteField}
+              baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
+              getSearchEndpoint={getHostGroupSearchEndpoint}
+              getOptionsFromResult={getOptionsFromResult}
+              label={labelHostGroup}
+              onChange={onHostGroupsChange}
+              value={selectedHostGroups || []}
+            />
+          </Grid>
+          <Grid item>
+            <ConnectedAutocompleteField
+              className={classes.autocompleteField}
+              baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
+              getSearchEndpoint={getServiceGroupSearchEndpoint}
+              label={labelServiceGroup}
+              onChange={onServiceGroupsChange}
+              getOptionsFromResult={getOptionsFromResult}
+              value={selectedServiceGroups || []}
+            />
+          </Grid>
+          <Grid item>
+            <Button color="primary" onClick={onClearAll}>
+              {labelClearAll}
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-    </Paper>
+      </ExpansionPanelDetails>
+    </ExpansionPanel>
   );
 };
 
