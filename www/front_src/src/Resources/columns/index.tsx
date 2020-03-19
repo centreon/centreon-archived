@@ -41,13 +41,7 @@ const SeverityColumn = ({ row }: ColumnProps): JSX.Element | undefined => {
 };
 
 const StatusColumn = ({ row }: ColumnProps): JSX.Element => {
-  return (
-    <StatusChip
-      style={{ width: 100 }}
-      label={row.status.name}
-      statusCode={row.status.code}
-    />
-  );
+  return <StatusChip label={row.status.name} statusCode={row.status.code} />;
 };
 
 const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
