@@ -70,10 +70,10 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
 
   React.useEffect(() => {
-    getData<Array<GraphData>>({
+    getData<GraphData>({
       endpoint,
       requestParams: { cancelToken: token },
-    }).then((retrievedGraphData) => setGraphData(retrievedGraphData[0]));
+    }).then((retrievedGraphData) => setGraphData(retrievedGraphData));
     return (): void => cancel();
   }, []);
 

@@ -72,8 +72,7 @@ Load the previous installation parameters::
     [y/n], default to [y]:
     > y
 
-    Using:  /etc/centreon/instCentCore.conf
-    /etc/centreon/instCentPlugins.conf
+    Using:  /etc/centreon/instCentPlugins.conf
     /etc/centreon/instCentStorage.conf
     /etc/centreon/instCentWeb.conf
 
@@ -315,11 +314,6 @@ Fill in the required information. ::
     > y
     CentCore init script installed                             OK
     CentCore default script installed                          OK
-
-    Do you want me to install CentCore run level ?
-    [y/n], default to [n]:
-    > y
-    Create /etc/centreon/instCentCore.conf                     OK
 
 Upgrading Centreon Plugins
 --------------------------

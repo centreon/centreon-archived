@@ -281,27 +281,50 @@ function updateNagiosConfigData($gopt_id = null)
     $centreon->initOptGen($pearDB);
 }
 
-function updateCentcoreConfigData($db, $form, $centreon)
+function updateGorgoneConfigData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    updateOption(
-        $db,
-        "enable_perfdata_sync",
-        isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0
-    );
-    updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
     updateOption($db, "enable_broker_stats", isset($ret["enable_broker_stats"]) && $ret['enable_broker_stats'] ? 1 : 0);
     updateOption(
         $db,
-        "centcore_cmd_timeout",
-        isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0
+        'gorgone_cmd_timeout',
+        $ret['gorgone_cmd_timeout'] ?? 0
     );
     updateOption(
         $db,
-        "centcore_illegal_characters",
-        isset($ret["centcore_illegal_characters"]) && $ret['centcore_illegal_characters']
-            ? $ret['centcore_illegal_characters']
-            : ""
+        'gorgone_illegal_characters',
+        $ret['gorgone_illegal_characters'] ?? ''
+    );
+    //API
+    updateOption(
+        $db,
+        'gorgone_api_address',
+        $ret['gorgone_api_address'] ?? '127.0.0.1'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_port',
+        $ret['gorgone_api_port'] ?? '8085'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_username',
+        $ret['gorgone_api_username'] ?? ''
+    );
+    updateOption(
+        $db,
+        'gorgone_api_password',
+        $ret['gorgone_api_password'] ?? ''
+    );
+    updateOption(
+        $db,
+        'gorgone_api_ssl',
+        $ret['gorgone_api_ssl'] ?? '0'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_allow_self_signed',
+        $ret['gorgone_api_allow_self_signed'] ?? '1'
     );
     $centreon->initOptGen($db);
 }
@@ -372,7 +395,7 @@ function updateDebugConfigData($gopt_id = null)
     updateOption($pearDB, "debug_rrdtool", isset($ret["debug_rrdtool"]) && $ret['debug_rrdtool'] ? 1 : 0);
     updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret['debug_ldap_import'] ? 1 : 0);
     updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret['debug_sql'] ? 1 : 0);
-    updateOption($pearDB, "debug_centcore", isset($ret["debug_centcore"]) && $ret['debug_centcore'] ? 1 : 0);
+    updateOption($pearDB, "debug_gorgone", isset($ret["debug_gorgone"]) && $ret['debug_gorgone'] ? 1 : 0);
     updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
     updateOption(
         $pearDB,

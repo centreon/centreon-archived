@@ -247,15 +247,27 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      *
      * @return bool
      */
-    private function hasServiceSearch()
+    private function hasServiceSearch(): bool
+    {
+        return $this->extractSpecificSearchCriteria('/^service\./')
+            && !$this->extractSpecificSearchCriteria('/^host\./');
+    }
+
+    /**
+     * Extract request parameters
+     *
+     * @param string $key
+     * @return bool
+     */
+    private function extractSpecificSearchCriteria(string $key)
     {
         $requestParameters = $this->sqlRequestTranslator->getRequestParameters();
         $search = $requestParameters->getSearch();
 
         $serviceConcordances = array_reduce(
             array_keys($this->serviceConcordances),
-            function ($acc, $concordanceKey) {
-                if (preg_match('/^service\./', $concordanceKey)) {
+            function ($acc, $concordanceKey) use ($key) {
+                if (preg_match($key, $concordanceKey)) {
                     $acc[] = $concordanceKey;
                 }
                 return $acc;
@@ -371,7 +383,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
-                AND sh.state = 0
                 AND sh.name NOT LIKE :serviceModule
                 AND sh.enabled = 1";
         $collector->addValue(':serviceModule', '_Module_%');
