@@ -105,14 +105,6 @@ export const selectOption = (element, optionText): void => {
   UserEvent.click(listItem);
 };
 
-const expandCriteriasFilters = (): void => {
-  const toggleButton = document.body.querySelector(
-    `[aria-label="${labelShowCriteriasFilters}"]`,
-  ) as HTMLElement;
-
-  UserEvent.click(toggleButton);
-};
-
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
@@ -173,13 +165,13 @@ describe(Resources, () => {
   });
 
   it('expands criterias filters', async () => {
-    const { queryByText } = render(<Resources />);
+    const { getByLabelText, queryByText } = render(<Resources />);
 
     await wait(() => {
       expect(queryByText(labelTypeOfResource)).not.toBeVisible();
     });
 
-    expandCriteriasFilters();
+    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
     await wait(() => {
       expect(queryByText(labelTypeOfResource)).toBeVisible();
