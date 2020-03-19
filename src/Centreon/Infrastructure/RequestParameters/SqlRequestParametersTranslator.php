@@ -200,6 +200,15 @@ class SqlRequestParametersTranslator
         if (is_array($valueOrArray)) {
             $searchOperator = (string) key($valueOrArray);
             $mixedValue = $valueOrArray[$searchOperator];
+
+            // replace REGEXP operator with LIKE if it's not vaild
+            if (
+                $mixedValue
+                && $searchOperator === RequestParameters::OPERATOR_REGEXP
+                && @preg_match("/{$mixedValue}/", '') === false
+            ) {
+                $searchOperator = RequestParameters::OPERATOR_LIKE;
+            }
         } else {
             $searchOperator = RequestParameters::DEFAULT_SEARCH_OPERATOR;
             $mixedValue = $valueOrArray;
