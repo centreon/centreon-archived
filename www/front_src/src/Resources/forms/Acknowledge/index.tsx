@@ -12,7 +12,7 @@ import {
 } from '../../translatedLabels';
 import DialogAcknowledge from './Dialog';
 import { Resource } from '../../models';
-import { acknowledgeResources } from '../../api';
+import { acknowledgeResources, getUser } from '../../api';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
@@ -33,10 +33,24 @@ const AcknowledgeForm = ({
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
+  const [username, setUsername] = React.useState<string>();
+
+  const hasResources = resources.length > 0;
+
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
+
+  React.useEffect(() => {
+    if (!hasResources) {
+      return;
+    }
+
+    getUser(token)
+      .then((user) => setUsername(user.username))
+      .catch(() => showError(labelSomethingWentWrong));
+  }, [hasResources]);
 
   React.useEffect(() => (): void => cancel(), []);
 
@@ -64,19 +78,20 @@ const AcknowledgeForm = ({
     validationSchema,
   });
 
-  const hasResources = resources.length > 0;
-
   return (
-    <DialogAcknowledge
-      open={hasResources}
-      onConfirm={form.submitForm}
-      onCancel={onClose}
-      canConfirm={form.isValid}
-      errors={form.errors}
-      values={form.values}
-      handleChange={form.handleChange}
-      submitting={form.isSubmitting}
-    />
+    <>
+      <DialogAcknowledge
+        open={hasResources}
+        onConfirm={form.submitForm}
+        onCancel={onClose}
+        canConfirm={form.isValid}
+        errors={form.errors}
+        values={form.values}
+        handleChange={form.handleChange}
+        submitting={form.isSubmitting}
+        loading={username === undefined}
+      />
+    </>
   );
 };
 

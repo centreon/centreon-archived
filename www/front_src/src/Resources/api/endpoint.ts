@@ -9,6 +9,8 @@ const hostEndpoint = `${monitoringEndpoint}/hosts`;
 const hostAcknowledgementEndpoint = `${hostEndpoint}/acknowledgements`;
 const serviceEndpoint = `${monitoringEndpoint}/services`;
 const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgements`;
+const userEndpoint =
+  './api/internal.php?object=centreon_topcounter&action=user';
 
 interface Param {
   name: string;
@@ -96,4 +98,5 @@ export {
   buildServiceGroupsEndpoint,
   hostAcknowledgementEndpoint,
   serviceAcknowledgementEndpoint,
+  userEndpoint,
 };

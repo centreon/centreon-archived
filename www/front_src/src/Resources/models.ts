@@ -51,3 +51,7 @@ export interface Listing<TEntity> {
 }
 
 export type ResourceListing = Listing<Resource>;
+
+export interface User {
+  username: string;
+}

@@ -8,45 +8,35 @@ import { Resource } from './models';
 import AcknowledgeForm from './forms/Acknowledge';
 
 interface Props {
-  selectedResources: Array<Resource>;
+  disabled: boolean;
+  resourcesToAcknowledge: Array<Resource>;
+  onPrepareToAcknowledge;
+  onCancelAcknowledge;
   onSuccess;
 }
 
-const Actions = ({ selectedResources, onSuccess }: Props): JSX.Element => {
-  const [resourcesToAcknowledge, setResourcesToAcknoweledge] = React.useState<
-    Array<Resource>
-  >([]);
-
-  const prepareAcknoweldge = (): void => {
-    setResourcesToAcknoweledge(selectedResources);
-  };
-
-  const resetAcknowledge = (): void => {
-    setResourcesToAcknoweledge([]);
-  };
-
-  const resetAcknowledgeAndSucceed = (): void => {
-    resetAcknowledge();
-    onSuccess();
-  };
-
-  const hasSelectedResources = selectedResources.length > 0;
-
+const Actions = ({
+  disabled,
+  resourcesToAcknowledge,
+  onPrepareToAcknowledge,
+  onCancelAcknowledge,
+  onSuccess,
+}: Props): JSX.Element => {
   return (
     <>
       <Button
         variant="contained"
         color="primary"
-        disabled={!hasSelectedResources}
+        disabled={disabled}
         startIcon={<IconAcknowledge />}
-        onClick={prepareAcknoweldge}
+        onClick={onPrepareToAcknowledge}
       >
         {labelAcknowledge}
       </Button>
       <AcknowledgeForm
         resources={resourcesToAcknowledge}
-        onClose={resetAcknowledge}
-        onSuccess={resetAcknowledgeAndSucceed}
+        onClose={onCancelAcknowledge}
+        onSuccess={onSuccess}
       />
     </>
   );

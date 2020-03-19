@@ -44,26 +44,39 @@ const SeverityColumn = ({ row }: ColumnProps): JSX.Element | undefined => {
   );
 };
 
+type StatusColumnProps = {
+  actions;
+} & Pick<ColumnProps, 'row'>;
+
 const StatusColumnOnHover = ({
+  actions,
   row,
-}: Pick<ColumnProps, 'row'>): JSX.Element => {
+}: StatusColumnProps): JSX.Element => {
   return (
-    <>
-      <IconButton
-        size="small"
-        color="primary"
-        aria-label={`${labelAcknowledge} ${row.name}`}
-      >
-        <IconAcknowledge />
-      </IconButton>
-      <StatusChip label={row.status.name[0]} statusCode={row.status.code} />
-    </>
+    <Grid container spacing={1} alignItems="center">
+      <Grid item>
+        <IconButton
+          size="small"
+          color="primary"
+          onClick={(): void => actions.onAcknowledge(row)}
+          aria-label={`${labelAcknowledge} ${row.name}`}
+        >
+          <IconAcknowledge />
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <StatusChip label={row.status.name[0]} statusCode={row.status.code} />
+      </Grid>
+    </Grid>
   );
 };
 
-const StatusColumn = ({ row, isHovered }: ColumnProps): JSX.Element => {
+const StatusColumn = (actions) => ({
+  row,
+  isHovered,
+}: ColumnProps): JSX.Element => {
   return isHovered ? (
-    <StatusColumnOnHover row={row} />
+    <StatusColumnOnHover actions={actions} row={row} />
   ) : (
     <StatusChip
       style={{ width: 120 }}
@@ -101,7 +114,7 @@ const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
   );
 };
 
-const columns = [
+const getColumns = (actions) => [
   {
     id: 'severity',
     label: 'S',
@@ -114,7 +127,7 @@ const columns = [
     id: 'status',
     label: labelStatus,
     type: TABLE_COLUMN_TYPES.component,
-    Component: StatusColumn,
+    Component: StatusColumn(actions),
     clickable: false,
     sortable: false,
     width: 125,
@@ -171,4 +184,4 @@ const columns = [
   },
 ];
 
-export default columns;
+export default getColumns;

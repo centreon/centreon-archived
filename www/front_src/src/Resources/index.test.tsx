@@ -21,8 +21,10 @@ import {
   labelResourceProblems,
   labelAll,
 } from './translatedLabels';
-import columns from './columns';
+import getColumns from './columns';
 import { Resource } from './models';
+
+const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Typography, Checkbox, FormHelperText, Grid } from '@material-ui/core';
 
-import { Dialog, TextField } from '@centreon/ui';
+import { Dialog, TextField, Loader } from '@centreon/ui';
 
 import {
   labelCancel,
@@ -21,6 +21,7 @@ interface Props {
   values;
   handleChange;
   submitting: boolean;
+  loading: boolean;
 }
 
 const DialogAcknowledge = ({
@@ -32,6 +33,7 @@ const DialogAcknowledge = ({
   values,
   submitting,
   handleChange,
+  loading,
 }: Props): JSX.Element => {
   return (
     <Dialog
@@ -45,6 +47,7 @@ const DialogAcknowledge = ({
       confirmDisabled={!canConfirm}
       submitting={submitting}
     >
+      {loading && <Loader fullContent />}
       <Grid direction="column" container spacing={2}>
         <Grid>
           <TextField

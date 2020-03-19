@@ -4,8 +4,9 @@ import {
   buildResourcesEndpoint,
   serviceAcknowledgementEndpoint,
   hostAcknowledgementEndpoint,
+  userEndpoint,
 } from './endpoint';
-import { ResourceListing } from '../models';
+import { ResourceListing, User } from '../models';
 
 const getData = <TData>({ endpoint, requestParams }): Promise<TData> =>
   axios.get(endpoint, requestParams).then(({ data }) => data);
@@ -38,7 +39,6 @@ const acknowledgeResources = ({
   resources,
   cancelToken,
 }): Promise<Array<AxiosResponse>> => {
-  console.log('batar');
   const getResourceParamsForType = (resourceType): Array<ResourceParams> =>
     resources.filter(({ type }) => type === resourceType).map(toResourceParams);
 
@@ -60,4 +60,7 @@ const acknowledgeResources = ({
   );
 };
 
-export { acknowledgeResources, listResources, getData };
+const getUser = (cancelToken): Promise<User> =>
+  getData({ endpoint: userEndpoint, requestParams: cancelToken });
+
+export { acknowledgeResources, listResources, getData, getUser };

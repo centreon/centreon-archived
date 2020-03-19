@@ -9,7 +9,7 @@ import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
 import { ResourceListing, Resource } from './models';
-import columns from './columns';
+import getColumns from './columns';
 import Filter from './Filter';
 import {
   filterById,
@@ -45,6 +45,10 @@ const Resources = (): JSX.Element => {
   const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
     [],
   );
+  const [resourcesToAcknowledge, setResourcesToAcknoweledge] = React.useState<
+    Array<Resource>
+  >([]);
+
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
@@ -189,6 +193,7 @@ const Resources = (): JSX.Element => {
   const confirmAndLoad = (): void => {
     load();
     selectResources([]);
+    setResourcesToAcknoweledge([]);
   };
 
   const rowColorConditions = [
@@ -204,8 +209,34 @@ const Resources = (): JSX.Element => {
     },
   ];
 
+  const prepareToAcknowledge = (resources): void => {
+    setResourcesToAcknoweledge(resources);
+  };
+
+  const prepareSelectedToAcknowledge = (): void => {
+    prepareToAcknowledge(selectedResources);
+  };
+
+  const cancelAcknowledge = (): void => {
+    prepareToAcknowledge([]);
+  };
+
+  const columns = getColumns({
+    onAcknowledge: (resource) => {
+      prepareToAcknowledge([resource]);
+    },
+  });
+
+  const hasSelectedResources = selectedResources.length > 0;
+
   const ResourceActions = (
-    <Actions selectedResources={selectedResources} onSuccess={confirmAndLoad} />
+    <Actions
+      disabled={!hasSelectedResources}
+      resourcesToAcknowledge={resourcesToAcknowledge}
+      onPrepareToAcknowledge={prepareSelectedToAcknowledge}
+      onCancelAcknowledge={cancelAcknowledge}
+      onSuccess={confirmAndLoad}
+    />
   );
 
   return (
