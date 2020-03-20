@@ -1,0 +1,17 @@
+Centreon\Domain\Monitoring\ResourceStatus:
+    virtual_properties:
+        getSeverityCode:
+            name: getSeverityCode
+            serialized_name: severity_code
+            type: int
+            groups:
+                - 'resource_status_main'
+    properties:
+        code:
+            type: int
+            groups:
+                - 'resource_status_main'
+        name:
+            type: string
+            groups:
+                - 'resource_status_main'

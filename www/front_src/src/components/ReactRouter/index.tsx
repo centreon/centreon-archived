@@ -13,10 +13,23 @@ import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbWrapper from '../breadcrumbWrapper';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
-const PageContainer = styled('div')({
+const PageContainer = styled('div')(({ theme }) => ({
   overflow: 'auto',
   height: 'calc(100vh - 82px)',
-});
+  background: theme.palette.background.default,
+}));
+
+interface PageWithBreadcrumbProps {
+  children: React.ReactNode;
+  path: string;
+}
+
+const PageWithBreadcrumb = ({
+  children,
+  path,
+}: PageWithBreadcrumbProps): JSX.Element => (
+  <BreadcrumbWrapper path={path}>{children}</BreadcrumbWrapper>
+);
 
 const getExternalPageRoutes = ({
   history,
@@ -45,9 +58,9 @@ const getExternalPageRoutes = ({
         exact
         render={(renderProps): JSX.Element => (
           <PageContainer>
-            <BreadcrumbWrapper path={path}>
+            <PageWithBreadcrumb path={path}>
               <Page {...renderProps} />
-            </BreadcrumbWrapper>
+            </PageWithBreadcrumb>
           </PageContainer>
         )}
       />
@@ -78,9 +91,9 @@ const ReactRouter = React.memo<Props>(
               render={(renderProps): JSX.Element => (
                 <PageContainer>
                   {allowedPages.includes(path) ? (
-                    <BreadcrumbWrapper path={path}>
+                    <PageWithBreadcrumb path={path}>
                       <Comp {...renderProps} />
-                    </BreadcrumbWrapper>
+                    </PageWithBreadcrumb>
                   ) : (
                     <NotAllowedPage {...renderProps} />
                   )}

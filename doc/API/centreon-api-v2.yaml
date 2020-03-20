@@ -173,6 +173,74 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources:
+    get:
+      tags:
+        - Resource
+      summary: "List all resources including hosts and services"
+      description: |
+        List all the resources in real-time monitoring : hosts and services.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * id
+        * name
+        * type
+        * status_code
+        * status
+        * action_url
+        * details_url
+        * parent_name
+        * parent_status
+        * severity_level
+        * in_downtime
+        * acknowledged
+        * impacted_resources_count
+        * last_status_change
+        * tries
+        * last_check
+        * information
+
+        Only for **searching**:
+
+        ---
+
+        * host.group
+        * host.group.id
+        * host.name
+        * host.alias
+        * host.address
+        * service.description
+        * service.group
+        * service.group.id
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/ResourceFilterType'
+        - $ref: '#/components/parameters/ResourceFilterState'
+        - $ref: '#/components/parameters/ResourceFilterStatus'
+        - $ref: '#/components/parameters/ResourceFilterHostgroupId'
+        - $ref: '#/components/parameters/ResourceFilterServicegroupId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.ResourceMain'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts:
     get:
       tags:
@@ -574,6 +642,23 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Hosts.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/services/acknowledgements:
     get:
       tags:
@@ -599,6 +684,23 @@ paths:
                         - $ref: '#/components/schemas/Acknowledgement.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Services.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -871,6 +973,23 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add an downtime on multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Hosts.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/services/downtimes:
     get:
       tags:
@@ -919,6 +1038,23 @@ paths:
                         - $ref: '#/components/schemas/Downtime.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add an downtime on multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Services.Add'
+      responses:
+        '204':
+          description: "Commands Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1058,6 +1194,42 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/check:
+    post:
+      tags:
+        - Check
+      summary: "Check multiple hosts"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Hosts'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/check:
+    post:
+      tags:
+        - Check
+      summary: "Check multiple services"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Services'
+      responses:
+        '204':
+          description: "Commands Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/check:
     post:
       tags:
@@ -1105,30 +1277,16 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance:
     get:
       tags:
         - Metrics
-      summary: 'Get service metrics data'
+      summary: 'Get service performance data'
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
-        - in: path
-          name: start
-          description: 'start of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T00:00:00'
-        - in: path
-          name: end
-          description: 'end of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T12:00:00'
+        - $ref: '#/components/parameters/MetricStartDate'
+        - $ref: '#/components/parameters/MetricEndDate'
       description: 'Get metrics data from a service between given interval'
       responses:
         '200':
@@ -1344,7 +1502,7 @@ paths:
           description: "Host or service not found"
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/status/start/{start}/end/{end}:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/status:
     get:
       tags:
         - Metrics
@@ -1352,22 +1510,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
-        - in: path
-          name: start
-          description: 'start of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T00:00:00'
-        - in: path
-          name: end
-          description: 'end of the interval (ISO8601)'
-          required: true
-          schema:
-            type: string
-            format: date-time
-            example: '2020-02-18T12:00:00'
+        - $ref: '#/components/parameters/MetricStartDate'
+        - $ref: '#/components/parameters/MetricEndDate'
       description: 'Get status data from a service between given interval'
       responses:
         '200':
@@ -1433,6 +1577,44 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           description: "Host or service not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /monitoring/hosts/{host_id}/timeline:
+    get:
+      tags:
+        - Timeline
+      summary: "List events related to a host"
+      description: |
+        List all events for a given host
+
+        The available parameters to **search** / **sort_by** are:
+
+        * date
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.TimelineEvent'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
@@ -1556,6 +1738,79 @@ components:
       schema:
         type: object
         example: '{"host.name":"ASC"}'
+    MetricStartDate:
+      in: query
+      name: start
+      required: false
+      description: "Start date of metrics (default date is 24 hours in the past)"
+      schema:
+        type: string
+        format: date-time
+        example: '2020-02-18T00:00:00'
+    MetricEndDate:
+      in: query
+      name: end
+      required: false
+      description: "End date of metrics (default date is current date)"
+      schema:
+        type: string
+        format: date-time
+        example: '2020-02-19T00:00:00'
+    ResourceFilterType:
+      in: query
+      name: types
+      required: false
+      description: "Filter the resources by type"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [service, host]
+        example: '["host"]'
+    ResourceFilterState:
+      in: query
+      name: states
+      required: false
+      description: "Filter the resources by state"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [unhandled_problems, resources_problems, in_downtime, acknowledged, all]
+        example: '["in_downtime", "acknowledged"]'
+    ResourceFilterStatus:
+      in: query
+      name: statuses
+      required: false
+      description: "Filter the resources by status"
+      schema:
+        type: array
+        items:
+            type: string
+            enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
+        example: '["OK", "UP", "PENDING"]'
+    ResourceFilterHostgroupId:
+      in: query
+      name: hostgroup_ids
+      required: false
+      description: "Filter the resources by host group ID"
+      schema:
+        type: array
+        items:
+            type: int
+            format: int64
+        example: '[13, 22, 31]'
+    ResourceFilterServicegroupId:
+      in: query
+      name: servicegroup_ids
+      required: false
+      description: "Filter the resources by service group ID"
+      schema:
+        type: array
+        items:
+            type: int
+            format: int64
+        example: '[2033]'
     ShowHost:
       in: query
       name: show_host
@@ -1751,10 +2006,14 @@ components:
           type: boolean
           description: "Indicates whether it's the default server"
           example: true
-        ssh_port:
+        gorgone_communication_type:
           type: integer
-          description: "SSH port of the server"
-          example: 22
+          description: "Communication type used by Gorgone to communicate with the server"
+          example: 1
+        gorgone_port:
+          type: integer
+          description: "Port used by Gorgone to communicate with the server"
+          example: 5556
         last_restart:
           type: string
           format: date-time
@@ -1815,7 +2074,7 @@ components:
           type: integer
           description: "ID of the master Remote Server linked to the server"
           example: null
-        remote_server_centcore_ssh_proxy:
+        remote_server_use_as_proxy:
           type: boolean
           description: "Indicates whether Remote Servers are used as SSH proxies"
           example: true
@@ -1893,6 +2152,21 @@ components:
               description: "ID of the service"
               example: 5
     Acknowledgement.Host.Add:
+      allOf:
+        - $ref: '#/components/schemas/Acknowledgement.Service.Add'
+        - type: object
+          properties:
+            with_services:
+              type: boolean
+              description: "Indicates whether we should add the downtime on the host-related services"
+              example: true
+    Acknowledgement.Hosts.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
+    Acknowledgement.Service.Add:
       type: object
       properties:
         comment:
@@ -1911,9 +2185,12 @@ components:
           type: boolean
           description: "Indicates whether acknowledgement is maintained in the case of a change of status"
           example: true
-    Acknowledgement.Service.Add:
-      allOf:
-        - $ref: '#/components/schemas/Acknowledgement.Host.Add'
+    Acknowledgement.Services.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Acknowledgement.Service.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Host.Add:
       allOf:
         - $ref: '#/components/schemas/Downtime.Service.Add'
@@ -1923,6 +2200,12 @@ components:
               type: boolean
               description: "Indicates whether we should add the downtime on the host-related services"
               example: true
+    Downtime.Hosts.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Downtime.Host.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Service.Add:
       type: object
       properties:
@@ -1950,6 +2233,12 @@ components:
           type: string
           description: "Comment of the downtime"
           example: "Downtime set by admin"
+    Downtime.Services.Add:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Downtime.Service.Add'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Downtime.Host:
       type: object
       properties:
@@ -2028,9 +2317,226 @@ components:
           required: false
           description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
           example: true
+    Check.Hosts:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Check.Host'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
     Check.Service:
       allOf:
         - $ref: '#/components/schemas/Check.Host'
+    Check.Services:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Check.Service'
+          - $ref: '#/components/schemas/Bulk.Resource.Id'
+    Monitoring.ResourceMain:
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of the resource"
+          example: "service|host"
+        short_type:
+          type: string
+          description: "Short name of the resource type"
+          example: "s|h"
+        id:
+          type: integer
+          format: int32
+          description: "ID of the resource"
+          example: 12
+        name:
+          type: string
+          description: "Resource name"
+          example: "Ping"
+        details_url:
+          type: string
+          description: "Resource url to details page"
+          example: "/monitoring/host/12/service/12"
+        icon:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              description: "ID of the image"
+              example: 12
+            name:
+              type: string
+              description: "Name of the icon"
+              example: "memory"
+            url:
+              type: string
+              description: "Url of the icon"
+              example: "/media/memory.png"
+        parent:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: "ID of the parent resource"
+              example: 12
+            name:
+              type: string
+              description: "Parent resource name"
+              example: "Central"
+            details_url:
+              type: string
+              description: "Parent resource url to details page"
+              example: "/monitoring/host/12"
+            status:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  description: |
+                    resource status code
+                    * `0` - UP or OK
+                    * `1` - DOWN or WARNING
+                    * `2` - UNREACHABLE or CRITICAL
+                    * `3` - UNKNOWN
+                    * `4` - PENDING
+                  example: 0
+                name:
+                  type: string
+                  description: |
+                    resource status name
+                    * UP
+                    * DOWN
+                    * UNREACHABLE
+                    * PENDING
+                    * OK
+                    * WARNING
+                    * CRITICAL
+                    * UNKNOWN
+                  example: "UP"
+                severity_code:
+                  type: integer
+                  description: |
+                    resource status name
+                    * `1` - DOWN or CRITICAL
+                    * `2` - WARNING
+                    * `3` - UNKNOWN or UNREACHABLE
+                    * `4` - PENDING
+                    * `5` - UP or OK
+                  example: 1
+            icon:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: "Name of the icon"
+                  example: "linux"
+                url:
+                  type: string
+                  description: "Url of the icon"
+                  example: "/img/media/topology/firewall.png"
+        status:
+          type: object
+          properties:
+            code:
+              type: integer
+              description: |
+                resource status code
+                * `0` - UP or OK
+                * `1` - DOWN or WARNING
+                * `2` - UNREACHABLE or CRITICAL
+                * `3` - UNKNOWN
+                * `4` - PENDING
+              example: 0
+            name:
+              type: string
+              description: |
+                resource status name
+                * UP
+                * DOWN
+                * UNREACHABLE
+                * PENDING
+                * OK
+                * WARNING
+                * CRITICAL
+                * UNKNOWN
+              example: "UP"
+            severity_code:
+              type: integer
+              description: |
+                resource status name
+                * `1` - DOWN or CRITICAL
+                * `2` - WARNING
+                * `3` - UNKNOWN or UNREACHABLE
+                * `4` - PENDING
+                * `5` - UP or OK
+              example: 1
+        in_downtime:
+          type: boolean
+          description: "Indicates whether resource is in downtime"
+          example: false
+        downtime_endpoint: "/monitoring/hosts/12/services/12/downtimes"
+        acknowledged:
+          type: boolean
+          description: "Indicates whether resource is acknowledged"
+          example: false
+        acknowledgement_endpoint: "/monitoring/hosts/12/services/12/acknowledgements"
+        severity:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              description: "ID of the severity"
+              example: 12
+            level:
+              type: integer
+              description: "level of the severity"
+              example: 1
+            name:
+              type: string
+              description: "Name of the severity"
+              example: "severity 1"
+            url:
+              type: string
+              description: "Url of the severity icon"
+              example: "/img/media/severity1.png"
+        impacted_resources_count:
+          type: integer
+          description: "count of impacted resources"
+          example: 4
+        action_url:
+          type: string
+          description: "action URL of the resource"
+          example: http://mediawiki/host/central
+        status_graph_endpoint:
+          type: string
+          description: "URL of the status chart linked to the resource"
+          example: "/monitoring/hosts/1/services/2/metrics/status"
+        performance_graph_endpoint:
+          type: string
+          description: "URL of the performance chart linked to the resource"
+          example: "/monitoring/hosts/1/services/2/metrics/performance"
+        duration:
+          type: string
+          description: "Duration since last status change"
+          example: "2h 3m"
+        last_status_change:
+          type: string
+          format: date-time
+          description: "Date of the last status change (ISO8601)"
+        tries:
+          type: string
+          description: "Number of check tries"
+          example: "3/3 (H)"
+        last_check:
+          type: string
+          description: "Duration since last check"
+          example: "1h 45m"
+        information:
+          type: string
+          description: "Output of the resource"
+          example: "OK - Ping is ok"
     Monitoring.HostGroup:
       type: object
       properties:
@@ -2166,6 +2672,14 @@ components:
               type: float
               description: "Percent state change since last check"
               example: 3.5
+            downtimes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Downtime.Host'
+            acknowledgement:
+              type: object
+              properties:
+                $ref: '#/components/schemas/Acknowledgement.Host'
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
@@ -2452,11 +2966,33 @@ components:
               type: integer
               description: "Number of scheduled downtimes the service is currently in"
               example: 0
+            downtimes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Downtime.Service'
+            acknowledgement:
+              type: object
+              properties:
+                $ref: '#/components/schemas/Acknowledgement.Service'
     Monitoring.ServiceWithHost:
       type: object
       properties:
         hosts:
           $ref: '#/components/schemas/Monitoring.HostMin'
+    Bulk.Resource.Id:
+      type: object
+      properties:
+        resource_id:
+          type: integer
+          format: int64
+          description: "ID of the resource"
+          example: 12
+        parent_resource_id:
+          type: integer
+          format: int64
+          nullable: true
+          description: "ID of the parent resource (eg: host id)"
+          example: 5
     Configuration.Proxy:
       type: object
       properties:
@@ -2483,3 +3019,21 @@ components:
         - port
         - user
         - password
+    Monitoring.TimelineEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of Event (L - log, C - Comment, A - Acknowledgement, D - Downtime"
+          example: "C"
+        id:
+          type: string
+          description: "Concatinated ID of Type + Object ID"
+          example: "C25"
+        date:
+          type: string
+          format: date-time
+          description: "The date the event was created (ISO8601)"
+        object:
+          type: object
+          description: "The detailed object properties of above types"

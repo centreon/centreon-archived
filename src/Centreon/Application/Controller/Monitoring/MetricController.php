@@ -26,7 +26,9 @@ use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\View\View;
 
 /**
@@ -69,7 +71,7 @@ class MetricController extends AbstractController
     private function findService(int $hostId, int $serviceId): Service
     {
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         $this->monitoringService->filterByContact($contact);
@@ -86,6 +88,36 @@ class MetricController extends AbstractController
         $service->setHost($host);
 
         return $service;
+    }
+
+    /**
+     * Validate and extract start/end dates from request parameters
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @return array
+     * @example [new \Datetime('yesterday'), new \Datetime('today')]
+     * @throws NotFoundHttpException
+     * @throws \LogicException
+     */
+    private function extractDatesFromRequestParameters(RequestParametersInterface $requestParameters): array
+    {
+        $start = $requestParameters->getExtraParameter('start') ?: '1 day ago';
+        $end = $requestParameters->getExtraParameter('end') ?: 'now';
+
+        foreach (['start' => $start, 'end' => $end] as $param => $value) {
+            if (false === strtotime($value)) {
+                throw new NotFoundHttpException(sprintf('Invalid date given for parameter "%s".', $param));
+            }
+        }
+
+        $start = new \DateTime($start);
+        $end = new \DateTime($end);
+
+        if ($start >= $end) {
+            throw new \RangeException('End date must be greater than start date.');
+        }
+
+        return [$start, $end];
     }
 
     /**
@@ -107,7 +139,7 @@ class MetricController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
 
@@ -137,6 +169,68 @@ class MetricController extends AbstractController
         \DateTime $end
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        $service = $this->findService($hostId, $serviceId);
+
+        $status = $this->metricService
+            ->filterByContact($contact)
+            ->findStatusByService($service, $start, $end);
+
+        return $this->view($status);
+    }
+
+    /**
+     * Entry point to get service performance metrics
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return View
+     * @throws \Exception
+     */
+    public function getServicePerformanceMetrics(
+        RequestParametersInterface $requestParameters,
+        int $hostId,
+        int $serviceId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+
+        $service = $this->findService($hostId, $serviceId);
+
+        $metrics = $this->metricService
+            ->filterByContact($contact)
+            ->findMetricsByService($service, $start, $end);
+
+        return $this->view($metrics);
+    }
+
+    /**
+     * Entry point to get service status metrics
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return View
+     * @throws \Exception
+     */
+    public function getServiceStatusMetrics(
+        RequestParametersInterface $requestParameters,
+        int $hostId,
+        int $serviceId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
 
         /**
          * @var $contact Contact

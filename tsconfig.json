@@ -1,20 +1,23 @@
-
 {
   "compilerOptions": {
     "target": "es5",
+    "downlevelIteration": true,
     "module": "commonjs",
     "jsx": "react",
     "strict": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
     "baseUrl": "./",
-    "typeRoots": ["./types", "./node_modules/@types"],
-    "esModuleInterop": true,
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
+    "esModuleInterop": true
   },
   "include": [
     "./www/front_src/src"
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

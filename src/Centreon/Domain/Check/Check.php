@@ -22,25 +22,20 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Check;
 
-use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
-
-class Check implements EntityDescriptorMetadataInterface
+class Check
 {
-    public const TYPE_HOST_CHECK = 0;
-    public const TYPE_SERVICE_CHECK = 1;
-
     public const VALIDATION_GROUPS_HOST_CHECK = ['check_host'];
     public const VALIDATION_GROUPS_SERVICE_CHECK = ['check_service'];
 
     /**
-     * @var int Host id
+     * @var int Resource id
      */
-    private $hostId;
+    private $resourceId;
 
     /**
-     * @var int|null Service id
+     * @var int|null Parent resource id
      */
-    private $serviceId;
+    private $parentResourceId;
 
     /**
      * @var \DateTime
@@ -53,51 +48,43 @@ class Check implements EntityDescriptorMetadataInterface
     private $isForced = true;
 
     /**
-     * {@inheritdoc}
+     * @var bool Indicates if this downtime should be applied to linked services
      */
-    public static function loadEntityDescriptorMetadata(): array
-    {
-        return [
-            'host_id' => 'setHostId',
-            'service_id' => 'setServiceId',
-            'check_time' => 'setCheckTime',
-            'is_forced' => 'setForced',
-        ];
-    }
+    private $withServices = false;
 
     /**
      * @return int
      */
-    public function getHostId(): int
+    public function getResourceId(): int
     {
-        return $this->hostId;
+        return $this->resourceId;
     }
 
     /**
-     * @param int $hostId
+     * @param int $resourceId
      * @return Check
      */
-    public function setHostId(int $hostId): Check
+    public function setResourceId(int $resourceId): Check
     {
-        $this->hostId = $hostId;
+        $this->resourceId = $resourceId;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getServiceId(): ?int
+    public function getParentResourceId(): ?int
     {
-        return $this->serviceId;
+        return $this->parentResourceId;
     }
 
     /**
-     * @param int $serviceId|null
+     * @param int|null $parentResourceId
      * @return Check
      */
-    public function setServiceId(?int $serviceId): Check
+    public function setParentResourceId(?int $parentResourceId): Check
     {
-        $this->serviceId = $serviceId;
+        $this->parentResourceId = $parentResourceId;
         return $this;
     }
 
@@ -135,5 +122,21 @@ class Check implements EntityDescriptorMetadataInterface
     {
         $this->isForced = $isForced;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithServices(): bool
+    {
+        return $this->withServices;
+    }
+
+    /**
+     * @param bool $withServices
+     */
+    public function setWithServices(bool $withServices): void
+    {
+        $this->withServices = $withServices;
     }
 }

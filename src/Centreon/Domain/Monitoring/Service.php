@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
@@ -208,6 +210,16 @@ class Service implements EntityDescriptorMetadataInterface
     private $criticality;
 
     /**
+     * @var Downtime[]
+     */
+    private $downtimes = [];
+
+    /**
+     * @var Acknowledgement|null
+     */
+    private $acknowledgement;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -314,7 +326,7 @@ class Service implements EntityDescriptorMetadataInterface
     /**
      * @return string|null
      */
-    public function getCommandLine(): string
+    public function getCommandLine(): ?string
     {
         return $this->commandLine;
     }
@@ -516,7 +528,7 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @param int|null $scheduledDowntimeDepth
+     * @param int $scheduledDowntimeDepth
      * @return Service
      */
     public function setScheduledDowntimeDepth(int $scheduledDowntimeDepth): Service
@@ -606,7 +618,7 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @param \DateTime $nextCheck
+     * @param \DateTime|null $nextCheck
      * @return Service|null
      */
     public function setNextCheck(?\DateTime $nextCheck): Service
@@ -828,6 +840,42 @@ class Service implements EntityDescriptorMetadataInterface
     public function setCriticality(?int $criticality): Service
     {
         $this->criticality = $criticality;
+        return $this;
+    }
+
+    /**
+     * @return Downtime[]
+     */
+    public function getDowntimes(): array
+    {
+        return $this->downtimes;
+    }
+
+    /**
+     * @param Downtime[] $downtimes
+     * @return Service
+     */
+    public function setDowntimes(array $downtimes): self
+    {
+        $this->downtimes = $downtimes;
+        return $this;
+    }
+
+    /**
+     * @return Acknowledgement|null
+     */
+    public function getAcknowledgement(): ?Acknowledgement
+    {
+        return $this->acknowledgement;
+    }
+
+    /**
+     * @param Acknowledgement|null $acknowledgement
+     * @return Service
+     */
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
+    {
+        $this->acknowledgement = $acknowledgement;
         return $this;
     }
 }

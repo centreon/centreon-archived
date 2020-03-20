@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 # -*-Shell-script-*-
 # install_vars
 # This file contain reconfigured variables used in install scripts
@@ -39,7 +40,6 @@ DEFAULT_CENTREON_VARLIB="/var/lib/centreon"
 DEFAULT_CENTSTORAGE_RRD="/var/lib/centreon"
 DEFAULT_CENTPLUGINS_TMP="/var/lib/centreon/centplugins"
 DEFAULT_CENTSTORAGE_BINDIR="bin"
-DEFAULT_CENTCORE_BINDIR="bin"
 DEFAULT_SNMP_ETC="/etc/snmp"
 DEFAULT_SNMPTT_BINDIR="/usr/share/centreon/bin/"
 DEFAULT_CENTPLUGINSTRAPS_BINDIR="/usr/share/centreon/bin"
@@ -56,3 +56,9 @@ DEFAULT_MONITORINGENGINE_INIT_SCRIPT="centengine"
 DEFAULT_BROKER_USER="centreon-broker"
 DEFAULT_BROKER_ETC="/etc/centreon-broker"
 DEFAULT_PHP_FPM_SERVICE="fpm-php"
+CENTREON_SPOOL_SSH=`eval echo "~$CENTREON_USER"`
+
+DEFAULT_GORGONE_VARLIB="/var/lib/centreon-gorgone"
+DEFAULT_GORGONE_CONFIG="/etc/centreon-gorgone"
+DEFAULT_GORGONE_USER="centreon-gorgone"
+DEFAULT_GORGONE_GROUP="centreon-gorgone"

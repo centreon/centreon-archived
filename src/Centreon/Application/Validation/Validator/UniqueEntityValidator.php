@@ -37,6 +37,7 @@
 namespace Centreon\Application\Validation\Validator;
 
 use Centreon\Application\Validation\Constraints\UniqueEntity;
+use Centreon\Application\Validation\Validator\Interfaces\CentreonValidatorInterface;
 use Centreon\ServiceProvider;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
@@ -44,7 +45,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class UniqueEntityValidator extends ConstraintValidator
+class UniqueEntityValidator extends ConstraintValidator implements CentreonValidatorInterface
 {
 
     /**
