@@ -198,12 +198,12 @@ class CentreonMetric extends CentreonWebService
             $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
-        $stmt->bindParam(':host_id', $queryValues['host_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':service_id', $queryValues['service_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
+        $stmt->bindParam(':host_id', $queryValues['host_id'], \PDO::PARAM_INT);
+        $stmt->bindParam(':service_id', $queryValues['service_id'], \PDO::PARAM_INT);
         if (isset($queryValues['offset'])) {
-            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
-            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $queryValues["offset"], \PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], \PDO::PARAM_INT);
         }
         $stmt->execute();
         $metrics = array();
