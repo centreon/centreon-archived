@@ -33,6 +33,7 @@ import {
   labelHostGroup,
   labelServiceGroup,
   labelClearAll,
+  labelOpen,
   labelShowCriteriasFilters,
 } from '../translatedLabels';
 import {
@@ -240,6 +241,7 @@ const Filter = ({
               label={labelTypeOfResource}
               onChange={onResourceTypesChange}
               value={selectedResourceTypes || []}
+              openText={`${labelOpen} ${labelTypeOfResource}`}
             />
           </Grid>
           <Grid item>
@@ -249,6 +251,7 @@ const Filter = ({
               label={labelState}
               onChange={onStatesChange}
               value={selectedStates || []}
+              openText={`${labelOpen} ${labelState}`}
             />
           </Grid>
           <Grid item>
@@ -258,6 +261,7 @@ const Filter = ({
               label={labelStatus}
               onChange={onStatusesChange}
               value={selectedStatuses || []}
+              openText={`${labelOpen} ${labelStatus}`}
             />
           </Grid>
           <Grid item>
@@ -269,6 +273,7 @@ const Filter = ({
               label={labelHostGroup}
               onChange={onHostGroupsChange}
               value={selectedHostGroups || []}
+              openText={`${labelOpen} ${labelHostGroup}`}
             />
           </Grid>
           <Grid item>
@@ -280,6 +285,7 @@ const Filter = ({
               onChange={onServiceGroupsChange}
               getOptionsFromResult={getOptionsFromResult}
               value={selectedServiceGroups || []}
+              openText={`${labelOpen} ${labelServiceGroup}`}
             />
           </Grid>
           <Grid item>

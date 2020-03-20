@@ -1,9 +1,15 @@
 import { I18n } from 'react-redux-i18n';
 
 export const labelAcknowledged = I18n.t('Acknowledged');
+export const labelAcknowledge = I18n.t('Acknowledge');
+export const labelAcknowledgedBy = I18n.t('Acknowledged by');
+export const labelAcknowledgeServices = I18n.t(
+  'Acknowledge services attached to host',
+);
 export const labelAll = I18n.t('All');
 export const labelAuthor = I18n.t('Author');
 export const labelComment = I18n.t('Comment');
+export const labelCancel = I18n.t('Cancel');
 export const labelClearAll = I18n.t('Clear all');
 export const labelCritical = I18n.t('Critical');
 export const labelDown = I18n.t('Down');
@@ -20,9 +26,15 @@ export const labelHostGroup = I18n.t('Host group');
 export const labelInDowntime = I18n.t('In downtime');
 export const labelLastCheck = I18n.t('Last check');
 export const labelNo = I18n.t('No');
+export const labelNotify = I18n.t('Notify');
+export const labelNotifyHelpCaption = I18n.t(
+  'If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged',
+);
 export const labelOk = I18n.t('Ok');
+export const labelOpen = I18n.t('Open');
 export const labelPersistent = I18n.t('Persistent');
 export const labelPending = I18n.t('Pending');
+export const labelRequired = I18n.t('Required');
 export const labelResourceName = I18n.t('Resource name');
 export const labelResourceProblems = I18n.t('Resource problems');
 export const labelResources = I18n.t('Resources');
@@ -49,6 +61,9 @@ export const labelServiceGroup = I18n.t('Service group');
 export const labelStartTime = I18n.t('Start time');
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
+export const labelSuccessfullyAcknowledged = I18n.t(
+  'Successfully acknowledged',
+);
 export const labelTypeOfResource = I18n.t('Type of resource');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
 export const labelUnhandled = I18n.t('Unhandled');
