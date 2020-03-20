@@ -31,8 +31,6 @@ Any **relevant details** of the configuration to perform the test should be adde
 
 ## Checklist
 
-#### Community contributors & Centreon team
-
 - [ ] I followed the **coding style guidelines** provided by Centreon
 - [ ] I have commented my code, especially new **classes**, **functions** or any **legacy code** modified. (***docblock***)
 - [ ] I have commented my code, especially **hard-to-understand areas** of the PR.
