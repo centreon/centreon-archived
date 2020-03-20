@@ -83,7 +83,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $bindParams[':fullName'] = '%' . (string)$this->arguments['q'] . '%';
         }
 
-        if (true === isset($this->arguments['e']) && strcmp('anomaly', $this->arguments['e']) == 0) {
+        if (isset($this->arguments['e']) && strcmp('anomaly', $this->arguments['e']) == 0) {
             $excludeAnomalyDetection = true;
         }
 
