@@ -140,13 +140,8 @@ class MonitoringResourceController extends AbstractController
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
-        // try to avoid exception from the regexp bad syntax in search criteria
-        try {
-            $resources = $this->resource->filterByContact($this->getUser())
-                ->findResources($filter);
-        } catch (\PDOException $e) {
-            $resources = [];
-        }
+        $resources = $this->resource->filterByContact($this->getUser())
+            ->findResources($filter);
 
         foreach ($resources as $resource) {
             if ($resource->getParent() != null) {

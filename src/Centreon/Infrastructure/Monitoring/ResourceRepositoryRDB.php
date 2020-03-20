@@ -37,7 +37,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
-use CentreonDuration;
+use Centreon\Domain\Monitoring\Exception\ResourceRegExpException;
 use PDO;
 
 /**
@@ -229,7 +229,15 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
 
-        $statement->execute();
+        try {
+            $statement->execute();
+        } catch (\PDOException $exception) {
+            if ($exception->getCode() !== "42000") {
+                throw $exception;
+            }
+
+            throw new ResourceRegExpException($exception->getMessage(), (int)$exception->getCode(), $exception);
+        }
 
         $this->sqlRequestTranslator->getRequestParameters()->setTotal(
             (int)$this->db->query('SELECT FOUND_ROWS()')->fetchColumn()

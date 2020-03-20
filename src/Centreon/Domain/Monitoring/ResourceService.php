@@ -28,6 +28,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\Exception\ResourceRegExpException;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -87,7 +88,12 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function findResources(ResourceFilter $filter): array
     {
-        $list = $this->resourceRepository->findResources($filter);
+        // try to avoid exception from the regexp bad syntax in search criteria
+        try {
+            $list = $this->resourceRepository->findResources($filter);
+        } catch (ResourceRegExpException $exception) {
+            $list = [];
+        }
 
         // set paths to endpoints
         foreach ($list as $resource) {
