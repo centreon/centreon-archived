@@ -486,9 +486,7 @@ class Broker extends AbstractObjectJSON
                 // Generate proxy URL
                 $proxy = '';
                 if (
-                    isset($proxyInfo['proxy_user'])
-                    && !empty($proxyInfo['proxy_user'])
-                    && isset($proxyInfo['proxy_password'])
+                    !empty($proxyInfo['proxy_user'])
                     && !empty($proxyInfo['proxy_password'])
                 ) {
                     $proxy = $proxyInfo['proxy_user'] . ':' . $proxyInfo['proxy_password'] . '@';
