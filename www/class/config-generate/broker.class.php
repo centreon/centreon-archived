@@ -235,14 +235,14 @@ class Broker extends AbstractObjectJSON
                             $subvalue['config_value'];
                         $subValuesToCastInArray[$subvalue['config_group_id']][] = $res[0];
 
-                        if (strcmp(
+                        if ((strcmp(
                                 $object[$key][$subvalue['config_group_id']]['name'],
                                 "forward-to-anomaly-detection"
-                            ) == 0
-                            && strcmp(
+                            ) == 0)
+                            && (strcmp(
                                 $object[$key][$subvalue['config_group_id']]['path'],
                                 "/usr/share/centreon-broker/lua/centreon-anomaly-detection.lua"
-                            ) == 0
+                            ) == 0)
                         ) {
                             $anomalyDetectionLuaOutputGroupID = $subvalue['config_group_id'];
                         }
@@ -285,6 +285,7 @@ class Broker extends AbstractObjectJSON
                     $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'],
                     $this->generateAnomalyDetectionLuaParameters()
                 );
+                $anomalyDetectionLuaOutputGroupID = -1;
             }
 
             // Generate file
