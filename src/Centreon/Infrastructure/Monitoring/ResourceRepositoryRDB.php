@@ -131,9 +131,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function filterByAccessGroups(?array $accessGroups): self
+    public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
     {
         $this->accessGroups = $accessGroups;
 
