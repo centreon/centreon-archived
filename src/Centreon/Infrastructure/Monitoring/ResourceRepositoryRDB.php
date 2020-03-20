@@ -48,7 +48,7 @@ use PDO;
 final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements ResourceRepositoryInterface
 {
     /**
-     * @var AccessGroup[] List of access group used to filter the requests
+     * @var AccessGroup[]|null List of access group used to filter the requests
      */
     private $accessGroups = [];
 
