@@ -5,6 +5,12 @@ const monitoringEndpoint = `${endpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
+const hostEndpoint = `${monitoringEndpoint}/hosts`;
+const hostAcknowledgementEndpoint = `${hostEndpoint}/acknowledgements`;
+const serviceEndpoint = `${monitoringEndpoint}/services`;
+const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgements`;
+const userEndpoint =
+  './api/internal.php?object=centreon_topcounter&action=user';
 
 interface Param {
   name: string;
@@ -90,4 +96,7 @@ export {
   buildResourcesEndpoint,
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
+  hostAcknowledgementEndpoint,
+  serviceAcknowledgementEndpoint,
+  userEndpoint,
 };
