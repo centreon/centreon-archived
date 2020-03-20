@@ -197,6 +197,7 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
   if (!row.performance_graph_endpoint) {
     return null;
   }
+
   return (
     <HoverChip
       ariaLabel={labelGraph}

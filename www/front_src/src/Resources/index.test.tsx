@@ -26,6 +26,7 @@ import {
   labelAcknowledgeServices,
   labelNotify,
   labelOpen,
+  labelShowCriteriasFilters,
 } from './translatedLabels';
 import getColumns from './columns';
 import { Resource } from './models';
@@ -124,6 +125,7 @@ const fillEntities = (): Array<Resource> => {
     status: {
       code: 0,
       name: 'OK',
+      severity_code: 5,
     },
     acknowledged: index % 2 === 0,
     acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,
@@ -188,6 +190,20 @@ describe(Resources, () => {
       },
     });
   };
+
+  it('expands criterias filters', async () => {
+    const { getByLabelText, queryByText } = render(<Resources />);
+
+    await wait(() => {
+      expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+    });
+
+    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+
+    await wait(() => {
+      expect(queryByText(labelTypeOfResource)).toBeVisible();
+    });
+  });
 
   it('executes a listing request with "Unhandled problems" filter group by default', async () => {
     render(<Resources />);

@@ -3,7 +3,7 @@ import React from 'react';
 import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
-import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
+import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
 import {
   labelResources,
@@ -50,7 +50,7 @@ const SeverityColumn = ({ row }: ColumnProps): JSX.Element | null => {
   return (
     <StatusChip
       label={row.severity.level.toString()}
-      statusCode={StatusCode.None}
+      severityCode={SeverityCode.None}
     />
   );
 };
@@ -76,7 +76,10 @@ const StatusColumnOnHover = ({
         </IconButton>
       </Grid>
       <Grid item>
-        <StatusChip label={row.status.name[0]} statusCode={row.status.code} />
+        <StatusChip
+          label={row.status.name[0]}
+          severityCode={row.status.severity_code}
+        />
       </Grid>
     </Grid>
   );
@@ -92,7 +95,7 @@ const StatusColumn = (actions) => ({
     <StatusChip
       style={{ width: 120 }}
       label={row.status.name}
-      statusCode={row.status.code}
+      severityCode={row.status.severity_code}
     />
   );
 };
@@ -106,7 +109,7 @@ const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
         {row.icon ? (
           <img src={row.icon.url} alt={row.icon.name} width={21} height={21} />
         ) : (
-          <StatusChip label={row.short_type} statusCode={StatusCode.None} />
+          <StatusChip label={row.short_type} severityCode={SeverityCode.None} />
         )}
       </Grid>
       <Grid item>
@@ -116,7 +119,7 @@ const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
         <Grid container spacing={1}>
           <Grid item xs={1} />
           <Grid item>
-            <StatusChip statusCode={row.parent?.status?.code || 0} />
+            <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
           </Grid>
           <Grid item>{row.parent.name}</Grid>
         </Grid>

@@ -44,6 +44,7 @@
     "eslint-plugin-prefer-arrow-functions": "^3.0.1",
     "eslint-plugin-prettier": "^3.1.2",
     "file-loader": "^6.0.0",
+    "fork-ts-checker-webpack-plugin": "^4.1.0",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-tags-plugin": "^2.0.17",
     "jest": "^25.1.0",
@@ -70,7 +71,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@centreon/ui": "centreon/centreon-ui",
+    "@centreon/ui": "github:centreon/centreon-ui#MON-5014-filter-style",
     "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.46",

@@ -32,6 +32,12 @@ class ResourceStatus
     // Groups for serilizing
     public const SERIALIZER_GROUP_MAIN = 'resource_status_main';
 
+    public const SEVERITY_HIGH = 1;
+    public const SEVERITY_MEDIUM = 2;
+    public const SEVERITY_LOW = 3;
+    public const SEVERITY_PENDING = 3;
+    public const SEVERITY_OK = 5;
+
     /**
      * @var int|null
      */
@@ -78,5 +84,35 @@ class ResourceStatus
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * Get status severity code from status name
+     *
+     * @return int
+     */
+    public function getSeverityCode(): int
+    {
+        $severity = self::SEVERITY_PENDING;
+
+        switch ($this->name) {
+            case 'OK':
+            case 'UP':
+                $severity = self::SEVERITY_OK;
+                break;
+            case 'UNKNOWN':
+            case 'UNREACHABLE':
+                $severity = self::SEVERITY_LOW;
+                break;
+            case 'WARNING':
+                $severity = self::SEVERITY_MEDIUM;
+                break;
+            case 'CRITICAL':
+            case 'DOWN':
+                $severity = self::SEVERITY_HIGH;
+                break;
+        }
+
+        return $severity;
     }
 }
