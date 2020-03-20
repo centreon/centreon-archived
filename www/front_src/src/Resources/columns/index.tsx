@@ -76,7 +76,10 @@ const StatusColumnOnHover = ({
         </IconButton>
       </Grid>
       <Grid item>
-        <StatusChip label={row.status.name[0]} severityCode={row.status.severity_code} />
+        <StatusChip
+          label={row.status.name[0]}
+          severityCode={row.status.severity_code}
+        />
       </Grid>
     </Grid>
   );
