@@ -38,9 +38,3 @@ Any **relevant details** of the configuration to perform the test should be adde
 - [ ] I have commented my code, especially **hard-to-understand areas** of the PR.
 - [ ] I have made corresponding changes to the **documentation**.
 - [ ] I have **rebased** my development branch on the base branch (master, maintenance).
-
-#### Centreon team only
-
-- [ ] I have made sure that the **unit tests** related to the story are successful.
-- [ ] I have made sure that **unit tests cover 80%** of the code written for the story.
-- [ ] I have made sure that **acceptance tests** related to the story are successful (**local and CI**)
