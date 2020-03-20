@@ -99,6 +99,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      *
      * @param int $hostId Host id for which this monitoring server host will be associated
      * @param MonitoringServer $monitoringServer Monitoring server to be added
+     * @throws \Exception
      */
     private function addMonitoringServer(int $hostId, MonitoringServer $monitoringServer): void
     {
@@ -112,6 +113,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':monitoring_server_id', $monitoringServer->getId(), \PDO::PARAM_INT);
             $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
             $statement->execute();
+            if ($statement->rowCount() === 0) {
+                throw new \Exception('Monitoring server with id ' . $monitoringServer->getId() . ' not found');
+            }
         } elseif (!empty($monitoringServer->getName())) {
             $request = $this->translateDbName(
                 'INSERT INTO `:db`.ns_host_relation 
@@ -123,8 +127,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement = $this->db->prepare($request);
             $statement->bindValue(':monitoring_server_name', $monitoringServer->getName(), \PDO::PARAM_STR);
             $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-            $status = $statement->execute();
-            $tt = $status;
+            $statement->execute();
+            if ($statement->rowCount() === 0) {
+                throw new \Exception('Monitoring server ' . $monitoringServer->getName() . ' not found');
+            }
         }
     }
 
@@ -133,7 +139,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      *
      * @param int $hostId Host id for which this extended host will be associated
      * @param ExtendedHost $extendedHost Extended host to be added
-     * @throws \PDOException
+     * @throws \Exception
      */
     private function addExtendedHost(int $hostId, ExtendedHost $extendedHost): void
     {
@@ -176,6 +182,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 $statement->bindValue(':template_id', $template->getId(), \PDO::PARAM_INT);
                 $statement->bindValue(':order', ((int) $order) + 1, \PDO::PARAM_INT);
                 $statement->execute();
+                if ($statement->rowCount() === 0) {
+                    throw new \Exception('Template with id ' . $template->getId() . ' not found');
+                }
             } elseif (!empty($template->getName())) {
                 // Associate the host and host template using template name
                 $request = $this->translateDbName(
