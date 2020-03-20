@@ -3,8 +3,7 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { styled } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
+import { styled, Link } from '@material-ui/core';
 
 const SmallLink = styled(Link)(() => ({
   fontSize: '12px',
