@@ -6,4 +6,5 @@ module.exports = merge(require('@centreon/frontend-core/jest'), {
     '@testing-library/jest-dom/extend-expect',
     '<rootDir>/setupTest.js',
   ],
+  testEnvironment: 'jest-environment-jsdom-sixteen',
 });

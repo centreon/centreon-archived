@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
+import IconAcknowledge from '@material-ui/icons/Person';
 
-import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
+import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
 import {
   labelResources,
@@ -12,9 +13,11 @@ import {
   labelInformation,
   labelState,
   labelLastCheck,
+  labelAcknowledge,
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
+import GraphColumn from './Graph';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -22,94 +25,139 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export interface Column {
+  id: string;
+  getFormattedString?: (details) => string;
+  label: string;
+  type: number;
+  Component?: (props) => JSX.Element | null;
+  sortable?: boolean;
+  width?: number;
+}
+
 export interface ColumnProps {
   row: Resource;
-  Cell: ({ children, width }: { children; width? }) => JSX.Element;
   isRowSelected: boolean;
+  isHovered: boolean;
   style;
   onClick;
 }
 
-const SeverityColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const SeverityColumn = ({ row }: ColumnProps): JSX.Element | null => {
+  if (!row.severity) {
+    return null;
+  }
   return (
-    <Cell>
-      {row.severity && (
+    <StatusChip
+      label={row.severity.level.toString()}
+      severityCode={SeverityCode.None}
+    />
+  );
+};
+
+type StatusColumnProps = {
+  actions;
+} & Pick<ColumnProps, 'row'>;
+
+const StatusColumnOnHover = ({
+  actions,
+  row,
+}: StatusColumnProps): JSX.Element => {
+  return (
+    <Grid container spacing={1} alignItems="center">
+      <Grid item>
+        <IconButton
+          size="small"
+          color="primary"
+          onClick={(): void => actions.onAcknowledge(row)}
+          aria-label={`${labelAcknowledge} ${row.name}`}
+        >
+          <IconAcknowledge />
+        </IconButton>
+      </Grid>
+      <Grid item>
         <StatusChip
-          label={row.severity.level.toString()}
-          statusCode={StatusCode.None}
+          label={row.status.name[0]}
+          severityCode={row.status.severity_code}
         />
-      )}
-    </Cell>
+      </Grid>
+    </Grid>
   );
 };
 
-const StatusColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
-  return (
-    <Cell>
-      <StatusChip label={row.status.name} statusCode={row.status.code} />
-    </Cell>
+const StatusColumn = (actions) => ({
+  row,
+  isHovered,
+}: ColumnProps): JSX.Element => {
+  return isHovered ? (
+    <StatusColumnOnHover actions={actions} row={row} />
+  ) : (
+    <StatusChip
+      style={{ width: 120 }}
+      label={row.status.name}
+      severityCode={row.status.severity_code}
+    />
   );
 };
 
-const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const ResourcesColumn = ({ row }: ColumnProps): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Cell>
-      <Grid container spacing={1} className={classes.resourceDetailsCell}>
-        <Grid item>
-          {row.icon ? (
-            <img
-              src={row.icon.url}
-              alt={row.icon.name}
-              width={21}
-              height={21}
-            />
-          ) : (
-            <StatusChip label={row.short_type} statusCode={StatusCode.None} />
-          )}
-        </Grid>
-        <Grid item>
-          <Typography>{row.name}</Typography>
-        </Grid>
-        {row.parent && (
-          <Grid container spacing={1}>
-            <Grid item xs={1} />
-            <Grid item>
-              <StatusChip statusCode={row.parent?.status?.code || 0} />
-            </Grid>
-            <Grid item>{row.parent.name}</Grid>
-          </Grid>
+    <Grid container spacing={1} className={classes.resourceDetailsCell}>
+      <Grid item>
+        {row.icon ? (
+          <img src={row.icon.url} alt={row.icon.name} width={21} height={21} />
+        ) : (
+          <StatusChip label={row.short_type} severityCode={SeverityCode.None} />
         )}
       </Grid>
-    </Cell>
+      <Grid item>
+        <Typography>{row.name}</Typography>
+      </Grid>
+      {row.parent && (
+        <Grid container spacing={1}>
+          <Grid item xs={1} />
+          <Grid item>
+            <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
+          </Grid>
+          <Grid item>{row.parent.name}</Grid>
+        </Grid>
+      )}
+    </Grid>
   );
 };
 
-const columns = [
+const getColumns = (actions): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
     type: TABLE_COLUMN_TYPES.component,
     Component: SeverityColumn,
-    clickable: false,
     sortable: false,
   },
   {
     id: 'status',
     label: labelStatus,
     type: TABLE_COLUMN_TYPES.component,
-    Component: StatusColumn,
-    clickable: false,
+    Component: StatusColumn(actions),
     sortable: false,
+    width: 125,
   },
   {
     id: 'resources',
     label: labelResources,
     type: TABLE_COLUMN_TYPES.component,
     Component: ResourcesColumn,
-    clickable: false,
     sortable: false,
+  },
+  {
+    id: 'graph',
+    label: '',
+    type: TABLE_COLUMN_TYPES.component,
+    Component: GraphColumn,
+    sortable: false,
+    width: 50,
   },
   {
     id: 'duration',
@@ -140,9 +188,9 @@ const columns = [
     label: labelState,
     type: TABLE_COLUMN_TYPES.component,
     Component: StateColumn,
-    clickable: false,
     sortable: false,
+    width: 80,
   },
 ];
 
-export default columns;
+export default getColumns;

@@ -1,9 +1,0 @@
-# Configuration for /etc/init.d/centcore
-
-# If run centcore at startup default: NO
-RUN_AT_STARTUP="NO"
-
-# Centreon user default: nagios
-CENTREON_USER="@CENTREON_USER@"
-
-OPTIONS="--logfile=@CENTREON_LOG@/centcore.log --severity=error --config=@CENTREON_ETC@/conf.pm"

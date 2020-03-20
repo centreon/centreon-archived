@@ -24,9 +24,6 @@ module.exports = merge(baseConfig, extractCssConfig, {
       filename: '../index.html',
     }),
   ],
-  resolve: {
-    extensions: ['.svg'],
-  },
   module: {
     rules: [
       { parser: { system: false } },

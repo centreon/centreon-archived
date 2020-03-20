@@ -21,6 +21,8 @@ import {
   labelNo,
 } from '../../../translatedLabels';
 import useCancelTokenSource from '../../../useCancelTokenSource';
+import { Listing } from '../../../models';
+import { Column } from '../..';
 
 const getFormattedDate = (isoDate): string =>
   format(parseISO(isoDate), 'MM/dd/yyyy H:m');
@@ -29,17 +31,12 @@ const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
 const columnMaxWidth = 150;
 
-interface Column {
-  getFormattedString: (details) => string;
-  label: string;
-}
-
 export interface DetailsTableProps {
   endpoint: string;
   columns: Array<Column>;
 }
 
-const DetailsTable = <TDetails extends {}>({
+const DetailsTable = <TDetails extends unknown>({
   endpoint,
   columns,
 }: DetailsTableProps): JSX.Element => {
@@ -47,8 +44,11 @@ const DetailsTable = <TDetails extends {}>({
   const { cancel, token } = useCancelTokenSource();
 
   useEffect(() => {
-    getData<TDetails>({ endpoint, requestParams: { cancelToken: token } })
-      .then((retrievedDetails) => setDetails(retrievedDetails))
+    getData<Listing<TDetails>>({
+      endpoint,
+      requestParams: { cancelToken: token },
+    })
+      .then((retrievedDetails) => setDetails(retrievedDetails.result[0]))
       .catch(() => {
         setDetails(null);
       });
@@ -64,7 +64,7 @@ const DetailsTable = <TDetails extends {}>({
 
   return (
     <TableContainer component={Paper}>
-      <Table size="small">
+      <Table size="small" style={{ width: tableMaxWidth }}>
         <TableHead>
           <TableRow>
             {columns.map(({ label }) => (
@@ -76,21 +76,17 @@ const DetailsTable = <TDetails extends {}>({
           <TableRow>
             {loading && (
               <TableCell colSpan={columns.length}>
-                <Skeleton height={20} animation="wave" width={tableMaxWidth} />
+                <Skeleton height={20} animation="wave" />
               </TableCell>
             )}
             {success &&
               columns.map(({ label, getFormattedString }) => (
-                <TableCell style={{ maxWidth: columnMaxWidth }} key={label}>
-                  <span>{getFormattedString(details)}</span>
+                <TableCell key={label}>
+                  <span>{getFormattedString?.(details)}</span>
                 </TableCell>
               ))}
             {error && (
-              <TableCell
-                style={{ width: tableMaxWidth }}
-                align="center"
-                colSpan={columns.length}
-              >
+              <TableCell align="center" colSpan={columns.length}>
                 <span>{labelSomethingWentWrong}</span>
               </TableCell>
             )}

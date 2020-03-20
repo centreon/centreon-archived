@@ -2006,10 +2006,14 @@ components:
           type: boolean
           description: "Indicates whether it's the default server"
           example: true
-        ssh_port:
+        gorgone_communication_type:
           type: integer
-          description: "SSH port of the server"
-          example: 22
+          description: "Communication type used by Gorgone to communicate with the server"
+          example: 1
+        gorgone_port:
+          type: integer
+          description: "Port used by Gorgone to communicate with the server"
+          example: 5556
         last_restart:
           type: string
           format: date-time
@@ -2070,7 +2074,7 @@ components:
           type: integer
           description: "ID of the master Remote Server linked to the server"
           example: null
-        remote_server_centcore_ssh_proxy:
+        remote_server_use_as_proxy:
           type: boolean
           description: "Indicates whether Remote Servers are used as SSH proxies"
           example: true
@@ -2410,6 +2414,16 @@ components:
                     * CRITICAL
                     * UNKNOWN
                   example: "UP"
+                severity_code:
+                  type: integer
+                  description: |
+                    resource status name
+                    * `1` - DOWN or CRITICAL
+                    * `2` - WARNING
+                    * `3` - UNKNOWN or UNREACHABLE
+                    * `4` - PENDING
+                    * `5` - UP or OK
+                  example: 1
             icon:
               type: object
               properties:
@@ -2447,6 +2461,16 @@ components:
                 * CRITICAL
                 * UNKNOWN
               example: "UP"
+            severity_code:
+              type: integer
+              description: |
+                resource status name
+                * `1` - DOWN or CRITICAL
+                * `2` - WARNING
+                * `3` - UNKNOWN or UNREACHABLE
+                * `4` - PENDING
+                * `5` - UP or OK
+              example: 1
         in_downtime:
           type: boolean
           description: "Indicates whether resource is in downtime"

@@ -37,6 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
+const ZMQ = 1;
+const SSH = 2;
+
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 $objMain = new CentreonMainCfg();
@@ -59,14 +62,14 @@ $nagios = array();
 $selectedAdditionnalRS = null;
 $serverType = "poller";
 if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
-    $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
+    $cfg_server = array_map("myDecode", $dbResult->fetch());
+    $dbResult->closeCursor();
 
     $query = 'SELECT ip FROM remote_servers';
-    $DBRESULT = $pearDB->query($query);
-    $remotesServerIPs = $DBRESULT->fetchAll(PDO::FETCH_COLUMN);
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query($query);
+    $remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+    $dbResult->closeCursor();
 
     if ($cfg_server['localhost']) {
         $serverType = "central";
@@ -75,9 +78,11 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "remote") {
-        $statement = $pearDB->prepare("SELECT http_method, http_port, no_check_certificate, no_proxy
+        $statement = $pearDB->prepare(
+            "SELECT http_method, http_port, no_check_certificate, no_proxy
             FROM `remote_servers`
-            WHERE `ip` = :ns_ip_address LIMIT 1");
+            WHERE `ip` = :ns_ip_address LIMIT 1"
+        );
         $statement->bindParam(':ns_ip_address', $cfg_server['ns_ip_address'], \PDO::PARAM_STR);
         $statement->execute();
 
@@ -86,11 +91,13 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "poller") {
-        // Select additionnal Remote Servers
-        $statement = $pearDB->prepare("SELECT remote_server_id, name 
+        // Select additional Remote Servers
+        $statement = $pearDB->prepare(
+            "SELECT remote_server_id, name
             FROM rs_poller_relation AS rspr
             LEFT JOIN nagios_server AS ns ON (rspr.remote_server_id = ns.id)
-            WHERE poller_server_id = :poller_server_id");
+            WHERE poller_server_id = :poller_server_id"
+        );
         $statement->bindParam(':poller_server_id', $cfg_server['id'], \PDO::PARAM_INT);
         $statement->execute();
 
@@ -110,7 +117,7 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
  * Preset values of misc commands
  */
 $cdata = CentreonData::getInstance();
-$cmdArray = $instanceObj->getCommandsFromPollerId(isset($server_id) ? $server_id : null);
+$cmdArray = $instanceObj->getCommandsFromPollerId($server_id ?? null);
 $cdata->addJsData('clone-values-pollercmd', htmlspecialchars(
     json_encode($cmdArray),
     ENT_QUOTES
@@ -121,11 +128,11 @@ $cdata->addJsData('clone-count-pollercmd', count($cmdArray));
  * nagios servers comes from DB
  */
 $nagios_servers = array();
-$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
-while ($nagios_server = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
+while ($nagios_server = $dbResult->fetch()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "50");
@@ -170,7 +177,7 @@ if ($o == SERVER_ADD) {
  * Headers
  */
 $form->addElement('header', 'Server_Informations', _("Server Information"));
-$form->addElement('header', 'SSH_Informations', _("SSH Information"));
+$form->addElement('header', 'gorgone_Informations', _("Gorgone Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
@@ -216,19 +223,37 @@ if (strcmp($serverType, 'poller') ==  0) {
     );
     $form->addElement('select2', 'remote_additional_id', _('Attach additional Remote Servers'), array(), $attrPoller2);
     $tab = [];
-    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("Yes"), '1');
-    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("No"), '0');
-    $form->addGroup($tab, 'remote_server_centcore_ssh_proxy', _("Use the Remote Server as a proxy for SSH"), '&nbsp;');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("No"), '0');
+    $form->addGroup($tab, 'remote_server_use_as_proxy', _("Use the Remote Server as a proxy"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
 $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
-$form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
+$tab = array();
+$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
+$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
+$form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
+$form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
 
 $tab = array();
-$tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
-$tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
+$tab[] = $form->createElement(
+    'radio',
+    'localhost',
+    null,
+    _("Yes"),
+    '1',
+    array('onclick' => "displayGorgoneParam(false);")
+);
+$tab[] = $form->createElement(
+    'radio',
+    'localhost',
+    null,
+    _("No"),
+    '0',
+    array('onclick' => "displayGorgoneParam(true);")
+);
 $form->addGroup($tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
 $tab = array();
@@ -305,17 +330,17 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "engine_restart_command" => $monitoring_engines["engine_restart_command"],
             "engine_reload_command" => $monitoring_engines["engine_reload_command"],
             "ns_activate" => '1',
-            "is_default"  =>  '0',
-            "ssh_port"  =>  '22',
-            "ssh_private_key"  =>  '~/.ssh/rsa.id',
-            "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
+            "is_default" => '0',
+            "gorgone_communication_type" => ZMQ,
+            "gorgone_port" => 5556,
+            "nagios_perfdata" => $monitoring_engines["nagios_perfdata"],
             "broker_reload_command" => "service cbd reload",
             "centreonbroker_cfg_path" => "/etc/centreon-broker",
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
             "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/",
-            "remote_server_centcore_ssh_proxy" => '1'
+            "remote_server_use_as_proxy" => '1'
         ]
     );
 } else {
@@ -419,6 +444,17 @@ if ($valid) {
 
 ?>
 <script type='text/javascript'>
+    // toggle gorgone port and communication mode fields
+    function displayGorgoneParam(checkValue) {
+        if (checkValue === true) {
+            jQuery('#gorgoneData').fadeIn({duration: 0});
+        } else {
+            jQuery('#gorgoneData').fadeOut({duration: 0});
+        }
+    }
+    // init current gorgone fields visibility
+    displayGorgoneParam(<?= !$cfg_server['localhost'] ? "true" : "false" ?>)
+
     jQuery("#remote_additional_id").centreonSelect2({
         select2: {
             ajax: {
@@ -432,6 +468,21 @@ if ($valid) {
             e: '#remote_id'
         }
     });
+
+    //check of gorgone_port type
+    jQuery(function () {
+        jQuery("input[name='gorgone_port']").change(function () {
+            if (isNaN(this.value)) {
+                const msg = "<span id='errMsg'><font style='color: red;'> Need to be a number</font></span>";
+                jQuery(msg).insertAfter(this);
+                jQuery("input[type='submit']").prop('disabled', true);
+            } else {
+                jQuery('#errMsg').remove();
+                jQuery("input[type='submit']").prop('disabled', false);
+            }
+        });
+    });
+
     jQuery(function () {
         jQuery("#remote_id").change(function () {
             var master_remote_id = jQuery("#remote_id").val();

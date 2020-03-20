@@ -124,6 +124,11 @@ services:
     Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface:
         class: Centreon\Infrastructure\Proxy\ProxyRepositoryRDB
 
+    Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface:
+        class: Centreon\Domain\Gorgone\GorgoneService
+        public: true
+
+
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService

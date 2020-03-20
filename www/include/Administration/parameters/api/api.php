@@ -57,7 +57,7 @@ $form->addElement('header', 'title', _("Modify Centcore options"));
  * Centcore Options
  */
 $form->addElement('checkbox', 'enable_broker_stats', _("Enable Broker Statistics Collection"));
-$form->addElement('text', 'centcore_cmd_timeout', _("Timeout value for Centcore commands"), $attrsText2);
+$form->addElement('text', 'gorgone_cmd_timeout', _("Timeout value for Gorgone commands"), $attrsText2);
 
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',

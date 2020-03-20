@@ -4,12 +4,14 @@ export interface Icon {
 }
 
 export interface Parent {
+  id: string;
   name: string;
   icon: Icon | null;
   status: Status;
 }
 
 export interface Status {
+  severity_code: number;
   code: number;
   name: string;
 }
@@ -33,7 +35,9 @@ export interface Resource {
   last_check: string;
   information: string;
   severity?: Severity;
-  short_type: string;
+  short_type: 'h' | 's';
+  performance_graph_endpoint?: string;
+  type: 'host' | 'service';
 }
 
 interface ListingMeta {
@@ -50,3 +54,7 @@ export interface Listing<TEntity> {
 }
 
 export type ResourceListing = Listing<Resource>;
+
+export interface User {
+  username: string;
+}
