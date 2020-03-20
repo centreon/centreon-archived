@@ -76,7 +76,7 @@ class CentreonMetric extends CentreonWebService
     {
         $queryValues = array();
         $nameArg = filter_var($this->arguments['q'] ?? false, FILTER_SANITIZE_STRING);
-        if (isset($this->arguments['q'])) {
+        if (false !== $nameArg) {
             $queryValues['name'] = '%' . $nameArg . '%';
         } else {
             $queryValues['name'] = '%%';
