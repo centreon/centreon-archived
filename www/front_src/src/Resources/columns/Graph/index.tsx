@@ -22,6 +22,9 @@ import HoverChip from '../HoverChip';
 import { getData } from '../../api';
 import { ColumnProps } from '..';
 
+const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
+const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
+
 const graphHeight = 350;
 const graphWidth = 475;
 
@@ -126,7 +129,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
   const YAxes =
     getUnits().length < 3 ? (
       getUnits().map((unit, index) => (
-        <YAxis
+        <JSXYAxis
           yAxisId={unit}
           key={unit}
           unit={unit}
@@ -135,7 +138,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
         />
       ))
     ) : (
-      <YAxis />
+      <JSXYAxis />
     );
 
   const legendFormatter = (value): JSX.Element => (
@@ -156,7 +159,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
           data={data}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" tickFormatter={xAxisFormatter} />
+          <JSXXAxis dataKey="time" tickFormatter={xAxisFormatter} />
           {YAxes}
           {graphData?.metrics.map(({ metric, ds_data, unit }, index) =>
             ds_data.ds_filled ? (
@@ -190,18 +193,18 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
   );
 };
 
-const GraphColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
+  if (!row.performance_graph_endpoint) {
+    return null;
+  }
+
   return (
-    <Cell width={50}>
-      {row.performance_graph_endpoint && (
-        <HoverChip
-          ariaLabel={labelGraph}
-          Icon={(): JSX.Element => <IconBarChart />}
-        >
-          <Graph endpoint={row.performance_graph_endpoint} />
-        </HoverChip>
-      )}
-    </Cell>
+    <HoverChip
+      ariaLabel={labelGraph}
+      Icon={(): JSX.Element => <IconBarChart />}
+    >
+      <Graph endpoint={row.performance_graph_endpoint} />
+    </HoverChip>
   );
 };
 
