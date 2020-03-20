@@ -44,7 +44,7 @@ interface ResourceRepositoryInterface
     /**
      * Sets the access groups that will be used to filter services and the host.
      *
-     * @param AccessGroup[]|null $accessGroups
+     * @param \Centreon\Domain\Security\AccessGroup\AccessGroup[]|null $accessGroups
      * @return ResourceRepositoryInterface
      */
     public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface;

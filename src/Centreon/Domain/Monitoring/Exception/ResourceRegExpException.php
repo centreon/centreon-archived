@@ -24,5 +24,4 @@ namespace Centreon\Domain\Monitoring\Exception;
 
 class ResourceRegExpException extends \PDOException
 {
-    
 }
