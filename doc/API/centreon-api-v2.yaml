@@ -2414,6 +2414,16 @@ components:
                     * CRITICAL
                     * UNKNOWN
                   example: "UP"
+                severity_code:
+                  type: integer
+                  description: |
+                    resource status name
+                    * `1` - DOWN or CRITICAL
+                    * `2` - WARNING
+                    * `3` - UNKNOWN or UNREACHABLE
+                    * `4` - PENDING
+                    * `5` - UP or OK
+                  example: 1
             icon:
               type: object
               properties:
