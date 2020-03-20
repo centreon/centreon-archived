@@ -36,7 +36,7 @@ class ResourceStatus
     public const SEVERITY_MEDIUM = 2;
     public const SEVERITY_LOW = 3;
     public const SEVERITY_PENDING = 3;
-    public const SEVERITY_NONE = 5;
+    public const SEVERITY_OK = 5;
 
     /**
      * @var int|null
@@ -98,7 +98,7 @@ class ResourceStatus
         switch ($this->name) {
             case 'OK':
             case 'UP':
-                $severity = self::SEVERITY_NONE;
+                $severity = self::SEVERITY_OK;
                 break;
             case 'UNKNOWN':
             case 'UNREACHABLE':
