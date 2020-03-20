@@ -137,12 +137,7 @@ const retrievedListing = {
   },
 };
 
-const searchableFields = [
-  'h.name',
-  'h.alias',
-  'h.address',
-  's.description',
-];
+const searchableFields = ['h.name', 'h.alias', 'h.address', 's.description'];
 
 const linuxServersHostGroup = {
   id: 0,
