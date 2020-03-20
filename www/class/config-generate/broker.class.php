@@ -132,6 +132,7 @@ class Broker extends AbstractObjectJSON
         }
 
         $watchdog = [];
+        $anomalyDetectionLuaOutputGroupID = -1;
 
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -233,6 +234,18 @@ class Broker extends AbstractObjectJSON
                         $object[$key][$subvalue['config_group_id']][$res[0]][(int)$subvalue['fieldIndex']][$res[1]] =
                             $subvalue['config_value'];
                         $subValuesToCastInArray[$subvalue['config_group_id']][] = $res[0];
+
+                        if (strcmp(
+                                $object[$key][$subvalue['config_group_id']]['name'],
+                                "forward-to-anomaly-detection"
+                            ) == 0
+                            && strcmp(
+                                $object[$key][$subvalue['config_group_id']]['path'],
+                                "/usr/share/centreon-broker/lua/centreon-anomaly-detection.lua"
+                            ) == 0
+                        ) {
+                            $anomalyDetectionLuaOutputGroupID = $subvalue['config_group_id'];
+                        }
                     }
                 }
 
@@ -265,6 +278,13 @@ class Broker extends AbstractObjectJSON
                         'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
                     ],
                 ];
+            }
+
+            if ($anomalyDetectionLuaOutputGroupID >= 0) {
+                $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'] = array_merge_recursive(
+                    $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'],
+                    $this->generateAnomalyDetectionLuaParameters()
+                );
             }
 
             // Generate file
@@ -425,5 +445,67 @@ class Broker extends AbstractObjectJSON
             throw new InvalidArgumentException('Unrecognized symbol ' . $item);
         }
         return $result;
+    }
+
+    /**
+     * Generate complete proxy url
+     *
+     * @return array with lua parameters
+     */
+    private function generateAnomalyDetectionLuaParameters(): array
+    {
+        global $pearDB;
+
+        $luaParameters = [];
+
+        $stmt = $pearDB->query(
+            "SELECT * FROM options WHERE options.key IN ('saas_token', 'saas_use_proxy', 'saas_url')"
+        );
+        while ($item = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($item['key'] == "saas_token") {
+                $luaParameters[] = [
+                    "type" => "string",
+                    "name" => "token",
+                    "value" => $item['value']
+                ];
+            } elseif ($item['key'] == "saas_url") {
+                $luaParameters[] = [
+                    "type" => "string",
+                    "name" => "destination",
+                    "value" => $item['value']
+                ];
+            } elseif (($item['key'] == "saas_use_proxy") && ($item['value'] == "1")) {
+                $proxyInfo = [];
+                $stmtProxy = $pearDB->query(
+                    "SELECT * FROM options WHERE options.key IN ('proxy_url', 'proxy_port', 'proxy_user', 'proxy_password')"
+                );
+                while ($data = $stmtProxy->fetch(PDO::FETCH_ASSOC)) {
+                    $proxyInfo[$data['key']] = $data['value'];
+                }
+
+                // Generate proxy URL
+                $proxy = '';
+                if (isset($proxyInfo['proxy_user']) && !empty($proxyInfo['proxy_user'])
+                    && isset($proxyInfo['proxy_password']) && !empty($proxyInfo['proxy_password'])
+                ) {
+                    $proxy = $proxyInfo['proxy_user'] . ':' . $proxyInfo['proxy_password'] . '@';
+                }
+
+                $proxy = (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME)
+                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '//:') : 'http://'
+                        ) . $proxy . $proxyInfo['proxy_url'];
+                if (isset($proxyInfo['proxy_port']) && !empty($proxyInfo['proxy_port'])) {
+                    $proxy .= ':' . $proxyInfo['proxy_port'];
+                }
+
+                $luaParameters[] = [
+                    "type" => "string",
+                    "name" => "proxy",
+                    "value" => $proxy
+                ];
+            }
+        }
+
+        return $luaParameters;
     }
 }
