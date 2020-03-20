@@ -33,7 +33,8 @@ on the market; it is absolutely free and Open Souce.
 
 <h4> Development team </h4>
 
-<a href="https://github.com/kduret"><img src="https://avatars1.githubusercontent.com/u/11978823?s=400&v=4" title="Kévin Duret" width="80" height="80"></a> &nbsp; <a href="https://github.com/danielhalupka"><img src="https://avatars3.githubusercontent.com/u/7901495?s=400&v=4" title="Danijel Halupka" width="80" height="80"></a> &nbsp; <a href="https://github.com/bouda1"><img src="https://avatars1.githubusercontent.com/u/6324413?s=400&v=4 " title="David Boucher" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/kduret"><img src="https://avatars1.githubusercontent.com/u/11978823?s=400&v=4" title="Kévin Duret" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/bouda1"><img src="https://avatars1.githubusercontent.com/u/6324413?s=400&v=4 " title="David Boucher" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/jdelpierre"><img src="https://avatars0.githubusercontent.com/u/12846806?s=400&v=4" title="Jérémy Delpierre" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/victorvassilev"><img src="https://avatars1.githubusercontent.com/u/19683390?s=400&v=4" title="Victor Vassilev" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/callapa"><img src="https://avatars1.githubusercontent.com/u/1265083?s=400&v=4" title="Laurent Calvet" width="80" height="80"></a> &nbsp;
@@ -44,11 +45,16 @@ on the market; it is absolutely free and Open Souce.
 <a href="https://github.com/leoncx"><img src="https://avatars1.githubusercontent.com/u/3930276?s=400&v=4" title="Maximilien Bersoult" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/jiliangWANG"><img src="https://avatars1.githubusercontent.com/u/48441685?s=400&v=4" title="Jiliang Wang" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/SylvestreG"><img src="https://avatars2.githubusercontent.com/u/3818949?s=400&v=4" title="Sylvestre Gallon" width="80" height="80"></a> &nbsp;
-<a href="https://github.com/Pontissalien"><img src="https://avatars3.githubusercontent.com/u/38663853?s=400&v=4" title="Thomas Arnaud" width="80" height="80"></a> &nbsp; <a href="https://github.com/agelibert"><img src="https://avatars1.githubusercontent.com/u/28709386?s=400&v=4" title="Adrien Gélibert" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/Pontissalien"><img src="https://avatars3.githubusercontent.com/u/38663853?s=400&v=4" title="Thomas Arnaud" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/agelibert"><img src="https://avatars1.githubusercontent.com/u/28709386?s=400&v=4" title="Adrien Gélibert" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/Thebarda"><img src="https://avatars3.githubusercontent.com/u/12515407?s=400&u=5642f34672a7c1ea887c6c3e12cd28880aa3971e&v=4" title="Tom Darneix" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/bdauria"><img src="https://avatars0.githubusercontent.com/u/8367233?s=400&u=563bd982e8d1557bdfd39627b029610d9c83fdc6&v=4" title="Bruno D'Auria" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/adr-mo "><img src="https://avatars2.githubusercontent.com/u/31647811?s=400&v=4" title="Adrien Morais" width="80" height="80"></a> &nbsp;
 
 <h4> Quality Assurance </h2>
 
-<a href="https://github.com/adr-mo "><img src="https://avatars2.githubusercontent.com/u/31647811?s=400&v=4" title="Adrien Morais" width="80" height="80"></a> &nbsp; <a href="https://github.com/thiuyendang"><img src="https://avatars2.githubusercontent.com/u/25612980?s=400&v=4" title="Thi Uyên Dang" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/thiuyendang"><img src="https://avatars2.githubusercontent.com/u/25612980?s=400&v=4" title="Thi Uyên Dang" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/tuntoja"><img src="https://avatars1.githubusercontent.com/u/58987095?s=400&v=4" title="Thomas Untoja" width="80" height="80"></a> &nbsp;
 
 See also the list of our [**contributors**](https://github.com/centreon/centreon/graphs/contributors)
 
