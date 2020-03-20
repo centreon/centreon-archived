@@ -138,10 +138,10 @@ const retrievedListing = {
 };
 
 const searchableFields = [
-  'host.name',
-  'host.alias',
-  'host.address',
-  'service.description',
+  'h.name',
+  'h.alias',
+  'h.address',
+  's.description',
 ];
 
 const linuxServersHostGroup = {

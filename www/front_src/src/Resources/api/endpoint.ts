@@ -45,10 +45,10 @@ const buildEndpoint = ({ baseEndpoint, params }): string => {
 
 const buildResourcesEndpoint = (params): string => {
   const searchOptions = [
-    'host.name',
-    'host.alias',
-    'host.address',
-    'service.description',
+    'h.name',
+    'h.alias',
+    'h.address',
+    's.description',
   ];
 
   const listingParams = getListingParams({ searchOptions, ...params });
