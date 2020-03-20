@@ -145,10 +145,6 @@ class MonitoringResourceController extends AbstractController
             $resources = $this->resource->filterByContact($this->getUser())
                 ->findResources($filter);
         } catch (\PDOException $e) {
-            if ($e->getCode() !== "42000") {
-                throw $e;
-            }
-
             $resources = [];
         }
 
