@@ -31,6 +31,10 @@ on the market; it is absolutely free and Open Souce.
 
 <a href="https://github.com/Moujimouja"><img src="https://avatars2.githubusercontent.com/u/6620287?s=400&v=4" title="Etienne Gautier" width="80" height="80"></a> &nbsp; <a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a> &nbsp;
 
+<h4> Product Owner </h4>
+
+<a href="https://github.com/cgagnaire"><img src="https://avatars1.githubusercontent.com/u/23257354?s=400&v=4" title="Colin Gagnaire" width="80" height="80"></a> &nbsp;
+
 <h4> Development team </h4>
 
 <a href="https://github.com/kduret"><img src="https://avatars1.githubusercontent.com/u/11978823?s=400&v=4" title="Kévin Duret" width="80" height="80"></a> &nbsp;
