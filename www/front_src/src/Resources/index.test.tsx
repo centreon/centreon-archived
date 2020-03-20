@@ -182,7 +182,7 @@ describe(Resources, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
   });
-      
+
   const resolveUserToBeAdmin = (): void => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
