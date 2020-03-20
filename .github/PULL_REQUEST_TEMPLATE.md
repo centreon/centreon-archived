@@ -1,5 +1,3 @@
-# Pull Request Template
-
 ## Description
 
 Please include a short resume of the changes and what is the purpose of PR. Any relevant information should be added to help:
