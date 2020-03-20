@@ -201,7 +201,7 @@ class SqlRequestParametersTranslator
             $searchOperator = (string) key($valueOrArray);
             $mixedValue = $valueOrArray[$searchOperator];
 
-            // replace REGEXP operator with LIKE if it's not vaild
+            // replace REGEXP operator with LIKE if it's not valid
             if (
                 $mixedValue
                 && $searchOperator === RequestParameters::OPERATOR_REGEXP
