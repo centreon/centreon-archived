@@ -1659,6 +1659,7 @@ CREATE TABLE `ods_view_details` (
   `contact_id` int(11) DEFAULT NULL,
   `all_user` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`dv_id`),
+  KEY `index_id` (`index_id`),
   KEY `contact_index` (`contact_id`, `index_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
