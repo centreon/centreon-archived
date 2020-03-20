@@ -205,14 +205,14 @@ paths:
 
         ---
 
-        * host.group
-        * host.group.id
-        * host.name
-        * host.alias
-        * host.address
-        * service.description
-        * service.group
-        * service.group.id
+        * h.group
+        * h.group.id
+        * h.name
+        * h.alias
+        * h.address
+        * s.description
+        * s.group
+        * s.group.id
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
