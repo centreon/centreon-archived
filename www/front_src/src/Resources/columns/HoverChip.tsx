@@ -33,7 +33,11 @@ const HoverChip = ({
       placement="left"
       title={children}
       classes={{ tooltip: classes.tooltip }}
-      enterDelay={0}
+      enterDelay={50}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       <Avatar aria-label={ariaLabel} className={`${classes.chip} ${className}`}>
         <Icon />

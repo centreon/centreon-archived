@@ -18,25 +18,32 @@ import {
   FilterGroup,
 } from './Filter/models';
 import Actions from './Actions';
+import Details from './Details';
 
 const useStyles = makeStyles((theme) => ({
   page: {
     backgroundColor: theme.palette.background.default,
   },
-
+  panel: {
+    position: 'absolute',
+    right: 0,
+    height: '100%',
+    width: 500,
+    zIndex: 3,
+  },
   listing: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
 }));
 
-const noOp = (): void => undefined;
-
 const defaultFilter = unhandledProblemsFilter;
 const { criterias } = defaultFilter;
 const defaultResourceTypes = criterias?.resourceTypes;
 const defaultStatuses = criterias?.statuses;
 const defaultStates = criterias?.states;
+
+type SortOrder = 'asc' | 'desc';
 
 const Resources = (): JSX.Element => {
   const classes = useStyles();
@@ -49,7 +56,7 @@ const Resources = (): JSX.Element => {
     Array<Resource>
   >([]);
 
-  const [sorto, setSorto] = useState<string>();
+  const [sorto, setSorto] = useState<SortOrder>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
@@ -63,6 +70,8 @@ const Resources = (): JSX.Element => {
   const [statuses, setStatuses] = useState<Array<FilterModel>>(defaultStatuses);
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
+
+  const [selectedResourceId, setSelectedResourceId] = useState<string>();
 
   const [loading, setLoading] = useState(true);
 
@@ -221,6 +230,10 @@ const Resources = (): JSX.Element => {
     prepareToAcknowledge([]);
   };
 
+  const selectResource = ({ id }): void => {
+    setSelectedResourceId(id);
+  };
+
   const columns = getColumns({
     onAcknowledge: (resource) => {
       prepareToAcknowledge([resource]);
@@ -258,6 +271,9 @@ const Resources = (): JSX.Element => {
         onClearAll={clearAllFilters}
         currentSearch={search}
       />
+      <div className={classes.panel}>
+        <Details resourceId={selectedResourceId} />
+      </div>
       <div className={classes.listing}>
         <Listing
           checkable
@@ -268,9 +284,7 @@ const Resources = (): JSX.Element => {
           currentPage={page - 1}
           rowColorConditions={rowColorConditions}
           limit={listing?.meta.limit}
-          onDelete={noOp}
           onSort={changeSort}
-          onDuplicate={noOp}
           onPaginationLimitChanged={changeLimit}
           onPaginate={changePage}
           sortf={sortf}
@@ -278,6 +292,7 @@ const Resources = (): JSX.Element => {
           totalRows={listing?.meta.total}
           onSelectRows={selectResources}
           selectedRows={selectedResources}
+          onRowClick={selectResource}
         />
       </div>
     </div>

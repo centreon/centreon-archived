@@ -32,6 +32,7 @@ export interface Column {
   type: number;
   Component?: (props) => JSX.Element | null;
   sortable?: boolean;
+  clickable?: boolean;
   width?: number;
 }
 
@@ -142,6 +143,7 @@ const getColumns = (actions): Array<Column> => [
     type: TABLE_COLUMN_TYPES.component,
     Component: StatusColumn(actions),
     sortable: false,
+    clickable: true,
     width: 125,
   },
   {
