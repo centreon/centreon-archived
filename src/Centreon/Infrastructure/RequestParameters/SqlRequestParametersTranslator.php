@@ -255,6 +255,14 @@ class SqlRequestParametersTranslator
             || $searchOperator === RequestParameters::OPERATOR_NOT_LIKE
             || $searchOperator === RequestParameters::OPERATOR_REGEXP
         ) {
+            // We check the regex
+            if ($searchOperator === RequestParameters::OPERATOR_REGEXP) {
+                try {
+                    preg_match($mixedValue, '');
+                } catch (\Throwable $ex) {
+                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
+                }
+            }
             $type = \PDO::PARAM_STR;
             $bindKey = ':value_' . (count($this->searchValues) + 1);
             $this->searchValues[$bindKey] = [$type => $mixedValue];
