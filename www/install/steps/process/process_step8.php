@@ -44,14 +44,52 @@ if (isset($parameters['modules'])) {
     $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
     $utils = $utilsFactory->newUtils();
     $moduleFactory = new \CentreonLegacy\Core\Module\Factory($dependencyInjector, $utils);
+
     foreach ($parameters['modules'] as $module) {
+        /* If the selected module is already installed (as dependency for example)
+         * then we can skip the installation process
+         */
+        if (
+            isset($result['modules'][$module]['install'])
+            && $result['modules'][$module]['install'] === true
+        ) {
+            continue;
+        }
+        /* retrieving the module's information stored in the conf.php
+         * configuration file
+         */
+        $information = $moduleFactory->newInformation();
+        $moduleInformation = $information->getConfiguration($module);
+        /* if the selected module has dependencies defined in its configuration file
+         * then we need to install them before installing the selected module to
+         * ensure its correct installation
+         */
+        if (isset($moduleInformation['dependencies'])) {
+            foreach ($moduleInformation['dependencies'] as $dependency) {
+                // If the dependency is already installed skip install
+                if (
+                    isset($result['modules'][$dependency]['install'])
+                    && $result['modules'][$dependency]['install'] === true
+                ) {
+                    continue;
+                }
+                $installer = $moduleFactory->newInstaller($dependency);
+                $id = $installer->install();
+                $install = $id ? true : false;
+                $result['modules'][$dependency] = [
+                    'module' => $dependency,
+                    'install' => $install,
+                ];
+            }
+        }
+        // installing the selected module
         $installer = $moduleFactory->newInstaller($module);
         $id = $installer->install();
-        $install = ($id) ? true : false;
-        $result['modules'][] = array(
+        $install = $id ? true : false;
+        $result['modules'][$module] = [
             'module' => $module,
-            'install' => $install
-        );
+            'install' => $install,
+        ];
     }
 }
 
@@ -63,7 +101,7 @@ if (isset($parameters['widgets'])) {
         $installer = $widgetFactory->newInstaller($widget);
         $id = $installer->install();
         $install = ($id) ? true : false;
-        $result['widgets'][] = array(
+        $result['widgets'][$widget] = array(
             'widget' => $widget,
             'install' => $install
         );
