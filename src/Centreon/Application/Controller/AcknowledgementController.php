@@ -28,7 +28,7 @@ use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Service\JsonValidator\ValidatorException;
 use FOS\RestBundle\Context\Context;
@@ -542,11 +542,11 @@ class AcknowledgementController extends AbstractController
         }
 
         /**
-         * @var Resource[] $resources
+         * @var ResourceEntity[] $resources
          */
         $resources = $serializer->deserialize(
             (string) $request->getContent(),
-            'array<' . Resource::class . '>',
+            'array<' . ResourceEntity::class . '>',
             'json'
         );
 
@@ -555,17 +555,17 @@ class AcknowledgementController extends AbstractController
         //validate input
         $errorList = new ConstraintViolationList();
         foreach ($resources as $resource) {
-            if ($resource->getType() === Resource::TYPE_SERVICE) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
                 $errorList->addAll($this->validateResource(
                     $entityValidator,
                     $resource,
-                    Resource::VALIDATION_GROUP_DISACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
                 ));
-            } elseif ($resource->getType() === Resource::TYPE_HOST) {
+            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll($this->validateResource(
                     $entityValidator,
                     $resource,
-                    Resource::VALIDATION_GROUP_DISACK_HOST
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
                 throw new \RestBadRequestException('Incorrect resource type for disacknowledgement');
@@ -579,7 +579,7 @@ class AcknowledgementController extends AbstractController
         foreach ($resources as $resource) {
             //start disacknowledgement process
             try {
-                if ($resource->getType() === Resource::TYPE_SERVICE) {
+                if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
                     $this->acknowledgementService->disacknowledgeService(
                         (int) $resource->getParent()->getId(),
                         (int) $resource->getId()
@@ -598,13 +598,13 @@ class AcknowledgementController extends AbstractController
     /**
      * Validates input for resource based on groups
      * @param EntityValidator $validator
-     * @param Resource $resource
+     * @param ResourceEntity $resource
      * @param array $contextGroups
      * @return ConstraintViolationListInterface
      */
     private function validateResource(
         EntityValidator $validator,
-        Resource $resource,
+        ResourceEntity $resource,
         array $contextGroups
     ): ConstraintViolationListInterface {
         return $validator->validate(
