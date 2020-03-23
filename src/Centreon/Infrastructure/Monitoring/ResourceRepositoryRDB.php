@@ -37,7 +37,6 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
-use Centreon\Domain\Monitoring\Exception\ResourceRegExpException;
 use PDO;
 
 /**
