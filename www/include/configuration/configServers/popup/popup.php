@@ -39,17 +39,12 @@ $dbResult->closeCursor();
 
 //get poller informations
 $query = "
-SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`,ns.remote_id, 
-cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id , 
-CASE
-    WHEN (ns.localhost = '1') THEN 'central'
-    WHEN (rs.id > '0') THEN 'remote'
-    ELSE 'poller' 
-END  AS poller_type 
+SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`, ns.remote_id, 
+remote_server_use_as_proxy, cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id 
 FROM nagios_server AS ns 
 LEFT JOIN remote_servers AS rs ON (rs.ip = ns.ns_ip_address) 
-LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id` ) 
-LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id` ) 
+LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id`) 
+LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id`) 
 WHERE ns.ns_activate = '1' 
 AND ns.`id` =" . (int)$_GET['id'];
 
@@ -64,7 +59,8 @@ while ($row = $dbResult->fetch()) {
 }
 
 $tpl->assign('serverIp', $server['ns_ip_address']);
-if (empty($server['remote_id']) && empty($server['list_remote_server_id'])) {
+if ((empty($server['remote_id']) && empty($server['list_remote_server_id'])) ||
+    $server['remote_server_use_as_proxy'] == 0) {
     //parent is the central
     $query = "SELECT `id` FROM nagios_server WHERE ns_activate = '1' AND localhost = '1'";
     $dbResult = $pearDB->query($query);
