@@ -11,13 +11,14 @@ export const labelAuthor = I18n.t('Author');
 export const labelComment = I18n.t('Comment');
 export const labelCancel = I18n.t('Cancel');
 export const labelClearAll = I18n.t('Clear all');
+export const labelCriterias = I18n.t('Criterias');
 export const labelCritical = I18n.t('Critical');
+export const labelDetails = I18n.t('Details');
 export const labelDown = I18n.t('Down');
 export const labelDuration = I18n.t('Duration');
 export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
-export const labelCriterias = I18n.t('Criterias');
 export const labelShowCriteriasFilters = I18n.t('Show criterias filters');
 export const labelFixed = I18n.t('Fixed');
 export const labelGraph = I18n.t('Graph');
@@ -25,6 +26,7 @@ export const labelHost = I18n.t('Host');
 export const labelHostGroup = I18n.t('Host group');
 export const labelInDowntime = I18n.t('In downtime');
 export const labelLastCheck = I18n.t('Last check');
+export const labelLess = I18n.t('Less');
 export const labelNo = I18n.t('No');
 export const labelNotify = I18n.t('Notify');
 export const labelNotifyHelpCaption = I18n.t(
@@ -44,6 +46,7 @@ export const labelStatus = I18n.t('Status');
 export const labelSticky = I18n.t('Sticky');
 export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
+export const labelMore = I18n.t('More');
 export const labelSearchOnFields = I18n.t(
   'The search is done on the following resource fields:',
 );
@@ -61,6 +64,7 @@ export const labelServiceGroup = I18n.t('Service group');
 export const labelStartTime = I18n.t('Start time');
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
+export const labelStatusInformation = I18n.t('Status information');
 export const labelSuccessfullyAcknowledged = I18n.t(
   'Successfully acknowledged',
 );

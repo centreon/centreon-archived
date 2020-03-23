@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core';
-import { lime, purple } from '@material-ui/core/colors';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -19,6 +18,7 @@ import {
 } from './Filter/models';
 import Actions from './Actions';
 import Details from './Details';
+import rowColorConditions from './rowColorConditions';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -71,7 +71,9 @@ const Resources = (): JSX.Element => {
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
 
-  const [selectedResourceId, setSelectedResourceId] = useState<string>();
+  const [selectedResourceId, setSelectedResourceId] = useState<string | null>(
+    null,
+  );
 
   const [loading, setLoading] = useState(true);
 
@@ -205,19 +207,6 @@ const Resources = (): JSX.Element => {
     setResourcesToAcknoweledge([]);
   };
 
-  const rowColorConditions = [
-    {
-      name: 'inDowntime',
-      condition: ({ in_downtime }): boolean => in_downtime,
-      color: purple[500],
-    },
-    {
-      name: 'acknowledged',
-      condition: ({ acknowledged }): boolean => acknowledged,
-      color: lime[900],
-    },
-  ];
-
   const prepareToAcknowledge = (resources): void => {
     setResourcesToAcknoweledge(resources);
   };
@@ -232,6 +221,10 @@ const Resources = (): JSX.Element => {
 
   const selectResource = ({ id }): void => {
     setSelectedResourceId(id);
+  };
+
+  const clearSelectedResource = (): void => {
+    setSelectedResourceId(null);
   };
 
   const columns = getColumns({
@@ -272,7 +265,10 @@ const Resources = (): JSX.Element => {
         currentSearch={search}
       />
       <div className={classes.panel}>
-        <Details resourceId={selectedResourceId} />
+        <Details
+          resourceId={selectedResourceId}
+          onClose={clearSelectedResource}
+        />
       </div>
       <div className={classes.listing}>
         <Listing
