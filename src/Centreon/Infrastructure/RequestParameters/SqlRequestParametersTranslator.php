@@ -258,7 +258,7 @@ class SqlRequestParametersTranslator
             // We check the regex
             if ($searchOperator === RequestParameters::OPERATOR_REGEXP) {
                 try {
-                    preg_match($mixedValue, '');
+                    preg_match('/' . $mixedValue . '/', '');
                 } catch (\Throwable $ex) {
                     throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
                 }
