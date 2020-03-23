@@ -11,7 +11,7 @@ import {
 } from '@centreon/ui';
 
 import { labelSomethingWentWrong } from '../translatedLabels';
-import { Status, Parent } from '../models';
+import { Status, Parent, Downtime, Acknowledgement } from '../models';
 import Header from './Header';
 import Body from './Body';
 
@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => {
       height: '100%',
     },
     header: {
-      padding: 10,
+      padding: 8,
     },
   };
 });
@@ -31,12 +31,14 @@ interface Props {
   onClose;
 }
 
-interface ResourceDetails {
+export interface ResourceDetails {
   name: string;
   status: Status;
   parent: Parent;
   criticality: number;
   output: string;
+  downtimes?: Array<Downtime>;
+  acknowledgement?: Acknowledgement;
 }
 
 const useGet = ({ onSuccess, endpoint }): (() => Promise<unknown>) => {

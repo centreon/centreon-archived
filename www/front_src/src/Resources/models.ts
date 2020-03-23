@@ -58,3 +58,19 @@ export type ResourceListing = Listing<Resource>;
 export interface User {
   username: string;
 }
+
+export interface Downtime {
+  author_name: string;
+  comment: string;
+  entry_time: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface Acknowledgement {
+  author_name: string;
+  comment: string;
+  entry_time: string;
+  is_persistent: boolean;
+  is_sticky: boolean;
+}
