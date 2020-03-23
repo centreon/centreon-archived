@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -69,14 +70,10 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $redirect = $form->addElement('hidden', 'o');
     $redirect->setValue($o);
 
-    if (isset($_GET["host_id"])
-        && !isset($_GET["service_id"])
-    ) {
+    if (isset($_GET["host_id"]) && !isset($_GET["service_id"])) {
         $disabled = "disabled";
         $hostName = $hObj->getHostName($_GET['host_id']);
-    } elseif (isset($_GET["host_id"])
-        && isset($_GET["service_id"])
-    ) {
+    } elseif (isset($_GET["host_id"]) && isset($_GET["service_id"])) {
         $disabled = "disabled";
         $serviceParameters = $serviceObj->getParameters($_GET['service_id'], array('service_description'));
         $serviceDisplayName = $serviceParameters['service_description'];
@@ -282,12 +279,14 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
     $defaultDuration = 7200;
     $defaultScale = 's';
-    if (isset($centreon->optGen['monitoring_dwt_duration']) &&
-        $centreon->optGen['monitoring_dwt_duration']
+    if (
+        isset($centreon->optGen['monitoring_dwt_duration'])
+        && $centreon->optGen['monitoring_dwt_duration']
     ) {
         $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
-        if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
-            $centreon->optGen['monitoring_dwt_duration_scale']
+        if (
+            isset($centreon->optGen['monitoring_dwt_duration_scale'])
+            && $centreon->optGen['monitoring_dwt_duration_scale']
         ) {
             $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
         }
@@ -378,7 +377,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             }
         }
 
-        if (isset($_POST['host_or_centreon_time']['host_or_centreon_time'])
+        if (
+            isset($_POST['host_or_centreon_time']['host_or_centreon_time'])
             && $_POST['host_or_centreon_time']['host_or_centreon_time']
         ) {
             $hostOrCentreonTime = $_POST['host_or_centreon_time']['host_or_centreon_time'];
@@ -387,18 +387,26 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         }
 
         $applyDtOnServices = false;
-        if (isset($values['with_services']) &&
-            $values['with_services']['with_services'] == 1
+        if (
+            isset($values['with_services'])
+            && $values['with_services']['with_services'] == 1
         ) {
             $applyDtOnServices = true;
         }
 
         /* concatenating the chosen dates before sending them to ext_cmd */
-        $concatenatedStart = $_POST["alternativeDateStart"] . ' ' . $_POST['start_time'];
-        $concatenatedEnd = $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time'];
+        $concatenatedStart = filter_var(
+            $_POST["alternativeDateStart"] . ' ' . $_POST['start_time'],
+            FILTER_SANITIZE_STRING
+        );
+        $concatenatedEnd = filter_var(
+            $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time'],
+            FILTER_SANITIZE_STRING
+        );
 
-        if (isset($values['downtimeType']) &&
-            $values['downtimeType']['downtimeType'] == 1
+        if (
+            isset($values['downtimeType'])
+            && $values['downtimeType']['downtimeType'] == 1
         ) {
             /*
              * Set a downtime for host only
@@ -421,7 +429,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                     $hostOrCentreonTime
                 );
             }
-        } elseif ($values['downtimeType']['downtimeType'] == 0
+        } elseif (
+            $values['downtimeType']['downtimeType'] == 0
             && isset($_POST['hostgroup_id'])
             && is_array($_POST['hostgroup_id'])
         ) {
@@ -458,9 +467,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
             foreach ($_POST["service_id"] as $value) {
                 $info = explode('-', $value);
-                if ($centreon->user->access->admin ||
-                    in_array($info[0], $hostAclId)
-                ) {
+                if ($centreon->user->access->admin || in_array($info[0], $hostAclId)) {
                     $ecObj->addSvcDowntime(
                         $info[0],
                         $info[1],
@@ -481,7 +488,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                 $stmt = $pearDBO->prepare(
                     "SELECT host_id, service_id FROM services_servicegroups WHERE servicegroup_id = :sgId"
                 );
-                $stmt->bindValue(':sgId', $sgId, PDO::PARAM_INT);
+                $stmt->bindValue(':sgId', $sgId, \PDO::PARAM_INT);
                 $stmt->execute();
 
                 while ($row = $stmt->fetch()) {
@@ -505,12 +512,10 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                 $stmt = $pearDBO->prepare(
                     "SELECT host_id FROM hosts WHERE instance_id = :poller_id AND enabled = 1"
                 );
-                $stmt->bindValue(':poller_id', $pollerId, PDO::PARAM_INT);
+                $stmt->bindValue(':poller_id', $pollerId, \PDO::PARAM_INT);
                 $stmt->execute();
                 while ($row = $stmt->fetch()) {
-                    if ($centreon->user->access->admin ||
-                        in_array($row['host_id'], $hostAclId)
-                    ) {
+                    if ($centreon->user->access->admin || in_array($row['host_id'], $hostAclId)) {
                         $ecObj->addHostDowntime(
                             $row['host_id'],
                             $_POST["comment"],
@@ -542,9 +547,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         $form->accept($renderer);
         $tpl->assign('form', $renderer->toArray());
 
-        if (isset($_GET['service_id']) &&
-            isset($_GET['host_id'])
-        ) {
+        if (isset($_GET['service_id']) && isset($_GET['host_id'])) {
             $tpl->assign('host_name', $hostName);
             $tpl->assign('service_description', $serviceDisplayName);
         } elseif (isset($_GET['host_id'])) {

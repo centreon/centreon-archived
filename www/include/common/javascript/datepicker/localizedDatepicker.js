@@ -1,5 +1,5 @@
 /*
-* Copyright 2005-2019 Centreon
+* Copyright 2005-2020 Centreon
 * Centreon is developed by : Julien Mathis and Romain Le Merlus under
 * GPL Licence 2.0.
 *
@@ -37,8 +37,7 @@
  *
  * @param className string : tag class name
  * @param altFormat string : format of the alternative field
- * @param defaultDate string : GMT YYYY-MM-DDTHH:mm:ss timestamp
- * @todo following 2 parameters seem to never be used, to remove ?
+ * @param defaultDate string : datepicker parameter of the setDate - GMT YYYY-MM-DDTHH:mm:ss timestamp
  * @param idName string : tag id of the displayed field
  * @param timestampToSet int : timestamp used to make a new date using the user localization and format
  */
@@ -49,10 +48,9 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
 
     setUserFormat();
 
-    var timezone = localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess();
+    var timezone = localStorage.getItem('realTimezone') || moment.tz.guess();
 
     if (typeof(idName) == "undefined" || typeof(timestampToSet) == "undefined") {
-
         // generate default date in proper timezone
         if (defaultDate == "0") {
             defaultDate = moment().tz(timezone);
@@ -80,9 +78,9 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
                 jQuery(this).datepicker();
             }
         });
-    // @todo section then seems to never be used, to remove ?
     } else {
         // setting the displayed and hidden fields with a timestamp value sent from the backend
+        // used for MBI pages
         var alternativeField = "input[name=alternativeDate" + idName + "]";
         var dateToSet = new Date(timestampToSet);
         jQuery("#" + idName).datepicker({
@@ -99,7 +97,8 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
  */
 function setUserFormat() {
     // Getting the local storage attribute
-    var userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 5) : "en_US";
+    let userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 5) : "en_US";
+
     if ("en_US" != userLanguage) {
         //calling the webservice to check if the file exists
         $.ajax({
@@ -114,8 +113,8 @@ function setUserFormat() {
                         .attr('src', './include/common/javascript/datepicker/' + data)
                         .appendTo('body');
                 } else {
-                    console.log ('WARNING : datepicker localized library not found for : "' + userLanguage + '"');
-                    console.log ('Initializing the datepicker for "en_US"');
+                    console.log('WARNING : datepicker localized library not found for : "' + userLanguage + '"');
+                    console.log('Initializing the datepicker for "en_US"');
                 }
             }
         });
@@ -145,6 +144,7 @@ function turnOffEvents() {
 function updateEndTime() {
     var start = moment($('[name="alternativeDateStart"]').val() + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
     var end = moment($('[name="alternativeDateEnd"]').val() + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+
     if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
@@ -157,6 +157,7 @@ function updateEndTime() {
 function updateStartTime() {
     var start = moment($('[name="alternativeDateStart"]').val() + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
     var end = moment($('[name="alternativeDateEnd"]').val() + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+
     if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
         end.subtract($('#duration').val(), $('#duration_scale').val());

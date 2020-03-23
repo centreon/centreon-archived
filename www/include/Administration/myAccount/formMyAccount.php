@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,7 +42,7 @@ require_once "./include/common/common-Func.php";
 
 require_once './class/centreonFeature.class.php';
 
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 /*
  * Path to the configuration dir
@@ -60,24 +61,30 @@ if (!isset($centreonFeature)) {
  */
 $cct = array();
 if ($o == "c") {
-    $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager, " .
-        "contact_js_effects, contact_autologin_key, default_page, contact_auth_type " .
-        "FROM contact WHERE contact_id = '" . $centreon->user->get_id() . "'";
-    $DBRESULT = $pearDB->query($query);
+    $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
+        contact_js_effects, contact_autologin_key, default_page, contact_auth_type
+        FROM contact WHERE contact_id = :id";
+    $DBRESULT = $pearDB->prepare($query);
+    $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
+    $DBRESULT->execute();
+
     // Set base value
     $cct = array_map("myDecode", $DBRESULT->fetch());
-    $res = $pearDB->query(
-        "SELECT cp_key, cp_value " .
-        "FROM contact_param " .
-        "WHERE cp_contact_id = '" . $pearDB->escape($centreon->user->get_id()) . "'"
+    $res = $pearDB->prepare(
+        "SELECT cp_key, cp_value
+        FROM contact_param
+        WHERE cp_contact_id = :id"
     );
+    $res->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
+    $res->execute();
+
     while ($row = $res->fetch()) {
         $cct[$row['cp_key']] = $row['cp_value'];
     }
 }
 
 /*
- * Database retrieve information for differents elements list we need on the page
+ * Database retrieve information for different elements list we need on the page
  *
  * Langs -> $langs Array
  */
@@ -87,7 +94,6 @@ $attrsText = array("size" => "35");
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Change my settings"));
-
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('text', 'contact_name', _("Name"), $attrsText);
 if ($cct["contact_auth_type"] != 'ldap') {

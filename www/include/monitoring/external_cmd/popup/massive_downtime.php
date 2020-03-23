@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -108,7 +109,7 @@ $form->addElement(
     array(
         'id' => 'start_time',
         'size' => 5,
-        'class' => 'timepicker'
+        'class' => 'timepicker',
     )
 );
 $form->addElement(
@@ -118,7 +119,7 @@ $form->addElement(
     array(
         'id' => 'end_time',
         'size' => 5,
-        'class' => 'timepicker'
+        'class' => 'timepicker',
     )
 );
 
@@ -138,14 +139,18 @@ $form->addElement(
         'disabled' => 'true'
     )
 );
+//setting default values
 $defaultDuration = 7200;
 $defaultScale = 's';
-if (isset($centreon->optGen['monitoring_dwt_duration']) &&
-    $centreon->optGen['monitoring_dwt_duration']
+//overriding the default duration and scale by the user's value from the administration fields
+if (
+    isset($centreon->optGen['monitoring_dwt_duration'])
+    && $centreon->optGen['monitoring_dwt_duration']
 ) {
     $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
-    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
-        $centreon->optGen['monitoring_dwt_duration_scale']
+    if (
+        isset($centreon->optGen['monitoring_dwt_duration_scale'])
+        && $centreon->optGen['monitoring_dwt_duration_scale']
     ) {
         $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
     }
@@ -229,6 +234,7 @@ $form->addElement(
 );
 
 // adding hidden fields to get the result of datepicker in an unlocalized format
+// required for the external command to be send to centreon-engine
 $form->addElement(
     'hidden',
     'alternativeDateStart',
