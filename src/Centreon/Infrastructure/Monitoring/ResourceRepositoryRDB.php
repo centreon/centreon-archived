@@ -229,15 +229,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
 
-        try {
-            $statement->execute();
-        } catch (\PDOException $exception) {
-            if ($exception->getCode() !== "42000") {
-                throw $exception;
-            }
-
-            throw new ResourceRegExpException($exception->getMessage(), (int)$exception->getCode(), $exception);
-        }
+        $statement->execute();
 
         $this->sqlRequestTranslator->getRequestParameters()->setTotal(
             (int)$this->db->query('SELECT FOUND_ROWS()')->fetchColumn()

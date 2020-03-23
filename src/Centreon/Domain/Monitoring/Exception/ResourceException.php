@@ -22,6 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Exception;
 
-class ResourceRegExpException extends \PDOException
+class ResourceException extends \Exception
 {
 }
