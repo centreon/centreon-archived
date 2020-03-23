@@ -57,4 +57,5 @@ export type ResourceListing = Listing<Resource>;
 
 export interface User {
   username: string;
+  locale: string | null;
 }

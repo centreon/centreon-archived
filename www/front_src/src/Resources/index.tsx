@@ -45,7 +45,10 @@ const Resources = (): JSX.Element => {
   const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
     [],
   );
-  const [resourcesToAcknowledge, setResourcesToAcknoweledge] = React.useState<
+  const [resourcesToAcknowledge, setResourcesToAcknowledge] = React.useState<
+    Array<Resource>
+  >([]);
+  const [resourcesToSetDowntime, setResourcesToSetDowntime] = React.useState<
     Array<Resource>
   >([]);
 
@@ -190,10 +193,10 @@ const Resources = (): JSX.Element => {
     setSelectedResources(resources);
   };
 
-  const confirmAndLoad = (): void => {
-    load();
+  const confirmAction = (): void => {
     selectResources([]);
-    setResourcesToAcknoweledge([]);
+    setResourcesToAcknowledge([]);
+    setResourcesToSetDowntime([]);
   };
 
   const rowColorConditions = [
@@ -210,7 +213,7 @@ const Resources = (): JSX.Element => {
   ];
 
   const prepareToAcknowledge = (resources): void => {
-    setResourcesToAcknoweledge(resources);
+    setResourcesToAcknowledge(resources);
   };
 
   const prepareSelectedToAcknowledge = (): void => {
@@ -221,9 +224,24 @@ const Resources = (): JSX.Element => {
     prepareToAcknowledge([]);
   };
 
+  const prepareToSetDowntime = (resources): void => {
+    setResourcesToSetDowntime(resources);
+  };
+
+  const prepareSelectedToSetDowntime = (): void => {
+    prepareToSetDowntime(selectedResources);
+  };
+
+  const cancelSetDowntime = (): void => {
+    prepareToSetDowntime([]);
+  };
+
   const columns = getColumns({
     onAcknowledge: (resource) => {
       prepareToAcknowledge([resource]);
+    },
+    onDowntime: (resource) => {
+      prepareToSetDowntime([resource]);
     },
   });
 
@@ -235,7 +253,10 @@ const Resources = (): JSX.Element => {
       resourcesToAcknowledge={resourcesToAcknowledge}
       onPrepareToAcknowledge={prepareSelectedToAcknowledge}
       onCancelAcknowledge={cancelAcknowledge}
-      onSuccess={confirmAndLoad}
+      resourcesToSetDowntime={resourcesToSetDowntime}
+      onPrepareToSetDowntime={prepareSelectedToSetDowntime}
+      onCancelSetDowntime={cancelSetDowntime}
+      onSuccess={confirmAction}
     />
   );
 

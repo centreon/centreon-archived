@@ -6,12 +6,16 @@ import IconAcknowledge from '@material-ui/icons/Person';
 import { labelAcknowledge } from './translatedLabels';
 import { Resource } from './models';
 import AcknowledgeForm from './forms/Acknowledge';
+import DowntimeForm from './forms/Downtime';
 
 interface Props {
   disabled: boolean;
   resourcesToAcknowledge: Array<Resource>;
   onPrepareToAcknowledge;
   onCancelAcknowledge;
+  resourcesToSetDowntime: Array<Resource>;
+  onPrepareToSetDowntime;
+  onCancelSetDowntime;
   onSuccess;
 }
 
@@ -20,6 +24,9 @@ const Actions = ({
   resourcesToAcknowledge,
   onPrepareToAcknowledge,
   onCancelAcknowledge,
+  resourcesToSetDowntime,
+  onPrepareToSetDowntime,
+  onCancelSetDowntime,
   onSuccess,
 }: Props): JSX.Element => {
   return (
@@ -36,6 +43,11 @@ const Actions = ({
       <AcknowledgeForm
         resources={resourcesToAcknowledge}
         onClose={onCancelAcknowledge}
+        onSuccess={onSuccess}
+      />
+      <DowntimeForm
+        resources={resourcesToSetDowntime}
+        onClose={onCancelSetDowntime}
         onSuccess={onSuccess}
       />
     </>
