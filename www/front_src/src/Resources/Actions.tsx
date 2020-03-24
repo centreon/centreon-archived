@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, ButtonProps, withStyles } from '@material-ui/core';
+import { Button, ButtonProps } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
 import IconDowntime from './columns/icons/Downtime';
@@ -19,17 +19,7 @@ interface Props {
   onCancelSetDowntime;
   onSuccess;
 }
-/*
-interface ActionButtonProps extends ButtonProps, Props {}
 
-const ActionButton = withStyles((theme) => ({
-  root: {
-    margin: theme.spacing(0, 1),
-  },
-}))((props: ActionButtonProps) => (
-  <Button variant="contained" color="primary" size="small" {...props} />
-));
-*/
 const ActionButton = (props: ButtonProps): JSX.Element => (
   <Button
     style={{ margin: '0 8px' }}
