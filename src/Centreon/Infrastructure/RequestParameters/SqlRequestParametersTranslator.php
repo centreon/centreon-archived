@@ -264,7 +264,7 @@ class SqlRequestParametersTranslator
                     throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
                 }
                 if (preg_last_error() !== PREG_NO_ERROR) {
-                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
+                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0);
                 }
             }
             $type = \PDO::PARAM_STR;
