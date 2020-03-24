@@ -2354,7 +2354,7 @@ components:
         details_endpoint:
           type: string
           description: "Resource url to details page"
-          example: "/monitoring/host/12/service/12"
+          example: "/centreon/monitoring/resources/hosts/12/services/12"
         icon:
           type: object
           properties:
