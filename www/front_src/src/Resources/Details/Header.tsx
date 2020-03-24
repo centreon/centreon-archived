@@ -14,7 +14,7 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 import { StatusChip, SeverityCode } from '@centreon/ui';
 
 import { DetailsSectionProps, ResourceDetails } from '.';
-import rowColorConditions from '../rowColorConditions';
+import { rowColorConditions } from '../colors';
 
 const useStyles = makeStyles<Theme, ResourceDetails>((theme) => ({
   header: ({ downtimes, acknowledgement }): CreateCSSProperties => {

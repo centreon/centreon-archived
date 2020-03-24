@@ -1,8 +1,6 @@
 import * as React from 'react';
 
 import {
-  Tabs,
-  Tab,
   Typography,
   Card,
   CardContent,
@@ -16,14 +14,7 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
 import { getStatusColors } from '@centreon/ui';
 
-import {
-  labelStatusInformation,
-  labelMore,
-  labelLess,
-  labelDetails,
-  labelGraph,
-} from '../translatedLabels';
-import { DetailsSectionProps } from '.';
+import { labelMore, labelLess } from '../../translatedLabels';
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
@@ -33,25 +24,20 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
     }).backgroundColor;
 
   return {
-    content: {
-      padding: 10,
-      backgroundColor: theme.palette.background.default,
-      height: '100%',
-    },
-    outputCard: ({ severityCode }): CreateCSSProperties => ({
+    card: ({ severityCode }): CreateCSSProperties => ({
       ...(severityCode && {
         borderWidth: 2,
         borderStyle: 'solid',
         borderColor: getStatusBackgroundColor(severityCode),
       }),
     }),
-    outputTitle: ({ severityCode }): CreateCSSProperties => ({
+    title: ({ severityCode }): CreateCSSProperties => ({
       ...(severityCode && { color: getStatusBackgroundColor(severityCode) }),
     }),
   };
 });
 
-interface ExpandableCardProps {
+interface Props {
   title: string;
   content: string;
   severityCode?: number;
@@ -61,7 +47,7 @@ const ExpandableCard = ({
   title,
   content,
   severityCode,
-}: ExpandableCardProps): JSX.Element => {
+}: Props): JSX.Element => {
   const classes = useStyles({ severityCode });
 
   const [outputExpanded, setOutputExpanded] = React.useState(false);
@@ -103,40 +89,4 @@ const ExpandableCard = ({
   );
 };
 
-const Body = ({ details }: DetailsSectionProps): JSX.Element => {
-  const classes = useStyles({ details });
-
-  const [selectedTabId, setSelectedTabId] = React.useState(0);
-
-  const changeSelectedTabId = (_, id): void => {
-    setSelectedTabId(id);
-  };
-
-  return (
-    <>
-      <Tabs
-        variant="fullWidth"
-        value={selectedTabId}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={changeSelectedTabId}
-      >
-        <Tab label={labelDetails} />
-        <Tab label={labelGraph} />
-      </Tabs>
-      <div className={classes.content}>
-        {selectedTabId === 0 && (
-          <>
-            <ExpandableCard
-              title={labelStatusInformation}
-              content={details.output}
-              severityCode={details.status.severity_code}
-            />
-          </>
-        )}
-      </div>
-    </>
-  );
-};
-
-export default Body;
+export default ExpandableCard;

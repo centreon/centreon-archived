@@ -18,7 +18,7 @@ import {
 } from './Filter/models';
 import Actions from './Actions';
 import Details from './Details';
-import rowColorConditions from './rowColorConditions';
+import { rowColorConditions } from './colors';
 
 const useStyles = makeStyles((theme) => ({
   page: {

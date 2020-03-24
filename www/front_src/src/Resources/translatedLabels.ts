@@ -15,6 +15,7 @@ export const labelCriterias = I18n.t('Criterias');
 export const labelCritical = I18n.t('Critical');
 export const labelDetails = I18n.t('Details');
 export const labelDown = I18n.t('Down');
+export const labelDowntimeDuration = I18n.t('Downtime duration');
 export const labelDuration = I18n.t('Duration');
 export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');

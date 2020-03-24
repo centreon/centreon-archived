@@ -11,7 +11,8 @@ import {
   labelEndTime,
   labelComment,
 } from '../../../translatedLabels';
-import DetailsTable, { getFormattedDate, DetailsTableProps } from '.';
+import DetailsTable, { DetailsTableProps } from '.';
+import getFormattedDate from '../../../getFormattedDate';
 
 interface DowntimeDetails {
   author_name: string;

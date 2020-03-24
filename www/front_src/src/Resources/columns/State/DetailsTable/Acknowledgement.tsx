@@ -9,11 +9,8 @@ import {
   labelPersistent,
   labelSticky,
 } from '../../../translatedLabels';
-import DetailsTable, {
-  getFormattedDate,
-  DetailsTableProps,
-  getYesNoLabel,
-} from '.';
+import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
+import getFormattedDate from '../../../getFormattedDate';
 
 interface AcknoweldgementDetails {
   author_name: string;

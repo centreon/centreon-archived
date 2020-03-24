@@ -1,5 +1,8 @@
 import { lime, purple } from '@material-ui/core/colors';
 
+const downtimeColor = purple[500];
+const acknwoledgeColor = lime[900];
+
 const rowColorConditions = [
   {
     name: 'inDowntime',
@@ -13,4 +16,4 @@ const rowColorConditions = [
   },
 ];
 
-export default rowColorConditions;
+export { downtimeColor, acknwoledgeColor, rowColorConditions };

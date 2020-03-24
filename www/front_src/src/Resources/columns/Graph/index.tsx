@@ -21,6 +21,7 @@ import { labelGraph } from '../../translatedLabels';
 import HoverChip from '../HoverChip';
 import { getData } from '../../api';
 import { ColumnProps } from '..';
+import GraphChip from '../../Chip/Graph';
 
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
@@ -199,10 +200,7 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
   }
 
   return (
-    <HoverChip
-      ariaLabel={labelGraph}
-      Icon={(): JSX.Element => <IconBarChart />}
-    >
+    <HoverChip Chip={(): JSX.Element => <GraphChip />} label={labelGraph}>
       <Graph endpoint={row.performance_graph_endpoint} />
     </HoverChip>
   );
