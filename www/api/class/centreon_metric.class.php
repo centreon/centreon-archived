@@ -75,9 +75,8 @@ class CentreonMetric extends CentreonWebService
     public function getList()
     {
         $queryValues = array();
-        $nameArg = filter_var($this->arguments['q'] ?? false, FILTER_SANITIZE_STRING);
-        if (false !== $nameArg) {
-            $queryValues['name'] = '%' . $nameArg . '%';
+        if (isset($this->arguments['q'])) {
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         } else {
             $queryValues['name'] = '%%';
         }
@@ -112,9 +111,8 @@ class CentreonMetric extends CentreonWebService
     protected function getListByService()
     {
         $queryValues = array();
-        $nameArg = filter_var($this->arguments['q'] ?? false, FILTER_SANITIZE_STRING);
-        if (false !== $nameArg) {
-            $queryValues['name'] = '%' . $nameArg . '%';
+        if (isset($this->arguments['q'])) {
+            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         } else {
             $queryValues['name'] = '%%';
         }
