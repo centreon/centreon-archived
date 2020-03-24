@@ -72,7 +72,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'status_code' => 'resource.status_code',
         'status' => 'resource.status_name',
         'action_url' => 'resource.action_url',
-        'details_url' => 'resource.details_url',
         'parent_name' => 'resource.parent_name',
         'parent_status' => 'resource.parent_status_name',
         'severity_level' => 'resource.severity_level',
@@ -153,11 +152,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.name, '
-            . 'resource.details_url, resource.action_url, '
+            . 'resource.id, resource.type, resource.name, resource.action_url, '
             . 'resource.status_code, resource.status_name, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
-            . 'resource.parent_id, resource.parent_name, resource.parent_details_url, ' // parent
+            . 'resource.parent_id, resource.parent_name, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             . 'resource.parent_status_code, resource.parent_status_name, ' // parent status
             . 'resource.severity_level, resource.severity_url, resource.severity_name, ' // severity
@@ -344,12 +342,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             sh.host_id AS `host_id`,
             s.description AS `name`,
             s.action_url AS `action_url`,
-            s.notes_url AS `details_url`,
             s.icon_image_alt AS `icon_name`,
             s.icon_image AS `icon_url`,
             sh.host_id AS `parent_id`,
             sh.name AS `parent_name`,
-            sh.notes_url AS `parent_details_url`,
             sh.icon_image_alt AS `parent_icon_name`,
             sh.icon_image AS `parent_icon_url`,
             sh.state AS `parent_status_code`,
@@ -497,12 +493,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.host_id AS `host_id`,
             h.name AS `name`,
             h.action_url AS `action_url`,
-            h.notes_url AS `details_url`,
             h.icon_image_alt AS `icon_name`,
             h.icon_image AS `icon_url`,
             NULL AS `parent_id`,
             NULL AS `parent_name`,
-            NULL AS `parent_details_url`,
             NULL AS `parent_icon_name`,
             NULL AS `parent_icon_url`,
             NULL AS `parent_status_code`,

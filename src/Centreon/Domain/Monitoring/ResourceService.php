@@ -93,6 +93,8 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         foreach ($list as $resource) {
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
             $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
+            $routeNameDetails = 'centreon_application_monitoring_getonehost';
+
             $parameters = [
                 'hostId' => $resource->getId(),
             ];
@@ -100,6 +102,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
                 $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
                 $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
+                $routeNameDetails = 'centreon_application_monitoring_getoneservice';
 
                 $parameters['hostId'] = $resource->getParent()->getId();
                 $parameters['serviceId'] = $resource->getId();
@@ -107,6 +110,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
 
             $resource->setAcknowledgementEndpoint($this->router->generate($routeNameAcknowledgement, $parameters));
             $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
+            $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
         }
 
         return $list;
