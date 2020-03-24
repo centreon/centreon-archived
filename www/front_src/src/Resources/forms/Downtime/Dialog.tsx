@@ -15,6 +15,10 @@ import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
 
 import {
   labelCancel,
+  labelEndDate,
+  labelEndTime,
+  labelStartDate,
+  labelStartTime,
   labelChangeEndDate,
   labelChangeEndTime,
   labelChangeStartDate,
@@ -110,6 +114,7 @@ const DialogDowntime = ({
             <Grid direction="row" container spacing={1}>
               <Grid item style={{ width: 240 }}>
                 <KeyboardDatePicker
+                  aria-label={labelStartDate}
                   value={values.dateStart}
                   onChange={changeDate('dateStart')}
                   KeyboardButtonProps={{
@@ -122,6 +127,7 @@ const DialogDowntime = ({
               </Grid>
               <Grid item style={{ width: 200 }}>
                 <KeyboardTimePicker
+                  aria-label={labelStartTime}
                   value={values.timeStart}
                   onChange={changeDate('timeStart')}
                   KeyboardButtonProps={{
@@ -139,6 +145,7 @@ const DialogDowntime = ({
             <Grid direction="row" container spacing={1}>
               <Grid item style={{ width: 240 }}>
                 <KeyboardDatePicker
+                  aria-label={labelEndDate}
                   value={values.dateEnd}
                   onChange={changeDate('dateEnd')}
                   KeyboardButtonProps={{
@@ -151,6 +158,7 @@ const DialogDowntime = ({
               </Grid>
               <Grid item style={{ width: 200 }}>
                 <KeyboardTimePicker
+                  aria-label={labelEndTime}
                   value={values.timeEnd}
                   onChange={changeDate('timeEnd')}
                   KeyboardButtonProps={{

@@ -21,12 +21,12 @@ const listResources = (
   getData({ endpoint: buildResourcesEndpoint(endpointParams), requestParams });
 
 interface AcknowledgeParams {
-  resource_id: string;
+  resource_id: number;
   comment: string;
   is_notify_contacts: boolean;
   is_persistent_comment: boolean;
   is_sticky: boolean;
-  parent_resource_id?: string;
+  parent_resource_id?: number | null;
   with_services?: boolean;
 }
 
@@ -41,8 +41,8 @@ const toAcknowledgeParams = ({
   is_notify_contacts: notify,
   is_persistent_comment: true,
   is_sticky: true,
-  resource_id: id,
-  parent_resource_id: parent?.id,
+  resource_id: parseInt(id, 10),
+  parent_resource_id: parseInt(parent?.id, 10) || null,
   with_services: acknowledgeAttachedResources,
 });
 
@@ -78,7 +78,7 @@ interface DowntimeParams {
   duration: string;
   end_time: string;
   is_fixed: boolean;
-  parent_resource_id?: number;
+  parent_resource_id?: number | null;
   resource_id: number;
   start_time: string;
   with_services?: boolean;
@@ -98,7 +98,7 @@ const toDowntimeParams = ({
   duration,
   end_time: formatISO(endTime),
   is_fixed: fixed,
-  parent_resource_id: parseInt(parent?.id, 10),
+  parent_resource_id: parseInt(parent?.id, 10) || null,
   resource_id: parseInt(id, 10),
   start_time: formatISO(startTime),
   with_services: downtimeAttachedResources,

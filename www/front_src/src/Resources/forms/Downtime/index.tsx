@@ -28,11 +28,13 @@ const formatDateInterval = (values: DateParams): [Date, Date] => {
   const dateTimeStart = new Date(values.dateStart);
   dateTimeStart.setHours(timeStart.getHours());
   dateTimeStart.setMinutes(timeStart.getMinutes());
+  dateTimeStart.setSeconds(0);
 
   const timeEnd = new Date(values.timeEnd);
   const dateTimeEnd = new Date(values.dateEnd);
   dateTimeEnd.setHours(timeEnd.getHours());
   dateTimeEnd.setMinutes(timeEnd.getMinutes());
+  dateTimeEnd.setSeconds(0);
 
   return [dateTimeStart, dateTimeEnd];
 };
@@ -51,13 +53,13 @@ const validationSchema = Yup.object().shape({
     .required(labelRequired)
     .nullable(),
   fixed: Yup.boolean(),
-  duration: Yup.object().shape({
-    value: Yup.string().when('$fixed', (fixed, schema) =>
-      !fixed ? schema.required(labelRequired) : schema,
-    ),
-    unit: Yup.string().when('$fixed', (fixed, schema) =>
-      !fixed ? schema.required(labelRequired) : schema,
-    ),
+  duration: Yup.object().when('fixed', (fixed, schema) => {
+    return !fixed
+      ? schema.shape({
+          value: Yup.string().required(labelRequired),
+          unit: Yup.string().required(labelRequired),
+        })
+      : schema;
   }),
   comment: Yup.string().required(labelRequired),
 });
