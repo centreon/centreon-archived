@@ -38,7 +38,6 @@
  * @param className string : tag class name
  * @param altFormat string : format of the alternative field
  * @param defaultDate string : GMT YYYY-MM-DDTHH:mm:ss timestamp
- * @todo following 2 parameters seem to never be used, to remove ?
  * @param idName string : tag id of the displayed field
  * @param timestampToSet int : timestamp used to make a new date using the user localization and format
  */
@@ -80,7 +79,6 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
                 jQuery(this).datepicker();
             }
         });
-    // @todo section then seems to never be used, to remove ?
     } else {
         // setting the displayed and hidden fields with a timestamp value sent from the backend
         var alternativeField = "input[name=alternativeDate" + idName + "]";
