@@ -393,8 +393,14 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         }
 
         /* concatenating the chosen dates before sending them to ext_cmd */
-        $concatenatedStart = $_POST["alternativeDateStart"] . ' ' . $_POST['start_time'];
-        $concatenatedEnd = $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time'];
+        $concatenatedStart = filter_var(
+            $_POST["alternativeDateStart"] . ' ' . $_POST['start_time'],
+            FILTER_SANITIZE_STRING
+        );
+        $concatenatedEnd = filter_var(
+            $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time'],
+            FILTER_SANITIZE_STRING
+        );
 
         if (
             isset($values['downtimeType'])
