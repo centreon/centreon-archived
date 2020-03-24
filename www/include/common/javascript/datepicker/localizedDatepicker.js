@@ -48,10 +48,9 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
 
     setUserFormat();
 
-    var timezone = localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess();
+    var timezone = localStorage.getItem('realTimezone') || moment.tz.guess();
 
     if (typeof(idName) == "undefined" || typeof(timestampToSet) == "undefined") {
-
         // generate default date in proper timezone
         if (defaultDate == "0") {
             defaultDate = moment().tz(timezone);
