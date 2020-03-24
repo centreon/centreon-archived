@@ -18,9 +18,11 @@ const StateCard = ({ title, contentLines, chip }: Props): JSX.Element => {
   return (
     <Card>
       <CardContent>
-        <Grid container>
+        <Grid container spacing={4}>
           <Grid item>
-            <Typography>{title}</Typography>
+            <Typography variant="subtitle2" color="textSecondary">
+              {title}
+            </Typography>
           </Grid>
           <Grid item style={{ flexGrow: 1 }}>
             {contentLines.map(Line)}

@@ -22,6 +22,7 @@ export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
 export const labelShowCriteriasFilters = I18n.t('Show criterias filters');
 export const labelFixed = I18n.t('Fixed');
+export const labelFrom = I18n.t('From');
 export const labelGraph = I18n.t('Graph');
 export const labelHost = I18n.t('Host');
 export const labelHostGroup = I18n.t('Host group');
@@ -69,6 +70,7 @@ export const labelStatusInformation = I18n.t('Status information');
 export const labelSuccessfullyAcknowledged = I18n.t(
   'Successfully acknowledged',
 );
+export const labelTo = I18n.t('To');
 export const labelTypeOfResource = I18n.t('Type of resource');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
 export const labelUnhandled = I18n.t('Unhandled');

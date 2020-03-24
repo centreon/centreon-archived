@@ -67,9 +67,9 @@ const ExpandableCard = ({
   );
 
   return (
-    <Card className={classes.outputCard} color="green">
+    <Card className={classes.card} color="green">
       <CardContent>
-        <Typography className={classes.outputTitle} variant="subtitle2">
+        <Typography className={classes.title} variant="subtitle2">
           {title}
         </Typography>
         {threeFirstlines.map(Line)}
