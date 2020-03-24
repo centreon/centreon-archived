@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
 
 import React, { Component } from 'react';
 
