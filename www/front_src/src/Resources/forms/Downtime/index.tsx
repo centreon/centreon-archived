@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useFormik } from 'formik';
+import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 
 import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
@@ -10,24 +10,76 @@ import {
   labelSomethingWentWrong,
   labelSuccessfullyAcknowledged,
   labelDowntimeBy,
+  labelEndDateMustBeGreater,
 } from '../../translatedLabels';
 import DialogDowntime from './Dialog';
 import { Resource } from '../../models';
-import { acknowledgeResources, getUser } from '../../api';
+import { setDowntimeOnResources, getUser } from '../../api';
+
+interface DateParams {
+  dateStart: Date;
+  timeStart: Date;
+  dateEnd: Date;
+  timeEnd: Date;
+}
+
+const formatDateInterval = (values: DateParams): [Date, Date] => {
+  const timeStart = new Date(values.timeStart);
+  const dateTimeStart = new Date(values.dateStart);
+  dateTimeStart.setHours(timeStart.getHours());
+  dateTimeStart.setMinutes(timeStart.getMinutes());
+
+  const timeEnd = new Date(values.timeEnd);
+  const dateTimeEnd = new Date(values.dateEnd);
+  dateTimeEnd.setHours(timeEnd.getHours());
+  dateTimeEnd.setMinutes(timeEnd.getMinutes());
+
+  return [dateTimeStart, dateTimeEnd];
+};
 
 const validationSchema = Yup.object().shape({
-  comment: Yup.string().required(labelRequired),
-  dateStart: Yup.string().required(labelRequired),
-  timeStart: Yup.string().required(labelRequired),
-  dateEnd: Yup.string().required(labelRequired),
-  timeEnd: Yup.string().required(labelRequired),
+  dateStart: Yup.string()
+    .required(labelRequired)
+    .nullable(),
+  timeStart: Yup.string()
+    .required(labelRequired)
+    .nullable(),
+  dateEnd: Yup.string()
+    .required(labelRequired)
+    .nullable(),
+  timeEnd: Yup.string()
+    .required(labelRequired)
+    .nullable(),
   fixed: Yup.boolean(),
   duration: Yup.object().shape({
     value: Yup.string().when('$fixed', (fixed, schema) =>
-      fixed ? schema.required(labelRequired) : schema,
+      !fixed ? schema.required(labelRequired) : schema,
+    ),
+    unit: Yup.string().when('$fixed', (fixed, schema) =>
+      !fixed ? schema.required(labelRequired) : schema,
     ),
   }),
+  comment: Yup.string().required(labelRequired),
 });
+
+const validate = (values: DateParams): FormikErrors<DateParams> => {
+  const errors: FormikErrors<DateParams> = {};
+
+  if (
+    values.dateStart &&
+    values.timeStart &&
+    values.dateEnd &&
+    values.timeEnd
+  ) {
+    const [start, end] = formatDateInterval(values);
+
+    if (start >= end) {
+      errors.dateEnd = labelEndDateMustBeGreater;
+    }
+  }
+
+  return errors;
+};
 
 interface Props {
   resources: Array<Resource>;
@@ -56,7 +108,6 @@ const DowntimeForm = ({
 
   const form = useFormik({
     initialValues: {
-      comment: '',
       dateStart: currentDate,
       timeStart: currentDate,
       dateEnd: twoHoursLaterDate,
@@ -66,14 +117,31 @@ const DowntimeForm = ({
         value: 3600,
         unit: 'seconds',
       },
+      comment: '',
       downtimeAttachedResources: true,
     },
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
 
-      const params = resources.map((resource) => ({ ...resource, ...values }));
+      const [startTime, endTime] = formatDateInterval(values);
 
-      acknowledgeResources({
+      const unitMultipliers = {
+        seconds: 1,
+        minutes: 60,
+        hours: 3600,
+      };
+      const durationDivider = unitMultipliers?.[values.duration.unit] || 1;
+      const duration = values.duration.value * durationDivider;
+
+      const params = resources.map((resource) => ({
+        ...resource,
+        ...values,
+        startTime,
+        endTime,
+        duration,
+      }));
+
+      setDowntimeOnResources({
         resources: params,
         cancelToken: token,
       })
@@ -85,6 +153,7 @@ const DowntimeForm = ({
         .finally(() => setSubmitting(false));
     },
     validationSchema,
+    validate,
   });
 
   const hasResources = resources.length > 0;

@@ -534,8 +534,8 @@ describe(Resources, () => {
 
     expect(getByText('admin')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:16')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:18')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:18')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
   });
 
@@ -577,7 +577,7 @@ describe(Resources, () => {
     );
 
     expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();

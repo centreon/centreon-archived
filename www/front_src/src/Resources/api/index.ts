@@ -1,9 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import formatISO from 'date-fns/formatISO';
 
 import {
   buildResourcesEndpoint,
   serviceAcknowledgementEndpoint,
   hostAcknowledgementEndpoint,
+  serviceDowntimeEndpoint,
+  hostDowntimeEndpoint,
   userEndpoint,
 } from './endpoint';
 import { ResourceListing, User } from '../models';
@@ -17,7 +20,7 @@ const listResources = (
 ): Promise<ResourceListing> =>
   getData({ endpoint: buildResourcesEndpoint(endpointParams), requestParams });
 
-interface ResourceParams {
+interface AcknowledgeParams {
   resource_id: string;
   comment: string;
   is_notify_contacts: boolean;
@@ -27,13 +30,13 @@ interface ResourceParams {
   with_services?: boolean;
 }
 
-const toResourceParams = ({
+const toAcknowledgeParams = ({
   id,
   comment,
   notify,
   parent,
   acknowledgeAttachedResources,
-}): ResourceParams => ({
+}): AcknowledgeParams => ({
   comment,
   is_notify_contacts: notify,
   is_persistent_comment: true,
@@ -47,8 +50,10 @@ const acknowledgeResources = ({
   resources,
   cancelToken,
 }): Promise<Array<AxiosResponse>> => {
-  const getResourceParamsForType = (resourceType): Array<ResourceParams> =>
-    resources.filter(({ type }) => type === resourceType).map(toResourceParams);
+  const getResourceParamsForType = (resourceType): Array<AcknowledgeParams> =>
+    resources
+      .filter(({ type }) => type === resourceType)
+      .map(toAcknowledgeParams);
 
   return axios.all(
     [
@@ -68,7 +73,69 @@ const acknowledgeResources = ({
   );
 };
 
+interface DowntimeParams {
+  comment: string;
+  duration: string;
+  end_time: string;
+  is_fixed: boolean;
+  parent_resource_id?: number;
+  resource_id: number;
+  start_time: string;
+  with_services?: boolean;
+}
+
+const toDowntimeParams = ({
+  comment,
+  downtimeAttachedResources,
+  duration,
+  endTime,
+  fixed,
+  id,
+  parent,
+  startTime,
+}): DowntimeParams => ({
+  comment,
+  duration,
+  end_time: formatISO(endTime),
+  is_fixed: fixed,
+  parent_resource_id: parseInt(parent?.id, 10),
+  resource_id: parseInt(id, 10),
+  start_time: formatISO(startTime),
+  with_services: downtimeAttachedResources,
+});
+
+const setDowntimeOnResources = ({
+  resources,
+  cancelToken,
+}): Promise<Array<AxiosResponse>> => {
+  const getResourceParamsForType = (resourceType): Array<DowntimeParams> =>
+    resources.filter(({ type }) => type === resourceType).map(toDowntimeParams);
+
+  return axios.all(
+    [
+      {
+        params: getResourceParamsForType('host'),
+        endpoint: hostDowntimeEndpoint,
+      },
+      {
+        params: getResourceParamsForType('service'),
+        endpoint: serviceDowntimeEndpoint,
+      },
+    ]
+      .filter(({ params }) => params.length > 0)
+      .map(({ endpoint, params }) =>
+        axios.post(endpoint, params, { cancelToken }),
+      ),
+  );
+};
+
 const getUser = (cancelToken): Promise<User> =>
   getData({ endpoint: userEndpoint, requestParams: cancelToken });
 
-export { acknowledgeResources, listResources, getData, getUser };
+export {
+  acknowledgeResources,
+  setDowntimeOnResources,
+  listResources,
+  getData,
+  getUser,
+};

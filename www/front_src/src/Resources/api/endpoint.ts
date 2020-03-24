@@ -7,8 +7,10 @@ const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 const hostEndpoint = `${monitoringEndpoint}/hosts`;
 const hostAcknowledgementEndpoint = `${hostEndpoint}/acknowledgements`;
+const hostDowntimeEndpoint = `${hostEndpoint}/downtimes`;
 const serviceEndpoint = `${monitoringEndpoint}/services`;
 const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgements`;
+const serviceDowntimeEndpoint = `${serviceEndpoint}/downtimes`;
 const userEndpoint =
   './api/internal.php?object=centreon_topcounter&action=user';
 
@@ -98,5 +100,7 @@ export {
   buildServiceGroupsEndpoint,
   hostAcknowledgementEndpoint,
   serviceAcknowledgementEndpoint,
+  hostDowntimeEndpoint,
+  serviceDowntimeEndpoint,
   userEndpoint,
 };

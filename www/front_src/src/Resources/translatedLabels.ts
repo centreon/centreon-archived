@@ -17,6 +17,9 @@ export const labelDuration = I18n.t('Duration');
 export const labelSeconds = I18n.t('Seconds');
 export const labelMinutes = I18n.t('Minutes');
 export const labelHours = I18n.t('Hours');
+export const labelEndDateMustBeGreater = I18n.t(
+  'End date must be greater than start date',
+);
 export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');

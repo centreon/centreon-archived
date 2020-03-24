@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-import { Button } from '@material-ui/core';
+import { Button, ButtonProps, withStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
-import { labelAcknowledge } from './translatedLabels';
+import IconDowntime from './columns/icons/Downtime';
+import { labelAcknowledge, labelDowntime } from './translatedLabels';
 import { Resource } from './models';
 import AcknowledgeForm from './forms/Acknowledge';
 import DowntimeForm from './forms/Downtime';
@@ -18,6 +19,26 @@ interface Props {
   onCancelSetDowntime;
   onSuccess;
 }
+/*
+interface ActionButtonProps extends ButtonProps, Props {}
+
+const ActionButton = withStyles((theme) => ({
+  root: {
+    margin: theme.spacing(0, 1),
+  },
+}))((props: ActionButtonProps) => (
+  <Button variant="contained" color="primary" size="small" {...props} />
+));
+*/
+const ActionButton = (props: ButtonProps): JSX.Element => (
+  <Button
+    style={{ margin: '0 8px' }}
+    variant="contained"
+    color="primary"
+    size="small"
+    {...props}
+  />
+);
 
 const Actions = ({
   disabled,
@@ -28,18 +49,23 @@ const Actions = ({
   onPrepareToSetDowntime,
   onCancelSetDowntime,
   onSuccess,
-}: Props): JSX.Element => {
+}: Props & Omit<ButtonProps, 'disabled'>): JSX.Element => {
   return (
     <>
-      <Button
-        variant="contained"
-        color="primary"
+      <ActionButton
         disabled={disabled}
         startIcon={<IconAcknowledge />}
         onClick={onPrepareToAcknowledge}
       >
         {labelAcknowledge}
-      </Button>
+      </ActionButton>
+      <ActionButton
+        disabled={disabled}
+        startIcon={<IconDowntime />}
+        onClick={onPrepareToSetDowntime}
+      >
+        {labelDowntime}
+      </ActionButton>
       <AcknowledgeForm
         resources={resourcesToAcknowledge}
         onClose={onCancelAcknowledge}

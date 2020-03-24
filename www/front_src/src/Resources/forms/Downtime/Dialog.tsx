@@ -89,7 +89,6 @@ const DialogDowntime = ({
   const changeDate = (field) => (value): void => {
     setFieldValue(field, value);
   };
-  console.log(values)
 
   return (
     <Dialog
@@ -111,23 +110,25 @@ const DialogDowntime = ({
             <Grid direction="row" container spacing={1}>
               <Grid item style={{ width: 240 }}>
                 <KeyboardDatePicker
-                  id="date-picker-inline"
                   value={values.dateStart}
                   onChange={changeDate('dateStart')}
                   KeyboardButtonProps={{
                     'aria-label': labelChangeStartDate,
                   }}
+                  error={errors?.dateStart !== undefined}
+                  helperText={errors?.dateStart}
                   {...datePickerProps}
                 />
               </Grid>
               <Grid item style={{ width: 200 }}>
                 <KeyboardTimePicker
-                  id="time-picker-inline"
                   value={values.timeStart}
                   onChange={changeDate('timeStart')}
                   KeyboardButtonProps={{
                     'aria-label': labelChangeStartTime,
                   }}
+                  error={errors?.timeStart !== undefined}
+                  helperText={errors?.timeStart}
                   {...timePickerProps}
                 />
               </Grid>
@@ -138,23 +139,25 @@ const DialogDowntime = ({
             <Grid direction="row" container spacing={1}>
               <Grid item style={{ width: 240 }}>
                 <KeyboardDatePicker
-                  id="date-picker-inline"
                   value={values.dateEnd}
                   onChange={changeDate('dateEnd')}
                   KeyboardButtonProps={{
                     'aria-label': labelChangeEndDate,
                   }}
+                  error={errors?.dateEnd !== undefined}
+                  helperText={errors?.dateEnd}
                   {...datePickerProps}
                 />
               </Grid>
               <Grid item style={{ width: 200 }}>
                 <KeyboardTimePicker
-                  id="time-picker-inline"
                   value={values.timeEnd}
                   onChange={changeDate('timeEnd')}
                   KeyboardButtonProps={{
                     'aria-label': labelChangeEndTime,
                   }}
+                  error={errors?.timeEnd !== undefined}
+                  helperText={errors?.timeEnd}
                   {...timePickerProps}
                 />
               </Grid>
@@ -184,6 +187,8 @@ const DialogDowntime = ({
                   type="number"
                   onChange={handleChange('duration.value')}
                   value={values.duration.value}
+                  error={errors?.duration?.value !== undefined}
+                  helperText={errors?.duration?.value}
                 />
               </Grid>
               <Grid item style={{ width: 150 }}>
@@ -226,9 +231,9 @@ const DialogDowntime = ({
               <Grid item container xs alignItems="center">
                 <Grid item xs={1}>
                   <Checkbox
+                    checked={values.downtimeAttachedResources}
                     inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                     color="primary"
-                    value={values.downtimeAttachedResources}
                     onChange={handleChange('downtimeAttachedResources')}
                   />
                 </Grid>
