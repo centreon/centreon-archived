@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
-/* eslint-disable camelcase */
 
 import React, { Component } from 'react';
+
 import Form from '../../components/forms/ServerConfigurationWizardForm';
 import routeMap from '../../route-maps/route-map';
 import ProgressBar from '../../components/progressBar';
+import BaseWizard from '../../components/forms/baseWizard';
 
 class ServerConfigurationWizardRoute extends Component {
   links = [
@@ -29,10 +30,10 @@ class ServerConfigurationWizardRoute extends Component {
   render() {
     const { links } = this;
     return (
-      <div>
+      <BaseWizard>
         <ProgressBar links={links} />
         <Form onSubmit={this.handleSubmit.bind(this)} />
-      </div>
+      </BaseWizard>
     );
   }
 }
