@@ -29,7 +29,6 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\Exception\ResourceRegExpException;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
