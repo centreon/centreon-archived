@@ -18,7 +18,7 @@ Centreon\Domain\HostConfiguration\ExtendedHost:
       groups:
         - 'host_extended'
         - 'host_extended_mapper_simulation'
-    actionsUrl:
+    actionUrl:
       type: string
       groups:
         - 'host_extended'
