@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
 const path = require('path');
 
-const baseConfig = require('@centreon/frontend-core/webpack/base/typescript');
+const baseConfig = require('@centreon/frontend-core/webpack/base');
 const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');
 
 module.exports = merge(baseConfig, extractCssConfig, {

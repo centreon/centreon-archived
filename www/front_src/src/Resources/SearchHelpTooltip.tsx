@@ -21,16 +21,16 @@ const Content = (): JSX.Element => (
   <>
     <p>{labelSearchOnFields}</p>
     <ul>
-      <li>host.name</li>
-      <li>host.alias</li>
-      <li>host.address</li>
-      <li>service.description</li>
+      <li>h.name</li>
+      <li>h.alias</li>
+      <li>h.address</li>
+      <li>s.description</li>
     </ul>
-    <p>{`${labelSearchByHostName} host.name:hostname`}</p>
+    <p>{`${labelSearchByHostName} h.name:hostname`}</p>
     <p>{labelUsePartialQuery}</p>
     <ul>
-      <li>{`${labelSearchByServiceStartingWith} service.description:^centreon`}</li>
-      <li>{`${labelSearchByHostAliasEndingWith} host.alias:(fr|us)-server`}</li>
+      <li>{`${labelSearchByServiceStartingWith} s.description:^centreon`}</li>
+      <li>{`${labelSearchByHostAliasEndingWith} h.alias:(fr|us)-server`}</li>
     </ul>
   </>
 );

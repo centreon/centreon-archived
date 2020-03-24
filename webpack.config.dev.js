@@ -2,8 +2,8 @@ const merge = require('webpack-merge');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const path = require('path');
 
-const baseConfig = require('./webpack.config');
 const devConfig = require('@centreon/frontend-core/webpack/patch/dev');
+const baseConfig = require('./webpack.config');
 
 module.exports = merge(baseConfig, devConfig, {
   resolve: {

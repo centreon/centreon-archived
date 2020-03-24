@@ -83,26 +83,26 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
         'information' => 'resource.information',
-        'host.group' => 'hg.name',
-        'host.group.id' => 'hhg.hostgroup_id',
+        'h.group' => 'hg.name',
+        'h.group.id' => 'hhg.hostgroup_id',
     ];
 
     /**
      * @var array Association of host search parameters
      */
     private $hostConcordances = [
-        'host.name' => 'h.name',
-        'host.alias' => 'h.alias',
-        'host.address' => 'h.address',
+        'h.name' => 'h.name',
+        'h.alias' => 'h.alias',
+        'h.address' => 'h.address',
     ];
 
     /**
      * @var array Association of service search parameters
      */
     private $serviceConcordances = [
-        'host.name' => 'sh.name',
-        'host.alias' => 'sh.alias',
-        'host.address' => 'sh.address',
+        'h.name' => 'sh.name',
+        'h.alias' => 'sh.alias',
+        'h.address' => 'sh.address',
         'service.description' => 's.description',
         'service.group' => 'sg.name',
         'service.group.id' => 'ssg.servicegroup_id',
@@ -249,8 +249,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     private function hasServiceSearch(): bool
     {
-        return $this->extractSpecificSearchCriteria('/^service\./')
-            && !$this->extractSpecificSearchCriteria('/^host\./');
+        return $this->extractSpecificSearchCriteria('/^s\./')
+            && !$this->extractSpecificSearchCriteria('/^h\./');
     }
 
     /**
