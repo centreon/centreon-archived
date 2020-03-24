@@ -2386,7 +2386,7 @@ components:
             details_endpoint:
               type: string
               description: "Parent resource url to details page"
-              example: "/monitoring/host/12"
+              example: "/centreon/monitoring/resources/hosts/12"
             status:
               type: object
               properties:
