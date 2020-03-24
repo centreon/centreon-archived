@@ -260,6 +260,10 @@ class SqlRequestParametersTranslator
                 try {
                     preg_match('/' . $mixedValue . '/', '');
                 } catch (\Throwable $ex) {
+                    // No exception in prod environment
+                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
+                }
+                if (preg_last_error() !== PREG_NO_ERROR) {
                     throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
                 }
             }
