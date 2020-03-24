@@ -62,7 +62,7 @@ $tpl->assign('serverIp', $server['ns_ip_address']);
 if (
     (empty($server['remote_id']) && empty($server['list_remote_server_id'])) ||
     $server['remote_server_use_as_proxy'] == 0
-    ) {
+) {
     //parent is the central
     $query = "SELECT `id` FROM nagios_server WHERE ns_activate = '1' AND localhost = '1'";
     $dbResult = $pearDB->query($query);
