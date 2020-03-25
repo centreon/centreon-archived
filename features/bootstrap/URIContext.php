@@ -85,7 +85,7 @@ class URIContext extends CentreonContext
                 return true;
             },
             'Comment is not applied.',
-            10
+            20
         );
     }
 
@@ -101,7 +101,7 @@ class URIContext extends CentreonContext
                 return true;
             },
             'Cannot find link in service output',
-            10
+            20
         );
     }
 
@@ -117,7 +117,7 @@ class URIContext extends CentreonContext
                 return true;
             },
             'Cannot find link in service output',
-            10
+            20
         );
     }
 
@@ -132,7 +132,7 @@ class URIContext extends CentreonContext
                 return count($windowNames) > 1;
             },
             'Link tab is not opened.',
-            10
+            20
         );
 
         $windowNames = $this->getSession()->getWindowNames();
