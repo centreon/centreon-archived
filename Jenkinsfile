@@ -4,6 +4,7 @@
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '20.04'
 def maintenanceBranch = "${serie}.x"
+env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
 } else if ((env.BRANCH_NAME == 'master') || (env.BRANCH_NAME == maintenanceBranch)) {
@@ -31,6 +32,9 @@ stage('Source') {
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
+    stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
+    stash name: 'vendor', includes: 'vendor.tar.gz'
+    stash name: 'api-doc', includes: 'centreon-api-v2.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -48,6 +52,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
         if (currentBuild.result == 'UNSTABLE')
@@ -120,6 +125,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
       }
 //    },
@@ -153,6 +159,8 @@ try {
       parallelSteps[feature] = {
         node {
           sh 'setup_centreon_build.sh'
+          unstash 'tar-sources'
+          unstash 'vendor'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
           junit 'xunit-reports/**/*.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
@@ -171,6 +179,8 @@ try {
     stage('Delivery') {
       node {
         sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        unstash 'api-doc'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
