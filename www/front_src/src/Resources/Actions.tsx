@@ -45,7 +45,7 @@ const Actions = ({
           {labelAcknowledge}
         </ActionButton>
       </Grid>
-      <Grid item >
+      <Grid item>
         <ActionButton
           disabled={disabled}
           startIcon={<IconDowntime />}
