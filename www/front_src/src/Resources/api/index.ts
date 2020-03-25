@@ -41,8 +41,8 @@ const toAcknowledgeParams = ({
   is_notify_contacts: notify,
   is_persistent_comment: true,
   is_sticky: true,
-  resource_id: parseInt(id, 10),
-  parent_resource_id: parseInt(parent?.id, 10) || null,
+  resource_id: id,
+  parent_resource_id: parent?.id || null,
   with_services: acknowledgeAttachedResources,
 });
 
@@ -98,8 +98,8 @@ const toDowntimeParams = ({
   duration,
   end_time: formatISO(endTime),
   is_fixed: fixed,
-  parent_resource_id: parseInt(parent?.id, 10) || null,
-  resource_id: parseInt(id, 10),
+  parent_resource_id: parent?.id || null,
+  resource_id: id,
   start_time: formatISO(startTime),
   with_services: downtimeAttachedResources,
 });

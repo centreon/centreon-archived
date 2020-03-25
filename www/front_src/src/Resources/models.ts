@@ -4,7 +4,7 @@ export interface Icon {
 }
 
 export interface Parent {
-  id: string;
+  id: number;
   name: string;
   icon: Icon | null;
   status: Status;
@@ -21,7 +21,7 @@ export interface Severity {
 }
 
 export interface Resource {
-  id: string;
+  id: number;
   name: string;
   icon?: Icon;
   parent?: Parent;

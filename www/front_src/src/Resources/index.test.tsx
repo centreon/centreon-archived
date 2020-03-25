@@ -132,7 +132,7 @@ export const selectOption = (element, optionText): void => {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
-    id: `${index}`,
+    id: index,
     name: `E${index}`,
     status: {
       code: 0,
@@ -658,7 +658,7 @@ describe(Resources, () => {
       hostAcknowledgementEndpoint,
       hostResources.map(({ id }) => ({
         parent_resource_id: null,
-        resource_id: parseInt(id, 10),
+        resource_id: id,
         comment: labelAcknowledgedByAdmin,
         is_notify_contacts: true,
         is_persistent_comment: true,
@@ -671,8 +671,8 @@ describe(Resources, () => {
     expect(mockedAxios.post).toHaveBeenCalledWith(
       serviceAcknowledgementEndpoint,
       serviceResources.map(({ id, parent }) => ({
-        resource_id: parseInt(id, 10),
-        parent_resource_id: parseInt(parent?.id || '', 10) || null,
+        resource_id: id,
+        parent_resource_id: parent?.id || null,
         comment: labelAcknowledgedByAdmin,
         is_notify_contacts: true,
         is_persistent_comment: true,
@@ -817,7 +817,7 @@ describe(Resources, () => {
         end_time: formatISO(endDateTime),
         is_fixed: true,
         parent_resource_id: null,
-        resource_id: parseInt(id, 10),
+        resource_id: id,
         start_time: formatISO(startDateTime),
         with_services: true,
       })),
@@ -831,8 +831,8 @@ describe(Resources, () => {
         duration: 3600,
         end_time: formatISO(endDateTime),
         is_fixed: true,
-        parent_resource_id: parseInt(parent?.id || '', 10) || null,
-        resource_id: parseInt(id, 10),
+        parent_resource_id: parent?.id || null,
+        resource_id: id,
         start_time: formatISO(startDateTime),
         with_services: true,
       })),
