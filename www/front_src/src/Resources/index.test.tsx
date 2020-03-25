@@ -3,6 +3,7 @@ import React from 'react';
 import axios from 'axios';
 import { render, wait, within, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
+import last from 'lodash/last';
 
 import Resources from '.';
 import {
@@ -20,9 +21,21 @@ import {
   labelUnhandledProblems,
   labelResourceProblems,
   labelAll,
+  labelAcknowledge,
+  labelAcknowledgedBy,
+  labelAcknowledgeServices,
+  labelNotify,
+  labelOpen,
+  labelShowCriteriasFilters,
 } from './translatedLabels';
-import columns from './columns';
+import getColumns from './columns';
 import { Resource } from './models';
+import {
+  hostAcknowledgementEndpoint,
+  serviceAcknowledgementEndpoint,
+} from './api/endpoint';
+
+const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -112,6 +125,7 @@ const fillEntities = (): Array<Resource> => {
     status: {
       code: 0,
       name: 'OK',
+      severity_code: 5,
     },
     acknowledged: index % 2 === 0,
     acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,
@@ -120,8 +134,9 @@ const fillEntities = (): Array<Resource> => {
     duration: '1m',
     last_check: '1m',
     tries: '1',
-    short_type: 's',
+    short_type: index % 4 === 0 ? 's' : 'h',
     information: `Entity ${index}`,
+    type: index % 4 === 0 ? 'service' : 'host',
   }));
 };
 
@@ -137,12 +152,7 @@ const retrievedListing = {
   },
 };
 
-const searchableFields = [
-  'host.name',
-  'host.alias',
-  'host.address',
-  'service.description',
-];
+const searchableFields = ['h.name', 'h.alias', 'h.address', 's.description'];
 
 const linuxServersHostGroup = {
   id: 0,
@@ -154,13 +164,40 @@ const webAccessService = {
   name: 'Web-access',
 };
 
+const hostResources = entities.filter(({ type }) => type === 'host');
+const serviceResources = entities.filter(({ type }) => type === 'service');
+
 describe(Resources, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
+    mockedAxios.post.mockReset();
+    mockedAxios.all.mockReset();
   });
 
   beforeEach(() => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+  });
+
+  const resolveUserToBeAdmin = (): void => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        username: 'admin',
+      },
+    });
+  };
+
+  it('expands criterias filters', async () => {
+    const { getByLabelText, queryByText } = render(<Resources />);
+
+    await wait(() => {
+      expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+    });
+
+    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+
+    await wait(() => {
+      expect(queryByText(labelTypeOfResource)).toBeVisible();
+    });
   });
 
   it('executes a listing request with "Unhandled problems" filter group by default', async () => {
@@ -267,14 +304,14 @@ describe(Resources, () => {
       selectEndpointMockAction,
     }) => {
       it(`executes a listing request with selected "${filterName}" filter options when it's changed`, async () => {
-        const { getAllByText } = render(<Resources />);
+        const { getAllByText, getByTitle } = render(<Resources />);
 
         await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
 
         selectEndpointMockAction?.();
         mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-        const [filterToChange] = getAllByText(filterName);
+        const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
         fireEvent.click(filterToChange);
 
         await wait(() => {
@@ -539,5 +576,107 @@ describe(Resources, () => {
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
+  });
+
+  const selectAllResourcesAndPrepareToAcknowledge = async ({
+    getByLabelText,
+    getByText,
+  }): Promise<void> => {
+    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    resolveUserToBeAdmin();
+
+    fireEvent.click(getByLabelText('Select all'));
+    fireEvent.click(getByText(labelAcknowledge));
+
+    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+  };
+
+  const labelAcknowledgedByAdmin = `${labelAcknowledgedBy} admin`;
+
+  it('cannot send an acknowledgement request when Acknwoledgement action is clicked and comment is empty', async () => {
+    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+
+    await selectAllResourcesAndPrepareToAcknowledge({
+      getByLabelText,
+      getByText,
+    });
+
+    fireEvent.change(getByText(labelAcknowledgedByAdmin), {
+      target: { value: '' },
+    });
+
+    await wait(() =>
+      expect(last(getAllByText(labelAcknowledge)).parentElement).toBeDisabled(),
+    );
+  });
+
+  it('sends an acknwoledgement request when Resources are selected and the Ackwoledgement action is clicked and confirmed', async () => {
+    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+
+    await selectAllResourcesAndPrepareToAcknowledge({
+      getByLabelText,
+      getByText,
+    });
+
+    fireEvent.click(getByLabelText(labelNotify));
+    fireEvent.click(getByLabelText(labelAcknowledgeServices));
+
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+    mockedAxios.all.mockResolvedValueOnce([]);
+    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+    fireEvent.click(last(getAllByText(labelAcknowledge)));
+
+    await wait(() => {
+      expect(mockedAxios.all).toHaveBeenCalled();
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      hostAcknowledgementEndpoint,
+      hostResources.map(({ id }) => ({
+        resource_id: id,
+        comment: labelAcknowledgedByAdmin,
+        is_notify_contacts: true,
+        is_persistent_comment: true,
+        is_sticky: true,
+        with_services: true,
+      })),
+      expect.anything(),
+    );
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      serviceAcknowledgementEndpoint,
+      serviceResources.map(({ id, parent }) => ({
+        resource_id: id,
+        resource_parent_id: parent?.id,
+        comment: labelAcknowledgedByAdmin,
+        is_notify_contacts: true,
+        is_persistent_comment: true,
+        is_sticky: true,
+        with_services: true,
+      })),
+      expect.anything(),
+    );
+  });
+
+  it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
+    const { getByLabelText, getByText, queryByText } = render(<Resources />);
+
+    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    resolveUserToBeAdmin();
+
+    serviceResources.map(({ id }) =>
+      fireEvent.click(getByLabelText(`Select row ${id}`)),
+    );
+
+    fireEvent.click(getByText(labelAcknowledge));
+
+    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    expect(getByText(labelAcknowledgedByAdmin)).toBeInTheDocument();
+    expect(queryByText(labelAcknowledgeServices)).toBeNull();
   });
 });
