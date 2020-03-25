@@ -29,6 +29,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -116,5 +117,22 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
 
         return $list;
+    }
+
+    /**
+     * Find host id by resource
+     * @param ResourceEntity $resource
+     * @return int|null
+     */
+    public static function generateHostIdByResource(ResourceEntity $resource): ?int
+    {
+        $hostId = null;
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hostId = (int) $resource->getId();
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hostId = (int) $resource->getParent()->getId();
+        }
+
+        return $hostId;
     }
 }

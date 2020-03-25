@@ -47,25 +47,34 @@ Centreon\Domain\Downtime\Downtime:
         startTime:
             - Type:
                 type: DateTime
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         endTime:
             - Type:
                 type: DateTime
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         isFixed:
             - Type:
                 type: boolean
+                groups: [resource_dt]
         duration:
             - Type:
                 type: integer
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         authorId:
             - Type:
                 type: integer
         comment:
             - Type:
                 type: string
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         hostId:
             - Type:
                 type: integer
@@ -75,6 +84,10 @@ Centreon\Domain\Downtime\Downtime:
         pollerId:
             - Type:
                 type: integer
+        withServices:
+            -Type:
+                type: boolean
+                groups: [resource_dt]
 
 # Used to validate the Check entity
 Centreon\Domain\Check\Check:

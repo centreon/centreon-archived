@@ -1676,13 +1676,31 @@ paths:
     post:
       tags:
         - Acknowledgement
-      summary: "Mass acknowledge resources"
+      summary: "Acknowledge multiple resources"
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Acknowledgment.Bulk'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/downtime:
+    post:
+      tags:
+        - Downtime
+      summary: "Set downtime for multiple resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Bulk'
       responses:
         '204':
           description: "Command Sent"
@@ -2436,6 +2454,44 @@ components:
               type: integer
               description: "ID of the service on which the downtime is set"
               example : 5
+    Downtime.Resource:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: "Short description of the downtime"
+          example: "Downtime set by admin"
+        with_services:
+          type: boolean
+          description: "Indicates whether we should add the downtime on the host-related services"
+          example: true
+        is_fixed:
+          type: boolean
+          description: "Indicates whether the downtime is fixed"
+          example: true
+        duration:
+          type: integer
+          description: "Downtime duration in seconds"
+          example: 7200
+        start_time:
+          type: string
+          format: date-time
+          description: "Scheduled start date of the downtime (ISO8601)"
+        end_time:
+          type: string
+          format: date-time
+          description: "Scheduled end date of the downtime (ISO8601)"
+    Downtime.Bulk:
+        type: object
+        properties:
+          downtime:
+            $ref: '#/components/schemas/Downtime.Resource'
+          resources:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Check.Host:
       type: object
       properties:

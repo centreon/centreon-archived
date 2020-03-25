@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\Request\DowntimeRequest;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
@@ -578,6 +579,93 @@ class DowntimeController extends AbstractController
         }
 
         $this->downtimeService->cancelDowntime($downtimeId, $host);
+        return $this->view();
+    }
+
+    /**
+     * Entry point to bulk set downtime for resources (hosts and services)
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function massDowntimeResources(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var AckRequest $ackRequest
+         */
+        $ackRequest = $serializer->deserialize(
+            (string)$request->getContent(),
+            DowntimeRequest::class,
+            'json'
+        );
+
+        $this->downtimeService->filterByContact($contact);
+
+        //validate input
+        $errorList = new ConstraintViolationList();
+
+        //validate resources
+        $resources = $ackRequest->getResources() ?? [];
+        foreach ($resources as $resource) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $errorList->addAll($this->validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
+                $errorList->addAll($this->validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                ));
+            } else {
+                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+            }
+        }
+
+        //validate downtime
+        $downtime = $ackRequest->getDowntime();
+        $errorList->addAll(
+            $entityValidator->validate(
+                $downtime,
+                null,
+                Downtime::VALIDATION_GROUP_DT_RESOURCE
+            )
+        );
+
+        if ($errorList->count() > 0) {
+            throw new ValidationFailedException($errorList);
+        }
+
+        foreach ($resources as $resource) {
+            //start applying downtime process
+            try {
+                $this->downtimeService->acknowledgeResource(
+                    $resource, $downtime
+                );
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
         return $this->view();
     }
 }
