@@ -164,7 +164,7 @@ foreach ($param['select'] as $key => $value) {
             send_cmd('SHUTDOWN_PROGRAM', time());
             break;
         case 25:
-            send_cmd('RESTART_PROGRAM', time());
+            send_cmd(' RESTART_PROGRAM', time());
             break;
         case 26:
             send_cmd('PROCESS_SERVICE_CHECK_RESULT', '');
@@ -278,7 +278,7 @@ foreach ($param['select'] as $key => $value) {
             checks_svc_host_hostgroup($key, 0);
             break;
         case 67:
-            schedule_svc_checks($key, 1);
+            schedule_svc_check($key, 1, 1);
             break;
 
         /* Auto Aknowledge */
