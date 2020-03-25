@@ -147,7 +147,7 @@ class MonitoringResourceController extends AbstractController
             // set paths to endpoints
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
             $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
-            $routeNameDetails = 'centreon_application_monitoring_getonehost';
+            $routeNameDetails = 'centreon_application_monitoring_resource_details_host';
 
             $parameters = [
                 'hostId' => $resource->getId(),
@@ -156,7 +156,7 @@ class MonitoringResourceController extends AbstractController
             if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
                 $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
                 $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
-                $routeNameDetails = 'centreon_application_monitoring_getoneservice';
+                $routeNameDetails = 'centreon_application_monitoring_resource_details_service';
 
                 $parameters['hostId'] = $resource->getParent()->getId();
                 $parameters['serviceId'] = $resource->getId();
@@ -190,7 +190,7 @@ class MonitoringResourceController extends AbstractController
 
                 $resource->getParent()
                     ->setDetailsEndpoint($this->router->generate(
-                        'centreon_application_monitoring_getonehost',
+                        'centreon_application_monitoring_resource_details_host',
                         [
                             'hostId' => $resource->getParent()->getId(),
                         ]
