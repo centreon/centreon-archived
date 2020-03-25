@@ -102,6 +102,9 @@ $form->addElement(
     )
 );
 
+$defaultStartTime = date('G:i');
+$defaultEndTime = date('G:i', strtotime('+2 hours'));
+
 $form->addElement(
     'text',
     'start_time',
@@ -109,7 +112,8 @@ $form->addElement(
     array(
         'id' => 'start_time',
         'size' => 5,
-        'class' => 'timepicker'
+        'class' => 'timepicker',
+        'value' => $defaultStartTime
     )
 );
 $form->addElement(
@@ -119,7 +123,8 @@ $form->addElement(
     array(
         'id' => 'end_time',
         'size' => 5,
-        'class' => 'timepicker'
+        'class' => 'timepicker',
+        'value' => $defaultEndTime
     )
 );
 
