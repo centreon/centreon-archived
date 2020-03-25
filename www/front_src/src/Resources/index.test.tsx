@@ -736,7 +736,7 @@ describe(Resources, () => {
     );
   });
 
-  it('cannot send a downtime request when Downtime action is clicked, flexible and duration is empty', async () => {
+  it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
     const {
       getByLabelText,
       getByText,
