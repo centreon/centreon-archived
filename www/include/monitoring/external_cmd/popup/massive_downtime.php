@@ -102,8 +102,9 @@ $form->addElement(
     )
 );
 
+$userDownTimeDuration = $_SESSION['centreon']->optGen['monitoring_dwt_duration'];
 $defaultStartTime = date('G:i');
-$defaultEndTime = date('G:i', strtotime('+2 hours'));
+$defaultEndTime = date('G:i', time() + $userDownTimeDuration);
 
 $form->addElement(
     'text',
