@@ -1524,7 +1524,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          description: "Host or service not found"
+          $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/metrics/status:
@@ -1601,7 +1601,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          description: "Host or service not found"
+          $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -1914,6 +1914,20 @@ components:
                 example: "You are not authorized to access this resource"
     NotFound:
       description: "Not Found"
+    NotFoundHostOrService:
+      description: "Host or service not found"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                example: 404
+              message:
+                type: string
+                example: "Host 12 not found"
     InternalServerError:
       description: "Internal Server Error"
       content:
