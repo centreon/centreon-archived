@@ -6,6 +6,10 @@ security:
         contact_provider:
             id: contact.provider
     firewalls:
+        free:
+            stateless: true
+            pattern: ^/centreon/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/.*$
+            security: false
         api:
             stateless: true
             pattern: ^/(?!centreon/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login).*
