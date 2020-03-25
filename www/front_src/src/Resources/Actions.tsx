@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, ButtonProps } from '@material-ui/core';
+import { Button, ButtonProps, Grid } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
 import IconDowntime from './columns/icons/Downtime';
@@ -21,13 +21,7 @@ interface Props {
 }
 
 const ActionButton = (props: ButtonProps): JSX.Element => (
-  <Button
-    style={{ margin: '0 8px' }}
-    variant="contained"
-    color="primary"
-    size="small"
-    {...props}
-  />
+  <Button variant="contained" color="primary" size="small" {...props} />
 );
 
 const Actions = ({
@@ -41,21 +35,25 @@ const Actions = ({
   onSuccess,
 }: Props & Omit<ButtonProps, 'disabled'>): JSX.Element => {
   return (
-    <>
-      <ActionButton
-        disabled={disabled}
-        startIcon={<IconAcknowledge />}
-        onClick={onPrepareToAcknowledge}
-      >
-        {labelAcknowledge}
-      </ActionButton>
-      <ActionButton
-        disabled={disabled}
-        startIcon={<IconDowntime />}
-        onClick={onPrepareToSetDowntime}
-      >
-        {labelDowntime}
-      </ActionButton>
+    <Grid container spacing={1}>
+      <Grid item>
+        <ActionButton
+          disabled={disabled}
+          startIcon={<IconAcknowledge />}
+          onClick={onPrepareToAcknowledge}
+        >
+          {labelAcknowledge}
+        </ActionButton>
+      </Grid>
+      <Grid item >
+        <ActionButton
+          disabled={disabled}
+          startIcon={<IconDowntime />}
+          onClick={onPrepareToSetDowntime}
+        >
+          {labelDowntime}
+        </ActionButton>
+      </Grid>
       <AcknowledgeForm
         resources={resourcesToAcknowledge}
         onClose={onCancelAcknowledge}
@@ -66,7 +64,7 @@ const Actions = ({
         onClose={onCancelSetDowntime}
         onSuccess={onSuccess}
       />
-    </>
+    </Grid>
   );
 };
 
