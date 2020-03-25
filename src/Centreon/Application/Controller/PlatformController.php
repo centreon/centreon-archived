@@ -57,23 +57,21 @@ class PlatformController extends AbstractController
         $widgetsVersion = $this->informationService->getWidgetsVersion();
 
         return $this->view(
-            array_merge(
-                array_map(
+            [
+                'web' => $this->extractVersion($webVersion),
+                'modules' => array_map(
                     function ($version) {
                         return $this->extractVersion($version);
                     },
                     $modulesVersion
                 ),
-                [
-                    'web' => $this->extractVersion($webVersion),
-                    'widgets' => array_map(
-                        function ($version) {
-                            return $this->extractVersion($version);
-                        },
-                        $widgetsVersion
-                    )
-                ]
-            )
+                'widgets' => array_map(
+                    function ($version) {
+                        return $this->extractVersion($version);
+                    },
+                    $widgetsVersion
+                )
+            ]
         );
     }
 
