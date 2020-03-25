@@ -153,7 +153,6 @@ try {
     }
     build job: 'centreon-autodiscovery/2.4.x', wait: false
     build job: 'centreon-awie/1.0.x', wait: false
-    build job: 'centreon-export/2.3.x', wait: false
     build job: 'centreon-license-manager/1.2.x', wait: false
     build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/2.4.x', wait: false
