@@ -1,6 +1,12 @@
 import * as React from 'react';
 
-import { Card, CardContent, Typography, Grid } from '@material-ui/core';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  makeStyles,
+} from '@material-ui/core';
 
 interface Props {
   title: string;
@@ -12,20 +18,18 @@ const DetailsCard = ({ title, lines }: Props): JSX.Element => {
     <Card>
       <CardContent>
         <Grid container direction="column" spacing={1}>
-          <Grid item>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              style={{ lineHeight: 0.8 }}
-            >
-              {title}
-            </Typography>
-          </Grid>
-          {lines.map(({ key, line }) => (
-            <Grid item key={key}>
-              {line}
+          <Grid item direction="column" container>
+            <Grid item>
+              <Typography variant="subtitle2" color="textSecondary">
+                {title}
+              </Typography>
             </Grid>
-          ))}
+            {lines.map(({ key, line }) => (
+              <Grid item key={key}>
+                {line}
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
       </CardContent>
     </Card>
