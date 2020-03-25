@@ -28,6 +28,7 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
@@ -283,11 +284,10 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
      */
     public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
     {
-        $host = $this->monitoringRepository->findOneHost((int) $resource->getId());
+        $host = $this->monitoringRepository->findOneHost($this->generateHostIdByResource($resource));
         if (is_null($host)) {
             throw new EntityNotFoundException('Host not found');
         }
-
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
             $this->engineService->addHostAcknowledgement($ack, $host);
             if ($ack->isWithServices()) {
@@ -310,5 +310,25 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         } else {
             throw new \Exception('Incorrect Resource type');
         }
+    }
+
+    /**
+     * Find host by resource
+     * @param ResourceEntity $resource
+     * @return int|null
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    private function generateHostIdByResource(ResourceEntity $resource): ?int
+    {
+        $hostId = null;
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hostId = (int) $resource->getId();
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hostId = (int) $resource->getParent()->getId();
+        } else {
+            throw new \Exception('Incorrect Resource type');
+        }
+        return $hostId;
     }
 }
