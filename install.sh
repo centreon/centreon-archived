@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #----
 ## @Synopsis	Install Script for Centreon project
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -34,14 +34,6 @@
 ##
 ##    For information : infos@centreon.com
 #
-# Todo list
-# - upgrade process 
-# -- 1.x --> 2.x
-# -- 2.x --> 2.x+1
-# -- on upgrade, overwrite existing ? backup ? 
-
-# Debug
-#set -x
 
 #----
 ## Usage information for install.sh
@@ -63,7 +55,7 @@ BASE_DIR=$(dirname $0)
 BASE_DIR=$( cd $BASE_DIR; pwd )
 export BASE_DIR
 if [ -z "${BASE_DIR#/}" ] ; then
-	echo -e "I think it is not right to have Centreon source on slash"
+	echo -e "You cannot select the filesystem root folder"
 	exit 1
 fi
 INSTALL_DIR="$BASE_DIR/libinstall"
@@ -118,7 +110,7 @@ LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
 if [ "${FORCE_NO_ROOT:-0}" -ne 0 ]; then
 	USERID=$(id -u)
 	if [ "$USERID" != "0" ]; then
-	    echo -e "$(gettext "You must exec with root user")"
+	    echo -e "$(gettext "You must launch this script using a root user")"
 	    exit 1
 	fi
 fi
@@ -165,7 +157,7 @@ if [ "$_tmp_install_opts" -eq 0 ] ; then
 fi
 
 #Export variable for all programs
-export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir
+export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir upgrade
 
 ## init LOG_FILE
 # backup old log file...
@@ -183,13 +175,12 @@ define_specific_binary_vars
 ${CAT} << __EOT__
 ###############################################################################
 #                                                                             #
-#                         Centreon (www.centreon.com)                         #
-#                          Thanks for using Centreon                          #
+#                           Centreon (www.centreon.com)                       #
 #                                                                             #
 #                               infos@centreon.com                            #
 #                                                                             #
 #                   Make sure you have installed and configured               #
-#                   sudo - sed - php - apache - rrdtool - mysql               #
+#         centreon-gorgone - sudo - sed - php - apache - rrdtool - mysql      #
 #                                                                             #
 ###############################################################################
 __EOT__
@@ -219,6 +210,21 @@ for binary in $BINARIES; do
 	fi
 done
 
+###### Mandatory step
+# ask if gorgone is already installed
+echo -e "\n$line"
+echo -e "\t$(gettext "Check mandatory gorgone service status")"
+echo -e "$line"
+
+yes_no_default "$(gettext "Is the Gorgone module already installed?")"
+if [ "$?" -ne 0 ] ; then
+    echo_failure "\n$(gettext "Gorgone is required.\nPlease install it before launching this script")" "$fail"
+    echo -e "\n\t$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
+    echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
+    echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
+    exit 1
+fi
+
 # Script stop if one binary wasn't found
 if [ "$binary_fail" -eq 1 ] ; then
 	echo_info "$(gettext "Please check fail binary and retry")"
@@ -234,10 +240,11 @@ if [ "$silent_install" -ne 1 ] ; then
 
 	yes_no_default "$(gettext "Do you accept GPL license ?")" 
 	if [ "$?" -ne 0 ] ; then 
-		echo_info "$(gettext "You do not agree to GPL license ? Okay... have a nice day.")"
+		echo_info "$(gettext "As you did not accept the license, we cannot continue.")"
+		log "INFO" "Installation aborted - License not accepted"
 		exit 1
 	else
-		log "INFO" "$(gettext "You accepted GPL license")"
+		log "INFO" "Accepted the license"
 	fi
 else 
 	if [ "$upgrade" -eq 0 ] ; then
@@ -257,13 +264,13 @@ if [ "$upgrade" -eq 1 ] ; then
 		echo_info "$(gettext "You seem to have an existing Centreon.")\n"
 		yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
 		if [ "$?" -eq 0 ] ; then
-			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)"
+			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)" "$ok"
 			use_upgrade_files="1"
 		fi
 	fi
 fi
 
-if [ "$silent_install" -ne 1 ] ; then 
+if [ "$silent_install" -ne 1 ] ; then
 	echo "$line"
 	echo -e "\t$(gettext "Please choose what you want to install")"
 	echo "$line"
@@ -278,7 +285,6 @@ fi
 ## For a moment, isn't possible to install standalone CentStorage daemon
 ## without CentWeb
 [ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE="0"
-[ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE="2"
 [ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS="2"
 [ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS="2"
 
@@ -288,7 +294,7 @@ if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
     log "INFO" "$(gettext "Created perl library directory")"
 fi
 
-## resquest centreon_www
+## request centreon_www
 if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : Centreon Web Front"
 	if [ "$?" -eq 0 ] ; then
@@ -299,16 +305,7 @@ if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then
 	fi
 fi
 
-## resquest centreon_centcore
-if [ "$PROCESS_CENTCORE" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon CentCore"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTCORE="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon CentCore"
-	fi
-fi
-
-## resquest centreon_plugins
+## request centreon_plugins
 if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : Centreon Nagios Plugins"
 	if [ "$?" -eq 0 ] ; then
@@ -317,7 +314,7 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then
 	fi
 fi
 
-## resquest centreon_snmp_traps
+## request centreon_snmp_traps
 if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then 
 	yes_no_default "$(gettext "Do you want to install") : CentreonTrapd process"
 	if [ "$?" -eq 0 ] ; then
@@ -356,22 +353,6 @@ if [ "$PROCESS_CENTSTORAGE" -eq 1 ] ; then
 		fi
 	fi
 	. $INSTALL_DIR/CentStorage.sh
-fi
-
-## Start CentCore install
-if [ "$PROCESS_CENTCORE" -eq 1 ] ; then
-	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentCore.conf" ] ; then
-		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentCore.conf"
-
-		. $inst_upgrade_dir/instCentCore.conf
-		if [ -n "$NAGIOS_USER" ]; then
-			echo_info "$(gettext "Convert variables for upgrade:")"
-			MONITORINGENGINE_USER=$NAGIOS_USER
-			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
-			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
-		fi
-	fi
-	. $INSTALL_DIR/CentCore.sh
 fi
 
 ## Start CentPlugins install
@@ -415,19 +396,31 @@ server=$(hostname -f)
 # Replace global variables
 
 ${CAT} << __EOT__
+
 ###############################################################################
+#                                                                             #
+#                         Thanks for using Centreon.                          #
+#                          -----------------------                            #
 #                                                                             #
 #                 Go to the URL : http://$server/centreon/                    #
 #                   	     to finish the setup                              #
 #                                                                             #
-#           Report bugs at https://github.com/centreon/centreon/issues        #
+#                Please read the documentation available here :               #
+#                         documentation.centreon.com                          #
 #                                                                             #
-#                         Thanks for using Centreon.                          #
-#                          -----------------------                            #
-#                        Contact : infos@centreon.com                         #
+#      ------------------------------------------------------------------     #
+#                                                                             #
+#         Report bugs at https://github.com/centreon/centreon/issues          #
+#                                                                             #
+#                        Contact : contact@centreon.com                       #
 #                          http://www.centreon.com                            #
 #                                                                             #
+#                          -----------------------                            #
+#              For security issues, please read our security policy           #
+#              https://github.com/centreon/centreon/security/policy           #
+#                                                                             #
 ###############################################################################
+
 __EOT__
 
 

@@ -205,14 +205,14 @@ paths:
 
         ---
 
-        * host.group
-        * host.group.id
-        * host.name
-        * host.alias
-        * host.address
-        * service.description
-        * service.group
-        * service.group.id
+        * h.group
+        * h.group.id
+        * h.name
+        * h.alias
+        * h.address
+        * s.description
+        * s.group
+        * s.group.id
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -588,6 +588,31 @@ paths:
                         - $ref: '#/components/schemas/Acknowledgement.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/acknowledgements/disacknowledge:
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Mass disacknowledge resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+                      - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      responses:
+        '204':
+          description: "OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1499,7 +1524,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          description: "Host or service not found"
+          $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/metrics/status:
@@ -1576,7 +1601,7 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
-          description: "Host or service not found"
+          $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -1889,6 +1914,20 @@ components:
                 example: "You are not authorized to access this resource"
     NotFound:
       description: "Not Found"
+    NotFoundHostOrService:
+      description: "Host or service not found"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                example: 404
+              message:
+                type: string
+                example: "Host 12 not found"
     InternalServerError:
       description: "Internal Server Error"
       content:
@@ -2006,10 +2045,14 @@ components:
           type: boolean
           description: "Indicates whether it's the default server"
           example: true
-        ssh_port:
+        gorgone_communication_type:
           type: integer
-          description: "SSH port of the server"
-          example: 22
+          description: "Communication type used by Gorgone to communicate with the server"
+          example: 1
+        gorgone_port:
+          type: integer
+          description: "Port used by Gorgone to communicate with the server"
+          example: 5556
         last_restart:
           type: string
           format: date-time
@@ -2070,7 +2113,7 @@ components:
           type: integer
           description: "ID of the master Remote Server linked to the server"
           example: null
-        remote_server_centcore_ssh_proxy:
+        remote_server_use_as_proxy:
           type: boolean
           description: "Indicates whether Remote Servers are used as SSH proxies"
           example: true
@@ -2328,6 +2371,38 @@ components:
         allOf:
           - $ref: '#/components/schemas/Check.Service'
           - $ref: '#/components/schemas/Bulk.Resource.Id'
+    Monitoring.Resource.Disacknowledge.Host:
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of the resource"
+          example: "service|host"
+        id:
+          type: integer
+          format: int32
+          description: "ID of the resource"
+          example: 12
+    Monitoring.Resource.Disacknowledge.Service:
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of the resource"
+          example: "service|host"
+        id:
+          type: integer
+          format: int32
+          description: "ID of the resource"
+          example: 12
+        parent:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: "ID of the parent resource"
+              example: 12
     Monitoring.ResourceMain:
       type: object
       properties:
@@ -2410,6 +2485,16 @@ components:
                     * CRITICAL
                     * UNKNOWN
                   example: "UP"
+                severity_code:
+                  type: integer
+                  description: |
+                    resource status name
+                    * `1` - DOWN or CRITICAL
+                    * `2` - WARNING
+                    * `3` - UNKNOWN or UNREACHABLE
+                    * `4` - PENDING
+                    * `5` - UP or OK
+                  example: 1
             icon:
               type: object
               properties:
@@ -2447,6 +2532,16 @@ components:
                 * CRITICAL
                 * UNKNOWN
               example: "UP"
+            severity_code:
+              type: integer
+              description: |
+                resource status name
+                * `1` - DOWN or CRITICAL
+                * `2` - WARNING
+                * `3` - UNKNOWN or UNREACHABLE
+                * `4` - PENDING
+                * `5` - UP or OK
+              example: 1
         in_downtime:
           type: boolean
           description: "Indicates whether resource is in downtime"

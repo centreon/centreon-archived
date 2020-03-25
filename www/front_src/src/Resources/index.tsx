@@ -3,14 +3,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core';
-
 import { lime, purple } from '@material-ui/core/colors';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
-import { ResourceListing } from './models';
-import columns from './columns';
+import { ResourceListing, Resource } from './models';
+import getColumns from './columns';
 import Filter from './Filter';
 import {
   filterById,
@@ -18,6 +17,7 @@ import {
   Filter as FilterModel,
   FilterGroup,
 } from './Filter/models';
+import Actions from './Actions';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -42,6 +42,13 @@ const Resources = (): JSX.Element => {
   const classes = useStyles();
 
   const [listing, setListing] = useState<ResourceListing>();
+  const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
+    [],
+  );
+  const [resourcesToAcknowledge, setResourcesToAcknoweledge] = React.useState<
+    Array<Resource>
+  >([]);
+
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
@@ -179,6 +186,16 @@ const Resources = (): JSX.Element => {
     setStates(defaultFilter.criterias.states);
   };
 
+  const selectResources = (resources): void => {
+    setSelectedResources(resources);
+  };
+
+  const confirmAndLoad = (): void => {
+    load();
+    selectResources([]);
+    setResourcesToAcknoweledge([]);
+  };
+
   const rowColorConditions = [
     {
       name: 'inDowntime',
@@ -191,6 +208,36 @@ const Resources = (): JSX.Element => {
       color: lime[900],
     },
   ];
+
+  const prepareToAcknowledge = (resources): void => {
+    setResourcesToAcknoweledge(resources);
+  };
+
+  const prepareSelectedToAcknowledge = (): void => {
+    prepareToAcknowledge(selectedResources);
+  };
+
+  const cancelAcknowledge = (): void => {
+    prepareToAcknowledge([]);
+  };
+
+  const columns = getColumns({
+    onAcknowledge: (resource) => {
+      prepareToAcknowledge([resource]);
+    },
+  });
+
+  const hasSelectedResources = selectedResources.length > 0;
+
+  const ResourceActions = (
+    <Actions
+      disabled={!hasSelectedResources}
+      resourcesToAcknowledge={resourcesToAcknowledge}
+      onPrepareToAcknowledge={prepareSelectedToAcknowledge}
+      onCancelAcknowledge={cancelAcknowledge}
+      onSuccess={confirmAndLoad}
+    />
+  );
 
   return (
     <div className={classes.page}>
@@ -213,6 +260,8 @@ const Resources = (): JSX.Element => {
       />
       <div className={classes.listing}>
         <Listing
+          checkable
+          Actions={ResourceActions}
           loading={loading}
           columnConfiguration={columns}
           tableData={listing?.result}
@@ -227,7 +276,8 @@ const Resources = (): JSX.Element => {
           sortf={sortf}
           sorto={sorto}
           totalRows={listing?.meta.total}
-          checkable={false}
+          onSelectRows={selectResources}
+          selectedRows={selectedResources}
         />
       </div>
     </div>

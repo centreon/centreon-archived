@@ -30,14 +30,14 @@ class ExtensionsRoute extends Component {
       module: { entities: [] },
       widget: { entities: [] },
     },
-    widgetsActive: true,
-    modulesActive: true,
+    widgetsActive: false,
+    modulesActive: false,
     modalDetailsActive: false,
     modalDetailsLoading: false,
     modalDetailsType: 'module',
-    not_installed: true,
-    installed: true,
-    updated: true,
+    not_installed: false,
+    installed: false,
+    updated: false,
     search: '',
     deleteToggled: false,
     deletingEntity: false,
@@ -71,11 +71,11 @@ class ExtensionsRoute extends Component {
   clearFilters = () => {
     this.setState(
       {
-        widgetsActive: true,
-        modulesActive: true,
-        not_installed: true,
-        installed: true,
-        updated: true,
+        widgetsActive: false,
+        modulesActive: false,
+        not_installed: false,
+        installed: false,
+        updated: false,
         nothingShown: false,
         search: '',
       },
@@ -126,7 +126,7 @@ class ExtensionsRoute extends Component {
           );
         },
       );
-    } else if (widgetsActive) {
+    } else if (modulesActive) {
       this.getEntitiesByKeyAndVersionParam(
         param,
         equals,
@@ -137,8 +137,8 @@ class ExtensionsRoute extends Component {
           }
         },
       );
-    } else if (modulesActive) {
-      // inverted because of inverse logic for switchers on/off false/true
+    } else if (widgetsActive) {
+      // inverted because of inverse logic for switches on/off false/true
       this.getEntitiesByKeyAndVersionParam(
         param,
         equals,
@@ -330,13 +330,13 @@ class ExtensionsRoute extends Component {
     } else if (!installed && !not_installed && !updated) {
       callback(params, nothingShown);
     } else {
-      if (!updated) {
+      if (updated) {
         params += '&updated=false';
       }
       if (!installed && not_installed) {
-        params += '&installed=true';
-      } else if (installed && !not_installed) {
         params += '&installed=false';
+      } else if (installed && !not_installed) {
+        params += '&installed=true';
       }
       callback(params, nothingShown);
     }
@@ -434,24 +434,24 @@ class ExtensionsRoute extends Component {
             filterKey: 'search',
           }}
           onChange={this.onChange.bind(this)}
-          switchers={[
+          switches={[
             [
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
-                switcherTitle: 'Status',
-                switcherStatus: 'Not installed',
+                switchTitle: 'Status',
+                switchStatus: 'Not installed',
                 value: not_installed,
                 filterKey: 'not_installed',
               },
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
-                switcherStatus: 'Installed',
+                switchStatus: 'Installed',
                 value: installed,
                 filterKey: 'installed',
               },
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
-                switcherStatus: 'Outdated',
+                switchStatus: 'Outdated',
                 value: updated,
                 filterKey: 'updated',
               },
@@ -459,14 +459,14 @@ class ExtensionsRoute extends Component {
             [
               {
                 customClass: 'container__col-sm-3 container__col-xs-4',
-                switcherTitle: 'Type',
-                switcherStatus: 'Module',
+                switchTitle: 'Type',
+                switchStatus: 'Module',
                 value: modulesActive,
                 filterKey: 'modulesActive',
               },
               {
                 customClass: 'container__col-sm-3 container__col-xs-4',
-                switcherStatus: 'Widget',
+                switchStatus: 'Widget',
                 value: widgetsActive,
                 filterKey: 'widgetsActive',
               },
@@ -526,12 +526,12 @@ class ExtensionsRoute extends Component {
               'extensionsInstallingStatus',
             )}
           />
-          <Hook path="/administration/extensions/manager/button" />
+          <Hook path="/administration/extensions/manager" />
         </Wrapper>
         {extensions.result && !nothingShown ? (
           <>
             {extensions.result.module &&
-            (!modulesActive || (modulesActive && widgetsActive)) ? (
+            (modulesActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}
@@ -545,7 +545,7 @@ class ExtensionsRoute extends Component {
               />
             ) : null}
             {extensions.result.widget &&
-            (!widgetsActive || (modulesActive && widgetsActive)) ? (
+            (widgetsActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}

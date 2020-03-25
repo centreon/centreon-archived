@@ -271,7 +271,6 @@ License agreement
 -----------------
 
 ::
-
     This General Public License does not permit incorporating your program into
     proprietary programs.  If your program is a subroutine library, you may
     consider it more useful to permit linking proprietary applications with the
@@ -310,8 +309,7 @@ Answer [y] to all the questions: ::
 Definition of installation paths
 --------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
             Start CentWeb Installation
     ------------------------------------------------------------------------
@@ -330,7 +328,7 @@ Definition of installation paths
     > y
     Path /var/log/centreon                                     OK
 
-    ::
+::
 
     Where is your Centreon etc directory ?
     default to [/etc/centreon]
@@ -407,8 +405,7 @@ the user will likely be *centreon-broker*. ::
 Monitoring logs directory
 -------------------------
 
-    ::
-
+::
     What is the Monitoring engine log directory ?[/var/log/centreon-engine]
     default to [/var/log/centreon-engine]
     >
@@ -423,8 +420,7 @@ Monitoring logs directory
 Sudo configuration
 ------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Configure Sudo
     ------------------------------------------------------------------------
@@ -463,8 +459,7 @@ Sudo configuration
 Apache configuration
 --------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
       	  Configure Apache server
     ------------------------------------------------------------------------
@@ -484,8 +479,7 @@ Apache configuration
 PHP FPM configuration
 ---------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
       	  Configure PHP FPM service
     ------------------------------------------------------------------------
@@ -553,8 +547,7 @@ PHP FPM configuration
 Pear module installation
 ------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     Pear Modules
     ------------------------------------------------------------------------
@@ -569,8 +562,7 @@ Pear module installation
 Configuration file installation
 -------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     		  Centreon Post Install
     ------------------------------------------------------------------------
@@ -580,8 +572,7 @@ Configuration file installation
 Performance data component (CentStorage) installation
 -----------------------------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Starting CentStorage Installation
     ------------------------------------------------------------------------
@@ -619,8 +610,7 @@ Performance data component (CentStorage) installation
 Poller communication subsystem (CentCore) installation
 ------------------------------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Starting CentCore Installation
     ------------------------------------------------------------------------
@@ -644,17 +634,10 @@ Poller communication subsystem (CentCore) installation
     CentCore init script installed                             OK
     CentCore default script installed                          OK
 
-    Do you want me to install CentCore run level ?
-    [y/n], default to [n]:
-    > y
-    CentCore Perl lib installed                                OK
-    Create /etc/centreon/instCentCore.conf                     OK
-
 Plugin installation
 -------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
     	  Starting Centreon Plugins Installation
     ------------------------------------------------------------------------
@@ -674,8 +657,7 @@ Plugin installation
 Centreon SNMP trap management installation
 ------------------------------------------
 
-    ::
-
+::
     ------------------------------------------------------------------------
      	  Starting CentreonTrapD Installation
     ------------------------------------------------------------------------

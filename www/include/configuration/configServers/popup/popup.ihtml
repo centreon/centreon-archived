@@ -1,0 +1,32 @@
+<h3 style="text-align: center;"> Gorgone configuration file :</h3>
+<br>
+<div  style="background-color: #ededed; padding: 4px;">
+    <pre id='configuration_file' style="overflow-x: auto;">{$args}</pre>
+    <br>
+    <pre id='command_configuration_file' style="overflow-x: auto; display: none">
+cat &lt;&lt;EOF &gt; /etc/centreon-gorgone/config.d/40-gorgoned.yaml
+{$args}
+EOF</pre>
+    {if $gorgoneError == '0'}
+    <div style="text-align: center;">
+        <button class="btn-copy" data-clipboard-target="#configuration_file">
+            <img src="./img/icons/clipboard.png" style="vertical-align: middle;" class="ico-14"
+                 alt="Copy to clipboard"/>
+            Copy to clipboard
+        </button>
+    </div>
+    {/if}
+</div>
+
+{literal}
+<script type='text/javascript'>
+    jQuery('#loading').hide();
+    var clipboard = new Clipboard('.btn-copy', {
+        text: function () {
+            var command = document.querySelector('#command_configuration_file').textContent;
+            re = /\n\t/g;
+            return command.replace(re, ' ');
+        }
+    });
+</script>
+{/literal}

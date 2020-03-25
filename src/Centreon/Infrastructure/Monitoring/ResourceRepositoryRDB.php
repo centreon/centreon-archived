@@ -37,7 +37,6 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
-use CentreonDuration;
 use PDO;
 
 /**
@@ -83,26 +82,26 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
         'information' => 'resource.information',
-        'host.group' => 'hg.name',
-        'host.group.id' => 'hhg.hostgroup_id',
+        'h.group' => 'hg.name',
+        'h.group.id' => 'hhg.hostgroup_id',
     ];
 
     /**
      * @var array Association of host search parameters
      */
     private $hostConcordances = [
-        'host.name' => 'h.name',
-        'host.alias' => 'h.alias',
-        'host.address' => 'h.address',
+        'h.name' => 'h.name',
+        'h.alias' => 'h.alias',
+        'h.address' => 'h.address',
     ];
 
     /**
      * @var array Association of service search parameters
      */
     private $serviceConcordances = [
-        'host.name' => 'sh.name',
-        'host.alias' => 'sh.alias',
-        'host.address' => 'sh.address',
+        'h.name' => 'sh.name',
+        'h.alias' => 'sh.alias',
+        'h.address' => 'sh.address',
         'service.description' => 's.description',
         'service.group' => 'sg.name',
         'service.group.id' => 'ssg.servicegroup_id',
@@ -131,9 +130,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function filterByAccessGroups(?array $accessGroups): self
+    public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
     {
         $this->accessGroups = $accessGroups;
 
@@ -247,15 +246,27 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      *
      * @return bool
      */
-    private function hasServiceSearch()
+    private function hasServiceSearch(): bool
+    {
+        return $this->extractSpecificSearchCriteria('/^s\./')
+            && !$this->extractSpecificSearchCriteria('/^h\./');
+    }
+
+    /**
+     * Extract request parameters
+     *
+     * @param string $key
+     * @return bool
+     */
+    private function extractSpecificSearchCriteria(string $key)
     {
         $requestParameters = $this->sqlRequestTranslator->getRequestParameters();
         $search = $requestParameters->getSearch();
 
         $serviceConcordances = array_reduce(
             array_keys($this->serviceConcordances),
-            function ($acc, $concordanceKey) {
-                if (preg_match('/^service\./', $concordanceKey)) {
+            function ($acc, $concordanceKey) use ($key) {
+                if (preg_match($key, $concordanceKey)) {
                     $acc[] = $concordanceKey;
                 }
                 return $acc;
@@ -371,7 +382,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
-                AND sh.state = 0
                 AND sh.name NOT LIKE :serviceModule
                 AND sh.enabled = 1";
         $collector->addValue(':serviceModule', '_Module_%');
