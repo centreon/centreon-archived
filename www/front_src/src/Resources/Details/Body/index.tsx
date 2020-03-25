@@ -8,10 +8,23 @@ import DetailsTab from './DetailsTab';
 
 const useStyles = makeStyles((theme) => {
   return {
-    content: {
-      padding: 10,
-      backgroundColor: theme.palette.background.default,
+    body: {
+      display: 'grid',
+      gridTemplateRows: 'auto 1fr',
       height: '100%',
+    },
+    contentContainer: {
+      backgroundColor: theme.palette.background.default,
+      position: 'relative',
+    },
+    contentTab: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      top: 0,
+      overflowY: 'auto',
+      padding: 10,
     },
   };
 });
@@ -26,7 +39,7 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
   };
 
   return (
-    <>
+    <div className={classes.body}>
       <Tabs
         variant="fullWidth"
         value={selectedTabId}
@@ -37,10 +50,12 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
         <Tab label={labelDetails} />
         <Tab label={labelGraph} />
       </Tabs>
-      <div className={classes.content}>
-        {selectedTabId === 0 && <DetailsTab details={details} />}
+      <div className={classes.contentContainer}>
+        <div className={classes.contentTab}>
+          {selectedTabId === 0 && <DetailsTab details={details} />}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

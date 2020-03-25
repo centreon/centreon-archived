@@ -22,18 +22,27 @@ import { rowColorConditions } from './colors';
 
 const useStyles = makeStyles((theme) => ({
   page: {
+    display: 'grid',
+    gridTemplateRows: 'auto 1fr',
     backgroundColor: theme.palette.background.default,
+    overflowY: 'hidden',
+  },
+  filter: {
+    zIndex: 4,
+  },
+  body: {
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr 550px',
   },
   panel: {
-    position: 'absolute',
-    right: 0,
-    height: '100%',
-    width: 500,
+    gridArea: '1 / 2',
     zIndex: 3,
   },
   listing: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    gridArea: '1 / 1 / 1 / span 2',
   },
 }));
 
@@ -247,49 +256,53 @@ const Resources = (): JSX.Element => {
 
   return (
     <div className={classes.page}>
-      <Filter
-        filter={filter}
-        onFilterGroupChange={changeFilter}
-        selectedResourceTypes={resourceTypes}
-        onResourceTypesChange={changeResourceTypes}
-        selectedStates={states}
-        onStatesChange={changeStates}
-        selectedStatuses={statuses}
-        onStatusesChange={changeStatuses}
-        onSearchRequest={doSearch}
-        onHostGroupsChange={changeHostGroups}
-        selectedHostGroups={hostGroups}
-        onServiceGroupsChange={changeServiceGroups}
-        selectedServiceGroups={serviceGroups}
-        onClearAll={clearAllFilters}
-        currentSearch={search}
-      />
-      <div className={classes.panel}>
-        <Details
-          resourceId={selectedResourceId}
-          onClose={clearSelectedResource}
+      <div className={classes.filter}>
+        <Filter
+          filter={filter}
+          onFilterGroupChange={changeFilter}
+          selectedResourceTypes={resourceTypes}
+          onResourceTypesChange={changeResourceTypes}
+          selectedStates={states}
+          onStatesChange={changeStates}
+          selectedStatuses={statuses}
+          onStatusesChange={changeStatuses}
+          onSearchRequest={doSearch}
+          onHostGroupsChange={changeHostGroups}
+          selectedHostGroups={hostGroups}
+          onServiceGroupsChange={changeServiceGroups}
+          selectedServiceGroups={serviceGroups}
+          onClearAll={clearAllFilters}
+          currentSearch={search}
         />
       </div>
-      <div className={classes.listing}>
-        <Listing
-          checkable
-          Actions={ResourceActions}
-          loading={loading}
-          columnConfiguration={columns}
-          tableData={listing?.result}
-          currentPage={page - 1}
-          rowColorConditions={rowColorConditions}
-          limit={listing?.meta.limit}
-          onSort={changeSort}
-          onPaginationLimitChanged={changeLimit}
-          onPaginate={changePage}
-          sortf={sortf}
-          sorto={sorto}
-          totalRows={listing?.meta.total}
-          onSelectRows={selectResources}
-          selectedRows={selectedResources}
-          onRowClick={selectResource}
-        />
+      <div className={classes.body}>
+        <div className={classes.panel}>
+          <Details
+            resourceId={selectedResourceId}
+            onClose={clearSelectedResource}
+          />
+        </div>
+        <div className={classes.listing}>
+          <Listing
+            checkable
+            Actions={ResourceActions}
+            loading={loading}
+            columnConfiguration={columns}
+            tableData={listing?.result}
+            currentPage={page - 1}
+            rowColorConditions={rowColorConditions}
+            limit={listing?.meta.limit}
+            onSort={changeSort}
+            onPaginationLimitChanged={changeLimit}
+            onPaginate={changePage}
+            sortf={sortf}
+            sorto={sorto}
+            totalRows={listing?.meta.total}
+            onSelectRows={selectResources}
+            selectedRows={selectedResources}
+            onRowClick={selectResource}
+          />
+        </div>
       </div>
     </div>
   );

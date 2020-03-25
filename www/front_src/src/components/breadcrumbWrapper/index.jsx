@@ -29,12 +29,7 @@ const BreadcrumbWrapper = ({ breadcrumbs, path, children, ...others }) => {
     path,
   ]);
 
-  return (
-    <>
-      <Breadcrumb breadcrumbs={breadcrumbPath} {...others} />
-      {children}
-    </>
-  );
+  return <Breadcrumb breadcrumbs={breadcrumbPath} {...others} />;
 };
 
 const mapStateToProps = (state) => ({

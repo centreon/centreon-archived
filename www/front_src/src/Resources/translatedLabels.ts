@@ -6,6 +6,7 @@ export const labelAcknowledgedBy = I18n.t('Acknowledged by');
 export const labelAcknowledgeServices = I18n.t(
   'Acknowledge services attached to host',
 );
+export const labelAt = I18n.t('at');
 export const labelAll = I18n.t('All');
 export const labelAuthor = I18n.t('Author');
 export const labelComment = I18n.t('Comment');
@@ -13,6 +14,7 @@ export const labelCancel = I18n.t('Cancel');
 export const labelClearAll = I18n.t('Clear all');
 export const labelCriterias = I18n.t('Criterias');
 export const labelCritical = I18n.t('Critical');
+export const labelCurrentStateDuration = I18n.t('Current state duration');
 export const labelDetails = I18n.t('Details');
 export const labelDown = I18n.t('Down');
 export const labelDowntimeDuration = I18n.t('Downtime duration');

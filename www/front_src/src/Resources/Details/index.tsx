@@ -2,26 +2,29 @@ import * as React from 'react';
 
 import { Paper, makeStyles, Grid, Divider } from '@material-ui/core';
 
-import {
-  useCancelTokenSource,
-  getData,
-  useSnackbar,
-  Loader,
-  Severity as SnackbarSeverity,
-} from '@centreon/ui';
+import { Loader } from '@centreon/ui';
 
-import { labelSomethingWentWrong } from '../translatedLabels';
 import { Status, Parent, Downtime, Acknowledgement } from '../models';
 import Header from './Header';
 import Body from './Body';
+import useGet from '../useGet';
 
 const useStyles = makeStyles(() => {
   return {
     details: {
       height: '100%',
+      display: 'grid',
+      gridTemplate: 'auto auto 1fr / 1fr',
     },
     header: {
+      gridArea: '1 / 1 / 2 / 1',
       padding: 8,
+    },
+    divider: {
+      gridArea: '2 / 1 / 3 / 1',
+    },
+    body: {
+      gridArea: '3 / 1 / 4 / 1',
     },
   };
 });
@@ -39,31 +42,9 @@ export interface ResourceDetails {
   output: string;
   downtimes?: Array<Downtime>;
   acknowledgement?: Acknowledgement;
+  duration: string;
+  tries: string;
 }
-
-const useGet = ({ onSuccess, endpoint }): (() => Promise<unknown>) => {
-  const { token, cancel } = useCancelTokenSource();
-  const { showMessage } = useSnackbar();
-
-  React.useEffect(() => {
-    return (): void => cancel();
-  }, []);
-
-  return (): Promise<unknown> =>
-    getData({
-      endpoint,
-      requestParams: { cancelToken: token },
-    })
-      .then((entity) => {
-        onSuccess(entity);
-      })
-      .catch(() =>
-        showMessage({
-          message: labelSomethingWentWrong,
-          severity: SnackbarSeverity.error,
-        }),
-      );
-};
 
 export interface DetailsSectionProps {
   details: ResourceDetails;
@@ -95,17 +76,13 @@ const Details = ({ resourceId, onClose }: Props): JSX.Element | null => {
 
   return (
     <Paper variant="outlined" elevation={2} className={classes.details}>
-      <Grid container direction="column">
-        <Grid item className={classes.header}>
-          <Header details={details} onClickClose={onClose} />
-        </Grid>
-        <Grid item>
-          <Divider />
-        </Grid>
-        <Grid item>
-          <Body details={details} />
-        </Grid>
-      </Grid>
+      <div className={classes.header}>
+        <Header details={details} onClickClose={onClose} />
+      </div>
+      <Divider className={classes.divider} />
+      <div className={classes.body}>
+        <Body details={details} />
+      </div>
     </Paper>
   );
 };
