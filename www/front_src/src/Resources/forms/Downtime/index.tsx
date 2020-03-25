@@ -8,7 +8,7 @@ import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 import {
   labelRequired,
   labelSomethingWentWrong,
-  labelSuccessfullyAcknowledged,
+  labelDowntimeCommandSent,
   labelDowntimeBy,
   labelEndDateMustBeGreater,
 } from '../../translatedLabels';
@@ -149,7 +149,7 @@ const DowntimeForm = ({
         cancelToken: token,
       })
         .then(() => {
-          showSuccess(labelSuccessfullyAcknowledged);
+          showSuccess(labelDowntimeCommandSent);
           onSuccess();
         })
         .catch(() => showError(labelSomethingWentWrong))

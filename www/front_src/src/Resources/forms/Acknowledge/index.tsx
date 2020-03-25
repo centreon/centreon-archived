@@ -8,7 +8,7 @@ import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 import {
   labelRequired,
   labelSomethingWentWrong,
-  labelSuccessfullyAcknowledged,
+  labelAcknowledgeCommandSent,
   labelAcknowledgedBy,
 } from '../../translatedLabels';
 import DialogAcknowledge from './Dialog';
@@ -57,7 +57,7 @@ const AcknowledgeForm = ({
         cancelToken: token,
       })
         .then(() => {
-          showSuccess(labelSuccessfullyAcknowledged);
+          showSuccess(labelAcknowledgeCommandSent);
           onSuccess();
         })
         .catch(() => showError(labelSomethingWentWrong))

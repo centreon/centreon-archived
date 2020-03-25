@@ -82,9 +82,8 @@ export const labelServiceGroup = I18n.t('Service group');
 export const labelStartTime = I18n.t('Start time');
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
-export const labelSuccessfullyAcknowledged = I18n.t(
-  'Successfully acknowledged',
-);
+export const labelAcknowledgeCommandSent = I18n.t('Acknowledge command sent');
+export const labelDowntimeCommandSent = I18n.t('Downtime command sent');
 export const labelTypeOfResource = I18n.t('Type of resource');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
 export const labelUnhandled = I18n.t('Unhandled');
