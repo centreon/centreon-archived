@@ -106,7 +106,8 @@ const DowntimeForm = ({
   const [locale, setLocale] = React.useState<string | null>('en');
 
   const currentDate = new Date();
-  const twoHoursLaterDate = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);
+  const twoHoursMs = 2 * 60 * 60 * 1000;
+  const twoHoursLaterDate = new Date(currentDate.getTime() + twoHoursMs);
 
   const form = useFormik({
     initialValues: {
