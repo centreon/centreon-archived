@@ -119,13 +119,4 @@ const Actions = ({
   );
 };
 
-export default React.memo(
-  Actions,
-  (prevProps, nextProps) =>
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.resourcesToAcknowledge.length ===
-      nextProps.resourcesToAcknowledge.length &&
-    prevProps.resourcesToSetDowntime.length ===
-      nextProps.resourcesToSetDowntime.length &&
-    prevProps.resourcesToCheck.length === nextProps.resourcesToCheck.length,
-);
+export default Actions;

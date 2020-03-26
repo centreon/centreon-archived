@@ -101,4 +101,8 @@ const AcknowledgeForm = ({
   );
 };
 
-export default AcknowledgeForm;
+export default React.memo(
+  AcknowledgeForm,
+  (prevProps, nextProps) =>
+    prevProps.resources.length === nextProps.resources.length,
+);

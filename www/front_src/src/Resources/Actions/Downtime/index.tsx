@@ -194,4 +194,8 @@ const DowntimeForm = ({
   );
 };
 
-export default DowntimeForm;
+export default React.memo(
+  DowntimeForm,
+  (prevProps, nextProps) =>
+    prevProps.resources.length === nextProps.resources.length,
+);
