@@ -154,8 +154,9 @@ if (
     && $centreon->optGen['monitoring_dwt_duration']
 ) {
     $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
-    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
-        $centreon->optGen['monitoring_dwt_duration_scale']
+    if (
+        isset($centreon->optGen['monitoring_dwt_duration_scale'])
+        && $centreon->optGen['monitoring_dwt_duration_scale']
     ) {
         $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
     }
