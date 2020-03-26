@@ -279,8 +279,9 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
     $defaultDuration = 7200;
     $defaultScale = 's';
-    if (isset($centreon->optGen['monitoring_dwt_duration']) &&
-        $centreon->optGen['monitoring_dwt_duration']
+    if (
+        isset($centreon->optGen['monitoring_dwt_duration'])
+        && $centreon->optGen['monitoring_dwt_duration']
     ) {
         $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
         if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
