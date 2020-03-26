@@ -61,7 +61,7 @@ Centreon\Domain\Downtime\Downtime:
                 - 'downtime_main'
                 - 'downtime_event_list'
         endTime:
-            type: DateTime<'Y-m-d\TH:i:sP'>
+            type: DateTime
             groups:
                 - 'Default'
                 - 'downtime_main'
@@ -80,7 +80,7 @@ Centreon\Domain\Downtime\Downtime:
                 - 'Default'
                 - 'downtime_main'
         startTime:
-            type: DateTime<'Y-m-d\TH:i:sP'>
+            type: DateTime
             groups:
                 - 'Default'
                 - 'downtime_main'

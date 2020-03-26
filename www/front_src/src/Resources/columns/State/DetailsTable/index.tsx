@@ -25,7 +25,7 @@ import { Listing } from '../../../models';
 import { Column } from '../..';
 
 const getFormattedDate = (isoDate): string =>
-  format(parseISO(isoDate), 'MM/dd/yyyy H:m');
+  format(parseISO(isoDate), 'MM/dd/yyyy HH:mm');
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
