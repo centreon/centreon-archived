@@ -151,6 +151,22 @@ function testExistence($name = null): bool
 }
 
 /**
+ * Test is the IP address is a valid IPv4/IPv6 or FQDN
+ *
+ * @param string $ipAddress The IP address to test
+ * @return bool
+ */
+function isValidIpAddress($ipAddress): bool
+{
+    // Check IPv6, IPv4 and FQDN format
+    if (!filter_var($ipAddress, FILTER_VALIDATE_DOMAIN) && !filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
  * Enable a server
  *
  * @global CentreonDB $pearDB DB connector

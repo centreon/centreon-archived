@@ -50,6 +50,7 @@ class CentreonInstance extends CentreonObject
     const ORDER_UNIQUENAME = 0;
     const ORDER_ADDRESS = 1;
     const ORDER_SSH_PORT = 2;
+    const INCORRECTIPADDRESS = "Invalid IP address format";
 
     /**
      * Constructor
@@ -107,6 +108,15 @@ class CentreonInstance extends CentreonObject
             throw new CentreonClapiException('Incorrect port parameters');
         }
         $addParams['ssh_port'] = $params[self::ORDER_SSH_PORT];
+
+        // Check IPv6, IPv4 and FQDN format
+        if (
+            !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_DOMAIN)
+            && !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_IP)
+        ) {
+            throw new CentreonClapiException(self::INCORRECTIPADDRESS);
+        }
+
         if ($addParams['ns_ip_address'] == "127.0.0.1" || strtolower($addParams['ns_ip_address']) == "localhost") {
             $this->params['localhost'] = '1';
         }
@@ -124,6 +134,15 @@ class CentreonInstance extends CentreonObject
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+
+        // Check IPv6, IPv4 and FQDN format
+        if (
+            $params[1] == 'ns_ip_address'
+            && !filter_var($params[2], FILTER_VALIDATE_DOMAIN)
+            && !filter_var($params[2], FILTER_VALIDATE_IP)
+        ) {
+            throw new CentreonClapiException(self::INCORRECTIPADDRESS);
         }
 
         $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
