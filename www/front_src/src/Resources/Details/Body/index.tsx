@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { Tabs, Tab, makeStyles } from '@material-ui/core';
+import { Tabs, Tab, makeStyles, Grid, styled } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
 import { labelDetails, labelGraph } from '../../translatedLabels';
 import { DetailsSectionProps } from '..';
@@ -24,10 +25,29 @@ const useStyles = makeStyles((theme) => {
       right: 0,
       top: 0,
       overflowY: 'auto',
+      overflowX: 'hidden',
       padding: 10,
     },
   };
 });
+
+const CardSkeleton = styled(Skeleton)(() => ({
+  transform: 'none',
+}));
+
+const LoadingSkeleton = (): JSX.Element => (
+  <Grid container spacing={2} direction="column">
+    <Grid item>
+      <CardSkeleton height={120} />
+    </Grid>
+    <Grid item>
+      <CardSkeleton height={75} />
+    </Grid>
+    <Grid item>
+      <CardSkeleton height={75} />
+    </Grid>
+  </Grid>
+);
 
 const Body = ({ details }: DetailsSectionProps): JSX.Element => {
   const classes = useStyles(details);
@@ -38,6 +58,8 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
     setSelectedTabId(id);
   };
 
+  const loading = details === undefined;
+
   return (
     <div className={classes.body}>
       <Tabs
@@ -47,12 +69,16 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
         textColor="primary"
         onChange={changeSelectedTabId}
       >
-        <Tab label={labelDetails} />
-        <Tab label={labelGraph} />
+        <Tab label={labelDetails} disabled={loading} />
+        <Tab label={labelGraph} disabled={loading} />
       </Tabs>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
-          {selectedTabId === 0 && <DetailsTab details={details} />}
+          {loading ? (
+            <LoadingSkeleton />
+          ) : (
+            selectedTabId === 0 && !loading && <DetailsTab details={details} />
+          )}
         </div>
       </div>
     </div>

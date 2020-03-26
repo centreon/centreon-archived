@@ -12,7 +12,7 @@ import {
   labelComment,
 } from '../../../translatedLabels';
 import DetailsTable, { DetailsTableProps } from '.';
-import getFormattedDate from '../../../getFormattedDate';
+import { getFormattedDateTime } from '../../../dateTime';
 
 interface DowntimeDetails {
   author_name: string;
@@ -44,13 +44,14 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       label: labelStartTime,
       type: TABLE_COLUMN_TYPES.string,
       getFormattedString: ({ start_time }): string =>
-        getFormattedDate(start_time),
+        getFormattedDateTime(start_time),
     },
     {
       id: 'end_time',
       label: labelEndTime,
       type: TABLE_COLUMN_TYPES.string,
-      getFormattedString: ({ end_time }): string => getFormattedDate(end_time),
+      getFormattedString: ({ end_time }): string =>
+        getFormattedDateTime(end_time),
     },
 
     {

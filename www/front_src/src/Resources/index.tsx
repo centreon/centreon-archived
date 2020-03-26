@@ -276,12 +276,14 @@ const Resources = (): JSX.Element => {
         />
       </div>
       <div className={classes.body}>
-        <div className={classes.panel}>
-          <Details
-            resourceId={selectedResourceId}
-            onClose={clearSelectedResource}
-          />
-        </div>
+        {selectedResourceId && (
+          <div className={classes.panel}>
+            <Details
+              resourceId={selectedResourceId}
+              onClose={clearSelectedResource}
+            />
+          </div>
+        )}
         <div className={classes.listing}>
           <Listing
             checkable

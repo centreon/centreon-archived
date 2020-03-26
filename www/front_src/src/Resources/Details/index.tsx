@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Paper, makeStyles, Grid, Divider } from '@material-ui/core';
+import { Paper, makeStyles, Divider } from '@material-ui/core';
 
 import { Loader } from '@centreon/ui';
 
@@ -44,6 +44,20 @@ export interface ResourceDetails {
   acknowledgement?: Acknowledgement;
   duration: string;
   tries: string;
+  poller_name?: string;
+  timezone?: string;
+  last_state_change: string;
+  last_check: string;
+  next_check: string;
+  active_checks: boolean;
+  execution_time: number;
+  latency: number;
+  flapping: boolean;
+  percent_state_change: number;
+  last_notification: string;
+  notification_number: number;
+  performance_data: string;
+  check_command: string;
 }
 
 export interface DetailsSectionProps {
@@ -61,18 +75,12 @@ const Details = ({ resourceId, onClose }: Props): JSX.Element | null => {
   });
 
   React.useEffect(() => {
-    if (resourceId !== null) {
-      get();
+    if (details !== undefined) {
+      setDetails(undefined);
     }
+
+    get();
   }, [resourceId]);
-
-  if (resourceId === null) {
-    return null;
-  }
-
-  if (details === undefined) {
-    return <Loader />;
-  }
 
   return (
     <Paper variant="outlined" elevation={2} className={classes.details}>

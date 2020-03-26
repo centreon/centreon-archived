@@ -32,6 +32,7 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
       }),
     }),
     title: ({ severityCode }): CreateCSSProperties => ({
+      marginBottom: 5,
       ...(severityCode && { color: getStatusBackgroundColor(severityCode) }),
     }),
   };
@@ -54,14 +55,14 @@ const ExpandableCard = ({
 
   const lines = content.split('\n');
   const threeFirstlines = lines.slice(0, 3);
-  const lastlines = lines.slice(3, lines.length - 1);
+  const lastlines = lines.slice(2, lines.length);
 
   const toggleOutputExpanded = (): void => {
     setOutputExpanded(!outputExpanded);
   };
 
-  const Line = (line): JSX.Element => (
-    <Typography key={line} variant="body2" component="p">
+  const Line = (line, index): JSX.Element => (
+    <Typography key={`${line}-${index}`} variant="body2" component="p">
       {line}
     </Typography>
   );
@@ -69,13 +70,17 @@ const ExpandableCard = ({
   return (
     <Card className={classes.card} color="green">
       <CardContent>
-        <Typography className={classes.title} variant="subtitle2">
+        <Typography
+          className={classes.title}
+          variant="subtitle2"
+          color="textSecondary"
+        >
           {title}
         </Typography>
         {threeFirstlines.map(Line)}
         {outputExpanded && lastlines.map(Line)}
       </CardContent>
-      {lastlines && (
+      {lastlines.length > 0 && (
         <>
           <Divider />
           <CardActions>

@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import axios from 'axios';
+
 import {
   useSnackbar,
   Severity,
@@ -25,12 +27,16 @@ const useGet = ({ onSuccess, endpoint }): (() => Promise<unknown>) => {
       .then((entity) => {
         onSuccess(entity);
       })
-      .catch(() =>
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          return;
+        }
+
         showMessage({
           message: labelSomethingWentWrong,
           severity: Severity.error,
-        }),
-      );
+        });
+      });
 };
 
 export default useGet;

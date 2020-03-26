@@ -10,7 +10,7 @@ import {
   labelSticky,
 } from '../../../translatedLabels';
 import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
-import getFormattedDate from '../../../getFormattedDate';
+import { getFormattedDateTime } from '../../../dateTime';
 
 interface AcknoweldgementDetails {
   author_name: string;
@@ -35,7 +35,7 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
       label: labelEntryTime,
       type: TABLE_COLUMN_TYPES.string,
       getFormattedString: ({ entry_time }): string =>
-        getFormattedDate(entry_time),
+        getFormattedDateTime(entry_time),
     },
     {
       id: 'is_persistent',

@@ -8,6 +8,7 @@ import {
   Theme,
   fade,
 } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import IconClose from '@material-ui/icons/Clear';
 import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
@@ -33,10 +34,23 @@ const useStyles = makeStyles<Theme, ResourceDetails>((theme) => ({
   },
 }));
 
+const LoadingSkeleton = (): JSX.Element => (
+  <Grid container spacing={2} alignItems="center">
+    <Grid item>
+      <Skeleton variant="circle" width={25} height={25} />
+    </Grid>
+    <Grid item>
+      <Skeleton width={250} height={25} />
+    </Grid>
+  </Grid>
+);
+
 type HeaderProps = DetailsSectionProps & { onClickClose };
 
 const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
   const classes = useStyles(details);
+
+  const loading = details === undefined;
 
   return (
     <Grid
@@ -46,37 +60,47 @@ const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
       alignItems="center"
       className={classes.header}
     >
-      <Grid item>
-        <StatusChip
-          severityCode={SeverityCode.None}
-          label={details.criticality?.toString()}
-        />
-      </Grid>
-      <Grid item>
-        <StatusChip
-          severityCode={details.status.severity_code}
-          label={details.status.name}
-        />
-      </Grid>
-      <Grid item style={{ flexGrow: 1 }}>
-        <Grid container direction="column">
-          <Grid item>
-            <Typography>{details.name}</Typography>
-          </Grid>
-          {details.parent && (
-            <Grid item container spacing={1}>
-              <Grid item>
-                <StatusChip
-                  severityCode={details.parent.status.severity_code}
-                />
-              </Grid>
-              <Grid item>
-                <Typography variant="caption">{details.parent.name}</Typography>
-              </Grid>
-            </Grid>
-          )}
+      {loading ? (
+        <Grid item style={{ flexGrow: 1 }}>
+          <LoadingSkeleton />
         </Grid>
-      </Grid>
+      ) : (
+        <>
+          <Grid item>
+            <StatusChip
+              severityCode={SeverityCode.None}
+              label={details.criticality?.toString()}
+            />
+          </Grid>
+          <Grid item>
+            <StatusChip
+              severityCode={details.status.severity_code}
+              label={details.status.name}
+            />
+          </Grid>
+          <Grid item style={{ flexGrow: 1 }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Typography>{details.name}</Typography>
+              </Grid>
+              {details.parent && (
+                <Grid item container spacing={1}>
+                  <Grid item>
+                    <StatusChip
+                      severityCode={details.parent.status.severity_code}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="caption">
+                      {details.parent.name}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+          </Grid>
+        </>
+      )}
       <Grid item>
         <IconButton onClick={onClickClose}>
           <IconClose />
