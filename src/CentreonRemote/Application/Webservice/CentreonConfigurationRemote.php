@@ -326,6 +326,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
+        // Check IPv6, IPv4 and FQDN format
+        if (!filter_var($serverIP, FILTER_VALIDATE_DOMAIN) && !filter_var($serverIP, FILTER_VALIDATE_IP)) {
+            return ['error' => true, 'message' => "Invalid IP address"];
+        }
+
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
         $dbAdapter->query($sql, [$serverIP]);
