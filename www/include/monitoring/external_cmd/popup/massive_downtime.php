@@ -149,8 +149,9 @@ $form->addElement(
 $defaultDuration = 7200;
 $defaultScale = 's';
 //overriding the default duration and scale by the user's value from the administration fields
-if (isset($centreon->optGen['monitoring_dwt_duration']) &&
-    $centreon->optGen['monitoring_dwt_duration']
+if (
+    isset($centreon->optGen['monitoring_dwt_duration'])
+    && $centreon->optGen['monitoring_dwt_duration']
 ) {
     $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
     if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
