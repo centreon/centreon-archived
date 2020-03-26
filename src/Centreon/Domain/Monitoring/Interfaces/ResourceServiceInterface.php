@@ -104,4 +104,15 @@ interface ResourceServiceInterface
      * @throws \Exception
      */
     public function findResources(ResourceFilter $filter): array;
+
+    /**
+     * Used to filter requests according to a contact.
+     * If the filter is defined, all requests will use the ACL of the contact
+     * to fetch data.
+     *
+     * @param mixed $contact Contact to use as a ACL filter
+     * @return ResourceServiceInterface
+     * @throws \Exception
+     */
+    public function filterByContact($contact);
 }

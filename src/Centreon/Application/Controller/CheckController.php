@@ -211,7 +211,7 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST);
+        $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST_ADD);
 
         /**
          * @var Check $check
@@ -223,7 +223,7 @@ class CheckController extends AbstractController
             $context
         );
         $check
-            ->setId($hostId)
+            ->setResourceId($hostId)
             ->setCheckTime(new \DateTime());
 
         $errors = $entityValidator->validate(
@@ -283,8 +283,8 @@ class CheckController extends AbstractController
             $context
         );
         $check
-            ->setParentId($hostId)
-            ->setId($serviceId)
+            ->setParentResourceId($hostId)
+            ->setResourceId($serviceId)
             ->setCheckTime(new \DateTime());
 
         $errors = $entityValidator->validate(

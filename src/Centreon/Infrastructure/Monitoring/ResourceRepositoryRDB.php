@@ -37,7 +37,6 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
-use CentreonDuration;
 use PDO;
 
 /**
@@ -131,9 +130,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function filterByAccessGroups(?array $accessGroups): self
+    public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
     {
         $this->accessGroups = $accessGroups;
 

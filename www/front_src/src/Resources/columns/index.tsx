@@ -5,6 +5,7 @@ import IconAcknowledge from '@material-ui/icons/Person';
 
 import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
+import IconDowntime from './icons/Downtime';
 import {
   labelResources,
   labelStatus,
@@ -14,6 +15,7 @@ import {
   labelState,
   labelLastCheck,
   labelAcknowledge,
+  labelSetDowntimeOn,
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
@@ -64,7 +66,7 @@ const StatusColumnOnHover = ({
   row,
 }: StatusColumnProps): JSX.Element => {
   return (
-    <Grid container spacing={1} alignItems="center">
+    <Grid container spacing={0} alignItems="center">
       <Grid item>
         <IconButton
           size="small"
@@ -73,6 +75,16 @@ const StatusColumnOnHover = ({
           aria-label={`${labelAcknowledge} ${row.name}`}
         >
           <IconAcknowledge />
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton
+          size="small"
+          color="primary"
+          onClick={(): void => actions.onDowntime(row)}
+          aria-label={`${labelSetDowntimeOn} ${row.name}`}
+        >
+          <IconDowntime />
         </IconButton>
       </Grid>
       <Grid item>
