@@ -171,8 +171,11 @@ class CentreonHomeCustomview extends CentreonWebService
      */
     public function getPreferences()
     {
-        if (!isset($this->arguments['widgetId']) || !isset($this->arguments['viewId'])) {
-            throw new \Exception('Missing argument');
+        if (
+            filter_var(($widgetId = $this->arguments['widgetId'] ?? false), FILTER_VALIDATE_INT) === false
+            || filter_var(($viewId = $this->arguments['viewId'] ?? false), FILTER_VALIDATE_INT) === false
+        ) {
+            throw new \InvalidArgumentException('Bad argument format');
         }
 
         require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
@@ -190,8 +193,6 @@ class CentreonHomeCustomview extends CentreonWebService
 
         global $centreon;
 
-        $viewId = $this->arguments['viewId'];
-        $widgetId = $this->arguments['widgetId'];
         $action = "setPreferences";
 
         $viewObj = new CentreonCustomView($centreon, $this->pearDB);
