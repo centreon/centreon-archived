@@ -36,6 +36,11 @@ use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Entity\EntityValidator;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\ResourceService;
 
 /**
  * This class is design to manage all API REST about downtime requests
@@ -608,9 +613,9 @@ class DowntimeController extends AbstractController
         }
 
         /**
-         * @var AckRequest $ackRequest
+         * @var DowntimeRequest $dtRequest
          */
-        $ackRequest = $serializer->deserialize(
+        $dtRequest = $serializer->deserialize(
             (string)$request->getContent(),
             DowntimeRequest::class,
             'json'
@@ -622,16 +627,16 @@ class DowntimeController extends AbstractController
         $errorList = new ConstraintViolationList();
 
         //validate resources
-        $resources = $ackRequest->getResources() ?? [];
+        $resources = $dtRequest->getResources() ?? [];
         foreach ($resources as $resource) {
             if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                $errorList->addAll($this->validateResource(
+                $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
-                $errorList->addAll($this->validateResource(
+                $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
@@ -642,7 +647,7 @@ class DowntimeController extends AbstractController
         }
 
         //validate downtime
-        $downtime = $ackRequest->getDowntime();
+        $downtime = $dtRequest->getDowntime();
         $errorList->addAll(
             $entityValidator->validate(
                 $downtime,
@@ -658,11 +663,11 @@ class DowntimeController extends AbstractController
         foreach ($resources as $resource) {
             //start applying downtime process
             try {
-                $this->downtimeService->acknowledgeResource(
+                $this->downtimeService->addResourceDowntime(
                     $resource, $downtime
                 );
             } catch (\Exception $e) {
-                continue;
+                throw $e;
             }
         }
 

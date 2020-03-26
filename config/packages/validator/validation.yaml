@@ -85,7 +85,7 @@ Centreon\Domain\Downtime\Downtime:
             - Type:
                 type: integer
         withServices:
-            -Type:
+            - Type:
                 type: boolean
                 groups: [resource_dt]
 

@@ -30,6 +30,7 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Service\JsonValidator\ValidatorException;
 use FOS\RestBundle\Context\Context;
@@ -645,13 +646,13 @@ class AcknowledgementController extends AbstractController
         $resources = $ackRequest->getResources() ?? [];
         foreach ($resources as $resource) {
             if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                $errorList->addAll($this->validateResource(
+                $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
-                $errorList->addAll($this->validateResource(
+                $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
@@ -691,25 +692,5 @@ class AcknowledgementController extends AbstractController
         }
 
         return $this->view();
-    }
-
-    /**
-     * Validates input for resource based on groups
-     * @param EntityValidator $validator
-     * @param ResourceEntity $resource
-     * @param array $contextGroups
-     * @return ConstraintViolationListInterface
-     */
-    private function validateResource(
-        EntityValidator $validator,
-        ResourceEntity $resource,
-        array $contextGroups
-    ): ConstraintViolationListInterface
-    {
-        return $validator->validate(
-            $resource,
-            null,
-            $contextGroups
-        );
     }
 }

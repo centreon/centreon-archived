@@ -107,6 +107,11 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
         $this->engineService->filterByContact($contact);
 
         $this->accessGroups = $this->accessGroupRepository->findByContact($contact);
+
+        $this->monitoringRepository
+            ->setContact($this->contact)
+            ->filterByAccessGroups($this->accessGroups);
+
         return $this;
     }
 

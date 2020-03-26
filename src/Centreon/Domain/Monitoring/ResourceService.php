@@ -30,6 +30,9 @@ use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Entity\EntityValidator;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -134,5 +137,25 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
 
         return $hostId;
+    }
+
+    /**
+     * Validates input for resource based on groups
+     * @param EntityValidator $validator
+     * @param ResourceEntity $resource
+     * @param array $contextGroups
+     * @return ConstraintViolationListInterface
+     */
+    public static function validateResource(
+        EntityValidator $validator,
+        ResourceEntity $resource,
+        array $contextGroups
+    ): ConstraintViolationListInterface
+    {
+        return $validator->validate(
+            $resource,
+            null,
+            $contextGroups
+        );
     }
 }
