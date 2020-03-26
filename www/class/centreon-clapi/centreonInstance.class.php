@@ -52,6 +52,7 @@ class CentreonInstance extends CentreonObject
     const ORDER_GORGONE_PROTOCOL = 2;
     const ORDER_GORGONE_PORT = 3;
     const GORGONE_COMMUNICATION = array('ZMQ' => '1', 'SSH' => '2');
+    const INCORRECTIPADDRESS = "Invalid IP address format";
 
     /*
      * Constructor
@@ -118,6 +119,14 @@ class CentreonInstance extends CentreonObject
         }
         $addParams['gorgone_port'] = $params[self::ORDER_GORGONE_PORT];
 
+        // Check IPv6, IPv4 and FQDN format
+        if (
+            !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_DOMAIN)
+            && !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_IP)
+        ) {
+            throw new CentreonClapiException(self::INCORRECTIPADDRESS);
+        }
+
         if ($addParams['ns_ip_address'] == "127.0.0.1" || strtolower($addParams['ns_ip_address']) == "localhost") {
             $this->params['localhost'] = '1';
         }
@@ -135,6 +144,15 @@ class CentreonInstance extends CentreonObject
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+
+        // Check IPv6, IPv4 and FQDN format
+        if (
+            $params[1] == 'ns_ip_address'
+            && !filter_var($params[2], FILTER_VALIDATE_DOMAIN)
+            && !filter_var($params[2], FILTER_VALIDATE_IP)
+        ) {
+            throw new CentreonClapiException(self::INCORRECTIPADDRESS);
         }
 
         $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
