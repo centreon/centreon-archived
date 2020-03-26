@@ -66,7 +66,7 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
             if (typeof(altName) != "undefined") {
                 var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
                 // $(this).val(), if exists, is a GMT YYYY-MM-DDTHH:mm:ss timestamp, for example with PHP : gmdate("Y-m-d\TH:i:s")
-                var value = $(this) && $(this).val() ? moment($(this).val()).tz(timezone) : defaultDate;
+                var value = $(this) && $(this).val() ? moment($(this).val(),"DD-MM-YYYY").tz(timezone) : defaultDate;
                 jQuery(this).datepicker({
                     //formatting the hidden fields using a specific format
                     altField: alternativeField,
