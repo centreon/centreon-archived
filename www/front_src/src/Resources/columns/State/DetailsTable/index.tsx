@@ -22,18 +22,14 @@ import {
 } from '../../../translatedLabels';
 import useCancelTokenSource from '../../../useCancelTokenSource';
 import { Listing } from '../../../models';
+import { Column } from '../..';
 
 const getFormattedDate = (isoDate): string =>
-  format(parseISO(isoDate), 'MM/dd/yyyy H:m');
+  format(parseISO(isoDate), 'MM/dd/yyyy HH:mm');
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
 const columnMaxWidth = 150;
-
-interface Column {
-  getFormattedString: (details) => string;
-  label: string;
-}
 
 export interface DetailsTableProps {
   endpoint: string;
@@ -86,7 +82,7 @@ const DetailsTable = <TDetails extends unknown>({
             {success &&
               columns.map(({ label, getFormattedString }) => (
                 <TableCell key={label}>
-                  <span>{getFormattedString(details)}</span>
+                  <span>{getFormattedString?.(details)}</span>
                 </TableCell>
               ))}
             {error && (

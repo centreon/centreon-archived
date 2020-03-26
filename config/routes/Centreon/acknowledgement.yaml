@@ -76,3 +76,9 @@ centreon_application_acknowledgement_findoneacknowledgement:
     requirements:
         acknowledgementId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::findOneAcknowledgement'
+
+centreon_application_acknowledgement_disacknowledge_resources:
+    methods: POST
+    path: /monitoring/acknowledgements/disacknowledge
+    controller: 'Centreon\Application\Controller\AcknowledgementController::massDisacknowledgeResources'
+    condition: "request.attributes.get('version') >= 2.0"

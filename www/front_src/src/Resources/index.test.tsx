@@ -1,8 +1,10 @@
 import React from 'react';
 
 import axios from 'axios';
-import { render, wait, within, fireEvent } from '@testing-library/react';
+import formatISO from 'date-fns/formatISO';
+import { render, waitFor, within, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
+import last from 'lodash/last';
 
 import Resources from '.';
 import {
@@ -20,9 +22,32 @@ import {
   labelUnhandledProblems,
   labelResourceProblems,
   labelAll,
+  labelAcknowledge,
+  labelAcknowledgedBy,
+  labelAcknowledgeServices,
+  labelDowntime,
+  labelSetDowntime,
+  labelDowntimeBy,
+  labelFixed,
+  labelNotify,
+  labelOpen,
+  labelShowCriteriasFilters,
+  labelChangeEndDate,
+  labelEndDate,
+  labelEndTime,
+  labelStartDate,
+  labelStartTime,
 } from './translatedLabels';
-import columns from './columns';
+import getColumns from './columns';
 import { Resource } from './models';
+import {
+  hostAcknowledgementEndpoint,
+  serviceAcknowledgementEndpoint,
+  hostDowntimeEndpoint,
+  serviceDowntimeEndpoint,
+} from './api/endpoint';
+
+const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -107,11 +132,12 @@ export const selectOption = (element, optionText): void => {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
-    id: `${index}`,
+    id: index,
     name: `E${index}`,
     status: {
       code: 0,
       name: 'OK',
+      severity_code: 5,
     },
     acknowledged: index % 2 === 0,
     acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,
@@ -120,8 +146,9 @@ const fillEntities = (): Array<Resource> => {
     duration: '1m',
     last_check: '1m',
     tries: '1',
-    short_type: 's',
+    short_type: index % 4 === 0 ? 's' : 'h',
     information: `Entity ${index}`,
+    type: index % 4 === 0 ? 'service' : 'host',
   }));
 };
 
@@ -137,12 +164,7 @@ const retrievedListing = {
   },
 };
 
-const searchableFields = [
-  'host.name',
-  'host.alias',
-  'host.address',
-  'service.description',
-];
+const searchableFields = ['h.name', 'h.alias', 'h.address', 's.description'];
 
 const linuxServersHostGroup = {
   id: 0,
@@ -154,19 +176,46 @@ const webAccessService = {
   name: 'Web-access',
 };
 
+const hostResources = entities.filter(({ type }) => type === 'host');
+const serviceResources = entities.filter(({ type }) => type === 'service');
+
 describe(Resources, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
+    mockedAxios.post.mockReset();
+    mockedAxios.all.mockReset();
   });
 
   beforeEach(() => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
   });
 
+  const resolveUserToBeAdmin = (): void => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        username: 'admin',
+      },
+    });
+  };
+
+  it('expands criterias filters', async () => {
+    const { getByLabelText, queryByText } = render(<Resources />);
+
+    await waitFor(() => {
+      expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+    });
+
+    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+
+    await waitFor(() => {
+      expect(queryByText(labelTypeOfResource)).toBeVisible();
+    });
+  });
+
   it('executes a listing request with "Unhandled problems" filter group by default', async () => {
     render(<Resources />);
 
-    await wait(() =>
+    await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         getEndpoint({}),
         cancelTokenRequestParam,
@@ -195,14 +244,14 @@ describe(Resources, () => {
     it(`executes a listing request with "${filterGroup}" params when "${filterGroup}" filter group is set`, async () => {
       const { getByText } = render(<Resources />);
 
-      await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
       // @material-ui Select uses a Popover that needs special handling to update options.
       selectOption(getByText(labelUnhandledProblems), filterGroup);
 
-      await wait(() =>
+      await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getEndpoint({
             resourceTypes: criterias.resourceTypes,
@@ -267,17 +316,17 @@ describe(Resources, () => {
       selectEndpointMockAction,
     }) => {
       it(`executes a listing request with selected "${filterName}" filter options when it's changed`, async () => {
-        const { getAllByText } = render(<Resources />);
+        const { getAllByText, getByTitle } = render(<Resources />);
 
-        await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
         selectEndpointMockAction?.();
         mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-        const [filterToChange] = getAllByText(filterName);
+        const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
         fireEvent.click(filterToChange);
 
-        await wait(() => {
+        await waitFor(() => {
           const [selectedOption] = getAllByText(optionToSelect);
 
           return fireEvent.click(selectedOption);
@@ -294,7 +343,7 @@ describe(Resources, () => {
   it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
     const { getByText } = render(<Resources />);
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -324,7 +373,7 @@ describe(Resources, () => {
   it('executes a listing request with an updated page param when a change page action is clicked', async () => {
     const { getByLabelText } = render(<Resources />);
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -460,7 +509,7 @@ describe(Resources, () => {
 
     const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -483,7 +532,7 @@ describe(Resources, () => {
     fireEvent.mouseEnter(getByLabelText(chipLabel));
     fireEvent.mouseOver(getByLabelText(chipLabel));
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       entityInDowntime?.downtime_endpoint,
@@ -492,8 +541,8 @@ describe(Resources, () => {
 
     expect(getByText('admin')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:16')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:18')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:18')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
   });
 
@@ -504,7 +553,7 @@ describe(Resources, () => {
       ({ acknowledged }) => acknowledged,
     );
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -527,7 +576,7 @@ describe(Resources, () => {
     fireEvent.mouseEnter(getByLabelText(chipLabel));
     fireEvent.mouseOver(getByLabelText(chipLabel));
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       acknowledgedEntity?.acknowledgement_endpoint,
@@ -535,9 +584,259 @@ describe(Resources, () => {
     );
 
     expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
+  });
+
+  const selectAllResources = async ({ getByLabelText }): Promise<void> => {
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    resolveUserToBeAdmin();
+
+    fireEvent.click(getByLabelText('Select all'));
+  };
+
+  /**
+   * Acknowledgement dialog
+   */
+
+  const selectAllResourcesAndPrepareToAcknowledge = async ({
+    getByLabelText,
+    getByText,
+  }): Promise<void> => {
+    await selectAllResources({ getByLabelText });
+
+    fireEvent.click(getByText(labelAcknowledge));
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+  };
+
+  const labelAcknowledgedByAdmin = `${labelAcknowledgedBy} admin`;
+
+  it('cannot send an acknowledgement request when Acknowledgement action is clicked and comment is empty', async () => {
+    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+
+    await selectAllResourcesAndPrepareToAcknowledge({
+      getByLabelText,
+      getByText,
+    });
+
+    fireEvent.change(getByText(labelAcknowledgedByAdmin), {
+      target: { value: '' },
+    });
+
+    await waitFor(() =>
+      expect(last(getAllByText(labelAcknowledge)).parentElement).toBeDisabled(),
+    );
+  });
+
+  it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
+    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+
+    await selectAllResourcesAndPrepareToAcknowledge({
+      getByLabelText,
+      getByText,
+    });
+
+    fireEvent.click(getByLabelText(labelNotify));
+    fireEvent.click(getByLabelText(labelAcknowledgeServices));
+
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+    mockedAxios.all.mockResolvedValueOnce([]);
+    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+    fireEvent.click(last(getAllByText(labelAcknowledge)));
+
+    await waitFor(() => {
+      expect(mockedAxios.all).toHaveBeenCalled();
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      hostAcknowledgementEndpoint,
+      hostResources.map(({ id }) => ({
+        parent_resource_id: null,
+        resource_id: id,
+        comment: labelAcknowledgedByAdmin,
+        is_notify_contacts: true,
+        is_persistent_comment: true,
+        is_sticky: true,
+        with_services: true,
+      })),
+      expect.anything(),
+    );
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      serviceAcknowledgementEndpoint,
+      serviceResources.map(({ id, parent }) => ({
+        resource_id: id,
+        parent_resource_id: parent?.id || null,
+        comment: labelAcknowledgedByAdmin,
+        is_notify_contacts: true,
+        is_persistent_comment: true,
+        is_sticky: true,
+        with_services: true,
+      })),
+      expect.anything(),
+    );
+  });
+
+  it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
+    const { getByLabelText, getByText, queryByText } = render(<Resources />);
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    resolveUserToBeAdmin();
+
+    serviceResources.map(({ id }) =>
+      fireEvent.click(getByLabelText(`Select row ${id}`)),
+    );
+
+    fireEvent.click(getByText(labelAcknowledge));
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    expect(getByText(labelAcknowledgedByAdmin)).toBeInTheDocument();
+    expect(queryByText(labelAcknowledgeServices)).toBeNull();
+  });
+
+  /**
+   * Downtime dialog
+   */
+
+  const selectAllResourcesAndPrepareToSetDowntime = async ({
+    getByLabelText,
+    getByText,
+  }): Promise<void> => {
+    await selectAllResources({ getByLabelText });
+
+    fireEvent.click(getByText(labelDowntime));
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+  };
+
+  const labelDowntimeByAdmin = `${labelDowntimeBy} admin`;
+
+  it('cannot send a downtime request when Downtime action is clicked and comment is empty', async () => {
+    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+
+    await selectAllResourcesAndPrepareToSetDowntime({
+      getByLabelText,
+      getByText,
+    });
+
+    fireEvent.change(getByText(labelDowntimeByAdmin), {
+      target: { value: '' },
+    });
+
+    await waitFor(() =>
+      expect(last(getAllByText(labelSetDowntime)).parentElement).toBeDisabled(),
+    );
+  });
+
+  it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
+    const {
+      getByLabelText,
+      getByText,
+      getAllByText,
+      getByDisplayValue,
+    } = render(<Resources />);
+
+    await selectAllResourcesAndPrepareToSetDowntime({
+      getByLabelText,
+      getByText,
+    });
+
+    fireEvent.click(getByLabelText(labelFixed));
+    fireEvent.change(getByDisplayValue('3600'), {
+      target: { value: '' },
+    });
+
+    await waitFor(() =>
+      expect(last(getAllByText(labelSetDowntime)).parentElement).toBeDisabled(),
+    );
+  });
+
+  it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
+    const { container, getByLabelText, getByText, getAllByText } = render(
+      <Resources />,
+    );
+
+    await selectAllResourcesAndPrepareToSetDowntime({
+      getByLabelText,
+      getByText,
+    });
+
+    // set previous day as end date using left arrow key
+    fireEvent.click(getByLabelText(labelChangeEndDate));
+    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
+    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
+
+    await waitFor(() =>
+      expect(last(getAllByText(labelSetDowntime)).parentElement).toBeDisabled(),
+    );
+  });
+
+  it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
+    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+
+    await selectAllResourcesAndPrepareToSetDowntime({
+      getByLabelText,
+      getByText,
+    });
+
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+    mockedAxios.all.mockResolvedValueOnce([]);
+    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+    fireEvent.click(last(getAllByText(labelSetDowntime)));
+
+    await waitFor(() => {
+      expect(mockedAxios.all).toHaveBeenCalled();
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    const startDateTime = new Date(
+      `${getByLabelText(labelStartTime)?.querySelector('input')?.value ||
+        ''} ${getByLabelText(labelStartDate)?.querySelector('input')?.value ||
+        ''}`,
+    );
+    const endDateTime = new Date(
+      `${getByLabelText(labelEndTime)?.querySelector('input')?.value ||
+        ''} ${getByLabelText(labelEndDate)?.querySelector('input')?.value ||
+        ''}`,
+    );
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      hostDowntimeEndpoint,
+      hostResources.map(({ id }) => ({
+        comment: labelDowntimeByAdmin,
+        duration: 3600,
+        end_time: formatISO(endDateTime),
+        is_fixed: true,
+        parent_resource_id: null,
+        resource_id: id,
+        start_time: formatISO(startDateTime),
+        with_services: true,
+      })),
+      expect.anything(),
+    );
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      serviceDowntimeEndpoint,
+      serviceResources.map(({ id, parent }) => ({
+        comment: labelDowntimeByAdmin,
+        duration: 3600,
+        end_time: formatISO(endDateTime),
+        is_fixed: true,
+        parent_resource_id: parent?.id || null,
+        resource_id: id,
+        start_time: formatISO(startDateTime),
+        with_services: true,
+      })),
+      expect.anything(),
+    );
   });
 });

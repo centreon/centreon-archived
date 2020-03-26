@@ -5,6 +5,14 @@ const monitoringEndpoint = `${endpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
+const hostEndpoint = `${monitoringEndpoint}/hosts`;
+const hostAcknowledgementEndpoint = `${hostEndpoint}/acknowledgements`;
+const hostDowntimeEndpoint = `${hostEndpoint}/downtimes`;
+const serviceEndpoint = `${monitoringEndpoint}/services`;
+const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgements`;
+const serviceDowntimeEndpoint = `${serviceEndpoint}/downtimes`;
+const userEndpoint =
+  './api/internal.php?object=centreon_topcounter&action=user';
 
 interface Param {
   name: string;
@@ -44,12 +52,7 @@ const buildEndpoint = ({ baseEndpoint, params }): string => {
 };
 
 const buildResourcesEndpoint = (params): string => {
-  const searchOptions = [
-    'host.name',
-    'host.alias',
-    'host.address',
-    'service.description',
-  ];
+  const searchOptions = ['h.name', 'h.alias', 'h.address', 's.description'];
 
   const listingParams = getListingParams({ searchOptions, ...params });
 
@@ -90,4 +93,9 @@ export {
   buildResourcesEndpoint,
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
+  hostAcknowledgementEndpoint,
+  serviceAcknowledgementEndpoint,
+  hostDowntimeEndpoint,
+  serviceDowntimeEndpoint,
+  userEndpoint,
 };

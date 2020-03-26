@@ -81,22 +81,20 @@ const AcknowledgedChip = ({
   );
 };
 
-const StateColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const StateColumn = ({ row }: ColumnProps): JSX.Element => {
   return (
-    <Cell width={80}>
-      <Grid container spacing={1}>
-        {row.in_downtime && (
-          <Grid item>
-            <DowntimeChip resource={row} />
-          </Grid>
-        )}
-        {row.acknowledged && (
-          <Grid item>
-            <AcknowledgedChip resource={row} />
-          </Grid>
-        )}
-      </Grid>
-    </Cell>
+    <Grid container spacing={1}>
+      {row.in_downtime && (
+        <Grid item>
+          <DowntimeChip resource={row} />
+        </Grid>
+      )}
+      {row.acknowledged && (
+        <Grid item>
+          <AcknowledgedChip resource={row} />
+        </Grid>
+      )}
+    </Grid>
   );
 };
 

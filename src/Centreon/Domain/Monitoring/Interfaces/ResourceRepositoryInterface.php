@@ -40,4 +40,12 @@ interface ResourceRepositoryInterface
      * @return ResourceRepositoryInterface
      */
     public function setContact(ContactInterface $contact): self;
+
+    /**
+     * Sets the access groups that will be used to filter services and the host.
+     *
+     * @param \Centreon\Domain\Security\AccessGroup[]|null $accessGroups
+     * @return ResourceRepositoryInterface
+     */
+    public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface;
 }
