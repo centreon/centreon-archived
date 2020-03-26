@@ -51,6 +51,9 @@ const Resources = (): JSX.Element => {
   const [resourcesToSetDowntime, setResourcesToSetDowntime] = React.useState<
     Array<Resource>
   >([]);
+  const [resourcesToCheck, setResourcesToCheck] = React.useState<
+    Array<Resource>
+  >([]);
 
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
@@ -197,6 +200,7 @@ const Resources = (): JSX.Element => {
     selectResources([]);
     setResourcesToAcknowledge([]);
     setResourcesToSetDowntime([]);
+    setResourcesToCheck([]);
   };
 
   const rowColorConditions = [
@@ -236,12 +240,23 @@ const Resources = (): JSX.Element => {
     prepareToSetDowntime([]);
   };
 
+  const prepareToCheck = (resources): void => {
+    setResourcesToCheck(resources);
+  };
+
+  const prepareSelectedToCheck = (): void => {
+    prepareToCheck(selectedResources);
+  };
+
   const columns = getColumns({
     onAcknowledge: (resource) => {
       prepareToAcknowledge([resource]);
     },
     onDowntime: (resource) => {
       prepareToSetDowntime([resource]);
+    },
+    onCheck: (resource) => {
+      prepareToCheck([resource]);
     },
   });
 
@@ -256,6 +271,8 @@ const Resources = (): JSX.Element => {
       resourcesToSetDowntime={resourcesToSetDowntime}
       onPrepareToSetDowntime={prepareSelectedToSetDowntime}
       onCancelSetDowntime={cancelSetDowntime}
+      resourcesToCheck={resourcesToCheck}
+      onPrepareToCheck={prepareSelectedToCheck}
       onSuccess={confirmAction}
     />
   );

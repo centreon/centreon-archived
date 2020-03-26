@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
+import IconCheck from '@material-ui/icons/Sync';
 
 import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
@@ -16,6 +17,7 @@ import {
   labelLastCheck,
   labelAcknowledge,
   labelSetDowntimeOn,
+  labelCheck,
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
@@ -85,6 +87,16 @@ const StatusColumnOnHover = ({
           aria-label={`${labelSetDowntimeOn} ${row.name}`}
         >
           <IconDowntime />
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <IconButton
+          size="small"
+          color="primary"
+          onClick={(): void => actions.onCheck(row)}
+          aria-label={`${labelCheck} ${row.name}`}
+        >
+          <IconCheck />
         </IconButton>
       </Grid>
       <Grid item>
