@@ -4,8 +4,9 @@ import { Tabs, Tab, makeStyles, Grid, styled } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { labelDetails, labelGraph } from '../../translatedLabels';
-import { DetailsSectionProps } from '..';
+import { DetailsSectionProps, ResourceDetails } from '..';
 import DetailsTab from './DetailsTab';
+import GraphTab from './GraphTab';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -49,12 +50,41 @@ const LoadingSkeleton = (): JSX.Element => (
   </Grid>
 );
 
-const getTabById = ({ id, details }): JSX.Element | null => {
-  const tabById = {
-    0: <DetailsTab details={details} />,
-  };
+const tabs = [
+  {
+    key: 0,
+    Component: DetailsTab,
+    title: labelDetails,
+  },
+  {
+    key: 1,
+    Component: GraphTab,
+    title: labelGraph,
+  },
+];
 
-  return tabById[id];
+interface TabByIdProps {
+  details: ResourceDetails;
+  id: number;
+}
+
+const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
+  const { Component } = tabs[id];
+
+  return <Component details={details} />;
+};
+
+type BodyContentProps = DetailsSectionProps & { selectedTabId: number };
+
+const BodyContent = ({
+  details,
+  selectedTabId,
+}: BodyContentProps): JSX.Element | null => {
+  if (details === undefined) {
+    return <LoadingSkeleton />;
+  }
+
+  return <TabById id={selectedTabId} details={details} />;
 };
 
 const Body = ({ details }: DetailsSectionProps): JSX.Element => {
@@ -66,8 +96,6 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
     setSelectedTabId(id);
   };
 
-  const loading = details === undefined;
-
   return (
     <div className={classes.body}>
       <Tabs
@@ -77,15 +105,13 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
         textColor="primary"
         onChange={changeSelectedTabId}
       >
-        <Tab label={labelDetails} disabled={loading} />
+        {tabs.map(({ key, title }) => (
+          <Tab key={key} label={title} disabled={details === undefined} />
+        ))}
       </Tabs>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
-          {loading ? (
-            <LoadingSkeleton />
-          ) : (
-            getTabById({ id: selectedTabId, details })
-          )}
+          <BodyContent details={details} selectedTabId={selectedTabId} />
         </div>
       </div>
     </div>
