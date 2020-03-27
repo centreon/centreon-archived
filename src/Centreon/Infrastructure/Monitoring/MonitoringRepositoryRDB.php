@@ -513,7 +513,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
                 //get services for host
                 $servicesByHost = $this->findServicesByHosts([$hostId]);
-                $host->setServices(!empty($servicesByHost[$hostId]) ?: []);
+                $host->setServices(!empty($servicesByHost[$hostId]) ? $servicesByHost[$hostId] : []);
 
                 //get downtimes for host
                 $downtimes = $this->findDowntimes($hostId, 0);
