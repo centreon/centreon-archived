@@ -267,6 +267,13 @@ class Broker extends AbstractObjectJSON
                 ];
             }
 
+            // gRPC parameters
+            $object['grpc'] = [
+                [
+                    'port' => 51000 + (int) $row['config_id']
+                ],
+            ];
+
             // Generate file
             $this->generateFile($object);
             $this->writeFile($this->backend_instance->getPath());
