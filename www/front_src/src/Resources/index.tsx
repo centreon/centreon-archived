@@ -252,8 +252,8 @@ const Resources = (): JSX.Element => {
     },
   });
 
-  const selectResource = ({ details_endpoint }): void => {
-    setSelectedDetailsEndpoint(details_endpoint);
+  const selectResource = ({ id }): void => {
+    setSelectedDetailsEndpoint(id);
   };
 
   const clearSelectedResource = (): void => {

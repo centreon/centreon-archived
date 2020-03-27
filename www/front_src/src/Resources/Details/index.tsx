@@ -69,7 +69,7 @@ const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
 
   const get = useGet({
     onSuccess: (entity) => setDetails(entity),
-    endpoint,
+    endpoint: 'http://localhost:5000/api/beta/resource',
   });
 
   React.useEffect(() => {
