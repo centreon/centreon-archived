@@ -77,7 +77,6 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
                     value = defaultDate;
                 }
                 jQuery(this).datepicker({
-                jQuery(this).datepicker({
                     //formatting the hidden fields using a specific format
                     altField: alternativeField,
                     altFormat: altFormat

@@ -307,6 +307,12 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addGroup($withServices, 'with_services', _("Set downtime for hosts services"), '&nbsp;');
 
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
+    $form->setDefaults(
+        array(
+            "comment" => sprintf(_("Downtime set by %s"),
+            $centreon->user->alias)
+        )
+    );
 
     $form->addRule('end', _("Required Field"), 'required');
     $form->addRule('start', _("Required Field"), 'required');
