@@ -269,9 +269,7 @@ class Broker extends AbstractObjectJSON
 
             // gRPC parameters
             $object['grpc'] = [
-                [
-                    'port' => 51000 + (int) $row['config_id']
-                ],
+                'port' => 51000 + (int) $row['config_id']
             ];
 
             // Generate file
