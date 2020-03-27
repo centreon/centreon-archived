@@ -93,9 +93,9 @@ const DialogAcknowledge = ({
             <Grid item container xs alignItems="center">
               <Grid item xs={1}>
                 <Checkbox
+                  checked={values.acknowledgeAttachedResources}
                   inputProps={{ 'aria-label': labelAcknowledgeServices }}
                   color="primary"
-                  value={values.acknowledgeAttachedResources}
                   onChange={handleChange('acknowledgeAttachedResources')}
                 />
               </Grid>

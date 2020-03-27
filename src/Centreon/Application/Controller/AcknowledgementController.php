@@ -28,13 +28,18 @@ use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Centreon\Domain\Service\JsonValidator\ValidatorException;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
+use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Used to manage all requests of hosts acknowledgements
@@ -510,5 +515,102 @@ class AcknowledgementController extends AbstractController
                 'pagination' => $requestParameters->toArray()
             ]
         ])->setContext($context);
+    }
+
+    /**
+     * Entry point to bulk acknowledge resources (hosts and services)
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function massDisacknowledgeResources(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var ResourceEntity[] $resources
+         */
+        $resources = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . ResourceEntity::class . '>',
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        //validate input
+        $errorList = new ConstraintViolationList();
+        foreach ($resources as $resource) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $errorList->addAll($this->validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
+                $errorList->addAll($this->validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                ));
+            } else {
+                throw new \RestBadRequestException('Incorrect resource type for disacknowledgement');
+            }
+        }
+
+        if ($errorList->count() > 0) {
+            throw new ValidationFailedException($errorList);
+        }
+
+        foreach ($resources as $resource) {
+            //start disacknowledgement process
+            try {
+                if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                    $this->acknowledgementService->disacknowledgeService(
+                        (int) $resource->getParent()->getId(),
+                        (int) $resource->getId()
+                    );
+                } else {
+                    $this->acknowledgementService->disacknowledgeHost((int) $resource->getId());
+                }
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Validates input for resource based on groups
+     * @param EntityValidator $validator
+     * @param ResourceEntity $resource
+     * @param array $contextGroups
+     * @return ConstraintViolationListInterface
+     */
+    private function validateResource(
+        EntityValidator $validator,
+        ResourceEntity $resource,
+        array $contextGroups
+    ): ConstraintViolationListInterface {
+        return $validator->validate(
+            $resource,
+            null,
+            $contextGroups
+        );
     }
 }

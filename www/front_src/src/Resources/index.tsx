@@ -61,11 +61,14 @@ const Resources = (): JSX.Element => {
   const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
     [],
   );
-  const [resourcesToAcknowledge, setResourcesToAcknoweledge] = React.useState<
+  const [resourcesToAcknowledge, setResourcesToAcknowledge] = React.useState<
+    Array<Resource>
+  >([]);
+  const [resourcesToSetDowntime, setResourcesToSetDowntime] = React.useState<
     Array<Resource>
   >([]);
 
-  const [sorto, setSorto] = useState<SortOrder>();
+  const [sorto, setSorto] = useState<'asc' | 'desc'>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
@@ -210,14 +213,14 @@ const Resources = (): JSX.Element => {
     setSelectedResources(resources);
   };
 
-  const confirmAndLoad = (): void => {
-    load();
+  const confirmAction = (): void => {
     selectResources([]);
-    setResourcesToAcknoweledge([]);
+    setResourcesToAcknowledge([]);
+    setResourcesToSetDowntime([]);
   };
 
   const prepareToAcknowledge = (resources): void => {
-    setResourcesToAcknoweledge(resources);
+    setResourcesToAcknowledge(resources);
   };
 
   const prepareSelectedToAcknowledge = (): void => {
@@ -228,6 +231,27 @@ const Resources = (): JSX.Element => {
     prepareToAcknowledge([]);
   };
 
+  const prepareToSetDowntime = (resources): void => {
+    setResourcesToSetDowntime(resources);
+  };
+
+  const prepareSelectedToSetDowntime = (): void => {
+    prepareToSetDowntime(selectedResources);
+  };
+
+  const cancelSetDowntime = (): void => {
+    prepareToSetDowntime([]);
+  };
+
+  const columns = getColumns({
+    onAcknowledge: (resource) => {
+      prepareToAcknowledge([resource]);
+    },
+    onDowntime: (resource) => {
+      prepareToSetDowntime([resource]);
+    },
+  });
+
   const selectResource = ({ details_endpoint }): void => {
     setSelectedDetailsEndpoint(details_endpoint);
   };
@@ -235,12 +259,6 @@ const Resources = (): JSX.Element => {
   const clearSelectedResource = (): void => {
     setSelectedDetailsEndpoint(null);
   };
-
-  const columns = getColumns({
-    onAcknowledge: (resource) => {
-      prepareToAcknowledge([resource]);
-    },
-  });
 
   const hasSelectedResources = selectedResources.length > 0;
 
@@ -250,7 +268,10 @@ const Resources = (): JSX.Element => {
       resourcesToAcknowledge={resourcesToAcknowledge}
       onPrepareToAcknowledge={prepareSelectedToAcknowledge}
       onCancelAcknowledge={cancelAcknowledge}
-      onSuccess={confirmAndLoad}
+      resourcesToSetDowntime={resourcesToSetDowntime}
+      onPrepareToSetDowntime={prepareSelectedToSetDowntime}
+      onCancelSetDowntime={cancelSetDowntime}
+      onSuccess={confirmAction}
     />
   );
 
@@ -273,6 +294,27 @@ const Resources = (): JSX.Element => {
           selectedServiceGroups={serviceGroups}
           onClearAll={clearAllFilters}
           currentSearch={search}
+        />
+      </div>
+      <div className={classes.listing}>
+        <Listing
+          checkable
+          Actions={ResourceActions}
+          loading={loading}
+          columnConfiguration={columns}
+          tableData={listing?.result}
+          currentPage={page - 1}
+          rowColorConditions={rowColorConditions}
+          limit={listing?.meta.limit}
+          onSort={changeSort}
+          onPaginationLimitChanged={changeLimit}
+          onPaginate={changePage}
+          sortf={sortf}
+          sorto={sorto}
+          totalRows={listing?.meta.total}
+          onSelectRows={selectResources}
+          selectedRows={selectedResources}
+          innerScrollDisabled={false}
         />
       </div>
       <div className={classes.body}>

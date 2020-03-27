@@ -178,3 +178,24 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: int
                     groups: [Default]
+
+# Used to validate the Resource Entity
+Centreon\Domain\Monitoring\Resource:
+    properties:
+        id:
+            - Type:
+                type: string
+                groups: [Default, disack_host, disack_service]
+        type:
+            - Type:
+                type: string
+                groups: [Default, disack_host, disack_service]
+            - Choice:
+                choices:
+                    - service
+                    - host
+                multiple: false
+                groups: [Default, disack_host, disack_service]
+        parent:
+            - NotNull:
+                groups: [disack_service]

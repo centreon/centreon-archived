@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
@@ -87,7 +88,12 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function findResources(ResourceFilter $filter): array
     {
-        $list = $this->resourceRepository->findResources($filter);
+        // try to avoid exception from the regexp bad syntax in search criteria
+        try {
+            $list = $this->resourceRepository->findResources($filter);
+        } catch (\Exception $ex) {
+            throw new ResourceException('Error while searching for resources', 0, $ex);
+        }
 
         // set paths to endpoints
         foreach ($list as $resource) {

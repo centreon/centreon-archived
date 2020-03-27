@@ -1,3 +1,14 @@
+=====================
+Centreon Web 19.10.10
+=====================
+
+Bug Fixes
+---------
+
+* [Configuration] Export "NULL" values correctly to Remote Server (PR #8281)
+* [Dashboard] Report displays templates instead of services (PR #8406)
+* [Centcore] External commands processed every second if in multiple files (PR #8407)
+
 ====================
 Centreon Web 19.10.9
 ====================
