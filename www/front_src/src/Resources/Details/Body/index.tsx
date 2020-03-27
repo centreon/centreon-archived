@@ -49,8 +49,16 @@ const LoadingSkeleton = (): JSX.Element => (
   </Grid>
 );
 
+const getTabById = ({ id, details }): JSX.Element | null => {
+  const tabById = {
+    0: <DetailsTab details={details} />,
+  };
+
+  return tabById[id];
+};
+
 const Body = ({ details }: DetailsSectionProps): JSX.Element => {
-  const classes = useStyles(details);
+  const classes = useStyles();
 
   const [selectedTabId, setSelectedTabId] = React.useState(0);
 
@@ -77,7 +85,7 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
           {loading ? (
             <LoadingSkeleton />
           ) : (
-            selectedTabId === 0 && !loading && <DetailsTab details={details} />
+            getTabById({ id: selectedTabId, details })
           )}
         </div>
       </div>

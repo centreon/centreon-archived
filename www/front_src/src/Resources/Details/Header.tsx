@@ -14,17 +14,23 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
 import { StatusChip, SeverityCode } from '@centreon/ui';
 
-import { DetailsSectionProps, ResourceDetails } from '.';
+import { DetailsSectionProps } from '.';
 import { rowColorConditions } from '../colors';
 
-const useStyles = makeStyles<Theme, ResourceDetails>((theme) => ({
-  header: ({ downtimes, acknowledgement }): CreateCSSProperties => {
-    const backgroundColor = rowColorConditions.find(({ condition }) =>
+const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
+  header: ({ details }): CreateCSSProperties => {
+    if (details === undefined) {
+      return {};
+    }
+
+    const foundColorCondition = rowColorConditions.find(({ condition }) =>
       condition({
-        in_downtime: downtimes !== undefined,
-        acknowledged: acknowledgement !== undefined,
+        in_downtime: details.downtimes !== undefined,
+        acknowledged: details.acknowledgement !== undefined,
       }),
-    )?.color;
+    );
+
+    const backgroundColor = foundColorCondition?.color;
 
     return {
       backgroundColor: backgroundColor
@@ -45,12 +51,56 @@ const LoadingSkeleton = (): JSX.Element => (
   </Grid>
 );
 
+const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
+  if (details === undefined) {
+    return (
+      <Grid item style={{ flexGrow: 1 }}>
+        <LoadingSkeleton />
+      </Grid>
+    );
+  }
+
+  return (
+    <>
+      <Grid item>
+        <StatusChip
+          severityCode={SeverityCode.None}
+          label={details.criticality?.toString()}
+        />
+      </Grid>
+      <Grid item>
+        <StatusChip
+          severityCode={details.status.severity_code}
+          label={details.status.name}
+        />
+      </Grid>
+      <Grid item style={{ flexGrow: 1 }}>
+        <Grid container direction="column">
+          <Grid item>
+            <Typography>{details.name}</Typography>
+          </Grid>
+          {details.parent && (
+            <Grid item container spacing={1}>
+              <Grid item>
+                <StatusChip
+                  severityCode={details.parent.status.severity_code}
+                />
+              </Grid>
+              <Grid item>
+                <Typography variant="caption">{details.parent.name}</Typography>
+              </Grid>
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
+    </>
+  );
+};
+
 type HeaderProps = DetailsSectionProps & { onClickClose };
 
 const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
-  const classes = useStyles(details);
-
-  const loading = details === undefined;
+  const classes = useStyles({ details });
 
   return (
     <Grid
@@ -60,47 +110,7 @@ const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
       alignItems="center"
       className={classes.header}
     >
-      {loading ? (
-        <Grid item style={{ flexGrow: 1 }}>
-          <LoadingSkeleton />
-        </Grid>
-      ) : (
-        <>
-          <Grid item>
-            <StatusChip
-              severityCode={SeverityCode.None}
-              label={details.criticality?.toString()}
-            />
-          </Grid>
-          <Grid item>
-            <StatusChip
-              severityCode={details.status.severity_code}
-              label={details.status.name}
-            />
-          </Grid>
-          <Grid item style={{ flexGrow: 1 }}>
-            <Grid container direction="column">
-              <Grid item>
-                <Typography>{details.name}</Typography>
-              </Grid>
-              {details.parent && (
-                <Grid item container spacing={1}>
-                  <Grid item>
-                    <StatusChip
-                      severityCode={details.parent.status.severity_code}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="caption">
-                      {details.parent.name}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
-          </Grid>
-        </>
-      )}
+      <HeaderContent details={details} />
       <Grid item>
         <IconButton onClick={onClickClose}>
           <IconClose />

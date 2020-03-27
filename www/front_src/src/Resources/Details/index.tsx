@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
-import { Loader } from '@centreon/ui';
-
 import { Status, Parent, Downtime, Acknowledgement } from '../models';
 import Header from './Header';
 import Body from './Body';
@@ -30,7 +28,7 @@ const useStyles = makeStyles(() => {
 });
 
 interface Props {
-  resourceId: string | null;
+  endpoint: string | null;
   onClose;
 }
 
@@ -61,17 +59,17 @@ export interface ResourceDetails {
 }
 
 export interface DetailsSectionProps {
-  details: ResourceDetails;
+  details?: ResourceDetails;
 }
 
-const Details = ({ resourceId, onClose }: Props): JSX.Element | null => {
+const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
   const classes = useStyles();
 
   const [details, setDetails] = React.useState<ResourceDetails>();
 
   const get = useGet({
     onSuccess: (entity) => setDetails(entity),
-    endpoint: 'http://localhost:5000/api/beta/resource',
+    endpoint,
   });
 
   React.useEffect(() => {
@@ -80,7 +78,7 @@ const Details = ({ resourceId, onClose }: Props): JSX.Element | null => {
     }
 
     get();
-  }, [resourceId]);
+  }, [endpoint]);
 
   return (
     <Paper variant="outlined" elevation={2} className={classes.details}>

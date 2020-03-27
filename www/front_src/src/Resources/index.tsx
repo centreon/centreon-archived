@@ -80,9 +80,9 @@ const Resources = (): JSX.Element => {
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
 
-  const [selectedResourceId, setSelectedResourceId] = useState<string | null>(
-    null,
-  );
+  const [selectedDetailsEndpoint, setSelectedDetailsEndpoint] = useState<
+    string | null
+  >(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -228,12 +228,12 @@ const Resources = (): JSX.Element => {
     prepareToAcknowledge([]);
   };
 
-  const selectResource = ({ id }): void => {
-    setSelectedResourceId(id);
+  const selectResource = ({ details_endpoint }): void => {
+    setSelectedDetailsEndpoint(details_endpoint);
   };
 
   const clearSelectedResource = (): void => {
-    setSelectedResourceId(null);
+    setSelectedDetailsEndpoint(null);
   };
 
   const columns = getColumns({
@@ -276,10 +276,10 @@ const Resources = (): JSX.Element => {
         />
       </div>
       <div className={classes.body}>
-        {selectedResourceId && (
+        {selectedDetailsEndpoint && (
           <div className={classes.panel}>
             <Details
-              resourceId={selectedResourceId}
+              endpoint={selectedDetailsEndpoint}
               onClose={clearSelectedResource}
             />
           </div>
@@ -303,6 +303,7 @@ const Resources = (): JSX.Element => {
             onSelectRows={selectResources}
             selectedRows={selectedResources}
             onRowClick={selectResource}
+            innerScrollDisabled={false}
           />
         </div>
       </div>

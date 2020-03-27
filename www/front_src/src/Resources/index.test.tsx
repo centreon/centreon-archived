@@ -1,7 +1,7 @@
 import React from 'react';
 
 import axios from 'axios';
-import { render, wait, within, fireEvent } from '@testing-library/react';
+import { render, waitFor, within, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import last from 'lodash/last';
 
@@ -39,7 +39,7 @@ const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('./columns/icons/Downtime');
+jest.mock('./icons/Downtime');
 
 interface SearchParam {
   mode: '$or' | '$and';
@@ -194,13 +194,13 @@ describe(Resources, () => {
   it('expands criterias filters', async () => {
     const { getByLabelText, queryByText } = render(<Resources />);
 
-    await wait(() => {
+    await waitFor(() => {
       expect(queryByText(labelTypeOfResource)).not.toBeVisible();
     });
 
     fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
-    await wait(() => {
+    await waitFor(() => {
       expect(queryByText(labelTypeOfResource)).toBeVisible();
     });
   });
@@ -208,7 +208,7 @@ describe(Resources, () => {
   it('executes a listing request with "Unhandled problems" filter group by default', async () => {
     render(<Resources />);
 
-    await wait(() =>
+    await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         getEndpoint({}),
         cancelTokenRequestParam,
@@ -237,14 +237,14 @@ describe(Resources, () => {
     it(`executes a listing request with "${filterGroup}" params when "${filterGroup}" filter group is set`, async () => {
       const { getByText } = render(<Resources />);
 
-      await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
       // @material-ui Select uses a Popover that needs special handling to update options.
       selectOption(getByText(labelUnhandledProblems), filterGroup);
 
-      await wait(() =>
+      await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getEndpoint({
             resourceTypes: criterias.resourceTypes,
@@ -311,7 +311,7 @@ describe(Resources, () => {
       it(`executes a listing request with selected "${filterName}" filter options when it's changed`, async () => {
         const { getAllByText, getByTitle } = render(<Resources />);
 
-        await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
         selectEndpointMockAction?.();
         mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
@@ -319,7 +319,7 @@ describe(Resources, () => {
         const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
         fireEvent.click(filterToChange);
 
-        await wait(() => {
+        await waitFor(() => {
           const [selectedOption] = getAllByText(optionToSelect);
 
           return fireEvent.click(selectedOption);
@@ -336,7 +336,7 @@ describe(Resources, () => {
   it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
     const { getByText } = render(<Resources />);
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -366,7 +366,7 @@ describe(Resources, () => {
   it('executes a listing request with an updated page param when a change page action is clicked', async () => {
     const { getByLabelText } = render(<Resources />);
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -502,7 +502,7 @@ describe(Resources, () => {
 
     const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -525,7 +525,7 @@ describe(Resources, () => {
     fireEvent.mouseEnter(getByLabelText(chipLabel));
     fireEvent.mouseOver(getByLabelText(chipLabel));
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       entityInDowntime?.downtime_endpoint,
@@ -546,7 +546,7 @@ describe(Resources, () => {
       ({ acknowledged }) => acknowledged,
     );
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
@@ -569,7 +569,7 @@ describe(Resources, () => {
     fireEvent.mouseEnter(getByLabelText(chipLabel));
     fireEvent.mouseOver(getByLabelText(chipLabel));
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       acknowledgedEntity?.acknowledgement_endpoint,
@@ -587,14 +587,14 @@ describe(Resources, () => {
     getByLabelText,
     getByText,
   }): Promise<void> => {
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     resolveUserToBeAdmin();
 
     fireEvent.click(getByLabelText('Select all'));
     fireEvent.click(getByText(labelAcknowledge));
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
   };
 
   const labelAcknowledgedByAdmin = `${labelAcknowledgedBy} admin`;
@@ -611,7 +611,7 @@ describe(Resources, () => {
       target: { value: '' },
     });
 
-    await wait(() =>
+    await waitFor(() =>
       expect(last(getAllByText(labelAcknowledge)).parentElement).toBeDisabled(),
     );
   });
@@ -633,7 +633,7 @@ describe(Resources, () => {
 
     fireEvent.click(last(getAllByText(labelAcknowledge)));
 
-    await wait(() => {
+    await waitFor(() => {
       expect(mockedAxios.all).toHaveBeenCalled();
       expect(mockedAxios.post).toHaveBeenCalled();
     });
@@ -669,7 +669,7 @@ describe(Resources, () => {
   it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
     const { getByLabelText, getByText, queryByText } = render(<Resources />);
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     resolveUserToBeAdmin();
 
@@ -679,7 +679,7 @@ describe(Resources, () => {
 
     fireEvent.click(getByText(labelAcknowledge));
 
-    await wait(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(getByText(labelAcknowledgedByAdmin)).toBeInTheDocument();
     expect(queryByText(labelAcknowledgeServices)).toBeNull();

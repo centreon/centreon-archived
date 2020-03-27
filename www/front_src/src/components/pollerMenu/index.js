@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable camelcase */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/forbid-prop-types */

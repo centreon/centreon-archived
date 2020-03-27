@@ -2,8 +2,6 @@ import React from 'react';
 
 import axios from 'axios';
 
-import fs from 'fs';
-
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import Details from '.';
 import {
@@ -34,7 +32,7 @@ jest.mock('../icons/Downtime');
 
 const onClose = jest.fn();
 
-const resourceId = 1;
+const endpoint = '/resource';
 
 const retrievedDetails = {
   name: 'Central',
@@ -56,7 +54,7 @@ const retrievedDetails = {
   check_command: 'base_host_alive',
   last_notification: '2020-07-18T19:30',
   latency: 0.005,
-  next_check: '2020-03-18T19:15',
+  next_check: '2020-06-18T19:15',
   notification_number: 3,
   flapping: false,
   percent_state_change: 3.5,
@@ -89,7 +87,7 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = render(
-      <Details resourceId={resourceId.toString()} onClose={onClose} />,
+      <Details endpoint={endpoint} onClose={onClose} />,
     );
 
     await waitFor(() => expect(getByText('Central')).toBeInTheDocument());
@@ -141,7 +139,7 @@ describe(Details, () => {
     expect(getAllByText(labelActive)).toHaveLength(2);
 
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
-    expect(getByText('070906 s')).toBeInTheDocument();
+    expect(getByText('0.070906 s')).toBeInTheDocument();
 
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
@@ -153,10 +151,10 @@ describe(Details, () => {
     expect(getByText('07/18/2020')).toBeInTheDocument();
     expect(getByText('19:30')).toBeInTheDocument();
 
-    expect(labelCurrentNotificationNumber).toBeInTheDocument();
+    expect(getByText(labelCurrentNotificationNumber)).toBeInTheDocument();
     expect(getByText('3')).toBeInTheDocument();
 
-    expect(labelPerformanceData).toBeInTheDocument();
+    expect(getByText(labelPerformanceData)).toBeInTheDocument();
     expect(
       getByText(
         'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
