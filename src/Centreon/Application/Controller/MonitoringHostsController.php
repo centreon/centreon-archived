@@ -79,7 +79,8 @@ class MonitoringHostsController extends AbstractController
 
         $groups = [
             Service::SERIALIZER_GROUP_FULL,
-            Acknowledgement::SERIALIZER_GROUP_FULL
+            Acknowledgement::SERIALIZER_GROUP_FULL,
+            Downtime::SERIALIZER_GROUPS_SERVICE,
         ];
         $context = (new Context())
             ->setGroups(array_merge($groups, Downtime::SERIALIZER_GROUPS_SERVICE))
