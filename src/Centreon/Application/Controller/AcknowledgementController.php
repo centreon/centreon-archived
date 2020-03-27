@@ -624,10 +624,6 @@ class AcknowledgementController extends AbstractController
          */
         $contact = $this->getUser();
 
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
         /**
          * @var AckRequest $ackRequest
          */
@@ -683,14 +679,34 @@ class AcknowledgementController extends AbstractController
         foreach ($resources as $resource) {
             //start acknowledgement process
             try {
-                $this->acknowledgementService->acknowledgeResource(
-                    $resource, $acknowledgement
-                );
+                if ($this->hasAckRightsForResource($contact, $resource)) {
+                    $this->acknowledgementService->acknowledgeResource(
+                        $resource, $acknowledgement
+                    );
+                }
             } catch (\Exception $e) {
                 continue;
             }
         }
 
         return $this->view();
+    }
+
+    /**
+     * @param Contact $contact
+     * @param ResourceEntity $resouce
+     * @return bool
+     */
+    private function hasAckRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    {
+        $hasRights = false;
+
+        if ($resouce->getType() === ResourceEntity::TYPE_HOST){
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
+        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
+        }
+
+        return $hasRights;
     }
 }
