@@ -599,8 +599,7 @@ class DowntimeController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -665,7 +664,8 @@ class DowntimeController extends AbstractController
             try {
                 if ($this->hasDtRightsForResource($contact, $resource)) {
                     $this->downtimeService->addResourceDowntime(
-                        $resource, $downtime
+                        $resource,
+                        $downtime
                     );
                 }
             } catch (\Exception $e) {
@@ -685,7 +685,7 @@ class DowntimeController extends AbstractController
     {
         $hasRights = false;
 
-        if ($resouce->getType() === ResourceEntity::TYPE_HOST){
+        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME);
         } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);

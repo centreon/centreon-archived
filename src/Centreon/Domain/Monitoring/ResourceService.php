@@ -150,8 +150,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         EntityValidator $validator,
         ResourceEntity $resource,
         array $contextGroups
-    ): ConstraintViolationListInterface
-    {
+    ): ConstraintViolationListInterface {
         return $validator->validate(
             $resource,
             null,

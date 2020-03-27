@@ -166,8 +166,7 @@ class AcknowledgementController extends AbstractController
         RequestParametersInterface $requestParameters,
         int $hostId,
         int $serviceId
-    ): View
-    {
+    ): View {
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -199,8 +198,7 @@ class AcknowledgementController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -256,8 +254,7 @@ class AcknowledgementController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -315,8 +312,7 @@ class AcknowledgementController extends AbstractController
         EntityValidator $entityValidator,
         SerializerInterface $serializer,
         int $hostId
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -369,8 +365,7 @@ class AcknowledgementController extends AbstractController
         SerializerInterface $serializer,
         int $hostId,
         int $serviceId
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $contact = $this->getUser();
@@ -536,8 +531,7 @@ class AcknowledgementController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -615,8 +609,7 @@ class AcknowledgementController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -681,7 +674,8 @@ class AcknowledgementController extends AbstractController
             try {
                 if ($this->hasAckRightsForResource($contact, $resource)) {
                     $this->acknowledgementService->acknowledgeResource(
-                        $resource, $acknowledgement
+                        $resource,
+                        $acknowledgement
                     );
                 }
             } catch (\Exception $e) {
@@ -701,7 +695,7 @@ class AcknowledgementController extends AbstractController
     {
         $hasRights = false;
 
-        if ($resouce->getType() === ResourceEntity::TYPE_HOST){
+        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
         } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
