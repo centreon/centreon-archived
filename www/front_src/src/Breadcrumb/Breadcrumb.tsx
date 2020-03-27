@@ -1,8 +1,6 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
-
-import { makeStyles, Breadcrumbs } from '@material-ui/core/styles';
+import { makeStyles, Breadcrumbs } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import BreadcrumbLink from './Link';
@@ -16,7 +14,16 @@ const useStyles = makeStyles({
   },
 });
 
-const Breadcrumb = ({ breadcrumbs }) => {
+interface Link {
+  label: string;
+  index: number;
+}
+
+interface Props {
+  links: Array<Link>;
+}
+
+const Breadcrumb = ({ links }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -25,21 +32,17 @@ const Breadcrumb = ({ breadcrumbs }) => {
       separator={<NavigateNextIcon fontSize="small" />}
       aria-label="Breadcrumb"
     >
-      {breadcrumbs &&
-        breadcrumbs.map((breadcrumb, index) => (
+      {links &&
+        links.map((link, index) => (
           <BreadcrumbLink
-            key={`${breadcrumb.label}${breadcrumb.index}`}
-            breadcrumb={breadcrumb}
+            key={`${link.label}${link.index}`}
+            breadcrumb={link}
             index={index}
-            count={breadcrumbs.length}
+            count={links.length}
           />
         ))}
     </Breadcrumbs>
   );
-};
-
-Breadcrumb.propTypes = {
-  breadcrumbs: PropTypes.arrayOf(PropTypes.shape).isRequired,
 };
 
 export default Breadcrumb;
