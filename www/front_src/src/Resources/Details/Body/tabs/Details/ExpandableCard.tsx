@@ -14,7 +14,7 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
 import { getStatusColors } from '@centreon/ui';
 
-import { labelMore, labelLess } from '../../translatedLabels';
+import { labelMore, labelLess } from '../../../../translatedLabels';
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>

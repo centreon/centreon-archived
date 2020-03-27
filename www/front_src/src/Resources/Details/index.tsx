@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
-import { Status, Parent, Downtime, Acknowledgement } from '../models';
 import Header from './Header';
 import Body from './Body';
 import useGet from '../useGet';
+import { ResourceDetails } from './models';
 
 const useStyles = makeStyles(() => {
   return {
@@ -30,32 +30,6 @@ const useStyles = makeStyles(() => {
 interface Props {
   endpoint: string | null;
   onClose;
-}
-
-export interface ResourceDetails {
-  name: string;
-  status: Status;
-  parent: Parent;
-  criticality: number;
-  output: string;
-  downtimes?: Array<Downtime>;
-  acknowledgement?: Acknowledgement;
-  duration: string;
-  tries: string;
-  poller_name?: string;
-  timezone?: string;
-  last_state_change: string;
-  last_check: string;
-  next_check: string;
-  active_checks: boolean;
-  execution_time: number;
-  latency: number;
-  flapping: boolean;
-  percent_state_change: number;
-  last_notification: string;
-  notification_number: number;
-  performance_data: string;
-  check_command: string;
 }
 
 export interface DetailsSectionProps {

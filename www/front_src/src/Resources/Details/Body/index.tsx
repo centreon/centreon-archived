@@ -4,9 +4,10 @@ import { Tabs, Tab, makeStyles, Grid, styled } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { labelDetails, labelGraph } from '../../translatedLabels';
-import { DetailsSectionProps, ResourceDetails } from '..';
-import DetailsTab from './DetailsTab';
-import GraphTab from './GraphTab';
+import { DetailsSectionProps } from '..';
+import GraphTab from './tabs/Graph';
+import DetailsTab from './tabs/Details';
+import { ResourceDetails } from '../models';
 
 const useStyles = makeStyles((theme) => {
   return {
