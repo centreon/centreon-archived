@@ -5,12 +5,12 @@ const parseAndFormat = ({ isoDate, to }): string =>
   format(parseISO(isoDate), to);
 
 const getFormattedDateTime = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'MM/dd/yyyy H:mm' });
+  parseAndFormat({ isoDate, to: 'MM/dd/yyyy HH:mm' });
 
 const getFormattedDate = (isoDate): string =>
   parseAndFormat({ isoDate, to: 'MM/dd/yyyy' });
 
 const getFormattedTime = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'H:mm' });
+  parseAndFormat({ isoDate, to: 'HH:mm' });
 
 export { getFormattedDateTime, getFormattedDate, getFormattedTime };

@@ -296,27 +296,6 @@ const Resources = (): JSX.Element => {
           currentSearch={search}
         />
       </div>
-      <div className={classes.listing}>
-        <Listing
-          checkable
-          Actions={ResourceActions}
-          loading={loading}
-          columnConfiguration={columns}
-          tableData={listing?.result}
-          currentPage={page - 1}
-          rowColorConditions={rowColorConditions}
-          limit={listing?.meta.limit}
-          onSort={changeSort}
-          onPaginationLimitChanged={changeLimit}
-          onPaginate={changePage}
-          sortf={sortf}
-          sorto={sorto}
-          totalRows={listing?.meta.total}
-          onSelectRows={selectResources}
-          selectedRows={selectedResources}
-          innerScrollDisabled={false}
-        />
-      </div>
       <div className={classes.body}>
         {selectedDetailsEndpoint && (
           <div className={classes.panel}>
