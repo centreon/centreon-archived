@@ -18,6 +18,12 @@ Centreon\Domain\Downtime\Downtime:
                 - 'Default'
                 - 'downtime_main'
                 - 'downtime_event_list'
+        authorName:
+            type: string
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
         hostId:
             type: int
             groups:
