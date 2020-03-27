@@ -223,7 +223,8 @@ class RequestParameters implements RequestParametersInterface
         $search = $this->search;
 
         if (!empty($search)) {
-            if ((
+            if (
+                (
                     !isset($search[RequestParameters::AGGREGATE_OPERATOR_AND])
                     && !isset($search[RequestParameters::AGGREGATE_OPERATOR_OR])
                 )

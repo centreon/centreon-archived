@@ -291,7 +291,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     private function hasServiceFilter(ResourceFilter $filter): bool
     {
-        if (($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) ||
+        if (
+            ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) ||
             ($filter->getStatuses() && !ResourceFilter::map(
                 $filter->getStatuses(),
                 ResourceFilter::MAP_STATUS_SERVICE
@@ -311,7 +312,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     private function hasHostFilter(ResourceFilter $filter): bool
     {
-        if ($this->hasServiceSearch() ||
+        if (
+            $this->hasServiceSearch() ||
             ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_HOST)) ||
             ($filter->getStatuses() && !ResourceFilter::map(
                 $filter->getStatuses(),
