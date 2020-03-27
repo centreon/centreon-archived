@@ -309,8 +309,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
     $form->setDefaults(
         array(
-            "comment" => sprintf(_("Downtime set by %s"),
-            $centreon->user->alias)
+            "comment" => sprintf(_("Downtime set by %s"), $centreon->user->alias)
         )
     );
 
