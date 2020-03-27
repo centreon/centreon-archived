@@ -78,7 +78,6 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
         onChange={changeSelectedTabId}
       >
         <Tab label={labelDetails} disabled={loading} />
-        <Tab label={labelGraph} disabled={loading} />
       </Tabs>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
