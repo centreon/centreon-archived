@@ -98,7 +98,7 @@ const Resources = (): JSX.Element => {
       })
       .catch((error) => {
         setListing(undefined);
-        showError(error?.response?.data?.message || error.message);
+        showError(error.response?.data?.message || error.message);
       })
       .finally(() => setLoading(false));
   };
