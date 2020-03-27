@@ -313,7 +313,7 @@ class Host implements EntityDescriptorMetadataInterface
             'host_id' => 'setId',
             'instance_id' => 'setPollerId',
             'address' => 'setAddressIp',
-            'acknowledged' => 'setAcknowledged'
+            'acknowledged' => 'setAcknowledged',
         ];
     }
 
