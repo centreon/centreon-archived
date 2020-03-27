@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import { createSelector } from 'reselect';
 
 /**
@@ -5,7 +6,7 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {String} build URL
  */
-const getUrl = (item) =>
+const getUrl = (item): string =>
   item.is_react
     ? item.url
     : `/main.php?p=${item.page}${item.options !== null ? item.options : ''}`;
@@ -15,7 +16,7 @@ const getUrl = (item) =>
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-const findFirstUrl = (item) => {
+const findFirstUrl = (item): string | undefined => {
   if (item.url) {
     return getUrl(item);
   }
@@ -36,7 +37,7 @@ const findFirstUrl = (item) => {
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-const getFirstUrlInChildren = (item) => {
+const getFirstUrlInChildren = (item): string | undefined => {
   if (!item.children) {
     return undefined;
   }
@@ -45,12 +46,12 @@ const getFirstUrlInChildren = (item) => {
   return childrenWithUrl ? findFirstUrl(childrenWithUrl) : undefined;
 };
 
-/**
- * get breadcrumb step information from an entry
- * @param Object item
- * @return {Object|null} breadcrumb step information
- */
-const getBreadcrumbStep = (item) => {
+interface Breadcrumb {
+  label: string;
+  link: string;
+}
+
+const getBreadcrumbStep = (item): Breadcrumb | null => {
   const availableUrl = item.url ? getUrl(item) : findFirstUrl(item);
   return availableUrl
     ? {
@@ -60,7 +61,13 @@ const getBreadcrumbStep = (item) => {
     : null;
 };
 
-const getNavigationItems = (state) => state.navigation.items;
+interface NavigationItem {
+  children: Array<NavigationItem>;
+  groups: Array<NavigationItem>;
+}
+
+const getNavigationItems = (state): Array<NavigationItem> =>
+  state.navigation.items;
 
 const breadcrumbsSelector = createSelector(getNavigationItems, (navItems) => {
   const breadcrumbs = {};
