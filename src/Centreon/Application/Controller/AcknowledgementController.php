@@ -462,8 +462,7 @@ class AcknowledgementController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $contact = $this->getUser();
-        if (
-            !$contact->isAdmin()
+        if (!$contact->isAdmin()
             && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
                 || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
         ) {
@@ -496,8 +495,7 @@ class AcknowledgementController extends AbstractController
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $contact = $this->getUser();
-        if (
-            !$contact->isAdmin()
+        if (!$contact->isAdmin()
             && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
                 || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
         ) {
