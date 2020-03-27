@@ -187,7 +187,7 @@ if (!empty($aclUser)) {
 
         return $parentsLvl;
     };
-    
+
     /**
      * Check if at least one child can be shown
      */
@@ -239,7 +239,7 @@ if (!empty($aclUser)) {
                 foreach ($childrenLvl3 as $parentLvl3) {
                     if ($translatedPages[$parentLvl3]['show']) {
                         $parentNameLvl3 = $translatedPages[$parentLvl3]['i18n'];
-                    
+
                         if ($parentNameLvl2 === $parentNameLvl3) {
                             /**
                              * The name between lvl2 and lvl3 are equals.
