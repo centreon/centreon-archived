@@ -146,12 +146,12 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
   );
 
   const loading = graphData === undefined;
+  const hasData = graphData && graphData?.times.length > 0;
 
   return (
     <div className={classes.container}>
-      {loading ? (
-        <CircularProgress size={60} color="primary" />
-      ) : (
+      {loading && <CircularProgress size={60} color="primary" />}
+      {hasData && (
         <ComposedChart
           className={classes.graph}
           width={graphWidth}
