@@ -243,10 +243,7 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     }
 
     /**
-     * @param ResourceEntity $resource
-     * @param Downtime $downtime
-     * @throws EntityNotFoundException
-     * @throws \Exception
+     * @inheritDoc
      */
     public function addResourceDowntime(ResourceEntity $resource, Downtime $downtime): void
     {

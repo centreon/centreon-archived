@@ -136,7 +136,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     /**
      * Acknowledge resource and its services if needed.
      *
-     * @param Resource $resource Resource to be acknowledged
+     * @param ResourceEntity $resource Resource to be acknowledged
      * @param Acknowledgement $ack
      * @throws EngineException
      * @throws EntityNotFoundException

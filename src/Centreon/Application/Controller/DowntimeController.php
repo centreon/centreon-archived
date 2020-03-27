@@ -663,14 +663,34 @@ class DowntimeController extends AbstractController
         foreach ($resources as $resource) {
             //start applying downtime process
             try {
-                $this->downtimeService->addResourceDowntime(
-                    $resource, $downtime
-                );
+                if ($this->hasDtRightsForResource($contact, $resource)) {
+                    $this->downtimeService->addResourceDowntime(
+                        $resource, $downtime
+                    );
+                }
             } catch (\Exception $e) {
                 throw $e;
             }
         }
 
         return $this->view();
+    }
+
+    /**
+     * @param Contact $contact
+     * @param ResourceEntity $resouce
+     * @return bool
+     */
+    private function hasDtRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    {
+        $hasRights = false;
+
+        if ($resouce->getType() === ResourceEntity::TYPE_HOST){
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME);
+        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
+        }
+
+        return $hasRights;
     }
 }
