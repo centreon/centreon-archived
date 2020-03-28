@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Tooltip, Avatar, makeStyles } from '@material-ui/core';
+import { Tooltip, IconButton, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme) => ({
   tooltip: {
     maxWidth: 'none',
     backgroundColor: 'transparent',
+  },
+  iconButton: {
+    padding: 0,
   },
 }));
 
@@ -21,10 +24,10 @@ interface Props {
 }
 
 const HoverChip = ({
+  className,
   children,
   ariaLabel,
   Icon,
-  className,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -34,10 +37,15 @@ const HoverChip = ({
       title={children}
       classes={{ tooltip: classes.tooltip }}
       enterDelay={0}
+      interactive
     >
-      <Avatar aria-label={ariaLabel} className={`${classes.chip} ${className}`}>
+      <IconButton
+        aria-label={ariaLabel}
+        classes={{ root: classes.iconButton }}
+        className={className}
+      >
         <Icon />
-      </Avatar>
+      </IconButton>
     </Tooltip>
   );
 };

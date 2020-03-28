@@ -54,7 +54,7 @@ import {
 
 const ExpansionPanelSummary = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(0, 3, 0, 1),
+    padding: theme.spacing(0, 3, 0, 0.5),
     minHeight: 'auto',
     '&$expanded': {
       minHeight: 'auto',
@@ -71,7 +71,7 @@ const ExpansionPanelSummary = withStyles((theme) => ({
 
 const ExpansionPanelDetails = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(0, 0.5, 1, 0.5),
   },
 }))(MuiExpansionPanelDetails);
 
@@ -169,7 +169,7 @@ const Filter = ({
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
   return (
-    <ExpansionPanel>
+    <ExpansionPanel square>
       <ExpansionPanelSummary
         expandIcon={
           <ExpandMoreIcon
@@ -179,7 +179,7 @@ const Filter = ({
         }
       >
         <Grid
-          spacing={2}
+          spacing={1}
           container
           direction="row"
           alignItems="center"
@@ -228,7 +228,7 @@ const Filter = ({
         </Grid>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        <Grid spacing={2} container direction="row" alignItems="center">
+        <Grid spacing={1} container direction="row" alignItems="center">
           <Grid item>
             <Typography className={classes.filterLineLabel} variant="subtitle1">
               {labelCriterias}

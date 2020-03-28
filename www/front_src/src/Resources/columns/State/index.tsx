@@ -12,14 +12,14 @@ import { labelInDowntime, labelAcknowledged } from '../../translatedLabels';
 import { Resource } from '../../models';
 import HoverChip from '../HoverChip';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   acknowledged: {
-    backgroundColor: fade(lime[900], 0.1),
-    color: lime[900],
+    backgroundColor: fade(theme.palette.action.acknowledged, 0.1),
+    color: theme.palette.action.acknowledged,
   },
   downtime: {
-    backgroundColor: fade(purple[500], 0.1),
-    color: purple[500],
+    backgroundColor: fade(theme.palette.action.inDowntime, 0.1),
+    color: theme.palette.action.inDowntime,
   },
   tooltip: {
     maxWidth: 'none',

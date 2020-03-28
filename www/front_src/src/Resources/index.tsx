@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 import { lime, purple } from '@material-ui/core/colors';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
@@ -23,10 +23,13 @@ const useStyles = makeStyles((theme) => ({
   page: {
     backgroundColor: theme.palette.background.default,
   },
-
+  filter: {
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  },
   listing: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
   },
 }));
 
@@ -40,6 +43,9 @@ const defaultStates = criterias?.states;
 
 const Resources = (): JSX.Element => {
   const classes = useStyles();
+  const theme = useTheme();
+  console.log(theme)
+  console.log(theme.palette.action.acknowledgedBackground)
 
   const [listing, setListing] = useState<ResourceListing>();
   const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
@@ -54,7 +60,7 @@ const Resources = (): JSX.Element => {
 
   const [sorto, setSorto] = useState<string>();
   const [sortf, setSortf] = useState<string>();
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(30);
   const [page, setPage] = useState<number>(1);
 
   const [filter, setFilter] = useState(defaultFilter);
@@ -203,12 +209,12 @@ const Resources = (): JSX.Element => {
     {
       name: 'inDowntime',
       condition: ({ in_downtime }): boolean => in_downtime,
-      color: purple[500],
+      color: theme.palette.action.inDowntimeBackground,
     },
     {
       name: 'acknowledged',
       condition: ({ acknowledged }): boolean => acknowledged,
-      color: lime[900],
+      color: theme.palette.action.acknowledgedBackground,
     },
   ];
 
@@ -262,23 +268,25 @@ const Resources = (): JSX.Element => {
 
   return (
     <div className={classes.page}>
-      <Filter
-        filter={filter}
-        onFilterGroupChange={changeFilter}
-        selectedResourceTypes={resourceTypes}
-        onResourceTypesChange={changeResourceTypes}
-        selectedStates={states}
-        onStatesChange={changeStates}
-        selectedStatuses={statuses}
-        onStatusesChange={changeStatuses}
-        onSearchRequest={doSearch}
-        onHostGroupsChange={changeHostGroups}
-        selectedHostGroups={hostGroups}
-        onServiceGroupsChange={changeServiceGroups}
-        selectedServiceGroups={serviceGroups}
-        onClearAll={clearAllFilters}
-        currentSearch={search}
-      />
+      <div className={classes.filter}>
+        <Filter
+          filter={filter}
+          onFilterGroupChange={changeFilter}
+          selectedResourceTypes={resourceTypes}
+          onResourceTypesChange={changeResourceTypes}
+          selectedStates={states}
+          onStatesChange={changeStates}
+          selectedStatuses={statuses}
+          onStatusesChange={changeStatuses}
+          onSearchRequest={doSearch}
+          onHostGroupsChange={changeHostGroups}
+          selectedHostGroups={hostGroups}
+          onServiceGroupsChange={changeServiceGroups}
+          selectedServiceGroups={serviceGroups}
+          onClearAll={clearAllFilters}
+          currentSearch={search}
+        />
+      </div>
       <div className={classes.listing}>
         <Listing
           checkable
