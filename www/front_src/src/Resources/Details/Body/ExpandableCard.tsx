@@ -68,7 +68,7 @@ const ExpandableCard = ({
   );
 
   return (
-    <Card className={classes.card} color="green">
+    <Card className={classes.card}>
       <CardContent>
         <Typography
           className={classes.title}

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Tabs, Tab, makeStyles, Grid, styled } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { labelDetails, labelGraph } from '../../translatedLabels';
+import { labelDetails } from '../../translatedLabels';
 import { DetailsSectionProps } from '..';
 import DetailsTab from './DetailsTab';
 
