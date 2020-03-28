@@ -54,6 +54,11 @@ class Downtime implements EntityDescriptorMetadataInterface
     private $authorId;
 
     /**
+     * @var string|null Author name who sent this downtime
+     */
+    private $authorName;
+
+    /**
      * @var int|null Host id linked to this downtime
      */
     private $hostId;
@@ -144,6 +149,7 @@ class Downtime implements EntityDescriptorMetadataInterface
     public static function loadEntityDescriptorMetadata(): array
     {
         return [
+            'author' => 'setAuthorName',
             'downtime_id' => 'setId',
             'cancelled' => 'setCancelled',
             'comment_data' => 'setComment',
@@ -199,6 +205,22 @@ class Downtime implements EntityDescriptorMetadataInterface
     public function setAuthorId(?int $authorId): void
     {
         $this->authorId = $authorId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    /**
+     * @param string|null $authorName
+     */
+    public function setAuthorName(?string $authorName): void
+    {
+        $this->authorName = $authorName;
     }
 
     /**
