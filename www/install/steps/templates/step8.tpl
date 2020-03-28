@@ -78,7 +78,9 @@
 </form>
 
 <script type="text/javascript">
+
     {literal}
+
     jQuery(function() {
         jQuery("input[type=button]#previous").hide();
         var nextButton = jQuery("input[type=button]#next");
@@ -90,9 +92,11 @@
             jQuery(this).attr('checked', 'checked');
         });
         manageButtons();
+
         jQuery('input[type=checkbox]').click(function() {
             manageButtons();
         });
+
         installButton.on('click', function() {
             installButton.prop('disabled', true)
                 .removeClass('bt_info')
@@ -157,6 +161,7 @@
                 jQuery("input[type=checkbox][id^=widget_]:not(:checked)").prop('disabled', false);
             });
         });
+
         function manageButtons() {
             var checkboxes = jQuery("input[type=checkbox]:checked:not(:disabled)");
             if (checkboxes.length) {
@@ -168,8 +173,11 @@
             }
         }
     });
+
     function validation() {
         return true;
     }
+
     {/literal}
+
 </script>
