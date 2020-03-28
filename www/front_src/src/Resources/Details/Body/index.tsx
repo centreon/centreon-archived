@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Tabs, Tab, makeStyles, Grid, styled } from '@material-ui/core';
+import { Tabs, Tab, makeStyles, Grid, styled, AppBar } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { labelDetails, labelGraph } from '../../translatedLabels';
@@ -99,17 +99,19 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
 
   return (
     <div className={classes.body}>
-      <Tabs
-        variant="fullWidth"
-        value={selectedTabId}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={changeSelectedTabId}
-      >
-        {tabs.map(({ key, title }) => (
-          <Tab key={key} label={title} disabled={details === undefined} />
-        ))}
-      </Tabs>
+      <AppBar position="static" color="default">
+        <Tabs
+          variant="fullWidth"
+          value={selectedTabId}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={changeSelectedTabId}
+        >
+          {tabs.map(({ key, title }) => (
+            <Tab key={key} label={title} disabled={details === undefined} />
+          ))}
+        </Tabs>
+      </AppBar>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
           <BodyContent details={details} selectedTabId={selectedTabId} />

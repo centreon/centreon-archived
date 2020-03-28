@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, * as React from 'react';
 
 import {
   ComposedChart,
@@ -8,19 +8,22 @@ import {
   YAxis,
   CartesianGrid,
   Legend,
+  ResponsiveContainer,
 } from 'recharts';
 import filesize from 'filesize';
 import format from 'date-fns/format';
 
-import { fade, makeStyles, CircularProgress } from '@material-ui/core';
+import {
+  fade,
+  makeStyles,
+  CircularProgress,
+  Typography,
+} from '@material-ui/core';
 
 import { useCancelTokenSource, getData } from '@centreon/ui';
 
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
-
-const graphHeight = 350;
-const graphWidth = 475;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -28,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.palette.common.white,
-    height: graphHeight,
-    width: graphWidth,
+    height: '100%',
+    width: '100%',
   },
   graph: {
     margin: 'auto',
@@ -136,7 +139,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
     );
 
   const legendFormatter = (value): JSX.Element => (
-    <span className={classes.legend}>{value}</span>
+    <Typography variant="caption">{value}</Typography>
   );
 
   const loading = graphData === undefined;
@@ -146,42 +149,43 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
     <div className={classes.container}>
       {loading && <CircularProgress size={60} color="primary" />}
       {hasData && (
-        <ComposedChart
-          className={classes.graph}
-          width={graphWidth}
-          height={graphHeight}
-          data={data}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <JSXXAxis dataKey="time" tickFormatter={xAxisFormatter} />
-          {YAxes}
-          {graphData?.metrics.map(({ metric, ds_data, unit }, index) =>
-            ds_data.ds_filled ? (
-              <Area
-                key={metric}
-                type="monotone"
-                dataKey={metric}
-                stackId={index}
-                stroke={ds_data.ds_color_line}
-                fill={fade(
-                  ds_data.ds_color_area,
-                  ds_data.ds_transparency * 0.01,
-                )}
-                yAxisId={unit}
-              />
-            ) : (
-              <Line
-                key={metric}
-                type="monotone"
-                dataKey={metric}
-                stroke={ds_data.ds_color_line}
-                dot={false}
-                yAxisId={unit}
-              />
-            ),
-          )}
-          <Legend iconType="square" formatter={legendFormatter} />
-        </ComposedChart>
+        <ResponsiveContainer>
+          <ComposedChart className={classes.graph} data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <JSXXAxis dataKey="time" tickFormatter={xAxisFormatter} />
+            {YAxes}
+            {graphData?.metrics.map(({ metric, ds_data, unit }, index) =>
+              ds_data.ds_filled ? (
+                <Area
+                  key={metric}
+                  type="monotone"
+                  dataKey={metric}
+                  stackId={index}
+                  stroke={ds_data.ds_color_line}
+                  fill={fade(
+                    ds_data.ds_color_area,
+                    ds_data.ds_transparency * 0.01,
+                  )}
+                  yAxisId={unit}
+                />
+              ) : (
+                <Line
+                  key={metric}
+                  type="monotone"
+                  dataKey={metric}
+                  stroke={ds_data.ds_color_line}
+                  dot={false}
+                  yAxisId={unit}
+                />
+              ),
+            )}
+            <Legend
+              formatter={legendFormatter}
+              iconType="circle"
+              iconSize={10}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
       )}
     </div>
   );

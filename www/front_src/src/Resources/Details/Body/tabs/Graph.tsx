@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Grid, Paper, Theme } from '@material-ui/core';
+import { Paper, Theme } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
 
@@ -13,6 +13,11 @@ import {
 import Graph from '../../../Graph';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  container: {
+    display: 'grid',
+    gridTemplateRows: 'auto 250px',
+    gridRowGap: theme.spacing(2),
+  },
   header: {
     padding: theme.spacing(2),
   },
@@ -25,6 +30,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   graph: {
     margin: 'auto',
+    height: '100%',
+    width: '100%',
   },
 }));
 
@@ -38,25 +45,21 @@ const GraphTab = (): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Grid container direction="column" spacing={2}>
-      <Grid item>
-        <Paper className={classes.header}>
-          <SelectField
-            className={classes.periodSelect}
-            options={graphOptions}
-            selectedOptionId="last_24_h"
-            onChange={() => {}}
-          />
-        </Paper>
-      </Grid>
-      <Grid item>
-        <Paper className={classes.graphContainer}>
-          <div className={classes.graph}>
-            <Graph endpoint="http://localhost:5000/api/beta/graph" />
-          </div>
-        </Paper>
-      </Grid>
-    </Grid>
+    <div className={classes.container}>
+      <Paper className={classes.header}>
+        <SelectField
+          className={classes.periodSelect}
+          options={graphOptions}
+          selectedOptionId="last_24_h"
+          onChange={() => {}}
+        />
+      </Paper>
+      <Paper className={classes.graphContainer}>
+        <div className={classes.graph}>
+          <Graph endpoint="http://localhost:5000/api/beta/graph" />
+        </div>
+      </Paper>
+    </div>
   );
 };
 
