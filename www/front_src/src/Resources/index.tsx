@@ -56,7 +56,7 @@ const Resources = (): JSX.Element => {
     Array<Resource>
   >([]);
 
-  const [sorto, setSorto] = useState<string>();
+  const [sorto, setSorto] = useState<'asc' | 'desc'>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(30);
   const [page, setPage] = useState<number>(1);
