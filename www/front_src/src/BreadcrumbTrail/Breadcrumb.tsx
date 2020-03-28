@@ -3,7 +3,7 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { Link, makeStyles } from '@material-ui/core';
-import { BreadcrumbItem } from './models';
+import { Breadcrumb as BreadcrumbModel } from './models';
 
 const useStyles = makeStyles(() => ({
   link: {
@@ -18,19 +18,17 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   index: number;
-  count: number;
-  breadcrumb: BreadcrumbItem;
+  last: boolean;
+  breadcrumb: BreadcrumbModel;
 }
 
-const BreadcrumbsLink = ({ index, count, breadcrumb }: Props): JSX.Element => {
+const Breadcrumb = ({ last, breadcrumb }: Props): JSX.Element => {
   const classes = useStyles();
-
-  const isLastLink = index === count - 1;
 
   return (
     <Link
       className={classes.link}
-      color={isLastLink ? 'textPrimary' : 'inherit'}
+      color={last ? 'textPrimary' : 'inherit'}
       component={RouterLink}
       to={breadcrumb.link}
     >
@@ -39,4 +37,4 @@ const BreadcrumbsLink = ({ index, count, breadcrumb }: Props): JSX.Element => {
   );
 };
 
-export default BreadcrumbsLink;
+export default Breadcrumb;

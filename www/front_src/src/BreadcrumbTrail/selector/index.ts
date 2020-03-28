@@ -69,7 +69,7 @@ interface NavigationItem {
 const getNavigationItems = (state): Array<NavigationItem> =>
   state.navigation.items;
 
-const breadcrumbsSelector = createSelector(getNavigationItems, (navItems) => {
+const breadcrumbSelector = createSelector(getNavigationItems, (navItems) => {
   const breadcrumbs = {};
 
   // build level 1 breadcrumbs
@@ -137,4 +137,4 @@ const breadcrumbsSelector = createSelector(getNavigationItems, (navItems) => {
   return breadcrumbs;
 });
 
-export default breadcrumbsSelector;
+export default breadcrumbSelector;

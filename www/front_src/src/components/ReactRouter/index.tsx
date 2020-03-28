@@ -10,7 +10,7 @@ import { styled } from '@material-ui/core';
 import internalPagesRoutes from '../../route-maps';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import NotAllowedPage from '../../route-components/notAllowedPage';
-import Breadcrumbs from '../../Breadcrumbs';
+import BreadcrumbTrail from '../../BreadcrumbTrail';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
 const PageContainer = styled('div')(({ theme }) => ({
@@ -29,7 +29,7 @@ const PageWithBreadcrumbs = ({
   path,
 }: PageWithBreadcrumbProps): JSX.Element => (
   <>
-    <Breadcrumbs path={path} />
+    <BreadcrumbTrail path={path} />
     {children}
   </>
 );
