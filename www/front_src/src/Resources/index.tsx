@@ -44,8 +44,6 @@ const defaultStates = criterias?.states;
 const Resources = (): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
-  console.log(theme)
-  console.log(theme.palette.action.acknowledgedBackground)
 
   const [listing, setListing] = useState<ResourceListing>();
   const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
