@@ -106,7 +106,7 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
  */
 function setUserFormat() {
     // Getting the local storage attribute
-    let userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 5) : "en_US";
+    const userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 5) : "en_US";
 
     if ("en_US" != userLanguage) {
         //calling the webservice to check if the file exists
