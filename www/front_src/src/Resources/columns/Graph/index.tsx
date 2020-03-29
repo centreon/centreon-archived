@@ -25,7 +25,7 @@ import { ColumnProps } from '..';
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
 
-const graphHeight = 200;
+const graphHeight = 250;
 const graphWidth = 475;
 
 const useStyles = makeStyles((theme) => ({
