@@ -71,7 +71,8 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
                     // alternativeField value has a MM/DD/YYYY format (the engine supported format)
                     value = moment($(alternativeField).val(), "MM/DD//YYYY");
                 } else if ($(this) && $(this).val()) {
-                    // $(this).val(), if exists, is a GMT YYYY-MM-DDTHH:mm:ss timestamp, for example with PHP : gmdate("Y-m-d\TH:i:s")
+                    // $(this).val(), if exists, is a GMT YYYY-MM-DDTHH:mm:ss timestamp
+                    // for example with PHP : gmdate("Y-m-d\TH:i:s")
                     value = moment($(this).val()).tz(timezone);
                 } else {
                     value = defaultDate;
@@ -81,7 +82,10 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
                     altField: alternativeField,
                     altFormat: altFormat
                 //datepicker date format elements : d, m, y, yy - moment date format elements :  D, M, YY, YYYY
-                }).datepicker("setDate", value.format($(this).datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY')));
+                }).datepicker(
+                    "setDate",
+                    value.format($(this).datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY'))
+                );
             } else {
                 alert("Fatal : attribute name not found for the class " + className);
                 jQuery(this).datepicker();
@@ -151,26 +155,36 @@ function turnOffEvents() {
 }
 
 function updateEndTime() {
-    var start = moment($('[name="alternativeDateStart"]').val() + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
-    var end = moment($('[name="alternativeDateEnd"]').val() + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+    let start = moment($('[name="alternativeDateStart"]').val()
+        + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    let end = moment($('[name="alternativeDateEnd"]').val()
+        + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
 
     if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
-        $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY')));
+        $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker(
+            "option",
+            "dateFormat"
+        ).toUpperCase().replace(/Y/g,'YY')));
         $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
         turnOnEvents();
     }
 }
 
 function updateStartTime() {
-    var start = moment($('[name="alternativeDateStart"]').val() + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
-    var end = moment($('[name="alternativeDateEnd"]').val() + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+    let start = moment($('[name="alternativeDateStart"]').val()
+        + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    let end = moment($('[name="alternativeDateEnd"]').val()
+        + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
 
     if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
         end.subtract($('#duration').val(), $('#duration_scale').val());
-        $(".datepicker").first().datepicker("setDate", end.format($(".datepicker").first().datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY')));
+        $(".datepicker").first().datepicker("setDate", end.format($(".datepicker").first().datepicker(
+            "option",
+            "dateFormat"
+        ).toUpperCase().replace(/Y/g,'YY')));
         $(".timepicker").first().timepicker("setTime", end.format("HH:mm"));
         turnOnEvents();
     }
