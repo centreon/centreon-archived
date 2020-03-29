@@ -25,6 +25,7 @@ const HoverChip = ({ children, Chip, label }: Props): JSX.Element => {
       classes={{ tooltip: classes.tooltip }}
       aria-label={label}
       enterDelay={0}
+      disableFocusListener
       onClick={(e): void => {
         e.preventDefault();
         e.stopPropagation();

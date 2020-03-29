@@ -1,4 +1,4 @@
-import React, * as React from 'react';
+import * as React from 'react';
 
 import {
   ComposedChart,
@@ -9,18 +9,15 @@ import {
   CartesianGrid,
   Legend,
   ResponsiveContainer,
+  Tooltip,
 } from 'recharts';
 import filesize from 'filesize';
 import format from 'date-fns/format';
 
-import {
-  fade,
-  makeStyles,
-  CircularProgress,
-  Typography,
-} from '@material-ui/core';
+import { fade, makeStyles, Typography, Grid } from '@material-ui/core';
 
-import { useCancelTokenSource, getData } from '@centreon/ui';
+import { Skeleton } from '@material-ui/lab';
+import useGet from '../useGet';
 
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
@@ -33,6 +30,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     height: '100%',
     width: '100%',
+  },
+  loadingSkeleton: {
+    flexGrow: 1,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    height: '100%',
+  },
+  loadingSkeletonLine: {
+    transform: 'none',
   },
   graph: {
     margin: 'auto',
@@ -63,18 +69,38 @@ interface MetricData {
   [metric: string]: string;
 }
 
+const LoadingSkeleton = (): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <Grid
+      container
+      direction="column"
+      spacing={2}
+      className={classes.loadingSkeleton}
+    >
+      <Grid item style={{ flexGrow: 1 }}>
+        <Skeleton height="100%" className={classes.loadingSkeletonLine} />
+      </Grid>
+      <Grid item>
+        <Skeleton className={classes.loadingSkeletonLine} />
+      </Grid>
+    </Grid>
+  );
+};
+
 const Graph = ({ endpoint }: Props): JSX.Element => {
-  const { cancel, token } = useCancelTokenSource();
   const [graphData, setGraphData] = React.useState<GraphData>();
+
+  const get = useGet({
+    endpoint,
+    onSuccess: setGraphData,
+  });
 
   const classes = useStyles();
 
   React.useEffect(() => {
-    getData<GraphData>({
-      endpoint,
-      requestParams: { cancelToken: token },
-    }).then((retrievedGraphData) => setGraphData(retrievedGraphData));
-    return (): void => cancel();
+    get();
   }, []);
 
   const getMetricDataForTimeIndex = (timeIndex): MetricData | undefined => {
@@ -139,15 +165,18 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
     );
 
   const legendFormatter = (value): JSX.Element => (
-    <Typography variant="caption">{value}</Typography>
+    <Typography variant="caption" color="textPrimary">
+      {value}
+    </Typography>
   );
 
   const loading = graphData === undefined;
   const hasData = graphData && graphData?.times.length > 0;
+  // const hasData = false;
 
   return (
     <div className={classes.container}>
-      {loading && <CircularProgress size={60} color="primary" />}
+      {loading && <LoadingSkeleton />}
       {hasData && (
         <ResponsiveContainer>
           <ComposedChart className={classes.graph} data={data}>
@@ -184,6 +213,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
               iconType="circle"
               iconSize={10}
             />
+            <Tooltip />
           </ComposedChart>
         </ResponsiveContainer>
       )}

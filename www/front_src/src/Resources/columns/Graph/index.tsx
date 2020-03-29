@@ -13,7 +13,9 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
 
   return (
     <HoverChip Chip={(): JSX.Element => <GraphChip />} label={labelGraph}>
-      <Graph endpoint={row.performance_graph_endpoint} />
+      <div style={{ height: 200, width: 475 }}>
+        <Graph endpoint="http://localhost:5000/api/beta/graph" />
+      </div>
     </HoverChip>
   );
 };
