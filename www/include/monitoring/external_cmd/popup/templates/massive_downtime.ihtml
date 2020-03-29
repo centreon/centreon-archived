@@ -62,7 +62,7 @@
 {literal}
 <script type="text/javascript">
     jQuery(".timepicker").each(function () {
-        if (! $(this).val()) {
+        if (!$(this).val()) {
             $(this).val(moment().tz(localStorage.getItem('realTimezone')
                 ? localStorage.getItem('realTimezone')
                 : moment.tz.guess()).format("HH:mm")
