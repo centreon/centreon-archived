@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   children: React.ReactNode;
   ariaLabel: string;
-  Icon: React.SFC;
+  Icon: React.ReactType;
   className?: string;
 }
 
@@ -44,7 +44,7 @@ const HoverChip = ({
         classes={{ root: classes.iconButton }}
         className={className}
       >
-        <Icon />
+        <Icon fontSize="small" />
       </IconButton>
     </Tooltip>
   );

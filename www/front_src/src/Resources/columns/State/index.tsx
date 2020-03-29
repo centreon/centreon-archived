@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 interface StateChipProps {
   endpoint: string;
   className: string;
-  Icon: React.SFC;
+  Icon: React.ReactType;
   DetailsTable: React.SFC<{ endpoint: string }>;
   ariaLabel: string;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-import { makeStyles, Breadcrumbs } from '@material-ui/core/styles';
+import { makeStyles, Breadcrumbs } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import BreadcrumbLink from './Link';

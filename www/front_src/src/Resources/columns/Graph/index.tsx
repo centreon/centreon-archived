@@ -199,10 +199,7 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
   }
 
   return (
-    <HoverChip
-      ariaLabel={labelGraph}
-      Icon={(): JSX.Element => <IconBarChart />}
-    >
+    <HoverChip ariaLabel={labelGraph} Icon={IconBarChart}>
       <Graph endpoint={row.performance_graph_endpoint} />
     </HoverChip>
   );

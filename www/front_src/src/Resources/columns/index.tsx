@@ -92,27 +92,25 @@ const StatusColumnOnHover = ({
   const classes = useStyles();
 
   return (
-    <Grid container spacing={0} alignItems="center">
+    <Grid container spacing={1} alignItems="center">
       <Grid item>
         <IconButton
           className={classes.iconButton}
-          size="small"
           color="primary"
           onClick={(): void => actions.onAcknowledge(row)}
           aria-label={`${labelAcknowledge} ${row.name}`}
         >
-          <IconAcknowledge />
+          <IconAcknowledge fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton
           className={classes.iconButton}
-          size="small"
           color="primary"
           onClick={(): void => actions.onDowntime(row)}
           aria-label={`${labelSetDowntimeOn} ${row.name}`}
         >
-          <IconDowntime />
+          <IconDowntime fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
@@ -137,7 +135,7 @@ const StatusColumn = (actions) => ({
     <StatusColumnOnHover actions={actions} row={row} />
   ) : (
     <StatusChip
-      style={{ width: 100, height: 20, margin: '2px 0px' }}
+      style={{ width: 100, height: 20, margin: 0 }}
       label={row.status.name}
       severityCode={row.status.severity_code}
     />
