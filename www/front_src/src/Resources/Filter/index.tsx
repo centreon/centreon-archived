@@ -157,7 +157,7 @@ const Filter = ({
     if (event.keyCode === 13) {
       requestSearch();
     }
-  }
+  };
 
   const getHostGroupSearchEndpoint = (searchValue): string => {
     return buildHostGroupsEndpoint({
