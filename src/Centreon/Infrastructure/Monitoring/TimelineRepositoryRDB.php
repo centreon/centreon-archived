@@ -230,11 +230,9 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             if ($serviceId) {
                 $sql .= " AND service_acl.service_id = l.service_id";
             }
-            $sql .= " AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") 
-                  WHERE l.host_id = :hostId AND l.service_id = :serviceId";
-        } else {
-            $sql .= " WHERE l.host_id = :hostId AND l.service_id = :serviceId";
+            $sql .= " AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") ";
         }
+        $sql .= " WHERE l.host_id = :hostId AND l.service_id = :serviceId";
 
         //Group to avoid duplicate entries
         $sql .= ' GROUP BY l.log_id';
