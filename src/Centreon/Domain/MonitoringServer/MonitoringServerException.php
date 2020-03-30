@@ -20,14 +20,8 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Service;
+namespace Centreon\Domain\MonitoringServer;
 
-interface EntityDescriptorMetadataInterface
+class MonitoringServerException extends \Exception
 {
-    /**
-     * Entity descriptor used to define the setter method for a specific column.
-     *
-     * @return array<string, string>
-     */
-    public static function loadEntityDescriptorMetadata(): array;
 }

@@ -24,9 +24,14 @@ namespace Centreon\Domain\MonitoringServer;
 
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
+/**
+ * This class is designed to represent a monitoring server entity.
+ *
+ * @package Centreon\Domain\MonitoringServer
+ */
 class MonitoringServer implements EntityDescriptorMetadataInterface
 {
-    // Groups for serilizing
+    // Groups for serializing
     public const SERIALIZER_GROUP_MAIN = 'monitoringserver_main';
 
     /**
@@ -170,7 +175,7 @@ class MonitoringServer implements EntityDescriptorMetadataInterface
     private $isUpdated = false;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public static function loadEntityDescriptorMetadata(): array
     {
