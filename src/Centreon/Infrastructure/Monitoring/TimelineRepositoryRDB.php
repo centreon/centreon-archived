@@ -367,7 +367,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     protected function generateAcknowledgementsQuery(
         StatementCollector $collector,
         int $hostId,
-        int $serviceId = null
+        int $serviceId = 0
     ): string {
         $sql = "SELECT
 		CONCAT('A', a.acknowledgement_id) AS `eventId`,
