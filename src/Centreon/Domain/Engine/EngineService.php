@@ -79,16 +79,6 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             throw new EngineException('Host name can not be empty');
         }
 
-        // We validate the acknowledgement instance
-        $errors = $this->validator->getValidator()->validate(
-            $acknowledgement,
-            null,
-            AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACK
-        );
-        if ($errors->count() > 0) {
-            throw new ValidationFailedException($errors);
-        }
-
         $preCommand = sprintf(
             'ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s',
             $host->getName(),
@@ -113,16 +103,6 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         }
         if (empty($service->getHost())) {
             throw new EngineException('The host of service is not defined');
-        }
-        if ($this->validator->hasValidatorFor(Acknowledgement::class)) {
-            $errors = $this->validator->getValidator()->validate(
-                $acknowledgement,
-                null,
-                AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK
-            );
-            if ($errors->count() > 0) {
-                throw new ValidationFailedException($errors);
-            }
         }
 
         $preCommand = sprintf(
