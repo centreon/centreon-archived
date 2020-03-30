@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\Request\AckRequest;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
@@ -164,7 +165,8 @@ class AcknowledgementController extends AbstractController
         RequestParametersInterface $requestParameters,
         int $hostId,
         int $serviceId
-    ): View {
+    ): View
+    {
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -196,7 +198,8 @@ class AcknowledgementController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View {
+    ): View
+    {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -211,7 +214,7 @@ class AcknowledgementController extends AbstractController
          * @var Acknowledgement[] $acknowledgements
          */
         $acknowledgements = $serializer->deserialize(
-            (string) $request->getContent(),
+            (string)$request->getContent(),
             'array<' . Acknowledgement::class . '>',
             'json'
         );
@@ -252,7 +255,8 @@ class AcknowledgementController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View {
+    ): View
+    {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -267,7 +271,7 @@ class AcknowledgementController extends AbstractController
          * @var Acknowledgement[] $acknowledgements
          */
         $acknowledgements = $serializer->deserialize(
-            (string) $request->getContent(),
+            (string)$request->getContent(),
             'array<' . Acknowledgement::class . '>',
             'json'
         );
@@ -310,7 +314,8 @@ class AcknowledgementController extends AbstractController
         EntityValidator $entityValidator,
         SerializerInterface $serializer,
         int $hostId
-    ): View {
+    ): View
+    {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -363,7 +368,8 @@ class AcknowledgementController extends AbstractController
         SerializerInterface $serializer,
         int $hostId,
         int $serviceId
-    ): View {
+    ): View
+    {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         $contact = $this->getUser();
@@ -518,7 +524,7 @@ class AcknowledgementController extends AbstractController
     }
 
     /**
-     * Entry point to bulk acknowledge resources (hosts and services)
+     * Entry point to bulk disacknowledge resources (hosts and services)
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -529,7 +535,8 @@ class AcknowledgementController extends AbstractController
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
-    ): View {
+    ): View
+    {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
@@ -545,7 +552,7 @@ class AcknowledgementController extends AbstractController
          * @var ResourceEntity[] $resources
          */
         $resources = $serializer->deserialize(
-            (string) $request->getContent(),
+            (string)$request->getContent(),
             'array<' . ResourceEntity::class . '>',
             'json'
         );
@@ -581,12 +588,103 @@ class AcknowledgementController extends AbstractController
             try {
                 if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
                     $this->acknowledgementService->disacknowledgeService(
-                        (int) $resource->getParent()->getId(),
-                        (int) $resource->getId()
+                        (int)$resource->getParent()->getId(),
+                        (int)$resource->getId()
                     );
                 } else {
-                    $this->acknowledgementService->disacknowledgeHost((int) $resource->getId());
+                    $this->acknowledgementService->disacknowledgeHost((int)$resource->getId());
                 }
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to bulk acknowledge resources (hosts and services)
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function massAcknowledgeResources(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var AckRequest $ackRequest
+         */
+        $ackRequest = $serializer->deserialize(
+            (string)$request->getContent(),
+            AckRequest::class,
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        //validate input
+        $errorList = new ConstraintViolationList();
+
+        //validate resources
+        $resources = $ackRequest->getResources() ?? [];
+        foreach ($resources as $resource) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $errorList->addAll($this->validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
+                $errorList->addAll($this->validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                ));
+            } else {
+                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+            }
+        }
+
+        //validate acknowledgement
+        $acknowledgement = $ackRequest->getAcknowledgement();
+        $errorList->addAll(
+            $entityValidator->validate(
+                $acknowledgement,
+                null,
+                Acknowledgement::VALIDATION_GROUP_ACK_RESOURCE
+            )
+        );
+
+        if ($errorList->count() > 0) {
+            throw new ValidationFailedException($errorList);
+        }
+
+        //set default values [sticky, persistent_comment] to true
+        $acknowledgement->setSticky(true);
+        $acknowledgement->setPersistentComment(true);
+
+        foreach ($resources as $resource) {
+            //start acknowledgement process
+            try {
+                $this->acknowledgementService->acknowledgeResource(
+                    $resource, $acknowledgement
+                );
             } catch (\Exception $e) {
                 continue;
             }
@@ -606,7 +704,8 @@ class AcknowledgementController extends AbstractController
         EntityValidator $validator,
         ResourceEntity $resource,
         array $contextGroups
-    ): ConstraintViolationListInterface {
+    ): ConstraintViolationListInterface
+    {
         return $validator->validate(
             $resource,
             null,

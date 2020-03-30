@@ -35,6 +35,9 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
     public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
 
+    //Groups for validation
+    public const VALIDATION_GROUP_ACK_RESOURCE = ['ack_resource'];
+
     /**
      * @var int
      */

@@ -4,7 +4,9 @@ jms_serializer:
             centreon:
                 namespace_prefix: "Centreon\\Domain"
                 path: '%kernel.root_dir%/../config/packages/serializer/Centreon'
-
+            application:
+                namespace_prefix: "Centreon\\Application"
+                path: '%kernel.root_dir%/../config/packages/serializer/Application'
 parameters:
     api.header: "Api-Version"
     api.version.latest: "2.0"

@@ -3,11 +3,15 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         comment:
             - Type:
                 type: string
-            - NotNull: ~
+                groups: [ack_resource]
+            - NotNull:
+                groups: [ack_resource]
         isNotifyContacts:
             - Type:
                 type: boolean
-            - NotNull: ~
+                groups: [ack_resource]
+            - NotNull:
+                groups: [ack_resource]
         isPersistentComment:
             - Type:
                 type: boolean
@@ -35,7 +39,7 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         withServices:
             - Type:
                 type: boolean
-                groups: [add_host_acks, add_host_ack]
+                groups: [add_host_acks, add_host_ack, ack_resource]
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
