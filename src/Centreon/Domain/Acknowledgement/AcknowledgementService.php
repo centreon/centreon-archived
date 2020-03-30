@@ -309,7 +309,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             $service->setHost($host);
             $this->engineService->addServiceAcknowledgement($ack, $service);
         } else {
-            throw new \Exception('Incorrect Resource type');
+            throw new \Exception('Incorrect Resource type: ' . $resource->getType());
         }
     }
 }
