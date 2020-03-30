@@ -62,6 +62,11 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     /**
      * @var string|null
      */
+    private $authorName;
+
+    /**
+     * @var string|null
+     */
     private $comment;
 
     /**
@@ -120,6 +125,7 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     public static function loadEntityDescriptorMetadata(): array
     {
         return [
+            'author' => 'setAuthorName',
             'acknowledgement_id' => 'setId',
             'comment_data' => 'setComment',
             'instance_id' => 'setPollerId',
@@ -217,6 +223,22 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     {
         $this->authorId = $authorId;
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    /**
+     * @param string|null $authorName
+     */
+    public function setAuthorName(?string $authorName): void
+    {
+        $this->authorName = $authorName;
     }
 
     /**

@@ -2138,6 +2138,10 @@ components:
           format: int64
           description: "ID of the contact who requested an acknowledgement"
           example: 3
+        author_name:
+          type: string
+          description: "Name of the contact who requested an acknowledgement"
+          example: "admin"
         comment:
           type: string
           description: "Short description of the acknowledgement"
@@ -2289,6 +2293,10 @@ components:
           type: integer
           description: "ID of the contact who requested the downtime"
           example: 3
+        author_name:
+          type: string
+          description: "Name of the contact who requested the downtime"
+          example: "admin"
         host_id:
           type: integer
           description: "ID of the host on which the downtime is set"
