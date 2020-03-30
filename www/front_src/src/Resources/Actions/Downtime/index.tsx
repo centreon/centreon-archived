@@ -93,7 +93,7 @@ const DowntimeForm = ({
   resources,
   onClose,
   onSuccess,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
@@ -177,6 +177,10 @@ const DowntimeForm = ({
 
   React.useEffect(() => (): void => cancel(), []);
 
+  if (resources.length === 0) {
+    return null;
+  }
+
   return (
     <DialogDowntime
       locale={locale}
@@ -194,8 +198,4 @@ const DowntimeForm = ({
   );
 };
 
-export default React.memo(
-  DowntimeForm,
-  (prevProps, nextProps) =>
-    prevProps.resources.length === nextProps.resources.length,
-);
+export default DowntimeForm;
