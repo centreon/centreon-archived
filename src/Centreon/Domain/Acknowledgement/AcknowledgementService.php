@@ -304,7 +304,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 (int) $resource->getId()
             );
             if (is_null($service)) {
-                throw new EntityNotFoundException('Service not found');
+                throw new EntityNotFoundException('Service ' . $resource->getId() . ' (parent: ' . $resource->getParent()->getId() . ') not found');
             }
             $service->setHost($host);
             $this->engineService->addServiceAcknowledgement($ack, $service);
