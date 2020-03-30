@@ -51,7 +51,7 @@ const Content = (): JSX.Element => (
       </li>
       <li>
         <b>h.name:^FR20 h.alias:prod</b>
-        {` ${labelSearchByHostNameStartingWith} "FR20" ${labelSearchAndHostAliasContaining} prod"`}
+        {` ${labelSearchByHostNameStartingWith} "FR20" ${labelSearchAndHostAliasContaining} "prod"`}
       </li>
     </ul>
   </>
