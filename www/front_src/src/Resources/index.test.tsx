@@ -224,8 +224,8 @@ describe(Resources, () => {
     );
   });
 
-  it.only('executes a listing request when a search is typed and enter key is pressed', async () => {
-    const { container, getByPlaceholderText } = render(<Resources />);
+  it('executes a listing request when a search is typed and enter key is pressed', async () => {
+    const { getByPlaceholderText } = render(<Resources />);
 
     const fieldSearchValue = 'foobar';
 
