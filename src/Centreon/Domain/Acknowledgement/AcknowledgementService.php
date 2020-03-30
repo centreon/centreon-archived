@@ -300,11 +300,14 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             }
         } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
             $service = $this->monitoringRepository->findOneService(
-                (int) $resource->getParent()->getId(),
-                (int) $resource->getId()
+                (int)$resource->getParent()->getId(),
+                (int)$resource->getId()
             );
             if (is_null($service)) {
-                throw new EntityNotFoundException('Service ' . $resource->getId() . ' (parent: ' . $resource->getParent()->getId() . ') not found');
+                throw new EntityNotFoundException(
+                    'Service ' . $resource->getId() . ' (parent: ' . $resource->getParent()->getId() .
+                    ') not found'
+                );
             }
             $service->setHost($host);
             $this->engineService->addServiceAcknowledgement($ack, $service);
