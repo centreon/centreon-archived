@@ -1,5 +1,5 @@
 /*
-* Copyright 2005-2019 Centreon
+* Copyright 2005-2020 Centreon
 * Centreon is developed by : Julien Mathis and Romain Le Merlus under
 * GPL Licence 2.0.
 *
@@ -37,7 +37,7 @@
  *
  * @param className string : tag class name
  * @param altFormat string : format of the alternative field
- * @param defaultDate string : datepicker parameter of the setDate
+ * @param defaultDate string : datepicker parameter of the setDate - GMT YYYY-MM-DDTHH:mm:ss timestamp
  * @param idName string : tag id of the displayed field
  * @param timestampToSet int : timestamp used to make a new date using the user localization and format
  */
@@ -48,11 +48,14 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
 
     setUserFormat();
 
-    if (typeof(idName) == "undefined" || typeof(timestampToSet) == "undefined") {
+    let timezone = localStorage.getItem('realTimezone') || moment.tz.guess();
 
-        // manage timezone : set +/- 1 day
-        if (defaultDate == "0" && localStorage.getItem('realTimezone')) {
-            defaultDate = new Date(moment().tz(localStorage.getItem('realTimezone')).format("YYYY-MM-DD"));
+    if (typeof(idName) == "undefined" || typeof(timestampToSet) == "undefined") {
+        // generate default date in proper timezone
+        if (defaultDate == "0") {
+            defaultDate = moment().tz(timezone);
+        } else {
+            defaultDate = moment(defaultDate).tz(timezone);
         }
 
         // initializing all the displayed and the hidden datepickers
@@ -62,12 +65,27 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
             var altName = jQuery(this).attr("name");
             if (typeof(altName) != "undefined") {
                 var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
-                var value = $(this) && $(this).val() ? $(this).val() : defaultDate;
+                var value;
+                // avoid to loose chosen localized values on refresh
+                if ($(alternativeField) && $(alternativeField).val()) {
+                    // alternativeField value has a MM/DD/YYYY format (the engine supported format)
+                    value = moment($(alternativeField).val(), "MM/DD//YYYY");
+                } else if ($(this) && $(this).val()) {
+                    // $(this).val(), if exists, is a GMT YYYY-MM-DDTHH:mm:ss timestamp
+                    // for example with PHP : gmdate("Y-m-d\TH:i:s")
+                    value = moment($(this).val()).tz(timezone);
+                } else {
+                    value = defaultDate;
+                }
                 jQuery(this).datepicker({
                     //formatting the hidden fields using a specific format
                     altField: alternativeField,
                     altFormat: altFormat
-                }).datepicker("setDate", value)
+                //datepicker date format elements : d, m, y, yy - moment date format elements :  D, M, YY, YYYY
+                }).datepicker(
+                    "setDate",
+                    value.format($(this).datepicker("option", "dateFormat").toUpperCase().replace(/Y/g,'YY'))
+                );
             } else {
                 alert("Fatal : attribute name not found for the class " + className);
                 jQuery(this).datepicker();
@@ -75,6 +93,7 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
         });
     } else {
         // setting the displayed and hidden fields with a timestamp value sent from the backend
+        // used for MBI pages
         var alternativeField = "input[name=alternativeDate" + idName + "]";
         var dateToSet = new Date(timestampToSet);
         jQuery("#" + idName).datepicker({
@@ -91,7 +110,8 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
  */
 function setUserFormat() {
     // Getting the local storage attribute
-    var userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 5) : "en_US";
+    const userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 5) : "en_US";
+
     if ("en_US" != userLanguage) {
         //calling the webservice to check if the file exists
         $.ajax({
@@ -106,8 +126,8 @@ function setUserFormat() {
                         .attr('src', './include/common/javascript/datepicker/' + data)
                         .appendTo('body');
                 } else {
-                    console.log ('WARNING : datepicker localized library not found for : "' + userLanguage + '"');
-                    console.log ('Initializing the datepicker for "en_US"');
+                    console.log('WARNING : datepicker localized library not found for : "' + userLanguage + '"');
+                    console.log('Initializing the datepicker for "en_US"');
                 }
             }
         });
@@ -135,27 +155,37 @@ function turnOffEvents() {
 }
 
 function updateEndTime() {
-    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
-    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
-    if (start > end) {
+    let start = moment($('[name="alternativeDateStart"]').val()
+        + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    let end = moment($('[name="alternativeDateEnd"]').val()
+        + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+
+    if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
-        var e = new Date();
-        e.setTime(start.getTime() + 7200000); //microseconds
-        $(".datepicker").last().datepicker("setDate", e);
-        $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        start.add($('#duration').val(), $('#duration_scale').val());
+        $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker(
+            "option",
+            "dateFormat"
+        ).toUpperCase().replace(/Y/g,'YY')));
+        $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
         turnOnEvents();
     }
 }
 
 function updateStartTime() {
-    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
-    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
-    if (start > end) {
+    let start = moment($('[name="alternativeDateStart"]').val()
+        + ' ' +  $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    let end = moment($('[name="alternativeDateEnd"]').val()
+        + ' ' +  $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+
+    if (start.isAfter(end) || start.isSame(end)) {
         turnOffEvents();
-        var e = new Date();
-        e.setTime(end.getTime() - 7200000); //microseconds
-        $(".datepicker").first().datepicker("setDate", e);
-        $(".timepicker").first().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        end.subtract($('#duration').val(), $('#duration_scale').val());
+        $(".datepicker").first().datepicker("setDate", end.format($(".datepicker").first().datepicker(
+            "option",
+            "dateFormat"
+        ).toUpperCase().replace(/Y/g,'YY')));
+        $(".timepicker").first().timepicker("setTime", end.format("HH:mm"));
         turnOnEvents();
     }
 }

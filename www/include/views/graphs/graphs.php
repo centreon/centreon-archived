@@ -284,9 +284,7 @@ $form->addElement(
     )
 );
 
-if ($period_start != 'undefined' &&
-    $period_end != 'undefined'
-) {
+if ($period_start != 'undefined' && $period_end != 'undefined') {
     $startDay = date('Y-m-d', $period_start);
     $startTime = date('H:i', $period_start);
     $endDay = date('Y-m-d', $period_end);
