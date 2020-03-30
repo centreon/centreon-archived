@@ -13,7 +13,7 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
 
   return (
     <HoverChip Chip={(): JSX.Element => <GraphChip />} label={labelGraph}>
-      <div style={{ height: 200, width: 475 }}>
+      <div style={{ height: 200, width: 575, display: 'block' }}>
         <Graph endpoint="http://localhost:5000/api/beta/graph" />
       </div>
     </HoverChip>

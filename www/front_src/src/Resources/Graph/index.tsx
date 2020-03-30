@@ -172,7 +172,6 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
 
   const loading = graphData === undefined;
   const hasData = graphData && graphData?.times.length > 0;
-  // const hasData = false;
 
   return (
     <div className={classes.container}>
@@ -180,6 +179,12 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
       {hasData && (
         <ResponsiveContainer>
           <ComposedChart className={classes.graph} data={data}>
+            <Legend
+              formatter={legendFormatter}
+              iconType="circle"
+              iconSize={8}
+              wrapperStyle={{ bottom: 0 }}
+            />
             <CartesianGrid strokeDasharray="3 3" />
             <JSXXAxis dataKey="time" tickFormatter={xAxisFormatter} />
             {YAxes}
@@ -208,11 +213,7 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
                 />
               ),
             )}
-            <Legend
-              formatter={legendFormatter}
-              iconType="circle"
-              iconSize={10}
-            />
+
             <Tooltip />
           </ComposedChart>
         </ResponsiveContainer>
