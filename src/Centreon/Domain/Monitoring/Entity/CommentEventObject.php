@@ -74,6 +74,7 @@ class CommentEventObject extends Comment implements EventObjectInterface, Entity
             'type' => 'setType',
             'contact' => 'setAuthor',
             'persistent' => 'setPersistent',
+            'service_id' => 'setServiceId'
         ];
     }
 }
