@@ -194,7 +194,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
      * @param int $serviceId
      * @return string
      */
-    protected function generateLogsQuery(StatementCollector $collector, int $hostId, int $serviceId = null): string
+    protected function generateLogsQuery(StatementCollector $collector, int $hostId, int $serviceId = 0): string
     {
         $sql = "SELECT
 		CONCAT('L', l.log_id) AS `eventId`,
@@ -220,16 +220,20 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         NULL AS `sticky`,
         NULL AS `notify_contacts` 
         FROM `:dbstg`.`logs` l
-        WHERE l.host_id = :hostId AND l.service_id = :serviceId";
+        ";
 
         $collector->addValue(":hostId", $hostId);
         $collector->addValue(":serviceId", (int) $serviceId);
-
         // set ACL limitations
         if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                  AND service_acl.service_id = s.service_id
-                  AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = l.host_id";
+            if ($serviceId) {
+                $sql .= " AND service_acl.service_id = l.service_id";
+            }
+            $sql .= " AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") 
+                  WHERE l.host_id = :hostId AND l.service_id = :serviceId";
+        } else {
+            $sql .= " WHERE l.host_id = :hostId AND l.service_id = :serviceId";
         }
 
         //Group to avoid duplicate entries
@@ -246,7 +250,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
      * @param int $serviceId
      * @return string
      */
-    protected function generateCommentsQuery(StatementCollector $collector, int $hostId, int $serviceId = null): string
+    protected function generateCommentsQuery(StatementCollector $collector, int $hostId, int $serviceId = 0): string
     {
         $sql = "SELECT
 		CONCAT('C', c.comment_id) AS `eventId`,
@@ -272,16 +276,21 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         NULL AS `sticky`,
         NULL AS `notify_contacts`
         FROM `:dbstg`.`comments` c
-        WHERE c.host_id = :hostId AND c.service_id = :serviceId";
+        ";
 
         $collector->addValue(":hostId", $hostId);
         $collector->addValue(":serviceId", (int) $serviceId);
 
         // set ACL limitations
         if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                  AND service_acl.service_id = s.service_id
-                  AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = c.host_id";
+            if ($serviceId) {
+                $sql .= " AND service_acl.service_id = c.service_id";
+            }
+            $sql .= " AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") 
+                  WHERE c.host_id = :hostId AND c.service_id = :serviceId";
+        } else {
+            $sql .= " WHERE c.host_id = :hostId AND c.service_id = :serviceId";
         }
 
         //Group to avoid duplicate entries
@@ -298,7 +307,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
      * @param int $serviceId
      * @return string
      */
-    protected function generateDowntimesQuery(StatementCollector $collector, int $hostId, int $serviceId = null): string
+    protected function generateDowntimesQuery(StatementCollector $collector, int $hostId, int $serviceId = 0): string
     {
         $sql = "SELECT
 		CONCAT('D', d.downtime_id) AS `eventId`,
@@ -324,16 +333,21 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         NULL AS `sticky`,
         NULL AS `notify_contacts`
         FROM `:dbstg`.`downtimes` d
-        WHERE d.host_id = :hostId AND d.service_id = :serviceId";
+        ";
 
         $collector->addValue(":hostId", $hostId);
         $collector->addValue(":serviceId", (int) $serviceId);
 
         // set ACL limitations
         if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                  AND service_acl.service_id = s.service_id
-                  AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = d.host_id";
+            if ($serviceId) {
+                $sql .= " AND service_acl.service_id = d.service_id";
+            }
+            $sql .= " AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") 
+                  WHERE d.host_id = :hostId AND d.service_id = :serviceId";
+        } else {
+            $sql .= " WHERE d.host_id = :hostId AND d.service_id = :serviceId";
         }
 
         //Group to avoid duplicate entries
@@ -379,16 +393,21 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         a.sticky AS `sticky`,
         a.notify_contacts AS `notify_contacts`
         FROM `:dbstg`.`acknowledgements` a
-        WHERE a.host_id = :hostId AND a.service_id = :serviceId";
+        ";
 
         $collector->addValue(":hostId", $hostId);
         $collector->addValue(":serviceId", (int) $serviceId);
 
         // set ACL limitations
         if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                  AND service_acl.service_id = s.service_id
-                  AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = a.host_id";
+            if ($serviceId) {
+                $sql .= " AND service_acl.service_id = a.service_id";
+            }
+            $sql .= " AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") 
+                  WHERE a.host_id = :hostId AND a.service_id = :serviceId";
+        } else {
+            $sql .= " WHERE a.host_id = :hostId AND a.service_id = :serviceId";
         }
 
         //Group to avoid duplicate entries
