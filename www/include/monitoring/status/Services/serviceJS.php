@@ -419,13 +419,15 @@ if (isset($_GET["acknowledge"])) {
     }
 
     function toggleFields(fixed) {
-        var dur;
-        dur = document.getElementById('duration');
+        var durationField = jQuery('#duration');
+        var durationScaleField = jQuery('#duration_scale');
+
         if (fixed.checked) {
-            dur.disabled = true;
-        }
-        else {
-            dur.disabled = false;
+            durationField.attr('disabled', true);
+            durationScaleField.attr('disabled', true);
+        } else {
+            durationField.removeAttr('disabled');
+            durationScaleField.removeAttr('disabled');
         }
     }
 </script>
