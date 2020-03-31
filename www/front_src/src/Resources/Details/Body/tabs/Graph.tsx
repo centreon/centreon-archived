@@ -11,11 +11,12 @@ import {
   labelLast31Days,
 } from '../../../translatedLabels';
 import Graph from '../../../Graph';
+import StatusGraph from '../../../Graph/Status';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'grid',
-    gridTemplateRows: 'auto 250px',
+    gridTemplateRows: 'auto 1fr',
     gridRowGap: theme.spacing(2),
   },
   header: {
@@ -25,13 +26,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 250,
   },
   graphContainer: {
-    display: 'flex',
+    display: 'grid',
     padding: theme.spacing(4),
+    gridTemplateRows: '250px 100px',
   },
   graph: {
     margin: 'auto',
     height: '100%',
+  },
+  performance: {
     width: '100%',
+  },
+  status: {
+    marginTop: theme.spacing(2),
+    width: '90%',
   },
 }));
 
@@ -55,8 +63,11 @@ const GraphTab = (): JSX.Element => {
         />
       </Paper>
       <Paper className={classes.graphContainer}>
-        <div className={classes.graph}>
+        <div className={`${classes.graph} ${classes.performance}`}>
           <Graph endpoint="http://localhost:5000/api/beta/graph" />
+        </div>
+        <div className={`${classes.graph} ${classes.status}`}>
+          <StatusGraph endpoint="http://localhost:5000/api/beta/status" />
         </div>
       </Paper>
     </div>
