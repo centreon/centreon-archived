@@ -17,28 +17,44 @@ import {
   FilterGroup,
 } from './Filter/models';
 import Actions from './Actions';
+import Details from './Details';
+import { rowColorConditions } from './colors';
 
 const useStyles = makeStyles((theme) => ({
   page: {
+    display: 'grid',
+    gridTemplateRows: 'auto 1fr',
     backgroundColor: theme.palette.background.default,
+    overflowY: 'hidden',
+  },
+  body: {
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr 550px',
+  },
+  panel: {
+    gridArea: '1 / 2',
+    zIndex: 3,
   },
   filter: {
+    zIndex: 4,
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
   },
   listing: {
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
+    gridArea: '1 / 1 / 1 / span 2',
   },
 }));
-
-const noOp = (): void => undefined;
 
 const defaultFilter = unhandledProblemsFilter;
 const { criterias } = defaultFilter;
 const defaultResourceTypes = criterias?.resourceTypes;
 const defaultStatuses = criterias?.statuses;
 const defaultStates = criterias?.states;
+
+type SortOrder = 'asc' | 'desc';
 
 const Resources = (): JSX.Element => {
   const classes = useStyles();
@@ -69,6 +85,10 @@ const Resources = (): JSX.Element => {
   const [statuses, setStatuses] = useState<Array<FilterModel>>(defaultStatuses);
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
+
+  const [selectedDetailsEndpoint, setSelectedDetailsEndpoint] = useState<
+    string | null
+  >(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -203,19 +223,6 @@ const Resources = (): JSX.Element => {
     setResourcesToSetDowntime([]);
   };
 
-  const rowColorConditions = [
-    {
-      name: 'inDowntime',
-      condition: ({ in_downtime }): boolean => in_downtime,
-      color: theme.palette.action.inDowntimeBackground,
-    },
-    {
-      name: 'acknowledged',
-      condition: ({ acknowledged }): boolean => acknowledged,
-      color: theme.palette.action.acknowledgedBackground,
-    },
-  ];
-
   const prepareToAcknowledge = (resources): void => {
     setResourcesToAcknowledge(resources);
   };
@@ -248,6 +255,14 @@ const Resources = (): JSX.Element => {
       prepareToSetDowntime([resource]);
     },
   });
+
+  const selectResource = ({ details_endpoint }): void => {
+    setSelectedDetailsEndpoint(details_endpoint);
+  };
+
+  const clearSelectedResource = (): void => {
+    setSelectedDetailsEndpoint(null);
+  };
 
   const hasSelectedResources = selectedResources.length > 0;
 
@@ -285,27 +300,37 @@ const Resources = (): JSX.Element => {
           currentSearch={search}
         />
       </div>
-      <div className={classes.listing}>
-        <Listing
-          checkable
-          Actions={ResourceActions}
-          loading={loading}
-          columnConfiguration={columns}
-          tableData={listing?.result}
-          currentPage={page - 1}
-          rowColorConditions={rowColorConditions}
-          limit={listing?.meta.limit}
-          onDelete={noOp}
-          onSort={changeSort}
-          onDuplicate={noOp}
-          onPaginationLimitChanged={changeLimit}
-          onPaginate={changePage}
-          sortf={sortf}
-          sorto={sorto}
-          totalRows={listing?.meta.total}
-          onSelectRows={selectResources}
-          selectedRows={selectedResources}
-        />
+      <div className={classes.body}>
+        {selectedDetailsEndpoint && (
+          <div className={classes.panel}>
+            <Details
+              endpoint={selectedDetailsEndpoint}
+              onClose={clearSelectedResource}
+            />
+          </div>
+        )}
+        <div className={classes.listing}>
+          <Listing
+            checkable
+            Actions={ResourceActions}
+            loading={loading}
+            columnConfiguration={columns}
+            tableData={listing?.result}
+            currentPage={page - 1}
+            rowColorConditions={rowColorConditions(theme)}
+            limit={listing?.meta.limit}
+            onSort={changeSort}
+            onPaginationLimitChanged={changeLimit}
+            onPaginate={changePage}
+            sortf={sortf}
+            sorto={sorto}
+            totalRows={listing?.meta.total}
+            onSelectRows={selectResources}
+            selectedRows={selectedResources}
+            onRowClick={selectResource}
+            innerScrollDisabled={false}
+          />
+        </div>
       </div>
     </div>
   );

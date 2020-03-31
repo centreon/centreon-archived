@@ -71,3 +71,9 @@ monitoring.downtime.cancelOneDowntime:
         downtimeId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::cancelOneDowntime'
     condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_resources_downtime:
+    methods: POST
+    path: /monitoring/resources/downtime
+    controller: 'Centreon\Application\Controller\DowntimeController::massDowntimeResources'
+    condition: "request.attributes.get('version') >= 2.0"

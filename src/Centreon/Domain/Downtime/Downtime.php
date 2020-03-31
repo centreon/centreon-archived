@@ -33,6 +33,10 @@ class Downtime implements EntityDescriptorMetadataInterface
     // Groups for serialization
     public const SERIALIZER_GROUPS_MAIN = ['Default', 'downtime_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['Default', 'downtime_service'];
+    public const SERIALIZER_GROUPS_RESOURCE_DOWNTIME = ['resource_dt'];
+
+    //Groups for validation
+    public const VALIDATION_GROUP_DT_RESOURCE = ['resource_dt'];
 
     // Types
     public const TYPE_HOST_DOWNTIME = 0;

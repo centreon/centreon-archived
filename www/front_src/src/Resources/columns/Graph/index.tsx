@@ -13,7 +13,6 @@ import filesize from 'filesize';
 import format from 'date-fns/format';
 
 import { fade, makeStyles, CircularProgress } from '@material-ui/core';
-import IconBarChart from '@material-ui/icons/BarChart';
 
 import { useCancelTokenSource } from '@centreon/ui';
 
@@ -21,6 +20,7 @@ import { labelGraph } from '../../translatedLabels';
 import HoverChip from '../HoverChip';
 import { getData } from '../../api';
 import { ColumnProps } from '..';
+import GraphChip from '../../Chip/Graph';
 
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
@@ -146,12 +146,12 @@ const Graph = ({ endpoint }: Props): JSX.Element => {
   );
 
   const loading = graphData === undefined;
+  const hasData = graphData && graphData?.times.length > 0;
 
   return (
     <div className={classes.container}>
-      {loading ? (
-        <CircularProgress size={60} color="primary" />
-      ) : (
+      {loading && <CircularProgress size={60} color="primary" />}
+      {hasData && (
         <ComposedChart
           className={classes.graph}
           width={graphWidth}
@@ -199,7 +199,7 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
   }
 
   return (
-    <HoverChip ariaLabel={labelGraph} Icon={IconBarChart}>
+    <HoverChip Chip={(): JSX.Element => <GraphChip />} label={labelGraph}>
       <Graph endpoint={row.performance_graph_endpoint} />
     </HoverChip>
   );

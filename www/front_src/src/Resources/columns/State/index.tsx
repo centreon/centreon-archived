@@ -1,81 +1,62 @@
 import React from 'react';
 
-import { Grid, makeStyles, fade } from '@material-ui/core';
-import IconAcknowledged from '@material-ui/icons/Person';
+import { Grid } from '@material-ui/core';
 
-import IconDowntime from '../icons/Downtime';
 import { ColumnProps } from '..';
 import DowntimeDetailsTable from './DetailsTable/Downtime';
 import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import { labelInDowntime, labelAcknowledged } from '../../translatedLabels';
 import { Resource } from '../../models';
 import HoverChip from '../HoverChip';
-
-const useStyles = makeStyles((theme) => ({
-  acknowledged: {
-    backgroundColor: fade(theme.palette.action.acknowledged, 0.1),
-    color: theme.palette.action.acknowledged,
-  },
-  downtime: {
-    backgroundColor: fade(theme.palette.action.inDowntime, 0.1),
-    color: theme.palette.action.inDowntime,
-  },
-  tooltip: {
-    maxWidth: 'none',
-    backgroundColor: 'transparent',
-  },
-}));
+import DowntimeChip from '../../Chip/Downtime';
+import AcknowledgeChip from '../../Chip/Acknowledge';
 
 interface StateChipProps {
   endpoint: string;
-  className: string;
-  Icon: React.ReactType;
+  Chip: () => JSX.Element;
   DetailsTable: React.SFC<{ endpoint: string }>;
-  ariaLabel: string;
+  label: string;
 }
 
-const StateChip = ({
+const StateHoverChip = ({
   endpoint,
-  className,
-  Icon,
+  Chip,
   DetailsTable,
-  ariaLabel,
+  label,
 }: StateChipProps): JSX.Element => {
   return (
-    <HoverChip className={className} ariaLabel={ariaLabel} Icon={Icon}>
+    <HoverChip Chip={Chip} label={label}>
       <DetailsTable endpoint={endpoint} />
     </HoverChip>
   );
 };
 
-const DowntimeChip = ({ resource }: { resource: Resource }): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <StateChip
-      endpoint={resource.downtime_endpoint as string}
-      className={classes.downtime}
-      ariaLabel={`${resource.name} ${labelInDowntime}`}
-      DetailsTable={DowntimeDetailsTable}
-      Icon={IconDowntime}
-    />
-  );
-};
-
-const AcknowledgedChip = ({
+const DowntimeHoverChip = ({
   resource,
 }: {
   resource: Resource;
 }): JSX.Element => {
-  const classes = useStyles();
-
   return (
-    <StateChip
+    <StateHoverChip
+      endpoint={resource.downtime_endpoint as string}
+      label={`${resource.name} ${labelInDowntime}`}
+      DetailsTable={DowntimeDetailsTable}
+      Chip={(): JSX.Element => <DowntimeChip />}
+    />
+  );
+};
+
+const AcknowledgeHoverChip = ({
+  resource,
+}: {
+  resource: Resource;
+}): JSX.Element => {
+  return (
+    <StateHoverChip
       endpoint={resource.acknowledgement_endpoint as string}
-      className={classes.acknowledged}
-      ariaLabel={`${resource.name} ${labelAcknowledged}`}
+      label={`${resource.name} ${labelAcknowledged}`}
       DetailsTable={AcknowledgementDetailsTable}
-      Icon={IconAcknowledged}
+      Chip={(): JSX.Element => <AcknowledgeChip />}
     />
   );
 };
@@ -85,12 +66,12 @@ const StateColumn = ({ row }: ColumnProps): JSX.Element => {
     <Grid container spacing={1}>
       {row.in_downtime && (
         <Grid item>
-          <DowntimeChip resource={row} />
+          <DowntimeHoverChip resource={row} />
         </Grid>
       )}
       {row.acknowledged && (
         <Grid item>
-          <AcknowledgedChip resource={row} />
+          <AcknowledgeHoverChip resource={row} />
         </Grid>
       )}
     </Grid>
