@@ -34,6 +34,7 @@ export interface Column {
   type: number;
   Component?: (props) => JSX.Element | null;
   sortable?: boolean;
+  sortField?: string;
   width?: number;
 }
 
@@ -146,22 +147,22 @@ const getColumns = (actions): Array<Column> => [
     label: 'S',
     type: TABLE_COLUMN_TYPES.component,
     Component: SeverityColumn,
-    sortable: false,
+    sortField: 'severity_level',
   },
   {
     id: 'status',
     label: labelStatus,
     type: TABLE_COLUMN_TYPES.component,
     Component: StatusColumn(actions),
-    sortable: false,
+    sortField: 'severity_code',
     width: 125,
   },
   {
-    id: 'resources',
+    id: 'resource',
     label: labelResources,
     type: TABLE_COLUMN_TYPES.component,
     Component: ResourcesColumn,
-    sortable: false,
+    sortField: 'name',
   },
   {
     id: 'graph',
