@@ -33,6 +33,9 @@ use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Centreon\Domain\Monitoring\Model;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -42,7 +45,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
     /**
-     * @var \Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface
+     * @var ResourceRepositoryInterface
      */
     private $resourceRepository;
 
@@ -120,6 +123,26 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
 
         return $list;
+    }
+
+    public function enrichHostWithDetails(Host $host): Model\ResourceDetailsHost
+    {
+        $enrichedHost = (new Model\ResourceDetailsHost())
+            ->import($host);
+
+        $this->resourceRepository->findMissingInformationAboutHost($enrichedHost);
+
+        return $enrichedHost;
+    }
+
+    public function enrichServiceWithDetails(Service $service): Model\ResourceDetailsService
+    {
+        $enrichedService = (new Model\ResourceDetailsService())
+            ->import($service);
+
+        $this->resourceRepository->findMissingInformationAboutService($enrichedService);
+
+        return $enrichedService;
     }
 
     /**

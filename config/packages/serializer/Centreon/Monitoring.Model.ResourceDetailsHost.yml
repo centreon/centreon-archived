@@ -1,0 +1,40 @@
+Centreon\Domain\Monitoring\Model\ResourceDetailsHost:
+    exclusion_policy: none
+    virtual_properties:
+        getDuration:
+            name: getDuration
+            serialized_name: duration
+            type: string
+            groups:
+                - 'resource_details_host'
+        getDowntimesAuthor:
+            name: getDowntimesAuthor
+            serialized_name: downtimes
+            type: string
+            groups:
+                - 'resource_details_host'
+        getAcknowledgementAuthor:
+            name: getAcknowledgementAuthor
+            serialized_name: acknowledgement
+            type: string
+            groups:
+                - 'resource_details_host'
+    properties:
+        tries:
+            type: string
+            accessor:
+                getter: getTriesTranslatable
+            groups:
+                - 'resource_details_host'
+        parent:
+            type: Centreon\Domain\Monitoring\ResourceStatus
+            groups:
+                - 'resource_details_host'
+        status:
+            type: Centreon\Domain\Monitoring\ResourceStatus
+            groups:
+                - 'resource_details_host'
+        poller_name:
+            type: string
+            groups:
+                - 'resource_details_host'

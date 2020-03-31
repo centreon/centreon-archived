@@ -556,7 +556,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT DISTINCT srv.*
+            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`
             FROM `:dbstg`.services srv
             LEFT JOIN `:dbstg`.hosts h 
               ON h.host_id = srv.host_id'
@@ -578,6 +578,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 $service = EntityCreator::createEntityByArray(
                     Service::class,
                     $row
+                );
+
+                $service->setHost(
+                    EntityCreator::createEntityByArray(Host::class, $row, 'host_')
                 );
             } else {
                 return null;

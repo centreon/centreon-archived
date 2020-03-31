@@ -32,6 +32,8 @@ use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
+use Centreon\Domain\Monitoring\Model\ResourceDetailsHost;
+use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -137,6 +139,107 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $this->accessGroups = $accessGroups;
 
         return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findMissingInformationAboutHost(ResourceDetailsHost $host): void
+    {
+        $collector = new StatementCollector();
+        $collector->addValue(':host_id', $host->getId(), PDO::PARAM_INT);
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT i.name AS `poller_name`, h.state AS `status_code`, '
+                . "CASE WHEN h.state = 0 THEN 'UP' "
+                . "WHEN h.state = 1 THEN 'DOWN' "
+                . "WHEN h.state = 2 THEN 'UNREACHABLE' "
+                . "WHEN h.state = 3 THEN 'PENDING' "
+                . "END AS `status_name`, "
+                . "CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', "
+                . "CASE WHEN h.state_type = 1 THEN 'Hard' "
+                . "WHEN h.state_type = 1 THEN 'Soft' "
+                . "END, ')') AS `tries` "
+                . 'FROM `:dbstg`.`hosts` AS `h` '
+                . 'LEFT JOIN `:dbstg`.`instances` AS `i` ON i.instance_id = h.instance_id '
+
+                . 'WHERE h.host_id = :host_id '
+                . 'GROUP BY h.host_id'
+            )
+        );
+        $collector->bind($statement);
+
+        $statement->execute();
+
+        while ($data = $statement->fetch()) {
+            $host->setPollerName($data['poller_name']);
+            $host->setTries($data['tries']);
+
+            // parse ResourceStatus object
+            $host->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $data,
+                'status_'
+            ));
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findMissingInformationAboutService(ResourceDetailsService $service): void
+    {
+        $collector = new StatementCollector();
+        $collector->addValue(':host_id', $service->getHost()->getId(), PDO::PARAM_INT);
+        $collector->addValue(':service_id', $service->getId(), PDO::PARAM_INT);
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT s.state AS `status_code`, '
+                . "CASE WHEN s.state = 0 THEN 'OK' "
+                . "WHEN s.state = 1 THEN 'WARNING' "
+                . "WHEN s.state = 2 THEN 'CRITICAL' "
+                . "WHEN s.state = 3 THEN 'UNKNOWN' "
+                . "WHEN s.state = 4 THEN 'PENDING' "
+                . "END AS `status_name`, "
+                . 'h.state AS `parent_status_code`, '
+                . "CASE WHEN h.state = 0 THEN 'UP' "
+                . "WHEN h.state = 1 THEN 'DOWN' "
+                . "WHEN h.state = 2 THEN 'UNREACHABLE' "
+                . "WHEN h.state = 3 THEN 'PENDING' "
+                . "END AS `parent_status_name`, "
+                . "CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', "
+                . "CASE WHEN s.state_type = 1 THEN 'Hard' "
+                . "WHEN s.state_type = 1 THEN 'Soft' "
+                . "END, ')') AS `tries` "
+                . 'FROM `:dbstg`.`services` AS `s` '
+                . 'LEFT JOIN `:dbstg`.`hosts` AS `h` ON h.host_id = s.host_id '
+                . 'WHERE s.service_id = :service_id AND s.host_id = :host_id '
+                . 'GROUP BY s.service_id'
+            )
+        );
+        $collector->bind($statement);
+
+        $statement->execute();
+
+        while ($data = $statement->fetch()) {
+            $service->setTries($data['tries']);
+
+            // parse ResourceStatus object
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $data,
+                'status_'
+            ));
+
+            // parse ResourceStatus object
+            $service->setParent(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $data,
+                'parent_status_'
+            ));
+        }
     }
 
     /**
