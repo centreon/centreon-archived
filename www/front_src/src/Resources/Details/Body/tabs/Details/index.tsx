@@ -60,7 +60,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
                   details.acknowledgement.entry_time,
                 )}`,
               ]}
-              chip={<AcknwoledgeChip />}
+              chip={<AcknowledgeChip />}
             />
           </Grid>
         )}
