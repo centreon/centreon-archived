@@ -55,10 +55,11 @@ $dbb = new CentreonDB("centstorage");
 
 $centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
 $centreonlang->bindLang();
+$sid = session_id();
 if (isset($sid)) {
     //$sid = $_GET["sid"];
     $res = $db->prepare("SELECT * FROM session WHERE session_id = :id");
-    $res->bindValue(':id', session_id(), \PDO::PARAM_STR);
+    $res->bindValue(':id', $sid, \PDO::PARAM_STR);
     $res->execute();
     if (!$session = $res->fetch()) {
         get_error('bad session id');

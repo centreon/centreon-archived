@@ -15,24 +15,11 @@ import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPa
 
 const PageContainer = styled('div')(({ theme }) => ({
   overflow: 'auto',
-  height: 'calc(100vh - 82px)',
+  height: '100%',
+  display: 'grid',
+  gridTemplateRows: 'auto 1fr',
   background: theme.palette.background.default,
 }));
-
-interface PageWithBreadcrumbProps {
-  children: React.ReactNode;
-  path: string;
-}
-
-const PageWithBreadcrumbs = ({
-  children,
-  path,
-}: PageWithBreadcrumbProps): JSX.Element => (
-  <>
-    <BreadcrumbTrail path={path} />
-    {children}
-  </>
-);
 
 const getExternalPageRoutes = ({
   history,
@@ -61,9 +48,8 @@ const getExternalPageRoutes = ({
         exact
         render={(renderProps): JSX.Element => (
           <PageContainer>
-            <PageWithBreadcrumbs path={path}>
-              <Page {...renderProps} />
-            </PageWithBreadcrumbs>
+            <BreadcrumbTrail path={path} />
+            <Page {...renderProps} />
           </PageContainer>
         )}
       />
@@ -94,9 +80,10 @@ const ReactRouter = React.memo<Props>(
               render={(renderProps): JSX.Element => (
                 <PageContainer>
                   {allowedPages.includes(path) ? (
-                    <PageWithBreadcrumbs path={path}>
+                    <>
+                      <BreadcrumbTrail path={path} />
                       <Comp {...renderProps} />
-                    </PageWithBreadcrumbs>
+                    </>
                   ) : (
                     <NotAllowedPage {...renderProps} />
                   )}

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { makeStyles } from '@material-ui/core';
-import { lime, purple } from '@material-ui/core/colors';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -18,25 +17,42 @@ import {
   FilterGroup,
 } from './Filter/models';
 import Actions from './Actions';
+import Details from './Details';
+import { rowColorConditions } from './colors';
 
 const useStyles = makeStyles((theme) => ({
   page: {
+    display: 'grid',
+    gridTemplateRows: 'auto 1fr',
     backgroundColor: theme.palette.background.default,
+    overflowY: 'hidden',
   },
-
+  filter: {
+    zIndex: 4,
+  },
+  body: {
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr 550px',
+  },
+  panel: {
+    gridArea: '1 / 2',
+    zIndex: 3,
+  },
   listing: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    gridArea: '1 / 1 / 1 / span 2',
   },
 }));
-
-const noOp = (): void => undefined;
 
 const defaultFilter = unhandledProblemsFilter;
 const { criterias } = defaultFilter;
 const defaultResourceTypes = criterias?.resourceTypes;
 const defaultStatuses = criterias?.statuses;
 const defaultStates = criterias?.states;
+
+type SortOrder = 'asc' | 'desc';
 
 const Resources = (): JSX.Element => {
   const classes = useStyles();
@@ -52,7 +68,7 @@ const Resources = (): JSX.Element => {
     Array<Resource>
   >([]);
 
-  const [sorto, setSorto] = useState<string>();
+  const [sorto, setSorto] = useState<'asc' | 'desc'>();
   const [sortf, setSortf] = useState<string>();
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
@@ -66,6 +82,10 @@ const Resources = (): JSX.Element => {
   const [statuses, setStatuses] = useState<Array<FilterModel>>(defaultStatuses);
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
+
+  const [selectedDetailsEndpoint, setSelectedDetailsEndpoint] = useState<
+    string | null
+  >(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -200,19 +220,6 @@ const Resources = (): JSX.Element => {
     setResourcesToSetDowntime([]);
   };
 
-  const rowColorConditions = [
-    {
-      name: 'inDowntime',
-      condition: ({ in_downtime }): boolean => in_downtime,
-      color: purple[500],
-    },
-    {
-      name: 'acknowledged',
-      condition: ({ acknowledged }): boolean => acknowledged,
-      color: lime[900],
-    },
-  ];
-
   const prepareToAcknowledge = (resources): void => {
     setResourcesToAcknowledge(resources);
   };
@@ -246,6 +253,14 @@ const Resources = (): JSX.Element => {
     },
   });
 
+  const selectResource = ({ details_endpoint }): void => {
+    setSelectedDetailsEndpoint(details_endpoint);
+  };
+
+  const clearSelectedResource = (): void => {
+    setSelectedDetailsEndpoint(null);
+  };
+
   const hasSelectedResources = selectedResources.length > 0;
 
   const ResourceActions = (
@@ -263,44 +278,56 @@ const Resources = (): JSX.Element => {
 
   return (
     <div className={classes.page}>
-      <Filter
-        filter={filter}
-        onFilterGroupChange={changeFilter}
-        selectedResourceTypes={resourceTypes}
-        onResourceTypesChange={changeResourceTypes}
-        selectedStates={states}
-        onStatesChange={changeStates}
-        selectedStatuses={statuses}
-        onStatusesChange={changeStatuses}
-        onSearchRequest={doSearch}
-        onHostGroupsChange={changeHostGroups}
-        selectedHostGroups={hostGroups}
-        onServiceGroupsChange={changeServiceGroups}
-        selectedServiceGroups={serviceGroups}
-        onClearAll={clearAllFilters}
-        currentSearch={search}
-      />
-      <div className={classes.listing}>
-        <Listing
-          checkable
-          Actions={ResourceActions}
-          loading={loading}
-          columnConfiguration={columns}
-          tableData={listing?.result}
-          currentPage={page - 1}
-          rowColorConditions={rowColorConditions}
-          limit={listing?.meta.limit}
-          onDelete={noOp}
-          onSort={changeSort}
-          onDuplicate={noOp}
-          onPaginationLimitChanged={changeLimit}
-          onPaginate={changePage}
-          sortf={sortf}
-          sorto={sorto}
-          totalRows={listing?.meta.total}
-          onSelectRows={selectResources}
-          selectedRows={selectedResources}
+      <div className={classes.filter}>
+        <Filter
+          filter={filter}
+          onFilterGroupChange={changeFilter}
+          selectedResourceTypes={resourceTypes}
+          onResourceTypesChange={changeResourceTypes}
+          selectedStates={states}
+          onStatesChange={changeStates}
+          selectedStatuses={statuses}
+          onStatusesChange={changeStatuses}
+          onSearchRequest={doSearch}
+          onHostGroupsChange={changeHostGroups}
+          selectedHostGroups={hostGroups}
+          onServiceGroupsChange={changeServiceGroups}
+          selectedServiceGroups={serviceGroups}
+          onClearAll={clearAllFilters}
+          currentSearch={search}
         />
+      </div>
+      <div className={classes.body}>
+        {selectedDetailsEndpoint && (
+          <div className={classes.panel}>
+            <Details
+              endpoint={selectedDetailsEndpoint}
+              onClose={clearSelectedResource}
+            />
+          </div>
+        )}
+        <div className={classes.listing}>
+          <Listing
+            checkable
+            Actions={ResourceActions}
+            loading={loading}
+            columnConfiguration={columns}
+            tableData={listing?.result}
+            currentPage={page - 1}
+            rowColorConditions={rowColorConditions}
+            limit={listing?.meta.limit}
+            onSort={changeSort}
+            onPaginationLimitChanged={changeLimit}
+            onPaginate={changePage}
+            sortf={sortf}
+            sorto={sorto}
+            totalRows={listing?.meta.total}
+            onSelectRows={selectResources}
+            selectedRows={selectedResources}
+            onRowClick={selectResource}
+            innerScrollDisabled={false}
+          />
+        </div>
       </div>
     </div>
   );
