@@ -592,7 +592,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/acknowledgements/disacknowledge:
+  /monitoring/resources/disacknowledge:
     post:
       tags:
         - Acknowledgement
@@ -602,14 +602,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                body:
-                  type: array
-                  items:
-                    allOf:
-                      - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-                      - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+              $ref: '#/components/schemas/Acknowledgment.Disacknowledge.Bulk'
       responses:
         '204':
           description: "OK"
@@ -1604,7 +1597,44 @@ paths:
           $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/timeline:
+    get:
+      tags:
+        - Timeline
+      summary: "List events related to a service"
+      description: |
+        List all events for a given service
 
+        The available parameters to **search** / **sort_by** are:
+
+        * date
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.TimelineEvent'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/timeline:
     get:
       tags:
@@ -1640,6 +1670,42 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/acknowledge:
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Acknowledge multiple resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgment.Bulk'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/downtime:
+    post:
+      tags:
+        - Downtime
+      summary: "Set downtime for multiple resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Bulk'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
@@ -2125,6 +2191,38 @@ components:
           type: boolean
           description: "Indicates whether the server configuration is activated"
           example: true
+    Acknowledgement.Resource:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: "Short description of the acknowledgement"
+          example: "Acknowledged by admin"
+        with_services:
+          type: boolean
+          description: "Indicates whether we should add the downtime on the host-related services"
+          example: true
+        is_notify_contacts:
+          type: boolean
+          description: "Indicates whether notification is sent to the contacts linked to the host or service"
+          example: false
+    Acknowledgment.Bulk:
+        type: object
+        properties:
+          acknowledgment:
+            $ref: '#/components/schemas/Acknowledgement.Resource'
+          resources:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+    Acknowledgment.Disacknowledge.Bulk:
+        type: array
+        items:
+          allOf:
+            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Host:
       type: object
       properties:
@@ -2356,6 +2454,44 @@ components:
               type: integer
               description: "ID of the service on which the downtime is set"
               example : 5
+    Downtime.Resource:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: "Short description of the downtime"
+          example: "Downtime set by admin"
+        with_services:
+          type: boolean
+          description: "Indicates whether we should add the downtime on the host-related services"
+          example: true
+        is_fixed:
+          type: boolean
+          description: "Indicates whether the downtime is fixed"
+          example: true
+        duration:
+          type: integer
+          description: "Downtime duration in seconds"
+          example: 7200
+        start_time:
+          type: string
+          format: date-time
+          description: "Scheduled start date of the downtime (ISO8601)"
+        end_time:
+          type: string
+          format: date-time
+          description: "Scheduled end date of the downtime (ISO8601)"
+    Downtime.Bulk:
+        type: object
+        properties:
+          downtime:
+            $ref: '#/components/schemas/Downtime.Resource'
+          resources:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Check.Host:
       type: object
       properties:

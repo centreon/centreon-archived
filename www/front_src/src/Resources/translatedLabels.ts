@@ -87,16 +87,29 @@ export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
 export const labelMore = I18n.t('More');
 export const labelSearchOnFields = I18n.t(
-  'The search is done on the following resource fields:',
+  'This search bar will search matching occurences you type contained in: host name or alias or address or service description',
 );
-export const labelSearchByHostAliasEndingWith = I18n.t(
-  "To search hosts with alias ending with the string '-server', you can type:",
+export const labelSearchByRegexp = I18n.t(
+  'You can use regular expression syntax to retrieve more relevant results',
 );
-export const labelSearchByHostName = I18n.t(
-  'For instance, to search by host name, you can type:',
+export const labelSearchSyntax = I18n.t(
+  "It's possible to specify the criteria you precisely want to search in using the following syntax:",
 );
-export const labelSearchByServiceStartingWith = I18n.t(
-  "To search services with a description starting with the string 'centreon', you can type:",
+export const labelSearchSomeExamples = I18n.t('Some examples:');
+export const labelSearchByHostNameStartingWith = I18n.t(
+  'will search host name starting by',
+);
+export const labelSearchByServiceDescEndingWith = I18n.t(
+  'will search for all service description finishing by',
+);
+export const labelSearchByHostAliasContaining = I18n.t(
+  'will search for all host alias containing',
+);
+export const labelSearchByHostAddressNotContaining = I18n.t(
+  "will search for FQDN that doesn't contain",
+);
+export const labelSearchAndHostAliasContaining = I18n.t(
+  'and host alias containing',
 );
 export const labelService = I18n.t('Service');
 export const labelServiceGroup = I18n.t('Service group');
@@ -117,9 +130,6 @@ export const labelUnhandled = I18n.t('Unhandled');
 export const labelUnreachable = I18n.t('Unreachable');
 export const labelUnknown = I18n.t('Unknown');
 export const labelUp = I18n.t('Up');
-export const labelUsePartialQuery = I18n.t(
-  "It's also possible to use a partial query for the search value, by using a regular expression, for instance:",
-);
 export const labelYes = I18n.t('Yes');
 export const labelSomethingWentWrong = I18n.t('Oops, something went wrong');
 export const labelWarning = I18n.t('Warning');

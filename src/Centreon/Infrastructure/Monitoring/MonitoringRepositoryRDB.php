@@ -494,11 +494,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`hosts` h'
-            . $accessGroupFilter
-            . ' INNER JOIN `:dbstg`.`services` srv
-              ON srv.host_id = h.host_id
-              AND srv.enabled = \'1\'
-            WHERE h.host_id = :host_id
+            . $accessGroupFilter .
+            ' WHERE h.host_id = :host_id
               AND h.name NOT LIKE \'_Module_BAM%\'
               AND h.enabled = \'1\'';
 
@@ -516,12 +513,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
                 //get services for host
                 $servicesByHost = $this->findServicesByHosts([$hostId]);
-
-                $host->setServices($servicesByHost[$hostId]);
+                $host->setServices(!empty($servicesByHost[$hostId]) ? $servicesByHost[$hostId] : []);
 
                 //get downtimes for host
                 $downtimes = $this->findDowntimes($hostId, 0);
-                    $host->setDowntimes($downtimes);
+                $host->setDowntimes($downtimes);
 
                 //get active acknowledgment for host
                 if ($host->getAcknowledged()) {
@@ -1261,8 +1257,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $sql = 'SELECT * FROM `:dbstg`.`downtimes` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL AND (NOW() BETWEEN FROM_UNIXTIME(actual_start_time) ' .
-                'AND FROM_UNIXTIME(actual_end_time)) ORDER BY entry_time DESC';
+                'AND deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(actual_start_time) ' .
+                'AND FROM_UNIXTIME(actual_end_time)) OR ((NOW() > FROM_UNIXTIME(actual_start_time) ' .
+                'AND actual_end_time IS NULL))) ORDER BY entry_time DESC';
+
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
         $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);

@@ -102,9 +102,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'h.name' => 'sh.name',
         'h.alias' => 'sh.alias',
         'h.address' => 'sh.address',
-        'service.description' => 's.description',
-        'service.group' => 'sg.name',
-        'service.group.id' => 'ssg.servicegroup_id',
+        's.description' => 's.description',
+        's.group' => 'sg.name',
+        's.group.id' => 'ssg.servicegroup_id',
     ];
 
     /**

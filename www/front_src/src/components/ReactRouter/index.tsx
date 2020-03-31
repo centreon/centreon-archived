@@ -10,7 +10,7 @@ import { styled } from '@material-ui/core';
 import internalPagesRoutes from '../../route-maps';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import NotAllowedPage from '../../route-components/notAllowedPage';
-import Breadcrumbs from '../../Breadcrumbs';
+import BreadcrumbTrail from '../../BreadcrumbTrail';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
 const PageContainer = styled('div')(({ theme }) => ({
@@ -48,7 +48,7 @@ const getExternalPageRoutes = ({
         exact
         render={(renderProps): JSX.Element => (
           <PageContainer>
-            <Breadcrumbs path={path} />
+            <BreadcrumbTrail path={path} />
             <Page {...renderProps} />
           </PageContainer>
         )}
@@ -81,7 +81,7 @@ const ReactRouter = React.memo<Props>(
                 <PageContainer>
                   {allowedPages.includes(path) ? (
                     <>
-                      <Breadcrumbs path={path} />
+                      <BreadcrumbTrail path={path} />
                       <Comp {...renderProps} />
                     </>
                   ) : (

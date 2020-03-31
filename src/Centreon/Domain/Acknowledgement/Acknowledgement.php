@@ -29,10 +29,14 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     // Groups for serialization
     public const SERIALIZER_GROUPS_HOST = ['Default', 'ack_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['Default', 'ack_service'];
+    public const SERIALIZER_GROUP_FULL = 'ack_full';
 
     // Types
     public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
     public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
+
+    //Groups for validation
+    public const VALIDATION_GROUP_ACK_RESOURCE = ['ack_resource'];
 
     /**
      * @var int
