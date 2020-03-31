@@ -10,7 +10,7 @@ import {
   labelLast7Days,
   labelLast31Days,
 } from '../../../translatedLabels';
-import Graph from '../../../Graph';
+import PerformanceGraph from '../../../Graph/Performance';
 import StatusGraph from '../../../Graph/Status';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -64,7 +64,7 @@ const GraphTab = (): JSX.Element => {
       </Paper>
       <Paper className={classes.graphContainer}>
         <div className={`${classes.graph} ${classes.performance}`}>
-          <Graph endpoint="http://localhost:5000/api/beta/graph" />
+          <PerformanceGraph endpoint="http://localhost:5000/api/beta/graph" />
         </div>
         <div className={`${classes.graph} ${classes.status}`}>
           <StatusGraph endpoint="http://localhost:5000/api/beta/status" />

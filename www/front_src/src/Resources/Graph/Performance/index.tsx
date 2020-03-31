@@ -16,8 +16,9 @@ import filesize from 'filesize';
 import { fade, makeStyles, Typography, Grid } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import useGet from '../useGet';
-import { formatTimeAxis } from './format';
+import useGet from '../../useGet';
+import { formatTimeAxis } from '../format';
+import getTimeSeries from './timeSeries';
 
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
@@ -81,7 +82,7 @@ const LoadingSkeleton = (): JSX.Element => {
   );
 };
 
-const Graph = ({ endpoint }: Props): JSX.Element | null => {
+const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
   const [graphData, setGraphData] = React.useState<GraphData>();
 
   const get = useGet({
@@ -95,20 +96,15 @@ const Graph = ({ endpoint }: Props): JSX.Element | null => {
     get();
   }, []);
 
-  const getMetricDataForTimeIndex = (timeIndex): MetricData | undefined => {
-    return graphData?.metrics.reduce((metricByName, { metric, data }) => {
-      const dataForTimeIndex = data[timeIndex];
-      const lowerLimit =
-        graphData.global['lower-limit'] || dataForTimeIndex - 1;
+  if (graphData === undefined) {
+    return <LoadingSkeleton />;
+  }
 
-      return {
-        ...metricByName,
-        ...(dataForTimeIndex > lowerLimit
-          ? { [metric]: dataForTimeIndex }
-          : null),
-      };
-    }, {});
-  };
+  const hasData = graphData.times.length > 0;
+
+  if (!hasData) {
+    return null;
+  }
 
   const getBase = (unit): 2 | 10 => {
     const base2Units = [
@@ -124,13 +120,8 @@ const Graph = ({ endpoint }: Props): JSX.Element | null => {
     return base2Units.includes(unit) ? 2 : 10;
   };
 
-  const data =
-    graphData?.times.map((time, timeIndex) => {
-      return { time, ...getMetricDataForTimeIndex(timeIndex) };
-    }) ?? [];
-
   const getUnits = (): Array<string> => [
-    ...new Set(graphData?.metrics?.map(({ unit }) => unit)),
+    ...new Set(graphData.metrics.map(({ unit }) => unit)),
   ];
 
   const yAxisFormatter = ({ tick, unit }): string =>
@@ -159,19 +150,9 @@ const Graph = ({ endpoint }: Props): JSX.Element | null => {
     </Typography>
   );
 
-  if (graphData === undefined) {
-    return <LoadingSkeleton />;
-  }
-
-  const hasData = graphData.times.length > 0;
-
-  if (!hasData) {
-    return null;
-  }
-
   return (
     <ResponsiveContainer>
-      <ComposedChart className={classes.graph} data={data}>
+      <ComposedChart className={classes.graph} data={getTimeSeries(graphData)}>
         <Legend
           formatter={legendFormatter}
           iconType="circle"
@@ -210,4 +191,4 @@ const Graph = ({ endpoint }: Props): JSX.Element | null => {
   );
 };
 
-export default Graph;
+export default PerformanceGraph;
