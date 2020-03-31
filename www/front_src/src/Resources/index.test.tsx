@@ -2,11 +2,18 @@ import React from 'react';
 
 import axios from 'axios';
 import formatISO from 'date-fns/formatISO';
-import { render, waitFor, within, fireEvent } from '@testing-library/react';
+import {
+  render,
+  waitFor,
+  within,
+  fireEvent,
+  RenderResult,
+} from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import last from 'lodash/last';
 import { Simulate } from 'react-dom/test-utils';
 
+import { ThemeProvider } from '@centreon/ui';
 import Resources from '.';
 import {
   labelResourceName,
@@ -85,7 +92,7 @@ const getEndpoint = ({
   sortBy = undefined,
   sortOrder = undefined,
   page = 1,
-  limit = 10,
+  limit = 30,
   search = undefined,
   states = defaultStates,
   statuses = defaultStatuses,
@@ -183,6 +190,13 @@ const webAccessService = {
 const hostResources = entities.filter(({ type }) => type === 'host');
 const serviceResources = entities.filter(({ type }) => type === 'service');
 
+const renderResources = (): RenderResult =>
+  render(
+    <ThemeProvider>
+      <Resources />
+    </ThemeProvider>,
+  );
+
 describe(Resources, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
@@ -203,7 +217,7 @@ describe(Resources, () => {
   };
 
   it('expands criterias filters', async () => {
-    const { getByLabelText, queryByText } = render(<Resources />);
+    const { getByLabelText, queryByText } = renderResources();
 
     await waitFor(() => {
       expect(queryByText(labelTypeOfResource)).not.toBeVisible();
@@ -217,7 +231,7 @@ describe(Resources, () => {
   });
 
   it('executes a listing request with "Unhandled problems" filter group by default', async () => {
-    render(<Resources />);
+    renderResources();
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -275,7 +289,7 @@ describe(Resources, () => {
     },
   ].forEach(({ filterGroup, criterias }) => {
     it(`executes a listing request with "${filterGroup}" params when "${filterGroup}" filter group is set`, async () => {
-      const { getByText } = render(<Resources />);
+      const { getByText } = renderResources();
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -349,7 +363,7 @@ describe(Resources, () => {
       selectEndpointMockAction,
     }) => {
       it(`executes a listing request with selected "${filterName}" filter options when it's changed`, async () => {
-        const { getAllByText, getByTitle } = render(<Resources />);
+        const { getAllByText, getByTitle } = renderResources();
 
         await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -374,7 +388,7 @@ describe(Resources, () => {
   );
 
   it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
-    const { getByText } = render(<Resources />);
+    const { getByText } = renderResources();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
@@ -404,7 +418,7 @@ describe(Resources, () => {
   });
 
   it('executes a listing request with an updated page param when a change page action is clicked', async () => {
-    const { getByLabelText } = render(<Resources />);
+    const { getByLabelText } = renderResources();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
@@ -468,7 +482,7 @@ describe(Resources, () => {
   });
 
   it('executes a listing request with a limit param when the rows per page value is changed', () => {
-    const { getByDisplayValue } = render(<Resources />);
+    const { getByDisplayValue } = renderResources();
 
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
@@ -484,7 +498,7 @@ describe(Resources, () => {
 
   searchableFields.forEach((searchableField) => {
     it(`executes a listing request with an "$and" search param containing ${searchableField} when ${searchableField} is typed in the search field`, () => {
-      const { getByPlaceholderText, getByText } = render(<Resources />);
+      const { getByPlaceholderText, getByText } = renderResources();
 
       const fieldSearchValue = 'foobar';
 
@@ -511,7 +525,7 @@ describe(Resources, () => {
   });
 
   it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', () => {
-    const { getByPlaceholderText, getByText } = render(<Resources />);
+    const { getByPlaceholderText, getByText } = renderResources();
 
     const searchValue = 'foobar';
 
@@ -538,7 +552,7 @@ describe(Resources, () => {
   });
 
   it('displays downtime details when the downtime state chip is hovered', async () => {
-    const { getByLabelText, getByText } = render(<Resources />);
+    const { getByLabelText, getByText } = renderResources();
 
     const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
 
@@ -580,7 +594,7 @@ describe(Resources, () => {
   });
 
   it('displays acknowledgement details when an acknowledged state chip is hovered', async () => {
-    const { getByLabelText, getByText } = render(<Resources />);
+    const { getByLabelText, getByText } = renderResources();
 
     const acknowledgedEntity = entities.find(
       ({ acknowledged }) => acknowledged,
@@ -649,7 +663,7 @@ describe(Resources, () => {
   const labelAcknowledgedByAdmin = `${labelAcknowledgedBy} admin`;
 
   it('cannot send an acknowledgement request when Acknowledgement action is clicked and comment is empty', async () => {
-    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+    const { getByLabelText, getByText, getAllByText } = renderResources();
 
     await selectAllResourcesAndPrepareToAcknowledge({
       getByLabelText,
@@ -666,7 +680,7 @@ describe(Resources, () => {
   });
 
   it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+    const { getByLabelText, getByText, getAllByText } = renderResources();
 
     await selectAllResourcesAndPrepareToAcknowledge({
       getByLabelText,
@@ -717,7 +731,7 @@ describe(Resources, () => {
   });
 
   it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
-    const { getByLabelText, getByText, queryByText } = render(<Resources />);
+    const { getByLabelText, getByText, queryByText } = renderResources();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -753,7 +767,7 @@ describe(Resources, () => {
   const labelDowntimeByAdmin = `${labelDowntimeBy} admin`;
 
   it('cannot send a downtime request when Downtime action is clicked and comment is empty', async () => {
-    const { getByLabelText, getByText } = render(<Resources />);
+    const { getByLabelText, getByText } = renderResources();
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -770,9 +784,7 @@ describe(Resources, () => {
   });
 
   it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
-    const { getByLabelText, getByText, getByDisplayValue } = render(
-      <Resources />,
-    );
+    const { getByLabelText, getByText, getByDisplayValue } = renderResources();
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -790,7 +802,7 @@ describe(Resources, () => {
   });
 
   it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
-    const { container, getByLabelText, getByText } = render(<Resources />);
+    const { container, getByLabelText, getByText } = renderResources();
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -808,7 +820,7 @@ describe(Resources, () => {
   });
 
   it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
-    const { getByLabelText, getByText } = render(<Resources />);
+    const { getByLabelText, getByText } = renderResources();
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -869,7 +881,7 @@ describe(Resources, () => {
   });
 
   it('sends a check request when Resources are selected and the Check action is clicked', async () => {
-    const { getByLabelText, getByText } = render(<Resources />);
+    const { getByLabelText, getByText } = renderResources();
 
     await selectAllResources({ getByLabelText });
 

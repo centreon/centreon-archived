@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -27,9 +27,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     overflowY: 'hidden',
   },
-  filter: {
-    zIndex: 4,
-  },
   body: {
     display: 'grid',
     gridTemplateRows: '1fr',
@@ -39,9 +36,14 @@ const useStyles = makeStyles((theme) => ({
     gridArea: '1 / 2',
     zIndex: 3,
   },
+  filter: {
+    zIndex: 4,
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  },
   listing: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
     gridArea: '1 / 1 / 1 / span 2',
   },
 }));
@@ -56,6 +58,7 @@ type SortOrder = 'asc' | 'desc';
 
 const Resources = (): JSX.Element => {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [listing, setListing] = useState<ResourceListing>();
   const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
@@ -73,7 +76,7 @@ const Resources = (): JSX.Element => {
 
   const [sorto, setSorto] = useState<'asc' | 'desc'>();
   const [sortf, setSortf] = useState<string>();
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(30);
   const [page, setPage] = useState<number>(1);
 
   const [filter, setFilter] = useState(defaultFilter);
@@ -331,7 +334,7 @@ const Resources = (): JSX.Element => {
             columnConfiguration={columns}
             tableData={listing?.result}
             currentPage={page - 1}
-            rowColorConditions={rowColorConditions}
+            rowColorConditions={rowColorConditions(theme)}
             limit={listing?.meta.limit}
             onSort={changeSort}
             onPaginationLimitChanged={changeLimit}
