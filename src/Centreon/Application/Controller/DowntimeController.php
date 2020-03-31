@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\Request\DowntimeRequest;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
@@ -35,6 +36,11 @@ use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Entity\EntityValidator;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\ResourceService;
 
 /**
  * This class is design to manage all API REST about downtime requests
@@ -579,5 +585,112 @@ class DowntimeController extends AbstractController
 
         $this->downtimeService->cancelDowntime($downtimeId, $host);
         return $this->view();
+    }
+
+    /**
+     * Entry point to bulk set downtime for resources (hosts and services)
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function massDowntimeResources(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var DowntimeRequest $dtRequest
+         */
+        $dtRequest = $serializer->deserialize(
+            (string)$request->getContent(),
+            DowntimeRequest::class,
+            'json'
+        );
+
+        $this->downtimeService->filterByContact($contact);
+
+        //validate input
+        $errorList = new ConstraintViolationList();
+
+        //validate resources
+        $resources = $dtRequest->getResources() ?? [];
+        foreach ($resources as $resource) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                ));
+            } else {
+                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+            }
+        }
+
+        //validate downtime
+        $downtime = $dtRequest->getDowntime();
+        $errorList->addAll(
+            $entityValidator->validate(
+                $downtime,
+                null,
+                Downtime::VALIDATION_GROUP_DT_RESOURCE
+            )
+        );
+
+        if ($errorList->count() > 0) {
+            throw new ValidationFailedException($errorList);
+        }
+
+        foreach ($resources as $resource) {
+            //start applying downtime process
+            try {
+                if ($this->hasDtRightsForResource($contact, $resource)) {
+                    $this->downtimeService->addResourceDowntime(
+                        $resource,
+                        $downtime
+                    );
+                }
+            } catch (\Exception $e) {
+                throw $e;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * @param Contact $contact
+     * @param ResourceEntity $resouce
+     * @return bool
+     */
+    private function hasDtRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    {
+        $hasRights = false;
+
+        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME);
+        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
+        }
+
+        return $hasRights;
     }
 }

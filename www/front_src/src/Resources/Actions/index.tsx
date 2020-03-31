@@ -6,7 +6,7 @@ import IconCheck from '@material-ui/icons/Sync';
 
 import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 
-import IconDowntime from '../columns/icons/Downtime';
+import IconDowntime from '../icons/Downtime';
 import {
   labelAcknowledge,
   labelDowntime,

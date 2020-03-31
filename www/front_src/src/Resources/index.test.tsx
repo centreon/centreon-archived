@@ -5,6 +5,7 @@ import formatISO from 'date-fns/formatISO';
 import { render, waitFor, within, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import last from 'lodash/last';
+import { Simulate } from 'react-dom/test-utils';
 
 import Resources from '.';
 import {
@@ -54,7 +55,7 @@ const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('./columns/icons/Downtime');
+jest.mock('./icons/Downtime');
 
 interface SearchParam {
   mode: '$or' | '$and';
@@ -223,6 +224,35 @@ describe(Resources, () => {
         getEndpoint({}),
         cancelTokenRequestParam,
       ),
+    );
+  });
+
+  it('executes a listing request when a search is typed and enter key is pressed', async () => {
+    const { getByPlaceholderText } = render(<Resources />);
+
+    const fieldSearchValue = 'foobar';
+
+    const searchInput = getByPlaceholderText(labelResourceName);
+
+    fireEvent.change(searchInput, {
+      target: { value: fieldSearchValue },
+    });
+
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+    Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      getEndpoint({
+        search: {
+          mode: '$or',
+          fieldPatterns: searchableFields.map((searchableField) => ({
+            field: searchableField,
+            value: fieldSearchValue,
+          })),
+        },
+      }),
+      cancelTokenRequestParam,
     );
   });
 
