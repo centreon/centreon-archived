@@ -118,12 +118,12 @@ const StatusColumnOnHover = ({
       </Grid>
       <Grid item>
         <IconButton
-          size="small"
+          className={classes.iconButton}
           color="primary"
           onClick={(): void => actions.onCheck(row)}
           aria-label={`${labelCheck} ${row.name}`}
         >
-          <IconCheck />
+          <IconCheck fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>

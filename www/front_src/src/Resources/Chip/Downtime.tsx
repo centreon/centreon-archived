@@ -9,7 +9,10 @@ const DowntimeChip = (): JSX.Element => {
   const theme = useTheme();
 
   return (
-    <Chip icon={<IconDowntime />} color={theme.palette.action.inDowntime} />
+    <Chip
+      icon={<IconDowntime fontSize="small" />}
+      color={theme.palette.action.inDowntime}
+    />
   );
 };
 
