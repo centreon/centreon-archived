@@ -10,7 +10,7 @@ import { styled } from '@material-ui/core';
 import internalPagesRoutes from '../../route-maps';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import NotAllowedPage from '../../route-components/notAllowedPage';
-import BreadcrumbWrapper from '../breadcrumbWrapper';
+import BreadcrumbTrail from '../../BreadcrumbTrail';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
 const PageContainer = styled('div')(({ theme }) => ({
@@ -24,11 +24,14 @@ interface PageWithBreadcrumbProps {
   path: string;
 }
 
-const PageWithBreadcrumb = ({
+const PageWithBreadcrumbs = ({
   children,
   path,
 }: PageWithBreadcrumbProps): JSX.Element => (
-  <BreadcrumbWrapper path={path}>{children}</BreadcrumbWrapper>
+  <>
+    <BreadcrumbTrail path={path} />
+    {children}
+  </>
 );
 
 const getExternalPageRoutes = ({
@@ -58,9 +61,9 @@ const getExternalPageRoutes = ({
         exact
         render={(renderProps): JSX.Element => (
           <PageContainer>
-            <PageWithBreadcrumb path={path}>
+            <PageWithBreadcrumbs path={path}>
               <Page {...renderProps} />
-            </PageWithBreadcrumb>
+            </PageWithBreadcrumbs>
           </PageContainer>
         )}
       />
@@ -91,9 +94,9 @@ const ReactRouter = React.memo<Props>(
               render={(renderProps): JSX.Element => (
                 <PageContainer>
                   {allowedPages.includes(path) ? (
-                    <PageWithBreadcrumb path={path}>
+                    <PageWithBreadcrumbs path={path}>
                       <Comp {...renderProps} />
-                    </PageWithBreadcrumb>
+                    </PageWithBreadcrumbs>
                   ) : (
                     <NotAllowedPage {...renderProps} />
                   )}

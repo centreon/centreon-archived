@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -26,6 +27,7 @@ use Centreon\Domain\Acknowledgement\AcknowledgementException;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use JMS\Serializer\Exception\ValidationFailedException;
 
@@ -131,4 +133,15 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function disacknowledgeService(int $hostId, int $serviceId): void;
+
+    /**
+     * Acknowledge resource and its services if needed.
+     *
+     * @param ResourceEntity $resource Resource to be acknowledged
+     * @param Acknowledgement $ack
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void;
 }

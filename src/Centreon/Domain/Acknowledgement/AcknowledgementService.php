@@ -28,7 +28,10 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -275,5 +278,41 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new AcknowledgementException('Acknowledgement already cancelled for this service');
         }
         $this->engineService->disacknowledgeService($service);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
+    {
+        $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+        if (is_null($host)) {
+            throw new EntityNotFoundException('Host not found');
+        }
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $this->engineService->addHostAcknowledgement($ack, $host);
+            if ($ack->isWithServices()) {
+                $services = $this->monitoringRepository->findServicesByHost($host->getId());
+                foreach ($services as $service) {
+                    $service->setHost($host);
+                    $this->engineService->addServiceAcknowledgement($ack, $service);
+                }
+            }
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $service = $this->monitoringRepository->findOneService(
+                (int)$resource->getParent()->getId(),
+                (int)$resource->getId()
+            );
+            if (is_null($service)) {
+                throw new EntityNotFoundException(
+                    'Service ' . $resource->getId() . ' (parent: ' . $resource->getParent()->getId() .
+                    ') not found'
+                );
+            }
+            $service->setHost($host);
+            $this->engineService->addServiceAcknowledgement($ack, $service);
+        } else {
+            throw new \Exception('Incorrect Resource type: ' . $resource->getType());
+        }
     }
 }
