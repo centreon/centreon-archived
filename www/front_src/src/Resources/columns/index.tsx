@@ -5,7 +5,7 @@ import IconAcknowledge from '@material-ui/icons/Person';
 
 import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
-import IconDowntime from './icons/Downtime';
+import IconDowntime from '../icons/Downtime';
 import {
   labelResources,
   labelStatus,
@@ -34,6 +34,7 @@ export interface Column {
   type: number;
   Component?: (props) => JSX.Element | null;
   sortable?: boolean;
+  clickable?: boolean;
   width?: number;
 }
 
@@ -154,6 +155,7 @@ const getColumns = (actions): Array<Column> => [
     type: TABLE_COLUMN_TYPES.component,
     Component: StatusColumn(actions),
     sortable: false,
+    clickable: true,
     width: 125,
   },
   {

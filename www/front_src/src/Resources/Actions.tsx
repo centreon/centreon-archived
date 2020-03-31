@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Button, ButtonProps, Grid } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
-import IconDowntime from './columns/icons/Downtime';
+import IconDowntime from './icons/Downtime';
 import { labelAcknowledge, labelDowntime } from './translatedLabels';
 import { Resource } from './models';
 import AcknowledgeForm from './forms/Acknowledge';

@@ -52,7 +52,7 @@ const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('./columns/icons/Downtime');
+jest.mock('./icons/Downtime');
 
 interface SearchParam {
   mode: '$or' | '$and';

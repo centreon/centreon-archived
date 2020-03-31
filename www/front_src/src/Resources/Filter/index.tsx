@@ -188,7 +188,6 @@ const Filter = ({
         <Grid
           spacing={2}
           container
-          direction="row"
           alignItems="center"
           onClick={(e): void => {
             e.stopPropagation();
@@ -236,7 +235,7 @@ const Filter = ({
         </Grid>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        <Grid spacing={2} container direction="row" alignItems="center">
+        <Grid spacing={2} container alignItems="center">
           <Grid item>
             <Typography className={classes.filterLineLabel} variant="subtitle1">
               {labelCriterias}
