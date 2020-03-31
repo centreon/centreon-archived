@@ -1,10 +1,13 @@
-import { map, prop, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
+import { map, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
 
-interface MetricData {
-  [metric: string]: string;
+import { Metric, MetricData, TimeWithMetrics } from './models';
+
+interface TimeMetrics {
+  time: number;
+  metrics: Array<Metric>;
 }
 
-const toTimeMetrics = ({ metrics, times }) => {
+const toTimeMetrics = ({ metrics, times }): Array<TimeMetrics> => {
   return map(
     (time) => ({
       time,
@@ -14,9 +17,9 @@ const toTimeMetrics = ({ metrics, times }) => {
   );
 };
 
-const toSeries = ({ time, metrics }, timeIndex) => {
-  const getMetricsForIndex = () => {
-    const addMetricForTimeIndex = (acc, { metric, data }) => ({
+const toTimeWithMetrics = ({ time, metrics }, timeIndex): TimeWithMetrics => {
+  const getMetricsForIndex = (): MetricData => {
+    const addMetricForTimeIndex = (acc, { metric, data }): MetricData => ({
       ...acc,
       [metric]: data[timeIndex],
     });
@@ -27,11 +30,11 @@ const toSeries = ({ time, metrics }, timeIndex) => {
   return { time, ...getMetricsForIndex() };
 };
 
-const getTimeSeries = (graphData) => {
+const getTimeSeries = (graphData): Array<TimeWithMetrics> => {
   const isGreaterThanLowerLimit = (value): boolean =>
     value > pathOr(value - 1, ['global', 'lower-limit'], graphData);
 
-  const rejectLowerThanLimit = (timeMetrics) => {
+  const rejectLowerThanLimit = (timeMetrics): Array<TimeWithMetrics> => {
     return {
       ...filter(isGreaterThanLowerLimit, timeMetrics),
       time: timeMetrics.time,
@@ -40,7 +43,7 @@ const getTimeSeries = (graphData) => {
 
   return pipe(
     toTimeMetrics,
-    addIndex(map)(toSeries),
+    addIndex(map)(toTimeWithMetrics),
     map(rejectLowerThanLimit),
   )(graphData);
 };

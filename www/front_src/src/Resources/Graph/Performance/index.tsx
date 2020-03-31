@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from 'recharts';
 import filesize from 'filesize';
+import { pipe, map, uniq, prop, isEmpty } from 'ramda';
 
 import { fade, makeStyles, Typography, Grid } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -19,6 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import useGet from '../../useGet';
 import { formatTimeAxis } from '../format';
 import getTimeSeries from './timeSeries';
+import { GraphData } from './models';
 
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
@@ -33,33 +35,10 @@ const useStyles = makeStyles((theme) => ({
   loadingSkeletonLine: {
     transform: 'none',
   },
-  graph: {
-    // margin: 'auto',
-  },
-  legend: {
-    color: theme.palette.common.black,
-  },
 }));
 
 interface Props {
   endpoint: string;
-}
-
-interface Metric {
-  data: Array<number>;
-  ds_data;
-  metric: string;
-  unit: string;
-}
-
-interface GraphData {
-  global;
-  metrics: Array<Metric>;
-  times: Array<string>;
-}
-
-interface MetricData {
-  [metric: string]: string;
 }
 
 const LoadingSkeleton = (): JSX.Element => {
@@ -90,8 +69,6 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
     onSuccess: setGraphData,
   });
 
-  const classes = useStyles();
-
   React.useEffect(() => {
     get();
   }, []);
@@ -120,12 +97,12 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
     return base2Units.includes(unit) ? 2 : 10;
   };
 
-  const getUnits = (): Array<string> => [
-    ...new Set(graphData.metrics.map(({ unit }) => unit)),
-  ];
+  const getUnits = (): Array<string> => {
+    return pipe(map(prop('unit')), uniq)(graphData.metrics);
+  };
 
-  const yAxisFormatter = ({ tick, unit }): string =>
-    unit === ''
+  const formatYAxis = ({ tick, unit }): string =>
+    isEmpty(unit)
       ? tick
       : filesize(tick, { base: getBase(unit) }).replace('B', '');
 
@@ -137,14 +114,14 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
           key={unit}
           unit={unit}
           orientation={index === 0 ? 'left' : 'right'}
-          tickFormatter={(tick): string => yAxisFormatter({ tick, unit })}
+          tickFormatter={(tick): string => formatYAxis({ tick, unit })}
         />
       ))
     ) : (
       <JSXYAxis />
     );
 
-  const legendFormatter = (value): JSX.Element => (
+  const formatLegend = (value): JSX.Element => (
     <Typography variant="caption" color="textPrimary">
       {value}
     </Typography>
@@ -152,9 +129,9 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
 
   return (
     <ResponsiveContainer>
-      <ComposedChart className={classes.graph} data={getTimeSeries(graphData)}>
+      <ComposedChart data={getTimeSeries(graphData)}>
         <Legend
-          formatter={legendFormatter}
+          formatter={formatLegend}
           iconType="circle"
           iconSize={8}
           wrapperStyle={{ bottom: 0 }}
@@ -162,11 +139,11 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
         <CartesianGrid strokeDasharray="3 3" />
         <JSXXAxis dataKey="time" tickFormatter={formatTimeAxis} />
         {YAxes}
-        {graphData?.metrics.map(({ metric, ds_data, unit }, index) =>
+        {graphData.metrics.map(({ metric, ds_data, unit }, index) =>
           ds_data.ds_filled ? (
             <Area
               key={metric}
-              type="monotone"
+              dot={false}
               dataKey={metric}
               stackId={index}
               stroke={ds_data.ds_color_line}
@@ -176,7 +153,6 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
           ) : (
             <Line
               key={metric}
-              type="monotone"
               dataKey={metric}
               stroke={ds_data.ds_color_line}
               dot={false}
