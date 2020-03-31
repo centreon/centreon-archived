@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import { makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   page: {
-    backgroundColor: '#FFF',
-    padding: '15px 0px 15px 0px',
+    backgroundColor: theme.palette.common.white,
+    padding: theme.spacing(2, 0),
   },
 }));
 
