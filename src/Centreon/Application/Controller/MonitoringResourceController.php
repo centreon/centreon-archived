@@ -195,7 +195,8 @@ class MonitoringResourceController extends AbstractController
      *
      * @return View
      */
-    public function detailsHost(int $hostId): View {
+    public function detailsHost(int $hostId): View
+    {
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -225,7 +226,8 @@ class MonitoringResourceController extends AbstractController
      *
      * @return View
      */
-    public function detailsService(int $hostId, int $serviceId): View {
+    public function detailsService(int $hostId, int $serviceId): View
+    {
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 

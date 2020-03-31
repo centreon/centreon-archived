@@ -128,7 +128,7 @@ trait ResourceDetailsTrait
     public function getTriesTranslatable(): ?string
     {
         $search = $replace = ['Hard', 'Soft'];
-        array_walk($replace, function(&$value){
+        array_walk($replace, function (&$value) {
             $value = _($value);
         });
 
