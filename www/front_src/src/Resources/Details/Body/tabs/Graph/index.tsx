@@ -81,7 +81,7 @@ const GraphTab = (): JSX.Element => {
         </div>
         <div className={`${classes.graph} ${classes.status}`}>
           <StatusGraph
-            endpoint={`http://localhost:5000/api/beta/graph${getEndpointParams()}`}
+            endpoint={`http://localhost:5000/api/beta/status${getEndpointParams()}`}
           />
         </div>
       </Paper>
