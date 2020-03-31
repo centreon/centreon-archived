@@ -18,11 +18,7 @@ interface Props {
   label: string;
 }
 
-const HoverChip = ({
-  children,
-  Chip,
-  label,
-}: Props): JSX.Element => {
+const HoverChip = ({ children, Chip, label }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
