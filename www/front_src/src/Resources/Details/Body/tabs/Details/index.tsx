@@ -15,7 +15,7 @@ import {
 import StateCard from './StateCard';
 import { getFormattedDateTime } from '../../../../dateTime';
 import DowntimeChip from '../../../../Chip/Downtime';
-import AcknwoledgeChip from '../../../../Chip/Acknowledge';
+import AcknowledgeChip from '../../../../Chip/Acknowledge';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
