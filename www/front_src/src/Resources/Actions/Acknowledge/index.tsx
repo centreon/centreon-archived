@@ -30,7 +30,7 @@ const AcknowledgeForm = ({
   resources,
   onClose,
   onSuccess,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
@@ -85,6 +85,10 @@ const AcknowledgeForm = ({
   }, [hasResources]);
 
   React.useEffect(() => (): void => cancel(), []);
+
+  if (resources.length === 0) {
+    return null;
+  }
 
   return (
     <DialogAcknowledge

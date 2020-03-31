@@ -7,6 +7,8 @@ import {
   hostAcknowledgementEndpoint,
   serviceDowntimeEndpoint,
   hostDowntimeEndpoint,
+  serviceCheckEndpoint,
+  hostCheckEndpoint,
   userEndpoint,
 } from './endpoint';
 import { ResourceListing, User } from '../models';
@@ -129,12 +131,48 @@ const setDowntimeOnResources = ({
   );
 };
 
+interface CheckParams {
+  parent_resource_id?: number | null;
+  resource_id: number;
+}
+
+const toCheckParams = ({ id, parent }): CheckParams => ({
+  parent_resource_id: parent?.id || null,
+  resource_id: id,
+});
+
+const checkResources = ({
+  resources,
+  cancelToken,
+}): Promise<Array<AxiosResponse>> => {
+  const getResourceParamsForType = (resourceType): Array<CheckParams> =>
+    resources.filter(({ type }) => type === resourceType).map(toCheckParams);
+
+  return axios.all(
+    [
+      {
+        params: getResourceParamsForType('host'),
+        endpoint: hostCheckEndpoint,
+      },
+      {
+        params: getResourceParamsForType('service'),
+        endpoint: serviceCheckEndpoint,
+      },
+    ]
+      .filter(({ params }) => params.length > 0)
+      .map(({ endpoint, params }) =>
+        axios.post(endpoint, params, { cancelToken }),
+      ),
+  );
+};
+
 const getUser = (cancelToken): Promise<User> =>
   getData({ endpoint: userEndpoint, requestParams: cancelToken });
 
 export {
   acknowledgeResources,
   setDowntimeOnResources,
+  checkResources,
   listResources,
   getData,
   getUser,

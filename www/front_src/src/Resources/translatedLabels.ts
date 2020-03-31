@@ -54,6 +54,7 @@ export const labelDowntimeBy = I18n.t('Downtime set by');
 export const labelSetDowntimeOnServices = I18n.t(
   'Set downtime on services attached to host',
 );
+export const labelCheck = I18n.t('Check');
 export const labelLastCheck = I18n.t('Last check');
 export const labelLastNotification = I18n.t('Last notification');
 export const labelLastStateChange = I18n.t('Last state change');
@@ -121,6 +122,7 @@ export const labelTimezone = I18n.t('Timezone');
 export const labelTo = I18n.t('To');
 export const labelAcknowledgeCommandSent = I18n.t('Acknowledge command sent');
 export const labelDowntimeCommandSent = I18n.t('Downtime command sent');
+export const labelCheckCommandSent = I18n.t('Check command sent');
 export const labelTypeOfResource = I18n.t('Type of resource');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
 export const labelUnhandled = I18n.t('Unhandled');
