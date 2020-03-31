@@ -109,7 +109,6 @@ class LogEventObject extends BaseLog implements EventObjectInterface, EntityDesc
             }
         } else if (isset(self::STATUS_LIST_SERVICE[$this->getStatus()])) {
             //calculate status for service
-            if (isset(self::STATUS_LIST_SERVICE[$this->getStatus()])) {
                 $textValue = self::STATUS_LIST_SERVICE[$this->getStatus()];
             }
         }
