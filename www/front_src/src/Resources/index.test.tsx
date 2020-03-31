@@ -29,6 +29,7 @@ import {
   labelDowntime,
   labelSetDowntime,
   labelDowntimeBy,
+  labelCheck,
   labelFixed,
   labelNotify,
   labelOpen,
@@ -46,6 +47,8 @@ import {
   serviceAcknowledgementEndpoint,
   hostDowntimeEndpoint,
   serviceDowntimeEndpoint,
+  hostCheckEndpoint,
+  serviceCheckEndpoint,
 } from './api/endpoint';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
@@ -750,7 +753,7 @@ describe(Resources, () => {
   const labelDowntimeByAdmin = `${labelDowntimeBy} admin`;
 
   it('cannot send a downtime request when Downtime action is clicked and comment is empty', async () => {
-    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+    const { getByLabelText, getByText } = render(<Resources />);
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -762,17 +765,14 @@ describe(Resources, () => {
     });
 
     await waitFor(() =>
-      expect(last(getAllByText(labelSetDowntime)).parentElement).toBeDisabled(),
+      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
     );
   });
 
   it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
-    const {
-      getByLabelText,
-      getByText,
-      getAllByText,
-      getByDisplayValue,
-    } = render(<Resources />);
+    const { getByLabelText, getByText, getByDisplayValue } = render(
+      <Resources />,
+    );
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -785,14 +785,12 @@ describe(Resources, () => {
     });
 
     await waitFor(() =>
-      expect(last(getAllByText(labelSetDowntime)).parentElement).toBeDisabled(),
+      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
     );
   });
 
   it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
-    const { container, getByLabelText, getByText, getAllByText } = render(
-      <Resources />,
-    );
+    const { container, getByLabelText, getByText } = render(<Resources />);
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -805,12 +803,12 @@ describe(Resources, () => {
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
     await waitFor(() =>
-      expect(last(getAllByText(labelSetDowntime)).parentElement).toBeDisabled(),
+      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
     );
   });
 
   it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
-    const { getByLabelText, getByText, getAllByText } = render(<Resources />);
+    const { getByLabelText, getByText } = render(<Resources />);
 
     await selectAllResourcesAndPrepareToSetDowntime({
       getByLabelText,
@@ -820,13 +818,6 @@ describe(Resources, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
     mockedAxios.all.mockResolvedValueOnce([]);
     mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
-
-    fireEvent.click(last(getAllByText(labelSetDowntime)));
-
-    await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
-      expect(mockedAxios.post).toHaveBeenCalled();
-    });
 
     const startDateTime = new Date(
       `${getByLabelText(labelStartTime)?.querySelector('input')?.value ||
@@ -838,6 +829,13 @@ describe(Resources, () => {
         ''} ${getByLabelText(labelEndDate)?.querySelector('input')?.value ||
         ''}`,
     );
+
+    fireEvent.click(getByText(labelSetDowntime));
+
+    await waitFor(() => {
+      expect(mockedAxios.all).toHaveBeenCalled();
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
       hostDowntimeEndpoint,
@@ -865,6 +863,41 @@ describe(Resources, () => {
         resource_id: id,
         start_time: formatISO(startDateTime),
         with_services: true,
+      })),
+      expect.anything(),
+    );
+  });
+
+  it('sends a check request when Resources are selected and the Check action is clicked', async () => {
+    const { getByLabelText, getByText } = render(<Resources />);
+
+    await selectAllResources({ getByLabelText });
+
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+    mockedAxios.all.mockResolvedValueOnce([]);
+    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+    fireEvent.click(getByText(labelCheck));
+
+    await waitFor(() => {
+      expect(mockedAxios.all).toHaveBeenCalled();
+      expect(mockedAxios.post).toHaveBeenCalled();
+    });
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      hostCheckEndpoint,
+      hostResources.map(({ id }) => ({
+        parent_resource_id: null,
+        resource_id: id,
+      })),
+      expect.anything(),
+    );
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      serviceCheckEndpoint,
+      serviceResources.map(({ id, parent }) => ({
+        parent_resource_id: parent?.id || null,
+        resource_id: id,
       })),
       expect.anything(),
     );
