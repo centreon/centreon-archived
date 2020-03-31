@@ -71,7 +71,7 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
 
   React.useEffect(() => {
     get();
-  }, []);
+  }, [endpoint]);
 
   if (graphData === undefined) {
     return <LoadingSkeleton />;
