@@ -7,6 +7,9 @@ const useStyles = makeStyles(() => ({
     maxWidth: 'none',
     backgroundColor: 'transparent',
   },
+  iconButton: {
+    padding: 0,
+  },
 }));
 
 interface Props {
@@ -25,6 +28,7 @@ const HoverChip = ({ children, Chip, label }: Props): JSX.Element => {
       classes={{ tooltip: classes.tooltip }}
       aria-label={label}
       enterDelay={0}
+      interactive
       onClick={(e): void => {
         e.preventDefault();
         e.stopPropagation();

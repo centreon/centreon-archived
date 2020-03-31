@@ -1,11 +1,19 @@
 import * as React from 'react';
 
+import { useTheme } from '@material-ui/core';
+
 import Chip from '.';
 import IconDowntime from '../icons/Downtime';
-import { downtimeColor } from '../colors';
 
-const DowntimeChip = (): JSX.Element => (
-  <Chip icon={<IconDowntime />} color={downtimeColor} />
-);
+const DowntimeChip = (): JSX.Element => {
+  const theme = useTheme();
+
+  return (
+    <Chip
+      icon={<IconDowntime fontSize="small" />}
+      color={theme.palette.action.inDowntime}
+    />
+  );
+};
 
 export default DowntimeChip;

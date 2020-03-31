@@ -25,7 +25,7 @@ import GraphChip from '../../Chip/Graph';
 const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
 const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
 
-const graphHeight = 350;
+const graphHeight = 250;
 const graphWidth = 475;
 
 const useStyles = makeStyles((theme) => ({

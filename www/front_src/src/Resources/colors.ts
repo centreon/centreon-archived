@@ -1,19 +1,22 @@
-import { lime, purple } from '@material-ui/core/colors';
+import { Theme } from '@material-ui/core';
 
-const downtimeColor = purple[500];
-const acknwoledgeColor = lime[900];
+interface Condition {
+  name: string;
+  condition;
+  color: string;
+}
 
-const rowColorConditions = [
+const rowColorConditions = (theme: Theme): Array<Condition> => [
   {
     name: 'inDowntime',
     condition: ({ in_downtime }): boolean => in_downtime,
-    color: purple[500],
+    color: theme.palette.action.inDowntimeBackground,
   },
   {
     name: 'acknowledged',
     condition: ({ acknowledged }): boolean => acknowledged,
-    color: lime[900],
+    color: theme.palette.action.acknowledgedBackground,
   },
 ];
 
-export { downtimeColor, acknwoledgeColor, rowColorConditions };
+export { rowColorConditions };

@@ -23,11 +23,12 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
       return {};
     }
 
-    const foundColorCondition = rowColorConditions.find(({ condition }) =>
-      condition({
-        in_downtime: details.downtimes !== undefined,
-        acknowledged: details.acknowledgement !== undefined,
-      }),
+    const foundColorCondition = rowColorConditions(theme).find(
+      ({ condition }) =>
+        condition({
+          in_downtime: details.downtimes !== undefined,
+          acknowledged: details.acknowledgement !== undefined,
+        }),
     );
 
     const backgroundColor = foundColorCondition?.color;

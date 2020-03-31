@@ -5,8 +5,8 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
 const useStyles = makeStyles<Theme, { color?: string }>((theme) => ({
   chip: ({ color }): CreateCSSProperties => ({
-    width: theme.spacing(4),
-    height: theme.spacing(4),
+    width: theme.spacing(2.5),
+    height: theme.spacing(2.5),
     ...(color && {
       backgroundColor: fade(color, 0.1),
       color,

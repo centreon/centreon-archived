@@ -1,13 +1,19 @@
 import * as React from 'react';
 
+import { useTheme } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
 import Chip from '.';
 
-import { acknwoledgeColor } from '../colors';
+const AcknowledgeChip = (): JSX.Element => {
+  const theme = useTheme();
 
-const AcknwoledgeChip = (): JSX.Element => (
-  <Chip icon={<IconAcknowledge />} color={acknwoledgeColor} />
-);
+  return (
+    <Chip
+      icon={<IconAcknowledge fontSize="small" />}
+      color={theme.palette.action.acknowledged}
+    />
+  );
+};
 
-export default AcknwoledgeChip;
+export default AcknowledgeChip;

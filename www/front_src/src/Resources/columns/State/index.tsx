@@ -46,7 +46,7 @@ const DowntimeHoverChip = ({
   );
 };
 
-const AcknowledgedChip = ({
+const AcknowledgeHoverChip = ({
   resource,
 }: {
   resource: Resource;
@@ -71,7 +71,7 @@ const StateColumn = ({ row }: ColumnProps): JSX.Element => {
       )}
       {row.acknowledged && (
         <Grid item>
-          <AcknowledgedChip resource={row} />
+          <AcknowledgeHoverChip resource={row} />
         </Grid>
       )}
     </Grid>
