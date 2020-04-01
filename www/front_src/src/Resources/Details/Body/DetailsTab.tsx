@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { Grid, Card, CardContent, Typography } from '@material-ui/core';
-import { ResourceDetails } from '..';
 import ExpandableCard from './ExpandableCard';
 import {
   labelStatusInformation,
@@ -18,6 +17,7 @@ import DowntimeChip from '../../Chip/Downtime';
 import AcknwoledgeChip from '../../Chip/Acknowledge';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
+import { ResourceDetails } from '../models';
 
 interface Props {
   details: ResourceDetails;

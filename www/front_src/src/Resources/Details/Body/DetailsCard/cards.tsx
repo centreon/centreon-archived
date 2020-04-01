@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Typography, Grid, makeStyles } from '@material-ui/core';
 import IconCheck from '@material-ui/icons/Check';
 
-import { ResourceDetails } from '../..';
 import {
   labelCurrentStateDuration,
   labelPoller,
@@ -21,6 +20,7 @@ import {
   labelCurrentNotificationNumber,
 } from '../../../translatedLabels';
 import { getFormattedDate, getFormattedTime } from '../../../dateTime';
+import { ResourceDetails } from '../../models';
 
 interface DetailLines {
   title: string;
