@@ -24,6 +24,7 @@ class ProgressBar extends Component {
             {links
               ? links.map((link) => (
                   <li
+                    key={link.path}
                     className={styles['progress-bar-item']}
                     onClick={this.goToPath.bind(this, link.path)}
                   >

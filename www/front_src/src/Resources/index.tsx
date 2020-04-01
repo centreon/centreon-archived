@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { makeStyles } from '@material-ui/core';
-
-import { lime, purple } from '@material-ui/core/colors';
+import { makeStyles, useTheme } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
-import { ResourceListing } from './models';
-import columns from './columns';
+import { ResourceListing, Resource } from './models';
+import getColumns from './columns';
 import Filter from './Filter';
 import {
   filterById,
@@ -18,19 +16,37 @@ import {
   Filter as FilterModel,
   FilterGroup,
 } from './Filter/models';
+import Actions from './Actions';
+import Details from './Details';
+import { rowColorConditions } from './colors';
 
 const useStyles = makeStyles((theme) => ({
   page: {
+    display: 'grid',
+    gridTemplateRows: 'auto 1fr',
     backgroundColor: theme.palette.background.default,
+    overflowY: 'hidden',
   },
-
+  body: {
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr 550px',
+  },
+  panel: {
+    gridArea: '1 / 2',
+    zIndex: 3,
+  },
+  filter: {
+    zIndex: 4,
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  },
   listing: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    gridArea: '1 / 1 / 1 / span 2',
   },
 }));
-
-const noOp = (): void => undefined;
 
 const defaultFilter = unhandledProblemsFilter;
 const { criterias } = defaultFilter;
@@ -38,13 +54,29 @@ const defaultResourceTypes = criterias?.resourceTypes;
 const defaultStatuses = criterias?.statuses;
 const defaultStates = criterias?.states;
 
+type SortOrder = 'asc' | 'desc';
+
 const Resources = (): JSX.Element => {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [listing, setListing] = useState<ResourceListing>();
-  const [sorto, setSorto] = useState<string>();
+  const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
+    [],
+  );
+  const [resourcesToAcknowledge, setResourcesToAcknowledge] = React.useState<
+    Array<Resource>
+  >([]);
+  const [resourcesToSetDowntime, setResourcesToSetDowntime] = React.useState<
+    Array<Resource>
+  >([]);
+  const [resourcesToCheck, setResourcesToCheck] = React.useState<
+    Array<Resource>
+  >([]);
+
+  const [sorto, setSorto] = useState<'asc' | 'desc'>();
   const [sortf, setSortf] = useState<string>();
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(30);
   const [page, setPage] = useState<number>(1);
 
   const [filter, setFilter] = useState(defaultFilter);
@@ -56,6 +88,10 @@ const Resources = (): JSX.Element => {
   const [statuses, setStatuses] = useState<Array<FilterModel>>(defaultStatuses);
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
+
+  const [selectedDetailsEndpoint, setSelectedDetailsEndpoint] = useState<
+    string | null
+  >(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -87,7 +123,8 @@ const Resources = (): JSX.Element => {
         setListing(retrievedListing);
       })
       .catch((error) => {
-        showError(error.message);
+        setListing(undefined);
+        showError(error.response?.data?.message || error.message);
       })
       .finally(() => setLoading(false));
   };
@@ -179,56 +216,138 @@ const Resources = (): JSX.Element => {
     setStates(defaultFilter.criterias.states);
   };
 
-  const rowColorConditions = [
-    {
-      name: 'inDowntime',
-      condition: ({ in_downtime }): boolean => in_downtime,
-      color: purple[500],
+  const selectResources = (resources): void => {
+    setSelectedResources(resources);
+  };
+
+  const confirmAction = (): void => {
+    selectResources([]);
+    setResourcesToAcknowledge([]);
+    setResourcesToSetDowntime([]);
+    setResourcesToCheck([]);
+  };
+
+  const prepareToAcknowledge = (resources): void => {
+    setResourcesToAcknowledge(resources);
+  };
+
+  const prepareSelectedToAcknowledge = (): void => {
+    prepareToAcknowledge(selectedResources);
+  };
+
+  const cancelAcknowledge = (): void => {
+    prepareToAcknowledge([]);
+  };
+
+  const prepareToSetDowntime = (resources): void => {
+    setResourcesToSetDowntime(resources);
+  };
+
+  const prepareSelectedToSetDowntime = (): void => {
+    prepareToSetDowntime(selectedResources);
+  };
+
+  const cancelSetDowntime = (): void => {
+    prepareToSetDowntime([]);
+  };
+
+  const prepareToCheck = (resources): void => {
+    setResourcesToCheck(resources);
+  };
+
+  const prepareSelectedToCheck = (): void => {
+    prepareToCheck(selectedResources);
+  };
+
+  const columns = getColumns({
+    onAcknowledge: (resource) => {
+      prepareToAcknowledge([resource]);
     },
-    {
-      name: 'acknowledged',
-      condition: ({ acknowledged }): boolean => acknowledged,
-      color: lime[900],
+    onDowntime: (resource) => {
+      prepareToSetDowntime([resource]);
     },
-  ];
+    onCheck: (resource) => {
+      prepareToCheck([resource]);
+    },
+  });
+
+  const selectResource = ({ details_endpoint }): void => {
+    setSelectedDetailsEndpoint(details_endpoint);
+  };
+
+  const clearSelectedResource = (): void => {
+    setSelectedDetailsEndpoint(null);
+  };
+
+  const hasSelectedResources = selectedResources.length > 0;
+
+  const ResourceActions = (
+    <Actions
+      disabled={!hasSelectedResources}
+      resourcesToAcknowledge={resourcesToAcknowledge}
+      onPrepareToAcknowledge={prepareSelectedToAcknowledge}
+      onCancelAcknowledge={cancelAcknowledge}
+      resourcesToSetDowntime={resourcesToSetDowntime}
+      onPrepareToSetDowntime={prepareSelectedToSetDowntime}
+      onCancelSetDowntime={cancelSetDowntime}
+      resourcesToCheck={resourcesToCheck}
+      onPrepareToCheck={prepareSelectedToCheck}
+      onSuccess={confirmAction}
+    />
+  );
 
   return (
     <div className={classes.page}>
-      <Filter
-        filter={filter}
-        onFilterGroupChange={changeFilter}
-        selectedResourceTypes={resourceTypes}
-        onResourceTypesChange={changeResourceTypes}
-        selectedStates={states}
-        onStatesChange={changeStates}
-        selectedStatuses={statuses}
-        onStatusesChange={changeStatuses}
-        onSearchRequest={doSearch}
-        onHostGroupsChange={changeHostGroups}
-        selectedHostGroups={hostGroups}
-        onServiceGroupsChange={changeServiceGroups}
-        selectedServiceGroups={serviceGroups}
-        onClearAll={clearAllFilters}
-        currentSearch={search}
-      />
-      <div className={classes.listing}>
-        <Listing
-          loading={loading}
-          columnConfiguration={columns}
-          tableData={listing?.result}
-          currentPage={page - 1}
-          rowColorConditions={rowColorConditions}
-          limit={listing?.meta.limit}
-          onDelete={noOp}
-          onSort={changeSort}
-          onDuplicate={noOp}
-          onPaginationLimitChanged={changeLimit}
-          onPaginate={changePage}
-          sortf={sortf}
-          sorto={sorto}
-          totalRows={listing?.meta.total}
-          checkable={false}
+      <div className={classes.filter}>
+        <Filter
+          filter={filter}
+          onFilterGroupChange={changeFilter}
+          selectedResourceTypes={resourceTypes}
+          onResourceTypesChange={changeResourceTypes}
+          selectedStates={states}
+          onStatesChange={changeStates}
+          selectedStatuses={statuses}
+          onStatusesChange={changeStatuses}
+          onSearchRequest={doSearch}
+          onHostGroupsChange={changeHostGroups}
+          selectedHostGroups={hostGroups}
+          onServiceGroupsChange={changeServiceGroups}
+          selectedServiceGroups={serviceGroups}
+          onClearAll={clearAllFilters}
+          currentSearch={search}
         />
+      </div>
+      <div className={classes.body}>
+        {selectedDetailsEndpoint && (
+          <div className={classes.panel}>
+            <Details
+              endpoint={selectedDetailsEndpoint}
+              onClose={clearSelectedResource}
+            />
+          </div>
+        )}
+        <div className={classes.listing}>
+          <Listing
+            checkable
+            Actions={ResourceActions}
+            loading={loading}
+            columnConfiguration={columns}
+            tableData={listing?.result}
+            currentPage={page - 1}
+            rowColorConditions={rowColorConditions(theme)}
+            limit={listing?.meta.limit}
+            onSort={changeSort}
+            onPaginationLimitChanged={changeLimit}
+            onPaginate={changePage}
+            sortf={sortf}
+            sorto={sorto}
+            totalRows={listing?.meta.total}
+            onSelectRows={selectResources}
+            selectedRows={selectedResources}
+            onRowClick={selectResource}
+            innerScrollDisabled={false}
+          />
+        </div>
       </div>
     </div>
   );

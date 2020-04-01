@@ -1,117 +1,80 @@
 import React from 'react';
 
-import { Grid, Avatar, makeStyles, fade, Tooltip } from '@material-ui/core';
-import { Person as IconAcknowledged } from '@material-ui/icons';
-import { lime, purple } from '@material-ui/core/colors';
+import { Grid } from '@material-ui/core';
 
-import IconDowntime from '../icons/Downtime';
 import { ColumnProps } from '..';
 import DowntimeDetailsTable from './DetailsTable/Downtime';
 import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import { labelInDowntime, labelAcknowledged } from '../../translatedLabels';
 import { Resource } from '../../models';
-
-const useStyles = makeStyles((theme) => ({
-  stateChip: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-  },
-  acknowledged: {
-    backgroundColor: fade(lime[900], 0.1),
-    color: lime[900],
-  },
-  downtime: {
-    backgroundColor: fade(purple[500], 0.1),
-    color: purple[500],
-  },
-  tooltip: {
-    maxWidth: 'none',
-    backgroundColor: 'transparent',
-  },
-}));
+import HoverChip from '../HoverChip';
+import DowntimeChip from '../../Chip/Downtime';
+import AcknowledgeChip from '../../Chip/Acknowledge';
 
 interface StateChipProps {
   endpoint: string;
-  className: string;
-  Icon: React.SFC;
+  Chip: () => JSX.Element;
   DetailsTable: React.SFC<{ endpoint: string }>;
-  ariaLabel: string;
+  label: string;
 }
 
-const StateChip = ({
+const StateHoverChip = ({
   endpoint,
-  className,
-  Icon,
+  Chip,
   DetailsTable,
-  ariaLabel,
+  label,
 }: StateChipProps): JSX.Element => {
-  const classes = useStyles();
-
   return (
-    <Tooltip
-      placement="left"
-      title={<DetailsTable endpoint={endpoint} />}
-      classes={{ tooltip: classes.tooltip }}
-      enterDelay={0}
-    >
-      <Avatar
-        className={`${classes.stateChip} ${className}`}
-        aria-label={ariaLabel}
-      >
-        <Icon />
-      </Avatar>
-    </Tooltip>
+    <HoverChip Chip={Chip} label={label}>
+      <DetailsTable endpoint={endpoint} />
+    </HoverChip>
   );
 };
 
-const DowntimeChip = ({ resource }: { resource: Resource }): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <StateChip
-      endpoint={resource.downtime_endpoint as string}
-      className={classes.downtime}
-      ariaLabel={`${resource.name} ${labelInDowntime}`}
-      DetailsTable={DowntimeDetailsTable}
-      Icon={IconDowntime}
-    />
-  );
-};
-
-const AcknowledgedChip = ({
+const DowntimeHoverChip = ({
   resource,
 }: {
   resource: Resource;
 }): JSX.Element => {
-  const classes = useStyles();
-
   return (
-    <StateChip
-      endpoint={resource.acknowledgement_endpoint as string}
-      className={classes.acknowledged}
-      ariaLabel={`${resource.name} ${labelAcknowledged}`}
-      DetailsTable={AcknowledgementDetailsTable}
-      Icon={IconAcknowledged}
+    <StateHoverChip
+      endpoint={resource.downtime_endpoint as string}
+      label={`${resource.name} ${labelInDowntime}`}
+      DetailsTable={DowntimeDetailsTable}
+      Chip={(): JSX.Element => <DowntimeChip />}
     />
   );
 };
 
-const StateColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const AcknowledgeHoverChip = ({
+  resource,
+}: {
+  resource: Resource;
+}): JSX.Element => {
   return (
-    <Cell width={80}>
-      <Grid container spacing={1}>
-        {row.in_downtime && (
-          <Grid item>
-            <DowntimeChip resource={row} />
-          </Grid>
-        )}
-        {row.acknowledged && (
-          <Grid item>
-            <AcknowledgedChip resource={row} />
-          </Grid>
-        )}
-      </Grid>
-    </Cell>
+    <StateHoverChip
+      endpoint={resource.acknowledgement_endpoint as string}
+      label={`${resource.name} ${labelAcknowledged}`}
+      DetailsTable={AcknowledgementDetailsTable}
+      Chip={(): JSX.Element => <AcknowledgeChip />}
+    />
+  );
+};
+
+const StateColumn = ({ row }: ColumnProps): JSX.Element => {
+  return (
+    <Grid container spacing={1}>
+      {row.in_downtime && (
+        <Grid item>
+          <DowntimeHoverChip resource={row} />
+        </Grid>
+      )}
+      {row.acknowledged && (
+        <Grid item>
+          <AcknowledgeHoverChip resource={row} />
+        </Grid>
+      )}
+    </Grid>
   );
 };
 

@@ -77,12 +77,12 @@ class MonitoringHostsController extends AbstractController
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
 
+        $groups = [
+            Service::SERIALIZER_GROUP_FULL,
+            Acknowledgement::SERIALIZER_GROUP_FULL
+        ];
         $context = (new Context())
-            ->setGroups([
-                Service::SERIALIZER_GROUP_FULL,
-                Acknowledgement::SERIALIZER_GROUPS_SERVICE,
-                Downtime::SERIALIZER_GROUPS_SERVICE
-            ])
+            ->setGroups(array_merge($groups, Downtime::SERIALIZER_GROUPS_SERVICE))
             ->enableMaxDepth();
 
         return $this->view($service)->setContext($context);
@@ -262,13 +262,19 @@ class MonitoringHostsController extends AbstractController
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
 
+        $groups = [
+            Host::SERIALIZER_GROUP_FULL,
+            Service::SERIALIZER_GROUP_MIN,
+            Acknowledgement::SERIALIZER_GROUP_FULL
+        ];
+
         $context = (new Context())
-            ->setGroups([
-                Host::SERIALIZER_GROUP_FULL,
-                Service::SERIALIZER_GROUP_MIN,
-                Acknowledgement::SERIALIZER_GROUPS_HOST,
-                Downtime::SERIALIZER_GROUPS_MAIN
-            ])
+            ->setGroups(
+                array_merge(
+                    $groups,
+                    Downtime::SERIALIZER_GROUPS_MAIN
+                )
+            )
             ->enableMaxDepth();
 
         return $this->view($host)->setContext($context);

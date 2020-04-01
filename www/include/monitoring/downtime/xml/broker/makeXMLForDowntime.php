@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +34,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
@@ -57,16 +58,18 @@ $centreonlang->bindLang();
 $sid = session_id();
 if (isset($sid)) {
     //$sid = $_GET["sid"];
-    $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
-    if (!$session = $res->fetchRow()) {
+    $res = $db->prepare("SELECT * FROM session WHERE session_id = :id");
+    $res->bindValue(':id', $sid, \PDO::PARAM_STR);
+    $res->execute();
+    if (!$session = $res->fetch()) {
         get_error('bad session id');
     }
 } else {
     get_error('need session id !');
 }
 
-(isset($_GET["hid"])) ? $host_id = CentreonDB::escape($_GET["hid"]) : $host_id = 0;
-(isset($_GET["svc_id"])) ? $service_id = CentreonDB::escape($_GET["svc_id"]) : $service_id = 0;
+$host_id = (int)($_GET['hid'] ?? 0);
+$service_id = (int)($_GET["svc_id"] ?? 0);
 
 /*
  * Init GMT class
@@ -92,24 +95,24 @@ $xml->endElement();
  * Retrieve info
  */
 if (!$service_id) {
-    $query = "SELECT author, actual_start_time , end_time, comment_data, duration, fixed " .
-        "FROM downtimes " .
-        "WHERE host_id = ? " .
-        "AND type = 2 " .
-        "AND cancelled = 0 " .
-        "AND end_time > UNIX_TIMESTAMP(NOW()) " .
-        "ORDER BY actual_start_time";
+    $query = "SELECT author, actual_start_time , end_time, comment_data, duration, fixed
+        FROM downtimes
+        WHERE host_id = ?
+        AND type = 2
+        AND cancelled = 0
+        AND end_time > UNIX_TIMESTAMP(NOW())
+        ORDER BY actual_start_time";
     $stmt = $dbb->prepare($query);
     $dbb->execute($stmt, array($dbb->escape($host_id)));
 } else {
-    $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed " .
-        "FROM downtimes " .
-        "WHERE host_id = ? " .
-        "AND service_id = ? " .
-        "AND type = 1 " .
-        "AND cancelled = 0 " .
-        "AND end_time > UNIX_TIMESTAMP(NOW()) " .
-        "ORDER BY actual_start_time";
+    $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed
+        FROM downtimes
+        WHERE host_id = ?
+        AND service_id = ?
+        AND type = 1
+        AND cancelled = 0
+        AND end_time > UNIX_TIMESTAMP(NOW())
+        ORDER BY actual_start_time";
     $stmt = $dbb->prepare($query);
     $dbb->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
 }

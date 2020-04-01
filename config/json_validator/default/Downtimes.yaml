@@ -10,7 +10,7 @@ add_downtimes:
           resource_id:
             type: integer
           parent_resource_id:
-            type: integer
+            type: [integer, 'null']
 add_downtime:
   $ref: "#/$components/downtime"
 $components:

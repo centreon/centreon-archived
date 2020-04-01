@@ -30,6 +30,16 @@
 #set -x
 
 echo -e "\n$line"
+echo -e "\t$(gettext "Gorgone module Installation")"
+echo -e "$line"
+
+# locate gorgone
+locate_gorgone_varlib
+locate_gorgone_config
+check_gorgone_user
+check_gorgone_group
+
+echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
 
@@ -43,8 +53,7 @@ if [ "$?" -eq 1 ] ; then
   fi
 fi
 
-###### Require
-#################################
+###### Mandatory step
 ## Create install_dir_centreon
 locate_centreon_installdir
 # Create an examples directory to save all important templates and config
@@ -70,15 +79,41 @@ locate_perl
 
 ## Check PHP version
 check_php_version
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+if [ "$?" -eq 1 ] ; then
+    echo_info "\n\t$(gettext "Your php version does not meet the requirements")"
+
+    echo -e "\t$(gettext "Please read the documentation available here") : documentation.centreon.com"
+    echo -e "\n\t$(gettext "Installation aborted")"
+
+    purge_centreon_tmp_dir
+    exit 1
+fi
 
 ## Check composer dependencies (if vendor directory exists)
 check_composer_dependencies
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+if [ "$?" -eq 1 ] ; then
+    echo_info "\n\t$(gettext "You must first install the composer's dependencies")"
+
+    echo -e "\n\t$(gettext "composer install --no-dev --optimize-autoloader")"
+    echo -e "\t$(gettext "Please read the documentation available here") : documentation.centreon.com"
+
+    echo -e "\n\t$(gettext "Installation aborted")"
+    purge_centreon_tmp_dir
+    exit 1
+fi
 
 ## Check frontend application (if www/static directory exists)
 check_frontend_application
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+if [ "$?" -eq 1 ] ; then
+    echo_info "\n\t$(gettext "You must first build the frontend application")"
+
+    echo -e "\n\t$(gettext "Using npm install and then npm build")"
+    echo -e "\t$(gettext "Please read the documentation available here") : documentation.centreon.com"
+
+    echo -e "\n\t$(gettext "Installation aborted")"
+    purge_centreon_tmp_dir
+    exit 1
+fi
 
 ## Config apache
 check_httpd_directory
@@ -208,8 +243,6 @@ cp -Rf $TMP_DIR/src/libinstall/{functions,cinstall,gettext} \
   $TMP_DIR/final/libinstall/ >> "$LOG_FILE" 2>&1
 
 ## Prepare insertBaseConf.sql
-#echo -e "$(gettext "In process")"
-### Step 1:
 ## Change Macro on sql file
 log "INFO" "$(gettext "Change macros for insertBaseConf.sql")"
 ${SED} -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
@@ -360,6 +393,15 @@ else
     add_group "$MONITORINGENGINE_USER" "$BROKER_GROUP"
     add_group "$BROKER_USER" "$CENTREON_GROUP"
 fi
+
+## Configure Gorgone user and group
+add_group "$CENTREON_USER" "$GORGONE_GROUP"
+add_group "$WEB_USER" "$GORGONE_GROUP"
+add_group "$GORGONE_USER" "$CENTREON_GROUP"
+add_group "$GORGONE_USER" "$BROKER_GROUP"
+add_group "$GORGONE_USER" "$MONITORINGENGINE_GROUP"
+add_group "$GORGONE_USER" "$WEB_GROUP"
+
 if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
     $INSTALL_DIR/cinstall $cinstall_opts \
         -g "$BROKER_GROUP" -d 775 \
@@ -699,7 +741,7 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 ## Prepare to install all pear modules needed.
 # use check_pear.php script
 echo -e "\n$line"
-echo -e "$(gettext "Pear Modules")"
+echo -e "\t$(gettext "Pear Modules")"
 echo -e "$line"
 pear_module="0"
 first=1
@@ -710,7 +752,7 @@ while [ "$pear_module" -eq 0 ] ; do
                 if [ "$first" -eq 0 ] ; then
                     echo_info "$(gettext "Unable to upgrade PEAR modules. You seem to have a connection problem.")"
                 fi
-                yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
+                yes_no_default "$(gettext "Do you want to install/upgrade your PEAR modules")" "$yes"
                 [ "$?" -eq 0 ] && PEAR_AUTOINST=1
             fi
         if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
@@ -727,6 +769,23 @@ while [ "$pear_module" -eq 0 ] ; do
     fi
 done
 
+#----
+## Gorgone specific tasks
+#----
+echo "$line"
+echo -e "\t$(gettext "Achieve gorgone's module integration")"
+echo "$line"
+## Copy pollers SSH keys (in case of upgrade) to the new "user" gorgone
+if [ "$upgrade" = "1" ]; then
+
+    copy_ssh_keys_to_gorgone
+fi
+## Create gorgone's configuration structure
+create_gorgone_configuration_structure
+
+echo "$line"
+echo -e "\t$(gettext "Create configuration and installation files")"
+echo "$line"
 ## Create configfile for web install
 createConfFile
 

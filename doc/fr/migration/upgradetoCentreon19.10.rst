@@ -164,7 +164,7 @@ Mise à jour de la suite Centreon
 ================================
 
 Forcez la mise à jour du nouveau serveur en déplacant le contenu du répertoire
-**/usr/share/centreon/installDir/install-19.10.0-YYYYMMDD_HHMMSS** dans le
+**/var/lib/centreon/installs/install-19.10.0-YYYYMMDD_HHMMSS** dans le
 repértoire **/usr/share/centreon/www/install** : ::
 
     # cd /usr/share/centreon/installDir/

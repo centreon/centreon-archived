@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,16 +38,10 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 
-/*
- * Init GMT class
- */
-$centreonGMT = new CentreonGMT($pearDB);
-$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 $hostAclId = preg_split('/,/', str_replace("'", "", $hostStr));
 
@@ -54,7 +49,8 @@ $hObj = new CentreonHost($pearDB);
 $serviceObj = new CentreonService($pearDB);
 $resourceId = $resourceId ?? 0;
 
-if (!$centreon->user->access->checkAction("host_schedule_downtime")
+if (
+    !$centreon->user->access->checkAction("host_schedule_downtime")
     && !$centreon->user->access->checkAction("service_schedule_downtime")
 ) {
     require_once _CENTREON_PATH_ . "www/include/core/errors/alt_error.php";
@@ -75,14 +71,10 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $redirect = $form->addElement('hidden', 'o');
     $redirect->setValue($o);
 
-    if (isset($_GET["host_id"])
-        && !isset($_GET["service_id"])
-    ) {
+    if (isset($_GET["host_id"]) && !isset($_GET["service_id"])) {
         $disabled = "disabled";
         $hostName = $hObj->getHostName($_GET['host_id']);
-    } elseif (isset($_GET["host_id"])
-        && isset($_GET["service_id"])
-    ) {
+    } elseif (isset($_GET["host_id"]) && isset($_GET["service_id"])) {
         $disabled = "disabled";
         $serviceParameters = $serviceObj->getParameters($_GET['service_id'], array('service_description'));
         $serviceDisplayName = $serviceParameters['service_description'];
@@ -287,6 +279,19 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     );
 
     $defaultDuration = 7200;
+    $defaultScale = 's';
+    if (
+        isset($centreon->optGen['monitoring_dwt_duration'])
+        && $centreon->optGen['monitoring_dwt_duration']
+    ) {
+        $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
+        if (
+            isset($centreon->optGen['monitoring_dwt_duration_scale'])
+            && $centreon->optGen['monitoring_dwt_duration_scale']
+        ) {
+            $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
+        }
+    }
     $form->setDefaults(array('duration' => $defaultDuration));
 
     $form->addElement(
@@ -296,11 +301,6 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days")),
         array('id' => 'duration_scale')
     );
-    $defaultScale = 's';
-    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
-        $centreon->optGen['monitoring_dwt_duration_scale']) {
-        $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
-    }
     $form->setDefaults(array('duration_scale' => $defaultScale));
 
     $withServices[] = $form->createElement('radio', 'with_services', null, _("Yes"), '1');
@@ -308,6 +308,11 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addGroup($withServices, 'with_services', _("Set downtime for hosts services"), '&nbsp;');
 
     $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
+    $form->setDefaults(
+        array(
+            "comment" => sprintf(_("Downtime set by %s"), $centreon->user->alias)
+        )
+    );
 
     $form->addRule('end', _("Required Field"), 'required');
     $form->addRule('start', _("Required Field"), 'required');
@@ -316,13 +321,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addRule('comment', _("Required Field"), 'required');
 
     $data = array();
-    $gmt = $centreonGMT->getMyGMT();
-    if (!$gmt) {
-        $gmt = date_default_timezone_get();
-    }
 
-    $data["start_time"] = $centreonGMT->getDate("G:i", time(), $gmt);
-    $data["end_time"] = $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt);
     $data["host_or_hg"] = 1;
     $data["with_services"] = $centreon->optGen['monitoring_dwt_svc'];
 
@@ -384,7 +383,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
             }
         }
 
-        if (isset($_POST['host_or_centreon_time']['host_or_centreon_time'])
+        if (
+            isset($_POST['host_or_centreon_time']['host_or_centreon_time'])
             && $_POST['host_or_centreon_time']['host_or_centreon_time']
         ) {
             $hostOrCentreonTime = $_POST['host_or_centreon_time']['host_or_centreon_time'];
@@ -393,18 +393,26 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         }
 
         $applyDtOnServices = false;
-        if (isset($values['with_services']) &&
-            $values['with_services']['with_services'] == 1
+        if (
+            isset($values['with_services'])
+            && $values['with_services']['with_services'] == 1
         ) {
             $applyDtOnServices = true;
         }
 
         /* concatenating the chosen dates before sending them to ext_cmd */
-        $concatenatedStart = $_POST["alternativeDateStart"] . ' ' . $_POST['start_time'];
-        $concatenatedEnd = $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time'];
+        $concatenatedStart = filter_var(
+            $_POST["alternativeDateStart"] . ' ' . $_POST['start_time'],
+            FILTER_SANITIZE_STRING
+        );
+        $concatenatedEnd = filter_var(
+            $_POST["alternativeDateEnd"] . ' ' . $_POST['end_time'],
+            FILTER_SANITIZE_STRING
+        );
 
-        if (isset($values['downtimeType']) &&
-            $values['downtimeType']['downtimeType'] == 1
+        if (
+            isset($values['downtimeType'])
+            && $values['downtimeType']['downtimeType'] == 1
         ) {
             /*
              * Set a downtime for host only
@@ -427,7 +435,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                     $hostOrCentreonTime
                 );
             }
-        } elseif ($values['downtimeType']['downtimeType'] == 0
+        } elseif (
+            $values['downtimeType']['downtimeType'] == 0
             && isset($_POST['hostgroup_id'])
             && is_array($_POST['hostgroup_id'])
         ) {
@@ -464,9 +473,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
             foreach ($_POST["service_id"] as $value) {
                 $info = explode('-', $value);
-                if ($centreon->user->access->admin ||
-                    in_array($info[0], $hostAclId)
-                ) {
+                if ($centreon->user->access->admin || in_array($info[0], $hostAclId)) {
                     $ecObj->addSvcDowntime(
                         $info[0],
                         $info[1],
@@ -487,7 +494,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                 $stmt = $pearDBO->prepare(
                     "SELECT host_id, service_id FROM services_servicegroups WHERE servicegroup_id = :sgId"
                 );
-                $stmt->bindValue(':sgId', $sgId, PDO::PARAM_INT);
+                $stmt->bindValue(':sgId', $sgId, \PDO::PARAM_INT);
                 $stmt->execute();
 
                 while ($row = $stmt->fetch()) {
@@ -511,12 +518,10 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                 $stmt = $pearDBO->prepare(
                     "SELECT host_id FROM hosts WHERE instance_id = :poller_id AND enabled = 1"
                 );
-                $stmt->bindValue(':poller_id', $pollerId, PDO::PARAM_INT);
+                $stmt->bindValue(':poller_id', $pollerId, \PDO::PARAM_INT);
                 $stmt->execute();
                 while ($row = $stmt->fetch()) {
-                    if ($centreon->user->access->admin ||
-                        in_array($row['host_id'], $hostAclId)
-                    ) {
+                    if ($centreon->user->access->admin || in_array($row['host_id'], $hostAclId)) {
                         $ecObj->addHostDowntime(
                             $row['host_id'],
                             $_POST["comment"],
@@ -548,9 +553,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         $form->accept($renderer);
         $tpl->assign('form', $renderer->toArray());
 
-        if (isset($_GET['service_id']) &&
-            isset($_GET['host_id'])
-        ) {
+        if (isset($_GET['service_id']) && isset($_GET['host_id'])) {
             $tpl->assign('host_name', $hostName);
             $tpl->assign('service_description', $serviceDisplayName);
         } elseif (isset($_GET['host_id'])) {
@@ -578,12 +581,15 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
     function setDurationField() {
         var durationField = jQuery('#duration');
+        var durationScaleField = jQuery('#duration_scale');
         var fixedCb = jQuery('#fixed');
 
         if (fixedCb.prop("checked") == true) {
-            durationField.disabled = true;
+            durationField.attr('disabled', true);
+            durationScaleField.attr('disabled', true);
         } else {
-            durationField.disabled = false;
+            durationField.removeAttr('disabled');
+            durationScaleField.removeAttr('disabled');
         }
     }
 </script>

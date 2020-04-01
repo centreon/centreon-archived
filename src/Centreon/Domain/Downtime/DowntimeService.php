@@ -29,7 +29,10 @@ use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
@@ -66,23 +69,31 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     private $accessGroups;
 
     /**
+     * @var MonitoringRepositoryInterface
+     */
+    private $monitoringRepository;
+
+    /**
      * DowntimeService constructor.
      *
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param EngineServiceInterface $engineService
      * @param EntityValidator $validator
      * @param DowntimeRepositoryInterface $downtimeRepository
+     * @param MonitoringRepositoryInterface $monitoringRepository
      */
     public function __construct(
         AccessGroupRepositoryInterface $accessGroupRepository,
         EngineServiceInterface $engineService,
         EntityValidator $validator,
-        DowntimeRepositoryInterface $downtimeRepository
+        DowntimeRepositoryInterface $downtimeRepository,
+        MonitoringRepositoryInterface $monitoringRepository
     ) {
         $this->accessGroupRepository = $accessGroupRepository;
         $this->engineService = $engineService;
         $this->validator = $validator;
         $this->downtimeRepository = $downtimeRepository;
+        $this->monitoringRepository = $monitoringRepository;
     }
 
     /**
@@ -96,6 +107,11 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
         $this->engineService->filterByContact($contact);
 
         $this->accessGroups = $this->accessGroupRepository->findByContact($contact);
+
+        $this->monitoringRepository
+            ->setContact($this->contact)
+            ->filterByAccessGroups($this->accessGroups);
+
         return $this;
     }
 
@@ -224,5 +240,31 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
         }
 
         $this->engineService->cancelDowntime($downtime, $host);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addResourceDowntime(ResourceEntity $resource, Downtime $downtime): void
+    {
+        $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+        if (is_null($host)) {
+            throw new EntityNotFoundException('Host not found');
+        }
+        if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $service = $this->monitoringRepository->findOneService(
+                (int) $resource->getParent()->getId(),
+                (int) $resource->getId()
+            );
+            if (is_null($service)) {
+                throw new EntityNotFoundException('Service not found');
+            }
+            $service->setHost($host);
+            $this->addServiceDowntime($downtime, $service);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $this->addHostDowntime($downtime, $host);
+        } else {
+            throw new \Exception('Incorrect Resource Type');
+        }
     }
 }
