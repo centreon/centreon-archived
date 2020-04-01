@@ -19,19 +19,19 @@ export interface TimePeriod {
 const last24hPeriod: TimePeriod = {
   name: labelLast24h,
   id: 'last_24_h',
-  getStart: (): Date => subHours(new Date(), 24),
+  getStart: (): Date => subHours(Date.now(), 24),
 };
 
 const last7Days: TimePeriod = {
   name: labelLast7Days,
   id: 'last_7_days',
-  getStart: (): Date => subDays(new Date(), 7),
+  getStart: (): Date => subDays(Date.now(), 7),
 };
 
 const last31Days: TimePeriod = {
   name: labelLast31Days,
   id: 'last_31_days',
-  getStart: (): Date => subDays(new Date(), 31),
+  getStart: (): Date => subDays(Date.now(), 31),
 };
 
 const timePeriods: Array<TimePeriod> = [last24hPeriod, last7Days, last31Days];

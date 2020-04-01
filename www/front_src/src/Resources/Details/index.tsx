@@ -1,11 +1,14 @@
 import * as React from 'react';
 
+import { omit } from 'ramda';
+
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
 import Header from './Header';
 import Body from './Body';
 import useGet from '../useGet';
 import { ResourceDetails } from './models';
+import { ResourceEndpoints } from '../models';
 
 const useStyles = makeStyles(() => {
   return {
@@ -28,18 +31,20 @@ const useStyles = makeStyles(() => {
 });
 
 interface Props {
-  endpoint: string | null;
-  onClose;
+  onClose: () => void;
+  endpoints: ResourceEndpoints;
 }
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
+const Details = ({ endpoints, onClose }: Props): JSX.Element | null => {
   const classes = useStyles();
 
   const [details, setDetails] = React.useState<ResourceDetails>();
+
+  const { details: detailsEndpoint } = endpoints;
 
   const get = useGet({
     onSuccess: (entity) => setDetails(entity),
@@ -52,7 +57,7 @@ const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
     }
 
     get();
-  }, [endpoint]);
+  }, [detailsEndpoint]);
 
   return (
     <Paper variant="outlined" elevation={2} className={classes.details}>
@@ -61,7 +66,7 @@ const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
       </div>
       <Divider className={classes.divider} />
       <div className={classes.body}>
-        <Body details={details} />
+        <Body details={details} endpoints={omit(['details'], endpoints)} />
       </div>
     </Paper>
   );

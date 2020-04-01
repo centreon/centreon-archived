@@ -1,9 +1,6 @@
 {
   "extends": "./node_modules/@centreon/frontend-core/tsconfig/index",
   "compilerOptions": {
-    "lib": [
-      "es2019"
-    ],
     "baseUrl": "./",
     "typeRoots": [
       "./types",

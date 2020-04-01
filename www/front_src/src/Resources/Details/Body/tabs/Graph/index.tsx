@@ -10,6 +10,7 @@ import { SelectField } from '@centreon/ui';
 import PerformanceGraph from '../../../../Graph/Performance';
 import StatusGraph from '../../../../Graph/Status';
 import { TimePeriodId, timePeriods, getTimePeriodById } from './models';
+import { ResourceEndpoints } from '../../../models';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -43,8 +44,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const timePeriodSelectOptions = map(pick(['id', 'name']), timePeriods);
 
-const GraphTab = (): JSX.Element => {
+interface Props {
+  endpoints: Pick<ResourceEndpoints, 'statusGraph' | 'performanceGraph'>;
+}
+
+const GraphTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
+
+  const {
+    statusGraph: statusGraphEndpoint,
+    performanceGraph: performanceGraphEndpoint,
+  } = endpoints;
 
   const [selectedTimePeriodId, setSelectedTimePeriodId] = React.useState<
     TimePeriodId
@@ -53,8 +63,8 @@ const GraphTab = (): JSX.Element => {
   const getEndpointParams = (): string => {
     const selectedTimePeriod = getTimePeriodById(selectedTimePeriodId);
 
-    const now = formatISO(new Date());
-    const start = formatISO(selectedTimePeriod.getStart());
+    const now = new Date(Date.now()).toISOString();
+    const start = selectedTimePeriod.getStart().toISOString();
 
     return `?start=${start}&end=${now}`;
   };
@@ -76,12 +86,12 @@ const GraphTab = (): JSX.Element => {
       <Paper className={classes.graphContainer}>
         <div className={`${classes.graph} ${classes.performance}`}>
           <PerformanceGraph
-            endpoint={`http://localhost:5000/api/beta/graph${getEndpointParams()}`}
+            endpoint={`${performanceGraphEndpoint}${getEndpointParams()}`}
           />
         </div>
         <div className={`${classes.graph} ${classes.status}`}>
           <StatusGraph
-            endpoint={`http://localhost:5000/api/beta/status${getEndpointParams()}`}
+            endpoint={`${statusGraphEndpoint}${getEndpointParams()}`}
           />
         </div>
       </Paper>
