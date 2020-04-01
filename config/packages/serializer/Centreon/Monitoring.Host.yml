@@ -272,10 +272,12 @@ Centreon\Domain\Monitoring\Host:
             type: array<Centreon\Domain\Downtime\Downtime>
             groups:
                 - 'host_full'
+                - 'resource_details_host'
         acknowledgement:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
             groups:
                 - 'host_full'
+                - 'resource_details_host'
         flapping:
             type: bool
             groups:

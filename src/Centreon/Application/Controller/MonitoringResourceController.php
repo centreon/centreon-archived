@@ -40,6 +40,8 @@ use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Model\ResourceDetailsHost;
 use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 
 /**
  * Resource APIs for the Unified View page
@@ -209,11 +211,12 @@ class MonitoringResourceController extends AbstractController
         }
 
         $context = (new Context())
-            ->setGroups([
+            ->setGroups(array_merge([
                 ResourceDetailsHost::SERIALIZER_GROUP_DETAILS,
                 ResourceStatus::SERIALIZER_GROUP_MAIN,
                 Service::SERIALIZER_GROUP_MIN,
-            ])
+                Acknowledgement::SERIALIZER_GROUP_FULL,
+            ], Downtime::SERIALIZER_GROUPS_SERVICE))
             ->enableMaxDepth();
 
         return $this
@@ -240,10 +243,11 @@ class MonitoringResourceController extends AbstractController
         }
 
         $context = (new Context())
-            ->setGroups([
+            ->setGroups(array_merge([
                 ResourceDetailsService::SERIALIZER_GROUP_DETAILS,
                 ResourceStatus::SERIALIZER_GROUP_MAIN,
-            ])
+                Acknowledgement::SERIALIZER_GROUP_FULL,
+            ], Downtime::SERIALIZER_GROUPS_SERVICE))
             ->enableMaxDepth();
 
         return $this

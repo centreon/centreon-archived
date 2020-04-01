@@ -48,38 +48,6 @@ trait ResourceDetailsTrait
     protected $tries;
 
     /**
-     * @return \Centreon\Domain\Downtime\Downtime[]
-     */
-    abstract public function getDowntimes(): array;
-
-    /**
-     * @param Acknowledgement|null $acknowledgement
-     * @return Host
-     */
-    abstract public function getAcknowledgement(): ?Acknowledgement;
-
-    /**
-     * @return string|null
-     */
-    public function getDowntimesAuthor(): ?string
-    {
-        $downtimes = $this->getDowntimes();
-        return $downtimes
-            ? (end($downtimes))->getAuthorName()
-            : null;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAcknowledgementAuthor(): ?string
-    {
-        return $this->getAcknowledgement()
-            ? $this->getAcknowledgement()->getAuthorName()
-            : null;
-    }
-
-    /**
      * @return selfStatus|null
      */
     public function getStatus(): ?ResourceStatus
