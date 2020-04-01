@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
-
 import {
   TableContainer,
   TableRow,
@@ -14,18 +11,17 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
+import { useCancelTokenSource } from '@centreon/ui';
+
 import { getData } from '../../../api';
 import {
   labelSomethingWentWrong,
   labelYes,
   labelNo,
 } from '../../../translatedLabels';
-import useCancelTokenSource from '../../../useCancelTokenSource';
+
 import { Listing } from '../../../models';
 import { Column } from '../..';
-
-const getFormattedDate = (isoDate): string =>
-  format(parseISO(isoDate), 'MM/dd/yyyy H:m');
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
@@ -97,5 +93,5 @@ const DetailsTable = <TDetails extends unknown>({
   );
 };
 
-export { getFormattedDate, getYesNoLabel };
+export { getYesNoLabel };
 export default DetailsTable;

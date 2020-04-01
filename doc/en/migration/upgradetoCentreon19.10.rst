@@ -161,7 +161,7 @@ Upgrading Centreon
 ==================
 
 On the new server, force the update by moving the contents of the
-**/usr/share/centreon/installDir/install-19.10.0-YYYYMMDD_HHMMSS** directory to
+**/var/lib/centreon/installs/install-19.10.0-YYYYMMDD_HHMMSS** directory to
 the **/usr/share/centreon/www/install** directory: ::
 
     # cd /usr/share/centreon/installDir/

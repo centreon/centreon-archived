@@ -25,15 +25,23 @@ namespace Centreon\Application\Controller;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Domain\Monitoring\Model\ResourceDetailsHost;
+use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 
 /**
  * Resource APIs for the Unified View page
@@ -62,6 +70,11 @@ class MonitoringResourceController extends AbstractController
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
+     * @var MonitoringServiceInterface
+     */
+    private $monitoring;
+
+    /**
      * @var ResourceServiceInterface
      */
     protected $resource;
@@ -72,11 +85,16 @@ class MonitoringResourceController extends AbstractController
     protected $router;
 
     /**
+     * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
      */
-    public function __construct(ResourceServiceInterface $resource, UrlGeneratorInterface $router)
-    {
+    public function __construct(
+        MonitoringServiceInterface $monitoringService,
+        ResourceServiceInterface $resource,
+        UrlGeneratorInterface $router
+    ) {
+        $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
     }
@@ -172,5 +190,68 @@ class MonitoringResourceController extends AbstractController
             'result' => $resources,
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
+    }
+
+    /**
+     * Get resource details related to the host
+     *
+     * @return View
+     */
+    public function detailsHost(int $hostId): View
+    {
+        // ACL check
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $host = $this->monitoring
+            ->filterByContact($this->getUser())
+            ->findOneHost($hostId);
+
+        if ($host === null) {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+
+        $context = (new Context())
+            ->setGroups(array_merge([
+                ResourceDetailsHost::SERIALIZER_GROUP_DETAILS,
+                ResourceStatus::SERIALIZER_GROUP_MAIN,
+                Service::SERIALIZER_GROUP_MIN,
+                Acknowledgement::SERIALIZER_GROUP_FULL,
+            ], Downtime::SERIALIZER_GROUPS_SERVICE))
+            ->enableMaxDepth();
+
+        return $this
+            ->view($this->resource->enrichHostWithDetails($host))
+            ->setContext($context);
+    }
+
+    /**
+     * Get resource details related to the service
+     *
+     * @return View
+     */
+    public function detailsService(int $hostId, int $serviceId): View
+    {
+        // ACL check
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $service = $this->monitoring
+            ->filterByContact($this->getUser())
+            ->findOneService($hostId, $serviceId);
+
+        if ($service === null) {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+
+        $context = (new Context())
+            ->setGroups(array_merge([
+                ResourceDetailsService::SERIALIZER_GROUP_DETAILS,
+                ResourceStatus::SERIALIZER_GROUP_MAIN,
+                Acknowledgement::SERIALIZER_GROUP_FULL,
+            ], Downtime::SERIALIZER_GROUPS_SERVICE))
+            ->enableMaxDepth();
+
+        return $this
+            ->view($this->resource->enrichServiceWithDetails($service))
+            ->setContext($context);
     }
 }

@@ -29,10 +29,14 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     // Groups for serialization
     public const SERIALIZER_GROUPS_HOST = ['Default', 'ack_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['Default', 'ack_service'];
+    public const SERIALIZER_GROUP_FULL = 'ack_full';
 
     // Types
     public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
     public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
+
+    //Groups for validation
+    public const VALIDATION_GROUP_ACK_RESOURCE = ['ack_resource'];
 
     /**
      * @var int
@@ -58,6 +62,11 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
      * @var int|null
      */
     private $authorId;
+
+    /**
+     * @var string|null
+     */
+    private $authorName;
 
     /**
      * @var string|null
@@ -120,6 +129,7 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     public static function loadEntityDescriptorMetadata(): array
     {
         return [
+            'author' => 'setAuthorName',
             'acknowledgement_id' => 'setId',
             'comment_data' => 'setComment',
             'instance_id' => 'setPollerId',
@@ -217,6 +227,22 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     {
         $this->authorId = $authorId;
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    /**
+     * @param string|null $authorName
+     */
+    public function setAuthorName(?string $authorName): void
+    {
+        $this->authorName = $authorName;
     }
 
     /**

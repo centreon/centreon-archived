@@ -33,6 +33,10 @@ class Downtime implements EntityDescriptorMetadataInterface
     // Groups for serialization
     public const SERIALIZER_GROUPS_MAIN = ['Default', 'downtime_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['Default', 'downtime_service'];
+    public const SERIALIZER_GROUPS_RESOURCE_DOWNTIME = ['resource_dt'];
+
+    //Groups for validation
+    public const VALIDATION_GROUP_DT_RESOURCE = ['resource_dt'];
 
     // Types
     public const TYPE_HOST_DOWNTIME = 0;
@@ -52,6 +56,11 @@ class Downtime implements EntityDescriptorMetadataInterface
      * @var int|null Author id who sent this downtime
      */
     private $authorId;
+
+    /**
+     * @var string|null Author name who sent this downtime
+     */
+    private $authorName;
 
     /**
      * @var int|null Host id linked to this downtime
@@ -144,6 +153,7 @@ class Downtime implements EntityDescriptorMetadataInterface
     public static function loadEntityDescriptorMetadata(): array
     {
         return [
+            'author' => 'setAuthorName',
             'downtime_id' => 'setId',
             'cancelled' => 'setCancelled',
             'comment_data' => 'setComment',
@@ -199,6 +209,22 @@ class Downtime implements EntityDescriptorMetadataInterface
     public function setAuthorId(?int $authorId): void
     {
         $this->authorId = $authorId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    /**
+     * @param string|null $authorName
+     */
+    public function setAuthorName(?string $authorName): void
+    {
+        $this->authorName = $authorName;
     }
 
     /**

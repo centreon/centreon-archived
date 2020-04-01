@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 
 import {
   Grid,
@@ -54,7 +54,7 @@ import {
 
 const ExpansionPanelSummary = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(0, 3, 0, 1),
+    padding: theme.spacing(0, 3, 0, 0.5),
     minHeight: 'auto',
     '&$expanded': {
       minHeight: 'auto',
@@ -71,7 +71,7 @@ const ExpansionPanelSummary = withStyles((theme) => ({
 
 const ExpansionPanelDetails = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(0, 0.5, 1, 0.5),
   },
 }))(MuiExpansionPanelDetails);
 
@@ -152,6 +152,13 @@ const Filter = ({
     onSearchRequest(searchFieldValue);
   };
 
+  const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
+    // "Enter" key
+    if (event.keyCode === 13) {
+      requestSearch();
+    }
+  };
+
   const getHostGroupSearchEndpoint = (searchValue): string => {
     return buildHostGroupsEndpoint({
       limit: 10,
@@ -169,7 +176,7 @@ const Filter = ({
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
   return (
-    <ExpansionPanel>
+    <ExpansionPanel square>
       <ExpansionPanelSummary
         expandIcon={
           <ExpandMoreIcon
@@ -179,9 +186,8 @@ const Filter = ({
         }
       >
         <Grid
-          spacing={2}
+          spacing={1}
           container
-          direction="row"
           alignItems="center"
           onClick={(e): void => {
             e.stopPropagation();
@@ -213,6 +219,7 @@ const Filter = ({
               value={searchFieldValue || ''}
               onChange={changeSearchFieldValue}
               placeholder={labelResourceName}
+              onKeyDown={requestSearchOnEnterKey}
             />
           </Grid>
           <Grid item>
@@ -228,7 +235,7 @@ const Filter = ({
         </Grid>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        <Grid spacing={2} container direction="row" alignItems="center">
+        <Grid spacing={1} container alignItems="center">
           <Grid item>
             <Typography className={classes.filterLineLabel} variant="subtitle1">
               {labelCriterias}

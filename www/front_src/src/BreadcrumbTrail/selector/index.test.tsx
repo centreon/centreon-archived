@@ -1,6 +1,6 @@
-import breadcrumbsSelector from './breadcrumbs';
+import breadcrumbSelector from '.';
 
-describe('breadcrumbsSelector', () => {
+describe('breadcrumbSelector', () => {
   it('returns formatted breadcrumbs', () => {
     const state = {
       navigation: {
@@ -25,7 +25,7 @@ describe('breadcrumbsSelector', () => {
         ],
       },
     };
-    const breadcrumbs = breadcrumbsSelector(state);
+    const breadcrumbs = breadcrumbSelector(state);
 
     expect(breadcrumbs).toEqual({
       '/main.php?p=1': [{ label: 'Home', link: '/main.php?p=1' }],
@@ -94,7 +94,7 @@ describe('breadcrumbsSelector', () => {
         ],
       },
     };
-    const breadcrumbs = breadcrumbsSelector(state);
+    const breadcrumbs = breadcrumbSelector(state);
 
     expect(breadcrumbs).toEqual({
       '/main.php?p=2': [{ label: 'Configuration', link: '/main.php?p=2' }],

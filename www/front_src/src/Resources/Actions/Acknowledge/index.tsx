@@ -8,7 +8,7 @@ import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 import {
   labelRequired,
   labelSomethingWentWrong,
-  labelSuccessfullyAcknowledged,
+  labelAcknowledgeCommandSent,
   labelAcknowledgedBy,
 } from '../../translatedLabels';
 import DialogAcknowledge from './Dialog';
@@ -30,7 +30,7 @@ const AcknowledgeForm = ({
   resources,
   onClose,
   onSuccess,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
@@ -57,7 +57,7 @@ const AcknowledgeForm = ({
         cancelToken: token,
       })
         .then(() => {
-          showSuccess(labelSuccessfullyAcknowledged);
+          showSuccess(labelAcknowledgeCommandSent);
           onSuccess();
         })
         .catch(() => showError(labelSomethingWentWrong))
@@ -85,6 +85,10 @@ const AcknowledgeForm = ({
   }, [hasResources]);
 
   React.useEffect(() => (): void => cancel(), []);
+
+  if (resources.length === 0) {
+    return null;
+  }
 
   return (
     <DialogAcknowledge
