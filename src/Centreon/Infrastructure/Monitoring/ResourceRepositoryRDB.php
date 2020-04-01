@@ -72,6 +72,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'type' => 'resource.type',
         'status_code' => 'resource.status_code',
         'status' => 'resource.status_name',
+        'status_severity_code' => 'resource.status_severity_code',
         'action_url' => 'resource.action_url',
         'details_url' => 'resource.details_url',
         'parent_name' => 'resource.parent_name',
@@ -257,11 +258,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
             . 'resource.id, resource.type, resource.name, '
             . 'resource.details_url, resource.action_url, '
-            . 'resource.status_code, resource.status_name, ' // status
+            . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.parent_id, resource.parent_name, resource.parent_details_url, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
-            . 'resource.parent_status_code, resource.parent_status_name, ' // parent status
+            // parent status
+            . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
             . 'resource.severity_level, resource.severity_url, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
@@ -461,6 +463,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHEN sh.state = 2 THEN 'UNREACHABLE'
                 WHEN sh.state = 3 THEN 'PENDING'
             END AS `parent_status_name`,
+            CASE
+                WHEN sh.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
+                WHEN sh.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . "
+                WHEN sh.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . "
+                WHEN sh.state = 3 THEN " . ResourceStatus::SEVERITY_PENDING . "
+            END AS `parent_status_severity_code`,
             s.state AS `status_code`,
             CASE
                 WHEN s.state = 0 THEN 'OK'
@@ -469,6 +477,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHEN s.state = 3 THEN 'UNKNOWN'
                 WHEN s.state = 4 THEN 'PENDING'
             END AS `status_name`,
+            CASE
+                WHEN s.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
+                WHEN s.state = 1 THEN " . ResourceStatus::SEVERITY_MEDIUM . "
+                WHEN s.state = 2 THEN " . ResourceStatus::SEVERITY_HIGH . "
+                WHEN s.state = 3 THEN " . ResourceStatus::SEVERITY_LOW . "
+                WHEN s.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
+            END AS `status_severity_code`,
             s.scheduled_downtime_depth AS `in_downtime`,
             s.acknowledged AS `acknowledged`,
             service_cvl.value AS `severity_level`,
@@ -609,6 +624,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             NULL AS `parent_icon_url`,
             NULL AS `parent_status_code`,
             NULL AS `parent_status_name`,
+            NULL as `parent_status_severity_code`,
             h.state AS `status_code`,
             CASE
                 WHEN h.state = 0 THEN 'UP'
@@ -616,6 +632,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHEN h.state = 2 THEN 'UNREACHABLE'
                 WHEN h.state = 3 THEN 'PENDING'
             END AS `status_name`,
+            CASE
+                WHEN h.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
+                WHEN h.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . "
+                WHEN h.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . "
+                WHEN h.state = 3 THEN " . ResourceStatus::SEVERITY_PENDING . "
+            END AS `status_severity_code`,
             h.scheduled_downtime_depth AS `in_downtime`,
             h.acknowledged AS `acknowledged`,
             host_cvl.value AS `severity_level`,
@@ -715,6 +737,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      *
      * @param array $data
      * @return \Centreon\Domain\Monitoring\Resource
+     * @throws \Exception
      */
     protected function parseResource(array $data): Resource
     {

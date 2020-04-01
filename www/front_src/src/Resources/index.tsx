@@ -8,7 +8,7 @@ import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
 import { ResourceListing, Resource } from './models';
-import getColumns from './columns';
+import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import Filter from './Filter';
 import {
   filterById,
@@ -75,8 +75,8 @@ const Resources = (): JSX.Element => {
     Array<Resource>
   >([]);
 
-  const [sorto, setSorto] = useState<'asc' | 'desc'>();
-  const [sortf, setSortf] = useState<string>();
+  const [sorto, setSorto] = useState<SortOrder>(defaultSortOrder);
+  const [sortf, setSortf] = useState<string>(defaultSortField);
   const [limit, setLimit] = useState<number>(30);
   const [page, setPage] = useState<number>(1);
 

@@ -48,7 +48,7 @@ class Resource
     public const TYPE_HOST = 'host';
 
     /**
-     * @var string|null
+     * @var int|null
      */
     private $id;
 
@@ -205,18 +205,18 @@ class Resource
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param string|null $id
+     * @param int|null $id
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setId(?string $id): self
+    public function setId(?int $id): self
     {
         $this->id = $id;
 

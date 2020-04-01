@@ -47,7 +47,7 @@ import {
   labelStartDate,
   labelStartTime,
 } from './translatedLabels';
-import getColumns from './columns';
+import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import { Resource } from './models';
 import {
   hostAcknowledgementEndpoint,
@@ -89,8 +89,8 @@ const defaultStates = ['unhandled_problems'];
 const buildParam = (param): string => JSON.stringify(param);
 
 const getEndpoint = ({
-  sortBy = undefined,
-  sortOrder = undefined,
+  sortBy = defaultSortField,
+  sortOrder = defaultSortOrder,
   page = 1,
   limit = 30,
   search = undefined,
@@ -388,7 +388,7 @@ describe(Resources, () => {
   );
 
   it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
-    const { getByText } = renderResources();
+    const { getByLabelText } = renderResources();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
@@ -396,22 +396,24 @@ describe(Resources, () => {
 
     columns
       .filter(({ sortable }) => sortable !== false)
-      .forEach(({ id, label }) => {
+      .forEach(({ id, label, sortField }) => {
+        const sortBy = sortField || id;
+
         mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-        fireEvent.click(getByText(label));
+        fireEvent.click(getByLabelText(`Column ${label}`));
 
         expect(mockedAxios.get).toHaveBeenCalledWith(
-          getEndpoint({ sortBy: id, sortOrder: 'desc' }),
+          getEndpoint({ sortBy, sortOrder: 'desc' }),
           cancelTokenRequestParam,
         );
 
         mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-        fireEvent.click(getByText(label));
+        fireEvent.click(getByLabelText(`Column ${label}`));
 
         expect(mockedAxios.get).toHaveBeenCalledWith(
-          getEndpoint({ sortBy: id, sortOrder: 'asc' }),
+          getEndpoint({ sortBy, sortOrder: 'asc' }),
           cancelTokenRequestParam,
         );
       });
