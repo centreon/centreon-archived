@@ -25,7 +25,7 @@
         "behat/mink-selenium2-driver": "^1.3",
         "adlawson/vfs": "^0.12.1",
         "zircote/swagger-php": "^3.0",
-        "symfony/phpunit-bridge": "^4.3",
+        "symfony/phpunit-bridge": "^4.4",
         "centreon/centreon-test-lib": "dev-master",
         "sensiolabs/security-checker": "^6.0",
         "symfony/var-dumper": "4.4.*",
@@ -37,8 +37,8 @@
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "^3.2",
-        "symfony/filesystem": "^4.1",
-        "symfony/finder": "^4.1",
+        "symfony/filesystem": "^4.4",
+        "symfony/finder": "^4.4",
         "openpsa/quickform": "3.3.*",
         "smarty/smarty": "~2.6",
         "curl/curl" : "^1.5",
@@ -51,7 +51,7 @@
         "symfony/dotenv": "4.4.*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "4.4.*",
-        "symfony/security-bundle": "^4.3",
+        "symfony/security-bundle": "^4.4.7",
         "symfony/yaml": "4.4.*",
         "symfony/options-resolver": "4.4.*",
         "symfony/serializer-pack": "^1.0",
@@ -63,7 +63,7 @@
         "ext-json": "*",
         "justinrainbow/json-schema": "^5.2",
         "ext-openssl": "*",
-        "symfony/http-client": "4.4.*"
+        "symfony/http-client": "^4.4.7"
     },
     "autoload": {
         "psr-4": {
