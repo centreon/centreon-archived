@@ -225,7 +225,8 @@ class Engine extends AbstractObject
         'host_perfdata_file_processing_command',
         'service_perfdata_file_processing_command',
         'macros_filter',
-        'enable_macros_filter'
+        'enable_macros_filter',
+        'grpc_port'
     );
     protected $attributes_default = array(
         'enable_notifications',
@@ -400,6 +401,7 @@ class Engine extends AbstractObject
         $object['service_perfdata_file_processing_command']
             = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
 
+        $object['grpc_port'] = 50000 + $poller_id;
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
         $object['resource_file'] = $this->cfg_file['debug']['resource_file'];
