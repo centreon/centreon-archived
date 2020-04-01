@@ -262,7 +262,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.parent_id, resource.parent_name, resource.parent_details_url, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
-            . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, ' // parent status
+            // parent status
+            . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
             . 'resource.severity_level, resource.severity_url, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
