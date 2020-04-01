@@ -10654,7 +10654,7 @@ msgstr "Effacer les arguments"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:214
 msgid "Describe macros"
-msgstr "Décrire les marcros"
+msgstr "Décrire les macros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:215
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:364

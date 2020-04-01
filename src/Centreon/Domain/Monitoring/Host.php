@@ -33,6 +33,8 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
  */
 class Host implements EntityDescriptorMetadataInterface
 {
+    use Model\ImportTrait;
+
     // Groups for serilizing
     public const SERIALIZER_GROUP_MIN = 'host_min';
     public const SERIALIZER_GROUP_MAIN = 'host_main';
@@ -47,262 +49,262 @@ class Host implements EntityDescriptorMetadataInterface
     /**
      * @var int Id of host
      */
-    private $id;
+    protected $id;
 
     /**
      * @var int Poller id
      */
-    private $pollerId;
+    protected $pollerId;
 
     /**
      * @var string Name of host
      */
-    private $name;
+    protected $name;
 
     /**
      * @var bool|null
      */
-    private $acknowledged;
+    protected $acknowledged;
 
     /**
      * @var bool|null
      */
-    private $activeChecks;
+    protected $activeChecks;
 
     /**
      * @var string|null Ip address or domain name
      */
-    private $addressIp;
+    protected $addressIp;
 
     /**
      * @var string|null Alias of host
      */
-    private $alias;
+    protected $alias;
 
     /**
      * @var int|null
      */
-    private $checkAttempt;
+    protected $checkAttempt;
 
     /**
      * @var string|null
      */
-    private $checkCommand;
+    protected $checkCommand;
 
     /**
      * @var double|null
      */
-    private $checkInterval;
+    protected $checkInterval;
 
     /**
      * @var string|null
      */
-    private $checkPeriod;
+    protected $checkPeriod;
 
     /**
      * @var int|null
      */
-    private $checkType;
+    protected $checkType;
 
     /**
      * @var bool|null
      */
-    private $checked;
+    protected $checked;
 
     /**
      * @var string|null
      */
-    private $displayName;
+    protected $displayName;
 
     /**
      * @var bool
      */
-    private $enabled;
+    protected $enabled;
 
     /**
      * @var double|null
      */
-    private $executionTime;
+    protected $executionTime;
 
     /**
      * @var string|null
      */
-    private $iconImage;
+    protected $iconImage;
 
     /**
      * @var string|null
      */
-    private $iconImageAlt;
+    protected $iconImageAlt;
 
     /**
      * @var \DateTime|null
      */
-    private $lastCheck;
+    protected $lastCheck;
 
     /**
      * @var int|null
      */
-    private $lastHardState;
+    protected $lastHardState;
 
     /**
      * @var \DateTime|null
      */
-    private $lastHardStateChange;
+    protected $lastHardStateChange;
 
     /**
      * @var \DateTime|null
      */
-    private $lastNotification;
+    protected $lastNotification;
 
     /**
      * @var \DateTime|null
      */
-    private $lastStateChange;
+    protected $lastStateChange;
 
     /**
      * @var \DateTime|null
      */
-    private $lastTimeDown;
+    protected $lastTimeDown;
 
     /**
      * @var \DateTime|null
      */
-    private $lastTimeUnreachable;
+    protected $lastTimeUnreachable;
 
     /**
      * @var \DateTime|null
      */
-    private $lastTimeUp;
+    protected $lastTimeUp;
 
     /**
      * @var \DateTime|null
      */
-    private $lastUpdate;
+    protected $lastUpdate;
 
     /**
      * @var double|null
      */
-    private $latency;
+    protected $latency;
 
     /**
      * @var int|null
      */
-    private $maxCheckAttempts;
+    protected $maxCheckAttempts;
 
     /**
      * @var \DateTime|null
      */
-    private $nextCheck;
+    protected $nextCheck;
 
     /**
      * @var int|null
      */
-    private $nextHostNotification;
+    protected $nextHostNotification;
 
     /**
      * @var double|null
      */
-    private $notificationInterval;
+    protected $notificationInterval;
 
     /**
      * @var int|null
      */
-    private $notificationNumber;
+    protected $notificationNumber;
 
     /**
      * @var string|null
      */
-    private $notificationPeriod;
+    protected $notificationPeriod;
 
     /**
      * @var bool|null
      */
-    private $notify;
+    protected $notify;
 
     /**
      * @var bool|null
      */
-    private $notifyOnDown;
+    protected $notifyOnDown;
 
     /**
      * @var bool|null
      */
-    private $notifyOnDowntime;
+    protected $notifyOnDowntime;
 
     /**
      * @var bool|null
      */
-    private $notifyOnFlapping;
+    protected $notifyOnFlapping;
 
     /**
      * @var bool|null
      */
-    private $notifyOnRecovery;
+    protected $notifyOnRecovery;
 
     /**
      * @var bool|null
      */
-    private $notifyOnUnreachable;
+    protected $notifyOnUnreachable;
 
     /**
      * @var string|null
      */
-    private $output;
+    protected $output;
 
     /**
      * @var bool|null
      */
-    private $passiveChecks;
+    protected $passiveChecks;
 
     /**
      * @var Service[]
      */
-    private $services = [];
+    protected $services = [];
 
     /**
      * @var int|null ['0' => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE', '4' => 'PENDING']
      */
-    private $state;
+    protected $state;
 
     /**
      * @var int|null
      */
-    private $stateType;
+    protected $stateType;
 
     /**
      * @var string|null
      */
-    private $timezone;
+    protected $timezone;
 
     /**
      * @var int|null
      */
-    private $scheduledDowntimeDepth;
+    protected $scheduledDowntimeDepth;
 
     /**
      * @var int|null
      */
-    private $criticality;
+    protected $criticality;
 
     /**
      * @var bool|null
      */
-    private $flapping;
+    protected $flapping;
 
     /**
      * @var double|null
      */
-    private $percentStateChange;
+    protected $percentStateChange;
 
     /**
      * @var Downtime[]
      */
-    private $downtimes = [];
+    protected $downtimes = [];
 
     /**
      * @var Acknowledgement|null
      */
-    private $acknowledgement;
+    protected $acknowledgement;
 
     /**
      * {@inheritdoc}

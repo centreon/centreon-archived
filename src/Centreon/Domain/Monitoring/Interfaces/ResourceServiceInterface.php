@@ -23,6 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\Interfaces;
 
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\Model;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 
 interface ResourceServiceInterface
 {
@@ -104,6 +107,22 @@ interface ResourceServiceInterface
      * @throws \Exception
      */
     public function findResources(ResourceFilter $filter): array;
+
+    /**
+     * Create a new object with details but with data from the parent
+     *
+     * @param Host $host
+     * @return Model\ResourceDetailsHost
+     */
+    public function enrichHostWithDetails(Host $host): Model\ResourceDetailsHost;
+
+    /**
+     * Create a new object with details but with data from the parent
+     *
+     * @param Service $service
+     * @return Model\ResourceDetailsService
+     */
+    public function enrichServiceWithDetails(Service $service): Model\ResourceDetailsService;
 
     /**
      * Used to filter requests according to a contact.
