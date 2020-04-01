@@ -53,6 +53,7 @@ export interface Column {
   type: number;
   Component?: (props) => JSX.Element | null;
   sortable?: boolean;
+  sortField?: string;
   clickable?: boolean;
   width?: number;
 }
@@ -207,20 +208,20 @@ const InformationColumn = ({ row }: ColumnProps): JSX.Element | null => {
   );
 };
 
-const getColumns = (actions): Array<Column> => [
+export const getColumns = (actions): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
     type: TABLE_COLUMN_TYPES.component,
     Component: SeverityColumn,
-    sortable: false,
+    sortField: 'severity_level',
   },
   {
     id: 'status',
     label: labelStatus,
     type: TABLE_COLUMN_TYPES.component,
     Component: StatusColumn(actions),
-    sortable: false,
+    sortField: 'status_severity_code',
     clickable: true,
     width: 125,
   },
@@ -229,7 +230,7 @@ const getColumns = (actions): Array<Column> => [
     label: labelResource,
     type: TABLE_COLUMN_TYPES.component,
     Component: ResourceColumn,
-    sortable: false,
+    sortField: 'name',
   },
   {
     id: 'parent_resource',
@@ -281,4 +282,5 @@ const getColumns = (actions): Array<Column> => [
   },
 ];
 
-export default getColumns;
+export const defaultSortField = 'status_severity_code';
+export const defaultSortOrder = 'asc';
