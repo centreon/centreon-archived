@@ -715,6 +715,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      *
      * @param array $data
      * @return \Centreon\Domain\Monitoring\Resource
+     * @throws \Exception
      */
     protected function parseResource(array $data): Resource
     {

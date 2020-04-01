@@ -201,7 +201,7 @@ Centreon\Domain\Monitoring\Resource:
     properties:
         id:
             - Type:
-                type: string
+                type: int
                 groups: [Default, disack_host, disack_service]
         type:
             - Type:
