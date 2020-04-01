@@ -1,8 +1,14 @@
-import { flatten, pipe, prop, map, sortBy, max, min, path } from 'ramda';
+import { flatten, pipe, map, sortBy } from 'ramda';
 
 import { SeverityCode } from '@centreon/ui';
+import { GraphData, Interval } from './models';
 
-const statusWithSeverities = [
+interface StatusSeverity {
+  status: string;
+  severityCode: SeverityCode;
+}
+
+const statusWithSeverities: Array<StatusSeverity> = [
   { status: 'critical', severityCode: SeverityCode.High },
   {
     status: 'warning',
@@ -18,11 +24,6 @@ const statusWithSeverities = [
   },
 ];
 
-interface Interval {
-  start: number;
-  end: number;
-}
-
 interface IntervalWithSeverity {
   interval: Interval;
   severityCode: SeverityCode;
@@ -34,29 +35,28 @@ interface SeverityTimeFraction {
   fraction: number;
   value: 1;
 }
-
-const toEndTime = ({ interval }): number => interval.end;
-const toStartTime = ({ interval }): number => interval.start;
-
-const toIntervalWithSeverity = (severityCode) => (
-  interval,
+const toStartTime = ({ interval }: IntervalWithSeverity): number =>
+  interval.start;
+const toEndTime = ({ interval }: IntervalWithSeverity): number => interval.end;
+const toIntervalWithSeverity = (severityCode: SeverityCode) => (
+  interval: Interval,
 ): IntervalWithSeverity => ({ interval, severityCode });
 
-const getTimeSeries = (graphData): Array<SeverityTimeFraction> => {
-  const getStatusSeries = ({
+const getTimeSeries = (graphData: GraphData): Array<SeverityTimeFraction> => {
+  const getStatusIntervals = ({
     status,
     severityCode,
-  }): Array<IntervalWithSeverity> =>
-    pipe(prop(status), map(toIntervalWithSeverity(severityCode)))(graphData);
+  }: StatusSeverity): Array<IntervalWithSeverity> =>
+    map(toIntervalWithSeverity(severityCode), graphData[status]);
 
   const severityIntervals = pipe(
-    map(getStatusSeries),
+    map(getStatusIntervals),
     flatten,
-    sortBy(path(['interval', ['start']])),
+    sortBy(toStartTime),
   )(statusWithSeverities);
 
-  const minStartTime = min(...map(toStartTime, severityIntervals));
-  const maxEndTime = max(...map(toEndTime, severityIntervals));
+  const minStartTime = Math.min(...map(toStartTime, severityIntervals));
+  const maxEndTime = Math.max(...map(toEndTime, severityIntervals));
 
   const totalElapsedTime = maxEndTime - minStartTime;
 

@@ -6,12 +6,8 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
 
-import {
-  ResourceEndpoints,
-  TimePeriodId,
-  timePeriods,
-  getTimePeriodById,
-} from './models';
+import { ResourceEndpoints } from '../../../../models';
+import { TimePeriodId, timePeriods, getTimePeriodById } from './models';
 import PerformanceGraph from '../../../../Graph/Performance';
 import StatusGraph from '../../../../Graph/Status';
 

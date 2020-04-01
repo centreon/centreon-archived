@@ -10,13 +10,7 @@ import { getStatusColors } from '@centreon/ui';
 import useGet from '../../useGet';
 import getTimeSeries from './timeSeries';
 import { formatTimeAxis } from '../format';
-
-interface GraphData {
-  critical: Array<number>;
-  warning: Array<number>;
-  ok: Array<number>;
-  unknown: Array<number>;
-}
+import { GraphData } from './models';
 
 const LoadingSkeleton = (): JSX.Element => {
   return <Skeleton height="100%" />;

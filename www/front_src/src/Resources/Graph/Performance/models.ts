@@ -12,9 +12,5 @@ export interface GraphData {
 }
 
 export interface MetricData {
-  [metric: string]: string;
-}
-
-export interface TimeWithMetrics {
   [field: string]: string | number;
 }
