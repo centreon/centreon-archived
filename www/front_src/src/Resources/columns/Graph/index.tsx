@@ -28,7 +28,7 @@ const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
   return (
     <HoverChip Chip={(): JSX.Element => <GraphChip />} label={labelGraph}>
       <div className={classes.graph}>
-        <PerformanceGraph endpoint="http://localhost:5000/api/beta/graph" />
+        <PerformanceGraph endpoint={row.performance_graph_endpoint} />
       </div>
     </HoverChip>
   );
