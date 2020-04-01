@@ -65,6 +65,7 @@ try {
     ];
 
     $isACentral = false;
+    $isARemote = false;
 
     // get user's centreon cache folder path
     $fileToOpen = _CENTREON_ETC_ . '/instCentWeb.conf';
@@ -111,6 +112,7 @@ try {
         ) {
             $stop = true;
             $isACentral = strpos($line, 'central') ? true : false;
+            $isARemote = strpos($line, 'remote') ? true : false;
             continue;
         } elseif (
             $start === true
@@ -156,9 +158,13 @@ try {
             $errorMessage = 'Database configuration file is not created properly';
             throw new \InvalidArgumentException($errorMessage);
         }
+    }
 
+    if (true === $isACentral || true === $isARemote) {
+        // central and remote have different template
+        $tplName = $isACentral ? 'gorgoneCoreTemplate.yaml' : 'gorgoneRemoteTemplate.yaml';
         // gorgone configuration file for centreon. Created in the centreon-gorgone folder
-        $fileTpl = __DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml';
+        $fileTpl = __DIR__ . '/../var/gorgone/' . $tplName;
         if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
             $errorMessage = 'Gorgone configuration template is empty or missing';
             throw new \InvalidArgumentException($errorMessage);
