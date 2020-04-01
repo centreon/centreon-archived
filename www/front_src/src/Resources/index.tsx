@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
-import { makeStyles, useTheme } from '@material-ui/core';
+import { makeStyles, useTheme, Grid } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -283,24 +283,29 @@ const Resources = (): JSX.Element => {
   const hasSelectedResources = selectedResources.length > 0;
 
   const Actions = (
-    <>
-      <ResourceActions
-        disabled={!hasSelectedResources}
-        resourcesToAcknowledge={resourcesToAcknowledge}
-        onPrepareToAcknowledge={prepareSelectedToAcknowledge}
-        onCancelAcknowledge={cancelAcknowledge}
-        resourcesToSetDowntime={resourcesToSetDowntime}
-        onPrepareToSetDowntime={prepareSelectedToSetDowntime}
-        onCancelSetDowntime={cancelSetDowntime}
-        resourcesToCheck={resourcesToCheck}
-        onPrepareToCheck={prepareSelectedToCheck}
-        onSuccess={confirmAction}
-      />
-      <GlobalActions
-        disabledRefresh={false}
-        onRefresh={() => {}}
-      />
-    </>
+    <Grid container>
+      <Grid item>
+        <ResourceActions
+          disabled={!hasSelectedResources}
+          resourcesToAcknowledge={resourcesToAcknowledge}
+          onPrepareToAcknowledge={prepareSelectedToAcknowledge}
+          onCancelAcknowledge={cancelAcknowledge}
+          resourcesToSetDowntime={resourcesToSetDowntime}
+          onPrepareToSetDowntime={prepareSelectedToSetDowntime}
+          onCancelSetDowntime={cancelSetDowntime}
+          resourcesToCheck={resourcesToCheck}
+          onPrepareToCheck={prepareSelectedToCheck}
+          onSuccess={confirmAction}
+        />
+      </Grid>
+      <Grid item style={{ paddingLeft: theme.spacing(3) }}>
+        <GlobalActions
+          disabledRefresh={loading}
+          //disabledAutorefresh={!autorefresh}
+          onRefresh={load}
+        />
+      </Grid>
+    </Grid>
   );
 
   return (

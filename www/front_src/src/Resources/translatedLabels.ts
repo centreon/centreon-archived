@@ -84,6 +84,7 @@ export const labelSticky = I18n.t('Sticky');
 export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
 export const labelMore = I18n.t('More');
+export const labelRefresh = I18n.t('Refresh');
 export const labelSearchOnFields = I18n.t(
   'This search bar will search matching occurences you type contained in: host name or alias or address or service description',
 );
