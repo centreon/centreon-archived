@@ -16,7 +16,8 @@ import {
   Filter as FilterModel,
   FilterGroup,
 } from './Filter/models';
-import Actions from './Actions';
+import ResourceActions from './Actions/Resource';
+import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import { rowColorConditions } from './colors';
 
@@ -281,19 +282,25 @@ const Resources = (): JSX.Element => {
 
   const hasSelectedResources = selectedResources.length > 0;
 
-  const ResourceActions = (
-    <Actions
-      disabled={!hasSelectedResources}
-      resourcesToAcknowledge={resourcesToAcknowledge}
-      onPrepareToAcknowledge={prepareSelectedToAcknowledge}
-      onCancelAcknowledge={cancelAcknowledge}
-      resourcesToSetDowntime={resourcesToSetDowntime}
-      onPrepareToSetDowntime={prepareSelectedToSetDowntime}
-      onCancelSetDowntime={cancelSetDowntime}
-      resourcesToCheck={resourcesToCheck}
-      onPrepareToCheck={prepareSelectedToCheck}
-      onSuccess={confirmAction}
-    />
+  const Actions = (
+    <>
+      <ResourceActions
+        disabled={!hasSelectedResources}
+        resourcesToAcknowledge={resourcesToAcknowledge}
+        onPrepareToAcknowledge={prepareSelectedToAcknowledge}
+        onCancelAcknowledge={cancelAcknowledge}
+        resourcesToSetDowntime={resourcesToSetDowntime}
+        onPrepareToSetDowntime={prepareSelectedToSetDowntime}
+        onCancelSetDowntime={cancelSetDowntime}
+        resourcesToCheck={resourcesToCheck}
+        onPrepareToCheck={prepareSelectedToCheck}
+        onSuccess={confirmAction}
+      />
+      <GlobalActions
+        disabledRefresh={false}
+        onRefresh={() => {}}
+      />
+    </>
   );
 
   return (
@@ -329,7 +336,7 @@ const Resources = (): JSX.Element => {
         <div className={classes.listing}>
           <Listing
             checkable
-            Actions={ResourceActions}
+            Actions={Actions}
             loading={loading}
             columnConfiguration={columns}
             tableData={listing?.result}

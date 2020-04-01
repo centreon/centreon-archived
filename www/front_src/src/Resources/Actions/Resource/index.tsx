@@ -1,28 +1,26 @@
 import * as React from 'react';
 
-import { Button, ButtonProps, Grid, IconButton } from '@material-ui/core';
+import { Button, ButtonProps, Grid } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
-import IconRefresh from '@material-ui/icons/Refresh';
 
 import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 
-import IconDowntime from '../icons/Downtime';
+import IconDowntime from '../../icons/Downtime';
 import {
   labelAcknowledge,
   labelDowntime,
   labelCheck,
   labelSomethingWentWrong,
   labelCheckCommandSent,
-} from '../translatedLabels';
-import { Resource } from '../models';
+} from '../../translatedLabels';
+import { Resource } from '../../models';
 import AcknowledgeForm from './Acknowledge';
 import DowntimeForm from './Downtime';
-import { checkResources } from '../api';
+import { checkResources } from '../../api';
 
 interface Props {
-  disabledResourceActions: boolean;
-  disabledRefresh;
+  disabled: boolean;
   resourcesToAcknowledge: Array<Resource>;
   onPrepareToAcknowledge;
   onCancelAcknowledge;
@@ -32,14 +30,13 @@ interface Props {
   resourcesToCheck: Array<Resource>;
   onPrepareToCheck;
   onSuccess;
-  onRefresh;
 }
 
 const ActionButton = (props: ButtonProps): JSX.Element => (
   <Button variant="contained" color="primary" size="small" {...props} />
 );
 
-const Actions = ({
+const ResourceActions = ({
   disabled,
   resourcesToAcknowledge,
   onPrepareToAcknowledge,
@@ -108,11 +105,6 @@ const Actions = ({
           {labelCheck}
         </ActionButton>
       </Grid>
-      <Grid item>
-        <IconButton color="primary" disabled={disabled} onClick={() => {}} size="small">
-          <IconRefresh />
-        </IconButton>
-      </Grid>
       <AcknowledgeForm
         resources={resourcesToAcknowledge}
         onClose={onCancelAcknowledge}
@@ -127,4 +119,4 @@ const Actions = ({
   );
 };
 
-export default Actions;
+export default ResourceActions;
