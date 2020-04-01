@@ -104,7 +104,6 @@ const Resources = (): JSX.Element => {
   const load = (): void => {
     setLoading(true);
     const sort = sortf ? { [sortf]: sorto } : undefined;
-    //const sort = sortf ? { [sortf]: sorto, name: 'ASC' } : { name: 'ASC' };
 
     listResources(
       {
