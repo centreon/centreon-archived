@@ -38,6 +38,21 @@ class LogEventObject extends BaseLog implements EventObjectInterface, EntityDesc
     public const SERIALIZER_GROUP_LIST = 'log_event_list';
     public const SERIALIZER_GROUP_FULL = 'log_event_full';
 
+    public const STATUS_LIST_SERVICE = [
+        0 => 'OK',
+        1 => 'WARNING',
+        2 => 'CRITICAL',
+        3 => 'UNKNOWN',
+        4 => 'PENDING'
+    ];
+
+    public const STATUS_LIST_HOST = [
+        0 => 'UP',
+        1 => 'DOWN',
+        2 => 'UNREACHABLE',
+        4 => 'PENDING'
+    ];
+
     /**
      * @inheritdoc
      */
@@ -75,7 +90,8 @@ class LogEventObject extends BaseLog implements EventObjectInterface, EntityDesc
             'type' => 'setType',
             'retry' => 'setRetry',
             'contact' => 'setNotificationContact',
-            'command' => 'setNotificationCmd'
+            'command' => 'setNotificationCmd',
+            'service_id' => 'setServiceId'
         ];
     }
 
@@ -85,22 +101,15 @@ class LogEventObject extends BaseLog implements EventObjectInterface, EntityDesc
      */
     public function getStatusText(): ?string
     {
-        switch ($this->getStatus()) {
-            case 0:
-                $textValue = 'OK';
-                break;
-            case 1:
-                $textValue = 'WARNING';
-                break;
-            case 2:
-                $textValue = 'CRITICAL';
-                break;
-            case 3:
-                $textValue = 'UNKNOWN';
-                break;
-            default:
-                $textValue = null;
-                break;
+        $textValue = null;
+        if ($this->getServiceId() === 0) {
+            //calculate status for host
+            if (isset(self::STATUS_LIST_HOST[$this->getStatus()])) {
+                $textValue = self::STATUS_LIST_HOST[$this->getStatus()];
+            }
+        } elseif (isset(self::STATUS_LIST_SERVICE[$this->getStatus()])) {
+            //calculate status for service
+            $textValue = self::STATUS_LIST_SERVICE[$this->getStatus()];
         }
 
         return $textValue;

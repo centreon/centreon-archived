@@ -425,6 +425,12 @@ class ExtensionsRoute extends Component {
       extensionDetails,
     } = this.state;
 
+    const hasNoSelection =
+      ((installed && not_installed && updated) ||
+        (!installed && !not_installed && !updated)) &&
+      search.length === 0 &&
+      ((modulesActive && widgetsActive) || (!modulesActive && !widgetsActive));
+
     return (
       <div>
         <TopFilters
@@ -482,16 +488,7 @@ class ExtensionsRoute extends Component {
         />
         <Wrapper>
           <Button
-            label={`${
-              installed &&
-              not_installed &&
-              updated &&
-              search.length === 0 &&
-              ((modulesActive && widgetsActive) ||
-                (!modulesActive && !widgetsActive))
-                ? 'Update all'
-                : 'Update selection'
-            }`}
+            label={`${hasNoSelection ? 'Update all' : 'Update selection'}`}
             buttonType="regular"
             customClass="mr-2"
             color="orange"
@@ -506,16 +503,7 @@ class ExtensionsRoute extends Component {
             )}
           />
           <Button
-            label={`${
-              installed &&
-              not_installed &&
-              updated &&
-              search.length === 0 &&
-              ((modulesActive && widgetsActive) ||
-                (!modulesActive && !widgetsActive))
-                ? 'Install all'
-                : 'Install selection'
-            }`}
+            label={`${hasNoSelection ? 'Install all' : 'Install selection'}`}
             buttonType="regular"
             customClass="mr-2"
             color="green"

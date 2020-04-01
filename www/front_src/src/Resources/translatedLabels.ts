@@ -6,13 +6,23 @@ export const labelAcknowledgedBy = I18n.t('Acknowledged by');
 export const labelAcknowledgeServices = I18n.t(
   'Acknowledge services attached to host',
 );
+export const labelAt = I18n.t('at');
+export const labelActive = I18n.t('Active');
 export const labelAll = I18n.t('All');
 export const labelAuthor = I18n.t('Author');
 export const labelComment = I18n.t('Comment');
 export const labelCancel = I18n.t('Cancel');
 export const labelClearAll = I18n.t('Clear all');
+export const labelCriterias = I18n.t('Criterias');
 export const labelCritical = I18n.t('Critical');
+export const labelCheckDuration = I18n.t('Check duration');
+export const labelCurrentNotificationNumber = I18n.t(
+  'Current notification number',
+);
+export const labelCurrentStateDuration = I18n.t('Current state duration');
+export const labelDetails = I18n.t('Details');
 export const labelDown = I18n.t('Down');
+export const labelDowntimeDuration = I18n.t('Downtime duration');
 export const labelDuration = I18n.t('Duration');
 export const labelSeconds = I18n.t('Seconds');
 export const labelMinutes = I18n.t('Minutes');
@@ -23,10 +33,9 @@ export const labelEndDateMustBeGreater = I18n.t(
 export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
-export const labelCriterias = I18n.t('Criterias');
+export const labelResourceFlapping = I18n.t('Is this resource flapping?');
 export const labelShowCriteriasFilters = I18n.t('Show criterias filters');
 export const labelFrom = I18n.t('From');
-export const labelTo = I18n.t('To');
 export const labelStartDate = I18n.t('Start date');
 export const labelEndDate = I18n.t('End date');
 export const labelChangeStartDate = I18n.t('Change start date');
@@ -45,7 +54,13 @@ export const labelDowntimeBy = I18n.t('Downtime set by');
 export const labelSetDowntimeOnServices = I18n.t(
   'Set downtime on services attached to host',
 );
+export const labelCheck = I18n.t('Check');
 export const labelLastCheck = I18n.t('Last check');
+export const labelLastNotification = I18n.t('Last notification');
+export const labelLastStateChange = I18n.t('Last state change');
+export const labelLatency = I18n.t('Latency');
+export const labelLess = I18n.t('Less');
+export const labelNextCheck = I18n.t('Next check');
 export const labelNo = I18n.t('No');
 export const labelNotify = I18n.t('Notify');
 export const labelNotifyHelpCaption = I18n.t(
@@ -53,18 +68,22 @@ export const labelNotifyHelpCaption = I18n.t(
 );
 export const labelOk = I18n.t('Ok');
 export const labelOpen = I18n.t('Open');
+export const labelPercentStateChange = I18n.t('Percent state change');
+export const labelPerformanceData = I18n.t('Performance data');
 export const labelPersistent = I18n.t('Persistent');
 export const labelPending = I18n.t('Pending');
+export const labelPoller = I18n.t('Poller');
 export const labelRequired = I18n.t('Required');
 export const labelResourceName = I18n.t('Resource name');
 export const labelResourceProblems = I18n.t('Resource problems');
-export const labelResources = I18n.t('Resources');
+export const labelResource = I18n.t('Resource');
 export const labelSearch = I18n.t('Search');
 export const labelSeverity = I18n.t('Severity');
 export const labelStatus = I18n.t('Status');
 export const labelSticky = I18n.t('Sticky');
 export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
+export const labelMore = I18n.t('More');
 export const labelSearchOnFields = I18n.t(
   'This search bar will search matching occurences you type contained in: host name or alias or address or service description',
 );
@@ -95,8 +114,15 @@ export const labelServiceGroup = I18n.t('Service group');
 export const labelStartTime = I18n.t('Start time');
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
+export const labelStatusInformation = I18n.t('Status information');
+export const labelSuccessfullyAcknowledged = I18n.t(
+  'Successfully acknowledged',
+);
+export const labelTimezone = I18n.t('Timezone');
+export const labelTo = I18n.t('To');
 export const labelAcknowledgeCommandSent = I18n.t('Acknowledge command sent');
 export const labelDowntimeCommandSent = I18n.t('Downtime command sent');
+export const labelCheckCommandSent = I18n.t('Check command sent');
 export const labelTypeOfResource = I18n.t('Type of resource');
 export const labelUnhandledProblems = I18n.t('Unhandled problems');
 export const labelUnhandled = I18n.t('Unhandled');
