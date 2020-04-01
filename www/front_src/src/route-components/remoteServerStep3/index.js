@@ -7,11 +7,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { I18n } from 'react-redux-i18n';
+
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
-
 import axios from '../../axios';
+import BaseWizard from '../../components/forms/baseWizard';
 
 class RemoteServerStepThreeRoute extends Component {
   state = {
@@ -165,7 +166,7 @@ class RemoteServerStepThreeRoute extends Component {
     const { pollerData } = this.props;
     const { generateStatus, processingStatus, error } = this.state;
     return (
-      <div>
+      <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
           statusCreating={pollerData.submitStatus}
@@ -174,7 +175,7 @@ class RemoteServerStepThreeRoute extends Component {
           formTitle={`${I18n.t('Finalizing Setup')}:`}
           error={error}
         />
-      </div>
+      </BaseWizard>
     );
   }
 }

@@ -167,7 +167,8 @@ class SqlRequestParametersTranslator
                     $orderQuery .= ', ';
                 }
                 $orderQuery .= sprintf(
-                    '%s %s',
+                    '%s IS NULL, %s %s',
+                    $this->concordanceArray[$name],
                     $this->concordanceArray[$name],
                     $order
                 );
