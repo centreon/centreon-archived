@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Gorgone;
 
-use Centreon\Domain\Gorgone\Command\Internal\Thumbprint;
+use Centreon\Domain\Gorgone\Command\Thumbprint;
 use Centreon\Domain\Gorgone\GorgoneService;
 use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
