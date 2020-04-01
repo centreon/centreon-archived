@@ -45,10 +45,8 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service to report
  */
-isset($_GET["host_id"]) ? $host_id = $_GET["host_id"] : $host_id = "NULL";
-isset($_POST["host_id"]) ? $host_id = $_POST["host_id"] : $host_id;
-isset($_GET["item"]) ? $service_id = $_GET["item"] : $service_id = "NULL";
-isset($_POST["item"]) ? $service_id = $_POST["item"] : $service_id;
+$host_id = filter_var($_GET['host_id'] ?? $_POST['host_id'] ?? false, FILTER_VALIDATE_INT);
+$service_id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * FORMS
@@ -115,7 +113,7 @@ $formPeriod->addElement(
 /*
  * Set service id with period selection form
  */
-if ($service_id != "NULL" && $host_id != "NULL") {
+if ($service_id !== false && $host_id !== false) {
     $formPeriod->addElement(
         'hidden',
         'item',
@@ -132,12 +130,7 @@ if ($service_id != "NULL" && $host_id != "NULL") {
         $host_id
     );
     $form->setDefaults(array('item' => $service_id));
-}
 
-/*
- * Stats Display for selected service
- */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
     /*
      * Getting periods values
      */
@@ -175,26 +168,9 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
     $tpl->assign('date_end', $end_date);
     $formPeriod->setDefaults(array('period' => $period));
     $tpl->assign('id', $service_id);
-}
-$tpl->assign('resumeTitle', _("Service state"));
-$tpl->assign('p', $p);
 
-/*
- * Rendering forms
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formPeriod->accept($renderer);
-$tpl->assign('formPeriod', $renderer->toArray());
-
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
-
-/*
- * Ajax timeline and CSV export initialization
- */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
     /*
+     * Ajax timeline and CSV export initialization
      * CSV Export
      */
     $tpl->assign(
@@ -221,5 +197,18 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
+$tpl->assign('resumeTitle', _("Service state"));
+$tpl->assign('p', $p);
+
+/*
+ * Rendering forms
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formPeriod->accept($renderer);
+$tpl->assign('formPeriod', $renderer->toArray());
+
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('formItem', $renderer->toArray());
 
 $tpl->display("template/viewServicesLog.ihtml");

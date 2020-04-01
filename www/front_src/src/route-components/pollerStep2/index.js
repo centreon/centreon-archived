@@ -6,11 +6,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
+
 import Form from '../../components/forms/poller/PollerFormStepTwo';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import axios from '../../axios';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
+import BaseWizard from '../../components/forms/baseWizard';
 
 class PollerStepTwoRoute extends Component {
   state = {
@@ -71,14 +73,14 @@ class PollerStepTwoRoute extends Component {
     const { pollerData } = this.props;
     const { pollers } = this.state;
     return (
-      <div>
+      <BaseWizard>
         <ProgressBar links={links} />
         <Form
           pollers={pollers}
           initialValues={pollerData}
           onSubmit={this.handleSubmit.bind(this)}
         />
-      </div>
+      </BaseWizard>
     );
   }
 }

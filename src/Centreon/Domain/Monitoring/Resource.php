@@ -39,6 +39,10 @@ class Resource
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
 
+    //Groups for validation
+    public const VALIDATION_GROUP_DISACK_HOST = ['disack_host'];
+    public const VALIDATION_GROUP_DISACK_SERVICE = ['disack_service'];
+
     // Types
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';

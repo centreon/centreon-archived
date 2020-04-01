@@ -10201,7 +10201,7 @@ msgstr "Argumentos claros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:214
 msgid "Describe macros"
-msgstr "Describe los marcros"
+msgstr "Describe los macros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:215
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:364

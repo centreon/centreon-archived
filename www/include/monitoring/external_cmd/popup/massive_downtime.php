@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -50,12 +51,6 @@ if (isset($_GET['select'])) {
 }
 
 $path = _CENTREON_PATH_ . "/www/include/monitoring/external_cmd/popup/";
-
-/*
- * Init GMT
- */
-$centreonGMT = new CentreonGMT($pearDB);
-$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
 /*
  * Smarty template Init
@@ -114,7 +109,7 @@ $form->addElement(
     array(
         'id' => 'start_time',
         'size' => 5,
-        'class' => 'timepicker'
+        'class' => 'timepicker',
     )
 );
 $form->addElement(
@@ -124,7 +119,7 @@ $form->addElement(
     array(
         'id' => 'end_time',
         'size' => 5,
-        'class' => 'timepicker'
+        'class' => 'timepicker',
     )
 );
 
@@ -133,11 +128,6 @@ $form->addElement(
     'timezone_warning',
     _("*The timezone used is configured on your user settings")
 );
-
-$gmt = $centreonGMT->getMyGMT();
-if (!$gmt) {
-    $gmt = date_default_timezone_get();
-}
 
 $form->addElement(
     'text',
@@ -149,7 +139,22 @@ $form->addElement(
         'disabled' => 'true'
     )
 );
+//setting default values
 $defaultDuration = 7200;
+$defaultScale = 's';
+//overriding the default duration and scale by the user's value from the administration fields
+if (
+    isset($centreon->optGen['monitoring_dwt_duration'])
+    && $centreon->optGen['monitoring_dwt_duration']
+) {
+    $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
+    if (
+        isset($centreon->optGen['monitoring_dwt_duration_scale'])
+        && $centreon->optGen['monitoring_dwt_duration_scale']
+    ) {
+        $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
+    }
+}
 $form->setDefaults(array('duration' => $defaultDuration));
 
 $scaleChoices = array(
@@ -164,16 +169,11 @@ $form->addElement(
     _("Scale of time"),
     $scaleChoices,
     array(
-        'id' => 'duration_scale'
+        'id' => 'duration_scale',
+        'disabled' => 'true'
     )
 );
-$form->setDefaults(array('duration_scale' => 's'));
-$form->setDefaults(
-    array(
-        "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
-        "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt)
-    )
-);
+$form->setDefaults(array('duration_scale' => $defaultScale));
 
 $chckbox[] = $form->addElement(
     'checkbox',
@@ -234,6 +234,7 @@ $form->addElement(
 );
 
 // adding hidden fields to get the result of datepicker in an unlocalized format
+// required for the external command to be send to centreon-engine
 $form->addElement(
     'hidden',
     'alternativeDateStart',
@@ -252,7 +253,6 @@ $form->addElement(
         'class' => 'alternativeDate'
     )
 );
-
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

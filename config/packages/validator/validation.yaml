@@ -3,11 +3,15 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         comment:
             - Type:
                 type: string
-            - NotNull: ~
+                groups: [ack_resource]
+            - NotNull:
+                groups: [ack_resource]
         isNotifyContacts:
             - Type:
                 type: boolean
-            - NotNull: ~
+                groups: [ack_resource]
+            - NotNull:
+                groups: [ack_resource]
         isPersistentComment:
             - Type:
                 type: boolean
@@ -35,7 +39,7 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         withServices:
             - Type:
                 type: boolean
-                groups: [add_host_acks, add_host_ack]
+                groups: [add_host_acks, add_host_ack, ack_resource]
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
@@ -43,25 +47,34 @@ Centreon\Domain\Downtime\Downtime:
         startTime:
             - Type:
                 type: DateTime
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         endTime:
             - Type:
                 type: DateTime
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         isFixed:
             - Type:
                 type: boolean
+                groups: [resource_dt]
         duration:
             - Type:
                 type: integer
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         authorId:
             - Type:
                 type: integer
         comment:
             - Type:
                 type: string
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         hostId:
             - Type:
                 type: integer
@@ -71,6 +84,10 @@ Centreon\Domain\Downtime\Downtime:
         pollerId:
             - Type:
                 type: integer
+        withServices:
+            - Type:
+                type: boolean
+                groups: [resource_dt]
 
 # Used to validate the Check entity
 Centreon\Domain\Check\Check:
@@ -178,3 +195,24 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: int
                     groups: [Default]
+
+# Used to validate the Resource Entity
+Centreon\Domain\Monitoring\Resource:
+    properties:
+        id:
+            - Type:
+                type: string
+                groups: [Default, disack_host, disack_service]
+        type:
+            - Type:
+                type: string
+                groups: [Default, disack_host, disack_service]
+            - Choice:
+                choices:
+                    - service
+                    - host
+                multiple: false
+                groups: [Default, disack_host, disack_service]
+        parent:
+            - NotNull:
+                groups: [disack_service]

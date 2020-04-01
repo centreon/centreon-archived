@@ -4,12 +4,14 @@ export interface Icon {
 }
 
 export interface Parent {
+  id: number;
   name: string;
   icon: Icon | null;
   status: Status;
 }
 
 export interface Status {
+  severity_code: number;
   code: number;
   name: string;
 }
@@ -19,7 +21,7 @@ export interface Severity {
 }
 
 export interface Resource {
-  id: string;
+  id: number;
   name: string;
   icon?: Icon;
   parent?: Parent;
@@ -33,8 +35,9 @@ export interface Resource {
   last_check: string;
   information: string;
   severity?: Severity;
-  short_type: string;
+  short_type: 'h' | 's';
   performance_graph_endpoint?: string;
+  type: 'host' | 'service';
 }
 
 interface ListingMeta {
@@ -51,3 +54,24 @@ export interface Listing<TEntity> {
 }
 
 export type ResourceListing = Listing<Resource>;
+
+export interface User {
+  username: string;
+  locale: string | null;
+}
+
+export interface Downtime {
+  author_name: string;
+  comment: string;
+  entry_time: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface Acknowledgement {
+  author_name: string;
+  comment: string;
+  entry_time: string;
+  is_persistent: boolean;
+  is_sticky: boolean;
+}

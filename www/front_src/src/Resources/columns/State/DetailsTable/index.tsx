@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
-
 import {
   TableContainer,
   TableRow,
@@ -14,26 +11,21 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
+import { useCancelTokenSource } from '@centreon/ui';
+
 import { getData } from '../../../api';
 import {
   labelSomethingWentWrong,
   labelYes,
   labelNo,
 } from '../../../translatedLabels';
-import useCancelTokenSource from '../../../useCancelTokenSource';
-import { Listing } from '../../../models';
 
-const getFormattedDate = (isoDate): string =>
-  format(parseISO(isoDate), 'MM/dd/yyyy H:m');
+import { Listing } from '../../../models';
+import { Column } from '../..';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
 const columnMaxWidth = 150;
-
-interface Column {
-  getFormattedString: (details) => string;
-  label: string;
-}
 
 export interface DetailsTableProps {
   endpoint: string;
@@ -86,7 +78,7 @@ const DetailsTable = <TDetails extends unknown>({
             {success &&
               columns.map(({ label, getFormattedString }) => (
                 <TableCell key={label}>
-                  <span>{getFormattedString(details)}</span>
+                  <span>{getFormattedString?.(details)}</span>
                 </TableCell>
               ))}
             {error && (
@@ -101,5 +93,5 @@ const DetailsTable = <TDetails extends unknown>({
   );
 };
 
-export { getFormattedDate, getYesNoLabel };
+export { getYesNoLabel };
 export default DetailsTable;

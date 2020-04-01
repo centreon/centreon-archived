@@ -41,28 +41,32 @@ if (isset($_SESSION['centreon'])) {
     exit;
 }
 
-if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
-    /* Validate the type of request arguments for security */
-    if (!is_numeric($_GET['id']) || !is_numeric($_GET['host_id'])) {
-        $buffer->writeElement('error', 'Bad id format');
-        $buffer->endElement();
-        header('Content-Type: text/xml');
-        $buffer->output();
-        exit;
-    }
+$color = array_filter($_GET['color'] ?? [], function ($oneColor) {
+    return filter_var($oneColor, FILTER_VALIDATE_REGEXP, [
+        'options' => [
+            'regexp' => "/^#[[:xdigit:]]{6}$/"
+        ]
+    ]);
+});
+if (empty($color) || count($_GET['color']) !== count($color)) {
+    $buffer->writeElement('error', 'Bad color format');
+    $buffer->endElement();
+    header('Content-Type: text/xml');
+    $buffer->output();
+    exit;
+}
 
-    $color = array();
-    foreach ($_GET["color"] as $key => $value) {
-        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-    }
-
+if (
+    ($id = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT)) !== false
+    && ($host_id = filter_var($_GET['host_id'] ?? false, FILTER_VALIDATE_INT)) !== false
+) {
     /* Get ACL if user is not admin */
     $isAdmin = $centreon->user->admin;
     $accessService = true;
     if (!$isAdmin) {
         $userId = $centreon->user->user_id;
         $acl = new CentreonACL($userId, $isAdmin);
-        if (!$acl->checkService($_GET["id"])) {
+        if (!$acl->checkService($id)) {
             $accessService = false;
         }
     }
@@ -75,8 +79,8 @@ if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
             'AND service_id LIKE :service_id ' .
             'ORDER BY date_start DESC';
         $stmt = $pearDBO->prepare($query);
-        $stmt->bindValue(':host_id', $_GET['host_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':service_id', $_GET['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':host_id', $host_id, PDO::PARAM_INT);
+        $stmt->bindValue(':service_id', $id, PDO::PARAM_INT);
         $stmt->execute();
         while ($row = $stmt->fetch()) {
             fillBuffer($statesTab, $row, $color);
@@ -85,9 +89,8 @@ if (isset($_GET["host_id"]) && isset($_GET["id"]) && isset($_GET["color"])) {
         $buffer->writeElement("error", "Cannot access to host information");
     }
 } else {
-    $buffer->writeElement("error", "error");
+    $buffer->writeElement('error', 'Bad id format');
 }
 $buffer->endElement();
-
 header('Content-Type: text/xml');
 $buffer->output();
