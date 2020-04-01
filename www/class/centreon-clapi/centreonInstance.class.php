@@ -50,8 +50,8 @@ class CentreonInstance extends CentreonObject
     const ORDER_UNIQUENAME = 0;
     const ORDER_ADDRESS = 1;
     const ORDER_SSH_PORT = 2;
-    const ORDER_GORGONE_PROTOCOL = 2;
-    const ORDER_GORGONE_PORT = 3;
+    const ORDER_GORGONE_PROTOCOL = 3;
+    const ORDER_GORGONE_PORT = 4;
     const GORGONE_COMMUNICATION = array('ZMQ' => '1', 'SSH' => '2');
     const INCORRECTIPADDRESS = "Invalid IP address format";
 
@@ -81,8 +81,7 @@ class CentreonInstance extends CentreonObject
             'centreonbroker_module_path' => '/usr/share/centreon/lib/centreon-broker',
             'centreonconnector_path' => '/usr/lib64/centreon-connector'
         ];
-        $this->insertParams = array('name', 'ns_ip_address', 'ssh_port');
-        $this->insertParams = array('name', 'ns_ip_address', 'gorgone_communication_type', 'gorgone_port');
+        $this->insertParams = array('name', 'ns_ip_address', 'ssh_port', 'gorgone_communication_type', 'gorgone_port');
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
             array(

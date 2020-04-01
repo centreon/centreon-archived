@@ -37,7 +37,7 @@ class NagiosServer
             'centreonbroker_cfg_path'    => '/etc/centreon-broker',
             'centreonbroker_module_path' => '/usr/share/centreon/lib/centreon-broker',
             'centreonconnector_path'     => '/usr/lib64/centreon-connector',
-            'ssh_port'                   => '22',
+            'ssh_port'                   => 22,
             'gorgone_communication_type' => self::ZMQ,
             'gorgone_port'               => 5556,
             'init_script_centreontrapd'  => 'centreontrapd',
