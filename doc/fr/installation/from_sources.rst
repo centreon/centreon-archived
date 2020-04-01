@@ -610,7 +610,6 @@ Installation du composant CentStorage
     Creating Centreon Directory '/var/lib/centreon/metrics'    OK
     Modify rights : /var/run/centreon                          OK
     Install logAnalyserBroker                                  OK
-    Install nagiosPerfTrace                                    OK
     Change macros for centstorage.cron                         OK
     Install CentStorage cron                                   OK
     Create /etc/centreon/instCentStorage.conf                  OK

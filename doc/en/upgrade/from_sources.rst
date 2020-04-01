@@ -284,7 +284,6 @@ Fill in the required information. ::
     CentStorage status Directory already exists                PASSED
     CentStorage metrics Directory already exists               PASSED
     Install logAnalyserBroker                                  OK
-    Install nagiosPerfTrace                                    OK
     Change macros for centstorage.cron                         OK
     Install CentStorage cron                                   OK
     Change macros for centstorage.logrotate                    OK
