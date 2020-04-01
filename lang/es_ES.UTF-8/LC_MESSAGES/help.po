@@ -4307,22 +4307,18 @@ msgstr "Método de recarga de la configuración: reiniciar, recargar o comando e
 msgid "Run the commands that are defined in the poller configuration page (Configuration > Centreon > Poller > Post-Restart command)."
 msgstr "Ejecuta el comando definido en la configuración del recopilador (Configuración> Centreon> Poller> Comando posterior al reinicio)."
 
-msgid ""
-"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
-msgstr ""
+#~msgid "What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+#~msgstr ""
 
-msgid "On which TCP port is listening the Remote Server?"
-msgstr ""
+#~msgid "On which TCP port is listening the Remote Server?"
+#~msgstr ""
 
-msgid ""
-"If checked, it won't check the validity of the SSL certificate of the Remote Server."
-msgstr ""
-""
+#~msgid "If checked, it won't check the validity of the SSL certificate of the Remote Server."
+#~msgstr ""
 
-msgid "If checked, it won't  use the proxy configured in "
-"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
-msgstr ""
-""
+#~msgid "If checked, it won't  use the proxy configured in "
+#~"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+#~msgstr ""
 
 #: /www/include/Administration/parameters/ldap/help.po
 #~ msgid "This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour."
