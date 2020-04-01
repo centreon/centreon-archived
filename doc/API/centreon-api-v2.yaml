@@ -2045,6 +2045,10 @@ components:
           type: boolean
           description: "Indicates whether it's the default server"
           example: true
+        ssh_port:
+          type: integer
+          description: "SSH port of the server"
+          example: 22
         gorgone_communication_type:
           type: integer
           description: "Communication type used by Gorgone to communicate with the server"

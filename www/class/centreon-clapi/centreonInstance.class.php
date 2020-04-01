@@ -49,6 +49,7 @@ class CentreonInstance extends CentreonObject
 {
     const ORDER_UNIQUENAME = 0;
     const ORDER_ADDRESS = 1;
+    const ORDER_SSH_PORT = 2;
     const ORDER_GORGONE_PROTOCOL = 2;
     const ORDER_GORGONE_PORT = 3;
     const GORGONE_COMMUNICATION = array('ZMQ' => '1', 'SSH' => '2');
@@ -66,6 +67,7 @@ class CentreonInstance extends CentreonObject
         $this->params = [
             'localhost' => '0',
             'ns_activate' => '1',
+            'ssh_port' => '22',
             'gorgone_communication_type' => self::GORGONE_COMMUNICATION['ZMQ'],
             'gorgone_port' => '5556',
             'nagios_bin' => '/usr/sbin/centengine',
@@ -79,6 +81,7 @@ class CentreonInstance extends CentreonObject
             'centreonbroker_module_path' => '/usr/share/centreon/lib/centreon-broker',
             'centreonconnector_path' => '/usr/lib64/centreon-connector'
         ];
+        $this->insertParams = array('name', 'ns_ip_address', 'ssh_port');
         $this->insertParams = array('name', 'ns_ip_address', 'gorgone_communication_type', 'gorgone_port');
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
@@ -114,9 +117,10 @@ class CentreonInstance extends CentreonObject
         } else {
             throw new CentreonClapiException('Incorrect connection protocol');
         }
-        if (!is_numeric($params[self::ORDER_GORGONE_PORT])) {
+        if (!is_numeric($params[self::ORDER_GORGONE_PORT]) || !is_numeric($params[self::ORDER_SSH_PORT])) {
             throw new CentreonClapiException('Incorrect port parameters');
         }
+        $addParams['ssh_port'] = $params[self::ORDER_SSH_PORT];
         $addParams['gorgone_port'] = $params[self::ORDER_GORGONE_PORT];
 
         // Check IPv6, IPv4 and FQDN format
@@ -194,6 +198,7 @@ class CentreonInstance extends CentreonObject
             'broker_reload_command',
             'nagios_bin',
             'nagiostats_bin',
+            'ssh_port',
             'gorgone_communication_type',
             'gorgone_port'
         ];
