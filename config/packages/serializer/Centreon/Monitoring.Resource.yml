@@ -33,11 +33,6 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        detailsUrl:
-            type: string
-            groups:
-                - 'resource_main'
-                - 'resource_parent'
         icon:
             type: Centreon\Domain\Monitoring\Icon
             groups:
@@ -64,6 +59,11 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_main'
+        detailsEndpoint:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         acknowledgementEndpoint:
             type: string
             groups:

@@ -63,11 +63,6 @@ class Resource
     private $name;
 
     /**
-     * @var string|null
-     */
-    private $detailsUrl;
-
-    /**
      * @var \Centreon\Domain\Monitoring\Icon|null
      */
     private $icon;
@@ -101,6 +96,11 @@ class Resource
      * @var string|null
      */
     private $acknowledgementEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $detailsEndpoint;
 
     /**
      * @var string|null
@@ -262,25 +262,6 @@ class Resource
     }
 
     /**
-     * @return string|null
-     */
-    public function getDetailsUrl(): ?string
-    {
-        return $this->detailsUrl;
-    }
-
-    /**
-     * @param string|null $detailsUrl
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setDetailsUrl(?string $detailsUrl): self
-    {
-        $this->detailsUrl = $detailsUrl ?: null;
-
-        return $this;
-    }
-
-    /**
      * @return \Centreon\Domain\Monitoring\Icon|null
      */
     public function getIcon(): ?Icon
@@ -409,6 +390,25 @@ class Resource
     public function setAcknowledgementEndpoint(string $acknowledgementEndpoint): self
     {
         $this->acknowledgementEndpoint = $acknowledgementEndpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDetailsEndpoint(): ?string
+    {
+        return $this->detailsEndpoint;
+    }
+
+    /**
+     * @param string|null $detailsEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setDetailsEndpoint(?string $detailsEndpoint): self
+    {
+        $this->detailsEndpoint = $detailsEndpoint ?: null;
 
         return $this;
     }
