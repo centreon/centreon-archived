@@ -208,7 +208,7 @@ const InformationColumn = ({ row }: ColumnProps): JSX.Element | null => {
   );
 };
 
-const getColumns = (actions): Array<Column> => [
+export const getColumns = (actions): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
@@ -221,7 +221,7 @@ const getColumns = (actions): Array<Column> => [
     label: labelStatus,
     type: TABLE_COLUMN_TYPES.component,
     Component: StatusColumn(actions),
-    sortField: 'severity_code',
+    sortField: 'status_severity_code',
     clickable: true,
     width: 125,
   },
@@ -282,4 +282,5 @@ const getColumns = (actions): Array<Column> => [
   },
 ];
 
-export default getColumns;
+export const defaultSortField = 'status_severity_code';
+export const defaultSortOrder = 'asc';
