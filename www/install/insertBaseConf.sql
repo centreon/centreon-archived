@@ -146,6 +146,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('gorgone_api_port', '8085'),
 ('gorgone_api_ssl', '0'),
 ('gorgone_api_allow_self_signed', '1');
+('gorgone_cmd_timeout', '5');
+('enable_broker_stats', '0');
 
 --
 -- Contenu de la table `giv_components_template`
