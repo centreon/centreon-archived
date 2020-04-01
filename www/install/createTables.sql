@@ -1623,6 +1623,7 @@ CREATE TABLE `nagios_server` (
   `centreonbroker_cfg_path` varchar(255) DEFAULT NULL,
   `centreonbroker_module_path` varchar(255) DEFAULT NULL,
   `centreonconnector_path` varchar(255) DEFAULT NULL,
+  `ssh_port` int(11) DEFAULT NULL,
   `gorgone_communication_type` enum('1', '2') NOT NULL DEFAULT '1',
   `gorgone_port` int(11) DEFAULT NULL,
   `init_script_centreontrapd` varchar(255) DEFAULT NULL,
