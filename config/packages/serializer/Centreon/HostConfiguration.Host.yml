@@ -4,6 +4,7 @@ Centreon\Domain\HostConfiguration\Host:
       type: int
       groups:
         - 'host_conf_min'
+        - 'host_mapper_simulation'
     name:
       type: string
       groups:
