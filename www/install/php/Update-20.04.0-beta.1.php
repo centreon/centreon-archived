@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -77,8 +78,8 @@ try {
         $line = fgets($file);
         if (strpos($line, "CENTREON_CACHEDIR") !== false) {
             //remove superfluous carriage return
-            $line = preg_replace("/\r|\n/", "", $line);
-            $line = explode("=", $line);
+            $line = preg_replace("/\r|\n/", '', $line);
+            $line = explode('=', $line);
             $pattern[] = '/--CENTREON_CACHEDIR--/';
             // if no value is found, a default value is required
             $userValues[] = $line[1] ?? '/var/cache/centreon';
@@ -104,13 +105,15 @@ try {
         if (strpos($line, '$centreon_config = {') !== false) {
             $start = true;
             continue;
-        } elseif ($start === true
+        } elseif (
+            $start === true
             && strpos($line, '$instance_mode =') !== false
         ) {
             $stop = true;
             $isACentral = strpos($line, 'central') ? true : false;
             continue;
-        } elseif ($start === true
+        } elseif (
+            $start === true
             && strlen($line) > 5
             && substr($line, 0, 1) !== "#"
             && strpos($line, ' => ') !== false
@@ -301,12 +304,5 @@ try {
         " - Code : " . (int)$e->getCode() .
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
-    );
-}
-
-if (empty($errorMessage)) {
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . " - Successful Update"
     );
 }
