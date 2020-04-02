@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { isNil } from 'ramda';
 
-import { makeStyles, useTheme, Grid } from '@material-ui/core';
+import { makeStyles, useTheme, Grid, Slide } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -22,6 +23,7 @@ import ResourceActions from './Actions/Resource';
 import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import { rowColorConditions } from './colors';
+import { detailsTabId, graphTabId } from './Details/Body/tabs';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -96,6 +98,8 @@ const Resources = (): JSX.Element => {
     selectedDetailsEndpoints,
     setSelectedDetailsEndpoints,
   ] = useState<ResourceEndpoints | null>(null);
+
+  const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = useState(0);
 
   const [loading, setLoading] = useState(true);
   const [enabledAutorefresh, setEnabledAutorefresh] = useState(true);
@@ -299,6 +303,18 @@ const Resources = (): JSX.Element => {
     onCheck: (resource) => {
       prepareToCheck([resource]);
     },
+    onDisplayGraph: ({
+      details_endpoint,
+      status_graph_endpoint,
+      performance_graph_endpoint,
+    }) => {
+      setDefaultDetailsTabIdToOpen(graphTabId);
+      setSelectedDetailsEndpoints({
+        details: details_endpoint,
+        statusGraph: status_graph_endpoint,
+        performanceGraph: performance_graph_endpoint,
+      });
+    },
   });
 
   const selectResource = ({
@@ -306,6 +322,9 @@ const Resources = (): JSX.Element => {
     status_graph_endpoint,
     performance_graph_endpoint,
   }): void => {
+    if (isNil(selectedDetailsEndpoints)) {
+      setDefaultDetailsTabIdToOpen(detailsTabId);
+    }
     setSelectedDetailsEndpoints({
       details: details_endpoint,
       statusGraph: status_graph_endpoint,
@@ -373,12 +392,22 @@ const Resources = (): JSX.Element => {
       </div>
       <div className={classes.body}>
         {selectedDetailsEndpoints && (
-          <div className={classes.panel}>
-            <Details
-              endpoints={selectedDetailsEndpoints}
-              onClose={clearSelectedResource}
-            />
-          </div>
+          <Slide
+            direction="left"
+            in={!isNil(selectedDetailsEndpoints)}
+            timeout={{
+              enter: 150,
+              exit: 50,
+            }}
+          >
+            <div className={classes.panel}>
+              <Details
+                endpoints={selectedDetailsEndpoints}
+                openTabId={detailsTabIdToOpen}
+                onClose={clearSelectedResource}
+              />
+            </div>
+          </Slide>
         )}
         <div className={classes.listing}>
           <Listing

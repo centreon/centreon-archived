@@ -18,20 +18,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GraphColumn = ({ row }: ColumnProps): JSX.Element | null => {
-  const classes = useStyles();
+const GraphColumn = ({
+  onClick,
+}: {
+  onClick: (row) => void;
+}): ((props) => JSX.Element | null) => {
+  const GraphHoverChip = ({ row }: ColumnProps): JSX.Element | null => {
+    const classes = useStyles();
+    if (!row.performance_graph_endpoint) {
+      return null;
+    }
 
-  if (!row.performance_graph_endpoint) {
-    return null;
-  }
+    return (
+      <HoverChip
+        Chip={(): JSX.Element => <GraphChip />}
+        label={labelGraph}
+        onClick={(): void => onClick(row)}
+      >
+        <div className={classes.graph}>
+          <PerformanceGraph endpoint={row.performance_graph_endpoint} />
+        </div>
+      </HoverChip>
+    );
+  };
 
-  return (
-    <HoverChip Chip={(): JSX.Element => <GraphChip />} label={labelGraph}>
-      <div className={classes.graph}>
-        <PerformanceGraph endpoint={row.performance_graph_endpoint} />
-      </div>
-    </HoverChip>
-  );
+  return GraphHoverChip;
 };
 
 export default GraphColumn;

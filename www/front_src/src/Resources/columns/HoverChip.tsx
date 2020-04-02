@@ -16,9 +16,10 @@ interface Props {
   children: React.ReactNode;
   Chip: () => JSX.Element;
   label: string;
+  onClick?: () => void;
 }
 
-const HoverChip = ({ children, Chip, label }: Props): JSX.Element => {
+const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -32,6 +33,8 @@ const HoverChip = ({ children, Chip, label }: Props): JSX.Element => {
       onClick={(e): void => {
         e.preventDefault();
         e.stopPropagation();
+
+        onClick?.();
       }}
     >
       <div>
