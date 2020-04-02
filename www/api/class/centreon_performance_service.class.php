@@ -69,6 +69,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $additionalValues = array();
         $additionalCondition = '';
         $bindParams = array();
+        $excludeAnomalyDetection = false;
 
         /* Get ACL if user is not admin */
         $acl = null;
@@ -80,6 +81,10 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $bindParams[':fullName'] = '%%';
         } else {
             $bindParams[':fullName'] = '%' . (string)$this->arguments['q'] . '%';
+        }
+
+        if (isset($this->arguments['e']) && strcmp('anomaly', $this->arguments['e']) == 0) {
+            $excludeAnomalyDetection = true;
         }
 
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id ' .
@@ -106,6 +111,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
         }
 
+        if ($excludeAnomalyDetection) {
+            $additionalCondition .= 'AND s.service_id NOT IN (SELECT service_id FROM centreon.mod_anomaly_service) ';
+        }
         if (isset($this->arguments['hostgroup'])) {
             $additionalCondition .= 'AND (hg.host_id = i.host_id ' .
                 'AND hg.hostgroup_id IN (';

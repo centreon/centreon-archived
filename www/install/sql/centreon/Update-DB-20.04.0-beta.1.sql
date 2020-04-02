@@ -40,3 +40,6 @@ INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_ssl', '0');
 INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_allow_self_signed', '1');
 -- Add default value for enable_broker_stats if not set
 INSERT INTO `options` (`key`, `value`) SELECT 'enable_broker_stats', '0' WHERE NOT EXISTS (SELECT `value` FROM `options` WHERE `key` = 'enable_broker_stats');
+
+-- Add missing index on ods_view_details
+ALTER TABLE `ods_view_details`ADD KEY `index_id` (`index_id`);

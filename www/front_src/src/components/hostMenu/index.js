@@ -209,7 +209,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Critical')}
+                  submenuTitle={I18n.t('Down')}
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
