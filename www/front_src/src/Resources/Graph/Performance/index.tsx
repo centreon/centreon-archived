@@ -22,9 +22,6 @@ import { formatTimeAxis } from '../format';
 import getTimeSeries from './timeSeries';
 import { GraphData } from './models';
 
-const JSXXAxis = (XAxis as unknown) as (props) => JSX.Element;
-const JSXYAxis = (YAxis as unknown) as (props) => JSX.Element;
-
 const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {
     flexGrow: 1,
@@ -101,25 +98,26 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
     return pipe(map(prop('unit')), uniq)(graphData.metrics);
   };
 
+  const displayMultipleYAxes = getUnits().length < 3;
+
   const formatYAxis = ({ tick, unit }): string =>
     isEmpty(unit)
       ? tick
       : filesize(tick, { base: getBase(unit) }).replace('B', '');
 
-  const YAxes =
-    getUnits().length < 3 ? (
-      getUnits().map((unit, index) => (
-        <JSXYAxis
-          yAxisId={unit}
-          key={unit}
-          unit={unit}
-          orientation={index === 0 ? 'left' : 'right'}
-          tickFormatter={(tick): string => formatYAxis({ tick, unit })}
-        />
-      ))
-    ) : (
-      <JSXYAxis />
-    );
+  const YAxes = displayMultipleYAxes ? (
+    getUnits().map((unit, index) => (
+      <YAxis
+        yAxisId={unit}
+        key={unit}
+        unit={unit}
+        orientation={index === 0 ? 'left' : 'right'}
+        tickFormatter={(tick): string => formatYAxis({ tick, unit })}
+      />
+    ))
+  ) : (
+    <YAxis />
+  );
 
   const formatLegend = (value): JSX.Element => (
     <Typography variant="caption" color="textPrimary">
@@ -137,10 +135,12 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
           wrapperStyle={{ bottom: 0 }}
         />
         <CartesianGrid strokeDasharray="3 3" />
-        <JSXXAxis dataKey="time" tickFormatter={formatTimeAxis} />
+        <XAxis dataKey="time" tickFormatter={formatTimeAxis} />
         {YAxes}
-        {graphData.metrics.map(({ metric, ds_data, unit }, index) =>
-          ds_data.ds_filled ? (
+        {graphData.metrics.map(({ metric, ds_data, unit }, index) => {
+          const yAxisId = displayMultipleYAxes ? unit : undefined;
+
+          return ds_data.ds_filled ? (
             <Area
               key={metric}
               dot={false}
@@ -148,7 +148,7 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
               stackId={index}
               stroke={ds_data.ds_color_line}
               fill={fade(ds_data.ds_color_area, ds_data.ds_transparency * 0.01)}
-              yAxisId={unit}
+              yAxisId={yAxisId}
             />
           ) : (
             <Line
@@ -156,10 +156,10 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
               dataKey={metric}
               stroke={ds_data.ds_color_line}
               dot={false}
-              yAxisId={unit}
+              yAxisId={yAxisId}
             />
-          ),
-        )}
+          );
+        })}
 
         <Tooltip />
       </ComposedChart>
