@@ -9,7 +9,6 @@
          failOnWarning="true"
 >
     <php>
-        <server name="KERNEL_CLASS" value="App\Kernel"/>
         <ini name="error_reporting" value="30719" /><!-- E_ALL & ~E_STRICT -->
         <ini name="intl.default_locale" value="en" />
         <ini name="intl.error_level" value="0" />
@@ -17,15 +16,7 @@
         <const name="_CENTREON_PATH_" value="./"/>
         <const name="_CENTREON_ETC_" value="./"/>
         <const name="_CENTREON_CACHEDIR_" value="./"/>
-        <const name="_CENTREON_LOG_" value="./"/>
 
-        <env name="hostCentreon" value="0.0.0.0"/>
-        <env name="hostCentstorage" value="0.0.0.0"/>
-        <env name="user" value="root"/>
-        <env name="password" value=""/>
-        <env name="db" value="centreon"/>
-        <env name="dbcstg" value="centreon_storage"/>
-        <env name="port" value="3307"/>
         <!-- ###+ symfony/framework-bundle ### -->
         <env name="APP_ENV" value="dev"/>
         <env name="APP_SECRET" value="96cde5b9a5c3d1cd4a4d6cca990bcc54"/>
