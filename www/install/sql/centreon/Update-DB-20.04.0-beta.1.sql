@@ -37,3 +37,6 @@ INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_address', '127.0.0.1
 INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_port', '8085');
 INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_ssl', '0');
 INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_allow_self_signed', '1');
+
+-- Add missing index on ods_view_details
+ALTER TABLE `ods_view_details`ADD KEY `index_id` (`index_id`);

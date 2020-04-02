@@ -277,6 +277,14 @@ try {
             7,
             'countConnections',
             '{\"target\": \"connections_count\"}'
+        ),
+        (
+            (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'storage'),
+            (SELECT `cb_field_id` FROM `cb_field` WHERE `fieldname` = 'connections_count'),
+            0,
+            7,
+            'countConnections',
+            '{\"target\": \"connections_count\"}'
         )"
     );
 
