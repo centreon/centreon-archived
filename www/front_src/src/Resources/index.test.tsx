@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import formatISO from 'date-fns/formatISO';
 import {
@@ -46,6 +47,9 @@ import {
   labelEndTime,
   labelStartDate,
   labelStartTime,
+  labelRefresh,
+  labelDisableAutorefresh,
+  labelEnableAutorefresh
 } from './translatedLabels';
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import { Resource } from './models';
@@ -61,6 +65,10 @@ import {
 const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('./icons/Downtime');
 
@@ -85,6 +93,12 @@ interface EndpointParams {
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
+
+const appState = {
+  intervals: {
+    AjaxTimeReloadMonitoring: 60,
+  },
+};
 
 const buildParam = (param): string => JSON.stringify(param);
 
@@ -199,12 +213,16 @@ const renderResources = (): RenderResult =>
 
 describe(Resources, () => {
   afterEach(() => {
+    useSelector.mockClear();
     mockedAxios.get.mockReset();
     mockedAxios.post.mockReset();
     mockedAxios.all.mockReset();
   });
 
   beforeEach(() => {
+    useSelector.mockImplementation((callback) => {
+      return callback(appState);
+    });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
   });
 
@@ -915,5 +933,50 @@ describe(Resources, () => {
       })),
       expect.anything(),
     );
+  });
+
+  it('executes a listing request when refresh button is clicked', async () => {
+    const { getByLabelText } = renderResources();
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({}),
+        cancelTokenRequestParam,
+      ),
+    );
+
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+    const refreshButton = getByLabelText(labelRefresh);
+
+    await waitFor(() => expect(refreshButton).toBeEnabled());
+
+    fireEvent.click(refreshButton);
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({}),
+        cancelTokenRequestParam,
+      ),
+    );
+  });
+
+  it('swaps autorefresh icon when the icon is clicked', async () => {
+    const { getByLabelText } = renderResources();
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({}),
+        cancelTokenRequestParam,
+      ),
+    );
+
+    fireEvent.click(getByLabelText(labelDisableAutorefresh));
+
+    expect(getByLabelText(labelEnableAutorefresh)).toBeTruthy();
+
+    fireEvent.click(getByLabelText(labelEnableAutorefresh));
+
+    expect(getByLabelText(labelDisableAutorefresh)).toBeTruthy();
   });
 });
