@@ -49,3 +49,15 @@ build/coverage/*
 ###< symfony/framework-bundle ###
 /bin/.phpunit/
 /doc/en/_build/
+
+src/Centreon*
+!src/Centreon/
+!src/CentreonCommand/
+!src/CentreonLegacy/
+!src/CentreonModule/
+!src/CentreonNotification/
+!src/CentreonRemote/
+!src/CentreonUser/
+www/modules/centreon-*
+www/widgets
+!www/widgets/require.php
