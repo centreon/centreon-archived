@@ -201,11 +201,7 @@ const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
 };
 
 const InformationColumn = ({ row }: ColumnProps): JSX.Element | null => {
-  return (
-    <Typography variant="body2" noWrap style={{ maxWidth: 400 }}>
-      {row.information || ''}
-    </Typography>
-  );
+  return <Typography variant="body2">{row.information || ''}</Typography>;
 };
 
 export const getColumns = (actions): Array<Column> => [
@@ -252,18 +248,21 @@ export const getColumns = (actions): Array<Column> => [
     label: labelDuration,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ duration }): string => duration,
+    width: 125,
   },
   {
     id: 'tries',
     label: labelTries,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ tries }): string => tries,
+    width: 125,
   },
   {
     id: 'last_check',
     label: labelLastCheck,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ last_check }): string => last_check,
+    width: 125,
   },
   {
     id: 'information',

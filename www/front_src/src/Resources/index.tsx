@@ -43,8 +43,6 @@ const useStyles = makeStyles((theme) => ({
   },
   filter: {
     zIndex: 4,
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
   },
   listing: {
     marginLeft: theme.spacing(2),
