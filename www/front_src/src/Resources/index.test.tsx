@@ -49,7 +49,7 @@ import {
   labelStartTime,
   labelRefresh,
   labelDisableAutorefresh,
-  labelEnableAutorefresh
+  labelEnableAutorefresh,
 } from './translatedLabels';
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import { Resource } from './models';
