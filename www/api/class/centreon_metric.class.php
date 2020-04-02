@@ -158,6 +158,71 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
+     * @return array
+     *
+     * @throws RestBadRequestException
+     */
+    protected function getListOfMetricsByService()
+    {
+        $queryValues = array();
+        if (isset($this->arguments['id'])) {
+            $tmp = explode ('-', $this->arguments['id']);
+            $queryValues['host_id'] = (int)$tmp[0];
+            $queryValues['service_id'] = (int)$tmp[1];
+        } else {
+            throw new \RestBadRequestException('400 Bad Request, invalid service id');
+        }
+        $nameArg = filter_var($this->arguments['q'] ?? false, FILTER_SANITIZE_STRING);
+        if ($nameArg !== false) {
+            $queryValues['name'] = '%' . $nameArg . '%';
+        } else {
+            $queryValues['name'] = '%%';
+        }
+
+        $query = 'SELECT SQL_CALC_FOUND_ROWS m.metric_id, ' .
+            'm.metric_name AS name ' .
+            'FROM metrics m, hosts h, services s, index_data i ' .
+            'WHERE m.index_id = i.id ' .
+            'AND h.host_id = i.host_id ' .
+            'AND s.service_id = i.service_id ' .
+            'AND h.enabled = 1 ' .
+            'AND s.enabled = 1 ' .
+            'AND m.metric_name LIKE :name ' .
+            'AND h.host_id = :host_id AND s.service_id = :service_id ' .
+            'ORDER BY m.metric_name ';
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+                throw new \RestBadRequestException('400 Bad Request, limit error');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $query .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
+        }
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
+        $stmt->bindParam(':host_id', $queryValues['host_id'], \PDO::PARAM_INT);
+        $stmt->bindParam(':service_id', $queryValues['service_id'], \PDO::PARAM_INT);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], \PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], \PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        $metrics = array();
+        while ($row = $stmt->fetch()) {
+            $metrics[] = array(
+                'id' => $row['metric_id'],
+                'text' => $row['name']
+            );
+        }
+        return array(
+            'items' => $metrics,
+            'total' => (int) $this->pearDBMonitoring->numberRows()
+        );
+    }
+
+    /**
      * Get last metrics value by services or/and metrics
      *
      * @return array | null if arguments are not set

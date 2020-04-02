@@ -4,19 +4,6 @@ gorgone:
     pubkey: "--CENTREON_VARLIB---gorgone/.keys/rsakey.pub.pem"
 
   modules:
-    - name: httpserver
-      package: "gorgone::modules::core::httpserver::hooks"
-      enable: true
-      address: "--HTTPSERVERADDRESS--"
-      port: "--HTTPSERVERPORT--"
-      ssl: --SSLMODE--
-      auth:
-        enabled: false
-      allowed_hosts:
-        enabled: true
-        subnets:
-          - 127.0.0.1/32
-
     - name: action
       package: "gorgone::modules::core::action::hooks"
       enable: true

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -64,6 +65,7 @@ try {
     ];
 
     $isACentral = false;
+    $isARemote = false;
 
     // get user's centreon cache folder path
     $fileToOpen = _CENTREON_ETC_ . '/instCentWeb.conf';
@@ -77,8 +79,8 @@ try {
         $line = fgets($file);
         if (strpos($line, "CENTREON_CACHEDIR") !== false) {
             //remove superfluous carriage return
-            $line = preg_replace("/\r|\n/", "", $line);
-            $line = explode("=", $line);
+            $line = preg_replace("/\r|\n/", '', $line);
+            $line = explode('=', $line);
             $pattern[] = '/--CENTREON_CACHEDIR--/';
             // if no value is found, a default value is required
             $userValues[] = $line[1] ?? '/var/cache/centreon';
@@ -104,13 +106,16 @@ try {
         if (strpos($line, '$centreon_config = {') !== false) {
             $start = true;
             continue;
-        } elseif ($start === true
+        } elseif (
+            $start === true
             && strpos($line, '$instance_mode =') !== false
         ) {
             $stop = true;
             $isACentral = strpos($line, 'central') ? true : false;
+            $isARemote = strpos($line, 'remote') ? true : false;
             continue;
-        } elseif ($start === true
+        } elseif (
+            $start === true
             && strlen($line) > 5
             && substr($line, 0, 1) !== "#"
             && strpos($line, ' => ') !== false
@@ -153,9 +158,13 @@ try {
             $errorMessage = 'Database configuration file is not created properly';
             throw new \InvalidArgumentException($errorMessage);
         }
+    }
 
+    if (true === $isACentral || true === $isARemote) {
+        // central and remote have different template
+        $tplName = $isACentral ? 'gorgoneCoreTemplate.yaml' : 'gorgoneRemoteTemplate.yaml';
         // gorgone configuration file for centreon. Created in the centreon-gorgone folder
-        $fileTpl = __DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml';
+        $fileTpl = __DIR__ . '/../var/gorgone/' . $tplName;
         if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
             $errorMessage = 'Gorgone configuration template is empty or missing';
             throw new \InvalidArgumentException($errorMessage);
@@ -268,6 +277,14 @@ try {
             7,
             'countConnections',
             '{\"target\": \"connections_count\"}'
+        ),
+        (
+            (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'storage'),
+            (SELECT `cb_field_id` FROM `cb_field` WHERE `fieldname` = 'connections_count'),
+            0,
+            7,
+            'countConnections',
+            '{\"target\": \"connections_count\"}'
         )"
     );
 
@@ -301,12 +318,5 @@ try {
         " - Code : " . (int)$e->getCode() .
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
-    );
-}
-
-if (empty($errorMessage)) {
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . " - Successful Update"
     );
 }
