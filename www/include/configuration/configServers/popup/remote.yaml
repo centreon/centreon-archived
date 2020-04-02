@@ -24,7 +24,7 @@ gorgone:
     - name: legacycmd
       package: gorgone::modules::centreon::legacycmd::hooks
       enable: true
-      cmd_dir: "/var/lib/centreon/"
+      cmd_dir: "/var/lib/centreon/centcore/"
       cmd_file: "/var/lib/centreon/centcore.cmd"
       cache_dir: "/var/cache/centreon/"
       cache_dir_trap: "/etc/snmp/centreon_traps/"

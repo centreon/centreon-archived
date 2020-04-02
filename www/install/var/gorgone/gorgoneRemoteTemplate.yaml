@@ -24,7 +24,7 @@ gorgone:
     - name: legacycmd
       package: "gorgone::modules::centreon::legacycmd::hooks"
       enable: true
-      cmd_dir: "--CENTREON_VARLIB--/"
+      cmd_dir: "--CENTREON_VARLIB--/centcore/"
       cmd_file: "--CENTREON_VARLIB--/centcore.cmd"
       cache_dir: "--CENTREON_CACHEDIR--"
       cache_dir_trap: "--CENTREON_TRAPDIR--"
