@@ -1261,7 +1261,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $sql = 'SELECT d.*, c.contact_id AS `author_id` FROM `:dbstg`.`downtimes`  AS `d` '
-            . 'INNER JOIN `:db`.contact AS `c` ON c.contact_alias = d.author '
+            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author '
             . 'WHERE d.host_id = :hostId AND d.service_id = :serviceId '
             . 'AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time) '
             . 'AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time) '
@@ -1299,7 +1299,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $sql = 'SELECT a.*, c.contact_id AS `author_id` FROM `:dbstg`.`acknowledgements` AS `a` '
-            . 'INNER JOIN `:db`.contact AS `c` ON c.contact_alias = a.author '
+            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author '
             . 'WHERE a.host_id = :hostId AND a.service_id = :serviceId AND a.deletion_time IS NULL '
             . 'ORDER BY a.entry_time DESC';
 

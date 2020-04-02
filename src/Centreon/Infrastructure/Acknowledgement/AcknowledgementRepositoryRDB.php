@@ -172,7 +172,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
         $request =
             'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
-            INNER JOIN `:db`.contact
+            LEFT JOIN `:db`.contact
               ON contact.contact_alias = ack.author'
             . $accessGroupFilter
             . 'WHERE ack.host_id = :host_id
@@ -208,7 +208,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
         $request =
             'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
-            INNER JOIN `:db`.contact
+            LEFT JOIN `:db`.contact
               ON contact.contact_alias = ack.author'
             . $accessGroupFilter
             . 'WHERE ack.host_id = :host_id
@@ -242,7 +242,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
         $request =
             'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
-            INNER JOIN `:db`.contact
+            LEFT JOIN `:db`.contact
             ON contact.contact_alias = ack.author
             WHERE ack.acknowledgement_id = (
             SELECT MAX(ack2.acknowledgement_id)
@@ -290,7 +290,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
         $request =
             'SELECT ack.*, contact.contact_id AS author_id
         FROM `:dbstg`.acknowledgements ack
-        INNER JOIN `:db`.contact
+        LEFT JOIN `:db`.contact
           ON contact.contact_alias = ack.author
         WHERE ack.acknowledgement_id = (
           SELECT MAX(ack2.acknowledgement_id)
@@ -351,7 +351,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
 
         $request = 'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
-            INNER JOIN `:db`.contact
+            LEFT JOIN `:db`.contact
                 ON contact.contact_alias = ack.author '
             . $accessGroupFilter
             . 'WHERE ack.service_id ' . (($type === self::TYPE_HOST_ACKNOWLEDGEMENT) ? ' = 0' : ' != 0');

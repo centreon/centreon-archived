@@ -335,7 +335,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         NULL AS `sticky`,
         NULL AS `notify_contacts`
         FROM `:dbstg`.`downtimes` d
-        INNER JOIN `:db`.contact AS `contact_d` ON contact_d.contact_alias = d.author
+        LEFT JOIN `:db`.contact AS `contact_d` ON contact_d.contact_alias = d.author
         ";
 
         $collector->addValue(":hostId", $hostId);
@@ -396,7 +396,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         a.sticky AS `sticky`,
         a.notify_contacts AS `notify_contacts`
         FROM `:dbstg`.`acknowledgements` a
-        INNER JOIN `:db`.contact AS `contact_a` ON contact_a.contact_alias = a.author
+        LEFT JOIN `:db`.contact AS `contact_a` ON contact_a.contact_alias = a.author
         ";
 
         $collector->addValue(":hostId", $hostId);
