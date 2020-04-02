@@ -36,7 +36,7 @@ const GraphColumn = ({
         onClick={(): void => onClick(row)}
       >
         <div className={classes.graph}>
-          <PerformanceGraph endpoint="http://localhost:5000/api/beta/graph" />
+          <PerformanceGraph endpoint={row.performance_graph_endpoint} />
         </div>
       </HoverChip>
     );
