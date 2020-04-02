@@ -11,10 +11,10 @@ import {
   labelDowntimeCommandSent,
   labelDowntimeBy,
   labelEndDateMustBeGreater,
-} from '../../translatedLabels';
+} from '../../../translatedLabels';
 import DialogDowntime from './Dialog';
-import { Resource } from '../../models';
-import { setDowntimeOnResources, getUser } from '../../api';
+import { Resource } from '../../../models';
+import { setDowntimeOnResources, getUser } from '../../../api';
 
 interface DateParams {
   dateStart: Date;

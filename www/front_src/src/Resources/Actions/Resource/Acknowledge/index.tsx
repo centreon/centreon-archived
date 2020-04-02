@@ -10,10 +10,10 @@ import {
   labelSomethingWentWrong,
   labelAcknowledgeCommandSent,
   labelAcknowledgedBy,
-} from '../../translatedLabels';
+} from '../../../translatedLabels';
 import DialogAcknowledge from './Dialog';
-import { Resource } from '../../models';
-import { acknowledgeResources, getUser } from '../../api';
+import { Resource } from '../../../models';
+import { acknowledgeResources, getUser } from '../../../api';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
