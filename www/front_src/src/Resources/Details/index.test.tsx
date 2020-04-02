@@ -40,6 +40,7 @@ const onClose = jest.fn();
 const detailsEndpoint = '/resource';
 const performanceGraphEndpoint = '/performance';
 const statusGraphEndpoint = '/status';
+const defaultTabIdOpen = 0;
 
 const retrievedDetails = {
   name: 'Central',
@@ -113,7 +114,11 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = render(
-      <Details endpoints={{ details: detailsEndpoint }} onClose={onClose} />,
+      <Details
+        endpoints={{ details: detailsEndpoint }}
+        onClose={onClose}
+        openTabId={defaultTabIdOpen}
+      />,
     );
 
     await waitFor(() => expect(getByText('Central')).toBeInTheDocument());
@@ -208,6 +213,7 @@ describe(Details, () => {
             performanceGraph: performanceGraphEndpoint,
           }}
           onClose={onClose}
+          openTabId={defaultTabIdOpen}
         />,
       );
 

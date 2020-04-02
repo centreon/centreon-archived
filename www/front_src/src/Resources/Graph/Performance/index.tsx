@@ -14,7 +14,7 @@ import {
 import filesize from 'filesize';
 import { pipe, map, uniq, prop, isEmpty } from 'ramda';
 
-import { fade, makeStyles, Typography, Grid } from '@material-ui/core';
+import { fade, makeStyles, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import useGet from '../../useGet';
@@ -23,14 +23,27 @@ import getTimeSeries from './timeSeries';
 import { GraphData } from './models';
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'grid',
+    gridTemplateRows: '20px 1fr',
+    height: '100%',
+    justifyItems: 'center',
+  },
+  graph: {
+    height: '100%',
+    width: '100%',
+  },
   loadingSkeleton: {
-    flexGrow: 1,
+    display: 'grid',
+    gridTemplateRows: '10px 1fr auto',
+    gridGap: theme.spacing(1),
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
-    height: '100%',
+    height: '95%',
   },
   loadingSkeletonLine: {
     transform: 'none',
+    paddingBottom: theme.spacing(1),
   },
 }));
 
@@ -42,23 +55,17 @@ const LoadingSkeleton = (): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      direction="column"
-      spacing={2}
-      className={classes.loadingSkeleton}
-    >
-      <Grid item style={{ flexGrow: 1 }}>
-        <Skeleton height="100%" className={classes.loadingSkeletonLine} />
-      </Grid>
-      <Grid item>
-        <Skeleton className={classes.loadingSkeletonLine} />
-      </Grid>
-    </Grid>
+    <div className={classes.loadingSkeleton}>
+      <Skeleton className={classes.loadingSkeletonLine} />
+      <Skeleton className={classes.loadingSkeletonLine} />
+      <Skeleton className={classes.loadingSkeletonLine} />
+    </div>
   );
 };
 
 const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
+  const classes = useStyles();
+
   const [graphData, setGraphData] = React.useState<GraphData>();
 
   const get = useGet({
@@ -126,44 +133,52 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
   );
 
   return (
-    <ResponsiveContainer>
-      <ComposedChart data={getTimeSeries(graphData)}>
-        <Legend
-          formatter={formatLegend}
-          iconType="circle"
-          iconSize={8}
-          wrapperStyle={{ bottom: 0 }}
-        />
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" tickFormatter={formatTimeAxis} />
-        {YAxes}
-        {graphData.metrics.map(({ metric, ds_data, unit }, index) => {
-          const yAxisId = displayMultipleYAxes ? unit : undefined;
+    <div className={classes.container}>
+      <Typography variant="body2" color="textPrimary">
+        {graphData.global.title}
+      </Typography>
+      <ResponsiveContainer className={classes.graph}>
+        <ComposedChart data={getTimeSeries(graphData)}>
+          <Legend
+            formatter={formatLegend}
+            iconType="circle"
+            iconSize={8}
+            wrapperStyle={{ bottom: 0 }}
+          />
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" tickFormatter={formatTimeAxis} />
+          {YAxes}
+          {graphData.metrics.map(({ metric, ds_data, unit }, index) => {
+            const yAxisId = displayMultipleYAxes ? unit : undefined;
 
-          return ds_data.ds_filled ? (
-            <Area
-              key={metric}
-              dot={false}
-              dataKey={metric}
-              stackId={index}
-              stroke={ds_data.ds_color_line}
-              fill={fade(ds_data.ds_color_area, ds_data.ds_transparency * 0.01)}
-              yAxisId={yAxisId}
-            />
-          ) : (
-            <Line
-              key={metric}
-              dataKey={metric}
-              stroke={ds_data.ds_color_line}
-              dot={false}
-              yAxisId={yAxisId}
-            />
-          );
-        })}
+            return ds_data.ds_filled ? (
+              <Area
+                key={metric}
+                dot={false}
+                dataKey={metric}
+                stackId={index}
+                stroke={ds_data.ds_color_line}
+                fill={fade(
+                  ds_data.ds_color_area,
+                  ds_data.ds_transparency * 0.01,
+                )}
+                yAxisId={yAxisId}
+              />
+            ) : (
+              <Line
+                key={metric}
+                dataKey={metric}
+                stroke={ds_data.ds_color_line}
+                dot={false}
+                yAxisId={yAxisId}
+              />
+            );
+          })}
 
-        <Tooltip />
-      </ComposedChart>
-    </ResponsiveContainer>
+          <Tooltip />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

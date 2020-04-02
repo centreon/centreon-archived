@@ -2,8 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { Tabs, Tab, makeStyles, Grid, styled, AppBar } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Tabs, Tab, makeStyles, AppBar } from '@material-ui/core';
 
 import { labelDetails, labelGraph } from '../../translatedLabels';
 import { DetailsSectionProps } from '..';
@@ -36,24 +35,6 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const CardSkeleton = styled(Skeleton)(() => ({
-  transform: 'none',
-}));
-
-const LoadingSkeleton = (): JSX.Element => (
-  <Grid container spacing={2} direction="column">
-    <Grid item>
-      <CardSkeleton height={120} />
-    </Grid>
-    <Grid item>
-      <CardSkeleton height={75} />
-    </Grid>
-    <Grid item>
-      <CardSkeleton height={75} />
-    </Grid>
-  </Grid>
-);
-
 const tabs = [
   {
     key: 0,
@@ -71,7 +52,7 @@ const tabs = [
 ];
 
 interface TabByIdProps {
-  details: ResourceDetails;
+  details?: ResourceDetails;
   id: number;
   endpoints: TabEndpoints;
 }
@@ -86,31 +67,19 @@ const TabById = ({
   return <Component details={details} endpoints={endpoints} />;
 };
 
-type BodyContentProps = DetailsSectionProps & {
-  selectedTabId: number;
-  endpoints: TabEndpoints;
-};
-
-const BodyContent = ({
-  details,
-  selectedTabId,
-  endpoints,
-}: BodyContentProps): JSX.Element | null => {
-  if (details === undefined) {
-    return <LoadingSkeleton />;
-  }
-
-  return <TabById id={selectedTabId} details={details} endpoints={endpoints} />;
-};
-
 type Props = {
   endpoints: TabEndpoints;
+  openTabId: number;
 } & DetailsSectionProps;
 
-const Body = ({ details, endpoints }: Props): JSX.Element => {
+const Body = ({ details, endpoints, openTabId }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [selectedTabId, setSelectedTabId] = React.useState(0);
+
+  React.useEffect(() => {
+    setSelectedTabId(openTabId);
+  }, [openTabId]);
 
   const changeSelectedTabId = (_, id): void => {
     setSelectedTabId(id);
@@ -135,11 +104,7 @@ const Body = ({ details, endpoints }: Props): JSX.Element => {
       </AppBar>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
-          <BodyContent
-            details={details}
-            selectedTabId={selectedTabId}
-            endpoints={endpoints}
-          />
+          <TabById id={selectedTabId} details={details} endpoints={endpoints} />
         </div>
       </div>
     </div>

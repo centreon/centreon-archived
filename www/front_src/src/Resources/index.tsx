@@ -95,6 +95,8 @@ const Resources = (): JSX.Element => {
     setSelectedDetailsEndpoints,
   ] = useState<ResourceEndpoints | null>(null);
 
+  const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = useState(0);
+
   const [loading, setLoading] = useState(true);
 
   const { showMessage } = useSnackbar();
@@ -271,6 +273,18 @@ const Resources = (): JSX.Element => {
     onCheck: (resource) => {
       prepareToCheck([resource]);
     },
+    onDisplayGraph: ({
+      details_endpoint,
+      status_graph_endpoint,
+      performance_graph_endpoint,
+    }) => {
+      setDefaultDetailsTabIdToOpen(1);
+      setSelectedDetailsEndpoints({
+        details: details_endpoint,
+        statusGraph: status_graph_endpoint,
+        performanceGraph: performance_graph_endpoint,
+      });
+    },
   });
 
   const selectResource = ({
@@ -332,6 +346,7 @@ const Resources = (): JSX.Element => {
           <div className={classes.panel}>
             <Details
               endpoints={selectedDetailsEndpoints}
+              openTabId={detailsTabIdToOpen}
               onClose={clearSelectedResource}
             />
           </div>

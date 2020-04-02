@@ -243,7 +243,7 @@ export const getColumns = (actions): Array<Column> => [
     id: 'graph',
     label: '',
     type: TABLE_COLUMN_TYPES.component,
-    Component: GraphColumn,
+    Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
     width: 50,
   },
