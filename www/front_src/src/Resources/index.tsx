@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { isNil } from 'ramda';
 
-import { makeStyles, useTheme, Slide } from '@material-ui/core';
+import { makeStyles, useTheme, Grid, Slide } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -18,7 +19,8 @@ import {
   Filter as FilterModel,
   FilterGroup,
 } from './Filter/models';
-import Actions from './Actions';
+import ResourceActions from './Actions/Resource';
+import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
@@ -100,6 +102,12 @@ const Resources = (): JSX.Element => {
   const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = useState(0);
 
   const [loading, setLoading] = useState(true);
+  const [enabledAutorefresh, setEnabledAutorefresh] = useState(true);
+
+  const refreshIntervalMs = useSelector(
+    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
+  );
+  const refreshIntervalRef = useRef<number>();
 
   const { showMessage } = useSnackbar();
   const showError = (message): void =>
@@ -135,14 +143,30 @@ const Resources = (): JSX.Element => {
       .finally(() => setLoading(false));
   };
 
+  const initAutorefresh = (): void => {
+    window.clearInterval(refreshIntervalRef.current);
+
+    const interval = enabledAutorefresh
+      ? window.setInterval(load, refreshIntervalMs)
+      : undefined;
+
+    refreshIntervalRef.current = interval;
+  };
+
+  const initAutorefreshAndLoad = (): void => {
+    initAutorefresh();
+    load();
+  };
+
   useEffect(() => {
     return (): void => {
       tokenSource.cancel();
+      window.clearInterval(refreshIntervalRef.current);
     };
   }, []);
 
   useEffect(() => {
-    load();
+    initAutorefreshAndLoad();
   }, [
     sortf,
     sorto,
@@ -155,6 +179,10 @@ const Resources = (): JSX.Element => {
     hostGroups,
     serviceGroups,
   ]);
+
+  useEffect(() => {
+    initAutorefresh();
+  }, [enabledAutorefresh]);
 
   const doSearch = (value): void => {
     setSearch(value);
@@ -308,21 +336,37 @@ const Resources = (): JSX.Element => {
     setSelectedDetailsEndpoints(null);
   };
 
+  const toggleAutorefresh = (): void => {
+    setEnabledAutorefresh(!enabledAutorefresh);
+  };
+
   const hasSelectedResources = selectedResources.length > 0;
 
-  const ResourceActions = (
-    <Actions
-      disabled={!hasSelectedResources}
-      resourcesToAcknowledge={resourcesToAcknowledge}
-      onPrepareToAcknowledge={prepareSelectedToAcknowledge}
-      onCancelAcknowledge={cancelAcknowledge}
-      resourcesToSetDowntime={resourcesToSetDowntime}
-      onPrepareToSetDowntime={prepareSelectedToSetDowntime}
-      onCancelSetDowntime={cancelSetDowntime}
-      resourcesToCheck={resourcesToCheck}
-      onPrepareToCheck={prepareSelectedToCheck}
-      onSuccess={confirmAction}
-    />
+  const Actions = (
+    <Grid container>
+      <Grid item>
+        <ResourceActions
+          disabled={!hasSelectedResources}
+          resourcesToAcknowledge={resourcesToAcknowledge}
+          onPrepareToAcknowledge={prepareSelectedToAcknowledge}
+          onCancelAcknowledge={cancelAcknowledge}
+          resourcesToSetDowntime={resourcesToSetDowntime}
+          onPrepareToSetDowntime={prepareSelectedToSetDowntime}
+          onCancelSetDowntime={cancelSetDowntime}
+          resourcesToCheck={resourcesToCheck}
+          onPrepareToCheck={prepareSelectedToCheck}
+          onSuccess={confirmAction}
+        />
+      </Grid>
+      <Grid item style={{ paddingLeft: theme.spacing(3) }}>
+        <GlobalActions
+          disabledRefresh={loading}
+          enabledAutorefresh={enabledAutorefresh}
+          onRefresh={initAutorefreshAndLoad}
+          toggleAutorefresh={toggleAutorefresh}
+        />
+      </Grid>
+    </Grid>
   );
 
   return (
@@ -368,7 +412,7 @@ const Resources = (): JSX.Element => {
         <div className={classes.listing}>
           <Listing
             checkable
-            Actions={ResourceActions}
+            Actions={Actions}
             loading={loading}
             columnConfiguration={columns}
             tableData={listing?.result}

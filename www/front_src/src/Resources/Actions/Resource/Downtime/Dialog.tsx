@@ -34,8 +34,8 @@ import {
   labelSetDowntime,
   labelSetDowntimeOnServices,
   labelTo,
-} from '../../translatedLabels';
-import { Resource } from '../../models';
+} from '../../../translatedLabels';
+import { Resource } from '../../../models';
 
 interface Props {
   locale: string | null;
