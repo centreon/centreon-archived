@@ -99,7 +99,7 @@ const Resources = (): JSX.Element => {
   const [enabledAutorefresh, setEnabledAutorefresh] = useState(true);
 
   const refreshIntervalMs = useSelector(
-    (state) => (state?.intervals?.AjaxTimeReloadMonitoring || 15) * 1000,
+    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
   );
   const refreshIntervalRef = useRef<number>();
 
