@@ -261,7 +261,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $collector->addValue(":host_id_{$key}", $resources->getId(), PDO::PARAM_INT);
             $collector->addValue(":service_id_{$key}", $resources->getParent()->getId(), PDO::PARAM_INT);
         }
-        
+
         if (!$where) {
             return [];
         }
@@ -269,7 +269,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $statement = $this->db->prepare(
             $this->translateDbName(
                 'SELECT host_id, service_id FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i '
-                . 'WHERE (' . implode(' OR ', $where ) . ') AND i.id = m.index_id AND m.hidden = :hidden '
+                . 'WHERE (' . implode(' OR ', $where) . ') AND i.id = m.index_id AND m.hidden = :hidden '
                 . 'GROUP BY m.metric_id '
                 . 'LIMIT 0, 1'
             )

@@ -170,7 +170,6 @@ class MonitoringResourceController extends AbstractController
                     'service_id' => $resource->getId(),
                 ], $resourcesGraphData)
             ) {
-
                 $parameters = [
                     'hostId' => $resource->getParent()->getId(),
                     'serviceId' => $resource->getId(),
