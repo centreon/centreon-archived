@@ -1,6 +1,8 @@
 import * as actions from '../actions/refreshActions';
 
-const initialState = {};
+const initialState = {
+  AjaxTimeReloadMonitoring: 10,
+};
 
 const refreshReducer = (state = initialState, action) => {
   switch (action.type) {

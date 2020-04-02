@@ -159,20 +159,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTSTORAGE_BINDIR/logAnalyserBroker >> $LOG_FILE 2>&1
 check_result $?  "$(gettext "Install logAnalyserBroker")"
 
-## nagiosPerfTrace
-
-log "INFO" "$(gettext "Install nagiosPerfTrace")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/src/cron/nagiosPerfTrace \
-	$INSTALL_DIR_CENTREON/cron/nagiosPerfTrace >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install nagiosPerfTrace")"
-
-if [ -f "$CENTREON_LOG/nagiosPerfTrace.log" ]; then
-    log "INFO" "$(gettext "Applying proper permissions to nagiosPerfTrace.log file")"
-    $CHOWN $CENTREON_USER:$CENTREON_GROUP $CENTREON_LOG/nagiosPerfTrace.log
-fi
-
 ## cron file
 log "INFO" "$(gettext "Change macros for centstorage.cron")"
 ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \

@@ -11,8 +11,8 @@ import {
   labelNotify,
   labelNotifyHelpCaption,
   labelAcknowledgeServices,
-} from '../../translatedLabels';
-import { Resource } from '../../models';
+} from '../../../translatedLabels';
+import { Resource } from '../../../models';
 
 interface Props {
   resources: Array<Resource>;
