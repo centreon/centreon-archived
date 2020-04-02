@@ -65,7 +65,7 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     if ($dbResult->rowCount()) {
         $row = $dbResult->fetch();
         $res = $pearDB->prepare("SELECT session_id FROM session WHERE session_id = :sessionId");
-        $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_INT);
+        $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
         $res->execute();
         if (!$res->rowCount()) {
             // security fix - regenerate the sid to prevent session fixation
