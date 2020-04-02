@@ -1,12 +1,13 @@
 import * as React from 'react';
 
 import { makeStyles } from '@material-ui/core';
+import IconGraph from '@material-ui/icons/BarChart';
 
 import { labelGraph } from '../../translatedLabels';
 import HoverChip from '../HoverChip';
 import { ColumnProps } from '..';
-import GraphChip from '../../Chip/Graph';
 import PerformanceGraph from '../../Graph/Performance';
+import ActionButton from '../../ActionButton';
 
 const useStyles = makeStyles((theme) => ({
   graph: {
@@ -31,9 +32,12 @@ const GraphColumn = ({
 
     return (
       <HoverChip
-        Chip={(): JSX.Element => <GraphChip />}
+        Chip={(): JSX.Element => (
+          <ActionButton onClick={(): void => onClick(row)}>
+            <IconGraph fontSize="small" />
+          </ActionButton>
+        )}
         label={labelGraph}
-        onClick={(): void => onClick(row)}
       >
         <div className={classes.graph}>
           <PerformanceGraph endpoint={row.performance_graph_endpoint} />

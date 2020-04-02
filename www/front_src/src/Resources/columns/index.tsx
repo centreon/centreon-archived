@@ -22,6 +22,7 @@ import {
 import { Resource } from '../models';
 import StateColumn from './State';
 import GraphColumn from './Graph';
+import ActionButton from '../ActionButton';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -31,9 +32,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     paddingLeft: theme.spacing(2),
-  },
-  iconButton: {
-    padding: 0,
   },
   extraSmallChipContainer: {
     height: 16,
@@ -98,34 +96,29 @@ const StatusColumnOnHover = ({
   return (
     <Grid container spacing={1} alignItems="center">
       <Grid item>
-        <IconButton
-          className={classes.iconButton}
+        <ActionButton
           color="primary"
           onClick={(): void => actions.onAcknowledge(row)}
           aria-label={`${labelAcknowledge} ${row.name}`}
         >
           <IconAcknowledge fontSize="small" />
-        </IconButton>
+        </ActionButton>
       </Grid>
       <Grid item>
-        <IconButton
-          className={classes.iconButton}
-          color="primary"
+        <ActionButton
           onClick={(): void => actions.onDowntime(row)}
           aria-label={`${labelSetDowntimeOn} ${row.name}`}
         >
           <IconDowntime fontSize="small" />
-        </IconButton>
+        </ActionButton>
       </Grid>
       <Grid item>
-        <IconButton
-          className={classes.iconButton}
-          color="primary"
+        <ActionButton
           onClick={(): void => actions.onCheck(row)}
           aria-label={`${labelCheck} ${row.name}`}
         >
           <IconCheck fontSize="small" />
-        </IconButton>
+        </ActionButton>
       </Grid>
       <Grid item>
         <StatusChip
@@ -219,7 +212,7 @@ export const getColumns = (actions): Array<Column> => [
     Component: StatusColumn(actions),
     sortField: 'status_severity_code',
     clickable: true,
-    width: 125,
+    width: 130,
   },
   {
     id: 'resource',
