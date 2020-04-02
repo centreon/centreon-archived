@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import { isNil } from 'ramda';
 
-import { makeStyles, useTheme } from '@material-ui/core';
+import { makeStyles, useTheme, Slide } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -292,6 +293,9 @@ const Resources = (): JSX.Element => {
     status_graph_endpoint,
     performance_graph_endpoint,
   }): void => {
+    if (isNil(selectedDetailsEndpoints)) {
+      setDefaultDetailsTabIdToOpen(0);
+    }
     setSelectedDetailsEndpoints({
       details: details_endpoint,
       statusGraph: status_graph_endpoint,
@@ -343,13 +347,22 @@ const Resources = (): JSX.Element => {
       </div>
       <div className={classes.body}>
         {selectedDetailsEndpoints && (
-          <div className={classes.panel}>
-            <Details
-              endpoints={selectedDetailsEndpoints}
-              openTabId={detailsTabIdToOpen}
-              onClose={clearSelectedResource}
-            />
-          </div>
+          <Slide
+            direction="left"
+            in={!isNil(selectedDetailsEndpoints)}
+            timeout={{
+              enter: 150,
+              exit: 50,
+            }}
+          >
+            <div className={classes.panel}>
+              <Details
+                endpoints={selectedDetailsEndpoints}
+                openTabId={detailsTabIdToOpen}
+                onClose={clearSelectedResource}
+              />
+            </div>
+          </Slide>
         )}
         <div className={classes.listing}>
           <Listing

@@ -59,8 +59,8 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
     TimePeriodId
   >('last_24_h');
 
-  const getSelectedPeriodQueryParams = (): string => {
-    const selectedTimePeriod = getTimePeriodById(selectedTimePeriodId);
+  const getQueryParams = (timePeriodId): string => {
+    const selectedTimePeriod = getTimePeriodById(timePeriodId);
 
     const now = new Date(Date.now()).toISOString();
     const start = selectedTimePeriod.getStart().toISOString();
@@ -69,12 +69,13 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
   };
 
   const [periodQueryParams, setPeriodQueryParams] = React.useState(
-    getSelectedPeriodQueryParams(),
+    getQueryParams(selectedTimePeriodId),
   );
 
   const changeSelectedPeriod = (event): void => {
     setSelectedTimePeriodId(event.target.value);
-    setPeriodQueryParams(getSelectedPeriodQueryParams());
+    const queryParamsForSelectedPeriodId = getQueryParams(event.target.value);
+    setPeriodQueryParams(queryParamsForSelectedPeriodId);
   };
 
   return (

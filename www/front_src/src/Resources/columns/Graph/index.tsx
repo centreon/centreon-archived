@@ -23,9 +23,8 @@ const GraphColumn = ({
 }: {
   onClick: (row) => void;
 }): ((props) => JSX.Element | null) => {
-  const classes = useStyles();
-
-  return ({ row }: ColumnProps): JSX.Element | null => {
+  const GraphHoverChip = ({ row }: ColumnProps): JSX.Element | null => {
+    const classes = useStyles();
     if (!row.performance_graph_endpoint) {
       return null;
     }
@@ -42,6 +41,8 @@ const GraphColumn = ({
       </HoverChip>
     );
   };
+
+  return GraphHoverChip;
 };
 
 export default GraphColumn;
