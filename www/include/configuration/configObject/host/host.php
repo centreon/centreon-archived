@@ -37,9 +37,10 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["host_id"]) ? $hG = $_GET["host_id"] : $hG = null;
-isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = null;
-$hG ? $host_id = $hG : $host_id = $hP;
+$host_id = filter_var(
+    $_GET["host_id"] ?? $_POST["host_id"] ?? 0,
+    FILTER_VALIDATE_INT
+);
 
 isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
 isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -2290,15 +2291,16 @@ class CentreonHost
     }
 
     /**
-     * @param array $values
-     * @param array $options
+     * @param array  $values
+     * @param array  $options
      * @param string $register
+     *
      * @return array
      */
-    public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
+    public function getObjectForSelect2($values = [], $options = [], $register = '1')
     {
         global $centreon;
-        $items = array();
+        $items = [];
         $useAcl = false;
         if (!$centreon->user->access->admin && $register == '1') {
             $useAcl = true;
@@ -2309,24 +2311,24 @@ class CentreonHost
             $hAcl = $centreon->user->access->getHostAclConf(
                 null,
                 'broker',
-                array(
+                [
                     'distinct' => true,
-                    'fields' => array('host.host_id'),
+                    'fields' => ['host.host_id'],
                     'get_row' => 'host_id',
-                    'keys' => array('host_id'),
-                    'conditions' => array(
-                        'host.host_id' => array(
+                    'keys' => ['host_id'],
+                    'conditions' => [
+                        'host.host_id' => [
                             'IN',
-                            $values
-                        )
-                    )
-                ),
+                            $values,
+                        ],
+                    ],
+                ],
                 false
             );
         }
 
         $listValues = '';
-        $queryValues = array();
+        $queryValues = [];
         if (!empty($values)) {
             foreach ($values as $k => $v) {
                 $listValues .= ':host' . $v . ',';
@@ -2360,12 +2362,13 @@ class CentreonHost
                 $hide = true;
             }
 
-            $items[] = array(
+            $items[] = [
                 'id' => $row['host_id'],
                 'text' => $row['host_name'],
-                'hide' => $hide
-            );
+                'hide' => $hide,
+            ];
         }
+
         return $items;
     }
 
