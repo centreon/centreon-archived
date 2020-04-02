@@ -161,8 +161,16 @@ class MonitoringResourceController extends AbstractController
         $resources = $this->resource->filterByContact($this->getUser())
             ->findResources($filter);
 
+        $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
+
         foreach ($resources as $resource) {
-            if ($resource->getParent() != null) {
+            if (
+                $resource->getParent() != null && in_array([
+                    'host_id' => $resource->getParent()->getId(),
+                    'service_id' => $resource->getId(),
+                ], $resourcesGraphData)
+            ) {
+
                 $parameters = [
                     'hostId' => $resource->getParent()->getId(),
                     'serviceId' => $resource->getId(),

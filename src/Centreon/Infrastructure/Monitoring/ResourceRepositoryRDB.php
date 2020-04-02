@@ -246,6 +246,44 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
+    public function getListOfResourcesWithGraphData(array $resources): array
+    {
+        $collector = new StatementCollector();
+        $collector->addValue(":hidden", 0);
+        $where = [];
+
+        foreach ($resources as $key => $resources) {
+            if (!$resources->getParent()) {
+                continue;
+            }
+
+            $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
+            $collector->addValue(":host_id_{$key}", $resources->getId(), PDO::PARAM_INT);
+            $collector->addValue(":service_id_{$key}", $resources->getParent()->getId(), PDO::PARAM_INT);
+        }
+        
+        if (!$where) {
+            return [];
+        }
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT host_id, service_id FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i '
+                . 'WHERE (' . implode(' OR ', $where ) . ') AND i.id = m.index_id AND m.hidden = :hidden '
+                . 'GROUP BY m.metric_id '
+                . 'LIMIT 0, 1'
+            )
+        );
+        $collector->bind($statement);
+
+        $statement->execute();
+
+        return $statement->fetchAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function findResources(ResourceFilter $filter): array
     {
         $resources = [];
