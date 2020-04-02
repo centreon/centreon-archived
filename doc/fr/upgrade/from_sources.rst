@@ -286,28 +286,6 @@ De nouvelle informations sont nécessaires : ::
    CentStorage status Directory already exists                PASSED
    CentStorage metrics Directory already exists               PASSED
    Install logAnalyserBroker                                  OK
-   Install nagiosPerfTrace                                    OK
-   Change macros for centstorage.cron                         OK
-   Install CentStorage cron                                   OK
-   Change macros for centstorage.logrotate                    OK
-   Install Centreon Storage logrotate.d file                  OK
-   Create /etc/centreon/instCentStorage.conf                  OK
-
-Mise à jour Centreon Storage
-----------------------------
-
-De nouvelle informations sont nécessaires : ::
-
-   ------------------------------------------------------------------------
-         Start CentStorage Installation
-   ------------------------------------------------------------------------
-   Preparing Centreon temporary files
-   /tmp/centreon-setup exists, it will be moved...
-   install www/install/createTablesCentstorage.sql            OK
-   CentStorage status Directory already exists                PASSED
-   CentStorage metrics Directory already exists               PASSED
-   Install logAnalyserBroker                                  OK
-   Install nagiosPerfTrace                                    OK
    Change macros for centstorage.cron                         OK
    Install CentStorage cron                                   OK
    Change macros for centstorage.logrotate                    OK
