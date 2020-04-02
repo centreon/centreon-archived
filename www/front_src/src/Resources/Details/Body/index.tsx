@@ -1,11 +1,16 @@
 import * as React from 'react';
 
-import { Tabs, Tab, makeStyles, Grid, styled } from '@material-ui/core';
+import { isNil } from 'ramda';
+
+import { Tabs, Tab, makeStyles, Grid, styled, AppBar } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { labelDetails } from '../../translatedLabels';
+import { labelDetails, labelGraph } from '../../translatedLabels';
 import { DetailsSectionProps } from '..';
-import DetailsTab from './DetailsTab';
+import GraphTab from './tabs/Graph';
+import DetailsTab from './tabs/Details';
+import { ResourceDetails } from '../models';
+import { GraphEndpoints, TabEndpoints } from './models';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -49,15 +54,60 @@ const LoadingSkeleton = (): JSX.Element => (
   </Grid>
 );
 
-const getTabById = ({ id, details }): JSX.Element | null => {
-  const tabById = {
-    0: <DetailsTab details={details} />,
-  };
+const tabs = [
+  {
+    key: 0,
+    Component: DetailsTab,
+    title: labelDetails,
+    visible: (): boolean => true,
+  },
+  {
+    key: 1,
+    Component: GraphTab,
+    title: labelGraph,
+    visible: ({ statusGraph, performanceGraph }: GraphEndpoints): boolean =>
+      !isNil(performanceGraph) || !isNil(statusGraph),
+  },
+];
 
-  return tabById[id];
+interface TabByIdProps {
+  details: ResourceDetails;
+  id: number;
+  endpoints: TabEndpoints;
+}
+
+const TabById = ({
+  id,
+  details,
+  endpoints,
+}: TabByIdProps): JSX.Element | null => {
+  const { Component } = tabs[id];
+
+  return <Component details={details} endpoints={endpoints} />;
 };
 
-const Body = ({ details }: DetailsSectionProps): JSX.Element => {
+type BodyContentProps = DetailsSectionProps & {
+  selectedTabId: number;
+  endpoints: TabEndpoints;
+};
+
+const BodyContent = ({
+  details,
+  selectedTabId,
+  endpoints,
+}: BodyContentProps): JSX.Element | null => {
+  if (details === undefined) {
+    return <LoadingSkeleton />;
+  }
+
+  return <TabById id={selectedTabId} details={details} endpoints={endpoints} />;
+};
+
+type Props = {
+  endpoints: TabEndpoints;
+} & DetailsSectionProps;
+
+const Body = ({ details, endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [selectedTabId, setSelectedTabId] = React.useState(0);
@@ -66,26 +116,30 @@ const Body = ({ details }: DetailsSectionProps): JSX.Element => {
     setSelectedTabId(id);
   };
 
-  const loading = details === undefined;
-
   return (
     <div className={classes.body}>
-      <Tabs
-        variant="fullWidth"
-        value={selectedTabId}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={changeSelectedTabId}
-      >
-        <Tab label={labelDetails} disabled={loading} />
-      </Tabs>
+      <AppBar position="static" color="default">
+        <Tabs
+          variant="fullWidth"
+          value={selectedTabId}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={changeSelectedTabId}
+        >
+          {tabs
+            .filter(({ visible }) => visible(endpoints))
+            .map(({ key, title }) => (
+              <Tab key={key} label={title} disabled={details === undefined} />
+            ))}
+        </Tabs>
+      </AppBar>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
-          {loading ? (
-            <LoadingSkeleton />
-          ) : (
-            getTabById({ id: selectedTabId, details })
-          )}
+          <BodyContent
+            details={details}
+            selectedTabId={selectedTabId}
+            endpoints={endpoints}
+          />
         </div>
       </div>
     </div>

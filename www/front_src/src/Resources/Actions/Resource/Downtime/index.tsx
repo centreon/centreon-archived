@@ -40,18 +40,10 @@ const formatDateInterval = (values: DateParams): [Date, Date] => {
 };
 
 const validationSchema = Yup.object().shape({
-  dateStart: Yup.string()
-    .required(labelRequired)
-    .nullable(),
-  timeStart: Yup.string()
-    .required(labelRequired)
-    .nullable(),
-  dateEnd: Yup.string()
-    .required(labelRequired)
-    .nullable(),
-  timeEnd: Yup.string()
-    .required(labelRequired)
-    .nullable(),
+  dateStart: Yup.string().required(labelRequired).nullable(),
+  timeStart: Yup.string().required(labelRequired).nullable(),
+  dateEnd: Yup.string().required(labelRequired).nullable(),
+  timeEnd: Yup.string().required(labelRequired).nullable(),
   fixed: Yup.boolean(),
   duration: Yup.object().when('fixed', (fixed, schema) => {
     return !fixed

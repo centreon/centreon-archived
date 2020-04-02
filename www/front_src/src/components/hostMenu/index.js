@@ -31,10 +31,7 @@ import {
 import styles from '../header/header.scss';
 import axios from '../../axios';
 
-const numberFormat = yup
-  .number()
-  .required()
-  .integer();
+const numberFormat = yup.number().required().integer();
 
 const statusSchema = yup.object().shape({
   down: yup.object().shape({

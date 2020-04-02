@@ -75,3 +75,9 @@ export interface Acknowledgement {
   is_persistent: boolean;
   is_sticky: boolean;
 }
+
+export interface ResourceEndpoints {
+  details: string;
+  statusGraph?: string;
+  performanceGraph?: string;
+}

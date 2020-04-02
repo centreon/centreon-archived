@@ -8,7 +8,8 @@ import { makeStyles, useTheme, Grid } from '@material-ui/core';
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
-import { ResourceListing, Resource } from './models';
+import { ResourceListing, Resource, ResourceEndpoints } from './models';
+
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import Filter from './Filter';
 import {
@@ -91,9 +92,10 @@ const Resources = (): JSX.Element => {
   const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
   const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
 
-  const [selectedDetailsEndpoint, setSelectedDetailsEndpoint] = useState<
-    string | null
-  >(null);
+  const [
+    selectedDetailsEndpoints,
+    setSelectedDetailsEndpoints,
+  ] = useState<ResourceEndpoints | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [enabledAutorefresh, setEnabledAutorefresh] = useState(true);
@@ -299,12 +301,20 @@ const Resources = (): JSX.Element => {
     },
   });
 
-  const selectResource = ({ details_endpoint }): void => {
-    setSelectedDetailsEndpoint(details_endpoint);
+  const selectResource = ({
+    details_endpoint,
+    status_graph_endpoint,
+    performance_graph_endpoint,
+  }): void => {
+    setSelectedDetailsEndpoints({
+      details: details_endpoint,
+      statusGraph: status_graph_endpoint,
+      performanceGraph: performance_graph_endpoint,
+    });
   };
 
   const clearSelectedResource = (): void => {
-    setSelectedDetailsEndpoint(null);
+    setSelectedDetailsEndpoints(null);
   };
 
   const toggleAutorefresh = (): void => {
@@ -362,10 +372,10 @@ const Resources = (): JSX.Element => {
         />
       </div>
       <div className={classes.body}>
-        {selectedDetailsEndpoint && (
+        {selectedDetailsEndpoints && (
           <div className={classes.panel}>
             <Details
-              endpoint={selectedDetailsEndpoint}
+              endpoints={selectedDetailsEndpoints}
               onClose={clearSelectedResource}
             />
           </div>

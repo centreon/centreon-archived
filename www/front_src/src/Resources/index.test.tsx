@@ -6,11 +6,10 @@ import formatISO from 'date-fns/formatISO';
 import {
   render,
   waitFor,
-  within,
   fireEvent,
   RenderResult,
 } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+
 import last from 'lodash/last';
 import { Simulate } from 'react-dom/test-utils';
 
@@ -61,6 +60,7 @@ import {
   hostCheckEndpoint,
   serviceCheckEndpoint,
 } from './api/endpoint';
+import { selectOption } from './test';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
 
@@ -140,19 +140,6 @@ const getEndpoint = ({
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };
-
-export const selectOption = (element, optionText): void => {
-  const selectButton = element.parentNode.querySelector('[role=button]');
-
-  UserEvent.click(selectButton);
-
-  const listbox = document.body.querySelector(
-    'ul[role=listbox]',
-  ) as HTMLElement;
-
-  const listItem = within(listbox).getByText(optionText);
-  UserEvent.click(listItem);
-};
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
@@ -852,14 +839,14 @@ describe(Resources, () => {
     mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
 
     const startDateTime = new Date(
-      `${getByLabelText(labelStartTime)?.querySelector('input')?.value ||
-        ''} ${getByLabelText(labelStartDate)?.querySelector('input')?.value ||
-        ''}`,
+      `${getByLabelText(labelStartTime)?.querySelector('input')?.value || ''} ${
+        getByLabelText(labelStartDate)?.querySelector('input')?.value || ''
+      }`,
     );
     const endDateTime = new Date(
-      `${getByLabelText(labelEndTime)?.querySelector('input')?.value ||
-        ''} ${getByLabelText(labelEndDate)?.querySelector('input')?.value ||
-        ''}`,
+      `${getByLabelText(labelEndTime)?.querySelector('input')?.value || ''} ${
+        getByLabelText(labelEndDate)?.querySelector('input')?.value || ''
+      }`,
     );
 
     fireEvent.click(getByText(labelSetDowntime));

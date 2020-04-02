@@ -18,9 +18,9 @@ import {
   labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
-} from '../../../translatedLabels';
-import { getFormattedDate, getFormattedTime } from '../../../dateTime';
-import { ResourceDetails } from '../../models';
+} from '../../../../../translatedLabels';
+import { getFormattedDate, getFormattedTime } from '../../../../../dateTime';
+import { ResourceDetails } from '../../../../models';
 
 interface DetailLines {
   title: string;
