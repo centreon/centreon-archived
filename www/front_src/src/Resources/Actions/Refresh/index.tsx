@@ -2,15 +2,55 @@ import * as React from 'react';
 
 import { Grid, IconButton, Tooltip } from '@material-ui/core';
 import IconRefresh from '@material-ui/icons/Refresh';
+import IconPlay from '@material-ui/icons/PlayArrow';
+import IconPause from '@material-ui/icons/Pause';
 
-import { labelRefresh } from '../../translatedLabels';
+import {
+  labelRefresh,
+  labelDisableAutorefresh,
+  labelEnableAutorefresh,
+} from '../../translatedLabels';
 
-interface Props {
+interface AutorefreshProps {
+  enabledAutorefresh: boolean;
+  toggleAutorefresh;
+}
+
+interface Props extends AutorefreshProps {
   disabledRefresh: boolean;
   onRefresh;
 }
 
-const RefreshActions = ({ disabledRefresh, onRefresh }: Props): JSX.Element => {
+const AutorefreshButton = ({
+  enabledAutorefresh,
+  toggleAutorefresh,
+}: AutorefreshProps): JSX.Element => {
+  const label = enabledAutorefresh
+    ? labelDisableAutorefresh
+    : labelEnableAutorefresh;
+
+  return (
+    <Tooltip title={label}>
+      <span>
+        <IconButton
+          aria-label={label}
+          color="primary"
+          onClick={toggleAutorefresh}
+          size="small"
+        >
+          {enabledAutorefresh ? <IconPause /> : <IconPlay />}
+        </IconButton>
+      </span>
+    </Tooltip>
+  );
+};
+
+const RefreshActions = ({
+  disabledRefresh,
+  enabledAutorefresh,
+  onRefresh,
+  toggleAutorefresh,
+}: Props): JSX.Element => {
   return (
     <Grid container spacing={1}>
       <Grid item>
@@ -27,6 +67,12 @@ const RefreshActions = ({ disabledRefresh, onRefresh }: Props): JSX.Element => {
             </IconButton>
           </span>
         </Tooltip>
+      </Grid>
+      <Grid item>
+        <AutorefreshButton
+          enabledAutorefresh={enabledAutorefresh}
+          toggleAutorefresh={toggleAutorefresh}
+        />
       </Grid>
     </Grid>
   );
