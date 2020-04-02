@@ -207,6 +207,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         l.type AS `type`,
         l.retry AS `retry`,
         l.notification_contact AS `contact`,
+        null AS `contact_id`,
         l.notification_cmd AS `command`,
         NULL AS `persistent`,    
         NULL as `deletion_time`,
@@ -262,6 +263,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         c.type AS `type`,
         NULL AS `retry`,
         c.author AS `contact`,
+        null AS `contact_id`,
         NULL AS `command`,
         c.persistent AS `persistent`,
         NULL as `deletion_time`,
@@ -318,6 +320,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         d.type AS `type`,
         NULL AS `retry`,
         d.author AS `contact`,
+        contact_d.contact_id AS `contact_id`,
         NULL AS `command`,
         NULL AS `persistent`,
         d.deletion_time as `deletion_time`,
@@ -332,6 +335,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         NULL AS `sticky`,
         NULL AS `notify_contacts`
         FROM `:dbstg`.`downtimes` d
+        INNER JOIN `:db`.contact AS `contact_d` ON contact_d.contact_alias = d.author
         ";
 
         $collector->addValue(":hostId", $hostId);
@@ -377,6 +381,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         a.type AS `type`,
         NULL AS `retry`,
         a.author AS `contact`,
+        contact_a.contact_id AS `contact_id`,
         NULL AS `command`,
         a.persistent_comment AS `persistent`,
         a.deletion_time as `deletion_time`,
@@ -391,6 +396,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         a.sticky AS `sticky`,
         a.notify_contacts AS `notify_contacts`
         FROM `:dbstg`.`acknowledgements` a
+        INNER JOIN `:db`.contact AS `contact_a` ON contact_a.contact_alias = a.author
         ";
 
         $collector->addValue(":hostId", $hostId);

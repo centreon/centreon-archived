@@ -1260,10 +1260,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $downtimes;
         }
 
-        $sql = 'SELECT * FROM `:dbstg`.`downtimes` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(actual_start_time) ' .
-                'AND FROM_UNIXTIME(actual_end_time)) OR ((NOW() > FROM_UNIXTIME(actual_start_time) ' .
-                'AND actual_end_time IS NULL))) ORDER BY entry_time DESC';
+        $sql = 'SELECT d.*, c.contact_id AS `author_id` FROM `:dbstg`.`downtimes`  AS `d` '
+            . 'INNER JOIN `:db`.contact AS `c` ON c.contact_alias = d.author '
+            . 'WHERE d.host_id = :hostId AND d.service_id = :serviceId '
+            . 'AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time) '
+            . 'AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time) '
+            . 'AND d.actual_end_time IS NULL))) '
+            . 'ORDER BY d.entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
@@ -1295,8 +1298,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $acks;
         }
 
-        $sql = 'SELECT * FROM `:dbstg`.`acknowledgements` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL ORDER BY entry_time DESC';
+        $sql = 'SELECT a.*, c.contact_id AS `author_id` FROM `:dbstg`.`acknowledgements` AS `a` '
+            . 'INNER JOIN `:db`.contact AS `c` ON c.contact_alias = a.author '
+            . 'WHERE a.host_id = :hostId AND a.service_id = :serviceId AND a.deletion_time IS NULL '
+            . 'ORDER BY a.entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
