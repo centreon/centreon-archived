@@ -21,6 +21,7 @@ import {
 import Actions from './Actions';
 import Details from './Details';
 import { rowColorConditions } from './colors';
+import { detailsTabId, graphTabId } from './Details/Body/tabs';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -279,7 +280,7 @@ const Resources = (): JSX.Element => {
       status_graph_endpoint,
       performance_graph_endpoint,
     }) => {
-      setDefaultDetailsTabIdToOpen(1);
+      setDefaultDetailsTabIdToOpen(graphTabId);
       setSelectedDetailsEndpoints({
         details: details_endpoint,
         statusGraph: status_graph_endpoint,
@@ -294,7 +295,7 @@ const Resources = (): JSX.Element => {
     performance_graph_endpoint,
   }): void => {
     if (isNil(selectedDetailsEndpoints)) {
-      setDefaultDetailsTabIdToOpen(0);
+      setDefaultDetailsTabIdToOpen(detailsTabId);
     }
     setSelectedDetailsEndpoints({
       details: details_endpoint,
