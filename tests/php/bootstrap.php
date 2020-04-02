@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2016 Centreon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * For more information : contact@centreon.com
- *
  */
 
 // mock path constants to redirect to base centreon directory
