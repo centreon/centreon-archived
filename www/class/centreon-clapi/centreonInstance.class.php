@@ -111,7 +111,7 @@ class CentreonInstance extends CentreonObject
         $addParams['ns_ip_address'] = $params[self::ORDER_ADDRESS];
 
         if(is_numeric($params[self::ORDER_GORGONE_PROTOCOL])){
-           $revertGorgoneCom = array_flip (self::GORGONE_COMMUNICATION);
+            $revertGorgoneCom = array_flip (self::GORGONE_COMMUNICATION);
             $params[self::ORDER_GORGONE_PROTOCOL] = $revertGorgoneCom[$params[self::ORDER_GORGONE_PROTOCOL]];
         }
         if (isset(self::GORGONE_COMMUNICATION[strtoupper($params[self::ORDER_GORGONE_PROTOCOL])])) {
