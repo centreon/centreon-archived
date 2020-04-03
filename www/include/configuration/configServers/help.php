@@ -6,6 +6,7 @@ $help['localhost'] = dgettext("help", "Whether the poller is local");
 $help['is_default'] = dgettext("help", "Main poller");
 $help['remote_id'] = dgettext("help", "Master Remote Server to which this server will be attached");
 $help['remote_additional_id'] = dgettext("help", "Additional Remote Server to which this server will be attached");
+$help['ssh_port'] = dgettext("help", "SSH legacy port used by Centreon extensions or tools (see Gorgone Information for communication port between monitoring servers)");
 $help['gorgone_communication_type'] = dgettext("help", "Gorgone communication protocol (ZMQ or SSH)");
 $help['gorgone_port'] = dgettext("help", "Gorgone port of the remote poller (5556 or 22)");
 $help['engine_start_command'] = dgettext("help", "Command to start Centreon Engine process");

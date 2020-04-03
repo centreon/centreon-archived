@@ -6267,6 +6267,10 @@ msgid "Main poller"
 msgstr "Collecteur principal"
 
 #: centreon-web/www/include/configuration/configServers/help.php:7
+msgid "SSH legacy port used by Centreon extensions or tools (see Gorgone Information for communication port between monitoring servers)"
+msgstr "Port SSH utilisé par les extensions ou outils Centreon (voir Gorgone Information pour le port de communication entre les serveurs de supervision)"
+
+#: centreon-web/www/include/configuration/configServers/help.php:7
 msgid "Gorgone communication protocol (ZMQ or SSH)"
 msgstr "Protocole de communication Gorgone (ZMQ ou SSH)"
 
