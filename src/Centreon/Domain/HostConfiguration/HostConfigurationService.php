@@ -41,10 +41,13 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
      * @inheritDoc
      */
-    public function addHost(Host $host): void
+    public function addHost(Host $host): int
     {
         try {
-            $this->hostConfigurationRepository->addHost($host);
+            if ($host->getExtendedHost() === null) {
+                $host->setExtendedHost(new ExtendedHost());
+            }
+            return $this->hostConfigurationRepository->addHost($host);
         } catch (\Exception $ex) {
             throw new HostConfigurationException('Error while creation of host', 0, $ex);
         }

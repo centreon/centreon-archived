@@ -54,9 +54,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * Add a host
      *
      * @param Host $host Host to add
+     * @return int Returns the host id
      * @throws \Exception
      */
-    public function addHost(Host $host): void
+    public function addHost(Host $host): int
     {
         try {
             $this->db->beginTransaction();
@@ -81,13 +82,13 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             if ($host->getMonitoringServer() !== null) {
                 $this->addMonitoringServer($hostId, $host->getMonitoringServer());
             }
-            if ($host->getExtendedHost() !== null) {
-                $this->addExtendedHost($hostId, $host->getExtendedHost());
-            }
+            $this->addExtendedHost($hostId, $host->getExtendedHost());
             $this->addHostTemplate($hostId, $host->getTemplate());
             $this->addHostMacro($hostId, $host->getMacros());
 
             $this->db->commit();
+
+            return $hostId;
         } catch (\Exception $ex) {
             $this->db->rollBack();
             throw $ex;

@@ -24,6 +24,7 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Infrastructure\HostConfiguration\HostConfigurationRepositoryRDB;
 
 interface HostConfigurationRepositoryInterface
 {
@@ -31,10 +32,11 @@ interface HostConfigurationRepositoryInterface
      * Add a host
      *
      * @param Host $host Host to add
+     * @return int Returns the host id
      * @throws RepositoryException
      * @throws \Exception
      */
-    public function addHost(Host $host): void;
+    public function addHost(Host $host): int;
 
     /**
      * Find a host.
