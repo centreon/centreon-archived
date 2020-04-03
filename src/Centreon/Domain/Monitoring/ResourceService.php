@@ -93,6 +93,14 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     /**
      * {@inheritDoc}
      */
+    public function getListOfResourcesWithGraphData(array $resources): array
+    {
+        return $this->resourceRepository->getListOfResourcesWithGraphData($resources);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function findResources(ResourceFilter $filter): array
     {
         // try to avoid exception from the regexp bad syntax in search criteria

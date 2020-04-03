@@ -109,6 +109,14 @@ interface ResourceServiceInterface
     public function findResources(ResourceFilter $filter): array;
 
     /**
+     * Get list of resources with graph data.
+     *
+     * @param Resource[] $resources
+     * @return int[]
+     */
+    public function getListOfResourcesWithGraphData(array $resources): array;
+
+    /**
      * Create a new object with details but with data from the parent
      *
      * @param Host $host
