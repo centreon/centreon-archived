@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+
 import { Grid, Card, CardContent, Typography, styled } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -90,20 +92,22 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       </Grid>
       <Grid item container spacing={2} alignItems="stretch">
         {getDetailCardLines(details).map(
-          ({ title, field, lines }) =>
-            field && (
-              <Grid item xs={6}>
-                <DetailsCard title={title} lines={lines} />
+          ({ title, field, getLines }) =>
+            !isNil(field) && (
+              <Grid key={title} item xs={6}>
+                <DetailsCard title={title} lines={getLines()} />
               </Grid>
             ),
         )}
       </Grid>
-      <Grid item>
-        <ExpandableCard
-          title={labelPerformanceData}
-          content={details.performance_data}
-        />
-      </Grid>
+      {details.performance_data && (
+        <Grid item>
+          <ExpandableCard
+            title={labelPerformanceData}
+            content={details.performance_data}
+          />
+        </Grid>
+      )}
       <Grid item>
         <Card>
           <CardContent>

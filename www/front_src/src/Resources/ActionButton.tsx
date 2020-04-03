@@ -7,9 +7,9 @@ import {
   Tooltip,
 } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   button: {
-    padding: theme.spacing(0.5),
+    padding: 0,
   },
 }));
 
@@ -29,7 +29,9 @@ const ActionButton = ({
 
   return (
     <Tooltip title={title} onClick={onClick} aria-label={ariaLabel}>
-      <IconButton className={classes.button} color="primary" {...props} />
+      <span>
+        <IconButton className={classes.button} color="primary" {...props} />
+      </span>
     </Tooltip>
   );
 };
