@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, KeyboardEvent } from 'react';
+import * as React from 'react';
 
 import {
   Grid,
@@ -142,7 +142,7 @@ const Filter = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const [searchFieldValue, setSearchFieldValue] = useState<string>();
+  const [searchFieldValue, setSearchFieldValue] = React.useState<string>();
 
   const changeSearchFieldValue = (event): void => {
     setSearchFieldValue(event.target.value);
@@ -152,7 +152,7 @@ const Filter = ({
     onSearchRequest(searchFieldValue);
   };
 
-  const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
+  const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
     // "Enter" key
     if (event.keyCode === 13) {
       requestSearch();
@@ -162,14 +162,14 @@ const Filter = ({
   const getHostGroupSearchEndpoint = (searchValue): string => {
     return buildHostGroupsEndpoint({
       limit: 10,
-      search: `name:${searchValue}`,
+      search: searchValue ? `name:${searchValue}` : undefined,
     });
   };
 
   const getServiceGroupSearchEndpoint = (searchValue): string => {
     return buildServiceGroupsEndpoint({
       limit: 10,
-      search: `name:${searchValue}`,
+      search: searchValue ? `name:${searchValue}` : undefined,
     });
   };
 
@@ -306,4 +306,4 @@ const Filter = ({
   );
 };
 
-export default Filter;
+export default React.memo(Filter);
