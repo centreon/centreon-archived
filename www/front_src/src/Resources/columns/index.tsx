@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
+import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 
