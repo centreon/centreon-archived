@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 import IconGraph from '@material-ui/icons/BarChart';
 
 import { labelGraph } from '../../translatedLabels';
@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     height: 200,
     width: 575,
-    backgroundColor: theme.palette.common.white,
     paddingTop: theme.spacing(1),
   },
 }));
@@ -33,15 +32,19 @@ const GraphColumn = ({
     return (
       <HoverChip
         Chip={(): JSX.Element => (
-          <ActionButton onClick={(): void => onClick(row)}>
+          <ActionButton
+            title={labelGraph}
+            onClick={(): void => onClick(row)}
+            ariaLabel={labelGraph}
+          >
             <IconGraph fontSize="small" />
           </ActionButton>
         )}
         label={labelGraph}
       >
-        <div className={classes.graph}>
-          <PerformanceGraph endpoint={row.performance_graph_endpoint} />
-        </div>
+        <Paper className={classes.graph}>
+          <PerformanceGraph endpoint="http://localhost:5000/api/beta/graph" />
+        </Paper>
       </HoverChip>
     );
   };

@@ -18,6 +18,7 @@ import {
   labelAcknowledge,
   labelSetDowntimeOn,
   labelCheck,
+  labelSetDowntime,
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
@@ -97,25 +98,28 @@ const StatusColumnOnHover = ({
     <Grid container spacing={1} alignItems="center">
       <Grid item>
         <ActionButton
+          title={labelAcknowledge}
           color="primary"
           onClick={(): void => actions.onAcknowledge(row)}
-          aria-label={`${labelAcknowledge} ${row.name}`}
+          ariaLabel={`${labelAcknowledge} ${row.name}`}
         >
           <IconAcknowledge fontSize="small" />
         </ActionButton>
       </Grid>
       <Grid item>
         <ActionButton
+          title={labelSetDowntime}
           onClick={(): void => actions.onDowntime(row)}
-          aria-label={`${labelSetDowntimeOn} ${row.name}`}
+          ariaLabel={`${labelSetDowntimeOn} ${row.name}`}
         >
           <IconDowntime fontSize="small" />
         </ActionButton>
       </Grid>
       <Grid item>
         <ActionButton
+          title={labelCheck}
           onClick={(): void => actions.onCheck(row)}
-          aria-label={`${labelCheck} ${row.name}`}
+          ariaLabel={`${labelCheck} ${row.name}`}
         >
           <IconCheck fontSize="small" />
         </ActionButton>

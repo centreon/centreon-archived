@@ -1,17 +1,37 @@
 import * as React from 'react';
 
-import { makeStyles, IconButton } from '@material-ui/core';
+import {
+  makeStyles,
+  IconButton,
+  IconButtonProps,
+  Tooltip,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    padding: theme.spacing(0.25),
+    padding: theme.spacing(0.5),
   },
 }));
 
-const ActionButton = (props): JSX.Element => {
+type Props = {
+  title: string;
+  onClick: () => void;
+  ariaLabel: string;
+} & IconButtonProps;
+
+const ActionButton = ({
+  title,
+  onClick,
+  ariaLabel,
+  ...props
+}: Props): JSX.Element => {
   const classes = useStyles();
 
-  return <IconButton className={classes.button} color="primary" {...props} />;
+  return (
+    <Tooltip title={title} onClick={onClick} aria-label={ariaLabel}>
+      <IconButton className={classes.button} color="primary" {...props} />
+    </Tooltip>
+  );
 };
 
 export default ActionButton;
