@@ -74,7 +74,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'status' => 'resource.status_name',
         'status_severity_code' => 'resource.status_severity_code',
         'action_url' => 'resource.action_url',
-        'details_url' => 'resource.details_url',
         'parent_name' => 'resource.parent_name',
         'parent_status' => 'resource.parent_status_name',
         'severity_level' => 'resource.severity_level',
@@ -246,6 +245,44 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
+    public function getListOfResourcesWithGraphData(array $resources): array
+    {
+        $collector = new StatementCollector();
+        $collector->addValue(":hidden", 0);
+        $where = [];
+
+        foreach ($resources as $key => $resources) {
+            if (!$resources->getParent()) {
+                continue;
+            }
+
+            $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
+            $collector->addValue(":host_id_{$key}", $resources->getId(), PDO::PARAM_INT);
+            $collector->addValue(":service_id_{$key}", $resources->getParent()->getId(), PDO::PARAM_INT);
+        }
+
+        if (!$where) {
+            return [];
+        }
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT host_id, service_id FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i '
+                . 'WHERE (' . implode(' OR ', $where) . ') AND i.id = m.index_id AND m.hidden = :hidden '
+                . 'GROUP BY m.metric_id '
+                . 'LIMIT 0, 1'
+            )
+        );
+        $collector->bind($statement);
+
+        $statement->execute();
+
+        return $statement->fetchAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function findResources(ResourceFilter $filter): array
     {
         $resources = [];
@@ -256,11 +293,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.name, '
-            . 'resource.details_url, resource.action_url, '
+            . 'resource.id, resource.type, resource.name, resource.action_url, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
-            . 'resource.parent_id, resource.parent_name, resource.parent_details_url, ' // parent
+            . 'resource.parent_id, resource.parent_name, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
@@ -448,12 +484,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             sh.host_id AS `host_id`,
             s.description AS `name`,
             s.action_url AS `action_url`,
-            s.notes_url AS `details_url`,
             s.icon_image_alt AS `icon_name`,
             s.icon_image AS `icon_url`,
             sh.host_id AS `parent_id`,
             sh.name AS `parent_name`,
-            sh.notes_url AS `parent_details_url`,
             sh.icon_image_alt AS `parent_icon_name`,
             sh.icon_image AS `parent_icon_url`,
             sh.state AS `parent_status_code`,
@@ -614,12 +648,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.host_id AS `host_id`,
             h.name AS `name`,
             h.action_url AS `action_url`,
-            h.notes_url AS `details_url`,
             h.icon_image_alt AS `icon_name`,
             h.icon_image AS `icon_url`,
             NULL AS `parent_id`,
             NULL AS `parent_name`,
-            NULL AS `parent_details_url`,
             NULL AS `parent_icon_name`,
             NULL AS `parent_icon_url`,
             NULL AS `parent_status_code`,

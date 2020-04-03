@@ -143,6 +143,11 @@ class NagiosServer implements Mapping\MetadataInterface
     /**
      * @var int
      */
+    private $sshPort;
+
+    /**
+     * @var int
+     */
     private $gorgonePort;
 
     /**
@@ -204,6 +209,7 @@ class NagiosServer implements Mapping\MetadataInterface
             ->add('centreonbrokerCfgPath', 'centreonbroker_cfg_path')
             ->add('centreonbrokerModulePath', 'centreonbroker_module_path')
             ->add('centreonconnectorPath', 'centreonconnector_path')
+            ->add('sshPort', 'ssh_port', PDO::PARAM_INT)
             ->add('gorgoneCommunicationType', 'gorgone_communication_type', PDO::PARAM_INT)
             ->add('gorgonePort', 'gorgone_port', PDO::PARAM_INT)
             ->add('initScriptCentreontrapd', 'init_script_centreontrapd')
@@ -375,6 +381,14 @@ class NagiosServer implements Mapping\MetadataInterface
     public function getCentreonconnectorPath(): ?string
     {
         return $this->centreonconnectorPath;
+    }
+
+    /**
+     * @return integer|null
+     */
+    public function getSshPort(): ?int
+    {
+        return $this->sshPort;
     }
 
     /**
@@ -592,6 +606,15 @@ class NagiosServer implements Mapping\MetadataInterface
     {
         $this->centreonconnectorPath = $centreonconnectorPath;
     }
+
+    /**
+     * @param string|int $sshPort
+     * @return void
+     */
+    public function setSshPort($sshPort = null): void
+    {
+        $this->sshPort = (int)$sshPort;
+    } 
 
     /**
      * @param string|int $gorgoneCommunicationType

@@ -66,4 +66,12 @@ interface ResourceRepositoryInterface
      * @return void
      */
     public function findMissingInformationAboutService(ResourceDetailsService $service): void;
+
+    /**
+     * Get list of resources with graph data.
+     *
+     * @param Resource[] $resources
+     * @return int[]
+     */
+    public function getListOfResourcesWithGraphData(array $resources): array;
 }
