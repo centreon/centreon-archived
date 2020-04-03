@@ -257,8 +257,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             }
 
             $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
-            $collector->addValue(":host_id_{$key}", $resources->getId(), PDO::PARAM_INT);
-            $collector->addValue(":service_id_{$key}", $resources->getParent()->getId(), PDO::PARAM_INT);
+            $collector->addValue(":service_id_{$key}", $resources->getId(), PDO::PARAM_INT);
+            $collector->addValue(":host_id_{$key}", $resources->getParent()->getId(), PDO::PARAM_INT);
         }
 
         if (!$where) {
