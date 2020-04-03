@@ -20,16 +20,8 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Model;
+namespace Centreon\Domain\Platform;
 
-use Centreon\Domain\Monitoring\Service;
-
-/**
- * The model enrich the Service model
- */
-class ResourceDetailsService extends Service
+class PlatformException extends \Exception
 {
-    use ResourceDetailsTrait;
-
-    public const SERIALIZER_GROUP_DETAILS = 'resource_details_service';
 }

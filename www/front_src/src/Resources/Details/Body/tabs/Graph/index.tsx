@@ -59,8 +59,8 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
     TimePeriodId
   >('last_24_h');
 
-  const getEndpointParams = (): string => {
-    const selectedTimePeriod = getTimePeriodById(selectedTimePeriodId);
+  const getQueryParams = (timePeriodId): string => {
+    const selectedTimePeriod = getTimePeriodById(timePeriodId);
 
     const now = new Date(Date.now()).toISOString();
     const start = selectedTimePeriod.getStart().toISOString();
@@ -68,8 +68,14 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
     return `?start=${start}&end=${now}`;
   };
 
-  const changePeriodId = (event): void => {
+  const [periodQueryParams, setPeriodQueryParams] = React.useState(
+    getQueryParams(selectedTimePeriodId),
+  );
+
+  const changeSelectedPeriod = (event): void => {
     setSelectedTimePeriodId(event.target.value);
+    const queryParamsForSelectedPeriodId = getQueryParams(event.target.value);
+    setPeriodQueryParams(queryParamsForSelectedPeriodId);
   };
 
   return (
@@ -79,18 +85,18 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
           className={classes.periodSelect}
           options={timePeriodSelectOptions}
           selectedOptionId={selectedTimePeriodId}
-          onChange={changePeriodId}
+          onChange={changeSelectedPeriod}
         />
       </Paper>
       <Paper className={classes.graphContainer}>
         <div className={`${classes.graph} ${classes.performance}`}>
           <PerformanceGraph
-            endpoint={`${performanceGraphEndpoint}${getEndpointParams()}`}
+            endpoint={`${performanceGraphEndpoint}${periodQueryParams}`}
           />
         </div>
         <div className={`${classes.graph} ${classes.status}`}>
           <StatusGraph
-            endpoint={`${statusGraphEndpoint}${getEndpointParams()}`}
+            endpoint={`${statusGraphEndpoint}${periodQueryParams}`}
           />
         </div>
       </Paper>

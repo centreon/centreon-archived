@@ -1,6 +1,9 @@
 import * as React from 'react';
 
-import { Grid, Card, CardContent, Typography } from '@material-ui/core';
+import { isNil } from 'ramda';
+
+import { Grid, Card, CardContent, Typography, styled } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
 import ExpandableCard from './ExpandableCard';
 import {
@@ -20,11 +23,33 @@ import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
 
+const CardSkeleton = styled(Skeleton)(() => ({
+  transform: 'none',
+}));
+
+const LoadingSkeleton = (): JSX.Element => (
+  <Grid container spacing={2} direction="column">
+    <Grid item>
+      <CardSkeleton height={120} />
+    </Grid>
+    <Grid item>
+      <CardSkeleton height={75} />
+    </Grid>
+    <Grid item>
+      <CardSkeleton height={75} />
+    </Grid>
+  </Grid>
+);
+
 interface Props {
-  details: ResourceDetails;
+  details?: ResourceDetails;
 }
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
+  if (details === undefined) {
+    return <LoadingSkeleton />;
+  }
+
   return (
     <Grid container direction="column" spacing={2}>
       <Grid item container direction="column" spacing={2}>
@@ -67,20 +92,22 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       </Grid>
       <Grid item container spacing={2} alignItems="stretch">
         {getDetailCardLines(details).map(
-          ({ title, field, lines }) =>
-            field && (
-              <Grid item xs={6}>
-                <DetailsCard title={title} lines={lines} />
+          ({ title, field, getLines }) =>
+            !isNil(field) && (
+              <Grid key={title} item xs={6}>
+                <DetailsCard title={title} lines={getLines()} />
               </Grid>
             ),
         )}
       </Grid>
-      <Grid item>
-        <ExpandableCard
-          title={labelPerformanceData}
-          content={details.performance_data}
-        />
-      </Grid>
+      {details.performance_data && (
+        <Grid item>
+          <ExpandableCard
+            title={labelPerformanceData}
+            content={details.performance_data}
+          />
+        </Grid>
+      )}
       <Grid item>
         <Card>
           <CardContent>

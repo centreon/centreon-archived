@@ -1,7 +1,7 @@
-import { Status, Parent, Acknowledgement, Downtime } from '../models';
+import { Status, Acknowledgement, Downtime, Parent } from '../models';
 
 export interface ResourceDetails {
-  name: string;
+  display_name: string;
   status: Status;
   parent: Parent;
   criticality: number;
@@ -22,6 +22,6 @@ export interface ResourceDetails {
   percent_state_change: number;
   last_notification: string;
   notification_number: number;
-  performance_data: string;
+  performance_data?: string;
   check_command: string;
 }

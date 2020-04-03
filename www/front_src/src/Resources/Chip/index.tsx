@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { makeStyles, Avatar, fade, Theme } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
 const useStyles = makeStyles<Theme, { color?: string }>((theme) => ({
@@ -8,7 +8,6 @@ const useStyles = makeStyles<Theme, { color?: string }>((theme) => ({
     width: theme.spacing(2.5),
     height: theme.spacing(2.5),
     ...(color && {
-      backgroundColor: fade(color, 0.1),
       color,
     }),
   }),
@@ -22,7 +21,7 @@ interface Props {
 const Chip = ({ icon, color }: Props): JSX.Element => {
   const classes = useStyles({ color });
 
-  return <Avatar className={`${classes.chip}`}>{icon}</Avatar>;
+  return <div className={`${classes.chip}`}>{icon}</div>;
 };
 
 export default Chip;

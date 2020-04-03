@@ -33,13 +33,18 @@ const useStyles = makeStyles(() => {
 interface Props {
   onClose: () => void;
   endpoints: ResourceEndpoints;
+  openTabId: number;
 }
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = ({ endpoints, onClose }: Props): JSX.Element | null => {
+const Details = ({
+  endpoints,
+  onClose,
+  openTabId,
+}: Props): JSX.Element | null => {
   const classes = useStyles();
 
   const [details, setDetails] = React.useState<ResourceDetails>();
@@ -66,7 +71,11 @@ const Details = ({ endpoints, onClose }: Props): JSX.Element | null => {
       </div>
       <Divider className={classes.divider} />
       <div className={classes.body}>
-        <Body details={details} endpoints={omit(['details'], endpoints)} />
+        <Body
+          details={details}
+          endpoints={omit(['details'], endpoints)}
+          openTabId={openTabId}
+        />
       </div>
     </Paper>
   );
