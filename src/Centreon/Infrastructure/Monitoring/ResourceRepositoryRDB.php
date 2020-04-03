@@ -495,13 +495,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHEN sh.state = 0 THEN 'UP'
                 WHEN sh.state = 1 THEN 'DOWN'
                 WHEN sh.state = 2 THEN 'UNREACHABLE'
-                WHEN sh.state = 3 THEN 'PENDING'
+                WHEN sh.state = 4 THEN 'PENDING'
             END AS `parent_status_name`,
             CASE
                 WHEN sh.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
                 WHEN sh.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . "
                 WHEN sh.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . "
-                WHEN sh.state = 3 THEN " . ResourceStatus::SEVERITY_PENDING . "
+                WHEN sh.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
             END AS `parent_status_severity_code`,
             s.state AS `status_code`,
             CASE
@@ -662,13 +662,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHEN h.state = 0 THEN 'UP'
                 WHEN h.state = 1 THEN 'DOWN'
                 WHEN h.state = 2 THEN 'UNREACHABLE'
-                WHEN h.state = 3 THEN 'PENDING'
+                WHEN h.state = 4 THEN 'PENDING'
             END AS `status_name`,
             CASE
                 WHEN h.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
                 WHEN h.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . "
                 WHEN h.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . "
-                WHEN h.state = 3 THEN " . ResourceStatus::SEVERITY_PENDING . "
+                WHEN h.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
             END AS `status_severity_code`,
             h.scheduled_downtime_depth AS `in_downtime`,
             h.acknowledged AS `acknowledged`,
