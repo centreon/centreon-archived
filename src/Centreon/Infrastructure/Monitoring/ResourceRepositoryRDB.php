@@ -157,6 +157,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 . "WHEN h.state = 2 THEN 'UNREACHABLE' "
                 . "WHEN h.state = 3 THEN 'PENDING' "
                 . "END AS `status_name`, "
+                . "CASE WHEN h.state = 0 THEN ". ResourceStatus::SEVERITY_OK . ' '
+                . "WHEN h.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . ' '
+                . "WHEN h.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . ' '
+                . "WHEN h.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . ' '
+                . " END AS `status_severity_code`, "
                 . "CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', "
                 . "CASE WHEN h.state_type = 1 THEN 'Hard' "
                 . "WHEN h.state_type = 1 THEN 'Soft' "
@@ -203,12 +208,25 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 . "WHEN s.state = 3 THEN 'UNKNOWN' "
                 . "WHEN s.state = 4 THEN 'PENDING' "
                 . "END AS `status_name`, "
+                . 'h.host_id AS `parent_id`, '
+                . 'h.name AS `parent_name`, '
                 . 'h.state AS `parent_status_code`, '
                 . "CASE WHEN h.state = 0 THEN 'UP' "
                 . "WHEN h.state = 1 THEN 'DOWN' "
                 . "WHEN h.state = 2 THEN 'UNREACHABLE' "
                 . "WHEN h.state = 3 THEN 'PENDING' "
                 . "END AS `parent_status_name`, "
+                . "CASE WHEN h.state = 0 THEN ". ResourceStatus::SEVERITY_OK . ' '
+                . "WHEN h.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . ' '
+                . "WHEN h.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . ' '
+                . "WHEN h.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . ' '
+                . " END AS `parent_status_severity_code`, "
+                . "CASE WHEN s.state = 0 THEN " . ResourceStatus::SEVERITY_OK . ' '
+                . "WHEN s.state = 1 THEN " . ResourceStatus::SEVERITY_MEDIUM . ' '
+                . "WHEN s.state = 2 THEN " . ResourceStatus::SEVERITY_HIGH . ' '
+                . "WHEN s.state = 3 THEN " . ResourceStatus::SEVERITY_LOW . ' '
+                . "WHEN s.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . ' '
+                . "END AS `status_severity_code`,"
                 . "CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', "
                 . "CASE WHEN s.state_type = 1 THEN 'Hard' "
                 . "WHEN s.state_type = 1 THEN 'Soft' "
@@ -233,8 +251,15 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 'status_'
             ));
 
-            // parse ResourceStatus object
+            // parse Resource object
             $service->setParent(EntityCreator::createEntityByArray(
+                Resource::class,
+                $data,
+                'parent_'
+            ));
+
+            // parse ResourceStatus object
+            $service->getParent()->setStatus(EntityCreator::createEntityByArray(
                 ResourceStatus::class,
                 $data,
                 'parent_status_'
