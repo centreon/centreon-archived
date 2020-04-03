@@ -428,10 +428,7 @@ if (!$centreon->user->access->admin) {
                 FROM servicegroup sg, acl_resources_sg_relations arsr
                 WHERE sg.sg_id = arsr.sg_id
                     AND arsr.acl_res_id IN (".$centreon->user->access->getResourceGroupsString().")
-                    AND sg.sg_activate = '1'
-                    AND sg.sg_id in (SELECT servicegroup_sg_id
-                FROM servicegroup_relation
-                WHERE service_service_id IN (".$centreon->user->access->getServicesString("ID", $acldb)."))";
+                    AND sg.sg_activate = '1'";
     $DBRESULT = $pearDB->query($query);
     while ($data = $DBRESULT->fetchRow()) {
         $sgBrk[$data["name"]] = 1;
