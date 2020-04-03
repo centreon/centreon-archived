@@ -15,7 +15,6 @@ import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import Filter from './Filter';
 import {
   filterById,
-  unhandledProblemsFilter,
   Filter as FilterModel,
   FilterGroup,
   allFilter,
@@ -25,6 +24,7 @@ import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
+import { storeFilter, getStoredOrDefaultFilter } from './filterLocalStorage';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -52,7 +52,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const defaultFilter = unhandledProblemsFilter;
+const defaultFilter = getStoredOrDefaultFilter();
+
+const defaultSearch = defaultFilter.search;
 const { criterias } = defaultFilter;
 const defaultResourceTypes = criterias?.resourceTypes;
 const defaultStatuses = criterias?.statuses;
@@ -84,7 +86,12 @@ const Resources = (): JSX.Element => {
   const [page, setPage] = useState<number>(1);
 
   const [filter, setFilter] = useState(defaultFilter);
-  const [search, setSearch] = useState<string>();
+  const [currentSearch, setCurrentSearch] = useState<string | undefined>(
+    defaultSearch,
+  );
+  const [nextSearch, setNextSearch] = useState<string | undefined>(
+    defaultSearch,
+  );
   const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>(
     defaultResourceTypes,
   );
@@ -128,7 +135,7 @@ const Resources = (): JSX.Element => {
         sort,
         limit,
         page,
-        search,
+        search: currentSearch,
       },
       { cancelToken: tokenSource.token },
     )
@@ -171,7 +178,7 @@ const Resources = (): JSX.Element => {
     sorto,
     page,
     limit,
-    search,
+    currentSearch,
     states,
     statuses,
     resourceTypes,
@@ -183,8 +190,38 @@ const Resources = (): JSX.Element => {
     initAutorefresh();
   }, [enabledAutorefresh]);
 
-  const doSearch = (value): void => {
-    setSearch(value);
+  const updateLocalStorageFilter = (): void => {
+    storeFilter({
+      ...filter,
+      search: nextSearch,
+      criterias: {
+        resourceTypes,
+        statuses,
+        states,
+        hostGroups,
+        serviceGroups,
+      },
+    });
+  };
+
+  useEffect(() => {
+    updateLocalStorageFilter();
+  }, [
+    filter,
+    nextSearch,
+    resourceTypes,
+    states,
+    statuses,
+    hostGroups,
+    serviceGroups,
+  ]);
+
+  const prepareSearch = (event): void => {
+    setNextSearch(event.target.value);
+  };
+
+  const requestSearch = (): void => {
+    setCurrentSearch(nextSearch);
   };
 
   const changeSort = ({ order, orderBy }): void => {
@@ -380,13 +417,15 @@ const Resources = (): JSX.Element => {
           onStatesChange={changeStates}
           selectedStatuses={statuses}
           onStatusesChange={changeStatuses}
-          onSearchRequest={doSearch}
+          onSearchRequest={requestSearch}
+          onSearchPrepare={prepareSearch}
+          currentSearch={currentSearch}
+          nextSearch={nextSearch}
           onHostGroupsChange={changeHostGroups}
           selectedHostGroups={hostGroups}
           onServiceGroupsChange={changeServiceGroups}
           selectedServiceGroups={serviceGroups}
           onClearAll={clearAllFilters}
-          currentSearch={search}
         />
       </div>
       <div className={classes.body}>

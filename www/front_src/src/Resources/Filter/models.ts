@@ -23,6 +23,7 @@ export interface Filter {
 }
 
 export type FilterGroup = {
+  search?: string;
   criterias: {
     resourceTypes: Array<Filter>;
     states: Array<Filter>;

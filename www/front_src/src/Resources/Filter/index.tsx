@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, KeyboardEvent } from 'react';
+import React, { KeyboardEvent } from 'react';
 
 import {
   Grid,
@@ -109,7 +109,9 @@ interface Props {
   filter: FilterGroup;
   onFilterGroupChange: (event) => void;
   currentSearch?: string;
-  onSearchRequest: (event) => void;
+  nextSearch?: string;
+  onSearchRequest: () => void;
+  onSearchPrepare: (event) => void;
   selectedResourceTypes: Array<FilterModel>;
   onResourceTypesChange: (event, types) => void;
   selectedStates: Array<FilterModel>;
@@ -127,7 +129,9 @@ const Filter = ({
   filter,
   onFilterGroupChange,
   currentSearch,
+  nextSearch,
   onSearchRequest,
+  onSearchPrepare,
   selectedResourceTypes,
   onResourceTypesChange,
   selectedStates,
@@ -141,23 +145,6 @@ const Filter = ({
   onClearAll,
 }: Props): JSX.Element => {
   const classes = useStyles();
-
-  const [searchFieldValue, setSearchFieldValue] = useState<string>();
-
-  const changeSearchFieldValue = (event): void => {
-    setSearchFieldValue(event.target.value);
-  };
-
-  const requestSearch = (): void => {
-    onSearchRequest(searchFieldValue);
-  };
-
-  const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
-    // "Enter" key
-    if (event.keyCode === 13) {
-      requestSearch();
-    }
-  };
 
   const getHostGroupSearchEndpoint = (searchValue): string => {
     return buildHostGroupsEndpoint({
@@ -174,6 +161,14 @@ const Filter = ({
   };
 
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
+
+  const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
+    const enterKeyPressed = event.keyCode === 13;
+
+    if (enterKeyPressed) {
+      onSearchRequest();
+    }
+  };
 
   return (
     <ExpansionPanel square>
@@ -216,8 +211,8 @@ const Filter = ({
             <SearchField
               className={classes.searchField}
               EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
-              value={searchFieldValue || ''}
-              onChange={changeSearchFieldValue}
+              value={nextSearch || ''}
+              onChange={onSearchPrepare}
               placeholder={labelResourceName}
               onKeyDown={requestSearchOnEnterKey}
             />
@@ -226,8 +221,8 @@ const Filter = ({
             <Button
               variant="contained"
               color="primary"
-              disabled={!searchFieldValue && !currentSearch}
-              onClick={requestSearch}
+              disabled={!currentSearch && !nextSearch}
+              onClick={onSearchRequest}
             >
               {labelSearch}
             </Button>
