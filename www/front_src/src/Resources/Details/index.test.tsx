@@ -43,7 +43,7 @@ const statusGraphEndpoint = '/status';
 const defaultTabIdOpen = 0;
 
 const retrievedDetails = {
-  name: 'Central',
+  display_name: 'Central',
   severity: { level: 1 },
   status: { name: 'Critical', severity_code: 1 },
   parent: { name: 'Centreon', status: { severity_code: 1 } },

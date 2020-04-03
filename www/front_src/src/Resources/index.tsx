@@ -18,6 +18,7 @@ import {
   unhandledProblemsFilter,
   Filter as FilterModel,
   FilterGroup,
+  allFilter,
 } from './Filter/models';
 import ResourceActions from './Actions/Resource';
 import GlobalActions from './Actions/Refresh';
@@ -43,8 +44,6 @@ const useStyles = makeStyles((theme) => ({
   },
   filter: {
     zIndex: 4,
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
   },
   listing: {
     marginLeft: theme.spacing(2),
@@ -244,10 +243,10 @@ const Resources = (): JSX.Element => {
   };
 
   const clearAllFilters = (): void => {
-    setFilter(defaultFilter);
-    setResourceTypes(defaultFilter.criterias.resourceTypes);
-    setStatuses(defaultFilter.criterias.statuses);
-    setStates(defaultFilter.criterias.states);
+    setFilter(allFilter);
+    setResourceTypes(allFilter.criterias.resourceTypes);
+    setStatuses(allFilter.criterias.statuses);
+    setStates(allFilter.criterias.states);
   };
 
   const selectResources = (resources): void => {

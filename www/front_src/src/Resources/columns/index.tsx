@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
+import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 
@@ -18,10 +18,12 @@ import {
   labelAcknowledge,
   labelSetDowntimeOn,
   labelCheck,
+  labelSetDowntime,
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
 import GraphColumn from './Graph';
+import ActionButton from '../ActionButton';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -31,9 +33,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     paddingLeft: theme.spacing(2),
-  },
-  iconButton: {
-    padding: 0,
   },
   extraSmallChipContainer: {
     height: 16,
@@ -98,34 +97,32 @@ const StatusColumnOnHover = ({
   return (
     <Grid container spacing={1} alignItems="center">
       <Grid item>
-        <IconButton
-          className={classes.iconButton}
+        <ActionButton
+          title={labelAcknowledge}
           color="primary"
           onClick={(): void => actions.onAcknowledge(row)}
-          aria-label={`${labelAcknowledge} ${row.name}`}
+          ariaLabel={`${labelAcknowledge} ${row.name}`}
         >
           <IconAcknowledge fontSize="small" />
-        </IconButton>
+        </ActionButton>
       </Grid>
       <Grid item>
-        <IconButton
-          className={classes.iconButton}
-          color="primary"
+        <ActionButton
+          title={labelSetDowntime}
           onClick={(): void => actions.onDowntime(row)}
-          aria-label={`${labelSetDowntimeOn} ${row.name}`}
+          ariaLabel={`${labelSetDowntimeOn} ${row.name}`}
         >
           <IconDowntime fontSize="small" />
-        </IconButton>
+        </ActionButton>
       </Grid>
       <Grid item>
-        <IconButton
-          className={classes.iconButton}
-          color="primary"
+        <ActionButton
+          title={labelCheck}
           onClick={(): void => actions.onCheck(row)}
-          aria-label={`${labelCheck} ${row.name}`}
+          ariaLabel={`${labelCheck} ${row.name}`}
         >
           <IconCheck fontSize="small" />
-        </IconButton>
+        </ActionButton>
       </Grid>
       <Grid item>
         <StatusChip
@@ -201,11 +198,7 @@ const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
 };
 
 const InformationColumn = ({ row }: ColumnProps): JSX.Element | null => {
-  return (
-    <Typography variant="body2" noWrap style={{ maxWidth: 400 }}>
-      {row.information || ''}
-    </Typography>
-  );
+  return <Typography variant="body2">{row.information || ''}</Typography>;
 };
 
 export const getColumns = (actions): Array<Column> => [
@@ -223,7 +216,7 @@ export const getColumns = (actions): Array<Column> => [
     Component: StatusColumn(actions),
     sortField: 'status_severity_code',
     clickable: true,
-    width: 125,
+    width: 130,
   },
   {
     id: 'resource',
@@ -252,18 +245,21 @@ export const getColumns = (actions): Array<Column> => [
     label: labelDuration,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ duration }): string => duration,
+    width: 125,
   },
   {
     id: 'tries',
     label: labelTries,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ tries }): string => tries,
+    width: 125,
   },
   {
     id: 'last_check',
     label: labelLastCheck,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ last_check }): string => last_check,
+    width: 125,
   },
   {
     id: 'information',

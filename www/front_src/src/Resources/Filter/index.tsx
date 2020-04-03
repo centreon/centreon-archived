@@ -54,7 +54,7 @@ import {
 
 const ExpansionPanelSummary = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(0, 3, 0, 0.5),
+    padding: theme.spacing(0, 3, 0, 2),
     minHeight: 'auto',
     '&$expanded': {
       minHeight: 'auto',
@@ -71,13 +71,13 @@ const ExpansionPanelSummary = withStyles((theme) => ({
 
 const ExpansionPanelDetails = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(0, 0.5, 1, 0.5),
+    padding: theme.spacing(0, 0.5, 1, 2),
   },
 }))(MuiExpansionPanelDetails);
 
 const useStyles = makeStyles((theme) => ({
   filterBox: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(),
     backgroundColor: theme.palette.common.white,
   },
   filterLineLabel: {

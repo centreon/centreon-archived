@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from 'recharts';
 import filesize from 'filesize';
-import { pipe, map, uniq, prop, isEmpty, repeat } from 'ramda';
+import { pipe, map, uniq, prop, isEmpty } from 'ramda';
 
 import { fade, makeStyles, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -57,7 +57,11 @@ const LoadingSkeleton = (): JSX.Element => {
   const skeletonLine = <Skeleton className={classes.loadingSkeletonLine} />;
 
   return (
-    <div className={classes.loadingSkeleton}>{repeat(skeletonLine, 3)}</div>
+    <div className={classes.loadingSkeleton}>
+      {skeletonLine}
+      {skeletonLine}
+      {skeletonLine}
+    </div>
   );
 };
 

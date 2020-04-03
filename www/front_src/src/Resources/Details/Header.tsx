@@ -64,10 +64,12 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
   return (
     <>
       <Grid item>
-        <StatusChip
-          severityCode={SeverityCode.None}
-          label={details.criticality?.toString()}
-        />
+        {details.criticality && (
+          <StatusChip
+            severityCode={SeverityCode.None}
+            label={details.criticality.toString()}
+          />
+        )}
       </Grid>
       <Grid item>
         <StatusChip
@@ -78,13 +80,13 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       <Grid item style={{ flexGrow: 1 }}>
         <Grid container direction="column">
           <Grid item>
-            <Typography>{details.name}</Typography>
+            <Typography>{details.display_name}</Typography>
           </Grid>
           {details.parent && (
             <Grid item container spacing={1}>
               <Grid item>
                 <StatusChip
-                  severityCode={details.parent.status.severity_code}
+                  severityCode={details.parent.status?.severity_code}
                 />
               </Grid>
               <Grid item>
