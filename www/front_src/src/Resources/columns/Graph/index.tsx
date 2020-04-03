@@ -43,7 +43,7 @@ const GraphColumn = ({
         label={labelGraph}
       >
         <Paper className={classes.graph}>
-          <PerformanceGraph endpoint="http://localhost:5000/api/beta/graph" />
+          <PerformanceGraph endpoint={row.performance_graph_endpoint} />
         </Paper>
       </HoverChip>
     );
