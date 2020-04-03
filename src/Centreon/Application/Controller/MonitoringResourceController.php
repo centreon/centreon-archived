@@ -161,6 +161,8 @@ class MonitoringResourceController extends AbstractController
         $resources = $this->resource->filterByContact($this->getUser())
             ->findResources($filter);
 
+        $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
+
         foreach ($resources as $resource) {
             // set paths to endpoints
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
@@ -184,7 +186,12 @@ class MonitoringResourceController extends AbstractController
             $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
             $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
 
-            if ($resource->getParent() != null) {
+            if (
+                $resource->getParent() != null && in_array([
+                    'host_id' => $resource->getParent()->getId(),
+                    'service_id' => $resource->getId(),
+                ], $resourcesGraphData)
+            ) {
                 $parameters = [
                     'hostId' => $resource->getParent()->getId(),
                     'serviceId' => $resource->getId(),

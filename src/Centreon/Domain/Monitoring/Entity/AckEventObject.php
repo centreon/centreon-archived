@@ -100,6 +100,7 @@ class AckEventObject extends Acknowledgement implements EventObjectInterface
             'sticky' => 'setSticky',
             'timestamp' => 'setEntryTime',
             'contact' => 'setAuthor',
+            'contact_id' => 'setAuthorId',
             'service_id' => 'setServiceId'
         ];
     }
