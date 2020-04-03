@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\Model;
 
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\ResourceStatus;
 
 /**
  * The model enrich the Service model
@@ -33,23 +32,4 @@ class ResourceDetailsService extends Service
     use ResourceDetailsTrait;
 
     public const SERIALIZER_GROUP_DETAILS = 'resource_details_service';
-
-    /**
-     * @return self|null
-     */
-    public function getParent(): ?ResourceStatus
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param ResourceStatus|null $parent
-     * @return self
-     */
-    public function setParent(?ResourceStatus $parent): self
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
 }

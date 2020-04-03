@@ -15,7 +15,7 @@ Centreon\Domain\Monitoring\Model\ResourceDetailsHost:
             groups:
                 - 'resource_details_host'
         parent:
-            type: Centreon\Domain\Monitoring\ResourceStatus
+            type: Centreon\Domain\Monitoring\Resource
             groups:
                 - 'resource_details_host'
         status:

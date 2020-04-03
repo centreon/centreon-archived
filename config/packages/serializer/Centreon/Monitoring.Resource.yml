@@ -24,6 +24,7 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
+                - 'resource_details_service'
         type:
             type: string
             groups:
@@ -33,6 +34,7 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
+                - 'resource_details_service'
         icon:
             type: Centreon\Domain\Monitoring\Icon
             groups:
@@ -47,6 +49,7 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
+                - 'resource_details_service'
         inDowntime:
             type: bool
             groups:
