@@ -155,7 +155,6 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
 
             return ds_data.ds_filled ? (
               <Area
-                isAnimationActive={false}
                 key={metric}
                 dot={false}
                 dataKey={metric}
