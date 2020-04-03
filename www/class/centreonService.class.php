@@ -1120,9 +1120,10 @@ class CentreonService
                     $serviceList[] = array('id' => $serviceCompleteId, 'text' => $serviceCompleteName);
                 }
             } else {
-                $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id "
-                    . "FROM host h, service s, host_service_relation hsr "
+                $queryService = "SELECT DISTINCT s.service_description, s.service_id, h.host_name, h.host_id, sgr.host_host_id "
+                    . "FROM host h, service s, host_service_relation hsr, servicegroup_relation sgr "
                     . 'WHERE hsr.host_host_id = h.host_id '
+                    . "AND sgr.host_host_id = h.host_id "
                     . "AND hsr.service_service_id = s.service_id "
                     . "AND h.host_register = '$register' AND s.service_register = '$register' "
                     . $selectedHosts
