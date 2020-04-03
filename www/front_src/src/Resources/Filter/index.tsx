@@ -306,4 +306,4 @@ const Filter = ({
   );
 };
 
-export default React.memo(Filter);
+export default Filter;
