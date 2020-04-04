@@ -69,4 +69,16 @@ class MonitoringServerService implements MonitoringServerServiceInterface
             throw new MonitoringServerException('Error when searching for a resource of monitoring server', 0, $ex);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findLocalServer(): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findLocalServer();
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when searching for the local monitoring servers', 0, $ex);
+        }
+    }
 }

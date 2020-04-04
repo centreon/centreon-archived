@@ -25,6 +25,7 @@ namespace Centreon\Domain\MonitoringServer\Interfaces;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\MonitoringServer\MonitoringServerResource;
+use Centreon\Domain\MonitoringServer\MonitoringServerService;
 
 interface MonitoringServerServiceInterface
 {
@@ -46,4 +47,12 @@ interface MonitoringServerServiceInterface
      * @throws MonitoringServerException
      */
     public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource;
+
+    /**
+     * Find the local monitoring server.
+     *
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findLocalServer(): ?MonitoringServer;
 }

@@ -67,6 +67,29 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
+    public function findLocalServer(): ?MonitoringServer
+    {
+        $request = $this->translateDbName('SELECT * FROM `:db`.nagios_server WHERE localhost = \'1\'');
+        $statement = $this->db->query($request);
+        if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            /**
+             * @var MonitoringServer $server
+             */
+            $server = EntityCreator::createEntityByArray(
+                MonitoringServer::class,
+                $result
+            );
+            if ((int) $result['last_restart'] === 0) {
+                $server->setLastRestart(null);
+            }
+            return $server;
+        }
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findServers(): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([

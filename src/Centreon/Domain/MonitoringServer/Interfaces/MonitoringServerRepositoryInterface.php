@@ -44,4 +44,12 @@ interface MonitoringServerRepositoryInterface
      * @return MonitoringServerResource|null
      */
     public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource;
+
+    /**
+     * Find the local monitoring server.
+     *
+     * @return MonitoringServer|null
+     * @throws \Exception
+     */
+    public function findLocalServer(): ?MonitoringServer;
 }
