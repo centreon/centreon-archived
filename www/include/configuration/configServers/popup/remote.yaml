@@ -13,6 +13,11 @@ gorgone:
       package: gorgone::modules::core::action::hooks
       enable: true
 
+    - name: cron
+      package: "gorgone::modules::core::cron::hooks"
+      enable: true
+      cron: !include cron.d/*.yaml
+
     - name: nodes
       package: gorgone::modules::centreon::nodes::hooks
       enable: true
