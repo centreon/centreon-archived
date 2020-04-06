@@ -19,7 +19,30 @@ const getDefaultHostGroups = (): Array<Filter> =>
 const getDefaultServiceGroups = (): Array<Filter> =>
   getDefaultCriterias().serviceGroups;
 
-const useFilter = () => {
+type FilterGroupDispatch = React.Dispatch<React.SetStateAction<FilterGroup>>;
+type FiltersDispatch = React.Dispatch<React.SetStateAction<Array<Filter>>>;
+type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
+
+interface FilterState {
+  filter: FilterGroup;
+  setFilter: FilterGroupDispatch;
+  currentSearch?: string;
+  setCurrentSearch: SearchDispatch;
+  nextSearch?: string;
+  setNextSearch: SearchDispatch;
+  resourceTypes: Array<Filter>;
+  setResourceTypes: FiltersDispatch;
+  states: Array<Filter>;
+  setStates: FiltersDispatch;
+  statuses: Array<Filter>;
+  setStatuses: FiltersDispatch;
+  hostGroups: Array<Filter>;
+  setHostGroups: FiltersDispatch;
+  serviceGroups: Array<Filter>;
+  setServiceGroups: FiltersDispatch;
+}
+
+const useFilter = (): FilterState => {
   const [filter, setFilter] = React.useState(getStoredOrDefaultFilter());
   const [currentSearch, setCurrentSearch] = React.useState<string | undefined>(
     getDefaultSearch(),
