@@ -24,31 +24,33 @@ namespace Centreon\Domain\Gorgone\Command;
 
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
-class CommandFactory
+/**
+ * This class is designed to send command of action type to the Gorgone server.
+ *
+ * @package Centreon\Domain\Gorgone\Command
+ */
+final class Command extends AbstractCommand implements CommandInterface
 {
-    /**
-     * @var array<CommandInterface> GorgoneCommandInterface[]
-     */
-    private static $commands = [];
+    private const NAME = "action::command";
 
     /**
-     * @param CommandInterface $command Command to add
+     * @inheritDoc
      */
-    public static function addCommand(CommandInterface $command): void
+    public function getUriRequest(): string
     {
-        static::$commands[$command->getName()] = $command;
+        return 'nodes/' . $this->getMonitoringInstanceId() . '/core/action/command';
     }
 
-    /***
-     * @param string $commandName Gorgone command name
-     * @return CommandInterface
+    /**
+     * @inheritDoc
      */
-    public static function create(string $commandName): CommandInterface
+    public function getName(): string
     {
-        if (array_key_exists($commandName, static::$commands)) {
-            return static::$commands[$commandName];
-        } else {
-            throw new \LogicException('Command not found');
-        }
+        return self::NAME;
+    }
+
+    public function getMethod(): string
+    {
+        return self::METHOD_POST;
     }
 }

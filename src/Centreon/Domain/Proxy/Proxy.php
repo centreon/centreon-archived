@@ -120,4 +120,15 @@ class Proxy
         $this->password = $password;
         return $this;
     }
+
+    public function __toString()
+    {
+        return sprintf(
+            '%s:%s@%s:%u',
+            $this->getUser(),
+            $this->getPassword(),
+            $this->getUrl(),
+            $this->getPort()
+        );
+    }
 }

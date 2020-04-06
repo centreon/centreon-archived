@@ -20,20 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Gorgone\Command\Internal;
+namespace Centreon\Domain\Gorgone\Command;
 
-use Centreon\Domain\Gorgone\Command\BasicCommand;
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
 /**
- * This class is designed to represent a thumbprint command
+ * This class is designed to send thumbprint command of internal type to the Gorgone server.
  *
- * @package Centreon\Domain\Gorgone\Command\Internal
+ * @package Centreon\Domain\Gorgone\Command
  */
-class ThumbprintCommand implements CommandInterface
+final class Thumbprint extends AbstractCommand implements CommandInterface
 {
-    use BasicCommand;
-
     // Internal name of this command
     private const NAME = 'internal::thumbprint';
 
@@ -42,15 +39,7 @@ class ThumbprintCommand implements CommandInterface
      */
     public function getUriRequest(): string
     {
-        return 'nodes/' . $this->monitoringInstanceId . '/internal/thumbprint';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getBodyRequest(): string
-    {
-        return '';
+        return 'nodes/' . $this->getMonitoringInstanceId() . '/internal/thumbprint';
     }
 
     /**

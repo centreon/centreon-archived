@@ -20,23 +20,29 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Proxy\Interfaces;
+namespace Centreon\Domain\HostConfiguration\Interfaces;
 
-use Centreon\Domain\Proxy\Proxy;
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostConfigurationException;
+use Centreon\Domain\HostConfiguration\HostConfigurationService;
 
-interface ProxyServiceInterface
+interface HostConfigurationServiceInterface
 {
     /**
-     * Update the proxy configuration.
+     * Add a host.
      *
-     * @param Proxy $proxy Proxy details
+     * @param Host $host
+     * @return int Returns the host id
+     * @throws HostConfigurationException
      */
-    public function updateProxy(Proxy $proxy): void;
+    public function addHost(Host $host): int;
 
     /**
-     * Get the proxy configuration.
+     * Find a host.
      *
-     * @return Proxy
+     * @param int $hostId Host Id to be found
+     * @return Host|null Returns a host otherwise null
+     * @throws HostConfigurationException
      */
-    public function getProxy(): Proxy;
+    public function findHost(int $hostId): ?Host;
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -22,6 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\MonitoringServerResource;
+use Centreon\Domain\MonitoringServer\MonitoringServerService;
 
 interface MonitoringServerServiceInterface
 {
@@ -30,7 +34,25 @@ interface MonitoringServerServiceInterface
      * Find pollers.
      *
      * @return MonitoringServer[]
-     * @throws \Exception
+     * @throws MonitoringServerException
      */
     public function findServers(): array;
+
+    /**
+     * Find a resource of monitoring servers identified by his name.
+     *
+     * @param int $monitoringServerId Id of the monitoring server for which we want their resources
+     * @param string $resourceName Resource name to find
+     * @return MonitoringServerResource|null
+     * @throws MonitoringServerException
+     */
+    public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource;
+
+    /**
+     * Find the local monitoring server.
+     *
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findLocalServer(): ?MonitoringServer;
 }
