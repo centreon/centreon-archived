@@ -1,5 +1,8 @@
 centreon:
     resource: "./Centreon/**/*.yaml"
-    prefix: /centreon/api/{version}
+    prefix: "/{base_uri}api/{version}"
     defaults:
+        base_uri: "centreon"
         version: "beta"
+    requirements:
+        base_uri: "(.+/)|.{0}"

@@ -89,16 +89,18 @@ if (file_exists("./install/setup.php")) {
  * Install frontend assets if needed
  */
 $basePath = '/' . trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/") . '/';
+$basePath = str_replace('//', '/', $basePath);
 $indexHtmlPath = './index.html';
 $indexHtmlContent = file_get_contents($indexHtmlPath);
 
 // update base path only if it has changed
 if (!preg_match('/.*<base\shref="' . preg_quote($basePath, '/') . '">/', $indexHtmlContent)) {
     $indexHtmlContent = preg_replace(
-        '/(.*<base\shref=").*(">)/',
+        '/(^.*<base\shref=")\S+(">.*$)/s',
         '${1}' . $basePath . '${2}',
         $indexHtmlContent
     );
+
     file_put_contents($indexHtmlPath, $indexHtmlContent);
 }
 
