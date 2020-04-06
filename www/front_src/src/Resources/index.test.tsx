@@ -9,8 +9,8 @@ import {
   fireEvent,
   RenderResult,
 } from '@testing-library/react';
-
 import { Simulate } from 'react-dom/test-utils';
+
 import {
   partition,
   where,
