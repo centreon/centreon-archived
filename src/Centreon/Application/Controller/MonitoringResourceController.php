@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Application\Normalizer\ImageUrlNormalizer;
+use Centreon\Application\Normalizer\IconUrlNormalizer;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
@@ -86,26 +86,26 @@ class MonitoringResourceController extends AbstractController
     protected $router;
 
     /**
-     * @var ImageUrlNormalizer
+     * @var IconUrlNormalizer
      */
-    protected $imageUrlNormalizer;
+    protected $iconUrlNormalizer;
 
     /**
      * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
-     * @param ImageUrlNormalizer $imageUrlNormalizer
+     * @param IconUrlNormalizer $iconUrlNormalizer
      */
     public function __construct(
         MonitoringServiceInterface $monitoringService,
         ResourceServiceInterface $resource,
         UrlGeneratorInterface $router,
-        ImageUrlNormalizer $imageUrlNormalizer
+        IconUrlNormalizer $iconUrlNormalizer
     ) {
         $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
-        $this->imageUrlNormalizer = $imageUrlNormalizer;
+        $this->iconUrlNormalizer = $iconUrlNormalizer;
     }
 
     /**
@@ -173,7 +173,7 @@ class MonitoringResourceController extends AbstractController
         $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
 
         foreach ($resources as $resource) {
-            $this->imageUrlNormalizer->normalize($resource);
+            $this->iconUrlNormalizer->normalize($resource);
 
             // set paths to endpoints
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';

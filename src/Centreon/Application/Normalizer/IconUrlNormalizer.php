@@ -26,8 +26,13 @@ use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\Icon;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
-class ImageUrlNormalizer implements ContextAwareNormalizerInterface
+/**
+ * Normalize icon url to build full url
+ */
+class IconUrlNormalizer implements ContextAwareNormalizerInterface
 {
+    private const IMG_DIR = '/img/media';
+
     /**
      * @inheritDoc
      */
@@ -62,8 +67,8 @@ class ImageUrlNormalizer implements ContextAwareNormalizerInterface
      */
     private function normalizeIcon(Icon $icon): Icon
     {
-        if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+\/)api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
-            $icon->setUrl($matches[1] . '/img/media/ppm/operatingsystems-linux-snmp-linux-128.png');
+        if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
+            $icon->setUrl($matches[1] . self::IMG_DIR . '/' . $icon->getUrl());
         }
 
         return $icon;
