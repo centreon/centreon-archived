@@ -5,6 +5,10 @@ DELETE FROM `cb_field` WHERE
   OR `description` LIKE 'File where correlation%'
   OR `displayname` = 'Correlation passive';
 DELETE FROM `cb_type` WHERE `type_shortname` = 'correlation';
+-- Resolve radio button broker form
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES
+((SELECT cb_list_id FROM cb_list WHERE cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldtype ='radio' AND fieldname ='error') LIMIT 1),'No','no'),
+((SELECT cb_list_id FROM cb_list WHERE cb_field_id = (SELECT cb_field_id FROM cb_field WHERE fieldtype ='radio' AND fieldname ='error') LIMIT 1),'Yes','yes');
 
 -- Update topology of service grid / by host group / by service group
 UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;

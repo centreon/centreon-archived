@@ -38,8 +38,6 @@ interface EncryptionInterface
      * Crypt data according to first and second keys.
      *
      * @param string $data Data to be encrypted
-     * @see Security::$firstKey
-     * @see Security::$secondKey
      * @return string Encrypted data
      * @throws \Exception
      */
@@ -50,7 +48,6 @@ interface EncryptionInterface
      *
      * @param string $firstKey
      * @return EncryptionInterface
-     * @see Security::$firstKey
      */
     public function setFirstKey(string $firstKey): EncryptionInterface;
 
@@ -59,7 +56,6 @@ interface EncryptionInterface
      *
      * @param string $secondKey
      * @return EncryptionInterface
-     * @see Security::$secondKey
      */
     public function setSecondKey(string $secondKey): EncryptionInterface;
 

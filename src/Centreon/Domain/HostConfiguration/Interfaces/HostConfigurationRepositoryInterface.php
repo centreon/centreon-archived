@@ -20,23 +20,30 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Proxy\Interfaces;
+namespace Centreon\Domain\HostConfiguration\Interfaces;
 
-use Centreon\Domain\Proxy\Proxy;
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Infrastructure\HostConfiguration\HostConfigurationRepositoryRDB;
 
-interface ProxyServiceInterface
+interface HostConfigurationRepositoryInterface
 {
     /**
-     * Update the proxy configuration.
+     * Add a host
      *
-     * @param Proxy $proxy Proxy details
+     * @param Host $host Host to add
+     * @return int Returns the host id
+     * @throws RepositoryException
+     * @throws \Exception
      */
-    public function updateProxy(Proxy $proxy): void;
+    public function addHost(Host $host): int;
 
     /**
-     * Get the proxy configuration.
+     * Find a host.
      *
-     * @return Proxy
+     * @param int $hostId Host Id to be found
+     * @return Host|null Returns a host otherwise null
+     * @throws \Exception
      */
-    public function getProxy(): Proxy;
+    public function findHost(int $hostId): ?Host;
 }

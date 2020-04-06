@@ -27,7 +27,7 @@ interface EntityDescriptorMetadataInterface
     /**
      * Entity descriptor used to define the setter method for a specific column.
      *
-     * @return array
+     * @return array<string, string>
      */
     public static function loadEntityDescriptorMetadata(): array;
 }

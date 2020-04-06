@@ -138,7 +138,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        $timeout = (int) $this->gorgoneParameters[self::GORGONE_COMMAND_TIMEOUT] ?? self::DEFAULT_TIMEOUT;
+        $timeout = (int) ($this->gorgoneParameters[self::GORGONE_COMMAND_TIMEOUT] ?? self::DEFAULT_TIMEOUT);
         // Do not use a timeout at 0
         return $timeout > 0 ? $timeout : 1;
     }

@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
+use Centreon\Domain\Gorgone\GorgoneException;
+
 /**
  * Interface GorgoneServiceInterface
  *
@@ -35,8 +37,7 @@ interface GorgoneServiceInterface
      *
      * @param CommandInterface $command Command to send
      * @return ResponseInterface Returns a response containing the command sent.
-     * @throws \Exception
-     * @see ResponseInterface
+     * @throws GorgoneException
      */
     public function send(CommandInterface $command): ResponseInterface;
 

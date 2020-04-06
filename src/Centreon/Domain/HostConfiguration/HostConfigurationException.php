@@ -20,23 +20,8 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Proxy\Interfaces;
+namespace Centreon\Domain\HostConfiguration;
 
-use Centreon\Domain\Proxy\Proxy;
-
-interface ProxyServiceInterface
+class HostConfigurationException extends \Exception
 {
-    /**
-     * Update the proxy configuration.
-     *
-     * @param Proxy $proxy Proxy details
-     */
-    public function updateProxy(Proxy $proxy): void;
-
-    /**
-     * Get the proxy configuration.
-     *
-     * @return Proxy
-     */
-    public function getProxy(): Proxy;
 }

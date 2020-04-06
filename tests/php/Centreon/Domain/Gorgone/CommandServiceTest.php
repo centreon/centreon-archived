@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Gorgone;
 
-use Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand;
+use Centreon\Domain\Gorgone\Command\Thumbprint;
 use Centreon\Domain\Gorgone\GorgoneService;
 use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
@@ -40,7 +40,7 @@ class CommandServiceTest extends TestCase
         $firstGorgoneResponse = file_get_contents(__DIR__ . '/first_gorgone_response.json');
         $secondGorgoneResponse = file_get_contents(__DIR__ . '/second_gorgone_response.json');
 
-        $thumbprintCommand = new ThumbprintCommand(2);
+        $thumbprintCommand = new Thumbprint(2);
         $commandRepository = $this
             ->getMockBuilder(CommandRepositoryInterface::class)
             ->disableOriginalConstructor()
