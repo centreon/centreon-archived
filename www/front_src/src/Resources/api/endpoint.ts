@@ -3,15 +3,13 @@ import { getSearchParam, OrSearchParam } from './searchObjects';
 const endpoint = './api/beta';
 const monitoringEndpoint = `${endpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
+const acknowledgeEndpoint = `${resourcesEndpoint}/acknowledge`;
+const downtimeEndpoint = `${resourcesEndpoint}/downtime`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 const hostEndpoint = `${monitoringEndpoint}/hosts`;
-const hostAcknowledgementEndpoint = `${hostEndpoint}/acknowledgements`;
-const hostDowntimeEndpoint = `${hostEndpoint}/downtimes`;
 const hostCheckEndpoint = `${hostEndpoint}/check`;
 const serviceEndpoint = `${monitoringEndpoint}/services`;
-const serviceAcknowledgementEndpoint = `${serviceEndpoint}/acknowledgements`;
-const serviceDowntimeEndpoint = `${serviceEndpoint}/downtimes`;
 const serviceCheckEndpoint = `${serviceEndpoint}/check`;
 const userEndpoint =
   './api/internal.php?object=centreon_topcounter&action=user';
@@ -95,10 +93,8 @@ export {
   buildResourcesEndpoint,
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
-  hostAcknowledgementEndpoint,
-  serviceAcknowledgementEndpoint,
-  hostDowntimeEndpoint,
-  serviceDowntimeEndpoint,
+  acknowledgeEndpoint,
+  downtimeEndpoint,
   hostCheckEndpoint,
   serviceCheckEndpoint,
   userEndpoint,

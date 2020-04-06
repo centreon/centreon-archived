@@ -50,10 +50,9 @@ const AcknowledgeForm = ({
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
 
-      const params = resources.map((resource) => ({ ...resource, ...values }));
-
       acknowledgeResources({
-        resources: params,
+        resources,
+        params: values,
         cancelToken: token,
       })
         .then(() => {
