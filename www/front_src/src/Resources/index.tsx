@@ -13,18 +13,13 @@ import { ResourceListing, Resource, ResourceEndpoints } from './models';
 
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import Filter from './Filter';
-import {
-  filterById,
-  unhandledProblemsFilter,
-  Filter as FilterModel,
-  FilterGroup,
-  allFilter,
-} from './Filter/models';
+import { filterById, FilterGroup, allFilter } from './Filter/models';
 import ResourceActions from './Actions/Resource';
 import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
+import useFilter from './Filter/useFilter';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -52,12 +47,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const defaultFilter = unhandledProblemsFilter;
-const { criterias } = defaultFilter;
-const defaultResourceTypes = criterias?.resourceTypes;
-const defaultStatuses = criterias?.statuses;
-const defaultStates = criterias?.states;
-
 type SortOrder = 'asc' | 'desc';
 
 const Resources = (): JSX.Element => {
@@ -83,19 +72,24 @@ const Resources = (): JSX.Element => {
   const [limit, setLimit] = React.useState<number>(30);
   const [page, setPage] = React.useState<number>(1);
 
-  const [filter, setFilter] = React.useState(defaultFilter);
-  const [search, setSearch] = React.useState<string>();
-  const [resourceTypes, setResourceTypes] = React.useState<Array<FilterModel>>(
-    defaultResourceTypes,
-  );
-  const [states, setStates] = React.useState<Array<FilterModel>>(defaultStates);
-  const [statuses, setStatuses] = React.useState<Array<FilterModel>>(
-    defaultStatuses,
-  );
-  const [hostGroups, setHostGroups] = React.useState<Array<FilterModel>>();
-  const [serviceGroups, setServiceGroups] = React.useState<
-    Array<FilterModel>
-  >();
+  const {
+    filter,
+    setFilter,
+    currentSearch,
+    setCurrentSearch,
+    nextSearch,
+    setNextSearch,
+    resourceTypes,
+    setResourceTypes,
+    states,
+    setStates,
+    statuses,
+    setStatuses,
+    hostGroups,
+    setHostGroups,
+    serviceGroups,
+    setServiceGroups,
+  } = useFilter();
 
   const [
     selectedDetailsEndpoints,
@@ -132,7 +126,7 @@ const Resources = (): JSX.Element => {
         sort,
         limit,
         page,
-        search,
+        search: currentSearch,
       },
       { cancelToken: tokenSource.token },
     )
@@ -164,7 +158,7 @@ const Resources = (): JSX.Element => {
   React.useEffect(() => {
     return (): void => {
       tokenSource.cancel();
-      window.clearInterval(refreshIntervalRef.current);
+      clearInterval(refreshIntervalRef.current);
     };
   }, []);
 
@@ -175,7 +169,7 @@ const Resources = (): JSX.Element => {
     sorto,
     page,
     limit,
-    search,
+    currentSearch,
     states,
     statuses,
     resourceTypes,
@@ -187,22 +181,12 @@ const Resources = (): JSX.Element => {
     initAutorefresh();
   }, [enabledAutorefresh]);
 
-  React.useEffect(() => {
-    setPage(1);
-  }, [
-    sortf,
-    sorto,
-    limit,
-    search,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-  ]);
+  const prepareSearch = (event): void => {
+    setNextSearch(event.target.value);
+  };
 
-  const doSearch = (value): void => {
-    setSearch(value);
+  const requestSearch = (): void => {
+    setCurrentSearch(nextSearch);
   };
 
   const changeSort = ({ order, orderBy }): void => {
@@ -398,13 +382,15 @@ const Resources = (): JSX.Element => {
           onStatesChange={changeStates}
           selectedStatuses={statuses}
           onStatusesChange={changeStatuses}
-          onSearchRequest={doSearch}
+          onSearchRequest={requestSearch}
+          onSearchPrepare={prepareSearch}
+          currentSearch={currentSearch}
+          nextSearch={nextSearch}
           onHostGroupsChange={changeHostGroups}
           selectedHostGroups={hostGroups}
           onServiceGroupsChange={changeServiceGroups}
           selectedServiceGroups={serviceGroups}
           onClearAll={clearAllFilters}
-          currentSearch={search}
         />
       </div>
       <div className={classes.body}>

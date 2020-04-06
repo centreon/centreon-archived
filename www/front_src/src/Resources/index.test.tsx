@@ -10,12 +10,21 @@ import {
   RenderResult,
 } from '@testing-library/react';
 
-import last from 'lodash/last';
 import { Simulate } from 'react-dom/test-utils';
-import { partition, where, contains, pipe, split, head } from 'ramda';
+import {
+  partition,
+  where,
+  contains,
+  pipe,
+  split,
+  head,
+  map,
+  pick,
+  last,
+} from 'ramda';
 
 import { ThemeProvider } from '@centreon/ui';
-import Resources from '.';
+
 import {
   labelResourceName,
   labelSearch,
@@ -54,14 +63,16 @@ import {
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import { Resource } from './models';
 import {
-  hostAcknowledgementEndpoint,
-  serviceAcknowledgementEndpoint,
-  hostDowntimeEndpoint,
-  serviceDowntimeEndpoint,
+  acknowledgeEndpoint,
+  downtimeEndpoint,
   hostCheckEndpoint,
   serviceCheckEndpoint,
 } from './api/endpoint';
+
+import Resources from '.';
+
 import { selectOption } from './test';
+import { allFilter } from './Filter/models';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
 
@@ -101,6 +112,8 @@ const appState = {
   },
 };
 
+const filterStorageKey = 'centreon-events-filter';
+
 const buildParam = (param): string => JSON.stringify(param);
 
 const getEndpoint = ({
@@ -137,7 +150,20 @@ const getEndpoint = ({
     ? `&servicegroup_ids=${buildParam(serviceGroupIds)}`
     : '';
 
-  return `${endpoint}?page=${page}&limit=${limit}${sortParam}${searchParam}${statesParam}${resourceTypesParam}${statusesParam}${hostGroupsIdsParam}${serviceGroupIdsParam}`;
+  return [
+    endpoint,
+    '?page=',
+    page,
+    '&limit=',
+    limit,
+    sortParam,
+    searchParam,
+    statesParam,
+    resourceTypesParam,
+    statusesParam,
+    hostGroupsIdsParam,
+    serviceGroupIdsParam,
+  ].join('');
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -185,13 +211,19 @@ const linuxServersHostGroup = {
   name: 'Linux-servers',
 };
 
-const webAccessService = {
+const webAccessServiceGroup = {
   id: 1,
   name: 'Web-access',
 };
 
 const hostResources = entities.filter(({ type }) => type === 'host');
 const serviceResources = entities.filter(({ type }) => type === 'service');
+
+const mockedLocalStorageGetItem = jest.fn();
+const mockedLocalStorageSetItem = jest.fn();
+
+Storage.prototype.getItem = mockedLocalStorageGetItem;
+Storage.prototype.setItem = mockedLocalStorageSetItem;
 
 const renderResources = (): RenderResult =>
   render(
@@ -206,6 +238,8 @@ describe(Resources, () => {
     mockedAxios.get.mockReset();
     mockedAxios.post.mockReset();
     mockedAxios.all.mockReset();
+    mockedLocalStorageSetItem.mockReset();
+    mockedLocalStorageGetItem.mockReset();
   });
 
   beforeEach(() => {
@@ -376,14 +410,14 @@ describe(Resources, () => {
     },
     {
       filterName: labelServiceGroup,
-      optionToSelect: webAccessService.name,
+      optionToSelect: webAccessServiceGroup.name,
       selectEndpointMockAction: (): void => {
         mockedAxios.get.mockResolvedValueOnce({
-          data: { result: [webAccessService] },
+          data: { result: [webAccessServiceGroup] },
         });
       },
       endpointParamChanged: {
-        serviceGroupIds: [webAccessService.id],
+        serviceGroupIds: [webAccessServiceGroup.id],
       },
     },
   ].forEach(
@@ -708,7 +742,9 @@ describe(Resources, () => {
     });
 
     await waitFor(() =>
-      expect(last(getAllByText(labelAcknowledge)).parentElement).toBeDisabled(),
+      expect(
+        (last(getAllByText(labelAcknowledge)) as HTMLElement).parentElement,
+      ).toBeDisabled(),
     );
   });
 
@@ -727,38 +763,22 @@ describe(Resources, () => {
     mockedAxios.all.mockResolvedValueOnce([]);
     mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
 
-    fireEvent.click(last(getAllByText(labelAcknowledge)));
+    fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
 
     await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
       expect(mockedAxios.post).toHaveBeenCalled();
     });
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostAcknowledgementEndpoint,
-      hostResources.map(({ id }) => ({
-        parent_resource_id: null,
-        resource_id: id,
-        comment: labelAcknowledgedByAdmin,
-        is_notify_contacts: true,
-        is_persistent_comment: true,
-        is_sticky: true,
-        with_services: true,
-      })),
-      expect.anything(),
-    );
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceAcknowledgementEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        resource_id: id,
-        parent_resource_id: parent?.id || null,
-        comment: labelAcknowledgedByAdmin,
-        is_notify_contacts: true,
-        is_persistent_comment: true,
-        is_sticky: true,
-        with_services: true,
-      })),
+      acknowledgeEndpoint,
+      {
+        resources: map(pick(['id', 'parent', 'type']), retrievedListing.result),
+        acknowledgement: {
+          comment: labelAcknowledgedByAdmin,
+          is_notify_contacts: true,
+          with_services: true,
+        },
+      },
       expect.anything(),
     );
   });
@@ -878,37 +898,22 @@ describe(Resources, () => {
     fireEvent.click(getByText(labelSetDowntime));
 
     await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
       expect(mockedAxios.post).toHaveBeenCalled();
     });
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostDowntimeEndpoint,
-      hostResources.map(({ id }) => ({
-        comment: labelDowntimeByAdmin,
-        duration: 3600,
-        end_time: formatISO(endDateTime),
-        is_fixed: true,
-        parent_resource_id: null,
-        resource_id: id,
-        start_time: formatISO(startDateTime),
-        with_services: true,
-      })),
-      expect.anything(),
-    );
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceDowntimeEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        comment: labelDowntimeByAdmin,
-        duration: 3600,
-        end_time: formatISO(endDateTime),
-        is_fixed: true,
-        parent_resource_id: parent?.id || null,
-        resource_id: id,
-        start_time: formatISO(startDateTime),
-        with_services: true,
-      })),
+      downtimeEndpoint,
+      {
+        resources: map(pick(['id', 'type', 'parent']), retrievedListing.result),
+        downtime: {
+          comment: labelDowntimeByAdmin,
+          duration: 3600,
+          end_time: formatISO(endDateTime),
+          is_fixed: true,
+          start_time: formatISO(startDateTime),
+          with_services: true,
+        },
+      },
       expect.anything(),
     );
   });
@@ -991,5 +996,62 @@ describe(Resources, () => {
     fireEvent.click(getByLabelText(labelEnableAutorefresh));
 
     expect(getByLabelText(labelDisableAutorefresh)).toBeTruthy();
+  });
+
+  it('populates filter with values from localStorage if available', () => {
+    const filter = {
+      id: '',
+      name: '',
+      search: 'searching...',
+      criterias: {
+        resourceTypes: [{ id: 'host', name: labelHost }],
+        states: [{ id: 'acknowledged', name: labelAcknowledged }],
+        statuses: [{ id: 'OK', name: labelOk }],
+        hostGroups: [linuxServersHostGroup],
+        serviceGroups: [webAccessServiceGroup],
+      },
+    };
+
+    mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
+
+    const {
+      getByText,
+      getByDisplayValue,
+      queryByLabelText,
+    } = renderResources();
+
+    expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterStorageKey);
+    expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
+    expect(getByDisplayValue('searching...')).toBeInTheDocument();
+    expect(getByText(labelHost)).toBeInTheDocument();
+    expect(getByText(labelAcknowledged)).toBeInTheDocument();
+    expect(getByText(labelOk)).toBeInTheDocument();
+    expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+    expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
+  });
+
+  it('stores filter values in localStorage when updated', async () => {
+    const { getByText, getByPlaceholderText } = renderResources();
+
+    mockedAxios.get.mockResolvedValue({ data: retrievedListing });
+
+    selectOption(getByText(labelUnhandledProblems), labelAll);
+
+    expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
+      filterStorageKey,
+      JSON.stringify(allFilter),
+    );
+
+    fireEvent.change(getByPlaceholderText(labelResourceName), {
+      target: { value: 'searching...' },
+    });
+
+    expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
+      filterStorageKey,
+      JSON.stringify({
+        ...allFilter,
+        search: 'searching...',
+      }),
+    );
   });
 });

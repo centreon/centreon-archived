@@ -22,6 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone;
 
+/**
+ * This class is designed to represent a business exception in the 'Gorgone' context.
+ *
+ * @package Centreon\Domain\Gorgone
+ */
 class GorgoneException extends \Exception
 {
 }

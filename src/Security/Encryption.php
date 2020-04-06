@@ -158,8 +158,8 @@ class Encryption implements EncryptionInterface
     /**
      * For more security, we modify the references of the first and second keys.
      *
-     * @see Security::$firstKey
-     * @see Security::$secondKey
+     * @see Encryption::$firstKey
+     * @see Encryption::$secondKey
      */
     public function __destruct()
     {
