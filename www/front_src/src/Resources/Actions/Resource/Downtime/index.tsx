@@ -128,16 +128,9 @@ const DowntimeForm = ({
       const durationDivider = unitMultipliers?.[values.duration.unit] || 1;
       const duration = values.duration.value * durationDivider;
 
-      const params = resources.map((resource) => ({
-        ...resource,
-        ...values,
-        startTime,
-        endTime,
-        duration,
-      }));
-
       setDowntimeOnResources({
-        resources: params,
+        resources,
+        params: { ...values, startTime, endTime, duration },
         cancelToken: token,
       })
         .then(() => {

@@ -53,10 +53,8 @@ import {
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import { Resource } from './models';
 import {
-  hostAcknowledgementEndpoint,
-  serviceAcknowledgementEndpoint,
-  hostDowntimeEndpoint,
-  serviceDowntimeEndpoint,
+  acknowledgeEndpoint,
+  downtimeEndpoint,
   hostCheckEndpoint,
   serviceCheckEndpoint,
 } from './api/endpoint';
@@ -704,35 +702,23 @@ describe(Resources, () => {
     fireEvent.click(last(getAllByText(labelAcknowledge)));
 
     await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
       expect(mockedAxios.post).toHaveBeenCalled();
     });
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostAcknowledgementEndpoint,
-      hostResources.map(({ id }) => ({
-        parent_resource_id: null,
-        resource_id: id,
-        comment: labelAcknowledgedByAdmin,
-        is_notify_contacts: true,
-        is_persistent_comment: true,
-        is_sticky: true,
-        with_services: true,
-      })),
-      expect.anything(),
-    );
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceAcknowledgementEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        resource_id: id,
-        parent_resource_id: parent?.id || null,
-        comment: labelAcknowledgedByAdmin,
-        is_notify_contacts: true,
-        is_persistent_comment: true,
-        is_sticky: true,
-        with_services: true,
-      })),
+      acknowledgeEndpoint,
+      {
+        resources: retrievedListing.result.map(({ id, parent, type }) => ({
+          id,
+          parent,
+          type,
+        })),
+        acknowledgement: {
+          comment: labelAcknowledgedByAdmin,
+          is_notify_contacts: true,
+          with_services: true,
+        },
+      },
       expect.anything(),
     );
   });
@@ -852,37 +838,26 @@ describe(Resources, () => {
     fireEvent.click(getByText(labelSetDowntime));
 
     await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
       expect(mockedAxios.post).toHaveBeenCalled();
     });
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostDowntimeEndpoint,
-      hostResources.map(({ id }) => ({
-        comment: labelDowntimeByAdmin,
-        duration: 3600,
-        end_time: formatISO(endDateTime),
-        is_fixed: true,
-        parent_resource_id: null,
-        resource_id: id,
-        start_time: formatISO(startDateTime),
-        with_services: true,
-      })),
-      expect.anything(),
-    );
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceDowntimeEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        comment: labelDowntimeByAdmin,
-        duration: 3600,
-        end_time: formatISO(endDateTime),
-        is_fixed: true,
-        parent_resource_id: parent?.id || null,
-        resource_id: id,
-        start_time: formatISO(startDateTime),
-        with_services: true,
-      })),
+      downtimeEndpoint,
+      {
+        resources: retrievedListing.result.map(({ id, type, parent }) => ({
+          id,
+          type,
+          parent,
+        })),
+        downtime: {
+          comment: labelDowntimeByAdmin,
+          duration: 3600,
+          end_time: formatISO(endDateTime),
+          is_fixed: true,
+          start_time: formatISO(startDateTime),
+          with_services: true,
+        },
+      },
       expect.anything(),
     );
   });
