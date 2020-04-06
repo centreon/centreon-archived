@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\Normalizer\ImageUrlNormalizer;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
@@ -85,18 +86,26 @@ class MonitoringResourceController extends AbstractController
     protected $router;
 
     /**
+     * @var ImageUrlNormalizer
+     */
+    protected $imageUrlNormalizer;
+
+    /**
      * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
+     * @param ImageUrlNormalizer $imageUrlNormalizer
      */
     public function __construct(
         MonitoringServiceInterface $monitoringService,
         ResourceServiceInterface $resource,
-        UrlGeneratorInterface $router
+        UrlGeneratorInterface $router,
+        ImageUrlNormalizer $imageUrlNormalizer
     ) {
         $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
+        $this->imageUrlNormalizer = $imageUrlNormalizer;
     }
 
     /**
@@ -164,6 +173,8 @@ class MonitoringResourceController extends AbstractController
         $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
 
         foreach ($resources as $resource) {
+            $this->imageUrlNormalizer->normalize($resource);
+
             // set paths to endpoints
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
             $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
