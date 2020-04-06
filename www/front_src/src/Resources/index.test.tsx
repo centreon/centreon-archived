@@ -12,7 +12,7 @@ import {
 
 import last from 'lodash/last';
 import { Simulate } from 'react-dom/test-utils';
-import { partition, where, contains } from 'ramda';
+import { partition, where, contains, pipe, split, head } from 'ramda';
 
 import { ThemeProvider } from '@centreon/ui';
 import Resources from '.';
@@ -236,7 +236,9 @@ describe(Resources, () => {
     );
 
     resourcesWithMultipleLines.forEach(({ information }) => {
-      expect(getByText(information.split('\n')[0])).toBeInTheDocument();
+      expect(
+        getByText(pipe(split('\n'), head)(information)),
+      ).toBeInTheDocument();
       expect(queryByText(information)).not.toBeInTheDocument();
     });
 
