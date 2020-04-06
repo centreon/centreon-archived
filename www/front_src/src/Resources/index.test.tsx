@@ -10,8 +10,8 @@ import {
   RenderResult,
 } from '@testing-library/react';
 
-import last from 'lodash/last';
 import { Simulate } from 'react-dom/test-utils';
+import { map, pick, last } from 'ramda';
 
 import { ThemeProvider } from '@centreon/ui';
 import Resources from '.';
@@ -680,7 +680,9 @@ describe(Resources, () => {
     });
 
     await waitFor(() =>
-      expect(last(getAllByText(labelAcknowledge)).parentElement).toBeDisabled(),
+      expect(
+        (last(getAllByText(labelAcknowledge)) as HTMLElement).parentElement,
+      ).toBeDisabled(),
     );
   });
 
@@ -699,7 +701,7 @@ describe(Resources, () => {
     mockedAxios.all.mockResolvedValueOnce([]);
     mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
 
-    fireEvent.click(last(getAllByText(labelAcknowledge)));
+    fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalled();
@@ -708,11 +710,7 @@ describe(Resources, () => {
     expect(mockedAxios.post).toHaveBeenCalledWith(
       acknowledgeEndpoint,
       {
-        resources: retrievedListing.result.map(({ id, parent, type }) => ({
-          id,
-          parent,
-          type,
-        })),
+        resources: map(pick(['id', 'parent', 'type']), retrievedListing.result),
         acknowledgement: {
           comment: labelAcknowledgedByAdmin,
           is_notify_contacts: true,
@@ -844,11 +842,7 @@ describe(Resources, () => {
     expect(mockedAxios.post).toHaveBeenCalledWith(
       downtimeEndpoint,
       {
-        resources: retrievedListing.result.map(({ id, type, parent }) => ({
-          id,
-          type,
-          parent,
-        })),
+        resources: map(pick(['id', 'type', 'parent']), retrievedListing.result),
         downtime: {
           comment: labelDowntimeByAdmin,
           duration: 3600,
