@@ -24,7 +24,6 @@ namespace Centreon\Domain\Monitoring\Model;
 
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Acknowledgement\Acknowledgement;
 use CentreonDuration;
 
 /**
@@ -78,6 +77,25 @@ trait ResourceDetailsTrait
         }
 
         return $result;
+    }
+
+    /**
+     * @return self|null
+     */
+    public function getParent(): ?Resource
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param ResourceStatus|null $parent
+     * @return self
+     */
+    public function setParent(?Resource $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
     }
 
     /**

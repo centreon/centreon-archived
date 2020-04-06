@@ -7,9 +7,6 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 # rewrite file with new cron line
 CRONTAB_EXEC_USER=""
 
-# Cron for tracing Nagios Poller Performances
-*/5 * * * * @CENTREON_USER@ @INSTALL_DIR_CENTREON@/cron/nagiosPerfTrace --config=@CENTREON_ETC@/conf.pm >> @CENTREON_LOG@/nagiosPerfTrace.log 2>&1
-
 # Cron for databin and logs purge
 0 2 * * * @CENTREON_USER@ @PHP_BIN@ @INSTALL_DIR_CENTREON@/cron/centstorage_purge.php >> @CENTREON_LOG@/centreon-purge.log 2>&1
 

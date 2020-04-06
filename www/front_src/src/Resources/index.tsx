@@ -1,24 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { isNil } from 'ramda';
 
-import { makeStyles, useTheme } from '@material-ui/core';
+import { makeStyles, useTheme, Grid, Slide } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
-import { ResourceListing, Resource } from './models';
-import getColumns from './columns';
+import { ResourceListing, Resource, ResourceEndpoints } from './models';
+
+import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import Filter from './Filter';
 import {
   filterById,
   unhandledProblemsFilter,
   Filter as FilterModel,
   FilterGroup,
+  allFilter,
 } from './Filter/models';
-import Actions from './Actions';
+import ResourceActions from './Actions/Resource';
+import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import { rowColorConditions } from './colors';
+import { detailsTabId, graphTabId } from './Details/Body/tabs';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -38,8 +44,6 @@ const useStyles = makeStyles((theme) => ({
   },
   filter: {
     zIndex: 4,
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
   },
   listing: {
     marginLeft: theme.spacing(2),
@@ -60,10 +64,10 @@ const Resources = (): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [listing, setListing] = useState<ResourceListing>();
-  const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
-    [],
-  );
+  const [listing, setListing] = React.useState<ResourceListing>();
+  const [selectedResources, setSelectedResources] = React.useState<
+    Array<Resource>
+  >([]);
   const [resourcesToAcknowledge, setResourcesToAcknowledge] = React.useState<
     Array<Resource>
   >([]);
@@ -74,32 +78,45 @@ const Resources = (): JSX.Element => {
     Array<Resource>
   >([]);
 
-  const [sorto, setSorto] = useState<'asc' | 'desc'>();
-  const [sortf, setSortf] = useState<string>();
-  const [limit, setLimit] = useState<number>(30);
-  const [page, setPage] = useState<number>(1);
+  const [sorto, setSorto] = React.useState<SortOrder>(defaultSortOrder);
+  const [sortf, setSortf] = React.useState<string>(defaultSortField);
+  const [limit, setLimit] = React.useState<number>(30);
+  const [page, setPage] = React.useState<number>(1);
 
-  const [filter, setFilter] = useState(defaultFilter);
-  const [search, setSearch] = useState<string>();
-  const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>(
+  const [filter, setFilter] = React.useState(defaultFilter);
+  const [search, setSearch] = React.useState<string>();
+  const [resourceTypes, setResourceTypes] = React.useState<Array<FilterModel>>(
     defaultResourceTypes,
   );
-  const [states, setStates] = useState<Array<FilterModel>>(defaultStates);
-  const [statuses, setStatuses] = useState<Array<FilterModel>>(defaultStatuses);
-  const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
-  const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
+  const [states, setStates] = React.useState<Array<FilterModel>>(defaultStates);
+  const [statuses, setStatuses] = React.useState<Array<FilterModel>>(
+    defaultStatuses,
+  );
+  const [hostGroups, setHostGroups] = React.useState<Array<FilterModel>>();
+  const [serviceGroups, setServiceGroups] = React.useState<
+    Array<FilterModel>
+  >();
 
-  const [selectedDetailsEndpoint, setSelectedDetailsEndpoint] = useState<
-    string | null
-  >(null);
+  const [
+    selectedDetailsEndpoints,
+    setSelectedDetailsEndpoints,
+  ] = React.useState<ResourceEndpoints | null>(null);
 
-  const [loading, setLoading] = useState(true);
+  const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = React.useState(0);
+
+  const [loading, setLoading] = React.useState(true);
+  const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
+
+  const refreshIntervalMs = useSelector(
+    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
+  );
+  const refreshIntervalRef = React.useRef<number>();
 
   const { showMessage } = useSnackbar();
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
 
-  const [tokenSource] = useState(axios.CancelToken.source());
+  const [tokenSource] = React.useState(axios.CancelToken.source());
 
   const load = (): void => {
     setLoading(true);
@@ -129,18 +146,52 @@ const Resources = (): JSX.Element => {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
+  const initAutorefresh = (): void => {
+    window.clearInterval(refreshIntervalRef.current);
+
+    const interval = enabledAutorefresh
+      ? window.setInterval(load, refreshIntervalMs)
+      : undefined;
+
+    refreshIntervalRef.current = interval;
+  };
+
+  const initAutorefreshAndLoad = (): void => {
+    initAutorefresh();
+    load();
+  };
+
+  React.useEffect(() => {
     return (): void => {
       tokenSource.cancel();
+      window.clearInterval(refreshIntervalRef.current);
     };
   }, []);
 
-  useEffect(() => {
-    load();
+  React.useEffect(() => {
+    initAutorefreshAndLoad();
   }, [
     sortf,
     sorto,
     page,
+    limit,
+    search,
+    states,
+    statuses,
+    resourceTypes,
+    hostGroups,
+    serviceGroups,
+  ]);
+
+  React.useEffect(() => {
+    initAutorefresh();
+  }, [enabledAutorefresh]);
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [
+    sortf,
+    sorto,
     limit,
     search,
     states,
@@ -210,10 +261,10 @@ const Resources = (): JSX.Element => {
   };
 
   const clearAllFilters = (): void => {
-    setFilter(defaultFilter);
-    setResourceTypes(defaultFilter.criterias.resourceTypes);
-    setStatuses(defaultFilter.criterias.statuses);
-    setStates(defaultFilter.criterias.states);
+    setFilter(allFilter);
+    setResourceTypes(allFilter.criterias.resourceTypes);
+    setStatuses(allFilter.criterias.statuses);
+    setStates(allFilter.criterias.states);
   };
 
   const selectResources = (resources): void => {
@@ -269,31 +320,70 @@ const Resources = (): JSX.Element => {
     onCheck: (resource) => {
       prepareToCheck([resource]);
     },
+    onDisplayGraph: ({
+      details_endpoint,
+      status_graph_endpoint,
+      performance_graph_endpoint,
+    }) => {
+      setDefaultDetailsTabIdToOpen(graphTabId);
+      setSelectedDetailsEndpoints({
+        details: details_endpoint,
+        statusGraph: status_graph_endpoint,
+        performanceGraph: performance_graph_endpoint,
+      });
+    },
   });
 
-  const selectResource = ({ details_endpoint }): void => {
-    setSelectedDetailsEndpoint(details_endpoint);
+  const selectResource = ({
+    details_endpoint,
+    status_graph_endpoint,
+    performance_graph_endpoint,
+  }): void => {
+    if (isNil(selectedDetailsEndpoints)) {
+      setDefaultDetailsTabIdToOpen(detailsTabId);
+    }
+    setSelectedDetailsEndpoints({
+      details: details_endpoint,
+      statusGraph: status_graph_endpoint,
+      performanceGraph: performance_graph_endpoint,
+    });
   };
 
   const clearSelectedResource = (): void => {
-    setSelectedDetailsEndpoint(null);
+    setSelectedDetailsEndpoints(null);
+  };
+
+  const toggleAutorefresh = (): void => {
+    setEnabledAutorefresh(!enabledAutorefresh);
   };
 
   const hasSelectedResources = selectedResources.length > 0;
 
-  const ResourceActions = (
-    <Actions
-      disabled={!hasSelectedResources}
-      resourcesToAcknowledge={resourcesToAcknowledge}
-      onPrepareToAcknowledge={prepareSelectedToAcknowledge}
-      onCancelAcknowledge={cancelAcknowledge}
-      resourcesToSetDowntime={resourcesToSetDowntime}
-      onPrepareToSetDowntime={prepareSelectedToSetDowntime}
-      onCancelSetDowntime={cancelSetDowntime}
-      resourcesToCheck={resourcesToCheck}
-      onPrepareToCheck={prepareSelectedToCheck}
-      onSuccess={confirmAction}
-    />
+  const Actions = (
+    <Grid container>
+      <Grid item>
+        <ResourceActions
+          disabled={!hasSelectedResources}
+          resourcesToAcknowledge={resourcesToAcknowledge}
+          onPrepareToAcknowledge={prepareSelectedToAcknowledge}
+          onCancelAcknowledge={cancelAcknowledge}
+          resourcesToSetDowntime={resourcesToSetDowntime}
+          onPrepareToSetDowntime={prepareSelectedToSetDowntime}
+          onCancelSetDowntime={cancelSetDowntime}
+          resourcesToCheck={resourcesToCheck}
+          onPrepareToCheck={prepareSelectedToCheck}
+          onSuccess={confirmAction}
+        />
+      </Grid>
+      <Grid item style={{ paddingLeft: theme.spacing(3) }}>
+        <GlobalActions
+          disabledRefresh={loading}
+          enabledAutorefresh={enabledAutorefresh}
+          onRefresh={initAutorefreshAndLoad}
+          toggleAutorefresh={toggleAutorefresh}
+        />
+      </Grid>
+    </Grid>
   );
 
   return (
@@ -318,18 +408,28 @@ const Resources = (): JSX.Element => {
         />
       </div>
       <div className={classes.body}>
-        {selectedDetailsEndpoint && (
-          <div className={classes.panel}>
-            <Details
-              endpoint={selectedDetailsEndpoint}
-              onClose={clearSelectedResource}
-            />
-          </div>
+        {selectedDetailsEndpoints && (
+          <Slide
+            direction="left"
+            in={!isNil(selectedDetailsEndpoints)}
+            timeout={{
+              enter: 150,
+              exit: 50,
+            }}
+          >
+            <div className={classes.panel}>
+              <Details
+                endpoints={selectedDetailsEndpoints}
+                openTabId={detailsTabIdToOpen}
+                onClose={clearSelectedResource}
+              />
+            </div>
+          </Slide>
         )}
         <div className={classes.listing}>
           <Listing
             checkable
-            Actions={ResourceActions}
+            Actions={Actions}
             loading={loading}
             columnConfiguration={columns}
             tableData={listing?.result}

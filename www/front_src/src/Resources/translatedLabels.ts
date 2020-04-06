@@ -48,6 +48,9 @@ export const labelHost = I18n.t('Host');
 export const labelHostGroup = I18n.t('Host group');
 export const labelDowntime = I18n.t('Downtime');
 export const labelInDowntime = I18n.t('In downtime');
+export const labelLast24h = I18n.t('Last 24h');
+export const labelLast7Days = I18n.t('Last 7 days');
+export const labelLast31Days = I18n.t('Last 31 days');
 export const labelSetDowntime = I18n.t('Set downtime');
 export const labelSetDowntimeOn = I18n.t('Set downtime on');
 export const labelDowntimeBy = I18n.t('Downtime set by');
@@ -84,6 +87,9 @@ export const labelSticky = I18n.t('Sticky');
 export const labelTries = I18n.t('Tries');
 export const labelInformation = I18n.t('Information');
 export const labelMore = I18n.t('More');
+export const labelRefresh = I18n.t('Refresh');
+export const labelDisableAutorefresh = I18n.t('Disable autorefresh');
+export const labelEnableAutorefresh = I18n.t('Enable autorefresh');
 export const labelSearchOnFields = I18n.t(
   'This search bar will search matching occurences you type contained in: host name or alias or address or service description',
 );

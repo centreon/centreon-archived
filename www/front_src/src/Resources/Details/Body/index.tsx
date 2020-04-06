@@ -1,11 +1,10 @@
 import * as React from 'react';
 
-import { Tabs, Tab, makeStyles, Grid, styled } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Tabs, Tab, makeStyles, AppBar } from '@material-ui/core';
 
-import { labelDetails } from '../../translatedLabels';
 import { DetailsSectionProps } from '..';
-import DetailsTab from './DetailsTab';
+import { TabEndpoints } from './models';
+import { TabById, tabs } from './tabs';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -31,61 +30,44 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const CardSkeleton = styled(Skeleton)(() => ({
-  transform: 'none',
-}));
+type Props = {
+  endpoints: TabEndpoints;
+  openTabId: number;
+} & DetailsSectionProps;
 
-const LoadingSkeleton = (): JSX.Element => (
-  <Grid container spacing={2} direction="column">
-    <Grid item>
-      <CardSkeleton height={120} />
-    </Grid>
-    <Grid item>
-      <CardSkeleton height={75} />
-    </Grid>
-    <Grid item>
-      <CardSkeleton height={75} />
-    </Grid>
-  </Grid>
-);
-
-const getTabById = ({ id, details }): JSX.Element | null => {
-  const tabById = {
-    0: <DetailsTab details={details} />,
-  };
-
-  return tabById[id];
-};
-
-const Body = ({ details }: DetailsSectionProps): JSX.Element => {
+const Body = ({ details, endpoints, openTabId }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [selectedTabId, setSelectedTabId] = React.useState(0);
+
+  React.useEffect(() => {
+    setSelectedTabId(openTabId);
+  }, [openTabId]);
 
   const changeSelectedTabId = (_, id): void => {
     setSelectedTabId(id);
   };
 
-  const loading = details === undefined;
-
   return (
     <div className={classes.body}>
-      <Tabs
-        variant="fullWidth"
-        value={selectedTabId}
-        indicatorColor="primary"
-        textColor="primary"
-        onChange={changeSelectedTabId}
-      >
-        <Tab label={labelDetails} disabled={loading} />
-      </Tabs>
+      <AppBar position="static" color="default">
+        <Tabs
+          variant="fullWidth"
+          value={selectedTabId}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={changeSelectedTabId}
+        >
+          {tabs
+            .filter(({ visible }) => visible(endpoints))
+            .map(({ id, title }) => (
+              <Tab key={id} label={title} disabled={details === undefined} />
+            ))}
+        </Tabs>
+      </AppBar>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
-          {loading ? (
-            <LoadingSkeleton />
-          ) : (
-            getTabById({ id: selectedTabId, details })
-          )}
+          <TabById id={selectedTabId} details={details} endpoints={endpoints} />
         </div>
       </div>
     </div>

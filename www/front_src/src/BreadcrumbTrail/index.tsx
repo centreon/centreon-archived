@@ -33,10 +33,7 @@ const getBreadcrumbs = ({
   }
 
   if (path.includes('/')) {
-    const shorterPath = path
-      .split('/')
-      .slice(0, -1)
-      .join('/');
+    const shorterPath = path.split('/').slice(0, -1).join('/');
 
     return getBreadcrumbs({ breadcrumbsByPath, path: shorterPath });
   }

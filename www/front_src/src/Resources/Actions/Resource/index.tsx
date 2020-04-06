@@ -6,18 +6,18 @@ import IconCheck from '@material-ui/icons/Sync';
 
 import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 
-import IconDowntime from '../icons/Downtime';
+import IconDowntime from '../../icons/Downtime';
 import {
   labelAcknowledge,
   labelDowntime,
   labelCheck,
   labelSomethingWentWrong,
   labelCheckCommandSent,
-} from '../translatedLabels';
-import { Resource } from '../models';
+} from '../../translatedLabels';
+import { Resource } from '../../models';
 import AcknowledgeForm from './Acknowledge';
 import DowntimeForm from './Downtime';
-import { checkResources } from '../api';
+import { checkResources } from '../../api';
 
 interface Props {
   disabled: boolean;
@@ -36,7 +36,7 @@ const ActionButton = (props: ButtonProps): JSX.Element => (
   <Button variant="contained" color="primary" size="small" {...props} />
 );
 
-const Actions = ({
+const ResourceActions = ({
   disabled,
   resourcesToAcknowledge,
   onPrepareToAcknowledge,
@@ -119,4 +119,4 @@ const Actions = ({
   );
 };
 
-export default Actions;
+export default ResourceActions;

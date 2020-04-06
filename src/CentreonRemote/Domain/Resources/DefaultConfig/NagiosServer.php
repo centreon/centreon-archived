@@ -33,6 +33,7 @@ class NagiosServer
             'centreonbroker_cfg_path'    => '@broker_etc@',
             'centreonbroker_module_path' => '@centreonbroker_lib@',
             'centreonconnector_path'     => '@centreon_engine_connectors@',
+            'ssh_port'                   => 22,
             'gorgone_communication_type' => '1',
             'gorgone_port'               => 5556,
             'init_script_centreontrapd'  => 'centreontrapd',

@@ -4,19 +4,6 @@ gorgone:
     pubkey: "--CENTREON_VARLIB---gorgone/.keys/rsakey.pub.pem"
 
   modules:
-    - name: httpserver
-      package: "gorgone::modules::core::httpserver::hooks"
-      enable: true
-      address: "--HTTPSERVERADDRESS--"
-      port: "--HTTPSERVERPORT--"
-      ssl: --SSLMODE--
-      auth:
-        enabled: false
-      allowed_hosts:
-        enabled: true
-        subnets:
-          - 127.0.0.1/32
-
     - name: action
       package: "gorgone::modules::core::action::hooks"
       enable: true
@@ -37,6 +24,7 @@ gorgone:
     - name: legacycmd
       package: "gorgone::modules::centreon::legacycmd::hooks"
       enable: true
+      cmd_dir: "--CENTREON_VARLIB--/centcore/"
       cmd_file: "--CENTREON_VARLIB--/centcore.cmd"
       cache_dir: "--CENTREON_CACHEDIR--"
       cache_dir_trap: "--CENTREON_TRAPDIR--"
@@ -47,13 +35,18 @@ gorgone:
       enable: true
       command_file: "--CENTREON_VARLIB---engine/rw/centengine.cmd"
 
-    - name: broker
-      package: "gorgone::modules::centreon::broker::hooks"
+    - name: statistics
+      package: "gorgone::modules::centreon::statistics::hooks"
       enable: true
-      cache_dir: "--CENTREON_CACHEDIR--/broker-stats/"
+      broker_cache_dir: "--CENTREON_CACHEDIR--/broker-stats/"
       cron:
         - id: broker_stats
-          timespec: "*/2 * * * *"
+          timespec: "*/5 * * * *"
           action: BROKERSTATS
+          parameters:
+            timeout: 10
+        - id: engine_stats
+          timespec: "*/5 * * * *"
+          action: ENGINESTATS
           parameters:
             timeout: 10

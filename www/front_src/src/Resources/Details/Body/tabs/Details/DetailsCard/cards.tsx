@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Typography, Grid, makeStyles } from '@material-ui/core';
 import IconCheck from '@material-ui/icons/Check';
 
-import { ResourceDetails } from '../..';
 import {
   labelCurrentStateDuration,
   labelPoller,
@@ -19,17 +18,20 @@ import {
   labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
-} from '../../../translatedLabels';
-import { getFormattedDate, getFormattedTime } from '../../../dateTime';
+} from '../../../../../translatedLabels';
+import { getFormattedDate, getFormattedTime } from '../../../../../dateTime';
+import { ResourceDetails } from '../../../../models';
 
-interface DetailLines {
+type Lines = Array<{ key: string; line: JSX.Element | null }>;
+
+interface DetailCardLines {
   title: string;
   field?: string | number | boolean;
-  lines: Array<{ key: string; line: JSX.Element | null }>;
+  getLines: () => Lines;
 }
 
-const DetailsLine = ({ line }: { line?: string }): JSX.Element | null => {
-  return line ? <Typography variant="h5">{line}</Typography> : null;
+const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
+  return <Typography variant="h5">{line}</Typography>;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -53,11 +55,13 @@ const ActiveLine = (): JSX.Element => {
   );
 };
 
-const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
-  const getDateTimeLines = ({ label, field }): DetailLines => ({
+const getDetailCardLines = (
+  details: ResourceDetails,
+): Array<DetailCardLines> => {
+  const getDateTimeLines = ({ label, field }): DetailCardLines => ({
     title: label,
     field,
-    lines: [
+    getLines: (): Lines => [
       {
         key: `${label}_date`,
         line: <DetailsLine line={getFormattedDate(field)} />,
@@ -69,10 +73,10 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     ],
   });
 
-  const getCheckLines = ({ label, field }): DetailLines => ({
+  const getCheckLines = ({ label, field }): DetailCardLines => ({
     ...getDateTimeLines({ label, field }),
-    lines: [
-      ...getDateTimeLines({ label, field }).lines,
+    getLines: (): Lines => [
+      ...getDateTimeLines({ label, field }).getLines(),
       {
         key: `${label}_active`,
         line: details.active_checks ? <ActiveLine /> : null,
@@ -84,7 +88,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelPoller,
       field: details.poller_name,
-      lines: [
+      getLines: (): Lines => [
         {
           key: 'poller',
           line: <DetailsLine line={details.poller_name} />,
@@ -94,7 +98,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelTimezone,
       field: details.timezone,
-      lines: [
+      getLines: (): Lines => [
         {
           key: 'timezone',
           line: <DetailsLine line={details.timezone} />,
@@ -104,7 +108,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelCurrentStateDuration,
       field: details.duration,
-      lines: [
+      getLines: (): Lines => [
         { key: 'duration', line: <DetailsLine line={details.duration} /> },
         {
           key: 'tries',
@@ -121,7 +125,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelCheckDuration,
       field: details.execution_time,
-      lines: [
+      getLines: (): Lines => [
         {
           key: 'check_duration',
           line: <DetailsLine line={`${details.execution_time} s`} />,
@@ -131,7 +135,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelLatency,
       field: details.latency,
-      lines: [
+      getLines: (): Lines => [
         {
           key: 'latency',
           line: <DetailsLine line={`${details.latency} s`} />,
@@ -141,7 +145,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelResourceFlapping,
       field: details.flapping,
-      lines: [
+      getLines: (): Lines => [
         {
           key: 'flapping',
           line: <DetailsLine line={details.flapping ? 'N/A' : labelYes} />,
@@ -151,7 +155,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelPercentStateChange,
       field: details.percent_state_change,
-      lines: [
+      getLines: (): Lines => [
         {
           key: 'percent_state_change',
           line: <DetailsLine line={`${details.percent_state_change}%`} />,
@@ -165,7 +169,7 @@ const getDetailCardLines = (details: ResourceDetails): Array<DetailLines> => {
     {
       title: labelCurrentNotificationNumber,
       field: details.notification_number,
-      lines: [
+      getLines: (): Lines => [
         {
           key: 'notification_number',
           line: <DetailsLine line={details.notification_number.toString()} />,

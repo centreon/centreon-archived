@@ -1,11 +1,14 @@
 import * as React from 'react';
 
+import { omit } from 'ramda';
+
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
-import { Status, Parent, Downtime, Acknowledgement } from '../models';
 import Header from './Header';
 import Body from './Body';
 import useGet from '../useGet';
+import { ResourceDetails } from './models';
+import { ResourceEndpoints } from '../models';
 
 const useStyles = makeStyles(() => {
   return {
@@ -28,48 +31,29 @@ const useStyles = makeStyles(() => {
 });
 
 interface Props {
-  endpoint: string | null;
-  onClose;
-}
-
-export interface ResourceDetails {
-  name: string;
-  status: Status;
-  parent: Parent;
-  criticality: number;
-  output: string;
-  downtimes?: Array<Downtime>;
-  acknowledgement?: Acknowledgement;
-  duration: string;
-  tries: string;
-  poller_name?: string;
-  timezone?: string;
-  last_state_change: string;
-  last_check: string;
-  next_check: string;
-  active_checks: boolean;
-  execution_time: number;
-  latency: number;
-  flapping: boolean;
-  percent_state_change: number;
-  last_notification: string;
-  notification_number: number;
-  performance_data: string;
-  check_command: string;
+  onClose: () => void;
+  endpoints: ResourceEndpoints;
+  openTabId: number;
 }
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
+const Details = ({
+  endpoints,
+  onClose,
+  openTabId,
+}: Props): JSX.Element | null => {
   const classes = useStyles();
 
   const [details, setDetails] = React.useState<ResourceDetails>();
 
+  const { details: detailsEndpoint } = endpoints;
+
   const get = useGet({
     onSuccess: (entity) => setDetails(entity),
-    endpoint,
+    endpoint: detailsEndpoint,
   });
 
   React.useEffect(() => {
@@ -78,7 +62,7 @@ const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
     }
 
     get();
-  }, [endpoint]);
+  }, [detailsEndpoint]);
 
   return (
     <Paper variant="outlined" elevation={2} className={classes.details}>
@@ -87,7 +71,11 @@ const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
       </div>
       <Divider className={classes.divider} />
       <div className={classes.body}>
-        <Body details={details} />
+        <Body
+          details={details}
+          endpoints={omit(['details'], endpoints)}
+          openTabId={openTabId}
+        />
       </div>
     </Paper>
   );

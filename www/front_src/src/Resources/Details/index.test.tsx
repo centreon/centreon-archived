@@ -24,7 +24,12 @@ import {
   labelLastCheck,
   labelCurrentNotificationNumber,
   labelPerformanceData,
+  labelGraph,
+  labelLast7Days,
+  labelLast24h,
+  labelLast31Days,
 } from '../translatedLabels';
+import { selectOption } from '../test';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -32,10 +37,13 @@ jest.mock('../icons/Downtime');
 
 const onClose = jest.fn();
 
-const endpoint = '/resource';
+const detailsEndpoint = '/resource';
+const performanceGraphEndpoint = '/performance';
+const statusGraphEndpoint = '/status';
+const defaultTabIdOpen = 0;
 
 const retrievedDetails = {
-  name: 'Central',
+  display_name: 'Central',
   severity: { level: 1 },
   status: { name: 'Critical', severity_code: 1 },
   parent: { name: 'Centreon', status: { severity_code: 1 } },
@@ -78,16 +86,39 @@ const retrievedDetails = {
   tries: '3/3 (Hard)',
 };
 
+const performanceGraphData = {
+  global: {},
+  times: [],
+};
+const statusGraphData = { warning: [], ok: [], critical: [], unknown: [] };
+
+const RealDate = Date;
+const currentDateIsoString = '2020-06-20T20:00:00.000Z';
+
 describe(Details, () => {
+  beforeEach(() => {
+    global.Date.now = jest.fn(() => Date.parse(currentDateIsoString));
+
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: performanceGraphData })
+      .mockResolvedValueOnce({ data: statusGraphData });
+  });
+
   afterEach(() => {
+    global.Date = RealDate;
     mockedAxios.get.mockReset();
   });
 
   it('displays resource details information', async () => {
-    mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = render(
-      <Details endpoint={endpoint} onClose={onClose} />,
+      <Details
+        endpoints={{ details: detailsEndpoint }}
+        onClose={onClose}
+        openTabId={defaultTabIdOpen}
+      />,
     );
 
     await waitFor(() => expect(getByText('Central')).toBeInTheDocument());
@@ -163,4 +194,43 @@ describe(Details, () => {
 
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
+
+  [
+    { period: labelLast24h, startIsoString: '2020-06-19T20:00:00.000Z' },
+    { period: labelLast7Days, startIsoString: '2020-06-13T20:00:00.000Z' },
+    { period: labelLast31Days, startIsoString: '2020-05-20T20:00:00.000Z' },
+  ].forEach(({ period, startIsoString }) =>
+    it(`queries performance and status graphs with ${period} period when the Graph tab is selected and ${period} is selected`, async () => {
+      mockedAxios.get
+        .mockResolvedValueOnce({ data: performanceGraphData })
+        .mockResolvedValueOnce({ data: statusGraphData });
+
+      const { getByText } = render(
+        <Details
+          endpoints={{
+            details: detailsEndpoint,
+            statusGraph: statusGraphEndpoint,
+            performanceGraph: performanceGraphEndpoint,
+          }}
+          onClose={onClose}
+          openTabId={defaultTabIdOpen}
+        />,
+      );
+
+      await waitFor(() => expect(getByText('Central')).toBeInTheDocument());
+
+      fireEvent.click(getByText(labelGraph));
+
+      selectOption(getByText(labelLast24h), period);
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${performanceGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
+        expect.anything(),
+      );
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${statusGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
+        expect.anything(),
+      );
+    }),
+  );
 });

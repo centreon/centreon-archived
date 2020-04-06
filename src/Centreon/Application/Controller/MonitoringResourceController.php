@@ -161,8 +161,37 @@ class MonitoringResourceController extends AbstractController
         $resources = $this->resource->filterByContact($this->getUser())
             ->findResources($filter);
 
+        $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
+
         foreach ($resources as $resource) {
-            if ($resource->getParent() != null) {
+            // set paths to endpoints
+            $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
+            $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
+            $routeNameDetails = 'centreon_application_monitoring_resource_details_host';
+
+            $parameters = [
+                'hostId' => $resource->getId(),
+            ];
+
+            if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
+                $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
+                $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
+                $routeNameDetails = 'centreon_application_monitoring_resource_details_service';
+
+                $parameters['hostId'] = $resource->getParent()->getId();
+                $parameters['serviceId'] = $resource->getId();
+            }
+
+            $resource->setAcknowledgementEndpoint($this->router->generate($routeNameAcknowledgement, $parameters));
+            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
+            $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
+
+            if (
+                $resource->getParent() != null && in_array([
+                    'host_id' => $resource->getParent()->getId(),
+                    'service_id' => $resource->getId(),
+                ], $resourcesGraphData)
+            ) {
                 $parameters = [
                     'hostId' => $resource->getParent()->getId(),
                     'serviceId' => $resource->getId(),
@@ -183,6 +212,14 @@ class MonitoringResourceController extends AbstractController
                         $parameters
                     )
                 );
+
+                $resource->getParent()
+                    ->setDetailsEndpoint($this->router->generate(
+                        'centreon_application_monitoring_resource_details_host',
+                        [
+                            'hostId' => $resource->getParent()->getId(),
+                        ]
+                    ));
             }
         }
 

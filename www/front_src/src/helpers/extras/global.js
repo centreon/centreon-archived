@@ -13,7 +13,7 @@
  * Extra for the s.js build only
  * (Included by default in system.js build)
  */
-(function(global) {
+(function (global) {
   const systemJSPrototype = global.System.constructor.prototype;
   const isIE = navigator.userAgent.indexOf('Trident') !== -1;
 
@@ -63,20 +63,20 @@
   }
 
   const impt = systemJSPrototype.import;
-  systemJSPrototype.import = function(id, parentUrl) {
+  systemJSPrototype.import = function (id, parentUrl) {
     noteGlobalProps();
     return impt.call(this, id, parentUrl);
   };
 
   const emptyInstantiation = [
     [],
-    function() {
+    function () {
       return {};
     },
   ];
 
   const { getRegister } = systemJSPrototype;
-  systemJSPrototype.getRegister = function() {
+  systemJSPrototype.getRegister = function () {
     const lastRegister = getRegister.call(this);
     if (lastRegister) return lastRegister;
 
@@ -96,7 +96,7 @@
 
     return [
       [],
-      function(_export) {
+      function (_export) {
         return {
           execute() {
             _export({ default: globalExport, __useDefault: true });
