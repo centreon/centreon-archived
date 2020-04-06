@@ -13,18 +13,13 @@ import { ResourceListing, Resource, ResourceEndpoints } from './models';
 
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import Filter from './Filter';
-import {
-  filterById,
-  Filter as FilterModel,
-  FilterGroup,
-  allFilter,
-} from './Filter/models';
+import { filterById, FilterGroup, allFilter } from './Filter/models';
 import ResourceActions from './Actions/Resource';
 import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
-import { storeFilter, getStoredOrDefaultFilter } from './filterLocalStorage';
+import useFilter from './Filter/useFilter';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -52,14 +47,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const defaultFilter = getStoredOrDefaultFilter();
-
-const defaultSearch = defaultFilter.search;
-const { criterias } = defaultFilter;
-const defaultResourceTypes = criterias?.resourceTypes;
-const defaultStatuses = criterias?.statuses;
-const defaultStates = criterias?.states;
-
 type SortOrder = 'asc' | 'desc';
 
 const Resources = (): JSX.Element => {
@@ -85,20 +72,24 @@ const Resources = (): JSX.Element => {
   const [limit, setLimit] = useState<number>(30);
   const [page, setPage] = useState<number>(1);
 
-  const [filter, setFilter] = useState(defaultFilter);
-  const [currentSearch, setCurrentSearch] = useState<string | undefined>(
-    defaultSearch,
-  );
-  const [nextSearch, setNextSearch] = useState<string | undefined>(
-    defaultSearch,
-  );
-  const [resourceTypes, setResourceTypes] = useState<Array<FilterModel>>(
-    defaultResourceTypes,
-  );
-  const [states, setStates] = useState<Array<FilterModel>>(defaultStates);
-  const [statuses, setStatuses] = useState<Array<FilterModel>>(defaultStatuses);
-  const [hostGroups, setHostGroups] = useState<Array<FilterModel>>();
-  const [serviceGroups, setServiceGroups] = useState<Array<FilterModel>>();
+  const {
+    filter,
+    setFilter,
+    currentSearch,
+    setCurrentSearch,
+    nextSearch,
+    setNextSearch,
+    resourceTypes,
+    setResourceTypes,
+    states,
+    setStates,
+    statuses,
+    setStatuses,
+    hostGroups,
+    setHostGroups,
+    serviceGroups,
+    setServiceGroups,
+  } = useFilter();
 
   const [
     selectedDetailsEndpoints,
@@ -167,7 +158,7 @@ const Resources = (): JSX.Element => {
   useEffect(() => {
     return (): void => {
       tokenSource.cancel();
-      window.clearInterval(refreshIntervalRef.current);
+      clearInterval(refreshIntervalRef.current);
     };
   }, []);
 
@@ -189,32 +180,6 @@ const Resources = (): JSX.Element => {
   useEffect(() => {
     initAutorefresh();
   }, [enabledAutorefresh]);
-
-  const updateLocalStorageFilter = (): void => {
-    storeFilter({
-      ...filter,
-      search: nextSearch,
-      criterias: {
-        resourceTypes,
-        statuses,
-        states,
-        hostGroups,
-        serviceGroups,
-      },
-    });
-  };
-
-  useEffect(() => {
-    updateLocalStorageFilter();
-  }, [
-    filter,
-    nextSearch,
-    resourceTypes,
-    states,
-    statuses,
-    hostGroups,
-    serviceGroups,
-  ]);
 
   const prepareSearch = (event): void => {
     setNextSearch(event.target.value);
