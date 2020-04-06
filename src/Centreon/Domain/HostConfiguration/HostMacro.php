@@ -130,7 +130,7 @@ class HostMacro
      * @param bool $isPassword
      * @return HostMacro
      */
-    public function setIsPassword(bool $isPassword): HostMacro
+    public function setPassword(bool $isPassword): HostMacro
     {
         $this->isPassword = $isPassword;
         return $this;
