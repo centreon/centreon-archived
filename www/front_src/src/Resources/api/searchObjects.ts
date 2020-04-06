@@ -37,6 +37,7 @@ const getSearchParam = ({
   if (!searchValue) {
     return undefined;
   }
+
   const foundSearchObjects = getFoundSearchObjects({
     searchValue,
     searchOptions,
