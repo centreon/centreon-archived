@@ -26,7 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
 /**
  * This class has been defined to differentiate between contacts that have
- * identified by session and those by token.
+ * identified by session and those by token. 
  *
  * @package Security
  */
@@ -120,5 +120,15 @@ class ContactBySession extends Contact
     public function getUsername()
     {
         return $this->contact->getUsername();
+    }
+
+    public function hasAccessToApiConfiguration(): bool
+    {
+        return true;
+    }
+
+    public function hasAccessToApiRealTime(): bool
+    {
+        return true;
     }
 }
