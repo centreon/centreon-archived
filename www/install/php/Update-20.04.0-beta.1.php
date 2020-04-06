@@ -64,9 +64,6 @@ try {
         'false'
     ];
 
-    $isACentral = false;
-    $isARemote = false;
-
     // get user's centreon cache folder path
     $fileToOpen = _CENTREON_ETC_ . '/instCentWeb.conf';
     $errorMessage = 'Missing or empty \'instCentWeb.conf\' file';
@@ -98,6 +95,7 @@ try {
     $stop = false;
     $file = fopen($fileToOpen, 'r');
 
+    $fileName = '';
     while (!feof($file) && $stop === false) {
         // removing indentation and carriage return
         $line = rtrim(ltrim(fgets($file), " "), ",\n");
@@ -111,8 +109,12 @@ try {
             && strpos($line, '$instance_mode =') !== false
         ) {
             $stop = true;
-            $isACentral = strpos($line, 'central') ? true : false;
-            $isARemote = strpos($line, 'remote') ? true : false;
+
+            if (false !== strpos($line, 'central')) {
+                $fileName = 'Central';
+            } elseif (false !== strpos($line, 'remote')) {
+                $fileName = 'Remote';
+            }
             continue;
         } elseif (
             $start === true
@@ -142,7 +144,7 @@ try {
     fclose($file);
 
     // checking if the instance is a central and generating configuration files
-    if ($isACentral === true) {
+    if (!empty($fileName)) {
         // database configuration file
         $fileTpl = __DIR__ . '/../var/databaseTemplate.yaml';
         if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
@@ -158,13 +160,10 @@ try {
             $errorMessage = 'Database configuration file is not created properly';
             throw new \InvalidArgumentException($errorMessage);
         }
-    }
 
-    if (true === $isACentral || true === $isARemote) {
         // central and remote have different template
-        $tplName = $isACentral ? 'gorgoneCoreTemplate.yaml' : 'gorgoneRemoteTemplate.yaml';
+        $fileTpl = __DIR__ . '/../var/gorgone/gorgone' . $fileName . 'Template.yaml';
         // gorgone configuration file for centreon. Created in the centreon-gorgone folder
-        $fileTpl = __DIR__ . '/../var/gorgone/' . $tplName;
         if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
             $errorMessage = 'Gorgone configuration template is empty or missing';
             throw new \InvalidArgumentException($errorMessage);

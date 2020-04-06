@@ -130,7 +130,7 @@ file_put_contents($gorgoneDatabaseFile, $contents);
  * Gorgone daemon configuration file for a central
  */
 $gorgoneCoreFileForCentral = $centreonEtcPath . '/../centreon-gorgone/config.d/40-gorgoned.yaml';
-$contents = file_get_contents('../../var/gorgone/gorgoneCoreTemplate.yaml');
+$contents = file_get_contents('../../var/gorgone/gorgoneCentralTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneCoreFileForCentral, $contents);
 

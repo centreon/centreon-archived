@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { KeyboardEvent } from 'react';
+import * as React from 'react';
 
 import {
   Grid,
@@ -149,14 +149,14 @@ const Filter = ({
   const getHostGroupSearchEndpoint = (searchValue): string => {
     return buildHostGroupsEndpoint({
       limit: 10,
-      search: `name:${searchValue}`,
+      search: searchValue ? `name:${searchValue}` : undefined,
     });
   };
 
   const getServiceGroupSearchEndpoint = (searchValue): string => {
     return buildServiceGroupsEndpoint({
       limit: 10,
-      search: `name:${searchValue}`,
+      search: searchValue ? `name:${searchValue}` : undefined,
     });
   };
 

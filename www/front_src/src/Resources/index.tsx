@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import * as React from 'react';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -53,10 +53,10 @@ const Resources = (): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
 
-  const [listing, setListing] = useState<ResourceListing>();
-  const [selectedResources, setSelectedResources] = useState<Array<Resource>>(
-    [],
-  );
+  const [listing, setListing] = React.useState<ResourceListing>();
+  const [selectedResources, setSelectedResources] = React.useState<
+    Array<Resource>
+  >([]);
   const [resourcesToAcknowledge, setResourcesToAcknowledge] = React.useState<
     Array<Resource>
   >([]);
@@ -67,10 +67,10 @@ const Resources = (): JSX.Element => {
     Array<Resource>
   >([]);
 
-  const [sorto, setSorto] = useState<SortOrder>(defaultSortOrder);
-  const [sortf, setSortf] = useState<string>(defaultSortField);
-  const [limit, setLimit] = useState<number>(30);
-  const [page, setPage] = useState<number>(1);
+  const [sorto, setSorto] = React.useState<SortOrder>(defaultSortOrder);
+  const [sortf, setSortf] = React.useState<string>(defaultSortField);
+  const [limit, setLimit] = React.useState<number>(30);
+  const [page, setPage] = React.useState<number>(1);
 
   const {
     filter,
@@ -94,23 +94,23 @@ const Resources = (): JSX.Element => {
   const [
     selectedDetailsEndpoints,
     setSelectedDetailsEndpoints,
-  ] = useState<ResourceEndpoints | null>(null);
+  ] = React.useState<ResourceEndpoints | null>(null);
 
-  const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = useState(0);
+  const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = React.useState(0);
 
-  const [loading, setLoading] = useState(true);
-  const [enabledAutorefresh, setEnabledAutorefresh] = useState(true);
+  const [loading, setLoading] = React.useState(true);
+  const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
 
   const refreshIntervalMs = useSelector(
     (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
   );
-  const refreshIntervalRef = useRef<number>();
+  const refreshIntervalRef = React.useRef<number>();
 
   const { showMessage } = useSnackbar();
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
 
-  const [tokenSource] = useState(axios.CancelToken.source());
+  const [tokenSource] = React.useState(axios.CancelToken.source());
 
   const load = (): void => {
     setLoading(true);
@@ -155,14 +155,14 @@ const Resources = (): JSX.Element => {
     load();
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     return (): void => {
       tokenSource.cancel();
       clearInterval(refreshIntervalRef.current);
     };
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     initAutorefreshAndLoad();
   }, [
     sortf,
@@ -177,7 +177,7 @@ const Resources = (): JSX.Element => {
     serviceGroups,
   ]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     initAutorefresh();
   }, [enabledAutorefresh]);
 
