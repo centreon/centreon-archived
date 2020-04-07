@@ -23,5 +23,5 @@ export interface ResourceDetails {
   last_notification: string;
   notification_number: number;
   performance_data?: string;
-  check_command: string;
+  command_line: string;
 }

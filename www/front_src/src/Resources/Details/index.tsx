@@ -65,7 +65,7 @@ const Details = ({
   }, [detailsEndpoint]);
 
   return (
-    <Paper variant="outlined" elevation={2} className={classes.details}>
+    <Paper elevation={4} className={classes.details}>
       <div className={classes.header}>
         <Header details={details} onClickClose={onClose} />
       </div>
