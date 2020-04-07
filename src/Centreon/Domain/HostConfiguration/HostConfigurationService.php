@@ -43,11 +43,20 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      */
     public function addHost(Host $host): int
     {
+        if ($host->getName() === null) {
+            throw new HostConfigurationException('Host name can not be empty');
+        }
         try {
+            $hasHostWithSameName = $this->hostConfigurationRepository->hasHostWithSameName($host->getName());
+            if ($hasHostWithSameName) {
+                throw new HostConfigurationException('Host name already exists');
+            }
             if ($host->getExtendedHost() === null) {
                 $host->setExtendedHost(new ExtendedHost());
             }
             return $this->hostConfigurationRepository->addHost($host);
+        } catch (HostConfigurationException $ex) {
+            throw $ex;
         } catch (\Exception $ex) {
             throw new HostConfigurationException('Error while creation of host', 0, $ex);
         }
@@ -62,6 +71,18 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             return $this->hostConfigurationRepository->findHost($hostId);
         } catch (\Exception $ex) {
             throw new HostConfigurationException('Error while searching for the host', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNumberOfHosts(): int
+    {
+        try {
+            return $this->hostConfigurationRepository->getNumberOfHosts();
+        } catch (\Exception $ex) {
+            throw new HostConfigurationException('Error while searching for the number of host', 0, $ex);
         }
     }
 }
