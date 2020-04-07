@@ -458,11 +458,15 @@ $cloneSetMacro[] = $form->addElement(
 
 
 $cloneSetTemplate = array();
+echo'<pre>';
+var_dump($hostObj->getLimitedList(false, true));
+
+$listTemplate = array(null => null) + $mTp + $hostObj->getList(false, true);
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
     '',
-    (array(null => null) + $hostObj->getList(false, true)),
+    $listTemplate,
     array(
         "id" => "tpSelect_#index#",
         "class" => "select2",

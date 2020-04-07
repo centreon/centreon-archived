@@ -116,6 +116,36 @@ class CentreonHost
     }
 
     /**
+     * @param bool $enable
+     * @param bool $template
+     * @param null|int $exclude - host id to exclude in returned result
+     * @return array
+     * @throws Exception
+     */
+    public function getLimitedList($enable = false, $template = false, $exclude = null)
+    {
+        // get template from pp
+        $stmt = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+        $alreadyProcessed = array();
+        $templates = array();
+        $depth = -1;
+        while ($row = $stmt->fetch()) {
+            $templates = array_merge(
+                $templates,
+                $this->getTemplateChain($row['host_id'], $alreadyProcessed, $depth, array('host_id'))
+            );
+        }
+
+
+
+    }
+
+
+    /**
      * @param $hostId
      * @param bool $withHg
      * @return array
