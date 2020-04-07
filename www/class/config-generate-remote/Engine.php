@@ -37,7 +37,7 @@ class Engine extends AbstractObject
         nagios_id,
         use_timezone,
         cfg_dir,
-        cfg_file as cfg_filename,
+        cfg_file,
         log_file,
         status_file,
         status_update_interval,
@@ -141,6 +141,7 @@ class Engine extends AbstractObject
     ';
     protected $attributesWrite = [
         'nagios_server_id',
+        'nagios_id',
         'use_timezone',
         'log_file',
         'status_file',
@@ -205,7 +206,8 @@ class Engine extends AbstractObject
         'macros_filter',
         'enable_macros_filter',
         'nagios_activate',
-        'cfg_dir'
+        'cfg_dir',
+        'cfg_file'
     ];
     protected $stmtEngine = null;
 
