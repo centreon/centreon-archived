@@ -263,7 +263,7 @@ class CentreonTopCounter extends CentreonWebService
             'fullname' => $this->centreon->user->name,
             'username' => $this->centreon->user->alias,
             'locale' => $locale,
-            'timezone' => $this->centreon->user->gmt,
+            'timezone' => $this->centreon->CentreonGMT->getActiveTimezone($this->centreon->user->gmt),
             'hasAccessToProfile' => $this->hasAccessToProfile,
             'autologinkey' => $autoLoginKey,
             'soundNotificationsEnabled' => $this->soundNotificationsEnabled
