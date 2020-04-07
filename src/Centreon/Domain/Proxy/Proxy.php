@@ -61,6 +61,9 @@ class Proxy
      */
     private $protocol;
 
+    /**
+     * @var string[]
+     */
     private $protocolAvailable = [];
 
     public function __construct()
