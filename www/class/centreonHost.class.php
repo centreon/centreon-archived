@@ -34,6 +34,8 @@
  *
  */
 
+use App\Kernel;
+
 require_once __DIR__ . '/centreonInstance.class.php';
 require_once __DIR__ . '/centreonService.class.php';
 require_once __DIR__ . '/centreonCommand.class.php';
@@ -143,6 +145,39 @@ class CentreonHost
         return $mTp;
     }
 
+    /**
+     * check host limitation
+     *
+     * @return bool
+     */
+    private function getHostLimit()
+    {
+        $licenseStatus = true;
+
+        $legacyContainer = \Centreon\LegacyContainer::getInstance();
+        $legacyContainer[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
+        $legacyContainer[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
+        $licenceManager = $legacyContainer[\CentreonLicense\ServiceProvider::LM_LICENSE];
+
+        $licenseExists = $licenceManager->exists();
+        $licenseDetails = $licenceManager->getData();
+
+        echo "<PRE>";
+        echo "<H2>data from the license</H2>";
+        var_dump($licenseDetails);
+        echo "<H2>is the license file exists ?</H2>";
+        var_dump($licenseExists);
+        echo "<H2>license object data</H2>";
+        var_dump($licenceManager);
+
+
+        echo "</PRE>";
+        // @TODO get LM returned value
+        // LM host isset and > count(host) ?
+        // caution -1 means unlocked
+
+        return $licenseStatus;
+    }
 
     /**
      *  get list of inherited templates from plugin pack
@@ -155,12 +190,15 @@ class CentreonHost
      */
     public function getLimitedList($enable = false, $template = false)
     {
+        $ppList = array();
+        if (false === $this->getHostLimit()) {
+            return $ppList;
+        }
         $stmt = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
-        $ppList = array();
         while ($row = $stmt->fetch()) {
             $this->getHostChain($row['host_id'], $ppList);
         }
