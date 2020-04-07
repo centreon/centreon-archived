@@ -116,6 +116,34 @@ class CentreonHost
     }
 
     /**
+     * get the template currently saved for this host
+     *
+     * @param $hostId
+     *
+     * @return array
+     */
+    public function getSavedTpl($hostId)
+    {
+        $mTp = [];
+        $k = 0;
+        $dbResult = $this->db->prepare(
+            "SELECT host_tpl_id, host.host_name
+            FROM host_template_relation, host
+            WHERE host_host_id = :hostId
+            AND host_tpl_id = host.host_id"
+        );
+        $dbResult->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $dbResult->execute();
+        while ($multiTp = $dbResult->fetch()) {
+            $mTp[$multiTp["host_tpl_id"]] = $multiTp["host_name"];
+            $k++;
+        }
+
+        return $mTp;
+    }
+
+
+    /**
      * @param bool $enable
      * @param bool $template
      * @return array
