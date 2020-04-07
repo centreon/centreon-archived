@@ -243,16 +243,20 @@ $extImgStatusmap = return_image_list(2);
 // Host multiple templates relations stored in DB
 $mTp = array();
 $k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id, host.host_name
-                            FROM host_template_relation, host
-                            WHERE host_host_id = '" . $host_id . "' 
-                            AND host_tpl_id = host.host_id
-                            ORDER BY `order`");
-while ($multiTp = $DBRESULT->fetch()) {
+$dbResult = $pearDB->prepare(
+    "SELECT host_tpl_id, host.host_name
+    FROM host_template_relation, host
+    WHERE host_host_id = :hostId
+    AND host_tpl_id = host.host_id
+    ORDER BY `order`"
+);
+$dbResult->bindValue(':hostId', $host_id, \PDO::PARAM_INT);
+$dbResult->execute();
+while ($multiTp = $dbResult->fetch()) {
     $mTp[$multiTp["host_tpl_id"]] = $multiTp["host_name"];
     $k++;
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 
 // Var information to format the element
