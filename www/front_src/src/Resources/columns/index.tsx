@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   resourceNameItem: {
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
   },
   extraSmallChipContainer: {
     height: 16,
