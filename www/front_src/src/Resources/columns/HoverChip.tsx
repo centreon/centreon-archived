@@ -30,6 +30,12 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
       aria-label={label}
       enterDelay={0}
       interactive
+      PopperProps={{
+        onClick: (e): void => {
+          e.preventDefault();
+          e.stopPropagation();
+        },
+      }}
       onClick={(e): void => {
         e.preventDefault();
         e.stopPropagation();
