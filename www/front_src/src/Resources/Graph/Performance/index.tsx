@@ -18,7 +18,7 @@ import { fade, makeStyles, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import useGet from '../../useGet';
-import { formatTimeAxis } from '../format';
+import { formatTo, timeFormat } from '../format';
 import getTimeSeries from './timeSeries';
 import { GraphData } from './models';
 
@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   endpoint: string;
+  xAxisTickFormat: string;
 }
 
 const LoadingSkeleton = (): JSX.Element => {
@@ -65,7 +66,10 @@ const LoadingSkeleton = (): JSX.Element => {
   );
 };
 
-const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
+const PerformanceGraph = ({
+  endpoint,
+  xAxisTickFormat = timeFormat,
+}: Props): JSX.Element | null => {
   const classes = useStyles();
 
   const [graphData, setGraphData] = React.useState<GraphData>();
@@ -122,10 +126,12 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
         unit={unit}
         orientation={index === 0 ? 'left' : 'right'}
         tickFormatter={(tick): string => formatYAxis({ tick, unit })}
+        tick={{ fontSize: 13 }}
+        width={40}
       />
     ))
   ) : (
-    <YAxis />
+    <YAxis width={40} />
   );
 
   const formatLegend = (value): JSX.Element => (
@@ -148,7 +154,12 @@ const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
             wrapperStyle={{ bottom: 0 }}
           />
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" tickFormatter={formatTimeAxis} />
+          <XAxis
+            dataKey="time"
+            tickFormatter={(tick): string =>
+              formatTo({ time: tick, to: xAxisTickFormat })}
+            tick={{ fontSize: 13 }}
+          />
           {YAxes}
           {graphData.metrics.map(({ metric, ds_data, unit }, index) => {
             const yAxisId = displayMultipleYAxes ? unit : undefined;

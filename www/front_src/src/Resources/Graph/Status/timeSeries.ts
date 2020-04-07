@@ -33,6 +33,7 @@ interface SeverityTimeFraction {
   time: number;
   severityCode: SeverityCode;
   fraction: number;
+  offset: number;
   value: 1;
 }
 const toStartTime = ({ interval }: IntervalWithSeverity): number =>
@@ -65,6 +66,7 @@ const getTimeSeries = (graphData: GraphData): Array<SeverityTimeFraction> => {
     severityCode,
   }): SeverityTimeFraction => ({
     fraction: (interval.end - interval.start) / totalElapsedTime,
+    offset: (interval.start - minStartTime) / totalElapsedTime,
     severityCode,
     time: interval.start,
     value: 1,
