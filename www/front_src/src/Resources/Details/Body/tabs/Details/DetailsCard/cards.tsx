@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Typography, Grid, makeStyles } from '@material-ui/core';
+import { Typography, Grid, makeStyles, Box } from '@material-ui/core';
 import IconCheck from '@material-ui/icons/Check';
 
 import {
@@ -31,7 +31,13 @@ interface DetailCardLines {
 }
 
 const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
-  return <Typography variant="h5">{line}</Typography>;
+  return (
+    <Typography component="div">
+      <Box fontWeight={500} lineHeight={1}>
+        {line}
+      </Box>
+    </Typography>
+  );
 };
 
 const useStyles = makeStyles((theme) => ({

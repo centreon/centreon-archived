@@ -2,11 +2,24 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { Grid, Card, CardContent, Typography, styled } from '@material-ui/core';
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  styled,
+  Tooltip,
+  IconButton,
+} from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import IconCopyFile from '@material-ui/icons/FileCopy';
+
+import { useSnackbar, Severity } from '@centreon/ui';
 
 import ExpandableCard from './ExpandableCard';
 import {
+  labelCopy,
+  labelCommand,
   labelStatusInformation,
   labelDowntimeDuration,
   labelFrom,
@@ -14,6 +27,8 @@ import {
   labelAcknowledgedBy,
   labelAt,
   labelPerformanceData,
+  labelCommandCopied,
+  labelSomethingWentWrong,
 } from '../../../../translatedLabels';
 import StateCard from './StateCard';
 import { getFormattedDateTime } from '../../../../dateTime';
@@ -46,9 +61,29 @@ interface Props {
 }
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
+  const { showMessage } = useSnackbar();
+
   if (details === undefined) {
     return <LoadingSkeleton />;
   }
+
+  const copyCommandLine = (): void => {
+    try {
+      const textArea = document.createElement('textarea');
+      document.body.appendChild(textArea);
+      textArea.value = details.command_line;
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+
+      showMessage({ message: labelCommandCopied, severity: Severity.success });
+    } catch (_) {
+      showMessage({
+        message: labelSomethingWentWrong,
+        severity: Severity.error,
+      });
+    }
+  };
 
   return (
     <Grid container direction="column" spacing={2}>
@@ -111,7 +146,19 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       <Grid item>
         <Card>
           <CardContent>
-            <Typography variant="body2">{details.check_command}</Typography>
+            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+              <Grid container alignItems="center" spacing={1}>
+                <Grid item>{labelCommand}</Grid>
+                <Grid item>
+                  <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                    <IconButton size="small">
+                      <IconCopyFile color="primary" fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </Grid>
+            </Typography>
+            <Typography variant="body2">{details.command_line}</Typography>
           </CardContent>
         </Card>
       </Grid>

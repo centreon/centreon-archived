@@ -32,7 +32,6 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
       }),
     }),
     title: ({ severityCode }): CreateCSSProperties => ({
-      marginBottom: 5,
       ...(severityCode && { color: getStatusBackgroundColor(severityCode) }),
     }),
   };
@@ -74,6 +73,7 @@ const ExpandableCard = ({
           className={classes.title}
           variant="subtitle2"
           color="textSecondary"
+          gutterBottom
         >
           {title}
         </Typography>
