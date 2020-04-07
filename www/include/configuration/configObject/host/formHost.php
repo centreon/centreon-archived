@@ -458,6 +458,7 @@ $cloneSetMacro[] = $form->addElement(
 
 
 $cloneSetTemplate = array();
+
 echo'<pre>';
 var_dump($hostObj->getLimitedList(false, true));
 

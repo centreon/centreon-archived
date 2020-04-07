@@ -130,18 +130,14 @@ class CentreonHost
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
-        $alreadyProcessed = array();
         $templates = array();
-        $depth = -1;
         while ($row = $stmt->fetch()) {
             $templates = array_merge(
                 $templates,
-                $this->getTemplateChain($row['host_id'], $alreadyProcessed, $depth, array('host_id'))
+                $this->getTemplateChain($row['host_id'], array(), -1, false, "host_id")
             );
         }
-
-
-
+        return $templates;
     }
 
 
