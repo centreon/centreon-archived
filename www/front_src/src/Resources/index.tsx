@@ -323,7 +323,7 @@ const Resources = (): JSX.Element => {
     status_graph_endpoint,
     performance_graph_endpoint,
   }): void => {
-    if (isNil(selectedDetailsEndpoints)) {
+    if (isNil(performance_graph_endpoint)) {
       setDefaultDetailsTabIdToOpen(detailsTabId);
     }
     setSelectedDetailsEndpoints({
