@@ -138,3 +138,10 @@ export const labelUp = I18n.t('Up');
 export const labelYes = I18n.t('Yes');
 export const labelSomethingWentWrong = I18n.t('Oops, something went wrong');
 export const labelWarning = I18n.t('Warning');
+export const labelApiNotFoundNotUpToDate = I18n.t(
+  'Seems that your Apache configuration is not up-to-date',
+);
+export const labelApiNotFoundContactAdmin = I18n.t(
+  'Contact your Centreon administrator or update the following file',
+);
+export const labelApiNotFoundDocumentation = I18n.t('See Documentation');
