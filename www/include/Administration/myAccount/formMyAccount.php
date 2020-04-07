@@ -82,7 +82,7 @@ if ($o == "c") {
         $cct[$row['cp_key']] = $row['cp_value'];
     }
 
-    $cct['default_page'] = $cct['default_page'] ?: 104; // selected bu default is Events view page
+    $cct['default_page'] = $cct['default_page'] ?: 104; // selected by default is Events view page
 }
 
 /*
