@@ -77,9 +77,12 @@ class CentreonHost
     }
 
     /**
-     * @param bool $enable
-     * @param bool $template
+     * get all host templates saved in the DB
+     *
+     * @param bool     $enable
+     * @param bool     $template
      * @param null|int $exclude - host id to exclude in returned result
+     *
      * @return array
      * @throws Exception
      */
@@ -125,7 +128,6 @@ class CentreonHost
     public function getSavedTpl($hostId)
     {
         $mTp = [];
-        $k = 0;
         $dbResult = $this->db->prepare(
             "SELECT host_tpl_id, host.host_name
             FROM host_template_relation, host
@@ -136,7 +138,6 @@ class CentreonHost
         $dbResult->execute();
         while ($multiTp = $dbResult->fetch()) {
             $mTp[$multiTp["host_tpl_id"]] = $multiTp["host_name"];
-            $k++;
         }
 
         return $mTp;
@@ -144,14 +145,16 @@ class CentreonHost
 
 
     /**
+     *  get list of inherited templates from plugin pack
+     *
      * @param bool $enable
      * @param bool $template
+     *
      * @return array
      * @throws Exception
      */
     public function getLimitedList($enable = false, $template = false)
     {
-        // get template from pp
         $stmt = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
         $dbResult = $stmt->execute();
         if (!$dbResult) {
@@ -164,7 +167,6 @@ class CentreonHost
         asort($ppList);
         return $ppList;
     }
-
 
     /**
      * @param $hostId
