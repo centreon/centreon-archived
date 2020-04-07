@@ -118,11 +118,10 @@ class CentreonHost
     /**
      * @param bool $enable
      * @param bool $template
-     * @param null|int $exclude - host id to exclude in returned result
      * @return array
      * @throws Exception
      */
-    public function getLimitedList($enable = false, $template = false, $exclude = null)
+    public function getLimitedList($enable = false, $template = false)
     {
         // get template from pp
         $stmt = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
@@ -131,13 +130,12 @@ class CentreonHost
             throw new \Exception("An error occured");
         }
         $templates = array();
+        $alreadyProcessed = array();
         while ($row = $stmt->fetch()) {
-            $templates = array_merge(
-                $templates,
-                $this->getTemplateChain($row['host_id'], array(), -1, false, "host_id")
-            );
+            $this->getHostChain($row['host_id'], $alreadyProcessed);
         }
-        return $templates;
+        asort($alreadyProcessed);
+        return $alreadyProcessed;
     }
 
 
@@ -1286,15 +1284,15 @@ class CentreonHost
         $fields = array()
     ) {
         $templates = array();
-
         if (($depth == -1) || ($depth > 0)) {
             if ($depth > 0) {
                 $depth--;
             }
+
             if (in_array($hostId, $alreadyProcessed)) {
                 return $templates;
             } else {
-                $alreadyProcessed[] = $hostId;
+                $alreadyProcessed[] = $hostId ;
                 if (empty($fields)) {
                     if (!$allFields) {
                         $fields = "h.host_id, h.host_name";
@@ -1337,6 +1335,36 @@ class CentreonHost
             }
         }
         return $templates;
+    }
+
+
+    /**
+     * @param $hostId
+     * @param $alreadyProcessed
+     * @return array
+     * @throws Exception
+     */
+    public function getHostChain(
+        $hostId,
+        &$alreadyProcessed
+    ) {
+        if (in_array($hostId, $alreadyProcessed)) {
+            return $alreadyProcessed;
+        } else {
+            $alreadyProcessed[$hostId] = $hostId;
+            $query = 'SELECT host_host_id FROM host_template_relation htr 
+            WHERE htr.host_tpl_id = :hostId 
+            ORDER BY `order` ASC';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
+            while ($row = $stmt->fetch()) {
+                    $this->getHostChain($row['host_host_id'], $alreadyProcessed);
+            }
+        }
     }
 
     /**

@@ -243,12 +243,13 @@ $extImgStatusmap = return_image_list(2);
 // Host multiple templates relations stored in DB
 $mTp = array();
 $k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id 
-                            FROM host_template_relation 
+$DBRESULT = $pearDB->query("SELECT host_tpl_id, host.host_name
+                            FROM host_template_relation, host
                             WHERE host_host_id = '" . $host_id . "' 
+                            AND host_tpl_id = host.host_id
                             ORDER BY `order`");
 while ($multiTp = $DBRESULT->fetch()) {
-    $mTp[$k] = $multiTp["host_tpl_id"];
+    $mTp[$multiTp["host_tpl_id"]] = $multiTp["host_name"];
     $k++;
 }
 $DBRESULT->closeCursor();
@@ -459,10 +460,11 @@ $cloneSetMacro[] = $form->addElement(
 
 $cloneSetTemplate = array();
 
-echo'<pre>';
-var_dump($hostObj->getLimitedList(false, true));
 
-$listTemplate = array(null => null) + $mTp + $hostObj->getList(false, true);
+$listPpTemplate = $hostObj->getLimitedList(false, true);
+$listAllTemplate = $hostObj->getList(false, true);
+$templateValid = array_diff_key($listAllTemplate, $listPpTemplate);
+$listTemplate = array(null => null) + $mTp + $templateValid;
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
