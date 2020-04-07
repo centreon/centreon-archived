@@ -216,7 +216,7 @@ export const getColumns = (actions): Array<Column> => [
     Component: StatusColumn(actions),
     sortField: 'status_severity_code',
     clickable: true,
-    width: 130,
+    width: 145,
   },
   {
     id: 'resource',
