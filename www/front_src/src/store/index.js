@@ -11,9 +11,8 @@ import createRootReducer from '../redux/reducers';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const paths = window.location.pathname.split('/');
 export const history = createBrowserHistory({
-  basename: `/${paths[1] ? paths[1] : ''}`,
+  basename: document.baseURI.replace(window.location.origin, ''),
 });
 
 const createAppStore = (initialState = {}) => {

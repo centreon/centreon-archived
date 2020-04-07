@@ -252,10 +252,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $event->getRequest()->attributes->set('version.not_beta', true);
 
         $uri = $event->getRequest()->getRequestUri();
-        $paths = explode('/', $uri);
-        array_shift($paths);
-        if (count($paths) >= 3) {
-            $requestApiVersion = $paths[2];
+        if (preg_match('/\/api\/([^\/]+)/', $uri, $matches)) {
+            $requestApiVersion = $matches[1];
             if ($requestApiVersion[0] == 'v') {
                 $requestApiVersion = substr($requestApiVersion, 1);
                 $requestApiVersion = VersionHelper::regularizeDepthVersion(

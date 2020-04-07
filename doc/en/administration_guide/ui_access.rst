@@ -15,10 +15,7 @@ To update the Centreon URI, you need to follow those steps:
 .. image:: /_static/images/adminstration/custom_uri.png
     :align: center
 
-2. On the centreon central server:
-
-* Replace **/centreon** occurences by **/your_custom_uri** in **centreon/www/.htaccess**.
-* Navigate to your Centreon URL.
+2. Edit Apache configuration file for Centreon Web : **/opt/rh/httpd24/root/etc/httpd/conf.d/10-centreon.conf**
 
 ************
 HTTPS access
@@ -73,6 +70,12 @@ To access to the UI using HTTPS, follow those steps:
         <IfModule mod_php5.c>
           php_admin_value engine Off
         </IfModule>
+
+        RewriteRule ^index\.html$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.html [L]
+        ErrorDocument 404 /centreon/index.html
 
         AddType text/plain hbs
       </Directory>

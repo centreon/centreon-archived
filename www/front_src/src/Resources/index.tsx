@@ -17,9 +17,11 @@ import { filterById, FilterGroup, allFilter } from './Filter/models';
 import ResourceActions from './Actions/Resource';
 import GlobalActions from './Actions/Refresh';
 import Details from './Details';
+import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
 import useFilter from './Filter/useFilter';
+import { labelSomethingWentWrong } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -135,7 +137,13 @@ const Resources = (): JSX.Element => {
       })
       .catch((error) => {
         setListing(undefined);
-        showError(error.response?.data?.message || error.message);
+
+        // if 404 is returned, it is probably an issue in apache configuration file
+        if (error.response?.status === 404) {
+          showError(ApiNotFoundMessage);
+        } else {
+          showError(error.response?.data?.message || labelSomethingWentWrong);
+        }
       })
       .finally(() => setLoading(false));
   };
