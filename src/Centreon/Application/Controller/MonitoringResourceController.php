@@ -24,6 +24,7 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Doctrine\Instantiator\Exception\ExceptionInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -115,6 +116,9 @@ class MonitoringResourceController extends AbstractController
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param EntityValidator $entityValidator
+     * @throws ValidationFailedException
+     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
+     * @throws \Exception
      * @return View
      */
     public function list(
@@ -170,8 +174,6 @@ class MonitoringResourceController extends AbstractController
         $resources = $this->resource->filterByContact($this->getUser())
             ->findResources($filter);
 
-        $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
-
         foreach ($resources as $resource) {
             $this->iconUrlNormalizer->normalize($resource);
 
@@ -198,10 +200,7 @@ class MonitoringResourceController extends AbstractController
             $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
 
             if (
-                $resource->getParent() != null && in_array([
-                    'host_id' => $resource->getParent()->getId(),
-                    'service_id' => $resource->getId(),
-                ], $resourcesGraphData)
+                $resource->getParent() != null
             ) {
                 $parameters = [
                     'hostId' => $resource->getParent()->getId(),
@@ -242,7 +241,7 @@ class MonitoringResourceController extends AbstractController
 
     /**
      * Get resource details related to the host
-     *
+     * @throws \Exception
      * @return View
      */
     public function detailsHost(int $hostId): View
@@ -274,7 +273,7 @@ class MonitoringResourceController extends AbstractController
 
     /**
      * Get resource details related to the service
-     *
+     * @throws \Exception
      * @return View
      */
     public function detailsService(int $hostId, int $serviceId): View
