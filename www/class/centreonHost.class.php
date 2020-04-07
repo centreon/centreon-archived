@@ -129,13 +129,12 @@ class CentreonHost
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
-        $templates = array();
-        $alreadyProcessed = array();
+        $ppList = array();
         while ($row = $stmt->fetch()) {
-            $this->getHostChain($row['host_id'], $alreadyProcessed);
+            $this->getHostChain($row['host_id'], $ppList);
         }
-        asort($alreadyProcessed);
-        return $alreadyProcessed;
+        asort($ppList);
+        return $ppList;
     }
 
 
@@ -1156,7 +1155,6 @@ class CentreonHost
         return $aFinalMacro;
     }
 
-
     public function ajaxMacroControl($form)
     {
         $macros = array();
@@ -1337,7 +1335,6 @@ class CentreonHost
         return $templates;
     }
 
-
     /**
      * @param $hostId
      * @param $alreadyProcessed
@@ -1348,9 +1345,7 @@ class CentreonHost
         $hostId,
         &$alreadyProcessed
     ) {
-        if (in_array($hostId, $alreadyProcessed)) {
-            return $alreadyProcessed;
-        } else {
+        if (!in_array($hostId, $alreadyProcessed)) {
             $alreadyProcessed[$hostId] = $hostId;
             $query = 'SELECT host_host_id FROM host_template_relation htr 
             WHERE htr.host_tpl_id = :hostId 
@@ -1365,6 +1360,7 @@ class CentreonHost
                     $this->getHostChain($row['host_host_id'], $alreadyProcessed);
             }
         }
+        return $alreadyProcessed;
     }
 
     /**
@@ -1409,7 +1405,6 @@ class CentreonHost
         $fields = array(),
         $values = array()
     ) {
-
         if ($depth != 0) {
             $depth--;
             if (in_array($hostId, $alreadyProcessed)) {
@@ -1437,7 +1432,6 @@ class CentreonHost
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
                 }
-
                 while ($row = $stmt->fetch()) {
                     if (!count($alreadyProcessed)) {
                         $fields = array_keys($row);
@@ -1467,7 +1461,6 @@ class CentreonHost
     public function getLockedHostTemplates()
     {
         static $arr = null;
-
         if (is_null($arr)) {
             $arr = array();
             $stmt = $this->db->query("SELECT host_id FROM host WHERE host_locked = 1");

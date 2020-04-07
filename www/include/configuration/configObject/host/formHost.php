@@ -393,7 +393,7 @@ $form->addElement('select2', 'host_location', _("Timezone / Location"), array(),
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 /*
- * Get deault poller id
+ * Get default poller id
  */
 $DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 $defaultServer = $DBRESULT->fetch();
@@ -457,14 +457,11 @@ $cloneSetMacro[] = $form->addElement(
     array('id' => 'macroFrom_#index#')
 );
 
-
 $cloneSetTemplate = array();
-
-
 $listPpTemplate = $hostObj->getLimitedList(false, true);
 $listAllTemplate = $hostObj->getList(false, true);
-$templateValid = array_diff_key($listAllTemplate, $listPpTemplate);
-$listTemplate = array(null => null) + $mTp + $templateValid;
+$validTemplate = array_diff_key($listAllTemplate, $listPpTemplate);
+$listTemplate = array(null => null) + $mTp + $validTemplate;
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
