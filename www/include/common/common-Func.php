@@ -142,7 +142,8 @@ function tidySearchKey($search, $advanced_search)
     if ($advanced_search == 1) {
         if (isset($search) && !strstr($search, "*") && !strstr($search, "%")) {
             $search = "'" . $search . "'";
-        } elseif (isset($search) &&
+        } elseif (
+            isset($search) &&
             isset($search[0]) &&
             isset($search[strlen($search) - 1]) &&
             $search[0] == "%" &&
@@ -365,7 +366,7 @@ function getMyHostGroups($host_id = null)
     return $hgs;
 }
 
-function getMyHostField($host_id = null, $field)
+function getMyHostField($host_id, $field)
 {
     if (!$host_id) {
         return;
@@ -389,7 +390,7 @@ function getMyHostField($host_id = null, $field)
     return null;
 }
 
-function getMyHostFieldOnHost($host_id = null, $field)
+function getMyHostFieldOnHost($host_id, $field)
 {
     global $pearDB;
 
@@ -502,7 +503,7 @@ function getMyHostMacroFromMultiTemplates($host_id, $field)
     return null;
 }
 
-function getMyHostMacro($host_id = null, $field)
+function getMyHostMacro($host_id, $field)
 {
     if (!$host_id) {
         return;
@@ -575,7 +576,7 @@ function getMyCategorieName($sc_id = null)
     return $row["sc_name"];
 }
 
-function getMyServiceMacro($service_id = null, $field)
+function getMyServiceMacro($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -598,7 +599,7 @@ function getMyServiceMacro($service_id = null, $field)
     }
 }
 
-function getMyHostExtendedInfoField($host_id = null, $field)
+function getMyHostExtendedInfoField($host_id, $field)
 {
     if (!$host_id) {
         return;
@@ -617,7 +618,7 @@ function getMyHostExtendedInfoField($host_id = null, $field)
     }
 }
 
-function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = null, $antiLoop = null)
+function getMyHostExtendedInfoImage($host_id, $field, $flag1stLevel = null, $antiLoop = null)
 {
     global $pearDB, $oreon;
 
@@ -675,12 +676,13 @@ function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = nul
                         }
                     }
                 } else {
-                    if ($result_field = getMyHostExtendedInfoImage(
-                        $row['host_tpl_id'],
-                        $field,
-                        null,
-                        $row['host_tpl_id']
-                    )
+                    if (
+                        $result_field = getMyHostExtendedInfoImage(
+                            $row['host_tpl_id'],
+                            $field,
+                            null,
+                            $row['host_tpl_id']
+                        )
                     ) {
                         return $result_field;
                     }
@@ -974,7 +976,7 @@ function getMyServiceGroupActivateServices($sg_id = null, $access = null)
 
 #
 
-function getMyServiceField($service_id = null, $field)
+function getMyServiceField($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -1002,7 +1004,7 @@ function getMyServiceField($service_id = null, $field)
     }
 }
 
-function getMyServiceExtendedInfoField($service_id = null, $field)
+function getMyServiceExtendedInfoField($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -1032,7 +1034,7 @@ function getMyServiceExtendedInfoField($service_id = null, $field)
     }
 }
 
-function getMyServiceExtendedInfoImage($service_id = null, $field)
+function getMyServiceExtendedInfoImage($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -1859,7 +1861,8 @@ function host_has_one_or_more_GraphService($host_id, $search = 0)
     $services = getMyHostServices($host_id, $search);
 
     foreach ($services as $svc_id => $svc_name) {
-        if (service_has_graph($host_id, $svc_id) &&
+        if (
+            service_has_graph($host_id, $svc_id) &&
             ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id])))
         ) {
             return true;
@@ -2207,30 +2210,33 @@ function cleanString($str)
     return $str;
 }
 
-// Global Function 
+// Global Function
 
 function get_my_first_allowed_root_menu($lcaTStr)
 {
     global $pearDB;
 
     if (trim($lcaTStr) != "") {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE topology_page IN ($lcaTStr) 
-                AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
-                LIMIT 1";
+        $rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react
+               FROM topology 
+               WHERE topology_page IN ($lcaTStr) 
+               AND (topology_parent IS NULL OR topology_page = 104) AND topology_page IS NOT NULL AND topology_show = '1' 
+               ORDER BY CASE topology_page WHEN 104 THEN 1 ELSE 0 END DESC, topology_id ASC
+               LIMIT 1";
     } else {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
-                LIMIT 1";
+        $rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react
+               FROM topology 
+               WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
+               LIMIT 1";
     }
-    $DBRESULT = $pearDB->query($rq);
-    $root_menu = array();
-    if ($DBRESULT->rowCount()) {
-        $root_menu = $DBRESULT->fetchRow();
+
+    $dbResult = $pearDB->query($rq);
+
+    if (!$dbResult->rowCount()) {
+        return [];
     }
-    return $root_menu;
+
+    return $dbResult->fetchRow();
 }
 
 function reset_search_page($url)
@@ -2240,7 +2246,8 @@ function reset_search_page($url)
     if (!isset($url)) {
         return;
     }
-    if (isset($_GET['search'])
+    if (
+        isset($_GET['search'])
         && isset($centreon->historySearch[$url])
         && $_GET['search'] != $centreon->historySearch[$url]
         && !isset($_GET['num'])
@@ -2248,7 +2255,8 @@ function reset_search_page($url)
     ) {
         $_POST['num'] = 0;
         $_GET['num'] = 0;
-    } elseif (isset($_GET["search"])
+    } elseif (
+        isset($_GET["search"])
         && isset($_POST["search"])
         && $_GET["search"] === $_POST["search"]
     ) {
