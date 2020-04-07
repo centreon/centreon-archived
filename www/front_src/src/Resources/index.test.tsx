@@ -9,9 +9,19 @@ import {
   fireEvent,
   RenderResult,
 } from '@testing-library/react';
-
 import { Simulate } from 'react-dom/test-utils';
-import { map, pick, last } from 'ramda';
+
+import {
+  partition,
+  where,
+  contains,
+  pipe,
+  split,
+  head,
+  map,
+  pick,
+  last,
+} from 'ramda';
 
 import { ThemeProvider } from '@centreon/ui';
 
@@ -176,7 +186,8 @@ const fillEntities = (): Array<Resource> => {
     last_check: '1m',
     tries: '1',
     short_type: index % 4 === 0 ? 's' : 'h',
-    information: `Entity ${index}`,
+    information:
+      index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
     type: index % 4 === 0 ? 'service' : 'host',
   }));
 };
@@ -246,7 +257,31 @@ describe(Resources, () => {
     });
   };
 
-  it('expands criterias filters', async () => {
+  it('displays first part of information when multiple (split by \n) are available', async () => {
+    const { getByText, queryByText } = renderResources();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
+      where({ information: contains('\n') }),
+      retrievedListing.result,
+    );
+
+    resourcesWithMultipleLines.forEach(({ information }) => {
+      expect(
+        getByText(pipe(split('\n'), head)(information)),
+      ).toBeInTheDocument();
+      expect(queryByText(information)).not.toBeInTheDocument();
+    });
+
+    resourcesWithSingleLines.forEach(({ information }) => {
+      expect(getByText(information)).toBeInTheDocument();
+    });
+  });
+
+  it('expands criterias filters when the expand icon is clicked', async () => {
     const { getByLabelText, queryByText } = renderResources();
 
     await waitFor(() => {
