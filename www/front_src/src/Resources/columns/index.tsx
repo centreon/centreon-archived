@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { pipe, split, head, propOr } from 'ramda';
+
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
@@ -197,10 +199,6 @@ const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
   );
 };
 
-const InformationColumn = ({ row }: ColumnProps): JSX.Element | null => {
-  return <Typography variant="body2">{row.information || ''}</Typography>;
-};
-
 export const getColumns = (actions): Array<Column> => [
   {
     id: 'severity',
@@ -208,6 +206,7 @@ export const getColumns = (actions): Array<Column> => [
     type: TABLE_COLUMN_TYPES.component,
     Component: SeverityColumn,
     sortField: 'severity_level',
+    width: 50,
   },
   {
     id: 'status',
@@ -224,6 +223,7 @@ export const getColumns = (actions): Array<Column> => [
     type: TABLE_COLUMN_TYPES.component,
     Component: ResourceColumn,
     sortField: 'name',
+    width: 200,
   },
   {
     id: 'parent_resource',
@@ -231,6 +231,7 @@ export const getColumns = (actions): Array<Column> => [
     type: TABLE_COLUMN_TYPES.component,
     Component: ParentResourceColumn,
     sortable: false,
+    width: 200,
   },
   {
     id: 'graph',
@@ -264,9 +265,8 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'information',
     label: labelInformation,
-    type: TABLE_COLUMN_TYPES.component,
-    Component: InformationColumn,
-    width: 400,
+    type: TABLE_COLUMN_TYPES.string,
+    getFormattedString: pipe(propOr('', 'information'), split('\n'), head),
   },
   {
     id: 'state',

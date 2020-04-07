@@ -26,8 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
 /**
  * This class has been defined to differentiate between contacts that have
- * identified by session and those by token. By session, all calls to the
- * **hasRole()** method will return TRUE.
+ * identified by session and those by token. 
  *
  * @package Security
  */
@@ -51,11 +50,6 @@ class ContactBySession extends Contact
             Contact::ROLE_API_REALTIME,
             Contact::ROLE_API_CONFIGURATION
         ];
-    }
-
-    public function hasRole(string $role): bool
-    {
-        return true;
     }
 
     public function getId(): int
