@@ -24,7 +24,6 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Doctrine\Instantiator\Exception\ExceptionInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
