@@ -44,14 +44,8 @@ const StatusGraph = ({
 
   const timeSeries = getTimeSeries(graphData);
 
-  const area = timeSeries.map(({ time }) => (
-    <Area
-      key={time}
-      dataKey="value"
-      stroke="transparent"
-      fill="url(#splitColor)"
-    />
-  ));
+  const formatToxAxisTickFormat = (tick): string =>
+    formatTo({ time: tick, to: xAxisTickFormat });
 
   return (
     <ResponsiveContainer>
@@ -77,13 +71,8 @@ const StatusGraph = ({
           </linearGradient>
         </defs>
 
-        <XAxis
-          dataKey="time"
-          tickFormatter={(tick): string =>
-            formatTo({ time: tick, to: xAxisTickFormat })
-          }
-        />
-        {area}
+        <XAxis dataKey="time" tickFormatter={formatToxAxisTickFormat} />
+        <Area dataKey="value" stroke="transparent" fill="url(#splitColor)" />
       </AreaChart>
     </ResponsiveContainer>
   );

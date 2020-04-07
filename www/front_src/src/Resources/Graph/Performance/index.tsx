@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   endpoint: string;
-  xAxisTickFormat: string;
+  xAxisTickFormat?: string;
 }
 
 const LoadingSkeleton = (): JSX.Element => {
@@ -140,6 +140,9 @@ const PerformanceGraph = ({
     </Typography>
   );
 
+  const formatToxAxisTickFormat = (tick): string =>
+    formatTo({ time: tick, to: xAxisTickFormat });
+
   return (
     <div className={classes.container}>
       <Typography variant="body2" color="textPrimary">
@@ -156,8 +159,7 @@ const PerformanceGraph = ({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="time"
-            tickFormatter={(tick): string =>
-              formatTo({ time: tick, to: xAxisTickFormat })}
+            tickFormatter={formatToxAxisTickFormat}
             tick={{ fontSize: 13 }}
           />
           {YAxes}
@@ -188,7 +190,7 @@ const PerformanceGraph = ({
             );
           })}
 
-          <Tooltip />
+          <Tooltip labelFormatter={formatToxAxisTickFormat} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
