@@ -6,8 +6,9 @@ export interface ResourceDetails {
   parent: Parent;
   criticality: number;
   output: string;
-  downtimes?: Array<Downtime>;
+  downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;
+  is_acknowledged: boolean;
   duration: string;
   tries: string;
   poller_name?: string;
