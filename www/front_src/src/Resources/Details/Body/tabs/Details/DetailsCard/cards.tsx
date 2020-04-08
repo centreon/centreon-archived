@@ -154,7 +154,7 @@ const getDetailCardLines = (
       getLines: (): Lines => [
         {
           key: 'flapping',
-          line: <DetailsLine line={details.flapping ? 'N/A' : labelYes} />,
+          line: <DetailsLine line={details.flapping ? labelYes : 'N/A'} />,
         },
       ],
     },

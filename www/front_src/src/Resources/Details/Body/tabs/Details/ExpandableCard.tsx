@@ -52,7 +52,7 @@ const ExpandableCard = ({
 
   const [outputExpanded, setOutputExpanded] = React.useState(false);
 
-  const lines = content.split('\n');
+  const lines = content.split(/\n|\\n/);
   const threeFirstlines = lines.slice(0, 3);
   const lastlines = lines.slice(2, lines.length);
 

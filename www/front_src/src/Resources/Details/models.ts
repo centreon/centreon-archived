@@ -18,10 +18,10 @@ export interface ResourceDetails {
   active_checks: boolean;
   execution_time: number;
   latency: number;
-  flapping: boolean;
+  flapping?: boolean;
   percent_state_change: number;
   last_notification: string;
   notification_number: number;
   performance_data?: string;
-  command_line: string;
+  command_line?: string;
 }

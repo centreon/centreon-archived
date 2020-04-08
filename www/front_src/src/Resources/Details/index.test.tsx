@@ -37,6 +37,7 @@ import {
   labelLast31Days,
   labelCopy,
   labelCommand,
+  labelResourceFlapping,
 } from '../translatedLabels';
 import { selectOption } from '../test';
 
@@ -190,6 +191,9 @@ describe(Details, () => {
 
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
+
+    expect(getByText(labelResourceFlapping)).toBeInTheDocument();
+    expect(getByText('N/A')).toBeInTheDocument();
 
     expect(getByText(labelPercentStateChange)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();

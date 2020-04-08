@@ -69,7 +69,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   }
 
   const copyCommandLine = (): void => {
-    writeToClipboard(details.command_line)
+    writeToClipboard(details.command_line as string)
       .then(() => {
         showMessage({
           message: labelCommandCopied,
@@ -142,25 +142,31 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           />
         </Grid>
       )}
-      <Grid item>
-        <Card>
-          <CardContent>
-            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item>{labelCommand}</Grid>
-                <Grid item>
-                  <Tooltip onClick={copyCommandLine} title={labelCopy}>
-                    <IconButton size="small">
-                      <IconCopyFile color="primary" fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+      {details.command_line && (
+        <Grid item>
+          <Card>
+            <CardContent>
+              <Typography
+                variant="subtitle2"
+                color="textSecondary"
+                gutterBottom
+              >
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>{labelCommand}</Grid>
+                  <Grid item>
+                    <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                      <IconButton size="small">
+                        <IconCopyFile color="primary" fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Typography>
-            <Typography variant="body2">{details.command_line}</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+              </Typography>
+              <Typography variant="body2">{details.command_line}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      )}
     </Grid>
   );
 };
