@@ -18,6 +18,7 @@ import {
   labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
+  labelNo,
 } from '../../../../../translatedLabels';
 import { getFormattedDate, getFormattedTime } from '../../../../../dateTime';
 import { ResourceDetails } from '../../../../models';
@@ -154,7 +155,7 @@ const getDetailCardLines = (
       getLines: (): Lines => [
         {
           key: 'flapping',
-          line: <DetailsLine line={details.flapping ? labelYes : 'N/A'} />,
+          line: <DetailsLine line={details.flapping ? labelYes : labelNo} />,
         },
       ],
     },
