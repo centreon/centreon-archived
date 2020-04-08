@@ -153,8 +153,7 @@ class CentreonHost
     public function getHostNumber(): int
     {
         $query = $this->db->query('SELECT COUNT(*) AS `num` FROM host WHERE host_register <> "0"');
-        $res = $query->fetch()['num'];
-        return ((int)$res);
+        return ((int)$query->fetch()['num']);
     }
 
     /**
