@@ -164,7 +164,7 @@ class CentreonHost
      */
     private function getHostLimit(): bool
     {
-        $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-managerll"');
+        $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-manager"');
         if ($dbResult->fetch()) {
             try {
                 $legacyContainer = \Centreon\LegacyContainer::getInstance();
