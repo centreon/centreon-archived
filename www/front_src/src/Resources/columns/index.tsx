@@ -1,157 +1,283 @@
 import React from 'react';
 
+import { pipe, split, head, propOr } from 'ramda';
+
 import { Grid, Typography, makeStyles } from '@material-ui/core';
+import IconAcknowledge from '@material-ui/icons/Person';
+import IconCheck from '@material-ui/icons/Sync';
 
-import { TABLE_COLUMN_TYPES, StatusChip, StatusCode } from '@centreon/ui';
+import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
+import IconDowntime from '../icons/Downtime';
 import {
-  labelResources,
+  labelResource,
   labelStatus,
   labelDuration,
   labelTries,
   labelInformation,
   labelState,
   labelLastCheck,
+  labelAcknowledge,
+  labelSetDowntimeOn,
+  labelCheck,
+  labelSetDowntime,
 } from '../translatedLabels';
 import { Resource } from '../models';
 import StateColumn from './State';
 import GraphColumn from './Graph';
+import ActionButton from '../ActionButton';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
+    padding: theme.spacing(0, 0.5),
+  },
+  resourceNameItem: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingLeft: theme.spacing(1),
+  },
+  extraSmallChipContainer: {
+    height: 16,
+  },
+  smallChipContainer: {
+    height: 18,
+  },
+  smallChipLabel: {
     padding: theme.spacing(0.5),
   },
 }));
 
+export interface Column {
+  id: string;
+  getFormattedString?: (details) => string;
+  label: string;
+  type: number;
+  Component?: (props) => JSX.Element | null;
+  sortable?: boolean;
+  sortField?: string;
+  clickable?: boolean;
+  width?: number;
+}
+
 export interface ColumnProps {
   row: Resource;
-  Cell: ({ children, width }: { children; width? }) => JSX.Element;
   isRowSelected: boolean;
+  isHovered: boolean;
   style;
   onClick;
 }
 
-const SeverityColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const SeverityColumn = ({ row }: ColumnProps): JSX.Element | null => {
+  const classes = useStyles();
+
+  if (!row.severity) {
+    return null;
+  }
+
   return (
-    <Cell>
-      {row.severity && (
-        <StatusChip
-          label={row.severity.level.toString()}
-          statusCode={StatusCode.None}
-        />
-      )}
-    </Cell>
+    <StatusChip
+      label={row.severity.level.toString()}
+      severityCode={SeverityCode.None}
+      classes={{
+        root: classes.extraSmallChipContainer,
+        label: classes.smallChipLabel,
+      }}
+    />
   );
 };
 
-const StatusColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
-  return (
-    <Cell>
-      <StatusChip label={row.status.name} statusCode={row.status.code} />
-    </Cell>
-  );
-};
+type StatusColumnProps = {
+  actions;
+} & Pick<ColumnProps, 'row'>;
 
-const ResourcesColumn = ({ Cell, row }: ColumnProps): JSX.Element => {
+const StatusColumnOnHover = ({
+  actions,
+  row,
+}: StatusColumnProps): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Cell>
-      <Grid container spacing={1} className={classes.resourceDetailsCell}>
-        <Grid item>
-          {row.icon ? (
-            <img
-              src={row.icon.url}
-              alt={row.icon.name}
-              width={21}
-              height={21}
-            />
-          ) : (
-            <StatusChip label={row.short_type} statusCode={StatusCode.None} />
-          )}
-        </Grid>
-        <Grid item>
-          <Typography>{row.name}</Typography>
-        </Grid>
-        {row.parent && (
-          <Grid container spacing={1}>
-            <Grid item xs={1} />
-            <Grid item>
-              <StatusChip statusCode={row.parent?.status?.code || 0} />
-            </Grid>
-            <Grid item>{row.parent.name}</Grid>
-          </Grid>
-        )}
+    <Grid container spacing={1} alignItems="center">
+      <Grid item>
+        <ActionButton
+          title={labelAcknowledge}
+          color="primary"
+          onClick={(): void => actions.onAcknowledge(row)}
+          ariaLabel={`${labelAcknowledge} ${row.name}`}
+        >
+          <IconAcknowledge fontSize="small" />
+        </ActionButton>
       </Grid>
-    </Cell>
+      <Grid item>
+        <ActionButton
+          title={labelSetDowntime}
+          onClick={(): void => actions.onDowntime(row)}
+          ariaLabel={`${labelSetDowntimeOn} ${row.name}`}
+        >
+          <IconDowntime fontSize="small" />
+        </ActionButton>
+      </Grid>
+      <Grid item>
+        <ActionButton
+          title={labelCheck}
+          onClick={(): void => actions.onCheck(row)}
+          ariaLabel={`${labelCheck} ${row.name}`}
+        >
+          <IconCheck fontSize="small" />
+        </ActionButton>
+      </Grid>
+      <Grid item>
+        <StatusChip
+          label={row.status.name[0]}
+          severityCode={row.status.severity_code}
+          classes={{
+            root: classes.smallChipContainer,
+            label: classes.smallChipLabel,
+          }}
+        />
+      </Grid>
+    </Grid>
   );
 };
 
-const columns = [
+const StatusColumn = (actions) => ({
+  row,
+  isHovered,
+}: ColumnProps): JSX.Element => {
+  return isHovered ? (
+    <StatusColumnOnHover actions={actions} row={row} />
+  ) : (
+    <StatusChip
+      style={{ width: 100, height: 20, margin: 0 }}
+      label={row.status.name}
+      severityCode={row.status.severity_code}
+    />
+  );
+};
+
+const ResourceColumn = ({ row }: ColumnProps): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <Grid container spacing={0} className={classes.resourceDetailsCell}>
+      <Grid item>
+        {row.icon ? (
+          <img src={row.icon.url} alt={row.icon.name} width={16} height={16} />
+        ) : (
+          <StatusChip
+            label={row.short_type}
+            severityCode={SeverityCode.None}
+            classes={{
+              root: classes.extraSmallChipContainer,
+              label: classes.smallChipLabel,
+            }}
+          />
+        )}
+      </Grid>
+      <Grid item className={classes.resourceNameItem}>
+        <Typography variant="body2">{row.name}</Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
+const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
+  if (!row.parent) {
+    return null;
+  }
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={1} />
+      <Grid item>
+        <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
+      </Grid>
+      <Grid item>
+        <Typography variant="body2">{row.parent.name}</Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
+export const getColumns = (actions): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
     type: TABLE_COLUMN_TYPES.component,
     Component: SeverityColumn,
-    clickable: false,
-    sortable: false,
+    sortField: 'severity_level',
+    width: 50,
   },
   {
     id: 'status',
     label: labelStatus,
     type: TABLE_COLUMN_TYPES.component,
-    Component: StatusColumn,
-    clickable: false,
-    sortable: false,
+    Component: StatusColumn(actions),
+    sortField: 'status_severity_code',
+    clickable: true,
+    width: 145,
   },
   {
-    id: 'resources',
-    label: labelResources,
+    id: 'resource',
+    label: labelResource,
     type: TABLE_COLUMN_TYPES.component,
-    Component: ResourcesColumn,
-    clickable: false,
+    Component: ResourceColumn,
+    sortField: 'name',
+    width: 200,
+  },
+  {
+    id: 'parent_resource',
+    label: '',
+    type: TABLE_COLUMN_TYPES.component,
+    Component: ParentResourceColumn,
     sortable: false,
+    width: 200,
   },
   {
     id: 'graph',
     label: '',
     type: TABLE_COLUMN_TYPES.component,
-    Component: GraphColumn,
-    clickable: false,
+    Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
+    width: 50,
   },
   {
     id: 'duration',
     label: labelDuration,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ duration }): string => duration,
+    sortField: 'last_status_change',
+    width: 125,
   },
   {
     id: 'tries',
     label: labelTries,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ tries }): string => tries,
+    width: 125,
   },
   {
     id: 'last_check',
     label: labelLastCheck,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ last_check }): string => last_check,
+    width: 125,
   },
   {
     id: 'information',
     label: labelInformation,
     type: TABLE_COLUMN_TYPES.string,
-    getFormattedString: ({ information }): string => information,
+    getFormattedString: pipe(propOr('', 'information'), split('\n'), head),
   },
   {
     id: 'state',
     label: labelState,
     type: TABLE_COLUMN_TYPES.component,
     Component: StateColumn,
-    clickable: false,
     sortable: false,
+    width: 80,
   },
 ];
 
-export default columns;
+export const defaultSortField = 'status_severity_code';
+export const defaultSortOrder = 'asc';

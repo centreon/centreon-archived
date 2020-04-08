@@ -29,6 +29,13 @@ namespace Centreon\Domain\Proxy;
  */
 class Proxy
 {
+    public const PROTOCOL_HTTP = 'http://';
+    public const PROTOCOL_HTTPS = 'https://';
+    /**
+     * @link https://metacpan.org/pod/LWP::Protocol::connect
+     */
+    public const PROTOCOL_CONNECT = 'connect://';
+
     /**
      * @var string|null
      */
@@ -48,6 +55,22 @@ class Proxy
      * @var string|null
      */
     private $password;
+
+    /**
+     * @var string Proxy connection protocol (default: Proxy::PROTOCOL_HTTP)
+     */
+    private $protocol;
+
+    /**
+     * @var string[]
+     */
+    private $protocolAvailable = [];
+
+    public function __construct()
+    {
+        $this->protocolAvailable = [self::PROTOCOL_HTTP, self::PROTOCOL_HTTPS, self::PROTOCOL_CONNECT];
+        $this->protocol = self::PROTOCOL_HTTP;
+    }
 
     /**
      * @return string|null
@@ -119,5 +142,57 @@ class Proxy
     {
         $this->password = $password;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        return $this->protocol;
+    }
+
+    /**
+     * @param string $protocol
+     * @return Proxy
+     * @throws \InvalidArgumentException
+     * @see Proxy::PROTOCOL_HTTP
+     * @see Proxy::PROTOCOL_HTTPS
+     * @see Proxy::PROTOCOL_CONNECT
+     */
+    public function setProtocol(string $protocol): Proxy
+    {
+        if (!in_array($protocol, $this->protocolAvailable)) {
+            throw new \InvalidArgumentException('Protocol \'' . $protocol . '\' is not allowed');
+        }
+        $this->protocol = $protocol;
+        return $this;
+    }
+
+    /**
+     * **Formats available:**
+     *
+     * <<procotol>>://<<user>>:<<password>>@<<url>>:<<port>>
+     *
+     * <<procotol>>://<<user>>:<<password>>@<<url>>
+     *
+     * <<procotol>>://<<url>>:<<port>>
+     *
+     * <<procotol>>://<<url>>
+     */
+    public function __toString()
+    {
+        $uri = $this->protocol;
+        if ($this->url !== null) {
+            if ($this->user !== null) {
+                $uri .= $this->user . ':' . $this->password . '@';
+            }
+            if ($this->port !== null && $this->port >= 0) {
+                $uri .= $this->url . ':' . $this->port;
+            } else {
+                $uri .= $this->url;
+            }
+        }
+        return $uri;
     }
 }

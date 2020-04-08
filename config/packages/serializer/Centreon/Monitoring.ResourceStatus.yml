@@ -8,3 +8,7 @@ Centreon\Domain\Monitoring\ResourceStatus:
             type: string
             groups:
                 - 'resource_status_main'
+        severityCode:
+            type: int
+            groups:
+                - 'resource_status_main'

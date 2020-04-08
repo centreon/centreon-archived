@@ -112,6 +112,7 @@ class DowntimeEventObject extends Downtime implements EventObjectInterface, Enti
             'timestamp' => 'setEntryTime',
             'type' => 'setType',
             'contact' => 'setAuthor',
+            'contact_id' => 'setAuthorId',
             'start_time' => 'setStartTime',
             'end_time' => 'setEndTime',
             'actual_start_time' => 'setActualStartTime',
@@ -121,6 +122,7 @@ class DowntimeEventObject extends Downtime implements EventObjectInterface, Enti
             'cancelled' => 'setCancelled',
             'fixed' => 'setFixed',
             'deletion_time' => 'setDeletionTime',
+            'service_id' => 'setServiceId'
         ];
     }
 }

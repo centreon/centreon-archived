@@ -3,15 +3,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import React, { Component } from 'react';
-import Moment from 'moment';
-import 'moment-timezone/builds/moment-timezone-with-data-10-year-range'; // minimize bundle size (905KB -> 33KB)
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'; // minimize bundle size (905KB -> 33KB)
 import axios from '../../axios';
 
 import styles from '../header/header.scss';
 
 const instantiateDate = (tz, locale, timestamp) => {
   const currentTime =
-    tz !== '' ? Moment.unix(timestamp).tz(tz) : Moment.unix(timestamp);
+    tz !== '' ? moment.unix(timestamp).tz(tz) : moment.unix(timestamp);
   locale = locale !== null ? currentTime.locale(locale) : currentTime;
 
   return {

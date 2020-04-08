@@ -1,31 +1,25 @@
 import * as React from 'react';
 
-import { Tooltip, Avatar, makeStyles } from '@material-ui/core';
+import { Tooltip, makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
-  chip: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-  },
+const useStyles = makeStyles(() => ({
   tooltip: {
     maxWidth: 'none',
     backgroundColor: 'transparent',
+  },
+  iconButton: {
+    padding: 0,
   },
 }));
 
 interface Props {
   children: React.ReactNode;
-  ariaLabel: string;
-  Icon: React.SFC;
-  className?: string;
+  Chip: () => JSX.Element;
+  label: string;
+  onClick?: () => void;
 }
 
-const HoverChip = ({
-  children,
-  ariaLabel,
-  Icon,
-  className,
-}: Props): JSX.Element => {
+const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -33,11 +27,25 @@ const HoverChip = ({
       placement="left"
       title={children}
       classes={{ tooltip: classes.tooltip }}
+      aria-label={label}
       enterDelay={0}
+      interactive
+      PopperProps={{
+        onClick: (e): void => {
+          e.preventDefault();
+          e.stopPropagation();
+        },
+      }}
+      onClick={(e): void => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        onClick?.();
+      }}
     >
-      <Avatar aria-label={ariaLabel} className={`${classes.chip} ${className}`}>
-        <Icon />
-      </Avatar>
+      <div>
+        <Chip />
+      </div>
     </Tooltip>
   );
 };

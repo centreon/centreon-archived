@@ -167,7 +167,8 @@ class SqlRequestParametersTranslator
                     $orderQuery .= ', ';
                 }
                 $orderQuery .= sprintf(
-                    '%s %s',
+                    '%s IS NULL, %s %s',
+                    $this->concordanceArray[$name],
                     $this->concordanceArray[$name],
                     $order
                 );
@@ -255,6 +256,18 @@ class SqlRequestParametersTranslator
             || $searchOperator === RequestParameters::OPERATOR_NOT_LIKE
             || $searchOperator === RequestParameters::OPERATOR_REGEXP
         ) {
+            // We check the regex
+            if ($searchOperator === RequestParameters::OPERATOR_REGEXP) {
+                try {
+                    preg_match('/' . $mixedValue . '/', '');
+                } catch (\Throwable $ex) {
+                    // No exception in prod environment
+                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
+                }
+                if (preg_last_error() !== PREG_NO_ERROR) {
+                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0);
+                }
+            }
             $type = \PDO::PARAM_STR;
             $bindKey = ':value_' . (count($this->searchValues) + 1);
             $this->searchValues[$bindKey] = [$type => $mixedValue];

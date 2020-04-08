@@ -3,8 +3,16 @@ import { getSearchParam, OrSearchParam } from './searchObjects';
 const endpoint = './api/beta';
 const monitoringEndpoint = `${endpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
+const acknowledgeEndpoint = `${resourcesEndpoint}/acknowledge`;
+const downtimeEndpoint = `${resourcesEndpoint}/downtime`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
+const hostEndpoint = `${monitoringEndpoint}/hosts`;
+const hostCheckEndpoint = `${hostEndpoint}/check`;
+const serviceEndpoint = `${monitoringEndpoint}/services`;
+const serviceCheckEndpoint = `${serviceEndpoint}/check`;
+const userEndpoint =
+  './api/internal.php?object=centreon_topcounter&action=user';
 
 interface Param {
   name: string;
@@ -44,12 +52,7 @@ const buildEndpoint = ({ baseEndpoint, params }): string => {
 };
 
 const buildResourcesEndpoint = (params): string => {
-  const searchOptions = [
-    'host.name',
-    'host.alias',
-    'host.address',
-    'service.description',
-  ];
+  const searchOptions = ['h.name', 'h.alias', 'h.address', 's.description'];
 
   const listingParams = getListingParams({ searchOptions, ...params });
 
@@ -90,4 +93,9 @@ export {
   buildResourcesEndpoint,
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
+  acknowledgeEndpoint,
+  downtimeEndpoint,
+  hostCheckEndpoint,
+  serviceCheckEndpoint,
+  userEndpoint,
 };

@@ -35,22 +35,23 @@
 $stateType = 'host';
 require_once realpath(dirname(__FILE__) . "/initXmlFeed.php");
 
-if (isset($_GET["id"]) && isset($_GET["color"])) {
-    /* Validate the type of request arguments for security */
-    if (!is_numeric($_GET['id'])) {
-        $buffer->writeElement('error', 'Bad id format');
-        $buffer->endElement();
-        header('Content-Type: text/xml');
-        $buffer->output();
-        exit;
-    }
+$color = array_filter($_GET['color'] ?? [], function ($oneColor) {
+    return filter_var($oneColor, FILTER_VALIDATE_REGEXP, [
+        'options' => [
+            'regexp' => "/^#[[:xdigit:]]{6}$/"
+        ]
+    ]);
+});
+if (empty($color) || count($_GET['color']) !== count($color)) {
+    $buffer->writeElement('error', 'Bad color format');
+    $buffer->endElement();
+    header('Content-Type: text/xml');
+    $buffer->output();
+    exit;
+}
 
-    $color = array();
-    foreach ($_GET["color"] as $key => $value) {
-        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-    }
-
-    $hosts_id = $centreon->user->access->getHostHostGroupAclConf($_GET["id"], "broker");
+if (($id = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT)) !== false) {
+    $hosts_id = $centreon->user->access->getHostHostGroupAclConf($id, "broker");
     if (count($hosts_id) > 0) {
         $rq = 'SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, '
             . 'sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, '
@@ -67,10 +68,9 @@ if (isset($_GET["id"]) && isset($_GET["color"])) {
         $DBRESULT->closeCursor();
     }
 } else {
-    $buffer->writeElement("error", "error");
+    $buffer->writeElement('error', 'Bad id format');
 }
+
 $buffer->endElement();
-
 header('Content-Type: text/xml');
-
 $buffer->output();

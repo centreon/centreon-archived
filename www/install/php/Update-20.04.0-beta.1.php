@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -63,8 +64,6 @@ try {
         'false'
     ];
 
-    $isACentral = false;
-
     // get user's centreon cache folder path
     $fileToOpen = _CENTREON_ETC_ . '/instCentWeb.conf';
     $errorMessage = 'Missing or empty \'instCentWeb.conf\' file';
@@ -77,8 +76,8 @@ try {
         $line = fgets($file);
         if (strpos($line, "CENTREON_CACHEDIR") !== false) {
             //remove superfluous carriage return
-            $line = preg_replace("/\r|\n/", "", $line);
-            $line = explode("=", $line);
+            $line = preg_replace("/\r|\n/", '', $line);
+            $line = explode('=', $line);
             $pattern[] = '/--CENTREON_CACHEDIR--/';
             // if no value is found, a default value is required
             $userValues[] = $line[1] ?? '/var/cache/centreon';
@@ -96,6 +95,7 @@ try {
     $stop = false;
     $file = fopen($fileToOpen, 'r');
 
+    $fileName = '';
     while (!feof($file) && $stop === false) {
         // removing indentation and carriage return
         $line = rtrim(ltrim(fgets($file), " "), ",\n");
@@ -104,13 +104,20 @@ try {
         if (strpos($line, '$centreon_config = {') !== false) {
             $start = true;
             continue;
-        } elseif ($start === true
+        } elseif (
+            $start === true
             && strpos($line, '$instance_mode =') !== false
         ) {
             $stop = true;
-            $isACentral = strpos($line, 'central') ? true : false;
+
+            if (false !== strpos($line, 'central')) {
+                $fileName = 'Central';
+            } elseif (false !== strpos($line, 'remote')) {
+                $fileName = 'Remote';
+            }
             continue;
-        } elseif ($start === true
+        } elseif (
+            $start === true
             && strlen($line) > 5
             && substr($line, 0, 1) !== "#"
             && strpos($line, ' => ') !== false
@@ -137,7 +144,7 @@ try {
     fclose($file);
 
     // checking if the instance is a central and generating configuration files
-    if ($isACentral === true) {
+    if (!empty($fileName)) {
         // database configuration file
         $fileTpl = __DIR__ . '/../var/databaseTemplate.yaml';
         if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
@@ -154,8 +161,9 @@ try {
             throw new \InvalidArgumentException($errorMessage);
         }
 
+        // central and remote have different template
+        $fileTpl = __DIR__ . '/../var/gorgone/gorgone' . $fileName . 'Template.yaml';
         // gorgone configuration file for centreon. Created in the centreon-gorgone folder
-        $fileTpl = __DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml';
         if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
             $errorMessage = 'Gorgone configuration template is empty or missing';
             throw new \InvalidArgumentException($errorMessage);
@@ -268,6 +276,14 @@ try {
             7,
             'countConnections',
             '{\"target\": \"connections_count\"}'
+        ),
+        (
+            (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'storage'),
+            (SELECT `cb_field_id` FROM `cb_field` WHERE `fieldname` = 'connections_count'),
+            0,
+            7,
+            'countConnections',
+            '{\"target\": \"connections_count\"}'
         )"
     );
 
@@ -301,12 +317,5 @@ try {
         " - Code : " . (int)$e->getCode() .
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
-    );
-}
-
-if (empty($errorMessage)) {
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . " - Successful Update"
     );
 }

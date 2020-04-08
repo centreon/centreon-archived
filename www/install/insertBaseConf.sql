@@ -145,7 +145,9 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('gorgone_api_address', '127.0.0.1'),
 ('gorgone_api_port', '8085'),
 ('gorgone_api_ssl', '0'),
-('gorgone_api_allow_self_signed', '1');
+('gorgone_api_allow_self_signed', '1'),
+('gorgone_cmd_timeout', '5'),
+('enable_broker_stats', '0');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -846,7 +848,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
 (33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
 (13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}'),
-(16, 75, 0, 7, 'countConnections', '{"target": "connections_count"}');
+(16, 75, 0, 7, 'countConnections', '{"target": "connections_count"}'),
+(14, 75, 0, 7, 'countConnections', '{"target": "connections_count"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`

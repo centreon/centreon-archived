@@ -31,10 +31,7 @@ import {
 import styles from '../header/header.scss';
 import axios from '../../axios';
 
-const numberFormat = yup
-  .number()
-  .required()
-  .integer();
+const numberFormat = yup.number().required().integer();
 
 const statusSchema = yup.object().shape({
   down: yup.object().shape({
@@ -209,7 +206,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Critical')}
+                  submenuTitle={I18n.t('Down')}
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}

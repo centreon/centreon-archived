@@ -159,6 +159,22 @@ function testExistence($name = null): bool
 }
 
 /**
+ * Test is the IP address is a valid IPv4/IPv6 or FQDN
+ *
+ * @param string $ipAddress The IP address to test
+ * @return bool
+ */
+function isValidIpAddress($ipAddress): bool
+{
+    // Check IPv6, IPv4 and FQDN format
+    if (!filter_var($ipAddress, FILTER_VALIDATE_DOMAIN) && !filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
  * Enable a server
  *
  * @param int         $id     Id of the server
@@ -458,8 +474,8 @@ function insertServer(array $data): int
     global $pearDB, $centreon;
 
     $retValue = [];
-    $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `gorgone_communication_type`, " .
-        "`gorgone_port`, `nagios_bin`, `nagiostats_bin`, " .
+    $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, " .
+        "`gorgone_communication_type`, `gorgone_port`, `nagios_bin`, `nagiostats_bin`, " .
         "`engine_start_command`, `engine_stop_command`, `engine_restart_command`, `engine_reload_command`, " .
         "`init_script_centreontrapd`, `snmp_trapd_path_conf`, " .
         "`nagios_perfdata` , `broker_reload_command`, " .
@@ -484,6 +500,12 @@ function insertServer(array $data): int
         $retValue[':ns_ip_address'] = htmlentities(trim($data["ns_ip_address"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
+    }
+    if (isset($data["ssh_port"]) && $data["ssh_port"] != null) {
+        $rq .= ':ssh_port, ';
+        $retValue[':ssh_port'] = (int)$data["ssh_port"];
+    } else {
+        $rq .= "22, ";
     }
     if (
         isset($data["gorgone_communication_type"]['gorgone_communication_type'])
@@ -759,6 +781,13 @@ function updateServer(int $id, array $data): void
         $retValue[':ns_ip_address'] = htmlentities(trim($data["ns_ip_address"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
+    }
+    $rq .= "`ssh_port` = ";
+    if (isset($data["ssh_port"]) && $data["ssh_port"] != null) {
+        $rq .= ':ssh_port, ';
+        $retValue[':ssh_port'] = (int)$data["ssh_port"];
+    } else {
+        $rq .= "22, ";
     }
     $rq .= "`gorgone_communication_type` = ";
     if (

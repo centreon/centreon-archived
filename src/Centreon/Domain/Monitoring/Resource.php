@@ -39,12 +39,16 @@ class Resource
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
 
+    //Groups for validation
+    public const VALIDATION_GROUP_DISACK_HOST = ['disack_host'];
+    public const VALIDATION_GROUP_DISACK_SERVICE = ['disack_service'];
+
     // Types
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
 
     /**
-     * @var string|null
+     * @var int|null
      */
     private $id;
 
@@ -57,11 +61,6 @@ class Resource
      * @var string|null
      */
     private $name;
-
-    /**
-     * @var string|null
-     */
-    private $detailsUrl;
 
     /**
      * @var \Centreon\Domain\Monitoring\Icon|null
@@ -97,6 +96,11 @@ class Resource
      * @var string|null
      */
     private $acknowledgementEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $detailsEndpoint;
 
     /**
      * @var string|null
@@ -201,18 +205,18 @@ class Resource
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param string|null $id
+     * @param int|null $id
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setId(?string $id): self
+    public function setId(?int $id): self
     {
         $this->id = $id;
 
@@ -253,25 +257,6 @@ class Resource
     public function setName(?string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDetailsUrl(): ?string
-    {
-        return $this->detailsUrl;
-    }
-
-    /**
-     * @param string|null $detailsUrl
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setDetailsUrl(?string $detailsUrl): self
-    {
-        $this->detailsUrl = $detailsUrl ?: null;
 
         return $this;
     }
@@ -405,6 +390,25 @@ class Resource
     public function setAcknowledgementEndpoint(string $acknowledgementEndpoint): self
     {
         $this->acknowledgementEndpoint = $acknowledgementEndpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDetailsEndpoint(): ?string
+    {
+        return $this->detailsEndpoint;
+    }
+
+    /**
+     * @param string|null $detailsEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setDetailsEndpoint(?string $detailsEndpoint): self
+    {
+        $this->detailsEndpoint = $detailsEndpoint ?: null;
 
         return $this;
     }

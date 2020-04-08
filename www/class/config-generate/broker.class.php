@@ -288,6 +288,12 @@ class Broker extends AbstractObjectJSON
                 $anomalyDetectionLuaOutputGroupID = -1;
             }
 
+            // gRPC parameters
+            $object['grpc'] = [
+                'port' => 51000 + (int) $row['config_id']
+            ];
+
+
             // Generate file
             $this->generateFile($object);
             $this->writeFile($this->backend_instance->getPath());

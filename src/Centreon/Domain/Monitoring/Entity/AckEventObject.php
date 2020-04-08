@@ -25,6 +25,11 @@ namespace Centreon\Domain\Monitoring\Entity;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Monitoring\Interfaces\EventObjectInterface;
 
+/**
+ * Class AckEventObject
+ * This class represents an Acknowledgement Event for Timeline bulk listing of different events
+ * @package Centreon\Domain\Monitoring\Entity
+ */
 class AckEventObject extends Acknowledgement implements EventObjectInterface
 {
     public const EVENTTYPE = 'A';
@@ -95,6 +100,8 @@ class AckEventObject extends Acknowledgement implements EventObjectInterface
             'sticky' => 'setSticky',
             'timestamp' => 'setEntryTime',
             'contact' => 'setAuthor',
+            'contact_id' => 'setAuthorId',
+            'service_id' => 'setServiceId'
         ];
     }
 }

@@ -29,8 +29,14 @@ namespace Centreon\Domain\Monitoring;
  */
 class ResourceStatus
 {
-    // Groups for serilizing
+    // Groups for serializing
     public const SERIALIZER_GROUP_MAIN = 'resource_status_main';
+
+    public const SEVERITY_HIGH = 1;
+    public const SEVERITY_MEDIUM = 2;
+    public const SEVERITY_LOW = 3;
+    public const SEVERITY_PENDING = 4;
+    public const SEVERITY_OK = 5;
 
     /**
      * @var int|null
@@ -41,6 +47,11 @@ class ResourceStatus
      * @var string|null
      */
     private $name;
+
+    /**
+     * @var int|null
+     */
+    private $severityCode;
 
     /**
      * @return int|null
@@ -76,6 +87,25 @@ class ResourceStatus
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSeverityCode(): ?int
+    {
+        return $this->severityCode;
+    }
+
+    /**
+     * @param int|null $severityCode
+     * @return \Centreon\Domain\Monitoring\ResourceStatus
+     */
+    public function setSeverityCode(?int $severityCode): self
+    {
+        $this->severityCode = $severityCode;
 
         return $this;
     }

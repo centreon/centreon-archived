@@ -494,11 +494,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`hosts` h'
-            . $accessGroupFilter
-            . ' INNER JOIN `:dbstg`.`services` srv
-              ON srv.host_id = h.host_id
-              AND srv.enabled = \'1\'
-            WHERE h.host_id = :host_id
+            . $accessGroupFilter .
+            ' WHERE h.host_id = :host_id
               AND h.name NOT LIKE \'_Module_BAM%\'
               AND h.enabled = \'1\'';
 
@@ -516,12 +513,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
                 //get services for host
                 $servicesByHost = $this->findServicesByHosts([$hostId]);
-
-                $host->setServices($servicesByHost[$hostId]);
+                $host->setServices(!empty($servicesByHost[$hostId]) ? $servicesByHost[$hostId] : []);
 
                 //get downtimes for host
                 $downtimes = $this->findDowntimes($hostId, 0);
-                    $host->setDowntimes($downtimes);
+                $host->setDowntimes($downtimes);
 
                 //get active acknowledgment for host
                 if ($host->getAcknowledged()) {
@@ -560,7 +556,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT DISTINCT srv.*
+            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`
             FROM `:dbstg`.services srv
             LEFT JOIN `:dbstg`.hosts h 
               ON h.host_id = srv.host_id'
@@ -582,6 +578,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 $service = EntityCreator::createEntityByArray(
                     Service::class,
                     $row
+                );
+
+                $service->setHost(
+                    EntityCreator::createEntityByArray(Host::class, $row, 'host_')
                 );
             } else {
                 return null;
@@ -1260,9 +1260,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $downtimes;
         }
 
-        $sql = 'SELECT * FROM `:dbstg`.`downtimes` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL AND (NOW() BETWEEN FROM_UNIXTIME(actual_start_time) ' .
-                'AND FROM_UNIXTIME(actual_end_time)) ORDER BY entry_time DESC';
+        $sql = 'SELECT d.*, c.contact_id AS `author_id` FROM `:dbstg`.`downtimes`  AS `d` '
+            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author '
+            . 'WHERE d.host_id = :hostId AND d.service_id = :serviceId '
+            . 'AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time) '
+            . 'AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time) '
+            . 'AND d.actual_end_time IS NULL))) '
+            . 'ORDER BY d.entry_time DESC';
+
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
         $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
@@ -1293,8 +1298,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $acks;
         }
 
-        $sql = 'SELECT * FROM `:dbstg`.`acknowledgements` WHERE host_id = :hostId AND service_id = :serviceId ' .
-                'AND deletion_time IS NULL ORDER BY entry_time DESC';
+        $sql = 'SELECT a.*, c.contact_id AS `author_id` FROM `:dbstg`.`acknowledgements` AS `a` '
+            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author '
+            . 'WHERE a.host_id = :hostId AND a.service_id = :serviceId AND a.deletion_time IS NULL '
+            . 'ORDER BY a.entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);

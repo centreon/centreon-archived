@@ -22,12 +22,15 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand;
+use Centreon\Domain\Gorgone\Command\Thumbprint;
+use Centreon\Domain\Gorgone\GorgoneException;
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 use Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use JsonSchema\Constraints\Constraint;
+use JsonSchema\Validator;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * This class is designed to provide a single communication interface to interact with the Gorgone system.
@@ -44,7 +47,7 @@ class GorgoneController extends AbstractFOSRestController
     /**
      * GorgoneController constructor.
      *
-     * @param \Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface $gorgoneService
+     * @param GorgoneServiceInterface $gorgoneService
      */
     public function __construct(GorgoneServiceInterface $gorgoneService)
     {
@@ -54,18 +57,41 @@ class GorgoneController extends AbstractFOSRestController
     /**
      * Entry point to send a command to a specific command
      *
-     * @Rest\Get(
-     *     "/gorgone/pollers/{pollerId}/commands/{commandName}",
-     *     condition="request.attributes.get('version') == 2.0")
-     * @param string $commandName Name of the Gorgone command
-     * @param int    $pollerId    Id of the poller for which this command is intended
+     * @param int $pollerId Id of the poller for which this command is intended
      *
+     * @param string $commandName Name of the Gorgone command
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function sendCommand(int $pollerId, string $commandName): View
+    public function sendCommand(int $pollerId, string $commandName, Request $request): View
     {
-        $command = $this->createFromName($commandName, $pollerId);
+        $requestBody = json_decode((string) $request->getContent(), false);
+        if (!empty($requestBody)) {
+            $validationFile = $this->findValidationFileByCommandName($commandName);
+            if ($validationFile !== null) {
+                $validator = new Validator();
+                $validator->validate(
+                    $requestBody,
+                    (object) ['$ref' => $validationFile],
+                    Constraint::CHECK_MODE_VALIDATE_SCHEMA
+                );
+
+                if (!$validator->isValid()) {
+                    $message = '';
+                    foreach ($validator->getErrors() as $error) {
+                        $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+                    }
+                    throw new GorgoneException($message);
+                }
+            }
+        }
+
+        $command = $this->createFromName(
+            $commandName,
+            $pollerId,
+            !empty($request->getContent()) ? (string) $request->getContent() : null
+        );
         $gorgoneResponse = $this->gorgoneService->send($command);
 
         return $this->view([
@@ -78,9 +104,6 @@ class GorgoneController extends AbstractFOSRestController
     /**
      * Entry point to get the response to a specific command
      *
-     * @Rest\Get(
-     *     "/gorgone/pollers/{pollerId}/responses/{token}",
-     *     condition="request.attributes.get('version') == 2.0")
      * @param int    $pollerId Id of the poller for which the command is intended
      * @param string $token    Token of the command attributed by the Gorgone server
      *
@@ -106,17 +129,31 @@ class GorgoneController extends AbstractFOSRestController
      * Check whether the command type exists or not.
      *
      * @param string $commandType Type of the command (ex: thumbprint, ...)
-     * @param int    $pollerId    Id of the poller for which the command is intended
-     *
+     * @param int $pollerId Id of the poller for which the command is intended
+     * @param string|null $requestBody Request body to send in the command
      * @return CommandInterface
      */
-    private function createFromName(string $commandType, int $pollerId): CommandInterface
+    private function createFromName(string $commandType, int $pollerId, ?string $requestBody): CommandInterface
     {
         switch ($commandType) {
             case 'thumbprint':
-                return new ThumbprintCommand($pollerId);
+                return new Thumbprint($pollerId);
             default:
                 throw new \LogicException('Unrecognized Command');
         }
+    }
+
+    /**
+     * Find the validation file based on the command name.
+     *
+     * Will be implemented with the future commands of Gorgone server.
+     *
+     * @param string $commandName Command name
+     * @return string|null Return the path of the validation file or null if not found
+     * @throws GorgoneException
+     */
+    private function findValidationFileByCommandName(string $commandName): ?string
+    {
+        throw new GorgoneException('Commands containing a request body are not allowed at the moment');
     }
 }

@@ -78,7 +78,7 @@ class ResourceFilter
         self::STATUS_UP => 0,
         self::STATUS_DOWN => 1,
         self::STATUS_UNREACHABLE => 2,
-        self::STATUS_PENDING => 3,
+        self::STATUS_PENDING => 4,
     ];
 
     /**

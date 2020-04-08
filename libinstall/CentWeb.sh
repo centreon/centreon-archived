@@ -225,7 +225,7 @@ cd "${OLDPATH}"
 OLDPATH=$(pwd)
 cd $TMP_DIR/src/
 log "INFO" "$(gettext "Copying frontend application...")"
-cp -Rf www/index.html www/static www/.htaccess $TMP_DIR/final/www/
+cp -Rf www/index.html www/static $TMP_DIR/final/www/
 cd "${OLDPATH}"
 
 ## Create temporary directory
@@ -433,10 +433,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     -p $TMP_DIR/final/www \
     $TMP_DIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
-
-cp -f $TMP_DIR/final/www/.htaccess $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
-$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/.htaccess
-$CHMOD 644 $INSTALL_DIR_CENTREON/www/.htaccess
 
 cp -Rf $TMP_DIR/final/src $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
@@ -726,9 +722,6 @@ check_result $? "$(gettext "Install clapi binary")"
     $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
         $TMP_DIR/src/lib/perl/centreon/script/logAnalyserBroker.pm \
         $PERL_LIB_DIR/centreon/script/logAnalyserBroker.pm >> $LOG_FILE 2>&1
-    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-        $TMP_DIR/src/lib/perl/centreon/script/nagiosPerfTrace.pm \
-        $PERL_LIB_DIR/centreon/script/nagiosPerfTrace.pm >> $LOG_FILE 2>&1
     echo_success "$(gettext "Centreon Web Perl lib installed")" "$ok"
     log "INFO" "$(gettext "Centreon Web Perl lib installed")"
 # End

@@ -33,6 +33,8 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
  */
 class Service implements EntityDescriptorMetadataInterface
 {
+    use Model\ImportTrait;
+
     // Groups for serilizing
     public const SERIALIZER_GROUP_MIN = 'service_min';
     public const SERIALIZER_GROUP_MAIN = 'service_main';
@@ -42,182 +44,182 @@ class Service implements EntityDescriptorMetadataInterface
     /**
      * @var int Unique index
      */
-    private $id;
+    protected $id;
 
     /**
      * @var int
      */
-    private $checkAttempt;
+    protected $checkAttempt;
 
     /**
      * @var string|null
      */
-    private $checkCommand;
+    protected $checkCommand;
 
     /**
      * @var float|null
      */
-    private $checkInterval;
+    protected $checkInterval;
 
     /**
      * @var string|null
      */
-    private $checkPeriod;
+    protected $checkPeriod;
 
     /**
      * @var int|null
      */
-    private $checkType;
+    protected $checkType;
 
     /**
      * @var string|null
      */
-    private $commandLine;
+    protected $commandLine;
 
     /**
      * @var string
      */
-    private $description;
+    protected $description;
 
     /**
      * @var string
      */
-    private $displayName;
+    protected $displayName;
 
     /**
      * @var float|null
      */
-    private $executionTime;
+    protected $executionTime;
 
     /**
      * @var Host|null
      */
-    private $host;
+    protected $host;
 
     /**
      * @var string|null
      */
-    private $iconImage;
+    protected $iconImage;
 
     /**
      * @var string|null
      */
-    private $iconImageAlt;
+    protected $iconImageAlt;
 
     /**
      * @var bool
      */
-    private $isAcknowledged;
+    protected $isAcknowledged;
 
     /**
      * @var bool
      */
-    private $isActiveCheck;
+    protected $isActiveCheck;
 
     /**
      * @var bool
      */
-    private $isChecked;
+    protected $isChecked;
 
     /**
      * @var int|null
      */
-    private $scheduledDowntimeDepth;
+    protected $scheduledDowntimeDepth;
 
     /**
      * @var \DateTime|null
      */
-    private $lastCheck;
+    protected $lastCheck;
 
     /**
      * @var \DateTime|null
      */
-    private $lastHardStateChange;
+    protected $lastHardStateChange;
 
     /**
      * @var \DateTime|null
      */
-    private $lastNotification;
+    protected $lastNotification;
 
     /**
      * @var \DateTime|null
      */
-    private $lastTimeCritical;
+    protected $lastTimeCritical;
 
     /**
      * @var \DateTime|null
      */
-    private $lastTimeOk;
+    protected $lastTimeOk;
 
     /**
      * @var \DateTime|null
      */
-    private $lastTimeUnknown;
+    protected $lastTimeUnknown;
 
     /**
      * @var \DateTime|null
      */
-    private $lastTimeWarning;
+    protected $lastTimeWarning;
 
     /**
      * @var \DateTime|null
      */
-    private $lastUpdate;
+    protected $lastUpdate;
 
     /**
      * @var \DateTime|null
      */
-    private $lastStateChange;
+    protected $lastStateChange;
 
     /**
      * @var float|null
      */
-    private $latency;
+    protected $latency;
 
     /**
      * @var int
      */
-    private $maxCheckAttempts;
+    protected $maxCheckAttempts;
 
     /**
      * @var \DateTime
      */
-    private $nextCheck;
+    protected $nextCheck;
 
     /**
      * @var string
      */
-    private $output;
+    protected $output;
 
     /**
      * @var string
      */
-    private $performanceData;
+    protected $performanceData;
 
     /**
      * @var int ['0' => 'OK', '1' => 'WARNING', '2' => 'CRITICAL', '3' => 'UNKNOWN', '4' => 'PENDING']
      */
-    private $state;
+    protected $state;
 
     /**
      * @var int ('1' => 'HARD', '0' => 'SOFT')
      */
-    private $stateType;
+    protected $stateType;
 
     /**
      * @var int
      */
-    private $criticality;
+    protected $criticality;
 
     /**
      * @var Downtime[]
      */
-    private $downtimes = [];
+    protected $downtimes = [];
 
     /**
      * @var Acknowledgement|null
      */
-    private $acknowledgement;
+    protected $acknowledgement;
 
     /**
      * {@inheritdoc}

@@ -26,8 +26,6 @@ use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use PHPUnit\Framework\TestCase;
 
 class ResourceServiceTest extends TestCase
@@ -47,12 +45,8 @@ class ResourceServiceTest extends TestCase
             ->willReturn([$resource]); // values returned for the all next tests
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $router = $this->createMock(UrlGeneratorInterface::class);
-        $router->expects(self::any())
-            ->method('generate')
-            ->willReturn('/api-endpoint');
 
-        $resourceService = new ResourceService($repository, $accessGroup, $router);
+        $resourceService = new ResourceService($repository, $accessGroup);
 
         $resourcesFound = $resourceService->findResources(new ResourceFilter());
         $this->assertCount(
