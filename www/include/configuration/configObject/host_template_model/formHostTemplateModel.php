@@ -276,8 +276,8 @@ $cloneSetMacro[] = $form->addElement(
 );
 
 $cloneSetTemplate = [];
-$listPpTemplate = $hostObj->getLimitedList(false, true);
-$listAllTemplate = $hostObj->getList(false, true);
+$listPpTemplate = $hostObj->getLimitedList();
+$listAllTemplate = $hostObj->getList(false, true, null);
 $mTp = $hostObj->getSavedTpl($host_id);
 $validTemplate = array_diff_key($listAllTemplate, $listPpTemplate);
 $listTemplate = [null => null] + $mTp + $validTemplate;
