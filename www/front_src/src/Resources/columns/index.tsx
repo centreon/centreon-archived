@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   resourceNameItem: {
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
   },
   extraSmallChipContainer: {
     height: 16,
@@ -246,6 +246,7 @@ export const getColumns = (actions): Array<Column> => [
     label: labelDuration,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ duration }): string => duration,
+    sortField: 'last_status_change',
     width: 125,
   },
   {

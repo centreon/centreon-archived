@@ -82,7 +82,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             if ($host->getMonitoringServer() !== null) {
                 $this->addMonitoringServer($hostId, $host->getMonitoringServer());
             }
-            $this->addExtendedHost($hostId, $host->getExtendedHost());
+            if ($host->getExtendedHost() !== null) {
+                $this->addExtendedHost($hostId, $host->getExtendedHost());
+            }
             $this->addHostTemplate($hostId, $host->getTemplate());
             $this->addHostMacro($hostId, $host->getMacros());
 
@@ -283,5 +285,34 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             return $host;
         }
         return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNumberOfHosts(): int
+    {
+        $request = $this->translateDbName('SELECT COUNT(*) AS total FROM `:db`.host WHERE host_register = \'1\'');
+        $statement = $this->db->query($request);
+
+        if ($statement !== false && ($result = $statement->fetchColumn()) !== false) {
+            return (int) $result;
+        }
+        return 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasHostWithSameName(string $hostName): bool
+    {
+        $request = $this->translateDbName('SELECT COUNT(*) FROM `:db`.host WHERE host_name = :host_name');
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_name', $hostName, \PDO::FETCH_ASSOC);
+        $statement->execute();
+        if (($result = $statement->fetchColumn()) !== false) {
+            return ((int) $result) > 0;
+        }
+        return false;
     }
 }

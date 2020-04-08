@@ -45,4 +45,12 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findHost(int $hostId): ?Host;
+
+    /**
+     * Returns the number of host.
+     *
+     * @return int Number of host
+     * @throws HostConfigurationException
+     */
+    public function getNumberOfHosts(): int;
 }

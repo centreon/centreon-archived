@@ -26,8 +26,8 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
     const foundColorCondition = rowColorConditions(theme).find(
       ({ condition }) =>
         condition({
-          in_downtime: details.downtimes !== undefined,
-          acknowledged: details.acknowledgement !== undefined,
+          in_downtime: details.downtimes.length > 0,
+          acknowledged: details.is_acknowledged,
         }),
     );
 
@@ -35,7 +35,7 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
 
     return {
       backgroundColor: backgroundColor
-        ? fade(backgroundColor, 0.2)
+        ? fade(backgroundColor, 0.8)
         : theme.palette.common.white,
     };
   },

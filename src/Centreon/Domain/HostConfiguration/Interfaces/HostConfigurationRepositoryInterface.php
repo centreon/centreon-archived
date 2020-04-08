@@ -24,7 +24,6 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\Repository\RepositoryException;
-use Centreon\Infrastructure\HostConfiguration\HostConfigurationRepositoryRDB;
 
 interface HostConfigurationRepositoryInterface
 {
@@ -46,4 +45,19 @@ interface HostConfigurationRepositoryInterface
      * @throws \Exception
      */
     public function findHost(int $hostId): ?Host;
+
+    /**
+     * Indicates if a hostname is already in use.
+     *
+     * @param string $hostName Hostname to be found
+     * @return bool True if the hostname is already in use
+     */
+    public function hasHostWithSameName(string $hostName): bool;
+
+    /**
+     * Returns the number of hosts.
+     *
+     * @return int Number of hosts
+     */
+    public function getNumberOfHosts(): int;
 }
