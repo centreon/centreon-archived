@@ -127,14 +127,14 @@ class CentreonHost
      *
      * @return array
      */
-    public function getSavedTpl($hostId)
+    public function getSavedTpl($hostId): array
     {
         $mTp = [];
         $dbResult = $this->db->prepare(
-            "SELECT host_tpl_id, host.host_name
+            'SELECT host_tpl_id, host.host_name
             FROM host_template_relation, host
             WHERE host_host_id = :hostId
-            AND host_tpl_id = host.host_id"
+            AND host_tpl_id = host.host_id'
         );
         $dbResult->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
         $dbResult->execute();
@@ -146,52 +146,63 @@ class CentreonHost
     }
 
     /**
+     *  get number of hosts
+     *
+     * @return int
+     */
+    public function getHostNumber(): int
+    {
+        $query = $this->db->query('SELECT COUNT(*) AS `num` FROM host WHERE host_register <> "0"');
+        $res = $query->fetch()['num'];
+        return ((int)$res);
+    }
+
+    /**
      * check host limitation
      *
      * @return bool
+     * @throws \Exception
      */
-    private function getHostLimit()
+    private function getHostLimit(): bool
     {
-        $licenseStatus = true;
+        try {
+            $legacyContainer = \Centreon\LegacyContainer::getInstance();
+        } catch (Exception $e) {
+            throw new Exception('LM Error - getInstance');
+        }
 
-        $legacyContainer = \Centreon\LegacyContainer::getInstance();
-        $legacyContainer[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
-        $legacyContainer[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
-        $licenceManager = $legacyContainer[\CentreonLicense\ServiceProvider::LM_LICENSE];
+        try {
+            $legacyContainer[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
+            $legacyContainer[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
+            $licenceManager = $legacyContainer[\CentreonLicense\ServiceProvider::LM_LICENSE];
+        } catch (Exception $e) {
+            throw new Exception('LM Error - Licence');
+        }
 
-        $licenseExists = $licenceManager->exists();
-        $licenseDetails = $licenceManager->getData();
+        if (!$licenceManager->exists()) {
+            $licenseData = -1;
+        } else {
+            $licenseData = $licenceManager->getData()['licensing']['hosts'] ?? 0;
+        }
+        $num = $this->getHostNumber();
 
-        echo "<PRE>";
-        echo "<H2>data from the license</H2>";
-        var_dump($licenseDetails);
-        echo "<H2>is the license file exists ?</H2>";
-        var_dump($licenseExists);
-        echo "<H2>license object data</H2>";
-        var_dump($licenceManager);
-
-
-        echo "</PRE>";
-        // @TODO get LM returned value
-        // LM host isset and > count(host) ?
-        // caution -1 means unlocked
-
-        return $licenseStatus;
+        try {
+            return ($licenseData === -1 || $licenseData['licensing']['hosts'] >= $num);
+        } catch (Exception $e) {
+            throw new Exception('LM Error ');
+        }
     }
 
     /**
      *  get list of inherited templates from plugin pack
      *
-     * @param bool $enable
-     * @param bool $template
-     *
      * @return array
      * @throws Exception
      */
-    public function getLimitedList($enable = false, $template = false)
+    public function getLimitedList(): array
     {
         $ppList = array();
-        if (false === $this->getHostLimit()) {
+        if (true === $this->getHostLimit()) {
             return $ppList;
         }
         $stmt = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
@@ -476,7 +487,6 @@ class CentreonHost
         }
     }
 
-
     /**
      * @param $hostId
      * @return mixed|null
@@ -539,7 +549,6 @@ class CentreonHost
         return null;
     }
 
-
     /**
      * @param $address
      * @param array $params
@@ -571,7 +580,6 @@ class CentreonHost
         }
         return $hostList;
     }
-
 
     /**
      * @param $hostName
@@ -893,7 +901,6 @@ class CentreonHost
         }
         return $arr;
     }
-
 
     /**
      * @param null $hostId
@@ -1331,7 +1338,6 @@ class CentreonHost
         $macros = $this->macroUnique($macros);
         return $macros;
     }
-
 
     /**
      * @param $hostId
@@ -1926,7 +1932,6 @@ class CentreonHost
         return $listServices;
     }
 
-
     /**
      * @param $hostId
      * @param null $hostTemplateId
@@ -2386,7 +2391,6 @@ class CentreonHost
             }
         }
     }
-
 
     /**
      * @param $hostId
