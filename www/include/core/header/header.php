@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -147,14 +148,14 @@ unset($centreon->optGen);
 $centreon->initOptGen($pearDB);
 
 if (!$p) {
-    $root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
-    if (isset($root_menu["topology_page"])) {
-        $p = $root_menu["topology_page"];
-    } else {
-        $p = null;
-    }
-    if (isset($root_menu["topology_url_opt"])) {
-        $tab = preg_split("/\=/", $root_menu["topology_url_opt"]);
+    $rootMenu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
+
+    if ($rootMenu && $rootMenu['topology_url'] && $rootMenu['is_react']) {
+        header("Location: .{$rootMenu['topology_url']}");
+    } elseif ($root_menu) {
+        $p = $rootMenu["topology_page"];
+        $tab = preg_split("/\=/", $rootMenu["topology_url_opt"]);
+
         if (isset($tab[1])) {
             $o = $tab[1];
         }
