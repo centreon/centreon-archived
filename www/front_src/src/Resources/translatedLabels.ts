@@ -16,6 +16,9 @@ export const labelClearAll = I18n.t('Clear all');
 export const labelCriterias = I18n.t('Criterias');
 export const labelCritical = I18n.t('Critical');
 export const labelCheckDuration = I18n.t('Check duration');
+export const labelCommand = I18n.t('Command');
+export const labelCopy = I18n.t('Copy');
+export const labelCommandCopied = I18n.t('Command copied to clipboard');
 export const labelCurrentNotificationNumber = I18n.t(
   'Current notification number',
 );

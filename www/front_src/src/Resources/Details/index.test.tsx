@@ -1,8 +1,15 @@
 import React from 'react';
 
 import axios from 'axios';
+import clipboardy from 'clipboardy';
 
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import {
+  render,
+  waitFor,
+  fireEvent,
+  RenderResult,
+} from '@testing-library/react';
+
 import Details from '.';
 import {
   labelMore,
@@ -28,12 +35,19 @@ import {
   labelLast7Days,
   labelLast24h,
   labelLast31Days,
+  labelCopy,
+  labelCommand,
+  labelResourceFlapping,
 } from '../translatedLabels';
 import { selectOption } from '../test';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
+
+jest.mock('clipboardy');
+
+const mockedClipboardy = clipboardy as jest.Mocked<typeof clipboardy>;
 
 const onClose = jest.fn();
 
@@ -59,7 +73,7 @@ const retrievedDetails = {
   timezone: 'Europe/Paris',
   criticality: 10,
   active_checks: true,
-  check_command: 'base_host_alive',
+  command_line: 'base_host_alive',
   last_notification: '2020-07-18T19:30',
   latency: 0.005,
   next_check: '2020-06-18T19:15',
@@ -95,6 +109,19 @@ const statusGraphData = { warning: [], ok: [], critical: [], unknown: [] };
 const RealDate = Date;
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
+const renderDetails = (): RenderResult =>
+  render(
+    <Details
+      endpoints={{
+        details: detailsEndpoint,
+        performanceGraph: performanceGraphEndpoint,
+        statusGraph: statusGraphEndpoint,
+      }}
+      onClose={onClose}
+      openTabId={defaultTabIdOpen}
+    />,
+  );
+
 describe(Details, () => {
   beforeEach(() => {
     global.Date.now = jest.fn(() => Date.parse(currentDateIsoString));
@@ -113,15 +140,9 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText } = render(
-      <Details
-        endpoints={{ details: detailsEndpoint }}
-        onClose={onClose}
-        openTabId={defaultTabIdOpen}
-      />,
-    );
+    const { getByText, queryByText, getAllByText } = renderDetails();
 
-    await waitFor(() => expect(getByText('Central')).toBeInTheDocument());
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(getByText('10')).toBeInTheDocument();
     expect(getByText('CRITICAL')).toBeInTheDocument();
@@ -175,6 +196,9 @@ describe(Details, () => {
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
 
+    expect(getByText(labelResourceFlapping)).toBeInTheDocument();
+    expect(getByText('N/A')).toBeInTheDocument();
+
     expect(getByText(labelPercentStateChange)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();
 
@@ -192,6 +216,7 @@ describe(Details, () => {
       ),
     ).toBeInTheDocument();
 
+    expect(getByText(labelCommand)).toBeInTheDocument();
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
 
@@ -205,19 +230,9 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: performanceGraphData })
         .mockResolvedValueOnce({ data: statusGraphData });
 
-      const { getByText } = render(
-        <Details
-          endpoints={{
-            details: detailsEndpoint,
-            statusGraph: statusGraphEndpoint,
-            performanceGraph: performanceGraphEndpoint,
-          }}
-          onClose={onClose}
-          openTabId={defaultTabIdOpen}
-        />,
-      );
+      const { getByText } = renderDetails();
 
-      await waitFor(() => expect(getByText('Central')).toBeInTheDocument());
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       fireEvent.click(getByText(labelGraph));
 
@@ -233,4 +248,20 @@ describe(Details, () => {
       );
     }),
   );
+
+  it('copies the command line to clipboard when the copy button is clicked', async () => {
+    const { getByTitle } = renderDetails();
+
+    mockedClipboardy.write.mockResolvedValue();
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    fireEvent.click(getByTitle(labelCopy));
+
+    await waitFor(() =>
+      expect(mockedClipboardy.write).toHaveBeenCalledWith(
+        retrievedDetails.command_line,
+      ),
+    );
+  });
 });
