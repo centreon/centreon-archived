@@ -161,7 +161,10 @@ class CentreonHost
      */
     private function isAllowed(): bool
     {
-        $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-manager"');
+        $dbResult = $this->db->query(
+            'SELECT `name` FROM modules_informations
+            WHERE `name` = "centreon-license-manager"'
+        );
         if ($dbResult->fetch()) {
             try {
                 $container = \Centreon\LegacyContainer::getInstance();
@@ -177,13 +180,12 @@ class CentreonHost
                 throw new Exception('LM Error - Licence');
             }
 
-            if (!$licenceManager->exists()) {
-                $licenseData = -1;
-            } else {
-                $licenseData = $licenceManager->getData()['licensing']['hosts'] ?? 0;
+            if (!$licenceManager->validate()) {
+                return false;
             }
-            $num = $this->getHostNumber();
 
+            $licenseData = (int)$licenceManager->getData()['licensing']['hosts'] ?? 0;
+            $num = $this->getHostNumber();
             try {
                 return ($licenseData === -1 || $licenseData['licensing']['hosts'] >= $num);
             } catch (Exception $e) {
@@ -215,7 +217,8 @@ class CentreonHost
             'operatingsystems-windows-snmp'
         );
         $ppList = array();
-        if (true === $this->isAllowed()) {
+        $dbResult = $this->db->query('SELECT `name` FROM modules_informations WHERE `name` = "centreon-pp-manager"');
+        if (!$dbResult->fetch() || true === $this->isAllowed()) {
             return $ppList;
         }
         $dbResult = $this->db->query(
