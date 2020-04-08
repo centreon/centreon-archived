@@ -246,6 +246,7 @@ export const getColumns = (actions): Array<Column> => [
     label: labelDuration,
     type: TABLE_COLUMN_TYPES.string,
     getFormattedString: ({ duration }): string => duration,
+    sortField: 'last_status_change',
     width: 125,
   },
   {
