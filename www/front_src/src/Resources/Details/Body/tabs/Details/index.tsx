@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { isNil } from 'ramda';
+import { write as writeToClipboard } from 'clipboardy';
 
 import {
   Grid,
@@ -68,21 +69,19 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   }
 
   const copyCommandLine = (): void => {
-    try {
-      const textArea = document.createElement('textarea');
-      document.body.appendChild(textArea);
-      textArea.value = details.command_line;
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-
-      showMessage({ message: labelCommandCopied, severity: Severity.success });
-    } catch (_) {
-      showMessage({
-        message: labelSomethingWentWrong,
-        severity: Severity.error,
+    writeToClipboard(details.command_line)
+      .then(() => {
+        showMessage({
+          message: labelCommandCopied,
+          severity: Severity.success,
+        });
+      })
+      .catch(() => {
+        showMessage({
+          message: labelSomethingWentWrong,
+          severity: Severity.error,
+        });
       });
-    }
   };
 
   return (
