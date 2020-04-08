@@ -189,7 +189,6 @@ paths:
         * status_code
         * status
         * action_url
-        * details_url
         * parent_name
         * parent_status
         * severity_level
@@ -2571,10 +2570,10 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
-        details_url:
+        details_endpoint:
           type: string
           description: "Resource url to details page"
-          example: "/monitoring/host/12/service/12"
+          example: "/centreon/monitoring/resources/hosts/12/services/12"
         icon:
           type: object
           properties:
@@ -2603,10 +2602,10 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
-            details_url:
+            details_endpoint:
               type: string
               description: "Parent resource url to details page"
-              example: "/monitoring/host/12"
+              example: "/centreon/monitoring/resources/hosts/12"
             status:
               type: object
               properties:
