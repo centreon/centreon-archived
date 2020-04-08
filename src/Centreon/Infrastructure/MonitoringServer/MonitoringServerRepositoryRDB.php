@@ -155,10 +155,12 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT resource.* FROM `:db`.cfg_resource resource 
             INNER JOIN `:db`.cfg_resource_instance_relations rel
                 ON rel.resource_id = resource.resource_id
-            WHERE rel.instance_id = :monitoring_server_id'
+            WHERE rel.instance_id = :monitoring_server_id
+            AND resource.resource_name = :resource_name'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->bindValue(':resource_name', $resourceName, \PDO::PARAM_STR);
         $statement->execute();
 
         if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
