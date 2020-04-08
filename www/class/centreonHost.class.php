@@ -164,7 +164,7 @@ class CentreonHost
      */
     private function getHostLimit(): bool
     {
-        $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-manager"');
+        $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-managerll"');
         if ($dbResult->fetch()) {
             try {
                 $legacyContainer = \Centreon\LegacyContainer::getInstance();
@@ -225,7 +225,7 @@ class CentreonHost
             'SELECT ph.host_id 
             FROM centreon.mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
             WHERE ph.pluginpack_id = pp.pluginpack_id
-            AND pp.slug NOT IN (' . implode(',', $freePp) . ')'
+            AND pp.slug NOT IN ("' . implode('","',  $freePp) . '")'
         );
         while ($row = $dbResult->fetch()) {
             $this->getHostChain($row['host_id'], $ppList);
