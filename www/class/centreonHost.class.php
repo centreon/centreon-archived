@@ -162,7 +162,7 @@ class CentreonHost
      * @return bool
      * @throws \Exception
      */
-    private function getHostLimit(): bool
+    private function isAllowed(): bool
     {
         $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-manager"');
         if ($dbResult->fetch()) {
@@ -218,7 +218,7 @@ class CentreonHost
             'operatingsystems-windows-snmp'
         );
         $ppList = array();
-        if (true === $this->getHostLimit()) {
+        if (true === $this->isAllowed()) {
             return $ppList;
         }
         $dbResult = $this->db->query(
