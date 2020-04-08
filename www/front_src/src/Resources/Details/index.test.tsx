@@ -1,7 +1,7 @@
 import React from 'react';
 
 import axios from 'axios';
-import { readSync } from 'clipboardy';
+import clipboardy from 'clipboardy';
 
 import {
   render,
@@ -44,6 +44,10 @@ import { selectOption } from '../test';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
+
+jest.mock('clipboardy');
+
+const mockedClipboardy = clipboardy as jest.Mocked<typeof clipboardy>;
 
 const onClose = jest.fn();
 
@@ -248,12 +252,16 @@ describe(Details, () => {
   it('copies the command line to clipboard when the copy button is clicked', async () => {
     const { getByTitle } = renderDetails();
 
+    mockedClipboardy.write.mockResolvedValue();
+
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     fireEvent.click(getByTitle(labelCopy));
 
     await waitFor(() =>
-      expect(readSync()).toEqual(retrievedDetails.command_line),
+      expect(mockedClipboardy.write).toHaveBeenCalledWith(
+        retrievedDetails.command_line,
+      ),
     );
   });
 });
