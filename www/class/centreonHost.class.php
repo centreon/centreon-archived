@@ -81,8 +81,8 @@ class CentreonHost
     /**
      * get all host templates saved in the DB
      *
-     * @param bool     $enable
-     * @param bool     $template
+     * @param bool $enable
+     * @param bool $template
      * @param null|int $exclude - host id to exclude in returned result
      *
      * @return array
@@ -164,31 +164,36 @@ class CentreonHost
      */
     private function getHostLimit(): bool
     {
-        try {
-            $legacyContainer = \Centreon\LegacyContainer::getInstance();
-        } catch (Exception $e) {
-            throw new Exception('LM Error - getInstance');
-        }
+        $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-manager"');
+        if ($dbResult->fetch()) {
+            try {
+                $legacyContainer = \Centreon\LegacyContainer::getInstance();
+            } catch (Exception $e) {
+                throw new Exception('LM Error - getInstance');
+            }
 
-        try {
-            $legacyContainer[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
-            $legacyContainer[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
-            $licenceManager = $legacyContainer[\CentreonLicense\ServiceProvider::LM_LICENSE];
-        } catch (Exception $e) {
-            throw new Exception('LM Error - Licence');
-        }
+            try {
+                $legacyContainer[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
+                $legacyContainer[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
+                $licenceManager = $legacyContainer[\CentreonLicense\ServiceProvider::LM_LICENSE];
+            } catch (Exception $e) {
+                throw new Exception('LM Error - Licence');
+            }
 
-        if (!$licenceManager->exists()) {
-            $licenseData = -1;
+            if (!$licenceManager->exists()) {
+                $licenseData = -1;
+            } else {
+                $licenseData = $licenceManager->getData()['licensing']['hosts'] ?? 0;
+            }
+            $num = $this->getHostNumber();
+
+            try {
+                return ($licenseData === -1 || $licenseData['licensing']['hosts'] >= $num);
+            } catch (Exception $e) {
+                throw new Exception('LM Error ');
+            }
         } else {
-            $licenseData = $licenceManager->getData()['licensing']['hosts'] ?? 0;
-        }
-        $num = $this->getHostNumber();
-
-        try {
-            return ($licenseData === -1 || $licenseData['licensing']['hosts'] >= $num);
-        } catch (Exception $e) {
-            throw new Exception('LM Error ');
+            return false;
         }
     }
 
@@ -200,14 +205,28 @@ class CentreonHost
      */
     public function getLimitedList(): array
     {
+        $freePp = array(
+            'applications-databases-mysql',
+            'applications-monitoring-centreon-central',
+            'applications-monitoring-centreon-database',
+            'applications-monitoring-centreon-poller',
+            'base-generic',
+            'hardware-printers-standard-rfc3805-snmp',
+            'hardware-ups-standard-rfc1628-snmp',
+            'network-cisco-standard-snmp',
+            'operatingsystems-linux-snmp',
+            'operatingsystems-windows-snmp'
+        );
         $ppList = array();
         if (true === $this->getHostLimit()) {
             return $ppList;
         }
-        $dbResult = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
+        $dbResult = $this->db->query(
+            'SELECT ph.host_id 
+            FROM centreon.mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
+            WHERE ph.pluginpack_id = pp.pluginpack_id
+            AND pp.slug NOT IN (' . implode(',', $freePp) . ')'
+        );
         while ($row = $dbResult->fetch()) {
             $this->getHostChain($row['host_id'], $ppList);
         }
@@ -1362,7 +1381,7 @@ class CentreonHost
             if (in_array($hostId, $alreadyProcessed)) {
                 return $templates;
             } else {
-                $alreadyProcessed[] = $hostId ;
+                $alreadyProcessed[] = $hostId;
                 if (empty($fields)) {
                     if (!$allFields) {
                         $fields = "h.host_id, h.host_name";
@@ -1429,7 +1448,7 @@ class CentreonHost
                 throw new \Exception("An error occured");
             }
             while ($row = $stmt->fetch()) {
-                    $this->getHostChain($row['host_host_id'], $alreadyProcessed);
+                $this->getHostChain($row['host_host_id'], $alreadyProcessed);
             }
         }
         return $alreadyProcessed;
@@ -2408,8 +2427,8 @@ class CentreonHost
     }
 
     /**
-     * @param array  $values
-     * @param array  $options
+     * @param array $values
+     * @param array $options
      * @param string $register
      *
      * @return array
