@@ -96,6 +96,7 @@ const DowntimeForm = ({
 
   const [loaded, setLoaded] = React.useState(false);
   const [locale, setLocale] = React.useState<string | null>('en');
+  const [timezone, setTimezone] = React.useState<string | null>(null);
 
   const currentDate = new Date();
   const twoHoursMs = 2 * 60 * 60 * 1000;
@@ -155,6 +156,7 @@ const DowntimeForm = ({
       .then((user) => {
         form.setFieldValue('comment', `${labelDowntimeBy} ${user.username}`);
         setLocale(user.locale);
+        setTimezone(user.timezone);
       })
       .catch(() => showError(labelSomethingWentWrong))
       .finally(() => setLoaded(true));
@@ -169,6 +171,7 @@ const DowntimeForm = ({
   return (
     <DialogDowntime
       locale={locale}
+      timezone={timezone}
       resources={resources}
       onConfirm={form.submitForm}
       onCancel={onClose}

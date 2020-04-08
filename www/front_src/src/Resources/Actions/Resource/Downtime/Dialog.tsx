@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range';
 import MomentUtils from '@date-io/moment';
 
 import { Typography, Checkbox, FormHelperText, Grid } from '@material-ui/core';
@@ -39,6 +40,7 @@ import { Resource } from '../../../models';
 
 interface Props {
   locale: string | null;
+  timezone: string | null;
   resources: Array<Resource>;
   canConfirm: boolean;
   onCancel;
@@ -75,6 +77,7 @@ const timePickerProps = {
 
 const DialogDowntime = ({
   locale,
+  timezone,
   resources,
   canConfirm,
   onCancel,
@@ -94,6 +97,14 @@ const DialogDowntime = ({
     setFieldValue(field, value);
   };
 
+  React.useEffect(() => {
+    moment.locale(locale);
+  }, [locale]);
+
+  React.useEffect(() => {
+    moment.tz.setDefault(timezone);
+  }, [timezone]);
+
   return (
     <Dialog
       labelCancel={labelCancel}
@@ -107,7 +118,11 @@ const DialogDowntime = ({
       submitting={submitting}
     >
       {loading && <Loader fullContent />}
-      <MuiPickersUtilsProvider utils={MomentUtils} locale={locale}>
+      <MuiPickersUtilsProvider
+        libInstance={moment}
+        utils={MomentUtils}
+        locale={locale}
+      >
         <Grid direction="column" container spacing={1}>
           <Grid item>
             <FormHelperText>{labelFrom}</FormHelperText>
