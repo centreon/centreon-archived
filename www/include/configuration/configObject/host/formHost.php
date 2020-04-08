@@ -1045,7 +1045,8 @@ if ($o != "mc") {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
-    if (isset($centreon->optGen["strict_hostParent_poller_management"])
+    if (
+        isset($centreon->optGen["strict_hostParent_poller_management"])
         && $centreon->optGen["strict_hostParent_poller_management"] == 1
     ) {
         $form->registerRule('testPollerDep', 'callback', 'testPollerDep');

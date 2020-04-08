@@ -34,8 +34,6 @@
  *
  */
 
-use App\Kernel;
-
 require_once __DIR__ . '/centreonInstance.class.php';
 require_once __DIR__ . '/centreonService.class.php';
 require_once __DIR__ . '/centreonCommand.class.php';
@@ -44,7 +42,6 @@ require_once __DIR__ . '/centreonLogAction.class.php';
 /*
  *  Class that contains various methods for managing hosts
  */
-
 class CentreonHost
 {
     /**
@@ -167,15 +164,15 @@ class CentreonHost
         $dbResult = $this->db->query('SELECT * FROM modules_informations WHERE `name` = "centreon-license-manager"');
         if ($dbResult->fetch()) {
             try {
-                $legacyContainer = \Centreon\LegacyContainer::getInstance();
+                $container = \Centreon\LegacyContainer::getInstance();
             } catch (Exception $e) {
                 throw new Exception('LM Error - getInstance');
             }
 
             try {
-                $legacyContainer[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
-                $legacyContainer[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
-                $licenceManager = $legacyContainer[\CentreonLicense\ServiceProvider::LM_LICENSE];
+                $container[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
+                $container[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
+                $licenceManager = $container[\CentreonLicense\ServiceProvider::LM_LICENSE];
             } catch (Exception $e) {
                 throw new Exception('LM Error - Licence');
             }
@@ -225,7 +222,7 @@ class CentreonHost
             'SELECT ph.host_id 
             FROM centreon.mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
             WHERE ph.pluginpack_id = pp.pluginpack_id
-            AND pp.slug NOT IN ("' . implode('","',  $freePp) . '")'
+            AND pp.slug NOT IN ("' . implode('","' ,  $freePp) . '")'
         );
         while ($row = $dbResult->fetch()) {
             $this->getHostChain($row['host_id'], $ppList);
