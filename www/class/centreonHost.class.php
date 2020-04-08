@@ -204,12 +204,11 @@ class CentreonHost
         if (true === $this->getHostLimit()) {
             return $ppList;
         }
-        $stmt = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
-        $dbResult = $stmt->execute();
+        $dbResult = $this->db->query('SELECT host_id FROM centreon.mod_ppm_pluginpack_host');
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
-        while ($row = $stmt->fetch()) {
+        while ($row = $dbResult->fetch()) {
             $this->getHostChain($row['host_id'], $ppList);
         }
         asort($ppList);
