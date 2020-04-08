@@ -9,7 +9,7 @@ import { getStatusColors } from '@centreon/ui';
 
 import useGet from '../../useGet';
 import getTimeSeries from './timeSeries';
-import { formatTimeAxis } from '../format';
+import { formatTo, timeFormat } from '../format';
 import { GraphData } from './models';
 
 const LoadingSkeleton = (): JSX.Element => {
@@ -18,9 +18,13 @@ const LoadingSkeleton = (): JSX.Element => {
 
 interface Props {
   endpoint: string;
+  xAxisTickFormat: string;
 }
 
-const StatusGraph = ({ endpoint }: Props): JSX.Element | null => {
+const StatusGraph = ({
+  endpoint,
+  xAxisTickFormat = timeFormat,
+}: Props): JSX.Element | null => {
   const theme = useTheme();
 
   const [graphData, setGraphData] = React.useState<GraphData>();
@@ -38,37 +42,37 @@ const StatusGraph = ({ endpoint }: Props): JSX.Element | null => {
     return <LoadingSkeleton />;
   }
 
-  const bars = getTimeSeries(graphData).map(({ time }) => (
-    <Area
-      key={time}
-      dataKey="value"
-      stroke="transparent"
-      fill="url(#splitColor)"
-    />
-  ));
+  const timeSeries = getTimeSeries(graphData);
+
+  const formatToxAxisTickFormat = (tick): string =>
+    formatTo({ time: tick, to: xAxisTickFormat });
 
   return (
     <ResponsiveContainer>
-      <AreaChart data={getTimeSeries(graphData)}>
+      <AreaChart data={timeSeries}>
         <defs>
-          <linearGradient id="splitColor" x1="0" y1="0" x2="1" y2="0">
-            {getTimeSeries(graphData).map(
-              ({ fraction, severityCode, time }) => (
-                <stop
-                  key={time}
-                  offset={fraction}
-                  stopColor={
-                    getStatusColors({ theme, severityCode }).backgroundColor
-                  }
-                  stopOpacity={1}
-                />
-              ),
-            )}
+          <linearGradient id="splitColor">
+            {timeSeries.map(({ fraction, offset, severityCode, time }) => [
+              <stop
+                key={`start-${time}`}
+                offset={offset}
+                stopColor={
+                  getStatusColors({ theme, severityCode }).backgroundColor
+                }
+              />,
+              <stop
+                key={`end-${time}`}
+                offset={offset + fraction}
+                stopColor={
+                  getStatusColors({ theme, severityCode }).backgroundColor
+                }
+              />,
+            ])}
           </linearGradient>
         </defs>
 
-        <XAxis dataKey="time" tickFormatter={formatTimeAxis} />
-        {bars}
+        <XAxis dataKey="time" tickFormatter={formatToxAxisTickFormat} />
+        <Area dataKey="value" stroke="transparent" fill="url(#splitColor)" />
       </AreaChart>
     </ResponsiveContainer>
   );
