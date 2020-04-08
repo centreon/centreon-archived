@@ -95,8 +95,8 @@ const DowntimeForm = ({
     showMessage({ message, severity: Severity.success });
 
   const [loaded, setLoaded] = React.useState(false);
-  const [locale, setLocale] = React.useState<string | null>();
-  const [timezone, setTimezone] = React.useState<string | null>();
+  const [locale, setLocale] = React.useState<string | null>('en');
+  const [timezone, setTimezone] = React.useState<string | null>(null);
 
   const currentDate = new Date();
   const twoHoursMs = 2 * 60 * 60 * 1000;
