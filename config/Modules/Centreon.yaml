@@ -147,3 +147,7 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+
+    Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
+        class: Centreon\Domain\HostConfiguration\HostConfigurationService
+        public: true
