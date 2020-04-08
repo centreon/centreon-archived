@@ -413,8 +413,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     private function hasServiceSearch(): bool
     {
-        return $this->extractSpecificSearchCriteria('/^s\./')
-            && !$this->extractSpecificSearchCriteria('/^h\./');
+        return $this->extractSpecificSearchCriteria('/^s\./');
     }
 
     /**
