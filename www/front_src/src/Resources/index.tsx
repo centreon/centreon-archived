@@ -194,6 +194,9 @@ const Resources = (): JSX.Element => {
   };
 
   const requestSearch = (): void => {
+    if (currentSearch === nextSearch) {
+      load();
+    }
     setCurrentSearch(nextSearch);
   };
 

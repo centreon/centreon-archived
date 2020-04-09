@@ -113,10 +113,10 @@ const PerformanceGraph = ({
 
   const displayMultipleYAxes = getUnits().length < 3;
 
-  const formatYAxis = ({ tick, unit }): string =>
+  const formatValue = ({ value, unit }): string =>
     isEmpty(unit)
-      ? tick
-      : filesize(tick, { base: getBase(unit) }).replace('B', '');
+      ? value
+      : filesize(value, { base: getBase(unit) }).replace('B', '');
 
   const YAxes = displayMultipleYAxes ? (
     getUnits().map((unit, index) => (
@@ -125,14 +125,17 @@ const PerformanceGraph = ({
         key={unit}
         unit={unit}
         orientation={index === 0 ? 'left' : 'right'}
-        tickFormatter={(tick): string => formatYAxis({ tick, unit })}
+        tickFormatter={(tick): string => formatValue({ value: tick, unit })}
         tick={{ fontSize: 13 }}
-        width={40}
       />
     ))
   ) : (
     <YAxis width={40} />
   );
+
+  const formatTooltip = (value, name, { unit }): Array<string> => {
+    return [formatValue({ value, unit }), name];
+  };
 
   const formatLegend = (value): JSX.Element => (
     <Typography variant="caption" color="textPrimary">
@@ -143,13 +146,15 @@ const PerformanceGraph = ({
   const formatToxAxisTickFormat = (tick): string =>
     formatTo({ time: tick, to: xAxisTickFormat });
 
+  console.log(getTimeSeries(graphData));
+
   return (
     <div className={classes.container}>
       <Typography variant="body2" color="textPrimary">
         {graphData.global.title}
       </Typography>
       <ResponsiveContainer className={classes.graph}>
-        <ComposedChart data={getTimeSeries(graphData)}>
+        <ComposedChart data={getTimeSeries(graphData)} stackOffset="sign">
           <Legend
             formatter={formatLegend}
             iconType="circle"
@@ -163,7 +168,7 @@ const PerformanceGraph = ({
             tick={{ fontSize: 13 }}
           />
           {YAxes}
-          {graphData.metrics.map(({ metric, ds_data, unit }, index) => {
+          {graphData.metrics.map(({ metric, ds_data, unit }) => {
             const yAxisId = displayMultipleYAxes ? unit : undefined;
 
             return ds_data.ds_filled ? (
@@ -171,26 +176,32 @@ const PerformanceGraph = ({
                 key={metric}
                 dot={false}
                 dataKey={metric}
-                stackId={index}
+                unit={unit}
                 stroke={ds_data.ds_color_line}
                 fill={fade(
                   ds_data.ds_color_area,
                   ds_data.ds_transparency * 0.01,
                 )}
                 yAxisId={yAxisId}
+                isAnimationActive={false}
               />
             ) : (
               <Line
                 key={metric}
                 dataKey={metric}
+                unit={unit}
                 stroke={ds_data.ds_color_line}
                 dot={false}
                 yAxisId={yAxisId}
+                isAnimationActive={false}
               />
             );
           })}
 
-          <Tooltip labelFormatter={formatToxAxisTickFormat} />
+          <Tooltip
+            labelFormatter={formatToxAxisTickFormat}
+            formatter={formatTooltip}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

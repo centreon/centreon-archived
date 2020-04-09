@@ -221,7 +221,6 @@ const Filter = ({
             <Button
               variant="contained"
               color="primary"
-              disabled={!currentSearch && !nextSearch}
               onClick={onSearchRequest}
             >
               {labelSearch}

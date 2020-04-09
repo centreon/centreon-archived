@@ -14,7 +14,6 @@ import {
   TimePeriod,
 } from './models';
 import PerformanceGraph from '../../../../Graph/Performance';
-import StatusGraph from '../../../../Graph/Status';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -30,7 +29,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   graphContainer: {
     display: 'grid',
-    padding: theme.spacing(3),
+    paddingTop: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     gridTemplateRows: '250px 100px',
   },
   graph: {
@@ -57,10 +58,7 @@ interface Props {
 const GraphTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const {
-    statusGraph: statusGraphEndpoint,
-    performanceGraph: performanceGraphEndpoint,
-  } = endpoints;
+  const { performanceGraph: performanceGraphEndpoint } = endpoints;
 
   const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<
     TimePeriod
