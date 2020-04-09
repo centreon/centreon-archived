@@ -194,6 +194,9 @@ const Resources = (): JSX.Element => {
   };
 
   const requestSearch = (): void => {
+    if (currentSearch === nextSearch) {
+      load();
+    }
     setCurrentSearch(nextSearch);
   };
 
@@ -349,6 +352,10 @@ const Resources = (): JSX.Element => {
     setEnabledAutorefresh(!enabledAutorefresh);
   };
 
+  const selectDetailsTabToOpen = (id): void => {
+    setDefaultDetailsTabIdToOpen(id);
+  };
+
   const hasSelectedResources = selectedResources.length > 0;
 
   const Actions = (
@@ -416,6 +423,7 @@ const Resources = (): JSX.Element => {
                 endpoints={selectedDetailsEndpoints}
                 openTabId={detailsTabIdToOpen}
                 onClose={clearSelectedResource}
+                onSelectTab={selectDetailsTabToOpen}
               />
             </div>
           </Slide>

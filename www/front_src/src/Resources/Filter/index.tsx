@@ -128,7 +128,6 @@ interface Props {
 const Filter = ({
   filter,
   onFilterGroupChange,
-  currentSearch,
   nextSearch,
   onSearchRequest,
   onSearchPrepare,
@@ -221,7 +220,6 @@ const Filter = ({
             <Button
               variant="contained"
               color="primary"
-              disabled={!currentSearch && !nextSearch}
               onClick={onSearchRequest}
             >
               {labelSearch}
