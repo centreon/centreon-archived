@@ -252,6 +252,10 @@ Centreon\Domain\Monitoring\Host:
                 - 'resource_details_host'
         timezone:
             type: string
+            access_type: public_method
+            accessor:
+              getter: getSanitizedTimezone
+              setter: setTimezone
             groups:
                 - 'host_main'
                 - 'host_full'
