@@ -128,7 +128,6 @@ interface Props {
 const Filter = ({
   filter,
   onFilterGroupChange,
-  currentSearch,
   nextSearch,
   onSearchRequest,
   onSearchPrepare,

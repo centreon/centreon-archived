@@ -146,8 +146,6 @@ const PerformanceGraph = ({
   const formatToxAxisTickFormat = (tick): string =>
     formatTo({ time: tick, to: xAxisTickFormat });
 
-  console.log(getTimeSeries(graphData));
-
   return (
     <div className={classes.container}>
       <Typography variant="body2" color="textPrimary">

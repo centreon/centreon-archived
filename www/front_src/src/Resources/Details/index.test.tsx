@@ -100,7 +100,6 @@ const performanceGraphData = {
   global: {},
   times: [],
 };
-const statusGraphData = { warning: [], ok: [], critical: [], unknown: [] };
 
 const RealDate = Date;
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
