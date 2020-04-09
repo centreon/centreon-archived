@@ -130,7 +130,6 @@ interface Props {
 const Filter = ({
   filter,
   onFilterGroupChange,
-  currentSearch,
   nextSearch,
   onSearchRequest,
   onSearchPrepare,
@@ -225,12 +224,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={!currentSearch && !nextSearch}
-              onClick={requestSearch}
-            >
+            <Button variant="contained" color="primary" onClick={requestSearch}>
               {labelSearch}
             </Button>
           </Grid>

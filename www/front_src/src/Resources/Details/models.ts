@@ -17,9 +17,10 @@ export interface ResourceDetails {
   last_check: string;
   next_check: string;
   active_checks: boolean;
+  is_active_check: boolean;
   execution_time: number;
   latency: number;
-  flapping?: boolean;
+  flapping: boolean;
   percent_state_change: number;
   last_notification: string;
   notification_number: number;
