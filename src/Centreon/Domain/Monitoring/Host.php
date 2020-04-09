@@ -1147,7 +1147,9 @@ class Host implements EntityDescriptorMetadataInterface
 
     public function getSanitizedTimezone(): ?string
     {
-        return preg_replace('/^:/', '', $this->timezone);
+        return (null !== $this->timezone) ?
+            preg_replace('/^:/', '', $this->timezone) :
+            $this->timezone;
     }
 
     /**
