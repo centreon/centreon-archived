@@ -154,49 +154,6 @@ class CentreonHost
     }
 
     /**
-     * check host limitation
-     *
-     * @return bool
-     * @throws \Exception
-     */
-    private function isAllowed(): bool
-    {
-        $dbResult = $this->db->query(
-            'SELECT `name` FROM modules_informations
-            WHERE `name` = "centreon-license-manager"'
-        );
-        if ($dbResult->fetch()) {
-            try {
-                $container = \Centreon\LegacyContainer::getInstance();
-            } catch (Exception $e) {
-                throw new Exception('LM Error - getInstance');
-            }
-
-            try {
-                $container[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
-                $container[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
-                $licenceManager = $container[\CentreonLicense\ServiceProvider::LM_LICENSE];
-            } catch (Exception $e) {
-                throw new Exception('LM Error - Licence');
-            }
-
-            if (!$licenceManager->validate()) {
-                return false;
-            }
-
-            $licenseData = (int)$licenceManager->getData()['licensing']['hosts'] ?? 0;
-            $num = $this->getHostNumber();
-            try {
-                return ($licenseData === -1 || $licenseData['licensing']['hosts'] >= $num);
-            } catch (Exception $e) {
-                throw new Exception('LM Error ');
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
      *  get list of inherited templates from plugin pack
      *
      * @return array
@@ -225,7 +182,7 @@ class CentreonHost
             'SELECT ph.host_id 
             FROM centreon.mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
             WHERE ph.pluginpack_id = pp.pluginpack_id
-            AND pp.slug NOT IN ("' . implode('","' ,  $freePp) . '")'
+            AND pp.slug NOT IN ("' . implode('","', $freePp) . '")'
         );
         while ($row = $dbResult->fetch()) {
             $this->getHostChain($row['host_id'], $ppList);
@@ -1542,6 +1499,44 @@ class CentreonHost
             }
         }
         return $values;
+    }
+
+    /**
+     * check host limitation
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    private function isAllowed(): bool
+    {
+        $dbResult = $this->db->query(
+            'SELECT `name` FROM modules_informations
+            WHERE `name` = "centreon-license-manager"'
+        );
+        if (!$dbResult->fetch()) {
+            return false;
+        }
+        try {
+            $container = \Centreon\LegacyContainer::getInstance();
+        } catch (Exception $e) {
+            throw new Exception('Cannot instantiate container');
+        }
+
+        $container[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
+        $container[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
+
+        if (!$container[\CentreonLicense\ServiceProvider::LM_LICENSE]) {
+            return false;
+        }
+
+        $licenceManager = $container[\CentreonLicense\ServiceProvider::LM_LICENSE];
+        if (!$licenceManager->validate()) {
+            return false;
+        }
+        $licenseData = ((int)$licenceManager->getData()['licensing']['hosts']) ?? 0;
+        $num = $this->getHostNumber();
+
+        return ($licenseData === -1 || $licenseData >= $num);
     }
 
     /**
