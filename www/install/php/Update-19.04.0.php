@@ -24,6 +24,7 @@ $centreonLog = new CentreonLog();
 /**
  * New configuration options for Centreon Engine
  */
+$pearDB->query('SET SESSION innodb_strict_mode=OFF');
 try {
     if (!$pearDB->isColumnExist('cfg_nagios', 'enable_macros_filter')) {
         //$pearDB = "centreon"

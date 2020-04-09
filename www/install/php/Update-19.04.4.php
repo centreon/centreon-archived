@@ -24,6 +24,7 @@ $centreonLog = new CentreonLog();
 /**
  * LDAP auto or manual synchronization feature
  */
+$pearDB->query('SET SESSION innodb_strict_mode=OFF');
 try {
     // Adding two columns to check last user's LDAP sync timestamp
     if (!$pearDB->isColumnExist('contact', 'contact_ldap_last_sync')) {
