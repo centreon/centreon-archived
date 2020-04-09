@@ -1168,7 +1168,6 @@ class CentreonService extends CentreonObject
                     break;
             }
             if (class_exists($relclass) && class_exists($class)) {
-                
                 /* Parse arguments */
                 if (!isset($arg[0]) || !$arg[0]) {
                     throw new CentreonClapiException(self::MISSINGPARAMETER);
@@ -1196,7 +1195,6 @@ class CentreonService extends CentreonObject
                 $relobj = new $relclass($this->dependencyInjector);
                 $obj = new $class($this->dependencyInjector);
                 if ($matches[1] == "get") {
-                    
                     $tab = $relobj->getTargetIdFromSourceId(
                         $relobj->getFirstKey(),
                         $relobj->getSecondKey(),
