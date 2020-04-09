@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { isNil } from 'ramda';
-import { write as writeToClipboard } from 'clipboardy';
 
 import {
   Grid,
@@ -38,6 +37,7 @@ import AcknowledgeChip from '../../../../Chip/Acknowledge';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
+import { copy } from './clipboard';
 
 const CardSkeleton = styled(Skeleton)(() => ({
   transform: 'none',
@@ -69,19 +69,19 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   }
 
   const copyCommandLine = (): void => {
-    writeToClipboard(details.command_line as string)
-      .then(() => {
-        showMessage({
-          message: labelCommandCopied,
-          severity: Severity.success,
-        });
-      })
-      .catch(() => {
-        showMessage({
-          message: labelSomethingWentWrong,
-          severity: Severity.error,
-        });
+    try {
+      copy(details.command_line);
+
+      showMessage({
+        message: labelCommandCopied,
+        severity: Severity.success,
       });
+    } catch (_) {
+      showMessage({
+        message: labelSomethingWentWrong,
+        severity: Severity.error,
+      });
+    }
   };
 
   return (

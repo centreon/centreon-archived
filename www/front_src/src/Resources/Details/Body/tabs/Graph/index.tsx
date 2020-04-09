@@ -104,12 +104,6 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
             xAxisTickFormat={selectedTimePeriod.timeFormat}
           />
         </div>
-        <div className={`${classes.graph} ${classes.status}`}>
-          <StatusGraph
-            endpoint={`${statusGraphEndpoint}${periodQueryParams}`}
-            xAxisTickFormat={selectedTimePeriod.timeFormat}
-          />
-        </div>
       </Paper>
     </div>
   );
