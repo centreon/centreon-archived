@@ -33,19 +33,19 @@ const useStyles = makeStyles((theme) => {
 type Props = {
   endpoints: TabEndpoints;
   openTabId: number;
+  onSelectTab: (id) => void;
 } & DetailsSectionProps;
 
-const Body = ({ details, endpoints, openTabId }: Props): JSX.Element => {
+const Body = ({
+  details,
+  endpoints,
+  openTabId,
+  onSelectTab,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
-  const [selectedTabId, setSelectedTabId] = React.useState(0);
-
-  React.useEffect(() => {
-    setSelectedTabId(openTabId);
-  }, [openTabId]);
-
   const changeSelectedTabId = (_, id): void => {
-    setSelectedTabId(id);
+    onSelectTab(id);
   };
 
   return (
@@ -53,7 +53,7 @@ const Body = ({ details, endpoints, openTabId }: Props): JSX.Element => {
       <AppBar position="static" color="default">
         <Tabs
           variant="fullWidth"
-          value={selectedTabId}
+          value={openTabId}
           indicatorColor="primary"
           textColor="primary"
           onChange={changeSelectedTabId}
@@ -67,7 +67,7 @@ const Body = ({ details, endpoints, openTabId }: Props): JSX.Element => {
       </AppBar>
       <div className={classes.contentContainer}>
         <div className={classes.contentTab}>
-          <TabById id={selectedTabId} details={details} endpoints={endpoints} />
+          <TabById id={openTabId} details={details} endpoints={endpoints} />
         </div>
       </div>
     </div>
