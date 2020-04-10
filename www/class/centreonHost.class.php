@@ -180,7 +180,7 @@ class CentreonHost
         }
         $dbResult = $this->db->query(
             'SELECT ph.host_id 
-            FROM centreon.mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
+            FROM mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
             WHERE ph.pluginpack_id = pp.pluginpack_id
             AND pp.slug NOT IN ("' . implode('","', $freePp) . '")'
         );
