@@ -81,6 +81,7 @@ Centreon\Domain\Monitoring\Service:
                 - 'resource_details_service'
         isActiveCheck:
             type: bool
+            serialized_name: active_checks
             groups:
                 - 'service_full'
                 - 'resource_details_service'
