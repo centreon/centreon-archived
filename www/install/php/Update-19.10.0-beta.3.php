@@ -40,8 +40,9 @@ $centreonLog = new CentreonLog();
 /**
  * LDAP auto or manual synchronization feature
  */
-$pearDB->query('SET SESSION innodb_strict_mode=OFF');
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
+
     // Adding two columns to check last user's LDAP sync timestamp
     if (!$pearDB->isColumnExist('contact', 'contact_ldap_last_sync')) {
         //$pearDB = "centreon"
@@ -64,6 +65,8 @@ try {
         );
         $needToUpdateValues = true;
     }
+
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
@@ -137,9 +140,11 @@ $pearDB->query(
 try {
     // Add trap regexp matching
     if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
+        $pearDB->query('SET SESSION innodb_strict_mode=OFF');
         $pearDB->query(
             "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
         );
+        $pearDB->query('SET SESSION innodb_strict_mode=ON');
     }
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
@@ -153,6 +158,7 @@ try {
  * Add columns to manage engine & broker restart/reload process
  */
 
+$pearDB->query('SET SESSION innodb_strict_mode=OFF');
 $pearDB->query('
     ALTER TABLE `nagios_server`
     ADD COLUMN `engine_start_command` varchar(255) DEFAULT \'service centengine start\' AFTER `monitoring_engine`
@@ -173,6 +179,7 @@ $pearDB->query('
     ALTER TABLE `nagios_server`
     ADD COLUMN `broker_reload_command` varchar(255) DEFAULT \'service cbd reload\' AFTER `nagios_perfdata`
 ');
+$pearDB->query('SET SESSION innodb_strict_mode=ON');
 
 $stmt = $pearDB->prepare('
     UPDATE `nagios_server`

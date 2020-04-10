@@ -21,8 +21,9 @@
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
-$pearDB->query('SET SESSION innodb_strict_mode=OFF');
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
+
     // Add HTTPS connexion to Remote Server
     if (!$pearDB->isColumnExist('remote_servers', 'http_method')) {
         $pearDB->query(
@@ -44,6 +45,8 @@ try {
             "ALTER TABLE remote_servers ADD COLUMN `no_proxy` enum('0','1') NOT NULL DEFAULT '0'"
         );
     }
+
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,

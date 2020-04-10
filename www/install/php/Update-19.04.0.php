@@ -24,8 +24,8 @@ $centreonLog = new CentreonLog();
 /**
  * New configuration options for Centreon Engine
  */
-$pearDB->query('SET SESSION innodb_strict_mode=OFF');
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
     if (!$pearDB->isColumnExist('cfg_nagios', 'enable_macros_filter')) {
         //$pearDB = "centreon"
         //$pearDBO = "realtime"
@@ -38,6 +38,7 @@ try {
             "ALTER TABLE `cfg_nagios` ADD COLUMN `macros_filter` TEXT DEFAULT ''"
         );
     }
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,

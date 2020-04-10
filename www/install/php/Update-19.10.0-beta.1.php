@@ -47,13 +47,14 @@ $pearDB->query(
     WHERE topology_url LIKE "/poller-wizard/%"'
 );
 
-$pearDB->query('SET SESSION innodb_strict_mode=OFF');
 try {
     // Add trap regexp matching
     if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
+        $pearDB->query('SET SESSION innodb_strict_mode=OFF');
         $pearDB->query(
             "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
         );
+        $pearDB->query('SET SESSION innodb_strict_mode=ON');
     }
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
