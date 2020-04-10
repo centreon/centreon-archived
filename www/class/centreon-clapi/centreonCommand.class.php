@@ -205,7 +205,9 @@ class CentreonCommand extends CentreonObject
             'type',
             'graph',
             'example',
-            'comment'
+            'comment',
+            'activate',
+            'enable_shell'
         );
         $unknownParam = array();
 
@@ -227,6 +229,8 @@ class CentreonCommand extends CentreonObject
                         case "graph":
                             $field = "graph_id";
                             break;
+                        case "enable_shell":
+                            break;
                         default:
                             if (!preg_match("/^command_/", $paramSearch)) {
                                 $field = "command_" . $paramSearch;
@@ -237,6 +241,15 @@ class CentreonCommand extends CentreonObject
                     
                     $ret = $this->object->getParameters($objectId, $field);
                     $ret = $ret[$field];
+
+                    switch ($paramSearch) {
+                        case "graph":
+                            $graphObj = new \Centreon_Object_Graph_Template($this->dependencyInjector);
+                            $field = $graphObj->getUniqueLabelField();
+                            $ret = $graphObj->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
                     
                     if (!isset($exportedFields[$paramSearch])) {
                         $resultString .= $ret . $this->delim;
