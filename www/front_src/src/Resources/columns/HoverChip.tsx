@@ -28,7 +28,9 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
       title={children}
       classes={{ tooltip: classes.tooltip }}
       aria-label={label}
-      enterDelay={0}
+      enterDelay={200}
+      enterNextDelay={200}
+      leaveDelay={0}
       interactive
       PopperProps={{
         onClick: (e): void => {
@@ -43,9 +45,9 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
         onClick?.();
       }}
     >
-      <div>
+      <span>
         <Chip />
-      </div>
+      </span>
     </Tooltip>
   );
 };
