@@ -257,6 +257,8 @@ const Resources = (): JSX.Element => {
     setResourceTypes(allFilter.criterias.resourceTypes);
     setStatuses(allFilter.criterias.statuses);
     setStates(allFilter.criterias.states);
+    setHostGroups(allFilter.criterias.hostGroups);
+    setServiceGroups(allFilter.criterias.serviceGroups);
   };
 
   const selectResources = (resources): void => {

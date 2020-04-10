@@ -21,6 +21,7 @@ import useGet from '../../useGet';
 import { formatTo, timeFormat } from '../format';
 import getTimeSeries from './timeSeries';
 import { GraphData } from './models';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -90,7 +91,7 @@ const PerformanceGraph = ({
   const hasData = graphData.times.length > 0;
 
   if (!hasData) {
-    return null;
+    return <Typography variant="h6">{labelNoDataForThisPeriod}</Typography>;
   }
 
   const getBase = (unit): 2 | 10 => {
