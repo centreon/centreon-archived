@@ -215,7 +215,7 @@ const Filter = ({
           <Grid item>
             <SearchField
               className={classes.searchField}
-              EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
+              EndAdornment={SearchHelpTooltip}
               value={nextSearch || ''}
               onClick={avoidToggleExpansionPanel}
               onChange={onSearchPrepare}

@@ -41,7 +41,7 @@ const DowntimeHoverChip = ({
       endpoint={resource.downtime_endpoint as string}
       label={`${resource.name} ${labelInDowntime}`}
       DetailsTable={DowntimeDetailsTable}
-      Chip={(): JSX.Element => <DowntimeChip />}
+      Chip={DowntimeChip}
     />
   );
 };
@@ -56,7 +56,7 @@ const AcknowledgeHoverChip = ({
       endpoint={resource.acknowledgement_endpoint as string}
       label={`${resource.name} ${labelAcknowledged}`}
       DetailsTable={AcknowledgementDetailsTable}
-      Chip={(): JSX.Element => <AcknowledgeChip />}
+      Chip={AcknowledgeChip}
     />
   );
 };
