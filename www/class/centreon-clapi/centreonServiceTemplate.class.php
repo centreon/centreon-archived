@@ -878,6 +878,10 @@ class CentreonServiceTemplate extends CentreonObject
                     $class = "Centreon_Object_Host_Template";
                     $relclass = "Centreon_Object_Relation_Service_Template_Host";
                     break;
+                case "category":
+                    $class = "Centreon_Object_Service_Category";
+                    $relclass = "Centreon_Object_Relation_Service_Category_Service";
+                    break;
                 default:
                     throw new CentreonClapiException(self::UNKNOWN_METHOD);
                     break;
