@@ -222,6 +222,11 @@ class Service implements EntityDescriptorMetadataInterface
     protected $acknowledgement;
 
     /**
+     * @var bool|null
+     */
+    protected $flapping;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -878,6 +883,24 @@ class Service implements EntityDescriptorMetadataInterface
     public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return Service
+     */
+    public function setFlapping(?bool $flapping): self
+    {
+        $this->flapping = $flapping;
         return $this;
     }
 }
