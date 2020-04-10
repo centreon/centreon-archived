@@ -34,6 +34,7 @@ interface Props {
   onClose: () => void;
   endpoints: ResourceEndpoints;
   openTabId: number;
+  onSelectTab: (id) => void;
 }
 
 export interface DetailsSectionProps {
@@ -44,6 +45,7 @@ const Details = ({
   endpoints,
   onClose,
   openTabId,
+  onSelectTab,
 }: Props): JSX.Element | null => {
   const classes = useStyles();
 
@@ -75,6 +77,7 @@ const Details = ({
           details={details}
           endpoints={omit(['details'], endpoints)}
           openTabId={openTabId}
+          onSelectTab={onSelectTab}
         />
       </div>
     </Paper>

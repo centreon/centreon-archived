@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+
 import {
   Grid,
   Typography,
@@ -27,7 +29,7 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
       ({ condition }) =>
         condition({
           in_downtime: details.downtimes.length > 0,
-          acknowledged: details.is_acknowledged,
+          acknowledged: !isNil(details.acknowledgement),
         }),
     );
 

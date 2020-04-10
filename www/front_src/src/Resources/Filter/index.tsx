@@ -59,12 +59,14 @@ const ExpansionPanelSummary = withStyles((theme) => ({
     '&$expanded': {
       minHeight: 'auto',
     },
+    justifyContent: 'flex-start',
   },
   content: {
     margin: theme.spacing(1, 0),
     '&$expanded': {
       margin: theme.spacing(1, 0),
     },
+    flexGrow: 0,
   },
   expanded: {},
 }))(MuiExpansionPanelSummary);
@@ -128,7 +130,6 @@ interface Props {
 const Filter = ({
   filter,
   onFilterGroupChange,
-  currentSearch,
   nextSearch,
   onSearchRequest,
   onSearchPrepare,
@@ -162,12 +163,23 @@ const Filter = ({
 
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
+  const avoidToggleExpansionPanel = (
+    event: React.MouseEvent<HTMLElement>,
+  ): void => {
+    event.stopPropagation();
+  };
+
   const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed) {
       onSearchRequest();
     }
+  };
+
+  const requestSearch = (event: React.MouseEvent<HTMLElement>): void => {
+    avoidToggleExpansionPanel(event);
+    onSearchRequest();
   };
 
   return (
@@ -180,15 +192,7 @@ const Filter = ({
           />
         }
       >
-        <Grid
-          spacing={1}
-          container
-          alignItems="center"
-          onClick={(e): void => {
-            e.stopPropagation();
-          }}
-          style={{ cursor: 'default' }}
-        >
+        <Grid spacing={1} container alignItems="center">
           <Grid item>
             <Typography className={classes.filterLineLabel} variant="h6">
               {labelFilter}
@@ -203,6 +207,7 @@ const Filter = ({
                 allFilter,
               ]}
               selectedOptionId={filter.id}
+              onClick={avoidToggleExpansionPanel}
               onChange={onFilterGroupChange}
               aria-label={labelStateFilter}
             />
@@ -212,18 +217,14 @@ const Filter = ({
               className={classes.searchField}
               EndAdornment={(): JSX.Element => <SearchHelpTooltip />}
               value={nextSearch || ''}
+              onClick={avoidToggleExpansionPanel}
               onChange={onSearchPrepare}
               placeholder={labelResourceName}
               onKeyDown={requestSearchOnEnterKey}
             />
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={!currentSearch && !nextSearch}
-              onClick={onSearchRequest}
-            >
+            <Button variant="contained" color="primary" onClick={requestSearch}>
               {labelSearch}
             </Button>
           </Grid>
