@@ -646,11 +646,11 @@ describe(Resources, () => {
     fireEvent.mouseEnter(getByLabelText(chipLabel));
     fireEvent.mouseOver(getByLabelText(chipLabel));
 
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      entityInDowntime?.downtime_endpoint,
-      cancelTokenRequestParam,
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        entityInDowntime?.downtime_endpoint,
+        cancelTokenRequestParam,
+      ),
     );
 
     expect(getByText('admin')).toBeInTheDocument();
@@ -690,11 +690,11 @@ describe(Resources, () => {
     fireEvent.mouseEnter(getByLabelText(chipLabel));
     fireEvent.mouseOver(getByLabelText(chipLabel));
 
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      acknowledgedEntity?.acknowledgement_endpoint,
-      cancelTokenRequestParam,
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        acknowledgedEntity?.acknowledgement_endpoint,
+        cancelTokenRequestParam,
+      ),
     );
 
     expect(getByText('admin')).toBeInTheDocument();

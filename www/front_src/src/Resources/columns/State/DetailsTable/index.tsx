@@ -36,7 +36,7 @@ const DetailsTable = <TDetails extends unknown>({
   endpoint,
   columns,
 }: DetailsTableProps): JSX.Element => {
-  const [details, setDetails] = useState<TDetails | null>();
+  const [details, setDetails] = useState<Array<TDetails> | null>();
   const { cancel, token } = useCancelTokenSource();
 
   useEffect(() => {
@@ -44,9 +44,9 @@ const DetailsTable = <TDetails extends unknown>({
       endpoint,
       requestParams: { cancelToken: token },
     })
-      .then((retrievedDetails) => setDetails(retrievedDetails.result[0]))
+      .then((retrievedDetails) => setDetails(retrievedDetails.result))
       .catch(() => {
-        setDetails(null);
+        setDetails([]);
       });
 
     return (): void => cancel();
@@ -69,24 +69,30 @@ const DetailsTable = <TDetails extends unknown>({
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            {loading && (
+          {loading && (
+            <TableRow>
               <TableCell colSpan={columns.length}>
                 <Skeleton height={20} animation="wave" />
               </TableCell>
-            )}
-            {success &&
-              columns.map(({ label, getFormattedString }) => (
-                <TableCell key={label}>
-                  <span>{getFormattedString?.(details)}</span>
-                </TableCell>
-              ))}
-            {error && (
+            </TableRow>
+          )}
+          {success &&
+            details?.map((detail) => (
+              <TableRow>
+                {columns.map(({ label, getFormattedString }) => (
+                  <TableCell key={label}>
+                    <span>{getFormattedString?.(detail)}</span>
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          {error && (
+            <TableRow>
               <TableCell align="center" colSpan={columns.length}>
                 <span>{labelSomethingWentWrong}</span>
               </TableCell>
-            )}
-          </TableRow>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableContainer>
