@@ -1059,7 +1059,7 @@ describe(Resources, () => {
     );
   });
 
-  it('leaves search help tooltip when the search input filled ', async () => {
+  it('leaves search help tooltip visible when the search input is filled', async () => {
     const {
       getByLabelText,
       getByText,
