@@ -1536,7 +1536,7 @@ class CentreonHost
         $licenseData = ((int)$licenceManager->getData()['licensing']['hosts']) ?? 0;
         $num = $this->getHostNumber();
 
-        return ($licenseData === -1 || $licenseData >= $num);
+        return ($licenseData === -1 || $licenseData > $num);
     }
 
     /**
