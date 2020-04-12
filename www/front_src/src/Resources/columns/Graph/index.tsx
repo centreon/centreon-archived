@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     height: 200,
     width: 575,
-    paddingTop: theme.spacing(1),
+    padding: theme.spacing(2),
   },
 }));
 

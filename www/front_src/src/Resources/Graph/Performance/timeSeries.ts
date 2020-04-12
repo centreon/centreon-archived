@@ -61,7 +61,7 @@ const toLegendColor = ({
   legend,
 }: Metric): { legend: string; color: string } => ({
   legend,
-  color: ds_data.ds_line_color,
+  color: ds_data.ds_color_line,
 });
 
 const getLegend = (graphData: GraphData) => {
