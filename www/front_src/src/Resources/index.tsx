@@ -185,7 +185,12 @@ const Resources = (): JSX.Element => {
     initAutorefreshAndLoad();
   }, [sortf, sorto, page, limit, currentSearch]);
 
+  const firstUpdate = React.useRef(true);
   React.useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
     requestSearch();
   }, [states, statuses, resourceTypes, hostGroups, serviceGroups]);
 
