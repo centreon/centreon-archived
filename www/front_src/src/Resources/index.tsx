@@ -163,6 +163,17 @@ const Resources = (): JSX.Element => {
     load();
   };
 
+  const prepareSearch = (event): void => {
+    setNextSearch(event.target.value);
+  };
+
+  const requestSearch = (): void => {
+    if (currentSearch === nextSearch) {
+      initAutorefreshAndLoad();
+    }
+    setCurrentSearch(nextSearch);
+  };
+
   React.useEffect(() => {
     return (): void => {
       tokenSource.cancel();
@@ -172,33 +183,15 @@ const Resources = (): JSX.Element => {
 
   React.useEffect(() => {
     initAutorefreshAndLoad();
-  }, [
-    sortf,
-    sorto,
-    page,
-    limit,
-    currentSearch,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-  ]);
+  }, [sortf, sorto, page, limit, currentSearch]);
+
+  React.useEffect(() => {
+    requestSearch();
+  }, [states, statuses, resourceTypes, hostGroups, serviceGroups]);
 
   React.useEffect(() => {
     initAutorefresh();
   }, [enabledAutorefresh]);
-
-  const prepareSearch = (event): void => {
-    setNextSearch(event.target.value);
-  };
-
-  const requestSearch = (): void => {
-    if (currentSearch === nextSearch) {
-      load();
-    }
-    setCurrentSearch(nextSearch);
-  };
 
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
