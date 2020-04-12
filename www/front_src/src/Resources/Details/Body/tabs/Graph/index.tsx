@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   graphContainer: {
     display: 'grid',
     padding: theme.spacing(2, 1, 0),
-    gridTemplateRows: '250px 100px',
+    gridTemplateRows: '1fr',
   },
   graph: {
     margin: 'auto',

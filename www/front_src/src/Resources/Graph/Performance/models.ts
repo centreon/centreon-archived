@@ -3,6 +3,7 @@ export interface Metric {
   ds_data;
   metric: string;
   unit: string;
+  legend: string;
 }
 
 export interface GraphData {

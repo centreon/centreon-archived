@@ -14,29 +14,43 @@ import {
 import filesize from 'filesize';
 import { pipe, map, uniq, prop, isEmpty } from 'ramda';
 
-import { fade, makeStyles, Typography } from '@material-ui/core';
+import { fade, makeStyles, Typography, Grid } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import useGet from '../../useGet';
 import { formatTo, timeFormat } from '../format';
-import getTimeSeries from './timeSeries';
+import getTimeSeries, { getLegend } from './timeSeries';
 import { GraphData } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    display: 'grid',
-    gridTemplateRows: '20px 1fr',
+    display: 'flex',
+    flexDirection: 'column',
+    gridTemplateRows: '1fr 10fr 2fr',
     height: '100%',
     justifyItems: 'center',
   },
-  graph: {
+  noDataContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     height: '100%',
+  },
+  graph: {
     width: '100%',
+    maxHeight: 300,
+    minHeight: 100,
+  },
+  legendIcon: {
+    width: 8,
+    height: 8,
+    background: 'red',
+    borderRadius: '50%',
   },
   loadingSkeleton: {
     display: 'grid',
-    gridTemplateRows: '10px 1fr auto',
+    gridTemplateRows: '1fr 10fr 2fr',
     gridGap: theme.spacing(1),
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -76,7 +90,7 @@ const PerformanceGraph = ({
   const [graphData, setGraphData] = React.useState<GraphData>();
 
   const get = useGet({
-    endpoint,
+    endpoint: 'http://localhost:5000/mock/graph',
     onSuccess: setGraphData,
   });
 
@@ -91,7 +105,13 @@ const PerformanceGraph = ({
   const hasData = graphData.times.length > 0;
 
   if (!hasData) {
-    return <Typography variant="h6">{labelNoDataForThisPeriod}</Typography>;
+    return (
+      <div className={classes.noDataContainer}>
+        <Typography align="center" variant="body1">
+          {labelNoDataForThisPeriod}
+        </Typography>
+      </div>
+    );
   }
 
   const getBase = (unit): 2 | 10 => {
@@ -131,7 +151,7 @@ const PerformanceGraph = ({
       />
     ))
   ) : (
-    <YAxis width={40} />
+    <YAxis tick={{ fontSize: 13 }} />
   );
 
   const formatTooltip = (value, name, { unit }): Array<string> => {
@@ -154,12 +174,12 @@ const PerformanceGraph = ({
       </Typography>
       <ResponsiveContainer className={classes.graph}>
         <ComposedChart data={getTimeSeries(graphData)} stackOffset="sign">
-          <Legend
+          {/* <Legend
             formatter={formatLegend}
             iconType="circle"
             iconSize={8}
-            wrapperStyle={{ bottom: 0 }}
-          />
+            wrapperStyle={{ position: 'relative', bottom: 0 }}
+          /> */}
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="time"
@@ -203,6 +223,21 @@ const PerformanceGraph = ({
           />
         </ComposedChart>
       </ResponsiveContainer>
+      <div
+        style={{
+          // display: 'flex',
+          overflow: 'auto',
+          // flexWrap: 'wrap',
+          // maxHeight: 100,
+        }}
+      >
+        {getLegend(graphData).map(({ color, legend }) => (
+          <div>
+            <div className={classes.legendIcon} />
+            <Typography variant="caption">{legend}</Typography>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

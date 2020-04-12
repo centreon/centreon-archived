@@ -1,4 +1,4 @@
-import { map, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
+import { map, pipe, reduce, filter, pathOr, addIndex, prop } from 'ramda';
 
 import { Metric, MetricData, GraphData } from './models';
 
@@ -56,4 +56,17 @@ const getTimeSeries = (graphData: GraphData): Array<MetricData> => {
   )(graphData);
 };
 
+const toLegendColor = ({
+  ds_data,
+  legend,
+}: Metric): { legend: string; color: string } => ({
+  legend,
+  color: ds_data.ds_line_color,
+});
+
+const getLegend = (graphData: GraphData) => {
+  return map(toLegendColor, graphData.metrics);
+};
+
 export default getTimeSeries;
+export { getLegend };
