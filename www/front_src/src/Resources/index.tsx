@@ -262,6 +262,8 @@ const Resources = (): JSX.Element => {
     setStates(allFilter.criterias.states);
     setHostGroups(allFilter.criterias.hostGroups);
     setServiceGroups(allFilter.criterias.serviceGroups);
+    setNextSearch('');
+    setCurrentSearch('');
   };
 
   const selectResources = (resources): void => {

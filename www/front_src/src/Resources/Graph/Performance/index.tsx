@@ -49,6 +49,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     width: '100%',
     overflow: 'auto',
+    // we use 'space-between' justification to prevent long legends to be cut.
+    // we need to add empty items to make single items centered.
+    '&::before': {
+      content: '""',
+    },
+    '&::after': {
+      content: '""',
+    },
   },
   legendItem: {
     display: 'grid',
@@ -103,7 +111,7 @@ const PerformanceGraph = ({
   const [graphData, setGraphData] = React.useState<GraphData>();
 
   const get = useGet({
-    endpoint: 'http://localhost:5000/mock/graph',
+    endpoint,
     onSuccess: setGraphData,
   });
 
@@ -231,7 +239,7 @@ const PerformanceGraph = ({
               className={classes.legendIcon}
               style={{ backgroundColor: color }}
             />
-            <Typography variant="caption">{legend.slice(0, 6)}</Typography>
+            <Typography variant="caption">{legend}</Typography>
           </div>
         ))}
       </div>
