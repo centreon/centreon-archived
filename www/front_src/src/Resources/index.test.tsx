@@ -28,6 +28,8 @@ import { ThemeProvider } from '@centreon/ui';
 import {
   labelResourceName,
   labelSearch,
+  labelSearchHelp,
+  labelSearchOnFields,
   labelInDowntime,
   labelAcknowledged,
   labelTypeOfResource,
@@ -321,17 +323,19 @@ describe(Resources, () => {
 
     Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      getEndpoint({
-        search: {
-          mode: '$or',
-          fieldPatterns: searchableFields.map((searchableField) => ({
-            field: searchableField,
-            value: fieldSearchValue,
-          })),
-        },
-      }),
-      cancelTokenRequestParam,
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({
+          search: {
+            mode: '$or',
+            fieldPatterns: searchableFields.map((searchableField) => ({
+              field: searchableField,
+              value: fieldSearchValue,
+            })),
+          },
+        }),
+        cancelTokenRequestParam,
+      ),
     );
   });
 
@@ -1053,5 +1057,29 @@ describe(Resources, () => {
         search: 'searching...',
       }),
     );
+  });
+
+  it('leaves search help tooltip visible when the search input is filled', async () => {
+    const {
+      getByLabelText,
+      getByText,
+      getByPlaceholderText,
+    } = renderResources();
+
+    fireEvent.click(getByLabelText(labelSearchHelp));
+
+    expect(
+      getByText(labelSearchOnFields, { exact: false }),
+    ).toBeInTheDocument();
+
+    const searchInput = getByPlaceholderText(labelResourceName);
+
+    fireEvent.change(searchInput, {
+      target: { value: 'foobar' },
+    });
+
+    expect(
+      getByText(labelSearchOnFields, { exact: false }),
+    ).toBeInTheDocument();
   });
 });
