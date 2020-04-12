@@ -93,6 +93,7 @@ export const labelMore = I18n.t('More');
 export const labelRefresh = I18n.t('Refresh');
 export const labelDisableAutorefresh = I18n.t('Disable autorefresh');
 export const labelEnableAutorefresh = I18n.t('Enable autorefresh');
+export const labelSearchHelp = I18n.t('Search help');
 export const labelSearchOnFields = I18n.t(
   'This search bar will search matching occurences you type contained in: host name or alias or address or service description',
 );

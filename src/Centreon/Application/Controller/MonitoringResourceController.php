@@ -193,7 +193,9 @@ class MonitoringResourceController extends AbstractController
                 $parameters['serviceId'] = $resource->getId();
             }
 
-            $resource->setAcknowledgementEndpoint($this->router->generate($routeNameAcknowledgement, $parameters));
+            $resource->setAcknowledgementEndpoint(
+                $this->router->generate($routeNameAcknowledgement, array_merge($parameters, ['limit' => 1]))
+            );
             $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
             $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
 
