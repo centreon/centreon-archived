@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactElement;
   Chip: () => JSX.Element;
   label: string;
   onClick?: () => void;
