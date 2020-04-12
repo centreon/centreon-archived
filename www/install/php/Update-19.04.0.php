@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -38,10 +39,11 @@ try {
             "ALTER TABLE `cfg_nagios` ADD COLUMN `macros_filter` TEXT DEFAULT ''"
         );
     }
-    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
         "UPGRADE : 19.04.0 Unable to modify centreon engine in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }

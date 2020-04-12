@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2018 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -59,8 +60,10 @@ if ($row
     $pearDB->query($query);
 
     // USER1 resource.
-    $query = "UPDATE cfg_resource SET resource_line='/usr/lib64/nagios/plugins' WHERE resource_line='/usr/lib/nagios/plugins'";
-    $pearDB->query($query);
+    $pearDB->query(
+        "UPDATE cfg_resource SET resource_line='/usr/lib64/nagios/plugins'
+        WHERE resource_line='/usr/lib/nagios/plugins'"
+    );
 }
 
 /*
@@ -92,16 +95,16 @@ while ($aclTopology = $aclTopologies->fetch()) {
             !in_array($topologyParameters['topology_parent'], $aclToInsert)
         ) {
             if (strlen($topologyPage) === 5) { // level 3
-                $levelOne = substr($topologyPage, 0, 1); // get level 1 from begining of topology_page
+                $levelOne = substr($topologyPage, 0, 1); // get level 1 from beginning of topology_page
                 if (!isset($aclToInsert[$levelOne])) {
                     $aclToInsert[] = $levelOne;
                 }
-                $levelTwo = substr($topologyPage, 0, 3); // get level 2 from begining of topology_page
+                $levelTwo = substr($topologyPage, 0, 3); // get level 2 from beginning of topology_page
                 if (!isset($aclToInsert[$levelTwo])) {
                     $aclToInsert[] = $levelTwo;
                 }
             } elseif (strlen($topologyPage) === 3) { // level 2
-                $levelOne = substr($topologyPage, 0, 1); // get level 1 from begining of topology_page
+                $levelOne = substr($topologyPage, 0, 1); // get level 1 from beginning of topology_page
                 if (!isset($aclToInsert[$levelOne])) {
                     $aclToInsert[] = $levelOne;
                 }

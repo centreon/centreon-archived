@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -48,17 +49,18 @@ $pearDB->query(
 );
 
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
     // Add trap regexp matching
     if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
-        $pearDB->query('SET SESSION innodb_strict_mode=OFF');
         $pearDB->query(
             "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
         );
-        $pearDB->query('SET SESSION innodb_strict_mode=ON');
     }
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
         "UPGRADE : 19.10.0-beta.1 Unable to modify regexp matching in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }

@@ -45,11 +45,11 @@ try {
             "ALTER TABLE remote_servers ADD COLUMN `no_proxy` enum('0','1') NOT NULL DEFAULT '0'"
         );
     }
-
-    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
         "UPGRADE : Unable to process 19.04.1 upgrade"
     );
+} finally {
+    pearDB->query('SET SESSION innodb_strict_mode=ON');
 }
