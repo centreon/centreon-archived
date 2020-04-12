@@ -147,7 +147,7 @@ class CentreonHost
      *
      * @return int
      */
-    public function getHostNumber(): int
+    private function getHostNumber(): int
     {
         $query = $this->db->query('SELECT COUNT(*) AS `num` FROM host WHERE host_register <> "0"');
         return ((int)$query->fetch()['num']);
@@ -1389,7 +1389,7 @@ class CentreonHost
      * @return array
      * @throws Exception
      */
-    public function getHostChain(
+    private function getHostChain(
         $hostId,
         &$alreadyProcessed
     ) {
