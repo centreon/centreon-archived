@@ -61,6 +61,7 @@ import {
   labelRefresh,
   labelDisableAutorefresh,
   labelEnableAutorefresh,
+  labelClearAll,
 } from './translatedLabels';
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import { Resource } from './models';
@@ -220,6 +221,19 @@ const webAccessServiceGroup = {
 
 const hostResources = entities.filter(({ type }) => type === 'host');
 const serviceResources = entities.filter(({ type }) => type === 'service');
+
+const savedFilter = {
+  id: '',
+  name: '',
+  search: 'searching...',
+  criterias: {
+    resourceTypes: [{ id: 'host', name: labelHost }],
+    states: [{ id: 'acknowledged', name: labelAcknowledged }],
+    statuses: [{ id: 'OK', name: labelOk }],
+    hostGroups: [linuxServersHostGroup],
+    serviceGroups: [webAccessServiceGroup],
+  },
+};
 
 const mockedLocalStorageGetItem = jest.fn();
 const mockedLocalStorageSetItem = jest.fn();
@@ -1003,20 +1017,7 @@ describe(Resources, () => {
   });
 
   it('populates filter with values from localStorage if available', () => {
-    const filter = {
-      id: '',
-      name: '',
-      search: 'searching...',
-      criterias: {
-        resourceTypes: [{ id: 'host', name: labelHost }],
-        states: [{ id: 'acknowledged', name: labelAcknowledged }],
-        statuses: [{ id: 'OK', name: labelOk }],
-        hostGroups: [linuxServersHostGroup],
-        serviceGroups: [webAccessServiceGroup],
-      },
-    };
-
-    mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
+    mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
 
     const {
       getByText,
@@ -1057,6 +1058,31 @@ describe(Resources, () => {
         search: 'searching...',
       }),
     );
+  });
+
+  it('clears all filters and set filter group to all when the clear all button is clicked', () => {
+    mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
+
+    mockedAxios.get.mockResolvedValue({ data: retrievedListing });
+
+    const {
+      getByText,
+      queryByDisplayValue,
+      getByLabelText,
+      queryByText,
+    } = renderResources();
+
+    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+
+    fireEvent.click(getByText(labelClearAll));
+
+    expect(getByText(labelAll)).toBeInTheDocument();
+    expect(queryByDisplayValue('searching...')).toBeNull();
+    expect(queryByText(labelHost)).toBeNull();
+    expect(queryByText(labelAcknowledged)).toBeNull();
+    expect(queryByText(labelOk)).toBeNull();
+    expect(queryByText(linuxServersHostGroup.name)).toBeNull();
+    expect(queryByText(webAccessServiceGroup.name)).toBeNull();
   });
 
   it('leaves search help tooltip visible when the search input is filled', async () => {
