@@ -36,6 +36,9 @@ export const labelEndDateMustBeGreater = I18n.t(
 export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
+export const labelNoDataForThisPeriod = I18n.t(
+  'No data available for this period',
+);
 export const labelResourceFlapping = I18n.t('Is this resource flapping?');
 export const labelShowCriteriasFilters = I18n.t('Show criterias filters');
 export const labelFrom = I18n.t('From');
