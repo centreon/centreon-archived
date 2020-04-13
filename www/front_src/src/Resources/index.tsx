@@ -21,7 +21,11 @@ import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
 import useFilter from './Filter/useFilter';
-import { labelSomethingWentWrong } from './translatedLabels';
+import {
+  labelSomethingWentWrong,
+  labelRowsPerPage,
+  labelOf,
+} from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -443,6 +447,9 @@ const Resources = (): JSX.Element => {
             onPaginate={changePage}
             sortf={sortf}
             sorto={sorto}
+            labelRowsPerPage={labelRowsPerPage}
+            labelDisplayedRows={({ from, to, count }): string =>
+              `${from}-${to} ${labelOf} ${count}`}
             totalRows={listing?.meta.total}
             onSelectRows={selectResources}
             selectedRows={selectedResources}

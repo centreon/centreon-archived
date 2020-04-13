@@ -51,7 +51,7 @@ export const labelHost = I18n.t('Host');
 export const labelHostGroup = I18n.t('Host group');
 export const labelDowntime = I18n.t('Downtime');
 export const labelInDowntime = I18n.t('In downtime');
-export const labelLast24h = I18n.t('Last 24h');
+export const labelLast24h = I18n.t('Last 24 hours');
 export const labelLast7Days = I18n.t('Last 7 days');
 export const labelLast31Days = I18n.t('Last 31 days');
 export const labelSetDowntime = I18n.t('Set downtime');
@@ -68,7 +68,6 @@ export const labelLatency = I18n.t('Latency');
 export const labelLess = I18n.t('Less');
 export const labelNextCheck = I18n.t('Next check');
 export const labelNo = I18n.t('No');
-export const labelNotify = I18n.t('Notify');
 export const labelNotifyHelpCaption = I18n.t(
   'If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged',
 );
@@ -83,6 +82,8 @@ export const labelRequired = I18n.t('Required');
 export const labelResourceName = I18n.t('Resource name');
 export const labelResourceProblems = I18n.t('Resource problems');
 export const labelResource = I18n.t('Resource');
+export const labelRowsPerPage = I18n.t('Rows per page');
+export const labelOf = I18n.t('of');
 export const labelSearch = I18n.t('Search');
 export const labelSeverity = I18n.t('Severity');
 export const labelStatus = I18n.t('Status');
@@ -95,26 +96,26 @@ export const labelDisableAutorefresh = I18n.t('Disable autorefresh');
 export const labelEnableAutorefresh = I18n.t('Enable autorefresh');
 export const labelSearchHelp = I18n.t('Search help');
 export const labelSearchOnFields = I18n.t(
-  'This search bar will search matching occurences you type contained in: host name or alias or address or service description',
+  'This search bar will search matching occurences you type, contained in: host name or alias or address or service description',
 );
 export const labelSearchByRegexp = I18n.t(
   'You can use regular expression syntax to retrieve more relevant results',
 );
 export const labelSearchSyntax = I18n.t(
-  "It's possible to specify the criteria you precisely want to search in using the following syntax:",
+  "It's possible to specify the criteria you precisely want to search, by using the following syntax:",
 );
 export const labelSearchSomeExamples = I18n.t('Some examples:');
 export const labelSearchByHostNameStartingWith = I18n.t(
-  'will search host name starting by',
+  'will display resources with host name starting by',
 );
 export const labelSearchByServiceDescEndingWith = I18n.t(
-  'will search for all service description finishing by',
+  'will display resources with service description finishing by',
 );
 export const labelSearchByHostAliasContaining = I18n.t(
-  'will search for all host alias containing',
+  'will display all resources with host having alias containing',
 );
 export const labelSearchByHostAddressNotContaining = I18n.t(
-  "will search for FQDN that doesn't contain",
+  "will display resources having FQDN that doesn't contain",
 );
 export const labelSearchAndHostAliasContaining = I18n.t(
   'and host alias containing',
@@ -125,9 +126,6 @@ export const labelStartTime = I18n.t('Start time');
 export const labelState = I18n.t('State');
 export const labelStateFilter = I18n.t('State filter');
 export const labelStatusInformation = I18n.t('Status information');
-export const labelSuccessfullyAcknowledged = I18n.t(
-  'Successfully acknowledged',
-);
 export const labelTimezone = I18n.t('Timezone');
 export const labelTo = I18n.t('To');
 export const labelAcknowledgeCommandSent = I18n.t('Acknowledge command sent');

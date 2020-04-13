@@ -333,7 +333,7 @@ msgstr "graphique de l'hôte"
 
 #: centreon-web/www/class/centreonGraph.class.php:1190
 msgid "Graph"
-msgstr "Graph"
+msgstr "Graphe"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177
 #: centreon-web/www/install/centreon_broker_translation.php:48
@@ -11808,7 +11808,7 @@ msgstr "PID"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:117
 msgid "Start time"
-msgstr "Heure de démarrage du programme"
+msgstr "Temps de début"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:118
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:189
@@ -14842,3 +14842,192 @@ msgstr "Eléments verrouillés"
 
 msgid "This value needs to be an integer lesser than"
 msgstr "Cette valeur doit être un entier inférieur à"
+
+msgid "Acknwoledged by"
+msgstr "Acquitté par"
+
+msgid "Acknowledge services attached to host"
+msgstr "Acquitter les services attachés à l'hôte"
+
+msgid "at"
+msgstr "à"
+
+msgid "Clear all"
+msgstr "Effacer tout"
+
+msgid "Criterias"
+msgstr "Critères"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Command copied to clipboard"
+msgstr "Commande copiée dans le press-papier"
+
+msgid "Current notification number"
+msgstr "Numéro de notification actuel"
+
+msgid "Current state duration"
+msgstr "Durée de l'état actuel"
+
+msgid "Downtime duration"
+msgstr "Durée du temps d'arrêt"
+
+msgid "End date must be greater than start date"
+msgstr "La date de fin doit être supérieure à la date de début"
+
+msgid "End time"
+msgstr "Temps de fin"
+
+msgid "Is this resource flapping?"
+msgstr "Cette ressource est-elle bagottante?"
+
+msgid "Show criterias filters"
+msgstr "Montrer les critères de filtre"
+
+msgid "Start date"
+msgstr "Date de début"
+
+msgid "End date"
+msgstr "Date de fin"
+
+msgid "Change start date"
+msgstr "Changer la date de début"
+
+msgid "Change start time"
+msgstr "Changer le temps de début"
+
+msgid "Host group"
+msgstr "Groupe d'hôtes"
+
+msgid "Downtime"
+msgstr "Temps d'arrêt"
+
+msgid "In downtime"
+msgstr "En temps arrêt"
+
+msgid "Last 24 hours"
+msgstr "Dernières 24 heures"
+
+msgid "Last 7 days"
+msgstr "Derniers 7 jours"
+
+msgid "Last 31 days"
+msgstr "Derniers 31 jours"
+
+msgid "Set downtime"
+msgstr "Programmer un temps d'arrêt"
+
+msgid "Set downtime on"
+msgstr "Programmer un temps d'arrêt sur"
+
+msgid "Downtime set by"
+msgstr "Temps d'arrêt programmé par"
+
+msgid "Set downtime on services attached to host"
+msgstr "Programmer le temps d'arrêt sur les services attachés à l'hôte"
+
+msgid "Last notification"
+msgstr "Dernière notification"
+
+msgid "Last state change"
+msgstr "Changement du dernier état"
+
+msgid "Next check"
+msgstr "Prochain contrôle"
+
+msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
+msgstr "Si cette option est cochée, une notification sera envoyée aux contacts lié à l'object afin d'avertir que l'incident de la ressource a été acquitté"
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Percent state change"
+msgstr "Pourcentage de changement d'état"
+
+msgid "Resource name"
+msgstr "Nom de la ressource"
+
+msgid "Resource problems"
+msgstr "Problèmes de ressources"
+
+msgid "Rows per page"
+msgstr "Ressources par page"
+
+msgid "of"
+msgstr "de"
+
+msgid "More"
+msgstr "Étendre"
+
+msgid "Disable autorefresh"
+msgstr "Désactiver l'actualisation automatique"
+
+msgid "Enable autorefresh"
+msgstr "Activer l'actualisation automatique"
+
+msgid "Search help"
+msgstr "Aide pour la recherche"
+
+msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
+msgstr "Cette barre de recherche va rechercher les ressources correspondant aux occurances que vous tapez, contenus dans: le nom de l'hôte, l'alias, l'adresse, ou bien la description du service"
+
+msgid "You can use regular expression syntax to retrieve more relevant results"
+msgstr "Vous pouvez utiliser des expressions régulières afin afficher des résultats plus pertinants à la recherches"
+
+msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
+msgstr "Il est possible de spécifier des critères que vous voulez rechercher de manière précise,  en utilisant la syntaxe suivante:"
+
+msgid "Some examples:"
+msgstr "Quelques examples:"
+
+msgid "will display resources with host name starting by'"
+msgstr "affichera les ressources avec un nom d'hôte commençant par"
+
+msgid "will display resources with service description finishing by"
+msgstr "affichera les ressources avec une description de service finissant par"
+
+msgid "will display all resources with host having alias containing"
+msgstr "affichera les ressources avec un alias d'hôte contenant"
+
+msgid "will display resources having FQDN that doesn't contain"
+msgstr "affichera les ressources avec un FQDN ne contenant pas"
+
+msgid "and host alias containing"
+msgstr "et un alias d'hôte contenant"
+
+msgid "Service group"
+msgstr "Groupe de services"
+
+msgid "State filter"
+msgstr "Filtre de statut"
+
+msgid "Acknowledge command sent"
+msgstr "Commande d'acquittement envoyée"
+
+msgid "Downtime command sent"
+msgstr "Commande de temps d'arrêt envoyée"
+
+msgid "Check command sent"
+msgstr "Commande de contrôle envoyée"
+
+msgid "Type of resource"
+msgstr "Type de ressource"
+
+msgid "Unhandled problems"
+msgstr "Problèmes non traîtés"
+
+msgid "Unhandled"
+msgstr "Non traîté"
+
+msgid "Oops, something went wrong"
+msgstr "Oups, quelque chose a cloché"
+
+msgid "Seems that your Apache configuration is not up-to-date"
+msgstr "Il semble que votre configuration Apache n'est pas à jour"
+
+msgid "Contact your Centreon administrator or update the following site"
+msgstr "Contactez votre administrateur Centreon ou mettez à jour le site suivant"
+
+msgid "See Documentation"
+msgstr "Voir la documentation"
