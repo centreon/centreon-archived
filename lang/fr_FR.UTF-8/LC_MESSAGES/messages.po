@@ -15018,7 +15018,7 @@ msgid "Unhandled problems"
 msgstr "Problèmes non traités"
 
 msgid "Unhandled"
-msgstr "Non traîté"
+msgstr "Non traité"
 
 msgid "Oops, something went wrong"
 msgstr "Oups, quelque chose a cloché"
