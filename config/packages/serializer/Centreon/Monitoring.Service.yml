@@ -1,4 +1,10 @@
 Centreon\Domain\Monitoring\Service:
+    virtual_properties:
+        isActiveCheck:
+            serialized_name: active_checks
+            type: bool
+            groups:
+                - 'resource_details_service'
     properties:
         id:
             type: int
@@ -81,10 +87,8 @@ Centreon\Domain\Monitoring\Service:
                 - 'resource_details_service'
         isActiveCheck:
             type: bool
-            serialized_name: active_checks
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         isChecked:
             type: bool
             groups:
