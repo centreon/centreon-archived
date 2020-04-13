@@ -14979,7 +14979,7 @@ msgid "It's possible to specify the criteria you precisely want to search, by us
 msgstr "Il est possible de spécifier des critères que vous voulez rechercher de manière précise,  en utilisant la syntaxe suivante:"
 
 msgid "Some examples:"
-msgstr "Quelques examples:"
+msgstr "Quelques exemples:"
 
 msgid "will display resources with host name starting by'"
 msgstr "affichera les ressources avec un nom d'hôte commençant par"
