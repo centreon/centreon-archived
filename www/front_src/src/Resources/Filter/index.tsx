@@ -149,7 +149,7 @@ const Filter = ({
 
   const [expanded, setExpanded] = React.useState(false);
 
-  const toggleExpanded = () => {
+  const toggleExpanded = (): void => {
     setExpanded(!expanded);
   };
 
