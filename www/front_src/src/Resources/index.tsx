@@ -188,6 +188,7 @@ const Resources = (): JSX.Element => {
   const firstUpdate = React.useRef(true);
   React.useEffect(() => {
     if (firstUpdate.current) {
+      // to avoid duplicate rendering on mount
       firstUpdate.current = false;
       return;
     }
