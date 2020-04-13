@@ -14843,7 +14843,7 @@ msgstr "Eléments verrouillés"
 msgid "This value needs to be an integer lesser than"
 msgstr "Cette valeur doit être un entier inférieur à"
 
-msgid "Acknwoledged by"
+msgid "Acknowledged by"
 msgstr "Acquitté par"
 
 msgid "Acknowledge services attached to host"
