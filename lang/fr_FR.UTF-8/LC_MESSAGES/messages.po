@@ -14907,7 +14907,7 @@ msgid "In downtime"
 msgstr "En temps arrêt"
 
 msgid "Last 24 hours"
-msgstr "Dernières 24 heures"
+msgstr "24 dernières heures"
 
 msgid "Last 7 days"
 msgstr "Derniers 7 jours"
