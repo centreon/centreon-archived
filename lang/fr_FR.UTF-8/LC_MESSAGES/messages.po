@@ -14862,7 +14862,7 @@ msgid "Copy"
 msgstr "Copier"
 
 msgid "Command copied to clipboard"
-msgstr "Commande copiée dans le press-papier"
+msgstr "Commande copiée dans le presse-papier"
 
 msgid "Current notification number"
 msgstr "Numéro de notification actuel"
