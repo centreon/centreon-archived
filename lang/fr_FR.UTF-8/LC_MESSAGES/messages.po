@@ -14970,7 +14970,7 @@ msgid "Search help"
 msgstr "Aide pour la recherche"
 
 msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
-msgstr "Cette barre de recherche va rechercher les ressources correspondant aux occurances que vous tapez, contenus dans: le nom de l'hôte, l'alias, l'adresse, ou bien la description du service"
+msgstr "Cette barre de recherche va rechercher les ressources correspondantes aux occurences que vous tapez, contenues dans: le nom de l'hôte, l'alias, l'adresse, ou bien la description du service"
 
 msgid "You can use regular expression syntax to retrieve more relevant results"
 msgstr "Vous pouvez utiliser des expressions régulières afin afficher des résultats plus pertinants à la recherches"
