@@ -56,4 +56,19 @@ const getTimeSeries = (graphData: GraphData): Array<MetricData> => {
   )(graphData);
 };
 
+interface LegendColor {
+  legend: string;
+  color: string;
+}
+
+const toLegendColor = ({ ds_data, legend }: Metric): LegendColor => ({
+  legend,
+  color: ds_data.ds_color_line,
+});
+
+const getLegend = (graphData: GraphData): Array<LegendColor> => {
+  return map(toLegendColor, graphData.metrics);
+};
+
 export default getTimeSeries;
+export { getLegend };
