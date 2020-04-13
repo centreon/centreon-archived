@@ -10,6 +10,7 @@ import {
   styled,
   Tooltip,
   IconButton,
+  makeStyles,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import IconCopyFile from '@material-ui/icons/FileCopy';
@@ -39,29 +40,41 @@ import getDetailCardLines from './DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
 import { copy } from './clipboard';
 
+const useStyles = makeStyles((theme) => ({
+  loadingSkeleton: {
+    display: 'grid',
+    gridTemplateRows: '120px 75px 75px',
+    gridRowGap: theme.spacing(2),
+  },
+  details: {
+    display: 'grid',
+    gridRowGap: theme.spacing(2),
+  },
+}));
+
 const CardSkeleton = styled(Skeleton)(() => ({
   transform: 'none',
 }));
 
-const LoadingSkeleton = (): JSX.Element => (
-  <Grid container spacing={2} direction="column">
-    <Grid item>
-      <CardSkeleton height={120} />
-    </Grid>
-    <Grid item>
-      <CardSkeleton height={75} />
-    </Grid>
-    <Grid item>
-      <CardSkeleton height={75} />
-    </Grid>
-  </Grid>
-);
+const LoadingSkeleton = (): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.loadingSkeleton}>
+      <CardSkeleton height="100%" />
+      <CardSkeleton height="100%" />
+      <CardSkeleton height="100%" />
+    </div>
+  );
+};
 
 interface Props {
   details?: ResourceDetails;
 }
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
+  const classes = useStyles();
+
   const { showMessage } = useSnackbar();
 
   if (details === undefined) {
@@ -85,46 +98,38 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   };
 
   return (
-    <Grid container direction="column" spacing={2}>
-      <Grid item container direction="column" spacing={2}>
-        <Grid item>
-          <ExpandableCard
-            title={labelStatusInformation}
-            content={details.output}
-            severityCode={details.status.severity_code}
-          />
-        </Grid>
-        {details.downtimes?.map(({ start_time, end_time }) => (
-          <Grid item>
-            <StateCard
-              title={labelDowntimeDuration}
-              contentLines={[
-                { prefix: labelFrom, time: start_time },
-                { prefix: labelTo, time: end_time },
-              ].map(
-                ({ prefix, time }) => `${prefix} ${getFormattedDateTime(time)}`,
-              )}
-              chip={<DowntimeChip />}
-            />
-          </Grid>
-        ))}
-        {details.acknowledgement && (
-          <Grid item>
-            <StateCard
-              title={labelAcknowledgedBy}
-              contentLines={[
-                `${
-                  details.acknowledgement.author_name
-                } ${labelAt} ${getFormattedDateTime(
-                  details.acknowledgement.entry_time,
-                )}`,
-              ]}
-              chip={<AcknowledgeChip />}
-            />
-          </Grid>
-        )}
-      </Grid>
-      <Grid item container spacing={2} alignItems="stretch">
+    <div className={classes.details}>
+      <ExpandableCard
+        title={labelStatusInformation}
+        content={details.output}
+        severityCode={details.status.severity_code}
+      />
+      {details.downtimes?.map(({ start_time, end_time }) => (
+        <StateCard
+          title={labelDowntimeDuration}
+          contentLines={[
+            { prefix: labelFrom, time: start_time },
+            { prefix: labelTo, time: end_time },
+          ].map(
+            ({ prefix, time }) => `${prefix} ${getFormattedDateTime(time)}`,
+          )}
+          chip={<DowntimeChip />}
+        />
+      ))}
+      {details.acknowledgement && (
+        <StateCard
+          title={labelAcknowledgedBy}
+          contentLines={[
+            `${
+              details.acknowledgement.author_name
+            } ${labelAt} ${getFormattedDateTime(
+              details.acknowledgement.entry_time,
+            )}`,
+          ]}
+          chip={<AcknowledgeChip />}
+        />
+      )}
+      <Grid container spacing={2} alignItems="stretch">
         {getDetailCardLines(details).map(
           ({ title, field, getLines }) =>
             !isNil(field) && (
@@ -135,39 +140,31 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
         )}
       </Grid>
       {details.performance_data && (
-        <Grid item>
-          <ExpandableCard
-            title={labelPerformanceData}
-            content={details.performance_data}
-          />
-        </Grid>
+        <ExpandableCard
+          title={labelPerformanceData}
+          content={details.performance_data}
+        />
       )}
       {details.command_line && (
-        <Grid item>
-          <Card>
-            <CardContent>
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                gutterBottom
-              >
-                <Grid container alignItems="center" spacing={1}>
-                  <Grid item>{labelCommand}</Grid>
-                  <Grid item>
-                    <Tooltip onClick={copyCommandLine} title={labelCopy}>
-                      <IconButton size="small">
-                        <IconCopyFile color="primary" fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
+        <Card>
+          <CardContent>
+            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+              <Grid container alignItems="center" spacing={1}>
+                <Grid item>{labelCommand}</Grid>
+                <Grid item>
+                  <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                    <IconButton size="small">
+                      <IconCopyFile color="primary" fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </Grid>
-              </Typography>
-              <Typography variant="body2">{details.command_line}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+              </Grid>
+            </Typography>
+            <Typography variant="body2">{details.command_line}</Typography>
+          </CardContent>
+        </Card>
       )}
-    </Grid>
+    </div>
   );
 };
 

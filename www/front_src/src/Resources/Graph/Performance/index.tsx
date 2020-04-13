@@ -7,7 +7,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
@@ -19,27 +18,53 @@ import { Skeleton } from '@material-ui/lab';
 
 import useGet from '../../useGet';
 import { formatTo, timeFormat } from '../format';
-import getTimeSeries from './timeSeries';
+import getTimeSeries, { getLegend } from './timeSeries';
 import { GraphData } from './models';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'grid',
-    gridTemplateRows: '20px 1fr',
+    flexDirection: 'column',
+    gridTemplateRows: 'auto minmax(100px, 280px) auto',
+    gridColumnGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
   },
-  graph: {
+  noDataContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     height: '100%',
+  },
+  graph: {
     width: '100%',
+    height: '100%',
+    maxHeight: 280,
+  },
+  legend: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  legendItem: {
+    display: 'flex',
+    alignItems: 'center',
+    marginRight: theme.spacing(1),
+  },
+  legendIcon: {
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    marginRight: theme.spacing(1),
   },
   loadingSkeleton: {
     display: 'grid',
-    gridTemplateRows: '10px 1fr auto',
+    gridTemplateRows: '1fr 10fr 2fr',
     gridGap: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    height: '95%',
+    height: '100%',
   },
   loadingSkeletonLine: {
     transform: 'none',
@@ -90,7 +115,13 @@ const PerformanceGraph = ({
   const hasData = graphData.times.length > 0;
 
   if (!hasData) {
-    return null;
+    return (
+      <div className={classes.noDataContainer}>
+        <Typography align="center" variant="body1">
+          {labelNoDataForThisPeriod}
+        </Typography>
+      </div>
+    );
   }
 
   const getBase = (unit): 2 | 10 => {
@@ -126,22 +157,16 @@ const PerformanceGraph = ({
         unit={unit}
         orientation={index === 0 ? 'left' : 'right'}
         tickFormatter={(tick): string => formatValue({ value: tick, unit })}
-        tick={{ fontSize: 13 }}
+        tick={{ fontSize: 12 }}
       />
     ))
   ) : (
-    <YAxis width={40} />
+    <YAxis tick={{ fontSize: 12 }} />
   );
 
   const formatTooltip = (value, name, { unit }): Array<string> => {
     return [formatValue({ value, unit }), name];
   };
-
-  const formatLegend = (value): JSX.Element => (
-    <Typography variant="caption" color="textPrimary">
-      {value}
-    </Typography>
-  );
 
   const formatToxAxisTickFormat = (tick): string =>
     formatTo({ time: tick, to: xAxisTickFormat });
@@ -153,12 +178,6 @@ const PerformanceGraph = ({
       </Typography>
       <ResponsiveContainer className={classes.graph}>
         <ComposedChart data={getTimeSeries(graphData)} stackOffset="sign">
-          <Legend
-            formatter={formatLegend}
-            iconType="circle"
-            iconSize={8}
-            wrapperStyle={{ bottom: 0 }}
-          />
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="time"
@@ -202,6 +221,19 @@ const PerformanceGraph = ({
           />
         </ComposedChart>
       </ResponsiveContainer>
+      <div className={classes.legend}>
+        {getLegend(graphData).map(({ color, legend }) => (
+          <div className={classes.legendItem} key={legend}>
+            <div
+              className={classes.legendIcon}
+              style={{ backgroundColor: color }}
+            />
+            <Typography align="center" variant="caption">
+              {legend}
+            </Typography>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

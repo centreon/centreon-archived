@@ -147,6 +147,12 @@ const Filter = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
+  const [expanded, setExpanded] = React.useState(false);
+
+  const toggleExpanded = (): void => {
+    setExpanded(!expanded);
+  };
+
   const getHostGroupSearchEndpoint = (searchValue): string => {
     return buildHostGroupsEndpoint({
       limit: 10,
@@ -163,12 +169,6 @@ const Filter = ({
 
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
-  const avoidToggleExpansionPanel = (
-    event: React.MouseEvent<HTMLElement>,
-  ): void => {
-    event.stopPropagation();
-  };
-
   const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
     const enterKeyPressed = event.keyCode === 13;
 
@@ -177,13 +177,8 @@ const Filter = ({
     }
   };
 
-  const requestSearch = (event: React.MouseEvent<HTMLElement>): void => {
-    avoidToggleExpansionPanel(event);
-    onSearchRequest();
-  };
-
   return (
-    <ExpansionPanel square>
+    <ExpansionPanel square expanded={expanded}>
       <ExpansionPanelSummary
         expandIcon={
           <ExpandMoreIcon
@@ -191,6 +186,8 @@ const Filter = ({
             aria-label={labelShowCriteriasFilters}
           />
         }
+        IconButtonProps={{ onClick: toggleExpanded }}
+        style={{ cursor: 'default' }}
       >
         <Grid spacing={1} container alignItems="center">
           <Grid item>
@@ -207,7 +204,6 @@ const Filter = ({
                 allFilter,
               ]}
               selectedOptionId={filter.id}
-              onClick={avoidToggleExpansionPanel}
               onChange={onFilterGroupChange}
               aria-label={labelStateFilter}
             />
@@ -217,14 +213,17 @@ const Filter = ({
               className={classes.searchField}
               EndAdornment={SearchHelpTooltip}
               value={nextSearch || ''}
-              onClick={avoidToggleExpansionPanel}
               onChange={onSearchPrepare}
               placeholder={labelResourceName}
               onKeyDown={requestSearchOnEnterKey}
             />
           </Grid>
           <Grid item>
-            <Button variant="contained" color="primary" onClick={requestSearch}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onSearchRequest}
+            >
               {labelSearch}
             </Button>
           </Grid>
