@@ -14952,7 +14952,7 @@ msgid "Resource problems"
 msgstr "Problèmes de ressources"
 
 msgid "Rows per page"
-msgstr "Ressources par page"
+msgstr "Lignes par page"
 
 msgid "of"
 msgstr "de"
