@@ -14931,7 +14931,7 @@ msgid "Last notification"
 msgstr "Dernière notification"
 
 msgid "Last state change"
-msgstr "Changement du dernier état"
+msgstr "Dernier changement d'état"
 
 msgid "Next check"
 msgstr "Prochain contrôle"
