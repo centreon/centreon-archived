@@ -1395,8 +1395,8 @@ class CentreonHost
         if (!in_array($hostId, $alreadyProcessed)) {
             $alreadyProcessed[$hostId] = $hostId;
             $query = 'SELECT host_host_id FROM host_template_relation htr 
-            WHERE htr.host_tpl_id = :hostId 
-            ORDER BY `order` ASC';
+                WHERE htr.host_tpl_id = :hostId 
+                ORDER BY `order` ASC';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
