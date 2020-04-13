@@ -221,7 +221,7 @@ const webAccessServiceGroup = {
 const hostResources = entities.filter(({ type }) => type === 'host');
 const serviceResources = entities.filter(({ type }) => type === 'service');
 
-const filterParams = [
+const filtersParams = [
   {
     filterName: labelTypeOfResource,
     optionToSelect: labelHost,
@@ -426,7 +426,7 @@ describe(Resources, () => {
     });
   });
 
-  filterParams.forEach(
+  filtersParams.forEach(
     ({
       filterName,
       optionToSelect,
@@ -624,7 +624,7 @@ describe(Resources, () => {
     );
   });
 
-  filterParams.forEach(
+  filtersParams.forEach(
     ({
       filterName,
       optionToSelect,
