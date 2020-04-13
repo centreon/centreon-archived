@@ -14937,7 +14937,7 @@ msgid "Next check"
 msgstr "Prochain contrôle"
 
 msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
-msgstr "Si cette option est cochée, une notification sera envoyée aux contacts lié à l'object afin d'avertir que l'incident de la ressource a été acquitté"
+msgstr "Si cette option est cochée, une notification sera envoyée aux contacts liés à l'objet afin d'avertir que l'incident de la ressource a été acquitté"
 
 msgid "Open"
 msgstr "Ouvrir"
