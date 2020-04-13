@@ -15015,7 +15015,7 @@ msgid "Type of resource"
 msgstr "Type de ressource"
 
 msgid "Unhandled problems"
-msgstr "Problèmes non traîtés"
+msgstr "Problèmes non traités"
 
 msgid "Unhandled"
 msgstr "Non traîté"
