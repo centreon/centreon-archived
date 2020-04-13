@@ -1408,7 +1408,6 @@ class CentreonHost
                 $this->getHostChain($row['host_host_id'], $alreadyProcessed);
             }
         }
-        return $alreadyProcessed;
     }
 
     /**
