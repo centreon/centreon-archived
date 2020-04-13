@@ -1,6 +1,6 @@
 Centreon\Domain\Monitoring\Service:
     virtual_properties:
-        isActiveCheck:
+        getActiveCheck:
             serialized_name: active_checks
             type: bool
             groups:
