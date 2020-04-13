@@ -15026,7 +15026,7 @@ msgstr "Oups, quelque chose a cloché"
 msgid "Seems that your Apache configuration is not up-to-date"
 msgstr "Il semble que votre configuration Apache n'est pas à jour"
 
-msgid "Contact your Centreon administrator or update the following site"
+msgid "Contact your Centreon administrator or update the following file"
 msgstr "Contactez votre administrateur Centreon ou mettez à jour le site suivant"
 
 msgid "See Documentation"
