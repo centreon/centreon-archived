@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridTemplateRows: 'auto minmax(80px, 280px) auto',
+    gridTemplateRows: 'auto minmax(100px, 280px) auto',
     gridColumnGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
@@ -45,23 +45,12 @@ const useStyles = makeStyles((theme) => ({
   legend: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    overflow: 'auto',
-    // we use 'space-between' justification to prevent long legends to be cut.
-    // we need to add empty items to make single items centered.
-    '&::before': {
-      content: '""',
-    },
-    '&::after': {
-      content: '""',
-    },
   },
   legendItem: {
-    display: 'grid',
-    gridTemplateColumns: 'auto auto',
-    gridAutoFlow: 'column',
+    display: 'flex',
     alignItems: 'center',
     marginRight: theme.spacing(1),
   },
@@ -239,7 +228,9 @@ const PerformanceGraph = ({
               className={classes.legendIcon}
               style={{ backgroundColor: color }}
             />
-            <Typography variant="caption">{legend}</Typography>
+            <Typography align="center" variant="caption">
+              {legend}
+            </Typography>
           </div>
         ))}
       </div>
