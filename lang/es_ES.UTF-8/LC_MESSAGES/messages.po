@@ -14296,7 +14296,7 @@ msgstr "Use SSL/TLS"
 msgid "Allow self signed certificate"
 msgstr "Permitir certificado autofirmado"
 
-msgid "Acknwoledged by"
+msgid "Acknowledged by"
 msgstr ""
 
 msgid "Acknowledge services attached to host"
