@@ -14913,7 +14913,7 @@ msgid "Last 7 days"
 msgstr "7 derniers jours"
 
 msgid "Last 31 days"
-msgstr "Derniers 31 jours"
+msgstr "31 derniers jours"
 
 msgid "Set downtime"
 msgstr "Programmer un temps d'arrêt"
