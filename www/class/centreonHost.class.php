@@ -1386,7 +1386,6 @@ class CentreonHost
     /**
      * @param $hostId
      * @param $alreadyProcessed
-     * @return array
      * @throws Exception
      */
     private function getHostChain(
