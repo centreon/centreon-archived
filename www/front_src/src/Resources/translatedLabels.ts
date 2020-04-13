@@ -36,6 +36,9 @@ export const labelEndDateMustBeGreater = I18n.t(
 export const labelEndTime = I18n.t('End time');
 export const labelEntryTime = I18n.t('Entry time');
 export const labelFilter = I18n.t('Filter');
+export const labelNoDataForThisPeriod = I18n.t(
+  'No data available for this period',
+);
 export const labelResourceFlapping = I18n.t('Is this resource flapping?');
 export const labelShowCriteriasFilters = I18n.t('Show criterias filters');
 export const labelFrom = I18n.t('From');
@@ -93,6 +96,7 @@ export const labelMore = I18n.t('More');
 export const labelRefresh = I18n.t('Refresh');
 export const labelDisableAutorefresh = I18n.t('Disable autorefresh');
 export const labelEnableAutorefresh = I18n.t('Enable autorefresh');
+export const labelSearchHelp = I18n.t('Search help');
 export const labelSearchOnFields = I18n.t(
   'This search bar will search matching occurences you type contained in: host name or alias or address or service description',
 );

@@ -27,9 +27,13 @@ const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
 const columnMaxWidth = 150;
 
+interface DetailsTableColumn extends Column {
+  getContent: (details) => string | JSX.Element;
+}
+
 export interface DetailsTableProps {
   endpoint: string;
-  columns: Array<Column>;
+  columns: Array<DetailsTableColumn>;
 }
 
 const DetailsTable = <TDetails extends unknown>({
@@ -77,11 +81,11 @@ const DetailsTable = <TDetails extends unknown>({
             </TableRow>
           )}
           {success &&
-            details?.map((detail) => (
-              <TableRow>
-                {columns.map(({ label, getFormattedString }) => (
+            details?.map((detail, index) => (
+              <TableRow key={index}>
+                {columns.map(({ label, getContent }) => (
                   <TableCell key={label}>
-                    <span>{getFormattedString?.(detail)}</span>
+                    <span>{getContent?.(detail)}</span>
                   </TableCell>
                 ))}
               </TableRow>

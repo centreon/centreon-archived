@@ -202,3 +202,8 @@ Centreon\Domain\Monitoring\Service:
             groups:
                 - 'service_full'
                 - 'resource_details_service'
+        flapping:
+            type: bool
+            groups:
+                - 'service_full'
+                - 'resource_details_service'
