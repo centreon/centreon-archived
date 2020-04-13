@@ -333,7 +333,7 @@ msgstr "graphique de l'hôte"
 
 #: centreon-web/www/class/centreonGraph.class.php:1190
 msgid "Graph"
-msgstr "Graphe"
+msgstr "Graphique"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177
 #: centreon-web/www/install/centreon_broker_translation.php:48
