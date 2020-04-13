@@ -14633,7 +14633,7 @@ msgstr ""
 msgid "Seems that your Apache configuration is not up-to-date"
 msgstr ""
 
-msgid "Contact your Centreon administrator or update the following site"
+msgid "Contact your Centreon administrator or update the following file"
 msgstr ""
 
 msgid "See Documentation"
