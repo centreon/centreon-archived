@@ -14910,7 +14910,7 @@ msgid "Last 24 hours"
 msgstr "24 dernières heures"
 
 msgid "Last 7 days"
-msgstr "Derniers 7 jours"
+msgstr "7 derniers jours"
 
 msgid "Last 31 days"
 msgstr "Derniers 31 jours"
