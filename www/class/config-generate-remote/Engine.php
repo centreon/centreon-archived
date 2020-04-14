@@ -35,6 +35,7 @@ class Engine extends AbstractObject
     protected $attributesSelect = '
         nagios_server_id,
         nagios_id,
+        nagios_name,
         use_timezone,
         cfg_dir,
         cfg_file,
@@ -142,6 +143,7 @@ class Engine extends AbstractObject
     protected $attributesWrite = [
         'nagios_server_id',
         'nagios_id',
+        'nagios_name',
         'use_timezone',
         'log_file',
         'status_file',
