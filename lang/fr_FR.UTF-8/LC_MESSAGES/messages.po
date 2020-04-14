@@ -14888,9 +14888,6 @@ msgstr "Montrer les critères de filtre"
 msgid "Start date"
 msgstr "Date de début"
 
-msgid "End date"
-msgstr "Date de fin"
-
 msgid "Change start date"
 msgstr "Changer la date de début"
 
@@ -15015,7 +15012,7 @@ msgid "Type of resource"
 msgstr "Type de ressource"
 
 msgid "Unhandled problems"
-msgstr "Problèmes non traités"
+msgstr "Problèmes non acquittés"
 
 msgid "Unhandled"
 msgstr "Non traité"
