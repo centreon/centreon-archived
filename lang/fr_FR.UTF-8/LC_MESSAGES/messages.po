@@ -14528,9 +14528,6 @@ msgstr "Poubelle"
 #~ msgid "On Problem Host"
 #~ msgstr "Sur Problème de l'hôte"
 
-#~ msgid "Unhandled"
-#~ msgstr "Non Traités"
-
 #~ msgid "Unhandled Service problems (last %s)"
 #~ msgstr "Problèmes de service non traités (%s derniers)"
 
@@ -14911,9 +14908,6 @@ msgstr "7 derniers jours"
 
 msgid "Last 31 days"
 msgstr "31 derniers jours"
-
-msgid "Set downtime"
-msgstr "Programmer un temps d'arrêt"
 
 msgid "Set downtime on"
 msgstr "Programmer un temps d'arrêt sur"
