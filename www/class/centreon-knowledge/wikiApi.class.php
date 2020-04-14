@@ -271,7 +271,7 @@ class WikiApi
                     $postfields['apfrom'] = $result->{'continue'}->apcontinue;
                     $continue = true;
                 }
-            } else if (isset($result->{'query-continue'}->allpages->apcontinue)) {
+            } elseif (isset($result->{'query-continue'}->allpages->apcontinue)) {
                 $postfields['apfrom'] = $result->{'query-continue'}->allpages->apcontinue;
                 $continue = true;
             }
