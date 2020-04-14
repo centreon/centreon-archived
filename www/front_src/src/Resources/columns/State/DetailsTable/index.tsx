@@ -25,7 +25,7 @@ import { Column } from '../..';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
-const columnMaxWidth = 150;
+const defaultColumnWidth = 100;
 
 interface DetailsTableColumn extends Column {
   getContent: (details) => string | JSX.Element;
@@ -60,15 +60,20 @@ const DetailsTable = <TDetails extends unknown>({
   const error = details === null;
   const success = !loading && !error;
 
-  const tableMaxWidth = columns.length * columnMaxWidth;
+  const tableWidth = columns.reduce(
+    (totalWidth, { width = defaultColumnWidth }) => totalWidth + width,
+    0,
+  );
 
   return (
-    <TableContainer component={Paper}>
-      <Table size="small" style={{ width: tableMaxWidth }}>
+    <TableContainer component={Paper} style={{ width: tableWidth }}>
+      <Table size="small">
         <TableHead>
           <TableRow>
-            {columns.map(({ label }) => (
-              <TableCell key={label}>{label}</TableCell>
+            {columns.map(({ label, width = defaultColumnWidth }) => (
+              <TableCell key={label} style={{ width }}>
+                {label}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
