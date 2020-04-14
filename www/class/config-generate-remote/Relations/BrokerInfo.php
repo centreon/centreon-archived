@@ -87,12 +87,10 @@ class BrokerInfo extends AbstractObject
      */
     private function buildCache()
     {
-        if ($this->doneCache === 1) {
-            return 0;
+        if ($this->doneCache === 0) {
+            $this->cacheBrokerInfo();
+            $this->doneCache = 1;
         }
-
-        $this->cacheBrokerInfo();
-        $this->doneCache = 1;
     }
 
     /**
