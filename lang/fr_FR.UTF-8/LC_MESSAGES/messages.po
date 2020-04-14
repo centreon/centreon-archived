@@ -14895,7 +14895,7 @@ msgid "Change start date"
 msgstr "Changer la date de début"
 
 msgid "Change start time"
-msgstr "Changer le temps de début"
+msgstr "Changer l'heure de début"
 
 msgid "Host group"
 msgstr "Groupe d'hôtes"
