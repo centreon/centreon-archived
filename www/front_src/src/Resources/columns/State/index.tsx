@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Grid } from '@material-ui/core';
 
+import { useCancelTokenSource } from '@centreon/ui';
+
 import { ColumnProps } from '..';
 import DowntimeDetailsTable from './DetailsTable/Downtime';
 import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
@@ -10,6 +12,7 @@ import { Resource } from '../../models';
 import HoverChip from '../HoverChip';
 import DowntimeChip from '../../Chip/Downtime';
 import AcknowledgeChip from '../../Chip/Acknowledge';
+import { getData } from '../../api';
 
 interface StateChipProps {
   endpoint: string;
@@ -24,9 +27,25 @@ const StateHoverChip = ({
   DetailsTable,
   label,
 }: StateChipProps): JSX.Element => {
+  const [loading, setLoading] = React.useState(true);
+  const [data, setData] = React.useState();
+  const { cancel, token } = useCancelTokenSource();
+
+  React.useEffect(() => {
+    getData({
+      endpoint,
+      requestParams: { cancelToken: token },
+    })
+      .then((retrievedData) => setData(retrievedData))
+      .catch(() => setData(null))
+      .finally(() => setLoading(false));
+
+    return (): void => cancel();
+  }, []);
+
   return (
     <HoverChip Chip={Chip} label={label}>
-      <DetailsTable endpoint={endpoint} />
+      <DetailsTable loading={loading} data={data} />
     </HoverChip>
   );
 };

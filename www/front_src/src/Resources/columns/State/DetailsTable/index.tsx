@@ -37,27 +37,11 @@ export interface DetailsTableProps {
 }
 
 const DetailsTable = <TDetails extends unknown>({
-  endpoint,
+  loading,
+  data,
   columns,
 }: DetailsTableProps): JSX.Element => {
-  const [details, setDetails] = useState<Array<TDetails> | null>();
-  const { cancel, token } = useCancelTokenSource();
-
-  useEffect(() => {
-    getData<Listing<TDetails>>({
-      endpoint,
-      requestParams: { cancelToken: token },
-    })
-      .then((retrievedDetails) => setDetails(retrievedDetails.result))
-      .catch(() => {
-        setDetails([]);
-      });
-
-    return (): void => cancel();
-  }, []);
-
-  const loading = details === undefined;
-  const error = details === null;
+  const error = data === null;
   const success = !loading && !error;
 
   const tableWidth = columns.reduce(
@@ -78,15 +62,7 @@ const DetailsTable = <TDetails extends unknown>({
           </TableRow>
         </TableHead>
         <TableBody>
-          {loading && (
-            <TableRow>
-              <TableCell colSpan={columns.length}>
-                <Skeleton height={20} animation="wave" />
-              </TableCell>
-            </TableRow>
-          )}
-          {success &&
-            details?.map((detail, index) => (
+          {data?.result?.map((detail, index) => (
               <TableRow key={index}>
                 {columns.map(({ label, getContent }) => (
                   <TableCell key={label}>
@@ -94,7 +70,7 @@ const DetailsTable = <TDetails extends unknown>({
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
+          ))}
           {error && (
             <TableRow>
               <TableCell align="center" colSpan={columns.length}>
