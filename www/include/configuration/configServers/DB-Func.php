@@ -1088,7 +1088,7 @@ function defineLocalPollerToDefault()
     $query = "SELECT `is_default` FROM `nagios_server`";
     $result = $pearDB->query($query);
 
-    for ($i = 0; $config = $result->fetch(); $i++) {
+    while ($config = $result->fetch()) {
         $defaultPoller[] = $config['is_default'];
     }
 
