@@ -415,7 +415,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     {
         $search = $this->sqlRequestTranslator->getRequestParameters()->getSearch();
 
-        if (!$search) {
+        if (empty($search)) {
             return false;
         }
 
