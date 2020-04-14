@@ -39,9 +39,8 @@ interface AcknowledgementDetails {
 
 type Props = Pick<DetailsTableProps, 'endpoint'>;
 
-const AcknowledgementDetailsTable = ({ loading, data }: Props): JSX.Element => {
+const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
-  console.log(data)
 
   const columns = [
     {
@@ -89,8 +88,7 @@ const AcknowledgementDetailsTable = ({ loading, data }: Props): JSX.Element => {
   return (
     <DetailsTable<AcknowledgementDetails>
       columns={columns}
-      loading={loading}
-      data={data}
+      endpoint={endpoint}
     />
   );
 };
