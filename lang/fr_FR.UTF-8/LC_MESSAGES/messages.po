@@ -14877,7 +14877,7 @@ msgid "End date must be greater than start date"
 msgstr "La date de fin doit être supérieure à la date de début"
 
 msgid "End time"
-msgstr "Temps de fin"
+msgstr "Heure de fin"
 
 msgid "Is this resource flapping?"
 msgstr "Cette ressource est-elle bagottante?"
