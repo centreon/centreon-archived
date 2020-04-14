@@ -222,6 +222,52 @@ const webAccessServiceGroup = {
 const hostResources = entities.filter(({ type }) => type === 'host');
 const serviceResources = entities.filter(({ type }) => type === 'service');
 
+const filtersParams = [
+  {
+    filterName: labelTypeOfResource,
+    optionToSelect: labelHost,
+    endpointParamChanged: { resourceTypes: ['host'] },
+  },
+  {
+    filterName: labelState,
+    optionToSelect: labelAcknowledged,
+    endpointParamChanged: {
+      states: [...defaultStates, 'acknowledged'],
+    },
+  },
+  {
+    filterName: labelStatus,
+    optionToSelect: labelOk,
+    endpointParamChanged: {
+      statuses: [...defaultStatuses, 'OK'],
+    },
+  },
+  {
+    filterName: labelHostGroup,
+    optionToSelect: linuxServersHostGroup.name,
+    selectEndpointMockAction: (): void => {
+      mockedAxios.get.mockResolvedValueOnce({
+        data: { result: [linuxServersHostGroup] },
+      });
+    },
+    endpointParamChanged: {
+      hostGroupsIds: [linuxServersHostGroup.id],
+    },
+  },
+  {
+    filterName: labelServiceGroup,
+    optionToSelect: webAccessServiceGroup.name,
+    selectEndpointMockAction: (): void => {
+      mockedAxios.get.mockResolvedValueOnce({
+        data: { result: [webAccessServiceGroup] },
+      });
+    },
+    endpointParamChanged: {
+      serviceGroupIds: [webAccessServiceGroup.id],
+    },
+  },
+];
+
 const savedFilter = {
   id: '',
   name: '',
@@ -394,51 +440,7 @@ describe(Resources, () => {
     });
   });
 
-  [
-    {
-      filterName: labelTypeOfResource,
-      optionToSelect: labelHost,
-      endpointParamChanged: { resourceTypes: ['host'] },
-    },
-    {
-      filterName: labelState,
-      optionToSelect: labelAcknowledged,
-      endpointParamChanged: {
-        states: [...defaultStates, 'acknowledged'],
-      },
-    },
-    {
-      filterName: labelStatus,
-      optionToSelect: labelOk,
-      endpointParamChanged: {
-        statuses: [...defaultStatuses, 'OK'],
-      },
-    },
-    {
-      filterName: labelHostGroup,
-      optionToSelect: linuxServersHostGroup.name,
-      selectEndpointMockAction: (): void => {
-        mockedAxios.get.mockResolvedValueOnce({
-          data: { result: [linuxServersHostGroup] },
-        });
-      },
-      endpointParamChanged: {
-        hostGroupsIds: [linuxServersHostGroup.id],
-      },
-    },
-    {
-      filterName: labelServiceGroup,
-      optionToSelect: webAccessServiceGroup.name,
-      selectEndpointMockAction: (): void => {
-        mockedAxios.get.mockResolvedValueOnce({
-          data: { result: [webAccessServiceGroup] },
-        });
-      },
-      endpointParamChanged: {
-        serviceGroupIds: [webAccessServiceGroup.id],
-      },
-    },
-  ].forEach(
+  filtersParams.forEach(
     ({
       filterName,
       optionToSelect,
@@ -635,6 +637,57 @@ describe(Resources, () => {
       cancelTokenRequestParam,
     );
   });
+
+  filtersParams.forEach(
+    ({
+      filterName,
+      optionToSelect,
+      endpointParamChanged,
+      selectEndpointMockAction,
+    }) => {
+      it(`executes a listing request with the last typed search when "${filterName}" filter options are changed`, async () => {
+        const {
+          getAllByText,
+          getByTitle,
+          getByPlaceholderText,
+        } = renderResources();
+
+        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+        selectEndpointMockAction?.();
+        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+        const searchValue = 'foobar';
+
+        fireEvent.change(getByPlaceholderText(labelResourceName), {
+          target: { value: searchValue },
+        });
+
+        const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
+        fireEvent.click(filterToChange);
+
+        await waitFor(() => {
+          const [selectedOption] = getAllByText(optionToSelect);
+
+          return fireEvent.click(selectedOption);
+        });
+
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({
+            search: {
+              mode: '$or',
+              fieldPatterns: searchableFields.map((searchableField) => ({
+                field: searchableField,
+                value: searchValue,
+              })),
+            },
+            ...endpointParamChanged,
+          }),
+          cancelTokenRequestParam,
+        );
+      });
+    },
+  );
 
   it('displays downtime details when the downtime state chip is hovered', async () => {
     const { getByLabelText, getByText } = renderResources();
