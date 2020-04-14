@@ -14341,9 +14341,6 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-msgid "End date"
-msgstr ""
-
 msgid "Change start date"
 msgstr ""
 
@@ -14366,9 +14363,6 @@ msgid "Last 7 days"
 msgstr ""
 
 msgid "Last 31 days"
-msgstr ""
-
-msgid "Set downtime"
 msgstr ""
 
 msgid "Set downtime on"
