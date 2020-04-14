@@ -138,7 +138,9 @@ class HostMenu extends Component {
             iconType="hosts"
             iconName={I18n.t('Hosts')}
             onClick={this.toggle}
-          />
+          >
+            {data.pending > 0 && <span className={styles['custom-icon']} />}
+          </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to="/main.php?p=20202&o=h_down&search="
