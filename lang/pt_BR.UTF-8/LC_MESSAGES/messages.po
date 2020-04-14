@@ -14494,9 +14494,6 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-msgid "End date"
-msgstr ""
-
 msgid "Change start date"
 msgstr ""
 
