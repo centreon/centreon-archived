@@ -11808,7 +11808,7 @@ msgstr "PID"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:117
 msgid "Start time"
-msgstr "Temps de début"
+msgstr "Heure de début"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:118
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:189
