@@ -413,6 +413,18 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     private function hasServiceSearch(): bool
     {
+        $search = $this->sqlRequestTranslator->getRequestParameters()->getSearch();
+
+        if (empty($search)) {
+            return false;
+        }
+
+        $operator = array_keys($search)[0];
+
+        if ($operator === RequestParameters::AGGREGATE_OPERATOR_OR) {
+            return !$this->extractSpecificSearchCriteria('/^h\./');
+        }
+
         return $this->extractSpecificSearchCriteria('/^s\./');
     }
 
