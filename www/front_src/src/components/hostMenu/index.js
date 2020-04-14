@@ -134,7 +134,11 @@ class HostMenu extends Component {
         ref={(host) => (this.host = host)}
       >
         <SubmenuHeader submenuType="top" active={toggled}>
-          <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
+          <IconHeader
+            iconType="hosts"
+            iconName={I18n.t('Hosts')}
+            onClick={this.toggle}
+          />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to="/main.php?p=20202&o=h_down&search="
