@@ -15021,7 +15021,7 @@ msgid "Unhandled"
 msgstr "Non traité"
 
 msgid "Oops, something went wrong"
-msgstr "Oups, quelque chose a cloché"
+msgstr "Oups, quelque chose s'est mal passé"
 
 msgid "Seems that your Apache configuration is not up-to-date"
 msgstr "Il semble que votre configuration Apache ne soit pas à jour"
