@@ -8,6 +8,7 @@ import {
   waitFor,
   fireEvent,
   RenderResult,
+  within,
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 
@@ -690,7 +691,7 @@ describe(Resources, () => {
   );
 
   it('displays downtime details when the downtime state chip is hovered', async () => {
-    const { getByLabelText, getByText } = renderResources();
+    const { getByLabelText, getByRole } = renderResources();
 
     const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
 
@@ -724,15 +725,17 @@ describe(Resources, () => {
       ),
     );
 
-    expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:18')).toBeInTheDocument();
-    expect(getByText('Set by admin')).toBeInTheDocument();
-  });
+    const tooltip = getByRole('tooltip');
+
+    expect(within(tooltip).getByText('admin')).toBeInTheDocument();
+    expect(within(tooltip).getByText('Yes')).toBeInTheDocument();
+    expect(within(tooltip).getByText('02/28/2020 09:16')).toBeInTheDocument();
+    expect(within(tooltip).getByText('02/28/2020 09:18')).toBeInTheDocument();
+    expect(within(tooltip).getByText('Set by admin')).toBeInTheDocument();
+  }, 10000);
 
   it('displays acknowledgement details when an acknowledged state chip is hovered', async () => {
-    const { getByLabelText, getByText } = renderResources();
+    const { getByLabelText, getByRole } = renderResources();
 
     const acknowledgedEntity = entities.find(
       ({ acknowledged }) => acknowledged,
@@ -768,12 +771,14 @@ describe(Resources, () => {
       ),
     );
 
-    expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
-    expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('No')).toBeInTheDocument();
-    expect(getByText('Set by admin')).toBeInTheDocument();
-  });
+    const tooltip = getByRole('tooltip');
+
+    expect(within(tooltip).getByText('admin')).toBeInTheDocument();
+    expect(within(tooltip).getByText('02/28/2020 09:16')).toBeInTheDocument();
+    expect(within(tooltip).getByText('Yes')).toBeInTheDocument();
+    expect(within(tooltip).getByText('No')).toBeInTheDocument();
+    expect(within(tooltip).getByText('Set by admin')).toBeInTheDocument();
+  }, 10000);
 
   const selectAllResources = async ({ getByLabelText }): Promise<void> => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
