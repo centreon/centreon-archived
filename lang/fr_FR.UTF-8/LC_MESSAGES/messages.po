@@ -333,7 +333,7 @@ msgstr "graphique de l'hôte"
 
 #: centreon-web/www/class/centreonGraph.class.php:1190
 msgid "Graph"
-msgstr "Graphe"
+msgstr "Graphique"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177
 #: centreon-web/www/install/centreon_broker_translation.php:48
@@ -14843,7 +14843,7 @@ msgstr "Eléments verrouillés"
 msgid "This value needs to be an integer lesser than"
 msgstr "Cette valeur doit être un entier inférieur à"
 
-msgid "Acknwoledged by"
+msgid "Acknowledged by"
 msgstr "Acquitté par"
 
 msgid "Acknowledge services attached to host"
@@ -14862,7 +14862,7 @@ msgid "Copy"
 msgstr "Copier"
 
 msgid "Command copied to clipboard"
-msgstr "Commande copiée dans le press-papier"
+msgstr "Commande copiée dans le presse-papier"
 
 msgid "Current notification number"
 msgstr "Numéro de notification actuel"
@@ -14907,13 +14907,13 @@ msgid "In downtime"
 msgstr "En temps arrêt"
 
 msgid "Last 24 hours"
-msgstr "Dernières 24 heures"
+msgstr "24 dernières heures"
 
 msgid "Last 7 days"
-msgstr "Derniers 7 jours"
+msgstr "7 derniers jours"
 
 msgid "Last 31 days"
-msgstr "Derniers 31 jours"
+msgstr "31 derniers jours"
 
 msgid "Set downtime"
 msgstr "Programmer un temps d'arrêt"
@@ -14931,13 +14931,13 @@ msgid "Last notification"
 msgstr "Dernière notification"
 
 msgid "Last state change"
-msgstr "Changement du dernier état"
+msgstr "Dernier changement d'état"
 
 msgid "Next check"
 msgstr "Prochain contrôle"
 
 msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
-msgstr "Si cette option est cochée, une notification sera envoyée aux contacts lié à l'object afin d'avertir que l'incident de la ressource a été acquitté"
+msgstr "Si cette option est cochée, une notification sera envoyée aux contacts liés à l'objet afin d'avertir que l'incident de la ressource a été acquitté"
 
 msgid "Open"
 msgstr "Ouvrir"
@@ -14952,7 +14952,7 @@ msgid "Resource problems"
 msgstr "Problèmes de ressources"
 
 msgid "Rows per page"
-msgstr "Ressources par page"
+msgstr "Lignes par page"
 
 msgid "of"
 msgstr "de"
@@ -14970,16 +14970,16 @@ msgid "Search help"
 msgstr "Aide pour la recherche"
 
 msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
-msgstr "Cette barre de recherche va rechercher les ressources correspondant aux occurances que vous tapez, contenus dans: le nom de l'hôte, l'alias, l'adresse, ou bien la description du service"
+msgstr "Cette barre de recherche va rechercher les ressources correspondantes aux occurences que vous tapez, contenues dans: le nom de l'hôte, l'alias, l'adresse, ou bien la description du service"
 
 msgid "You can use regular expression syntax to retrieve more relevant results"
-msgstr "Vous pouvez utiliser des expressions régulières afin afficher des résultats plus pertinants à la recherches"
+msgstr "Vous pouvez utiliser des expressions régulières afin afficher des résultats plus pertinents à la recherche"
 
 msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
 msgstr "Il est possible de spécifier des critères que vous voulez rechercher de manière précise,  en utilisant la syntaxe suivante:"
 
 msgid "Some examples:"
-msgstr "Quelques examples:"
+msgstr "Quelques exemples:"
 
 msgid "will display resources with host name starting by'"
 msgstr "affichera les ressources avec un nom d'hôte commençant par"
@@ -15015,19 +15015,19 @@ msgid "Type of resource"
 msgstr "Type de ressource"
 
 msgid "Unhandled problems"
-msgstr "Problèmes non traîtés"
+msgstr "Problèmes non traités"
 
 msgid "Unhandled"
-msgstr "Non traîté"
+msgstr "Non traité"
 
 msgid "Oops, something went wrong"
 msgstr "Oups, quelque chose a cloché"
 
 msgid "Seems that your Apache configuration is not up-to-date"
-msgstr "Il semble que votre configuration Apache n'est pas à jour"
+msgstr "Il semble que votre configuration Apache ne soit pas à jour"
 
-msgid "Contact your Centreon administrator or update the following site"
-msgstr "Contactez votre administrateur Centreon ou mettez à jour le site suivant"
+msgid "Contact your Centreon administrator or update the following file"
+msgstr "Contactez votre administrateur Centreon ou mettez à jour le fichier suivant"
 
 msgid "See Documentation"
 msgstr "Voir la documentation"

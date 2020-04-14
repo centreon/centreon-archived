@@ -14449,7 +14449,7 @@ msgstr "Use SSL/TLS"
 msgid "Allow self signed certificate"
 msgstr "Permitir certificado autoassinado"
 
-msgid "Acknwoledged by"
+msgid "Acknowledged by"
 msgstr ""
 
 msgid "Acknowledge services attached to host"
@@ -14632,7 +14632,7 @@ msgstr ""
 msgid "Seems that your Apache configuration is not up-to-date"
 msgstr ""
 
-msgid "Contact your Centreon administrator or update the following site"
+msgid "Contact your Centreon administrator or update the following file"
 msgstr ""
 
 msgid "See Documentation"
