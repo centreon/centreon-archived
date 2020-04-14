@@ -903,7 +903,7 @@ function updateServer(int $id, array $data): void
     }
     $rq .= "`is_default` = ";
     if (isset($data["is_default"]['is_default']) && $data["is_default"]['is_default'] != null) {
-        $rq .= ':is_default, ';
+        $rq .= ':isDefault, ';
         $retValue[':isDefault'] = (int)$data["is_default"]['is_default'];
     } else {
         $rq .= "0, ";
