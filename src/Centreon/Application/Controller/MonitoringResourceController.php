@@ -43,6 +43,7 @@ use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\RequestParameters\RequestParameters;
 
 /**
  * Resource APIs for the Unified View page
@@ -196,7 +197,30 @@ class MonitoringResourceController extends AbstractController
             $resource->setAcknowledgementEndpoint(
                 $this->router->generate($routeNameAcknowledgement, array_merge($parameters, ['limit' => 1]))
             );
-            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
+            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, array_merge($parameters, [
+                'search' => json_encode([
+                    RequestParameters::AGGREGATE_OPERATOR_AND => [
+                        [
+                            'start_time' => [
+                                RequestParameters::OPERATOR_LESS_THAN => time(),
+                            ],
+                            'end_time' => [
+                                RequestParameters::OPERATOR_GREATER_THAN => time(),
+                            ],
+                            [
+                                RequestParameters::AGGREGATE_OPERATOR_OR => [
+                                    'is_cancelled' => [
+                                        RequestParameters::OPERATOR_NOT_EQUAL => 1,
+                                    ],
+                                    'deletion_time' => [
+                                        RequestParameters::OPERATOR_GREATER_THAN => time(),
+                                    ],
+                                ],
+                            ]
+                        ]
+                    ],
+                ]),
+            ])));
             $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
 
             if (
