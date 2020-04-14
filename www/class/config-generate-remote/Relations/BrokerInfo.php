@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -86,7 +87,7 @@ class BrokerInfo extends AbstractObject
      */
     private function buildCache()
     {
-        if ($this->doneCache == 1) {
+        if ($this->doneCache === 1) {
             return 0;
         }
 
@@ -116,15 +117,15 @@ class BrokerInfo extends AbstractObject
      */
     public function getBrokerInfoByConfigId(int $configId)
     {
-        # Get from the cache
+        // Get from the cache
         if (isset($this->brokerInfoCache[$configId])) {
             $this->generateObject($configId, $this->brokerInfoCache);
             return $this->brokerInfoCache[$configId];
-        } elseif ($this->useCache == 1) {
-            return null;
+        } elseif ($this->useCache === 1) {
+            return [];
         }
 
-        # We get unitary
+        // We get unitary
         if (is_null($this->stmtBrokerInfo)) {
             $this->stmtBrokerInfo = $this->backendInstance->db->prepare(
                 "SELECT *
