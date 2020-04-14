@@ -1092,8 +1092,8 @@ function defineLocalPollerToDefault()
         $defaultPoller[] = $config['is_default'];
     }
 
-    if (!in_array("1",$defaultPoller)) {
-        $query = "UPDATE `nagios_server` SET `is_default` = \"1\" WHERE `localhost` = \"1\"";
+    if (!in_array("1", $defaultPoller)) {
+        $query = "UPDATE `nagios_server` SET `is_default` = '1' WHERE `localhost` = '1'";
         $pearDB->query($query);
     }
 }
