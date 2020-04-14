@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 
 import {
   TableContainer,
@@ -11,9 +11,6 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { useCancelTokenSource } from '@centreon/ui';
-
-import { getData } from '../../../api';
 import {
   labelSomethingWentWrong,
   labelYes,
@@ -25,14 +22,13 @@ import { Column } from '../..';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
-const defaultColumnWidth = 100;
-
 interface DetailsTableColumn extends Column {
   getContent: (details) => string | JSX.Element;
 }
 
-export interface DetailsTableProps {
-  endpoint: string;
+export interface DetailsTableProps<TDetails> {
+  loading: boolean;
+  data: Listing<TDetails> | null | undefined;
   columns: Array<DetailsTableColumn>;
 }
 
@@ -40,29 +36,30 @@ const DetailsTable = <TDetails extends unknown>({
   loading,
   data,
   columns,
-}: DetailsTableProps): JSX.Element => {
+}: DetailsTableProps<TDetails>): JSX.Element => {
   const error = data === null;
   const success = !loading && !error;
 
-  const tableWidth = columns.reduce(
-    (totalWidth, { width = defaultColumnWidth }) => totalWidth + width,
-    0,
-  );
-
   return (
-    <TableContainer component={Paper} style={{ width: tableWidth }}>
+    <TableContainer component={Paper}>
       <Table size="small">
         <TableHead>
           <TableRow>
-            {columns.map(({ label, width = defaultColumnWidth }) => (
-              <TableCell key={label} style={{ width }}>
-                {label}
-              </TableCell>
+            {columns.map(({ label }) => (
+              <TableCell key={label}>{label}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.result?.map((detail, index) => (
+          {loading && (
+            <TableRow>
+              <TableCell colSpan={columns.length}>
+                <Skeleton height={20} animation="wave" />
+              </TableCell>
+            </TableRow>
+          )}
+          {success &&
+            data?.result?.map((detail, index) => (
               <TableRow key={index}>
                 {columns.map(({ label, getContent }) => (
                   <TableCell key={label}>
@@ -70,7 +67,7 @@ const DetailsTable = <TDetails extends unknown>({
                   </TableCell>
                 ))}
               </TableRow>
-          ))}
+            ))}
           {error && (
             <TableRow>
               <TableCell align="center" colSpan={columns.length}>

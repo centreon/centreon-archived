@@ -37,9 +37,10 @@ interface DowntimeDetails {
   comment: string;
 }
 
-type Props = Pick<DetailsTableProps, 'endpoint'>;
+type DowntimeDetailsTableProps = DetailsTableProps<DowntimeDetails>;
+type Props = Pick<DowntimeDetailsTableProps, 'loading' | 'data'>;
 
-const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
+const DowntimeDetailsTable = ({ loading, data }: Props): JSX.Element => {
   const classes = useStyles();
 
   const columns = [
@@ -83,7 +84,11 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
   ];
 
   return (
-    <DetailsTable<DowntimeDetails> columns={columns} endpoint={endpoint} />
+    <DetailsTable<DowntimeDetails>
+      columns={columns}
+      loading={loading}
+      data={data}
+    />
   );
 };
 

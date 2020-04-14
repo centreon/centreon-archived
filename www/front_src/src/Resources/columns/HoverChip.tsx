@@ -17,9 +17,16 @@ interface Props {
   Chip: () => JSX.Element;
   label: string;
   onClick?: () => void;
+  onHover?: () => void;
 }
 
-const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
+const HoverChip = ({
+  children,
+  Chip,
+  label,
+  onClick,
+  onHover,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -44,6 +51,7 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
 
         onClick?.();
       }}
+      onOpen={onHover}
     >
       <span>
         <Chip />

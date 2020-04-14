@@ -17,12 +17,10 @@ import {
 import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 import { getFormattedDateTime } from '../../../dateTime';
 
-const commentWidth = 500;
-
 const useStyles = makeStyles({
   comment: {
     display: 'block',
-    maxWidth: commentWidth,
+    maxWidth: 500,
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
@@ -37,11 +35,13 @@ interface AcknowledgementDetails {
   comment: string;
 }
 
-type Props = Pick<DetailsTableProps, 'endpoint'>;
+type AcknowledgementDetailsTableProps = DetailsTableProps<
+  AcknowledgementDetails
+>;
+type Props = Pick<AcknowledgementDetailsTableProps, 'loading' | 'data'>;
 
 const AcknowledgementDetailsTable = ({ loading, data }: Props): JSX.Element => {
   const classes = useStyles();
-  console.log(data)
 
   const columns = [
     {
@@ -53,7 +53,6 @@ const AcknowledgementDetailsTable = ({ loading, data }: Props): JSX.Element => {
     {
       id: 'entry_time',
       label: labelEntryTime,
-      width: 150,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ entry_time }): string => getFormattedDateTime(entry_time),
     },
@@ -74,7 +73,6 @@ const AcknowledgementDetailsTable = ({ loading, data }: Props): JSX.Element => {
     {
       id: 'comment',
       label: labelComment,
-      width: commentWidth,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {
         return (
