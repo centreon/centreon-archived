@@ -68,6 +68,7 @@ export const labelLatency = I18n.t('Latency');
 export const labelLess = I18n.t('Less');
 export const labelNextCheck = I18n.t('Next check');
 export const labelNo = I18n.t('No');
+export const labelNotify = I18n.t('Notify');
 export const labelNotifyHelpCaption = I18n.t(
   'If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged',
 );
