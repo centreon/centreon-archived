@@ -14023,9 +14023,6 @@ msgstr "cubo de basura"
 #~ msgid "On Problem Host"
 #~ msgstr "Sobre el problema del huésped."
 
-#~ msgid "Unhandled"
-#~ msgstr "No tratados"
-
 #~ msgid "Unhandled Service problems (last %s)"
 #~ msgstr ""
 #~ "awk: cmd. line:1: (FILENAME=- FNR=1) fatal: not enough arguments to satisfy format string\n"
@@ -14465,7 +14462,7 @@ msgid "Unhandled problems"
 msgstr ""
 
 msgid "Unhandled"
-msgstr ""
+msgstr "No tratados"
 
 msgid "Oops, something went wrong"
 msgstr ""
