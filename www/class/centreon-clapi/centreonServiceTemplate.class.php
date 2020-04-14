@@ -203,9 +203,12 @@ class CentreonServiceTemplate extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+
+        
         $authorizeParam = array(
             'activate',
             'description',
+            'alias',
             'template',
             'is_volatile',
             'check_period',
@@ -255,6 +258,7 @@ class CentreonServiceTemplate extends CentreonObject
                 if (!in_array($field, $authorizeParam)) {
                     $unknownParam[] = $field;
                 } else {
+                    $extended = false;
                     switch ($paramSearch) {
                         case "check_command":
                             $field = "command_command_id";
