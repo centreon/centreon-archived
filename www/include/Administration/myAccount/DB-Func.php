@@ -126,64 +126,52 @@ function updateContact($contact_id = null)
     $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
     $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
-    $rq = "UPDATE contact SET ";
-    $rq .= "contact_name = ";
-    isset($ret["contact_name"]) && $ret["contact_name"] != null
-        ? $rq .= "'" . htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "contact_alias = ";
-    isset($ret["contact_alias"]) && $ret["contact_alias"] != null
-        ? $rq .= "'" . htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-
-    if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
+    $rq = 'UPDATE contact SET ' . 
+          'contact_name = :contactName, ' . 
+          'contact_alias = :contactAlias, ' .
+          'contact_location = :contactLocation, ' .
+          'contact_lang = :contactLang, ' .
+          'contact_email = :contactEmail, ' .
+          'contact_pager = :contactPager, ' .
+          'default_page = :defaultPage, ' .
+          'contact_js_effects = :contactJsEffects, ' .
+          'contact_autologin_key = :contactAutologinKey';
+    $password_encrypted = null;
+    if (isset($ret['contact_passwd']) && $ret['contact_passwd']) {
+        $rq .= ', contact_passwd = :contactPasswd';
         if ($encryptType == 1) {
-            $rq .= "contact_passwd = '" . md5($ret["contact_passwd"]) . "', ";
+            $password_encrypted = md5($ret['contact_passwd']);
         } elseif ($encryptType == 2) {
-            $rq .= "contact_passwd = '" . sha1($ret["contact_passwd"]) . "', ";
+            $password_encrypted = sha1($ret['contact_passwd']);
         } else {
-            $rq .= "contact_passwd = '" . md5($ret["contact_passwd"]) . "', ";
+            $password_encrypted = md5($ret['contact_passwd']);
         }
     }
 
-    $rq .= "contact_location = ";
-    isset($ret["contact_location"]) && $ret["contact_location"] != null
-        ? $rq .= "'" . htmlentities($ret["contact_location"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "contact_lang = ";
-    isset($ret["contact_lang"]) && $ret["contact_lang"] != null
-        ? $rq .= "'" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "'browser', ";
-    $rq .= "contact_email = ";
-    isset($ret["contact_email"]) && $ret["contact_email"] != null
-        ? $rq .= "'" . htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "contact_pager = ";
-    isset($ret["contact_pager"]) && $ret["contact_pager"] != null
-        ? $rq .= "'" . htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "default_page = ";
-    isset($ret["default_page"]) && $ret["default_page"] != null
-        ? $rq .= "'" . htmlentities($ret["default_page"], ENT_QUOTES, "UTF-8") . "', "
-        : $rq .= "NULL, ";
-    $rq .= "contact_js_effects = ";
-    isset($ret["contact_js_effects"]) ? $rq .= "'1', " : $rq .= "'0', ";
-    $rq .= "contact_autologin_key = ";
-    $rq .= !empty($ret["contact_autologin_key"])
-        ? "'" . $pearDB->escape($ret['contact_autologin_key']) . "'"
-        : "NULL ";
-    $rq .= "WHERE contact_id = :contactId";
+    $rq .= ' WHERE contact_id = :contactId';
 
     $stmt = $pearDB->prepare($rq);
+    $stmt->bindValue(':contactName', $ret['contact_name'], \PDO::PARAM_STR);
+    $stmt->bindValue(':contactAlias', $ret['contact_alias'], \PDO::PARAM_STR);
+    $stmt->bindValue(':contactLang', $ret['contact_lang'], \PDO::PARAM_STR);
+    $stmt->bindValue(':contactEmail', !empty($ret['contact_email']) ? $ret['contact_email'] : null, \PDO::PARAM_STR);
+    $stmt->bindValue(':contactPager', !empty($ret['contact_pager']) ? $ret['contact_pager'] : null, \PDO::PARAM_STR);
+    $stmt->bindValue(':contactAutologinKey', !empty($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : null, \PDO::PARAM_STR);
+    $stmt->bindValue(':contactLocation', !empty($ret['contact_location']) ? $ret['contact_location'] : null, \PDO::PARAM_INT);
+    $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
+    $stmt->bindValue(':contactJsEffects', isset($ret['contact_js_effects']) ? 1 : 0, \PDO::PARAM_INT);
     $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
+    if (!is_null($password_encrypted)) {
+        $stmt->bindValue(':contactPasswd', $password_encrypted, \PDO::PARAM_STR);
+    }
     $stmt->execute();
 
     /*
 	 * Update user object..
 	 */
-    $centreon->user->name = $ret["contact_name"];
-    $centreon->user->alias = $ret["contact_alias"];
-    $centreon->user->lang = $ret["contact_lang"];
-    $centreon->user->email = $ret["contact_email"];
-    $centreon->user->setToken(isset($ret["contact_autologin_key"]) ? $ret['contact_autologin_key'] : "''");
+    $centreon->user->name = $ret['contact_name'];
+    $centreon->user->alias = $ret['contact_alias'];
+    $centreon->user->lang = $ret['contact_lang'];
+    $centreon->user->email = $ret['contact_email'];
+    $centreon->user->setToken(isset($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : "''");
 }
