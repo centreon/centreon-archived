@@ -93,7 +93,7 @@ class Remover extends Module
     }
 
     /**
-     *
+     * @var bool $isPreUninstall Indicates whether or not it is a pre-uninstall
      * @return boolean
      */
     private function removePhpFiles(bool $isPreUninstall)
