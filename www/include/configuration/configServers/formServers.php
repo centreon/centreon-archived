@@ -427,6 +427,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
+    defineLocalPollerToDefault();
     require_once($path . "listServers.php");
 } else {
     /*
