@@ -15058,7 +15058,7 @@ msgstr "Erreur lors de la recherche de la version des extensions"
 
 #:Centreon/Domain/Platform/PlatformService.php:82
 msgid "Error while searching for the widgets version of the Centreon platform"
-msgstr "Erreur lors de la recherche de la version du widget"
+msgstr "Erreur lors de la recherche de la version des widgets"
 
 #:Centreon/Domain/RequestParameters/RequestParameters.php:354
 msgid "Bad format for the sort request parameter"
