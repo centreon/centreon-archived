@@ -174,7 +174,9 @@ class CentreonHost
             'operatingsystems-windows-snmp'
         );
         $ppList = array();
-        $dbResult = $this->db->query('SELECT name FROM mod_ppm_pluginpack');
+        $dbResult = $this->db->query(
+            'SELECT `TABLE_SCHEMA` FROM INFORMATION_SCHEMA.`TABLES` WHERE `TABLE_NAME` = "mod_ppm_pluginpack"'
+        );
         if (!$dbResult->fetch() || true === $this->isAllowed()) {
             return $ppList;
         }
