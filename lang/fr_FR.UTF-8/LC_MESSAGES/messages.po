@@ -14932,7 +14932,7 @@ msgstr "Boucle détectée dans le fichier %1"
 
 #:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:137
 msgid "The configuration file %1 does not exists"
-msgstr "Le fichier de configuration %1 n'éxiste pas"
+msgstr "Le fichier de configuration %1 n'existe pas"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:233
 msgid "Downtime not found"
