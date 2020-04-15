@@ -14951,7 +14951,7 @@ msgstr "Type de ressource incorrect"
 #:Centreon/Domain/Engine/EngineService.php:169
 #:Centreon/Domain/Engine/EngineService.php:220
 msgid "The contact alias is empty"
-msgstr "Le \"contact alias\" est vide"
+msgstr "L'alias du contact est vide"
 
 #:Centreon/Domain/Engine/EngineService.php:79
 #:Centreon/Domain/Engine/EngineService.php:129
