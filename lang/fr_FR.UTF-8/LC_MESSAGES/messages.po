@@ -14887,7 +14887,7 @@ msgstr "Commande non reconnue"
 
 #:Centreon/Application/Controller/GorgoneController.php:157
 msgid "Commands containing a request body are not allowed at the moment"
-msgstr "Les commandes contenant un \"request body\" ne sont pas autorisés pour le moment"
+msgstr "Les commandes contenant un \"request body\" ne sont pas autorisées pour le moment"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:161
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:200
@@ -15332,3 +15332,4 @@ msgstr "Contactez votre administrateur Centreon ou mettez à jour le fichier sui
 
 msgid "See Documentation"
 msgstr "Voir la documentation"
+
