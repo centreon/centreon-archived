@@ -96,7 +96,7 @@ class Remover extends Module
      *
      * @return boolean
      */
-    private function removePhpFiles($pre)
+    private function removePhpFiles(bool $isPreUninstall)
     {
         $removed = false;
 
