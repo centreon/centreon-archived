@@ -15042,7 +15042,7 @@ msgstr "Erreur lors de la recherche des évènements"
 
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:69
 msgid "Error when searching for a resource of monitoring server"
-msgstr "Erreur lors de la recherche de la ressource attaché au serveur de supervision"
+msgstr "Erreur lors de la recherche de la ressource attachée au serveur de supervision"
 
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:81
 msgid "Error when searching for the local monitoring servers"
