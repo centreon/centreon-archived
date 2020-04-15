@@ -14493,7 +14493,7 @@ msgid "Show criterias filters"
 msgstr ""
 
 msgid "Start date"
-msgstr """
+msgstr ""
 
 msgid "Change start date"
 msgstr ""
