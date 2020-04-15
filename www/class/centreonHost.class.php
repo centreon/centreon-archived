@@ -174,7 +174,7 @@ class CentreonHost
             'operatingsystems-windows-snmp'
         );
         $ppList = array();
-        $dbResult = $this->db->query('SELECT `name` FROM modules_informations WHERE `name` = "centreon-pp-manager"');
+        $dbResult = $this->db->query('SELECT name FROM mod_ppm_pluginpack');
         if (!$dbResult->fetch() || true === $this->isAllowed()) {
             return $ppList;
         }
