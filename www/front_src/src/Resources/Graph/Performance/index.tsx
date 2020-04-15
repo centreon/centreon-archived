@@ -11,22 +11,28 @@ import {
   Tooltip,
 } from 'recharts';
 import filesize from 'filesize';
-import { pipe, map, uniq, prop, isEmpty } from 'ramda';
+import { pipe, map, uniq, prop } from 'ramda';
 
-import { fade, makeStyles, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { fade, makeStyles, Typography, Theme } from '@material-ui/core';
 
 import useGet from '../../useGet';
-import { formatTo, timeFormat } from '../format';
+import { formatTo, timeFormat, dateTimeFormat } from '../format';
 import getTimeSeries, { getLegend } from './timeSeries';
 import { GraphData } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import LoadingSkeleton from './LoadingSkeleton';
 
-const useStyles = makeStyles((theme) => ({
+interface Props {
+  endpoint: string;
+  xAxisTickFormat?: string;
+  graphHeight: number;
+}
+
+const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridTemplateRows: 'auto minmax(100px, 280px) auto',
+    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
     gridColumnGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
@@ -40,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
   graph: {
     width: '100%',
     height: '100%',
-    maxHeight: 280,
   },
   legend: {
     display: 'flex',
@@ -60,42 +65,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '50%',
     marginRight: theme.spacing(1),
   },
-  loadingSkeleton: {
-    display: 'grid',
-    gridTemplateRows: '1fr 10fr 2fr',
-    gridGap: theme.spacing(1),
-    height: '100%',
-  },
-  loadingSkeletonLine: {
-    transform: 'none',
-    paddingBottom: theme.spacing(1),
-  },
 }));
-
-interface Props {
-  endpoint: string;
-  xAxisTickFormat?: string;
-}
-
-const LoadingSkeleton = (): JSX.Element => {
-  const classes = useStyles();
-
-  const skeletonLine = <Skeleton className={classes.loadingSkeletonLine} />;
-
-  return (
-    <div className={classes.loadingSkeleton}>
-      {skeletonLine}
-      {skeletonLine}
-      {skeletonLine}
-    </div>
-  );
-};
 
 const PerformanceGraph = ({
   endpoint,
+  graphHeight,
   xAxisTickFormat = timeFormat,
 }: Props): JSX.Element | null => {
-  const classes = useStyles();
+  const classes = useStyles({ graphHeight });
 
   const [graphData, setGraphData] = React.useState<GraphData>();
 
@@ -145,16 +122,13 @@ const PerformanceGraph = ({
   const displayMultipleYAxes = getUnits().length < 3;
 
   const formatValue = ({ value, unit }): string =>
-    isEmpty(unit)
-      ? value
-      : filesize(value, { base: getBase(unit) }).replace('B', '');
+    filesize(value, { base: getBase(unit) }).replace('B', '');
 
   const YAxes = displayMultipleYAxes ? (
     getUnits().map((unit, index) => (
       <YAxis
         yAxisId={unit}
         key={unit}
-        unit={unit}
         orientation={index === 0 ? 'left' : 'right'}
         tickFormatter={(tick): string => formatValue({ value: tick, unit })}
         tick={{ fontSize: 12 }}
@@ -164,12 +138,15 @@ const PerformanceGraph = ({
     <YAxis tick={{ fontSize: 12 }} />
   );
 
-  const formatTooltip = (value, name, { unit }): Array<string> => {
+  const formatTooltipValue = (value, name, { unit }): Array<string> => {
     return [formatValue({ value, unit }), name];
   };
 
-  const formatToxAxisTickFormat = (tick): string =>
+  const formatXAxisTick = (tick): string =>
     formatTo({ time: tick, to: xAxisTickFormat });
+
+  const formatTooltipTime = (tick): string =>
+    formatTo({ time: tick, to: dateTimeFormat });
 
   return (
     <div className={classes.container}>
@@ -181,7 +158,7 @@ const PerformanceGraph = ({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="time"
-            tickFormatter={formatToxAxisTickFormat}
+            tickFormatter={formatXAxisTick}
             tick={{ fontSize: 13 }}
           />
           {YAxes}
@@ -216,8 +193,8 @@ const PerformanceGraph = ({
           })}
 
           <Tooltip
-            labelFormatter={formatToxAxisTickFormat}
-            formatter={formatTooltip}
+            labelFormatter={formatTooltipTime}
+            formatter={formatTooltipValue}
           />
         </ComposedChart>
       </ResponsiveContainer>
