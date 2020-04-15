@@ -22,7 +22,6 @@ import { getFormattedDateTime } from '../../../dateTime';
 const useStyles = makeStyles({
   comment: {
     display: 'block',
-    maxWidth: 500,
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
@@ -48,30 +47,35 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       label: labelAuthor,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ author_name }): string => author_name,
+      width: 100,
     },
     {
       id: 'is_fixed',
       label: labelFixed,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ is_fixed }): string => (is_fixed ? labelYes : labelNo),
+      width: 100,
     },
     {
       id: 'start_time',
       label: labelStartTime,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ start_time }): string => getFormattedDateTime(start_time),
+      width: 150,
     },
     {
       id: 'end_time',
       label: labelEndTime,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ end_time }): string => getFormattedDateTime(end_time),
+      width: 150,
     },
 
     {
       id: 'comment',
       label: labelComment,
       type: TABLE_COLUMN_TYPES.string,
+      width: 250,
       getContent: ({ comment }: DowntimeDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
