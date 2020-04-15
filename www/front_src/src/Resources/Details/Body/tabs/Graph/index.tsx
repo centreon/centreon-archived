@@ -97,6 +97,7 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
         <div className={`${classes.graph} ${classes.performance}`}>
           <PerformanceGraph
             endpoint={`${performanceGraphEndpoint}${periodQueryParams}`}
+            graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.timeFormat}
           />
         </div>

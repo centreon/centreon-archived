@@ -44,7 +44,10 @@ const GraphColumn = ({
         label={labelGraph}
       >
         <Paper className={classes.graph}>
-          <PerformanceGraph endpoint={row.performance_graph_endpoint} />
+          <PerformanceGraph
+            endpoint={row.performance_graph_endpoint}
+            graphHeight={150}
+          />
         </Paper>
       </HoverChip>
     );
