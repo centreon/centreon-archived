@@ -15034,7 +15034,7 @@ msgstr "Erreur lors de la recherche du nombre d'hôte"
 
 #:Centreon/Domain/Monitoring/ResourceService.php:102
 msgid "Error while searching for resources"
-msgstr "Erreur lors de la recherche de la ressource"
+msgstr "Erreur lors de la recherche de ressources"
 
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:57
 msgid "Error when searching for monitoring servers"
