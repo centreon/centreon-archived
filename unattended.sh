@@ -152,7 +152,7 @@ fi
 print_step_begin "Services configuration"
 if [ "x$has_systemd" '=' x1 ] ; then
   systemctl enable httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd gorgoned centreontrapd cbd centengine centreon
-  systemctl restart httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd
+  systemctl restart gorgoned httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd
   print_step_end
 else
   print_step_end "OK, systemd not detected, skipping"
