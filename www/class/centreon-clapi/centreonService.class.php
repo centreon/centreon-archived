@@ -1191,6 +1191,7 @@ class CentreonService extends CentreonObject
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0] . "/" . $args[1]);
                 }
                 $serviceId = $elements[0]['service_id'];
+                $hostId = $elements[0]['host_id'];
 
                 $relobj = new $relclass($this->dependencyInjector);
                 $obj = new $class($this->dependencyInjector);
@@ -1242,7 +1243,11 @@ class CentreonService extends CentreonObject
                             $relobj->delete($relationId, $serviceId);
                         } elseif ($matches[1] == "set" || $matches[1] == "add") {
                             if (!in_array($relationId, $existingRelationIds)) {
-                                $relobj->insert($relationId, $serviceId);
+                                if ($matches[2] == "servicegroup") {
+                                    $relobj->insert($relationId, array("hostId" => $hostId, "serviceId" => $serviceId));
+                                } else {
+                                    $relobj->insert($relationId, $serviceId);
+                                }
                             }
                         }
                     }
