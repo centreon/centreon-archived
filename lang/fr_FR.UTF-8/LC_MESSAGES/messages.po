@@ -15108,7 +15108,7 @@ msgstr "Le modèle %1 n'a pas été trouvé"
 #:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:802
 #:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:1010
 msgid "Bad SQL request"
-msgstr "Le modèle %1 n'a pas été trouvé"
+msgstr "Mauvaise requête SQL"
 
 #:Centreon/Infrastructure/Monitoring/TimelineRepositoryRDB.php:444
 msgid "Incorrect Event Type"
