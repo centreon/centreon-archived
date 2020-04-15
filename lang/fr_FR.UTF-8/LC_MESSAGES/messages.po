@@ -15149,7 +15149,7 @@ msgstr "Erreur lors de la récupération du nombre de token"
 
 #:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:232
 msgid "Error when deleting tokens for one contact"
-msgstr "Erreur lors de la récupération du nombre de token"
+msgstr "Erreur lors de la suppression des tokens pour un contact"
 msgid "Acknowledged by"
 msgstr "Acquitté par"
 
