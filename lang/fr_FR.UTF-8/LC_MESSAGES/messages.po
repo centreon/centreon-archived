@@ -15010,7 +15010,7 @@ msgstr "Contact désactivé."
 
 #:Centreon/Domain/Gorgone/ActionLog.php:77
 msgid "Token can not empty, null or not defined"
-msgstr "Le token ne peut êter null, vide ou non défini"
+msgstr "Le token ne peut être ni null, ni vide ou non défini"
 
 #:Centreon/Domain/Gorgone/GorgoneService.php:69
 msgid "Error when connecting to the Gorgone server"
