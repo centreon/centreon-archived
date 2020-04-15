@@ -14483,9 +14483,6 @@ msgstr ""
 msgid "End date must be greater than start date"
 msgstr ""
 
-msgid "End time"
-msgstr ""
-
 msgid "Is this resource flapping?"
 msgstr ""
 
@@ -14507,9 +14504,6 @@ msgstr ""
 msgid "Host group"
 msgstr ""
 
-msgid "Downtime"
-msgstr ""
-
 msgid "In downtime"
 msgstr ""
 
@@ -14520,9 +14514,6 @@ msgid "Last 7 days"
 msgstr ""
 
 msgid "Last 31 days"
-msgstr ""
-
-msgid "Set downtime"
 msgstr ""
 
 msgid "Set downtime on"
@@ -14622,9 +14613,6 @@ msgid "Type of resource"
 msgstr ""
 
 msgid "Unhandled problems"
-msgstr ""
-
-msgid "Unhandled"
 msgstr ""
 
 msgid "Oops, something went wrong"
