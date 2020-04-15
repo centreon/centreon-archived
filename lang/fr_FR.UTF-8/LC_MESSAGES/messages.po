@@ -14920,7 +14920,7 @@ msgstr "Aucun acquittement trouvé pour ce service"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:278
 msgid "Acknowledgement already cancelled for this service"
-msgstr "Acquittement déjà annulé pour cet service"
+msgstr "Acquittement déjà annulé pour ce service"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
 msgid "Incorrect Resource type: %1"
