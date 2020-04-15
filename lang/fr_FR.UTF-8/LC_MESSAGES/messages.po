@@ -14998,7 +14998,7 @@ msgstr "Le nom d'hôte ne peut pas être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:359
 msgid "Service description cannot be empty"
-msgstr "La description du service ne peut être vide"
+msgstr "La description du service ne peut pas être vide"
 
 #:Centreon/Domain/Exception/ExpiredTokenException.php:29
 msgid "Token expired."
@@ -15332,4 +15332,3 @@ msgstr "Contactez votre administrateur Centreon ou mettez à jour le fichier sui
 
 msgid "See Documentation"
 msgstr "Voir la documentation"
-
