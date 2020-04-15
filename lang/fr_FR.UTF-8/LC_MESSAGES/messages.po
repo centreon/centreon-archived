@@ -14870,7 +14870,7 @@ msgstr "Type de ressource incorrect pour le désacquittement"
 #:Centreon/Application/Controller/AcknowledgementController.php:650
 #:Centreon/Application/Controller/DowntimeController.php:644
 msgid "Incorrect resource type for acknowledgement"
-msgstr "Type de ressource incorrect pour le l'acquittement"
+msgstr "Type de ressource incorrect pour l'acquittement"
 
 #:Centreon/Application/Controller/AuthenticationController.php:76
 msgid "Invalid credentials"
