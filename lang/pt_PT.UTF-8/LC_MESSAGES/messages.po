@@ -14480,6 +14480,9 @@ msgstr ""
 msgid "Downtime duration"
 msgstr ""
 
+msgid "End time"
+msgstr "Fim"
+
 msgid "End date must be greater than start date"
 msgstr ""
 
@@ -14490,10 +14493,7 @@ msgid "Show criterias filters"
 msgstr ""
 
 msgid "Start date"
-msgstr ""
-
-msgid "End date"
-msgstr ""
+msgstr """
 
 msgid "Change start date"
 msgstr ""
