@@ -14986,7 +14986,7 @@ msgstr "La description du service %1 ne peut pas être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:286
 msgid "Host and service id can not be null at the same time"
-msgstr "L'ID de l'hôte et du service ne peuvent être null en même temps"
+msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
 
 #:Centreon/Domain/Engine/EngineService.php:289
 msgid "Downtime internal id can not be null"
