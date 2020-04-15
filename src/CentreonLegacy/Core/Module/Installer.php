@@ -117,7 +117,7 @@ class Installer extends Module
      *
      * @return boolean
      */
-    public function installPhpFiles($pre)
+    public function installPhpFiles(bool $isPreInstallation)
     {
         $installed = false;
 
