@@ -15018,7 +15018,7 @@ msgstr "Erreur de connexion avec le serveur Gorgone"
 
 #:Centreon/Domain/HostConfiguration/HostConfigurationService.php:52
 msgid "Host name already exists"
-msgstr "Le nom d'hôte éxiste déjà"
+msgstr "Le nom d'hôte existe déjà"
 
 #:Centreon/Domain/HostConfiguration/HostConfigurationService.php:61
 msgid "Error while creation of host"
