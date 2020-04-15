@@ -25,7 +25,7 @@ print_step_begin "System analysis"
 
 # Unattended install script only support Red Hat or compatible.
 if [ \! -e /etc/redhat-release ] ; then
-  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
+  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/20.04/en/installation/introduction.html for alternative installation methods."
 fi
 rhrelease=`cat /etc/redhat-release`
 case "$rhrelease" in
@@ -33,7 +33,7 @@ case "$rhrelease" in
     # Good to go.
     ;;
   *)
-    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
+    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/20.04/en/installation/introduction.html for alternative installation methods."
     ;;
 esac
 
@@ -166,4 +166,4 @@ echo
 echo "Centreon was successfully installed !"
 echo
 echo "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
-echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/20.04/en/installation/post-installation.html"
+echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/20.04/en/installation/web-and-post-installation.html"
