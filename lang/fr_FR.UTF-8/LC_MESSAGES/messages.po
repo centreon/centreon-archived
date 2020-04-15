@@ -14994,7 +14994,7 @@ msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
 
 #:Centreon/Domain/Engine/EngineService.php:355
 msgid "Host name cannot be empty"
-msgstr "Le nom d'hôte ne peut être vide"
+msgstr "Le nom d'hôte ne peut pas être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:359
 msgid "Service description cannot be empty"
