@@ -14990,7 +14990,7 @@ msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
 
 #:Centreon/Domain/Engine/EngineService.php:289
 msgid "Downtime internal id can not be null"
-msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
+msgstr "L'ID interne du temps d'arrêt ne peut pas être null"
 
 #:Centreon/Domain/Engine/EngineService.php:355
 msgid "Host name cannot be empty"
