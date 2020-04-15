@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -43,11 +43,10 @@ class Remover extends Module
      */
     public function remove()
     {
-        $this->removeModuleConfiguration();
-
+        $this->removePhpFiles(true);
         $this->removeSqlFiles();
-        $this->removePhpFiles();
-
+        $this->removePhpFiles(false);
+        $this->removeModuleConfiguration();
         return true;
     }
 
@@ -96,11 +95,12 @@ class Remover extends Module
      *
      * @return boolean
      */
-    private function removePhpFiles()
+    private function removePhpFiles($pre)
     {
         $removed = false;
 
-        $phpFile = $this->getModulePath($this->moduleName) . '/php/uninstall.php';
+        $phpFile = $this->getModulePath($this->moduleName)
+	    . '/php/uninstall' . ($pre ? '.pre' : '') . '.php';
         if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $removed = true;

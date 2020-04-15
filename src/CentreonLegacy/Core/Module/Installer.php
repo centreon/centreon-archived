@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -48,9 +48,9 @@ class Installer extends Module
     public function install()
     {
         $id = $this->installModuleConfiguration();
+        $this->installPhpFiles(true);
         $this->installSqlFiles();
-        $this->installPhpFiles();
-
+        $this->installPhpFiles(false);
         return $id;
     }
 
@@ -116,11 +116,12 @@ class Installer extends Module
      *
      * @return boolean
      */
-    public function installPhpFiles()
+    public function installPhpFiles($pre)
     {
         $installed = false;
 
-        $phpFile = $this->getModulePath($this->moduleName) . '/php/install.php';
+        $phpFile = $this->getModulePath($this->moduleName)
+	    . '/php/install' . ($pre ? '.pre' : '') . '.php';
         if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
