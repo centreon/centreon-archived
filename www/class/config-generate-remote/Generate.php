@@ -46,6 +46,7 @@ require_once __DIR__ . '/Host.php';
 require_once __DIR__ . '/ServiceCategory.php';
 require_once __DIR__ . '/Resource.php';
 require_once __DIR__ . '/Engine.php';
+require_once __DIR__ . '/Broker.php';
 require_once __DIR__ . '/Graph.php';
 require_once __DIR__ . '/Manifest.php';
 require_once __DIR__ . '/HostCategory.php';
@@ -193,6 +194,7 @@ class Generate
         );
 
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->currentPoller);
+        Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->currentPoller);
     }
 
     /**
@@ -335,6 +337,7 @@ class Generate
         ContactGroup::getInstance($this->dependencyInjector)->reset();
         Curves::getInstance($this->dependencyInjector)->reset();
         Engine::getInstance($this->dependencyInjector)->reset();
+        Broker::getInstance($this->dependencyInjector)->reset();
         Graph::getInstance($this->dependencyInjector)->reset();
         HostCategory::getInstance($this->dependencyInjector)->reset();
         HostGroup::getInstance($this->dependencyInjector)->reset();
