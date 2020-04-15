@@ -1084,15 +1084,11 @@ REQUEST;
 function defineLocalPollerToDefault() 
 {
     global $pearDB;
-    $defaultPoller = [];
-    $query = "SELECT `is_default` FROM `nagios_server`";
-    $result = $pearDB->query($query);
+    $query = "SELECT COUNT(*) AS `nb_of_default_poller` FROM `nagios_server` WHERE `is_default` = '1'";
+    $statement = $pearDB->query($query);
+    $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
-    while ($config = $result->fetch()) {
-        $defaultPoller[] = $config['is_default'];
-    }
-
-    if (!in_array("1", $defaultPoller)) {
+    if ($result !== false && ((int) $result['nb_of_default_poller'] === 0)) {
         $query = "UPDATE `nagios_server` SET `is_default` = '1' WHERE `localhost` = '1'";
         $pearDB->query($query);
     }
