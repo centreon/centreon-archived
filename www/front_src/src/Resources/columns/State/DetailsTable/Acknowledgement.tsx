@@ -20,7 +20,6 @@ import { getFormattedDateTime } from '../../../dateTime';
 const useStyles = makeStyles({
   comment: {
     display: 'block',
-    maxWidth: 500,
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
@@ -46,12 +45,14 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
       label: labelAuthor,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ author_name }): string => author_name,
+      width: 100,
     },
     {
       id: 'entry_time',
       label: labelEntryTime,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ entry_time }): string => getFormattedDateTime(entry_time),
+      width: 150,
     },
     {
       id: 'is_persistent',
@@ -59,18 +60,21 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ is_persistent_comment }): string =>
         getYesNoLabel(is_persistent_comment),
+      width: 100,
     },
     {
       id: 'is_sticky',
       label: labelSticky,
       type: TABLE_COLUMN_TYPES.string,
       getContent: ({ is_sticky }): string => getYesNoLabel(is_sticky),
+      width: 100,
     },
 
     {
       id: 'comment',
       label: labelComment,
       type: TABLE_COLUMN_TYPES.string,
+      width: 250,
       getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
