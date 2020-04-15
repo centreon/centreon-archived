@@ -15014,7 +15014,7 @@ msgstr "Le token ne peut être ni null, ni vide ou non défini"
 
 #:Centreon/Domain/Gorgone/GorgoneService.php:69
 msgid "Error when connecting to the Gorgone server"
-msgstr "Erreur sde connexion avec le server Gorgone"
+msgstr "Erreur de connexion avec le serveur Gorgone"
 
 #:Centreon/Domain/HostConfiguration/HostConfigurationService.php:52
 msgid "Host name already exists"
