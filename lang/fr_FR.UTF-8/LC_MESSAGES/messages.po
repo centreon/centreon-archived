@@ -15022,7 +15022,7 @@ msgstr "Le nom d'hôte éxiste déjà"
 
 #:Centreon/Domain/HostConfiguration/HostConfigurationService.php:61
 msgid "Error while creation of host"
-msgstr "Le nom d'hôte éxiste déjà"
+msgstr "Erreur lors de la creation de l'hôte"
 
 #:Centreon/Domain/HostConfiguration/HostConfigurationService.php:73
 msgid "Error while searching for the host"
