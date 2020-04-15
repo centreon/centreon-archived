@@ -122,7 +122,7 @@ class Installer extends Module
         $installed = false;
 
         $phpFile = $this->getModulePath($this->moduleName)
-	    . '/php/install' . ($pre ? '.pre' : '') . '.php';
+	    . '/php/install' . ($isPreInstallation ? '.pre' : '') . '.php';
         if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
