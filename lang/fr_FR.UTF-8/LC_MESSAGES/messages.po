@@ -15075,7 +15075,7 @@ msgstr "Token non trouvé"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:87
 msgid "Centcore directory %1 does not exist"
-msgstr "Token non trouvé"
+msgstr "Le répertoire Centcore %1 n'existe pas"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:96
 msgid "Error during creation of the CentCore command file %1"
