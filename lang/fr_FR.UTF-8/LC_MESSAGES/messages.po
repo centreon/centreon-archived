@@ -14970,7 +14970,7 @@ msgstr "L'hôte du service n'est pas défini"
 
 #:Centreon/Domain/Engine/EngineService.php:172
 msgid "Host of downtime not found"
-msgstr "L'hôte associé à la plage de maintenance non trouvé"
+msgstr "L'hôte associé à la plage de maintenance n'a pas été trouvé"
 
 #:Centreon/Domain/Engine/EngineService.php:235
 msgid "The host of service %1 is not defined"
