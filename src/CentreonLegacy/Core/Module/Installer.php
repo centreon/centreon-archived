@@ -114,7 +114,7 @@ class Installer extends Module
     }
 
     /**
-     *
+     * @var bool $isPreInstallation Indicates whether or not it is a pre-installation
      * @return boolean
      */
     public function installPhpFiles(bool $isPreInstallation)
