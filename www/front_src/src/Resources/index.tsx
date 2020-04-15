@@ -389,6 +389,9 @@ const Resources = (): JSX.Element => {
     </Grid>
   );
 
+  const labelDisplayedRows = ({ from, to, count }): string =>
+    `${from}-${to} ${labelOf} ${count}`;
+
   return (
     <div className={classes.page}>
       <div className={classes.filter}>
@@ -448,8 +451,7 @@ const Resources = (): JSX.Element => {
             sortf={sortf}
             sorto={sorto}
             labelRowsPerPage={labelRowsPerPage}
-            labelDisplayedRows={({ from, to, count }): string =>
-              `${from}-${to} ${labelOf} ${count}`}
+            labelDisplayedRows={labelDisplayedRows}
             totalRows={listing?.meta.total}
             onSelectRows={selectResources}
             selectedRows={selectedResources}
