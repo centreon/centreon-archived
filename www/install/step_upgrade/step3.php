@@ -43,7 +43,7 @@ $_SESSION['step'] = STEP_NUMBER;
 require_once '../steps/functions.php';
 $template = getTemplate('templates');
 
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once __DIR__ . "/../../../config/centreon.config.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 $title = _('Release notes');
