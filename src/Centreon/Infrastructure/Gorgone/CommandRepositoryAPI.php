@@ -95,7 +95,15 @@ class CommandRepositoryAPI implements CommandRepositoryInterface
             }
             $jsonResponse = json_decode($response->getContent(), true);
             if (!array_key_exists('token', $jsonResponse)) {
-                throw new \Exception('Token not found');
+                $exceptionMessage = 'Token not found';
+                if (array_key_exists('message', $jsonResponse)) {
+                    if ($jsonResponse['message'] === 'Method not implemented') {
+                        $exceptionMessage = 'The Autodisco module of Gorgone is not loaded';
+                    } else {
+                        $exceptionMessage = $jsonResponse['message'];
+                    }
+                }
+                throw new \Exception($exceptionMessage);
             }
             return (string) $jsonResponse['token'];
         } catch (\Throwable $e) {
