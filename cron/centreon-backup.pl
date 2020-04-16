@@ -826,7 +826,13 @@ sub monitoringengineBackup() {
 	#########################
 	# Script initialisation #
 	#########################
-	copy($nagios_server->{init_script}, ($TEMP_CENTRAL_DIR."/init_d_centengine"));
+	#
+	my $init_script;
+	$init_script = $nagios_server->{init_script};
+	if ($init_script ne '') {
+		print STDERR "Wow, you have an init script for centengine ?! I'll backup it.\n"
+		copy($nagios_server->{init_script}, ($TEMP_CENTRAL_DIR."/init_d_centengine"));
+		}
 
 	###############
 	# Sudo rights #
