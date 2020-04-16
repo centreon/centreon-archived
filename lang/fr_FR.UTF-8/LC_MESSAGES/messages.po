@@ -3532,6 +3532,18 @@ msgstr ""
 msgid "Release notes"
 msgstr "Notes de version"
 
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Everything is ready !"
+msgstr "Tout est prêts !"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Your Centreon Platform is about to be upgraded from version "
+msgstr "Votre plateforme Centreon va être mise à jour de la version "
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "For further details on changes, please find the complete changelog on "
+msgstr "Pour plus d'informations, consultez les notes de version sur "
+
 #: centreon-web/www/install/step_upgrade/step5.php:44
 msgid "Upgrade finished"
 msgstr "Mise à jour terminée"

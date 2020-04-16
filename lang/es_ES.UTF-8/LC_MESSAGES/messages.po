@@ -3269,6 +3269,19 @@ msgstr "Se recomienda encarecidamente realizar una copia de seguridad de sus bas
 msgid "Release notes"
 msgstr "Notas de lanzamiento"
 
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Everything is ready !"
+msgstr "Todo está listo !"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Your Centreon Platform is about to be upgraded from version "
+msgstr "Su plataforma Centreon está a punto de ser actualizada de la versión "
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "For further details on changes, please find the complete changelog on "
+msgstr "Para más detalles sobre los cambios, por favor encuentre el registro completo de cambios en "
+
+
 #: centreon-web/www/install/step_upgrade/step5.php:44
 msgid "Upgrade finished"
 msgstr "Actualización completada"
