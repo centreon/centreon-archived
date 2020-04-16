@@ -44,7 +44,7 @@ require_once '../steps/functions.php';
 $template = getTemplate('templates');
 
 require_once __DIR__ . "/../../../config/centreon.config.php";
-include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once __DIR__ . "/../../class/centreonDB.class.php";
 
 $title = _('Release notes');
 
