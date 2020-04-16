@@ -26,6 +26,7 @@ use Centreon\Domain\Annotation\EntityDescriptor;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
+use Centreon\Domain\Contact\Contact;
 use ReflectionClass;
 
 class EntityCreator
@@ -46,6 +47,11 @@ class EntityCreator
     private $publicMethods;
 
     /**
+     * @var Contact
+     */
+    static private $contact;
+
+    /**
      * Create a new object entity based on the given values.
      * Used to create a new object entity with the values found in the database.
      *
@@ -59,6 +65,11 @@ class EntityCreator
     public static function createEntityByArray(string $className, array $data, string $prefix = null)
     {
         return (new self($className))->createByArray($data, $prefix);
+    }
+
+    public static function setContact(Contact $contact): void
+    {
+        self::$contact = $contact;
     }
 
     /**
@@ -184,7 +195,9 @@ class EntityCreator
                 return (bool) $value;
             case 'DateTime':
                 if (is_numeric($value)) {
-                    return (new \DateTime())->setTimestamp((int) $value);
+                    $value = (new \DateTime())->setTimestamp((int) $value);
+                    $value->setTimezone(static::$contact->getTimezone());
+                    return $value;
                 }
                 throw new \Exception("Numeric value expected");
             default:

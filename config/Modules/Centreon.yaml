@@ -151,3 +151,12 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
         public: true
+
+
+    Centreon\Domain\Contact\Contact:
+        class: Centreon\Domain\Contact\Contact
+
+    EntityCreator:
+        class: Centreon\Domain\Entity\EntityCreator
+        factory: ['Centreon\Domain\Entity\EntityCreator', setContact]
+        arguments: ['@Centreon\Domain\Contact\Contact']

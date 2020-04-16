@@ -111,6 +111,11 @@ class Contact implements UserInterface, ContactInterface
     private $topologyRulesNames = [];
 
     /**
+     * @var \DateTimeZone|null $timezone timezone of the user
+     */
+    private $timezone;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -448,5 +453,27 @@ class Contact implements UserInterface, ContactInterface
         if (!in_array($topologyRuleName, $this->topologyRulesNames)) {
             $this->topologyRulesNames[] = $topologyRuleName;
         }
+    }
+
+    /**
+     * timezone setter
+     *
+     * @param \DateTimeZone $timezone
+     * @return self
+     */
+    public function setTimezone(\DateTimeZone $timezone): self
+    {
+        $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
+     * timezone getter
+     *
+     * @return \DateTimeZone|null
+     */
+    public function getTimezone(): \DateTimeZone
+    {
+        return $this->timezone;
     }
 }
