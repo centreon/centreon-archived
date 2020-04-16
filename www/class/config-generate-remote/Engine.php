@@ -31,7 +31,7 @@ class Engine extends AbstractObject
     protected $table = 'cfg_nagios';
     protected $generateFilename = 'cfg_nagios.infile';
 
-    //skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path,
+    //skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path (why?),
     //lock_file, daemon_dumps_core
     protected $attributesSelect = '
         nagios_server_id,
@@ -41,6 +41,7 @@ class Engine extends AbstractObject
         cfg_dir,
         cfg_file,
         log_file,
+	log_archive_path,
         status_file,
         status_update_interval,
         external_command_buffer_slots,
@@ -147,6 +148,7 @@ class Engine extends AbstractObject
         'nagios_name',
         'use_timezone',
         'log_file',
+	'log_archive_path',
         'status_file',
         'status_update_interval',
         'external_command_buffer_slots',
