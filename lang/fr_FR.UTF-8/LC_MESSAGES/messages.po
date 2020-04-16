@@ -14840,6 +14840,316 @@ msgstr "Eléments verrouillés"
 msgid "This value needs to be an integer lesser than"
 msgstr "Cette valeur doit être un entier inférieur à"
 
+#:Centreon/Application/Controller/Configuration/ProxyController.php:91
+msgid "Invalid json message received"
+msgstr "Json invalide reçu"
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:81
+#:Centreon/Application/Controller/DowntimeController.php:134
+#:Centreon/Application/Controller/DowntimeController.php:273
+msgid "Host %1 not found"
+msgstr "Hôte %1 non trouvé"
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:81
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:308
+msgid "Service %1 not found"
+msgstr "Service %1 non trouvé"
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:109
+msgid "Invalid date given for parameter \"%1\"."
+msgstr "Date invalide pour le paramètre \"%1\"."
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:117
+msgid "End date must be greater than start date."
+msgstr "La date de fin doit être supérieure à la date de début."
+
+#:Centreon/Application/Controller/AcknowledgementController.php:573
+msgid "Incorrect resource type for disacknowledgement"
+msgstr "Type de ressource incorrect pour le désacquittement"
+
+#:Centreon/Application/Controller/AcknowledgementController.php:650
+#:Centreon/Application/Controller/DowntimeController.php:644
+msgid "Incorrect resource type for acknowledgement"
+msgstr "Type de ressource incorrect pour l'acquittement"
+
+#:Centreon/Application/Controller/AuthenticationController.php:76
+msgid "Invalid credentials"
+msgstr "Identifiants invalides"
+
+#:Centreon/Application/Controller/DowntimeController.php:203
+#:Centreon/Application/Controller/DowntimeController.php:333
+msgid "Service %1 on host %2 not found"
+msgstr "Service %1 de l'hôte %2 non trouvé"
+
+#:Centreon/Application/Controller/GorgoneController.php:142
+msgid "Unrecognized Command"
+msgstr "Commande non reconnue"
+
+#:Centreon/Application/Controller/GorgoneController.php:157
+msgid "Commands containing a request body are not allowed at the moment"
+msgstr "Les commandes contenant un corp ne sont pas autorisées pour le moment"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:161
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:200
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:246
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:290
+#:Centreon/Domain/Check/CheckService.php:114
+#:Centreon/Domain/Check/CheckService.php:138
+#:Centreon/Domain/Downtime/DowntimeService.php:252
+msgid "Host not found"
+msgstr "Hôte non trouvé"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:195
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:265
+#:Centreon/Domain/Check/CheckService.php:143
+#:Centreon/Domain/Downtime/DowntimeService.php:260
+msgid "Service not found"
+msgstr "Service non trouvé"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:250
+msgid "No acknowledgement found for this host"
+msgstr "Aucun acquittement trouvé pour cet hôte"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:253
+msgid "Acknowledgement already cancelled for this host"
+msgstr "Acquittement déjà annulé pour cet hôte"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:275
+msgid "No acknowledgement found for this service"
+msgstr "Aucun acquittement trouvé pour ce service"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:278
+msgid "Acknowledgement already cancelled for this service"
+msgstr "Acquittement déjà annulé pour ce service"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
+msgid "Incorrect Resource type: %1"
+msgstr "Type de ressource incorrect: %1"
+
+#:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:102
+msgid "Loop detected in file %1"
+msgstr "Boucle détectée dans le fichier %1"
+
+#:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:137
+msgid "The configuration file %1 does not exists"
+msgstr "Le fichier de configuration %1 n'existe pas"
+
+#:Centreon/Domain/Downtime/DowntimeService.php:233
+msgid "Downtime not found"
+msgstr "Plage de maintenance non trouvée"
+
+#:Centreon/Domain/Downtime/DowntimeService.php:239
+msgid "Downtime already cancelled for this %1"
+msgstr "Plage de maintenance déjà annulée pour %1"
+
+#:Centreon/Domain/Downtime/DowntimeService.php:267
+msgid "Incorrect Resource Type"
+msgstr "Type de ressource incorrect"
+
+#:Centreon/Domain/Engine/EngineService.php:76
+#:Centreon/Domain/Engine/EngineService.php:102
+#:Centreon/Domain/Engine/EngineService.php:169
+#:Centreon/Domain/Engine/EngineService.php:220
+msgid "The contact alias is empty"
+msgstr "L'alias du contact est vide"
+
+#:Centreon/Domain/Engine/EngineService.php:79
+#:Centreon/Domain/Engine/EngineService.php:129
+#:Centreon/Domain/Engine/EngineService.php:175
+#:Centreon/Domain/Engine/EngineService.php:266
+#:Centreon/Domain/Engine/EngineService.php:316
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:47
+msgid "Host name can not be empty"
+msgstr "Le nom d'hôte ne peut être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:105
+#:Centreon/Domain/Engine/EngineService.php:149
+#:Centreon/Domain/Engine/EngineService.php:146
+msgid "The host of service is not defined"
+msgstr "L'hôte du service n'est pas défini"
+
+#:Centreon/Domain/Engine/EngineService.php:172
+msgid "Host of downtime not found"
+msgstr "L'hôte associé à la plage de maintenance n'a pas été trouvé"
+
+#:Centreon/Domain/Engine/EngineService.php:235
+msgid "The host of service %1 is not defined"
+msgstr "L'hôte du service %1 n'est pas défini"
+
+#:Centreon/Domain/Engine/EngineService.php:238
+msgid "Host name of service %1 can not be empty"
+msgstr "Le nom d'hôte du service %1 ne peut pas être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:241
+msgid "The description of service %1 can not be empty"
+msgstr "La description du service %1 ne peut pas être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:286
+msgid "Host and service id can not be null at the same time"
+msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
+
+#:Centreon/Domain/Engine/EngineService.php:289
+msgid "Downtime internal id can not be null"
+msgstr "L'ID interne de la plage de maintenance ne peut pas être null"
+
+#:Centreon/Domain/Engine/EngineService.php:355
+msgid "Host name cannot be empty"
+msgstr "Le nom d'hôte ne peut pas être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:359
+msgid "Service description cannot be empty"
+msgstr "La description du service ne peut pas être vide"
+
+#:Centreon/Domain/Exception/ExpiredTokenException.php:29
+msgid "Token expired."
+msgstr "Token expiré."
+
+#:Centreon/Domain/Exception/ContactDisabledException.php:29
+msgid "Contact disabled."
+msgstr "Contact désactivé."
+
+#:Centreon/Domain/Gorgone/ActionLog.php:77
+msgid "Token can not empty, null or not defined"
+msgstr "Le token ne peut être ni null, ni vide ou non défini"
+
+#:Centreon/Domain/Gorgone/GorgoneService.php:69
+msgid "Error when connecting to the Gorgone server"
+msgstr "Erreur de connexion avec le serveur Gorgone"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:52
+msgid "Host name already exists"
+msgstr "Le nom d'hôte existe déjà"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:61
+msgid "Error while creation of host"
+msgstr "Erreur lors de la creation de l'hôte"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:73
+msgid "Error while searching for the host"
+msgstr "Erreur lors de la recherche de l'hôte"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:85
+msgid "Error while searching for the number of host"
+msgstr "Erreur lors de la recherche du nombre d'hôte"
+
+#:Centreon/Domain/Monitoring/ResourceService.php:102
+msgid "Error while searching for resources"
+msgstr "Erreur lors de la recherche de ressources"
+
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:57
+msgid "Error when searching for monitoring servers"
+msgstr "Erreur lors de la recherche de serveurs de supervision"
+
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:69
+msgid "Error when searching for a resource of monitoring server"
+msgstr "Erreur lors de la recherche de la ressource attachée au serveur de supervision"
+
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:81
+msgid "Error when searching for the local monitoring servers"
+msgstr "Erreur lors de la recherche du serveur de supervision local"
+
+#:Centreon/Domain/Platform/PlatformService.php:58
+msgid "Error while searching for the web version of the Centreon platform"
+msgstr "Erreur lors de la récupération de la version de la plate-forme Centreon"
+
+#:Centreon/Domain/Platform/PlatformService.php:70
+msgid "Error while searching for the modules version of the Centreon platform"
+msgstr "Erreur lors de la recherche de la version des extensions"
+
+#:Centreon/Domain/Platform/PlatformService.php:82
+msgid "Error while searching for the widgets version of the Centreon platform"
+msgstr "Erreur lors de la recherche de la version des widgets"
+
+#:Centreon/Domain/RequestParameters/RequestParameters.php:354
+msgid "Bad format for the sort request parameter"
+msgstr "Mauvais format pour la requête de tri"
+
+#:Centreon/Domain/Security/AuthenticationService.php:79
+msgid "Contact not found"
+msgstr "Contact non trouvé"
+
+#:Centreon/Domain/Security/AuthenticationService.php:113
+#:Centreon/Infrastructure/Gorgone/CommandRepositoryAPI.php:98
+msgid "Token not found"
+msgstr "Token non trouvé"
+
+#:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:87
+msgid "Centcore directory %1 does not exist"
+msgstr "Le répertoire Centcore %1 n'existe pas"
+
+#:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:96
+msgid "Error during creation of the CentCore command file %1"
+msgstr "Erreur lors de la création du fichier de commande Centcore %1"
+
+#:Centreon/Infrastructure/Gorgone/CommandRepositoryAPI.php:94
+msgid "Bad request"
+msgstr "Mauvaise requête"
+
+#:Centreon/Infrastructure/Gorgone/ResponseRepositoryAPI.php:94
+msgid "Request error"
+msgstr "Erreur de requête"
+
+#:Centreon/Infrastructure/HostConfiguration/HostConfigurationRepositoryRDB.php:135
+msgid "Monitoring server %1 not found"
+msgstr "Serveur de supervision %1 non trouvé"
+
+#:Centreon/Infrastructure/HostConfiguration/HostConfigurationRepositoryRDB.php:189
+msgid "Template with id %1 not found"
+msgstr "Le modèle possédant l'id %1 n'a pas été trouvé"
+
+#:Centreon/Infrastructure/HostConfiguration/HostConfigurationRepositoryRDB.php:206
+msgid "Template %1 not found"
+msgstr "Le modèle %1 n'a pas été trouvé"
+
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:189
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:535
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:590
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:702
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:802
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:1010
+msgid "Bad SQL request"
+msgstr "Mauvaise requête SQL"
+
+#:Centreon/Infrastructure/Monitoring/TimelineRepositoryRDB.php:444
+msgid "Incorrect Event Type"
+msgstr "Mauvais type d'évènement"
+
+#:Centreon/Infrastructure/Provider/AutoloadServiceProvider.php:112
+msgid "Provider %1 is loaded"
+msgstr "Le fournisseur %1 est chargé"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:197
+msgid "The parameter %1 is not allowed"
+msgstr "Le paramètre %1 n'est pas autorisé"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:216
+msgid "The value %1 is only supported by the operators %2 and %3"
+msgstr "La valeur %1 est uniquement supportée par les opéreateurs %2 et %3"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:265
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:268
+msgid "Bad regex format"
+msgstr "Mauvaise expression régulière (RegExp)"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:318
+msgid "Bad search operator"
+msgstr "Mauvais opérateur de recherche"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:97
+msgid "Error during token creation"
+msgstr "Erreur lors de la création du token"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:141
+msgid "Error during deleting expired session"
+msgstr "Erreur lors de l'expiration de la session"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:214
+msgid "Error when recovering the number of tokens"
+msgstr "Erreur lors de la récupération du nombre de token"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:232
+msgid "Error when deleting tokens for one contact"
+msgstr "Erreur lors de la suppression des tokens pour un contact"
 msgid "Acknowledged by"
 msgstr "Acquitté par"
 

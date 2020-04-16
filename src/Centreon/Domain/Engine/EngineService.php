@@ -142,10 +142,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
      */
     public function disacknowledgeService(Service $service): void
     {
-        if (empty($service->getHost())) {
-            throw new EngineException('Host of service not defined');
-        }
-        if (empty($service->getHost()->getName())) {
+        if (empty($service->getHost()) || empty($service->getHost()->getName())) {
             throw new EngineException('The host of service is not defined');
         }
 
