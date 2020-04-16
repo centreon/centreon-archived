@@ -74,14 +74,14 @@ if ($handle = opendir('../php')) {
     closedir($handle);
 }
 
-$majors = explode('.', $next);
+$majors = preg_match('/^(\d+\.\d+)/', $next, $matches);
 
-$releaseNoteLink = "https://documentation.centreon.com/" . $majors[0] . '.' . $majors[1] . '/en/releases/centreon-core.md';
+$releaseNoteLink = "https://documentation.centreon.com/" . $matches[1] . '/en/releases/centreon-core.md';
 
 $title = _('Release notes');
 
 $contents = '<p><b>' . _('Everything is ready !') . '</b></p>';
-$contents .= '<p>' . _('Your Centreon Platform is about to be upgraded from version') . $current . _(' to ') . $next . '</p>';
+$contents .= '<p>' . _('Your Centreon Platform is about to be upgraded from version ') . $current . _(' to ') . $next . '</p>';
 $contents .= '<p>' . _('For further details on changes, please find the complete changelog on ');
 $contents .= '<a href="' . $releaseNoteLink . '"target="_blank" style="text-decoration:underline;font-size:11px">documentation.centreon.com</a></p>';
 
