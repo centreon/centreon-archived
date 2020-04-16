@@ -98,7 +98,7 @@ class CommandRepositoryAPI implements CommandRepositoryInterface
                 $exceptionMessage = 'Token not found';
                 if (array_key_exists('message', $jsonResponse)) {
                     if ($jsonResponse['message'] === 'Method not implemented') {
-                        $exceptionMessage = 'The Autodisco module of Gorgone is not loaded';
+                        $exceptionMessage = 'The "autodiscovery" module of Gorgone is not loaded';
                     } else {
                         $exceptionMessage = $jsonResponse['message'];
                     }
