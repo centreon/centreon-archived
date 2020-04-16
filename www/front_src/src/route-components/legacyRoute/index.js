@@ -32,7 +32,7 @@ class LegacyRoute extends Component {
         if (clientHeight !== contentHeight) {
           this.setState({
             loading: false,
-            contentHeight: clientHeight - 30,
+            contentHeight: clientHeight,
           });
         }
       }, 200);
