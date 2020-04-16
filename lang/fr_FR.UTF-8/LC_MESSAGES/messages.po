@@ -3534,7 +3534,7 @@ msgstr "Notes de version"
 
 #: centreon-web/www/install/step_upgrade/step3.php:46
 msgid "Everything is ready !"
-msgstr "Tout est prêts !"
+msgstr "Tout est prêt !"
 
 #: centreon-web/www/install/step_upgrade/step3.php:46
 msgid "Your Centreon Platform is about to be upgraded from version "
