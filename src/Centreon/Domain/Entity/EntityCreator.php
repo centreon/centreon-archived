@@ -196,7 +196,9 @@ class EntityCreator
             case 'DateTime':
                 if (is_numeric($value)) {
                     $value = (new \DateTime())->setTimestamp((int) $value);
-                    $value->setTimezone(static::$contact->getTimezone());
+                    if (static::$contact !== null) {
+                        $value->setTimezone(static::$contact->getTimezone());
+                    }
                     return $value;
                 }
                 throw new \Exception("Numeric value expected");
