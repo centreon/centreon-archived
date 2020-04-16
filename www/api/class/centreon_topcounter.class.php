@@ -474,14 +474,14 @@ class CentreonTopCounter extends CentreonWebService
                 $result['issues']['latency']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'since' => $poller['warning']['time']
+                    'since' => $poller['latency']['time']
                 );
                 $latWar++;
             } elseif ($poller['latency']['state'] === 2) {
                 $result['issues']['latency']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'since' => $poller['warning']['time']
+                    'since' => $poller['latency']['time']
                 );
                 $latCri++;
             }
