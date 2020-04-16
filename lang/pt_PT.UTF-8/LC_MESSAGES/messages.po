@@ -11970,6 +11970,18 @@ msgstr "Ficheiro de configuração não encontrado."
 msgid "Release notes"
 msgstr "Notas de lançamento"
 
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Everything is ready !"
+msgstr "Está tudo pronto !"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Your Centreon Platform is about to be upgraded from version "
+msgstr "A sua plataforma Centreon está prestes a ser atualizada a partir da versão "
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "For further details on changes, please find the complete changelog on "
+msgstr "Para mais informações sobre as alterações, consulte o changelog completo sobre "
+
 #: centreon-web/www/install/step_upgrade/step4.php:56
 #: centreon-web/src/CentreonLegacy/Core/Install/Step/Step7.php:48
 msgid "Installation"
