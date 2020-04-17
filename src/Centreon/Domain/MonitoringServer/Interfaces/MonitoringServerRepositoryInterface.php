@@ -52,4 +52,12 @@ interface MonitoringServerRepositoryInterface
      * @throws \Exception
      */
     public function findLocalServer(): ?MonitoringServer;
+
+    /**
+     * We notify that the configuration has changed.
+     *
+     * @param MonitoringServer $monitoringServer Monitoring server to notify
+     * @throws \Exception
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
 }
