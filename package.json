@@ -48,6 +48,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "file-loader": "^6.0.0",
     "fork-ts-checker-webpack-plugin": "^4.1.2",
+    "html-webpack-harddisk-plugin": "^1.0.1",
     "html-webpack-plugin": "^4.0.2",
     "jest": "^25.2.3",
     "jest-environment-jsdom-sixteen": "^1.0.3",
@@ -71,7 +72,6 @@
     "webpack": "^4.42.1",
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11",
-    "webpack-livereload-plugin": "^2.3.0",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
@@ -92,7 +92,6 @@
     "filesize": "^6.1.0",
     "formik": "^2.1.4",
     "html-react-parser": "^0.10.3",
-    "html-webpack-harddisk-plugin": "^1.0.1",
     "install": "^0.13.0",
     "jsdom": "^16.2.1",
     "loaders.css": "^0.1.2",
