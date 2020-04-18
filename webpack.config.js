@@ -35,13 +35,25 @@ module.exports = merge(baseConfig, extractCssConfig, {
     rules: [
       { parser: { system: false } },
       {
-        test: /fonts(\\|\/).+\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?|\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        test: /fonts(\\|\/).+\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[hash:8].[ext]',
+              publicPath: './',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [
           {
             loader: 'url-loader',
             options: {
-              name: '[name].[hash:8].[ext]',
               limit: 10000,
+              name: '[name].[hash:8].[ext]',
             },
           },
         ],
