@@ -115,7 +115,7 @@ if ($isRemote !== 'yes') {
 
     try {
         $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
-        $message = 'Response from ['.CENTREON_STATS_URL.'] : ' . $returnData['statusCode'] . ',body : ' . $returnData['body'];
+        $message = 'Response from [' . CENTREON_STATS_URL . '] : ' . $returnData['statusCode'] . ',body : ' . $returnData['body'];
         echoLog($message);
 
     } catch (Exception $e) {
