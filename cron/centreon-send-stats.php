@@ -30,7 +30,7 @@ $isImpUser = false;
 
 $db = $dependencyInjector['configuration_db'];
 
-function echoLog ($message, $exception=NULL){
+function echoLog($message, $exception = null){
     $datetime = new DateTime();
     $datetime->setTimezone(new DateTimeZone('UTC'));
     $logEntry = is_null($exception) ? $message : $message. ' - '.$exception;
