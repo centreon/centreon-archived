@@ -99,7 +99,7 @@ if ($isRemote !== 'yes') {
         try{
             $additional = $oStatistics->getAdditionalData();
         } catch (Exception $e){
-            echoLog ('Got error while getting additional data', $e);
+            echoLog('Got error while getting additional data', $e);
         }
     }
 
