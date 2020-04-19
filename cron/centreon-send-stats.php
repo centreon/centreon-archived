@@ -33,7 +33,7 @@ $db = $dependencyInjector['configuration_db'];
 function echoLog($message, $exception = null){
     $datetime = new DateTime();
     $datetime->setTimezone(new DateTimeZone('UTC'));
-    $logEntry = is_null($exception) ? $message : $message. ' - '.$exception;
+    $logEntry = is_null($exception) ? $message : $message . ' - ' . $exception;
     echo $datetime->format('Y/m/d H:i:s') .' - '. $logEntry . "\n";
 }
 // Check if CEIP is enable
