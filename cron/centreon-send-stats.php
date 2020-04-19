@@ -119,6 +119,6 @@ if ($isRemote !== 'yes') {
         echoLog($message);
 
     } catch (Exception $e) {
-        echoLog('Got error while sending data to ['.CENTREON_STATS_URL.']',$e);
+        echoLog('Got error while sending data to ['.CENTREON_STATS_URL.']', $e);
     }
 }
