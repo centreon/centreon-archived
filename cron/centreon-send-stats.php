@@ -30,6 +30,12 @@ $isImpUser = false;
 
 $db = $dependencyInjector['configuration_db'];
 
+function echoLog ($message, $exception=NULL){
+    $datetime = new DateTime();
+    $datetime->setTimezone(new DateTimeZone('UTC'));
+    $logEntry = is_null($exception) ? $message : $message. ' - '.$exception;
+    echo $datetime->format('Y/m/d H:i:s') .' - '. $logEntry . "\n";
+}
 // Check if CEIP is enable
 $result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
 if ($row = $result->fetch()) {
@@ -90,7 +96,11 @@ if ($isRemote !== 'yes') {
      * or if at least a Centreon license is valid
      */
     if ($sendStatistics || $hasValidLicenses || $isRemote) {
-        $additional = $oStatistics->getAdditionalData();
+        try{
+            $additional = $oStatistics->getAdditionalData();
+        } catch (Exception $e){
+            echoLog ('Got error while getting additional data', $e);
+        }
     }
 
     // Construct the object gathering datas
@@ -105,8 +115,10 @@ if ($isRemote !== 'yes') {
 
     try {
         $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
-        echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
+        $message = 'Response from ['.CENTREON_STATS_URL.'] : ' . $returnData['statusCode'] . ',body : ' . $returnData['body'];
+        echoLog($message);
+
     } catch (Exception $e) {
-        echo 'Caught exception: ' .  $e->getMessage() . '\n';
+        echoLog('Got error while sending data to ['.CENTREON_STATS_URL.']',$e);
     }
 }
