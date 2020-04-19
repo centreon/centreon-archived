@@ -570,12 +570,15 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $hostName, "a", $fields);
                 }
             }
-            $centreon->user->access->updateACL(array(
-                "type" => 'HOST',
-                'id' => $maxId["MAX(host_id)"],
-                "action" => "DUP",
-                "duplicate_host" => (int)$key
-            ));
+            // if all duplication names are already used, next value is never set
+            if (isset($maxId['MAX(host_id)'])) {
+                $centreon->user->access->updateACL([
+                    'type' => 'HOST',
+                    'id' => $maxId['MAX(host_id)'],
+                    'action' => 'DUP',
+                    'duplicate_host' => (int)$key,
+                ]);
+            }
         }
     }
     CentreonACL::duplicateHostAcl($hostAcl);
