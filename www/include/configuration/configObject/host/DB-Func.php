@@ -666,11 +666,13 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
 # 1 - MC with deletion of existing options (Replacement)
 # 2 - MC with addition of new options (incremental)
 # 3 - Normal update
-    if (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
+    if (
+        isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
         && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]
     ) {
         updateHostNotifOptionInterval($host_id);
-    } elseif (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
+    } elseif (
+        isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
         && !$ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]
     ) {
         updateHostNotifOptionInterval_MC($host_id);
@@ -682,11 +684,13 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
 # 1 - MC with deletion of existing options (Replacement)
 # 2 - MC with addition of new options (incremental)
 # 3 - Normal update, default behavior
-    if (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
+    if (
+        isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
         && $ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]
     ) {
         updateHostNotifOptionFirstNotificationDelay($host_id);
-    } elseif (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
+    } elseif (
+        isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
         && !$ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]
     ) {
         updateHostNotifOptionFirstNotificationDelay_MC($host_id);
@@ -704,11 +708,13 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
 # 1 - MC with deletion of existing options (Replacement)
 # 2 - MC with addition of new options (incremental)
 # 3 - Normal update
-    if (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
+    if (
+        isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
         && $ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]
     ) {
         updateHostNotifOptionTimeperiod($host_id);
-    } elseif (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
+    } elseif (
+        isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
         && !$ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]
     ) {
         updateHostNotifOptionTimeperiod_MC($host_id);
@@ -1005,7 +1011,8 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
         $j = 0;
         foreach ($tplTab as $val) {
             $tplId = getMyHostID($val);
-            if (!isset($already_stored[$tplId])
+            if (
+                !isset($already_stored[$tplId])
                 && $tplId && hasNoInfiniteLoop($host_id['MAX(host_id)'], $tplId) === true
             ) {
                 $rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) 
@@ -1032,7 +1039,8 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
             for ($i = 0; $i <= $my_tab['nbOfMacro']; $i++) {
                 $macInput = "macroInput_" . $i;
                 $macValue = "macroValue_" . $i;
-                if (isset($my_tab[$macInput])
+                if (
+                    isset($my_tab[$macInput])
                     && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]
                 ) {
                     $my_tab[$macInput] = str_replace("\$_HOST", "", $my_tab[$macInput]);
@@ -1049,8 +1057,9 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
                 }
             }
         }
-    } elseif (isset($_REQUEST['macroInput']) &&
-        isset($_REQUEST['macroValue'])
+    } elseif (
+        isset($_REQUEST['macroInput'])
+        && isset($_REQUEST['macroValue'])
     ) {
         $macroDescription = array();
         foreach ($_REQUEST as $nam => $ele) {
@@ -1547,7 +1556,8 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
     /*
      *  Update demand macros
      */
-    if (isset($_REQUEST['macroInput']) &&
+    if (
+        isset($_REQUEST['macroInput']) &&
         isset($_REQUEST['macroValue'])
     ) {
         $macroDescription = array();
@@ -1698,7 +1708,8 @@ function updateHost_MC($host_id = null)
     if (isset($ret["host_recovery_notification_delay "]) && $ret["host_recovery_notification_delay "] != null) {
         $rq .= "host_recovery_notification_delay  = " . $ret["host_recovery_notification_delay "] . ", ";
     }
-    if (isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"])
+    if (
+        isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"])
         && in_array(
             $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"],
             array('0', '1')
@@ -1707,7 +1718,8 @@ function updateHost_MC($host_id = null)
         $rq .= "contact_additive_inheritance = '"
             . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
     }
-    if (isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"])
+    if (
+        isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"])
         && in_array(
             $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"],
             array('0', '1')
