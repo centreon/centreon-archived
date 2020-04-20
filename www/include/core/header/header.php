@@ -152,7 +152,7 @@ if (!$p) {
 
     if ($rootMenu && $rootMenu['topology_url'] && $rootMenu['is_react']) {
         header("Location: .{$rootMenu['topology_url']}");
-    } elseif ($root_menu) {
+    } elseif ($rootMenu) {
         $p = $rootMenu["topology_page"];
         $tab = preg_split("/\=/", $rootMenu["topology_url_opt"]);
 

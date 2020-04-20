@@ -175,7 +175,7 @@ class CentreonHost
         );
         $ppList = array();
         $dbResult = $this->db->query('SELECT `name` FROM modules_informations WHERE `name` = "centreon-pp-manager"');
-        if (!$dbResult->fetch() || true === $this->isAllowed()) {
+        if (empty($dbResult->fetch()) || true === $this->isAllowed()) {
             return $ppList;
         }
         $dbResult = $this->db->query(
@@ -1511,7 +1511,8 @@ class CentreonHost
             'SELECT `name` FROM modules_informations
             WHERE `name` = "centreon-license-manager"'
         );
-        if (!$dbResult->fetch()) {
+
+        if (empty($dbResult->fetch())) {
             return false;
         }
         try {

@@ -55,4 +55,12 @@ interface MonitoringServerServiceInterface
      * @throws MonitoringServerException
      */
     public function findLocalServer(): ?MonitoringServer;
+
+    /**
+     * We notify that the configuration has changed.
+     *
+     * @param MonitoringServer $monitoringServer Monitoring server to notify
+     * @throws MonitoringServerException
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
 }

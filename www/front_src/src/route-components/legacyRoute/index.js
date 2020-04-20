@@ -16,28 +16,9 @@ class LegacyRoute extends Component {
     this.resizeTimeout = null;
 
     this.state = {
-      contentHeight: 0,
       loading: true,
     };
   }
-
-  handleResize = () => {
-    // wait size is the same during 200ms to handle it
-    clearTimeout(this.resizeTimeout);
-
-    if (this.mainContainer) {
-      this.resizeTimeout = setTimeout(() => {
-        const { clientHeight } = this.mainContainer;
-        const { contentHeight } = this.state;
-        if (clientHeight !== contentHeight) {
-          this.setState({
-            loading: false,
-            contentHeight: clientHeight - 30,
-          });
-        }
-      }, 200);
-    }
-  };
 
   handleHref = (event) => {
     const { href } = event.detail;
@@ -54,9 +35,6 @@ class LegacyRoute extends Component {
 
   componentDidMount() {
     this.mainContainer = window.document.getElementById('fullscreen-wrapper');
-
-    // add a listener on global page size
-    window.addEventListener('resize', this.handleResize);
 
     // add event listener to update page url
     window.addEventListener('react.href.update', this.handleHref, false);
@@ -78,8 +56,12 @@ class LegacyRoute extends Component {
     window.removeEventListener('react.href.disconnect', this.handleDisconnect);
   }
 
+  load = () => {
+    this.setState({ loading: false });
+  };
+
   render() {
-    const { contentHeight, loading } = this.state;
+    const { loading } = this.state;
     const {
       history: {
         location: { search, hash },
@@ -104,10 +86,10 @@ class LegacyRoute extends Component {
           id="main-content"
           title="Main Content"
           frameBorder="0"
-          onLoad={this.handleResize}
+          onLoad={this.load}
           scrolling="yes"
           className={classnames({ [styles.hidden]: loading })}
-          style={{ width: '100%', height: `${contentHeight}px` }}
+          style={{ width: '100%', height: '100%' }}
           src={`./main.get.php${params}`}
         />
       </>
