@@ -30,7 +30,7 @@ $isImpUser = false;
 
 $db = $dependencyInjector['configuration_db'];
 
-function echoLog($message, $exception = null){
+function echoLog($message, $exception = null) {
     $datetime = new DateTime();
     $datetime->setTimezone(new DateTimeZone('UTC'));
     $logEntry = is_null($exception) ? $message : $message . ' - ' . $exception;
@@ -119,6 +119,6 @@ if ($isRemote !== 'yes') {
         echoLog($message);
 
     } catch (Exception $e) {
-        echoLog('Got error while sending data to ['.CENTREON_STATS_URL.']', $e);
+        echoLog('Got error while sending data to [' . CENTREON_STATS_URL . ']', $e);
     }
 }
