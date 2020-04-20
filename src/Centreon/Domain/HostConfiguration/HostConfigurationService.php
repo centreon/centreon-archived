@@ -43,7 +43,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      */
     public function addHost(Host $host): int
     {
-        if ($host->getName() === null) {
+        if (empty($host->getName())) {
             throw new HostConfigurationException('Host name can not be empty');
         }
         try {
