@@ -41,6 +41,7 @@ define('STEP_NUMBER', 4);
 
 $_SESSION['step'] = STEP_NUMBER;
 require_once '../steps/functions.php';
+require_once __DIR__ . "/../../../config/centreon.config.php";
 $template = getTemplate('templates');
 
 /*

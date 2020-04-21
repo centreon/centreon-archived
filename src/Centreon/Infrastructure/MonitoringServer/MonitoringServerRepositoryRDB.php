@@ -173,4 +173,26 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
         return null;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void
+    {
+        if ($monitoringServer->getId() !== null) {
+            $request = $this->translateDbName(
+                'UPDATE `:db`.nagios_server SET updated = "1" WHERE id = :server_id'
+            );
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':server_id', $monitoringServer->getId(), \PDO::PARAM_INT);
+            $statement->execute();
+        } elseif ($monitoringServer->getName() !== null) {
+            $request = $this->translateDbName(
+                'UPDATE `:db`.nagios_server SET updated = "1" WHERE name = :server_name'
+            );
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':server_name', $monitoringServer->getName(), \PDO::PARAM_STR);
+            $statement->execute();
+        }
+    }
 }

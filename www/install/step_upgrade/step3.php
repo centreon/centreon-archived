@@ -76,7 +76,7 @@ if ($handle = opendir('../php')) {
 
 $majors = preg_match('/^(\d+\.\d+)/', $next, $matches);
 
-$releaseNoteLink = "https://documentation.centreon.com/" . $matches[1] . '/en/releases/centreon-core.md';
+$releaseNoteLink = "https://documentation.centreon.com/" . $matches[1] . '/en/releases/centreon-core.html';
 
 $title = _('Release notes');
 

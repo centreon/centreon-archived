@@ -356,18 +356,18 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "host_name" ? ($host_name = $value2 = $value2 . "_" . $i) : null;
+                $key2 == "host_name" ? ($hostName = $value2 = $value2 . "_" . $i) : null;
                 $val
                     ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
                 if ($key2 != "host_id") {
                     $fields[$key2] = $value2;
                 }
-                if (isset($host_name)) {
-                    $fields["host_name"] = $host_name;
+                if (isset($hostName)) {
+                    $fields["host_name"] = $hostName;
                 }
             }
-            if (hasHostNameNeverUsed($host_name)) {
+            if (hasHostNameNeverUsed($hostName)) {
                 $val ? $rq = "INSERT INTO host VALUES (" . $val . ")" : $rq = null;
                 $dbResult = $pearDB->query($rq);
                 $dbResult = $pearDB->query("SELECT MAX(host_id) FROM host");
@@ -567,15 +567,18 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                 WHERE host_host_id = '" . (int)$key . "'";
                     $dbResult3 = $pearDB->query($request);
 
-                    $centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
+                    $centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $hostName, "a", $fields);
                 }
             }
-            $centreon->user->access->updateACL(array(
-                "type" => 'HOST',
-                'id' => $maxId["MAX(host_id)"],
-                "action" => "DUP",
-                "duplicate_host" => (int)$key
-            ));
+            // if all duplication names are already used, next value is never set
+            if (isset($maxId['MAX(host_id)'])) {
+                $centreon->user->access->updateACL([
+                    'type' => 'HOST',
+                    'id' => $maxId['MAX(host_id)'],
+                    'action' => 'DUP',
+                    'duplicate_host' => (int)$key,
+                ]);
+            }
         }
     }
     CentreonACL::duplicateHostAcl($hostAcl);
