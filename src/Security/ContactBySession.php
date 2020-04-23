@@ -122,6 +122,11 @@ class ContactBySession extends Contact
         return $this->contact->getUsername();
     }
 
+    /**
+     * contact timezone getter
+     *
+     * @return \DateTimeZone
+     */
     public function getTimezone(): \DateTimeZone
     {
         return $this->contact->getTimezone();
