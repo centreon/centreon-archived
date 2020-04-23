@@ -49,7 +49,7 @@ class EntityCreator
     /**
      * @var Contact
      */
-    static private $contact;
+    private static $contact;
 
     /**
      * Create a new object entity based on the given values.
@@ -67,9 +67,14 @@ class EntityCreator
         return (new self($className))->createByArray($data, $prefix);
     }
 
+    /**
+     * Set contact
+     *
+     * @param Contact $contact The contact
+     */
     public static function setContact(Contact $contact): void
     {
-        self::$contact = $contact;
+        static::$contact = $contact;
     }
 
     /**

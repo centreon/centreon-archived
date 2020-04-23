@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,7 +112,7 @@ class Contact implements UserInterface, ContactInterface
     private $topologyRulesNames = [];
 
     /**
-     * @var \DateTimeZone|null $timezone timezone of the user
+     * @var \DateTimeZone $timezone timezone of the user
      */
     private $timezone;
 
@@ -470,10 +471,11 @@ class Contact implements UserInterface, ContactInterface
     /**
      * timezone getter
      *
-     * @return \DateTimeZone|null
+     * @return \DateTimeZone
      */
     public function getTimezone(): \DateTimeZone
     {
+        //var_dump($this);
         return $this->timezone;
     }
 }

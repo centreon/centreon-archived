@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -379,9 +380,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param RequestEvent $event
+     * Set contact if he is logged in
      */
-    public function initEntityCreator(RequestEvent $event)
+    public function initEntityCreator()
     {
         if ($this->container->has('security.token_storage')) {
             if (null !== $token = $this->container->get('security.token_storage')->getToken()) {

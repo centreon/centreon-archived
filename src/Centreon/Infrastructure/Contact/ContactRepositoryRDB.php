@@ -288,6 +288,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $contactTimezoneName = !empty($contact['timezone_name'])
           ? $contact['timezone_name']
           : date_default_timezone_get();
+
         return (new Contact())
             ->setId((int) $contact['contact_id'])
             ->setName($contact['contact_name'])
