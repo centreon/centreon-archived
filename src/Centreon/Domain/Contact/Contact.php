@@ -475,7 +475,6 @@ class Contact implements UserInterface, ContactInterface
      */
     public function getTimezone(): \DateTimeZone
     {
-        //var_dump($this);
         return $this->timezone;
     }
 }
