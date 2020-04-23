@@ -148,7 +148,7 @@ unset($centreon->optGen);
 $centreon->initOptGen($pearDB);
 
 if (!$p) {
-    $rootMenu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
+    $rootMenu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr, $centreon->user->default_page);
 
     if ($rootMenu && $rootMenu['topology_url'] && $rootMenu['is_react']) {
         header("Location: .{$rootMenu['topology_url']}");
