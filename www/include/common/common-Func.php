@@ -2212,7 +2212,14 @@ function cleanString($str)
 
 // Global Function
 
-function get_my_first_allowed_root_menu($lcaTStr, $defautPage = null)
+/**
+ * get first menu entry allowed to a given user
+ *
+ * @param string $lcaTStr Allowed topology pages separated by comma
+ * @param int $defautPage User default page
+ * @return array The topology information (url, options, name...)
+ */
+function getFirstAllowedMenu($lcaTStr, $defautPage = null)
 {
     global $pearDB;
 
