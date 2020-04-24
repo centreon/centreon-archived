@@ -97,7 +97,7 @@ if (!$service_id) {
         AND end_time > UNIX_TIMESTAMP(NOW())
         ORDER BY actual_start_time'
     );
-    $res->bindValue(':$hostId', $hostId, \PDO::PARAM_INT);
+    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
     $res->execute();
 } else {
     $res = $dbb->prepare(
