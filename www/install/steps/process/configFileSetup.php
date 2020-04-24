@@ -47,6 +47,7 @@ $return = [
 $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
 $configuration = $step->getBaseConfiguration();
+$engine = $step->getEngineConfiguration();
 
 if ($parameters['address']) {
     $host = $parameters['address'];
@@ -77,7 +78,7 @@ $replacements = [
     $configuration['centreon_dir'],
     $configuration['centreon_cachedir'],
     $parameters['port'],
-    "central",
+    'central',
     $configuration['centreon_varlib'],
 ];
 
@@ -106,16 +107,20 @@ array_push(
     '/--HTTPSERVERADDRESS--/',
     '/--HTTPSERVERPORT--/',
     '/--SSLMODE--/',
-    '/--CENTREON_TRAPDIR--/'
+    '/--CENTREON_TRAPDIR--/',
+    '/--ENGINE_COMMAND--/',
+    '/--GORGONE_VARLIB--/'
 );
 
 array_push(
     $replacements,
-    "/var/spool/centreon",
-    "0.0.0.0",
-    "8085",
-    "false",
-    "/etc/snmp/centreon_traps"
+    '/var/spool/centreon',
+    '0.0.0.0',
+    '8085',
+    'false',
+    '/etc/snmp/centreon_traps',
+    '/var/lib/centreon-gorgone',
+    $engine['monitoring_var_lib'] . '/rw/centengine.cmd'
 );
 
 /**
