@@ -42,7 +42,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     public const VALIDATION_GROUPS_ADD_HOST_ACKS = ['Default', 'add_host_acks'];
     public const VALIDATION_GROUPS_ADD_SERVICE_ACKS = ['Default', 'add_service_acks'];
     public const VALIDATION_GROUPS_ADD_HOST_ACK = ['Default', 'add_host_ack'];
-    public const VALIDATION_GROUPS_ADD_SERVICE_ACK = ['Default', 'add_service_ack'];
+    public const VALIDATION_GROUPS_ADD_SERVICE_ACK = ['Default'];
 
     /**
      * @var AcknowledgementRepositoryInterface
