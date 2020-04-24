@@ -108,8 +108,8 @@ array_push(
     '/--HTTPSERVERPORT--/',
     '/--SSLMODE--/',
     '/--CENTREON_TRAPDIR--/',
-    '/--ENGINE_COMMAND--/',
-    '/--GORGONE_VARLIB--/'
+    '/--GORGONE_VARLIB--/',
+    '/--ENGINE_COMMAND--/'
 );
 
 array_push(

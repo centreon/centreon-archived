@@ -45,7 +45,7 @@ try {
     );
     $engineCommand = $res->fetch()['command_file'];
 
-    // set default values used by gorgone
+    // set macro keys
     $pattern = [
         '/--ADDRESS--/',
         '/--DBPORT--/',
@@ -59,8 +59,9 @@ try {
         '/--HTTPSERVERADDRESS--/',
         '/--HTTPSERVERPORT--/',
         '/--SSLMODE--/',
-        '/--ENGINE_COMMAND--/',
-        '/--GORGONE_VARLIB--/'
+        '/--GORGONE_VARLIB--/',
+        '/--ENGINE_COMMAND--/'
+
     ];
 
     // set default values for these parameters
@@ -92,7 +93,7 @@ try {
     function returnFinalFileName(string $destinationFile)
     {
         if (file_exists($destinationFile)) {
-            $destinationFile .= 'new';
+            $destinationFile .= '.new';
         }
 
         return $destinationFile;
@@ -129,7 +130,7 @@ try {
     $destinationFolder = _CENTREON_ETC_ . '/../centreon-gorgone';
     $destinationFile = returnFinalFileName($destinationFolder . '/config.d/40-gorgoned.yaml');
 
-    // checking if mandatory /etc/centreon-gorgone and sub-folders already exists
+    // checking if mandatory /etc/centreon-gorgone and sub-folder already exists
     if (!file_exists($destinationFolder) || !file_exists($destinationFolder . '/config.d')) {
         $errorMessage = 'Gorgone configuration folder does not exist. ' .
             'Please reinstall the centreon-gorgone package and retry';
