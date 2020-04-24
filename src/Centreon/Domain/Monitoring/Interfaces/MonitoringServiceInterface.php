@@ -23,12 +23,15 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
+use Centreon\Domain\HostConfiguration\HostConfigurationException;
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
-use Centreon\Domain\Monitoring\Model\BaseTimelineEvent;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Monitoring\TimelineEvent;
+use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
 interface MonitoringServiceInterface extends ContactFilterInterface
 {
@@ -134,4 +137,16 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function findTimelineEvents(int $hostid, int $serviceId): array;
+
+    /**
+     * Try to hide all macro password values of the command line.
+     *
+     * @param Service $monitoringService Monitoring service
+     * @param string $replacementValue Replacement value used instead of macro password value
+     * @throws HostConfigurationException
+     * @throws MonitoringServiceException
+     * @throws RepositoryException
+     * @throws ServiceConfigurationException
+     */
+    public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void;
 }

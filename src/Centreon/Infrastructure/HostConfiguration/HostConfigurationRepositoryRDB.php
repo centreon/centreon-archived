@@ -28,6 +28,7 @@ use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -243,48 +244,52 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     public function findHost(int $hostId): ?Host
     {
-        $request = $this->translateDbName(
-            'SELECT host.host_id, host.host_name, host.host_alias, host.display_name AS host_display_name,
-            host.host_address AS host_ip_address, host.host_comment, host.geo_coords AS host_geo_coords,
-            host.host_activate AS host_is_activate, nagios.id AS monitoring_server_id,
-            nagios.name AS monitoring_server_name, ext.*
-            FROM `:db`.host host
-            LEFT JOIN `centreon`.extended_host_information ext
-                ON ext.host_host_id = host.host_id
-            INNER JOIN `centreon`.ns_host_relation host_server
-                ON host_server.host_host_id = host.host_id
-            INNER JOIN `centreon`.nagios_server nagios
-                ON nagios.id = host_server.nagios_server_id 
-            WHERE host.host_id = :host_id
-            AND host.host_register = \'1\''
-        );
-        $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->execute();
-
-        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            /**
-             * @var Host $host
-             */
-            $host = EntityCreator::createEntityByArray(Host::class, $record, 'host_');
-            /**
-             * @var ExtendedHost $extendedHost
-             */
-            $extendedHost = EntityCreator::createEntityByArray(ExtendedHost::class, $record, 'ehi_');
-            $host->setExtendedHost($extendedHost);
-            /**
-             * @var MonitoringServer $monitoringServer
-             */
-            $monitoringServer = EntityCreator::createEntityByArray(
-                MonitoringServer::class,
-                $record,
-                'monitoring_server_'
+        try {
+            $request = $this->translateDbName(
+                'SELECT host.host_id, host.host_name, host.host_alias, host.display_name AS host_display_name,
+                host.host_address AS host_ip_address, host.host_comment, host.geo_coords AS host_geo_coords,
+                host.host_activate AS host_is_activate, nagios.id AS monitoring_server_id,
+                nagios.name AS monitoring_server_name, ext.*
+                FROM `:db`.host host
+                LEFT JOIN `centreon`.extended_host_information ext
+                    ON ext.host_host_id = host.host_id
+                INNER JOIN `centreon`.ns_host_relation host_server
+                    ON host_server.host_host_id = host.host_id
+                INNER JOIN `centreon`.nagios_server nagios
+                    ON nagios.id = host_server.nagios_server_id 
+                WHERE host.host_id = :host_id
+                AND host.host_register = \'1\''
             );
-            $host->setMonitoringServer($monitoringServer);
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+            $statement->execute();
 
-            return $host;
+            if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                /**
+                 * @var Host $host
+                 */
+                $host = EntityCreator::createEntityByArray(Host::class, $record, 'host_');
+                /**
+                 * @var ExtendedHost $extendedHost
+                 */
+                $extendedHost = EntityCreator::createEntityByArray(ExtendedHost::class, $record, 'ehi_');
+                $host->setExtendedHost($extendedHost);
+                /**
+                 * @var MonitoringServer $monitoringServer
+                 */
+                $monitoringServer = EntityCreator::createEntityByArray(
+                    MonitoringServer::class,
+                    $record,
+                    'monitoring_server_'
+                );
+                $host->setMonitoringServer($monitoringServer);
+
+                return $host;
+            }
+            return null;
+        } catch (\Throwable $ex) {
+            throw new RepositoryException('Error while searching for the host', 0, $ex);
         }
-        return null;
     }
 
     /**
@@ -314,5 +319,37 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             return ((int) $result) > 0;
         }
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOnDemandHostMacros(int $hostId): array
+    {
+        try {
+            $request = $this->translateDbName('
+            SELECT host_macro_id AS id, host_macro_name AS name, host_macro_value AS `value`, macro_order AS `order`,
+            CASE 
+                WHEN is_password IS NULL THEN \'0\'
+                ELSE is_password
+            END is_password, description
+            FROM `:db`.on_demand_macro_host
+            WHERE host_host_id = :host_id
+        ');
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $hostMacros = [];
+            while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                $hostMacros[] = EntityCreator::createEntityByArray(
+                    HostMacro::class,
+                    $record
+                );
+            }
+            return $hostMacros;
+        } catch (\Throwable $ex) {
+            throw new RepositoryException('Error while searching for the on-demand host macros', 0, $ex);
+        }
     }
 }

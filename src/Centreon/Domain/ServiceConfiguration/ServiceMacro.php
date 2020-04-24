@@ -20,11 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration;
+namespace Centreon\Domain\ServiceConfiguration;
 
-use Centreon\Domain\Annotation\EntityDescriptor;
-
-class HostMacro
+class ServiceMacro
 {
     /**
      * @var int|null
@@ -43,7 +41,6 @@ class HostMacro
 
     /**
      * @var bool Indicates whether this macro contains a password
-     * @EntityDescriptor(column="is_password", modifier="setPassword")
      */
     private $isPassword = false;
 
@@ -67,9 +64,9 @@ class HostMacro
 
     /**
      * @param int|null $id
-     * @return HostMacro
+     * @return ServiceMacro
      */
-    public function setId(?int $id): HostMacro
+    public function setId(?int $id): ServiceMacro
     {
         $this->id = $id;
         return $this;
@@ -85,13 +82,14 @@ class HostMacro
 
     /**
      * @param string|null $name
-     * @return HostMacro
+     * @return ServiceMacro
      */
-    public function setName(?string $name): HostMacro
+    public function setName(?string $name): ServiceMacro
     {
+        $patternToBeFound = '$_SERVICE';
         if ($name !== null) {
-            if (strpos($name, '$_HOST') !== 0) {
-                $name = '$_HOST' . $name;
+            if (strpos($name, $patternToBeFound) !== 0) {
+                $name = $patternToBeFound . $name;
                 if ($name[-1] !== '$') {
                     $name .= '$';
                 }
@@ -113,9 +111,9 @@ class HostMacro
 
     /**
      * @param string|null $value
-     * @return HostMacro
+     * @return ServiceMacro
      */
-    public function setValue(?string $value): HostMacro
+    public function setValue(?string $value): ServiceMacro
     {
         $this->value = $value;
         return $this;
@@ -131,9 +129,9 @@ class HostMacro
 
     /**
      * @param bool $isPassword
-     * @return HostMacro
+     * @return ServiceMacro
      */
-    public function setPassword(bool $isPassword): HostMacro
+    public function setPassword(bool $isPassword): ServiceMacro
     {
         $this->isPassword = $isPassword;
         return $this;
@@ -149,9 +147,9 @@ class HostMacro
 
     /**
      * @param string|null $description
-     * @return HostMacro
+     * @return ServiceMacro
      */
-    public function setDescription(?string $description): HostMacro
+    public function setDescription(?string $description): ServiceMacro
     {
         $this->description = $description;
         return $this;
@@ -167,9 +165,9 @@ class HostMacro
 
     /**
      * @param int|null $order
-     * @return HostMacro
+     * @return ServiceMacro
      */
-    public function setOrder(?int $order): HostMacro
+    public function setOrder(?int $order): ServiceMacro
     {
         $this->order = $order;
         return $this;

@@ -85,4 +85,34 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             throw new HostConfigurationException('Error while searching for the number of host', 0, $ex);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOnDemandHostMacros(int $hostId): array
+    {
+        try {
+            return $this->hostConfigurationRepository->findOnDemandHostMacros($hostId);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException('', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostMacrosPassword(int $hostId, string $command): array
+    {
+        $hostMacrosPassword = [];
+        // If contains on-demand host macros
+        if (strpos($command, '$_HOST') !== false) {
+            $onDemandHostMacros = $this->findOnDemandHostMacros($hostId);
+            foreach ($onDemandHostMacros as $hostMacro) {
+                if ($hostMacro->isPassword()) {
+                    $hostMacrosPassword[] = $hostMacro;
+                }
+            }
+        }
+        return $hostMacrosPassword;
+    }
 }
