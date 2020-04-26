@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,6 +38,9 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
@@ -53,6 +57,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
@@ -116,7 +121,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         return [
             KernelEvents::REQUEST => [
                 ['initRequestParameters', 9],
-                ['defineApiVersionInAttributes', 33]
+                ['defineApiVersionInAttributes', 33],
+                ['initEntityCreator', 7]
             ],
             KernelEvents::RESPONSE => [
                 ['addApiVersion', 10]
@@ -370,6 +376,20 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             $event->setResponse(
                 new Response($errorMessage, $httpCode)
             );
+        }
+    }
+
+    /**
+     * Set contact if he is logged in
+     */
+    public function initEntityCreator()
+    {
+        if ($this->container->has('security.token_storage')) {
+            if (null !== $token = $this->container->get('security.token_storage')->getToken()) {
+                if (is_object($user = $token->getUser())) {
+                    EntityCreator::setContact($user);
+                }
+            }
         }
     }
 }
