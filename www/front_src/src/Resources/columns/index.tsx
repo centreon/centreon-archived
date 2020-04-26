@@ -30,11 +30,13 @@ import ActionButton from '../ActionButton';
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
     padding: theme.spacing(0, 0.5),
+    display: 'flex',
+    flexWrap: 'nowrap',
+    alignItems: 'center',
   },
   resourceNameItem: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    whiteSpace: 'nowrap',
   },
   extraSmallChipContainer: {
     height: 16,
@@ -159,43 +161,40 @@ const ResourceColumn = ({ row }: ColumnProps): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Grid container spacing={0} className={classes.resourceDetailsCell}>
-      <Grid item>
-        {row.icon ? (
-          <img src={row.icon.url} alt={row.icon.name} width={16} height={16} />
-        ) : (
-          <StatusChip
-            label={row.short_type}
-            severityCode={SeverityCode.None}
-            classes={{
-              root: classes.extraSmallChipContainer,
-              label: classes.smallChipLabel,
-            }}
-          />
-        )}
-      </Grid>
-      <Grid item className={classes.resourceNameItem}>
+    <div className={classes.resourceDetailsCell}>
+      {row.icon ? (
+        <img src={row.icon.url} alt={row.icon.name} width={16} height={16} />
+      ) : (
+        <StatusChip
+          label={row.short_type}
+          severityCode={SeverityCode.None}
+          classes={{
+            root: classes.extraSmallChipContainer,
+            label: classes.smallChipLabel,
+          }}
+        />
+      )}
+      <div className={classes.resourceNameItem}>
         <Typography variant="body2">{row.name}</Typography>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 
 const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
+  const classes = useStyles();
+
   if (!row.parent) {
     return null;
   }
 
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={1} />
-      <Grid item>
-        <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
-      </Grid>
-      <Grid item>
+    <div className={classes.resourceDetailsCell}>
+      <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
+      <div className={classes.resourceNameItem}>
         <Typography variant="body2">{row.parent.name}</Typography>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 
