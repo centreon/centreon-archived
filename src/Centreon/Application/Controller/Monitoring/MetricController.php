@@ -28,7 +28,6 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use DateTimeZone;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\View\View;
 
@@ -95,10 +94,10 @@ class MetricController extends AbstractController
      * convert timestamp to DateTime
      *
      * @param integer $timestamp
-     * @param DateTimeZone $timezone
+     * @param \DateTimeZone $timezone
      * @return \DateTime
      */
-    private function formatTimestampToDateTime(int $timestamp, DateTimeZone $timezone): \DateTime
+    private function formatTimestampToDateTime(int $timestamp, \DateTimeZone $timezone): \DateTime
     {
         return (new \DateTime())
             ->setTimestamp($timestamp)
