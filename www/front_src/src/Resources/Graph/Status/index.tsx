@@ -9,7 +9,8 @@ import { getStatusColors } from '@centreon/ui';
 
 import useGet from '../../useGet';
 import getTimeSeries from './timeSeries';
-import { formatTo, timeFormat } from '../format';
+import { timeFormat } from '../format';
+import { parseAndFormat } from '../../dateTime';
 import { GraphData } from './models';
 
 const LoadingSkeleton = (): JSX.Element => {
@@ -45,7 +46,7 @@ const StatusGraph = ({
   const timeSeries = getTimeSeries(graphData);
 
   const formatToxAxisTickFormat = (tick): string =>
-    formatTo({ time: tick, to: xAxisTickFormat });
+    parseAndFormat({ isoDate: tick, to: xAxisTickFormat });
 
   return (
     <ResponsiveContainer>
