@@ -33,7 +33,7 @@ const StatusGraph = ({
   });
 
   React.useEffect(() => {
-    sendRequest().then(setGraphData);
+    sendRequest(endpoint).then(setGraphData);
   }, [endpoint]);
 
   if (graphData === undefined) {
