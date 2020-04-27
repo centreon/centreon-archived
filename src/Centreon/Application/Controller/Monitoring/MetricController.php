@@ -28,6 +28,7 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use DateTimeZone;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\View\View;
 
@@ -88,6 +89,42 @@ class MetricController extends AbstractController
         $service->setHost($host);
 
         return $service;
+    }
+
+    /**
+     * convert timestamp to DateTime
+     *
+     * @param integer $timestamp
+     * @param DateTimeZone $timezone
+     * @return \DateTime
+     */
+    private function formatTimestampToDateTime(int $timestamp, DateTimeZone $timezone): \DateTime
+    {
+        return (new \DateTime())
+            ->setTimestamp($timestamp)
+            ->setTimezone($timezone);
+    }
+
+    /**
+     * Normalize dates (from timestamp to DateTime using timezone)
+     *
+     * @param array $metrics
+     * @return array The normalized metrics
+     */
+    private function normalizePerformanceMetricsDates(array $metrics): array
+    {
+        $timezone = $this->getUser()->getTimezone();
+
+        $metrics['global']['start'] = $this->formatTimestampToDateTime((int) $metrics['global']['start'], $timezone);
+
+        $metrics['global']['end'] = $this->formatTimestampToDateTime((int) $metrics['global']['end'], $timezone);
+
+        // Normalize ticks
+        foreach ($metrics['times'] as $index => $timestamp) {
+            $metrics['times'][$index] = $this->formatTimestampToDateTime((int) $timestamp, $timezone);
+        }
+
+        return $metrics;
     }
 
     /**
@@ -212,11 +249,7 @@ class MetricController extends AbstractController
             ->filterByContact($contact)
             ->findMetricsByService($service, $start, $end);
 
-        foreach ($metrics['times'] as &$time) {
-            $time = (new \DateTime())
-                ->setTimestamp((int) $time)
-                ->setTimezone($contact->getTimezone());
-        }
+        $metrics = $this->normalizePerformanceMetricsDates($metrics);
 
         return $this->view($metrics);
     }
