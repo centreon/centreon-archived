@@ -28,14 +28,12 @@ const StatusGraph = ({
 
   const [graphData, setGraphData] = React.useState<GraphData>();
 
-  const { sendRequest } = useRequest({
+  const { sendRequest } = useRequest<GraphData>({
     request: getData,
   });
 
   React.useEffect(() => {
-    sendRequest().then((retrievedGraphData) =>
-      setGraphData(retrievedGraphData),
-    );
+    sendRequest().then(setGraphData);
   }, [endpoint]);
 
   if (graphData === undefined) {
