@@ -6,13 +6,7 @@ import { isNil, equals } from 'ramda';
 
 import { makeStyles, useTheme, Grid, Slide, fade } from '@material-ui/core';
 
-import {
-  Listing,
-  withSnackbar,
-  useSnackbar,
-  Severity,
-  RowColorCondition,
-} from '@centreon/ui';
+import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
 import { listResources } from './api';
 import { ResourceListing, Resource, ResourceEndpoints } from './models';
