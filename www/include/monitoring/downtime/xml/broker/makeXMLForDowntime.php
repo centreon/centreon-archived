@@ -34,15 +34,15 @@
  *
  */
 
-require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
-include_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
-include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+require_once realpath(__DIR__ . '/../../../../../../config/centreon.config.php');
+include_once _CENTREON_PATH_ . 'www/class/centreonDuration.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonXML.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
+include_once _CENTREON_PATH_ . 'www/include/common/common-Func.php';
 
 session_start();
 session_write_close();
@@ -50,15 +50,13 @@ session_write_close();
 $oreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();
-$pearDB = $db;
 $dbb = new CentreonDB("centstorage");
 
-$centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
-$centreonlang->bindLang();
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $oreon);
+$centreonLang->bindLang();
 $sid = session_id();
 if (isset($sid)) {
-    //$sid = $_GET["sid"];
-    $res = $db->prepare("SELECT * FROM session WHERE session_id = :id");
+    $res = $db->prepare('SELECT * FROM session WHERE session_id = :id');
     $res->bindValue(':id', $sid, \PDO::PARAM_STR);
     $res->execute();
     if (!$session = $res->fetch()) {
@@ -68,21 +66,18 @@ if (isset($sid)) {
     get_error('need session id !');
 }
 
-$host_id = (int)($_GET['hid'] ?? 0);
-$service_id = (int)($_GET["svc_id"] ?? 0);
+//check that $_GET['id'] is set, if not assign 0.
+// If a string is sent to host_id, return id 0 instead of false;
+$hostId = filter_var($_GET['hid'] ?? 0, FILTER_VALIDATE_INT) ?: 0;
+$svcId = filter_var($_GET['svc_id'] ?? 0, FILTER_VALIDATE_INT);
 
-/*
- * Init GMT class
- */
-$centreonGMT = new CentreonGMT($pearDB);
-$centreonGMT->getMyGMTFromSession($sid, $pearDB);
+// Init GMT class
+$centreonGMT = new CentreonGMT($db);
+$centreonGMT->getMyGMTFromSession($sid, $db);
 
-/**
- * Start Buffer
- */
+// Start Buffer
 $xml = new CentreonXML();
 $xml->startElement("response");
-
 $xml->startElement("label");
 $xml->writeElement('author', _('Author'));
 $xml->writeElement('fixed', _('Fixed'));
@@ -91,30 +86,35 @@ $xml->writeElement('end', _('End Time'));
 $xml->writeElement('comment', _('Comment'));
 $xml->endElement();
 
-/**
- * Retrieve info
- */
+// Retrieve info
 if (!$service_id) {
-    $query = "SELECT author, actual_start_time , end_time, comment_data, duration, fixed " .
-        "FROM downtimes " .
-        "WHERE host_id = ? " .
-        "AND service_id IS NULL " .
-        "AND cancelled = 0 " .
-        "AND end_time > UNIX_TIMESTAMP(NOW()) " .
-        "ORDER BY actual_start_time";
-    $stmt = $dbb->prepare($query);
-    $dbb->execute($stmt, array($dbb->escape($host_id)));
+    $res = $dbb->prepare(
+        'SELECT author, actual_start_time , end_time, comment_data, duration, fixed
+        FROM downtimes
+        WHERE host_id = :hostId
+        AND type = 2
+        AND cancelled = 0
+        AND end_time > UNIX_TIMESTAMP(NOW())
+        ORDER BY actual_start_time'
+    );
+    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+    $res->execute();
 } else {
-    $query = "SELECT author, actual_start_time, end_time, comment_data, duration, fixed " .
-        "FROM downtimes " .
-        "WHERE host_id = ? " .
-        "AND service_id = ? " .
-        "AND cancelled = 0 " .
-        "AND end_time > UNIX_TIMESTAMP(NOW()) " .
-        "ORDER BY actual_start_time";
-    $stmt = $dbb->prepare($query);
-    $dbb->execute($stmt, array($dbb->escape($host_id), $dbb->escape($service_id)));
+    $res = $dbb->prepare(
+        'SELECT author, actual_start_time, end_time, comment_data, duration, fixed
+        FROM downtimes
+        WHERE host_id = :hostId
+        AND service_id = :svcId
+        AND type = 1
+        AND cancelled = 0
+        AND end_time > UNIX_TIMESTAMP(NOW())
+        ORDER BY actual_start_time'
+    );
+    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+    $res->bindValue(':svcId', $svcId, \PDO::PARAM_INT);
+    $res->execute();
 }
+
 $rowClass = "list_one";
 while ($row = $stmt->fetch()) {
     $row['comment_data'] = strip_tags($row['comment_data']);
@@ -130,17 +130,13 @@ while ($row = $stmt->fetch()) {
     $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
     $xml->writeElement('fixed', $row['fixed'] ? _('Yes') : _('No'));
     $xml->endElement();
-    $rowClass == "list_one" ? $rowClass = "list_two" : $rowClass = "list_one";
+    $rowClass == 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
 }
 
-/*
- * End buffer
- */
+// End buffer
 $xml->endElement();
 header('Content-type: text/xml; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
 
-/*
- * Print Buffer
- */
+// Print Buffer
 $xml->output();
