@@ -39,8 +39,6 @@ use PHPUnit\Framework\TestCase;
 
 class MetricControllerTest extends TestCase
 {
-    protected $adminContact;
-
     protected $host;
     protected $service;
 
@@ -57,11 +55,6 @@ class MetricControllerTest extends TestCase
 
     protected function setUp()
     {
-        $this->adminContact = (new Contact())
-            ->setId(1)
-            ->setName('admin')
-            ->setAdmin(true);
-
         $this->host = (new Host())
             ->setId(1);
 
