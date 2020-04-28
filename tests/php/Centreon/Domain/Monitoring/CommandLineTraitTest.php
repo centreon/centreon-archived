@@ -31,7 +31,7 @@ class CommandLineTraitTest extends TestCase
 {
     use CommandLineTrait;
 
-    public function testExplodeSpacesButKeepValuesByMacro()
+    public function testExplodeSpacesButKeepValuesByMacro(): void
     {
         $hostMacro1 = (new HostMacro())->setName('VALUE1')->setValue('value  1');
         $hostMacro2 = (new HostMacro())->setName('VALUE2')->setValue('value2');
