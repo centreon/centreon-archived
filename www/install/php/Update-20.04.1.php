@@ -148,7 +148,7 @@ try {
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . (int)$e->getCode() .
+        " - Code : " . $e->getCode() .
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
     );
