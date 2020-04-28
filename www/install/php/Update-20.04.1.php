@@ -46,9 +46,9 @@ try {
     $engineCommand = $res->fetch()['command_file'];
 
     // escape double quotes and backslashes
-    $pattern = ['\\', '"'];
+    $needle = ['\\', '"'];
     $replacement = ['\\\\', '\"'];
-    $password = str_replace($pattern, $replacement, password);
+    $password = str_replace($needle, $replacement, password);
 
     // set macro keys
     $pattern = [

@@ -70,9 +70,9 @@ $patterns = [
 ];
 
 // escape double quotes and backslashes
-$pattern = ['\\', '"'];
+$needle = ['\\', '"'];
 $replacement = ['\\\\', '\"'];
-$password = str_replace($pattern, $replacement, $parameters['db_password']);
+$password = str_replace($needle, $replacement, $parameters['db_password']);
 
 $replacements = [
     $host,
