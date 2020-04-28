@@ -6,7 +6,7 @@
     },
     {
       "path": "www/static/**/vendors*.js",
-      "maxSize": "2.5 MB"
+      "maxSize": "2500 kB"
     }
   ]
 }
