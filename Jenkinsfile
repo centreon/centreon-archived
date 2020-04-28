@@ -32,6 +32,7 @@ stage('Source') {
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
+    env.COMMIT = "${source.COMMIT}"
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'api-doc', includes: 'centreon-api-v2.html'
