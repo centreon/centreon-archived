@@ -1,14 +1,13 @@
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
+import moment from 'moment';
 
 const parseAndFormat = ({ isoDate, to }): string =>
-  format(parseISO(isoDate), to);
+  moment.parseZone(isoDate).format(to);
 
 const getFormattedDateTime = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'MM/dd/yyyy HH:mm' });
+  parseAndFormat({ isoDate, to: 'MM/DD/YYYY HH:mm' });
 
 const getFormattedDate = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'MM/dd/yyyy' });
+  parseAndFormat({ isoDate, to: 'MM/DD/YYYY' });
 
 const getFormattedTime = (isoDate): string =>
   parseAndFormat({ isoDate, to: 'HH:mm' });
