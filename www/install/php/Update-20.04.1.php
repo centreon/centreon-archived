@@ -152,5 +152,5 @@ try {
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
     );
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, $e->getCode(), $e);
 }
