@@ -19,6 +19,9 @@
  *
  */
 
+// get current configuration data
+require_once __DIR__ . '/../../../config/centreon.config.php';
+
 include_once __DIR__ . '/../../class/centreonLog.class.php';
 $centreonLog = new CentreonLog();
 
@@ -33,9 +36,6 @@ try {
     /*
      * Get user data to generate a new config file for the gorgone daemon module
      */
-
-    // get current configuration data
-    require_once __DIR__ . '/../../../config/centreon.config.php';
 
     // get engine command
     $res = $pearDB->query(
