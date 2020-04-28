@@ -132,7 +132,7 @@ try {
     $destinationFolder = _CENTREON_ETC_ . '/../centreon-gorgone';
     $destinationFile = returnFinalFileName($destinationFolder . '/config.d/40-gorgoned.yaml');
 
-    // checking if mandatory /etc/centreon-gorgone and sub-folder already exists
+    // checking if mandatory centreon-gorgone configuration sub-folder already exists
     if (!file_exists($destinationFolder . '/config.d')) {
         $errorMessage = 'Gorgone configuration folder does not exist. ' .
             'Please reinstall the centreon-gorgone package and retry';
