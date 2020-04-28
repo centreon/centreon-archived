@@ -101,7 +101,7 @@ interface ContactInterface
     /**
      * Contact locale.
      *
-     * @return string
+     * @return string|null
      */
-    public function getLocale(): string;
+    public function getLocale(): ?string;
 }

@@ -135,9 +135,9 @@ class ContactBySession extends Contact
     /**
      * contact locale getter
      *
-     * @return string
+     * @return string|null
      */
-    public function getLocale(): string
+    public function getLocale(): ?string
     {
         return $this->contact->getLocale();
     }

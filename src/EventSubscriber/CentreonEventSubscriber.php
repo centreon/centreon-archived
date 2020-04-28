@@ -54,6 +54,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
@@ -96,15 +97,23 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     private $requestParameters;
 
     /**
+     * @var Security
+     */
+    private $security;
+
+    /**
      * @param RequestParametersInterface $requestParameters
      * @param ContainerInterface $container
+     * @param Security $security
      */
     public function __construct(
         RequestParametersInterface $requestParameters,
-        ContainerInterface $container
+        ContainerInterface $container,
+        Security $security
     ) {
         $this->container = $container;
         $this->requestParameters = $requestParameters;
+        $this->security = $security;
     }
 
     /**
@@ -380,13 +389,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      */
     public function initUser()
     {
-        if ($this->container->has('security.token_storage')) {
-            if (null !== $token = $this->container->get('security.token_storage')->getToken()) {
-                if (is_object($user = $token->getUser())) {
-                    EntityCreator::setContact($user);
-                    $this->initLanguage($user);
-                }
-            }
+        if ($user = $this->security->getUser()) {
+            EntityCreator::setContact($user);
+            $this->initLanguage($user);
         }
     }
 
@@ -398,12 +403,29 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      */
     private function initLanguage(Contact $user)
     {
-        $lang = $user->getLocale() . '.' . Contact::DEFAULT_CHARSET;
+        $locale = $user->getLocale() ?? $this->getBrowserLocale();
+        $lang = $locale . '.' . Contact::DEFAULT_CHARSET;
 
         putenv('LANG=' . $lang);
         setlocale(LC_ALL, $lang);
         bindtextdomain('messages', __DIR__ . '/../../www/locale');
         bind_textdomain_codeset('messages', Contact::DEFAULT_CHARSET);
         textdomain('messages');
+    }
+
+    /**
+     * Get browser locale if set in http header
+     *
+     * @return string The browser locale
+     */
+    private function getBrowserLocale(): string
+    {
+        $locale = Contact::DEFAULT_LOCALE;
+
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $locale = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        }
+
+        return $locale;
     }
 }

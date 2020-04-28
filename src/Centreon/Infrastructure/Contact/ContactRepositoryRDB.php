@@ -295,22 +295,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     }
 
     /**
-     * Get browser locale if set in http header
-     *
-     * @return string The browser locale
-     */
-    private function getBrowserLocale(): string
-    {
-        $locale = Contact::DEFAULT_LOCALE;
-
-        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $locale = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-        }
-
-        return $locale;
-    }
-
-    /**
      * Create a contact based on the data.
      *
      * @param mixed[] $contact Array of values representing the contact information
@@ -324,7 +308,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
 
         $contactLocale = !empty($contact['contact_lang'])
             ? $this->parseLocaleFromContactLang($contact['contact_lang'])
-            : $this->getBrowserLocale();
+            : null;
 
         return (new Contact())
             ->setId((int) $contact['contact_id'])

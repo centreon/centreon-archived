@@ -127,7 +127,7 @@ class Contact implements UserInterface, ContactInterface
     private $timezone;
 
     /**
-     * @var string $locale locale of the user
+     * @var string|null $locale locale of the user
      */
     private $locale;
 
@@ -496,10 +496,10 @@ class Contact implements UserInterface, ContactInterface
     /**
      * locale setter
      *
-     * @param string $locale
+     * @param string|null $locale
      * @return self
      */
-    public function setLocale(string $locale): self
+    public function setLocale(?string $locale): self
     {
         $this->locale = $locale;
         return $this;
@@ -508,9 +508,9 @@ class Contact implements UserInterface, ContactInterface
     /**
      * locale getter
      *
-     * @return string
+     * @return string|null
      */
-    public function getLocale(): string
+    public function getLocale(): ?string
     {
         return $this->locale;
     }
