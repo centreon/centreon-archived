@@ -39,7 +39,6 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
@@ -47,17 +46,14 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\VersionHelper;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
@@ -122,7 +118,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             KernelEvents::REQUEST => [
                 ['initRequestParameters', 9],
                 ['defineApiVersionInAttributes', 33],
-                ['initEntityCreator', 7]
+                ['initUser', 7],
             ],
             KernelEvents::RESPONSE => [
                 ['addApiVersion', 10]
@@ -382,14 +378,32 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     /**
      * Set contact if he is logged in
      */
-    public function initEntityCreator()
+    public function initUser()
     {
         if ($this->container->has('security.token_storage')) {
             if (null !== $token = $this->container->get('security.token_storage')->getToken()) {
                 if (is_object($user = $token->getUser())) {
                     EntityCreator::setContact($user);
+                    $this->initLanguage($user);
                 }
             }
         }
+    }
+
+    /**
+     * Init language to manage translation
+     *
+     * @param ContactInterface $user
+     * @return void
+     */
+    private function initLanguage(Contact $user)
+    {
+        $lang = $user->getLocale() . '.' . Contact::DEFAULT_CHARSET;
+
+        putenv('LANG=' . $lang);
+        setlocale(LC_ALL, $lang);
+        bindtextdomain('messages', __DIR__ . '/../../www/locale');
+        bind_textdomain_codeset('messages', Contact::DEFAULT_CHARSET);
+        textdomain('messages');
     }
 }

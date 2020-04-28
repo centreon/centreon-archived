@@ -132,6 +132,16 @@ class ContactBySession extends Contact
         return $this->contact->getTimezone();
     }
 
+    /**
+     * contact locale getter
+     *
+     * @return string
+     */
+    public function getLocale(): string
+    {
+        return $this->contact->getLocale();
+    }
+
     public function hasAccessToApiConfiguration(): bool
     {
         return true;
