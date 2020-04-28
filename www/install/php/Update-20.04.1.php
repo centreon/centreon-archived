@@ -22,7 +22,7 @@
 // get current configuration data
 require_once __DIR__ . '/../../../config/centreon.config.php';
 
-include_once __DIR__ . '/../../class/centreonLog.class.php';
+require_once __DIR__ . '/../../class/centreonLog.class.php';
 $centreonLog = new CentreonLog();
 
 // error specific content
