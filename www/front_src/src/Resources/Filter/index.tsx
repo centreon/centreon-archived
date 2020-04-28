@@ -14,8 +14,8 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import {
-  AutocompleteField,
-  ConnectedAutocompleteField,
+  MultiAutocompleteField,
+  MultiConnectedAutocompleteField,
   SelectField,
   SearchField,
   SelectEntry,
@@ -237,7 +237,7 @@ const Filter = ({
             </Typography>
           </Grid>
           <Grid item>
-            <AutocompleteField
+            <MultiAutocompleteField
               className={classes.autocompleteField}
               options={resourceTypes}
               label={labelTypeOfResource}
@@ -247,7 +247,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <AutocompleteField
+            <MultiAutocompleteField
               className={classes.autocompleteField}
               options={states}
               label={labelState}
@@ -257,7 +257,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <AutocompleteField
+            <MultiAutocompleteField
               className={classes.autocompleteField}
               options={statuses}
               label={labelStatus}
@@ -267,7 +267,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <ConnectedAutocompleteField
+            <MultiConnectedAutocompleteField
               className={classes.autocompleteField}
               baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
               getSearchEndpoint={getHostGroupSearchEndpoint}
@@ -279,7 +279,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <ConnectedAutocompleteField
+            <MultiConnectedAutocompleteField
               className={classes.autocompleteField}
               baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
               getSearchEndpoint={getServiceGroupSearchEndpoint}
