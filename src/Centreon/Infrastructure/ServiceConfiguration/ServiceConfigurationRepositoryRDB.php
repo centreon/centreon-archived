@@ -111,8 +111,8 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
     public function findCommandLine(int $serviceId): ?string
     {
         try {
-            $request = $this->translateDbName('
-                WITH RECURSIVE inherite AS (
+            $request = $this->translateDbName(
+                'WITH RECURSIVE inherite AS (
                 SELECT service_id, service_template_model_stm_id, command_command_id 
                 FROM `:db`.service
                 WHERE service_id = :service_id

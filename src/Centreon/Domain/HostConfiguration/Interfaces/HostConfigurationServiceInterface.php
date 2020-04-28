@@ -73,6 +73,4 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findHostMacrosPassword(int $hostId, string $command): array;
-
-
 }
