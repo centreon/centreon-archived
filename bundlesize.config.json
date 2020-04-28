@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "path": "www/static/**/main*.js",
+      "maxSize": "500 kB"
+    },
+    {
+      "path": "www/static/**/vendors*.js",
+      "maxSize": "2.5 MB"
+    }
+  ]
+}
