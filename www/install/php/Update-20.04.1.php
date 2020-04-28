@@ -47,8 +47,8 @@ try {
 
     // escape double quotes and backslashes
     $needle = ['\\', '"'];
-    $replacement = ['\\\\', '\"'];
-    $password = str_replace($needle, $replacement, password);
+    $escape = ['\\\\', '\"'];
+    $password = str_replace($needle, $escape, password);
 
     // set macro keys
     $pattern = [
