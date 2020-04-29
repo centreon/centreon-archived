@@ -14911,6 +14911,9 @@ msgstr "Les commandes contenant un corp ne sont pas autorisées pour le moment"
 msgid "Host not found"
 msgstr "Hôte non trouvé"
 
+msgid "Host %d not found"
+msgstr "Hôte %d non trouvé"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:195
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:265
 #:Centreon/Domain/Check/CheckService.php:143
@@ -14935,24 +14938,24 @@ msgid "Acknowledgement already cancelled for this service"
 msgstr "Acquittement déjà annulé pour ce service"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
-msgid "Incorrect Resource type: %1"
-msgstr "Type de ressource incorrect: %1"
+msgid "Incorrect Resource type: %s"
+msgstr "Type de ressource incorrect: %s"
 
 #:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:102
-msgid "Loop detected in file %1"
-msgstr "Boucle détectée dans le fichier %1"
+msgid "Loop detected in file %s"
+msgstr "Boucle détectée dans le fichier %s"
 
 #:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:137
-msgid "The configuration file %1 does not exists"
-msgstr "Le fichier de configuration %1 n'existe pas"
+msgid "The configuration file %s does not exists"
+msgstr "Le fichier de configuration %s n'existe pas"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:233
 msgid "Downtime not found"
 msgstr "Plage de maintenance non trouvée"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:239
-msgid "Downtime already cancelled for this %1"
-msgstr "Plage de maintenance déjà annulée pour %1"
+msgid "Downtime already cancelled for this %s"
+msgstr "Plage de maintenance déjà annulée pour %s"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:267
 msgid "Incorrect Resource Type"
@@ -14985,16 +14988,16 @@ msgid "Host of downtime not found"
 msgstr "L'hôte associé à la plage de maintenance n'a pas été trouvé"
 
 #:Centreon/Domain/Engine/EngineService.php:235
-msgid "The host of service %1 is not defined"
-msgstr "L'hôte du service %1 n'est pas défini"
+msgid "The host of service (id: %d) is not defined"
+msgstr "L'hôte du service (id: %d) n'est pas défini"
 
 #:Centreon/Domain/Engine/EngineService.php:238
-msgid "Host name of service %1 can not be empty"
-msgstr "Le nom d'hôte du service %1 ne peut pas être vide"
+msgid "Host name of service (id: %d) can not be empty"
+msgstr "Le nom d'hôte du service (id: %d) ne peut pas être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:241
-msgid "The description of service %1 can not be empty"
-msgstr "La description du service %1 ne peut pas être vide"
+msgid "The description of service (id: %d) can not be empty"
+msgstr "La description du service (id: %d) ne peut pas être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:286
 msgid "Host and service id can not be null at the same time"
@@ -15131,8 +15134,8 @@ msgid "Provider %1 is loaded"
 msgstr "Le fournisseur %1 est chargé"
 
 #:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:197
-msgid "The parameter %1 is not allowed"
-msgstr "Le paramètre %1 n'est pas autorisé"
+msgid "The parameter %s is not allowed"
+msgstr "Le paramètre %s n'est pas autorisé"
 
 #:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:216
 msgid "The value %1 is only supported by the operators %2 and %3"

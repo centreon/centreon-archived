@@ -14521,6 +14521,9 @@ msgstr "Os comandos contém uma requisição no corpo não aceito no momento"
 msgid "Host not found"
 msgstr "Host não encontrado"
 
+msgid "Host %d not found"
+msgstr "Host %d não encontrado"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:195
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:265
 #:Centreon/Domain/Check/CheckService.php:143
@@ -14545,16 +14548,16 @@ msgid "Acknowledgement already cancelled for this service"
 msgstr "Reconhecimento já foi cancelado para este serviço"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
-msgid "Incorrect Resource type: %1"
-msgstr "Tipo de Recurso incorreto: %1"
+msgid "Incorrect Resource type: %s"
+msgstr "Tipo de Recurso incorreto: %s"
 
 #:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:102
-msgid "Loop detected in file %1"
-msgstr "Loop detectado no arquivo %1"
+msgid "Loop detected in file %s"
+msgstr "Loop detectado no arquivo %s"
 
 #:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:137
-msgid "The configuration file %1 does not exists"
-msgstr "O arquivo de configuração %1 não existe"
+msgid "The configuration file %s does not exists"
+msgstr "O arquivo de configuração %s não existe"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:233
 msgid "Downtime not found"
@@ -14595,24 +14598,24 @@ msgid "Host of downtime not found"
 msgstr "O host do serviço não esta definido"
 
 #:Centreon/Domain/Engine/EngineService.php:235
-msgid "The host of service %1 is not defined"
-msgstr "O host do serviço %1 não esta definido"
+msgid "The host of service (id: %d) is not defined"
+msgstr "O host do serviço (id: %d) não esta definido"
 
 #:Centreon/Domain/Engine/EngineService.php:238
-msgid "Host name of service %1 can not be empty"
-msgstr "O nome do Host do serviço %1 não pode estar em branco"
+msgid "Host name of service (id: %d) can not be empty"
+msgstr "O nome do Host do serviço (id: %d) não pode estar em branco"
 
 #:Centreon/Domain/Engine/EngineService.php:241
-msgid "The description of service %1 can not be empty"
-msgstr "A descrição do serviço %1 não pode estar em branco"
+msgid "The description of service (id: %d) can not be empty"
+msgstr "A descrição do serviço (id: %d) não pode estar em branco"
 
 #:Centreon/Domain/Engine/EngineService.php:286
 msgid "Host and service id can not be null at the same time"
-msgstr "A descrição do serviço %1 não pode estar em branco"
+msgstr ""
 
 #:Centreon/Domain/Engine/EngineService.php:289
 msgid "Downtime internal id can not be null"
-msgstr "A descrição do serviço %1 não pode estar em branco"
+msgstr ""
 
 #:Centreon/Domain/Engine/EngineService.php:355
 msgid "Host name cannot be empty"
@@ -14741,8 +14744,8 @@ msgid "Provider %1 is loaded"
 msgstr "Provedor %1 foi carregado"
 
 #:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:197
-msgid "The parameter %1 is not allowed"
-msgstr "O parametro %1 não é aceito"
+msgid "The parameter %s is not allowed"
+msgstr "O parametro %s não é aceito"
 
 #:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:216
 msgid "The value %1 is only supported by the operators %2 and %3"
