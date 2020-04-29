@@ -138,7 +138,8 @@ class EntityCreator
                     $parameters = $this->publicMethods[$setterMethod]->getParameters();
                     if (empty($parameters)) {
                         throw new \Exception(
-                            sprintf(_('The public method %s::$setterMethod has no parameters'), $this->className));
+                            sprintf(_('The public method %s::$setterMethod has no parameters'), $this->className)
+                        );
                     }
                     $firstParameter = $parameters[0];
                     if ($firstParameter->hasType()) {
