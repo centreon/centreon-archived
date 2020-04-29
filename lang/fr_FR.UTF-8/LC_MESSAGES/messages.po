@@ -14859,17 +14859,17 @@ msgstr "Json invalide reçu"
 #:Centreon/Application/Controller/Monitoring/MetricController.php:81
 #:Centreon/Application/Controller/DowntimeController.php:134
 #:Centreon/Application/Controller/DowntimeController.php:273
-msgid "Host %1 not found"
-msgstr "Hôte %1 non trouvé"
+msgid "Host %d not found"
+msgstr "Hôte %d non trouvé"
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:81
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:308
-msgid "Service %1 not found"
-msgstr "Service %1 non trouvé"
+msgid "Service %d not found"
+msgstr "Service %d non trouvé"
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:109
-msgid "Invalid date given for parameter \"%1\"."
-msgstr "Date invalide pour le paramètre \"%1\"."
+msgid "Invalid date given for parameter \"%s\"."
+msgstr "Date invalide pour le paramètre \"%s\"."
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:117
 msgid "End date must be greater than start date."
@@ -14890,8 +14890,8 @@ msgstr "Identifiants invalides"
 
 #:Centreon/Application/Controller/DowntimeController.php:203
 #:Centreon/Application/Controller/DowntimeController.php:333
-msgid "Service %1 on host %2 not found"
-msgstr "Service %1 de l'hôte %2 non trouvé"
+msgid "Service %d on host %d not found"
+msgstr "Service %d de l'hôte %d non trouvé"
 
 #:Centreon/Application/Controller/GorgoneController.php:142
 msgid "Unrecognized Command"
@@ -14910,9 +14910,6 @@ msgstr "Les commandes contenant un corp ne sont pas autorisées pour le moment"
 #:Centreon/Domain/Downtime/DowntimeService.php:252
 msgid "Host not found"
 msgstr "Hôte non trouvé"
-
-msgid "Host %d not found"
-msgstr "Hôte %d non trouvé"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:195
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:265
@@ -15089,12 +15086,12 @@ msgid "Token not found"
 msgstr "Token non trouvé"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:87
-msgid "Centcore directory %1 does not exist"
-msgstr "Le répertoire Centcore %1 n'existe pas"
+msgid "Centcore directory %s does not exist"
+msgstr "Le répertoire Centcore %s n'existe pas"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:96
-msgid "Error during creation of the CentCore command file %1"
-msgstr "Erreur lors de la création du fichier de commande Centcore %1"
+msgid "Error during creation of the CentCore command file (%s)"
+msgstr "Erreur lors de la création du fichier de commande Centcore (%s)"
 
 #:Centreon/Infrastructure/Gorgone/CommandRepositoryAPI.php:94
 msgid "Bad request"

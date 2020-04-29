@@ -85,7 +85,7 @@ final class EngineRepositoryFile implements EngineRepositoryInterface
 
         if (!is_dir($this->centCoreDirectory)) {
             throw new EngineException(
-                sprintf(_('Centcore directory "%s" does not exist'), $this->centCoreDirectory)
+                sprintf(_('Centcore directory %s does not exist'), $this->centCoreDirectory)
             );
         }
 

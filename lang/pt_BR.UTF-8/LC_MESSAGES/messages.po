@@ -14456,17 +14456,17 @@ msgstr "Mensagem json inválida recebida"
 #:Centreon/Application/Controller/Monitoring/MetricController.php:81
 #:Centreon/Application/Controller/DowntimeController.php:134
 #:Centreon/Application/Controller/DowntimeController.php:273
-msgid "Host %1 not found"
-msgstr "Host %1 não encontrado"
+msgid "Host %d not found"
+msgstr "Host %d não encontrado"
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:81
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:308
-msgid "Service %1 not found"
-msgstr "Host %1 não encontrado"
+msgid "Service %d not found"
+msgstr "Serviço %d não encontrado"
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:109
-msgid "Invalid date given for parameter \"%1\"."
-msgstr "Data inválida fornecida para o parâmetro \"%1\"."
+msgid "Invalid date given for parameter \"%s\"."
+msgstr "Data inválida fornecida para o parâmetro \"%s\"."
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:117
 msgid "End date must be greater than start date."
@@ -14487,8 +14487,8 @@ msgstr "Credenciais Invalidas"
 
 #:Centreon/Application/Controller/DowntimeController.php:203
 #:Centreon/Application/Controller/DowntimeController.php:333
-msgid "Service %1 on host %2 not found"
-msgstr "Serviço %1 no host %2 não encontrado"
+msgid "Service %d on host %d not found"
+msgstr "Serviço %d no host %d não encontrado"
 
 #:Centreon/Application/Controller/GorgoneController.php:142
 msgid "Unrecognized Command"
@@ -14507,9 +14507,6 @@ msgstr "Os comandos contém uma requisição no corpo não aceito no momento"
 #:Centreon/Domain/Downtime/DowntimeService.php:252
 msgid "Host not found"
 msgstr "Host não encontrado"
-
-msgid "Host %d not found"
-msgstr "Host %d não encontrado"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:195
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:265
@@ -14551,8 +14548,8 @@ msgid "Downtime not found"
 msgstr "Manutenção não encontada"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:239
-msgid "Downtime already cancelled for this %1"
-msgstr "Manutenção já foi cancelada para %1"
+msgid "Downtime already cancelled for this %s"
+msgstr "Manutenção já foi cancelada para %s"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:267
 msgid "Incorrect Resource Type"
@@ -14686,12 +14683,12 @@ msgid "Token not found"
 msgstr "Token não encontrado"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:87
-msgid "Centcore directory %1 does not exist"
-msgstr "Diretorio %1 do Centcore não existe"
+msgid "Centcore directory %s does not exist"
+msgstr "Diretorio %s do Centcore não existe"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:96
-msgid "Error during creation of the CentCore command file %1"
-msgstr "Erro durante a criação do arquivo de comando %1 do CentCore"
+msgid "Error during creation of the CentCore command file (%s)"
+msgstr "Erro durante a criação do arquivo de comando do CentCore (%s)"
 
 #:Centreon/Infrastructure/Gorgone/CommandRepositoryAPI.php:94
 msgid "Bad request"
