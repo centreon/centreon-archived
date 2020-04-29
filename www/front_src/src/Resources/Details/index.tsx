@@ -4,9 +4,10 @@ import { omit } from 'ramda';
 
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
+import { getData, useRequest } from '@centreon/ui';
+
 import Header from './Header';
 import Body from './Body';
-import useGet from '../useGet';
 import { ResourceDetails } from './models';
 import { ResourceEndpoints } from '../models';
 
@@ -53,9 +54,8 @@ const Details = ({
 
   const { details: detailsEndpoint } = endpoints;
 
-  const get = useGet({
-    onSuccess: (entity) => setDetails(entity),
-    endpoint: detailsEndpoint,
+  const { sendRequest } = useRequest<ResourceDetails>({
+    request: getData,
   });
 
   React.useEffect(() => {
@@ -63,7 +63,9 @@ const Details = ({
       setDetails(undefined);
     }
 
-    get();
+    sendRequest(detailsEndpoint).then((retrievedDetails) =>
+      setDetails(retrievedDetails),
+    );
   }, [detailsEndpoint]);
 
   return (

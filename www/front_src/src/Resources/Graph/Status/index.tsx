@@ -5,9 +5,8 @@ import { XAxis, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { getStatusColors } from '@centreon/ui';
+import { getStatusColors, useRequest, getData } from '@centreon/ui';
 
-import useGet from '../../useGet';
 import getTimeSeries from './timeSeries';
 import { timeFormat } from '../format';
 import { parseAndFormat } from '../../dateTime';
@@ -30,13 +29,12 @@ const StatusGraph = ({
 
   const [graphData, setGraphData] = React.useState<GraphData>();
 
-  const get = useGet({
-    endpoint,
-    onSuccess: setGraphData,
+  const { sendRequest } = useRequest<GraphData>({
+    request: getData,
   });
 
   React.useEffect(() => {
-    get();
+    sendRequest(endpoint).then(setGraphData);
   }, [endpoint]);
 
   if (graphData === undefined) {

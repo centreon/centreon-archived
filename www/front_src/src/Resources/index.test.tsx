@@ -192,6 +192,7 @@ const fillEntities = (): Array<Resource> => {
     information:
       index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
     type: index % 4 === 0 ? 'service' : 'host',
+    details_endpoint: 'endpoint',
   }));
 };
 

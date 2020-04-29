@@ -15,7 +15,8 @@ import { pipe, map, uniq, prop } from 'ramda';
 
 import { fade, makeStyles, Typography, Theme } from '@material-ui/core';
 
-import useGet from '../../useGet';
+import { useRequest, getData } from '@centreon/ui';
+
 import { timeFormat, dateTimeFormat } from '../format';
 import { parseAndFormat } from '../../dateTime';
 import getTimeSeries, { getLegend } from './timeSeries';
@@ -77,13 +78,12 @@ const PerformanceGraph = ({
 
   const [graphData, setGraphData] = React.useState<GraphData>();
 
-  const get = useGet({
-    endpoint,
-    onSuccess: setGraphData,
+  const { sendRequest } = useRequest<GraphData>({
+    request: getData,
   });
 
   React.useEffect(() => {
-    get();
+    sendRequest(endpoint).then(setGraphData);
   }, [endpoint]);
 
   if (graphData === undefined) {

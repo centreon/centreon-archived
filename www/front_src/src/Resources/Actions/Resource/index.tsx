@@ -105,16 +105,20 @@ const ResourceActions = ({
           {labelCheck}
         </ActionButton>
       </Grid>
-      <AcknowledgeForm
-        resources={resourcesToAcknowledge}
-        onClose={onCancelAcknowledge}
-        onSuccess={onSuccess}
-      />
-      <DowntimeForm
-        resources={resourcesToSetDowntime}
-        onClose={onCancelSetDowntime}
-        onSuccess={onSuccess}
-      />
+      {resourcesToAcknowledge.length > 0 && (
+        <AcknowledgeForm
+          resources={resourcesToAcknowledge}
+          onClose={onCancelAcknowledge}
+          onSuccess={onSuccess}
+        />
+      )}
+      {resourcesToSetDowntime.length > 0 && (
+        <DowntimeForm
+          resources={resourcesToSetDowntime}
+          onClose={onCancelSetDowntime}
+          onSuccess={onSuccess}
+        />
+      )}
     </Grid>
   );
 };
