@@ -78,12 +78,16 @@ class MetricController extends AbstractController
 
         $host = $this->monitoringService->findOneHost($hostId);
         if (is_null($host)) {
-            throw new EntityNotFoundException("Host {$hostId} not found");
+            throw new EntityNotFoundException(
+                sprintf(_('Host %d not found'), $hostId)
+            );
         }
 
         $service = $this->monitoringService->findOneService($hostId, $serviceId);
         if (is_null($service)) {
-            throw new EntityNotFoundException("Service {$serviceId} not found");
+            throw new EntityNotFoundException(
+                sprintf(_('Service %d not found'), $serviceId)
+            );
         }
         $service->setHost($host);
 

@@ -97,7 +97,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     {
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
-            throw new \Exception('Host');
             $list = $this->resourceRepository->findResources($filter);
         } catch (\Exception $ex) {
             throw new ResourceException(_('Error while searching for resources'), 0, $ex);

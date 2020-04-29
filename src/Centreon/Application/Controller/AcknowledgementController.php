@@ -570,7 +570,7 @@ class AcknowledgementController extends AbstractController
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
-                throw new \RestBadRequestException('Incorrect resource type for disacknowledgement');
+                throw new \RestBadRequestException(_('Incorrect resource type for disacknowledgement'));
             }
         }
 
@@ -647,7 +647,7 @@ class AcknowledgementController extends AbstractController
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
-                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+                throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
             }
         }
 

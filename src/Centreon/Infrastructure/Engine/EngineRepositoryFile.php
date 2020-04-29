@@ -84,7 +84,9 @@ final class EngineRepositoryFile implements EngineRepositoryInterface
         }
 
         if (!is_dir($this->centCoreDirectory)) {
-            throw new EngineException('Centcore directory "' . $this->centCoreDirectory . '" does not exist');
+            throw new EngineException(
+                sprintf(_('Centcore directory "%s" does not exist'), $this->centCoreDirectory)
+            );
         }
 
         if (!empty($commandsToSend)) {
@@ -93,7 +95,7 @@ final class EngineRepositoryFile implements EngineRepositoryInterface
             if ($isDataSent === false) {
                 throw new EngineException(
                     sprintf(
-                        'Error during creation of the CentCore command file (%s)',
+                        _('Error during creation of the CentCore command file (%s)'),
                         $this->centCorePath
                     )
                 );

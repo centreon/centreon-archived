@@ -101,7 +101,9 @@ class EntityCreator
     public function createByArray(array $data, string $prefix = null)
     {
         if (!class_exists($this->className)) {
-            throw new \Exception('The class ' . $this->className . ' does not exist');
+            throw new \Exception(
+                sprintf(_('The class %s does not exist'), $this->className)
+            );
         }
         $this->readPublicMethod();
         $this->readAnnotations();
@@ -135,7 +137,8 @@ class EntityCreator
                 if (array_key_exists($setterMethod, $this->publicMethods)) {
                     $parameters = $this->publicMethods[$setterMethod]->getParameters();
                     if (empty($parameters)) {
-                        throw new \Exception("The public method {$this->className}::$setterMethod has no parameters");
+                        throw new \Exception(
+                            sprintf(_('The public method %s::$setterMethod has no parameters'), $this->className));
                     }
                     $firstParameter = $parameters[0];
                     if ($firstParameter->hasType()) {
@@ -159,7 +162,9 @@ class EntityCreator
 
                     call_user_func_array(array($objectToSet, $setterMethod), [$value]);
                 } else {
-                    throw new \Exception("The public method {$this->className}::$setterMethod is not found");
+                    throw new \Exception(
+                        sprintf(_('The public method %s::$setterMethod is not found'), $this->className)
+                    );
                 }
             }
         }
@@ -184,7 +189,7 @@ class EntityCreator
             if ($allowNull) {
                 return $value;
             } else {
-                throw new \Exception("The value cannot be null");
+                throw new \Exception(_('The value cannot be null'));
             }
         }
 
@@ -206,7 +211,7 @@ class EntityCreator
                     }
                     return $value;
                 }
-                throw new \Exception("Numeric value expected");
+                throw new \Exception(_('Numeric value expected'));
             default:
                 return $value;
         }
