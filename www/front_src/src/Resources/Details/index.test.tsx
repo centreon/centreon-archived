@@ -38,7 +38,7 @@ import {
   labelResourceFlapping,
   labelNo,
 } from '../translatedLabels';
-import { selectOption } from '../test';
+import { selectOption } from '../testUtils';
 import { detailsTabId, graphTabId } from './Body/tabs';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -230,9 +230,11 @@ describe(Details, () => {
 
       selectOption(getByText(labelLast24h), period);
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${performanceGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
-        expect.anything(),
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          `${performanceGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
+          expect.anything(),
+        ),
       );
     }),
   );

@@ -5,9 +5,11 @@ import axios from 'axios';
 import formatISO from 'date-fns/formatISO';
 import {
   render,
+  cleanup,
   waitFor,
   fireEvent,
   RenderResult,
+  within,
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 
@@ -23,8 +25,9 @@ import {
   last,
 } from 'ramda';
 
-import { ThemeProvider } from '@centreon/ui';
+import { ThemeProvider, SearchField } from '@centreon/ui';
 
+import userEvent from '@testing-library/user-event';
 import {
   labelResourceName,
   labelSearch,
@@ -74,7 +77,7 @@ import {
 
 import Resources from '.';
 
-import { selectOption } from './test';
+import { selectOption, getSelectPopover } from './testUtils';
 import { allFilter } from './Filter/models';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
@@ -224,49 +227,48 @@ const hostResources = entities.filter(({ type }) => type === 'host');
 const serviceResources = entities.filter(({ type }) => type === 'service');
 
 const filtersParams = [
-  {
-    filterName: labelTypeOfResource,
-    optionToSelect: labelHost,
-    endpointParamChanged: { resourceTypes: ['host'] },
-  },
-  {
-    filterName: labelState,
-    optionToSelect: labelAcknowledged,
-    endpointParamChanged: {
+  [labelTypeOfResource, labelHost, { resourceTypes: ['host'] }, undefined],
+  [
+    labelState,
+    labelAcknowledged,
+    {
       states: [...defaultStates, 'acknowledged'],
     },
-  },
-  {
-    filterName: labelStatus,
-    optionToSelect: labelOk,
-    endpointParamChanged: {
+    undefined,
+  ],
+  [
+    labelStatus,
+    labelOk,
+    {
       statuses: [...defaultStatuses, 'OK'],
     },
-  },
-  {
-    filterName: labelHostGroup,
-    optionToSelect: linuxServersHostGroup.name,
-    selectEndpointMockAction: (): void => {
+    undefined,
+  ],
+  [
+    labelHostGroup,
+    linuxServersHostGroup.name,
+    {
+      hostGroupsIds: [linuxServersHostGroup.id],
+    },
+    (): void => {
       mockedAxios.get.mockResolvedValueOnce({
         data: { result: [linuxServersHostGroup] },
       });
     },
-    endpointParamChanged: {
-      hostGroupsIds: [linuxServersHostGroup.id],
+  ],
+  [
+    labelServiceGroup,
+    webAccessServiceGroup.name,
+
+    {
+      serviceGroupIds: [webAccessServiceGroup.id],
     },
-  },
-  {
-    filterName: labelServiceGroup,
-    optionToSelect: webAccessServiceGroup.name,
-    selectEndpointMockAction: (): void => {
+    (): void => {
       mockedAxios.get.mockResolvedValueOnce({
         data: { result: [webAccessServiceGroup] },
       });
     },
-    endpointParamChanged: {
-      serviceGroupIds: [webAccessServiceGroup.id],
-    },
-  },
+  ],
 ];
 
 const savedFilter = {
@@ -297,6 +299,8 @@ const renderResources = (): RenderResult =>
 
 describe(Resources, () => {
   afterEach(() => {
+    cleanup();
+
     useSelector.mockClear();
     mockedAxios.get.mockReset();
     mockedAxios.post.mockReset();
@@ -320,112 +324,112 @@ describe(Resources, () => {
     });
   };
 
-  it('displays first part of information when multiple (split by \n) are available', async () => {
-    const { getByText, queryByText } = renderResources();
+  // it('displays first part of information when multiple (split by \n) are available', async () => {
+  //   const { getByText, queryByText } = renderResources();
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
+  //   await waitFor(() => {
+  //     expect(mockedAxios.get).toHaveBeenCalled();
+  //   });
 
-    const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
-      where({ information: contains('\n') }),
-      retrievedListing.result,
-    );
+  //   const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
+  //     where({ information: contains('\n') }),
+  //     retrievedListing.result,
+  //   );
 
-    resourcesWithMultipleLines.forEach(({ information }) => {
-      expect(
-        getByText(pipe(split('\n'), head)(information)),
-      ).toBeInTheDocument();
-      expect(queryByText(information)).not.toBeInTheDocument();
-    });
+  //   resourcesWithMultipleLines.forEach(({ information }) => {
+  //     expect(
+  //       getByText(pipe(split('\n'), head)(information)),
+  //     ).toBeInTheDocument();
+  //     expect(queryByText(information)).not.toBeInTheDocument();
+  //   });
 
-    resourcesWithSingleLines.forEach(({ information }) => {
-      expect(getByText(information)).toBeInTheDocument();
-    });
-  });
+  //   resourcesWithSingleLines.forEach(({ information }) => {
+  //     expect(getByText(information)).toBeInTheDocument();
+  //   });
+  // });
 
-  it('expands criterias filters when the expand icon is clicked', async () => {
-    const { getByLabelText, queryByText } = renderResources();
+  // it('expands criterias filters when the expand icon is clicked', async () => {
+  //   const { getByLabelText, queryByText } = renderResources();
 
-    await waitFor(() => {
-      expect(queryByText(labelTypeOfResource)).not.toBeVisible();
-    });
+  //   await waitFor(() => {
+  //     expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+  //   });
 
-    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+  //   fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
-    await waitFor(() => {
-      expect(queryByText(labelTypeOfResource)).toBeVisible();
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(queryByText(labelTypeOfResource)).toBeVisible();
+  //   });
+  // });
 
-  it('executes a listing request with "Unhandled problems" filter group by default', async () => {
-    renderResources();
+  // it('executes a listing request with "Unhandled problems" filter group by default', async () => {
+  //   renderResources();
 
-    await waitFor(() =>
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        getEndpoint({}),
-        cancelTokenRequestParam,
-      ),
-    );
-  });
+  //   await waitFor(() =>
+  //     expect(mockedAxios.get).toHaveBeenCalledWith(
+  //       getEndpoint({}),
+  //       cancelTokenRequestParam,
+  //     ),
+  //   );
+  // });
 
-  it('executes a listing request when a search is typed and enter key is pressed', async () => {
-    const { getByPlaceholderText } = render(<Resources />);
+  // it('executes a listing request when a search is typed and enter key is pressed', async () => {
+  //   const { getByPlaceholderText } = render(<Resources />);
 
-    const fieldSearchValue = 'foobar';
+  //   const fieldSearchValue = 'foobar';
 
-    const searchInput = getByPlaceholderText(labelResourceName);
+  //   const searchInput = getByPlaceholderText(labelResourceName);
 
-    fireEvent.change(searchInput, {
-      target: { value: fieldSearchValue },
-    });
+  //   fireEvent.change(searchInput, {
+  //     target: { value: fieldSearchValue },
+  //   });
 
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+  //   mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-    Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
+  //   Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
 
-    await waitFor(() =>
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        getEndpoint({
-          search: {
-            mode: '$or',
-            fieldPatterns: searchableFields.map((searchableField) => ({
-              field: searchableField,
-              value: fieldSearchValue,
-            })),
-          },
-        }),
-        cancelTokenRequestParam,
-      ),
-    );
-  });
+  //   await waitFor(() =>
+  //     expect(mockedAxios.get).toHaveBeenCalledWith(
+  //       getEndpoint({
+  //         search: {
+  //           mode: '$or',
+  //           fieldPatterns: searchableFields.map((searchableField) => ({
+  //             field: searchableField,
+  //             value: fieldSearchValue,
+  //           })),
+  //         },
+  //       }),
+  //       cancelTokenRequestParam,
+  //     ),
+  //   );
+  // });
 
-  [
-    {
-      filterGroup: labelResourceProblems,
-      criterias: {
+  it.each([
+    [
+      labelResourceProblems,
+      {
         statuses: defaultStatuses,
         states: [],
         resourceTypes: [],
       },
-    },
-    {
-      filterGroup: labelAll,
-      criterias: {
+    ],
+    [
+      labelAll,
+      {
         statuses: [],
         states: [],
         resourceTypes: [],
       },
-    },
-  ].forEach(({ filterGroup, criterias }) => {
-    it(`executes a listing request with "${filterGroup}" params when "${filterGroup}" filter group is set`, async () => {
+    ],
+  ])(
+    'executes a listing request with "%p" params when "%p" filter group is set',
+    async (filterGroup, criterias) => {
       const { getByText } = renderResources();
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-      // @material-ui Select uses a Popover that needs special handling to update options.
       selectOption(getByText(labelUnhandledProblems), filterGroup);
 
       await waitFor(() =>
@@ -438,72 +442,104 @@ describe(Resources, () => {
           cancelTokenRequestParam,
         ),
       );
-    });
-  });
+    },
+  );
 
-  filtersParams.forEach(
-    ({
+  it.each(filtersParams)(
+    "executes a listing request with current search and selected %p filter options when it's changed",
+    async (
       filterName,
       optionToSelect,
       endpointParamChanged,
       selectEndpointMockAction,
-    }) => {
-      it(`executes a listing request with selected "${filterName}" filter options when it's changed`, async () => {
-        const { getAllByText, getByTitle } = renderResources();
+    ) => {
+      const {
+        getByTitle,
+        getByLabelText,
+        getByPlaceholderText,
+      } = renderResources();
 
-        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-        selectEndpointMockAction?.();
-        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+      fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
-        const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
-        fireEvent.click(filterToChange);
+      selectEndpointMockAction?.();
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-        await waitFor(() => {
-          const [selectedOption] = getAllByText(optionToSelect);
+      const searchValue = 'foobar';
 
-          return fireEvent.click(selectedOption);
-        });
-
-        expect(mockedAxios.get).toHaveBeenCalledWith(
-          getEndpoint({ ...endpointParamChanged }),
-          cancelTokenRequestParam,
-        );
+      fireEvent.change(getByPlaceholderText(labelResourceName), {
+        target: { value: searchValue },
       });
+
+      const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
+
+      userEvent.click(filterToChange);
+
+      if (selectEndpointMockAction) {
+        // wait until ConnectedMultiSelect options have been fetched.
+        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      }
+
+      const selectedOption = within(getSelectPopover()).getByText(
+        optionToSelect,
+      );
+      userEvent.click(selectedOption);
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({
+            search: {
+              mode: '$or',
+              fieldPatterns: searchableFields.map((searchableField) => ({
+                field: searchableField,
+                value: searchValue,
+              })),
+            },
+            ...endpointParamChanged,
+          }),
+          cancelTokenRequestParam,
+        ),
+      );
     },
   );
 
-  it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
-    const { getByLabelText } = renderResources();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
-
+  it.each(
     columns
       .filter(({ sortable }) => sortable !== false)
-      .forEach(({ id, label, sortField }) => {
-        const sortBy = sortField || id;
+      .map(({ id, label, sortField }) => [id, label, sortField]),
+  )(
+    'executes a listing request with sort_by param when %p column is clicked',
+    async (id, label, sortField) => {
+      const { getByLabelText } = renderResources();
 
-        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+      mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
+      const sortBy = sortField || id;
+
+      fireEvent.click(getByLabelText(`Column ${label}`));
+
+      await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getEndpoint({ sortBy, sortOrder: 'desc' }),
           cancelTokenRequestParam,
-        );
+        ),
+      );
 
-        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+      fireEvent.click(getByLabelText(`Column ${label}`));
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
-
-        expect(mockedAxios.get).toHaveBeenCalledWith(
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
           getEndpoint({ sortBy, sortOrder: 'asc' }),
           cancelTokenRequestParam,
-        );
-      });
-  });
+        ),
+      );
+    },
+  );
 
   it('executes a listing request with an updated page param when a change page action is clicked', async () => {
     const { getByLabelText } = renderResources();
@@ -563,13 +599,15 @@ describe(Resources, () => {
 
     fireEvent.click(getByLabelText('First Page'));
 
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      getEndpoint({ page: 1 }),
-      cancelTokenRequestParam,
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        getEndpoint({ page: 1 }),
+        cancelTokenRequestParam,
+      ),
     );
   });
 
-  it('executes a listing request with a limit param when the rows per page value is changed', () => {
+  it('executes a listing request with a limit param when the rows per page value is changed', async () => {
     const { getByDisplayValue } = renderResources();
 
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
@@ -578,14 +616,17 @@ describe(Resources, () => {
       target: { value: '20' },
     });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      getEndpoint({ limit: 20 }),
-      cancelTokenRequestParam,
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({ limit: 20 }),
+        cancelTokenRequestParam,
+      ),
     );
   });
 
-  searchableFields.forEach((searchableField) => {
-    it(`executes a listing request with an "$and" search param containing ${searchableField} when ${searchableField} is typed in the search field`, () => {
+  it.each(searchableFields.map((searchableField) => [searchableField]))(
+    'executes a listing request with an "$and" search param containing %p when %p is typed in the search field',
+    async (searchableField) => {
       const { getByPlaceholderText, getByText } = renderResources();
 
       const fieldSearchValue = 'foobar';
@@ -598,21 +639,23 @@ describe(Resources, () => {
 
       fireEvent.click(getByText(labelSearch));
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        getEndpoint({
-          search: {
-            mode: '$and',
-            fieldPatterns: [
-              { field: searchableField, value: fieldSearchValue },
-            ],
-          },
-        }),
-        cancelTokenRequestParam,
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({
+            search: {
+              mode: '$and',
+              fieldPatterns: [
+                { field: searchableField, value: fieldSearchValue },
+              ],
+            },
+          }),
+          cancelTokenRequestParam,
+        ),
       );
-    });
-  });
+    },
+  );
 
-  it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', () => {
+  it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', async () => {
     const { getByPlaceholderText, getByText } = renderResources();
 
     const searchValue = 'foobar';
@@ -625,70 +668,21 @@ describe(Resources, () => {
 
     fireEvent.click(getByText(labelSearch));
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      getEndpoint({
-        search: {
-          mode: '$or',
-          fieldPatterns: searchableFields.map((searchableField) => ({
-            field: searchableField,
-            value: searchValue,
-          })),
-        },
-      }),
-      cancelTokenRequestParam,
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({
+          search: {
+            mode: '$or',
+            fieldPatterns: searchableFields.map((searchableField) => ({
+              field: searchableField,
+              value: searchValue,
+            })),
+          },
+        }),
+        cancelTokenRequestParam,
+      ),
     );
   });
-
-  filtersParams.forEach(
-    ({
-      filterName,
-      optionToSelect,
-      endpointParamChanged,
-      selectEndpointMockAction,
-    }) => {
-      it(`executes a listing request with the last typed search when "${filterName}" filter options are changed`, async () => {
-        const {
-          getAllByText,
-          getByTitle,
-          getByPlaceholderText,
-        } = renderResources();
-
-        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-        selectEndpointMockAction?.();
-        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-
-        const searchValue = 'foobar';
-
-        fireEvent.change(getByPlaceholderText(labelResourceName), {
-          target: { value: searchValue },
-        });
-
-        const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
-        fireEvent.click(filterToChange);
-
-        await waitFor(() => {
-          const [selectedOption] = getAllByText(optionToSelect);
-
-          return fireEvent.click(selectedOption);
-        });
-
-        expect(mockedAxios.get).toHaveBeenCalledWith(
-          getEndpoint({
-            search: {
-              mode: '$or',
-              fieldPatterns: searchableFields.map((searchableField) => ({
-                field: searchableField,
-                value: searchValue,
-              })),
-            },
-            ...endpointParamChanged,
-          }),
-          cancelTokenRequestParam,
-        );
-      });
-    },
-  );
 
   it('displays downtime details when the downtime state chip is hovered', async () => {
     const { getByLabelText, getByText } = renderResources();
@@ -837,21 +831,22 @@ describe(Resources, () => {
 
     fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
 
-    await waitFor(() => {
-      expect(mockedAxios.post).toHaveBeenCalled();
-    });
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      acknowledgeEndpoint,
-      {
-        resources: map(pick(['id', 'parent', 'type']), retrievedListing.result),
-        acknowledgement: {
-          comment: labelAcknowledgedByAdmin,
-          is_notify_contacts: true,
-          with_services: true,
+    await waitFor(() =>
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        acknowledgeEndpoint,
+        {
+          resources: map(
+            pick(['id', 'parent', 'type']),
+            retrievedListing.result,
+          ),
+          acknowledgement: {
+            comment: labelAcknowledgedByAdmin,
+            is_notify_contacts: true,
+            with_services: true,
+          },
         },
-      },
-      expect.anything(),
+        cancelTokenRequestParam,
+      ),
     );
   });
 
@@ -969,24 +964,25 @@ describe(Resources, () => {
 
     fireEvent.click(getByText(labelSetDowntime));
 
-    await waitFor(() => {
-      expect(mockedAxios.post).toHaveBeenCalled();
-    });
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      downtimeEndpoint,
-      {
-        resources: map(pick(['id', 'type', 'parent']), retrievedListing.result),
-        downtime: {
-          comment: labelDowntimeByAdmin,
-          duration: 3600,
-          end_time: formatISO(endDateTime),
-          is_fixed: true,
-          start_time: formatISO(startDateTime),
-          with_services: true,
+    await waitFor(() =>
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        downtimeEndpoint,
+        {
+          resources: map(
+            pick(['id', 'type', 'parent']),
+            retrievedListing.result,
+          ),
+          downtime: {
+            comment: labelDowntimeByAdmin,
+            duration: 3600,
+            end_time: formatISO(endDateTime),
+            is_fixed: true,
+            start_time: formatISO(startDateTime),
+            with_services: true,
+          },
         },
-      },
-      expect.anything(),
+        cancelTokenRequestParam,
+      ),
     );
   });
 
@@ -1002,27 +998,24 @@ describe(Resources, () => {
     fireEvent.click(getByText(labelCheck));
 
     await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
-      expect(mockedAxios.post).toHaveBeenCalled();
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        hostCheckEndpoint,
+        hostResources.map(({ id }) => ({
+          parent_resource_id: null,
+          resource_id: id,
+        })),
+        expect.anything(),
+      );
+
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        serviceCheckEndpoint,
+        serviceResources.map(({ id, parent }) => ({
+          parent_resource_id: parent?.id || null,
+          resource_id: id,
+        })),
+        expect.anything(),
+      );
     });
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostCheckEndpoint,
-      hostResources.map(({ id }) => ({
-        parent_resource_id: null,
-        resource_id: id,
-      })),
-      expect.anything(),
-    );
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceCheckEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        parent_resource_id: parent?.id || null,
-        resource_id: id,
-      })),
-      expect.anything(),
-    );
   });
 
   it('executes a listing request when refresh button is clicked', async () => {
@@ -1070,7 +1063,7 @@ describe(Resources, () => {
     expect(getByLabelText(labelDisableAutorefresh)).toBeTruthy();
   });
 
-  it('populates filter with values from localStorage if available', () => {
+  it('populates filter with values from localStorage if available', async () => {
     mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
 
     const {
@@ -1078,6 +1071,8 @@ describe(Resources, () => {
       getByDisplayValue,
       queryByLabelText,
     } = renderResources();
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterStorageKey);
     expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
@@ -1096,15 +1091,20 @@ describe(Resources, () => {
 
     selectOption(getByText(labelUnhandledProblems), labelAll);
 
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+
+    // await waitFor(() =>
     expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
       filterStorageKey,
       JSON.stringify(allFilter),
     );
+    // );
 
     fireEvent.change(getByPlaceholderText(labelResourceName), {
       target: { value: 'searching...' },
     });
 
+    // await waitFor(() =>
     expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
       filterStorageKey,
       JSON.stringify({
@@ -1112,9 +1112,10 @@ describe(Resources, () => {
         search: 'searching...',
       }),
     );
+    // );
   });
 
-  it('clears all filters and set filter group to all when the clear all button is clicked', () => {
+  it('clears all filters and set filter group to all when the clear all button is clicked', async () => {
     mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
 
     mockedAxios.get.mockResolvedValue({ data: retrievedListing });
@@ -1129,6 +1130,8 @@ describe(Resources, () => {
     fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
     fireEvent.click(getByText(labelClearAll));
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
     expect(getByText(labelAll)).toBeInTheDocument();
     expect(queryByDisplayValue('searching...')).toBeNull();
@@ -1145,6 +1148,8 @@ describe(Resources, () => {
       getByText,
       getByPlaceholderText,
     } = renderResources();
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     fireEvent.click(getByLabelText(labelSearchHelp));
 
