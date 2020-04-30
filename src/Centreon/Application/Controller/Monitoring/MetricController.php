@@ -91,6 +91,42 @@ class MetricController extends AbstractController
     }
 
     /**
+     * convert timestamp to DateTime
+     *
+     * @param integer $timestamp
+     * @param \DateTimeZone $timezone
+     * @return \DateTime
+     */
+    private function formatTimestampToDateTime(int $timestamp, \DateTimeZone $timezone): \DateTime
+    {
+        return (new \DateTime())
+            ->setTimestamp($timestamp)
+            ->setTimezone($timezone);
+    }
+
+    /**
+     * Normalize dates (from timestamp to DateTime using timezone)
+     *
+     * @param array $metrics
+     * @return array The normalized metrics
+     */
+    private function normalizePerformanceMetricsDates(array $metrics): array
+    {
+        $timezone = $this->getUser()->getTimezone();
+
+        $metrics['global']['start'] = $this->formatTimestampToDateTime((int) $metrics['global']['start'], $timezone);
+
+        $metrics['global']['end'] = $this->formatTimestampToDateTime((int) $metrics['global']['end'], $timezone);
+
+        // Normalize ticks
+        foreach ($metrics['times'] as $index => $timestamp) {
+            $metrics['times'][$index] = $this->formatTimestampToDateTime((int) $timestamp, $timezone);
+        }
+
+        return $metrics;
+    }
+
+    /**
      * Validate and extract start/end dates from request parameters
      *
      * @param RequestParametersInterface $requestParameters
@@ -211,6 +247,8 @@ class MetricController extends AbstractController
         $metrics = $this->metricService
             ->filterByContact($contact)
             ->findMetricsByService($service, $start, $end);
+
+        $metrics = $this->normalizePerformanceMetricsDates($metrics);
 
         return $this->view($metrics);
     }

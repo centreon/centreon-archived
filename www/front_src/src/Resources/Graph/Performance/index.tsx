@@ -17,7 +17,8 @@ import { fade, makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData } from '@centreon/ui';
 
-import { formatTo, timeFormat, dateTimeFormat } from '../format';
+import { timeFormat, dateTimeFormat } from '../format';
+import { parseAndFormat } from '../../dateTime';
 import getTimeSeries, { getLegend } from './timeSeries';
 import { GraphData } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
@@ -143,10 +144,10 @@ const PerformanceGraph = ({
   };
 
   const formatXAxisTick = (tick): string =>
-    formatTo({ time: tick, to: xAxisTickFormat });
+    parseAndFormat({ isoDate: tick, to: xAxisTickFormat });
 
   const formatTooltipTime = (tick): string =>
-    formatTo({ time: tick, to: dateTimeFormat });
+    parseAndFormat({ isoDate: tick, to: dateTimeFormat });
 
   return (
     <div className={classes.container}>
