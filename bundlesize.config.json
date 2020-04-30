@@ -1,12 +1,20 @@
 {
   "files": [
     {
-      "path": "www/static/**/main*.js",
-      "maxSize": "500 kB"
+      "path": "www/static/**/runtime~main*.js",
+      "maxSize": "10 kb"
     },
     {
-      "path": "www/static/**/vendors*.js",
-      "maxSize": "2500 kB"
+      "path": "www/static/**/main*.js",
+      "maxSize": "100 kB"
+    },
+    {
+      "path": "www/static/**/vendors~external*.js",
+      "maxSize": "15 kB"
+    },
+    {
+      "path": "www/static/**/vendors~main*.js",
+      "maxSize": "800 kB"
     }
   ]
 }
