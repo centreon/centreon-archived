@@ -408,7 +408,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
         putenv('LANG=' . $lang);
         setlocale(LC_ALL, $lang);
-        bindtextdomain('messages', __DIR__ . '/../../www/locale');
+        bindtextdomain('messages', $this->container->getParameter('translation_path'));
         bind_textdomain_codeset('messages', Contact::DEFAULT_CHARSET);
         textdomain('messages');
     }
