@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { isNil } from 'ramda';
+import { isNil, equals } from 'ramda';
 
-import { makeStyles, useTheme, Grid, Slide } from '@material-ui/core';
+import { makeStyles, useTheme, Grid, Slide, fade } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -363,6 +363,13 @@ const Resources = (): JSX.Element => {
     setDefaultDetailsTabIdToOpen(id);
   };
 
+  const resourceDetailsOpenCondition = {
+    name: 'detailsOpen',
+    condition: ({ details_endpoint }): boolean =>
+      equals(details_endpoint, selectedDetailsEndpoints?.details),
+    color: fade(theme.palette.primary.main, 0.08),
+  };
+
   const hasSelectedResources = selectedResources.length > 0;
 
   const Actions = (
@@ -446,7 +453,10 @@ const Resources = (): JSX.Element => {
             columnConfiguration={columns}
             tableData={listing?.result}
             currentPage={page - 1}
-            rowColorConditions={rowColorConditions(theme)}
+            rowColorConditions={[
+              ...rowColorConditions(theme),
+              resourceDetailsOpenCondition,
+            ]}
             limit={listing?.meta.limit}
             onSort={changeSort}
             onPaginationLimitChanged={changeLimit}

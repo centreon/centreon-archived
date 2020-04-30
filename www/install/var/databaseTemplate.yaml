@@ -2,8 +2,8 @@ database:
   db_configuration:
     dsn: "mysql:host=--ADDRESS--:--DBPORT--;dbname=--CONFDB--"
     username: "--DBUSER--"
-    password: "--DBPASS--"
+    password: '--DBPASS--'
   db_realtime:
     dsn: "mysql:host=--ADDRESS--:--DBPORT--;dbname=--STORAGEDB--"
     username: "--DBUSER--"
-    password: "--DBPASS--"
+    password: '--DBPASS--'
