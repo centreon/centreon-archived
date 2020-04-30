@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Tooltip, IconButton, Box, makeStyles } from '@material-ui/core';
+import { Tooltip, IconButton, Box, Link, makeStyles } from '@material-ui/core';
 import IconHelp from '@material-ui/icons/HelpOutline';
 import IconClose from '@material-ui/icons/HighlightOff';
 
@@ -76,6 +76,14 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
             {` ${labelSearchByHostNameStartingWith} "FR20" ${labelSearchAndHostAliasContaining} "prod"`}
           </li>
         </ul>
+        <i>
+          <b>Tips: </b>
+          get some help while creating your regular expression query at
+          <span> </span>
+          <Link href="https://regex101.com" target="_blank">
+            regex101.com
+          </Link>
+        </i>
       </Box>
     </>
   );
