@@ -111,7 +111,7 @@ class CentreonInstance extends CentreonObject
 
         // Check IPv6, IPv4 and FQDN format
         if (
-            !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_DOMAIN)
+            !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
             && !filter_var($addParams['ns_ip_address'], FILTER_VALIDATE_IP)
         ) {
             throw new CentreonClapiException(self::INCORRECTIPADDRESS);
@@ -139,7 +139,7 @@ class CentreonInstance extends CentreonObject
         // Check IPv6, IPv4 and FQDN format
         if (
             $params[1] == 'ns_ip_address'
-            && !filter_var($params[2], FILTER_VALIDATE_DOMAIN)
+            && !filter_var($params[2], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
             && !filter_var($params[2], FILTER_VALIDATE_IP)
         ) {
             throw new CentreonClapiException(self::INCORRECTIPADDRESS);
