@@ -15,6 +15,8 @@ import {
   labelSearchByHostAliasContaining,
   labelSearchByHostAddressNotContaining,
   labelSearchAndHostAliasContaining,
+  labelTips,
+  labelGetRegexHelp,
 } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
@@ -77,9 +79,8 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
           </li>
         </ul>
         <i>
-          <b>Tips: </b>
-          get some help while creating your regular expression query at
-          <span> </span>
+          <b>{`${labelTips}: `}</b>
+          {`${labelGetRegexHelp} `}
           <Link href="https://regex101.com" target="_blank">
             regex101.com
           </Link>
