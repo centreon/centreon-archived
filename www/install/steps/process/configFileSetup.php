@@ -69,10 +69,16 @@ $patterns = [
     '/--CENTREON_VARLIB--/',
 ];
 
+// escape double quotes and backslashes
+$needle = ['\\', '"'];
+$escape = ['\\\\', '\"'];
+$password = str_replace($needle, $escape, $parameters['db_password']);
+
+
 $replacements = [
     $host,
     $parameters['db_user'],
-    $parameters['db_password'],
+    $password,
     $parameters['db_configuration'],
     $parameters['db_storage'],
     $configuration['centreon_dir'],
