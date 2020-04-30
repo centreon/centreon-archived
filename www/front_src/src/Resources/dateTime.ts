@@ -12,4 +12,9 @@ const getFormattedDate = (isoDate): string =>
 const getFormattedTime = (isoDate): string =>
   parseAndFormat({ isoDate, to: 'HH:mm' });
 
-export { getFormattedDateTime, getFormattedDate, getFormattedTime };
+export {
+  parseAndFormat,
+  getFormattedDateTime,
+  getFormattedDate,
+  getFormattedTime,
+};
