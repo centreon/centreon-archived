@@ -508,11 +508,9 @@ describe(Resources, () => {
 
       fireEvent.click(getByLabelText(`Column ${label}`));
 
-      await waitFor(() =>
-        expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getEndpoint({ sortBy, sortOrder: 'desc' }),
-          cancelTokenRequestParam,
-        ),
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        getEndpoint({ sortBy, sortOrder: 'desc' }),
+        cancelTokenRequestParam,
       );
 
       fireEvent.click(getByLabelText(`Column ${label}`));
