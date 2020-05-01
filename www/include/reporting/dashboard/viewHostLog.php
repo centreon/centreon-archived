@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2018 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -63,23 +64,23 @@ $formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=" . $p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-$hostsRoute = array(
+$hostsRoute = [
     'datasourceOrigin' => 'ajax',
     'multiple' => false,
     'linkedObject' => 'centreonHost',
-	'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-	'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_id&id=' . $id,
-);
+    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_id&id=' . $id,
+];
 $selHost = $formHost->addElement(
     'select2',
     'host',
     _("Host"),
-    array(), 
-	$hostsRoute
+    [], 
+    $hostsRoute
 );
 $selHost->addJsCallback(
-	'change',
-	'this.form.submit();'
+    'change',
+    'this.form.submit();'
 );
 $formHost->addElement(
     'hidden',
