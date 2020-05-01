@@ -425,14 +425,12 @@ describe(Resources, () => {
     async (filterGroup, criterias) => {
       const { getByText } = renderResources();
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
       mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
       selectOption(getByText(labelUnhandledProblems), filterGroup);
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
           getEndpoint({
             resourceTypes: criterias.resourceTypes,
             states: criterias.states,
