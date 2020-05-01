@@ -8,7 +8,6 @@ import {
   waitFor,
   fireEvent,
   RenderResult,
-  within,
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 
