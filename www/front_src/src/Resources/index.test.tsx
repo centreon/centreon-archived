@@ -708,15 +708,11 @@ describe(Resources, () => {
   });
 
   it('displays acknowledgement details when an acknowledged state chip is hovered', async () => {
-    const { getByLabelText, getByText } = renderResources();
+    const { findByLabelText, getByText } = renderResources();
 
     const acknowledgedEntity = entities.find(
       ({ acknowledged }) => acknowledged,
     );
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
@@ -734,8 +730,10 @@ describe(Resources, () => {
 
     const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
 
-    fireEvent.mouseEnter(getByLabelText(chipLabel));
-    fireEvent.mouseOver(getByLabelText(chipLabel));
+    const chip = await findByLabelText(chipLabel);
+
+    fireEvent.mouseEnter(chip);
+    fireEvent.mouseOver(chip);
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(

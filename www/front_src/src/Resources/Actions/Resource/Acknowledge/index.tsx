@@ -64,13 +64,11 @@ const AcknowledgeForm = ({
     validationSchema,
   });
 
-  const hasResources = resources.length > 0;
-
   React.useEffect(() => {
     sendGetUser().then((user) =>
       form.setFieldValue('comment', `${labelAcknowledgedBy} ${user.username}`),
     );
-  }, [hasResources]);
+  }, []);
 
   return (
     <DialogAcknowledge
