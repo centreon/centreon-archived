@@ -457,9 +457,8 @@ describe(Resources, () => {
         getByTitle,
         getByLabelText,
         getByPlaceholderText,
+        findByText,
       } = renderResources();
-
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
       fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
@@ -476,13 +475,7 @@ describe(Resources, () => {
 
       userEvent.click(filterToChange);
 
-      if (selectEndpointMockAction) {
-        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-      }
-
-      const selectedOption = within(getSelectPopover()).getByText(
-        optionToSelect,
-      );
+      const selectedOption = await findByText(optionToSelect);
       userEvent.click(selectedOption);
 
       await waitFor(() =>
@@ -512,10 +505,6 @@ describe(Resources, () => {
     async (id, label, sortField) => {
       const { getByLabelText } = renderResources();
 
-      await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalled();
-      });
-
       mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
       const sortBy = sortField || id;
@@ -523,7 +512,7 @@ describe(Resources, () => {
       fireEvent.click(getByLabelText(`Column ${label}`));
 
       await waitFor(() =>
-        expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
           getEndpoint({ sortBy, sortOrder: 'desc' }),
           cancelTokenRequestParam,
         ),

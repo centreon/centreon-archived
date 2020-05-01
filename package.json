@@ -74,7 +74,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@centreon/ui": "github:centreon/centreon-ui#improve-connected-multi-select ",
+    "@centreon/ui": "github:centreon/centreon-ui",
     "@date-io/moment": "1.3.13",
     "@hot-loader/react-dom": "^16.13.0",
     "@material-ui/core": "^4.9.12",
