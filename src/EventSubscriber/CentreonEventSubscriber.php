@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,6 +38,9 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
@@ -52,6 +56,8 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
@@ -115,13 +121,14 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         return [
             KernelEvents::REQUEST => [
                 ['initRequestParameters', 9],
-                ['defineApiVersionInAttributes', 33]
+                ['defineApiVersionInAttributes', 33],
+                ['initEntityCreator', 7]
             ],
             KernelEvents::RESPONSE => [
                 ['addApiVersion', 10]
             ],
             KernelEvents::EXCEPTION => [
-                ['onKernelException', 10]
+                ['onKernelException', -10]
             ]
         ];
     }
@@ -251,10 +258,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $event->getRequest()->attributes->set('version.not_beta', true);
 
         $uri = $event->getRequest()->getRequestUri();
-        $paths = explode('/', $uri);
-        array_shift($paths);
-        if (count($paths) >= 3) {
-            $requestApiVersion = $paths[2];
+        if (preg_match('/\/api\/([^\/]+)/', $uri, $matches)) {
+            $requestApiVersion = $matches[1];
             if ($requestApiVersion[0] == 'v') {
                 $requestApiVersion = substr($requestApiVersion, 1);
                 $requestApiVersion = VersionHelper::regularizeDepthVersion(
@@ -328,14 +333,17 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     $statusCode
                 )
             );
-        } elseif (!$errorIsBeforeController) {
+        } else {
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
             $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
 
             if ($event->getException() instanceof EntityNotFoundException) {
-                $errorMessage = null;
+                $errorMessage = json_encode([
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'message' => $event->getException()->getMessage()
+                ]);
                 $httpCode = Response::HTTP_NOT_FOUND;
             } elseif ($event->getException() instanceof ValidationFailedException) {
                 $errorMessage = json_encode([
@@ -351,6 +359,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
+            } elseif ($event->getException() instanceof AccessDeniedException) {
+                $httpCode = $event->getException()->getCode();
+                $errorMessage = null;
             } elseif (get_class($event->getException()) == \Exception::class) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
@@ -365,6 +376,20 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             $event->setResponse(
                 new Response($errorMessage, $httpCode)
             );
+        }
+    }
+
+    /**
+     * Set contact if he is logged in
+     */
+    public function initEntityCreator()
+    {
+        if ($this->container->has('security.token_storage')) {
+            if (null !== $token = $this->container->get('security.token_storage')->getToken()) {
+                if (is_object($user = $token->getUser())) {
+                    EntityCreator::setContact($user);
+                }
+            }
         }
     }
 }

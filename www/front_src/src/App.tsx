@@ -7,20 +7,22 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React, { Component, ReactNode } from 'react';
+import { hot } from 'react-hot-loader/root';
+
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { StylesProvider } from '@material-ui/styles';
+
+import { ThemeProvider } from '@centreon/ui';
+
 import Header from './components/header';
 import { history } from './store';
-
 import NavigationComponent from './components/navigation';
 import Tooltip from './components/tooltip';
 import Footer from './components/footer';
 import MainRouter from './components/mainRouter';
 import axios from './axios';
-
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 
 import styles from './App.scss';
@@ -115,8 +117,8 @@ class App extends Component<Props, State> {
     const min = this.getMinArgument();
 
     return (
-      <StylesProvider injectFirst>
-        <ConnectedRouter history={history}>
+      <ConnectedRouter history={history}>
+        <ThemeProvider>
           <div className={styles.wrapper}>
             {!min && <NavigationComponent />}
             <Tooltip />
@@ -145,8 +147,8 @@ class App extends Component<Props, State> {
               onClick={this.goFull}
             />
           </div>
-        </ConnectedRouter>
-      </StylesProvider>
+        </ThemeProvider>
+      </ConnectedRouter>
     );
   }
 }
@@ -159,4 +161,4 @@ const mapDispatchToProps = (dispatch: (any) => void): Props => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default hot(connect(null, mapDispatchToProps)(App));

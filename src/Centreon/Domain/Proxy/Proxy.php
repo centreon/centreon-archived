@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Proxy;
 
-use JMS\Serializer\Annotation as Serializer;
-
 /**
  * This class is designed to represent a proxy configuration.
  *
@@ -30,29 +29,48 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Proxy
 {
+    public const PROTOCOL_HTTP = 'http://';
+    public const PROTOCOL_HTTPS = 'https://';
     /**
-     * @Serializer\Type("string")
+     * @link https://metacpan.org/pod/LWP::Protocol::connect
+     */
+    public const PROTOCOL_CONNECT = 'connect://';
+
+    /**
      * @var string|null
      */
     private $url;
 
     /**
-     * @Serializer\Type("integer")
      * @var int|null
      */
     private $port;
 
     /**
-     * @Serializer\Type("string")
      * @var string|null
      */
     private $user;
 
     /**
-     * @Serializer\Type("string")
      * @var string|null
      */
     private $password;
+
+    /**
+     * @var string Proxy connection protocol (default: Proxy::PROTOCOL_HTTP)
+     */
+    private $protocol;
+
+    /**
+     * @var string[]
+     */
+    private $protocolAvailable = [];
+
+    public function __construct()
+    {
+        $this->protocolAvailable = [self::PROTOCOL_HTTP, self::PROTOCOL_HTTPS, self::PROTOCOL_CONNECT];
+        $this->protocol = self::PROTOCOL_HTTP;
+    }
 
     /**
      * @return string|null
@@ -124,5 +142,57 @@ class Proxy
     {
         $this->password = $password;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        return $this->protocol;
+    }
+
+    /**
+     * @param string $protocol
+     * @return Proxy
+     * @throws \InvalidArgumentException
+     * @see Proxy::PROTOCOL_HTTP
+     * @see Proxy::PROTOCOL_HTTPS
+     * @see Proxy::PROTOCOL_CONNECT
+     */
+    public function setProtocol(string $protocol): Proxy
+    {
+        if (!in_array($protocol, $this->protocolAvailable)) {
+            throw new \InvalidArgumentException('Protocol \'' . $protocol . '\' is not allowed');
+        }
+        $this->protocol = $protocol;
+        return $this;
+    }
+
+    /**
+     * **Formats available:**
+     *
+     * <<procotol>>://<<user>>:<<password>>@<<url>>:<<port>>
+     *
+     * <<procotol>>://<<user>>:<<password>>@<<url>>
+     *
+     * <<procotol>>://<<url>>:<<port>>
+     *
+     * <<procotol>>://<<url>>
+     */
+    public function __toString()
+    {
+        $uri = $this->protocol;
+        if ($this->url !== null) {
+            if ($this->user !== null) {
+                $uri .= $this->user . ':' . $this->password . '@';
+            }
+            if ($this->port !== null && $this->port >= 0) {
+                $uri .= $this->url . ':' . $this->port;
+            } else {
+                $uri .= $this->url;
+            }
+        }
+        return $uri;
     }
 }

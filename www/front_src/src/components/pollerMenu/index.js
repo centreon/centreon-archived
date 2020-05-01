@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable camelcase */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/forbid-prop-types */
@@ -225,7 +226,7 @@ class PollerMenu extends Component {
                       }
 
                       return (
-                        <li className={styles['submenu-top-item']}>
+                        <li key={key} className={styles['submenu-top-item']}>
                           <span className={styles['submenu-top-item-link']}>
                             {message}
                             <span className={styles['submenu-top-count']}>
@@ -242,6 +243,7 @@ class PollerMenu extends Component {
                                 }
                                 return (
                                   <span
+                                    key={poller.name}
                                     className={styles['submenu-top-item-link']}
                                     style={{ padding: '0px 16px 17px' }}
                                   >

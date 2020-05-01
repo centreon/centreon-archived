@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -41,6 +42,8 @@ $centreonLog = new CentreonLog();
  * LDAP auto or manual synchronization feature
  */
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
+
     // Adding two columns to check last user's LDAP sync timestamp
     if (!$pearDB->isColumnExist('contact', 'contact_ldap_last_sync')) {
         //$pearDB = "centreon"
@@ -68,6 +71,8 @@ try {
         2,
         "UPGRADE : 19.10.0-beta.3 Unable to add LDAP new feature's tables in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }
 
 // Initializing reference synchronization time for all LDAP configurations */
@@ -136,6 +141,7 @@ $pearDB->query(
 try {
     // Add trap regexp matching
     if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
+        $pearDB->query('SET SESSION innodb_strict_mode=OFF');
         $pearDB->query(
             "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
         );
@@ -145,33 +151,46 @@ try {
         2,
         "UPGRADE : 19.10.0-beta.3 Unable to modify regexp matching in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }
 
 
 /**
  * Add columns to manage engine & broker restart/reload process
  */
-
-$pearDB->query('
-    ALTER TABLE `nagios_server`
-    ADD COLUMN `engine_start_command` varchar(255) DEFAULT \'service centengine start\' AFTER `monitoring_engine`
-');
-$pearDB->query('
-    ALTER TABLE `nagios_server`
-    ADD COLUMN `engine_stop_command` varchar(255) DEFAULT \'service centengine stop\' AFTER `engine_start_command`
-');
-$pearDB->query('
-    ALTER TABLE `nagios_server`
-    ADD COLUMN `engine_restart_command` varchar(255) DEFAULT \'service centengine restart\' AFTER `engine_stop_command`
-');
-$pearDB->query('
-    ALTER TABLE `nagios_server`
-    ADD COLUMN `engine_reload_command` varchar(255) DEFAULT \'service centengine reload\' AFTER `engine_restart_command`
-');
-$pearDB->query('
-    ALTER TABLE `nagios_server`
-    ADD COLUMN `broker_reload_command` varchar(255) DEFAULT \'service cbd reload\' AFTER `nagios_perfdata`
-');
+try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
+    $pearDB->query('
+        ALTER TABLE `nagios_server`
+        ADD COLUMN `engine_start_command` varchar(255) DEFAULT \'service centengine start\' AFTER `monitoring_engine`
+    ');
+    $pearDB->query('
+        ALTER TABLE `nagios_server`
+        ADD COLUMN `engine_stop_command` varchar(255) DEFAULT \'service centengine stop\' AFTER `engine_start_command`
+    ');
+    $pearDB->query('
+        ALTER TABLE `nagios_server`
+        ADD COLUMN `engine_restart_command` varchar(255)
+        DEFAULT \'service centengine restart\' AFTER `engine_stop_command`
+    ');
+    $pearDB->query('
+        ALTER TABLE `nagios_server`
+        ADD COLUMN `engine_reload_command` varchar(255)
+         DEFAULT \'service centengine reload\' AFTER `engine_restart_command`
+    ');
+    $pearDB->query('
+        ALTER TABLE `nagios_server`
+        ADD COLUMN `broker_reload_command` varchar(255) DEFAULT \'service cbd reload\' AFTER `nagios_perfdata`
+    ');
+} catch (\PDOException $e) {
+    $centreonLog->insertLog(
+        2,
+        "UPGRADE : 19.10.0-beta.3 Unable to manage engine & broker restart and reload processes"
+    );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
+}
 
 $stmt = $pearDB->prepare('
     UPDATE `nagios_server`
@@ -310,7 +329,6 @@ $result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_e
 $cache = $result->fetch();
 
 if ($cache['value']) {
-
     try {
         $pearDB->beginTransaction();
 
@@ -357,7 +375,7 @@ if ($cache['value']) {
 
         $centreonLog->insertLog(
             2, // sql-error.log
-            "UPGRADE : Unable to move rrd global cache option on broker form"
+            "UPGRADE : 19.10.0-beta.3 Unable to move rrd global cache option on broker form"
         );
         $pearDB->rollBack();
     }

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,34 +22,43 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class representing a record of a service group in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class ServiceGroup
+class ServiceGroup implements EntityDescriptorMetadataInterface
 {
+    // Groups for serilizing
+    public const SERIALIZER_GROUP_MAIN = 'sg_main';
+    public const SERIALIZER_GROUP_WITH_HOST = 'sg_with_host';
+
     /**
-     * @Serializer\Groups({"sg_main"})
-     * @Desc(column="servicegroup_id", modifier="setId")
      * @var int
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"sg_with_host"})
      * @var Host[]
      */
     private $hosts = [];
 
     /**
-     * @Serializer\Groups({"sg_main"})
      * @var string|null
      */
     private $name;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'servicegroup_id' => 'setId',
+        ];
+    }
 
     /**
      * @return int
@@ -72,7 +82,7 @@ class ServiceGroup
      * @param Host $host
      * @return ServiceGroup
      */
-    public function addHost(Host $host):ServiceGroup
+    public function addHost(Host $host): ServiceGroup
     {
         $this->hosts[] = $host;
         return $this;

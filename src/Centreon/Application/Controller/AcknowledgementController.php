@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,28 +22,33 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\Request\AckRequest;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Centreon\Domain\Service\JsonValidator\ValidatorException;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Used to manage all requests of hosts acknowledgements
  *
  * @package Centreon\Application\Controller
  */
-class AcknowledgementController extends AbstractFOSRestController
+class AcknowledgementController extends AbstractController
 {
     /**
      * @var AcknowledgementServiceInterface
@@ -60,26 +66,60 @@ class AcknowledgementController extends AbstractFOSRestController
     }
 
     /**
-     * Entry point to find the last hosts acknowledgements.
+     * Entry point to find the hosts acknowledgements.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/acknowledgements/hosts",
-     *     condition="request.attributes.get('version.is_beta') == true")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findLastHostAcknowledgement(RequestParametersInterface $requestParameters): View
+    public function findHostsAcknowledgements(RequestParametersInterface $requestParameters): View
     {
-        $hostsAcknowledgments = $this->acknowledgementService
-            ->filterByContact($this->getUser())
-            ->findLastHostsAcknowledgements();
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $context = (new Context())->setGroups(['ack_main']);
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $hostsAcknowledgements = $this->acknowledgementService
+            ->filterByContact($contact)
+            ->findHostsAcknowledgements();
+
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
 
         return $this->view([
-            'result' => $hostsAcknowledgments,
+            'result' => $hostsAcknowledgements,
+            'meta' => [
+                'pagination' => $requestParameters->toArray(),
+            ],
+        ])->setContext($context);
+    }
+
+    /**
+     * Entry point to find acknowledgements linked to a host.
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @param int $hostId
+     * @return View
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByHost(RequestParametersInterface $requestParameters, int $hostId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $hostsAcknowledgements = $this->acknowledgementService
+            ->filterByContact($this->getUser())
+            ->findAcknowledgementsByHost($hostId);
+
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
+
+        return $this->view([
+            'result' => $hostsAcknowledgements,
             'meta' => [
                 'pagination' => $requestParameters->toArray()
             ]
@@ -87,26 +127,28 @@ class AcknowledgementController extends AbstractFOSRestController
     }
 
     /**
-     * Entry point to find the last services acknowledgements.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/acknowledgements/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     * Entry point to find the services acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findLastServiceAcknowledgement(RequestParametersInterface $requestParameters): View
+    public function findServicesAcknowledgements(RequestParametersInterface $requestParameters): View
     {
-        $servicesAcknowledgments = $this->acknowledgementService
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
-            ->findLastServicesAcknowledgements();
-        $context = (new Context())->setGroups(['ack_main', 'ack_service']);
+            ->findServicesAcknowledgements();
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
 
         return $this->view([
-            'result' => $servicesAcknowledgments,
+            'result' => $servicesAcknowledgements,
             'meta' => [
                 'pagination' => $requestParameters->toArray()
             ]
@@ -114,25 +156,167 @@ class AcknowledgementController extends AbstractFOSRestController
     }
 
     /**
-     * Entry point to add a host acknowledgement.
+     * Entry point to find acknowledgements linked to a service.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/acknowledgements/hosts",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByService(
+        RequestParametersInterface $requestParameters,
+        int $hostId,
+        int $serviceId
+    ): View {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $servicesAcknowledgements = $this->acknowledgementService
+            ->filterByContact($this->getUser())
+            ->findAcknowledgementsByService($hostId, $serviceId);
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
+
+        return $this->view([
+            'result' => $servicesAcknowledgements,
+            'meta' => [
+                'pagination' => $requestParameters->toArray()
+            ]
+        ])->setContext($context);
+    }
+
+    /**
+     * Entry point to add multiple host acknowledgements.
+     *
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
      * @return View
      * @throws \Exception
      */
-    public function addHostAcknowledgement(
+    public function addHostAcknowledgements(
         Request $request,
         EntityValidator $entityValidator,
         SerializerInterface $serializer
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
-         * @var $contact Contact
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var Acknowledgement[] $acknowledgements
+         */
+        $acknowledgements = $serializer->deserialize(
+            (string)$request->getContent(),
+            'array<' . Acknowledgement::class . '>',
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        foreach ($acknowledgements as $acknowledgement) {
+            $errors = $entityValidator->validate(
+                $acknowledgement,
+                null,
+                AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACKS
+            );
+
+            if ($errors->count() > 0) {
+                throw new ValidationFailedException($errors);
+            }
+
+            try {
+                $this->acknowledgementService->addHostAcknowledgement($acknowledgement);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to add multiple service acknowledgements.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function addServiceAcknowledgements(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var Acknowledgement[] $acknowledgements
+         */
+        $acknowledgements = $serializer->deserialize(
+            (string)$request->getContent(),
+            'array<' . Acknowledgement::class . '>',
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        foreach ($acknowledgements as $acknowledgement) {
+            $errors = $entityValidator->validate(
+                $acknowledgement,
+                null,
+                AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACKS
+            );
+
+            if ($errors->count() > 0) {
+                throw new ValidationFailedException($errors);
+            }
+
+            try {
+                $this->acknowledgementService->addServiceAcknowledgement($acknowledgement);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to add a host acknowledgement.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @param int $hostId
+     * @return View
+     * @throws \Exception
+     */
+    public function addHostAcknowledgement(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer,
+        int $hostId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
          */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
@@ -144,79 +328,31 @@ class AcknowledgementController extends AbstractFOSRestController
             AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACK,
             false // To avoid error message for missing fields
         );
+
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var $acknowledgement Acknowledgement
-             */
-            $acknowledgement = $serializer->deserialize(
-                $request->getContent(),
-                Acknowledgement::class,
-                'json'
-            );
-            $this->acknowledgementService
-                ->filterByContact($contact)
-                ->addHostAcknowledgement($acknowledgement);
-            return $this->view();
         }
-    }
 
-    /**
-     * Entry point to disacknowledge an acknowledgement.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/acknowledgements/hosts/{hostId}",
-     *     condition="request.attributes.get('version.is_beta') == true")
-     * @param int $hostId Host id for which we want to cancel the acknowledgement
-     * @return View
-     * @throws \Exception
-     */
-    public function disacknowledgeHostAcknowledgement(int $hostId): View
-    {
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-        $this->acknowledgementService
-            ->filterByContact($contact)
-            ->disacknowledgeHostAcknowledgement($hostId);
-        return $this->view();
-    }
-
-    /**
-     * Entry point to remove a service acknowledgement.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/acknowledgements/hosts/{hostId}/services/{serviceId}",
-     *     condition="request.attributes.get('version.is_beta') == true")
-     * @param int $hostId Host id linked to service
-     * @param int $serviceId Service Id for which we want to cancel the acknowledgement
-     * @return View
-     * @throws \Exception
-     */
-    public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): View
-    {
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+        /**
+         * @var Acknowledgement $acknowledgement
+         */
+        $acknowledgement = $serializer->deserialize(
+            $request->getContent(),
+            Acknowledgement::class,
+            'json'
+        );
+        $acknowledgement->setResourceId($hostId);
 
         $this->acknowledgementService
             ->filterByContact($contact)
-            ->disacknowledgeServiceAcknowledgement($hostId, $serviceId);
+            ->addHostAcknowledgement($acknowledgement);
+
         return $this->view();
     }
 
     /**
      * Entry point to add a service acknowledgement.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/acknowledgements/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -226,8 +362,12 @@ class AcknowledgementController extends AbstractFOSRestController
     public function addServiceAcknowledgement(
         Request $request,
         EntityValidator $entityValidator,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        int $hostId,
+        int $serviceId
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -239,21 +379,328 @@ class AcknowledgementController extends AbstractFOSRestController
             AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
             false // To show errors on not expected fields
         );
+
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var $acknowledgement Acknowledgement
-             */
-            $acknowledgement = $serializer->deserialize(
-                $request->getContent(),
-                Acknowledgement::class,
-                'json'
-            );
-            $this->acknowledgementService
-                ->filterByContact($contact)
-                ->addServiceAcknowledgement($acknowledgement);
-            return $this->view();
         }
+
+        /**
+         * @var Acknowledgement $acknowledgement
+         */
+        $acknowledgement = $serializer->deserialize(
+            $request->getContent(),
+            Acknowledgement::class,
+            'json'
+        );
+        $acknowledgement
+            ->setParentResourceId($hostId)
+            ->setResourceId($serviceId);
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->addServiceAcknowledgement($acknowledgement);
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to disacknowledge an acknowledgement.
+     *
+     * @param int $hostId Host id for which we want to cancel the acknowledgement
+     * @return View
+     * @throws \Exception
+     */
+    public function disacknowledgeHost(int $hostId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->disacknowledgeHost($hostId);
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to remove a service acknowledgement.
+     *
+     * @param int $hostId Host id linked to service
+     * @param int $serviceId Service Id for which we want to cancel the acknowledgement
+     * @return View
+     * @throws \Exception
+     */
+    public function disacknowledgeService(int $hostId, int $serviceId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->disacknowledgeService($hostId, $serviceId);
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to find one acknowledgement.
+     *
+     * @param int $acknowledgementId Acknowledgement id to find
+     * @return View
+     * @throws \Exception
+     */
+    public function findOneAcknowledgement(int $acknowledgementId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+        if (
+            !$contact->isAdmin()
+            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
+                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
+        ) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+        $acknowledgement = $this->acknowledgementService
+            ->filterByContact($contact)
+            ->findOneAcknowledgement($acknowledgementId);
+
+        if ($acknowledgement !== null) {
+            $context = (new Context())
+                ->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE)
+                ->enableMaxDepth();
+
+            return $this->view($acknowledgement)->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+    }
+
+    /**
+     * Entry point to find all acknowledgements.
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     * @throws \Exception
+     */
+    public function findAcknowledgements(RequestParametersInterface $requestParameters): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+        if (
+            !$contact->isAdmin()
+            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
+                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
+        ) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+        $acknowledgements = $this->acknowledgementService
+            ->filterByContact($contact)
+            ->findAcknowledgements();
+
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
+
+        return $this->view([
+            'result' => $acknowledgements,
+            'meta' => [
+                'pagination' => $requestParameters->toArray()
+            ]
+        ])->setContext($context);
+    }
+
+    /**
+     * Entry point to bulk disacknowledge resources (hosts and services)
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function massDisacknowledgeResources(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /**
+         * @var ResourceEntity[] $resources
+         */
+        $resources = $serializer->deserialize(
+            (string)$request->getContent(),
+            'array<' . ResourceEntity::class . '>',
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        //validate input
+        $errorList = new ConstraintViolationList();
+        foreach ($resources as $resource) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                ));
+            } else {
+                throw new \RestBadRequestException('Incorrect resource type for disacknowledgement');
+            }
+        }
+
+        if ($errorList->count() > 0) {
+            throw new ValidationFailedException($errorList);
+        }
+
+        foreach ($resources as $resource) {
+            //start disacknowledgement process
+            try {
+                if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                    $this->acknowledgementService->disacknowledgeService(
+                        (int)$resource->getParent()->getId(),
+                        (int)$resource->getId()
+                    );
+                } else {
+                    $this->acknowledgementService->disacknowledgeHost((int)$resource->getId());
+                }
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to bulk acknowledge resources (hosts and services)
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function massAcknowledgeResources(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        /**
+         * @var AckRequest $ackRequest
+         */
+        $ackRequest = $serializer->deserialize(
+            (string)$request->getContent(),
+            AckRequest::class,
+            'json'
+        );
+
+        $this->acknowledgementService->filterByContact($contact);
+
+        //validate input
+        $errorList = new ConstraintViolationList();
+
+        //validate resources
+        $resources = $ackRequest->getResources() ?? [];
+        foreach ($resources as $resource) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                ));
+            } else {
+                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+            }
+        }
+
+        //validate acknowledgement
+        $acknowledgement = $ackRequest->getAcknowledgement();
+        $errorList->addAll(
+            $entityValidator->validate(
+                $acknowledgement,
+                null,
+                Acknowledgement::VALIDATION_GROUP_ACK_RESOURCE
+            )
+        );
+
+        if ($errorList->count() > 0) {
+            throw new ValidationFailedException($errorList);
+        }
+
+        //set default values [sticky, persistent_comment] to true
+        $acknowledgement->setSticky(true);
+        $acknowledgement->setPersistentComment(true);
+
+        foreach ($resources as $resource) {
+            //start acknowledgement process
+            try {
+                if ($this->hasAckRightsForResource($contact, $resource)) {
+                    $this->acknowledgementService->acknowledgeResource(
+                        $resource,
+                        $acknowledgement
+                    );
+                }
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * @param Contact $contact
+     * @param ResourceEntity $resouce
+     * @return bool
+     */
+    private function hasAckRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    {
+        $hasRights = false;
+
+        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
+        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
+        }
+
+        return $hasRights;
     }
 }

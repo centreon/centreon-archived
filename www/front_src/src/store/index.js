@@ -11,9 +11,8 @@ import createRootReducer from '../redux/reducers';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const paths = window.location.pathname.split('/');
 export const history = createBrowserHistory({
-  basename: `/${paths[1] ? paths[1] : ''}`,
+  basename: document.baseURI.replace(window.location.origin, ''),
 });
 
 const createAppStore = (initialState = {}) => {
@@ -24,14 +23,14 @@ const createAppStore = (initialState = {}) => {
     sagaMiddleware,
   ];
 
-  const store = createStore(
-    createRootReducer(history),
-    initialState,
-    compose(
-      applyMiddleware(...middlewares),
-      window.devToolsExtension ? window.devToolsExtension() : (f) => f,
-    ),
-  );
+  const composeEnhancers =
+    typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+      : compose;
+
+  const enhancer = composeEnhancers(applyMiddleware(...middlewares));
+
+  const store = createStore(createRootReducer(history), initialState, enhancer);
 
   sagaMiddleware.run(sagas);
   return store;

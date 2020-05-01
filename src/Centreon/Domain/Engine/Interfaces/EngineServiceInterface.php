@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,7 @@ namespace Centreon\Domain\Engine\Interfaces;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Check\Check;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
@@ -63,7 +65,7 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function scheduleForcedHostCheck(Host $host): void;
 
     /**
-     * Disacknowledge a host acknowledgement.
+     * Disacknowledge a host.
      *
      * @param Host $host Host to disacknowledge
      * @throws EngineException
@@ -72,7 +74,7 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function disacknowledgeHost(Host $host): void;
 
     /**
-     * Disacknowledge a service acknowledgement.
+     * Disacknowledge a service.
      *
      * @param Service $service Service to disacknowledge
      * @throws EngineException
@@ -81,31 +83,22 @@ interface EngineServiceInterface extends ContactFilterInterface
     public function disacknowledgeService(Service $service): void;
 
     /**
-     * Add a downtime on a host.
+     * Add a downtime on multiple hosts.
      *
      * @param Downtime $downtime Downtime to add on the host
-     * @param Host $host Host for which we want to add the downtime
+     * @param Host $hosts Host for which we want to add the downtime
      * @throws \Exception
      */
     public function addHostDowntime(Downtime $downtime, Host $host): void;
 
     /**
-     * Add a downtime on a service.
+     * Add a downtime on multiple services.
      *
      * @param Downtime $downtime Downtime to add
-     * @param Service $service Service for which we want to add a downtime
+     * @param Service[] $services Service for which we want to add a downtime
      * @throws \Exception
      */
     public function addServiceDowntime(Downtime $downtime, Service $service): void;
-
-    /**
-     * Add a downtime on a list of services.
-     *
-     * @param Downtime $downtime Downtime to add
-     * @param Service[] $services List of service for which we want to add a downtime
-     * @throws \Exception
-     */
-    public function addServicesDowntime(Downtime $downtime, array $services): void;
 
     /**
      * Cancel a downtime.
@@ -115,4 +108,22 @@ interface EngineServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function cancelDowntime(Downtime $downtime, Host $host): void;
+
+    /**
+     * Schedule a host check.
+     *
+     * @param Check $check Check to schedule
+     * @param Host $host Host on which check is scheduled
+     * @throws \Exception
+     */
+    public function scheduleHostCheck(Check $check, Host $host): void;
+
+    /**
+     * Schedule a service check.
+     *
+     * @param Check $check Check to schedule
+     * @param Service $service Service on which check is scheduled
+     * @throws \Exception
+     */
+    public function scheduleServiceCheck(Check $check, Service $service): void;
 }

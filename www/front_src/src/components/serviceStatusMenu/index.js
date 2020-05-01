@@ -19,20 +19,19 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { I18n } from 'react-redux-i18n';
 
-import IconHeader from '@centreon/ui/Icon/IconHeader';
-import IconNumber from '@centreon/ui/Icon/IconNumber';
-import IconToggleSubmenu from '@centreon/ui/Icon/IconToggleSubmenu';
-import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
-import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
-import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
+import {
+  IconHeader,
+  IconNumber,
+  IconToggleSubmenu,
+  SubmenuHeader,
+  SubmenuItem,
+  SubmenuItems,
+} from '@centreon/ui';
 
 import styles from '../header/header.scss';
 import axios from '../../axios';
 
-const numberFormat = yup
-  .number()
-  .required()
-  .integer();
+const numberFormat = yup.number().required().integer();
 
 const statusSchema = yup.object().shape({
   critical: yup.object().shape({
@@ -141,9 +140,11 @@ class ServiceStatusMenu extends Component {
         <SubmenuHeader submenuType="top" active={toggled}>
           <IconHeader
             iconType="services"
-            iconName="services"
+            iconName={I18n.t('Services')}
             onClick={this.toggle}
-          />
+          >
+            {data.pending > 0 && <span className={styles['custom-icon']} />}
+          </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="

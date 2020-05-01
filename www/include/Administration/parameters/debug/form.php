@@ -59,7 +59,7 @@ $form->addElement('checkbox', 'debug_sql', _("SQL debug"));
 $form->addElement('checkbox', 'debug_nagios_import', _("Monitoring Engine Import debug"));
 $form->addElement('checkbox', 'debug_rrdtool', _("RRDTool debug"));
 $form->addElement('checkbox', 'debug_ldap_import', _("LDAP User Import debug"));
-$form->addElement('checkbox', 'debug_centcore', _("Centcore Engine debug"));
+$form->addElement('checkbox', 'debug_gorgone', _("Centreon Gorgone debug"));
 $form->addElement('checkbox', 'debug_centreontrapd', _("Centreontrapd debug"));
 
 $form->applyFilter('__ALL__', 'myTrim');

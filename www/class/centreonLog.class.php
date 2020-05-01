@@ -149,6 +149,7 @@ class CentreonLog
         $this->errorType[2] = $this->path . "/sql-error.log";
         $this->errorType[3] = $this->path . "/ldap.log";
         $this->errorType[4] = $this->path . "/upgrade.log";
+        $this->errorType[5] = $this->path . '/plugin-pack-manager.log';
 
         foreach ($customLogs as $key => $value) {
             if (!preg_match('@' . $this->path . '@', $value)) {

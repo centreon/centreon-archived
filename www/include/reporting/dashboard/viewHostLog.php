@@ -38,10 +38,6 @@ if (!isset($centreon)) {
     exit;
 }
 
-if (!isset($search)) {
-    $search = "";
-}
-
 /*
  * Required files
  */
@@ -50,8 +46,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-isset($_GET["host"]) ? $id = $_GET["host"] : $id = "NULL";
-isset($_POST["host"]) ? $id = $_POST["host"] : htmlentities($id, ENT_QUOTES, "UTF-8");
+$id = filter_var($_GET['host'] ?? $_POST['host'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * Formulary
@@ -127,19 +122,15 @@ if (isset($id)) {
 /*
  * Set host id with period selection form
  */
-if ($id != "NULL") {
+if ($id !== false) {
     $formPeriod->addElement(
         'hidden',
         'host',
         $id
     );
-}
 
-/*
- * Stats Display for selected host
- */
-if (isset($id) && $id != "NULL") {
     /*
+     * Stats Display for selected host
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
@@ -179,25 +170,9 @@ if (isset($id) && $id != "NULL") {
     $tpl->assign("period", $period);
     $tpl->assign("host_id", $id);
     $tpl->assign("Alert", _("Alert"));
-}
-$tpl->assign("resumeTitle", _("Host state"));
 
-/*
- * Rendering Forms
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formPeriod->accept($renderer);
-$tpl->assign('formPeriod', $renderer->toArray());
-
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formHost->accept($renderer);
-$tpl->assign('formHost', $renderer->toArray());
-
-/*
- * Ajax TimeLine and CSV export initialization
- */
-if (isset($id) && $id != "NULL") {
     /*
+     * Ajax TimeLine and CSV export initialization
      * CSV export
      */
     $tpl->assign(
@@ -224,4 +199,17 @@ if (isset($id) && $id != "NULL") {
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
+$tpl->assign("resumeTitle", _("Host state"));
+
+/*
+ * Rendering Forms
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formPeriod->accept($renderer);
+$tpl->assign('formPeriod', $renderer->toArray());
+
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formHost->accept($renderer);
+$tpl->assign('formHost', $renderer->toArray());
+
 $tpl->display("template/viewHostLog.ihtml");

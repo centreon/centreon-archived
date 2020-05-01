@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Proxy",
+  "description": "A proxy",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "user": {
+      "type": ["string", "null"]
+    },
+    "password": {
+      "type": ["string", "null"]
+    },
+    "url": {
+      "type": ["string", "null"]
+    },
+    "port": {
+      "type": "integer"
+    }
+  }
+}

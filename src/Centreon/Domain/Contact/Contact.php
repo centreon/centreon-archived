@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +30,8 @@ class Contact implements UserInterface, ContactInterface
 {
     const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
     const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
+    const ROLE_HOST_CHECK = 'ROLE_HOST_CHECK';
+    const ROLE_SERVICE_CHECK = 'ROLE_SERVICE_CHECK';
     const ROLE_HOST_ACKNOWLEDGEMENT = 'ROLE_HOST_ACKNOWLEDGEMENT';
     const ROLE_HOST_DISACKNOWLEDGEMENT = 'ROLE_HOST_DISACKNOWLEDGEMENT';
     const ROLE_SERVICE_ACKNOWLEDGEMENT = 'ROLE_SERVICE_ACKNOWLEDGEMENT';
@@ -107,6 +110,11 @@ class Contact implements UserInterface, ContactInterface
      * @var string[] List of names of topology rules to which the contact can access
      */
     private $topologyRulesNames = [];
+
+    /**
+     * @var \DateTimeZone $timezone timezone of the user
+     */
+    private $timezone;
 
     /**
      * @return int
@@ -446,5 +454,27 @@ class Contact implements UserInterface, ContactInterface
         if (!in_array($topologyRuleName, $this->topologyRulesNames)) {
             $this->topologyRulesNames[] = $topologyRuleName;
         }
+    }
+
+    /**
+     * timezone setter
+     *
+     * @param \DateTimeZone $timezone
+     * @return self
+     */
+    public function setTimezone(\DateTimeZone $timezone): self
+    {
+        $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
+     * timezone getter
+     *
+     * @return \DateTimeZone
+     */
+    public function getTimezone(): \DateTimeZone
+    {
+        return $this->timezone;
     }
 }

@@ -1,0 +1,10 @@
+Centreon\Application\Request\DowntimeRequest:
+    properties:
+        downtime:
+            type: Centreon\Domain\Downtime\Downtime
+            groups:
+                - 'resource_dt'
+        resources:
+            type: array<Centreon\Domain\Monitoring\Resource>
+            groups:
+                - 'resource_dt'

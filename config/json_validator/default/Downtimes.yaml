@@ -1,26 +1,42 @@
+add_downtimes:
+  type: array
+  items:
+    - allOf:
+      - $ref: "#/$components/downtime"
+      - type: object
+        required:
+          - resource_id
+        properties:
+          resource_id:
+            type: integer
+          parent_resource_id:
+            type: [integer, 'null']
 add_downtime:
-  type: object
-  required:
-    - start_time
-    - end_time
-    - is_fixed
-    - duration
-    - comment
-  properties:
-    start_time:
-      type: string
-      format: date-time
-    end_time:
-      type: string
-      format: date-time
-    is_fixed:
-      type: boolean
-    duration:
-      type: integer
-    author_id:
-      type: integer
-    comment:
-      type: string
-    with_services:
-      type: boolean
-      default: false
+  $ref: "#/$components/downtime"
+$components:
+  downtime:
+    type: object
+    required:
+      - start_time
+      - end_time
+      - is_fixed
+      - duration
+      - comment
+    properties:
+      start_time:
+        type: string
+        format: date-time
+      end_time:
+        type: string
+        format: date-time
+      is_fixed:
+        type: boolean
+      duration:
+        type: integer
+      author_id:
+        type: integer
+      comment:
+        type: string
+      with_services:
+        type: boolean
+        default: false

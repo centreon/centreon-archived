@@ -241,17 +241,7 @@ $extImgStatusmap = array();
 $extImgStatusmap = return_image_list(2);
 
 // Host multiple templates relations stored in DB
-$mTp = array();
-$k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id 
-                            FROM host_template_relation 
-                            WHERE host_host_id = '" . $host_id . "' 
-                            ORDER BY `order`");
-while ($multiTp = $DBRESULT->fetch()) {
-    $mTp[$k] = $multiTp["host_tpl_id"];
-    $k++;
-}
-$DBRESULT->closeCursor();
+$mTp = $hostObj->getSavedTpl($host_id);
 
 
 // Var information to format the element
@@ -296,14 +286,6 @@ $attrHosts = array(
     'availableDatasetRoute' => $hostRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
-);
-$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates'
-    . '&action=list';
-$attrHostTpls = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $hostTplRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonHosttemplates'
 );
 $hostGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
@@ -392,7 +374,7 @@ $form->addElement('select2', 'host_location', _("Timezone / Location"), array(),
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 /*
- * Get deault poller id
+ * Get default poller id
  */
 $DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 $defaultServer = $DBRESULT->fetch();
@@ -456,13 +438,16 @@ $cloneSetMacro[] = $form->addElement(
     array('id' => 'macroFrom_#index#')
 );
 
-
 $cloneSetTemplate = array();
+$listPpTemplate = $hostObj->getLimitedList();
+$listAllTemplate = $hostObj->getList(false, true, null);
+$validTemplate = array_diff_key($listAllTemplate, $listPpTemplate);
+$listTemplate = array(null => null) + $mTp + $validTemplate;
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
     '',
-    (array(null => null) + $hostObj->getList(false, true)),
+    $listTemplate,
     array(
         "id" => "tpSelect_#index#",
         "class" => "select2",
@@ -1060,7 +1045,8 @@ if ($o != "mc") {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
-    if (isset($centreon->optGen["strict_hostParent_poller_management"])
+    if (
+        isset($centreon->optGen["strict_hostParent_poller_management"])
         && $centreon->optGen["strict_hostParent_poller_management"] == 1
     ) {
         $form->registerRule('testPollerDep', 'callback', 'testPollerDep');

@@ -1,17 +1,10 @@
-module.exports = {
-  setupFilesAfterEnv: [
-    '@testing-library/react/cleanup-after-each',
-    '@testing-library/jest-dom/extend-expect',
-  ],
+const merge = require('lodash/merge');
+
+module.exports = merge(require('@centreon/frontend-core/jest'), {
   roots: ['<rootDir>/www/front_src/src/'],
-  transform: {
-    '^.+\\.[jt]sx?$': 'babel-jest',
-  },
-  transformIgnorePatterns: ['/node_modules/(?!@centreon/ui).+\\.jsx?$'],
-  moduleNameMapper: {
-    '\\.(s?css|png|svg)$': 'identity-obj-proxy',
-    '^@centreon/ui/(.*)$': '@centreon/ui/src/$1',
-    '^@centreon/ui$': '@centreon/ui/src',
-  },
-  testPathIgnorePatterns: ['/node_modules/'],
-};
+  setupFilesAfterEnv: [
+    '@testing-library/jest-dom/extend-expect',
+    '<rootDir>/setupTest.js',
+  ],
+  testEnvironment: 'jest-environment-jsdom-sixteen',
+});

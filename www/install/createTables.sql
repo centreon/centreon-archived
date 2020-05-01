@@ -452,9 +452,6 @@ CREATE TABLE `cfg_nagios` (
   `cfg_dir` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
-  `check_result_path` varchar(255) DEFAULT NULL,
-  `use_check_result_path` enum('0','1') DEFAULT '0',
-  `max_check_result_file_age` varchar(255) DEFAULT NULL,
   `status_update_interval` int(11) DEFAULT NULL,
   `nagios_user` varchar(255) DEFAULT NULL,
   `nagios_group` varchar(255) DEFAULT NULL,
@@ -1627,14 +1624,15 @@ CREATE TABLE `nagios_server` (
   `centreonbroker_module_path` varchar(255) DEFAULT NULL,
   `centreonconnector_path` varchar(255) DEFAULT NULL,
   `ssh_port` int(11) DEFAULT NULL,
-  `ssh_private_key` varchar(255) DEFAULT NULL,
+  `gorgone_communication_type` enum('1', '2') NOT NULL DEFAULT '1',
+  `gorgone_port` int(11) DEFAULT NULL,
   `init_script_centreontrapd` varchar(255) DEFAULT NULL,
   `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
   `engine_name` varchar(255) DEFAULT NULL,
   `engine_version` varchar(255) DEFAULT NULL,
   `centreonbroker_logs_path` VARCHAR(255),
   `remote_id` int(11) NULL,
-  `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1',
+  `remote_server_use_as_proxy` enum('0','1') NOT NULL DEFAULT '1',
   `updated` enum('1','0') NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -1662,6 +1660,7 @@ CREATE TABLE `ods_view_details` (
   `contact_id` int(11) DEFAULT NULL,
   `all_user` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`dv_id`),
+  KEY `index_id` (`index_id`),
   KEY `contact_index` (`contact_id`, `index_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

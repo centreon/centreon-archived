@@ -1,0 +1,10 @@
+Centreon\Domain\Monitoring\Icon:
+    properties:
+        name:
+            type: string
+            groups:
+                - 'icon_main'
+        url:
+            type: string
+            groups:
+                - 'icon_main'

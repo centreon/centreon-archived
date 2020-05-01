@@ -117,7 +117,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function getList(): array
     {
-        return $this->postGetRemotesList();
+        $list = [];
+        foreach ($this->postGetRemotesList() as $row) {
+            $row['id'] = (int)$row['id'];
+            $list[] = $row;
+        }
+
+        return $list;
     }
 
     /**
@@ -319,6 +325,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $httpPort = "";
         $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
+
+        // Check IPv6, IPv4 and FQDN format
+        if (!filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) && !filter_var($serverIP, FILTER_VALIDATE_IP)) {
+            return ['error' => true, 'message' => "Invalid IP address"];
+        }
 
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';

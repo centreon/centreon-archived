@@ -1,0 +1,14 @@
+Centreon\Domain\Monitoring\ResourceStatus:
+    properties:
+        code:
+            type: int
+            groups:
+                - 'resource_status_main'
+        name:
+            type: string
+            groups:
+                - 'resource_status_main'
+        severityCode:
+            type: int
+            groups:
+                - 'resource_status_main'

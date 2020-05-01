@@ -51,9 +51,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findById(int $contactId): ?Contact
     {
-        $request = "SELECT * FROM `:db`.contact WHERE contact_id = :contact_id";
-        $request = $this->translateDbName($request);
-        
+        $request = $this->translateDbName(
+            "SELECT contact.*, tz.timezone_name
+            FROM `:db`.contact
+            LEFT JOIN `:db`.timezone tz
+                ON tz.timezone_id = contact.contact_location
+            WHERE contact_id = :contact_id"
+        );
+
         $statement = $this->db->prepare($request);
         $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
 
@@ -73,12 +78,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findByName(string $name): ?Contact
     {
-        $request = 'SELECT * 
-            FROM `:db`.contact 
+        $request = $this->translateDbName(
+            'SELECT contact.*, tz.timezone_name
+            FROM `:db`.contact
+            LEFT JOIN `:db`.timezone tz
+                ON tz.timezone_id = contact.contact_location
             WHERE contact_alias = :username
-            LIMIT 1';
-
-        $request = $this->translateDbName($request);
+            LIMIT 1'
+        );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':username', $name, \PDO::PARAM_STR);
 
@@ -99,14 +106,16 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findBySession(string $sessionId): ?Contact
     {
-        $request = 'SELECT contact.*
+        $request = $this->translateDbName(
+            'SELECT contact.*, tz.timezone_name
             FROM `:db`.contact
+            LEFT JOIN `:db`.timezone tz
+                ON tz.timezone_id = contact.contact_location
             INNER JOIN `:db`.session
               on session.user_id = contact.contact_id
             WHERE session.session_id = :session_id
-            LIMIT 1';
-
-        $request = $this->translateDbName($request);
+            LIMIT 1'
+        );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
         $statement->execute();
@@ -254,7 +263,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 ON actions.acl_action_id = agar.acl_action_id
             LEFT JOIN `:db`.acl_actions_rules rules
                 ON rules.acl_action_rule_id = actions.acl_action_id
-            WHERE contact.contact_id = :contact_id 
+            WHERE contact.contact_id = :contact_id
                 AND rules.acl_action_name IS NOT NULL
             ORDER BY contact.contact_id, rules.acl_action_name';
 
@@ -276,6 +285,10 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     private function createContact(array $contact): Contact
     {
+        $contactTimezoneName = !empty($contact['timezone_name'])
+          ? $contact['timezone_name']
+          : date_default_timezone_get();
+
         return (new Contact())
             ->setId((int) $contact['contact_id'])
             ->setName($contact['contact_name'])
@@ -287,7 +300,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setToken($contact['contact_autologin_key'])
             ->setEncodedPassword($contact['contact_passwd'])
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
-            ->setAccessToApiConfiguration($contact['reach_api'] === '1');
+            ->setAccessToApiConfiguration($contact['reach_api'] === '1')
+            ->setTimezone(new \DateTimeZone($contactTimezoneName));
     }
 
     /**
@@ -299,6 +313,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     private function addActionRule(Contact $contact, string $ruleName): void
     {
         switch ($ruleName) {
+            case 'host_schedule_check':
+            case 'host_schedule_forced_check':
+                $contact->addRole(Contact::ROLE_HOST_CHECK);
+                break;
+            case 'service_schedule_check':
+            case 'service_schedule_forced_check':
+                $contact->addRole(Contact::ROLE_SERVICE_CHECK);
+                break;
             case 'host_acknowledgement':
                 $contact->addRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
                 break;

@@ -8,6 +8,7 @@ import RemoteServerStepThree from '../route-components/remoteServerStep3';
 import ServerConfigurationWizard from '../route-components/serverConfigurationWizard';
 import ExtensionsManagerPage from '../route-components/administration/extensions/manager';
 import NotAllowedPage from '../route-components/notAllowedPage';
+import Resources from '../Resources';
 
 const reactRoutes = [
   {
@@ -45,6 +46,10 @@ const reactRoutes = [
   {
     path: routeMap.notAllowedPage,
     comp: NotAllowedPage,
+  },
+  {
+    path: routeMap.resources,
+    comp: Resources,
   },
 ];
 

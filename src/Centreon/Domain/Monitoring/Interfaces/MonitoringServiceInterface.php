@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +25,10 @@ namespace Centreon\Domain\Monitoring\Interfaces;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\Model\BaseTimelineEvent;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Monitoring\TimelineEvent;
 
 interface MonitoringServiceInterface extends ContactFilterInterface
 {
@@ -43,10 +46,11 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param bool $withHosts Indicates whether hosts groups must be completed with their hosts
      * @param bool $withServices Indicates whether hosts must be completed with their services
+     * @param int $hostId Return only hostgroups for specific host null by default
      * @return HostGroup[]
      * @throws \Exception
      */
-    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array;
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false, int $hostId = null): array;
 
     /**
      * Find a host based on his ID.
@@ -102,4 +106,32 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function isHostExists(int $hostId): bool;
+
+    /**
+     * Indicates whether a service exists.
+     *
+     * @param int $hostId Host id to find
+     * @param int $serviceId Service id to find
+     * @return bool
+     * @throws \Exception
+     */
+    public function isServiceExists(int $hostId, int $serviceId): bool;
+
+    /**
+     * Find all service groups by host and service ids
+     * @param int $hostId
+     * @param int $serviceId
+     * @return array
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
+
+    /**
+     * Find all timeline events for given service by host and service id
+     *
+     * @param int $hostid
+     * @param int $serviceId
+     * @return TimelineEvent[]
+     * @throws \Exception
+     */
+    public function findTimelineEvents(int $hostid, int $serviceId): array;
 }

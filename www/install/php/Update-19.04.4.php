@@ -25,6 +25,8 @@ $centreonLog = new CentreonLog();
  * LDAP auto or manual synchronization feature
  */
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
+
     // Adding two columns to check last user's LDAP sync timestamp
     if (!$pearDB->isColumnExist('contact', 'contact_ldap_last_sync')) {
         //$pearDB = "centreon"
@@ -52,6 +54,8 @@ try {
         2,
         "UPGRADE : 19.04.4 Unable to add LDAP new feature's tables in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }
 
 // Initializing reference synchronization time for all LDAP configurations */
@@ -120,6 +124,7 @@ $pearDB->query(
 try {
     // Add trap regexp matching
     if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
+        $pearDB->query('SET SESSION innodb_strict_mode=OFF');
         $pearDB->query(
             "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
         );
@@ -129,4 +134,6 @@ try {
         2,
         "UPGRADE : 19.04.4 Unable to modify regexp matching in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }

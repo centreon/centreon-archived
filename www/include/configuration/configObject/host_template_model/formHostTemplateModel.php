@@ -275,17 +275,22 @@ $cloneSetMacro[] = $form->addElement(
     )
 );
 
-$cloneSetTemplate = array();
+$cloneSetTemplate = [];
+$listPpTemplate = $hostObj->getLimitedList();
+$listAllTemplate = $hostObj->getList(false, true, null);
+$mTp = $hostObj->getSavedTpl($host_id);
+$validTemplate = array_diff_key($listAllTemplate, $listPpTemplate);
+$listTemplate = [null => null] + $mTp + $validTemplate;
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
     '',
-    (array(null => null) + $hostObj->getList(false, true, $host_id)),
-    array(
+    $listTemplate,
+    [
         "id" => "tpSelect_#index#",
         "class" => "select2",
-        "type" => "select-one"
-    )
+        "type" => "select-one",
+    ]
 );
 
 /*

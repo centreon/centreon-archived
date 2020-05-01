@@ -25,7 +25,7 @@ print_step_begin "System analysis"
 
 # Unattended install script only support Red Hat or compatible.
 if [ \! -e /etc/redhat-release ] ; then
-  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
+  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/20.04/en/installation/introduction.html for alternative installation methods."
 fi
 rhrelease=`cat /etc/redhat-release`
 case "$rhrelease" in
@@ -33,7 +33,7 @@ case "$rhrelease" in
     # Good to go.
     ;;
   *)
-    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
+    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/20.04/en/installation/introduction.html for alternative installation methods."
     ;;
 esac
 
@@ -89,9 +89,9 @@ if [ "x$?" '!=' x0 ] ; then
     error_and_exit "Could not install Software Collections repository (package centos-release-scl)"
   fi
 fi
-rpm -q centreon-release-19.10 > /dev/null 2>&1
+rpm -q centreon-release-20.04 > /dev/null 2>&1
 if [ "x$?" '!=' x0 ] ; then
-  yum -q install -y --nogpgcheck http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
+  yum -q install -y --nogpgcheck http://yum.centreon.com/standard/20.04/el7/stable/noarch/RPMS/centreon-release-20.04-1.el7.centos.noarch.rpm
   if [ "x$?" '!=' x0 ] ; then
     error_and_exit "Could not install Centreon repository"
   fi
@@ -151,7 +151,7 @@ fi
 
 print_step_begin "Services configuration"
 if [ "x$has_systemd" '=' x1 ] ; then
-  systemctl enable httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd centcore centreontrapd cbd centengine centreon
+  systemctl enable httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd gorgoned centreontrapd cbd centengine centreon
   systemctl restart httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd
   print_step_end
 else
@@ -166,4 +166,4 @@ echo
 echo "Centreon was successfully installed !"
 echo
 echo "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
-echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/docs/centreon/en/19.10/installation/from_packages.html#configuration"
+echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/20.04/en/installation/web-and-post-installation.html"

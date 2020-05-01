@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +22,15 @@
 namespace Tests\Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Monitoring\Entity\CommentEventObject;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Monitoring\TimelineEvent;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -309,5 +313,102 @@ class MonitoringServiceTest extends TestCase
         // Second test when the 'findOneHost' returns null
         $isHostExist = $monitoringService->isHostExists($host->getId());
         $this->assertfalse($isHostExist);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testIsServiceExist()
+    {
+        $host = (new Host())
+            ->setId(1)
+            ->setDisplayName('test');
+
+        $service = (new Service())
+            ->setId(1)
+            ->setHost($host);
+
+        $repository = $this->createMock(MonitoringRepositoryInterface::class);
+
+        $repository->expects(self::any())
+            ->method('findOneService')
+            ->with($host->getId(), $service->getId())
+            ->willReturn($service, null);
+
+        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+        $monitoringService = new MonitoringService($repository, $accessGroup);
+
+        $exists = $monitoringService->isServiceExists($host->getId(), $service->getId());
+        $this->assertTrue($exists);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function findServiceGroupsByHostAndService()
+    {
+        $service = (new Service())
+            ->setId(1)
+            ->setDisplayName('test');
+
+        $host = (new Host())
+            ->setId(2)
+            ->setDisplayName('test');
+        $host->addService($service);
+
+        $serviceGroup = (new ServiceGroup())
+            ->setId(3)
+            ->setHosts([$host]);
+
+        $repository = $this->createMock(MonitoringRepositoryInterface::class);
+
+        $repository->expects(self::any())
+            ->method('findServiceGroupsByHostAndService')
+            ->with($host->getId(), $service->getId())
+            ->willReturn([$serviceGroup]); // values returned for the all next tests
+
+        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+
+        $monitoringService = new MonitoringService($repository, $accessGroup);
+        /**
+         * @var ServiceGroup[] $servicesGroupsFound
+         */
+        $servicesGroupsFound = $monitoringService->findServiceGroupsByHostAndService($host->getId(), $service->getId());
+        $this->assertCount(
+            1,
+            $servicesGroupsFound,
+            "Error, this method must relay the 'findServiceGroupsByHostAndService' method of the monitoring repository"
+        );
+        $this->assertEquals($serviceGroup->getId(), $servicesGroupsFound[0]->getId());
+        $this->assertEquals($host->getId(), $serviceGroup->getHosts()[0]->getId());
+        $this->assertEquals($service->getId(), $serviceGroup->getHosts()[0]->getServices()[0]->getId());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function findTimelineEvents()
+    {
+        $commentObject = new CommentEventObject();
+        $timelineEvent = new TimelineEvent($commentObject);
+        $repository = $this->createMock(TimelineRepositoryInterface::class);
+
+        $repository->expects(self::any())
+            ->method('findTimelineEvents')
+            ->with(2, 2)
+            ->willReturn([$timelineEvent]); // values returned for the all next tests
+
+        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+
+        $monitoringService = new MonitoringService($repository, $accessGroup);
+        /**
+         * @var TimelineEvent[] $timelineEventsFound
+         */
+        $timelineEventsFound = $monitoringService->findTimelineEvents(2, 2);
+        $this->assertCount(
+            1,
+            $timelineEventsFound,
+            "Error, this method must relay the 'findTimelineEvents' method of the timeline repository"
+        );
     }
 }

@@ -13,7 +13,8 @@ parameters:
     database_user: "%env(user)%"
     database_password: "%env(password)%"
     centreon_var_lib: "%env(_CENTREON_VARLIB_)%"
-    validation_path: "%env(_CENTREON_PATH_)%config/packages/validator/validation.yaml"
+    validation_path: "%env(_CENTREON_PATH_)%config/packages/validator"
+    centreon_path: "%env(_CENTREON_PATH_)%"
 
 services:
     # Default configuration for services in *this* file
@@ -40,6 +41,13 @@ services:
     Centreon\Domain\Entity\EntityValidator:
         class: Centreon\Domain\Entity\EntityValidator
         arguments: ['%validation_path%']
+
+    Pimple\Container:
+        factory: ['Centreon\LegacyContainer', 'getInstance']
+
+    Centreon\Application\Controller\Router:
+        decorates: 'router'
+        arguments: ['@Centreon\Application\Controller\Router.inner']
 
 imports:
     resource: './Modules/*.yaml'

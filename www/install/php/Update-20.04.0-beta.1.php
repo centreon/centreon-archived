@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
@@ -29,6 +31,7 @@ $errorMessage = '';
  */
 try {
     $pearDB->beginTransaction();
+
     /*
      * Move broker xml files to json format
      */
@@ -121,6 +124,14 @@ try {
             7,
             'countConnections',
             '{\"target\": \"connections_count\"}'
+        ),
+        (
+            (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'storage'),
+            (SELECT `cb_field_id` FROM `cb_field` WHERE `fieldname` = 'connections_count'),
+            0,
+            7,
+            'countConnections',
+            '{\"target\": \"connections_count\"}'
         )"
     );
 
@@ -154,12 +165,5 @@ try {
         " - Code : " . (int)$e->getCode() .
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
-    );
-}
-
-if (empty($errorMessage)) {
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . " - Successful Update"
     );
 }

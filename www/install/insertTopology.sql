@@ -79,7 +79,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topo
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (124,'LDAP',501,50113,50,1,'./include/Administration/parameters/parameters.php','&o=ldap','0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (125,'RRDTool',501,50114,60,1,'./include/Administration/parameters/parameters.php','&o=rrdtool','0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (126,'Debug',501,50115,70,1,'./include/Administration/parameters/parameters.php','&o=debug','0','0','1',NULL,NULL,NULL,'1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (128,'CentCore',501,50117,25,1,'./include/Administration/parameters/parameters.php','&o=centcore','0','0','1',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (128,'Gorgone',501,50117,25,1,'./include/Administration/parameters/parameters.php','&o=gorgone','0','0','1',NULL,NULL,NULL,'1');
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (97,'Performance Management',501,NULL,20,10,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (129,'Options',501,50118,15,10,'./include/Administration/parameters/parameters.php','&o=storage','0','0','1',NULL,NULL,NULL,'1');
@@ -184,6 +184,9 @@ INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_p
 -- Insert Extensions Manager entry
 INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`) VALUES ('Manager', '/administration/extensions/manager', '1', '1', 507, 50709, 1);
 
+-- Add unified view page entry
+INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Events view (beta)', '/monitoring/events', '1', '1', 1, 104, 1, 2);
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,4 +281,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-

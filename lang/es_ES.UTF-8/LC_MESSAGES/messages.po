@@ -2581,6 +2581,9 @@ msgstr "Iniciar sesión"
 msgid "Password"
 msgstr "Contraseña"
 
+msgid "Username"
+msgstr "Nombre de usuario"
+
 #: centreon-web/www/install/steps/step5.php:80
 msgid "Confirm password"
 msgstr "confirmar la contraseña"
@@ -3241,8 +3244,8 @@ msgstr "Los archivos SQL se encuentran en %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:87
 #, php-format
-msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
-msgstr ""
+#~ msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+#~ msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
@@ -3265,6 +3268,19 @@ msgstr "Se recomienda encarecidamente realizar una copia de seguridad de sus bas
 #: centreon-web/www/install/step_upgrade/step3.php:46
 msgid "Release notes"
 msgstr "Notas de lanzamiento"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Everything is ready !"
+msgstr "Todo está listo !"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Your Centreon Platform is about to be upgraded from version "
+msgstr "Su plataforma Centreon está a punto de ser actualizada de la versión "
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "For further details on changes, please find the complete changelog on "
+msgstr "Para más detalles sobre los cambios, por favor encuentre el registro completo de cambios en "
+
 
 #: centreon-web/www/install/step_upgrade/step5.php:44
 msgid "Upgrade finished"
@@ -4029,13 +4045,13 @@ msgstr "Cambiar las opciones de Centcore"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:61
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
-msgid "Enable Broker Statistics Collection"
+msgid "Enable Broker statistics collection"
 msgstr "Habilitar la recuperación de archivos de estadísticas de componentes de Centreon Broker"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Tiempo máximo para ejecutar comandos centcore."
+msgid "Timeout value for Gorgone commands"
+msgstr "Tiempo máximo para ejecutar comandos Gorgone."
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
@@ -4595,8 +4611,8 @@ msgid "LDAP User Import debug"
 msgstr "Depuración de las importaciones de usuarios LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Depurando el motor de Centcore"
+msgid "Centreon Gorgone debug"
+msgstr "Depurando de Centreon Gorgone "
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -7735,14 +7751,6 @@ msgstr "Archivo de configuracion principal"
 msgid "Temp File"
 msgstr "Archivo temporal"
 
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:165
-msgid "Check result directory"
-msgstr "Directorio en caché"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:166
-msgid "Max Check Result File Age"
-msgstr "Edad máxima del archivo de caché"
-
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:171
 msgid "Monitoring system User"
 msgstr "Sistema de supervisión del usuario"
@@ -8436,10 +8444,6 @@ msgstr "directorios"
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:873
 msgid "Host Check Options"
 msgstr "Opciones de control de host"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:875
-msgid "Result Cache"
-msgstr "Resultados de caching"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:876
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:642
@@ -10210,7 +10214,7 @@ msgstr "Argumentos claros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:214
 msgid "Describe macros"
-msgstr "Describe los marcros"
+msgstr "Describe los macros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:215
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:364
@@ -11249,8 +11253,8 @@ msgid "Server Information"
 msgstr "Información del servidor"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:102
-msgid "SSH Information"
-msgstr "Información SSH"
+msgid "Gorgone Information"
+msgstr "Información Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"
@@ -14032,9 +14036,6 @@ msgstr "cubo de basura"
 #~ msgid "On Problem Host"
 #~ msgstr "Sobre el problema del huésped."
 
-#~ msgid "Unhandled"
-#~ msgstr "No tratados"
-
 #~ msgid "Unhandled Service problems (last %s)"
 #~ msgstr ""
 #~ "awk: cmd. line:1: (FILENAME=- FNR=1) fatal: not enough arguments to satisfy format string\n"
@@ -14295,3 +14296,195 @@ msgstr "Adjunte Remote Servers adicionales"
 
 #~ msgid "This value needs to be an integer lesser than"
 #~ msgstr ""
+
+msgid "IP address or hostname"
+msgstr "Dirección IP o nombre de host"
+
+msgid "Use SSL/TLS"
+msgstr "Use SSL/TLS"
+
+msgid "Allow self signed certificate"
+msgstr "Permitir certificado autofirmado"
+
+msgid "Acknowledged by"
+msgstr ""
+
+msgid "Acknowledge services attached to host"
+msgstr ""
+
+msgid "at"
+msgstr ""
+
+msgid "Clear all"
+msgstr ""
+
+msgid "Criterias"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Command copied to clipboard"
+msgstr ""
+
+msgid "Current notification number"
+msgstr ""
+
+msgid "Current state duration"
+msgstr ""
+
+msgid "Downtime duration"
+msgstr ""
+
+msgid "End date must be greater than start date"
+msgstr ""
+
+msgid "End time"
+msgstr ""
+
+msgid "Is this resource flapping?"
+msgstr ""
+
+msgid "Show criterias filters"
+msgstr ""
+
+msgid "Start date"
+msgstr ""
+
+msgid "Change start date"
+msgstr ""
+
+msgid "Change start time"
+msgstr ""
+
+msgid "Host group"
+msgstr ""
+
+msgid "Downtime"
+msgstr ""
+
+msgid "In downtime"
+msgstr ""
+
+msgid "Last 24 hours"
+msgstr ""
+
+msgid "Last 7 days"
+msgstr ""
+
+msgid "Last 31 days"
+msgstr ""
+
+msgid "Set downtime on"
+msgstr ""
+
+msgid "Downtime set by"
+msgstr ""
+
+msgid "Set downtime on services attached to host"
+msgstr ""
+
+msgid "Last notification"
+msgstr ""
+
+msgid "Last state change"
+msgstr ""
+
+msgid "Next check"
+msgstr ""
+
+msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Percent state change"
+msgstr ""
+
+msgid "Resource name"
+msgstr ""
+
+msgid "Resource problems"
+msgstr ""
+
+msgid "Rows per page"
+msgstr ""
+
+msgid "of"
+msgstr ""
+
+msgid "More"
+msgstr ""
+
+msgid "Disable autorefresh"
+msgstr ""
+
+msgid "Enable autorefresh"
+msgstr ""
+
+msgid "Search help"
+msgstr ""
+
+msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
+msgstr ""
+
+msgid "You can use regular expression syntax to retrieve more relevant results"
+msgstr ""
+
+msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
+msgstr ""
+
+msgid "Some examples:"
+msgstr ""
+
+msgid "will display resources with host name starting by'"
+msgstr ""
+
+msgid "will display resources with service description finishing by"
+msgstr ""
+
+msgid "will display all resources with host having alias containing"
+msgstr ""
+
+msgid "will display resources having FQDN that doesn't contain"
+msgstr ""
+
+msgid "and host alias containing"
+msgstr ""
+
+msgid "Service group"
+msgstr ""
+
+msgid "State filter"
+msgstr ""
+
+msgid "Acknowledge command sent"
+msgstr ""
+
+msgid "Downtime command sent"
+msgstr ""
+
+msgid "Check command sent"
+msgstr ""
+
+msgid "Type of resource"
+msgstr ""
+
+msgid "Unhandled problems"
+msgstr ""
+
+msgid "Unhandled"
+msgstr "No tratados"
+
+msgid "Oops, something went wrong"
+msgstr ""
+
+msgid "Seems that your Apache configuration is not up-to-date"
+msgstr ""
+
+msgid "Contact your Centreon administrator or update the following file"
+msgstr ""
+
+msgid "See Documentation"
+msgstr ""

@@ -1,0 +1,10 @@
+Centreon\Domain\Monitoring\Entity\AckEventObject:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'ack_event_list'
+        author:
+            type: string
+            groups:
+                - 'ack_event_list'
