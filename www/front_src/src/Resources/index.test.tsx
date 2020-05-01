@@ -5,7 +5,6 @@ import axios from 'axios';
 import formatISO from 'date-fns/formatISO';
 import {
   render,
-  cleanup,
   waitFor,
   fireEvent,
   RenderResult,
@@ -25,7 +24,7 @@ import {
   last,
 } from 'ramda';
 
-import { ThemeProvider, SearchField } from '@centreon/ui';
+import { ThemeProvider } from '@centreon/ui';
 
 import userEvent from '@testing-library/user-event';
 import {
@@ -290,6 +289,9 @@ const mockedLocalStorageSetItem = jest.fn();
 Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
 
+window.clearInterval = jest.fn();
+window.setInterval = jest.fn();
+
 const renderResources = (): RenderResult =>
   render(
     <ThemeProvider>
@@ -299,8 +301,6 @@ const renderResources = (): RenderResult =>
 
 describe(Resources, () => {
   afterEach(() => {
-    cleanup();
-
     useSelector.mockClear();
     mockedAxios.get.mockReset();
     mockedAxios.post.mockReset();
@@ -432,7 +432,7 @@ describe(Resources, () => {
 
       selectOption(getByText(labelUnhandledProblems), filterGroup);
 
-      await waitFor(() =>
+      await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getEndpoint({
             resourceTypes: criterias.resourceTypes,
@@ -440,8 +440,8 @@ describe(Resources, () => {
             statuses: criterias.statuses,
           }),
           cancelTokenRequestParam,
-        ),
-      );
+        );
+      });
     },
   );
 
@@ -477,7 +477,6 @@ describe(Resources, () => {
       userEvent.click(filterToChange);
 
       if (selectEndpointMockAction) {
-        // wait until ConnectedMultiSelect options have been fetched.
         await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
       }
 
@@ -1093,26 +1092,24 @@ describe(Resources, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
-    // await waitFor(() =>
     expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
       filterStorageKey,
       JSON.stringify(allFilter),
     );
-    // );
 
     fireEvent.change(getByPlaceholderText(labelResourceName), {
       target: { value: 'searching...' },
     });
 
-    // await waitFor(() =>
-    expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
-      filterStorageKey,
-      JSON.stringify({
-        ...allFilter,
-        search: 'searching...',
-      }),
+    await waitFor(() =>
+      expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
+        filterStorageKey,
+        JSON.stringify({
+          ...allFilter,
+          search: 'searching...',
+        }),
+      ),
     );
-    // );
   });
 
   it('clears all filters and set filter group to all when the clear all button is clicked', async () => {
