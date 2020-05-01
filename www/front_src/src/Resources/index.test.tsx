@@ -75,7 +75,7 @@ import {
 
 import Resources from '.';
 
-import { selectOption, getSelectPopover } from './testUtils';
+import { selectOption } from './testUtils';
 import { allFilter } from './Filter/models';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
