@@ -324,85 +324,85 @@ describe(Resources, () => {
     });
   };
 
-  // it('displays first part of information when multiple (split by \n) are available', async () => {
-  //   const { getByText, queryByText } = renderResources();
+  it('displays first part of information when multiple (split by \n) are available', async () => {
+    const { getByText, queryByText } = renderResources();
 
-  //   await waitFor(() => {
-  //     expect(mockedAxios.get).toHaveBeenCalled();
-  //   });
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
 
-  //   const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
-  //     where({ information: contains('\n') }),
-  //     retrievedListing.result,
-  //   );
+    const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
+      where({ information: contains('\n') }),
+      retrievedListing.result,
+    );
 
-  //   resourcesWithMultipleLines.forEach(({ information }) => {
-  //     expect(
-  //       getByText(pipe(split('\n'), head)(information)),
-  //     ).toBeInTheDocument();
-  //     expect(queryByText(information)).not.toBeInTheDocument();
-  //   });
+    resourcesWithMultipleLines.forEach(({ information }) => {
+      expect(
+        getByText(pipe(split('\n'), head)(information)),
+      ).toBeInTheDocument();
+      expect(queryByText(information)).not.toBeInTheDocument();
+    });
 
-  //   resourcesWithSingleLines.forEach(({ information }) => {
-  //     expect(getByText(information)).toBeInTheDocument();
-  //   });
-  // });
+    resourcesWithSingleLines.forEach(({ information }) => {
+      expect(getByText(information)).toBeInTheDocument();
+    });
+  });
 
-  // it('expands criterias filters when the expand icon is clicked', async () => {
-  //   const { getByLabelText, queryByText } = renderResources();
+  it('expands criterias filters when the expand icon is clicked', async () => {
+    const { getByLabelText, queryByText } = renderResources();
 
-  //   await waitFor(() => {
-  //     expect(queryByText(labelTypeOfResource)).not.toBeVisible();
-  //   });
+    await waitFor(() => {
+      expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+    });
 
-  //   fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
-  //   await waitFor(() => {
-  //     expect(queryByText(labelTypeOfResource)).toBeVisible();
-  //   });
-  // });
+    await waitFor(() => {
+      expect(queryByText(labelTypeOfResource)).toBeVisible();
+    });
+  });
 
-  // it('executes a listing request with "Unhandled problems" filter group by default', async () => {
-  //   renderResources();
+  it('executes a listing request with "Unhandled problems" filter group by default', async () => {
+    renderResources();
 
-  //   await waitFor(() =>
-  //     expect(mockedAxios.get).toHaveBeenCalledWith(
-  //       getEndpoint({}),
-  //       cancelTokenRequestParam,
-  //     ),
-  //   );
-  // });
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({}),
+        cancelTokenRequestParam,
+      ),
+    );
+  });
 
-  // it('executes a listing request when a search is typed and enter key is pressed', async () => {
-  //   const { getByPlaceholderText } = render(<Resources />);
+  it('executes a listing request when a search is typed and enter key is pressed', async () => {
+    const { getByPlaceholderText } = render(<Resources />);
 
-  //   const fieldSearchValue = 'foobar';
+    const fieldSearchValue = 'foobar';
 
-  //   const searchInput = getByPlaceholderText(labelResourceName);
+    const searchInput = getByPlaceholderText(labelResourceName);
 
-  //   fireEvent.change(searchInput, {
-  //     target: { value: fieldSearchValue },
-  //   });
+    fireEvent.change(searchInput, {
+      target: { value: fieldSearchValue },
+    });
 
-  //   mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-  //   Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
+    Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
 
-  //   await waitFor(() =>
-  //     expect(mockedAxios.get).toHaveBeenCalledWith(
-  //       getEndpoint({
-  //         search: {
-  //           mode: '$or',
-  //           fieldPatterns: searchableFields.map((searchableField) => ({
-  //             field: searchableField,
-  //             value: fieldSearchValue,
-  //           })),
-  //         },
-  //       }),
-  //       cancelTokenRequestParam,
-  //     ),
-  //   );
-  // });
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        getEndpoint({
+          search: {
+            mode: '$or',
+            fieldPatterns: searchableFields.map((searchableField) => ({
+              field: searchableField,
+              value: fieldSearchValue,
+            })),
+          },
+        }),
+        cancelTokenRequestParam,
+      ),
+    );
+  });
 
   it.each([
     [
