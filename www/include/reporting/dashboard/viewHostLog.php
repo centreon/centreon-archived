@@ -68,8 +68,10 @@ $hostsRoute = [
     'datasourceOrigin' => 'ajax',
     'multiple' => false,
     'linkedObject' => 'centreonHost',
-    'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
-    'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_id&id=' . $id,
+    'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_host&action=list',
+    'defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_host&action=defaultValues'
+        . '&target=host&field=host_id&id=' . $id,
+    'allowClear' => false,
 ];
 $selHost = $formHost->addElement(
     'select2',
@@ -165,7 +167,6 @@ if (isset($id) && $id != "NULL") {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign("name", $hosts[$id]);
     $tpl->assign("totalAlert", $hostStats["TOTAL_ALERTS"]);
     $tpl->assign("totalTime", $hostStats["TOTAL_TIME_F"]);
     $tpl->assign("summary", $hostStats);
