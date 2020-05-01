@@ -1,8 +1,8 @@
 #!@PHP_BIN@
 <?php
-/**
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+/*
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -20,11 +20,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give CENTREON
+ * As a special exception, the copyright holders of this program give Centreon
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of CENTREON choice, provided that
- * CENTREON also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -38,18 +38,18 @@ $debug = 0;
 
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__) . '/../config/centreon.config.php');
+require_once realpath(__DIR__ . "/../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../bootstrap.php");
 
-define('APPLICATION_PATH', realpath(dirname(__FILE__)));
+define('APPLICATION_PATH', realpath(__DIR__));
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath(APPLICATION_PATH . '/../lib'),
     realpath(APPLICATION_PATH . '/../www/class/centreon-clapi'),
     get_include_path()
 )));
 
-define('_CLAPI_LIB_', realpath(dirname(__FILE__)) . "/../lib");
-define('_CLAPI_CLASS_', realpath(dirname(__FILE__)) . "/../www/class/centreon-clapi");
+define('_CLAPI_LIB_', realpath(__DIR__ . "/../lib"));
+define('_CLAPI_CLASS_', realpath(__DIR__ . "/../www/class/centreon-clapi"));
 
 global $version;
 
@@ -121,9 +121,9 @@ $db_storage = $dependencyInjector['realtime_db'];
  */
 CentreonClapi\CentreonUtils::setUserName($options['u']);
 $api = CentreonClapi\CentreonAPI::getInstance(
-    (isset($options["u"]) ? $options["u"] : ""),
-    (isset($options["p"]) ? $options["p"] : ""),
-    (isset($options["a"]) ? $options["a"] : ""),
+    ($options["u"] ?? ""),
+    ($options["p"] ?? ""),
+    ($options["a"] ?? ""),
     $centreon_path,
     $options,
     $dependencyInjector
@@ -138,7 +138,6 @@ if (isset($options["V"])) {
 }
 
 if (isset($options["w"]) && $options['o'] == "CentreonWorker" && !empty($options["u"]) && !empty($options["p"])){
-
     $api->setLogin($options["u"]);
     $api->setPassword($options["p"]);
     $api->checkUser($useSha1, true);
@@ -157,9 +156,6 @@ if (isset($options["w"]) && $options['o'] == "CentreonWorker" && !empty($options
     }
 }
 
-/**
- * Now works
- */
 if ($api->login == "" || $api->password == "") {
     if (file_exists($_SERVER["HOME"] . "/.centreonApi")) {
         $uid = posix_getpwuid(fileowner($_SERVER["HOME"] . "/.centreonApi"));

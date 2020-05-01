@@ -142,7 +142,8 @@ function tidySearchKey($search, $advanced_search)
     if ($advanced_search == 1) {
         if (isset($search) && !strstr($search, "*") && !strstr($search, "%")) {
             $search = "'" . $search . "'";
-        } elseif (isset($search) &&
+        } elseif (
+            isset($search) &&
             isset($search[0]) &&
             isset($search[strlen($search) - 1]) &&
             $search[0] == "%" &&
@@ -161,36 +162,37 @@ function tidySearchKey($search, $advanced_search)
 
 #
 
+/**
+ * Allows to load Smarty's configuration in relation to a path
+ *
+ * @param {string} [$path=null] Path to the default template directory
+ * @param {object} [$tpl=null] A Smarty instance
+ * @param {string} [$subDir=null] A subdirectory of path
+ *
+ * @return {empty|object} A Smarty instance with configuration parameters
+ */
 function initSmartyTpl($path = null, $tpl = null, $subDir = null)
 {
     if (!$tpl) {
         return;
     }
     $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = "../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = "../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = "../GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = "../GPL_LIB/smarty-plugins";
+    $tpl->compile_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/compile";
+    $tpl->config_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/config";
+    $tpl->cache_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/cache";
+    $tpl->plugins_dir[] = __DIR__ . "/../../../GPL_LIB/smarty-plugins";
     $tpl->caching = 0;
     $tpl->compile_check = true;
     $tpl->force_compile = true;
     return $tpl;
 }
 
-function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centreon_path = null)
+/**
+ * This function is mainly used in widgets
+ */
+function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centreonPath = null)
 {
-    if (!$tpl) {
-        return;
-    }
-    $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = _CENTREON_PATH_ . "/GPL_LIB/smarty-plugins";
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
-    return $tpl;
+    return initSmartyTpl($path, $tpl, $subDir);
 }
 
 /*
@@ -364,7 +366,7 @@ function getMyHostGroups($host_id = null)
     return $hgs;
 }
 
-function getMyHostField($host_id = null, $field)
+function getMyHostField($host_id, $field)
 {
     if (!$host_id) {
         return;
@@ -388,7 +390,7 @@ function getMyHostField($host_id = null, $field)
     return null;
 }
 
-function getMyHostFieldOnHost($host_id = null, $field)
+function getMyHostFieldOnHost($host_id, $field)
 {
     global $pearDB;
 
@@ -501,7 +503,7 @@ function getMyHostMacroFromMultiTemplates($host_id, $field)
     return null;
 }
 
-function getMyHostMacro($host_id = null, $field)
+function getMyHostMacro($host_id, $field)
 {
     if (!$host_id) {
         return;
@@ -574,7 +576,7 @@ function getMyCategorieName($sc_id = null)
     return $row["sc_name"];
 }
 
-function getMyServiceMacro($service_id = null, $field)
+function getMyServiceMacro($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -597,7 +599,7 @@ function getMyServiceMacro($service_id = null, $field)
     }
 }
 
-function getMyHostExtendedInfoField($host_id = null, $field)
+function getMyHostExtendedInfoField($host_id, $field)
 {
     if (!$host_id) {
         return;
@@ -616,7 +618,7 @@ function getMyHostExtendedInfoField($host_id = null, $field)
     }
 }
 
-function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = null, $antiLoop = null)
+function getMyHostExtendedInfoImage($host_id, $field, $flag1stLevel = null, $antiLoop = null)
 {
     global $pearDB, $oreon;
 
@@ -674,12 +676,13 @@ function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = nul
                         }
                     }
                 } else {
-                    if ($result_field = getMyHostExtendedInfoImage(
-                        $row['host_tpl_id'],
-                        $field,
-                        null,
-                        $row['host_tpl_id']
-                    )
+                    if (
+                        $result_field = getMyHostExtendedInfoImage(
+                            $row['host_tpl_id'],
+                            $field,
+                            null,
+                            $row['host_tpl_id']
+                        )
                     ) {
                         return $result_field;
                     }
@@ -973,7 +976,7 @@ function getMyServiceGroupActivateServices($sg_id = null, $access = null)
 
 #
 
-function getMyServiceField($service_id = null, $field)
+function getMyServiceField($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -1001,7 +1004,7 @@ function getMyServiceField($service_id = null, $field)
     }
 }
 
-function getMyServiceExtendedInfoField($service_id = null, $field)
+function getMyServiceExtendedInfoField($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -1031,7 +1034,7 @@ function getMyServiceExtendedInfoField($service_id = null, $field)
     }
 }
 
-function getMyServiceExtendedInfoImage($service_id = null, $field)
+function getMyServiceExtendedInfoImage($service_id, $field)
 {
     if (!$service_id) {
         return;
@@ -1858,7 +1861,8 @@ function host_has_one_or_more_GraphService($host_id, $search = 0)
     $services = getMyHostServices($host_id, $search);
 
     foreach ($services as $svc_id => $svc_name) {
-        if (service_has_graph($host_id, $svc_id) &&
+        if (
+            service_has_graph($host_id, $svc_id) &&
             ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id])))
         ) {
             return true;
@@ -1949,6 +1953,37 @@ function getNDOPrefix()
     $conf_ndo = $DBRESULT->fetchRow();
     unset($DBRESULT);
     return $conf_ndo["db_prefix"];
+}
+
+/**
+ * Send a well formatted error.
+ *
+ * @param string $message Message to send
+ * @param int $code HTTP error code
+ * @param string $type Response type (json by default)
+ */
+function sendError(string $message, int $code = 500, string $type = 'json')
+{
+    switch ($type) {
+        case 'xml':
+            header('Content-Type: text/xml');
+            echo '<message>' . $message . '</message>';
+            break;
+        case 'json':
+        default:
+            header('Content-Type: application/json');
+            echo json_encode(['message' => $message]);
+            break;
+    }
+    switch ($code) {
+        case 401:
+            header("HTTP/1.0 401 Unauthorized");
+            break;
+        case 500:
+        default:
+            header("HTTP/1.0 500 Internal Server Error");
+    }
+    exit();
 }
 
 /* Ajax tests */
@@ -2175,30 +2210,40 @@ function cleanString($str)
     return $str;
 }
 
-// Global Function 
+// Global Function
 
-function get_my_first_allowed_root_menu($lcaTStr)
+/**
+ * get first menu entry allowed to a given user
+ *
+ * @param string $lcaTStr Allowed topology pages separated by comma
+ * @param int $defautPage User default page
+ * @return array The topology information (url, options, name...)
+ */
+function getFirstAllowedMenu($lcaTStr, $defautPage = null)
 {
     global $pearDB;
 
-    if (trim($lcaTStr) != "") {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE topology_page IN ($lcaTStr) 
-                AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
-                LIMIT 1";
-    } else {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
-                LIMIT 1";
+    $eventsViewPage = 104;
+    $orderedFields = [$eventsViewPage];
+
+    if ($defautPage !== null) {
+        array_unshift($orderedFields, $defautPage);
     }
-    $DBRESULT = $pearDB->query($rq);
-    $root_menu = array();
-    if ($DBRESULT->rowCount()) {
-        $root_menu = $DBRESULT->fetchRow();
+
+    $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
+        . "FROM topology "
+        . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
+        . "topology_page IS NOT NULL AND topology_show = '1' "
+        . "ORDER BY FIELD(topology_page, " . implode(',', $orderedFields) . ") DESC, topology_id ASC "
+        . "LIMIT 1";
+
+    $dbResult = $pearDB->query($query);
+
+    if (!$dbResult->rowCount()) {
+        return [];
     }
-    return $root_menu;
+
+    return $dbResult->fetch();
 }
 
 function reset_search_page($url)
@@ -2208,7 +2253,8 @@ function reset_search_page($url)
     if (!isset($url)) {
         return;
     }
-    if (isset($_GET['search'])
+    if (
+        isset($_GET['search'])
         && isset($centreon->historySearch[$url])
         && $_GET['search'] != $centreon->historySearch[$url]
         && !isset($_GET['num'])
@@ -2216,7 +2262,8 @@ function reset_search_page($url)
     ) {
         $_POST['num'] = 0;
         $_GET['num'] = 0;
-    } elseif (isset($_GET["search"])
+    } elseif (
+        isset($_GET["search"])
         && isset($_POST["search"])
         && $_GET["search"] === $_POST["search"]
     ) {

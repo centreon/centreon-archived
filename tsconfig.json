@@ -1,0 +1,13 @@
+{
+  "extends": "./node_modules/@centreon/frontend-core/tsconfig/index",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
+  },
+  "include": [
+    "./www/front_src/src"
+  ],
+}

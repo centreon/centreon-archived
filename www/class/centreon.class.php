@@ -37,7 +37,6 @@ require_once dirname(__FILE__) . '/centreonUser.class.php';
 require_once dirname(__FILE__) . '/centreonGMT.class.php';
 require_once dirname(__FILE__) . '/centreonLogAction.class.php';
 require_once dirname(__FILE__) . '/centreonExternalCommand.class.php';
-require_once dirname(__FILE__) . '/centreonCache.class.php';
 require_once dirname(__FILE__) . '/centreonBroker.class.php';
 require_once dirname(__FILE__) . '/centreonHostgroups.class.php';
 require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
@@ -47,15 +46,12 @@ require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
  */
 class Centreon
 {
-
     public $Nagioscfg;
     public $optGen;
+    public $informations;
     public $redirectTo;
     public $modules;
     public $hooks;
-    public $plugins;
-    public $status_graph_service;
-    public $status_graph_host;
 
     /*
      * @var array : saved user's pagination filter value
@@ -77,8 +73,6 @@ class Centreon
     public $historyLimit;
     public $search_type_service;
     public $search_type_host;
-    public $svc_svc_search;
-    public $svc_host_search;
     public $poller;
     public $template;
     public $hostgroup;
@@ -93,14 +87,6 @@ class Centreon
     public $CentreonGMT;
     public $CentreonLogAction;
     public $extCmd;
-    public $DB;
-    public $config;
-    public $session;
-    public $lang;
-    public $duration;
-    public $media;
-    public $cache;
-    public $broker;
 
     /**
      * Class constructor
@@ -125,6 +111,11 @@ class Centreon
          * Get general options
          */
         $this->initOptGen();
+
+        /*
+         * Get general informations
+         */
+        $this->initInformations();
 
         /*
          * Grab Modules
@@ -250,11 +241,13 @@ class Centreon
          * We don't check activate because we can a server without a engine on localhost running
          * (but we order to get if we have one)
          */
-        $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT * FROM cfg_nagios, nagios_server
-                                    WHERE nagios_server.id = cfg_nagios.nagios_server_id
-                                    AND nagios_server.localhost = '1'
-                                    ORDER BY cfg_nagios.nagios_activate
-                                    DESC LIMIT 1");
+        $DBRESULT = CentreonDBInstance::getConfInstance()->query(
+            "SELECT illegal_object_name_chars, cfg_dir FROM cfg_nagios, nagios_server
+            WHERE nagios_server.id = cfg_nagios.nagios_server_id
+            AND nagios_server.localhost = '1'
+            ORDER BY cfg_nagios.nagios_activate
+            DESC LIMIT 1"
+        );
         $this->Nagioscfg = $DBRESULT->fetch();
         $DBRESULT = null;
     }
@@ -273,6 +266,20 @@ class Centreon
         }
         $DBRESULT = null;
         unset($opt);
+    }
+
+    /**
+     * Store centreon informations in session
+     *
+     * @return void
+     */
+    public function initInformations(): void
+    {
+        $this->informations = [];
+        $result = CentreonDBInstance::getConfInstance()->query("SELECT * FROM `informations`");
+        while ($row = $result->fetch()) {
+            $this->informations[$row["key"]] = $row["value"];
+        }
     }
 
     /**

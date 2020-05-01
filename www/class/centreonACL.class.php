@@ -506,8 +506,9 @@ class CentreonACL
                         // First reading
                         ksort($childrenLvl3);
                         // We keep the tree of the first child
-                        $parentsLvl[$parentLvl1][$parentLvl2] =
-                            array_slice($childrenLvl3, 0, 1, true)[0];
+                        $parentsLvl[$parentLvl1][$parentLvl2] = is_array($childrenLvl3)
+                            ? array_slice($childrenLvl3, 0, 1, true)[0]
+                            : $childrenLvl3;
                         /**
                          * The first child has been processed so we set TRUE
                          * to delete all the following children
@@ -1454,42 +1455,46 @@ class CentreonACL
     /**
      * Function that returns the pair host/service by ID if $host_id is NULL
      *  Otherwise, it returns all the services of a specific host
+     *
+     * @param CentreonDB $pearDBMonitoring access to centreon_storage database
+     * @param Boolean $withServiceDescription to retrieve description of services
+     *
+     * @return array
      */
-    public function getHostsServices($pearDBMonitoring, $get_service_description = null)
+    public function getHostsServices($pearDBMonitoring, $withServiceDescription = false)
     {
-        $tab = array();
+        $tab = [];
         if ($this->admin) {
-            $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
+            $req = $withServiceDescription ? ", s.service_description " : "";
             $query = "SELECT h.host_id, s.service_id " . $req
                 . "FROM host h "
                 . "LEFT JOIN host_service_relation hsr on hsr.host_host_id = h.host_id "
                 . "LEFT JOIN service s on hsr.service_service_id = s.service_id "
-                . "WHERE h.host_activate = '1' "
-                . "AND (s.service_activate = '1' OR s.service_id is null) ";
-            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                if (!is_null($get_service_description)) {
+                . "WHERE h.host_register = '1' ";
+            $result = \CentreonDBInstance::getConfInstance()->query($query);
+            while ($row = $result->fetchRow()) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->closeCursor();
+            $result->closeCursor();
             // Used By EventLogs page Only
-            if (!is_null($get_service_description)) {
+            if ($withServiceDescription) {
                 // Get Services attached to hostgroups
                 $query = "SELECT hgr.host_host_id, s.service_id, s.service_description "
                     . "FROM hostgroup_relation hgr, service s, host_service_relation hsr "
                     . "WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
                     . "AND s.service_id = hsr.service_service_id ";
-                $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
-                while ($elem = $DBRESULT->fetchRow()) {
+                $result = \CentreonDBInstance::getConfInstance()->query($query);
+                while ($elem = $result->fetchRow()) {
                     $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];
                 }
-                $DBRESULT->closeCursor();
+                $result->closeCursor();
             }
         } else {
-            if (!is_null($get_service_description)) {
+            if ($withServiceDescription) {
                 $query = "SELECT acl.host_id, acl.service_id, s.description "
                     . "FROM centreon_acl acl "
                     . "LEFT JOIN services s on acl.service_id = s.service_id "
@@ -1502,21 +1507,21 @@ class CentreonACL
                     . "GROUP BY host_id, service_id ";
             }
 
-            $DBRESULT = $pearDBMonitoring->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                if (!is_null($get_service_description)) {
+            $result = $pearDBMonitoring->query($query);
+            while ($row = $result->fetchRow()) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->closeCursor();
+            $result->closeCursor();
         }
 
         return $tab;
     }
 
-    public function getHostServices($pearDBMonitoring, $host_id, $get_service_description = null)
+    public function getHostServices($pearDBMonitoring, $host_id)
     {
         $tab = array();
         if ($this->admin) {
@@ -2017,9 +2022,15 @@ class CentreonACL
     }
 
     /**
-     * Get Services in servicesgroups from ACL and configuration DB
+     * Get all services linked to a servicegroup regarding ACL
+     *
+     * @param int $sgId servicegroup id
+     * @param mixed $broker
+     * @param mixed $options
+     * @access public
+     * @return array
      */
-    public function getServiceServiceGroupAclConf($sg_id, $broker = null, $options = null)
+    public function getServiceServiceGroupAclConf($sgId, $broker = null, $options = null)
     {
         $services = array();
 
@@ -2053,24 +2064,27 @@ class CentreonACL
                 . "AND $db_name_acl.centreon_acl.host_id = host.host_id "
                 . "AND $db_name_acl.centreon_acl.service_id = service.service_id ";
         }
+
+        // Making sure that the id provided is a real int
+        $option = ['default' => 0];
+        $sgId = filter_var($sgId, FILTER_VALIDATE_INT, $option);
+
+        /*
+         * Using the centreon_storage database to get the information
+         * where the services_servicegroups table provides "resolved" dependencies
+         * for possible components of the servicegroup which can be:
+         *     - simple services
+         *     - service templates
+         *     - hostgroup services
+         */
         $query = $request['select'] . $request['simpleFields'] . " "
             . "FROM ( "
             . "SELECT " . $request['fields'] . " "
-            . "FROM servicegroup, servicegroup_relation, service, host " . $from_acl . " "
-            . "WHERE servicegroup.sg_id = '" . CentreonDB::escape($sg_id) . "' "
-            . "AND service.service_activate='1' AND host.host_activate='1' "
-            . "AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id "
-            . "AND servicegroup_relation.service_service_id = service.service_id "
-            . "AND servicegroup_relation.host_host_id = host.host_id "
-            . $where_acl . " "
-            . "UNION "
-            . "SELECT " . $request['fields'] . " "
-            . "FROM servicegroup, servicegroup_relation, hostgroup_relation, service, host " . $from_acl . " "
-            . "WHERE servicegroup.sg_id = '" . CentreonDB::escape($sg_id) . "' "
-            . "AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id "
-            . "AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id "
-            . "AND hostgroup_relation.host_host_id = host.host_id "
-            . "AND servicegroup_relation.service_service_id = service.service_id "
+            . "FROM " . $db_name_acl . ".services_servicegroups, service, host" . $from_acl . " "
+            . "WHERE servicegroup_id = " . $sgId . " "
+            . "AND host.host_id = services_servicegroups.host_id "
+            . "AND service.service_id = services_servicegroups.service_id "
+            . "AND service.service_activate = '1' AND host.host_activate = '1'"
             . $where_acl . " "
             . ") as t ";
 
@@ -2498,13 +2512,10 @@ class CentreonACL
      * @param array $hosts | hosts to duplicate
      * @return void
      */
-    public function duplicateHostAcl($hosts = array())
+    public function duplicateHostAcl($hosts = [])
     {
-        $sql = "INSERT INTO %s 
-                    (host_host_id, acl_res_id)
-                    (SELECT %d, acl_res_id 
-                    FROM %s 
-                    WHERE host_host_id = %d)";
+        $sql = "INSERT INTO %s (host_host_id, acl_res_id)
+            (SELECT %d, acl_res_id FROM %s WHERE host_host_id = %d)";
         $tbHost = "acl_resources_host_relations";
         $tbHostEx = "acl_resources_hostex_relations";
         foreach ($hosts as $copyId => $originalId) {

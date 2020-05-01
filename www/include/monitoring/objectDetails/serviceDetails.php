@@ -80,9 +80,7 @@ if (isset($_GET["host_name"]) &&
     $svc_description = $tab_data[1];
 }
 
-/*
- * Check if host is found
- */
+// Check if host is found
 $host_id = getMyHostID($host_name);
 
 if (!is_null($host_id)) {
@@ -133,13 +131,10 @@ if (!is_null($host_id)) {
         }
 
         // Get notifications contacts
-        $retrievedNotificationsInfos = get_notified_infos_for_service($service_id, $host_id);
+        $retrievedNotificationsInfos = getNotifiedInfosForService($service_id, $host_id, $dependencyInjector);
         $contacts = $retrievedNotificationsInfos['contacts'];
         $contactGroups = $retrievedNotificationsInfos['contactGroups'];
-
-        /*
-         * Get servicegroups list
-         */
+        // Get servicegroups list
         if (isset($service_id) && isset($host_id)) {
             $query = "SELECT DISTINCT sg.sg_name FROM servicegroup sg, servicegroup_relation sgr " .
                 "WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id .
@@ -156,9 +151,7 @@ if (!is_null($host_id)) {
             $DBRESULT->closeCursor();
         }
 
-        /*
-         * Get service category
-         */
+        // Get service category
         $tab_sc = getMyServiceCategories($service_id);
         if (is_array($tab_sc)) {
             foreach ($tab_sc as $sc_id) {
@@ -540,8 +533,8 @@ if (!is_null($host_id)) {
 
         $optionsURL = "host_name=" . urlencode($host_name) . "&service_description=" . urlencode($svc_description);
 
-        $query = "SELECT id FROM `index_data` WHERE host_name = '" . $pearDBO->escape($host_name) .
-            "' AND service_description = '" . $pearDBO->escape($svc_description) . "' LIMIT 1";
+        $query = "SELECT id FROM `index_data`, `metrics` WHERE host_name = '" . $pearDBO->escape($host_name) .
+            "' AND service_description = '" . $pearDBO->escape($svc_description) . "' AND id = index_id LIMIT 1";
         $DBRES = $pearDBO->query($query);
         $index_data = 0;
         if ($DBRES->rowCount()) {

@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,7 +36,7 @@
 /**
  * Include config file
  */
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 
 require_once _CENTREON_PATH_ . '/www/class/centreon.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonACL.class.php';
@@ -54,22 +54,31 @@ $mySessionId = session_id();
  * Checks for token
  */
 if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {
-    $token = isset($_GET['token']) ? $_GET['token'] : $_GET['akey'];
-    $DBRESULT = $pearDB->prepare("SELECT * FROM `contact`
-                                WHERE `contact_alias` = ?
-                                AND `contact_activate` = '1'
-                                AND `contact_autologin_key` = ? LIMIT 1");
-    $pearDB->execute($DBRESULT, array($_GET["username"], $token));
-    if ($DBRESULT->rowCount()) {
-        $row = $DBRESULT->fetch();
-        $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
+    $token = $_GET['token'] ?? $_GET['akey'];
+    $dbResult = $pearDB->prepare(
+        "SELECT contact_id FROM `contact`
+        WHERE `contact_alias` = ?
+        AND `contact_activate` = '1'
+        AND `contact_autologin_key` = ? LIMIT 1"
+    );
+    $pearDB->execute($dbResult, array($_GET["username"], $token));
+    if ($dbResult->rowCount()) {
+        $row = $dbResult->fetch();
+        $res = $pearDB->prepare("SELECT session_id FROM session WHERE session_id = :sessionId");
+        $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
+        $res->execute();
         if (!$res->rowCount()) {
-            $DBRESULT = $pearDB->prepare(
-                "INSERT INTO `session` (`session_id`, `user_id`, `current_page`, `last_reload`, `ip_address`) " .
-                "VALUES (?, ?, '', ?, ?)"
-			);
-            $DBRESULT = $pearDB->execute(
-                $DBRESULT,
+            // security fix - regenerate the sid to prevent session fixation
+            session_start();
+            session_regenerate_id(true);
+            $mySessionId = session_id();
+
+            $dbResult = $pearDB->prepare(
+                "INSERT INTO `session` (`session_id`, `user_id`, `current_page`, `last_reload`, `ip_address`)
+                VALUES (?, ?, NULL, ?, ?)"
+            );
+            $pearDB->execute(
+                $dbResult,
                 array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"])
             );
         }
@@ -78,17 +87,19 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     }
 }
 
-$index = isset($_GET['index']) ? $_GET['index'] : 0;
+$index = $_GET['index'] ?? 0;
 $pearDBO = new CentreonDB("centstorage");
 if (isset($_GET["hostname"]) && isset($_GET["service"])) {
-    $DBRESULT = $pearDBO->prepare("SELECT `id`
-                                 FROM index_data
-                                 WHERE host_name = ?
-                                 AND service_description = ?
-                                 LIMIT 1");
-    $pearDBO->execute($DBRESULT, array($_GET["hostname"], $_GET["service"]));
-    if ($DBRESULT->rowCount()) {
-        $res = $DBRESULT->fetch();
+    $dbResult = $pearDBO->prepare(
+        "SELECT `id`
+        FROM index_data
+        WHERE host_name = ?
+        AND service_description = ?
+        LIMIT 1"
+    );
+    $pearDBO->execute($dbResult, array($_GET["hostname"], $_GET["service"]));
+    if ($dbResult->rowCount()) {
+        $res = $dbResult->fetch();
         $index = $res["id"];
     } else {
         die('Resource not found');
@@ -96,7 +107,7 @@ if (isset($_GET["hostname"]) && isset($_GET["service"])) {
 }
 if (isset($_GET['chartId'])) {
     list($hostId, $serviceId) = explode('_', $_GET['chartId']);
-    if (false === isset($hostId) || false === isset($serviceId)) {
+    if (!isset($hostId) || !isset($serviceId)) {
         die('Resource not found');
     }
     $res = $pearDBO->prepare('SELECT id FROM index_data WHERE host_id = ? AND service_id = ?');
@@ -109,12 +120,15 @@ if (isset($_GET['chartId'])) {
     }
 }
 
-$sql = "SELECT c.contact_id, c.contact_admin 
-        FROM session s, contact c
-        WHERE s.session_id = '".$mySessionId."'
-        AND s.user_id = c.contact_id 
-        LIMIT 1";
-$res = $pearDB->query($sql);
+$res = $pearDB->prepare(
+    "SELECT c.contact_id, c.contact_admin
+    FROM session s, contact c
+    WHERE s.session_id = :sessionId
+    AND s.user_id = c.contact_id
+    LIMIT 1"
+);
+$res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
+$res->execute();
 if (!$res->rowCount()) {
     die('Unknown user');
 }
@@ -150,7 +164,7 @@ if (!CentreonSession::checkSession($mySessionId, $pearDB)) {
     CentreonGraph::displayError();
 }
 
-require_once _CENTREON_PATH_."www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 /**
  * Create XML Request Objects
@@ -210,7 +224,8 @@ $obj->displayImageFlow();
  * Closing session
  */
 if (isset($_GET['akey'])) {
-    $DBRESULT = $pearDB->prepare("DELETE FROM session WHERE session_id = ?
-        AND user_id = (SELECT contact_id from contact where contact_autologin_key = ?)");
-    $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $_GET['akey']));
+    $dbResult = $pearDB->prepare(
+        "DELETE FROM session
+        WHERE session_id = ? AND user_id = (SELECT contact_id from contact where contact_autologin_key = ?)");
+    $dbResult = $pearDB->execute($dbResult, array($mySessionId, $_GET['akey']));
 }

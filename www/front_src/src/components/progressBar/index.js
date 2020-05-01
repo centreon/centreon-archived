@@ -24,6 +24,7 @@ class ProgressBar extends Component {
             {links
               ? links.map((link) => (
                   <li
+                    key={link.path}
                     className={styles['progress-bar-item']}
                     onClick={this.goToPath.bind(this, link.path)}
                   >
@@ -49,7 +50,4 @@ const mapStateToProps = () => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ProgressBar);
+export default connect(mapStateToProps, mapDispatchToProps)(ProgressBar);

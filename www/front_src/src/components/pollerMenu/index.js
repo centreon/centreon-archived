@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-key */
+/* eslint-disable camelcase */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable radix */
@@ -115,7 +117,7 @@ class PollerMenu extends Component {
         });
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           this.setState({
             data: null,
           });
@@ -123,7 +125,7 @@ class PollerMenu extends Component {
       });
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     const { refreshTime } = nextProps;
     const { intervalApplied } = this.state;
     if (refreshTime && !intervalApplied) {
@@ -224,7 +226,7 @@ class PollerMenu extends Component {
                       }
 
                       return (
-                        <li className={styles['submenu-top-item']}>
+                        <li key={key} className={styles['submenu-top-item']}>
                           <span className={styles['submenu-top-item-link']}>
                             {message}
                             <span className={styles['submenu-top-count']}>
@@ -241,6 +243,7 @@ class PollerMenu extends Component {
                                 }
                                 return (
                                   <span
+                                    key={poller.name}
                                     className={styles['submenu-top-item-link']}
                                     style={{ padding: '0px 16px 17px' }}
                                   >
@@ -297,17 +300,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
 
 PollerMenu.propTypes = {
-  allowedPages: PropTypes.arrayOf(
-    PropTypes.string
-  ).isRequired,
-  refreshTime: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.bool
-  ]).isRequired,
+  allowedPages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
+    .isRequired,
 };

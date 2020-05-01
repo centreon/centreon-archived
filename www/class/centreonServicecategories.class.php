@@ -92,27 +92,26 @@ class CentreonServicecategories
             $scAcl = $centreon->user->access->getServiceCategories();
         }
 
-        $listValues = '';
-        $queryValues = array();
+        $queryValues = [];
         if (!empty($values)) {
             foreach ($values as $k => $v) {
-                $listValues .= ':sc' . $v . ',';
-                $queryValues['sc' . $v] = (int)$v;
+                $multiValues = explode(',', $v);
+                foreach ($multiValues as $item) {
+                    $queryValues[':sc_' . $item] = (int) $item;
+                }
             }
-            $listValues = rtrim($listValues, ',');
-        } else {
-            $listValues .= '""';
         }
 
         # get list of selected service categories
-        $query = 'SELECT sc_id, sc_name FROM service_categories ' .
-            'WHERE sc_id IN (' . $listValues . ') ORDER BY sc_name ';
+        $query = 'SELECT sc_id, sc_name FROM service_categories '
+            . 'WHERE sc_id IN ('
+            . (count($queryValues) ? implode(',', array_keys($queryValues)) : '""')
+            . ') ORDER BY sc_name ';
 
         $stmt = $this->db->prepare($query);
-
         if (!empty($queryValues)) {
             foreach ($queryValues as $key => $id) {
-                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
+                $stmt->bindValue($key, $id, PDO::PARAM_INT);
             }
         }
         $stmt->execute();

@@ -47,7 +47,9 @@ CREATE TABLE IF NOT EXISTS `task` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Add column to nagios_server table for remote-poller relation
+SET SESSION innodb_strict_mode=OFF;
 ALTER TABLE `nagios_server` ADD COLUMN `remote_id` int(11) NULL AFTER `centreonbroker_logs_path`;
+SET SESSION innodb_strict_mode=ON;
 ALTER TABLE `nagios_server` ADD CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Update the "About" menu

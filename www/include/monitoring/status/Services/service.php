@@ -228,8 +228,6 @@ $tpl->assign("mon_status_information", _("Status information"));
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
-$sDefaultOrder = "0";
-
 if (!isset($_GET['o'])) {
     $sSetOrderInMemory = "1";
 } else {
@@ -407,6 +405,22 @@ if ($o == "svc") {
     }
 }
 
+$serviceStatusFromO = isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))
+    ? $_GET['o']
+    : null;
+$defaultStatusService =  $_GET['statusService']
+    ?? $_POST['statusService']
+    ?? $serviceStatusFromO
+    ?: $_SESSION['monitoring_service_status']
+    ?? 'svc_unhandled';
+$o = $defaultStatusService;
+$form->setDefaults(array('statusFilter' => $defaultStatusService));
+
+$defaultStatusFilter = $_GET['statusFilter']
+    ?? $_POST['statusFilter']
+    ?? $_SESSION['monitoring_service_status_filter']
+    ?? '';
+
 $form->addElement(
     'select',
     'statusFilter',
@@ -414,12 +428,7 @@ $form->addElement(
     $statusList,
     array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
 );
-if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status_filter'])) {
-    $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
-    $sDefaultOrder = "1";
-}
-$defaultStatusFilter = $_GET['statusFilter'] ?? '';
-$defaultStatusService = $_GET['statusService'] ?? 'svc_unhandled';
+$form->setDefaults(['statusFilter' => $defaultStatusFilter]);
 
 $form->addElement(
     'select',
@@ -428,16 +437,7 @@ $form->addElement(
     $statusService,
     array('id' => 'statusService', 'onChange' => "statusServices(this.value);")
 );
-
-/* Get default service status by GET */
-if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
-    $form->setDefaults(array('statusService' => $_GET['o']));
-    /* Get default service status in SESSION */
-} elseif ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status'])) {
-    $o = $_SESSION['monitoring_service_status'];
-    $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));
-    $sDefaultOrder = "1";
-}
+$form->setDefaults(['statusService' => $defaultStatusService]);
 
 $criticality = new CentreonCriticality($pearDB);
 $crits = $criticality->getList(null, "level", 'ASC', null, null, true);
@@ -531,37 +531,17 @@ $tpl->display("service.ihtml");
 
     function preInit() {
         _keyPrefix = '<?= $keyPrefix; ?>';
-        _sid = '<?= $sid ?>';
         _tm = <?= $tM ?>;
         _o = '<?= $o; ?>';
         _defaultStatusFilter = '<?= $defaultStatusFilter; ?>';
         _defaultStatusService = '<?= $defaultStatusService; ?>';
-        _sDefaultOrder = '<?= $sDefaultOrder; ?>';
         sSetOrderInMemory = '<?= $sSetOrderInMemory; ?>';
 
         if (_defaultStatusService !== '') {
             jQuery("#statusService option[value='" + _defaultStatusService + "']").prop('selected', true);
         }
-
-        if (_sDefaultOrder == "0") {
-            if (_o == 'svc') {
-                jQuery("#statusFilter option[value='']").prop('selected', true);
-            } else if (_o == 'svc_ok') {
-                jQuery("#statusFilter option[value='ok']").prop('selected', true);
-            } else if (_o == 'svc_warning') {
-                jQuery("#statusFilter option[value='warning']").prop('selected', true);
-            } else if (_o == 'svc_critical') {
-                jQuery("#statusFilter option[value='critical']").prop('selected', true);
-            } else if (_o == 'svc_unknown') {
-                jQuery("#statusFilter option[value='unknown']").prop('selected', true);
-            } else if (_o == 'svc_pending') {
-                jQuery("#statusFilter option[value='pending']").prop('selected', true);
-            } else {
-                jQuery("#statusFilter option[value='']").prop('selected', true);
-            }
-            if (_defaultStatusFilter != '') {
-                jQuery("#statusFilter option[value='" + _defaultStatusFilter + "']").prop('selected', true);
-            }
+        if (_defaultStatusFilter !== '') {
+            jQuery("#statusFilter option[value='" + _defaultStatusFilter + "']").prop('selected', true);
         }
         filterStatus(document.getElementById('statusFilter').value, 1);
     }
@@ -574,12 +554,12 @@ $tpl->display("service.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function statusServices(value, isInit) {

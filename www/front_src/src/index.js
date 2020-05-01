@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-functions/prefer-arrow-functions */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable no-multi-assign */
@@ -7,10 +8,13 @@ import AppProvider from './Provider';
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
-(async function() {
+(async function () {
   window.React = await import(/* webpackChunkName: "external" */ 'react');
   window.ReactDOM = window.ReactDom = await import(
     /* webpackChunkName: "external" */ 'react-dom'
+  );
+  window.PropTypes = window.PropTypes = await import(
+    /* webpackChunkName: "external" */ 'prop-types'
   );
   window.ReactRouterDOM = window.ReactRouterDom = await import(
     /* webpackChunkName: "external" */ 'react-router-dom'

@@ -32,9 +32,15 @@
  * For more information : contact@centreon.com
  *
  */
+
+$configFile = realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once __DIR__ . '/../../class/config-generate/host.class.php';
+require_once __DIR__ . '/../../class/config-generate/service.class.php';
+
 if (!isset($centreon)) {
     exit();
 }
+
 function getMyHostRow($host_id = null, $rowdata)
 {
     global $pearDB;
@@ -79,210 +85,106 @@ function set_user_param($user_id, $pearDB, $key, $value)
     $_SESSION[$key] = $value;
 }
 
-function get_notified_infos_for_host($hostId)
+/**
+ * Get the notified contact/contact group of host tree inheritance
+ *
+ * @param int $hostId
+ * @param \Pimple\Container $dependencyInjector
+ * @return array
+ */
+function getNotifiedInfosForHost(int $hostId, \Pimple\Container $dependencyInjector) : array
 {
-    global $pearDB;
-    $loop = array();
-    $stack = array($hostId);
-    $hosts = array();
     $results = array('contacts' => array(), 'contactGroups' => array());
-    $stopReading = array('contacts' => 0, 'contactGroups' => 0);
+    $hostInstance = Host::getInstance($dependencyInjector);
+    $notifications = $hostInstance->getCgAndContacts($hostId);
 
-    while (($hostId = array_shift($stack))) {
-        if (isset($loop[$hostId])) {
-            continue;
-        }
-        $loop[$hostId] = 1;
-
-        $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance
-                FROM host WHERE host_id = " . $hostId);
-        $contactAdd = $DBRESULT->fetchRow();
-
-        /*
-         * Manage contact inheritance
-         */
-        $contactGroups = getContactGroupsForHost($hostId);
-        $contacts = getContactsForHost($hostId);
-
-        if ($stopReading['contacts'] == 0) {
-            $results['contacts'] = $results['contacts'] + $contacts;
-        }
-        if ($stopReading['contactGroups'] == 0) {
-            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
-        }
-
-        if ($contactAdd['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
-            $stopReading['contacts'] = 1;
-        }
-        if ($contactAdd['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
-            $stopReading['contactGroups'] = 1;
-        }
-
-        if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1) {
-            break;
-        }
-
-        /*
-         * Manage template
-         */
-        $DBRESULT = $pearDB->query("SELECT host_tpl_id
-                FROM host_template_relation
-                WHERE host_host_id = " . $hostId . "
-                ORDER BY `order` ASC LIMIT 1");
-        $hostsTpl = array();
-        while (($row = $DBRESULT->fetchRow())) {
-            $hostsTpl[] = $row['host_tpl_id'];
-        }
-
-        $stack = array_merge($hostsTpl, $stack);
+    if (isset($notifications['cg']) && count($notifications['cg']) > 0) {
+        $results['contactGroups'] = getContactgroups($notifications['cg']);
+    }
+    if (isset($notifications['contact']) && count($notifications['contact']) > 0) {
+        $results['contacts'] = getContacts($notifications['contact']);
     }
 
-    if (version_compare(phpversion(), '5.4.0') >= 0) {
-        asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
-        asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
-    } else {
-        natcasesort($results['contacts']);
-        natcasesort($results['contactGroups']);
-    }
-
+    natcasesort($results['contacts']);
+    natcasesort($results['contactGroups']);
     return $results;
 }
 
-function getContactgroupsForHost($hostId)
+/**
+ * Get the list of enable contact groups (id/name)
+ *
+ * @param int[] $cg list contact group id
+ * @return array
+ */
+function getContactgroups(array $cg): array
 {
     global $pearDB;
 
     $contactGroups = array();
-    $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup cg, contactgroup_host_relation cghr
-            WHERE cghr.host_host_id = " . $hostId . " AND cghr.contactgroup_cg_id = cg.cg_id");
-    while (($row = $DBRESULT->fetchRow())) {
+    $dbResult = $pearDB->query(
+        'SELECT cg_id, cg_name 
+        FROM contactgroup
+        WHERE cg_id IN (' . implode(', ', $cg) . ')'
+    );
+    while (($row = $dbResult->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
-
     return $contactGroups;
 }
 
-function getContactsForHost($hostId)
+/**
+ * Get the list of enable contact (id/name)
+ *
+ * @param int[] $contacts list contact id
+ * @return array
+ */
+function getContacts(array $contacts) : array
 {
     global $pearDB;
 
-    $contacts = array();
-    $DBRESULT = $pearDB->query("SELECT c.contact_id, contact_name FROM contact c, contact_host_relation chr
-            WHERE chr.host_host_id = " . $hostId . " AND chr.contact_id = c.contact_id");
-    while (($row = $DBRESULT->fetchRow())) {
-        $contacts[$row['contact_id']] = $row['contact_name'];
+    $contactsResult = array();
+    $dbResult = $pearDB->query(
+        'SELECT contact_id, contact_name 
+        FROM contact
+        WHERE contact_id IN (' . implode(', ', $contacts) . ')'
+    );
+    while (($row = $dbResult->fetchRow())) {
+        $contactsResult[$row['contact_id']] = $row['contact_name'];
     }
 
-    return $contacts;
+    return $contactsResult;
 }
 
-function get_notified_infos_for_service($serviceId, $hostId)
+/**
+ * Get the notified contact/contact group of service tree inheritance
+ *
+ * @param int $serviceId
+ * @param int $hostId
+ * @param \Pimple\Container $dependencyInjector
+ * @return array
+ */
+function getNotifiedInfosForService(int $serviceId, int $hostId, \Pimple\Container $dependencyInjector) : array
 {
-    global $pearDB;
-    $loop = array();
     $results = array('contacts' => array(), 'contactGroups' => array());
-    $stopReading = array('contacts' => 0, 'contactGroups' => 0);
-    $useOnlyContactsFromHost = 0;
 
-    $service = $service ?? [];
+    $serviceInstance = Service::getInstance($dependencyInjector);
+    $notifications = $serviceInstance->getCgAndContacts($serviceId);
 
-    while (1) {
-        if (isset($loop[$serviceId])) {
-            break;
-        }
-        $loop[$serviceId] = 1;
-
-        $query = "SELECT contact_additive_inheritance, cg_additive_inheritance, service_use_only_contacts_from_host, " .
-            "service_template_model_stm_id FROM service WHERE service_id = " . $serviceId;
-        $DBRESULT = $pearDB->query($query);
-        $contactAdd = $DBRESULT->fetchRow();
-        if (!isset($contactAdd['service_template_model_stm_id']) ||
-            is_null($contactAdd['service_template_model_stm_id']) ||
-            $contactAdd['service_template_model_stm_id'] == ''
-        ) {
-            break;
-        }
-        if (!is_null($contactAdd['service_use_only_contacts_from_host']) &&
-            $contactAdd['service_use_only_contacts_from_host'] == 1
-        ) {
-            $useOnlyContactsFromHost = 1;
-            break;
-        }
-
-        /*
-         * Manage contact inheritance
-         */
-        $contactGroups = getContactgroupsForService($serviceId);
-        $contacts = getContactsForService($serviceId);
-
-        if ($stopReading['contacts'] == 0) {
-            $results['contacts'] = $results['contacts'] + $contacts;
-        }
-        if ($stopReading['contactGroups'] == 0) {
-            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
-        }
-
-        if (isset($service['contact_additive_inheritance'])
-            && $service['contact_additive_inheritance'] == 0
-            && count($contacts) > 0
-        ) {
-            $stopReading['contacts'] = 1;
-        }
-        if (isset($service['cg_additive_inheritance'])
-            && $service['cg_additive_inheritance'] == 0
-            && count($contactGroups) > 0
-        ) {
-            $stopReading['contactGroups'] = 1;
-        }
-
-        if ($stopReading['contacts'] == 1 && $stopReading['contactGroups'] == 1) {
-            break;
-        }
-
-        if ($contactAdd['service_template_model_stm_id'] != '') {
-            $serviceId = $contactAdd['service_template_model_stm_id'];
-        }
-    }
-    if ($useOnlyContactsFromHost ||
-        (count($results['contacts']) == 0 && $contactAdd['contact_additive_inheritance'] == 0) &&
-        (count($results['contactGroups']) == 0 && $contactAdd['cg_additive_inheritance'] == 0)
+    if (((!isset($notifications['cg']) || count($notifications['cg']) == 0) &&
+        (!isset($notifications['contact']) || count($notifications['contact']) == 0)) ||
+        $serviceInstance->getString($serviceId, 'service_use_only_contacts_from_host')
     ) {
-        return get_notified_infos_for_host($hostId);
-    }
-
-    if (version_compare(phpversion(), '5.4.0') >= 0) {
-        asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
-        asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
+        $results = getNotifiedInfosForHost($hostId, $dependencyInjector);
     } else {
-        natcasesort($results['contacts']);
-        natcasesort($results['contactGroups']);
+        if (isset($notifications['cg']) && count($notifications['cg']) > 0) {
+            $results['contactGroups'] = getContactgroups($notifications['cg']);
+        }
+        if (isset($notifications['contact']) && count($notifications['contact']) > 0) {
+            $results['contacts'] = getContacts($notifications['contact']);
+        }
     }
 
+    natcasesort($results['contacts']);
+    natcasesort($results['contactGroups']);
     return $results;
-}
-
-function getContactgroupsForService($serviceId)
-{
-    global $pearDB;
-    $contactGroups = array();
-    $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
-            WHERE cgsr.service_service_id = " . $serviceId . " AND cgsr.contactgroup_cg_id = cg.cg_id");
-    while (($row = $DBRESULT->fetchRow())) {
-        $contactGroups[$row['cg_id']] = $row['cg_name'];
-    }
-
-    return $contactGroups;
-}
-
-function getContactsForService($serviceId)
-{
-    global $pearDB;
-    $contacts = array();
-    $DBRESULT = $pearDB->query("SELECT c.contact_id , contact_name FROM contact c, contact_service_relation csr
-            WHERE csr.service_service_id = " . $serviceId . " AND csr.contact_id = c.contact_id");
-    while (($row = $DBRESULT->fetchRow())) {
-        $contacts[$row['contact_id']] = $row['contact_name'];
-    }
-
-    return $contacts;
 }

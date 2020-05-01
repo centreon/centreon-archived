@@ -172,7 +172,6 @@ foreach ($jsdata as $k => $val) {
         function initWholePage() {
             setQuickSearchPosition();
             jQuery().centreon_notify({
-                sid: "<?php echo session_id();?>",
                 refresh_rate: <?php echo($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>
             });
         }
@@ -292,13 +291,14 @@ function validateFeature(name, version, enabled) {
       'click',
       function(e) {
         var href = jQuery(this).attr('href');
+        var isReact = jQuery(this).attr('isreact');
         var isHandled = jQuery(this).is('[onload]') ||
           jQuery(this).is('[onclick]') ||
           (href.match(/^javascript:/) !== null)
         ;
 
         // if it's a relative path, we can use the default redirection
-        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isHandled === false) {
+        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isHandled === false && !isReact) {
           e.preventDefault();
 
           // Manage centreon links
@@ -323,6 +323,9 @@ function validateFeature(name, version, enabled) {
           } else {
             window.open(href);
           }
+        } else if (isReact) {
+            e.preventDefault();
+            window.parent.location.href = href;
         }
       }
     );

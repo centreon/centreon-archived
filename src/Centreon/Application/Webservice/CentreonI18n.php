@@ -34,14 +34,19 @@
  */
 namespace Centreon\Application\Webservice;
 
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
+use Centreon\Infrastructure\Webservice;
+use Centreon\ServiceProvider;
+use Pimple\Container;
+use Pimple\Psr11\ServiceLocator;
 
 /**
  * Webservice that allow to retrieve all translations in one json file.
  * If the file doesn't exist it will be created at the first reading.
  */
-class CentreonI18n extends CentreonWebServiceAbstract
+class CentreonI18n extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizePublicInterface
 {
+
     /**
      * Name of web service object
      *
@@ -53,20 +58,6 @@ class CentreonI18n extends CentreonWebServiceAbstract
     }
 
     /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        return true;
-    }
-
-    /**
      * Return a table containing all the translations.
      *
      * @return array
@@ -75,11 +66,25 @@ class CentreonI18n extends CentreonWebServiceAbstract
     public function getTranslation(): array
     {
         try {
-            $translation = $this->getDi()['centreon.i18n_service']->getTranslation();
+            $translation = $this->services
+                ->get(ServiceProvider::CENTREON_I18N_SERVICE)
+                ->getTranslation();
         } catch (\Exception $e) {
             throw new \Exception("Translation files does not exists");
         }
 
         return $translation;
+    }
+
+    /**
+     * Extract services that are in use only
+     *
+     * @param \Pimple\Container $di
+     */
+    public function setDi(Container $di)
+    {
+        $this->services = new ServiceLocator($di, [
+            ServiceProvider::CENTREON_I18N_SERVICE,
+        ]);
     }
 }

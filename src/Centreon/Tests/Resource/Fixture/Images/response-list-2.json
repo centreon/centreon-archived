@@ -1,0 +1,1 @@
+{"status":true,"result":{"pagination":{"total":1,"offset":0,"limit":1},"entities":[{"repository":"Centreon\\Domain\\Repository\\ImagesRepository","dataRepresenter":null,"context":{"groups":["image-list"]},"limit":1,"offset":2}]}}

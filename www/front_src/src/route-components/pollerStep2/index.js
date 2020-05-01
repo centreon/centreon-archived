@@ -6,15 +6,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
+
 import Form from '../../components/forms/poller/PollerFormStepTwo';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import axios from '../../axios';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
+import BaseWizard from '../../components/forms/baseWizard';
 
 class PollerStepTwoRoute extends Component {
   state = {
-    pollers: null,
+    pollers: [],
   };
 
   links = [
@@ -55,7 +57,7 @@ class PollerStepTwoRoute extends Component {
       .post('', postData)
       .then((response) => {
         setPollerWizard({ submitStatus: response.data.success });
-        if (pollerData.linked_remote) {
+        if (pollerData.linked_remote_master) {
           history.push(routeMap.pollerStep3);
         } else {
           history.push(routeMap.pollerList);
@@ -71,14 +73,14 @@ class PollerStepTwoRoute extends Component {
     const { pollerData } = this.props;
     const { pollers } = this.state;
     return (
-      <div>
+      <BaseWizard>
         <ProgressBar links={links} />
         <Form
           pollers={pollers}
           initialValues={pollerData}
           onSubmit={this.handleSubmit.bind(this)}
         />
-      </div>
+      </BaseWizard>
     );
   }
 }
@@ -91,7 +93,4 @@ const mapDispatchToProps = {
   setPollerWizard,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerStepTwoRoute);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerStepTwoRoute);

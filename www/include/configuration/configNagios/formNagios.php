@@ -79,7 +79,7 @@ if ($o != "a") {
     $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
 } else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
-    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml";
+    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json";
 }
 $cdata->addJsData(
     'clone-values-broker',
@@ -211,8 +211,6 @@ $form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 $form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 $form->addElement('text', 'cfg_file', _("Object Configuration File"), $attrsText2);
 $form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
-$form->addElement('text', 'check_result_path', _("Check result directory"), $attrsText2);
-$form->addElement('text', 'max_check_result_file_age', _("Max Check Result File Age"), $attrsText3);
 
 /* *****************************************************
  * User / Groups
@@ -258,11 +256,6 @@ $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("Yes"
 $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("No"), '0');
 $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("Default"), '2');
 $form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'use_check_result_path', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'use_check_result_path', null, _("No"), '0');
-$form->addGroup($nagTab, 'use_check_result_path', _("Status"), '&nbsp;');
 
 /* *****************************************************
  * Log Rotation Method
@@ -664,30 +657,20 @@ $eventBrokerOptionsData = [];
 // Add checkbox for each of event broker options
 foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
     if ($bit === -1 || $bit === 0) {
-        $element = $form->createElement(
-            'customcheckbox',
-            $bit,
-            '',
-            _($label),
-            [
-                'onClick' => 'unCheckOthers("event-broker-options", this.name);',
-                'class' => 'event-broker-options'
-            ]
-        );
+        $onClick = 'unCheckOthers("event-broker-options", this.name);';
     } else {
-        $element = $form->createElement(
-            'customcheckbox',
-            $bit,
-            '',
-            _($label),
-            [
-                'onClick' => 'unCheckAllAndNaught("event-broker-options");',
-                'class' => 'event-broker-options'
-            ]
-        );
+        $onClick = 'unCheckAllAndNaught("event-broker-options");';
     }
-    $element->setCheckboxTemplate('<span class="checkbox-inline">{element}</span>');
-    $eventBrokerOptionsData[] = $element;
+    $eventBrokerOptionsData[] = $form->createElement(
+        'checkbox',
+        $bit,
+        '',
+        _($label),
+        [
+            'onClick' => $onClick,
+            'class' => 'event-broker-options'
+        ]
+    );;
 }
 $form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '&nbsp;');
  // New options for enable whitelist of macros sent to Centreon Broker
@@ -998,7 +981,6 @@ if ($valid) {
     $tpl->assign('ExternalCommandes', _("External Commands"));
     $tpl->assign('HostCheckOptions', _("Host Check Options"));
     $tpl->assign('ServiceCheckOptions', _("Service Check Options"));
-    $tpl->assign('ResultCache', _("Result Cache"));
     $tpl->assign('EventHandler', _("Event Handler"));
     $tpl->assign('Freshness', _("Freshness"));
     $tpl->assign('FlappingOptions', _("Flapping Options"));

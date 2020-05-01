@@ -255,11 +255,9 @@ function setSessionVariables($conf_centreon)
     $_SESSION['MONITORINGENGINE_PLUGIN'] = $conf_centreon['plugin_dir'];
     $_SESSION['CENTREON_LOG'] = $conf_centreon['centreon_log'];
     $_SESSION['CENTREON_RRD_DIR'] = $conf_centreon['centreon_dir_rrd'];
-    $_SESSION['MONITORING_INIT_SCRIPT'] = $conf_centreon['monitoring_init_script'];
     $_SESSION['MONITORING_BINARY'] = $conf_centreon['monitoring_binary'];
     $_SESSION['CENTREON_VARLIB'] = $conf_centreon['centreon_varlib'];
     $_SESSION['MONITORING_VAR_LOG'] = $conf_centreon['monitoring_varlog'];
-    $_SESSION['BROKER_INIT_SCRIPT'] = $conf_centreon['broker_init_script'];
     $_SESSION['CENTREON_ENGINE_CONNECTORS'] = $conf_centreon['centreon_engine_connectors'];
     $_SESSION['CENTREON_ENGINE_LIB'] = $conf_centreon['centreon_engine_lib'];
     $_SESSION['CENTREONBROKER_CBMOD'] = $conf_centreon['centreonbroker_cbmod'];

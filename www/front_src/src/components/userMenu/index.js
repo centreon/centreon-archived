@@ -52,7 +52,7 @@ class UserMenu extends Component {
         );
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           this.setState({
             data: null,
           });
@@ -139,7 +139,7 @@ class UserMenu extends Component {
                     </span>
                     <span className={styles['submenu-user-type']}>
                       <Translate value="as" />
-                      {username}
+                      {` ${username}`}
                     </span>
                     {allowEditProfile && (
                       <Link
@@ -153,7 +153,7 @@ class UserMenu extends Component {
                   </span>
                 </li>
                 {autologinkey && (
-                  <React.Fragment>
+                  <>
                     <button
                       className={styles['submenu-user-button']}
                       onClick={this.onCopy}
@@ -172,7 +172,7 @@ class UserMenu extends Component {
                       ref={(node) => (this.autologinNode = node)}
                       value={autolink}
                     />
-                  </React.Fragment>
+                  </>
                 )}
               </ul>
               <div className={styles['button-wrap']}>
@@ -202,7 +202,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UserMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);

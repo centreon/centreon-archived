@@ -37,6 +37,9 @@ if (!(class_exists('centreonDB') || class_exists('\\centreonDB')) && defined('_C
     require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 }
 
+use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
+use Centreon\Infrastructure\Webservice\WebserviceAutorizeRestApiInterface;
+
 class CentreonWebService
 {
     const RESULT_HTML = 'html';
@@ -344,7 +347,24 @@ class CentreonWebService
             static::sendResult("Method not found", 404);
         }
 
-        if (false === $wsObj->authorize($action, $user, $isInternal)) {
+        $accessDenied = true;
+
+        // if impemented public interface skip checks
+        if ($wsObj instanceof WebserviceAutorizePublicInterface) {
+            $accessDenied = false;
+        } elseif ($wsObj instanceof WebserviceAutorizeRestApiInterface) {
+            // unified check for Rest APIs authorization
+            if ($wsObj->authorize($action, $user, $isInternal)) {
+                $accessDenied = false;
+            } elseif (!$user || !$user->hasAccessRestApiConfiguration()) {
+                $accessDenied = false;
+            }
+        } elseif (false !== $wsObj->authorize($action, $user, $isInternal)) {
+            $accessDenied = false;
+        }
+
+        // Check of the authorization
+        if ($accessDenied) {
             static::sendResult('Forbidden', 403, static::RESULT_JSON);
         }
 

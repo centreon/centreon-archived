@@ -40,21 +40,15 @@ session_start();
 define('STEP_NUMBER', 4);
 
 $_SESSION['step'] = STEP_NUMBER;
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once '../steps/functions.php';
+require_once __DIR__ . "/../../../config/centreon.config.php";
 $template = getTemplate('templates');
-
-include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 /*
 ** Get and check initial Centreon version.
 ** Should be >= 2.8.0-beta1.
 */
-$db = new CentreonDB();
-$res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-$row = $res->fetchRow();
-$current = $row['value'];
-$_SESSION['CURRENT_VERSION'] = $current;
+$current = $_SESSION['CURRENT_VERSION'];
 if (version_compare($current, '2.8.0-beta1') < 0) {
     $troubleshootTxt1 = _('Upgrade to this release requires Centreon >= 2.8.0-beta1.');
     $troubleshootTxt2 = sprintf(_('Your current version is %s.'), $current);
@@ -70,7 +64,7 @@ if (version_compare($current, '2.8.0-beta1') < 0) {
 ** Print upcoming database upgrade steps.
 */
 } else {
-    $contents = _('<p>Currently upgrading database... please do not interrupt this process.</p>');
+    $contents = _('<p>Currently upgrading... please do not interrupt this process.</p>');
     $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
                     <thead>
                         <tr>
@@ -83,13 +77,18 @@ if (version_compare($current, '2.8.0-beta1') < 0) {
                   </table>";
 
     $troubleshootTxt1 = _('You seem to be having trouble with your upgrade.');
-    $troubleshootTxt2 = _('You may refer to the line that causes problem in order to find out more about the issue.');
-    $troubleshootTxt3 = sprintf(_('The SQL files are located in %s'), _CENTREON_PATH_ . 'www/install/sql/');
+    $troubleshootTxt1bis = sprintf(
+        _("Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"),
+        _CENTREON_LOG_
+    );
+    $troubleshootTxt2 = _('You may refer to the line in the specified file in order to correct the issue.');
+    $troubleshootTxt3 = sprintf(_('The SQL files are located in "%s"'), _CENTREON_PATH_ . 'www/install/sql/');
     $troubleshootTxt4 = _('But do not edit the SQL files unless you know what you are doing.'
         . 'Refresh this page when the problem is fixed.');
     $contents .= sprintf(
-        '<br/><p id="troubleshoot" style="display:none;">%s<br/>%s<br/>%s<br/>%s</p>',
+        '<br/><p id="troubleshoot" style="display:none;">%s<br/><br/>%s<br/>%s<br/><br/>%s<br/>%s</p>',
         $troubleshootTxt1,
+        $troubleshootTxt1bis,
         $troubleshootTxt2,
         $troubleshootTxt3,
         $troubleshootTxt4
@@ -126,19 +125,20 @@ $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
-    var step = <?php echo STEP_NUMBER;?>;
-    var mycurrent;
-    var mynext;
-    var result = false;
+    let step = <?php echo STEP_NUMBER;?>;
+    let myCurrent;
+    let myNext;
+    let result = false;
+    let stepContent = jQuery('#step_contents');
 
     jQuery(function () {
-        mycurrent = '<?php echo $current;?>';
-        mynext = '<?php echo $next;?>';
-        if (mycurrent != '' && mynext != '') {
-            jQuery("input[type=button]").hide();
-            nextStep(mycurrent, mynext);
+        myCurrent = '<?php echo $current;?>';
+        myNext = '<?php echo $next;?>';
+        jQuery("input[type=button]").hide();
+        if (myCurrent !== '' && myNext !== '') {
+            nextStep(myCurrent, myNext);
         } else {
-            result = true;
+            generationCache();
         }
     });
 
@@ -150,31 +150,55 @@ $template->display('content.tpl');
      * @return void
      */
     function nextStep(current, next) {
-        jQuery('#step_contents').append('<tr>');
-        jQuery('#step_contents').append('<td>' + current + ' to ' + next + '</td>');
-        jQuery('#step_contents').append('<td style="font-weight: bold;" name="'
+        stepContent.append('<tr>');
+        stepContent.append('<td>' + current + ' to ' + next + '</td>');
+        stepContent.append('<td style="font-weight: bold;" name="'
             + replaceDot(current) + '"><img src="../img/misc/ajax-loader.gif"></td>');
-        jQuery('#step_contents').append('</tr>');
+        stepContent.append('</tr>');
         doProcess(
             true,
             './step_upgrade/process/process_step' + step + '.php'
             , {'current': current, 'next': next},
             function (response) {
-                var data = jQuery.parseJSON(response);
+                let data = jQuery.parseJSON(response);
                 jQuery('td[name=' + replaceDot(current) + ']').html(data['msg']);
-                if (data['result'] == "0") {
+                if (data['result'] === "0") {
                     jQuery('#troubleshoot').hide();
                     if (data['next']) {
                         nextStep(data['current'], data['next']);
                     } else {
-                        jQuery('#next').show();
-                        result = true;
+                        generationCache();
                     }
                 } else {
                     jQuery('#troubleshoot').show();
                     jQuery('#refresh').show();
                 }
             });
+    }
+
+    function generationCache() {
+      stepContent.append('<tr>');
+      stepContent.append('<td>Application cache generation</td>');
+      stepContent.append(
+        '<td style="font-weight: bold;" name="api.cache"><img src="../img/misc/ajax-loader.gif"></td>'
+      );
+      stepContent.append('</tr>');
+      doProcess(
+        true,
+        './steps/process/generationCache.php',
+        null,
+        function (response) {
+          let data = jQuery.parseJSON(response);
+          if (data['result'] === 0) {
+            jQuery('td[name="api.cache"]').html("<span style='color:#88b917;'>" + data['msg'] + '</span>');
+            jQuery('#troubleshoot').hide();
+            jQuery('#next').show();
+            result = true;
+          } else {
+            jQuery('td[name="api.cache"]').html("<span style='color:red;'>" + data['msg'] + '</span>');
+            jQuery('#refresh').show();
+          }
+        });
     }
 
     /**

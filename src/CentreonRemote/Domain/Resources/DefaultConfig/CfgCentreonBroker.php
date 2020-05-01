@@ -18,7 +18,7 @@ class CfgCentreonBroker
             [
                 'config_id'              => 1,
                 'config_name'            => 'central-broker-master',
-                'config_filename'        => 'central-broker.xml',
+                'config_filename'        => 'central-broker.json',
                 'config_write_timestamp' => '1',
                 'config_write_thread_id' => '0',
                 'config_activate'        => '1',
@@ -30,7 +30,7 @@ class CfgCentreonBroker
             [
                 'config_id'              => 2,
                 'config_name'            => 'central-rrd-master',
-                'config_filename'        => 'central-rrd.xml',
+                'config_filename'        => 'central-rrd.json',
                 'config_write_timestamp' => '1',
                 'config_write_thread_id' => '0',
                 'config_activate'        => '1',
@@ -42,7 +42,7 @@ class CfgCentreonBroker
             [
                 'config_id'              => 3,
                 'config_name'            => 'central-module-master',
-                'config_filename'        => 'central-module.xml',
+                'config_filename'        => 'central-module.json',
                 'config_write_timestamp' => '0',
                 'config_write_thread_id' => '0',
                 'config_activate'        => '1',

@@ -78,34 +78,31 @@ $dbResult->closeCursor();
 /*
  * detect installation dir
  */
-$file_install_acces = 0;
+$file_install_access = 0;
 if (file_exists("./install/setup.php")) {
     $error_msg = "Installation Directory '" . __DIR__ .
         "/install/' is accessible. Delete this directory to prevent security problem.";
-    $file_install_acces = 1;
+    $file_install_access = 1;
 }
 
 /**
  * Install frontend assets if needed
  */
 $basePath = '/' . trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/") . '/';
+$basePath = str_replace('//', '/', $basePath);
 $indexHtmlPath = './index.html';
 $indexHtmlContent = file_get_contents($indexHtmlPath);
 
 // update base path only if it has changed
 if (!preg_match('/.*<base\shref="' . preg_quote($basePath, '/') . '">/', $indexHtmlContent)) {
     $indexHtmlContent = preg_replace(
-        '/(.*<base\shref=").*(">)/',
+        '/(^.*<base\shref=")\S+(">.*$)/s',
         '${1}' . $basePath . '${2}',
         $indexHtmlContent
     );
+
     file_put_contents($indexHtmlPath, $indexHtmlContent);
 }
-
-/*
- * Set PHP Session Expiration time
- */
-ini_set("session.gc_maxlifetime", "31536000");
 
 CentreonSession::start();
 
@@ -136,7 +133,7 @@ if (isset($_SESSION["centreon"])) {
 /*
  * Check PHP version
  *
- *  Centreon 18.10 doesn't support PHP < 7.1
+ *  Centreon >= 18.10 doesn't support PHP < 7.1
  *
  */
 if (version_compare(phpversion(), '7.1') < 0) {

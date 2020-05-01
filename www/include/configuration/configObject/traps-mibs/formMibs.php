@@ -70,15 +70,6 @@ $attrManufacturer = array(
     'linkedObject' => 'centreonManufacturer'
 );
 
-/**
- * commented out as deprecated, but kept for reference
-$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer' .
-    '&action=defaultValues&target=traps&field=manufacturer_id&id=';
-$attrManufacturer1 = array_merge(
-    $attrManufacturer,
-    array('defaultDatasetRoute' => $route)
-);
-*/
 $form->addElement('select2', 'mnftr', _("Vendor Name"), array(), $attrManufacturer);
 
 $form->addElement('file', 'filename', _("File (.mib)"));
@@ -117,43 +108,46 @@ $tpl->assign("helptext", $helptext);
  */
 $subA = $form->addElement('submit', 'submit', _("Import"), array("class" => "btc bt_success"));
 $form->addElement('header', 'status', _("Status"));
-$valid = false;
 $msg = null;
 $stdout = null;
 if ($form->validate()) {
     $ret = $form->getSubmitValues();
-
     $fileObj = $form->getElement('filename');
+    $manufacturerId = filter_var($ret['mnftr'], FILTER_VALIDATE_INT);
 
-    if ($fileObj->isUploadedFile()) {
+    if ($manufacturerId === false) {
+        $tpl->assign('msg', 'Wrong manufacturer given.');
+    } elseif ($fileObj->isUploadedFile()) {
         /*
 		 * Upload File
 		 */
         $values = $fileObj->getValue();
         $msg .= str_replace("\n", "<br />", $stdout);
-        $msg .= "<br />Moving traps in DataBase...";
+        $msg .= "<br />Moving traps in database...";
+
+        $command = "@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"]
+            . "' -m " . $manufacturerId . " --severity=info 2>&1";
 
         if ($debug) {
-            print("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"] . "' -m " .
-                htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8") . " --severity=info 2>&1");
+            print($command);
         }
 
-        $stdout = shell_exec(
-            "@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"] .
-            "' -m " . htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8") . " --severity=info 2>&1"
-        );
+        $stdout = shell_exec($command);
         unlink($values['tmp_name']);
-        $msg .= "<br />" . str_replace("\n", "<br />", $stdout);
-        $msg .= "<br />Generate Traps configuration files from Monitoring Engine configuration form!";
-        if ($msg) {
-            if (strlen($msg) > $max_characters) {
-                $msg = substr($msg, 0, $max_characters) . "..." .
-                    sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
-            }
-            $tpl->assign('msg', $msg);
+
+        if ($stdout === null) {
+            $msg .= '<br />An error occured during generation.';
+        } else {
+            $msg .= '<br />' . str_replace('\n', '<br />', $stdout)
+                . '<br />Generate Traps configuration files from Monitoring Engine configuration form!';
         }
+
+        if (strlen($msg) > $max_characters) {
+            $msg = substr($msg, 0, $max_characters) . "..." .
+                sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
+        }
+        $tpl->assign('msg', $msg);
     }
-    $valid = true;
 }
 
 /*

@@ -95,7 +95,7 @@ try {
     $tabs = array();
     if ($generate) {
         $tabs = $centreon->user->access->getPollerAclConf(array(
-            'fields' => array('id', 'name', 'localhost', 'monitoring_engine'),
+            'fields' => array('id', 'name', 'localhost'),
             'order' => array('name'),
             'keys' => array('id'),
             'conditions' => array('ns_activate' => '1')

@@ -72,6 +72,7 @@ class CentreonUserLog
         $this->errorType[1] = $this->path . "/login.log";
         $this->errorType[2] = $this->path . "/sql-error.log";
         $this->errorType[3] = $this->path . "/ldap.log";
+        $this->errorType[4] = $this->path . "/upgrade.log";
     }
 
     /*
@@ -81,9 +82,10 @@ class CentreonUserLog
     public function insertLog($id, $str, $print = 0, $page = 0, $option = 0)
     {
         /*
-         * Construct alerte message
+         * Construct alert message
+         * Take care before modifying this message pattern as it may break tools such as fail2ban
          */
-        $string = date("Y-m-d H:i") . "|" . $this->uid . "|$page|$option|$str";
+        $string = date("Y-m-d H:i:s") . "|" . $this->uid . "|$page|$option|$str";
 
         /*
          * Display error on Standard exit
@@ -146,6 +148,8 @@ class CentreonLog
         $this->errorType[1] = $this->path . "/login.log";
         $this->errorType[2] = $this->path . "/sql-error.log";
         $this->errorType[3] = $this->path . "/ldap.log";
+        $this->errorType[4] = $this->path . "/upgrade.log";
+        $this->errorType[5] = $this->path . '/plugin-pack-manager.log';
 
         foreach ($customLogs as $key => $value) {
             if (!preg_match('@' . $this->path . '@', $value)) {

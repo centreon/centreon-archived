@@ -234,23 +234,6 @@ msgstr "Protocole de sérialisation des données"
 msgid "Target DBMS."
 msgstr "Type de base de données."
 
-#: centreon-web/help.php:39
-msgid ""
-"The TCP port used to communicate with rrdcached. This is a global option, go "
-"to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Port de connexion pour communiquer avec le processus RRDCacheD. Cette option "
-"est définie globalement dans le menu \"Administration > Options > RRDTool\"."
-
-#: centreon-web/help.php:40
-msgid ""
-"The Unix socket used to communicate with rrdcached. This is a global option, "
-"go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Chemin d'accès au socket Unix pour communiquer avec le processus RRDCacheD. "
-"Cette option est définie globalement dans le menu \"Administration > Options > "
-"RRDTool\"."
-
 #: centreon-web/help.php:41
 msgid ""
 "The higher the buffer size is, the best compression. This however increase "
@@ -270,6 +253,10 @@ msgstr ""
 "Intervalle de temps entre deux contrôles du module Centreon Broker RRD afin de "
 "récupérer les directives de reconstruction des graphiques de performance. Par "
 "défaut cette valeur est positionnée à 300s."
+
+#: centreon-web/www/include/configuration/configCentreonBroker/help.php:93
+msgid "Usually cpus/2."
+msgstr "Généralement le nombre de cpus/2."
 
 #: centreon-web/help.php:43
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:84
@@ -831,9 +818,10 @@ msgid "The number elements loaded in async select."
 msgstr "Le nombre d'éléments chargé par défaut dans les listes de sélection."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:29
-msgid "Life duration of sessions."
-msgstr ""
-"Temps d'expiration en minutes  sessions des utilisateurs connectés à Centreon."
+ msgid "Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value "
+"set in your php centreon.ini file."
+msgstr "Temps d'expiration en minutes de la session des utilisateurs connectés à Centreon."
+"Cette valeur ne peut dépasser la valeur définie dans votre fichier de configuration php centreon.ini"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:35
 msgid "Refresh interval."
@@ -851,8 +839,7 @@ msgstr "Intervalle de rafraichissement utilisé dans les pages de supervision."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:40
 msgid "First refresh delay for statistics (top counters)."
-msgstr ""
-"Délai de rafraichissement des statistiques des états des hôtes et des services "
+msgstr "Délai de rafraichissement des statistiques des états des hôtes et des services "
 "lors du premier accès à la page (tableaux situés en haut des pages)."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:42
@@ -1226,22 +1213,6 @@ msgstr "Style de la police des filigranes."
 #: centreon-web/www/include/Administration/parameters/rrdtool/help.php:43
 msgid "Font size of watermarks."
 msgstr "Taille de la police des filigranes."
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:50
-msgid ""
-"Enable the rrdcached for Centreon. This option is valid only with Centreon "
-"Broker"
-msgstr ""
-"Activer RRDCached pour Centreon. Cette option est utilisée uniquement avec "
-"Centreon Broker."
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:52
-msgid "Port for communicating with rrdcached"
-msgstr "Port de communication avec RRDCached "
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:55
-msgid "The absolute path to unix socket for communicating with rrdcached"
-msgstr "Le chemin d'accès au socket Unix pour communiquer avec RRDCached "
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/help.php:8
 msgid "Name of resource rule."
@@ -1847,43 +1818,6 @@ msgstr ""
 "C'est un fichier temporaire que le moteur de supervision crée périodiquement "
 "durant la mise à jour des commentaires, des statuts, etc. Ce fichier est "
 "supprimé lorsqu'il n'est plus nécessaire."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:67
-msgid ""
-"This options determines which directory Monitoring Engine will use to "
-"temporarily store host and service check results before they are processed. "
-"This directory should not be used to store any other files, as Monitoring "
-"Engine will periodically clean this directory of old file. Make sure that only "
-"a single instance of Monitoring Engine has access to the check result path. If "
-"multiple instances of Monitoring Engine have their check result path set to "
-"the same directory, you will run into problems with check results being "
-"processed (incorrectly) by the wrong instance of Monitoring Engine!"
-msgstr ""
-"Cette option détermine quel répertoire le moteur de supervision utilisera pour "
-"stocker temporairement les résultats des contrôles. Ce répertoire ne doit pas "
-"stocker d'autres fichiers, car le moteur de supervision efface le contenu de "
-"ce répertoire de manière récurrente. Assurez-vous qu'une seule instance du "
-"moteur de supervision ait accès au répertoire des résultats. Si plusieurs "
-"instances du moteur de supervision ont leur répertoire de résultats, "
-"configurez le même emplacement, vous aurez des problèmes avec les résultats "
-"des contrôles en cours de traitement (à tort) par rapport à la mauvaise "
-"instance du moteur de supervision!"
-
-#: centreon-web/www/include/configuration/configNagios/help.php:78
-msgid ""
-"This options determines the maximum age in seconds that Monitoring Engine will "
-"consider check result files found in the check_result_path directory to be "
-"valid. Check result files that are older that this threshold will be deleted "
-"by Monitoring Engine and the check results they contain will not be processed. "
-"By using a value of zero (0) with this option, Monitoring Engine will process "
-"all check result files."
-msgstr ""
-"Cette option détermine le temps maximum en secondes que le moteur de "
-"supervision peut considérer trouver des informations de résultat de contrôles "
-"dans le répertoire de stockage des résultats. Les résultats dépassant ce temps "
-"limite seront effacés par le moteur de supervision et ne pourront plus être "
-"exploités. En utilisant la valeur zéro (0) pour cette option, le moteur de "
-"supervision exploitera chaque fichiers de contrôle."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:86
 msgid ""
@@ -3600,13 +3534,6 @@ msgstr ""
 "Active la possibilité de journaliser le PID du processus dans le journal "
 "d'évènement du moteur de supervision. Cette option ne fonctionne que pour le "
 "moteur Centreon Engine."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:492
-msgid ""
-"This option enable or disable compatibility mode to use check result path."
-msgstr ""
-"Cette option permet de rendre compatible le moteur Centreon Engine avec les "
-"modules tiers tels que MKLiveStatus et Mod_Gearman."
 
 #: centreon-web/www/include/configuration/configObject/host_dependency/help.php:4
 #: centreon-web/www/include/configuration/configObject/service_dependency/help.php:4
@@ -6305,23 +6232,15 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:75
 msgid ""
-"The Unix socket used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify "
-"it."
+"Enable rrdcached option for Centreon, please see Centreon documentation to configure it."
 msgstr ""
-"Chemin d'accès au socket Unix pour communiquer avec le processus RRDCacheD. "
-"Cette option est définie globalement dans le menu \"Administration > Options > "
-"RRDTool\"."
+"Activer l'option rrdcached pour Centreon, veuillez consulter la documentation de Centreon pour le configurer."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:79
 msgid ""
-"The TCP port used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify "
-"it."
+"The absolute path to unix socket or TCP port for communicating with rrdcached daemon."
 msgstr ""
-"Port de connexion pour communiquer avec le processus RRDCacheD.\n"
-" Cette option est définie globalement dans le menu \"Administration > Options "
-"> RRDTool\"."
+"Le chemin absolu vers la socket Unix ou le port TCP pour communiquer avec le démon rrdcached."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:90
 msgid ""
@@ -6348,8 +6267,16 @@ msgid "Main poller"
 msgstr "Collecteur principal"
 
 #: centreon-web/www/include/configuration/configServers/help.php:7
-msgid "SSH port of the remote poller"
-msgstr "Port SSH du collecteur distant"
+msgid "SSH legacy port used by Centreon extensions or tools (see Gorgone Information for communication port between monitoring servers)"
+msgstr "Port SSH utilisé par les extensions ou outils Centreon (voir Gorgone Information pour le port de communication entre les serveurs de supervision)"
+
+#: centreon-web/www/include/configuration/configServers/help.php:7
+msgid "Gorgone communication protocol (ZMQ or SSH)"
+msgstr "Protocole de communication Gorgone (ZMQ ou SSH)"
+
+#: centreon-web/www/include/configuration/configServers/help.php:8
+msgid "Gorgone port of the remote poller (5556 or 22)"
+msgstr "Port de communication Gorgone (5556 ou 22)"
 
 #: centreon-web/www/include/configuration/configServers/help.php:8
 msgid "Monitoring engine"
@@ -6421,6 +6348,14 @@ msgstr ""
 "la supervision et après le redémarrage du moteur de collecte. NE pas spécifier "
 "de macros ans cette commande car elles ne seraient pas remplacées. Vérifier "
 "que les droits d'exécution sont suffisant pour l'utilisateur \"apache\"."
+
+#: centreon-web/www/include/configuration/configServers/help.php:55
+msgid ""
+"If checked, it won't use the proxy configured in 'Administration > Parameters > Centreon UI' "
+"to connect to the Remote Server."
+msgstr ""
+"Si coché, il n'utilisera pas le proxy configuré dans 'Administration > Paramètres > Centreon UI' "
+"pour se connecter au serveur distant."
 
 #: centreon-web/www/include/configuration/configServers/help.php:22
 msgid "Short description of the poller"
@@ -7003,26 +6938,6 @@ msgstr ""
 #~ "temps en temps afin de supprimer les fichiers plus vieux que 24 heures."
 
 #~ msgid ""
-#~ "This options determines which directory Nagios will use to temporarily "
-#~ "store host and service check results before they are processed. This "
-#~ "directory should not be used to store any other files, as Nagios will "
-#~ "periodically clean this directory of old file. Make sure that only a single "
-#~ "instance of Nagios has access to the check result path. If multiple "
-#~ "instances of Nagios have their check result path set to the same directory, "
-#~ "you will run into problems with check results being processed (incorrectly) "
-#~ "by the wrong instance of Nagios!"
-#~ msgstr ""
-#~ "Cette option détermine quel répertoire Nagios utilisera afin de stocker "
-#~ "temporairement les résultats des contrôles sur les hôtes et les services "
-#~ "avant qu'ils ne soient traités. Ce répertoire ne devrait pas être utilisé "
-#~ "afin de stocker d'autres fichiers, car Nagios nettoiera périodiquement ce "
-#~ "répertoire des vieux fichiers. Assurez-vous que seul une instance de Nagios "
-#~ "a accès au chemin de résultat des contrôles. Si plusieurs instances Nagios "
-#~ "ont accès au même dossier, vous risquez de rencontrer des problèmes avec "
-#~ "des résultat de contrôle (incohérents) car traité par la mauvaise instance "
-#~ "de Nagios."
-
-#~ msgid ""
 #~ "This is used to set the effective user that the Nagios process should run "
 #~ "as. After initial program startup and before starting to monitor anything, "
 #~ "Nagios will drop its effective privileges and run as this user. You may "
@@ -7256,3 +7171,10 @@ msgstr ""
 #~ msgstr ""
 #~ "Sélectionner l'instance du serveur Nagios pour laquelle cette configuration "
 #~ "est définie."
+
+#: centreon-web/www/include/configuration/configServers/help.php:7
+#~ msgid "Master Remote Server to which this server will be attached"
+#~ msgstr ""
+
+#~ msgid "Additional Remote Server to which this server will be attached"
+#~ msgstr ""

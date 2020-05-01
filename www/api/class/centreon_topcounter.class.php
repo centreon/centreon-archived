@@ -51,7 +51,7 @@ class CentreonTopCounter extends CentreonWebService
     /**
      * @var int
      */
-    protected $refreshTime = 15;
+    protected $refreshTime;
 
     protected $hasAccessToTopCounter = false;
 
@@ -91,7 +91,7 @@ class CentreonTopCounter extends CentreonWebService
      */
     private function initRefreshInterval()
     {
-        $refreshInterval = 15;
+        $refreshInterval = 60;
 
         $query = 'SELECT `value` FROM options WHERE `key` = "AjaxTimeReloadStatistic"';
         $res = $this->pearDB->query($query);
@@ -202,6 +202,7 @@ class CentreonTopCounter extends CentreonWebService
         $locale = $this->centreon->user->lang === 'browser'
             ? null
             : $this->centreon->user->lang;
+        $autoLoginKey = null;
 
         if (isset($_SESSION['disable_sound'])) {
             $this->soundNotificationsEnabled = !$_SESSION['disable_sound'];
@@ -209,28 +210,62 @@ class CentreonTopCounter extends CentreonWebService
             $this->soundNotificationsEnabled = true;
         }
 
-        /* Get autologinkey */
-        $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$this->centreon->user->user_id;
-
+        // Is the autologin feature enabled ?
         try {
-            $res = $this->pearDB->query($query);
+            $res = $this->pearDB->query(
+                'SELECT value FROM options WHERE options.key = "enable_autologin"'
+            );
         } catch (\Exception $e) {
             throw new \RestInternalServerErrorException('Error getting the user.');
         }
 
-        if ($res->rowCount() === 0) {
-            throw new \RestUnauthorizedException('User does not exists.');
+        $rowEnableShortcut = $res->fetch();
+
+        // Do we need to display the autologin shortcut ?
+        try {
+            $res = $this->pearDB->query(
+                'SELECT value FROM options WHERE options.key = "display_autologin_shortcut"'
+            );
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException('Error getting the user.');
         }
-        $row = $res->fetch();
+
+        $rowEnableAutoLogin = $res->fetch();
+
+        // If the autologin feature is enabled then fetch the autologin key
+        // And display the shortcut if the option is enabled
+        if (isset($rowEnableAutoLogin['value'])
+            && isset($rowEnableShortcut['value'])
+            && $rowEnableAutoLogin['value'] === '1'
+            && $rowEnableShortcut['value'] === '1'
+        ) {
+            // Get autologinkey
+            try {
+                $res = $this->pearDB->prepare(
+                    'SELECT contact_autologin_key FROM contact WHERE contact_id = :userId'
+                );
+                $res->bindValue(':userId',  (int) $this->centreon->user->user_id, \PDO::PARAM_INT);
+                $res->execute();
+            } catch (\Exception $e) {
+                throw new \RestInternalServerErrorException('Error getting the user.');
+            }
+
+            if ($res->rowCount() === 0) {
+                throw new \RestUnauthorizedException('User does not exist.');
+            }
+
+            $row = $res->fetch();
+            $autoLoginKey = $row['contact_autologin_key'] ?? null;
+        }
 
         return array(
             'userId' => $this->centreon->user->user_id,
             'fullname' => $this->centreon->user->name,
             'username' => $this->centreon->user->alias,
             'locale' => $locale,
-            'timezone' => $this->centreon->user->gmt,
+            'timezone' => $this->centreon->CentreonGMT->getActiveTimezone($this->centreon->user->gmt),
             'hasAccessToProfile' => $this->hasAccessToProfile,
-            'autologinkey' => $row['contact_autologin_key'],
+            'autologinkey' => $autoLoginKey,
             'soundNotificationsEnabled' => $this->soundNotificationsEnabled
         );
     }
@@ -439,14 +474,14 @@ class CentreonTopCounter extends CentreonWebService
                 $result['issues']['latency']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'since' => $poller['warning']['time']
+                    'since' => $poller['latency']['time']
                 );
                 $latWar++;
             } elseif ($poller['latency']['state'] === 2) {
                 $result['issues']['latency']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'since' => $poller['warning']['time']
+                    'since' => $poller['latency']['time']
                 );
                 $latCri++;
             }
@@ -518,15 +553,20 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
 
+        if (isset($_SESSION['topCounterHostStatus']) && 
+            (time() - $this->refreshTime) < $_SESSION['topCounterHostStatus']['time']) {
+            return $_SESSION['topCounterHostStatus'];
+        }
+
         $query = 'SELECT
-            SUM(CASE WHEN h.state = 0 THEN 1 ELSE 0 END) AS up_total,
-            SUM(CASE WHEN h.state = 1 THEN 1 ELSE 0 END) AS down_total,
-            SUM(CASE WHEN h.state = 2 THEN 1 ELSE 0 END) AS unreachable_total,
-            SUM(CASE WHEN h.state = 4 THEN 1 ELSE 0 END) AS pending_total,
-            SUM(CASE WHEN h.state = 1 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
-                THEN 1 ELSE 0 END) AS down_unhandled,
-            SUM(CASE WHEN h.state = 2 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
-                THEN 1 ELSE 0 END) AS unreachable_unhandled
+            COALESCE(SUM(CASE WHEN h.state = 0 THEN 1 ELSE 0 END), 0) AS up_total,
+            COALESCE(SUM(CASE WHEN h.state = 1 THEN 1 ELSE 0 END), 0) AS down_total,
+            COALESCE(SUM(CASE WHEN h.state = 2 THEN 1 ELSE 0 END), 0) AS unreachable_total,
+            COALESCE(SUM(CASE WHEN h.state = 4 THEN 1 ELSE 0 END), 0) AS pending_total,
+            COALESCE(SUM(CASE WHEN h.state = 1 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
+                THEN 1 ELSE 0 END), 0) AS down_unhandled,
+            COALESCE(SUM(CASE WHEN h.state = 2 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0)
+                THEN 1 ELSE 0 END), 0) AS unreachable_unhandled
             FROM hosts h, instances i';
         $query .= ' WHERE i.deleted = 0
             AND h.instance_id = i.instance_id
@@ -560,9 +600,11 @@ class CentreonTopCounter extends CentreonWebService
             'ok' => $row['up_total'],
             'pending' => $row['pending_total'],
             'total' => $row['up_total'] + $row['pending_total'] + $row['down_total'] + $row['unreachable_total'],
-            'refreshTime' => $this->refreshTime
+            'refreshTime' => $this->refreshTime,
+            'time' => time()
         );
 
+        CentreonSession::writeSessionClose('topCounterHostStatus', $result);
         return $result;
     }
 
@@ -577,18 +619,23 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
 
+        if (isset($_SESSION['topCounterServiceStatus']) && 
+            (time() - $this->refreshTime) < $_SESSION['topCounterServiceStatus']['time']) {
+            return $_SESSION['topCounterServiceStatus'];
+        }
+
         $query = 'SELECT
-            SUM(CASE WHEN s.state = 0 THEN 1 ELSE 0 END) AS ok_total,
-            SUM(CASE WHEN s.state = 1 THEN 1 ELSE 0 END) AS warning_total,
-            SUM(CASE WHEN s.state = 2 THEN 1 ELSE 0 END) AS critical_total,
-            SUM(CASE WHEN s.state = 3 THEN 1 ELSE 0 END) AS unknown_total,
-            SUM(CASE WHEN s.state = 4 THEN 1 ELSE 0 END) AS pending_total,
-            SUM(CASE WHEN s.state = 1 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
-                THEN 1 ELSE 0 END) AS warning_unhandled,
-            SUM(CASE WHEN s.state = 2 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
-                THEN 1 ELSE 0 END) AS critical_unhandled,
-            SUM(CASE WHEN s.state = 3 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
-                THEN 1 ELSE 0 END) AS unknown_unhandled
+            COALESCE(SUM(CASE WHEN s.state = 0 THEN 1 ELSE 0 END), 0) AS ok_total,
+            COALESCE(SUM(CASE WHEN s.state = 1 THEN 1 ELSE 0 END), 0) AS warning_total,
+            COALESCE(SUM(CASE WHEN s.state = 2 THEN 1 ELSE 0 END), 0) AS critical_total,
+            COALESCE(SUM(CASE WHEN s.state = 3 THEN 1 ELSE 0 END), 0) AS unknown_total,
+            COALESCE(SUM(CASE WHEN s.state = 4 THEN 1 ELSE 0 END), 0) AS pending_total,
+            COALESCE(SUM(CASE WHEN s.state = 1 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
+                THEN 1 ELSE 0 END), 0) AS warning_unhandled,
+            COALESCE(SUM(CASE WHEN s.state = 2 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
+                THEN 1 ELSE 0 END), 0) AS critical_unhandled,
+            COALESCE(SUM(CASE WHEN s.state = 3 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
+                THEN 1 ELSE 0 END), 0) AS unknown_unhandled
             FROM hosts h, services s, instances i';
         $query .= ' WHERE i.deleted = 0
             AND h.instance_id = i.instance_id
@@ -630,9 +677,11 @@ class CentreonTopCounter extends CentreonWebService
             'pending' => $row['pending_total'],
             'total' => $row['ok_total'] + $row['pending_total'] + $row['critical_total'] + $row['unknown_total'] +
                 $row['warning_total'],
-            'refreshTime' => $this->refreshTime
+            'refreshTime' => $this->refreshTime,
+            'time' => time()
         );
 
+        CentreonSession::writeSessionClose('topCounterServiceStatus', $result);
         return $result;
     }
 
@@ -761,7 +810,7 @@ class CentreonTopCounter extends CentreonWebService
         while ($row = $res->fetch()) {
             if ($row['stat_value'] >= 120) {
                 $listPoller[$row['instance_id']]['latency']['state'] = 2;
-                $listPoller[$row['instance_id']]['database']['time'] = $row['stat_value'];
+                $listPoller[$row['instance_id']]['latency']['time'] = $row['stat_value'];
             } elseif ($row['stat_value'] >= 60) {
                 $listPoller[$row['instance_id']]['latency']['state'] = 1;
                 $listPoller[$row['instance_id']]['latency']['time'] = $row['stat_value'];
@@ -821,9 +870,13 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if (parent::authorize($action, $user, $isInternal)) {
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiRealtime())
+        ) {
             return true;
         }
-        return $user->hasAccessRestApiConfiguration();
+
+        return false;
     }
 }

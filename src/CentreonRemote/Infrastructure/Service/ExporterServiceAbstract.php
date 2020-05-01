@@ -1,15 +1,37 @@
 <?php
+/*
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Infrastructure\Service;
 
-use Psr\Container\ContainerInterface;
+use Pimple\Container;
 use CentreonRemote\Infrastructure\Service\ExporterCacheService;
 use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
-use Centreon\Infrastructure\Service\CentcoreConfigService;
 
 abstract class ExporterServiceAbstract implements ExporterServiceInterface
 {
+    /**
+     * @var Container $dependencyInjector
+     */
+    protected $dependencyInjector;
 
     /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
@@ -34,15 +56,13 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     /**
      * Construct
      *
-     * @param \Psr\Container\ContainerInterface $services
+     * @param Container $services
      */
-    public function __construct(ContainerInterface $services)
+    public function __construct(Container $services)
     {
-        $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
-
-        if ($services->has('centreon.config')) {
-            $this->config = $services->get('centreon.config');
-        }
+        $this->dependencyInjector = $services;
+        $this->db = $services['centreon.db-manager'];
+        $this->config = $services['centreon.config'];
     }
 
     public function setCache(ExporterCacheService $cache): void
@@ -69,6 +89,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
      * Create path for export
      *
      * @param string $exportPath
+     *
      * @return string
      */
     public function createPath(string $exportPath = null): string
@@ -88,6 +109,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
      * Get path of export
      *
      * @param string $exportPath
+     *
      * @return string
      */
     public function getPath(string $exportPath = null): string
@@ -101,6 +123,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
      * Get exported file
      *
      * @param string $filename
+     *
      * @return string
      */
     public function getFile(string $filename): string
@@ -113,56 +136,5 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     public static function order(): int
     {
         return 10;
-    }
-
-    protected function _parse(string $filename): array
-    {
-        $macros = null;
-
-        if ($this->config !== null) {
-            $macros = function (&$result) {
-                $result !== null ? $this->config->replaceMacros($result) : null;
-            };
-        }
-
-        $result = $this->commitment->getParser()->parse($filename, $macros);
-
-        return $result;
-    }
-
-    protected function _getIf(string $key, callable $data)
-    {
-        $result = $this->cache->getIf($key, $data);
-
-        return $result;
-    }
-
-    protected function _dump(array $input, string $filename): void
-    {
-        $this->commitment->getParser()->dump($input, $filename);
-
-        $this->manifest->addFile($filename);
-    }
-
-    protected function _mergeDump(array $input, string $filename, $uniqueId = 'id')
-    {
-        $data = $this->_parse($filename);
-
-        if ($data) {
-            foreach ($data as $row) {
-                $id = $row[$uniqueId];
-
-                foreach ($input as $_key => $_row) {
-                    $_id = $_row[$uniqueId];
-                    if ($id === $_id) {
-                        unset($input[$_key]);
-                    }
-                }
-            }
-
-            $input = array_merge($data, $input);
-        }
-
-        $this->_dump($input, $filename);
     }
 }

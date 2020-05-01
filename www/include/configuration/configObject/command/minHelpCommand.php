@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,82 +37,60 @@ if (!isset($oreon)) {
     exit();
 }
 
-if (isset($_GET["command_id"])) {
-    $command_id = $_GET["command_id"];
-} elseif (isset($_POST["command_id"])) {
-    $command_id = $_POST["command_id"];
-} else {
-    $command_id = null;
-}
+$commandId = filter_var(
+    $_GET["command_id"] ?? $_POST["command_id"] ?? null,
+    FILTER_VALIDATE_INT
+);
 
-if (isset($_GET["command_name"])) {
-    $command_name = $_GET["command_name"];
-} elseif (isset($_POST["command_name"])) {
-    $command_name = $_POST["command_name"];
-} else {
-    $command_name = null;
-}
+$commandName = filter_var(
+    $_GET["command_name"] ?? $_POST["command_name"] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-if ($command_id != null) {
-    /*
-     * Get command informations
-     */
-    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . $command_id . "' LIMIT 1");
-    $cmd = $DBRESULT->fetchRow();
+if ($commandId != null) {
+    //Get command information
+    $sth = $pearDB->prepare('SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1');
+    $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
+    $sth->execute();
+    $cmd = $sth->fetch();
+    unset($sth);
 
-    $cmd_array = explode(" ", $cmd["command_line"]);
-    $full_line = $cmd_array[0];
-    $cmd_array = explode("/", $full_line);
-    $resource_info = $cmd_array[0];
-    $resource_def = str_replace('$', '@DOLLAR@', $resource_info);
+    $aCmd = explode(" ", $cmd["command_line"]);
+    $fullLine = $aCmd[0];
+    $plugin = array_values(preg_grep('/^\-\-plugin\=(\w+)/i', $aCmd))[0];
+    $mode = array_values(preg_grep('/^\-\-mode\=(\w+)/i', $aCmd))[0];
+    $aCmd = explode("/", $fullLine);
+    $resourceInfo = $aCmd[0];
 
-    /*
-     * Match if the first part of the path is a MACRO
-     */
-    if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches)) {
-        /*
-         * Select Resource line
-         */
-        $query = "SELECT `resource_line` FROM `cfg_resource` " .
-            "WHERE `resource_name` = '\$USER" . $matches[1] . "\$' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
-
-        $resource = $DBRESULT->fetchRow();
-        unset($DBRESULT);
-
-        $resource_path = $resource["resource_line"];
-        unset($cmd_array[0]);
-        $command = rtrim($resource_path, "/") . "#S#" . implode("#S#", $cmd_array);
+    $prepare = $pearDB->prepare(
+        'SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = :resource LIMIT 1'
+    );
+    $prepare->bindValue(':resource', $resourceInfo, \PDO::PARAM_STR);
+    $prepare->execute();
+    //Match if the first part of the path is a MACRO
+    if ($resource = $prepare->fetch()) {
+        $resourcePath = $resource["resource_line"];
+        unset($aCmd[0]);
+        $command = rtrim($resourcePath, "/") . "#S#" . implode("#S#", $aCmd);
     } else {
-        $command = $full_line;
+        $command = $fullLine;
     }
 } else {
-    $command = $oreon->optGen["nagios_path_plugins"] . $command_name;
+    $command = $oreon->optGen["nagios_path_plugins"] . $commandName;
 }
 
 $command = str_replace("#S#", "/", $command);
 $command = str_replace("#BS#", "\\", $command);
 
-if (strncmp($command, "/usr/lib/nagios/", strlen("/usr/lib/nagios/"))) {
-    if (is_dir("/usr/lib64/nagios/")) {
-        $command = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $command);
-        $oreon->optGen["nagios_path_plugins"] = str_replace(
-            "/usr/lib/nagios/plugins/",
-            "/usr/lib64/nagios/plugins/",
-            $oreon->optGen["nagios_path_plugins"]
-        );
-    }
+$tab = explode(' ', $command);
+if (realpath($tab[0])) {
+    $command = realpath($tab[0]) . ' ' . $plugin . ' ' . $mode . ' --help';
+} else {
+    $command = $tab[0] . ' ' . $plugin . ' ' . $mode . ' --help';
 }
 
-$tab = explode(' ', $command);
-if (strncmp(realpath($tab[0]), $oreon->optGen["nagios_path_plugins"], strlen($oreon->optGen["nagios_path_plugins"]))) {
-    $msg = _('Error: Cannot Execute this command due to a path security problem.');
-    $command = realpath($tab[0]);
-} else {
-    $command = realpath($tab[0]);
-    $stdout = shell_exec(realpath($tab[0]) . " --help");
-    $msg = str_replace("\n", "<br />", $stdout);
-}
+$stdout = shell_exec($command . " 2>&1");
+$msg = str_replace("\n", "<br />", $stdout);
 
 $attrsText = array("size" => "25");
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
@@ -138,7 +116,7 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign('command_line', $command . " --help");
+$tpl->assign('command_line', $command);
 if (isset($msg) && $msg) {
     $tpl->assign('msg', $msg);
 }

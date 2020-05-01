@@ -3,10 +3,7 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
-use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use Centreon\Domain\Entity\Task;
-use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
-use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 /**
@@ -75,6 +72,61 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
+     * @OA\Get(
+     *   path="/internal.php?object=centreon_configuration_remote&action=list",
+     *   description="Get list with connected remotes",
+     *   tags={"centreon_configuration_remote"},
+     *   security={{"Session": {}}},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_configuration_remote"},
+     *          default="centreon_configuration_remote"
+     *       ),
+     *       description="the name of the API object class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getRemotesList"},
+     *          default="getRemotesList"
+     *       ),
+     *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON with the IPs of connected remotes",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="id", type="string"),
+     *          @OA\Property(property="ip", type="string"),
+     *          @OA\Property(property="name", type="string")
+     *       )
+     *   )
+     * )
+     *
+     * Get list with connected remotes
+     *
+     * @return array
+     * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
+     */
+    public function getList(): array
+    {
+        $list = [];
+        foreach ($this->postGetRemotesList() as $row) {
+            $row['id'] = (int)$row['id'];
+            $list[] = $row;
+        }
+
+        return $list;
+    }
+
+    /**
      * @OA\Post(
      *   path="/internal.php?object=centreon_configuration_remote&action=getRemotesList",
      *   description="Get list with connected remotes",
@@ -116,7 +168,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Get list with connected remotes
      *
      * @return array
-     * @example ['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']
+     * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
     public function postGetRemotesList(): array
     {
@@ -216,9 +268,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *              description="pollers to link with the new remote"
      *          ),
      *          @OA\Property(
-     *              property="linked_remote",
+     *              property="linked_remote_master",
      *              type="string",
      *              description="remote to manage the new poller"
+     *          ),
+     *          @OA\Property(
+     *              property="linked_remote_slaves",
+     *              type="string",
+     *              description="additional remotes which receive data from the new poller"
      *          )
      *       )
      *   ),
@@ -259,11 +316,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         // validate form fields
         WizardConfigurationRequestValidator::validate();
 
-        /** @var $pollerConfigurationService LinkedPollerConfigurationService */
         $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
-        /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
-        /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
         // extract HTTP method and port from form or database if registered
@@ -271,6 +325,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $httpPort = "";
         $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
+
+        // Check IPv6, IPv4 and FQDN format
+        if (!filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) && !filter_var($serverIP, FILTER_VALIDATE_IP)) {
+            return ['error' => true, 'message' => "Invalid IP address"];
+        }
 
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
@@ -294,6 +353,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         // set linked pollers
         $pollerConfigurationBridge->collectDataFromRequest();
+        // set additional Remote Servers
+        $pollerConfigurationBridge->collectDataFromAdditionalRemoteServers();
 
         // if it's a remote server, set database connection information and check if bam is installed
         if ($isRemoteConnection) {
@@ -367,6 +428,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $pollers = [$pollerConfigurationBridge->getPollerFromId($serverId)];
             $parentPoller = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate()[0];
             $pollerConfigurationService->linkPollersToParentPoller($pollers, $parentPoller);
+            // add broker output to forward data to additionnal remote server and link in db
+            $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
+            $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
         }
 
         return ['success' => true, 'task_id' => $taskId];

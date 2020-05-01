@@ -241,17 +241,7 @@ $extImgStatusmap = array();
 $extImgStatusmap = return_image_list(2);
 
 // Host multiple templates relations stored in DB
-$mTp = array();
-$k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id 
-                            FROM host_template_relation 
-                            WHERE host_host_id = '" . $host_id . "' 
-                            ORDER BY `order`");
-while ($multiTp = $DBRESULT->fetch()) {
-    $mTp[$k] = $multiTp["host_tpl_id"];
-    $k++;
-}
-$DBRESULT->closeCursor();
+$mTp = $hostObj->getSavedTpl($host_id);
 
 
 // Var information to format the element
@@ -296,14 +286,6 @@ $attrHosts = array(
     'availableDatasetRoute' => $hostRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
-);
-$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates'
-    . '&action=list';
-$attrHostTpls = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $hostTplRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonHosttemplates'
 );
 $hostGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
@@ -392,7 +374,7 @@ $form->addElement('select2', 'host_location', _("Timezone / Location"), array(),
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 /*
- * Get deault poller id
+ * Get default poller id
  */
 $DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 $defaultServer = $DBRESULT->fetch();
@@ -456,13 +438,16 @@ $cloneSetMacro[] = $form->addElement(
     array('id' => 'macroFrom_#index#')
 );
 
-
 $cloneSetTemplate = array();
+$listPpTemplate = $hostObj->getLimitedList();
+$listAllTemplate = $hostObj->getList(false, true, null);
+$validTemplate = array_diff_key($listAllTemplate, $listPpTemplate);
+$listTemplate = array(null => null) + $mTp + $validTemplate;
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
     '',
-    (array(null => null) + $hostObj->getList(false, true)),
+    $listTemplate,
     array(
         "id" => "tpSelect_#index#",
         "class" => "select2",
@@ -615,6 +600,8 @@ if ($o == "mc") {
 /*
  * Additive
  */
+$dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
+$inheritanceMode = $dbResult->fetch();
 if ($o == "mc") {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
@@ -625,7 +612,12 @@ if ($o == "mc") {
         _("Default"),
         '2'
     );
-    $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
+    $form->addGroup(
+        $contactAdditive,
+        'mc_contact_additive_inheritance',
+        _("Contact additive inheritance"),
+        '&nbsp;'
+    );
 
     $contactGroupAdditive[] = $form->createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = $form->createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
@@ -646,6 +638,7 @@ if ($o == "mc") {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
 }
+
 /*
  *  Contacts
  */
@@ -1052,7 +1045,8 @@ if ($o != "mc") {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
-    if (isset($centreon->optGen["strict_hostParent_poller_management"])
+    if (
+        isset($centreon->optGen["strict_hostParent_poller_management"])
         && $centreon->optGen["strict_hostParent_poller_management"] == 1
     ) {
         $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
@@ -1215,6 +1209,7 @@ if ($valid) {
     $tpl->assign('o', $o);
     $tpl->assign('seconds', _("seconds"));
     $tpl->assign('p', $p);
+    $tpl->assign('inheritance', $inheritanceMode['value']);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));
     $tpl->assign("History_Options", _("History Options"));

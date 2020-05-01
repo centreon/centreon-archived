@@ -11,6 +11,8 @@ require_once _CENTREON_PATH_ . 'www/include/configuration/configGenerate/DB-Func
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\Domain\Value\PollerServer;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputForwardMaster;
 use CentreonRemote\Infrastructure\Service\PollerInteractionService;
 use Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface;
 use Centreon\Domain\Service\BrokerConfigurationService;
@@ -131,6 +133,28 @@ class LinkedPollerConfigurationService
     }
 
     /**
+     * Link a poller to additional Remote Servers
+     *
+     * @param PollerServer   $poller
+     * @param PollerServer[] $remotes
+     */
+    public function linkPollerToAdditionalRemoteServers(PollerServer $poller, array $remotes)
+    {
+        foreach ($remotes as $remote) {
+            // If one peer retention is enabled, add input on remote server to get data from poller
+            if ($this->onePeerRetention) {
+                $this->setBrokerInputOfRemoteServer($remote->getId(), $poller);
+            } else { // If one peer retention is disabled, we need to set the host output of the poller
+                $this->setBrokerOutputOfPoller($poller->getId(), $remote, true);
+            }
+        }
+        $this->insertAddtitionnalRemoteServersRelations($poller, $remotes);
+
+        // Generate configuration for poller and restart it
+        $this->pollerInteractionService->generateAndExport($remotes);
+    }
+
+    /**
      * Add broker input configuration on remote server to get data from poller
      *
      * @param int $pollerId
@@ -147,32 +171,118 @@ class LinkedPollerConfigurationService
     }
 
     /**
+     * Add relation between poller and Remote Servers
+     *
+     * @param int            $pollerId
+     * @param PollerServer[] $remote
+     */
+    private function insertAddtitionnalRemoteServersRelations(PollerServer $poller, array $remotes)
+    {
+        $query = 'INSERT INTO `rs_poller_relation` VALUES (:remoteId, :pollerId)';
+        $this->db->beginTransaction();
+        $statement = $this->db->prepare($query);
+        try {
+            foreach ($remotes as $remote) {
+                $statement->bindParam(':remoteId', $remote->getId(), \PDO::PARAM_INT);
+                $statement->bindParam(':pollerId', $poller->getId(), \PDO::PARAM_INT);
+                $statement->execute();
+            }
+            $this->db->commit();
+        } catch (PDOException $Exception) {
+            $this->db->rollBack();
+        }
+    }
+
+    /**
      * Update host field of broker output on poller to link it the the remote server
      *
-     * @param int $pollerId
+     * @param int          $pollerId
      * @param PollerServer $remote
+     * @param Boolean      $additional
      */
-    private function setBrokerOutputOfPoller($pollerId, PollerServer $remote): void
+    private function setBrokerOutputOfPoller($pollerId, PollerServer $remote, $additional = false): void
     {
-        // find broker config id of poller module
-        $configQuery = "SELECT `config_id` "
-            . "FROM `cfg_centreonbroker` "
-            . "WHERE `ns_nagios_server` = :id "
-            . "AND `daemon` = 0";
-        $statement = $this->db->prepare($configQuery);
-        $statement->bindParam(':id', $pollerId, \PDO::PARAM_INT);
-        $statement->execute();
-        $configId = $statement->fetchColumn();
+        if ($additional) { // insert new broker output relation
+            $statement = $this->db->prepare("SELECT `config_id`
+                FROM `cfg_centreonbroker`
+                WHERE `ns_nagios_server` = :id
+                AND `daemon` = 0");
+            $statement->bindParam(':id', $pollerId, \PDO::PARAM_INT);
+            $statement->execute();
+            $configId = $statement->fetchColumn();
 
-        // update host field of poller module output to link it the remote server
-        $updateQuery = "UPDATE `cfg_centreonbroker_info` "
-            . "SET `config_value` = :config_value "
-            . "WHERE `config_id` = :config_id "
-            . "AND `config_key` = 'host'";
-        $statement = $this->db->prepare($updateQuery);
-        $statement->bindValue(':config_value', $remote->getIp(), \PDO::PARAM_STR);
-        $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
-        $statement->execute();
+            $statement = $this->db->prepare("SELECT MAX(`config_group_id`) AS config_group_id
+                FROM `cfg_centreonbroker_info`
+                WHERE `config_id` = :id");
+            $statement->bindParam(':id', $configId, \PDO::PARAM_INT);
+            $statement->execute();
+            $configGRoupId = $statement->fetchColumn('config_group_id') + 1;
+
+            $defaultBrokerOutput = (new OutputForwardMaster)->getConfiguration();
+            $defaultBrokerOutput[0]['config_value'] = 'forward-to-' . str_replace(' ', '-', $remote->getName());
+
+            $this->db->beginTransaction();
+            $statement = $this->db->prepare("INSERT INTO `cfg_centreonbroker_info` (
+                config_id, config_key, config_value, config_group, config_group_id, grp_level
+                ) VALUES (
+                :config_id,
+                :config_key,
+                :config_value,
+                :config_group,
+                :config_group_id,
+                :grp_level
+                )");
+            try {
+                foreach ($defaultBrokerOutput as $item) {
+                    $statement->bindParam(':config_id', $configId, \PDO::PARAM_INT);
+                    $statement->bindParam(':config_key', $item['config_key'], \PDO::PARAM_STR);
+                    if ($item['config_key'] == 'host') {
+                        $item['config_value'] = $remote->getIp();
+                    }
+                    $statement->bindParam(':config_value', $item['config_value'], \PDO::PARAM_STR);
+                    $statement->bindParam(':config_group', $item['config_group'], \PDO::PARAM_STR);
+                    $statement->bindParam(':config_group_id', $configGRoupId, \PDO::PARAM_INT);
+                    $statement->bindParam(':grp_level', $item['grp_level'], \PDO::PARAM_INT);
+                    $statement->execute();
+                }
+                $this->db->commit();
+            } catch (PDOException $Exception) {
+                $this->db->rollBack();
+            }
+        } else { // update host field of poller module output to link it the remote server
+            // find broker config id of poller module
+            $statement = $this->db->prepare("SELECT `config_id`
+                FROM `cfg_centreonbroker`
+                WHERE `ns_nagios_server` = :id
+                AND `daemon` = 0");
+            $statement->bindParam(':id', $pollerId, \PDO::PARAM_INT);
+            $statement->execute();
+            $configId = $statement->fetchColumn();
+
+            // update output ip address to master remote server
+            $statement = $this->db->prepare("UPDATE `cfg_centreonbroker_info`
+                SET `config_value` = :config_value
+                WHERE `config_id` = :config_id
+                AND `config_key` = 'host'
+                AND `config_group` = 'output'");
+            $statement->bindValue(':config_value', $remote->getIp(), \PDO::PARAM_STR);
+            $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            // update output name to master remote server
+            $statement = $this->db->prepare("UPDATE `cfg_centreonbroker_info`
+                SET `config_value` = :config_value
+                WHERE `config_id` = :config_id
+                AND `config_key` = 'name'
+                AND `config_group` = 'output'");
+            $statement->bindValue(
+                ':config_value',
+                'forward-to-' . str_replace(' ', '-', $remote->getName()),
+                \PDO::PARAM_STR
+            );
+            $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     /**
@@ -203,7 +313,8 @@ class LinkedPollerConfigurationService
         // Get from the database only the pollers that are linked to a remote
         $idBindString = str_repeat('?,', count($pollerIDs));
         $idBindString = rtrim($idBindString, ',');
-        $queryPollers = "SELECT id, remote_id FROM nagios_server WHERE id IN({$idBindString}) AND remote_id IS NOT NULL";
+        $queryPollers = "SELECT id, remote_id FROM nagios_server "
+            . "WHERE id IN({$idBindString}) AND remote_id IS NOT NULL";
         $remotesStatement = $this->db->query($queryPollers, $pollerIDs);
         $pollersWithRemote = $remotesStatement->fetchAll(\PDO::FETCH_ASSOC);
         $alreadyExportedRemotes = [];

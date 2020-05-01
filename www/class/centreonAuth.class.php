@@ -36,6 +36,11 @@
 
 class CentreonAuth
 {
+    /**
+     * The default page has to be Events view
+     */
+    public const DEFAULT_PAGE = 104;
+
     // Declare Values
     public $userInfos;
     protected $login;
@@ -101,7 +106,7 @@ class CentreonAuth
         $this->debug = $this->getLogFlag();
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
-        $this->default_page = 1;
+        $this->default_page = self::DEFAULT_PAGE;
         $this->source = $source;
 
         $res = $pearDB->query(
@@ -306,32 +311,32 @@ class CentreonAuth
                 }
             }
 
-            if ($this->userInfos["contact_oreon"]
-                || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
-            ) {
-                /*
-                 * Check password matching
-                 */
-                $this->getCryptFunction();
-                $this->checkPassword($password, $token);
-
-                if ($this->passwdOk == 1) {
+            /*
+             * Check password matching
+             */
+            $this->getCryptFunction();
+            $this->checkPassword($password, $token);
+            if ($this->passwdOk == 1) {
+                if ($this->userInfos["contact_oreon"]
+                    || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
+                ) {
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                     $this->CentreonLog->insertLog(
                         1,
-                        "[".$this->source."] Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]
+                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
                     );
                 } else {
                     $this->CentreonLog->insertLog(
                         1,
-                        "Contact '" . $username . "' doesn't match with password"
+                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] '" . $username . "' is not allowed to reach Centreon"
                     );
                     $this->error = _('Your credentials are incorrect.');
                 }
             } else {
+                //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     1,
-                    "[".$this->source."] Contact '" . $username . "' is not enable for reaching centreon"
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "'"
                 );
                 $this->error = _('Your credentials are incorrect.');
             }
@@ -366,10 +371,11 @@ class CentreonAuth
                 }
             }
         } else {
-            if ($this->debug) {
+            if (strlen($username) > 0) {
+                //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     1,
-                    "[".$this->source."] No contact found with this login : '$username'"
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not found"
                 );
             }
             $this->error = _('Your credentials are incorrect.');

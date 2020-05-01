@@ -101,8 +101,12 @@ default:
       paths: [ "%paths.base%/features/DowntimeStartAndStop.feature" ]
       contexts: [ DowntimeStartAndStopContext ]
 
-    downtime_dst:
-      paths: [ "%paths.base%/features/DowntimeDST.feature" ]
+    downtime_dst_realtime:
+      paths: [ "%paths.base%/features/DowntimeDST/Realtime.feature" ]
+      contexts: [ DowntimeDSTContext ]
+
+    downtime_dst_recurrent:
+      paths: [ "%paths.base%/features/DowntimeDST/Recurrent.feature" ]
       contexts: [ DowntimeDSTContext ]
 
     downtime_recurrent:
@@ -133,8 +137,16 @@ default:
       paths: [ "%paths.base%/features/Ldap.feature" ]
       contexts: [ LdapContext ]
 
-    custom_views:
-      paths: [ "%paths.base%/features/CustomViews.feature" ]
+    custom_views_locked:
+      paths: [ "%paths.base%/features/CustomViews/Locked.feature" ]
+      contexts: [ CustomViewsContext ]
+
+    custom_views_unlocked:
+      paths: [ "%paths.base%/features/CustomViews/Unlocked.feature" ]
+      contexts: [ CustomViewsContext ]
+
+    custom_views_public:
+      paths: [ "%paths.base%/features/CustomViews/Public.feature" ]
       contexts: [ CustomViewsContext ]
 
     host_template_configuration:
@@ -360,3 +372,20 @@ default:
     centreon_module_api:
       paths: [ "%paths.base%/features/CentreonModuleAPI.feature" ]
       contexts: [ CentreonModuleAPIContext ]
+
+    api_v1:
+      paths:
+        - "%paths.base%/features/APIv1/AclGroupsApi.feature"
+        - "%paths.base%/features/APIv1/CommandsApi.feature"
+        - "%paths.base%/features/APIv1/ContactGroupsApi.feature"
+        - "%paths.base%/features/APIv1/EscalationsApi.feature"
+        - "%paths.base%/features/APIv1/ImagesApi.feature"
+        - "%paths.base%/features/APIv1/TimeperiodsApi.feature"
+      contexts:
+        - \Centreon\Test\Behat\CentreonAPIContext
+
+    api_v2_monitoring:
+      paths:
+        - "%paths.base%/features/APIv2/Monitoring/HostApi.feature"
+        - "%paths.base%/features/APIv2/Monitoring/ServiceApi.feature"
+      contexts: [ APIv2Context ]

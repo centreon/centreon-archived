@@ -152,7 +152,8 @@ class CentreonServicegroups
                 $parameters['externalObject']['object'] = 'centreonServicetemplates';
                 $parameters['externalObject']['objectOptions'] = array('withHosttemplate' => true);
                 $parameters['relationObject']['table'] = 'servicegroup_relation';
-                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['additionalField'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
                 break;
             case 'sg_hgServices':
@@ -200,27 +201,25 @@ class CentreonServicegroups
             );
         }
 
-        $listValues = '';
-        $queryValues = array();
+        $queryValues = [];
         if (!empty($values)) {
             foreach ($values as $k => $v) {
-                $listValues .= ':sg' . $v . ',';
-                $queryValues['sg' . $v] = (int)$v;
+                $multiValues = explode(',', $v);
+                foreach ($multiValues as $item) {
+                    $queryValues[':sg_' . $item] = (int) $item;
+                }
             }
-            $listValues = rtrim($listValues, ',');
-        } else {
-            $listValues .= '""';
         }
 
         # get list of selected servicegroups
-        $query = 'SELECT sg_id, sg_name FROM servicegroup ' .
-            'WHERE sg_id IN (' . $listValues . ') ORDER BY sg_name ';
+        $query = 'SELECT sg_id, sg_name FROM servicegroup '
+            . 'WHERE sg_id IN ('
+            . (count($queryValues) ? implode(',', array_keys($queryValues)) : '""')
+            . ') ORDER BY sg_name ';
 
         $stmt = $this->DB->prepare($query);
-        if (!empty($queryValues)) {
-            foreach ($queryValues as $key => $id) {
-                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
-            }
+        foreach ($queryValues as $key => $id) {
+            $stmt->bindValue($key, $id, PDO::PARAM_INT);
         }
         $stmt->execute();
 

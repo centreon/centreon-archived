@@ -10,35 +10,67 @@
     ],
     "description": "Centreon - IT and Application monitoring software",
     "config": {
-        "secure-http": false
+        "secure-http": false,
+        "platform": {
+            "php": "7.2"
+        }
     },
     "require-dev": {
         "behat/behat": "^3.3",
-        "behat/mink": "^1.7",
-        "phpunit/phpunit": "^5.7",
+        "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
+        "phpunit/phpunit": "^7.5",
         "squizlabs/php_codesniffer": "^3.5",
-        "phing/phing": "^2.16",
+        "phing/phing": "3.0.0-alpha3",
         "behat/mink-extension": "^2.2",
         "behat/mink-selenium2-driver": "^1.3",
-        "centreon/centreon-test-lib": "dev-master",
         "adlawson/vfs": "^0.12.1",
-        "zircote/swagger-php": "^3.0"
+        "zircote/swagger-php": "^3.0",
+        "symfony/phpunit-bridge": "4.4.*",
+        "centreon/centreon-test-lib": "dev-master",
+        "sensiolabs/security-checker": "^6.0",
+        "symfony/var-dumper": "4.4.*",
+        "symfony/profiler-pack": "^1.0",
+        "phpstan/phpstan": "^0.12.14"
     },
     "require": {
         "php": ">=7.1.3",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "^3.2",
-        "symfony/filesystem": "^4.1",
-        "symfony/finder": "^4.1",
-        "symfony/yaml": "^4.2",
+        "symfony/filesystem": "4.4.*",
+        "symfony/finder": "4.4.*",
         "openpsa/quickform": "3.3.*",
         "smarty/smarty": "~2.6",
-        "curl/curl" : "^1.5"
+        "curl/curl" : "^1.5",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "friendsofsymfony/rest-bundle": "^2.5",
+        "jms/serializer-bundle": "^2.4",
+        "sensio/framework-extra-bundle": "^5.3",
+        "symfony/console": "4.4.*",
+        "symfony/dotenv": "4.4.*",
+        "symfony/flex": "^1.1",
+        "symfony/framework-bundle": "4.4.*",
+        "symfony/security-bundle": "4.4.*",
+        "symfony/yaml": "4.4.*",
+        "symfony/options-resolver": "4.4.*",
+        "symfony/serializer-pack": "^1.0",
+        "symfony/maker-bundle": "^1.11",
+        "nelmio/cors-bundle": "^1.5",
+        "symfony/validator": "4.4.*",
+        "symfony/translation": "4.4.*",
+        "symfony/expression-language": "4.4.*",
+        "ext-json": "*",
+        "justinrainbow/json-schema": "^5.2",
+        "ext-openssl": "*",
+        "symfony/http-client": "4.4.*"
     },
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "": "src/",
+            "ConfigGenerateRemote\\": "www/class/config-generate-remote/",
+            "App\\": "src/",
+            "Tests\\": "tests/php/"
         },
         "classmap": ["www/class/"],
         "files" : [
@@ -46,6 +78,7 @@
             "www/api/exceptions.php",
             "www/api/class/webService.class.php",
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
+            "www/lib/HTML/QuickForm/HTML_QuickForm_checkbox_Custom.php",
             "www/lib/HTML/QuickForm/HTML_QuickForm_radio_Custom.php",
             "www/lib/HTML/QuickForm/select2.php",
             "www/lib/HTML/QuickForm/advmultiselect.php",
@@ -54,5 +87,29 @@
             "www/lib/HTML/QuickForm/selectoptgroup.php",
             "www/class/centreon-clapi/centreonACL.class.php"
         ]
+    },
+    "replace": {
+        "paragonie/random_compat": "2.*",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php71": "*",
+        "symfony/polyfill-php70": "*",
+        "symfony/polyfill-php56": "*"
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": true,
+            "require": "4.4.*"
+        }
+    },
+    "scripts": {
+        "auto-scripts": {
+            "security-checker security:check": "script",
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
     }
 }

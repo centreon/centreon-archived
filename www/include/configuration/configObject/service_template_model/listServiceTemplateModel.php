@@ -49,18 +49,29 @@ include "./include/common/autoNumLimit.php";
 $o = "";
 
 $search = filter_var(
-    $_POST['searchST'] ?? $_GET['searchST'] ?? null,
+    $_POST['searchST'] ?? $_GET['searchST'] ?? $centreon->historySearch[$url]['search'] ?? '',
     FILTER_SANITIZE_STRING
 );
 
-if (isset($_POST['searchST']) || isset($_GET['searchST'])) {
-    //saving filters values
-    $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]["search"] = $search;
-} else {
-    //restoring saved values
-    $search = $centreon->historySearch[$url]["search"] ?? null;
+$displayLocked = filter_var(
+    $_POST['displayLocked'] ?? $_GET['displayLocked'] ?? 'off',
+    FILTER_VALIDATE_BOOLEAN
+);
+
+// keep checkbox state if navigating in pagination
+// this trick is mandatory cause unchecked checkboxes do not post any data
+if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+    $displayLocked = $centreon->historySearch[$url]['displayLocked'];
 }
+
+// store filters in session
+$centreon->historySearch[$url] = [
+    'search' => $search,
+    'displayLocked' => $displayLocked
+];
+
+// Locked filter
+$lockedFilter = $displayLocked ? "" : "AND sv.service_locked = 0 ";
 
 //Service Template Model list
 if ($search) {
@@ -69,12 +80,14 @@ if ($search) {
         "FROM service sv " .
         "WHERE (sv.service_description LIKE '%" . $search . "%' OR sv.service_alias LIKE '%" . $search . "%') " .
         "AND sv.service_register = '0' " .
+        $lockedFilter .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
         "sv.service_activate, sv.service_template_model_stm_id " .
         "FROM service sv " .
         "WHERE sv.service_register = '0' " .
+        $lockedFilter .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 }
 $dbResult = $pearDB->query($query);
@@ -319,10 +332,10 @@ $o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchST', $search);
+$tpl->assign("displayLocked", $displayLocked);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceTemplateModel.ihtml");
-?>

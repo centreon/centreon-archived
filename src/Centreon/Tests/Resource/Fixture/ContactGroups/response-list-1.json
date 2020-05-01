@@ -1,0 +1,1 @@
+{"status":true,"result":{"pagination":{"total":1,"offset":0,"limit":1},"entities":[{"repository":"Centreon\\Domain\\Repository\\ContactGroupRepository","dataRepresenter":null,"context":{"groups":["contact-group-list"]},"limit":null,"offset":null}]}}

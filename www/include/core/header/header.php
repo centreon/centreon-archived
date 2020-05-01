@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,8 +74,6 @@ $pearDBO = new CentreonDB("centstorage");
 
 $centreonSession = new CentreonSession();
 
-ini_set("session.gc_maxlifetime", "31536000");
-
 CentreonSession::start();
 
 /*
@@ -90,7 +89,7 @@ $time_limit = time() - ($session_expire["value"] * 60);
 $DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
 
 // drop session if session has been deleted due to expiration
-if (!$centreonSession->checkSession(session_id(), $pearDB)) {
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     CentreonSession::stop();
 }
 
@@ -136,30 +135,27 @@ if (!isset($_SESSION["centreon"])) {
  * Define Oreon var alias
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
+    $oreon = $centreon = $_SESSION["centreon"];
 }
 if (!isset($centreon) || !is_object($centreon)) {
     exit();
 }
 
 /*
- * Init differents elements we need in a lot of pages
+ * Init different elements we need in a lot of pages
  */
-unset($centreon->Nagioscfg);
-$centreon->initNagiosCFG($pearDB);
 unset($centreon->optGen);
 $centreon->initOptGen($pearDB);
 
 if (!$p) {
-    $root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
-    if (isset($root_menu["topology_page"])) {
-        $p = $root_menu["topology_page"];
-    } else {
-        $p = null;
-    }
-    if (isset($root_menu["topology_url_opt"])) {
-        $tab = preg_split("/\=/", $root_menu["topology_url_opt"]);
+    $rootMenu = getFirstAllowedMenu($centreon->user->access->topologyStr, $centreon->user->default_page);
+
+    if ($rootMenu && $rootMenu['topology_url'] && $rootMenu['is_react']) {
+        header("Location: .{$rootMenu['topology_url']}");
+    } elseif ($rootMenu) {
+        $p = $rootMenu["topology_page"];
+        $tab = preg_split("/\=/", $rootMenu["topology_url_opt"]);
+
         if (isset($tab[1])) {
             $o = $tab[1];
         }

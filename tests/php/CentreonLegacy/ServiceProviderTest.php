@@ -74,6 +74,17 @@ class ServiceProviderTest extends TestCase
     }
 
     /**
+     * Check CentreonRestHttp service
+     */
+    public function testRegisterRestHttp()
+    {
+        $this->assertTrue($this->container->offsetExists(ServiceProvider::CENTREON_REST_HTTP));
+        $service = $this->container->offsetGet(ServiceProvider::CENTREON_REST_HTTP);
+
+        $this->assertInstanceOf(\Closure::class, $service);
+    }
+
+    /**
      * @covers \CentreonLegacy\ServiceProvider::registerModule
      * @covers \CentreonLegacy\ServiceProvider::registerWidget
      */

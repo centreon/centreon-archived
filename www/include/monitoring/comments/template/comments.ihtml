@@ -35,8 +35,12 @@
             </table>
             <table class="ListTable">
                 <tr class='ListHeader'>
-                    <td class="ListColHeaderPicker"><input type="checkbox" name="checkall"
-                                                           onclick="checkUncheckAll(this);"/></td>
+                    <td class="ListColHeaderPicker">
+                        <div class="md-checkbox md-checkbox-inline">
+                            <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                            <label class="empty-label" for="checkall"></label>
+                        </div>
+                    </td>
                     <td class="ListColHeaderCenter" width="150">{t}Host Name{/t}</td>
                     <td class="ListColHeaderCenter" width="120">{t}Service Description{/t}</td>
                     <td class="ListColHeaderCenter" width="180">{t}Entry time{/t}</td>

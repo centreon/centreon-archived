@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '19.10.0-beta.3');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '20.04.1');
 
 --
 -- Contenu de la table `contact`
@@ -140,7 +140,14 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0'),
-('centcore_illegal_characters', '`');
+('gorgone_illegal_characters', '`'),
+('inheritance_mode', '3'),
+('gorgone_api_address', '127.0.0.1'),
+('gorgone_api_port', '8085'),
+('gorgone_api_ssl', '0'),
+('gorgone_api_allow_self_signed', '1'),
+('gorgone_cmd_timeout', '5'),
+('enable_broker_stats', '0');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -501,7 +508,6 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
 (30, 'Storage - Graphite', 'graphite', 18),
 (31, 'Storage - InfluxDB', 'influxdb', 19),
-(32, 'Correlation', 'correlation', 20),
 (33, 'Stream connector', 'lua', 21);
 
 --
@@ -537,15 +543,13 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (26, 'compression_level', 'Compression level', 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)', 'int', NULL),
 (27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
 (28, 'failover', 'Failover name', 'Name of the input or output object that will act as failover.', 'text', NULL),
-(29, 'file', 'Correlation file', 'Path to the correlation file which holds host, services, dependencies and parenting definitions.', 'text', NULL),
-(30, 'retention', 'Retention file', 'File where correlation state will be stored during correlation engine restart', 'text', NULL),
 (31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
 (33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
 (35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL),
-(36, 'path', 'Unix socket', 'The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
-(37, 'port', 'TCP port', 'The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'int', 'T=options:C=value:CK=key:K=rrdcached_port'),
+(36, 'rrd_cached_option', 'Enable RRDCached', 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.', 'radio', NULL),
+(37, 'rrd_cached', 'RRDCacheD listening socket/port', 'The absolute path to unix socket or TCP port for communicating with rrdcached daemon.', 'text', NULL),
 (38, 'max_size', 'Max file size in bytes', 'The maximum size of log file.', 'int', NULL),
 (39, 'check_replication', 'Replication enabled', 'When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.', 'radio', NULL),
 (40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL),
@@ -555,20 +559,20 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (46, 'negotiation', 'Enable negotiation', 'Enable negotiation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
-(48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL),
-(49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
-(50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL),
-(51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
-(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL),
-(63, 'cache', "Cache", "Enable caching", 'radio', NULL),
+(48, 'one_peer_retention_mode', 'One peer retention', 'This allows the retention to work even if the socket is listening', 'radio', NULL),
+(49, 'cleanup_check_interval', 'Cleanup check interval', 'Interval in seconds before delete data from deleted pollers.', 'int', NULL),
+(50, 'instance_timeout', 'Instance timeout', 'Interval in seconds before change status of resources from a disconnected poller', 'int', NULL),
+(51, 'metric_naming', 'Metric naming', 'How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL),
+(52, 'status_naming', 'Status naming', 'How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL),
+(63, 'cache', 'Cache', 'Enable caching', 'radio', NULL),
 (64, 'storage_db_host', 'Storage DB host', 'IP address or hostname of the database server.', 'text', NULL),
 (65, 'storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
 (66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
 (67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
-(70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL),
-(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL);
+(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
+(75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -577,7 +581,7 @@ INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `mu
 (4, 'lua_parameter', 'lua parameter', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
-(47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
+(47, 'category', 'Filter category', 'Category filter for flux in output', 'multiselect', NULL, 1),
 (53, 'metrics_timeseries', 'Metrics timeseries', 'How to name entries for metrics timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
 (54, 'status_timeseries', 'Status timeseries', 'How to name entries for statuses timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
 (55, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 2),
@@ -619,8 +623,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (9, 61, 'string'),
 (10, 62, 'false'),
 (1, 63, 'yes'),
-(1, 70, 'no'),
-(11, 73, 'string');
+(11, 73, 'string'),
+(12, 36, 'disable');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -658,7 +662,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (10, 'False', 'false'),
 (11, 'String', 'string'),
 (11, 'Number', 'number'),
-(11, 'Password', 'password');
+(11, 'Password', 'password'),
+(12, 'Disable', 'disable'),
+(12, 'TCP Port', 'tcp'),
+(12, 'UNIX Socket', 'unix');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -699,7 +706,6 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 29, 1),
 (1, 30, 0),
 (1, 31, 0),
-(1, 32, 1),
 (1, 33, 0);
 
 --
@@ -726,8 +732,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (11, 11, 1, 1),
 (11, 12, 1, 2),
 (11, 41, 0, 3),
-(13, 36, 0, 4),
-(13, 37, 0, 3),
+(13, 37, 0, 4),
 (13, 13, 1, 1),
 (13, 14, 1, 2),
 (14, 7, 1, 4),
@@ -794,9 +799,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (10, 48, 0, 16),
 (16, 49, 0, 18),
 (16, 50, 0, 19),
-(21, 28, 0, 2),
-(21, 31, 0, 2),
-(21, 32, 0, 2),
+(21, 28, 0, 8),
+(21, 31, 0, 8),
+(21, 32, 0, 8),
 (28, 15, 1, 1),
 (28, 7, 1, 2),
 (28, 18, 1, 3),
@@ -832,8 +837,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 60, 0, 14),
 (31, 61, 0, 15),
 (31, 62, 0, 16),
-(32, 29, 1, 1),
-(32, 70, 0, 2),
 (33, 74, 1, 1),
 (33, 47, 0, 2),
 (33, 72, 0, 3),
@@ -843,7 +846,10 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 -- Contenu de la table `cb_type_field_relation`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
-(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}');
+(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
+(13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}'),
+(16, 75, 0, 7, 'countConnections', '{"target": "connections_count"}'),
+(14, 75, 0, 7, 'countConnections', '{"target": "connections_count"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -880,6 +886,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('pollerMulti', 1),
                                            ('serviceGroupMulti', 1),
                                            ('hostSeverityMulti', 1),
+                                           ('serviceSeverityMulti', 1),
                                            ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES

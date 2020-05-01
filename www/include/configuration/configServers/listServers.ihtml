@@ -50,7 +50,12 @@
     </table>
     <table class="ListTable">
         <tr class="ListHeader">
-            <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+            <td class="ListColHeaderPicker">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <label class="empty-label" for="checkall"></label>
+                </div>
+            </td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
             <td class="ListColHeaderCenter">{$headerMenu_type}</td>
@@ -89,12 +94,21 @@
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
             <td class="ListColCenter">
-              {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""} 
-              <!-- Link for edit poller monitoring engine configuration -->
-              <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
-                <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
-              </a>
-              {/if}
+                {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""}
+                <!-- Link for edit poller monitoring engine configuration -->
+                <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
+                    <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
+                </a>
+                {/if}
+
+                {if $elemArr[elem].RowMenu_gorgone_protocol == 1 &&
+                $elemArr[elem].RowMenu_type != 'Central' &&
+                $elemArr[elem].RowMenu_statusVal == 1}
+                <!-- Link for edit poller monitoring engine configuration -->
+                <span  {literal}onclick="displayPopup('{/literal}{$elemArr[elem].RowMenu_server_id}{literal}'){/literal}" >
+                    <img src="./img/icons/show_template.png" class="ico-16" style="cursor: pointer" title="Gorgone configuration">
+                </span>
+                {/if}
             </td>
             <td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
         </tr>
@@ -126,10 +140,24 @@
 </form>
 {literal}
 <script type='text/javascript'>
+    function displayPopup(id) {
+        let popin = jQuery(
+            '<div id="config-popin">' +
+                '<div id="loading">' +
+                    '<img src="./img/misc/ajax-loader.gif" />' +
+                '</div>' +
+            '</div>'
+        );
+        let url = './include/configuration/configServers/popup/popup.php?id=' + id;
+        popin.centreonPopin({
+            url: url,
+            open: true,
+            ajaxType: 'GET',
+            ajaxDataType: 'html'
+        });
+    };
 
     setDisabledRowStyle();
-
-
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
 </script>

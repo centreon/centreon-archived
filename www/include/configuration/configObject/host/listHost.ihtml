@@ -14,7 +14,7 @@
             <td><h4>{$headerMenu_status}</h4></td>
         </tr>
         <tr>
-            <td><input type='text' name='searchH' value="{$search}"/></td>
+            <td><input type='text' name='searchH' value="{$searchH}"/></td>
             <td>{$form.hostgroup.html}</td>
             <td>{$form.poller.html}</td>
             <td>{$form.template.html}</td>
@@ -40,7 +40,11 @@
     </table>
     <table class="ListTable">
         <tr class="ListHeader">
-            <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>
+            <td class="ListColHeaderPicker">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <label class="empty-label" for="checkall"></label>
+                </div>
             </td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderLeft" style="width:20px;">&nbsp;</td>

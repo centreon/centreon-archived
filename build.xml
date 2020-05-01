@@ -20,12 +20,13 @@
     <phpunit bootstrap="tests/php/bootstrap.php" codecoverage="true">
       <formatter type="plain" usefile="false"/>
       <formatter type="xml" outfile="${builddir}/phpunit.xml"/>
-      <formatter type="clover" outfile="${builddir}/coverage.xml"/>
+      <formatter type="clover" outfile="${builddir}/coverage-be.xml"/>
       <batchtest>
         <fileset dir="tests/php/">
           <include name="**/**/**/*Test.php" />
         </fileset>
         <fileset dir="src">
+          <include name="**/*.php"/>
           <include name="**/Tests/*Test.php" />
           <include name="**/Tests/**/*Test.php" />
         </fileset>
@@ -34,23 +35,26 @@
   </target>
 
   <target name="codestyle" depends="prepare">
-    <phpcodesniffer standard="codingstyle.xml">
-      <formatter type="checkstyle" outfile="${builddir}/checkstyle.xml"/>
-      <fileset dir="features">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="tests">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="www">
-        <include name="**/*.php"/>
-        <exclude name="lib/HTML/QuickForm.php"/>
-        <exclude name="lib/HTML/QuickForm/**/*.php"/>
-      </fileset>
-      <fileset dir="src">
-        <include name="**/*.php"/>
-      </fileset>
-    </phpcodesniffer>
+    <exec executable="./vendor/bin/phpcs" dir="./">
+      <arg value="--standard=ruleset.xml" />
+      <arg value="--report=checkstyle" />
+      <arg value="--report-file=${builddir}/checkstyle-be.xml" />
+      <arg value="./" />
+    </exec>
+  </target>
+
+  <target name="phpstan" depends="prepare">
+    <exec executable="./vendor/bin/phpstan" output="${builddir}/phpstan.xml">
+      <arg value="analyse" />
+      <arg value="-c" />
+      <arg value="phpstan.neon" />
+      <arg value="--level" />
+      <arg value="4" />
+      <arg value="--error-format" />
+      <arg value="absolute" />
+      <arg value="--no-interaction" />
+      <arg value="--no-progress" />
+    </exec>
   </target>
 
   <target name="main"></target>

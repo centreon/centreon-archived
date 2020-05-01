@@ -6,10 +6,12 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import Form from '../../components/forms/poller/PollerFormStepOne';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
+import BaseWizard from '../../components/forms/baseWizard';
 
 class PollerStepOneRoute extends Component {
   links = [
@@ -37,10 +39,10 @@ class PollerStepOneRoute extends Component {
   render() {
     const { links } = this;
     return (
-      <div>
+      <BaseWizard>
         <ProgressBar links={links} />
         <Form onSubmit={this.handleSubmit.bind(this)} initialValues={{}} />
-      </div>
+      </BaseWizard>
     );
   }
 }
@@ -52,7 +54,4 @@ const mapStateToProps = ({ pollerForm }) => ({
 const mapDispatchToProps = {
   setPollerWizard,
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerStepOneRoute);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerStepOneRoute);

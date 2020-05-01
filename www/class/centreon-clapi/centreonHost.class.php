@@ -109,7 +109,8 @@ class CentreonHost extends CentreonObject
         'u' => 'Unreachable',
         'r' => 'Recovery',
         'f' => 'Flapping',
-        's' => 'Downtime Scheduled'
+        's' => 'Downtime Scheduled',
+        'n' => 'None'
     );
 
     protected $templateIds;
@@ -417,6 +418,7 @@ class CentreonHost extends CentreonObject
             'action_url',
             'activate',
             'active_checks_enabled',
+            'acknowledgement_timeout',
             'address',
             'alias',
             'check_command',
@@ -432,10 +434,15 @@ class CentreonHost extends CentreonObject
             'first_notification_delay',
             'flap_detection_enabled',
             'flap_detection_options',
+            'freshness_threshold',
+            'geo_coords',
             'host_high_flap_threshold',
             'host_low_flap_threshold',
+            'host_notification_options',
+            'high_flap_threshold',
             'icon_image',
             'icon_image_alt',
+            'low_flap_threshold',
             'max_check_attempts',
             'name',
             'notes',
@@ -455,13 +462,14 @@ class CentreonHost extends CentreonObject
             'snmp_version',
             'stalking_options',
             'statusmap_image',
-            'host_notification_options',
             'timezone'
         );
         $unknownParam = array();
 
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             $listParam = explode('|', $params[1]);
+            $exportedFields = [];
+            $resultString = "";
             foreach ($listParam as $paramSearch) {
                 if (!$paramString) {
                     $paramString = $paramSearch;
@@ -495,6 +503,7 @@ class CentreonHost extends CentreonObject
                         case "contact_additive_inheritance":
                         case "cg_additive_inheritance":
                         case "flap_detection_options":
+                        case "geo_coords":
                             break;
                         case "notes":
                         case "notes_url":
@@ -548,10 +557,9 @@ class CentreonHost extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                    if (!$resultString) {
-                        $resultString = $ret;
-                    } else {
-                        $resultString = $resultString . $this->delim . $ret;
+                    if (!isset($exportedFields[$paramSearch])) {
+                        $resultString .= $ret . $this->delim;
+                        $exportedFields[$paramSearch] = 1;
                     }
                 }
             }
@@ -562,8 +570,8 @@ class CentreonHost extends CentreonObject
         if (!empty($unknownParam)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
         }
-        echo $paramString . "\n";
-        echo $resultString . "\n";
+        echo implode(';', array_unique(explode(';', $paramString))) . "\n";
+        echo substr($resultString, 0, -1) . "\n";
     }
 
     /**
@@ -1292,7 +1300,11 @@ class CentreonHost extends CentreonObject
                     echo $this->action . $this->delim
                     . "addparent" . $this->delim
                     . $element[$this->object->getUniqueLabelField()] . $this->delim
-                    . isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]) ? $elements[$parentId][$this->object->getUniqueLabelField()] : '' . "\n";
+                    . ((isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]))
+                        ? $elements[$parentId][$this->object->getUniqueLabelField()]
+                        : ''
+                    )
+                    . "\n";
                 }
             }
 
@@ -1304,6 +1316,7 @@ class CentreonHost extends CentreonObject
                     "ehi_action_url",
                     "ehi_icon_image",
                     "ehi_icon_image_alt",
+                    "ehi_vrml_image",
                     "ehi_statusmap_image",
                     "ehi_2d_coords",
                     "ehi_3d_coords"
