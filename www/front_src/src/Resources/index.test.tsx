@@ -668,13 +668,9 @@ describe(Resources, () => {
   });
 
   it('displays downtime details when the downtime state chip is hovered', async () => {
-    const { getByLabelText, getByText } = renderResources();
+    const { findByLabelText, getByText } = renderResources();
 
     const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {
@@ -692,8 +688,10 @@ describe(Resources, () => {
 
     const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
-    fireEvent.mouseEnter(getByLabelText(chipLabel));
-    fireEvent.mouseOver(getByLabelText(chipLabel));
+    const chip = await findByLabelText(chipLabel);
+
+    fireEvent.mouseEnter(chip);
+    fireEvent.mouseOver(chip);
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
