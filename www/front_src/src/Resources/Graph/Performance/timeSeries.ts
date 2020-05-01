@@ -22,9 +22,9 @@ const toTimeWithMetrics = (
   timeIndex: number,
 ): MetricData => {
   const getMetricsForIndex = (): MetricData => {
-    const addMetricForTimeIndex = (acc, { metric, data }): MetricData => ({
+    const addMetricForTimeIndex = (acc, { legend, data }): MetricData => ({
       ...acc,
-      [metric]: data[timeIndex],
+      [legend]: data[timeIndex],
     });
 
     return reduce(addMetricForTimeIndex, {}, metrics);
