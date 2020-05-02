@@ -815,7 +815,7 @@ describe(Resources, () => {
     ])(
       'cannot send a %p request when the corresponding action is fired and the comment field is left empty',
       async (labelAction, labelComment, labelConfirmAction) => {
-        const { findByLabelText, getByText, getAllByText } = renderResources();
+        const { findByLabelText, getByText, getByRole } = renderResources();
 
         const firstRow = await findByLabelText(`Select row 1`);
 
@@ -823,28 +823,26 @@ describe(Resources, () => {
 
         fireEvent.click(getByText(labelAction));
 
-        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+        const dialog = getByRole('dialog');
 
-        fireEvent.change(getByText(labelComment), {
+        const commentField = await within(dialog).findByText(labelComment);
+
+        fireEvent.change(commentField, {
           target: { value: '' },
         });
 
         await waitFor(() =>
           expect(
-            (last(getAllByText(labelConfirmAction)) as HTMLElement)
-              .parentElement,
+            (last(
+              within(dialog).getAllByText(labelConfirmAction),
+            ) as HTMLElement).parentElement,
           ).toBeDisabled(),
         );
       },
     );
 
     it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-      const {
-        findByLabelText,
-        getByText,
-        getAllByText,
-        getByLabelText,
-      } = renderResources();
+      const { findByLabelText, getByText, getByRole } = renderResources();
 
       const hostEntity = find(propEq('type', 'host'), entities);
       const hostEntityRow = await findByLabelText(
@@ -855,16 +853,20 @@ describe(Resources, () => {
 
       fireEvent.click(getByText(labelAcknowledge));
 
-      const notifyCheckbox = await findByLabelText(labelNotify);
+      const dialog = getByRole('dialog');
+
+      const notifyCheckbox = await within(dialog).findByLabelText(labelNotify);
 
       fireEvent.click(notifyCheckbox);
-      fireEvent.click(getByLabelText(labelAcknowledgeServices));
+      fireEvent.click(within(dialog).getByLabelText(labelAcknowledgeServices));
 
       mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
       mockedAxios.all.mockResolvedValueOnce([]);
       mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
 
-      fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
+      fireEvent.click(
+        last(within(dialog).getAllByText(labelAcknowledge)) as HTMLElement,
+      );
 
       await waitFor(() =>
         expect(mockedAxios.post).toHaveBeenCalledWith(
@@ -884,12 +886,7 @@ describe(Resources, () => {
     });
 
     it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
-      const {
-        getByText,
-        queryByText,
-        findByText,
-        findByLabelText,
-      } = renderResources();
+      const { getByText, getByRole, findByLabelText } = renderResources();
 
       const serviceEntity = find(propEq('type', 'service'), entities);
       const serviceEntityCheckbox = await findByLabelText(
@@ -900,18 +897,15 @@ describe(Resources, () => {
 
       fireEvent.click(getByText(labelAcknowledge));
 
-      await findByText(labelAcknowledgedByAdmin);
+      const dialog = getByRole('dialog');
 
-      expect(queryByText(labelAcknowledgeServices)).toBeNull();
+      await within(dialog).findByText(labelAcknowledgedByAdmin);
+
+      expect(within(dialog).queryByText(labelAcknowledgeServices)).toBeNull();
     });
 
     it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
-      const {
-        getByLabelText,
-        getByText,
-        getByDisplayValue,
-        findByLabelText,
-      } = renderResources();
+      const { getByText, findByLabelText, getByRole } = renderResources();
 
       const firstRow = await findByLabelText(`Select row 1`);
 
@@ -919,15 +913,19 @@ describe(Resources, () => {
 
       fireEvent.click(getByText(labelDowntime));
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      const dialog = getByRole('dialog');
 
-      fireEvent.click(getByLabelText(labelFixed));
-      fireEvent.change(getByDisplayValue('3600'), {
+      await within(dialog).findByText(labelDowntimeByAdmin);
+
+      fireEvent.click(within(dialog).getByLabelText(labelFixed));
+      fireEvent.change(within(dialog).getByDisplayValue('3600'), {
         target: { value: '' },
       });
 
       await waitFor(() =>
-        expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
+        expect(
+          within(dialog).getByText(labelSetDowntime).parentElement,
+        ).toBeDisabled(),
       );
     });
 
@@ -976,7 +974,7 @@ describe(Resources, () => {
 
       await within(dialog).findByText(labelDowntimeByAdmin);
 
-      fireEvent.click(getByText(labelSetDowntime));
+      fireEvent.click(within(dialog).getByText(labelSetDowntime));
 
       const now = new Date();
       const twoHoursMs = 2 * 60 * 60 * 1000;
