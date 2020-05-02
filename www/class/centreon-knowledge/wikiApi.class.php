@@ -119,7 +119,7 @@ class WikiApi
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
-        if ($result == false) {
+        if ($result === false) {
             throw new \Exception("curl error");
         }
         $decoded = json_decode($result, true);
