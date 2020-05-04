@@ -47,6 +47,10 @@ module.exports = merge(baseConfig, extractCssConfig, {
         ],
       },
       {
+        test: /\.icon.svg$/,
+        use: ['@svgr/webpack'],
+      },
+      {
         test: /\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [
           {
@@ -57,10 +61,6 @@ module.exports = merge(baseConfig, extractCssConfig, {
             },
           },
         ],
-      },
-      {
-        test: /\.icon.svg$/,
-        use: ['@svgr/webpack'],
       },
     ],
   },

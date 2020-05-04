@@ -45,6 +45,11 @@ try {
     );
     $engineCommand = $res->fetch()['command_file'];
 
+    // escape double quotes and backslashes
+    $needle = ['\\', '"'];
+    $escape = ['\\\\', '\"'];
+    $password = str_replace($needle, $escape, password);
+
     // set macro keys
     $pattern = [
         '/--ADDRESS--/',
@@ -70,7 +75,7 @@ try {
         hostCentreon,
         port,
         user,
-        password,
+        $password,
         db,
         dbcstg,
         _CENTREON_VARLIB_,
