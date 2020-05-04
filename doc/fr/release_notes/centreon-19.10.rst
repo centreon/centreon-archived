@@ -1,4 +1,26 @@
 =====================
+Centreon Web 19.10.11
+=====================
+
+Enhancements
+------------
+
+* [Install] Add dependencies mechanism during extensions install/remove process
+* [Monitoring] Hide graphs when no metrics in Details Page (PR #8329)
+
+Bug Fixes
+---------
+
+* [Backend] host-graph-v2 do not display all graph
+
+Security
+--------
+
+* Vulnerabilities in centreon_home_customview API (PR #8448)
+* SQL Injection in makeXMLForAck.php (PR #8652)
+* Vulnerabilities with displayServiceStatus.php (PR #8467)
+
+=====================
 Centreon Web 19.10.10
 =====================
 
