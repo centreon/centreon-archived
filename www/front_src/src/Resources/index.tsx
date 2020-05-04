@@ -13,14 +13,13 @@ import { ResourceListing, Resource, ResourceEndpoints } from './models';
 
 import { defaultSortField, defaultSortOrder, getColumns } from './columns';
 import Filter from './Filter';
-import { filterById, FilterGroup, allFilter } from './Filter/models';
 import ResourceActions from './Actions/Resource';
 import GlobalActions from './Actions/Refresh';
 import Details from './Details';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
-import useFilter from './Filter/useFilter';
+import useFilter, { FilterState } from './Filter/useFilter';
 import {
   labelSomethingWentWrong,
   labelRowsPerPage,
@@ -55,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 
 type SortOrder = 'asc' | 'desc';
 
+const ResourceContext = React.createContext<FilterState | null>(null);
+
 const Resources = (): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
@@ -78,24 +79,19 @@ const Resources = (): JSX.Element => {
   const [limit, setLimit] = React.useState<number>(30);
   const [page, setPage] = React.useState<number>(1);
 
+  const listingContext = { listing, setListing };
+  const filterContext = useFilter();
+
   const {
-    filter,
-    setFilter,
     currentSearch,
     setCurrentSearch,
     nextSearch,
-    setNextSearch,
     resourceTypes,
-    setResourceTypes,
     states,
-    setStates,
     statuses,
-    setStatuses,
     hostGroups,
-    setHostGroups,
     serviceGroups,
-    setServiceGroups,
-  } = useFilter();
+  } = filterContext;
 
   const [
     selectedDetailsEndpoints,
@@ -167,17 +163,6 @@ const Resources = (): JSX.Element => {
     load();
   };
 
-  const prepareSearch = (event): void => {
-    setNextSearch(event.target.value);
-  };
-
-  const requestSearch = (): void => {
-    if (currentSearch === nextSearch) {
-      initAutorefreshAndLoad();
-    }
-    setCurrentSearch(nextSearch);
-  };
-
   React.useEffect(() => {
     return (): void => {
       tokenSource.cancel();
@@ -222,61 +207,6 @@ const Resources = (): JSX.Element => {
 
   const changePage = (_, updatedPage): void => {
     setPage(updatedPage + 1);
-  };
-
-  const setEmptyFilter = (): void => {
-    setFilter({ id: '', name: '' } as FilterGroup);
-  };
-
-  const changeResourceTypes = (_, updatedResourceTypes): void => {
-    setResourceTypes(updatedResourceTypes);
-    setEmptyFilter();
-  };
-
-  const changeStates = (_, updatedStates): void => {
-    setStates(updatedStates);
-    setEmptyFilter();
-  };
-
-  const changeStatuses = (_, updatedStatuses): void => {
-    setStatuses(updatedStatuses);
-    setEmptyFilter();
-  };
-
-  const changeHostGroups = (_, updatedHostGroups): void => {
-    setHostGroups(updatedHostGroups);
-  };
-
-  const changeServiceGroups = (_, updatedServiceGroups): void => {
-    setServiceGroups(updatedServiceGroups);
-  };
-
-  const changeFilter = (event): void => {
-    const filterId = event.target.value;
-
-    const updatedFilter = filterById[filterId];
-    setFilter(updatedFilter);
-
-    if (!updatedFilter.criterias) {
-      return;
-    }
-
-    setResourceTypes(updatedFilter.criterias.resourceTypes);
-    setStatuses(updatedFilter.criterias.statuses);
-    setStates(updatedFilter.criterias.states);
-    setHostGroups(updatedFilter.criterias.hostGroups);
-    setServiceGroups(updatedFilter.criterias.serviceGroups);
-  };
-
-  const clearAllFilters = (): void => {
-    setFilter(allFilter);
-    setResourceTypes(allFilter.criterias.resourceTypes);
-    setStatuses(allFilter.criterias.statuses);
-    setStates(allFilter.criterias.states);
-    setHostGroups(allFilter.criterias.hostGroups);
-    setServiceGroups(allFilter.criterias.serviceGroups);
-    setNextSearch('');
-    setCurrentSearch('');
   };
 
   const selectResources = (resources): void => {
@@ -413,78 +343,63 @@ const Resources = (): JSX.Element => {
     `${from}-${to} ${labelOf} ${count}`;
 
   return (
-    <div className={classes.page}>
-      <div className={classes.filter}>
-        <Filter
-          filter={filter}
-          onFilterGroupChange={changeFilter}
-          selectedResourceTypes={resourceTypes}
-          onResourceTypesChange={changeResourceTypes}
-          selectedStates={states}
-          onStatesChange={changeStates}
-          selectedStatuses={statuses}
-          onStatusesChange={changeStatuses}
-          onSearchRequest={requestSearch}
-          onSearchPrepare={prepareSearch}
-          currentSearch={currentSearch}
-          nextSearch={nextSearch}
-          onHostGroupsChange={changeHostGroups}
-          selectedHostGroups={hostGroups}
-          onServiceGroupsChange={changeServiceGroups}
-          selectedServiceGroups={serviceGroups}
-          onClearAll={clearAllFilters}
-        />
-      </div>
-      <div className={classes.body}>
-        {selectedDetailsEndpoints && (
-          <Slide
-            direction="left"
-            in={!isNil(selectedDetailsEndpoints)}
-            timeout={{
-              enter: 150,
-              exit: 50,
-            }}
-          >
-            <div className={classes.panel}>
-              <Details
-                endpoints={selectedDetailsEndpoints}
-                openTabId={detailsTabIdToOpen}
-                onClose={clearSelectedResource}
-                onSelectTab={selectDetailsTabToOpen}
-              />
-            </div>
-          </Slide>
-        )}
-        <div className={classes.listing}>
-          <Listing
-            checkable
-            Actions={Actions}
-            loading={loading}
-            columnConfiguration={columns}
-            tableData={listing?.result}
-            currentPage={page - 1}
-            rowColorConditions={[
-              ...rowColorConditions(theme),
-              resourceDetailsOpenCondition,
-            ]}
-            limit={listing?.meta.limit}
-            onSort={changeSort}
-            onPaginationLimitChanged={changeLimit}
-            onPaginate={changePage}
-            sortf={sortf}
-            sorto={sorto}
-            labelRowsPerPage={labelRowsPerPage}
-            labelDisplayedRows={labelDisplayedRows}
-            totalRows={listing?.meta.total}
-            onSelectRows={selectResources}
-            selectedRows={selectedResources}
-            onRowClick={selectResource}
-            innerScrollDisabled={false}
-          />
+    <ResourceContext.Provider value={{ ...listingContext, ...filterContext }}>
+      <div className={classes.page}>
+        <div className={classes.filter}>
+          <Filter />
+        </div>
+        <div className={classes.body}>
+          {selectedDetailsEndpoints && (
+            <Slide
+              direction="left"
+              in={!isNil(selectedDetailsEndpoints)}
+              timeout={{
+                enter: 150,
+                exit: 50,
+              }}
+            >
+              <div className={classes.panel}>
+                <Details
+                  endpoints={selectedDetailsEndpoints}
+                  openTabId={detailsTabIdToOpen}
+                  onClose={clearSelectedResource}
+                  onSelectTab={selectDetailsTabToOpen}
+                />
+              </div>
+            </Slide>
+          )}
+          <div className={classes.listing}>
+            <Listing
+              checkable
+              Actions={Actions}
+              loading={loading}
+              columnConfiguration={columns}
+              tableData={listing?.result}
+              currentPage={page - 1}
+              rowColorConditions={[
+                ...rowColorConditions(theme),
+                resourceDetailsOpenCondition,
+              ]}
+              limit={listing?.meta.limit}
+              onSort={changeSort}
+              onPaginationLimitChanged={changeLimit}
+              onPaginate={changePage}
+              sortf={sortf}
+              sorto={sorto}
+              labelRowsPerPage={labelRowsPerPage}
+              labelDisplayedRows={labelDisplayedRows}
+              totalRows={listing?.meta.total}
+              onSelectRows={selectResources}
+              selectedRows={selectedResources}
+              onRowClick={selectResource}
+              innerScrollDisabled={false}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </ResourceContext.Provider>
   );
 };
 
 export default withSnackbar(Resources);
+export { ResourceContext };
