@@ -22,9 +22,9 @@ const toTimeWithMetrics = (
   timeIndex: number,
 ): MetricData => {
   const getMetricsForIndex = (): MetricData => {
-    const addMetricForTimeIndex = (acc, { legend, data }): MetricData => ({
+    const addMetricForTimeIndex = (acc, { metric, data }): MetricData => ({
       ...acc,
-      [legend]: data[timeIndex],
+      [metric]: data[timeIndex],
     });
 
     return reduce(addMetricForTimeIndex, {}, metrics);
@@ -56,13 +56,15 @@ const getTimeSeries = (graphData: GraphData): Array<MetricData> => {
   )(graphData);
 };
 
-interface LegendColor {
-  legend: string;
+export interface LegendColor {
+  name: string;
   color: string;
+  metric: string;
 }
 
-const toLegendColor = ({ ds_data, legend }: Metric): LegendColor => ({
-  legend,
+const toLegendColor = ({ ds_data, legend, metric }: Metric): LegendColor => ({
+  metric,
+  name: legend,
   color: ds_data.ds_color_line,
 });
 

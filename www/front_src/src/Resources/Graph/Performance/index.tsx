@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from 'recharts';
 import filesize from 'filesize';
-import { pipe, map, uniq, prop } from 'ramda';
+import { pipe, map, uniq, prop, propEq, find, path } from 'ramda';
 
 import { fade, makeStyles, Typography, Theme } from '@material-ui/core';
 
@@ -102,6 +102,9 @@ const PerformanceGraph = ({
     );
   }
 
+  const timeSeries = getTimeSeries(graphData);
+  const legend = getLegend(graphData);
+
   const getBase = (unit): 2 | 10 => {
     const base2Units = [
       'B',
@@ -122,8 +125,9 @@ const PerformanceGraph = ({
 
   const displayMultipleYAxes = getUnits().length < 3;
 
-  const formatValue = ({ value, unit }): string =>
-    filesize(value, { base: getBase(unit) }).replace('B', '');
+  const formatValue = ({ value, unit }): string => {
+    return filesize(value, { base: getBase(unit) }).replace('B', '');
+  };
 
   const YAxes = displayMultipleYAxes ? (
     getUnits().map((unit, index) => (
@@ -139,8 +143,13 @@ const PerformanceGraph = ({
     <YAxis tick={{ fontSize: 12 }} />
   );
 
-  const formatTooltipValue = (value, name, { unit }): Array<string> => {
-    return [formatValue({ value, unit }), name];
+  const formatTooltipValue = (value, metric, { unit }): Array<string> => {
+    const legendName = pipe(
+      find(propEq('metric', metric)),
+      path(['name']),
+    )(legend) as string;
+
+    return [formatValue({ value, unit }), legendName];
   };
 
   const formatXAxisTick = (tick): string =>
@@ -155,7 +164,7 @@ const PerformanceGraph = ({
         {graphData.global.title}
       </Typography>
       <ResponsiveContainer className={classes.graph}>
-        <ComposedChart data={getTimeSeries(graphData)} stackOffset="sign">
+        <ComposedChart data={timeSeries} stackOffset="sign">
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="time"
@@ -196,18 +205,19 @@ const PerformanceGraph = ({
           <Tooltip
             labelFormatter={formatTooltipTime}
             formatter={formatTooltipValue}
+            contentStyle={{}}
           />
         </ComposedChart>
       </ResponsiveContainer>
       <div className={classes.legend}>
-        {getLegend(graphData).map(({ color, legend }) => (
-          <div className={classes.legendItem} key={legend}>
+        {legend.map(({ color, name }) => (
+          <div className={classes.legendItem} key={name}>
             <div
               className={classes.legendIcon}
               style={{ backgroundColor: color }}
             />
             <Typography align="center" variant="caption">
-              {legend}
+              {name}
             </Typography>
           </div>
         ))}
