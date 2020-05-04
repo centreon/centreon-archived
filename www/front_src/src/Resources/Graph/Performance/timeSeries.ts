@@ -56,7 +56,7 @@ const getTimeSeries = (graphData: GraphData): Array<MetricData> => {
   )(graphData);
 };
 
-export interface LegendColor {
+interface LegendColor {
   name: string;
   color: string;
   metric: string;
