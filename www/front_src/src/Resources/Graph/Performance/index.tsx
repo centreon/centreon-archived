@@ -205,7 +205,6 @@ const PerformanceGraph = ({
           <Tooltip
             labelFormatter={formatTooltipTime}
             formatter={formatTooltipValue}
-            contentStyle={{}}
           />
         </ComposedChart>
       </ResponsiveContainer>
