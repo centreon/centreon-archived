@@ -741,7 +741,7 @@ describe(Resources, () => {
       },
     );
 
-    it.only.each(filtersParams)(
+    it.each(filtersParams)(
       "executes a listing request with current search and selected %p filter options when it's changed",
       async (
         filterName,
