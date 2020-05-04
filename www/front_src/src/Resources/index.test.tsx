@@ -741,7 +741,7 @@ describe(Resources, () => {
       },
     );
 
-    it.each(filtersParams)(
+    it.only.each(filtersParams)(
       "executes a listing request with current search and selected %p filter options when it's changed",
       async (
         filterName,
@@ -753,7 +753,7 @@ describe(Resources, () => {
           getByTitle,
           getByLabelText,
           getByPlaceholderText,
-          getByRole,
+          findByText,
         } = renderResources();
 
         fireEvent.click(getByLabelText(labelShowCriteriasFilters));
@@ -769,10 +769,7 @@ describe(Resources, () => {
         const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
         fireEvent.click(filterToChange);
 
-        const selectPopover = getByRole('presentation');
-        const selectedOption = await within(selectPopover).findByText(
-          optionToSelect,
-        );
+        const selectedOption = await findByText(optionToSelect);
         fireEvent.click(selectedOption);
 
         await waitFor(() =>
