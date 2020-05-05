@@ -51,7 +51,7 @@ import {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
-import { ResourceContext } from '..';
+import { useResourceContext } from '../Context';
 
 const ExpansionPanelSummary = withStyles((theme) => ({
   root: {
@@ -129,7 +129,7 @@ const Filter = (): JSX.Element => {
     setHostGroups,
     serviceGroups,
     setServiceGroups,
-  } = React.useContext(ResourceContext);
+  } = useResourceContext();
 
   const toggleExpanded = (): void => {
     setExpanded(!expanded);

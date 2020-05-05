@@ -65,6 +65,10 @@ const useFilter = (): FilterState => {
   );
 
   React.useEffect(() => {
+    setCurrentSearch(nextSearch);
+  }, [states, statuses, resourceTypes, hostGroups, serviceGroups]);
+
+  React.useEffect(() => {
     storeFilter({
       ...filter,
       search: nextSearch,
