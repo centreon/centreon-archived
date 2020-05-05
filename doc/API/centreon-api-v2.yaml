@@ -1321,13 +1321,15 @@ paths:
                         description: title of the graph
                         example: graph title
                       start:
-                        type: integer
-                        description: timestamp of the start interval
-                        example: 1581987121
+                        type: string
+                        format: date-time
+                        description: datetime of the start interval
+                        example: '2020-02-18T00:00:00'
                       end:
-                        type: integer
-                        description: timestamp of the end interval
-                        example: 1581987721
+                        type: string
+                        format: date-time
+                        description: datetime of the end interval
+                        example: '2020-02-19T00:00:00'
                       vertical-label:
                         type: string
                         description: vertical label (should not be used cause multiple y-axis possible)
@@ -1507,12 +1509,13 @@ paths:
                   times:
                     type: array
                     items:
-                      type: integer
-                      description: timestamp
+                      type: string
+                      format: date-time
+                      description: datetime of the tick
                     example:
-                      - 1581987121
-                      - 1581987181
-                      - 1581987241
+                      - '2020-02-19T00:00:00'
+                      - '2020-02-19T00:05:00'
+                      - '2020-02-19T00:10:00'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
