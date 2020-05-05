@@ -15,7 +15,7 @@ parameters:
     centreon_var_lib: "%env(_CENTREON_VARLIB_)%"
     validation_path: "%env(_CENTREON_PATH_)%config/packages/validator"
     centreon_path: "%env(_CENTREON_PATH_)%"
-    translation_path: "../www/locale"
+    translation_path: "%centreon_path%/www/locale"
 
 services:
     # Default configuration for services in *this* file
