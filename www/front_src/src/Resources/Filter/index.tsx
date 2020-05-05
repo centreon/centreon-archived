@@ -59,6 +59,9 @@ const ExpansionPanelSummary = withStyles((theme) => ({
     '&$expanded': {
       minHeight: 'auto',
     },
+    '&$focused': {
+      backgroundColor: 'unset',
+    },
     justifyContent: 'flex-start',
   },
   content: {
@@ -68,6 +71,7 @@ const ExpansionPanelSummary = withStyles((theme) => ({
     },
     flexGrow: 0,
   },
+  focused: {},
   expanded: {},
 }))(MuiExpansionPanelSummary);
 
@@ -96,15 +100,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 200,
     maxWidth: 400,
   },
-  collapseWrapper: {
-    margin: 0,
-    padding: theme.spacing(1),
-    '&$expanded': {
-      margin: 0,
-      padding: theme.spacing(1),
-    },
-  },
-  expanded: {},
 }));
 
 interface Props {
