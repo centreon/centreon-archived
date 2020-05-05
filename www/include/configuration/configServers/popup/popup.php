@@ -113,8 +113,9 @@ if ($server['localhost'] == '1') {
                 sleep(2);
                 $timeout += 2;
             } while (
-                ($lastActionLog == null || $lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_BEGIN) &&
-                $timeout <= 30
+                ($lastActionLog == null
+                    || $lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_BEGIN)
+                && $timeout <= 30
             );
 
             if ($timeout > 30) {
