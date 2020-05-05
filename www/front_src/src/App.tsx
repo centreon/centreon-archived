@@ -7,6 +7,7 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React, { Component, ReactNode } from 'react';
+import { hot } from 'react-hot-loader/root';
 
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
@@ -160,4 +161,4 @@ const mapDispatchToProps = (dispatch: (any) => void): Props => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default hot(connect(null, mapDispatchToProps)(App));

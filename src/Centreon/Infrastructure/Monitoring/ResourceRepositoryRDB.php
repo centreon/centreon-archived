@@ -324,7 +324,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
-            . 'resource.severity_level, resource.severity_url, resource.severity_name, ' // severity
+            . 'resource.severity_level, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.tries, resource.last_check, resource.information '
@@ -413,6 +413,18 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     private function hasServiceSearch(): bool
     {
+        $search = $this->sqlRequestTranslator->getRequestParameters()->getSearch();
+
+        if (empty($search)) {
+            return false;
+        }
+
+        $operator = array_keys($search)[0];
+
+        if ($operator === RequestParameters::AGGREGATE_OPERATOR_OR) {
+            return !$this->extractSpecificSearchCriteria('/^h\./');
+        }
+
         return $this->extractSpecificSearchCriteria('/^s\./');
     }
 
@@ -545,7 +557,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.acknowledged AS `acknowledged`,
             service_cvl.value AS `severity_level`,
             sc.sc_name AS `severity_name`,
-            CONCAT(service_vid.dir_alias, IF(service_vid.dir_alias, '/', NULL), service_vi.img_path) AS `severity_url`,
             0 AS `impacted_resources_count`,
             s.last_state_change AS `last_status_change`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
@@ -581,9 +592,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         LEFT JOIN `:db`.`service_categories` AS sc ON sc.sc_id = scr.sc_id
             AND sc.level IS NOT NULL
             AND sc.icon_id IS NOT NULL
-        LEFT JOIN `:db`.`view_img` AS service_vi ON service_vi.img_id = sc.icon_id
-        LEFT JOIN `:db`.`view_img_dir_relation` AS service_vidr ON service_vidr.img_img_id = service_vi.img_id
-        LEFT JOIN `:db`.`view_img_dir` AS service_vid ON service_vid.dir_id = service_vidr.dir_dir_parent_id';
+        LEFT JOIN `:db`.`view_img` AS service_vi ON service_vi.img_id = sc.icon_id';
 
         $collector->addValue(':serviceCustomVariablesName', 'CRITICALITY_LEVEL');
 
@@ -697,7 +706,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.acknowledged AS `acknowledged`,
             host_cvl.value AS `severity_level`,
             hc.hc_comment AS `severity_name`,
-            CONCAT(host_vid.dir_alias, '/', host_vi.img_path) AS `severity_url`,
             (SELECT COUNT(DISTINCT host_s.service_id)
                 FROM `:dbstg`.`services` AS host_s
                 WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
@@ -726,9 +734,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         LEFT JOIN `:db`.`hostcategories` AS hc ON hc.hc_id = hcr.hostcategories_hc_id
             AND hc.level IS NOT NULL
             AND hc.icon_id IS NOT NULL
-        LEFT JOIN `:db`.`view_img` AS host_vi ON host_vi.img_id = hc.icon_id
-        LEFT JOIN `:db`.`view_img_dir_relation` AS host_vidr ON host_vidr.img_img_id = host_vi.img_id
-        LEFT JOIN `:db`.`view_img_dir` AS host_vid ON host_vid.dir_id = host_vidr.dir_dir_parent_id';
+        LEFT JOIN `:db`.`view_img` AS host_vi ON host_vi.img_id = hc.icon_id';
 
         $collector->addValue(':hostCustomVariablesName', 'CRITICALITY_LEVEL');
 
@@ -826,7 +832,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'severity_'
         );
 
-        if ($severity->getLevel() || $severity->getName() || $severity->getUrl()) {
+        if ($severity->getLevel() && $severity->getName()) {
             $resource->setSeverity($severity);
         }
 

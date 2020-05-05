@@ -86,10 +86,7 @@ const getDetailCardLines = (
       ...getDateTimeLines({ label, field }).getLines(),
       {
         key: `${label}_active`,
-        line:
-          details.active_checks || details.is_active_check ? (
-            <ActiveLine />
-          ) : null,
+        line: details.active_checks ? <ActiveLine /> : null,
       },
     ],
   });

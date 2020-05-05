@@ -61,3 +61,5 @@ src/Centreon*
 www/modules/centreon-*
 www/widgets
 !www/widgets/require.php
+
+.vscode/

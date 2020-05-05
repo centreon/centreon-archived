@@ -14,8 +14,8 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import {
-  AutocompleteField,
-  ConnectedAutocompleteField,
+  MultiAutocompleteField,
+  MultiConnectedAutocompleteField,
   SelectField,
   SearchField,
   SelectEntry,
@@ -59,6 +59,9 @@ const ExpansionPanelSummary = withStyles((theme) => ({
     '&$expanded': {
       minHeight: 'auto',
     },
+    '&$focused': {
+      backgroundColor: 'unset',
+    },
     justifyContent: 'flex-start',
   },
   content: {
@@ -68,6 +71,7 @@ const ExpansionPanelSummary = withStyles((theme) => ({
     },
     flexGrow: 0,
   },
+  focused: {},
   expanded: {},
 }))(MuiExpansionPanelSummary);
 
@@ -96,15 +100,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 200,
     maxWidth: 400,
   },
-  collapseWrapper: {
-    margin: 0,
-    padding: theme.spacing(1),
-    '&$expanded': {
-      margin: 0,
-      padding: theme.spacing(1),
-    },
-  },
-  expanded: {},
 }));
 
 interface Props {
@@ -237,7 +232,7 @@ const Filter = ({
             </Typography>
           </Grid>
           <Grid item>
-            <AutocompleteField
+            <MultiAutocompleteField
               className={classes.autocompleteField}
               options={resourceTypes}
               label={labelTypeOfResource}
@@ -247,7 +242,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <AutocompleteField
+            <MultiAutocompleteField
               className={classes.autocompleteField}
               options={states}
               label={labelState}
@@ -257,7 +252,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <AutocompleteField
+            <MultiAutocompleteField
               className={classes.autocompleteField}
               options={statuses}
               label={labelStatus}
@@ -267,7 +262,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <ConnectedAutocompleteField
+            <MultiConnectedAutocompleteField
               className={classes.autocompleteField}
               baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
               getSearchEndpoint={getHostGroupSearchEndpoint}
@@ -279,7 +274,7 @@ const Filter = ({
             />
           </Grid>
           <Grid item>
-            <ConnectedAutocompleteField
+            <MultiConnectedAutocompleteField
               className={classes.autocompleteField}
               baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
               getSearchEndpoint={getServiceGroupSearchEndpoint}

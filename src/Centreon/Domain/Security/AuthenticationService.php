@@ -76,7 +76,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $contact = $this->contactRepository->findByName($username);
         if (is_null($contact)) {
-            throw new NotFoundException('Contact not found');
+            throw new NotFoundException(_('Contact not found'));
         }
 
         $this->generatedToken = md5(bin2hex(random_bytes(128)));
@@ -110,7 +110,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $token = $this->authenticationRepository->findToken($authToken);
         if (is_null($token)) {
-            throw new \Exception('Token not found');
+            throw new \Exception(_('Token not found'));
         }
 
         return $this->authenticationRepository->deleteTokenFromContact(

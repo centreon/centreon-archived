@@ -2212,31 +2212,38 @@ function cleanString($str)
 
 // Global Function
 
-function get_my_first_allowed_root_menu($lcaTStr)
+/**
+ * get first menu entry allowed to a given user
+ *
+ * @param string $lcaTStr Allowed topology pages separated by comma
+ * @param int $defautPage User default page
+ * @return array The topology information (url, options, name...)
+ */
+function getFirstAllowedMenu($lcaTStr, $defautPage = null)
 {
     global $pearDB;
 
-    if (trim($lcaTStr) != "") {
-        $rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
-            . "FROM topology WHERE topology_page IN ({$lcaTStr}) "
-            . "AND (topology_parent IS NULL OR topology_page = 104) "
-            . "AND topology_page IS NOT NULL AND topology_show = '1' "
-            . "ORDER BY CASE topology_page WHEN 104 THEN 1 ELSE 0 END DESC, topology_id ASC "
-            . "LIMIT 1";
-    } else {
-        $rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
-            . "FROM topology "
-            . "WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' "
-            . "LIMIT 1";
+    $eventsViewPage = 104;
+    $orderedFields = [$eventsViewPage];
+
+    if ($defautPage !== null) {
+        array_unshift($orderedFields, $defautPage);
     }
 
-    $dbResult = $pearDB->query($rq);
+    $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
+        . "FROM topology "
+        . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
+        . "topology_page IS NOT NULL AND topology_show = '1' "
+        . "ORDER BY FIELD(topology_page, " . implode(',', $orderedFields) . ") DESC, topology_id ASC "
+        . "LIMIT 1";
+
+    $dbResult = $pearDB->query($query);
 
     if (!$dbResult->rowCount()) {
         return [];
     }
 
-    return $dbResult->fetchRow();
+    return $dbResult->fetch();
 }
 
 function reset_search_page($url)

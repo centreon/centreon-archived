@@ -111,7 +111,7 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
 
         $host = $this->monitoringRepository->findOneHost($check->getResourceId());
         if (is_null($host)) {
-            throw new EntityNotFoundException('Host not found');
+            throw new EntityNotFoundException(_('Host not found'));
         }
 
         $this->engineService->scheduleHostCheck($check, $host);
@@ -135,12 +135,12 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
 
         $host = $this->monitoringRepository->findOneHost($check->getParentResourceId());
         if (is_null($host)) {
-            throw new EntityNotFoundException('Host not found');
+            throw new EntityNotFoundException(_('Host not found'));
         }
 
         $service = $this->monitoringRepository->findOneService($check->getParentResourceId(), $check->getResourceId());
         if (is_null($service)) {
-            throw new EntityNotFoundException('Service not found');
+            throw new EntityNotFoundException(_('Service not found'));
         }
         $service->setHost($host);
 

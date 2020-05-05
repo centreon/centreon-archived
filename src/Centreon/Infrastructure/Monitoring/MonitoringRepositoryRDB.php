@@ -186,7 +186,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new \Exception('Bad SQL request');
+            throw new \Exception(_('Bad SQL request'));
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -532,7 +532,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 return null;
             }
         } else {
-            throw new \Exception('Bad SQL request');
+            throw new \Exception(_('Bad SQL request'));
         }
     }
 
@@ -587,7 +587,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 return null;
             }
         } else {
-            throw new \Exception('Bad SQL request');
+            throw new \Exception(_('Bad SQL request'));
         }
 
         //get downtimes for service
@@ -699,7 +699,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new \Exception('Bad SQL request');
+            throw new \Exception(_('Bad SQL request'));
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -798,7 +798,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new \Exception('Bad SQL request');
+            throw new \Exception(_('Bad SQL request'));
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -1007,7 +1007,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement = $this->db->prepare($request);
 
         if (false === $statement->execute(array_merge([$hostId], $serviceIds))) {
-            throw new \Exception('Bad SQL request');
+            throw new \Exception(_('Bad SQL request'));
         }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {

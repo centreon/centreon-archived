@@ -75,7 +75,7 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
 
             $dbResult = $pearDB->prepare(
                 "INSERT INTO `session` (`session_id`, `user_id`, `current_page`, `last_reload`, `ip_address`)
-                VALUES (?, ?, '', ?, ?)"
+                VALUES (?, ?, NULL, ?, ?)"
             );
             $pearDB->execute(
                 $dbResult,

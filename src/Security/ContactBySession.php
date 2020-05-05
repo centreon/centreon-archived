@@ -26,7 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
 /**
  * This class has been defined to differentiate between contacts that have
- * identified by session and those by token. 
+ * identified by session and those by token.
  *
  * @package Security
  */
@@ -120,6 +120,26 @@ class ContactBySession extends Contact
     public function getUsername()
     {
         return $this->contact->getUsername();
+    }
+
+    /**
+     * contact timezone getter
+     *
+     * @return \DateTimeZone
+     */
+    public function getTimezone(): \DateTimeZone
+    {
+        return $this->contact->getTimezone();
+    }
+
+    /**
+     * contact locale getter
+     *
+     * @return string|null
+     */
+    public function getLocale(): ?string
+    {
+        return $this->contact->getLocale();
     }
 
     public function hasAccessToApiConfiguration(): bool

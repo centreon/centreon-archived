@@ -167,7 +167,7 @@ function testExistence($name = null): bool
 function isValidIpAddress($ipAddress): bool
 {
     // Check IPv6, IPv4 and FQDN format
-    if (!filter_var($ipAddress, FILTER_VALIDATE_DOMAIN) && !filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+    if (!filter_var($ipAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) && !filter_var($ipAddress, FILTER_VALIDATE_IP)) {
         return false;
     } else {
         return true;
@@ -902,9 +902,9 @@ function updateServer(int $id, array $data): void
         $rq .= "NULL, ";
     }
     $rq .= "`is_default` = ";
-    if (isset($data["is_default"]) && $data["is_default"] != null) {
-        $rq .= ':is_default, ';
-        $retValue[':is_default'] = (int)$data["is_default"];
+    if (isset($data["is_default"]['is_default']) && $data["is_default"]['is_default'] != null) {
+        $rq .= ':isDefault, ';
+        $retValue[':isDefault'] = (int)$data["is_default"]['is_default'];
     } else {
         $rq .= "0, ";
     }
@@ -1074,4 +1074,22 @@ REQUEST;
     }
 
     return false;
+}
+
+/**
+ * Define LocalPoller as Default Poller if there is no Default Poller
+ *
+ * @return void
+ */
+function defineLocalPollerToDefault() 
+{
+    global $pearDB;
+    $query = "SELECT COUNT(*) AS `nb_of_default_poller` FROM `nagios_server` WHERE `is_default` = '1'";
+    $statement = $pearDB->query($query);
+    $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
+    if ($result !== false && ((int) $result['nb_of_default_poller'] === 0)) {
+        $query = "UPDATE `nagios_server` SET `is_default` = '1' WHERE `localhost` = '1'";
+        $pearDB->query($query);
+    }
 }

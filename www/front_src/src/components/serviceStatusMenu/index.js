@@ -140,9 +140,11 @@ class ServiceStatusMenu extends Component {
         <SubmenuHeader submenuType="top" active={toggled}>
           <IconHeader
             iconType="services"
-            iconName="services"
+            iconName={I18n.t('Services')}
             onClick={this.toggle}
-          />
+          >
+            {data.pending > 0 && <span className={styles['custom-icon']} />}
+          </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="

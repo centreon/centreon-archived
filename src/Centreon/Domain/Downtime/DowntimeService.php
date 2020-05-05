@@ -230,13 +230,15 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
         }
 
         if ($downtime === null) {
-            throw new EntityNotFoundException('Downtime not found');
+            throw new EntityNotFoundException(_('Downtime not found'));
         }
 
         $downtimeType = ($downtime->getServiceId() === null) ? 'host' : 'service';
 
         if (!is_null($downtime->getDeletionTime())) {
-            throw new DowntimeException('Downtime already cancelled for this ' . $downtimeType);
+            throw new DowntimeException(
+                sprintf(_('Downtime already cancelled for this %s'), $downtimeType)
+            );
         }
 
         $this->engineService->cancelDowntime($downtime, $host);
@@ -249,7 +251,7 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     {
         $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
         if (is_null($host)) {
-            throw new EntityNotFoundException('Host not found');
+            throw new EntityNotFoundException(_('Host not found'));
         }
         if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
             $service = $this->monitoringRepository->findOneService(
@@ -257,14 +259,14 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
                 (int) $resource->getId()
             );
             if (is_null($service)) {
-                throw new EntityNotFoundException('Service not found');
+                throw new EntityNotFoundException(_('Service not found'));
             }
             $service->setHost($host);
             $this->addServiceDowntime($downtime, $service);
         } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
             $this->addHostDowntime($downtime, $host);
         } else {
-            throw new \Exception('Incorrect Resource Type');
+            throw new \Exception(_('Incorrect Resource Type'));
         }
     }
 }

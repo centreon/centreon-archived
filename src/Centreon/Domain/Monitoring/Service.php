@@ -473,6 +473,15 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
+     * virtual property used by resource details endpoint
+     * @return bool
+     */
+    public function getActiveCheck(): bool
+    {
+        return $this->isActiveCheck;
+    }
+
+    /**
      * @return bool
      */
     public function isActiveCheck(): bool

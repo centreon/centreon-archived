@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { isNil } from 'ramda';
+import { isNil, equals } from 'ramda';
 
-import { makeStyles, useTheme, Grid, Slide } from '@material-ui/core';
+import { makeStyles, useTheme, Grid, Slide, fade } from '@material-ui/core';
 
 import { Listing, withSnackbar, useSnackbar, Severity } from '@centreon/ui';
 
@@ -21,7 +21,11 @@ import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { rowColorConditions } from './colors';
 import { detailsTabId, graphTabId } from './Details/Body/tabs';
 import useFilter from './Filter/useFilter';
-import { labelSomethingWentWrong } from './translatedLabels';
+import {
+  labelSomethingWentWrong,
+  labelRowsPerPage,
+  labelOf,
+} from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -163,6 +167,17 @@ const Resources = (): JSX.Element => {
     load();
   };
 
+  const prepareSearch = (event): void => {
+    setNextSearch(event.target.value);
+  };
+
+  const requestSearch = (): void => {
+    if (currentSearch === nextSearch) {
+      initAutorefreshAndLoad();
+    }
+    setCurrentSearch(nextSearch);
+  };
+
   React.useEffect(() => {
     return (): void => {
       tokenSource.cancel();
@@ -172,33 +187,21 @@ const Resources = (): JSX.Element => {
 
   React.useEffect(() => {
     initAutorefreshAndLoad();
-  }, [
-    sortf,
-    sorto,
-    page,
-    limit,
-    currentSearch,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-  ]);
+  }, [sortf, sorto, page, limit, currentSearch]);
+
+  const firstUpdate = React.useRef(true);
+  React.useEffect(() => {
+    if (firstUpdate.current) {
+      // to avoid duplicate rendering on mount
+      firstUpdate.current = false;
+      return;
+    }
+    requestSearch();
+  }, [states, statuses, resourceTypes, hostGroups, serviceGroups]);
 
   React.useEffect(() => {
     initAutorefresh();
   }, [enabledAutorefresh]);
-
-  const prepareSearch = (event): void => {
-    setNextSearch(event.target.value);
-  };
-
-  const requestSearch = (): void => {
-    if (currentSearch === nextSearch) {
-      load();
-    }
-    setCurrentSearch(nextSearch);
-  };
 
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
@@ -360,6 +363,13 @@ const Resources = (): JSX.Element => {
     setDefaultDetailsTabIdToOpen(id);
   };
 
+  const resourceDetailsOpenCondition = {
+    name: 'detailsOpen',
+    condition: ({ details_endpoint }): boolean =>
+      equals(details_endpoint, selectedDetailsEndpoints?.details),
+    color: fade(theme.palette.primary.main, 0.08),
+  };
+
   const hasSelectedResources = selectedResources.length > 0;
 
   const Actions = (
@@ -388,6 +398,9 @@ const Resources = (): JSX.Element => {
       </Grid>
     </Grid>
   );
+
+  const labelDisplayedRows = ({ from, to, count }): string =>
+    `${from}-${to} ${labelOf} ${count}`;
 
   return (
     <div className={classes.page}>
@@ -440,13 +453,18 @@ const Resources = (): JSX.Element => {
             columnConfiguration={columns}
             tableData={listing?.result}
             currentPage={page - 1}
-            rowColorConditions={rowColorConditions(theme)}
+            rowColorConditions={[
+              ...rowColorConditions(theme),
+              resourceDetailsOpenCondition,
+            ]}
             limit={listing?.meta.limit}
             onSort={changeSort}
             onPaginationLimitChanged={changeLimit}
             onPaginate={changePage}
             sortf={sortf}
             sorto={sorto}
+            labelRowsPerPage={labelRowsPerPage}
+            labelDisplayedRows={labelDisplayedRows}
             totalRows={listing?.meta.total}
             onSelectRows={selectResources}
             selectedRows={selectedResources}

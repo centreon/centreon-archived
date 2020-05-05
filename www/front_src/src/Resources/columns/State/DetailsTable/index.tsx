@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import { map, prop, sum, pipe } from 'ramda';
+
 import {
   TableContainer,
   TableRow,
@@ -24,8 +26,6 @@ import { Listing } from '../../../models';
 import { Column } from '../..';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
-
-const columnMaxWidth = 150;
 
 interface DetailsTableColumn extends Column {
   getContent: (details) => string | JSX.Element;
@@ -60,7 +60,7 @@ const DetailsTable = <TDetails extends unknown>({
   const error = details === null;
   const success = !loading && !error;
 
-  const tableMaxWidth = columns.length * columnMaxWidth;
+  const tableMaxWidth = pipe(map(prop('width')), sum)(columns);
 
   return (
     <TableContainer component={Paper}>
@@ -83,8 +83,8 @@ const DetailsTable = <TDetails extends unknown>({
           {success &&
             details?.map((detail, index) => (
               <TableRow key={index}>
-                {columns.map(({ label, getContent }) => (
-                  <TableCell key={label}>
+                {columns.map(({ label, getContent, width }) => (
+                  <TableCell key={label} style={{ maxWidth: width }}>
                     <span>{getContent?.(detail)}</span>
                   </TableCell>
                 ))}

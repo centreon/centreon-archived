@@ -145,13 +145,7 @@ const DowntimeForm = ({
     validate,
   });
 
-  const hasResources = resources.length > 0;
-
   React.useEffect(() => {
-    if (!hasResources) {
-      return;
-    }
-
     getUser(token)
       .then((user) => {
         form.setFieldValue('comment', `${labelDowntimeBy} ${user.username}`);
@@ -160,13 +154,9 @@ const DowntimeForm = ({
       })
       .catch(() => showError(labelSomethingWentWrong))
       .finally(() => setLoaded(true));
-  }, [hasResources]);
+  }, []);
 
   React.useEffect(() => (): void => cancel(), []);
-
-  if (resources.length === 0) {
-    return null;
-  }
 
   return (
     <DialogDowntime
