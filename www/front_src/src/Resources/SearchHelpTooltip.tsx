@@ -81,7 +81,7 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
         <i>
           <b>{`${labelTips}: `}</b>
           {`${labelGetRegexHelp} `}
-          <Link href="https://regex101.com" target="_blank" rel="noopener">
+          <Link href="https://regex101.com" target="_blank" rel="noopener noreferrer">
             regex101.com
           </Link>
         </i>
