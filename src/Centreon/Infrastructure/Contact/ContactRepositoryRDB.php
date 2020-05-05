@@ -278,6 +278,23 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     }
 
     /**
+     * Remove charset part of contact lang
+     *
+     * @param string $lang
+     * @return string The contact locale
+     */
+    private function parseLocaleFromContactLang(string $lang): string
+    {
+        $locale = Contact::DEFAULT_LOCALE;
+
+        if (preg_match('/^(\w{2}_\w{2})/', $lang, $matches)) {
+            $locale = $matches[1];
+        }
+
+        return $locale;
+    }
+
+    /**
      * Create a contact based on the data.
      *
      * @param mixed[] $contact Array of values representing the contact information
@@ -286,8 +303,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     private function createContact(array $contact): Contact
     {
         $contactTimezoneName = !empty($contact['timezone_name'])
-          ? $contact['timezone_name']
-          : date_default_timezone_get();
+            ? $contact['timezone_name']
+            : date_default_timezone_get();
+
+        $contactLocale = !empty($contact['contact_lang'])
+            ? $this->parseLocaleFromContactLang($contact['contact_lang'])
+            : null;
 
         return (new Contact())
             ->setId((int) $contact['contact_id'])
@@ -301,7 +322,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setEncodedPassword($contact['contact_passwd'])
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
-            ->setTimezone(new \DateTimeZone($contactTimezoneName));
+            ->setTimezone(new \DateTimeZone($contactTimezoneName))
+            ->setLocale($contactLocale);
     }
 
     /**

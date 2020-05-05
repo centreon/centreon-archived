@@ -99,7 +99,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         try {
             $list = $this->resourceRepository->findResources($filter);
         } catch (\Exception $ex) {
-            throw new ResourceException('Error while searching for resources', 0, $ex);
+            throw new ResourceException(_('Error while searching for resources'), 0, $ex);
         }
 
         return $list;
