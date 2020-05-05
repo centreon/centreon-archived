@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Tooltip, IconButton, Box, makeStyles } from '@material-ui/core';
+import { Tooltip, IconButton, Box, Link, makeStyles } from '@material-ui/core';
 import IconHelp from '@material-ui/icons/HelpOutline';
 import IconClose from '@material-ui/icons/HighlightOff';
 
@@ -15,6 +15,8 @@ import {
   labelSearchByHostAliasContaining,
   labelSearchByHostAddressNotContaining,
   labelSearchAndHostAliasContaining,
+  labelTips,
+  labelGetRegexHelp,
 } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
@@ -76,6 +78,17 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
             {` ${labelSearchByHostNameStartingWith} "FR20" ${labelSearchAndHostAliasContaining} "prod"`}
           </li>
         </ul>
+        <i>
+          <b>{`${labelTips}: `}</b>
+          {`${labelGetRegexHelp} `}
+          <Link
+            href="https://regex101.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            regex101.com
+          </Link>
+        </i>
       </Box>
     </>
   );

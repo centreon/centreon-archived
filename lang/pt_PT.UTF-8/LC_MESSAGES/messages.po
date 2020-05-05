@@ -14917,6 +14917,12 @@ msgstr ""
 msgid "and host alias containing"
 msgstr ""
 
+msgid "Tips"
+msgstr ""
+
+msgid "get some help while creating your regular expression query at"
+msgstr ""
+
 msgid "Service group"
 msgstr ""
 

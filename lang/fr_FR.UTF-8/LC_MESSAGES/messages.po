@@ -15309,6 +15309,12 @@ msgstr "affichera les ressources avec un FQDN ne contenant pas"
 msgid "and host alias containing"
 msgstr "et un alias d'hôte contenant"
 
+msgid "Tips"
+msgstr "Conseils"
+
+msgid "get some help while creating your regular expression query at"
+msgstr "obtenez de l'aide lors de la création de votre expression régulière sur"
+
 msgid "Service group"
 msgstr "Groupe de services"
 
