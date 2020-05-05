@@ -210,19 +210,21 @@ for binary in $BINARIES; do
 	fi
 done
 
-###### Mandatory step
-# ask if gorgone is already installed
-echo -e "\n$line"
-echo -e "\t$(gettext "Check mandatory gorgone service status")"
-echo -e "$line"
+if [ "$silent_install" -ne 1 ] ; then 
+	###### Mandatory step
+	# ask if gorgone is already installed
+	echo -e "\n$line"
+	echo -e "\t$(gettext "Check mandatory gorgone service status")"
+	echo -e "$line"
 
-yes_no_default "$(gettext "Is the Gorgone module already installed?")"
-if [ "$?" -ne 0 ] ; then
-    echo_failure "\n$(gettext "Gorgone is required.\nPlease install it before launching this script")" "$fail"
-    echo -e "\n\t$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
-    echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
-    echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
-    exit 1
+	yes_no_default "$(gettext "Is the Gorgone module already installed?")"
+	if [ "$?" -ne 0 ] ; then
+		echo_failure "\n$(gettext "Gorgone is required.\nPlease install it before launching this script")" "$fail"
+		echo -e "\n\t$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
+		echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
+		echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
+		exit 1
+	fi
 fi
 
 # Script stop if one binary wasn't found
