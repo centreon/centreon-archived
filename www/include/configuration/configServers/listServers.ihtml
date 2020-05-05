@@ -102,7 +102,6 @@
                 {/if}
 
                 {if $elemArr[elem].RowMenu_gorgone_protocol == 1 &&
-                $elemArr[elem].RowMenu_type != 'Central' &&
                 $elemArr[elem].RowMenu_statusVal == 1}
                 <!-- Link for edit poller monitoring engine configuration -->
                 <span  {literal}onclick="displayPopup('{/literal}{$elemArr[elem].RowMenu_server_id}{literal}'){/literal}" >
