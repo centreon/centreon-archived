@@ -42,6 +42,16 @@ class Contact implements UserInterface, ContactInterface
     const ROLE_ADD_SERVICE_DOWNTIME = 'ROLE_ADD_SERVICE_DOWNTIME';
 
     /**
+     * @var string
+     */
+    public const DEFAULT_LOCALE = 'en_US';
+
+    /**
+     * @var string
+     */
+    public const DEFAULT_CHARSET = 'UTF-8';
+
+    /**
      * @var int Id of contact
      */
     private $id;
@@ -115,6 +125,11 @@ class Contact implements UserInterface, ContactInterface
      * @var \DateTimeZone $timezone timezone of the user
      */
     private $timezone;
+
+    /**
+     * @var string|null $locale locale of the user
+     */
+    private $locale;
 
     /**
      * @return int
@@ -476,5 +491,27 @@ class Contact implements UserInterface, ContactInterface
     public function getTimezone(): \DateTimeZone
     {
         return $this->timezone;
+    }
+
+    /**
+     * locale setter
+     *
+     * @param string|null $locale
+     * @return self
+     */
+    public function setLocale(?string $locale): self
+    {
+        $this->locale = $locale;
+        return $this;
+    }
+
+    /**
+     * locale getter
+     *
+     * @return string|null
+     */
+    public function getLocale(): ?string
+    {
+        return $this->locale;
     }
 }

@@ -124,6 +124,10 @@ export const labelSearchByHostAddressNotContaining = I18n.t(
 export const labelSearchAndHostAliasContaining = I18n.t(
   'and host alias containing',
 );
+export const labelTips = I18n.t('Tips');
+export const labelGetRegexHelp = I18n.t(
+  'get some help while creating your regular expression query at',
+);
 export const labelService = I18n.t('Service');
 export const labelServiceGroup = I18n.t('Service group');
 export const labelStartTime = I18n.t('Start time');
