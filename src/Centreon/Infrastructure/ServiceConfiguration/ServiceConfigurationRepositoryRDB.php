@@ -56,7 +56,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
         try {
             $request = $this->translateDbName(
                 'SELECT service_id AS id, service_template_model_stm_id AS template_id, display_name AS name,
-                service_description AS description, service_locked AS is_locked, service_register AS is_registred,
+                service_description AS description, service_locked AS is_locked, service_register AS is_registered,
                 service_activate AS is_activated
                 FROM `:db`.service
                 WHERE service_id = :service_id'
