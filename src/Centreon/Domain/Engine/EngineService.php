@@ -330,7 +330,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
                 '%s;%s;%d',
                 $commandName,
                 $host->getName(),
-                $check->getCheckTime()
+                $check->getCheckTime()->getTimestamp()
             );
             $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
             $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
@@ -369,7 +369,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $commandName,
             $service->getHost()->getName(),
             $service->getDescription(),
-            $check->getCheckTime()
+            $check->getCheckTime()->getTimestamp()
         );
 
         $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
