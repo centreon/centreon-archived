@@ -13,16 +13,15 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { useCancelTokenSource } from '@centreon/ui';
+import { useRequest, getData } from '@centreon/ui';
 
-import { getData } from '../../../api';
 import {
   labelSomethingWentWrong,
   labelYes,
   labelNo,
-} from '../../../translatedLabels';
+} from '../../../../translatedLabels';
 
-import { Listing } from '../../../models';
+import { Listing } from '../../../../models';
 import { Column } from '../..';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
@@ -41,19 +40,15 @@ const DetailsTable = <TDetails extends unknown>({
   columns,
 }: DetailsTableProps): JSX.Element => {
   const [details, setDetails] = useState<Array<TDetails> | null>();
-  const { cancel, token } = useCancelTokenSource();
+
+  const { sendRequest } = useRequest<Listing<TDetails>>({
+    request: getData,
+  });
 
   useEffect(() => {
-    getData<Listing<TDetails>>({
-      endpoint,
-      requestParams: { cancelToken: token },
-    })
-      .then((retrievedDetails) => setDetails(retrievedDetails.result))
-      .catch(() => {
-        setDetails([]);
-      });
-
-    return (): void => cancel();
+    sendRequest(endpoint).then((retrievedDetails) =>
+      setDetails(retrievedDetails.result),
+    );
   }, []);
 
   const loading = details === undefined;

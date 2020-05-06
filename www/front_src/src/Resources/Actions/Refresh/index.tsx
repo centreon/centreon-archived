@@ -11,15 +11,11 @@ import {
   labelEnableAutorefresh,
 } from '../../translatedLabels';
 import ActionButton from '../../ActionButton';
+import { useResourceContext } from '../../Context';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
-  toggleAutorefresh;
-}
-
-interface Props extends AutorefreshProps {
-  disabledRefresh: boolean;
-  onRefresh;
+  toggleAutorefresh: () => void;
 }
 
 const AutorefreshButton = ({
@@ -42,19 +38,24 @@ const AutorefreshButton = ({
   );
 };
 
-const RefreshActions = ({
-  disabledRefresh,
-  enabledAutorefresh,
-  onRefresh,
-  toggleAutorefresh,
-}: Props): JSX.Element => {
+interface Props {
+  onRefresh: () => void;
+}
+
+const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
+  const { enabledAutorefresh, setEnabledAutorefresh } = useResourceContext();
+
+  const toggleAutorefresh = (): void => {
+    setEnabledAutorefresh(!enabledAutorefresh);
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid item>
         <ActionButton
           title={labelRefresh}
           ariaLabel={labelRefresh}
-          disabled={disabledRefresh}
+          disabled={!enabledAutorefresh}
           onClick={onRefresh}
           size="small"
         >

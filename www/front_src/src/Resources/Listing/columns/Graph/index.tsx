@@ -3,11 +3,11 @@ import * as React from 'react';
 import { makeStyles, Paper } from '@material-ui/core';
 import IconGraph from '@material-ui/icons/BarChart';
 
-import { labelGraph } from '../../translatedLabels';
+import { labelGraph } from '../../../translatedLabels';
 import HoverChip from '../HoverChip';
 import { ColumnProps } from '..';
-import PerformanceGraph from '../../Graph/Performance';
-import ActionButton from '../../ActionButton';
+import PerformanceGraph from '../../../Graph/Performance';
+import ActionButton from '../../../ActionButton';
 
 const useStyles = makeStyles((theme) => ({
   graph: {

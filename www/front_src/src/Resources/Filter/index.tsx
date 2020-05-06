@@ -46,7 +46,7 @@ import {
   FilterGroup,
   filterById,
 } from './models';
-import SearchHelpTooltip from '../SearchHelpTooltip';
+import SearchHelpTooltip from './SearchHelpTooltip';
 import {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,

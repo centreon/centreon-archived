@@ -15,9 +15,9 @@ import {
   labelStartTime,
   labelEndTime,
   labelComment,
-} from '../../../translatedLabels';
+} from '../../../../translatedLabels';
 import DetailsTable, { DetailsTableProps } from '.';
-import { getFormattedDateTime } from '../../../dateTime';
+import { getFormattedDateTime } from '../../../../dateTime';
 
 const useStyles = makeStyles({
   comment: {

@@ -1,104 +1,18 @@
 import * as React from 'react';
 
 import { isNil, equals } from 'ramda';
-import { useSelector } from 'react-redux';
 
 import { useTheme, fade } from '@material-ui/core';
 
 import { Listing } from '@centreon/ui';
 
-import { detailsTabId, graphTabId } from './Details/Body/tabs';
-import { rowColorConditions } from './colors';
-import { labelRowsPerPage, labelOf } from './translatedLabels';
+import { detailsTabId, graphTabId } from '../Details/Body/tabs';
+import { rowColorConditions } from '../colors';
+import { labelRowsPerPage, labelOf } from '../translatedLabels';
 import { getColumns } from './columns';
-import { useResourceContext } from './Context';
-import Actions from './Actions';
-
-const useLoadResources = () => {
-  const {
-    sortf,
-    sorto,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-    limit,
-    page,
-    currentSearch,
-    nextSearch,
-    setListing,
-    sendRequest,
-    enabledAutorefresh,
-  } = useResourceContext();
-
-  const refreshIntervalRef = React.useRef<number>();
-
-  const refreshIntervalMs = useSelector(
-    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
-  );
-
-  const load = (): void => {
-    const sort = sortf ? { [sortf]: sorto } : undefined;
-
-    sendRequest({
-      states: states.map(({ id }) => id),
-      statuses: statuses.map(({ id }) => id),
-      resourceTypes: resourceTypes.map(({ id }) => id),
-      hostGroupIds: hostGroups?.map(({ id }) => id),
-      serviceGroupIds: serviceGroups?.map(({ id }) => id),
-      sort,
-      limit,
-      page,
-      search: currentSearch,
-    }).then(setListing);
-  };
-
-  const initAutorefresh = (): void => {
-    window.clearInterval(refreshIntervalRef.current);
-
-    const interval = enabledAutorefresh
-      ? window.setInterval(load, refreshIntervalMs)
-      : undefined;
-
-    refreshIntervalRef.current = interval;
-  };
-
-  const initAutorefreshAndLoad = (): void => {
-    initAutorefresh();
-    load();
-  };
-
-  React.useEffect(() => {
-    initAutorefresh();
-  }, [enabledAutorefresh]);
-
-  React.useEffect(() => {
-    return (): void => {
-      clearInterval(refreshIntervalRef.current);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (currentSearch !== nextSearch) {
-      return;
-    }
-    initAutorefreshAndLoad();
-  }, [
-    sortf,
-    sorto,
-    page,
-    limit,
-    currentSearch,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-  ]);
-
-  return { initAutorefreshAndLoad };
-};
+import { useResourceContext } from '../Context';
+import Actions from '../Actions';
+import useLoadResources from './useLoadResources';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();

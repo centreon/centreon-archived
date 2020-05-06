@@ -1,9 +1,15 @@
 import * as React from 'react';
 import { FilterState } from './Filter/useFilter';
+import { ActionsState } from './Actions/useActions';
+import { ListingState } from './Listing/useListing';
+import { DetailsState } from './Details/useDetails';
 
-const Context = React.createContext<FilterState | null>(null);
+type ResourceContext = FilterState & ActionsState & ListingState & DetailsState;
 
-const useResourceContext = (): FilterState | null => React.useContext(Context);
+const Context = React.createContext<ResourceContext | undefined>(undefined);
+
+const useResourceContext = (): ResourceContext =>
+  React.useContext(Context) as ResourceContext;
 
 export default Context;
 

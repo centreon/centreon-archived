@@ -6,7 +6,6 @@ import { makeStyles, Slide } from '@material-ui/core';
 
 import { withSnackbar } from '@centreon/ui';
 
-import { ResourceEndpoints } from './models';
 import Context from './Context';
 import Filter from './Filter';
 import Listing from './Listing';
@@ -14,6 +13,7 @@ import Details from './Details';
 import useFilter from './Filter/useFilter';
 import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
+import useDetails from './Details/useDetails';
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -41,22 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useDetails = () => {
-  const [
-    selectedDetailsEndpoints,
-    setSelectedDetailsEndpoints,
-  ] = React.useState<ResourceEndpoints | null>(null);
-
-  const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = React.useState(0);
-
-  return {
-    selectedDetailsEndpoints,
-    setSelectedDetailsEndpoints,
-    detailsTabIdToOpen,
-    setDefaultDetailsTabIdToOpen,
-  };
-};
-
 const Resources = (): JSX.Element => {
   const classes = useStyles();
 
@@ -74,10 +58,6 @@ const Resources = (): JSX.Element => {
 
   const clearSelectedResource = (): void => {
     setSelectedDetailsEndpoints(null);
-  };
-
-  const selectDetailsTabToOpen = (id): void => {
-    setDefaultDetailsTabIdToOpen(id);
   };
 
   return (
@@ -108,7 +88,7 @@ const Resources = (): JSX.Element => {
                   endpoints={selectedDetailsEndpoints}
                   openTabId={detailsTabIdToOpen}
                   onClose={clearSelectedResource}
-                  onSelectTab={selectDetailsTabToOpen}
+                  onSelectTab={setDefaultDetailsTabIdToOpen}
                 />
               </div>
             </Slide>

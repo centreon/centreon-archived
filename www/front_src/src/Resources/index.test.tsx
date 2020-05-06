@@ -62,7 +62,11 @@ import {
   labelEnableAutorefresh,
   labelClearAll,
 } from './translatedLabels';
-import { defaultSortField, defaultSortOrder, getColumns } from './columns';
+import {
+  defaultSortField,
+  defaultSortOrder,
+  getColumns,
+} from './Listing/columns';
 import { Resource } from './models';
 import {
   acknowledgeEndpoint,

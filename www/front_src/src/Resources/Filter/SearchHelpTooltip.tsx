@@ -15,7 +15,7 @@ import {
   labelSearchByHostAliasContaining,
   labelSearchByHostAddressNotContaining,
   labelSearchAndHostAliasContaining,
-} from './translatedLabels';
+} from '../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   tooltip: {

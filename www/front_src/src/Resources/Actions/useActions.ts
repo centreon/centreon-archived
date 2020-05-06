@@ -2,7 +2,22 @@ import * as React from 'react';
 
 import { Resource } from '../models';
 
-const useActions = () => {
+type SetResourcesDispatch = React.Dispatch<
+  React.SetStateAction<Array<Resource>>
+>;
+
+export interface ActionsState {
+  selectedResources: Array<Resource>;
+  setSelectedResources: SetResourcesDispatch;
+  resourcesToAcknowledge: Array<Resource>;
+  setResourcesToAcknowledge: SetResourcesDispatch;
+  resourcesToSetDowntime: Array<Resource>;
+  setResourcesToSetDowntime: SetResourcesDispatch;
+  resourcesToCheck: Array<Resource>;
+  setResourcesToCheck: SetResourcesDispatch;
+}
+
+const useActions = (): ActionsState => {
   const [selectedResources, setSelectedResources] = React.useState<
     Array<Resource>
   >([]);
