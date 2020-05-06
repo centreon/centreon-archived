@@ -186,17 +186,25 @@ const Resources = (): JSX.Element => {
   }, []);
 
   React.useEffect(() => {
-    initAutorefreshAndLoad();
-  }, [sortf, sorto, page, limit, currentSearch]);
-
-  const firstUpdate = React.useRef(true);
-  React.useEffect(() => {
-    if (firstUpdate.current) {
-      // to avoid duplicate rendering on mount
-      firstUpdate.current = false;
+    if (currentSearch !== nextSearch) {
       return;
     }
-    requestSearch();
+    initAutorefreshAndLoad();
+  }, [
+    sortf,
+    sorto,
+    page,
+    limit,
+    currentSearch,
+    states,
+    statuses,
+    resourceTypes,
+    hostGroups,
+    serviceGroups,
+  ]);
+
+  React.useEffect(() => {
+    setCurrentSearch(nextSearch);
   }, [states, statuses, resourceTypes, hostGroups, serviceGroups]);
 
   React.useEffect(() => {
@@ -256,6 +264,8 @@ const Resources = (): JSX.Element => {
     setResourceTypes(updatedFilter.criterias.resourceTypes);
     setStatuses(updatedFilter.criterias.statuses);
     setStates(updatedFilter.criterias.states);
+    setHostGroups(updatedFilter.criterias.hostGroups);
+    setServiceGroups(updatedFilter.criterias.serviceGroups);
   };
 
   const clearAllFilters = (): void => {

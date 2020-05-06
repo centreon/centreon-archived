@@ -33,10 +33,9 @@ interface ResourcesWithAcknoweldgeParams {
   cancelToken: CancelToken;
 }
 
-const acknowledgeResources = ({
+const acknowledgeResources = (cancelToken) => ({
   resources,
   params,
-  cancelToken,
 }: ResourcesWithAcknoweldgeParams): Promise<Array<AxiosResponse>> => {
   return axios.post(
     acknowledgeEndpoint,
@@ -67,10 +66,9 @@ interface ResourcesWithDowntimeParams {
   cancelToken: CancelToken;
 }
 
-const setDowntimeOnResources = ({
+const setDowntimeOnResources = (cancelToken) => ({
   resources,
   params,
-  cancelToken,
 }: ResourcesWithDowntimeParams): Promise<Array<AxiosResponse>> => {
   return axios.post(
     downtimeEndpoint,
@@ -124,7 +122,7 @@ const checkResources = ({
   );
 };
 
-const getUser = (cancelToken): Promise<User> =>
+const getUser = (cancelToken) => (): Promise<User> =>
   getData({ endpoint: userEndpoint, requestParams: cancelToken });
 
 export {
