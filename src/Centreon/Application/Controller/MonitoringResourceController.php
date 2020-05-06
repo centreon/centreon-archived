@@ -263,7 +263,7 @@ class MonitoringResourceController extends AbstractController
 
         $metadata = $requestParameters->toArray();
 
-        $metadata['allowed_actions'] = $this->getActionsAuthorization();
+        $metadata['allowed_actions'] = $this->getAllowedActions();
 
         return $this->view([
             'result' => $resources,
@@ -339,7 +339,7 @@ class MonitoringResourceController extends AbstractController
      *
      * @return View
      */
-    private function getActionsAuthorization(): array
+    private function getAllowedActions(): array
     {
         $actions = [
             'host' => [
