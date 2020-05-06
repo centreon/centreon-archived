@@ -49,16 +49,7 @@ const Resources = (): JSX.Element => {
   const detailsContext = useDetails();
   const actionsContext = useActions();
 
-  const {
-    detailsTabIdToOpen,
-    setDefaultDetailsTabIdToOpen,
-    selectedDetailsEndpoints,
-    setSelectedDetailsEndpoints,
-  } = detailsContext;
-
-  const clearSelectedResource = (): void => {
-    setSelectedDetailsEndpoints(null);
-  };
+  const { selectedDetailsEndpoints } = detailsContext;
 
   return (
     <Context.Provider
@@ -84,12 +75,7 @@ const Resources = (): JSX.Element => {
               }}
             >
               <div className={classes.panel}>
-                <Details
-                  endpoints={selectedDetailsEndpoints}
-                  openTabId={detailsTabIdToOpen}
-                  onClose={clearSelectedResource}
-                  onSelectTab={setDefaultDetailsTabIdToOpen}
-                />
+                <Details />
               </div>
             </Slide>
           )}
