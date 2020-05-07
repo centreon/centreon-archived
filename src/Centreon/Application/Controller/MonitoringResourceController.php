@@ -337,7 +337,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * Entry point to get acl actions of the current user.
      *
-     * @return array
+     * @return View
      */
     private function getAllowedActions(): array
     {
