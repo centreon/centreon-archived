@@ -43,7 +43,11 @@ interface Props {
 }
 
 const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
-  const { enabledAutorefresh, setEnabledAutorefresh } = useResourceContext();
+  const {
+    enabledAutorefresh,
+    setEnabledAutorefresh,
+    sending,
+  } = useResourceContext();
 
   const toggleAutorefresh = (): void => {
     setEnabledAutorefresh(!enabledAutorefresh);
@@ -55,7 +59,7 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
         <ActionButton
           title={labelRefresh}
           ariaLabel={labelRefresh}
-          disabled={!enabledAutorefresh}
+          disabled={sending}
           onClick={onRefresh}
           size="small"
         >
