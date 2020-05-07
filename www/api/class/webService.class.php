@@ -325,7 +325,7 @@ class CentreonWebService
             }
         } else {
             $webService = self::webservicePath($object);
-            
+
             /**
              * Either we retrieve an instance of this web service that has been
              * created in the dependency injector, or we create a new one.
@@ -347,29 +347,10 @@ class CentreonWebService
             static::sendResult("Method not found", 404);
         }
 
-        $accessDenied = true;
-
-        // if impemented public interface skip checks
-        if ($wsObj instanceof WebserviceAutorizePublicInterface) {
-            $accessDenied = false;
-        } elseif ($wsObj instanceof WebserviceAutorizeRestApiInterface) {
-            // unified check for Rest APIs authorization
-            if ($wsObj->authorize($action, $user, $isInternal)) {
-                $accessDenied = false;
-            } elseif (!$user || !$user->hasAccessRestApiConfiguration()) {
-                $accessDenied = false;
-            }
-        } elseif (false !== $wsObj->authorize($action, $user, $isInternal)) {
-            $accessDenied = false;
-        }
-
-        // Check of the authorization
-        if ($accessDenied) {
-            static::sendResult('Forbidden', 403, static::RESULT_JSON);
-        }
-
         /* Execute the action */
         try {
+            static::checkWebserviceAuthorization($wsObj, $action, $user, $isInternal);
+
             static::updateTokenTtl();
             $data = $wsObj->$action();
             $wsObj::sendResult($data, 200, $resultFormat);
@@ -377,6 +358,28 @@ class CentreonWebService
             $wsObj::sendResult($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
             $wsObj::sendResult($e->getMessage(), 500);
+        }
+    }
+
+    private static function checkWebserviceAuthorization($webservice, $action, $user, $isInternal): void
+    {
+        $accessDenied = true;
+
+        // if impemented public interface skip checks
+        if ($webservice instanceof WebserviceAutorizePublicInterface) {
+            $accessDenied = false;
+        } elseif ($webservice instanceof WebserviceAutorizeRestApiInterface) {
+            // unified check for Rest APIs authorization
+            if ($webservice->authorize($action, $user, $isInternal)) {
+                $accessDenied = false;
+            }
+        } elseif (false !== $webservice->authorize($action, $user, $isInternal)) {
+            $accessDenied = false;
+        }
+
+        // Check of the authorization
+        if ($accessDenied) {
+            static::sendResult('Forbidden', 403, static::RESULT_JSON);
         }
     }
 }
