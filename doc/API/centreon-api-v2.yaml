@@ -173,6 +173,54 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /user/acl/actions:
+    get:
+      tags:
+        - User ACL actions
+      summary: "List allowed actions"
+      description: "List allowed actions of the current user."
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  host:
+                    type: object
+                    properties:
+                      check:
+                        type: boolean
+                        description: if check is allowed on host
+                        example: true
+                      acknowledgement:
+                        type: boolean
+                        description: if acknowledgement is allowed on host
+                        example: true
+                      downtime:
+                        type: boolean
+                        description: if downtime is allowed on host
+                        example: false
+                  service:
+                    type: object
+                    properties:
+                      check:
+                        type: boolean
+                        description: if check is allowed on service
+                        example: true
+                      acknowledgement:
+                        type: boolean
+                        description: if acknowledgement is allowed on service
+                        example: true
+                      downtime:
+                        type: boolean
+                        description: if downtime is allowed on service
+                        example: false
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources:
     get:
       tags:
