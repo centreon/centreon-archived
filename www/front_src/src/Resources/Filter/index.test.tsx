@@ -54,12 +54,6 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-const appState = {
-  intervals: {
-    AjaxTimeReloadMonitoring: 60,
-  },
-};
-
 window.clearInterval = jest.fn();
 window.setInterval = jest.fn();
 
