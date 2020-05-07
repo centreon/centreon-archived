@@ -361,6 +361,15 @@ class CentreonWebService
         }
     }
 
+    /**
+     * Check webservice authorization
+     *
+     * @param WebserviceAutorizePublicInterface|WebserviceAutorizeRestApiInterface $webservice
+     * @param string $action The action name
+     * @param CentreonUser|null $user The current user
+     * @param boolean $isInternal If the api is call from internal
+     * @return void
+     */
     private static function checkWebserviceAuthorization($webservice, $action, $user, $isInternal): void
     {
         $accessDenied = true;
