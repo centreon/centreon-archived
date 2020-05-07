@@ -13,8 +13,6 @@ import {
   act,
 } from '@testing-library/react';
 
-import { ThemeProvider } from '@centreon/ui';
-
 import { last } from 'ramda';
 import {
   labelAcknowledgedBy,
@@ -268,7 +266,12 @@ describe('Actions', () => {
   });
 
   it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
-    const { container, getByLabelText, getByText } = renderActions();
+    const {
+      container,
+      getByLabelText,
+      getByText,
+      findByText,
+    } = renderActions();
 
     const selectedResources = [{} as Resource];
 
@@ -278,7 +281,7 @@ describe('Actions', () => {
 
     fireEvent.click(getByText(labelDowntime));
 
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await findByText(labelDowntimeByAdmin);
 
     // set previous day as end date using left arrow key
     fireEvent.click(getByLabelText(labelChangeEndDate));
