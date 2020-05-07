@@ -349,7 +349,9 @@ class CentreonWebService
 
         /* Execute the action */
         try {
-            static::checkWebserviceAuthorization($wsObj, $action, $user, $isInternal);
+            if (!static::isWebserviceAllowed($wsObj, $action, $user, $isInternal)) {
+                static::sendResult('Forbidden', 403, static::RESULT_JSON);
+            }
 
             static::updateTokenTtl();
             $data = $wsObj->$action();
@@ -368,27 +370,19 @@ class CentreonWebService
      * @param string $action The action name
      * @param CentreonUser|null $user The current user
      * @param boolean $isInternal If the api is call from internal
-     * @return void
+     * @return boolean if the webservice is allowed for the current user
      */
-    private static function checkWebserviceAuthorization($webservice, $action, $user, $isInternal): void
+    private static function isWebserviceAllowed($webservice, $action, $user, $isInternal): bool
     {
-        $accessDenied = true;
+        $allowed = false;
 
-        // if impemented public interface skip checks
+        // if implemented public interface skip checks
         if ($webservice instanceof WebserviceAutorizePublicInterface) {
-            $accessDenied = false;
-        } elseif ($webservice instanceof WebserviceAutorizeRestApiInterface) {
-            // unified check for Rest APIs authorization
-            if ($webservice->authorize($action, $user, $isInternal)) {
-                $accessDenied = false;
-            }
-        } elseif (false !== $webservice->authorize($action, $user, $isInternal)) {
-            $accessDenied = false;
+            $allowed = true;
+        } else {
+            $allowed = $webservice->authorize($action, $user, $isInternal);
         }
 
-        // Check of the authorization
-        if ($accessDenied) {
-            static::sendResult('Forbidden', 403, static::RESULT_JSON);
-        }
+        return $allowed;
     }
 }
