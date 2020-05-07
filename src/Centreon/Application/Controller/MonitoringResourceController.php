@@ -44,7 +44,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Domain\Contact\Contact;
 
 /**
  * Resource APIs for the Unified View page
@@ -261,13 +260,9 @@ class MonitoringResourceController extends AbstractController
             }
         }
 
-        $metadata = $requestParameters->toArray();
-
-        $metadata['allowed_actions'] = $this->getActionsAuthorization();
-
         return $this->view([
             'result' => $resources,
-            'meta' => $metadata,
+            'meta' => $requestParameters->toArray(),
         ])->setContext($context);
     }
 
@@ -332,48 +327,5 @@ class MonitoringResourceController extends AbstractController
         return $this
             ->view($this->resource->enrichServiceWithDetails($service))
             ->setContext($context);
-    }
-
-    /**
-     * Entry point to get acl actions of the current user.
-     *
-     * @return View
-     */
-    private function getActionsAuthorization(): array
-    {
-        $actions = [
-            'host' => [
-                'check' => $this->getAuthorizationFromRole(Contact::ROLE_HOST_CHECK),
-                'acknowledgement' => $this->getAuthorizationFromRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT),
-                'downtime' => $this->getAuthorizationFromRole(Contact::ROLE_ADD_HOST_DOWNTIME),
-            ],
-            'service' => [
-                'check' => $this->getAuthorizationFromRole(Contact::ROLE_SERVICE_CHECK),
-                'acknowledgement' => $this->getAuthorizationFromRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT),
-                'downtime' => $this->getAuthorizationFromRole(Contact::ROLE_ADD_SERVICE_DOWNTIME),
-            ],
-        ];
-
-        return $actions;
-    }
-
-    /**
-     * Get authorization for a specific role of the current user
-     *
-     * @param string $role
-     * @return boolean
-     */
-    private function getAuthorizationFromRole(string $role): bool
-    {
-        /**
-         * @var Contact $contact
-         */
-        $contact = $this->getUser();
-
-        if ($contact === null) {
-            return false;
-        }
-
-        return $contact->isAdmin() || $contact->hasRole($role);
     }
 }
