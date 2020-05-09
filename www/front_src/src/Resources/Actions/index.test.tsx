@@ -52,13 +52,13 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../icons/Downtime');
 
-let context: ResourceContext;
-
 const ActionsWithLoading = (): JSX.Element => {
   useLoadResources();
 
   return <Actions onRefresh={onRefresh} />;
 };
+
+let context: ResourceContext;
 
 const ActionsWithContext = (): JSX.Element => {
   const listingState = useListing();
