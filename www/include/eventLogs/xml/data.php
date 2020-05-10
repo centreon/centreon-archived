@@ -87,13 +87,13 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 $inputArguments = array(
     'lang' => FILTER_SANITIZE_STRING,
     'id' => FILTER_SANITIZE_STRING,
-    'num' => FILTER_SANITIZE_STRING,
-    'limit' => FILTER_SANITIZE_STRING,
+    'num' => FILTER_SANITIZE_NUMBER_INT,
+    'limit' => FILTER_SANITIZE_NUMBER_INT,
     'StartDate' => FILTER_SANITIZE_STRING,
     'EndDate' => FILTER_SANITIZE_STRING,
     'StartTime' => FILTER_SANITIZE_STRING,
     'EndTime' => FILTER_SANITIZE_STRING,
-    'period' => FILTER_SANITIZE_STRING,
+    'period' => FILTER_SANITIZE_NUMBER_INT,
     'engine' => FILTER_SANITIZE_STRING,
     'up' => FILTER_SANITIZE_STRING,
     'down' => FILTER_SANITIZE_STRING,
@@ -170,13 +170,13 @@ if (isset($sid) && $sid) {
     );
 }
 
-$num = isset($inputs["num"]) ? htmlentities($inputs["num"]) : "0";
-$limit = isset($inputs["limit"]) ? htmlentities($inputs["limit"]) : "30";
+$num = isset($inputs["num"]) ? intval($inputs["num"]) : "0";
+$limit = isset($inputs["limit"]) ? intval($inputs["limit"]) : "30";
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
 $EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
 $StartTime = isset($inputs["StartTime"]) ? $StartTime = htmlentities($inputs["StartTime"]) : "";
 $EndTime = isset($inputs["EndTime"]) ? $EndTime = htmlentities($inputs["EndTime"]) : "";
-$auto_period = isset($inputs["period"]) ? $auto_period = htmlentities($inputs["period"]) : "-1";
+$auto_period = isset($inputs["period"]) ? $auto_period = intval($inputs["period"]) : "-1";
 $engine = isset($inputs["engine"]) ? $engine = htmlentities($inputs["engine"]) : "false";
 $up = isset($inputs["up"]) ? htmlentities($inputs["up"]) : "true";
 $down = isset($inputs["down"]) ? htmlentities($inputs["down"]) : "true";
