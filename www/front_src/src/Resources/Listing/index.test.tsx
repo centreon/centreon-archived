@@ -19,7 +19,7 @@ import useDetails from '../Details/useDetails';
 import useListing from './useListing';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
-import { getListingEndpoint } from '../testUtils';
+import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
 
@@ -95,8 +95,6 @@ const ListingTest = (): JSX.Element => {
 };
 
 const renderListing = (): RenderResult => render(<ListingTest />);
-
-const cancelTokenRequestParam = { cancelToken: {} };
 
 window.clearInterval = jest.fn();
 window.setInterval = jest.fn();

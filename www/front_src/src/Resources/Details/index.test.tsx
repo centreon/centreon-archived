@@ -41,9 +41,9 @@ import {
   labelResourceFlapping,
   labelNo,
 } from '../translatedLabels';
-import { selectOption } from '../testUtils';
 import { detailsTabId, graphTabId } from './Body/tabs';
 import * as Context from '../Context';
+import { cancelTokenRequestParam } from '../testUtils';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -243,7 +243,7 @@ describe(Details, () => {
       await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
           `${performanceGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
-          expect.anything(),
+          cancelTokenRequestParam,
         ),
       );
     }),
