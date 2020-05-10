@@ -152,7 +152,7 @@ const cancelTokenRequestParam = { cancelToken: {} };
 
 mockAppStateSelector(useSelector);
 
-describe('Filter', () => {
+describe(Filter, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
   });

@@ -1,12 +1,15 @@
 import React from 'react';
 
+import { last } from 'ramda';
 import axios from 'axios';
+import mockDate from 'mockdate';
 import {
   render,
   waitFor,
   fireEvent,
   RenderResult,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import * as clipboard from './Body/tabs/Details/clipboard';
 
 import Details from '.';
@@ -105,7 +108,6 @@ const performanceGraphData = {
   times: [],
 };
 
-const RealDate = Date;
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
 const mockUseResourceContext = ({ openTabId }): void => {
@@ -124,11 +126,11 @@ const renderDetails = (): RenderResult => render(<Details />);
 
 describe(Details, () => {
   beforeEach(() => {
-    global.Date.now = jest.fn(() => Date.parse(currentDateIsoString));
+    mockDate.set(currentDateIsoString);
   });
 
   afterEach(() => {
-    global.Date = RealDate;
+    mockDate.reset();
     mockedAxios.get.mockReset();
   });
 
@@ -230,11 +232,13 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData });
 
-      const { getByText } = renderDetails();
+      const { getByText, getAllByText } = renderDetails();
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
 
-      selectOption(getByText(labelLast24h), period);
+      userEvent.click(getByText(labelLast24h));
+
+      userEvent.click(last(getAllByText(period)) as HTMLElement);
 
       await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(

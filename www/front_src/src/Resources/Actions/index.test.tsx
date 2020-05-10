@@ -82,7 +82,7 @@ const renderActions = (): RenderResult => {
   return render(<ActionsWithContext />);
 };
 
-describe('Actions', () => {
+describe(Actions, () => {
   const labelAcknowledgedByAdmin = `${labelAcknowledgedBy} admin`;
   const labelDowntimeByAdmin = `${labelDowntimeBy} admin`;
 
