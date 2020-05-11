@@ -2216,25 +2216,24 @@ function cleanString($str)
  * get first menu entry allowed to a given user
  *
  * @param string $lcaTStr Allowed topology pages separated by comma
- * @param int $defautPage User default page
+ * @param int $defaultPage User default page
  * @return array The topology information (url, options, name...)
  */
-function getFirstAllowedMenu($lcaTStr, $defautPage = null)
+function getFirstAllowedMenu($lcaTStr, $defaultPage = null)
 {
     global $pearDB;
 
     $eventsViewPage = 104;
-    $orderedFields = [$eventsViewPage];
 
-    if ($defautPage !== null) {
-        array_unshift($orderedFields, $defautPage);
+    if ($defaultPage === null) {
+        $defaultPage = $eventsViewPage;
     }
 
     $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
         . "FROM topology "
         . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
         . "topology_page IS NOT NULL AND topology_show = '1' "
-        . "ORDER BY FIELD(topology_page, " . implode(',', $orderedFields) . ") DESC, topology_id ASC "
+        . "ORDER BY FIELD(topology_page, " . $defaultPage . ") DESC, topology_id ASC "
         . "LIMIT 1";
 
     $dbResult = $pearDB->query($query);
