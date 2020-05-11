@@ -94,7 +94,7 @@ ACLACTION;GRANT;Simple User;host_schedule_check;
 ACLACTION;GRANT;Simple User;host_schedule_forced_check;
 ACLACTION;GRANT;Simple User;host_schedule_downtime;
 ACLACTION;GRANT;Simple User;host_comment;
-INSTANCE;ADD;Central;127.0.0.1;1;5556
+INSTANCE;ADD;Central;127.0.0.1;22;1;5556
 INSTANCE;setparam;Central;localhost;1
 INSTANCE;setparam;Central;is_default;0
 INSTANCE;setparam;Central;ns_activate;1

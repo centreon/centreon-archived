@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -21,7 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\MonitoringServer\MonitoringServerResource;
+use Centreon\Infrastructure\MonitoringServer\MonitoringServerRepositoryRDB;
 
 interface MonitoringServerRepositoryInterface
 {
@@ -33,4 +37,38 @@ interface MonitoringServerRepositoryInterface
      * @throws \Exception
      */
     public function findServers(): array;
+
+    /**
+     * Find a resource of monitoring servers identified by his name.
+     *
+     * @param int $monitoringServerId Id of the monitoring server for which we want their resources
+     * @param string $resourceName Resource name to find
+     * @return MonitoringServerResource|null
+     */
+    public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource;
+
+    /**
+     * Find the local monitoring server.
+     *
+     * @return MonitoringServer|null
+     * @throws \Exception
+     */
+    public function findLocalServer(): ?MonitoringServer;
+
+    /**
+     * We notify that the configuration has changed.
+     *
+     * @param MonitoringServer $monitoringServer Monitoring server to notify
+     * @throws \Exception
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
+
+    /**
+     * Find a monitoring server.
+     *
+     * @param int $monitoringServerId Id of the monitoring server to be found
+     * @return MonitoringServer|null
+     * @throws \Exception
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer;
 }

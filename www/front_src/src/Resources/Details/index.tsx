@@ -1,11 +1,16 @@
 import * as React from 'react';
 
+import { omit } from 'ramda';
+
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
-import { Status, Parent, Downtime, Acknowledgement } from '../models';
+import { getData, useRequest } from '@centreon/ui';
+
 import Header from './Header';
 import Body from './Body';
-import useGet from '../useGet';
+import { ResourceDetails } from './models';
+import { ResourceEndpoints } from '../models';
+import { useResourceContext } from '../Context';
 
 const useStyles = makeStyles(() => {
   return {
@@ -27,49 +32,32 @@ const useStyles = makeStyles(() => {
   };
 });
 
-interface Props {
-  endpoint: string | null;
-  onClose;
-}
-
-export interface ResourceDetails {
-  name: string;
-  status: Status;
-  parent: Parent;
-  criticality: number;
-  output: string;
-  downtimes?: Array<Downtime>;
-  acknowledgement?: Acknowledgement;
-  duration: string;
-  tries: string;
-  poller_name?: string;
-  timezone?: string;
-  last_state_change: string;
-  last_check: string;
-  next_check: string;
-  active_checks: boolean;
-  execution_time: number;
-  latency: number;
-  flapping: boolean;
-  percent_state_change: number;
-  last_notification: string;
-  notification_number: number;
-  performance_data: string;
-  check_command: string;
-}
-
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
+const Details = (): JSX.Element | null => {
   const classes = useStyles();
 
   const [details, setDetails] = React.useState<ResourceDetails>();
 
-  const get = useGet({
-    onSuccess: (entity) => setDetails(entity),
-    endpoint,
+  const {
+    detailsTabIdToOpen,
+    setDefaultDetailsTabIdToOpen,
+    selectedDetailsEndpoints,
+    setSelectedDetailsEndpoints,
+  } = useResourceContext();
+
+  const {
+    details: detailsEndpoint,
+  } = selectedDetailsEndpoints as ResourceEndpoints;
+
+  const clearSelectedResource = (): void => {
+    setSelectedDetailsEndpoints(null);
+  };
+
+  const { sendRequest } = useRequest<ResourceDetails>({
+    request: getData,
   });
 
   React.useEffect(() => {
@@ -77,17 +65,24 @@ const Details = ({ endpoint, onClose }: Props): JSX.Element | null => {
       setDetails(undefined);
     }
 
-    get();
-  }, [endpoint]);
+    sendRequest(detailsEndpoint).then((retrievedDetails) =>
+      setDetails(retrievedDetails),
+    );
+  }, [detailsEndpoint]);
 
   return (
-    <Paper variant="outlined" elevation={2} className={classes.details}>
+    <Paper elevation={5} className={classes.details}>
       <div className={classes.header}>
-        <Header details={details} onClickClose={onClose} />
+        <Header details={details} onClickClose={clearSelectedResource} />
       </div>
       <Divider className={classes.divider} />
       <div className={classes.body}>
-        <Body details={details} />
+        <Body
+          details={details}
+          endpoints={omit(['details'], selectedDetailsEndpoints)}
+          openTabId={detailsTabIdToOpen}
+          onSelectTab={setDefaultDetailsTabIdToOpen}
+        />
       </div>
     </Paper>
   );

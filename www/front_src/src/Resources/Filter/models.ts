@@ -22,12 +22,17 @@ export interface Filter {
   name: string;
 }
 
+export interface Criterias {
+  resourceTypes: Array<Filter>;
+  states: Array<Filter>;
+  statuses: Array<Filter>;
+  hostGroups: Array<Filter>;
+  serviceGroups: Array<Filter>;
+}
+
 export type FilterGroup = {
-  criterias: {
-    resourceTypes: Array<Filter>;
-    states: Array<Filter>;
-    statuses: Array<Filter>;
-  };
+  search?: string;
+  criterias: Criterias;
 } & Filter;
 
 const unhandledState = {
@@ -71,6 +76,8 @@ const allFilter = {
     resourceTypes: [],
     states: [],
     statuses: [],
+    hostGroups: [],
+    serviceGroups: [],
   },
 };
 
@@ -81,6 +88,8 @@ const unhandledProblemsFilter: FilterGroup = {
     resourceTypes: [],
     states: [unhandledState],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+    hostGroups: [],
+    serviceGroups: [],
   },
 };
 
@@ -91,6 +100,8 @@ const resourceProblemsFilter: FilterGroup = {
     resourceTypes: [],
     states: [],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+    hostGroups: [],
+    serviceGroups: [],
   },
 };
 

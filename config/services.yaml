@@ -14,6 +14,8 @@ parameters:
     database_password: "%env(password)%"
     centreon_var_lib: "%env(_CENTREON_VARLIB_)%"
     validation_path: "%env(_CENTREON_PATH_)%config/packages/validator"
+    centreon_path: "%env(_CENTREON_PATH_)%"
+    translation_path: "%centreon_path%/www/locale"
 
 services:
     # Default configuration for services in *this* file
@@ -43,6 +45,10 @@ services:
 
     Pimple\Container:
         factory: ['Centreon\LegacyContainer', 'getInstance']
+
+    Centreon\Application\Controller\Router:
+        decorates: 'router'
+        arguments: ['@Centreon\Application\Controller\Router.inner']
 
 imports:
     resource: './Modules/*.yaml'

@@ -38,6 +38,7 @@ export interface Resource {
   short_type: 'h' | 's';
   performance_graph_endpoint?: string;
   type: 'host' | 'service';
+  details_endpoint: string;
 }
 
 interface ListingMeta {
@@ -58,6 +59,7 @@ export type ResourceListing = Listing<Resource>;
 export interface User {
   username: string;
   locale: string | null;
+  timezone: string | null;
 }
 
 export interface Downtime {
@@ -74,4 +76,10 @@ export interface Acknowledgement {
   entry_time: string;
   is_persistent: boolean;
   is_sticky: boolean;
+}
+
+export interface ResourceEndpoints {
+  details: string;
+  statusGraph?: string;
+  performanceGraph?: string;
 }

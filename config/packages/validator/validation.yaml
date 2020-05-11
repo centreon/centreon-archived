@@ -3,15 +3,15 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         comment:
             - Type:
                 type: string
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
             - NotNull:
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
         isNotifyContacts:
             - Type:
                 type: boolean
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
             - NotNull:
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
         isPersistentComment:
             - Type:
                 type: boolean
@@ -201,7 +201,7 @@ Centreon\Domain\Monitoring\Resource:
     properties:
         id:
             - Type:
-                type: string
+                type: int
                 groups: [Default, disack_host, disack_service]
         type:
             - Type:

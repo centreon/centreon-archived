@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -24,6 +25,7 @@ namespace Centreon\Infrastructure\MonitoringServer;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\MonitoringServer\MonitoringServerResource;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -60,6 +62,29 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             ->setConcordanceStrictMode(
                 RequestParameters::CONCORDANCE_MODE_STRICT
             );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findLocalServer(): ?MonitoringServer
+    {
+        $request = $this->translateDbName('SELECT * FROM `:db`.nagios_server WHERE localhost = \'1\'');
+        $statement = $this->db->query($request);
+        if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            /**
+             * @var MonitoringServer $server
+             */
+            $server = EntityCreator::createEntityByArray(
+                MonitoringServer::class,
+                $result
+            );
+            if ((int) $result['last_restart'] === 0) {
+                $server->setLastRestart(null);
+            }
+            return $server;
+        }
+        return null;
     }
 
     /**
@@ -119,5 +144,81 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $servers[] = $server;
         }
         return $servers;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer
+    {
+        $request = $this->translateDbName('SELECT * FROM `:db`.nagios_server WHERE id = :server_id');
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':server_id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            /**
+             * @var MonitoringServer $server
+             */
+            $server = EntityCreator::createEntityByArray(
+                MonitoringServer::class,
+                $record
+            );
+            if ((int) $record['last_restart'] === 0) {
+                $server->setLastRestart(null);
+            }
+            return $server;
+        }
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource
+    {
+        $request = $this->translateDbName(
+            'SELECT resource.* FROM `:db`.cfg_resource resource 
+            INNER JOIN `:db`.cfg_resource_instance_relations rel
+                ON rel.resource_id = resource.resource_id
+            WHERE rel.instance_id = :monitoring_server_id
+            AND resource.resource_name = :resource_name'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->bindValue(':resource_name', $resourceName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return (new MonitoringServerResource())
+                ->setId((int) $record['resource_id'])
+                ->setName($record['resource_name'])
+                ->setComment($record['resource_comment'])
+                ->setIsActivate($record['resource_activate'] === '1')
+                ->setPath($record['resource_line']);
+        }
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void
+    {
+        if ($monitoringServer->getId() !== null) {
+            $request = $this->translateDbName(
+                'UPDATE `:db`.nagios_server SET updated = "1" WHERE id = :server_id'
+            );
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':server_id', $monitoringServer->getId(), \PDO::PARAM_INT);
+            $statement->execute();
+        } elseif ($monitoringServer->getName() !== null) {
+            $request = $this->translateDbName(
+                'UPDATE `:db`.nagios_server SET updated = "1" WHERE name = :server_name'
+            );
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':server_name', $monitoringServer->getName(), \PDO::PARAM_STR);
+            $statement->execute();
+        }
     }
 }

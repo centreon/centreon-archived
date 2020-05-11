@@ -30,6 +30,9 @@
             <td class="FormRowValue">{$form.remote_additional_id.html}</td>
         </tr>
         {/if}
+        {if $form.ssh_port.label}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
+        {/if}
         {if $form.header.Remote_Configuration}
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">

@@ -128,7 +128,7 @@ class SqlRequestParametersTranslatorTest extends TestCase
         ]);
 
         $this->expectException(RequestParametersTranslatorException::class);
-        $this->expectExceptionMessage("The parameter 'host.description' is not allowed");
+        $this->expectExceptionMessage("The parameter host.description is not allowed");
 
         $sqlRequestParametersTranslator->translateSearchParameterToSql();
     }
@@ -197,7 +197,7 @@ class SqlRequestParametersTranslatorTest extends TestCase
         );
 
         $this->assertEquals(
-            ' ORDER BY h.name ASC, h.description DESC',
+            ' ORDER BY h.name IS NULL, h.name ASC, h.description IS NULL, h.description DESC',
             $sqlRequestParametersTranslator->translateSortParameterToSql()
         );
     }

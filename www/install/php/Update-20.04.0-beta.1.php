@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -30,151 +31,6 @@ $errorMessage = '';
  */
 try {
     $pearDB->beginTransaction();
-    /*
-     * Get user data to generate a new config file for the gorgone daemon module
-     */
-
-    //set a pattern for values to get from file
-    $patterns = [
-        'instance_mode' => '/--INSTANCEMODE--/',
-        'db_host' => '/--ADDRESS--:--DBPORT--/',
-        'db_user' => '/--DBUSER--/',
-        'db_passwd' => '/--DBPASS--/',
-        'centreon_db' => '/--CONFDB--/',
-        'centstorage_db' => '/--STORAGEDB--/',
-        'VarLib' => '/--CENTREON_VARLIB--/'
-    ];
-
-    //set new mandatory parameters pattern used by gorgone
-    $pattern = [
-        '/--CENTREON_SPOOL--/',
-        '/--CENTREON_TRAPDIR--/',
-        '/--HTTPSERVERADDRESS--/',
-        '/--HTTPSERVERPORT--/',
-        '/--SSLMODE--/'
-    ];
-
-    //set default values for these parameters
-    $userValues = [
-        '/var/spool/centreon',
-        '/etc/snmp/centreon_traps',
-        '0.0.0.0',
-        '8085',
-        'false'
-    ];
-
-    $isACentral = false;
-
-    // get user's centreon cache folder path
-    $fileToOpen = _CENTREON_ETC_ . '/instCentWeb.conf';
-    $errorMessage = 'Missing or empty \'instCentWeb.conf\' file';
-    if (!file_exists($fileToOpen) || 0 === filesize($fileToOpen)) {
-        throw new \InvalidArgumentException($errorMessage);
-    }
-    $file = fopen($fileToOpen, 'r');
-
-    while (!feof($file)) {
-        $line = fgets($file);
-        if (strpos($line, "CENTREON_CACHEDIR") !== false) {
-            //remove superfluous carriage return
-            $line = preg_replace("/\r|\n/", "", $line);
-            $line = explode("=", $line);
-            $pattern[] = '/--CENTREON_CACHEDIR--/';
-            // if no value is found, a default value is required
-            $userValues[] = $line[1] ?? '/var/cache/centreon';
-        }
-    }
-    fclose($file);
-
-    // get user's values from conf.pm
-    $fileToOpen = _CENTREON_ETC_ . '/conf.pm';
-    $errorMessage = 'Missing or empty centreon \'conf.pm\' file';
-    if (!file_exists($fileToOpen) || 0 === filesize($fileToOpen)) {
-        throw new \InvalidArgumentException($errorMessage);
-    }
-    $start = false;
-    $stop = false;
-    $file = fopen($fileToOpen, 'r');
-
-    while (!feof($file) && $stop === false) {
-        // removing indentation and carriage return
-        $line = rtrim(ltrim(fgets($file), " "), ",\n");
-
-        // getting only line in a specific array
-        if (strpos($line, '$centreon_config = {') !== false) {
-            $start = true;
-            continue;
-        } elseif ($start === true
-            && strpos($line, '$instance_mode =') !== false
-        ) {
-            $stop = true;
-            $isACentral = strpos($line, 'central') ? true : false;
-            continue;
-        } elseif ($start === true
-            && strlen($line) > 5
-            && substr($line, 0, 1) !== "#"
-            && strpos($line, ' => ') !== false
-        ) {
-            $line = explode(' => ', $line);
-            if (!isset($line[1])) {
-                continue;
-            }
-
-            list($currentLine, $currentValue) = $line;
-            $currentLine = trim($currentLine, '"');
-            if ($currentLine === 'db_passwd') {
-                $currentValue = trim($currentValue, '\'');
-            } else {
-                $currentValue = trim($currentValue, '"');
-            }
-
-            if (array_key_exists($currentLine, $patterns)) {
-                $pattern[] = $patterns[$currentLine];
-                $userValues[] = $currentValue;
-            }
-        }
-    }
-    fclose($file);
-
-    // checking if the instance is a central and generating configuration files
-    if ($isACentral === true) {
-        // database configuration file
-        $fileTpl = __DIR__ . '/../var/databaseTemplate.yaml';
-        if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
-            $errorMessage = 'Database configuration template is empty or missing';
-            throw new \InvalidArgumentException($errorMessage);
-        }
-        $content = file_get_contents($fileTpl);
-        $content = preg_replace($pattern, $userValues, $content);
-        $finalFile = _CENTREON_ETC_ . '/config.d/10-database.yaml';
-        file_put_contents($finalFile, $content);
-
-        if (!file_exists($finalFile) || 0 === filesize($finalFile)) {
-            $errorMessage = 'Database configuration file is not created properly';
-            throw new \InvalidArgumentException($errorMessage);
-        }
-
-        // gorgone configuration file for centreon. Created in the centreon-gorgone folder
-        $fileTpl = __DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml';
-        if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
-            $errorMessage = 'Gorgone configuration template is empty or missing';
-            throw new \InvalidArgumentException($errorMessage);
-        }
-        $content = file_get_contents($fileTpl);
-        $content = preg_replace($pattern, $userValues, $content);
-        $finalFile = _CENTREON_ETC_ . '/../centreon-gorgone/config.d/40-gorgoned.yaml';
-        if (!file_exists(_CENTREON_ETC_ . '/../centreon-gorgone')) {
-            $errorMessage = 'Gorgone configuration folder does not exist. ' .
-                'Please reinstall the centreon-gorgone package and retry';
-            throw new \InvalidArgumentException($errorMessage);
-        }
-        file_put_contents($finalFile, $content);
-
-        if (!file_exists($finalFile) || 0 === filesize($finalFile)) {
-            $errorMessage = 'Gorgone configuration file is not created properly';
-            throw new \InvalidArgumentException($errorMessage);
-        }
-    }
 
     /*
      * Move broker xml files to json format
@@ -268,6 +124,14 @@ try {
             7,
             'countConnections',
             '{\"target\": \"connections_count\"}'
+        ),
+        (
+            (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'storage'),
+            (SELECT `cb_field_id` FROM `cb_field` WHERE `fieldname` = 'connections_count'),
+            0,
+            7,
+            'countConnections',
+            '{\"target\": \"connections_count\"}'
         )"
     );
 
@@ -301,12 +165,5 @@ try {
         " - Code : " . (int)$e->getCode() .
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
-    );
-}
-
-if (empty($errorMessage)) {
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . " - Successful Update"
     );
 }

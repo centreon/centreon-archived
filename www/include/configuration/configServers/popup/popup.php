@@ -92,7 +92,7 @@ $timeout = 0;
 try {
     foreach ($parents as $serverId) {
         $lastActionLog = null;
-        $thumbprintCommand = new \Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand($serverId);
+        $thumbprintCommand = new \Centreon\Domain\Gorgone\Command\Thumbprint($serverId);
         $gorgoneResponse = $gorgoneService->send($thumbprintCommand);
         // check if we have log for 30 s every 2s
         do {

@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Gorgone;
 
 /**
- * This class is design to represent a action log received by the Gorgone server.
+ * This class is designed to represent a action log received by the Gorgone server.
  *
  * A command can produce more than one action log.
  *

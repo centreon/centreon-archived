@@ -232,6 +232,10 @@ $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Bina
 $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
 $tab = array();
+if ($serverType !== "central") {
+    $form->addElement('text', 'ssh_port', _("SSH Legacy port"), $attrsText3);    
+}
+
 $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
 $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
 $form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
@@ -331,6 +335,7 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "engine_reload_command" => $monitoring_engines["engine_reload_command"],
             "ns_activate" => '1',
             "is_default" => '0',
+            "ssh_port" => 22,
             "gorgone_communication_type" => ZMQ,
             "gorgone_port" => 5556,
             "nagios_perfdata" => $monitoring_engines["nagios_perfdata"],
@@ -422,6 +427,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
+    defineLocalPollerToDefault();
     require_once($path . "listServers.php");
 } else {
     /*

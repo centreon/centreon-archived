@@ -128,7 +128,7 @@
                 }
             }).success(function(data) {
                 var data = JSON.parse(data);
-                var modules = Object.values(data['modules']);
+                const modules = data['modules'] ? Object.values(data['modules']) : [];
                 if (modules && modules.length > 0) {
                     modules.forEach(function(module) {
                         if (module.install) {
@@ -139,7 +139,7 @@
                         }
                     });
                 }
-                var widgets = Object.values(data['widgets']);
+                const widgets = data['widgets'] ? Object.values(data['widgets']) : [];
                 if (widgets && widgets.length > 0) {
                     widgets.forEach(function(widget) {
                         if (widget.install) {

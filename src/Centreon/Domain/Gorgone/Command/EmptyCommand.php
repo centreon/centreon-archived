@@ -22,12 +22,18 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Command;
 
+use Centreon\Domain\Gorgone\GorgoneService;
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
-class EmptyCommand implements CommandInterface
+/**
+ * This class is designed to be injected into a Gorgone response.
+ *
+ * @see GorgoneService::getResponseFromToken()
+ *
+ * @package Centreon\Domain\Gorgone\Command
+ */
+class EmptyCommand extends AbstractCommand implements CommandInterface
 {
-    use BasicCommand;
-
     private const NAME = "basic";
 
     /**

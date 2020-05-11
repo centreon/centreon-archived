@@ -558,19 +558,19 @@ class AcknowledgementController extends AbstractController
         $errorList = new ConstraintViolationList();
         foreach ($resources as $resource) {
             if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                $errorList->addAll($this->validateResource(
+                $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
-                $errorList->addAll($this->validateResource(
+                $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
-                throw new \RestBadRequestException('Incorrect resource type for disacknowledgement');
+                throw new \RestBadRequestException(_('Incorrect resource type for disacknowledgement'));
             }
         }
 
@@ -647,7 +647,7 @@ class AcknowledgementController extends AbstractController
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
-                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+                throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
             }
         }
 

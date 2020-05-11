@@ -33,6 +33,9 @@ use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Centreon\Domain\Monitoring\Model;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -42,7 +45,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
     /**
-     * @var \Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface
+     * @var ResourceRepositoryInterface
      */
     private $resourceRepository;
 
@@ -52,23 +55,15 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private $router;
-
-    /**
      * @param ResourceRepositoryInterface $resourceRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
-     * @param UrlGeneratorInterface $router
      */
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
-        UrlGeneratorInterface $router
+        AccessGroupRepositoryInterface $accessGroupRepository
     ) {
         $this->resourceRepository = $resourceRepository;
         $this->accessGroupRepository = $accessGroupRepository;
-        $this->router = $router;
     }
 
     /**
@@ -90,36 +85,44 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     /**
      * {@inheritDoc}
      */
+    public function getListOfResourcesWithGraphData(array $resources): array
+    {
+        return $this->resourceRepository->getListOfResourcesWithGraphData($resources);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function findResources(ResourceFilter $filter): array
     {
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
             $list = $this->resourceRepository->findResources($filter);
         } catch (\Exception $ex) {
-            throw new ResourceException('Error while searching for resources', 0, $ex);
-        }
-
-        // set paths to endpoints
-        foreach ($list as $resource) {
-            $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
-            $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
-            $parameters = [
-                'hostId' => $resource->getId(),
-            ];
-
-            if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
-                $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
-                $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
-
-                $parameters['hostId'] = $resource->getParent()->getId();
-                $parameters['serviceId'] = $resource->getId();
-            }
-
-            $resource->setAcknowledgementEndpoint($this->router->generate($routeNameAcknowledgement, $parameters));
-            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
+            throw new ResourceException(_('Error while searching for resources'), 0, $ex);
         }
 
         return $list;
+    }
+
+    public function enrichHostWithDetails(Host $host): Model\ResourceDetailsHost
+    {
+        $enrichedHost = (new Model\ResourceDetailsHost())
+            ->import($host);
+
+        $this->resourceRepository->findMissingInformationAboutHost($enrichedHost);
+
+        return $enrichedHost;
+    }
+
+    public function enrichServiceWithDetails(Service $service): Model\ResourceDetailsService
+    {
+        $enrichedService = (new Model\ResourceDetailsService())
+            ->import($service);
+
+        $this->resourceRepository->findMissingInformationAboutService($enrichedService);
+
+        return $enrichedService;
     }
 
     /**

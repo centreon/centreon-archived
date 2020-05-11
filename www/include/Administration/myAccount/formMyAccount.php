@@ -81,6 +81,9 @@ if ($o == "c") {
     while ($row = $res->fetch()) {
         $cct[$row['cp_key']] = $row['cp_value'];
     }
+
+    // selected by default is Events view page
+    $cct['default_page'] = $cct['default_page'] ?: CentreonAuth::DEFAULT_PAGE;
 }
 
 /*
@@ -231,6 +234,9 @@ if (!empty($aclUser)) {
         $parentNameLvl1 = $translatedPages[$parentLvl1]['i18n'];
         foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
             $parentNameLvl2 = $translatedPages[$parentLvl2]['i18n'];
+            $isThirdLevelMenu = false;
+            $parentLvl3 = null;
+
             if ($oneChildCanBeShown()) {
                 /**
                  * There is at least one child that can be shown then we can
@@ -254,11 +260,18 @@ if (!empty($aclUser)) {
                         }
                     }
                 }
-            } else {
+
+                $isThirdLevelMenu = true;
+            }
+
+            // select parent from level 2 if level 3 is missing
+            $pageId = $parentLvl3 ?: $parentLvl2;
+
+            if (!$isThirdLevelMenu && $translatedPages[$pageId]['show']) {
                 /**
                  * We show only first and second level
                  */
-                $pages[$parentLvl3] =
+                $pages[$pageId] =
                     $parentNameLvl1 . ' > ' . $parentNameLvl2;
             }
         }

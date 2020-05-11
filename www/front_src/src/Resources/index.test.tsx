@@ -1,23 +1,38 @@
 import React from 'react';
 
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import formatISO from 'date-fns/formatISO';
 import {
   render,
   waitFor,
-  within,
   fireEvent,
   RenderResult,
+  within,
 } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
-import last from 'lodash/last';
 import { Simulate } from 'react-dom/test-utils';
+import mockDate from 'mockdate';
+
+import {
+  partition,
+  where,
+  contains,
+  pipe,
+  split,
+  head,
+  pick,
+  last,
+  find,
+  propEq,
+} from 'ramda';
 
 import { ThemeProvider } from '@centreon/ui';
-import Resources from '.';
+
 import {
   labelResourceName,
   labelSearch,
+  labelSearchHelp,
+  labelSearchOnFields,
   labelInDowntime,
   labelAcknowledged,
   labelTypeOfResource,
@@ -42,25 +57,36 @@ import {
   labelOpen,
   labelShowCriteriasFilters,
   labelChangeEndDate,
-  labelEndDate,
-  labelEndTime,
-  labelStartDate,
-  labelStartTime,
+  labelRefresh,
+  labelDisableAutorefresh,
+  labelEnableAutorefresh,
+  labelClearAll,
 } from './translatedLabels';
-import getColumns from './columns';
+import {
+  defaultSortField,
+  defaultSortOrder,
+  getColumns,
+} from './Listing/columns';
 import { Resource } from './models';
 import {
-  hostAcknowledgementEndpoint,
-  serviceAcknowledgementEndpoint,
-  hostDowntimeEndpoint,
-  serviceDowntimeEndpoint,
+  acknowledgeEndpoint,
+  downtimeEndpoint,
   hostCheckEndpoint,
   serviceCheckEndpoint,
 } from './api/endpoint';
 
+import Resources from '.';
+
+import { selectOption } from './testUtils';
+import { allFilter } from './Filter/models';
+
 const columns = getColumns({ onAcknowledge: jest.fn() });
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('./icons/Downtime');
 
@@ -86,11 +112,19 @@ const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
+const appState = {
+  intervals: {
+    AjaxTimeReloadMonitoring: 60,
+  },
+};
+
+const filterStorageKey = 'centreon-events-filter';
+
 const buildParam = (param): string => JSON.stringify(param);
 
 const getEndpoint = ({
-  sortBy = undefined,
-  sortOrder = undefined,
+  sortBy = defaultSortField,
+  sortOrder = defaultSortOrder,
   page = 1,
   limit = 30,
   search = undefined,
@@ -122,23 +156,23 @@ const getEndpoint = ({
     ? `&servicegroup_ids=${buildParam(serviceGroupIds)}`
     : '';
 
-  return `${endpoint}?page=${page}&limit=${limit}${sortParam}${searchParam}${statesParam}${resourceTypesParam}${statusesParam}${hostGroupsIdsParam}${serviceGroupIdsParam}`;
+  return [
+    endpoint,
+    '?page=',
+    page,
+    '&limit=',
+    limit,
+    sortParam,
+    searchParam,
+    statesParam,
+    resourceTypesParam,
+    statusesParam,
+    hostGroupsIdsParam,
+    serviceGroupIdsParam,
+  ].join('');
 };
 
 const cancelTokenRequestParam = { cancelToken: {} };
-
-export const selectOption = (element, optionText): void => {
-  const selectButton = element.parentNode.querySelector('[role=button]');
-
-  UserEvent.click(selectButton);
-
-  const listbox = document.body.querySelector(
-    'ul[role=listbox]',
-  ) as HTMLElement;
-
-  const listItem = within(listbox).getByText(optionText);
-  UserEvent.click(listItem);
-};
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
@@ -158,8 +192,10 @@ const fillEntities = (): Array<Resource> => {
     last_check: '1m',
     tries: '1',
     short_type: index % 4 === 0 ? 's' : 'h',
-    information: `Entity ${index}`,
+    information:
+      index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
     type: index % 4 === 0 ? 'service' : 'host',
+    details_endpoint: 'endpoint',
   }));
 };
 
@@ -182,13 +218,77 @@ const linuxServersHostGroup = {
   name: 'Linux-servers',
 };
 
-const webAccessService = {
+const webAccessServiceGroup = {
   id: 1,
   name: 'Web-access',
 };
 
-const hostResources = entities.filter(({ type }) => type === 'host');
-const serviceResources = entities.filter(({ type }) => type === 'service');
+const filtersParams = [
+  [labelTypeOfResource, labelHost, { resourceTypes: ['host'] }, undefined],
+  [
+    labelState,
+    labelAcknowledged,
+    {
+      states: [...defaultStates, 'acknowledged'],
+    },
+    undefined,
+  ],
+  [
+    labelStatus,
+    labelOk,
+    {
+      statuses: [...defaultStatuses, 'OK'],
+    },
+    undefined,
+  ],
+  [
+    labelHostGroup,
+    linuxServersHostGroup.name,
+    {
+      hostGroupsIds: [linuxServersHostGroup.id],
+    },
+    (): void => {
+      mockedAxios.get.mockResolvedValueOnce({
+        data: { result: [linuxServersHostGroup] },
+      });
+    },
+  ],
+  [
+    labelServiceGroup,
+    webAccessServiceGroup.name,
+
+    {
+      serviceGroupIds: [webAccessServiceGroup.id],
+    },
+    (): void => {
+      mockedAxios.get.mockResolvedValueOnce({
+        data: { result: [webAccessServiceGroup] },
+      });
+    },
+  ],
+];
+
+const savedFilter = {
+  id: '',
+  name: '',
+  search: 'searching...',
+  criterias: {
+    resourceTypes: [{ id: 'host', name: labelHost }],
+    states: [{ id: 'acknowledged', name: labelAcknowledged }],
+    statuses: [{ id: 'OK', name: labelOk }],
+    hostGroups: [linuxServersHostGroup],
+    serviceGroups: [webAccessServiceGroup],
+  },
+};
+
+const mockedLocalStorageGetItem = jest.fn();
+const mockedLocalStorageSetItem = jest.fn();
+
+Storage.prototype.getItem = mockedLocalStorageGetItem;
+Storage.prototype.setItem = mockedLocalStorageSetItem;
+
+window.clearInterval = jest.fn();
+window.setInterval = jest.fn();
 
 const renderResources = (): RenderResult =>
   render(
@@ -199,12 +299,18 @@ const renderResources = (): RenderResult =>
 
 describe(Resources, () => {
   afterEach(() => {
+    useSelector.mockClear();
     mockedAxios.get.mockReset();
     mockedAxios.post.mockReset();
     mockedAxios.all.mockReset();
+    mockedLocalStorageSetItem.mockReset();
+    mockedLocalStorageGetItem.mockReset();
   });
 
   beforeEach(() => {
+    useSelector.mockImplementation((callback) => {
+      return callback(appState);
+    });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
   });
 
@@ -216,702 +322,829 @@ describe(Resources, () => {
     });
   };
 
-  it('expands criterias filters', async () => {
-    const { getByLabelText, queryByText } = renderResources();
+  describe('Listing', () => {
+    it('displays first part of information when multiple (split by \n) are available', async () => {
+      const { getByText, queryByText } = renderResources();
 
-    await waitFor(() => {
-      expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
+      const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
+        where({ information: contains('\n') }),
+        retrievedListing.result,
+      );
+
+      resourcesWithMultipleLines.forEach(({ information }) => {
+        expect(
+          getByText(pipe(split('\n'), head)(information)),
+        ).toBeInTheDocument();
+        expect(queryByText(information)).not.toBeInTheDocument();
+      });
+
+      resourcesWithSingleLines.forEach(({ information }) => {
+        expect(getByText(information)).toBeInTheDocument();
+      });
     });
 
-    fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+    it('expands criterias filters when the expand icon is clicked', async () => {
+      const { getByLabelText, queryByText } = renderResources();
 
-    await waitFor(() => {
-      expect(queryByText(labelTypeOfResource)).toBeVisible();
-    });
-  });
+      await waitFor(() => {
+        expect(queryByText(labelTypeOfResource)).not.toBeVisible();
+      });
 
-  it('executes a listing request with "Unhandled problems" filter group by default', async () => {
-    renderResources();
+      fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
-    await waitFor(() =>
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        getEndpoint({}),
-        cancelTokenRequestParam,
-      ),
-    );
-  });
-
-  it('executes a listing request when a search is typed and enter key is pressed', async () => {
-    const { getByPlaceholderText } = render(<Resources />);
-
-    const fieldSearchValue = 'foobar';
-
-    const searchInput = getByPlaceholderText(labelResourceName);
-
-    fireEvent.change(searchInput, {
-      target: { value: fieldSearchValue },
+      await waitFor(() => {
+        expect(queryByText(labelTypeOfResource)).toBeVisible();
+      });
     });
 
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+    it('executes a listing request with "Unhandled problems" filter group by default', async () => {
+      renderResources();
 
-    Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({}),
+          cancelTokenRequestParam,
+        ),
+      );
+    });
 
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      getEndpoint({
-        search: {
-          mode: '$or',
-          fieldPatterns: searchableFields.map((searchableField) => ({
-            field: searchableField,
-            value: fieldSearchValue,
-          })),
-        },
-      }),
-      cancelTokenRequestParam,
-    );
-  });
+    it('executes a listing request when a search is typed and enter key is pressed', async () => {
+      const { getByPlaceholderText } = render(<Resources />);
 
-  [
-    {
-      filterGroup: labelResourceProblems,
-      criterias: {
-        statuses: defaultStatuses,
-        states: [],
-        resourceTypes: [],
-      },
-    },
-    {
-      filterGroup: labelAll,
-      criterias: {
-        statuses: [],
-        states: [],
-        resourceTypes: [],
-      },
-    },
-  ].forEach(({ filterGroup, criterias }) => {
-    it(`executes a listing request with "${filterGroup}" params when "${filterGroup}" filter group is set`, async () => {
-      const { getByText } = renderResources();
+      const fieldSearchValue = 'foobar';
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      const searchInput = getByPlaceholderText(labelResourceName);
+
+      fireEvent.change(searchInput, {
+        target: { value: fieldSearchValue },
+      });
 
       mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-      // @material-ui Select uses a Popover that needs special handling to update options.
-      selectOption(getByText(labelUnhandledProblems), filterGroup);
+      Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
 
       await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getEndpoint({
-            resourceTypes: criterias.resourceTypes,
-            states: criterias.states,
-            statuses: criterias.statuses,
+            search: {
+              mode: '$or',
+              fieldPatterns: searchableFields.map((searchableField) => ({
+                field: searchableField,
+                value: fieldSearchValue,
+              })),
+            },
           }),
           cancelTokenRequestParam,
         ),
       );
     });
-  });
 
-  [
-    {
-      filterName: labelTypeOfResource,
-      optionToSelect: labelHost,
-      endpointParamChanged: { resourceTypes: ['host'] },
-    },
-    {
-      filterName: labelState,
-      optionToSelect: labelAcknowledged,
-      endpointParamChanged: {
-        states: [...defaultStates, 'acknowledged'],
-      },
-    },
-    {
-      filterName: labelStatus,
-      optionToSelect: labelOk,
-      endpointParamChanged: {
-        statuses: [...defaultStatuses, 'OK'],
-      },
-    },
-    {
-      filterName: labelHostGroup,
-      optionToSelect: linuxServersHostGroup.name,
-      selectEndpointMockAction: (): void => {
-        mockedAxios.get.mockResolvedValueOnce({
-          data: { result: [linuxServersHostGroup] },
-        });
-      },
-      endpointParamChanged: {
-        hostGroupsIds: [linuxServersHostGroup.id],
-      },
-    },
-    {
-      filterName: labelServiceGroup,
-      optionToSelect: webAccessService.name,
-      selectEndpointMockAction: (): void => {
-        mockedAxios.get.mockResolvedValueOnce({
-          data: { result: [webAccessService] },
-        });
-      },
-      endpointParamChanged: {
-        serviceGroupIds: [webAccessService.id],
-      },
-    },
-  ].forEach(
-    ({
-      filterName,
-      optionToSelect,
-      endpointParamChanged,
-      selectEndpointMockAction,
-    }) => {
-      it(`executes a listing request with selected "${filterName}" filter options when it's changed`, async () => {
-        const { getAllByText, getByTitle } = renderResources();
+    it('executes a listing request when refresh button is clicked', async () => {
+      const { getByLabelText } = renderResources();
 
-        await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-        selectEndpointMockAction?.();
-        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-
-        const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
-        fireEvent.click(filterToChange);
-
-        await waitFor(() => {
-          const [selectedOption] = getAllByText(optionToSelect);
-
-          return fireEvent.click(selectedOption);
-        });
-
+      await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
-          getEndpoint({ ...endpointParamChanged }),
+          getEndpoint({}),
+          cancelTokenRequestParam,
+        ),
+      );
+
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+      const refreshButton = getByLabelText(labelRefresh);
+
+      await waitFor(() => expect(refreshButton).toBeEnabled());
+
+      fireEvent.click(refreshButton);
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({}),
+          cancelTokenRequestParam,
+        ),
+      );
+    });
+
+    it('swaps autorefresh icon when the icon is clicked', async () => {
+      const { getByLabelText } = renderResources();
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({}),
+          cancelTokenRequestParam,
+        ),
+      );
+
+      fireEvent.click(getByLabelText(labelDisableAutorefresh));
+
+      expect(getByLabelText(labelEnableAutorefresh)).toBeTruthy();
+
+      fireEvent.click(getByLabelText(labelEnableAutorefresh));
+
+      expect(getByLabelText(labelDisableAutorefresh)).toBeTruthy();
+    });
+
+    it.each(
+      columns
+        .filter(({ sortable }) => sortable !== false)
+        .map(({ id, label, sortField }) => [id, label, sortField]),
+    )(
+      'executes a listing request with sort_by param when %p column is clicked',
+      async (id, label, sortField) => {
+        const { getByLabelText } = renderResources();
+
+        mockedAxios.get.mockResolvedValue({ data: retrievedListing });
+
+        const sortBy = sortField || id;
+
+        fireEvent.click(getByLabelText(`Column ${label}`));
+
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
+          getEndpoint({ sortBy, sortOrder: 'desc' }),
           cancelTokenRequestParam,
         );
+
+        fireEvent.click(getByLabelText(`Column ${label}`));
+
+        await waitFor(() =>
+          expect(mockedAxios.get).toHaveBeenLastCalledWith(
+            getEndpoint({ sortBy, sortOrder: 'asc' }),
+            cancelTokenRequestParam,
+          ),
+        );
+      },
+    );
+
+    it('executes a listing request with an updated page param when a change page action is clicked', async () => {
+      const { getByLabelText } = renderResources();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
       });
-    },
-  );
 
-  it('executes a listing request with sort_by param when a sortable column is clicked', async () => {
-    const { getByText } = renderResources();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
-
-    columns
-      .filter(({ sortable }) => sortable !== false)
-      .forEach(({ id, label }) => {
-        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-
-        fireEvent.click(getByText(label));
-
-        expect(mockedAxios.get).toHaveBeenCalledWith(
-          getEndpoint({ sortBy: id, sortOrder: 'desc' }),
-          cancelTokenRequestParam,
-        );
-
-        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-
-        fireEvent.click(getByText(label));
-
-        expect(mockedAxios.get).toHaveBeenCalledWith(
-          getEndpoint({ sortBy: id, sortOrder: 'asc' }),
-          cancelTokenRequestParam,
-        );
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          ...retrievedListing,
+          meta: { ...retrievedListing.meta, page: 2 },
+        },
       });
-  });
 
-  it('executes a listing request with an updated page param when a change page action is clicked', async () => {
-    const { getByLabelText } = renderResources();
+      fireEvent.click(getByLabelText('Next Page'));
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        getEndpoint({ page: 2 }),
+        cancelTokenRequestParam,
+      );
+
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          ...retrievedListing,
+          meta: { ...retrievedListing.meta, page: 1 },
+        },
+      });
+
+      fireEvent.click(getByLabelText('Previous Page'));
+
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        getEndpoint({ page: 1 }),
+        cancelTokenRequestParam,
+      );
+
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          ...retrievedListing,
+          meta: { ...retrievedListing.meta, page: 4 },
+        },
+      });
+
+      fireEvent.click(getByLabelText('Last Page'));
+
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        getEndpoint({ page: 4 }),
+        cancelTokenRequestParam,
+      );
+
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          ...retrievedListing,
+          meta: { ...retrievedListing.meta, page: 4 },
+        },
+      });
+
+      fireEvent.click(getByLabelText('First Page'));
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
+          getEndpoint({ page: 1 }),
+          cancelTokenRequestParam,
+        ),
+      );
     });
 
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 2 },
+    it('executes a listing request with a limit param when the rows per page value is changed', async () => {
+      const { getByDisplayValue } = renderResources();
+
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+      fireEvent.change(getByDisplayValue('10'), {
+        target: { value: '20' },
+      });
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({ limit: 20 }),
+          cancelTokenRequestParam,
+        ),
+      );
+    });
+
+    it.each(searchableFields.map((searchableField) => [searchableField]))(
+      'executes a listing request with an "$and" search param containing %p when %p is typed in the search field',
+      async (searchableField) => {
+        const { getByPlaceholderText, getByText } = renderResources();
+
+        const fieldSearchValue = 'foobar';
+
+        fireEvent.change(getByPlaceholderText(labelResourceName), {
+          target: { value: `${searchableField}:${fieldSearchValue}` },
+        });
+
+        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+        fireEvent.click(getByText(labelSearch));
+
+        await waitFor(() =>
+          expect(mockedAxios.get).toHaveBeenCalledWith(
+            getEndpoint({
+              search: {
+                mode: '$and',
+                fieldPatterns: [
+                  { field: searchableField, value: fieldSearchValue },
+                ],
+              },
+            }),
+            cancelTokenRequestParam,
+          ),
+        );
       },
-    });
-
-    fireEvent.click(getByLabelText('Next Page'));
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      getEndpoint({ page: 2 }),
-      cancelTokenRequestParam,
     );
 
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 1 },
-      },
-    });
-
-    fireEvent.click(getByLabelText('Previous Page'));
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      getEndpoint({ page: 1 }),
-      cancelTokenRequestParam,
-    );
-
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 4 },
-      },
-    });
-
-    fireEvent.click(getByLabelText('Last Page'));
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      getEndpoint({ page: 4 }),
-      cancelTokenRequestParam,
-    );
-
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        ...retrievedListing,
-        meta: { ...retrievedListing.meta, page: 4 },
-      },
-    });
-
-    fireEvent.click(getByLabelText('First Page'));
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      getEndpoint({ page: 1 }),
-      cancelTokenRequestParam,
-    );
-  });
-
-  it('executes a listing request with a limit param when the rows per page value is changed', () => {
-    const { getByDisplayValue } = renderResources();
-
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-
-    fireEvent.change(getByDisplayValue('10'), {
-      target: { value: '20' },
-    });
-
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      getEndpoint({ limit: 20 }),
-      cancelTokenRequestParam,
-    );
-  });
-
-  searchableFields.forEach((searchableField) => {
-    it(`executes a listing request with an "$and" search param containing ${searchableField} when ${searchableField} is typed in the search field`, () => {
+    it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', async () => {
       const { getByPlaceholderText, getByText } = renderResources();
 
-      const fieldSearchValue = 'foobar';
+      const searchValue = 'foobar';
 
       fireEvent.change(getByPlaceholderText(labelResourceName), {
-        target: { value: `${searchableField}:${fieldSearchValue}` },
+        target: { value: searchValue },
       });
 
       mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
       fireEvent.click(getByText(labelSearch));
 
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        getEndpoint({
-          search: {
-            mode: '$and',
-            fieldPatterns: [
-              { field: searchableField, value: fieldSearchValue },
-            ],
-          },
-        }),
-        cancelTokenRequestParam,
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          getEndpoint({
+            search: {
+              mode: '$or',
+              fieldPatterns: searchableFields.map((searchableField) => ({
+                field: searchableField,
+                value: searchValue,
+              })),
+            },
+          }),
+          cancelTokenRequestParam,
+        ),
       );
     });
-  });
 
-  it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', () => {
-    const { getByPlaceholderText, getByText } = renderResources();
+    it('displays downtime details when the downtime state chip is hovered', async () => {
+      const { findByLabelText, getByText } = renderResources();
 
-    const searchValue = 'foobar';
+      const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
 
-    fireEvent.change(getByPlaceholderText(labelResourceName), {
-      target: { value: searchValue },
-    });
-
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-
-    fireEvent.click(getByText(labelSearch));
-
-    expect(mockedAxios.get).toHaveBeenCalledWith(
-      getEndpoint({
-        search: {
-          mode: '$or',
-          fieldPatterns: searchableFields.map((searchableField) => ({
-            field: searchableField,
-            value: searchValue,
-          })),
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          result: [
+            {
+              author_name: 'admin',
+              start_time: '2020-02-28T09:16:16',
+              end_time: '2020-02-28T09:18:16',
+              is_fixed: true,
+              comment: 'Set by admin',
+            },
+          ],
         },
-      }),
-      cancelTokenRequestParam,
-    );
-  });
+      });
 
-  it('displays downtime details when the downtime state chip is hovered', async () => {
-    const { getByLabelText, getByText } = renderResources();
+      const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
-    const entityInDowntime = entities.find(({ in_downtime }) => in_downtime);
+      const chip = await findByLabelText(chipLabel);
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
+      fireEvent.mouseEnter(chip);
+      fireEvent.mouseOver(chip);
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
+          entityInDowntime?.downtime_endpoint,
+          cancelTokenRequestParam,
+        ),
+      );
+
+      expect(getByText('admin')).toBeInTheDocument();
+      expect(getByText('Yes')).toBeInTheDocument();
+      expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
+      expect(getByText('02/28/2020 09:18')).toBeInTheDocument();
+      expect(getByText('Set by admin')).toBeInTheDocument();
     });
 
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        result: [
-          {
-            author_name: 'admin',
-            start_time: '2020-02-28T09:16:16',
-            end_time: '2020-02-28T09:18:16',
-            is_fixed: true,
-            comment: 'Set by admin',
-          },
-        ],
+    it('displays acknowledgement details when an acknowledged state chip is hovered', async () => {
+      const { findByLabelText, getByText } = renderResources();
+
+      const acknowledgedEntity = entities.find(
+        ({ acknowledged }) => acknowledged,
+      );
+
+      mockedAxios.get.mockResolvedValueOnce({
+        data: {
+          result: [
+            {
+              author_name: 'admin',
+              entry_time: '2020-02-28T09:16:16',
+              is_persistent_comment: true,
+              is_sticky: false,
+              comment: 'Set by admin',
+            },
+          ],
+        },
+      });
+
+      const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
+
+      const chip = await findByLabelText(chipLabel);
+
+      fireEvent.mouseEnter(chip);
+      fireEvent.mouseOver(chip);
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
+          acknowledgedEntity?.acknowledgement_endpoint,
+          cancelTokenRequestParam,
+        ),
+      );
+
+      expect(getByText('admin')).toBeInTheDocument();
+      expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
+      expect(getByText('Yes')).toBeInTheDocument();
+      expect(getByText('No')).toBeInTheDocument();
+      expect(getByText('Set by admin')).toBeInTheDocument();
+    });
+  });
+
+  describe('Filter', () => {
+    it.each([
+      [
+        labelResourceProblems,
+        {
+          statuses: defaultStatuses,
+          states: [],
+          resourceTypes: [],
+        },
+      ],
+      [
+        labelAll,
+        {
+          statuses: [],
+          states: [],
+          resourceTypes: [],
+        },
+      ],
+    ])(
+      'executes a listing request with "%p" params when "%p" filter group is set',
+      async (filterGroup, criterias) => {
+        const { getByText } = renderResources();
+
+        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+        selectOption(getByText(labelUnhandledProblems), filterGroup);
+
+        await waitFor(() => {
+          expect(mockedAxios.get).toHaveBeenLastCalledWith(
+            getEndpoint({
+              resourceTypes: criterias.resourceTypes,
+              states: criterias.states,
+              statuses: criterias.statuses,
+            }),
+            cancelTokenRequestParam,
+          );
+        });
       },
-    });
-
-    const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
-
-    fireEvent.mouseEnter(getByLabelText(chipLabel));
-    fireEvent.mouseOver(getByLabelText(chipLabel));
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      entityInDowntime?.downtime_endpoint,
-      cancelTokenRequestParam,
     );
 
-    expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:18')).toBeInTheDocument();
-    expect(getByText('Set by admin')).toBeInTheDocument();
-  });
+    it.each(filtersParams)(
+      "executes a listing request with current search and selected %p filter options when it's changed",
+      async (
+        filterName,
+        optionToSelect,
+        endpointParamChanged,
+        selectEndpointMockAction,
+      ) => {
+        const {
+          getByTitle,
+          getByLabelText,
+          getByPlaceholderText,
+          findByText,
+        } = renderResources();
 
-  it('displays acknowledgement details when an acknowledged state chip is hovered', async () => {
-    const { getByLabelText, getByText } = renderResources();
+        fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
-    const acknowledgedEntity = entities.find(
-      ({ acknowledged }) => acknowledged,
-    );
+        selectEndpointMockAction?.();
+        mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
+        const searchValue = 'foobar';
+        fireEvent.change(getByPlaceholderText(labelResourceName), {
+          target: { value: searchValue },
+        });
 
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        result: [
-          {
-            author_name: 'admin',
-            entry_time: '2020-02-28T09:16:16',
-            is_persistent_comment: true,
-            is_sticky: false,
-            comment: 'Set by admin',
-          },
-        ],
+        const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
+        fireEvent.click(filterToChange);
+
+        const selectedOption = await findByText(optionToSelect);
+        fireEvent.click(selectedOption);
+
+        await waitFor(() =>
+          expect(mockedAxios.get).toHaveBeenCalledWith(
+            getEndpoint({
+              search: {
+                mode: '$or',
+                fieldPatterns: searchableFields.map((searchableField) => ({
+                  field: searchableField,
+                  value: searchValue,
+                })),
+              },
+              ...endpointParamChanged,
+            }),
+            cancelTokenRequestParam,
+          ),
+        );
       },
-    });
-
-    const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
-
-    fireEvent.mouseEnter(getByLabelText(chipLabel));
-    fireEvent.mouseOver(getByLabelText(chipLabel));
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      acknowledgedEntity?.acknowledgement_endpoint,
-      cancelTokenRequestParam,
-    );
-
-    expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
-    expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('No')).toBeInTheDocument();
-    expect(getByText('Set by admin')).toBeInTheDocument();
-  });
-
-  const selectAllResources = async ({ getByLabelText }): Promise<void> => {
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    resolveUserToBeAdmin();
-
-    fireEvent.click(getByLabelText('Select all'));
-  };
-
-  /**
-   * Acknowledgement dialog
-   */
-
-  const selectAllResourcesAndPrepareToAcknowledge = async ({
-    getByLabelText,
-    getByText,
-  }): Promise<void> => {
-    await selectAllResources({ getByLabelText });
-
-    fireEvent.click(getByText(labelAcknowledge));
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-  };
-
-  const labelAcknowledgedByAdmin = `${labelAcknowledgedBy} admin`;
-
-  it('cannot send an acknowledgement request when Acknowledgement action is clicked and comment is empty', async () => {
-    const { getByLabelText, getByText, getAllByText } = renderResources();
-
-    await selectAllResourcesAndPrepareToAcknowledge({
-      getByLabelText,
-      getByText,
-    });
-
-    fireEvent.change(getByText(labelAcknowledgedByAdmin), {
-      target: { value: '' },
-    });
-
-    await waitFor(() =>
-      expect(last(getAllByText(labelAcknowledge)).parentElement).toBeDisabled(),
     );
   });
 
-  it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-    const { getByLabelText, getByText, getAllByText } = renderResources();
+  describe('Actions', () => {
+    const labelAcknowledgedByAdmin = `${labelAcknowledgedBy} admin`;
+    const labelDowntimeByAdmin = `${labelDowntimeBy} admin`;
 
-    await selectAllResourcesAndPrepareToAcknowledge({
-      getByLabelText,
-      getByText,
+    const mockNow = '2020-01-01';
+
+    beforeEach(() => {
+      resolveUserToBeAdmin();
+      mockDate.set(mockNow);
     });
 
-    fireEvent.click(getByLabelText(labelNotify));
-    fireEvent.click(getByLabelText(labelAcknowledgeServices));
-
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-    mockedAxios.all.mockResolvedValueOnce([]);
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
-
-    fireEvent.click(last(getAllByText(labelAcknowledge)));
-
-    await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
-      expect(mockedAxios.post).toHaveBeenCalled();
+    afterEach(() => {
+      mockDate.reset();
     });
 
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostAcknowledgementEndpoint,
-      hostResources.map(({ id }) => ({
-        parent_resource_id: null,
-        resource_id: id,
-        comment: labelAcknowledgedByAdmin,
-        is_notify_contacts: true,
-        is_persistent_comment: true,
-        is_sticky: true,
-        with_services: true,
-      })),
-      expect.anything(),
+    it.each([
+      [labelAcknowledge, labelAcknowledgedByAdmin, labelAcknowledge],
+      [labelDowntime, labelDowntimeByAdmin, labelSetDowntime],
+    ])(
+      'cannot send a %p request when the corresponding action is fired and the comment field is left empty',
+      async (labelAction, labelComment, labelConfirmAction) => {
+        const { findByLabelText, getByText, getByRole } = renderResources();
+
+        const firstRow = await findByLabelText(`Select row 1`);
+
+        fireEvent.click(firstRow);
+
+        fireEvent.click(getByText(labelAction));
+
+        const dialog = getByRole('dialog');
+
+        const commentField = await within(dialog).findByText(labelComment);
+
+        fireEvent.change(commentField, {
+          target: { value: '' },
+        });
+
+        await waitFor(() =>
+          expect(
+            (last(
+              within(dialog).getAllByText(labelConfirmAction),
+            ) as HTMLElement).parentElement,
+          ).toBeDisabled(),
+        );
+      },
     );
 
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceAcknowledgementEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        resource_id: id,
-        parent_resource_id: parent?.id || null,
-        comment: labelAcknowledgedByAdmin,
-        is_notify_contacts: true,
-        is_persistent_comment: true,
-        is_sticky: true,
-        with_services: true,
-      })),
-      expect.anything(),
-    );
+    it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
+      const { findByLabelText, getByText, getByRole } = renderResources();
+
+      const hostEntity = find(propEq('type', 'host'), entities);
+      const hostEntityRow = await findByLabelText(
+        `Select row ${hostEntity?.id}`,
+      );
+
+      fireEvent.click(hostEntityRow);
+
+      fireEvent.click(getByText(labelAcknowledge));
+
+      const dialog = getByRole('dialog');
+
+      const notifyCheckbox = await within(dialog).findByLabelText(labelNotify);
+
+      fireEvent.click(notifyCheckbox);
+      fireEvent.click(within(dialog).getByLabelText(labelAcknowledgeServices));
+
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+      mockedAxios.all.mockResolvedValueOnce([]);
+      mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+      fireEvent.click(
+        last(within(dialog).getAllByText(labelAcknowledge)) as HTMLElement,
+      );
+
+      await waitFor(() =>
+        expect(mockedAxios.post).toHaveBeenCalledWith(
+          acknowledgeEndpoint,
+          {
+            resources: [pick(['id', 'parent', 'type'], hostEntity)],
+
+            acknowledgement: {
+              comment: labelAcknowledgedByAdmin,
+              is_notify_contacts: true,
+              with_services: true,
+            },
+          },
+          cancelTokenRequestParam,
+        ),
+      );
+    });
+
+    it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
+      const { getByText, getByRole, findByLabelText } = renderResources();
+
+      const serviceEntity = find(propEq('type', 'service'), entities);
+      const serviceEntityCheckbox = await findByLabelText(
+        `Select row ${serviceEntity?.id}`,
+      );
+
+      fireEvent.click(serviceEntityCheckbox);
+
+      fireEvent.click(getByText(labelAcknowledge));
+
+      const dialog = getByRole('dialog');
+
+      await within(dialog).findByText(labelAcknowledgedByAdmin);
+
+      expect(within(dialog).queryByText(labelAcknowledgeServices)).toBeNull();
+    });
+
+    it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
+      const { getByText, findByLabelText, getByRole } = renderResources();
+
+      const firstRow = await findByLabelText(`Select row 1`);
+
+      fireEvent.click(firstRow);
+
+      fireEvent.click(getByText(labelDowntime));
+
+      const dialog = getByRole('dialog');
+
+      await within(dialog).findByText(labelDowntimeByAdmin);
+
+      fireEvent.click(within(dialog).getByLabelText(labelFixed));
+      fireEvent.change(within(dialog).getByDisplayValue('3600'), {
+        target: { value: '' },
+      });
+
+      await waitFor(() =>
+        expect(
+          within(dialog).getByText(labelSetDowntime).parentElement,
+        ).toBeDisabled(),
+      );
+    });
+
+    it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
+      const {
+        container,
+        getByLabelText,
+        getByText,
+        findByLabelText,
+      } = renderResources();
+
+      const firstRow = await findByLabelText(`Select row 1`);
+
+      fireEvent.click(firstRow);
+
+      fireEvent.click(getByText(labelDowntime));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+      // set previous day as end date using left arrow key
+      fireEvent.click(getByLabelText(labelChangeEndDate));
+      fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
+      fireEvent.keyDown(container, { key: 'Enter', code: 13 });
+
+      await waitFor(() =>
+        expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
+      );
+    });
+
+    it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
+      const { getByText, findByLabelText, getByRole } = renderResources();
+
+      const firstEntity = head(entities);
+      const firstEntityCheckbox = await findByLabelText(
+        `Select row ${firstEntity?.id}`,
+      );
+
+      fireEvent.click(firstEntityCheckbox);
+
+      fireEvent.click(getByText(labelDowntime));
+
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+      mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+      const dialog = getByRole('dialog');
+
+      await within(dialog).findByText(labelDowntimeByAdmin);
+
+      fireEvent.click(within(dialog).getByText(labelSetDowntime));
+
+      const now = new Date();
+      const twoHoursMs = 2 * 60 * 60 * 1000;
+      const twoHoursFromNow = new Date(Date.now() + twoHoursMs);
+
+      await waitFor(() =>
+        expect(mockedAxios.post).toHaveBeenCalledWith(
+          downtimeEndpoint,
+          {
+            resources: [pick(['id', 'type', 'parent'], firstEntity)],
+            downtime: {
+              comment: labelDowntimeByAdmin,
+              duration: 3600,
+              start_time: formatISO(now),
+              end_time: formatISO(twoHoursFromNow),
+              is_fixed: true,
+              with_services: true,
+            },
+          },
+          cancelTokenRequestParam,
+        ),
+      );
+    });
+
+    it('sends a check request when Resources are selected and the Check action is clicked', async () => {
+      const { findByLabelText, getByText } = renderResources();
+
+      const hostEntity = find(propEq('type', 'host'), entities);
+      const hostEntityCheckbox = await findByLabelText(
+        `Select row ${hostEntity?.id}`,
+      );
+
+      const serviceEntity = find(propEq('type', 'service'), entities);
+      const serviceEntityCheckbox = await findByLabelText(
+        `Select row ${serviceEntity?.id}`,
+      );
+
+      fireEvent.click(hostEntityCheckbox);
+      fireEvent.click(serviceEntityCheckbox);
+
+      mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+      mockedAxios.all.mockResolvedValueOnce([]);
+      mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+      fireEvent.click(getByText(labelCheck));
+
+      await waitFor(() => {
+        expect(mockedAxios.post).toHaveBeenCalledWith(
+          hostCheckEndpoint,
+          [
+            {
+              parent_resource_id: null,
+              resource_id: hostEntity?.id,
+            },
+          ],
+          cancelTokenRequestParam,
+        );
+
+        expect(mockedAxios.post).toHaveBeenCalledWith(
+          serviceCheckEndpoint,
+          [{ parent_resource_id: null, resource_id: serviceEntity?.id }],
+          cancelTokenRequestParam,
+        );
+      });
+    });
   });
 
-  it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
-    const { getByLabelText, getByText, queryByText } = renderResources();
+  describe('Filter storage', () => {
+    it('populates filter with values from localStorage if available', async () => {
+      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
 
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      const {
+        getByText,
+        getByDisplayValue,
+        queryByLabelText,
+      } = renderResources();
 
-    resolveUserToBeAdmin();
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    serviceResources.map(({ id }) =>
-      fireEvent.click(getByLabelText(`Select row ${id}`)),
-    );
-
-    fireEvent.click(getByText(labelAcknowledge));
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    expect(getByText(labelAcknowledgedByAdmin)).toBeInTheDocument();
-    expect(queryByText(labelAcknowledgeServices)).toBeNull();
-  });
-
-  /**
-   * Downtime dialog
-   */
-
-  const selectAllResourcesAndPrepareToSetDowntime = async ({
-    getByLabelText,
-    getByText,
-  }): Promise<void> => {
-    await selectAllResources({ getByLabelText });
-
-    fireEvent.click(getByText(labelDowntime));
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-  };
-
-  const labelDowntimeByAdmin = `${labelDowntimeBy} admin`;
-
-  it('cannot send a downtime request when Downtime action is clicked and comment is empty', async () => {
-    const { getByLabelText, getByText } = renderResources();
-
-    await selectAllResourcesAndPrepareToSetDowntime({
-      getByLabelText,
-      getByText,
+      expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterStorageKey);
+      expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
+      expect(getByDisplayValue('searching...')).toBeInTheDocument();
+      expect(getByText(labelHost)).toBeInTheDocument();
+      expect(getByText(labelAcknowledged)).toBeInTheDocument();
+      expect(getByText(labelOk)).toBeInTheDocument();
+      expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+      expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
     });
 
-    fireEvent.change(getByText(labelDowntimeByAdmin), {
-      target: { value: '' },
+    it('stores filter values in localStorage when updated', async () => {
+      const { getByText, getByPlaceholderText } = renderResources();
+
+      mockedAxios.get.mockResolvedValue({ data: retrievedListing });
+
+      selectOption(getByText(labelUnhandledProblems), labelAll);
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+
+      expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
+        filterStorageKey,
+        JSON.stringify(allFilter),
+      );
+
+      fireEvent.change(getByPlaceholderText(labelResourceName), {
+        target: { value: 'searching...' },
+      });
+
+      await waitFor(() =>
+        expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
+          filterStorageKey,
+          JSON.stringify({
+            ...allFilter,
+            search: 'searching...',
+          }),
+        ),
+      );
     });
 
-    await waitFor(() =>
-      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
-    );
-  });
+    it('clears all filters and set filter group to all when the clear all button is clicked', async () => {
+      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
 
-  it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
-    const { getByLabelText, getByText, getByDisplayValue } = renderResources();
+      mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
-    await selectAllResourcesAndPrepareToSetDowntime({
-      getByLabelText,
-      getByText,
+      const {
+        getByText,
+        queryByDisplayValue,
+        getByLabelText,
+        queryByText,
+      } = renderResources();
+
+      fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+
+      fireEvent.click(getByText(labelClearAll));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+
+      expect(getByText(labelAll)).toBeInTheDocument();
+      expect(queryByDisplayValue('searching...')).toBeNull();
+      expect(queryByText(labelHost)).toBeNull();
+      expect(queryByText(labelAcknowledged)).toBeNull();
+      expect(queryByText(labelOk)).toBeNull();
+      expect(queryByText(linuxServersHostGroup.name)).toBeNull();
+      expect(queryByText(webAccessServiceGroup.name)).toBeNull();
     });
 
-    fireEvent.click(getByLabelText(labelFixed));
-    fireEvent.change(getByDisplayValue('3600'), {
-      target: { value: '' },
+    it('leaves search help tooltip visible when the search input is filled', async () => {
+      const {
+        getByLabelText,
+        getByText,
+        getByPlaceholderText,
+      } = renderResources();
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+      fireEvent.click(getByLabelText(labelSearchHelp));
+
+      expect(
+        getByText(labelSearchOnFields, { exact: false }),
+      ).toBeInTheDocument();
+
+      const searchInput = getByPlaceholderText(labelResourceName);
+
+      fireEvent.change(searchInput, {
+        target: { value: 'foobar' },
+      });
+
+      expect(
+        getByText(labelSearchOnFields, { exact: false }),
+      ).toBeInTheDocument();
     });
-
-    await waitFor(() =>
-      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
-    );
-  });
-
-  it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
-    const { container, getByLabelText, getByText } = renderResources();
-
-    await selectAllResourcesAndPrepareToSetDowntime({
-      getByLabelText,
-      getByText,
-    });
-
-    // set previous day as end date using left arrow key
-    fireEvent.click(getByLabelText(labelChangeEndDate));
-    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
-
-    await waitFor(() =>
-      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
-    );
-  });
-
-  it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
-    const { getByLabelText, getByText } = renderResources();
-
-    await selectAllResourcesAndPrepareToSetDowntime({
-      getByLabelText,
-      getByText,
-    });
-
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-    mockedAxios.all.mockResolvedValueOnce([]);
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
-
-    const startDateTime = new Date(
-      `${getByLabelText(labelStartTime)?.querySelector('input')?.value ||
-        ''} ${getByLabelText(labelStartDate)?.querySelector('input')?.value ||
-        ''}`,
-    );
-    const endDateTime = new Date(
-      `${getByLabelText(labelEndTime)?.querySelector('input')?.value ||
-        ''} ${getByLabelText(labelEndDate)?.querySelector('input')?.value ||
-        ''}`,
-    );
-
-    fireEvent.click(getByText(labelSetDowntime));
-
-    await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
-      expect(mockedAxios.post).toHaveBeenCalled();
-    });
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostDowntimeEndpoint,
-      hostResources.map(({ id }) => ({
-        comment: labelDowntimeByAdmin,
-        duration: 3600,
-        end_time: formatISO(endDateTime),
-        is_fixed: true,
-        parent_resource_id: null,
-        resource_id: id,
-        start_time: formatISO(startDateTime),
-        with_services: true,
-      })),
-      expect.anything(),
-    );
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceDowntimeEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        comment: labelDowntimeByAdmin,
-        duration: 3600,
-        end_time: formatISO(endDateTime),
-        is_fixed: true,
-        parent_resource_id: parent?.id || null,
-        resource_id: id,
-        start_time: formatISO(startDateTime),
-        with_services: true,
-      })),
-      expect.anything(),
-    );
-  });
-
-  it('sends a check request when Resources are selected and the Check action is clicked', async () => {
-    const { getByLabelText, getByText } = renderResources();
-
-    await selectAllResources({ getByLabelText });
-
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
-    mockedAxios.all.mockResolvedValueOnce([]);
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
-
-    fireEvent.click(getByText(labelCheck));
-
-    await waitFor(() => {
-      expect(mockedAxios.all).toHaveBeenCalled();
-      expect(mockedAxios.post).toHaveBeenCalled();
-    });
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      hostCheckEndpoint,
-      hostResources.map(({ id }) => ({
-        parent_resource_id: null,
-        resource_id: id,
-      })),
-      expect.anything(),
-    );
-
-    expect(mockedAxios.post).toHaveBeenCalledWith(
-      serviceCheckEndpoint,
-      serviceResources.map(({ id, parent }) => ({
-        parent_resource_id: parent?.id || null,
-        resource_id: id,
-      })),
-      expect.anything(),
-    );
   });
 });

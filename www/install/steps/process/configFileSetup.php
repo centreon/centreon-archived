@@ -47,6 +47,7 @@ $return = [
 $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
 $configuration = $step->getBaseConfiguration();
+$engine = $step->getEngineConfiguration();
 
 if ($parameters['address']) {
     $host = $parameters['address'];
@@ -68,16 +69,22 @@ $patterns = [
     '/--CENTREON_VARLIB--/',
 ];
 
+// escape double quotes and backslashes
+$needle = ['\\', '"'];
+$escape = ['\\\\', '\"'];
+$password = str_replace($needle, $escape, $parameters['db_password']);
+
+
 $replacements = [
     $host,
     $parameters['db_user'],
-    $parameters['db_password'],
+    $password,
     $parameters['db_configuration'],
     $parameters['db_storage'],
     $configuration['centreon_dir'],
     $configuration['centreon_cachedir'],
     $parameters['port'],
-    "central",
+    'central',
     $configuration['centreon_varlib'],
 ];
 
@@ -106,16 +113,20 @@ array_push(
     '/--HTTPSERVERADDRESS--/',
     '/--HTTPSERVERPORT--/',
     '/--SSLMODE--/',
-    '/--CENTREON_TRAPDIR--/'
+    '/--CENTREON_TRAPDIR--/',
+    '/--GORGONE_VARLIB--/',
+    '/--ENGINE_COMMAND--/'
 );
 
 array_push(
     $replacements,
-    "/var/spool/centreon",
-    "0.0.0.0",
-    "8085",
-    "false",
-    "/etc/snmp/centreon_traps"
+    '/var/spool/centreon',
+    '0.0.0.0',
+    '8085',
+    'false',
+    '/etc/snmp/centreon_traps',
+    '/var/lib/centreon-gorgone',
+    $engine['monitoring_var_lib'] . '/rw/centengine.cmd'
 );
 
 /**
@@ -130,7 +141,7 @@ file_put_contents($gorgoneDatabaseFile, $contents);
  * Gorgone daemon configuration file for a central
  */
 $gorgoneCoreFileForCentral = $centreonEtcPath . '/../centreon-gorgone/config.d/40-gorgoned.yaml';
-$contents = file_get_contents('../../var/gorgone/gorgoneCoreTemplate.yaml');
+$contents = file_get_contents('../../var/gorgone/gorgoneCentralTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneCoreFileForCentral, $contents);
 

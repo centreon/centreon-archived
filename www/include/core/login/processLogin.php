@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,7 +38,8 @@ require_once _CENTREON_PATH_ . 'bootstrap.php';
 
 const AUTOLOGIN_FIELDS = array('autologin' , 'useralias', 'token');
 
-if (isset($_POST["centreon_token"])
+if (
+    isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) && $_GET["autologin"]
         && isset($generalOptions["enable_autologin"])
         && $generalOptions["enable_autologin"])
@@ -122,9 +124,21 @@ if (isset($_POST["centreon_token"])
                     }
                 }
             } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                $headerRedirection .= "?p=" . $centreon->user->default_page;
-                if (isset($_GET["min"]) && $_GET["min"] == '1') {
-                    $headerRedirection .= '&min=1';
+                // get more details about the default page
+                $stmt = $pearDB->prepare(
+                    "SELECT topology_url, is_react FROM topology WHERE topology_page = ? LIMIT 0, 1"
+                );
+                $pearDB->execute($stmt, [$centreon->user->default_page]);
+
+                if ($stmt->rowCount() && ($topologyData = $stmt->fetch()) && $topologyData['is_react']) {
+                    // redirect to the react path
+                    $headerRedirection = '.' . $topologyData['topology_url'];
+                } else {
+                    $headerRedirection .= "?p=" . $centreon->user->default_page;
+
+                    if (isset($_GET["min"]) && $_GET["min"] == '1') {
+                        $headerRedirection .= '&min=1';
+                    }
                 }
             }
         }

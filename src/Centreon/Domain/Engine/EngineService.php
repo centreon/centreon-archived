@@ -142,10 +142,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
      */
     public function disacknowledgeService(Service $service): void
     {
-        if (empty($service->getHost())) {
-            throw new EngineException('Host of service not defined');
-        }
-        if (empty($service->getHost()->getName())) {
+        if (empty($service->getHost()) || empty($service->getHost()->getName())) {
             throw new EngineException('The host of service is not defined');
         }
 
@@ -166,13 +163,13 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
     public function addHostDowntime(Downtime $downtime, Host $host): void
     {
         if (empty($this->contact->getAlias())) {
-            throw new EngineException('The contact alias is empty');
+            throw new EngineException(_('The contact alias is empty'));
         }
         if ($host === null) {
-            throw new EngineException('Host of downtime not found');
+            throw new EngineException(_('Host of downtime not found'));
         }
         if (empty($host->getName())) {
-            throw new EngineException('Host name can not be empty');
+            throw new EngineException(_('Host name can not be empty'));
         }
 
         if ($this->validator->hasValidatorFor(Downtime::class)) {
@@ -217,7 +214,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
     public function addServiceDowntime(Downtime $downtime, Service $service): void
     {
         if (empty($this->contact->getAlias())) {
-            throw new EngineException('The contact alias is empty');
+            throw new EngineException(_('The contact alias is empty'));
         }
         if ($this->validator->hasValidatorFor(Downtime::class)) {
             // We validate the downtime instance
@@ -232,13 +229,19 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         }
 
         if ($service->getHost() == null) {
-            throw new EngineException('The host of service (id: ' . $service->getId() . ') is not defined');
+            throw new EngineException(
+                sprintf(_('The host of service (id: %d) is not defined'), $service->getId())
+            );
         }
         if (empty($service->getHost()->getName())) {
-            throw new EngineException('Host name of service (id: ' . $service->getId() . ') can not be empty');
+            throw new EngineException(
+                sprintf(_('Host name of service (id: %d) can not be empty'), $service->getId())
+            );
         }
         if (empty($service->getDescription())) {
-            throw new EngineException('The description of service (id: ' . $service->getId() . ') can not be empty');
+            throw new EngineException(
+                sprintf(_('The description of service (id: %d) can not be empty'), $service->getId())
+            );
         }
         $preCommand = sprintf(
             'SCHEDULE_SVC_DOWNTIME;%s;%s;%d;%d;%d;0;%d;%s;%s',
@@ -263,7 +266,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
     public function scheduleForcedHostCheck(Host $host): void
     {
         if (empty($host->getName())) {
-            throw new EngineException('Host name can not be empty');
+            throw new EngineException(_('Host name can not be empty'));
         }
 
         $preCommand = sprintf(
@@ -283,10 +286,10 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
     public function cancelDowntime(Downtime $downtime, Host $host): void
     {
         if ($downtime->getServiceId() === null && $downtime->getHostId() === null) {
-            throw new EngineException('Host and service id can not be null at the same time');
+            throw new EngineException(_('Host and service id can not be null at the same time'));
         }
         if ($downtime->getInternalId() === null) {
-            throw new EngineException('Downtime internal id can not be null');
+            throw new EngineException(_('Downtime internal id can not be null'));
         }
 
         $suffix = ($downtime->getServiceId() === null) ? 'HOST' : 'SVC';
@@ -313,7 +316,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         }
 
         if (empty($host->getName())) {
-            throw new EngineException('Host name can not be empty');
+            throw new EngineException(_('Host name can not be empty'));
         }
 
         $commandNames = [$check->isForced() ? 'SCHEDULE_FORCED_HOST_CHECK' : 'SCHEDULE_HOST_CHECK'];
@@ -327,7 +330,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
                 '%s;%s;%d',
                 $commandName,
                 $host->getName(),
-                $check->getCheckTime()
+                $check->getCheckTime()->getTimestamp()
             );
             $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
             $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
@@ -352,11 +355,11 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         }
 
         if (empty($service->getHost()->getName())) {
-            throw new EngineException('Host name cannot be empty');
+            throw new EngineException(_('Host name cannot be empty'));
         }
 
         if (empty($service->getDescription())) {
-            throw new EngineException('Service description cannot be empty');
+            throw new EngineException(_('Service description cannot be empty'));
         }
 
         $commandName = $check->isForced() ? 'SCHEDULE_FORCED_SVC_CHECK' : 'SCHEDULE_SVC_CHECK';
@@ -366,7 +369,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
             $commandName,
             $service->getHost()->getName(),
             $service->getDescription(),
-            $check->getCheckTime()
+            $check->getCheckTime()->getTimestamp()
         );
 
         $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;

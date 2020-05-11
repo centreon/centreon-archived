@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+
 import {
   Grid,
   Typography,
@@ -26,8 +28,8 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
     const foundColorCondition = rowColorConditions(theme).find(
       ({ condition }) =>
         condition({
-          in_downtime: details.downtimes !== undefined,
-          acknowledged: details.acknowledgement !== undefined,
+          in_downtime: details.downtimes.length > 0,
+          acknowledged: !isNil(details.acknowledgement),
         }),
     );
 
@@ -35,7 +37,7 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
 
     return {
       backgroundColor: backgroundColor
-        ? fade(backgroundColor, 0.2)
+        ? fade(backgroundColor, 0.8)
         : theme.palette.common.white,
     };
   },
@@ -64,10 +66,12 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
   return (
     <>
       <Grid item>
-        <StatusChip
-          severityCode={SeverityCode.None}
-          label={details.criticality?.toString()}
-        />
+        {details.criticality && (
+          <StatusChip
+            severityCode={SeverityCode.None}
+            label={details.criticality.toString()}
+          />
+        )}
       </Grid>
       <Grid item>
         <StatusChip
@@ -78,13 +82,13 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       <Grid item style={{ flexGrow: 1 }}>
         <Grid container direction="column">
           <Grid item>
-            <Typography>{details.name}</Typography>
+            <Typography>{details.display_name}</Typography>
           </Grid>
           {details.parent && (
             <Grid item container spacing={1}>
               <Grid item>
                 <StatusChip
-                  severityCode={details.parent.status.severity_code}
+                  severityCode={details.parent.status?.severity_code}
                 />
               </Grid>
               <Grid item>

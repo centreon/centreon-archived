@@ -31,10 +31,7 @@ import {
 import styles from '../header/header.scss';
 import axios from '../../axios';
 
-const numberFormat = yup
-  .number()
-  .required()
-  .integer();
+const numberFormat = yup.number().required().integer();
 
 const statusSchema = yup.object().shape({
   down: yup.object().shape({
@@ -137,7 +134,13 @@ class HostMenu extends Component {
         ref={(host) => (this.host = host)}
       >
         <SubmenuHeader submenuType="top" active={toggled}>
-          <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
+          <IconHeader
+            iconType="hosts"
+            iconName={I18n.t('Hosts')}
+            onClick={this.toggle}
+          >
+            {data.pending > 0 && <span className={styles['custom-icon']} />}
+          </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to="/main.php?p=20202&o=h_down&search="
@@ -209,7 +212,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Critical')}
+                  submenuTitle={I18n.t('Down')}
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}

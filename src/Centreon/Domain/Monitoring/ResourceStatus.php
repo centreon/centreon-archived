@@ -29,13 +29,13 @@ namespace Centreon\Domain\Monitoring;
  */
 class ResourceStatus
 {
-    // Groups for serilizing
+    // Groups for serializing
     public const SERIALIZER_GROUP_MAIN = 'resource_status_main';
 
     public const SEVERITY_HIGH = 1;
     public const SEVERITY_MEDIUM = 2;
     public const SEVERITY_LOW = 3;
-    public const SEVERITY_PENDING = 3;
+    public const SEVERITY_PENDING = 4;
     public const SEVERITY_OK = 5;
 
     /**
@@ -47,6 +47,11 @@ class ResourceStatus
      * @var string|null
      */
     private $name;
+
+    /**
+     * @var int|null
+     */
+    private $severityCode;
 
     /**
      * @return int|null
@@ -87,32 +92,21 @@ class ResourceStatus
     }
 
     /**
-     * Get status severity code from status name
-     *
-     * @return int
+     * @return int|null
      */
-    public function getSeverityCode(): int
+    public function getSeverityCode(): ?int
     {
-        $severity = self::SEVERITY_PENDING;
+        return $this->severityCode;
+    }
 
-        switch ($this->name) {
-            case 'OK':
-            case 'UP':
-                $severity = self::SEVERITY_OK;
-                break;
-            case 'UNKNOWN':
-            case 'UNREACHABLE':
-                $severity = self::SEVERITY_LOW;
-                break;
-            case 'WARNING':
-                $severity = self::SEVERITY_MEDIUM;
-                break;
-            case 'CRITICAL':
-            case 'DOWN':
-                $severity = self::SEVERITY_HIGH;
-                break;
-        }
+    /**
+     * @param int|null $severityCode
+     * @return \Centreon\Domain\Monitoring\ResourceStatus
+     */
+    public function setSeverityCode(?int $severityCode): self
+    {
+        $this->severityCode = $severityCode;
 
-        return $severity;
+        return $this;
     }
 }

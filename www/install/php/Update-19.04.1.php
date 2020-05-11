@@ -22,6 +22,8 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
+
     // Add HTTPS connexion to Remote Server
     if (!$pearDB->isColumnExist('remote_servers', 'http_method')) {
         $pearDB->query(
@@ -48,4 +50,6 @@ try {
         2,
         "UPGRADE : Unable to process 19.04.1 upgrade"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }

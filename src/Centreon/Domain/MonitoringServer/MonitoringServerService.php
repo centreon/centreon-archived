@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -24,6 +25,11 @@ namespace Centreon\Domain\MonitoringServer;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 
+/**
+ * This class is designed to manage monitoring servers and their associated resources.
+ *
+ * @package Centreon\Domain\MonitoringServer
+ */
 class MonitoringServerService implements MonitoringServerServiceInterface
 {
     /**
@@ -45,6 +51,67 @@ class MonitoringServerService implements MonitoringServerServiceInterface
      */
     public function findServers(): array
     {
-        return $this->monitoringServerRepository->findServers();
+        try {
+            return $this->monitoringServerRepository->findServers();
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when searching for monitoring servers', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException(
+                'Error when searching for a monitoring server (' . $monitoringServerId . ')',
+                0,
+                $ex
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource
+    {
+        try {
+            return $this->monitoringServerRepository->findResource($monitoringServerId, $resourceName);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when searching for a resource of monitoring server', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findLocalServer(): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findLocalServer();
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when searching for the local monitoring servers', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void
+    {
+        if ($monitoringServer->getId() === null && $monitoringServer->getName() === null) {
+            throw new MonitoringServerException(
+                'The id or name of the monitoring server must be defined and not null'
+            );
+        }
+        try {
+            $this->monitoringServerRepository->notifyConfigurationChanged($monitoringServer);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when notifying a configuration change', 0, $ex);
+        }
     }
 }

@@ -1,7 +1,9 @@
 --
 -- Add new field for Remote Server option
 --
+SET SESSION innodb_strict_mode=OFF;
 ALTER TABLE nagios_server ADD COLUMN `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1';
+SET SESSION innodb_strict_mode=ON;
 
 -- Add severity preference on host-monitoring and service-monitoring widgets
 INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES

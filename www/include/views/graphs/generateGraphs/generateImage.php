@@ -65,16 +65,17 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     if ($dbResult->rowCount()) {
         $row = $dbResult->fetch();
         $res = $pearDB->prepare("SELECT session_id FROM session WHERE session_id = :sessionId");
-        $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_INT);
+        $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
         $res->execute();
         if (!$res->rowCount()) {
             // security fix - regenerate the sid to prevent session fixation
+            session_start();
             session_regenerate_id(true);
             $mySessionId = session_id();
 
             $dbResult = $pearDB->prepare(
                 "INSERT INTO `session` (`session_id`, `user_id`, `current_page`, `last_reload`, `ip_address`)
-                VALUES (?, ?, '', ?, ?)"
+                VALUES (?, ?, NULL, ?, ?)"
             );
             $pearDB->execute(
                 $dbResult,

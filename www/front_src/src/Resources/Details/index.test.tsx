@@ -1,8 +1,14 @@
 import React from 'react';
 
 import axios from 'axios';
+import {
+  render,
+  waitFor,
+  fireEvent,
+  RenderResult,
+} from '@testing-library/react';
+import * as clipboard from './Body/tabs/Details/clipboard';
 
-import { render, waitFor, fireEvent } from '@testing-library/react';
 import Details from '.';
 import {
   labelMore,
@@ -24,18 +30,34 @@ import {
   labelLastCheck,
   labelCurrentNotificationNumber,
   labelPerformanceData,
+  labelLast7Days,
+  labelLast24h,
+  labelLast31Days,
+  labelCopy,
+  labelCommand,
+  labelResourceFlapping,
+  labelNo,
 } from '../translatedLabels';
+import { selectOption } from '../testUtils';
+import { detailsTabId, graphTabId } from './Body/tabs';
+import * as Context from '../Context';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
+jest.mock('./Body/tabs/Details/clipboard');
+jest.mock('../Context');
 
-const onClose = jest.fn();
+const mockedUseResourceContext = Context.useResourceContext as jest.Mock<
+  unknown
+>;
 
-const endpoint = '/resource';
+const detailsEndpoint = '/resource';
+const performanceGraphEndpoint = '/performance';
+const statusGraphEndpoint = '/status';
 
 const retrievedDetails = {
-  name: 'Central',
+  display_name: 'Central',
   severity: { level: 1 },
   status: { name: 'Critical', severity_code: 1 },
   parent: { name: 'Centreon', status: { severity_code: 1 } },
@@ -51,7 +73,7 @@ const retrievedDetails = {
   timezone: 'Europe/Paris',
   criticality: 10,
   active_checks: true,
-  check_command: 'base_host_alive',
+  command_line: 'base_host_alive',
   last_notification: '2020-07-18T19:30',
   latency: 0.005,
   next_check: '2020-06-18T19:15',
@@ -78,19 +100,46 @@ const retrievedDetails = {
   tries: '3/3 (Hard)',
 };
 
+const performanceGraphData = {
+  global: {},
+  times: [],
+};
+
+const RealDate = Date;
+const currentDateIsoString = '2020-06-20T20:00:00.000Z';
+
+const mockUseResourceContext = ({ openTabId }): void => {
+  mockedUseResourceContext.mockReturnValue({
+    detailsTabIdToOpen: openTabId,
+    selectedDetailsEndpoints: {
+      details: detailsEndpoint,
+      performanceGraph: performanceGraphEndpoint,
+      statusGraph: statusGraphEndpoint,
+    },
+    setDefaultDetailsTabIdToOpen: jest.fn(),
+  });
+};
+
+const renderDetails = (): RenderResult => render(<Details />);
+
 describe(Details, () => {
+  beforeEach(() => {
+    global.Date.now = jest.fn(() => Date.parse(currentDateIsoString));
+  });
+
   afterEach(() => {
+    global.Date = RealDate;
     mockedAxios.get.mockReset();
   });
 
   it('displays resource details information', async () => {
-    mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
+    mockUseResourceContext({ openTabId: detailsTabId });
 
-    const { getByText, queryByText, getAllByText } = render(
-      <Details endpoint={endpoint} onClose={onClose} />,
-    );
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    await waitFor(() => expect(getByText('Central')).toBeInTheDocument());
+    const { getByText, queryByText, getAllByText } = renderDetails();
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     expect(getByText('10')).toBeInTheDocument();
     expect(getByText('CRITICAL')).toBeInTheDocument();
@@ -144,6 +193,9 @@ describe(Details, () => {
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
 
+    expect(getByText(labelResourceFlapping)).toBeInTheDocument();
+    expect(getByText(labelNo)).toBeInTheDocument();
+
     expect(getByText(labelPercentStateChange)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();
 
@@ -161,6 +213,54 @@ describe(Details, () => {
       ),
     ).toBeInTheDocument();
 
+    expect(getByText(labelCommand)).toBeInTheDocument();
     expect(getByText('base_host_alive')).toBeInTheDocument();
+  });
+
+  [
+    { period: labelLast24h, startIsoString: '2020-06-19T20:00:00.000Z' },
+    { period: labelLast7Days, startIsoString: '2020-06-13T20:00:00.000Z' },
+    { period: labelLast31Days, startIsoString: '2020-05-20T20:00:00.000Z' },
+  ].forEach(({ period, startIsoString }) =>
+    it(`queries performance and status graphs with ${period} period when the Graph tab is selected and ${period} is selected`, async () => {
+      mockUseResourceContext({ openTabId: graphTabId });
+
+      mockedAxios.get.mockResolvedValueOnce({ data: performanceGraphData });
+      mockedAxios.get
+        .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: performanceGraphData });
+
+      const { getByText } = renderDetails();
+
+      await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
+
+      selectOption(getByText(labelLast24h), period);
+
+      await waitFor(() =>
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          `${performanceGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
+          expect.anything(),
+        ),
+      );
+    }),
+  );
+
+  it('copies the command line to clipboard when the copy button is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockUseResourceContext({ openTabId: detailsTabId });
+
+    const mockedClipboard = clipboard as jest.Mocked<typeof clipboard>;
+
+    const { getByTitle } = renderDetails();
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    fireEvent.click(getByTitle(labelCopy));
+
+    await waitFor(() =>
+      expect(mockedClipboard.copy).toHaveBeenCalledWith(
+        retrievedDetails.command_line,
+      ),
+    );
   });
 });
