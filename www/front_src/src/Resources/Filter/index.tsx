@@ -40,17 +40,18 @@ import {
   unhandledProblemsFilter,
   resourceProblemsFilter,
   allFilter,
-  states,
-  resourceTypes,
-  statuses,
-  Filter as FilterModel,
+  states as availableStates,
+  resourceTypes as availableResourceTypes,
+  statuses as availableStatuses,
   FilterGroup,
+  filterById,
 } from './models';
-import SearchHelpTooltip from '../SearchHelpTooltip';
+import SearchHelpTooltip from './SearchHelpTooltip';
 import {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
+import { useResourceContext } from '../Context';
 
 const ExpansionPanelSummary = withStyles((theme) => ({
   root: {
@@ -102,47 +103,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
-  filter: FilterGroup;
-  onFilterGroupChange: (event) => void;
-  currentSearch?: string;
-  nextSearch?: string;
-  onSearchRequest: () => void;
-  onSearchPrepare: (event) => void;
-  selectedResourceTypes: Array<FilterModel>;
-  onResourceTypesChange: (event, types) => void;
-  selectedStates: Array<FilterModel>;
-  onStatesChange: (_, states) => void;
-  selectedStatuses: Array<FilterModel>;
-  onStatusesChange: (_, statuses) => void;
-  selectedHostGroups?: Array<FilterModel>;
-  onHostGroupsChange: (_, hostGroups) => void;
-  selectedServiceGroups?: Array<FilterModel>;
-  onServiceGroupsChange: (_, serviceGroups) => void;
-  onClearAll: () => void;
-}
-
-const Filter = ({
-  filter,
-  onFilterGroupChange,
-  nextSearch,
-  onSearchRequest,
-  onSearchPrepare,
-  selectedResourceTypes,
-  onResourceTypesChange,
-  selectedStates,
-  onStatesChange,
-  selectedStatuses,
-  onStatusesChange,
-  selectedHostGroups,
-  onHostGroupsChange,
-  selectedServiceGroups,
-  onServiceGroupsChange,
-  onClearAll,
-}: Props): JSX.Element => {
+const Filter = (): JSX.Element => {
   const classes = useStyles();
 
   const [expanded, setExpanded] = React.useState(false);
+
+  const {
+    filter,
+    setFilter,
+    setCurrentSearch,
+    nextSearch,
+    setNextSearch,
+    resourceTypes,
+    setResourceTypes,
+    states,
+    setStates,
+    statuses,
+    setStatuses,
+    hostGroups,
+    setHostGroups,
+    serviceGroups,
+    setServiceGroups,
+  } = useResourceContext();
 
   const toggleExpanded = (): void => {
     setExpanded(!expanded);
@@ -164,12 +146,75 @@ const Filter = ({
 
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
+  const requestSearch = (): void => {
+    setCurrentSearch(nextSearch);
+  };
+
   const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed) {
-      onSearchRequest();
+      requestSearch();
     }
+  };
+
+  const prepareSearch = (event): void => {
+    setNextSearch(event.target.value);
+  };
+
+  const changeFilterGroup = (event): void => {
+    const filterId = event.target.value;
+
+    const updatedFilter = filterById[filterId];
+    setFilter(updatedFilter);
+
+    if (!updatedFilter.criterias) {
+      return;
+    }
+
+    setResourceTypes(updatedFilter.criterias.resourceTypes);
+    setStatuses(updatedFilter.criterias.statuses);
+    setStates(updatedFilter.criterias.states);
+    setHostGroups(updatedFilter.criterias.hostGroups);
+    setServiceGroups(updatedFilter.criterias.serviceGroups);
+  };
+
+  const clearAllFilters = (): void => {
+    setFilter(allFilter);
+    setResourceTypes(allFilter.criterias.resourceTypes);
+    setStatuses(allFilter.criterias.statuses);
+    setStates(allFilter.criterias.states);
+    setHostGroups(allFilter.criterias.hostGroups);
+    setServiceGroups(allFilter.criterias.serviceGroups);
+    setNextSearch('');
+    setCurrentSearch('');
+  };
+
+  const setEmptyFilter = (): void => {
+    setFilter({ id: '', name: '' } as FilterGroup);
+  };
+
+  const changeResourceTypes = (_, updatedResourceTypes): void => {
+    setResourceTypes(updatedResourceTypes);
+    setEmptyFilter();
+  };
+
+  const changeStates = (_, updatedStates): void => {
+    setStates(updatedStates);
+    setEmptyFilter();
+  };
+
+  const changeStatuses = (_, updatedStatuses): void => {
+    setStatuses(updatedStatuses);
+    setEmptyFilter();
+  };
+
+  const changeHostGroups = (_, updatedHostGroups): void => {
+    setHostGroups(updatedHostGroups);
+  };
+
+  const changeServiceGroups = (_, updatedServiceGroups): void => {
+    setServiceGroups(updatedServiceGroups);
   };
 
   return (
@@ -199,7 +244,7 @@ const Filter = ({
                 allFilter,
               ]}
               selectedOptionId={filter.id}
-              onChange={onFilterGroupChange}
+              onChange={changeFilterGroup}
               aria-label={labelStateFilter}
             />
           </Grid>
@@ -208,17 +253,13 @@ const Filter = ({
               className={classes.searchField}
               EndAdornment={SearchHelpTooltip}
               value={nextSearch || ''}
-              onChange={onSearchPrepare}
+              onChange={prepareSearch}
               placeholder={labelResourceName}
               onKeyDown={requestSearchOnEnterKey}
             />
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={onSearchRequest}
-            >
+            <Button variant="contained" color="primary" onClick={requestSearch}>
               {labelSearch}
             </Button>
           </Grid>
@@ -234,30 +275,30 @@ const Filter = ({
           <Grid item>
             <MultiAutocompleteField
               className={classes.autocompleteField}
-              options={resourceTypes}
+              options={availableResourceTypes}
               label={labelTypeOfResource}
-              onChange={onResourceTypesChange}
-              value={selectedResourceTypes || []}
+              onChange={changeResourceTypes}
+              value={resourceTypes || []}
               openText={`${labelOpen} ${labelTypeOfResource}`}
             />
           </Grid>
           <Grid item>
             <MultiAutocompleteField
               className={classes.autocompleteField}
-              options={states}
+              options={availableStates}
               label={labelState}
-              onChange={onStatesChange}
-              value={selectedStates || []}
+              onChange={changeStates}
+              value={states || []}
               openText={`${labelOpen} ${labelState}`}
             />
           </Grid>
           <Grid item>
             <MultiAutocompleteField
               className={classes.autocompleteField}
-              options={statuses}
+              options={availableStatuses}
               label={labelStatus}
-              onChange={onStatusesChange}
-              value={selectedStatuses || []}
+              onChange={changeStatuses}
+              value={statuses || []}
               openText={`${labelOpen} ${labelStatus}`}
             />
           </Grid>
@@ -268,8 +309,8 @@ const Filter = ({
               getSearchEndpoint={getHostGroupSearchEndpoint}
               getOptionsFromResult={getOptionsFromResult}
               label={labelHostGroup}
-              onChange={onHostGroupsChange}
-              value={selectedHostGroups || []}
+              onChange={changeHostGroups}
+              value={hostGroups || []}
               openText={`${labelOpen} ${labelHostGroup}`}
             />
           </Grid>
@@ -279,14 +320,14 @@ const Filter = ({
               baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
               getSearchEndpoint={getServiceGroupSearchEndpoint}
               label={labelServiceGroup}
-              onChange={onServiceGroupsChange}
+              onChange={changeServiceGroups}
               getOptionsFromResult={getOptionsFromResult}
-              value={selectedServiceGroups || []}
+              value={serviceGroups || []}
               openText={`${labelOpen} ${labelServiceGroup}`}
             />
           </Grid>
           <Grid item>
-            <Button color="primary" onClick={onClearAll}>
+            <Button color="primary" onClick={clearAllFilters}>
               {labelClearAll}
             </Button>
           </Grid>

@@ -17,7 +17,7 @@ import {
   labelSearchAndHostAliasContaining,
   labelTips,
   labelGetRegexHelp,
-} from './translatedLabels';
+} from '../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   tooltip: {
