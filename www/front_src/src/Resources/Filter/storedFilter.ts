@@ -1,6 +1,6 @@
 import { isNil } from 'ramda';
 
-import { unhandledProblemsFilter, FilterGroup } from './Filter/models';
+import { unhandledProblemsFilter, FilterGroup } from './models';
 
 const key = 'centreon-events-filter';
 

@@ -4,7 +4,7 @@ import {
   getStoredOrDefaultFilter,
   clearCachedFilter,
   storeFilter,
-} from '../storedFilter';
+} from './storedFilter';
 import { Filter, FilterGroup, Criterias } from './models';
 
 const getDefaultFilter = (): FilterGroup => getStoredOrDefaultFilter();
@@ -23,7 +23,7 @@ type FilterGroupDispatch = React.Dispatch<React.SetStateAction<FilterGroup>>;
 type FiltersDispatch = React.Dispatch<React.SetStateAction<Array<Filter>>>;
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 
-interface FilterState {
+export interface FilterState {
   filter: FilterGroup;
   setFilter: FilterGroupDispatch;
   currentSearch?: string;
@@ -63,6 +63,10 @@ const useFilter = (): FilterState => {
   const [serviceGroups, setServiceGroups] = React.useState<Array<Filter>>(
     getDefaultServiceGroups(),
   );
+
+  React.useEffect(() => {
+    setCurrentSearch(nextSearch);
+  }, [states, statuses, resourceTypes, hostGroups, serviceGroups]);
 
   React.useEffect(() => {
     storeFilter({

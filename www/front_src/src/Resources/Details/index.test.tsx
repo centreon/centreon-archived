@@ -40,13 +40,17 @@ import {
 } from '../translatedLabels';
 import { selectOption } from '../testUtils';
 import { detailsTabId, graphTabId } from './Body/tabs';
+import * as Context from '../Context';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
 jest.mock('./Body/tabs/Details/clipboard');
+jest.mock('../Context');
 
-const onClose = jest.fn();
+const mockedUseResourceContext = Context.useResourceContext as jest.Mock<
+  unknown
+>;
 
 const detailsEndpoint = '/resource';
 const performanceGraphEndpoint = '/performance';
@@ -104,19 +108,19 @@ const performanceGraphData = {
 const RealDate = Date;
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
-const renderDetails = (openTabId): RenderResult =>
-  render(
-    <Details
-      endpoints={{
-        details: detailsEndpoint,
-        performanceGraph: performanceGraphEndpoint,
-        statusGraph: statusGraphEndpoint,
-      }}
-      onClose={onClose}
-      onSelectTab={jest.fn()}
-      openTabId={openTabId}
-    />,
-  );
+const mockUseResourceContext = ({ openTabId }): void => {
+  mockedUseResourceContext.mockReturnValue({
+    detailsTabIdToOpen: openTabId,
+    selectedDetailsEndpoints: {
+      details: detailsEndpoint,
+      performanceGraph: performanceGraphEndpoint,
+      statusGraph: statusGraphEndpoint,
+    },
+    setDefaultDetailsTabIdToOpen: jest.fn(),
+  });
+};
+
+const renderDetails = (): RenderResult => render(<Details />);
 
 describe(Details, () => {
   beforeEach(() => {
@@ -129,11 +133,11 @@ describe(Details, () => {
   });
 
   it('displays resource details information', async () => {
+    mockUseResourceContext({ openTabId: detailsTabId });
+
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText } = renderDetails(
-      detailsTabId,
-    );
+    const { getByText, queryByText, getAllByText } = renderDetails();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -219,12 +223,14 @@ describe(Details, () => {
     { period: labelLast31Days, startIsoString: '2020-05-20T20:00:00.000Z' },
   ].forEach(({ period, startIsoString }) =>
     it(`queries performance and status graphs with ${period} period when the Graph tab is selected and ${period} is selected`, async () => {
+      mockUseResourceContext({ openTabId: graphTabId });
+
       mockedAxios.get.mockResolvedValueOnce({ data: performanceGraphData });
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData });
 
-      const { getByText } = renderDetails(graphTabId);
+      const { getByText } = renderDetails();
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
 
@@ -241,9 +247,11 @@ describe(Details, () => {
 
   it('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockUseResourceContext({ openTabId: detailsTabId });
+
     const mockedClipboard = clipboard as jest.Mocked<typeof clipboard>;
 
-    const { getByTitle } = renderDetails(detailsTabId);
+    const { getByTitle } = renderDetails();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 

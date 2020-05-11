@@ -6,7 +6,7 @@ import {
   labelApiNotFoundNotUpToDate,
   labelApiNotFoundContactAdmin,
   labelApiNotFoundDocumentation,
-} from './translatedLabels';
+} from '../translatedLabels';
 
 const ApiNotFoundMessage = (): JSX.Element => {
   return (

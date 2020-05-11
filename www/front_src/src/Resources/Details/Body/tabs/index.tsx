@@ -11,8 +11,10 @@ import { TabEndpoints, GraphEndpoints } from '../models';
 const detailsTabId = 0;
 const graphTabId = 1;
 
+export type TabId = 0 | 1;
+
 interface Tab {
-  id: 0 | 1;
+  id: TabId;
   Component: (props) => JSX.Element;
   title: string;
   visible: (endpoints) => boolean;
