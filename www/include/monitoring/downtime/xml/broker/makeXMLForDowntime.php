@@ -120,7 +120,7 @@ if (false === $svcId) {
 }
 
 $rowClass = "list_one";
-while ($row = $stmt->fetch()) {
+while ($row = $res->fetch()) {
     $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
