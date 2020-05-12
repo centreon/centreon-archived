@@ -174,7 +174,7 @@ function updateDateAndTime() {
     let end = moment($('[name="alternativeDateEnd"]').val()
         + ' ' + $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
 
-    if (start.isAfter(end) || start.isSame(end)) {
+    if (start.isSameOrAfter(end)) {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
         $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker(
@@ -196,7 +196,7 @@ function updateEndTime() {
     let end = moment($('[name="alternativeDateEnd"]').val()
         + ' ' + $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
 
-    if (start.isAfter(end) || start.isSame(end)) {
+    if (start.isSameOrAfter(end)) {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
         $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
@@ -218,7 +218,7 @@ function checkEndTime() {
     let end = moment($('[name="alternativeDateEnd"]').val()
         + ' ' + endTime, "MM/DD/YYYY HH:mm");
 
-    if (start.isAfter(end) || start.isSame(end)) {
+    if (start.isSameOrAfter(end)) {
         // Display a warning to the user.
         alert("The downtime end time - " + endTime + ",\nis not consistent with the start time - " + startTime +
             "\n\nThe end time will be modified using the chosen duration");
