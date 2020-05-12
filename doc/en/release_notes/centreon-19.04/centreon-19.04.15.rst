@@ -4,8 +4,10 @@ Centreon Web 19.04.15
 
 Bug fixes
 ---------
+
 * [Backend] Add Asia/Yangon to the timezone list (#8711)
 * [Backend] host-graph-v2 do not display all graph
+* [Monitoring] Correctly compute downtime duration (PR #7606)
 
 Security fixes
 --------------
