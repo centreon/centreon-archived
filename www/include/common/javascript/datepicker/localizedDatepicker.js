@@ -142,8 +142,8 @@ function turnOnEvents() {
         // On change, the first click is taken in account. but the second click will update the end timepicker,
         // as the focus is lost on the first timepicker when updating the end timepicker value.
         // So the timepicker popin needs to be hidden while the end value is modified.
-        $(".ui-timepicker.ui-widget").hide();
         updateDateAndTime();
+        $(this).timepicker();
     });
 
     // End value of datepicker and timepicker selector
