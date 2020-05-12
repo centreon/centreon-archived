@@ -43,7 +43,7 @@ try {
         $errorMessage = 'Cannot add Asia/Yangon to timezone list';
         $stmt = $pearDB->query(
             'INSERT INTO timezone (timezone_name, timezone_offset, timezone_dst_offset, timezone_description)
-            VALUE ("Asia/Yangon", "+6:30", "+6:30", NULL)'
+            VALUE ("Asia/Yangon", "+06:30", "+06:30", NULL)'
         );
     }
 } catch (\Exception $e) {
