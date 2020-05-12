@@ -19,6 +19,18 @@ export interface GraphData {
   times: Array<string>;
 }
 
-export interface MetricData {
+export interface TimeValue {
   [field: string]: string | number;
+}
+
+export interface Line {
+  name: string;
+  color: string;
+  metric: string;
+  display: boolean;
+  areaColor: string;
+  unit: string;
+  lineColor: string;
+  filled: boolean;
+  transparency: number;
 }
