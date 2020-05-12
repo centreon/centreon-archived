@@ -53,7 +53,7 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   )(graphData);
 };
 
-const toLegend = ({ ds_data, legend, metric, unit }: Metric): Line => ({
+const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   metric,
   name: legend,
   color: ds_data.ds_color_line,
@@ -65,9 +65,9 @@ const toLegend = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   display: true,
 });
 
-const getLines = (graphData: GraphData): Array<Line> => {
-  return map(toLegend, graphData.metrics);
+const getLineData = (graphData: GraphData): Array<Line> => {
+  return map(toLine, graphData.metrics);
 };
 
 export default getTimeSeries;
-export { getLines };
+export { getLineData };

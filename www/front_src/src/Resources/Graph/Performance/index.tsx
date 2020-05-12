@@ -23,25 +23,19 @@ import {
   sortBy,
 } from 'ramda';
 
-import {
-  fade,
-  makeStyles,
-  Typography,
-  Theme,
-  FormControlLabel,
-  Checkbox,
-} from '@material-ui/core';
+import { fade, makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData } from '@centreon/ui';
 
 import { timeFormat, dateTimeFormat } from '../format';
 import { parseAndFormat } from '../../dateTime';
-import getTimeSeries, { getLines } from './timeSeries';
+import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import identity from '../../identity';
 import Legend from './Legend';
+import getGraphLines from './Lines';
 
 interface Props {
   endpoint: string;
@@ -95,9 +89,9 @@ const PerformanceGraph = ({
   });
 
   React.useEffect(() => {
-    sendRequest('http://localhost:5000/mock/graph').then((graphData) => {
+    sendRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
-      setLineData(getLines(graphData));
+      setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
     });
   }, [endpoint]);
@@ -116,7 +110,10 @@ const PerformanceGraph = ({
     );
   }
 
-  const getBase = (unit): 2 | 10 => {
+  const sortedLines = sortBy(prop('name'), lineData);
+  const displayedLines = reject(propEq('display', false), sortedLines);
+
+  const formatValue = ({ value, unit }): string => {
     const base2Units = [
       'B',
       'bytes',
@@ -126,36 +123,10 @@ const PerformanceGraph = ({
       'o',
       'octets',
     ];
+    const base = base2Units.includes(unit) ? 2 : 10;
 
-    return base2Units.includes(unit) ? 2 : 10;
+    return filesize(value, { base }).replace('B', '');
   };
-
-  const sortedLines = sortBy(prop('name'), lineData);
-  const displayedLines = reject(propEq('display', false), sortedLines);
-
-  const getUnits = (): Array<string> => {
-    return pipe(map(prop('unit')), uniq)(displayedLines);
-  };
-
-  const displayMultipleYAxes = getUnits().length < 3;
-
-  const formatValue = ({ value, unit }): string => {
-    return filesize(value, { base: getBase(unit) }).replace('B', '');
-  };
-
-  const YAxes = displayMultipleYAxes ? (
-    getUnits().map((unit, index) => (
-      <YAxis
-        yAxisId={unit}
-        key={unit}
-        orientation={index === 0 ? 'left' : 'right'}
-        tickFormatter={(tick): string => formatValue({ value: tick, unit })}
-        tick={{ fontSize: 12 }}
-      />
-    ))
-  ) : (
-    <YAxis tick={{ fontSize: 12 }} />
-  );
 
   const formatTooltipValue = (value, metric, { unit }): Array<string> => {
     const legendName = pipe(
@@ -173,7 +144,7 @@ const PerformanceGraph = ({
     parseAndFormat({ isoDate: tick, to: dateTimeFormat });
 
   const toggleMetricDisplay = ({ checked, metric }): void => {
-    const line = find(propEq('metric', metric), lineData) as LineData;
+    const line = find(propEq('metric', metric), lineData) as LineModel;
 
     setLineData([
       ...reject(propEq('metric', metric), lineData),
@@ -194,29 +165,8 @@ const PerformanceGraph = ({
             tickFormatter={formatXAxisTick}
             tick={{ fontSize: 13 }}
           />
-          {YAxes}
-          {displayedLines.map(
-            ({ metric, areaColor, transparency, lineColor, filled, unit }) => {
-              const LineComponent = identity(filled ? Area : Line);
 
-              return (
-                <LineComponent
-                  key={metric}
-                  dot={false}
-                  dataKey={metric}
-                  unit={unit}
-                  stroke={lineColor}
-                  yAxisId={displayMultipleYAxes ? unit : undefined}
-                  isAnimationActive={false}
-                  fill={
-                    transparency
-                      ? fade(areaColor, transparency * 0.01)
-                      : undefined
-                  }
-                />
-              );
-            },
-          )}
+          {getGraphLines({ lines: displayedLines, formatValue })}
 
           <Tooltip
             labelFormatter={formatTooltipTime}
@@ -225,7 +175,11 @@ const PerformanceGraph = ({
         </ComposedChart>
       </ResponsiveContainer>
       <div className={classes.legend}>
-        <Legend lines={sortedLines} onItemToggle={toggleMetricDisplay} />
+        <Legend
+          lines={sortedLines}
+          onItemToggle={toggleMetricDisplay}
+          toggable={toggableLegend}
+        />
       </div>
     </div>
   );

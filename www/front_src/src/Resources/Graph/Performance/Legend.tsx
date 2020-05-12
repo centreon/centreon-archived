@@ -14,46 +14,74 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
   legendIcon: {
-    width: 10,
-    height: 10,
+    width: 9,
+    height: 9,
     borderRadius: '50%',
+    marginRight: theme.spacing(1),
+  },
+  legendCaption: {
     marginRight: theme.spacing(1),
   },
 }));
 
 interface Props {
   lines: Array<Line>;
+  toggable: boolean;
   onItemToggle: (params) => void;
 }
 
-const Legend = ({ lines, onItemToggle }: Props): JSX.Element => {
+const Legend = ({ lines, onItemToggle, toggable }: Props): JSX.Element => {
   const classes = useStyles();
+
+  const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
+    if (toggable) {
+      const control = (
+        <Checkbox
+          color="primary"
+          size="small"
+          checked={display}
+          onChange={(_, checked): void => {
+            onItemToggle({ checked, metric });
+          }}
+        />
+      );
+
+      return (
+        <>
+          <FormControlLabel
+            control={control}
+            label={<Typography variant="body2">{name}</Typography>}
+          />
+        </>
+      );
+    }
+
+    return (
+      <Typography className={classes.legendCaption} variant="caption">
+        {name}
+      </Typography>
+    );
+  };
 
   return (
     <>
-      {lines.map(({ color, name, display, metric }) => (
-        <div className={classes.legendItem} key={name}>
-          <Typography align="center" variant="caption">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  color="primary"
-                  size="small"
-                  checked={display}
-                  onChange={(_, checked): void => {
-                    onItemToggle({ checked, metric });
-                  }}
-                />
-              }
-              label={<Typography variant="body2">{name}</Typography>}
-            />
-          </Typography>
+      {lines.map((line) => {
+        const { color, name } = line;
+
+        const icon = (
           <div
             className={classes.legendIcon}
             style={{ backgroundColor: color }}
           />
-        </div>
-      ))}
+        );
+
+        return (
+          <div className={classes.legendItem} key={name}>
+            {getLegendName(line)}
+            {icon}
+          </div>
+        );
+      })}
     </>
   );
 };
