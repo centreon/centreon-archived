@@ -148,7 +148,7 @@ function turnOnEvents() {
 
     // End value of datepicker and timepicker selector
     $(".datepicker").last().on('change', function (e) {
-        // Check that the user do not set an end date lesser than the start date
+        // Check that the user do not set an end date lesser than the start date.
         checkEndDate();
         // Update the end time according to the chosen duration
         updateEndTime();
