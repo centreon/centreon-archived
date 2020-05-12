@@ -1544,7 +1544,7 @@ To add more than one child to a host, use the character '|'. Ex:  ::
 
   "values": "fw-berlin;mail-uranus-frontend|mail-neptune-frontend"
 
-The add action add the child without overwriting he previous configuration.
+The add action add the child without overwriting the previous configuration.
 
 
 Set child
