@@ -209,7 +209,7 @@ function updateEndTime() {
 
 /**
  * Used for the end DATEPICKER, to avoid an end date value lesser than the start date
- * Update the end date according to the start values, and display a warning to the user.
+ * Updates the end date according to the start values.
  */
 function checkEndDate() {
     let start = moment($('[name="alternativeDateStart"]').val()
