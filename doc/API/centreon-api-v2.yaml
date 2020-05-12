@@ -173,7 +173,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /user/acl/actions:
+  /users/acl/actions:
     get:
       tags:
         - User ACL actions
