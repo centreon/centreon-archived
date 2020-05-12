@@ -148,6 +148,9 @@ function turnOnEvents() {
 
     // End value of datepicker and timepicker selector
     $(".datepicker").last().on('change', function (e) {
+        // Check that the user do not set an end date lesser than the start date
+        checkEndDate();
+        // Update the end time according to the chosen duration
         updateEndTime();
     });
     $(".timepicker").last().on('change', function (e) {
@@ -200,6 +203,33 @@ function updateEndTime() {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
         $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
+        turnOnEvents();
+    }
+}
+
+/**
+ * Used for the end DATEPICKER, to avoid an end date value lesser than the start date
+ * Update the end date according to the start values, and display a warning to the user.
+ */
+function checkEndDate() {
+    let startDate = $('[name="alternativeDateStart"]').val();
+    let startTime = $(".timepicker").first().val();
+    let start = moment(startDate + ' ' + startTime, "MM/DD/YYYY HH:mm");
+
+    let endDate = $('[name="alternativeDateEnd"]').val();
+    let endTime = $(".timepicker").last().val();
+    let end = moment(endDate + ' ' + endTime, "MM/DD/YYYY HH:mm");
+
+    if (start.isSameOrAfter(end)) {
+        turnOffEvents();
+        start.add($('#duration').val(), $('#duration_scale').val());
+        $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker(
+            "option",
+            "dateFormat"
+        ).toUpperCase().replace(/Y/g, 'YY')));
+        alert("The downtime end - " + endDate + " at " + endTime +
+            ",\nis not consistent with the start - " + startDate + " at " + startTime +
+            "\n\nThe downtime end will be modified according to the chosen duration");
         turnOnEvents();
     }
 }
