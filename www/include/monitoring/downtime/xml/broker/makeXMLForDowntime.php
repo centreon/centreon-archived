@@ -120,23 +120,21 @@ if (false === $svcId) {
 }
 
 $rowClass = "list_one";
-if (isset($res)) {
-    while ($row = $res->fetch()) {
-        $row['comment_data'] = strip_tags($row['comment_data']);
-        $xml->startElement('dwt');
-        $xml->writeAttribute('class', $rowClass);
-        $xml->writeElement('author', $row['author']);
-        $xml->writeElement('start', $row['actual_start_time']);
-        if (!$row['fixed']) {
-            $row['end_time'] = (int)$row['actual_start_time'] + (int)$row['duration'];
-        }
-        $xml->writeElement('end', $row['end_time']);
-        $xml->writeElement('comment', $row['comment_data']);
-        $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
-        $xml->writeElement('fixed', $row['fixed'] ? _('Yes') : _('No'));
-        $xml->endElement();
-        $rowClass == 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
+while ($row = $res->fetch()) {
+    $row['comment_data'] = strip_tags($row['comment_data']);
+    $xml->startElement('dwt');
+    $xml->writeAttribute('class', $rowClass);
+    $xml->writeElement('author', $row['author']);
+    $xml->writeElement('start', $row['actual_start_time']);
+    if (!$row['fixed']) {
+        $row['end_time'] = (int)$row['actual_start_time'] + (int)$row['duration'];
     }
+    $xml->writeElement('end', $row['end_time']);
+    $xml->writeElement('comment', $row['comment_data']);
+    $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
+    $xml->writeElement('fixed', $row['fixed'] ? _('Yes') : _('No'));
+    $xml->endElement();
+    $rowClass == 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
 }
 
 // End buffer

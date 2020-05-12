@@ -115,19 +115,17 @@ if (false === $svcId) {
 }
 
 $rowClass = 'list_one';
-if (isset($res)) {
-    while ($row = $res->fetch()) {
-        $row['comment_data'] = strip_tags($row['comment_data']);
-        $xml->startElement('ack');
-        $xml->writeAttribute('class', $rowClass);
-        $xml->writeElement('author', $row['author']);
-        $xml->writeElement('entrytime', $row['entry_time']);
-        $xml->writeElement('comment', $row['comment_data']);
-        $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
-        $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
-        $xml->endElement();
-        $rowClass === 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
-    }
+while ($row = $res->fetch()) {
+    $row['comment_data'] = strip_tags($row['comment_data']);
+    $xml->startElement('ack');
+    $xml->writeAttribute('class', $rowClass);
+    $xml->writeElement('author', $row['author']);
+    $xml->writeElement('entrytime', $row['entry_time']);
+    $xml->writeElement('comment', $row['comment_data']);
+    $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
+    $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
+    $xml->endElement();
+    $rowClass === 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
 }
 
 // End buffer
