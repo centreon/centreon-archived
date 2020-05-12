@@ -4,6 +4,7 @@ import formatISO from 'date-fns/formatISO';
 import mockDate from 'mockdate';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { last } from 'ramda';
 
 import {
   render,
@@ -13,7 +14,6 @@ import {
   act,
 } from '@testing-library/react';
 
-import { last } from 'ramda';
 import {
   labelAcknowledgedBy,
   labelDowntimeBy,
