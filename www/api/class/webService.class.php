@@ -376,7 +376,7 @@ class CentreonWebService
     {
         $allowed = false;
 
-        // if implemented public interface skip checks
+        // skip checks if public interface is implemented
         if ($webservice instanceof WebserviceAutorizePublicInterface) {
             $allowed = true;
         } else {
