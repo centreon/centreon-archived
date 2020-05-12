@@ -150,7 +150,7 @@ function turnOnEvents() {
     $(".datepicker").last().on('change', function (e) {
         // Check that the user do not set an end date lesser than the start date.
         checkEndDate();
-        // Update the end time according to the chosen duration
+        // Update the end time according to the chosen duration.
         updateEndTime();
     });
     $(".timepicker").last().on('change', function (e) {
