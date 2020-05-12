@@ -212,13 +212,10 @@ function updateEndTime() {
  * Update the end date according to the start values, and display a warning to the user.
  */
 function checkEndDate() {
-    let startDate = $('[name="alternativeDateStart"]').val();
-    let startTime = $(".timepicker").first().val();
-    let start = moment(startDate + ' ' + startTime, "MM/DD/YYYY HH:mm");
-
-    let endDate = $('[name="alternativeDateEnd"]').val();
-    let endTime = $(".timepicker").last().val();
-    let end = moment(endDate + ' ' + endTime, "MM/DD/YYYY HH:mm");
+    let start = moment($('[name="alternativeDateStart"]').val()
+        + ' ' + $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    let end = moment($('[name="alternativeDateEnd"]').val()
+        + ' ' + $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
 
     if (start.isSameOrAfter(end)) {
         turnOffEvents();
@@ -227,9 +224,6 @@ function checkEndDate() {
             "option",
             "dateFormat"
         ).toUpperCase().replace(/Y/g, 'YY')));
-        alert("The downtime end - " + endDate + " at " + endTime +
-            ",\nis not consistent with the start - " + startDate + " at " + startTime +
-            "\n\nThe downtime end will be modified according to the chosen duration");
         turnOnEvents();
     }
 }
