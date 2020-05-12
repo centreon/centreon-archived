@@ -220,7 +220,7 @@ function checkEndTime() {
 
     if (start.isAfter(end) || start.isSame(end)) {
         // Display a warning to the user.
-        alert("The downtime end time - " + endTime + ",\nis unconsistent with the start time - " + startTime +
+        alert("The downtime end time - " + endTime + ",\nis not consistent with the start time - " + startTime +
             "\n\nThe end time will be modified using the chosen duration");
         // Hidding the popin.
         $(".ui-timepicker.ui-widget").hide();
