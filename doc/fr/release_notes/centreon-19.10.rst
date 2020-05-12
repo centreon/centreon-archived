@@ -1,5 +1,5 @@
 =====================
-Centreon Web 19.10.11
+Centreon Web 19.10.12
 =====================
 
 Enhancements
@@ -11,6 +11,8 @@ Enhancements
 Bug Fixes
 ---------
 
+* [Monitoring] Correctly compute downtime duration (PR #7606)
+* [Backend] Add Asia/Yangon to the timezone list (PR #8711)
 * [Backend] host-graph-v2 do not display all graph
 
 Security
