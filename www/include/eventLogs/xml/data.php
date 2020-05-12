@@ -170,13 +170,13 @@ if (isset($sid) && $sid) {
     );
 }
 
-$num = isset($inputs["num"]) ? intval($inputs["num"]) : "0";
-$limit = isset($inputs["limit"]) ? intval($inputs["limit"]) : "30";
+$num = isset($inputs["num"]) ? (int) $inputs["num"] : 0;
+$limit = isset($inputs["limit"]) ? (int) $inputs["limit"] : 30;
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
 $EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
 $StartTime = isset($inputs["StartTime"]) ? $StartTime = htmlentities($inputs["StartTime"]) : "";
 $EndTime = isset($inputs["EndTime"]) ? $EndTime = htmlentities($inputs["EndTime"]) : "";
-$auto_period = isset($inputs["period"]) ? $auto_period = intval($inputs["period"]) : "-1";
+$auto_period = isset($inputs["period"]) ? $auto_period = (int) $inputs["period"] : -1;
 $engine = isset($inputs["engine"]) ? $engine = htmlentities($inputs["engine"]) : "false";
 $up = isset($inputs["up"]) ? htmlentities($inputs["up"]) : "true";
 $down = isset($inputs["down"]) ? htmlentities($inputs["down"]) : "true";
