@@ -35,7 +35,15 @@ const getGraphLines = ({ lines, formatValue }): Array<JSX.Element> => {
   return [
     ...getYAxes(),
     ...lines.map(
-      ({ metric, areaColor, transparency, lineColor, filled, unit }) => {
+      ({
+        metric,
+        areaColor,
+        transparency,
+        lineColor,
+        filled,
+        unit,
+        highlight,
+      }) => {
         const props = {
           dot: false,
           dataKey: metric,
@@ -44,6 +52,8 @@ const getGraphLines = ({ lines, formatValue }): Array<JSX.Element> => {
           yAxisId: multipleYAxes ? unit : undefined,
           isAnimationActive: false,
           fill: transparency ? fade(areaColor, transparency * 0.01) : undefined,
+          strokeWidth: highlight ? 2 : 1,
+          opacity: highlight === false ? 0.3 : 1,
         };
 
         if (filled) {

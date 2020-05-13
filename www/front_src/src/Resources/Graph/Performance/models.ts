@@ -33,4 +33,5 @@ export interface Line {
   lineColor: string;
   filled: boolean;
   transparency: number;
+  highlight?: boolean;
 }

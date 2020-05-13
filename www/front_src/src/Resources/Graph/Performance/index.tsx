@@ -2,28 +2,15 @@ import * as React from 'react';
 
 import {
   ComposedChart,
-  Area,
-  Line,
   XAxis,
-  YAxis,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
 import filesize from 'filesize';
-import {
-  pipe,
-  map,
-  uniq,
-  prop,
-  propEq,
-  find,
-  path,
-  reject,
-  sortBy,
-} from 'ramda';
+import { pipe, map, prop, propEq, find, path, reject, sortBy } from 'ramda';
 
-import { fade, makeStyles, Typography, Theme } from '@material-ui/core';
+import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData } from '@centreon/ui';
 
@@ -33,7 +20,6 @@ import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
-import identity from '../../identity';
 import Legend from './Legend';
 import getGraphLines from './Lines';
 
@@ -143,13 +129,30 @@ const PerformanceGraph = ({
   const formatTooltipTime = (tick): string =>
     parseAndFormat({ isoDate: tick, to: dateTimeFormat });
 
-  const toggleMetricDisplay = ({ checked, metric }): void => {
-    const line = find(propEq('metric', metric), lineData) as LineModel;
+  const getLineByMetric = (metric): LineModel => {
+    return find(propEq('metric', metric), lineData) as LineModel;
+  };
+
+  const toggleMetricDisplay = (metric): void => {
+    const line = getLineByMetric(metric);
 
     setLineData([
       ...reject(propEq('metric', metric), lineData),
-      { ...line, display: checked },
+      { ...line, display: !line.display },
     ]);
+  };
+
+  const highlightLine = (metric): void => {
+    const fadedLines = map((line) => ({ ...line, highlight: false }), lineData);
+
+    setLineData([
+      ...reject(propEq('metric', metric), fadedLines),
+      { ...getLineByMetric(metric), highlight: true },
+    ]);
+  };
+
+  const clearHighlight = (): void => {
+    setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
   };
 
   return (
@@ -179,6 +182,8 @@ const PerformanceGraph = ({
           lines={sortedLines}
           onItemToggle={toggleMetricDisplay}
           toggable={toggableLegend}
+          onItemHighlight={highlightLine}
+          onClearItemHighlight={clearHighlight}
         />
       </div>
     </div>

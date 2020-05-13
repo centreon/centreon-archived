@@ -63,6 +63,7 @@ const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   filled: ds_data.ds_filled,
   unit,
   display: true,
+  highlight: undefined,
 });
 
 const getLineData = (graphData: GraphData): Array<Line> => {
