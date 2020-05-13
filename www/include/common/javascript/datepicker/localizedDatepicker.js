@@ -180,10 +180,13 @@ function updateDateAndTime() {
     if (start.isSameOrAfter(end)) {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
-        $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker(
-            "option",
-            "dateFormat"
-        ).toUpperCase().replace(/Y/g, 'YY')));
+        $(".datepicker").last()
+            .datepicker(
+                "setDate",
+                start.format(
+                    $(".datepicker").last().datepicker("option", "dateFormat").toUpperCase().replace(/Y/g, 'YY')
+                )
+            );
         $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
         turnOnEvents();
     }
