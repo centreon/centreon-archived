@@ -90,11 +90,11 @@ const Legend = ({
 
         return (
           <div className={classes.item} key={name}>
-            {getLegendName(line)}
             <div
               className={clsx(classes.icon, { [classes.hidden]: !display })}
               style={{ backgroundColor: iconBackgroundColor }}
             />
+            {getLegendName(line)}
           </div>
         );
       })}
