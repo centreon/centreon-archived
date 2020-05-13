@@ -89,10 +89,14 @@ if ($server['localhost'] == '1') {
         [
             '__SERVERNAME__',
             '__COMMAND__',
+            '__CENTREON_VARLIB__',
+            '__CENTREON_CACHEDIR__',
         ],
         [
             $server['name'],
             $server['command_file'],
+            _CENTREON_VARLIB_,
+            _CENTREON_CACHEDIR_,
         ],
         $config
     );
@@ -154,6 +158,8 @@ if ($server['localhost'] == '1') {
                 '__GORGONEPORT__',
                 '__THUMBPRINT__',
                 '__COMMAND__',
+                '__CENTREON_VARLIB__',
+                '__CENTREON_CACHEDIR__',
             ],
             [
                 $server['name'],
@@ -161,6 +167,8 @@ if ($server['localhost'] == '1') {
                 $server['gorgone_port'],
                 $thumbprints,
                 $server['command_file'],
+                _CENTREON_VARLIB_,
+                _CENTREON_CACHEDIR_,
             ],
             $config
         );
