@@ -148,6 +148,9 @@ function turnOnEvents() {
 
     // End value of datepicker and timepicker selector
     $(".datepicker").last().on('change', function (e) {
+        // Check that the user do not set an end date lesser than the start date.
+        checkEndDate();
+        // Update the end time according to the chosen duration.
         updateEndTime();
     });
     $(".timepicker").last().on('change', function (e) {
@@ -177,10 +180,13 @@ function updateDateAndTime() {
     if (start.isSameOrAfter(end)) {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
-        $(".datepicker").last().datepicker("setDate", start.format($(".datepicker").last().datepicker(
-            "option",
-            "dateFormat"
-        ).toUpperCase().replace(/Y/g, 'YY')));
+        $(".datepicker").last()
+            .datepicker(
+                "setDate",
+                start.format(
+                    $(".datepicker").last().datepicker("option", "dateFormat").toUpperCase().replace(/Y/g, 'YY')
+                )
+            );
         $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
         turnOnEvents();
     }
@@ -200,6 +206,30 @@ function updateEndTime() {
         turnOffEvents();
         start.add($('#duration').val(), $('#duration_scale').val());
         $(".timepicker").last().timepicker("setTime", start.format("HH:mm"));
+        turnOnEvents();
+    }
+}
+
+/**
+ * Used for the end DATEPICKER, to avoid an end date value lesser than the start date
+ * Updates the end date according to the start values.
+ */
+function checkEndDate() {
+    let start = moment($('[name="alternativeDateStart"]').val()
+        + ' ' + $(".timepicker").first().val(), "MM/DD/YYYY HH:mm");
+    let end = moment($('[name="alternativeDateEnd"]').val()
+        + ' ' + $(".timepicker").last().val(), "MM/DD/YYYY HH:mm");
+
+    if (start.isSameOrAfter(end)) {
+        turnOffEvents();
+        start.add($('#duration').val(), $('#duration_scale').val());
+        $(".datepicker").last()
+            .datepicker(
+                "setDate",
+                start.format(
+                    $(".datepicker").last().datepicker("option", "dateFormat").toUpperCase().replace(/Y/g, 'YY')
+                )
+            );
         turnOnEvents();
     }
 }
