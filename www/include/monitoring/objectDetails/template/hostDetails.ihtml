@@ -489,7 +489,7 @@
     </tr>
 </table>
 <div id="div_img" class="img_volante"></div>
-<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
 {literal}
 <script>
