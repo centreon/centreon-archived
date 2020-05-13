@@ -83,7 +83,7 @@ $kernel = App\Kernel::createForWeb();
  * @var $gorgoneService \Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface
  */
 $gorgoneError = false;
-if ($server['localhost'] == '1') {
+if ($server['localhost'] === '1') {
     $config = file_get_contents('./central.yaml');
     $config = str_replace(
         [
