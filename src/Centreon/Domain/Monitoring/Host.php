@@ -47,7 +47,7 @@ class Host implements EntityDescriptorMetadataInterface
     public const STATUS_UNREACHABLE = 2;
 
     /**
-     * @var int Id of host
+     * @var int|null Id of host
      */
     protected $id;
 
@@ -320,9 +320,9 @@ class Host implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

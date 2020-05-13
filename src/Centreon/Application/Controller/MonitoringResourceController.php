@@ -311,6 +311,7 @@ class MonitoringResourceController extends AbstractController
         $service = $this->monitoring
             ->filterByContact($this->getUser())
             ->findOneService($hostId, $serviceId);
+        $this->monitoring->hidePasswordInCommandLine($service);
 
         if ($service === null) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);

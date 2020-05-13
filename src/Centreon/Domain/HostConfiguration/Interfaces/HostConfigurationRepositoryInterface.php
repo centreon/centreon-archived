@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
 use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\Repository\RepositoryException;
 
 interface HostConfigurationRepositoryInterface
@@ -42,7 +43,7 @@ interface HostConfigurationRepositoryInterface
      *
      * @param int $hostId Host Id to be found
      * @return Host|null Returns a host otherwise null
-     * @throws \Exception
+     * @throws RepositoryException
      */
     public function findHost(int $hostId): ?Host;
 
@@ -60,4 +61,13 @@ interface HostConfigurationRepositoryInterface
      * @return int Number of hosts
      */
     public function getNumberOfHosts(): int;
+
+    /**
+     * Find all host macros for the host.
+     *
+     * @param int $hostId Id of the host
+     * @return array<HostMacro> List of host macros found
+     * @throws RepositoryException
+     */
+    public function findOnDemandHostMacros(int $hostId): array;
 }

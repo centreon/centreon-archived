@@ -42,7 +42,7 @@ class Service implements EntityDescriptorMetadataInterface
     public const SERIALIZER_GROUP_WITH_HOST = 'service_with_host';
 
     /**
-     * @var int Unique index
+     * @var int|null Unique index
      */
     protected $id;
 
@@ -241,9 +241,9 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -23,11 +23,16 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\HostConfiguration\HostMacro;
+use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
+use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 
 /**
  * Monitoring class used to manage the real time services and hosts
@@ -36,6 +41,8 @@ use Centreon\Domain\Service\AbstractCentreonService;
  */
 class MonitoringService extends AbstractCentreonService implements MonitoringServiceInterface
 {
+    use CommandLineTrait;
+
     /**
      * @var MonitoringRepositoryInterface
      */
@@ -50,19 +57,34 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      * @var TimelineRepositoryInterface
      */
     private $timelineRepository;
+    /**
+     * @var ServiceConfigurationServiceInterface
+     */
+    private $serviceConfiguration;
+    /**
+     * @var HostConfigurationServiceInterface
+     */
+    private $hostConfiguration;
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ServiceConfigurationServiceInterface $serviceConfigurationService
+     * @param HostConfigurationServiceInterface $hostConfigurationService
+     * @param TimelineRepositoryInterface|null $timelineRepository
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
         AccessGroupRepositoryInterface $accessGroupRepository,
+        ServiceConfigurationServiceInterface $serviceConfigurationService,
+        HostConfigurationServiceInterface $hostConfigurationService,
         TimelineRepositoryInterface $timelineRepository = null
     ) {
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
         $this->timelineRepository = $timelineRepository;
+        $this->serviceConfiguration = $serviceConfigurationService;
+        $this->hostConfiguration = $hostConfigurationService;
     }
 
     /**
@@ -302,5 +324,101 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             }
         }
         return $hosts;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void
+    {
+        $monitoringCommand = $monitoringService->getCommandLine();
+        if (empty($monitoringCommand)) {
+            return;
+        }
+        if ($monitoringService->getId() === null) {
+            throw new MonitoringServiceException('The service id can not be null');
+        }
+        if ($monitoringService->getHost() === null || $monitoringService->getHost()->getId() === null) {
+            throw new MonitoringServiceException('Host or id can not be null');
+        }
+
+        $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
+        if (empty($configurationCommand)) {
+            throw new MonitoringServiceException(
+                'The command line in the configuration service is empty whereas '
+                . 'the command line in the monitoring service is not'
+            );
+        }
+
+        $serviceMacrosPassword = $this->serviceConfiguration->findServiceMacrosPassword(
+            $monitoringService->getId(),
+            $configurationCommand
+        );
+        $hostMacrosPassword = $this->hostConfiguration->findHostMacrosPassword(
+            $monitoringService->getHost()->getId(),
+            $configurationCommand
+        );
+
+        if (!empty($hostMacrosPassword) || !empty($serviceMacrosPassword)) {
+            try {
+                /**
+                 * @var ServiceMacro[]|HostMacro[] $macrosPassword
+                 */
+                $macrosPassword = array_merge($hostMacrosPassword, $serviceMacrosPassword);
+                $macroNames = array_map(
+                    function ($macro) {
+                        return $macro->getName();
+                    },
+                    $macrosPassword
+                );
+
+                $onDemandServiceMacro = $this->serviceConfiguration->findOnDemandServiceMacros(
+                    $monitoringService->getId()
+                );
+                $onDemandHostMacro = $this->hostConfiguration->findOnDemandHostMacros(
+                    $monitoringService->getHost()->getId()
+                );
+
+                $configurationToken = explode(' ', $configurationCommand);
+                $monitoringToken = $this->explodeSpacesButKeepValuesByMacro(
+                    $configurationCommand,
+                    $monitoringCommand,
+                    $onDemandServiceMacro,
+                    $onDemandHostMacro
+                );
+                if (count($monitoringToken) === count($configurationToken)) {
+                    /**
+                     * @var array<string, ServiceMacro|HostMacro> $macrosPasswordByName
+                     */
+                    $macrosPasswordByName = [];
+                    foreach ($macrosPassword as $macro) {
+                        $macrosPasswordByName[$macro->getName()] = $macro;
+                    }
+                    $patternMacrosPassword = implode('|', $macroNames);
+                    $patternMacrosPassword = str_replace('$', '\\$', $patternMacrosPassword);
+                    foreach ($configurationToken as $index => $token) {
+                        if (preg_match_all('~' . $patternMacrosPassword . '~', $token, $matches, PREG_SET_ORDER)) {
+                            if (
+                                array_key_exists($matches[0][0], $macrosPasswordByName)
+                                && $macrosPasswordByName[$matches[0][0]]->getValue() !== null
+                            ) {
+                                $monitoringToken[$index] = str_replace(
+                                    $macrosPasswordByName[$matches[0][0]]->getValue(),
+                                    $replacementValue,
+                                    $monitoringToken[$index]
+                                );
+                            }
+                        }
+                    }
+                    $monitoringService->setCommandLine(implode(' ', $monitoringToken));
+                } else {
+                    throw new MonitoringServiceException(
+                        'Different number of tokens between configuration and monitoring command line'
+                    );
+                }
+            } catch (\Throwable $ex) {
+                $monitoringService->setCommandLine('Unable to hide passwords in command');
+            }
+        }
     }
 }
