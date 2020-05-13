@@ -18,9 +18,6 @@ module.exports = merge(baseConfig, extractCssConfig, {
     library: ['name'],
   },
   optimization: {
-    splitChunks: {
-      chunks: 'all',
-    },
     runtimeChunk: true,
   },
   plugins: [
