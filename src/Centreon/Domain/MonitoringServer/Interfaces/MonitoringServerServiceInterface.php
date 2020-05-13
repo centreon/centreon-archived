@@ -63,4 +63,13 @@ interface MonitoringServerServiceInterface
      * @throws MonitoringServerException
      */
     public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
+
+    /**
+     * Find a monitoring server.
+     *
+     * @param int $monitoringServerId Id of the monitoring server to be found.
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer;
 }

@@ -163,7 +163,9 @@ class Proxy
     public function setProtocol(string $protocol): Proxy
     {
         if (!in_array($protocol, $this->protocolAvailable)) {
-            throw new \InvalidArgumentException('Protocol \'' . $protocol . '\' is not allowed');
+            throw new \InvalidArgumentException(
+                sprintf(_('Protocol %s is not allowed'), $protocol)
+            );
         }
         $this->protocol = $protocol;
         return $this;

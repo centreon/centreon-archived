@@ -61,6 +61,22 @@ class MonitoringServerService implements MonitoringServerServiceInterface
     /**
      * @inheritDoc
      */
+    public function findServer(int $monitoringServerId): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException(
+                'Error when searching for a monitoring server (' . $monitoringServerId . ')',
+                0,
+                $ex
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource
     {
         try {

@@ -5,11 +5,11 @@ import { Grid } from '@material-ui/core';
 import { ColumnProps } from '..';
 import DowntimeDetailsTable from './DetailsTable/Downtime';
 import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
-import { labelInDowntime, labelAcknowledged } from '../../translatedLabels';
-import { Resource } from '../../models';
+import { labelInDowntime, labelAcknowledged } from '../../../translatedLabels';
+import { Resource } from '../../../models';
 import HoverChip from '../HoverChip';
-import DowntimeChip from '../../Chip/Downtime';
-import AcknowledgeChip from '../../Chip/Acknowledge';
+import DowntimeChip from '../../../Chip/Downtime';
+import AcknowledgeChip from '../../../Chip/Acknowledge';
 
 interface StateChipProps {
   endpoint: string;

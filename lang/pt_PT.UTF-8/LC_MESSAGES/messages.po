@@ -14469,17 +14469,17 @@ msgstr "Mensagem json inválida recebida"
 #:Centreon/Application/Controller/Monitoring/MetricController.php:81
 #:Centreon/Application/Controller/DowntimeController.php:134
 #:Centreon/Application/Controller/DowntimeController.php:273
-msgid "Host %1 not found"
-msgstr "Host %1 não encontrado"
+msgid "Host %d not found"
+msgstr "Host %d não encontrado"
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:81
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:308
-msgid "Service %1 not found"
-msgstr "Host %1 não encontrado"
+msgid "Service %d not found"
+msgstr "Host %d não encontrado"
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:109
-msgid "Invalid date given for parameter \"%1\"."
-msgstr "Data inválida fornecida para o parâmetro \"%1\"."
+msgid "Invalid date given for parameter \"%s\"."
+msgstr "Data inválida fornecida para o parâmetro \"%s\"."
 
 #:Centreon/Application/Controller/Monitoring/MetricController.php:117
 msgid "End date must be greater than start date."
@@ -14500,8 +14500,8 @@ msgstr "Credenciais Invalidas"
 
 #:Centreon/Application/Controller/DowntimeController.php:203
 #:Centreon/Application/Controller/DowntimeController.php:333
-msgid "Service %1 on host %2 not found"
-msgstr "Serviço %1 no host %2 não encontrado"
+msgid "Service %d on host %d not found"
+msgstr "Serviço %d no host %d não encontrado"
 
 #:Centreon/Application/Controller/GorgoneController.php:142
 msgid "Unrecognized Command"
@@ -14545,24 +14545,24 @@ msgid "Acknowledgement already cancelled for this service"
 msgstr "Reconhecimento já foi cancelado para este serviço"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
-msgid "Incorrect Resource type: %1"
-msgstr "Tipo de Recurso incorreto: %1"
+msgid "Incorrect Resource type: %s"
+msgstr "Tipo de Recurso incorreto: %s"
 
 #:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:102
-msgid "Loop detected in file %1"
-msgstr "Loop detectado no arquivo %1"
+msgid "Loop detected in file %s"
+msgstr "Loop detectado no arquivo %s"
 
 #:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:137
-msgid "The configuration file %1 does not exists"
-msgstr "O arquivo de configuração %1 não existe"
+msgid "The configuration file %s does not exists"
+msgstr "O arquivo de configuração %s não existe"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:233
 msgid "Downtime not found"
 msgstr "Manutenção não encontada"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:239
-msgid "Downtime already cancelled for this %1"
-msgstr "Manutenção já foi cancelada para %1"
+msgid "Downtime already cancelled for this %s"
+msgstr "Manutenção já foi cancelada para %s"
 
 #:Centreon/Domain/Downtime/DowntimeService.php:267
 msgid "Incorrect Resource Type"
@@ -14595,24 +14595,24 @@ msgid "Host of downtime not found"
 msgstr "O host do serviço não esta definido"
 
 #:Centreon/Domain/Engine/EngineService.php:235
-msgid "The host of service %1 is not defined"
-msgstr "O host do serviço %1 não esta definido"
+msgid "The host of service (id: %d) is not defined"
+msgstr "O host do serviço (id: %d) não esta definido"
 
 #:Centreon/Domain/Engine/EngineService.php:238
-msgid "Host name of service %1 can not be empty"
-msgstr "O nome do Host do serviço %1 não pode estar em branco"
+msgid "Host name of service (id: %d) can not be empty"
+msgstr "O nome do Host do serviço (id: %d) não pode estar em branco"
 
 #:Centreon/Domain/Engine/EngineService.php:241
-msgid "The description of service %1 can not be empty"
-msgstr "A descrição do serviço %1 não pode estar em branco"
+msgid "The description of service (id: %d) can not be empty"
+msgstr "A descrição do serviço (id: %d) não pode estar em branco"
 
 #:Centreon/Domain/Engine/EngineService.php:286
 msgid "Host and service id can not be null at the same time"
-msgstr "A descrição do serviço %1 não pode estar em branco"
+msgstr ""
 
 #:Centreon/Domain/Engine/EngineService.php:289
 msgid "Downtime internal id can not be null"
-msgstr "A descrição do serviço %1 não pode estar em branco"
+msgstr ""
 
 #:Centreon/Domain/Engine/EngineService.php:355
 msgid "Host name cannot be empty"
@@ -14696,12 +14696,12 @@ msgid "Token not found"
 msgstr "Token não encontrado"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:87
-msgid "Centcore directory %1 does not exist"
-msgstr "Diretorio %1 do Centcore não existe"
+msgid "Centcore directory %s does not exist"
+msgstr "Diretorio %s do Centcore não existe"
 
 #:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:96
-msgid "Error during creation of the CentCore command file %1"
-msgstr "Erro durante a criação do arquivo de comando %1 do CentCore"
+msgid "Error during creation of the CentCore command file (%s)"
+msgstr "Erro durante a criação do arquivo de comando do CentCore (%s)"
 
 #:Centreon/Infrastructure/Gorgone/CommandRepositoryAPI.php:94
 msgid "Bad request"
@@ -14741,8 +14741,8 @@ msgid "Provider %1 is loaded"
 msgstr "Provedor %1 foi carregado"
 
 #:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:197
-msgid "The parameter %1 is not allowed"
-msgstr "O parametro %1 não é aceito"
+msgid "The parameter %s is not allowed"
+msgstr "O parametro %s não é aceito"
 
 #:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:216
 msgid "The value %1 is only supported by the operators %2 and %3"
@@ -14915,6 +14915,12 @@ msgid "will display resources having FQDN that doesn't contain"
 msgstr ""
 
 msgid "and host alias containing"
+msgstr ""
+
+msgid "Tips"
+msgstr ""
+
+msgid "get some help while creating your regular expression query at"
 msgstr ""
 
 msgid "Service group"

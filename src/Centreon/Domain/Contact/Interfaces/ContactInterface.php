@@ -92,9 +92,16 @@ interface ContactInterface
     public function getEncodedPassword(): string;
 
     /**
-     * Contact salt.
+     * Contact timezone.
      *
      * @return \DateTimeZone
      */
     public function getTimezone(): \DateTimeZone;
+
+    /**
+     * Contact locale.
+     *
+     * @return string|null
+     */
+    public function getLocale(): ?string;
 }

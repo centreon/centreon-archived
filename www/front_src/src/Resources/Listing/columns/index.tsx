@@ -8,7 +8,7 @@ import IconCheck from '@material-ui/icons/Sync';
 
 import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
 
-import IconDowntime from '../icons/Downtime';
+import IconDowntime from '../../icons/Downtime';
 import {
   labelResource,
   labelStatus,
@@ -21,11 +21,11 @@ import {
   labelSetDowntimeOn,
   labelCheck,
   labelSetDowntime,
-} from '../translatedLabels';
-import { Resource } from '../models';
+} from '../../translatedLabels';
+import { Resource } from '../../models';
 import StateColumn from './State';
 import GraphColumn from './Graph';
-import ActionButton from '../ActionButton';
+import ActionButton from '../../ActionButton';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {

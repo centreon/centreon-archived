@@ -64,10 +64,14 @@ if (isset($sid)) {
     get_error('need session id !');
 }
 
-//check that $_GET['id'] is set, if not assign 0.
-// If a string is sent to host_id, return id 0 instead of false;
-$hostId = filter_var($_GET['hid'] ?? 0, FILTER_VALIDATE_INT) ?: 0;
-$svcId = filter_var($_GET['svc_id'] ?? 0, FILTER_VALIDATE_INT);
+// sanitize host and service id from request;
+$hostId = filter_var($_GET['hid'] ?? false, FILTER_VALIDATE_INT);
+$svcId = filter_var($_GET['svc_id'] ?? false, FILTER_VALIDATE_INT);
+
+// check if a mandatory valid hostId is given
+if (false === $hostId) {
+    get_error('bad host Id');
+}
 
 // Init GMT class
 $centreonGMT = new CentreonGMT($db);
@@ -85,12 +89,12 @@ $xml->writeElement('comment', _('Comment'));
 $xml->endElement();
 
 // Retrieve info
-if (!$service_id) {
+if (false === $svcId) {
     $res = $dbb->prepare(
         'SELECT author, entry_time, comment_data, persistent_comment, sticky
         FROM acknowledgements
         WHERE host_id = :hostId
-        AND service_id IS NULL
+        AND service_id = 0
         ORDER BY entry_time DESC
         LIMIT 1'
     );
@@ -111,19 +115,17 @@ if (!$service_id) {
 }
 
 $rowClass = 'list_one';
-if (isset($res)) {
-    while ($row = $res->fetch()) {
-        $row['comment_data'] = strip_tags($row['comment_data']);
-        $xml->startElement('ack');
-        $xml->writeAttribute('class', $rowClass);
-        $xml->writeElement('author', $row['author']);
-        $xml->writeElement('entrytime', $row['entry_time']);
-        $xml->writeElement('comment', $row['comment_data']);
-        $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
-        $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
-        $xml->endElement();
-        $rowClass === 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
-    }
+while ($row = $res->fetch()) {
+    $row['comment_data'] = strip_tags($row['comment_data']);
+    $xml->startElement('ack');
+    $xml->writeAttribute('class', $rowClass);
+    $xml->writeElement('author', $row['author']);
+    $xml->writeElement('entrytime', $row['entry_time']);
+    $xml->writeElement('comment', $row['comment_data']);
+    $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
+    $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
+    $xml->endElement();
+    $rowClass === 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
 }
 
 // End buffer

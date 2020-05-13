@@ -3,16 +3,15 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
 import {
   labelRequired,
-  labelSomethingWentWrong,
   labelAcknowledgeCommandSent,
   labelAcknowledgedBy,
 } from '../../../translatedLabels';
 import DialogAcknowledge from './Dialog';
-import { Resource } from '../../../models';
+import { Resource, User } from '../../../models';
 import { acknowledgeResources, getUser } from '../../../api';
 
 const validationSchema = Yup.object().shape({
@@ -31,15 +30,21 @@ const AcknowledgeForm = ({
   onClose,
   onSuccess,
 }: Props): JSX.Element | null => {
-  const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
-  const showError = (message): void =>
-    showMessage({ message, severity: Severity.error });
+  const {
+    sendRequest: sendAcknowledgeResources,
+    sending: sendingAcknowledgeResources,
+  } = useRequest({
+    request: acknowledgeResources,
+  });
+
+  const { sendRequest: sendGetUser } = useRequest<User>({
+    request: getUser,
+  });
+
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
-
-  const [loaded, setLoaded] = React.useState(false);
 
   const form = useFormik({
     initialValues: {
@@ -47,39 +52,23 @@ const AcknowledgeForm = ({
       notify: false,
       acknowledgeAttachedResources: false,
     },
-    onSubmit: (values, { setSubmitting }) => {
-      setSubmitting(true);
-
-      acknowledgeResources({
+    onSubmit: (values) => {
+      sendAcknowledgeResources({
         resources,
         params: values,
-        cancelToken: token,
-      })
-        .then(() => {
-          showSuccess(labelAcknowledgeCommandSent);
-          onSuccess();
-        })
-        .catch(() => showError(labelSomethingWentWrong))
-        .finally(() => setSubmitting(false));
+      }).then(() => {
+        showSuccess(labelAcknowledgeCommandSent);
+        onSuccess();
+      });
     },
     validationSchema,
   });
 
-  const hasResources = resources.length > 0;
-
   React.useEffect(() => {
-    getUser(token)
-      .then((user) =>
-        form.setFieldValue(
-          'comment',
-          `${labelAcknowledgedBy} ${user.username}`,
-        ),
-      )
-      .catch(() => showError(labelSomethingWentWrong))
-      .finally(() => setLoaded(true));
-  }, [hasResources]);
-
-  React.useEffect(() => (): void => cancel(), []);
+    sendGetUser().then((user) =>
+      form.setFieldValue('comment', `${labelAcknowledgedBy} ${user.username}`),
+    );
+  }, []);
 
   return (
     <DialogAcknowledge
@@ -90,8 +79,8 @@ const AcknowledgeForm = ({
       errors={form.errors}
       values={form.values}
       handleChange={form.handleChange}
-      submitting={form.isSubmitting}
-      loading={!loaded}
+      submitting={sendingAcknowledgeResources}
+      loading={form.values.comment === ''}
     />
   );
 };

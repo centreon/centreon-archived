@@ -57,12 +57,14 @@ const getTimeSeries = (graphData: GraphData): Array<MetricData> => {
 };
 
 interface LegendColor {
-  legend: string;
+  name: string;
   color: string;
+  metric: string;
 }
 
-const toLegendColor = ({ ds_data, legend }: Metric): LegendColor => ({
-  legend,
+const toLegendColor = ({ ds_data, legend, metric }: Metric): LegendColor => ({
+  metric,
+  name: legend,
   color: ds_data.ds_color_line,
 });
 

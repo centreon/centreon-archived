@@ -31,16 +31,6 @@ const TwoPollers = [
 const store = mockStore({});
 
 describe('PollerFormStepTwo', () => {
-  it('renders', () => {
-    const { container } = render(
-      <Provider store={store}>
-        <PollerFormStepTwo pollers={TwoPollers} onSubmit={jest.fn()} />
-      </Provider>,
-    );
-
-    expect(container.firstChild).toMatchSnapshot();
-  });
-
   it('does not display selects if no one remote server exists', () => {
     const { container } = render(
       <Provider store={store}>

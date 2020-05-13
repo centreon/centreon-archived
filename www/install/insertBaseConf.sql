@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '20.04.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '20.04.2');
 
 --
 -- Contenu de la table `contact`
@@ -1176,6 +1176,7 @@ INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`)
                         ('Asia/Vientiane', '+07:00', '+07:00'),
                         ('Asia/Vladivostok', '+10:00', '+10:00'),
                         ('Asia/Yakutsk', '+09:00', '+09:00'),
+                        ('Asia/Yangon', '+06:30', '+06:30'),
                         ('Asia/Yekaterinburg', '+05:00', '+05:00'),
                         ('Asia/Yerevan', '+04:00', '+04:00'),
                         ('Atlantic/Azores', '-01:00', '-00:00'),

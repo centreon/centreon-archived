@@ -13,9 +13,9 @@ import {
   labelEntryTime,
   labelPersistent,
   labelSticky,
-} from '../../../translatedLabels';
+} from '../../../../translatedLabels';
 import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
-import { getFormattedDateTime } from '../../../dateTime';
+import { getFormattedDateTime } from '../../../../dateTime';
 
 const useStyles = makeStyles({
   comment: {
