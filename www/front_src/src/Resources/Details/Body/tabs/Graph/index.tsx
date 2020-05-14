@@ -99,6 +99,7 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
             endpoint={`${performanceGraphEndpoint}${periodQueryParams}`}
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.timeFormat}
+            toggableLegend
           />
         </div>
       </Paper>
