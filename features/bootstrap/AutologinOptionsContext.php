@@ -60,7 +60,10 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                $element = $this->currentPage->find('css', '*[aria-label="Breadcrumb"]  a[href="/centreon/monitoring/events"]');
+                $element = $this->currentPage->find(
+                    'css',
+                    '*[aria-label="Breadcrumb"]  a[href="main.php?p=50110&amp;o=general"]'
+                );
                 return !is_null($element);
             },
             'The current page is not valid.',
