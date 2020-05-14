@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,6 +36,7 @@
 
 namespace CentreonClapi;
 
+
 class CentreonUtils
 {
     /**
@@ -53,39 +55,6 @@ class CentreonUtils
     private static $clapiUserId;
 
     /**
-     * Get centreon application path
-     *
-     * @return string
-     */
-    public static function getCentreonPath()
-    {
-        if (isset(self::$centreonPath)) {
-            return self::$centreonPath;
-        }
-        $db = new \CentreonDB('centreon');
-        $res = $db->query("SELECT `value` FROM options WHERE `key` = 'oreon_path'");
-        $row = $res->fetchRow();
-        self::$centreonPath = $row['value'];
-        return self::$centreonPath = $row['value'];
-    }
-
-    /**
-     * Get centreon directory
-     *
-     * @return string
-     */
-    public static function getCentreonDir()
-    {
-        $db = new \CentreonDB('centreon');
-        $res = $db->query("SELECT `value` FROM options WHERE `key` = 'oreon_path' LIMIT 1");
-        $row = $res->fetchRow();
-        if (isset($row['value'])) {
-            return $row['value'];
-        }
-        return "";
-    }
-
-    /**
      * Converts strings such as #S# #BS# #BR#
      *
      * @param string $pattern
@@ -101,10 +70,14 @@ class CentreonUtils
 
     /**
      * @param $imagename
-     * @return null
+     * @param null $db
+     * @return int|null
      */
-    public function getImageId($imagename)
+    public function getImageId($imagename, $db = null)
     {
+        if(is_null($db)){
+            $db = new \CentreonDB('centreon');
+        }
         $tab = preg_split("/\//", $imagename);
         isset($tab[0]) ? $dirname = $tab[0] : $dirname = null;
         isset($tab[1]) ? $imagename = $tab[1] : $imagename = null;
@@ -119,12 +92,11 @@ class CentreonUtils
             "AND img.img_path = '" . $imagename . "' " .
             "AND dir.dir_name = '" . $dirname . "' " .
             "LIMIT 1";
-        $db = new \CentreonDB('centreon');
         $res = $db->query($query);
         $img_id = null;
         $row = $res->fetchRow();
         if (isset($row['img_id']) && $row['img_id']) {
-            $img_id = $row['img_id'];
+            $img_id = (int)$row['img_id'];
         }
         return $img_id;
     }
