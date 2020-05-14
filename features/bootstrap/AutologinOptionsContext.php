@@ -9,6 +9,18 @@ class AutologinOptionsContext extends CentreonContext
     private $currentPage;
 
     /**
+     * @Given user default page is a legacy page
+     */
+    public function userDefaultPageIsALegacyPage()
+    {
+        $this->currentPage = new CurrentUserConfigurationPage($this);
+        $this->currentPage->setProperties([
+            'default' => 'Administration > Parameters > Centreon UI'
+        ]);
+        $this->currentPage->save();
+    }
+
+    /**
      * @Given one autologin key has been generated
      */
     public function oneAutologinKeyHasBeenGenerated()
