@@ -3,6 +3,7 @@
 use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\External\LoginPage;
 
 class AutologinOptionsContext extends CentreonContext
 {
@@ -49,6 +50,11 @@ class AutologinOptionsContext extends CentreonContext
      */
     public function iTypeTheAutologinUrlWithTheFullscreenOptionInMyWebBrowser()
     {
+        // log out
+        $this->visit('index.php?disconnect=1');
+        $this->currentPage = new LoginPage($this, false);
+
+        // log in with autologin
         $this->visit('main.php?autologin=1&useralias=admin&token=autolog&min=1');
         $this->currentPage = $this->getSession()->getPage();
     }
