@@ -36,7 +36,7 @@ class AutologinOptionsContext extends CentreonContext
         // Wait page is properly saved
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', 'input[type="button"][value="Modify"]');
+                return $context->getSession()->getPage()->has('css', 'input[name="change"]');
             }
         );
     }
