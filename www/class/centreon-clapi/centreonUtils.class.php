@@ -70,7 +70,7 @@ class CentreonUtils
 
     /**
      * @param $imagename
-     * @param null $db
+     * @param CentreonDB|null $db
      * @return int|null
      */
     public function getImageId($imagename, $db = null)
