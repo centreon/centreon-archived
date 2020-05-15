@@ -43,8 +43,9 @@ class AutologinOptionsContext extends CentreonContext
         $this->iAmLoggedOut();
 
         // log in with autologin
-        $this->visit('main.php?autologin=1&useralias=admin&token=autolog&min=1');
-        $this->currentPage = $this->getSession()->getPage();
+        $this->visit('main.php?autologin=1&useralias=admin&token=autolog&min=1', false);
+        self::$lastUri = 'p=60101';
+        $this->switchToIframe();
     }
 
     /**
