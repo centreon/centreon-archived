@@ -11,34 +11,16 @@ class AutologinOptionsContext extends CentreonContext
     private $currentPage;
 
     /**
-     * @Given user default page is a legacy page
-     */
-    public function userDefaultPageIsALegacyPage()
-    {
-        $this->currentPage = new CurrentUserConfigurationPage($this);
-        $this->currentPage->setProperties([
-            'default' => 'Configuration > Hosts'
-        ]);
-        $this->currentPage->save();
-    }
-
-    /**
      * @Given one autologin key has been generated
      */
     public function oneAutologinKeyHasBeenGenerated()
     {
         $this->currentPage = new CurrentUserConfigurationPage($this);
         $this->currentPage->setProperties(array(
+            'default' => 'Configuration > Hosts',
             'autologin_key' => 'autolog'
         ));
         $this->currentPage->save();
-
-        // Wait page is properly saved
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('css', 'input[name="change"]');
-            }
-        );
     }
 
     /**
