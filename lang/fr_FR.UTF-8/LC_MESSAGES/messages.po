@@ -15075,7 +15075,7 @@ msgid "Host or id can not be null"
 msgstr "L'hôte ou l'id de l'hôte ne peuvent pas être null"
 
 msgid "The command line in the configuration is empty while in the monitoring it is not"
-msgstr "La ligne de commande dans la configuration est vide alors que dans la surveillance elle ne l'est pas."
+msgstr "La ligne de commande dans la configuration est vide alors que celle de la supervision ne l'est pas."
 
 msgid "Different number of tokens between configuration and monitoring command line"
 msgstr "Nombre différent de jetons entre la ligne de commande de configuration et de supervision"
