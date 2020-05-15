@@ -132,7 +132,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
             $statement->execute();
             if ($statement->rowCount() === 0) {
-                throw new \Exception(sprintf(_('Monitoring server %s not found'),$monitoringServer->getName()));
+                throw new \Exception(sprintf(_('Monitoring server %s not found'), $monitoringServer->getName()));
             }
         }
     }
