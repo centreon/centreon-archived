@@ -15044,6 +15044,42 @@ msgstr "Erreur lors de la recherche de l'hôte"
 msgid "Error while searching for the number of host"
 msgstr "Erreur lors de la recherche du nombre d'hôte"
 
+msgid "Error while searching for the host macros"
+msgstr "Erreur lors de la recherche des macros de l'hôte"
+
+msgid "Monitoring server with id %d not found"
+msgstr "Le serveur de supervision avec l'id %d n'a pas été trouvé"
+
+msgid "Monitoring server %s not found"
+msgstr "Le serveur de supervision %s n'a pas été trouvé"
+
+msgid "Template with id %d not found"
+msgstr "Le modèle avec l'id %d n'a pas été trouvé"
+
+msgid "Template %s not found"
+msgstr "Le modèle %s n'a pas été trouvé"
+
+msgid "Error while searching for the service macros"
+msgstr "Erreur lors de la recherche des macros du service"
+
+msgid "Error while searching for the service"
+msgstr "Erreur lors de la recherche du service"
+
+msgid "Error while searching for the command of service"
+msgstr "Erreur lors de la recherche de la commande du service"
+
+msgid "The service id can not be null"
+msgstr "L'id du service ne peut pas être null"
+
+msgid "Host or id can not be null"
+msgstr "L'hôte ou l'id de l'hôte ne peuvent pas être null"
+
+msgid "The command line in the configuration is empty while in the monitoring it is not"
+msgstr "La ligne de commande dans la configuration est vide alors que dans la surveillance elle ne l'est pas."
+
+msgid "Different number of tokens between configuration and monitoring command line"
+msgstr "Nombre différent de jetons entre la ligne de commande de configuration et de surveillance"
+
 #:Centreon/Domain/Monitoring/ResourceService.php:102
 msgid "Error while searching for resources"
 msgstr "Erreur lors de la recherche de ressources"
