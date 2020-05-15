@@ -2,7 +2,7 @@
 
 use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
-use Centreon\Test\Behat\Configuration\HostConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\External\LoginPage;
 
@@ -67,7 +67,7 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                new HostConfigurationPage($context, false);
+                new HostConfigurationListingPage($context, false);
                 return true;
             },
             'The current page is not valid.',
