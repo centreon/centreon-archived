@@ -15078,7 +15078,7 @@ msgid "The command line in the configuration is empty while in the monitoring it
 msgstr "La ligne de commande dans la configuration est vide alors que dans la surveillance elle ne l'est pas."
 
 msgid "Different number of tokens between configuration and monitoring command line"
-msgstr "Nombre différent de jetons entre la ligne de commande de configuration et de surveillance"
+msgstr "Nombre différent de jetons entre la ligne de commande de configuration et de supervision"
 
 #:Centreon/Domain/Monitoring/ResourceService.php:102
 msgid "Error while searching for resources"
