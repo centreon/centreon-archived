@@ -32,6 +32,13 @@ class AutologinOptionsContext extends CentreonContext
             'autologin_key' => 'autolog'
         ));
         $this->currentPage->save();
+
+        // Wait page is properly saved
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', 'input[type="button"][value="Modify"]');
+            }
+        );
     }
 
     /**
