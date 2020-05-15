@@ -2,6 +2,7 @@
 
 use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
 use Centreon\Test\Behat\External\LoginPage;
 
@@ -16,7 +17,7 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->currentPage = new CurrentUserConfigurationPage($this);
         $this->currentPage->setProperties([
-            'default' => 'Administration > Sessions'
+            'default' => 'Configuration > Hosts'
         ]);
         $this->currentPage->save();
     }
@@ -66,11 +67,8 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                $element = $this->currentPage->find(
-                    'css',
-                    '*[aria-label="Breadcrumb"]  a[href="main.php?p=504"]'
-                );
-                return !is_null($element);
+                new HostConfigurationPage($context, false);
+                return true;
             },
             'The current page is not valid.',
             5
