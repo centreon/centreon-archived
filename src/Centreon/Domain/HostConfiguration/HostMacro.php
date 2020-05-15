@@ -190,9 +190,11 @@ class HostMacro
 
     /**
      * @param int|null $hostId
+     * @return HostMacro
      */
-    public function setHostId(?int $hostId): void
+    public function setHostId(?int $hostId): HostMacro
     {
         $this->hostId = $hostId;
+        return $this;
     }
 }
