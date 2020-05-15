@@ -62,7 +62,7 @@ class AutologinOptionsContext extends CentreonContext
             function ($context) {
                 $element = $this->currentPage->find(
                     'css',
-                    '*[aria-label="Breadcrumb"]  a[href="main.php?p=50110&o=general"]'
+                    '*[aria-label="Breadcrumb"]  a[href="main.php?p=504"]'
                 );
                 return !is_null($element);
             },
