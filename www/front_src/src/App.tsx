@@ -7,16 +7,17 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React, { Component, ReactNode } from 'react';
-import { hot } from 'react-hot-loader/root';
 
+import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
+import { pipe } from 'ramda';
 
 import { ThemeProvider } from '@centreon/ui';
 
-import { withStyles } from '@material-ui/core';
+import { withStyles, createStyles } from '@material-ui/core';
 
 import Header from './components/header';
 import { history } from './store';
@@ -29,7 +30,7 @@ import { fetchExternalComponents } from './redux/actions/externalComponentsActio
 
 import footerStyles from './components/footer/footer.scss';
 
-const styles = {
+const styles = createStyles({
   wrapper: {
     display: 'flex',
     alignItems: 'stretch',
@@ -56,7 +57,7 @@ const styles = {
     transition: 'all 0.3s',
     position: 'relative',
   },
-};
+});
 
 // Extends Window interface
 declare global {
@@ -197,4 +198,7 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-export default hot(connect(null, mapDispatchToProps)(withStyles(styles)(App)));
+export default pipe(
+  hot,
+  connect(null, mapDispatchToProps),
+)(withStyles(styles)(App));
