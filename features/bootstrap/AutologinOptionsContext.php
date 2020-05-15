@@ -15,7 +15,7 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->currentPage = new CurrentUserConfigurationPage($this);
         $this->currentPage->setProperties([
-            'default' => 'Administration > Parameters > Centreon UI'
+            'default' => 'Administration > Sessions'
         ]);
         $this->currentPage->save();
     }
