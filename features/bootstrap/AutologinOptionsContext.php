@@ -58,9 +58,7 @@ class AutologinOptionsContext extends CentreonContext
      */
     public function iTypeTheAutologinUrlWithTheFullscreenOptionInMyWebBrowser()
     {
-        // log out
-        $this->visit('index.php?disconnect=1');
-        $this->currentPage = new LoginPage($this, false);
+        $this->iAmLoggedOut();
 
         // log in with autologin
         $this->visit('main.php?autologin=1&useralias=admin&token=autolog&min=1');
