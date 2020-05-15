@@ -16,6 +16,8 @@ import queryString from 'query-string';
 
 import { ThemeProvider } from '@centreon/ui';
 
+import { withStyles } from '@material-ui/core';
+
 import Header from './components/header';
 import { history } from './store';
 import NavigationComponent from './components/navigation';
@@ -25,9 +27,36 @@ import MainRouter from './components/mainRouter';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 
-import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
-import contentStyles from './styles/partials/_content.scss';
+
+const styles = {
+  wrapper: {
+    display: 'flex',
+    alignItems: 'stretch',
+    height: '100%',
+    overflow: 'hidden',
+  },
+  fullScreenWrapper: {
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    flexGrow: 1,
+  },
+  mainContent: {
+    height: '100%',
+    width: '100%',
+    backgroundcolor: 'white',
+  },
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    width: '100%',
+    height: ' 100vh',
+    transition: 'all 0.3s',
+    position: 'relative',
+  },
+};
 
 // Extends Window interface
 declare global {
@@ -39,6 +68,7 @@ declare global {
 
 interface Props {
   fetchExternalComponents: () => void;
+  classes;
 }
 
 interface State {
@@ -116,17 +146,19 @@ class App extends Component<Props, State> {
   public render(): ReactNode {
     const min = this.getMinArgument();
 
+    const { classes } = this.props;
+
     return (
       <ConnectedRouter history={history}>
         <ThemeProvider>
-          <div className={styles.wrapper}>
+          <div className={classes.wrapper}>
             {!min && <NavigationComponent />}
             <Tooltip />
-            <div id="content" className={contentStyles.content}>
+            <div id="content" className={classes.content}>
               {!min && <Header />}
               <div
                 id="fullscreen-wrapper"
-                className={contentStyles['fullscreen-wrapper']}
+                className={classes.fullScreenWrapper}
               >
                 <Fullscreen
                   enabled={this.state.isFullscreenEnabled}
@@ -135,7 +167,7 @@ class App extends Component<Props, State> {
                     this.setState({ isFullscreenEnabled });
                   }}
                 >
-                  <div className={styles['main-content']}>
+                  <div className={classes.mainContent}>
                     <MainRouter />
                   </div>
                 </Fullscreen>
@@ -153,7 +185,11 @@ class App extends Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: (any) => void): Props => {
+interface DispatchProps {
+  fetchExternalComponents: () => void;
+}
+
+const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   return {
     fetchExternalComponents: (): void => {
       dispatch(fetchExternalComponents());
@@ -161,4 +197,4 @@ const mapDispatchToProps = (dispatch: (any) => void): Props => {
   };
 };
 
-export default hot(connect(null, mapDispatchToProps)(App));
+export default hot(connect(null, mapDispatchToProps)(withStyles(styles)(App)));
