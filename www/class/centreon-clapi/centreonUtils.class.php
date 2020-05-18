@@ -75,7 +75,7 @@ class CentreonUtils
      */
     public function getImageId($imagename, $db = null)
     {
-        if(is_null($db)){
+        if (is_null($db)) {
             $db = new \CentreonDB('centreon');
         }
         $tab = preg_split("/\//", $imagename);
