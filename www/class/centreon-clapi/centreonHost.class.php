@@ -669,7 +669,7 @@ class CentreonHost extends CentreonObject
                     || $params[1] == "ehi_statusmap_image"
                 ) {
                     if ($params[2]) {
-                        $id = CentreonUtils::getImageId($params[2]);
+                        $id = CentreonUtils::getImageId($params[2], $this->db);
                         if (is_null($id)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
                         }
