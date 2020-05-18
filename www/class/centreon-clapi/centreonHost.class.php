@@ -58,6 +58,7 @@ require_once "Centreon/Object/Contact/Group.php";
 require_once "Centreon/Object/Relation/Host/Template/Host.php";
 require_once "Centreon/Object/Relation/Host/Parent/Host.php";
 require_once "Centreon/Object/Relation/Host/Group/Host.php";
+require_once "Centreon/Object/Relation/Host/Child/Host.php";
 require_once "Centreon/Object/Relation/Host/Category/Host.php";
 require_once "Centreon/Object/Relation/Instance/Host.php";
 require_once "Centreon/Object/Relation/Contact/Host.php";
@@ -1061,6 +1062,10 @@ class CentreonHost extends CentreonObject
                 case "parent":
                     $class = "Centreon_Object_Host";
                     $relclass = "Centreon_Object_Relation_Host_Parent_Host";
+                    break;
+                case "child":
+                    $class = "Centreon_Object_Host";
+                    $relclass = "Centreon_Object_Relation_Host_Child_Host";
                     break;
                 case "hostcategory":
                     $class = "Centreon_Object_Host_Category";
