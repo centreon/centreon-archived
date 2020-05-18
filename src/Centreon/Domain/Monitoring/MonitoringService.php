@@ -336,17 +336,16 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             return;
         }
         if ($monitoringService->getId() === null) {
-            throw new MonitoringServiceException('The service id can not be null');
+            throw new MonitoringServiceException(_('The service id can not be null'));
         }
         if ($monitoringService->getHost() === null || $monitoringService->getHost()->getId() === null) {
-            throw new MonitoringServiceException('Host or id can not be null');
+            throw new MonitoringServiceException(_('Host or id can not be null'));
         }
 
         $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
         if (empty($configurationCommand)) {
             throw new MonitoringServiceException(
-                'The command line in the configuration service is empty whereas '
-                . 'the command line in the monitoring service is not'
+                _('The command line in the configuration is empty while in the monitoring it is not')
             );
         }
 
@@ -373,10 +372,12 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                 );
 
                 $onDemandServiceMacro = $this->serviceConfiguration->findOnDemandServiceMacros(
-                    $monitoringService->getId()
+                    $monitoringService->getId(),
+                    true
                 );
                 $onDemandHostMacro = $this->hostConfiguration->findOnDemandHostMacros(
-                    $monitoringService->getHost()->getId()
+                    $monitoringService->getHost()->getId(),
+                    true
                 );
 
                 $configurationToken = explode(' ', $configurationCommand);

@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration;
 
+use Centreon\Domain\Annotation\EntityDescriptor;
+
 class ServiceMacro
 {
     /**
@@ -41,6 +43,7 @@ class ServiceMacro
 
     /**
      * @var bool Indicates whether this macro contains a password
+     * @EntityDescriptor(column="is_password", modifier="setPassword")
      */
     private $isPassword = false;
 
@@ -53,6 +56,11 @@ class ServiceMacro
      * @var int|null
      */
     private $order;
+
+    /**
+     * @var int|null
+     */
+    private $serviceId;
 
     /**
      * @return int|null
@@ -170,6 +178,24 @@ class ServiceMacro
     public function setOrder(?int $order): ServiceMacro
     {
         $this->order = $order;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int|null $serviceId
+     * @return ServiceMacro
+     */
+    public function setServiceId(?int $serviceId): ServiceMacro
+    {
+        $this->serviceId = $serviceId;
         return $this;
     }
 }

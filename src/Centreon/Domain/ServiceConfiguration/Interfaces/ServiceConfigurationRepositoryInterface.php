@@ -22,23 +22,20 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration\Interfaces;
 
-use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
-use Centreon\Infrastructure\ServiceConfiguration\ServiceConfigurationRepositoryRDB;
 
 interface ServiceConfigurationRepositoryInterface
 {
-
     /**
      * Find all service macros for the service.
      *
      * @param int $serviceId Id of the service
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find service macros (FALSE by default)
      * @return array<ServiceMacro> List of service macros found
-     * @throws RepositoryException
+     * @throws \Throwable
      */
-    public function findOnDemandServiceMacros(int $serviceId): array;
+    public function findOnDemandServiceMacros(int $serviceId, bool $isUsingInheritance = false): array;
 
     /**
      * Find the command of a service.
@@ -48,7 +45,7 @@ interface ServiceConfigurationRepositoryInterface
      *
      * @param int $serviceId Service id
      * @return string|null Return the command if found
-     * @throws RepositoryException
+     * @throws \Throwable
      */
     public function findCommandLine(int $serviceId): ?string;
 
@@ -57,7 +54,7 @@ interface ServiceConfigurationRepositoryInterface
      *
      * @param int $serviceId Service id
      * @return Service|null
-     * @throws RepositoryException
+     * @throws \Throwable
      */
     public function findService(int $serviceId): ?Service;
 }

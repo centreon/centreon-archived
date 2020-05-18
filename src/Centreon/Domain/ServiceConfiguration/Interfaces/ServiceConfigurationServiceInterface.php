@@ -22,10 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration\Interfaces;
 
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
-use Centreon\Domain\ServiceConfiguration\ServiceConfigurationService;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 
 interface ServiceConfigurationServiceInterface
@@ -34,18 +32,17 @@ interface ServiceConfigurationServiceInterface
      * Find all service macros for the service.
      *
      * @param int $serviceId Id of the service
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find service macros (FALSE by default)
      * @return ServiceMacro[] List of service macros found
      * @throws ServiceConfigurationException
-     * @throws RepositoryException
      */
-    public function findOnDemandServiceMacros(int $serviceId): array;
+    public function findOnDemandServiceMacros(int $serviceId, bool $isUsingInheritance = false): array;
 
     /**
      * Find a service.
      *
      * @param int $serviceId Service id
      * @return Service|null
-     * @throws RepositoryException
      * @throws ServiceConfigurationException
      */
     public function findService(int $serviceId): ?Service;
@@ -57,7 +54,6 @@ interface ServiceConfigurationServiceInterface
      * @param string $command Command to analyse
      * @return ServiceMacro[] List of service macros of type password
      * @throws ServiceConfigurationException
-     * @throws RepositoryException
      */
     public function findServiceMacrosPassword(int $serviceId, string $command): array;
 
@@ -66,7 +62,6 @@ interface ServiceConfigurationServiceInterface
      *
      * @param int $serviceId Service id
      * @return string|null Return the command if found
-     * @throws RepositoryException
      * @throws ServiceConfigurationException
      */
     public function findCommandLine(int $serviceId): ?string;
