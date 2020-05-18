@@ -201,4 +201,5 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
 export default pipe(
   hot,
   connect(null, mapDispatchToProps),
-)(withStyles(styles)(App));
+  withStyles(styles),
+)(App);
