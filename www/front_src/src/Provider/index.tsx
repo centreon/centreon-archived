@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { pick, pathEq } from 'ramda';
 
-import { useRequest, getData } from '@centreon/ui';
+import { useRequest, getData, Loader } from '@centreon/ui';
 import {
   loadTranslations,
   setLocale,
@@ -59,7 +59,7 @@ const AppProvider = (): JSX.Element | null => {
   }, []);
 
   if (!dataLoaded) {
-    return null;
+    return <Loader fullContent />;
   }
 
   return (

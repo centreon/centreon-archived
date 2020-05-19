@@ -447,7 +447,7 @@ class CentreonHostGroupService extends CentreonObject
                 $params[2] = "esi_" . $params[2];
                 if ($params[2] == "esi_icon_image") {
                     if ($params[3]) {
-                        $id = CentreonUtils::getImageId($params[3]);
+                        $id = CentreonUtils::getImageId($params[3], $this->db);
                         if (is_null($id)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[3]);
                         }
