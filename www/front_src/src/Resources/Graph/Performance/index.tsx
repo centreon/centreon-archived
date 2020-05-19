@@ -8,7 +8,17 @@ import {
   Tooltip,
 } from 'recharts';
 import filesize from 'filesize';
-import { pipe, map, prop, propEq, find, path, reject, sortBy } from 'ramda';
+import {
+  pipe,
+  map,
+  prop,
+  propEq,
+  find,
+  path,
+  reject,
+  sortBy,
+  isEmpty,
+} from 'ramda';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
@@ -66,8 +76,8 @@ const PerformanceGraph = ({
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
 
-  const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>();
-  const [lineData, setLineData] = React.useState<Array<LineModel>>();
+  const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
+  const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
   const [title, setTitle] = React.useState<string>();
 
   const { sendRequest, sending } = useRequest<GraphData>({
@@ -86,7 +96,7 @@ const PerformanceGraph = ({
     return <LoadingSkeleton />;
   }
 
-  if (!timeSeries || !lineData) {
+  if (isEmpty(timeSeries) || isEmpty(lineData)) {
     return (
       <div className={classes.noDataContainer}>
         <Typography align="center" variant="body1">
