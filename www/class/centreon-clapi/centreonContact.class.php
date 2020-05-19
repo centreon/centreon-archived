@@ -202,7 +202,8 @@ class CentreonContact extends CentreonObject
         if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
             return true;
         }
-        $dir = CentreonUtils::getCentreonPath() . "/www/locale/$locale";
+        $centreonDir = realpath(__DIR__ . "/../../../");
+        $dir = $centreonDir . "/www/locale/$locale";
         if (is_dir($dir)) {
             return true;
         }

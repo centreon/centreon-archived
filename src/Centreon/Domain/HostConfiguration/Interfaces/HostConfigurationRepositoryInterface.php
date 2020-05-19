@@ -43,7 +43,7 @@ interface HostConfigurationRepositoryInterface
      *
      * @param int $hostId Host Id to be found
      * @return Host|null Returns a host otherwise null
-     * @throws RepositoryException
+     * @throws \Throwable
      */
     public function findHost(int $hostId): ?Host;
 
@@ -66,8 +66,9 @@ interface HostConfigurationRepositoryInterface
      * Find all host macros for the host.
      *
      * @param int $hostId Id of the host
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find host macros (FALSE by default)
      * @return array<HostMacro> List of host macros found
-     * @throws RepositoryException
+     * @throws \Throwable
      */
-    public function findOnDemandHostMacros(int $hostId): array;
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
 }
