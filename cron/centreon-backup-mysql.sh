@@ -129,8 +129,8 @@ output_log "Mount point finded: $mount_point"
 ###
 # Get Volume group Name
 ###
-vg_name=$(lvdisplay -c "$mount_device" | cut -d : -f 2)
-lv_name=$(lvdisplay -c "$mount_device" | cut -d : -f 1)
+vg_name=$(sudo lvdisplay -c "$mount_device" | cut -d : -f 2)
+lv_name=$(sudo lvdisplay -c "$mount_device" | cut -d : -f 1)
 if [ -z "$vg_name" ] ; then
 	output_log "ERROR: Can't get VolumeGroup name for datadir." 1
 	exit 1
@@ -144,8 +144,8 @@ output_log "VolumeGroup finded: $vg_name"
 ###
 # Get free Space
 ###
-free_pe=$(vgdisplay -c "$vg_name" | cut -d : -f 16)
-size_pe=$(vgdisplay -c "$vg_name" | cut -d : -f 13)
+free_pe=$(sudo vgdisplay -c "$vg_name" | cut -d : -f 16)
+size_pe=$(sudo vgdisplay -c "$vg_name" | cut -d : -f 13)
 if [ -z "$free_pe" ] ; then
 	output_log "ERROR: Can't get free PE value for the VolumeGroup." 1
 	exit 1
