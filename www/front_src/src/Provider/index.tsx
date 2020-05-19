@@ -47,7 +47,7 @@ const AppProvider = (): JSX.Element | null => {
 
         syncTranslationWithStore(store);
         store.dispatch(loadTranslations(retrievedTranslations));
-        store.dispatch(setLocale(retrievedUser.locale.slice(0, 2)));
+        store.dispatch(setLocale(retrievedUser.locale?.slice(0, 2)));
 
         setDataLoaded(true);
       })
