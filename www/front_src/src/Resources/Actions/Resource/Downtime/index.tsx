@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
+import { useUserContext } from '../../../../Provider/UserContext';
 import {
   labelRequired,
   labelDowntimeCommandSent,
@@ -12,8 +13,8 @@ import {
   labelEndDateMustBeGreater,
 } from '../../../translatedLabels';
 import DialogDowntime from './Dialog';
-import { Resource, User } from '../../../models';
-import { setDowntimeOnResources, getUser } from '../../../api';
+import { Resource } from '../../../models';
+import { setDowntimeOnResources } from '../../../api';
 
 interface DateParams {
   dateStart: Date;
@@ -90,18 +91,13 @@ const DowntimeForm = ({
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const [locale, setLocale] = React.useState<string | null>('en');
-  const [timezone, setTimezone] = React.useState<string | null>(null);
+  const { locale, timezone, username } = useUserContext();
 
   const {
     sendRequest: sendSetDowntimeOnResources,
     sending: sendingSetDowntingOnResources,
   } = useRequest({
     request: setDowntimeOnResources,
-  });
-
-  const { sendRequest: sendGetUser } = useRequest<User>({
-    request: getUser,
   });
 
   const currentDate = new Date();
@@ -148,11 +144,7 @@ const DowntimeForm = ({
   });
 
   React.useEffect(() => {
-    sendGetUser().then((user) => {
-      form.setFieldValue('comment', `${labelDowntimeBy} ${user.username}`);
-      setLocale(user.locale);
-      setTimezone(user.timezone);
-    });
+    form.setFieldValue('comment', `${labelDowntimeBy} ${username}`);
   }, []);
 
   return (

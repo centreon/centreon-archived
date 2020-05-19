@@ -11,8 +11,9 @@ import {
   labelAcknowledgedBy,
 } from '../../../translatedLabels';
 import DialogAcknowledge from './Dialog';
-import { Resource, User } from '../../../models';
-import { acknowledgeResources, getUser } from '../../../api';
+import { Resource } from '../../../models';
+import { acknowledgeResources } from '../../../api';
+import { useUserContext } from '../../../../Provider/UserContext';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
@@ -32,15 +33,13 @@ const AcknowledgeForm = ({
 }: Props): JSX.Element | null => {
   const { showMessage } = useSnackbar();
 
+  const { username } = useUserContext();
+
   const {
     sendRequest: sendAcknowledgeResources,
     sending: sendingAcknowledgeResources,
   } = useRequest({
     request: acknowledgeResources,
-  });
-
-  const { sendRequest: sendGetUser } = useRequest<User>({
-    request: getUser,
   });
 
   const showSuccess = (message): void =>
@@ -65,9 +64,7 @@ const AcknowledgeForm = ({
   });
 
   React.useEffect(() => {
-    sendGetUser().then((user) =>
-      form.setFieldValue('comment', `${labelAcknowledgedBy} ${user.username}`),
-    );
+    form.setFieldValue('comment', `${labelAcknowledgedBy} ${username}`);
   }, []);
 
   return (

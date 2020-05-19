@@ -293,7 +293,7 @@ describe(Actions, () => {
     );
   });
 
-  it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
+  it.only('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
     const { getByText, findByText } = renderActions();
 
     const selectedResources = [

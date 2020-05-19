@@ -56,12 +56,6 @@ export interface Listing<TEntity> {
 
 export type ResourceListing = Listing<Resource>;
 
-export interface User {
-  username: string;
-  locale: string | null;
-  timezone: string | null;
-}
-
 export interface Downtime {
   author_name: string;
   comment: string;
