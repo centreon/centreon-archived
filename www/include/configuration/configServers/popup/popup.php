@@ -134,7 +134,7 @@ if ($server['localhost'] === '1') {
             $thumbprintResponse = json_decode($lastActionLog->getData(), true);
             if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
                 $thumbprints .= '
-      - key: ' . $thummprintReponse['data']['thumbprint'];
+      - key: ' . $thumbprintResponse['data']['thumbprint'];
             } else {
                 $gorgoneError = true;
                 $dataError .= '
