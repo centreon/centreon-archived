@@ -65,10 +65,11 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     }
 
     // Get executed command lines
-    $sth = $pearDBStorage->prepare("SELECT command_line FROM services
-        WHERE host_id = :host_id
-        AND service_id = :service_id
-        AND check_command = :check_command"
+    $sth = $pearDBStorage->prepare(
+        "SELECT command_line FROM services "
+        . "WHERE host_id = :host_id "
+        . "AND service_id = :service_id "
+        . "AND check_command = :check_command"
     );
     $sth->bindParam(':host_id', $hostId, PDO::PARAM_INT);
     $sth->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
@@ -115,8 +116,12 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
                 break;
             } else {
                 $currentMacro = $row['svc_macro_name'];
-                $commandLineWithMacros = str_replace($row['svc_macro_name'],
-                    '$pw', $commandLineWithMacros, $replacedMacros);
+                $commandLineWithMacros = str_replace(
+                    $row['svc_macro_name'],
+                    '$pw',
+                    $commandLineWithMacros,
+                    $replacedMacros
+                );
                 $replacedExecuted = 0;
             }
         }
@@ -159,8 +164,12 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
                 break;
             } else {
                 $currentMacro = $row['host_macro_name'];
-                $commandLineWithMacros = str_replace($row['host_macro_name'],
-                    '$pw', $commandLineWithMacros, $replacedMacros);
+                $commandLineWithMacros = str_replace(
+                    $row['host_macro_name'],
+                    '$pw',
+                    $commandLineWithMacros,
+                    $replacedMacros
+                );
                 $replacedExecuted = 0;
             }
         }
