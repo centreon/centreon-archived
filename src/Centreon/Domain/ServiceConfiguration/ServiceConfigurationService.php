@@ -22,9 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration;
 
-use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\HostConfiguration\HostConfigurationService;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 
@@ -60,10 +58,8 @@ class ServiceConfigurationService implements ServiceConfigurationServiceInterfac
     {
         try {
             return $this->serviceRepository->findService($serviceId);
-        } catch (RepositoryException $ex) {
-            throw $ex;
         } catch (\Throwable $ex) {
-            throw new ServiceConfigurationException('Error while searching for the service', 0, $ex);
+            throw new ServiceConfigurationException(_('Error while searching for the service'), 0, $ex);
         }
     }
 
@@ -74,24 +70,20 @@ class ServiceConfigurationService implements ServiceConfigurationServiceInterfac
     {
         try {
             return $this->serviceRepository->findCommandLine($serviceId);
-        } catch (RepositoryException $ex) {
-            throw $ex;
         } catch (\Throwable $ex) {
-            throw new ServiceConfigurationException('Error while searching for the command of service', 0, $ex);
+            throw new ServiceConfigurationException(_('Error while searching for the command of service'), 0, $ex);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function findOnDemandServiceMacros(int $serviceId): array
+    public function findOnDemandServiceMacros(int $serviceId, bool $isUsingInheritance = false): array
     {
         try {
-            return $this->serviceRepository->findOnDemandServiceMacros($serviceId);
-        } catch (RepositoryException $ex) {
-            throw $ex;
+            return $this->serviceRepository->findOnDemandServiceMacros($serviceId, $isUsingInheritance);
         } catch (\Throwable $ex) {
-            throw new ServiceConfigurationException('Error while searching for the on-demand service macros', 0, $ex);
+            throw new ServiceConfigurationException(_('Error while searching for the service macros'), 0, $ex);
         }
     }
 
@@ -103,7 +95,7 @@ class ServiceConfigurationService implements ServiceConfigurationServiceInterfac
         $serviceMacrosPassword = [];
         // If contains on-demand service macros
         if (strpos($command, '$_SERVICE') !== false) {
-            $onDemandServiceMacros = $this->findOnDemandServiceMacros($serviceId);
+            $onDemandServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
             foreach ($onDemandServiceMacros as $serviceMacro) {
                 if ($serviceMacro->isPassword()) {
                     $serviceMacrosPassword[] = $serviceMacro;

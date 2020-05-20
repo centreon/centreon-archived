@@ -59,10 +59,11 @@ interface HostConfigurationServiceInterface
      * Find all host macros for the host.
      *
      * @param int $hostId Id of the host
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find host macros (FALSE by default)
      * @return HostMacro[] List of host macros found
      * @throws HostConfigurationException
      */
-    public function findOnDemandHostMacros(int $hostId): array;
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
 
     /**
      * Find all on-demand host macros of type password needed for this command.

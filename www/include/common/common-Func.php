@@ -2219,30 +2219,39 @@ function cleanString($str)
  * @param int $defaultPage User default page
  * @return array The topology information (url, options, name...)
  */
-function getFirstAllowedMenu($lcaTStr, $defaultPage = null)
+function getFirstAllowedMenu($lcaTStr, $defaultPage = 104)
 {
     global $pearDB;
 
-    $eventsViewPage = 104;
+    $defaultPageOptions = null;
 
-    if ($defaultPage === null) {
-        $defaultPage = $eventsViewPage;
+    // manage default page with option (eg: 50110&o=general)
+    if (preg_match('/(\d+)(\D+)/', $defaultPage, $matches)) {
+        $defaultPage = $matches[1];
+        $defaultPageOptions = $matches[2];
     }
 
-    $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
+    $statement = $pearDB->prepare(
+        "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
         . "FROM topology "
         . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
         . "topology_page IS NOT NULL AND topology_show = '1' "
-        . "ORDER BY FIELD(topology_page, " . $defaultPage . ") DESC, topology_id ASC "
-        . "LIMIT 1";
+        . "ORDER BY FIELD(topology_page, :default_page) DESC, "
+        . "FIELD(topology_url_opt, :default_page_options) DESC, "
+        . "topology_id ASC "
+        . "LIMIT 1"
+    );
 
-    $dbResult = $pearDB->query($query);
+    $statement->bindValue(':default_page', $defaultPage, \PDO::PARAM_INT);
+    $statement->bindValue(':default_page_options', $defaultPageOptions, \PDO::PARAM_STR);
 
-    if (!$dbResult->rowCount()) {
+    $statement->execute();
+
+    if (!$statement->rowCount()) {
         return [];
     }
 
-    return $dbResult->fetch();
+    return $statement->fetch();
 }
 
 function reset_search_page($url)

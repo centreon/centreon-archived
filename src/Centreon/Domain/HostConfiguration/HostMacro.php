@@ -58,6 +58,11 @@ class HostMacro
     private $order;
 
     /**
+     * @var int|null
+     */
+    private $hostId;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -172,6 +177,24 @@ class HostMacro
     public function setOrder(?int $order): HostMacro
     {
         $this->order = $order;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHostId(): ?int
+    {
+        return $this->hostId;
+    }
+
+    /**
+     * @param int|null $hostId
+     * @return HostMacro
+     */
+    public function setHostId(?int $hostId): HostMacro
+    {
+        $this->hostId = $hostId;
         return $this;
     }
 }
