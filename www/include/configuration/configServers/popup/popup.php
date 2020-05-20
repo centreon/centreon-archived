@@ -131,7 +131,7 @@ if ($server['localhost'] === '1') {
                 continue;
             }
 
-            $thummprintReponse = json_decode($lastActionLog->getData(), true);
+            $thumbprintResponse = json_decode($lastActionLog->getData(), true);
             if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
                 $thumbprints .= '
       - key: ' . $thummprintReponse['data']['thumbprint'];
