@@ -138,7 +138,7 @@ if ($server['localhost'] === '1') {
             } else {
                 $gorgoneError = true;
                 $dataError .= '
-      - error : Poller ' . $serverId . ' : ' . $thummprintReponse['message'];
+      - error : Poller ' . $serverId . ' : ' . $thumbprintResponse['message'];
             }
         }
     } catch (\Exception $ex) {
