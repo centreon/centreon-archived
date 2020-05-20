@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { last } from 'ramda';
+import { last, head } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -106,6 +106,7 @@ const retrievedDetails = {
 const performanceGraphData = {
   global: {},
   times: [],
+  metrics: [],
 };
 
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
@@ -236,7 +237,7 @@ describe(Details, () => {
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
 
-      userEvent.click(getByText(labelLast24h));
+      userEvent.click(head(getAllByText(labelLast24h)) as HTMLElement);
 
       userEvent.click(last(getAllByText(period)) as HTMLElement);
 
