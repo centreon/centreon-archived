@@ -28,6 +28,8 @@ import {
   labelFixed,
   labelChangeEndDate,
   labelCheck,
+  labelServicesDenied,
+  labelHostsDenied,
 } from '../translatedLabels';
 import Actions from '.';
 import useLoadResources from '../Listing/useLoadResources';
@@ -43,14 +45,42 @@ import {
   hostCheckEndpoint,
   serviceCheckEndpoint,
 } from '../api/endpoint';
+import * as UserContext from '../../Provider/UserContext';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
+
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
+
 jest.mock('../icons/Downtime');
+
+const mockUserContext = {
+  username: 'admin',
+  locale: 'en',
+  timezone: 'Europe/Paris',
+
+  acl: {
+    actions: {
+      service: {
+        downtime: true,
+        acknowledgement: true,
+        check: true,
+      },
+      host: {
+        downtime: true,
+        acknowledgement: true,
+        check: true,
+      },
+    },
+  },
+};
+
+jest.mock('../../Provider/UserContext');
+
+const mockedUseUserContext = UserContext as jest.Mocked<typeof UserContext>;
 
 const ActionsWithLoading = (): JSX.Element => {
   useLoadResources();
@@ -89,19 +119,19 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValueOnce({ data: [] }).mockResolvedValueOnce({
-      data: {
-        username: 'admin',
-      },
-    });
+    mockedAxios.get.mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
     mockAppStateSelector(useSelector);
+
+    mockedUseUserContext.useUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+
+    mockedUseUserContext.useUserContext.mockReset();
   });
 
   it('executes a listing request when refresh button is clicked', async () => {
@@ -293,7 +323,7 @@ describe(Actions, () => {
     );
   });
 
-  it.only('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
+  it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
     const { getByText, findByText } = renderActions();
 
     const selectedResources = [
@@ -383,4 +413,162 @@ describe(Actions, () => {
       );
     });
   });
+
+  it('cannot execute an action when associated ACL are not sufficient', async () => {
+    mockedUseUserContext.useUserContext.mockReturnValue({
+      ...mockUserContext,
+      acl: {
+        actions: {
+          service: {
+            downtime: false,
+            check: false,
+            acknowledgement: false,
+          },
+          host: {
+            downtime: false,
+            check: false,
+            acknowledgement: false,
+          },
+        },
+      },
+    });
+
+    const { getByText } = renderActions();
+
+    const host = {
+      id: 0,
+      type: 'host',
+    } as Resource;
+
+    const service = {
+      id: 1,
+      type: 'service',
+    } as Resource;
+
+    const selectedResources = [host, service];
+
+    act(() => {
+      context.setSelectedResources(selectedResources);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelCheck)).toBeDisabled();
+      expect(getByText(labelAcknowledge)).toBeDisabled();
+      expect(getByText(labelDowntime)).toBeDisabled();
+    });
+  });
+
+  const cannotDowntimeServicesAcl = {
+    actions: {
+      service: {
+        downtime: false,
+        check: true,
+        acknowledgement: true,
+      },
+      host: {
+        downtime: true,
+        check: true,
+        acknowledgement: true,
+      },
+    },
+  };
+
+  const cannotAcknowledgeServicesAcl = {
+    actions: {
+      service: {
+        downtime: true,
+        check: false,
+        acknowledgement: false,
+      },
+      host: {
+        downtime: true,
+        check: true,
+        acknowledgement: true,
+      },
+    },
+  };
+
+  const cannotDowntimeHostsAcl = {
+    actions: {
+      service: {
+        downtime: true,
+        check: true,
+        acknowledgement: true,
+      },
+      host: {
+        downtime: false,
+        check: true,
+        acknowledgement: true,
+      },
+    },
+  };
+
+  const cannotAcknowledgeHostsAcl = {
+    actions: {
+      service: {
+        downtime: true,
+        check: true,
+        acknowledgement: true,
+      },
+      host: {
+        downtime: true,
+        check: true,
+        acknowledgement: false,
+      },
+    },
+  };
+
+  it.each([
+    [
+      labelSetDowntime,
+      labelDowntime,
+      labelServicesDenied,
+      cannotDowntimeServicesAcl,
+    ],
+    [
+      labelAcknowledge,
+      labelAcknowledge,
+      labelServicesDenied,
+      cannotAcknowledgeServicesAcl,
+    ],
+    [labelSetDowntime, labelDowntime, labelHostsDenied, cannotDowntimeHostsAcl],
+    [
+      labelAcknowledge,
+      labelAcknowledge,
+      labelHostsDenied,
+      cannotAcknowledgeHostsAcl,
+    ],
+  ])(
+    'displays a warning message when trying to %p with limited ACL',
+    async (_, labelAction, labelWarning, acl) => {
+      mockedUseUserContext.useUserContext.mockReturnValue({
+        ...mockUserContext,
+        acl,
+      });
+
+      const { getByText } = renderActions();
+
+      const host = {
+        id: 0,
+        type: 'host',
+      } as Resource;
+
+      const service = {
+        id: 1,
+        type: 'service',
+      } as Resource;
+
+      const selectedResources = [host, service];
+
+      act(() => {
+        context.setSelectedResources(selectedResources);
+      });
+
+      fireEvent.click(getByText(labelAction));
+
+      await waitFor(() => {
+        expect(getByText(labelWarning)).toBeInTheDocument();
+      });
+    },
+  );
 });

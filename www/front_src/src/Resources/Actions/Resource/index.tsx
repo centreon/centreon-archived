@@ -8,6 +8,7 @@ import IconCheck from '@material-ui/icons/Sync';
 
 import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 
+import { useUserContext } from '../../../Provider/UserContext';
 import IconDowntime from '../../icons/Downtime';
 import {
   labelAcknowledge,
@@ -20,6 +21,7 @@ import AcknowledgeForm from './Acknowledge';
 import DowntimeForm from './Downtime';
 import { checkResources } from '../../api';
 import { useResourceContext } from '../../Context';
+import useAclQuery from './aclQuery';
 
 const ActionButton = (props: ButtonProps): JSX.Element => (
   <Button variant="contained" color="primary" size="small" {...props} />
@@ -44,6 +46,8 @@ const ResourceActions = (): JSX.Element => {
     showMessage({ message, severity: Severity.error });
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
+
+  const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
 
   const hasResourcesToCheck = resourcesToCheck.length > 0;
 
@@ -92,13 +96,18 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToSetDowntime([]);
   };
 
-  const disabled = isEmpty(selectedResources);
+  const noResourcesSelected = isEmpty(selectedResources);
+  const disableAcknowledge =
+    noResourcesSelected || !canAcknowledge(selectedResources);
+  const disableDowntime =
+    noResourcesSelected || !canDowntime(selectedResources);
+  const disableCheck = noResourcesSelected || !canCheck(selectedResources);
 
   return (
     <Grid container spacing={1}>
       <Grid item>
         <ActionButton
-          disabled={disabled}
+          disabled={disableAcknowledge}
           startIcon={<IconAcknowledge />}
           onClick={prepareToAcknowledge}
         >
@@ -107,7 +116,7 @@ const ResourceActions = (): JSX.Element => {
       </Grid>
       <Grid item>
         <ActionButton
-          disabled={disabled}
+          disabled={disableDowntime}
           startIcon={<IconDowntime />}
           onClick={prepareToSetDowntime}
         >
@@ -116,7 +125,7 @@ const ResourceActions = (): JSX.Element => {
       </Grid>
       <Grid item>
         <ActionButton
-          disabled={disabled}
+          disabled={disableCheck}
           startIcon={<IconCheck />}
           onClick={prepareToCheck}
         >

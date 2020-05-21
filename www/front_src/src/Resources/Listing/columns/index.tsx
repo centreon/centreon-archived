@@ -26,6 +26,7 @@ import { Resource } from '../../models';
 import StateColumn from './State';
 import GraphColumn from './Graph';
 import ActionButton from '../../ActionButton';
+import useAclQuery from '../../Actions/Resource/aclQuery';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -97,12 +98,18 @@ const StatusColumnOnHover = ({
   row,
 }: StatusColumnProps): JSX.Element => {
   const classes = useStyles();
+  const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
+
+  const disableAcknowledge = !canAcknowledge([row]);
+  const disableDowntime = !canDowntime([row]);
+  const disableCheck = !canCheck([row]);
 
   return (
     <Grid container spacing={1} alignItems="center">
       <Grid item>
         <ActionButton
           title={labelAcknowledge}
+          disabled={disableAcknowledge}
           color="primary"
           onClick={(): void => actions.onAcknowledge(row)}
           ariaLabel={`${labelAcknowledge} ${row.name}`}
@@ -113,6 +120,7 @@ const StatusColumnOnHover = ({
       <Grid item>
         <ActionButton
           title={labelSetDowntime}
+          disabled={disableDowntime}
           onClick={(): void => actions.onDowntime(row)}
           ariaLabel={`${labelSetDowntimeOn} ${row.name}`}
         >
@@ -122,6 +130,7 @@ const StatusColumnOnHover = ({
       <Grid item>
         <ActionButton
           title={labelCheck}
+          disabled={disableCheck}
           onClick={(): void => actions.onCheck(row)}
           ariaLabel={`${labelCheck} ${row.name}`}
         >

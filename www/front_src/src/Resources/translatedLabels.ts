@@ -155,3 +155,9 @@ export const labelApiNotFoundContactAdmin = I18n.t(
   'Contact your Centreon administrator or update the following file',
 );
 export const labelApiNotFoundDocumentation = I18n.t('See Documentation');
+export const labelServicesDenied = I18n.t(
+  "Services will not be affected because you don't have sufficient permission",
+);
+export const labelHostsDenied = I18n.t(
+  "Hosts will not be affected because you don't have sufficient permission",
+);

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Typography, Checkbox, FormHelperText, Grid } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, Loader } from '@centreon/ui';
 
@@ -13,6 +14,7 @@ import {
   labelAcknowledgeServices,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
+import useAclQuery from '../aclQuery';
 
 interface Props {
   resources: Array<Resource>;
@@ -37,6 +39,10 @@ const DialogAcknowledge = ({
   handleChange,
   loading,
 }: Props): JSX.Element => {
+  const { getAcknowledgementDeniedTypeAlert } = useAclQuery();
+
+  const deniedTypeAlert = getAcknowledgementDeniedTypeAlert(resources);
+
   const open = resources.length > 0;
 
   const hasHosts = resources.find((resource) => resource.type === 'host');
@@ -55,6 +61,11 @@ const DialogAcknowledge = ({
     >
       {loading && <Loader fullContent />}
       <Grid direction="column" container spacing={1}>
+        {deniedTypeAlert && (
+          <Grid item>
+            <Alert severity="warning">{deniedTypeAlert}</Alert>
+          </Grid>
+        )}
         <Grid item>
           <TextField
             value={values.comment}
