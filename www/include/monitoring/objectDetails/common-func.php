@@ -184,7 +184,11 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     }
 
     // Also hide as much as possible passwords from Centreon Plugins options which may be used in non-password macros
-    $commandLineExecuted = preg_replace('/(--([0-9a-z]+-)*password=)[^ ]+/', '$1$pw', $commandLineExecuted);
+    $commandLineExecuted = preg_replace(
+        '/(--([0-9a-z]+-)*password=|--snmp-community=)[^ ]+/',
+        '$1$pw',
+        $commandLineExecuted
+    );
 
     return $commandLineExecuted;
 }
