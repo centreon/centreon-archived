@@ -460,59 +460,39 @@ describe(Actions, () => {
 
   const cannotDowntimeServicesAcl = {
     actions: {
+      ...mockUserContext.acl.actions,
       service: {
+        ...mockUserContext.acl.actions.service,
         downtime: false,
-        check: true,
-        acknowledgement: true,
-      },
-      host: {
-        downtime: true,
-        check: true,
-        acknowledgement: true,
       },
     },
   };
 
   const cannotAcknowledgeServicesAcl = {
     actions: {
+      ...mockUserContext.acl.actions,
       service: {
-        downtime: true,
-        check: false,
+        ...mockUserContext.acl.actions.service,
         acknowledgement: false,
-      },
-      host: {
-        downtime: true,
-        check: true,
-        acknowledgement: true,
       },
     },
   };
 
   const cannotDowntimeHostsAcl = {
     actions: {
-      service: {
-        downtime: true,
-        check: true,
-        acknowledgement: true,
-      },
+      ...mockUserContext.acl.actions,
       host: {
+        ...mockUserContext.acl.actions.host,
         downtime: false,
-        check: true,
-        acknowledgement: true,
       },
     },
   };
 
   const cannotAcknowledgeHostsAcl = {
     actions: {
-      service: {
-        downtime: true,
-        check: true,
-        acknowledgement: true,
-      },
+      ...mockUserContext.acl.actions,
       host: {
-        downtime: true,
-        check: true,
+        ...mockUserContext.acl.actions.host,
         acknowledgement: false,
       },
     },
