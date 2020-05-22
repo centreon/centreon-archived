@@ -11,8 +11,6 @@ import {
   isNil,
   always,
   equals,
-  tap,
-  filter,
   isEmpty,
   reject,
 } from 'ramda';

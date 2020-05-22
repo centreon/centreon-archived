@@ -8,7 +8,6 @@ import IconCheck from '@material-ui/icons/Sync';
 
 import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 
-import { useUserContext } from '../../../Provider/UserContext';
 import IconDowntime from '../../icons/Downtime';
 import {
   labelAcknowledge,
