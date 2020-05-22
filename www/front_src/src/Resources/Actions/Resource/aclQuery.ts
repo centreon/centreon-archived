@@ -11,6 +11,10 @@ import {
   isNil,
   always,
   equals,
+  tap,
+  filter,
+  isEmpty,
+  reject,
 } from 'ramda';
 
 import { Resource } from '../../models';
@@ -51,17 +55,18 @@ const useAclQuery = (): AclQuery => {
 
     return pipe(
       partition(isHost),
+      reject(isEmpty),
       find(cannot(action)),
-      head,
       ifElse(
         isNil,
         always(undefined),
         pipe(
+          head,
           toType,
           ifElse(
-            equals('service'),
-            always(labelServicesDenied),
+            equals('host'),
             always(labelHostsDenied),
+            always(labelServicesDenied),
           ),
         ),
       ),

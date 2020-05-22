@@ -80,7 +80,7 @@ const mockUserContext = {
 
 jest.mock('../../Provider/UserContext');
 
-const mockedUseUserContext = UserContext as jest.Mocked<typeof UserContext>;
+const mockedUserContext = UserContext as jest.Mocked<typeof UserContext>;
 
 const ActionsWithLoading = (): JSX.Element => {
   useLoadResources();
@@ -124,14 +124,14 @@ describe(Actions, () => {
     mockDate.set(mockNow);
     mockAppStateSelector(useSelector);
 
-    mockedUseUserContext.useUserContext.mockReturnValue(mockUserContext);
+    mockedUserContext.useUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
 
-    mockedUseUserContext.useUserContext.mockReset();
+    mockedUserContext.useUserContext.mockReset();
   });
 
   it('executes a listing request when refresh button is clicked', async () => {
@@ -172,7 +172,7 @@ describe(Actions, () => {
     async (labelAction, labelComment, labelConfirmAction) => {
       const { getByText, getAllByText, findByText } = renderActions();
 
-      const selectedResources = [{} as Resource];
+      const selectedResources = [{ type: 'host' } as Resource];
 
       act(() => {
         context.setSelectedResources(selectedResources);
@@ -275,7 +275,7 @@ describe(Actions, () => {
       getByDisplayValue,
     } = renderActions();
 
-    const selectedResources = [{} as Resource];
+    const selectedResources = [{ type: 'host' } as Resource];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -303,11 +303,13 @@ describe(Actions, () => {
       findByText,
     } = renderActions();
 
-    const selectedResources = [{} as Resource];
+    const selectedResources = [{ type: 'host' } as Resource];
 
     act(() => {
       context.setSelectedResources(selectedResources);
     });
+
+    await waitFor(() => expect(getByText(labelDowntime)).toBeEnabled());
 
     fireEvent.click(getByText(labelDowntime));
 
@@ -415,7 +417,7 @@ describe(Actions, () => {
   });
 
   it('cannot execute an action when associated ACL are not sufficient', async () => {
-    mockedUseUserContext.useUserContext.mockReturnValue({
+    mockedUserContext.useUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
       acl: {
         actions: {
@@ -521,7 +523,7 @@ describe(Actions, () => {
   ])(
     'displays a warning message when trying to %p with limited ACL',
     async (_, labelAction, labelWarning, acl) => {
-      mockedUseUserContext.useUserContext.mockReturnValue({
+      mockedUserContext.useUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,
       });
