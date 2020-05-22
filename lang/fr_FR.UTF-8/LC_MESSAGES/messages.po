@@ -2379,7 +2379,7 @@ msgid "Performances"
 msgstr "Informations de performance"
 
 #: centreon-web/www/install/smarty_translate.php:831
-msgid "Host Informations"
+msgid "Host Information"
 msgstr "Informations sur l'hôte"
 
 #: centreon-web/www/install/smarty_translate.php:834

@@ -39,7 +39,7 @@ const AppProvider = (): JSX.Element | null => {
     Promise.all([
       getUser(userEndpoint),
       getTranslations(translationEndpoint),
-      getAcl('http://localhost:5000/mock/acl'),
+      getAcl(aclEndpoint),
     ])
       .then(([retrievedUser, retrievedTranslations, retrievedAcl]) => {
         setUser(pick(['username', 'locale', 'timezone'], retrievedUser));
