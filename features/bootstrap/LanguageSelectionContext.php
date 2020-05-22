@@ -13,7 +13,6 @@ class LanguageSelectionContext extends CentreonContext
     public function theUserWithAutologinEnabled()
     {
         $this->currentPage = new ParametersMyAccountPage($this);
-        $this->currentPage->save();
     }
 
     /**
@@ -28,7 +27,8 @@ class LanguageSelectionContext extends CentreonContext
             function ($context) {
                 return (!empty($this->assertFind('css', 'select[name="contact_lang"]')));
             },
-            'Cannot retrieve language list from select2'
+            'Cannot retrieve language list from select2',
+            5
         );
     }
 
