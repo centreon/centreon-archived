@@ -28,8 +28,7 @@ class LanguageSelectionContext extends CentreonContext
             function ($context) {
                 return (!empty($this->assertFind('css', 'select[name="contact_lang"]')));
             },
-            'Cannot retrieve language list from select2',
-            5
+            'Cannot retrieve language list from select2'
         );
     }
 
