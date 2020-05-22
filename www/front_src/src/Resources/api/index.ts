@@ -8,11 +8,10 @@ import {
   buildResourcesEndpoint,
   serviceCheckEndpoint,
   hostCheckEndpoint,
-  userEndpoint,
   acknowledgeEndpoint,
   downtimeEndpoint,
 } from './endpoint';
-import { ResourceListing, User, Resource } from '../models';
+import { ResourceListing, Resource } from '../models';
 
 const listResources = (cancelToken) => (
   endpointParams,
@@ -120,14 +119,10 @@ const checkResources = ({
   );
 };
 
-const getUser = (token) => (): Promise<User> =>
-  getData<User>(token)(userEndpoint);
-
 export {
   acknowledgeResources,
   setDowntimeOnResources,
   checkResources,
   listResources,
   getData,
-  getUser,
 };
