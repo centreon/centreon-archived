@@ -1491,6 +1491,11 @@ configure_php_fpm() {
     # Generate a apache config in directory
     prepare_php_fpm_config "$dir_conf"
 
+    # Disable the useless default pool to save resources
+    if [ -e $DIR_PHP_FPM_CONF/www.conf ] ; then
+        mv $DIR_PHP_FPM_CONF/www.conf $DIR_PHP_FPM_CONF/www.conf.orig
+    fi
+
     if [ "$silent_install" -ne 1 ] ; then
         if [ -e $DIR_PHP_FPM_CONF/centreon.conf ] ; then
             echo "$(gettext "Finding PHP FPM Centreon configuration file")"
