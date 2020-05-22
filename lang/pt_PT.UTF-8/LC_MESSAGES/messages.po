@@ -14955,3 +14955,9 @@ msgstr ""
 
 msgid "See Documentation"
 msgstr ""
+
+msgid "Services will not be affected because you don't have sufficient permission"
+msgstr ""
+
+msgid "Hosts will not be affected because you don't have sufficient permission"
+msgstr ""
