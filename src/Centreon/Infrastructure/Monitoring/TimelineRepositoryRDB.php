@@ -441,7 +441,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
                 $eventClass = DowntimeEventObject::class;
                 break;
             default:
-                throw new \Exception('Incorrect Event Type');
+                throw new \Exception(_('Incorrect Event Type'));
         }
 
         return $eventClass;

@@ -2212,31 +2212,46 @@ function cleanString($str)
 
 // Global Function
 
-function get_my_first_allowed_root_menu($lcaTStr)
+/**
+ * get first menu entry allowed to a given user
+ *
+ * @param string $lcaTStr Allowed topology pages separated by comma
+ * @param int $defaultPage User default page
+ * @return array The topology information (url, options, name...)
+ */
+function getFirstAllowedMenu($lcaTStr, $defaultPage = 104)
 {
     global $pearDB;
 
-    if (trim($lcaTStr) != "") {
-        $rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
-            . "FROM topology WHERE topology_page IN ({$lcaTStr}) "
-            . "AND (topology_parent IS NULL OR topology_page = 104) "
-            . "AND topology_page IS NOT NULL AND topology_show = '1' "
-            . "ORDER BY CASE topology_page WHEN 104 THEN 1 ELSE 0 END DESC, topology_id ASC "
-            . "LIMIT 1";
-    } else {
-        $rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
-            . "FROM topology "
-            . "WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' "
-            . "LIMIT 1";
+    $defaultPageOptions = null;
+
+    // manage default page with option (eg: 50110&o=general)
+    if (preg_match('/(\d+)(\D+)/', $defaultPage, $matches)) {
+        $defaultPage = $matches[1];
+        $defaultPageOptions = $matches[2];
     }
 
-    $dbResult = $pearDB->query($rq);
+    $statement = $pearDB->prepare(
+        "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
+        . "FROM topology "
+        . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
+        . "topology_page IS NOT NULL AND topology_show = '1' "
+        . "ORDER BY FIELD(topology_page, :default_page) DESC, "
+        . "FIELD(topology_url_opt, :default_page_options) DESC, "
+        . "topology_id ASC "
+        . "LIMIT 1"
+    );
 
-    if (!$dbResult->rowCount()) {
+    $statement->bindValue(':default_page', $defaultPage, \PDO::PARAM_INT);
+    $statement->bindValue(':default_page_options', $defaultPageOptions, \PDO::PARAM_STR);
+
+    $statement->execute();
+
+    if (!$statement->rowCount()) {
         return [];
     }
 
-    return $dbResult->fetchRow();
+    return $statement->fetch();
 }
 
 function reset_search_page($url)

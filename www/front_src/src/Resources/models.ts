@@ -38,6 +38,7 @@ export interface Resource {
   short_type: 'h' | 's';
   performance_graph_endpoint?: string;
   type: 'host' | 'service';
+  details_endpoint: string;
 }
 
 interface ListingMeta {

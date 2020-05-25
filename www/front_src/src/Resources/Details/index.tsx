@@ -4,11 +4,13 @@ import { omit } from 'ramda';
 
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
+import { getData, useRequest } from '@centreon/ui';
+
 import Header from './Header';
 import Body from './Body';
-import useGet from '../useGet';
 import { ResourceDetails } from './models';
 import { ResourceEndpoints } from '../models';
+import { useResourceContext } from '../Context';
 
 const useStyles = makeStyles(() => {
   return {
@@ -30,32 +32,32 @@ const useStyles = makeStyles(() => {
   };
 });
 
-interface Props {
-  onClose: () => void;
-  endpoints: ResourceEndpoints;
-  openTabId: number;
-  onSelectTab: (id) => void;
-}
-
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = ({
-  endpoints,
-  onClose,
-  openTabId,
-  onSelectTab,
-}: Props): JSX.Element | null => {
+const Details = (): JSX.Element | null => {
   const classes = useStyles();
 
   const [details, setDetails] = React.useState<ResourceDetails>();
 
-  const { details: detailsEndpoint } = endpoints;
+  const {
+    detailsTabIdToOpen,
+    setDefaultDetailsTabIdToOpen,
+    selectedDetailsEndpoints,
+    setSelectedDetailsEndpoints,
+  } = useResourceContext();
 
-  const get = useGet({
-    onSuccess: (entity) => setDetails(entity),
-    endpoint: detailsEndpoint,
+  const {
+    details: detailsEndpoint,
+  } = selectedDetailsEndpoints as ResourceEndpoints;
+
+  const clearSelectedResource = (): void => {
+    setSelectedDetailsEndpoints(null);
+  };
+
+  const { sendRequest } = useRequest<ResourceDetails>({
+    request: getData,
   });
 
   React.useEffect(() => {
@@ -63,21 +65,23 @@ const Details = ({
       setDetails(undefined);
     }
 
-    get();
+    sendRequest(detailsEndpoint).then((retrievedDetails) =>
+      setDetails(retrievedDetails),
+    );
   }, [detailsEndpoint]);
 
   return (
     <Paper elevation={5} className={classes.details}>
       <div className={classes.header}>
-        <Header details={details} onClickClose={onClose} />
+        <Header details={details} onClickClose={clearSelectedResource} />
       </div>
       <Divider className={classes.divider} />
       <div className={classes.body}>
         <Body
           details={details}
-          endpoints={omit(['details'], endpoints)}
-          openTabId={openTabId}
-          onSelectTab={onSelectTab}
+          endpoints={omit(['details'], selectedDetailsEndpoints)}
+          openTabId={detailsTabIdToOpen}
+          onSelectTab={setDefaultDetailsTabIdToOpen}
         />
       </div>
     </Paper>

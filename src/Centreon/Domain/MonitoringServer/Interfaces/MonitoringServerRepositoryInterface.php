@@ -22,8 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\MonitoringServer\MonitoringServerResource;
+use Centreon\Infrastructure\MonitoringServer\MonitoringServerRepositoryRDB;
 
 interface MonitoringServerRepositoryInterface
 {
@@ -60,4 +62,13 @@ interface MonitoringServerRepositoryInterface
      * @throws \Exception
      */
     public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
+
+    /**
+     * Find a monitoring server.
+     *
+     * @param int $monitoringServerId Id of the monitoring server to be found
+     * @return MonitoringServer|null
+     * @throws \Exception
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer;
 }

@@ -106,6 +106,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       />
       {details.downtimes?.map(({ start_time, end_time }) => (
         <StateCard
+          key={`downtime-${start_time}-${end_time}`}
           title={labelDowntimeDuration}
           contentLines={[
             { prefix: labelFrom, time: start_time },
