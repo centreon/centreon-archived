@@ -24,7 +24,14 @@ class LanguageSelectionContext extends CentreonContext
     public function selectTheLanguageDropdown()
     {
         $this->currentPage = new ParametersMyAccountPage($this);
-        $this->assertFind('css', 'select[name="contact_lang"]');
+
+        /* Wait for select2 returned values */
+        $this->spin(
+            function ($context) {
+                return (!empty($this->assertFind('css', 'select[name="contact_lang"]')));
+            },
+            'Cannot retrieve language list from select2'
+        );
     }
 
     /**
