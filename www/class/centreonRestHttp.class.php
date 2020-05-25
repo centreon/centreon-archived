@@ -202,8 +202,7 @@ class CentreonRestHttp
     public function setProxy($url, $port)
     {
         if (isset($url) && !empty($url)) {
-            $this->proxy = 'tcp://' . $url;
-            
+            $this->proxy = $url;
             if ($port) {
                 $this->proxy .= ':' . $port;
             }
@@ -228,8 +227,7 @@ class CentreonRestHttp
         }
 
         if (isset($dataProxy['proxy_url']) && !empty($dataProxy['proxy_url'])) {
-            $this->proxy = 'tcp://' . $dataProxy['proxy_url'];
-
+            $this->proxy = $dataProxy['proxy_url'];
             if ($dataProxy['proxy_port']) {
                 $this->proxy .= ':' . $dataProxy['proxy_port'];
             }
