@@ -43,11 +43,6 @@ class ResourceSeverity
     private $name;
 
     /**
-     * @var string|null
-     */
-    private $url;
-
-    /**
      * @return int|null
      */
     public function getLevel(): ?int
@@ -81,25 +76,6 @@ class ResourceSeverity
     public function setName(?string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUrl(): ?string
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string|null $url
-     * @return \Centreon\Domain\Monitoring\ResourceSeverity
-     */
-    public function setUrl(?string $url): self
-    {
-        $this->url = $url;
 
         return $this;
     }

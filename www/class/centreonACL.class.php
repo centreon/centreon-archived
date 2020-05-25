@@ -2512,13 +2512,10 @@ class CentreonACL
      * @param array $hosts | hosts to duplicate
      * @return void
      */
-    public function duplicateHostAcl($hosts = array())
+    public function duplicateHostAcl($hosts = [])
     {
-        $sql = "INSERT INTO %s 
-                    (host_host_id, acl_res_id)
-                    (SELECT %d, acl_res_id 
-                    FROM %s 
-                    WHERE host_host_id = %d)";
+        $sql = "INSERT INTO %s (host_host_id, acl_res_id)
+            (SELECT %d, acl_res_id FROM %s WHERE host_host_id = %d)";
         $tbHost = "acl_resources_host_relations";
         $tbHostEx = "acl_resources_hostex_relations";
         foreach ($hosts as $copyId => $originalId) {

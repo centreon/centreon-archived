@@ -71,12 +71,10 @@ class WikiApi
     private function getCurl()
     {
         $curl = curl_init();
-        $cookiefile = tempnam("/tmp", "CURLCOOKIE");
         curl_setopt($curl, CURLOPT_URL, $this->url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiefile);
-        curl_setopt($curl, CURLOPT_COOKIEJAR, $cookiefile);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, '');
         if ($this->noSslCertificate == 1) {
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -111,8 +109,6 @@ class WikiApi
             return $this->loggedIn;
         }
 
-        curl_setopt($this->curl, CURLOPT_HEADER, true);
-
         // Get Connection Cookie/Token
         $postfields = array(
             'action' => 'query',
@@ -123,20 +119,12 @@ class WikiApi
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
-        $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
-        $header = substr($result, 0, $header_size);
-        $body = substr($result, $header_size);
+        if ($result === false) {
+            throw new \Exception("curl error");
+        }
+        $decoded = json_decode($result, true);
 
-        // Get cookies
-        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
-
-        $this->cookies = array_merge($this->cookies, $matches[1]);
-        $cookies = implode('; ', $this->cookies);
-        curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
-
-        $result = json_decode($body, true);
-
-        $token = $result['query']['tokens']['logintoken'];
+        $token = $decoded['query']['tokens']['logintoken'];
 
         // Launch Connection
         $postfields = [
@@ -150,26 +138,17 @@ class WikiApi
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
+        if ($result === false) {
+            throw new \Exception("curl error");
+        }
 
-        $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
-        $header = substr($result, 0, $header_size);
-        $body = substr($result, $header_size);
-
-        // Get cookies
-        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
-        $this->cookies = array_merge($this->cookies, $matches[1]);
-        $cookies = implode('; ', $this->cookies);
-        curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
-
-        $result = json_decode($body, true);
-        $resultLogin = $result['login']['result'];
+        $decoded = json_decode($result, true);
+        $resultLogin = $decoded['login']['result'];
 
         $this->loggedIn = false;
         if ($resultLogin == 'Success') {
             $this->loggedIn = true;
         }
-
-        curl_setopt($this->curl, CURLOPT_HEADER, false);
 
         return $this->loggedIn;
     }
@@ -215,9 +194,6 @@ class WikiApi
 
         if ($this->version >= 1.24) {
             $this->tokens[$method] = $result['query']['tokens']['csrftoken'];
-            if ($this->tokens[$method] == '+/') {
-                $this->tokens[$method] = $this->getMethodToken('delete', $title);
-            }
         } elseif ($this->version >= 1.20) {
             $this->tokens[$method] = $result['tokens'][$method . 'token'];
         } else {
@@ -260,9 +236,6 @@ class WikiApi
             $tries++;
         }
 
-        //remove cookies related to this action
-        unlink('/tmp/CURLCOOKIE*');
-
         if (isset($deleteResult->error)) {
             return false;
         } elseif (isset($deleteResult->delete)) {
@@ -292,10 +265,17 @@ class WikiApi
             }
 
             // Get next page if exists
-            if (isset($result->{'query-continue'}->allpages->apcontinue)) {
+            $continue = false;
+            if ($this->version >= 1.31) {
+                if (isset($result->{'continue'}->apcontinue)) {
+                    $postfields['apfrom'] = $result->{'continue'}->apcontinue;
+                    $continue = true;
+                }
+            } elseif (isset($result->{'query-continue'}->allpages->apcontinue)) {
                 $postfields['apfrom'] = $result->{'query-continue'}->allpages->apcontinue;
+                $continue = true;
             }
-        } while (isset($result->{'query-continue'}->allpages->apcontinue));
+        } while ($continue === true);
 
         return $pages;
     }

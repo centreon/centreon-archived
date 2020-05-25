@@ -61,6 +61,22 @@ class MonitoringServerService implements MonitoringServerServiceInterface
     /**
      * @inheritDoc
      */
+    public function findServer(int $monitoringServerId): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException(
+                'Error when searching for a monitoring server (' . $monitoringServerId . ')',
+                0,
+                $ex
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource
     {
         try {
@@ -79,6 +95,23 @@ class MonitoringServerService implements MonitoringServerServiceInterface
             return $this->monitoringServerRepository->findLocalServer();
         } catch (\Exception $ex) {
             throw new MonitoringServerException('Error when searching for the local monitoring servers', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void
+    {
+        if ($monitoringServer->getId() === null && $monitoringServer->getName() === null) {
+            throw new MonitoringServerException(
+                'The id or name of the monitoring server must be defined and not null'
+            );
+        }
+        try {
+            $this->monitoringServerRepository->notifyConfigurationChanged($monitoringServer);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when notifying a configuration change', 0, $ex);
         }
     }
 }

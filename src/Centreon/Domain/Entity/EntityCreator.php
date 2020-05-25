@@ -26,6 +26,7 @@ use Centreon\Domain\Annotation\EntityDescriptor;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
+use Centreon\Domain\Contact\Contact;
 use ReflectionClass;
 
 class EntityCreator
@@ -46,6 +47,11 @@ class EntityCreator
     private $publicMethods;
 
     /**
+     * @var Contact
+     */
+    private static $contact;
+
+    /**
      * Create a new object entity based on the given values.
      * Used to create a new object entity with the values found in the database.
      *
@@ -59,6 +65,16 @@ class EntityCreator
     public static function createEntityByArray(string $className, array $data, string $prefix = null)
     {
         return (new self($className))->createByArray($data, $prefix);
+    }
+
+    /**
+     * Set contact
+     *
+     * @param Contact $contact The contact
+     */
+    public static function setContact(Contact $contact): void
+    {
+        static::$contact = $contact;
     }
 
     /**
@@ -85,7 +101,9 @@ class EntityCreator
     public function createByArray(array $data, string $prefix = null)
     {
         if (!class_exists($this->className)) {
-            throw new \Exception('The class ' . $this->className . ' does not exist');
+            throw new \Exception(
+                sprintf(_('The class %s does not exist'), $this->className)
+            );
         }
         $this->readPublicMethod();
         $this->readAnnotations();
@@ -119,7 +137,9 @@ class EntityCreator
                 if (array_key_exists($setterMethod, $this->publicMethods)) {
                     $parameters = $this->publicMethods[$setterMethod]->getParameters();
                     if (empty($parameters)) {
-                        throw new \Exception("The public method {$this->className}::$setterMethod has no parameters");
+                        throw new \Exception(
+                            sprintf(_('The public method %s::$setterMethod has no parameters'), $this->className)
+                        );
                     }
                     $firstParameter = $parameters[0];
                     if ($firstParameter->hasType()) {
@@ -143,7 +163,9 @@ class EntityCreator
 
                     call_user_func_array(array($objectToSet, $setterMethod), [$value]);
                 } else {
-                    throw new \Exception("The public method {$this->className}::$setterMethod is not found");
+                    throw new \Exception(
+                        sprintf(_('The public method %s::$setterMethod is not found'), $this->className)
+                    );
                 }
             }
         }
@@ -168,7 +190,7 @@ class EntityCreator
             if ($allowNull) {
                 return $value;
             } else {
-                throw new \Exception("The value cannot be null");
+                throw new \Exception(_('The value cannot be null'));
             }
         }
 
@@ -184,9 +206,13 @@ class EntityCreator
                 return (bool) $value;
             case 'DateTime':
                 if (is_numeric($value)) {
-                    return (new \DateTime())->setTimestamp((int) $value);
+                    $value = (new \DateTime())->setTimestamp((int) $value);
+                    if (static::$contact !== null) {
+                        $value->setTimezone(static::$contact->getTimezone());
+                    }
+                    return $value;
                 }
-                throw new \Exception("Numeric value expected");
+                throw new \Exception(_('Numeric value expected'));
             default:
                 return $value;
         }

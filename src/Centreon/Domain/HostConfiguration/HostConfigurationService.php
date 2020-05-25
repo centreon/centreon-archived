@@ -43,13 +43,13 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      */
     public function addHost(Host $host): int
     {
-        if ($host->getName() === null) {
-            throw new HostConfigurationException('Host name can not be empty');
+        if (empty($host->getName())) {
+            throw new HostConfigurationException(_('Host name can not be empty'));
         }
         try {
             $hasHostWithSameName = $this->hostConfigurationRepository->hasHostWithSameName($host->getName());
             if ($hasHostWithSameName) {
-                throw new HostConfigurationException('Host name already exists');
+                throw new HostConfigurationException(_('Host name already exists'));
             }
             if ($host->getExtendedHost() === null) {
                 $host->setExtendedHost(new ExtendedHost());
@@ -58,7 +58,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         } catch (HostConfigurationException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw new HostConfigurationException('Error while creation of host', 0, $ex);
+            throw new HostConfigurationException(_('Error while creation of host'), 0, $ex);
         }
     }
 
@@ -69,8 +69,8 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     {
         try {
             return $this->hostConfigurationRepository->findHost($hostId);
-        } catch (\Exception $ex) {
-            throw new HostConfigurationException('Error while searching for the host', 0, $ex);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error while searching for the host'), 0, $ex);
         }
     }
 
@@ -81,8 +81,38 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     {
         try {
             return $this->hostConfigurationRepository->getNumberOfHosts();
-        } catch (\Exception $ex) {
-            throw new HostConfigurationException('Error while searching for the number of host', 0, $ex);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error while searching for the number of host'), 0, $ex);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array
+    {
+        try {
+            return $this->hostConfigurationRepository->findOnDemandHostMacros($hostId, $isUsingInheritance);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error while searching for the host macros'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostMacrosPassword(int $hostId, string $command): array
+    {
+        $hostMacrosPassword = [];
+        // If contains on-demand host macros
+        if (strpos($command, '$_HOST') !== false) {
+            $onDemandHostMacros = $this->findOnDemandHostMacros($hostId, true);
+            foreach ($onDemandHostMacros as $hostMacro) {
+                if ($hostMacro->isPassword()) {
+                    $hostMacrosPassword[] = $hostMacro;
+                }
+            }
+        }
+        return $hostMacrosPassword;
     }
 }

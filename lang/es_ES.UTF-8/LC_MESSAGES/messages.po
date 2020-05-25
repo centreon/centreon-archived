@@ -2183,7 +2183,7 @@ msgid "Performances"
 msgstr "Información de rendimiento"
 
 #: centreon-web/www/install/smarty_translate.php:831
-msgid "Host Informations"
+msgid "Host Information"
 msgstr "Información sobre el anfitrión"
 
 #: centreon-web/www/install/smarty_translate.php:834 centreon-web/www/install/smarty_translate.php:885
@@ -14451,6 +14451,12 @@ msgid "will display resources having FQDN that doesn't contain"
 msgstr ""
 
 msgid "and host alias containing"
+msgstr ""
+
+msgid "Tips"
+msgstr ""
+
+msgid "get some help while creating your regular expression query at"
 msgstr ""
 
 msgid "Service group"

@@ -57,10 +57,13 @@ class MetricControllerTest extends TestCase
 
     protected function setUp()
     {
+        $timezone = new \DateTimeZone('Europe/Paris');
+
         $this->adminContact = (new Contact())
             ->setId(1)
             ->setName('admin')
-            ->setAdmin(true);
+            ->setAdmin(true)
+            ->setTimezone($timezone);
 
         $this->host = (new Host())
             ->setId(1);
@@ -70,10 +73,23 @@ class MetricControllerTest extends TestCase
         $this->service->setHost($this->host);
 
         $this->metrics = [
-            'global' => [],
+            'global' => [
+                'start' => '1581980400',
+                'end' => '1582023600',
+            ],
             'metrics' => [],
             'times' => [],
         ];
+
+        $this->normalizedPerformanceMetrics = [
+            'global' => [
+                'start' => (new \Datetime())->setTimestamp(1581980400)->setTimezone($timezone),
+                'end' => (new \Datetime())->setTimestamp(1582023600)->setTimezone($timezone),
+            ],
+            'metrics' => [],
+            'times' => [],
+        ];
+
         $this->status = [
             'critical' => [],
             'wraning' => [],
@@ -94,7 +110,7 @@ class MetricControllerTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->expects($this->any())
             ->method('getUser')
-            ->willReturn('admin');
+            ->willReturn($this->adminContact);
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
         $tokenStorage->expects($this->any())
             ->method('getToken')
@@ -109,9 +125,10 @@ class MetricControllerTest extends TestCase
             ->withConsecutive(
                 [$this->equalTo('security.authorization_checker')],
                 [$this->equalTo('security.token_storage')],
+                [$this->equalTo('security.token_storage')],
                 [$this->equalTo('security.token_storage')]
             )
-            ->willReturnOnConsecutiveCalls($authorizationChecker, $tokenStorage, $tokenStorage);
+            ->willReturnOnConsecutiveCalls($authorizationChecker, $tokenStorage, $tokenStorage, $tokenStorage);
 
         $this->requestParameters = $this->createMock(RequestParametersInterface::class);
     }
@@ -358,7 +375,7 @@ class MetricControllerTest extends TestCase
         $metrics = $metricController->getServicePerformanceMetrics($this->requestParameters, 1, 1);
         $this->assertEquals(
             $metrics,
-            View::create($this->metrics, null, [])
+            View::create($this->normalizedPerformanceMetrics, null, [])
         );
     }
 

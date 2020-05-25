@@ -131,7 +131,9 @@ class DowntimeController extends AbstractController
                 $host = $this->monitoringService->findOneHost($downtime->getResourceId());
 
                 if ($host === null) {
-                    throw new EntityNotFoundException("Host {$downtime->getResourceId()} not found");
+                    throw new EntityNotFoundException(
+                        sprintf(_('Host %d not found'), $downtime->getResourceId())
+                    );
                 }
 
                 $this->downtimeService->addHostDowntime($downtime, $host);
@@ -200,7 +202,11 @@ class DowntimeController extends AbstractController
                 );
                 if ($service === null) {
                     throw new EntityNotFoundException(
-                        "Service {$downtime->getResourceId()} on host {$downtime->getParentResourceId()} not found"
+                        sprintf(
+                            _('Service %d on host %d not found'),
+                            $downtime->getResourceId(),
+                            $downtime->getParentResourceId()
+                        )
                     );
                 }
 
@@ -270,7 +276,9 @@ class DowntimeController extends AbstractController
         $host = $this->monitoringService->findOneHost($hostId);
 
         if ($host === null) {
-            throw new EntityNotFoundException("Host {$hostId} not found");
+            throw new EntityNotFoundException(
+                sprintf(_('Host %d not found'), $hostId)
+            );
         }
 
         $this->downtimeService->addHostDowntime($downtime, $host);
@@ -330,7 +338,9 @@ class DowntimeController extends AbstractController
 
             $service = $this->monitoringService->findOneService($hostId, $serviceId);
             if ($service === null) {
-                throw new EntityNotFoundException("Service {$serviceId} on host {$hostId} not found");
+                throw new EntityNotFoundException(
+                    sprintf(_('Service %d on host %d not found'), $serviceId, $hostId)
+                );
             }
 
             $host = $this->monitoringService->findOneHost($hostId);
@@ -641,7 +651,7 @@ class DowntimeController extends AbstractController
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
-                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+                throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
             }
         }
 

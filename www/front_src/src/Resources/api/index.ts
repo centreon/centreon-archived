@@ -1,6 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios';
+import axios, { AxiosResponse, CancelToken } from 'axios';
 import formatISO from 'date-fns/formatISO';
 import { map, pick } from 'ramda';
+
+import { getData } from '@centreon/ui';
 
 import {
   buildResourcesEndpoint,
@@ -12,14 +14,10 @@ import {
 } from './endpoint';
 import { ResourceListing, User, Resource } from '../models';
 
-const getData = <TData>({ endpoint, requestParams }): Promise<TData> =>
-  axios.get(endpoint, requestParams).then(({ data }) => data);
-
-const listResources = (
+const listResources = (cancelToken) => (
   endpointParams,
-  requestParams: AxiosRequestConfig = {},
 ): Promise<ResourceListing> =>
-  getData({ endpoint: buildResourcesEndpoint(endpointParams), requestParams });
+  getData<ResourceListing>(cancelToken)(buildResourcesEndpoint(endpointParams));
 
 interface AcknowledgeParams {
   acknowledgeAttachedResources?: boolean;
@@ -33,10 +31,9 @@ interface ResourcesWithAcknoweldgeParams {
   cancelToken: CancelToken;
 }
 
-const acknowledgeResources = ({
+const acknowledgeResources = (cancelToken) => ({
   resources,
   params,
-  cancelToken,
 }: ResourcesWithAcknoweldgeParams): Promise<Array<AxiosResponse>> => {
   return axios.post(
     acknowledgeEndpoint,
@@ -67,10 +64,9 @@ interface ResourcesWithDowntimeParams {
   cancelToken: CancelToken;
 }
 
-const setDowntimeOnResources = ({
+const setDowntimeOnResources = (cancelToken) => ({
   resources,
   params,
-  cancelToken,
 }: ResourcesWithDowntimeParams): Promise<Array<AxiosResponse>> => {
   return axios.post(
     downtimeEndpoint,
@@ -124,8 +120,8 @@ const checkResources = ({
   );
 };
 
-const getUser = (cancelToken): Promise<User> =>
-  getData({ endpoint: userEndpoint, requestParams: cancelToken });
+const getUser = (token) => (): Promise<User> =>
+  getData<User>(token)(userEndpoint);
 
 export {
   acknowledgeResources,
