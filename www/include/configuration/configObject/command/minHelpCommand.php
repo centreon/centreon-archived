@@ -79,8 +79,11 @@ if ($commandId != null) {
     $command = $oreon->optGen["nagios_path_plugins"] . $commandName;
 }
 
-$command = str_replace("#S#", "/", $command);
-$command = str_replace("#BS#", "\\", $command);
+// Secure command
+$search = ['#S#', '#BS#', '../'];
+$replace = ['/', "\\", '/'];
+$command = str_replace($search, $replace, $command);
+$command = escapeshellcmd($command);
 
 $tab = explode(' ', $command);
 if (realpath($tab[0])) {
