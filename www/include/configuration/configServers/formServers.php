@@ -278,9 +278,10 @@ $redirect->setValue($o);
  * Form Rules
  */
 $form->registerRule('exist', 'callback', 'testExistence');
+$form->registerRule('isValidIpAddress', 'callback', 'isValidIpAddress');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('name', _("The name of the poller is mandatory"), 'required');
-
+$form->addRule('ns_ip_address', _("The IP address is incorrect"), 'isValidIpAddress');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
