@@ -432,7 +432,7 @@ class CentreonRtDowntime extends CentreonObject
 
         // to choose the best add (addHostDowntime, addSvcDowntime etc.)
         $method = 'add' . ucfirst(strtolower($parsedParameters['type'])) . 'Downtime';
-        if ((ucfirst(strtolower($parsedParameters['type']) === 'Host')) || (ucfirst(strtolower($parsedParameters['type'])) === 'Hg')) {
+        if ((strtolower($parsedParameters['type']) === 'host') || (strtolower($parsedParameters['type']) === 'hg')) {
             $this->$method(
                 $parsedParameters['resource'],
                 $parsedParameters['start'],
