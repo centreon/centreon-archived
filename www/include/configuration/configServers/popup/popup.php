@@ -36,7 +36,6 @@ $query = 'SELECT ip FROM remote_servers';
 $dbResult = $pearDB->query($query);
 $remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
 $dbResult->closeCursor();
-
 //get poller informations
 $query = "
 SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`, ns.remote_id, 
@@ -83,93 +82,117 @@ $kernel = App\Kernel::createForWeb();
 /**
  * @var $gorgoneService \Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface
  */
-$gorgoneService = $kernel->getContainer()->get(\Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface::class);
-$thumbprints = '';
-$dataError = '';
 $gorgoneError = false;
-$timeout = 0;
-
-try {
-    foreach ($parents as $serverId) {
-        $lastActionLog = null;
-        $thumbprintCommand = new \Centreon\Domain\Gorgone\Command\Thumbprint($serverId);
-        $gorgoneResponse = $gorgoneService->send($thumbprintCommand);
-        // check if we have log for 30 s every 2s
-        do {
-            $lastActionLog = $gorgoneResponse->getLastActionLog();
-            sleep(2);
-            $timeout += 2;
-        } while (
-            ($lastActionLog == null || $lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_BEGIN) &&
-            $timeout <= 30
-        );
-
-        if ($timeout > 30) {
-            // add 10 s for the next server
-            $timeout -= 10;
-            $gorgoneError = true;
-            $dataError .= '
-    - error : TimeOut error for poller ' . $serverId . ' We can\'t get log';
-            continue;
-        }
-
-        $thummprintReponse = json_decode($lastActionLog->getData(), true);
-        if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
-            $thumbprints .= '
-      - key: ' . $thummprintReponse['data']['thumbprint'];
-        } else {
-            $gorgoneError = true;
-            $dataError .= '
-      - error : Poller ' . $serverId . ' : ' . $thummprintReponse['message'];
-        }
-    }
-} catch (\Exception $ex) {
-    $gorgoneError = true;
-    $dataError = $ex->getMessage();
-}
-
-if (!empty($dataError)) {
-    $config = $dataError;
-} elseif (in_array($server['ns_ip_address'], $remotesServerIPs)) {
-    //config for remote
-    $config = file_get_contents('./remote.yaml');
+if ($server['localhost'] === '1') {
+    $config = file_get_contents('./central.yaml');
     $config = str_replace(
         [
             '__SERVERNAME__',
-            '__SERVERID__',
-            '__GORGONEPORT__',
-            '__THUMBPRINT__',
             '__COMMAND__',
+            '__CENTREON_VARLIB__',
+            '__CENTREON_CACHEDIR__',
         ],
         [
             $server['name'],
-            $server['id'],
-            $server['gorgone_port'],
-            $thumbprints,
             $server['command_file'],
+            _CENTREON_VARLIB_,
+            _CENTREON_CACHEDIR_,
         ],
         $config
     );
 } else {
-    //config for poller
-    $config = file_get_contents('./poller.yaml');
-    $config = str_replace(
-        [
-            '__SERVERNAME__',
-            '__SERVERID__',
-            '__GORGONEPORT__',
-            '__THUMBPRINT__',
-            '__COMMAND__',
-        ],
-        [
-            $server['name'],
-            $server['id'],
-            $server['gorgone_port'],
-            $thumbprints,
-            $server['command_file'],
-        ],
-        $config
-    );
+    $gorgoneService = $kernel->getContainer()->get(\Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface::class);
+    $thumbprints = '';
+    $dataError = '';
+    $timeout = 0;
+
+    try {
+        foreach ($parents as $serverId) {
+            $lastActionLog = null;
+            $thumbprintCommand = new \Centreon\Domain\Gorgone\Command\Thumbprint($serverId);
+            $gorgoneResponse = $gorgoneService->send($thumbprintCommand);
+            // check if we have log for 30 s every 2s
+            do {
+                $lastActionLog = $gorgoneResponse->getLastActionLog();
+                sleep(2);
+                $timeout += 2;
+            } while (
+                ($lastActionLog == null
+                    || $lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_BEGIN)
+                && $timeout <= 30
+            );
+
+            if ($timeout > 30) {
+                // add 10 s for the next server
+                $timeout -= 10;
+                $gorgoneError = true;
+                $dataError .= '
+      - error : TimeOut error for poller ' . $serverId . ' We can\'t get log';
+                continue;
+            }
+
+            $thumbprintResponse = json_decode($lastActionLog->getData(), true);
+            if ($lastActionLog->getCode() === \Centreon\Domain\Gorgone\Response::STATUS_OK) {
+                $thumbprints .= '
+      - key: ' . $thumbprintResponse['data']['thumbprint'];
+            } else {
+                $gorgoneError = true;
+                $dataError .= '
+      - error : Poller ' . $serverId . ' : ' . $thumbprintResponse['message'];
+            }
+        }
+    } catch (\Exception $ex) {
+        $gorgoneError = true;
+        $dataError = $ex->getMessage();
+    }
+
+    if (!empty($dataError)) {
+        $config = $dataError;
+    } elseif (in_array($server['ns_ip_address'], $remotesServerIPs)) {
+        //config for remote
+        $config = file_get_contents('./remote.yaml');
+        $config = str_replace(
+            [
+                '__SERVERNAME__',
+                '__SERVERID__',
+                '__GORGONEPORT__',
+                '__THUMBPRINT__',
+                '__COMMAND__',
+                '__CENTREON_VARLIB__',
+                '__CENTREON_CACHEDIR__',
+            ],
+            [
+                $server['name'],
+                $server['id'],
+                $server['gorgone_port'],
+                $thumbprints,
+                $server['command_file'],
+                _CENTREON_VARLIB_,
+                _CENTREON_CACHEDIR_,
+            ],
+            $config
+        );
+    } else {
+        //config for poller
+        $config = file_get_contents('./poller.yaml');
+        $config = str_replace(
+            [
+                '__SERVERNAME__',
+                '__SERVERID__',
+                '__GORGONEPORT__',
+                '__THUMBPRINT__',
+                '__COMMAND__',
+            ],
+            [
+                $server['name'],
+                $server['id'],
+                $server['gorgone_port'],
+                $thumbprints,
+                $server['command_file'],
+            ],
+            $config
+        );
+    }
 }
 
 $tpl->assign('args', $config);
