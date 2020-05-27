@@ -308,10 +308,20 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Service $service
+         */
         $service = $this->monitoring
             ->filterByContact($this->getUser())
             ->findOneService($hostId, $serviceId);
-        $this->monitoring->hidePasswordInCommandLine($service);
+        try {
+            $this->monitoring->hidePasswordInCommandLine($service);
+        } catch (\Throwable $ex) {
+            $service->setCommandLine(
+                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+            );
+        }
+
 
         if ($service === null) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
