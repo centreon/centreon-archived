@@ -248,15 +248,19 @@ sub getBrokerStats($) {
 
         # Get poller Configuration
         $server_info = $self->getServerConfig($poller_id);
-        $port = checkSSHPort($server_info->{ssh_port});
 
-        # Copy the stat file into a buffer
         my $statistics_file = $data->{cache_directory} . "/" . $data->{config_name} . "-stats.json";
-        $cmd = "$self->{ssh} -q $server_info->{ns_ip_address} -p $port 'cat \"" . $statistics_file . "\" > $statPipe'";
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => $self->{cmd_timeout}
-                                                              );
+        if (defined($server_info->{ns_ip_address})) {
+            $port = checkSSHPort($server_info->{ssh_port});
+
+            # Copy the stat file into a buffer
+            $cmd = "$self->{ssh} -q $server_info->{ns_ip_address} -p $port 'cat \"" . $statistics_file . "\" > $statPipe'";
+            ($lerror, $stdout) = centreon::common::misc::backtick(
+                command => $cmd,
+                logger => $self->{logger},
+                timeout => $self->{cmd_timeout}
+            );
+        }
         if ($lerror == -1) {
             $self->{logger}->writeLogError("Could not read pipe " . $statistics_file . " on poller ".$server_info->{ns_ip_address});
         }
@@ -264,12 +268,16 @@ sub getBrokerStats($) {
             $self->{logger}->writeLogInfo("Result : $stdout");
         }
 
-        $cmd = "$self->{scp} -P $port $server_info->{ns_ip_address}:$statPipe $destFile/broker-stats-$poller_id.dat >> /dev/null";
-        # Get the stats file
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => $self->{cmd_timeout}
-                                                              );
+        if (defined($server_info->{ns_ip_address})) {
+            $cmd = "$self->{scp} -P $port $server_info->{ns_ip_address}:$statPipe "
+                . "$destFile/broker-stats-$poller_id.dat >> /dev/null";
+            # Get the stats file
+            ($lerror, $stdout) = centreon::common::misc::backtick(
+                command => $cmd,
+                logger => $self->{logger},
+                timeout => $self->{cmd_timeout}
+            );
+        }
         if ($lerror == -1 && defined($stdout) && $stdout) {
             $self->{logger}->writeLogError("Result : $stdout");
         }
@@ -316,6 +324,17 @@ sub getServerConfig($){
         return undef;
     }
     my $data = $sth->fetchrow_hashref();
+
+    # Check IPv6, IPv4 and FQDN format
+    if ($data->{'ns_ip_address'} !~ /^([0-9a-fA-F]{4}|0)(\:([0-9a-fA-F]{4}|0)){7}$/
+        && !($data->{'ns_ip_address'} =~ /^[0-9\.]+$/ && $data->{'ns_ip_address'} =~ /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)
+        && !($data->{'ns_ip_address'} !~ /^[0-9\.]+$/ && $data->{'ns_ip_address'} =~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]+)\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)
+    ) {
+        $self->{logger}->writeLogError(
+            sprintf("The IP address of the poller %s is incorrect: %s", $data->{'name'}, $data->{'ns_ip_address'})
+        );
+        return undef;
+    }
 
     # Get Nagios User
     $data->{'nagios_user'} = $self->getNagiosConfigurationField($_[0], 'nagios_user');
@@ -516,13 +535,16 @@ sub sendExternalCommand($$){
                 if ($count >= 200 || $totalCount == $countCommands) {
                     if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
                         my $remote_server = $self->getServerConfig($server_info->{remote_id});
-                        $cmd_line =~ s/^\s+|\s+$//g;
-                        $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port "
-                            . "\"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' "
-                            . ">> " . $self->{cmdDir} . time() . "-sendcmd\"";
-                        $self->{logger}->writeLogInfo(
-                            "Send external command using Remote Server: " . $remote_server->{ns_ip_address}
-                        );
+                        if (defined($remote_server->{ns_ip_address})) {
+                            $port = checkSSHPort($remote_server->{ssh_port});
+                            $cmd_line =~ s/^\s+|\s+$//g;
+                            $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port "
+                                . "\"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' "
+                                . ">> " . $self->{cmdDir} . time() . "-sendcmd\"";
+                            $self->{logger}->writeLogInfo(
+                                "Send external command using Remote Server: " . $remote_server->{ns_ip_address}
+                            );
+                        }
                     } else {
                         $cmd2 = "$self->{ssh} -q " . $server_info->{ns_ip_address} . " -p $port "
                             . "\"$self->{echo} '" . $cmd_line."' >> " . $command_file . "\"";
