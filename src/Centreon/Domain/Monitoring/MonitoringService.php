@@ -395,7 +395,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                     $macrosPasswordByName[$macro->getName()] = $macro;
                 }
                 $patternMacrosPassword = implode('|', $macroNames);
-                $patternMacrosPassword = str_replace(['$', '~'], ['\\$', '\~'], $patternMacrosPassword);
+                $patternMacrosPassword = str_replace(['$', '~'], ['\$', '\~'], $patternMacrosPassword);
                 foreach ($configurationToken as $index => $token) {
                     if (preg_match_all('~' . $patternMacrosPassword . '~', $token, $matches, PREG_SET_ORDER)) {
                         if (
