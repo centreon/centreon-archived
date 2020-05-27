@@ -50,6 +50,7 @@ class CentreonInstance extends CentreonObject
     const ORDER_UNIQUENAME = 0;
     const ORDER_ADDRESS = 1;
     const ORDER_SSH_PORT = 2;
+    const INCORRECTIPADDRESS = "Invalid IP address format";
 
     /**
      * Constructor
