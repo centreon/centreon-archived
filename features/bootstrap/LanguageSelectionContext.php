@@ -13,7 +13,6 @@ class LanguageSelectionContext extends CentreonContext
     public function theUserWithAutologinEnabled()
     {
         $this->currentPage = new ParametersMyAccountPage($this);
-        $this->currentPage->save();
     }
 
     /**

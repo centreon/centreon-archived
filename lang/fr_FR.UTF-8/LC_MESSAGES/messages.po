@@ -15386,3 +15386,9 @@ msgstr "Contactez votre administrateur Centreon ou mettez à jour le fichier sui
 
 msgid "See Documentation"
 msgstr "Voir la documentation"
+
+msgid "Services will not be affected because you don't have sufficient permission"
+msgstr "Les services ne seront pas affectés car vous ne disposez pas de droits suffisants"
+
+msgid "Hosts will not be affected because you don't have sufficient permission"
+msgstr "Les hôtes ne seront pas affectés car vous ne disposez pas de droits suffisants"

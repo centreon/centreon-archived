@@ -11,6 +11,7 @@ import {
   DatePickerProps,
   TimePickerProps,
 } from '@material-ui/pickers';
+import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
 
@@ -37,6 +38,7 @@ import {
   labelTo,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
+import useAclQuery from '../aclQuery';
 
 interface Props {
   locale: string | null;
@@ -89,6 +91,8 @@ const DialogDowntime = ({
   setFieldValue,
   loading,
 }: Props): JSX.Element => {
+  const { getDowntimeDeniedTypeAlert } = useAclQuery();
+
   const open = resources.length > 0;
 
   const hasHosts = resources.find((resource) => resource.type === 'host');
@@ -105,6 +109,8 @@ const DialogDowntime = ({
     moment.tz.setDefault(timezone);
   }, [timezone]);
 
+  const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
+
   return (
     <Dialog
       labelCancel={labelCancel}
@@ -118,6 +124,7 @@ const DialogDowntime = ({
       submitting={submitting}
     >
       {loading && <Loader fullContent />}
+      {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
       <MuiPickersUtilsProvider
         libInstance={moment}
         utils={MomentUtils}

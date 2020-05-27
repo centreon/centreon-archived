@@ -28,6 +28,8 @@ import {
   labelFixed,
   labelChangeEndDate,
   labelCheck,
+  labelServicesDenied,
+  labelHostsDenied,
 } from '../translatedLabels';
 import Actions from '.';
 import useLoadResources from '../Listing/useLoadResources';
@@ -43,14 +45,42 @@ import {
   hostCheckEndpoint,
   serviceCheckEndpoint,
 } from '../api/endpoint';
+import * as UserContext from '../../Provider/UserContext';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
+
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
+
 jest.mock('../icons/Downtime');
+
+const mockUserContext = {
+  username: 'admin',
+  locale: 'en',
+  timezone: 'Europe/Paris',
+
+  acl: {
+    actions: {
+      service: {
+        downtime: true,
+        acknowledgement: true,
+        check: true,
+      },
+      host: {
+        downtime: true,
+        acknowledgement: true,
+        check: true,
+      },
+    },
+  },
+};
+
+jest.mock('../../Provider/UserContext');
+
+const mockedUserContext = UserContext as jest.Mocked<typeof UserContext>;
 
 const ActionsWithLoading = (): JSX.Element => {
   useLoadResources();
@@ -89,19 +119,19 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValueOnce({ data: [] }).mockResolvedValueOnce({
-      data: {
-        username: 'admin',
-      },
-    });
+    mockedAxios.get.mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
     mockAppStateSelector(useSelector);
+
+    mockedUserContext.useUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+
+    mockedUserContext.useUserContext.mockReset();
   });
 
   it('executes a listing request when refresh button is clicked', async () => {
@@ -142,7 +172,7 @@ describe(Actions, () => {
     async (labelAction, labelComment, labelConfirmAction) => {
       const { getByText, getAllByText, findByText } = renderActions();
 
-      const selectedResources = [{} as Resource];
+      const selectedResources = [{ type: 'host' } as Resource];
 
       act(() => {
         context.setSelectedResources(selectedResources);
@@ -245,7 +275,7 @@ describe(Actions, () => {
       getByDisplayValue,
     } = renderActions();
 
-    const selectedResources = [{} as Resource];
+    const selectedResources = [{ type: 'host' } as Resource];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -273,11 +303,13 @@ describe(Actions, () => {
       findByText,
     } = renderActions();
 
-    const selectedResources = [{} as Resource];
+    const selectedResources = [{ type: 'host' } as Resource];
 
     act(() => {
       context.setSelectedResources(selectedResources);
     });
+
+    await waitFor(() => expect(getByText(labelDowntime)).toBeEnabled());
 
     fireEvent.click(getByText(labelDowntime));
 
@@ -383,4 +415,142 @@ describe(Actions, () => {
       );
     });
   });
+
+  it('cannot execute an action when associated ACL are not sufficient', async () => {
+    mockedUserContext.useUserContext.mockReset().mockReturnValue({
+      ...mockUserContext,
+      acl: {
+        actions: {
+          service: {
+            downtime: false,
+            check: false,
+            acknowledgement: false,
+          },
+          host: {
+            downtime: false,
+            check: false,
+            acknowledgement: false,
+          },
+        },
+      },
+    });
+
+    const { getByText } = renderActions();
+
+    const host = {
+      id: 0,
+      type: 'host',
+    } as Resource;
+
+    const service = {
+      id: 1,
+      type: 'service',
+    } as Resource;
+
+    const selectedResources = [host, service];
+
+    act(() => {
+      context.setSelectedResources(selectedResources);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelCheck)).toBeDisabled();
+      expect(getByText(labelAcknowledge)).toBeDisabled();
+      expect(getByText(labelDowntime)).toBeDisabled();
+    });
+  });
+
+  const cannotDowntimeServicesAcl = {
+    actions: {
+      ...mockUserContext.acl.actions,
+      service: {
+        ...mockUserContext.acl.actions.service,
+        downtime: false,
+      },
+    },
+  };
+
+  const cannotAcknowledgeServicesAcl = {
+    actions: {
+      ...mockUserContext.acl.actions,
+      service: {
+        ...mockUserContext.acl.actions.service,
+        acknowledgement: false,
+      },
+    },
+  };
+
+  const cannotDowntimeHostsAcl = {
+    actions: {
+      ...mockUserContext.acl.actions,
+      host: {
+        ...mockUserContext.acl.actions.host,
+        downtime: false,
+      },
+    },
+  };
+
+  const cannotAcknowledgeHostsAcl = {
+    actions: {
+      ...mockUserContext.acl.actions,
+      host: {
+        ...mockUserContext.acl.actions.host,
+        acknowledgement: false,
+      },
+    },
+  };
+
+  it.each([
+    [
+      labelSetDowntime,
+      labelDowntime,
+      labelServicesDenied,
+      cannotDowntimeServicesAcl,
+    ],
+    [
+      labelAcknowledge,
+      labelAcknowledge,
+      labelServicesDenied,
+      cannotAcknowledgeServicesAcl,
+    ],
+    [labelSetDowntime, labelDowntime, labelHostsDenied, cannotDowntimeHostsAcl],
+    [
+      labelAcknowledge,
+      labelAcknowledge,
+      labelHostsDenied,
+      cannotAcknowledgeHostsAcl,
+    ],
+  ])(
+    'displays a warning message when trying to %p with limited ACL',
+    async (_, labelAction, labelWarning, acl) => {
+      mockedUserContext.useUserContext.mockReset().mockReturnValue({
+        ...mockUserContext,
+        acl,
+      });
+
+      const { getByText } = renderActions();
+
+      const host = {
+        id: 0,
+        type: 'host',
+      } as Resource;
+
+      const service = {
+        id: 1,
+        type: 'service',
+      } as Resource;
+
+      const selectedResources = [host, service];
+
+      act(() => {
+        context.setSelectedResources(selectedResources);
+      });
+
+      fireEvent.click(getByText(labelAction));
+
+      await waitFor(() => {
+        expect(getByText(labelWarning)).toBeInTheDocument();
+      });
+    },
+  );
 });
