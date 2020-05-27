@@ -23,14 +23,21 @@ const ActionButton = ({
   title,
   onClick,
   ariaLabel,
+  disabled,
   ...props
 }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Tooltip title={title} onClick={onClick} aria-label={ariaLabel}>
+    <Tooltip title={title} aria-label={ariaLabel}>
       <span>
-        <IconButton className={classes.button} color="primary" {...props} />
+        <IconButton
+          className={classes.button}
+          color="primary"
+          onClick={onClick}
+          disabled={disabled}
+          {...props}
+        />
       </span>
     </Tooltip>
   );
