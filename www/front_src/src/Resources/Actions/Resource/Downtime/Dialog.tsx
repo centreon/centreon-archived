@@ -69,13 +69,13 @@ const pickerCommonProps = {
 const datePickerProps = {
   ...pickerCommonProps,
   format: 'LL',
-} as DatePickerProps;
+} as Omit<DatePickerProps, 'onChange'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
   ampm: false,
   format: 'LT',
-} as TimePickerProps;
+} as Omit<TimePickerProps, 'onChange'>;
 
 const DialogDowntime = ({
   locale,

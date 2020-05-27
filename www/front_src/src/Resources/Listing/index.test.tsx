@@ -126,7 +126,7 @@ describe(Listing, () => {
 
     resourcesWithMultipleLines.forEach(({ information }) => {
       expect(
-        getByText(pipe(split('\n'), head)(information)),
+        getByText(pipe(split('\n'), head)(information) as string),
       ).toBeInTheDocument();
       expect(queryByText(information)).not.toBeInTheDocument();
     });
