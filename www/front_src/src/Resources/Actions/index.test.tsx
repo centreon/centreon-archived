@@ -145,7 +145,7 @@ describe(Actions, () => {
 
     await waitFor(() => expect(refreshButton).toBeEnabled());
 
-    fireEvent.click(refreshButton);
+    fireEvent.click(refreshButton.firstElementChild as HTMLElement);
 
     expect(onRefresh).toHaveBeenCalled();
   });
@@ -155,11 +155,15 @@ describe(Actions, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    fireEvent.click(getByLabelText(labelDisableAutorefresh));
+    fireEvent.click(
+      getByLabelText(labelDisableAutorefresh).firstElementChild as HTMLElement,
+    );
 
     expect(getByLabelText(labelEnableAutorefresh)).toBeTruthy();
 
-    fireEvent.click(getByLabelText(labelEnableAutorefresh));
+    fireEvent.click(
+      getByLabelText(labelEnableAutorefresh).firstElementChild as HTMLElement,
+    );
 
     expect(getByLabelText(labelDisableAutorefresh)).toBeTruthy();
   });
