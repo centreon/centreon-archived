@@ -359,66 +359,62 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         );
 
         if (!empty($hostMacrosPassword) || !empty($serviceMacrosPassword)) {
-            try {
+            /**
+             * @var ServiceMacro[]|HostMacro[] $macrosPassword
+             */
+            $macrosPassword = array_merge($hostMacrosPassword, $serviceMacrosPassword);
+            $macroNames = array_map(
+                function ($macro) {
+                    return $macro->getName();
+                },
+                $macrosPassword
+            );
+
+            $onDemandServiceMacro = $this->serviceConfiguration->findOnDemandServiceMacros(
+                $monitoringService->getId(),
+                true
+            );
+            $onDemandHostMacro = $this->hostConfiguration->findOnDemandHostMacros(
+                $monitoringService->getHost()->getId(),
+                true
+            );
+
+            $configurationToken = explode(' ', $configurationCommand);
+            $monitoringToken = $this->explodeSpacesButKeepValuesByMacro(
+                $configurationCommand,
+                $monitoringCommand,
+                $onDemandServiceMacro,
+                $onDemandHostMacro
+            );
+            if (count($monitoringToken) === count($configurationToken)) {
                 /**
-                 * @var ServiceMacro[]|HostMacro[] $macrosPassword
+                 * @var array<string, ServiceMacro|HostMacro> $macrosPasswordByName
                  */
-                $macrosPassword = array_merge($hostMacrosPassword, $serviceMacrosPassword);
-                $macroNames = array_map(
-                    function ($macro) {
-                        return $macro->getName();
-                    },
-                    $macrosPassword
-                );
-
-                $onDemandServiceMacro = $this->serviceConfiguration->findOnDemandServiceMacros(
-                    $monitoringService->getId(),
-                    true
-                );
-                $onDemandHostMacro = $this->hostConfiguration->findOnDemandHostMacros(
-                    $monitoringService->getHost()->getId(),
-                    true
-                );
-
-                $configurationToken = explode(' ', $configurationCommand);
-                $monitoringToken = $this->explodeSpacesButKeepValuesByMacro(
-                    $configurationCommand,
-                    $monitoringCommand,
-                    $onDemandServiceMacro,
-                    $onDemandHostMacro
-                );
-                if (count($monitoringToken) === count($configurationToken)) {
-                    /**
-                     * @var array<string, ServiceMacro|HostMacro> $macrosPasswordByName
-                     */
-                    $macrosPasswordByName = [];
-                    foreach ($macrosPassword as $macro) {
-                        $macrosPasswordByName[$macro->getName()] = $macro;
-                    }
-                    $patternMacrosPassword = implode('|', $macroNames);
-                    $patternMacrosPassword = str_replace('$', '\\$', $patternMacrosPassword);
-                    foreach ($configurationToken as $index => $token) {
-                        if (preg_match_all('~' . $patternMacrosPassword . '~', $token, $matches, PREG_SET_ORDER)) {
-                            if (
-                                array_key_exists($matches[0][0], $macrosPasswordByName)
-                                && $macrosPasswordByName[$matches[0][0]]->getValue() !== null
-                            ) {
-                                $monitoringToken[$index] = str_replace(
-                                    $macrosPasswordByName[$matches[0][0]]->getValue(),
-                                    $replacementValue,
-                                    $monitoringToken[$index]
-                                );
-                            }
+                $macrosPasswordByName = [];
+                foreach ($macrosPassword as $macro) {
+                    $macrosPasswordByName[$macro->getName()] = $macro;
+                }
+                $patternMacrosPassword = implode('|', $macroNames);
+                $patternMacrosPassword = str_replace('$', '\\$', $patternMacrosPassword);
+                foreach ($configurationToken as $index => $token) {
+                    if (preg_match_all('~' . $patternMacrosPassword . '~', $token, $matches, PREG_SET_ORDER)) {
+                        if (
+                            array_key_exists($matches[0][0], $macrosPasswordByName)
+                            && $macrosPasswordByName[$matches[0][0]]->getValue() !== null
+                        ) {
+                            $monitoringToken[$index] = str_replace(
+                                $macrosPasswordByName[$matches[0][0]]->getValue(),
+                                $replacementValue,
+                                $monitoringToken[$index]
+                            );
                         }
                     }
-                    $monitoringService->setCommandLine(implode(' ', $monitoringToken));
-                } else {
-                    throw new MonitoringServiceException(
-                        'Different number of tokens between configuration and monitoring command line'
-                    );
                 }
-            } catch (\Throwable $ex) {
-                $monitoringService->setCommandLine('Unable to hide passwords in command');
+                $monitoringService->setCommandLine(implode(' ', $monitoringToken));
+            } else {
+                throw new MonitoringServiceException(
+                    'Different number of tokens between configuration and monitoring command line'
+                );
             }
         }
     }
