@@ -1,10 +1,12 @@
 ## BEGIN: CENTREON SUDO
 
 User_Alias      CENTREON=%@CENTREON_GROUP@
+Cmnd_Alias      LVM_commands = /usr/sbin/lvdisplay -c *, /usr/sbin/vgdisplay -c *
+
 Defaults:CENTREON !requiretty
 
 # Database backup script
-CENTREON   ALL = NOPASSWD: /usr/sbin/lvdisplay -c *, /usr/sbin/vgdisplay -c *
+CENTREON   ALL = (ALL) NOPASSWD: LVM_Commands
 
 # centreontrapd
 CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd start
