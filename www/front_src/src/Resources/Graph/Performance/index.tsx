@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import filesize from 'filesize';
+import * as numeral from 'numeral';
 import {
   pipe,
   map,
@@ -32,6 +32,26 @@ import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import getGraphLines from './Lines';
+
+const fontFamily = 'Roboto, sans-serif';
+
+const formatValue = ({ value, unit }): string => {
+  const base2Units = [
+    'B',
+    'bytes',
+    'bytespersecond',
+    'B/s',
+    'B/sec',
+    'o',
+    'octets',
+  ];
+  const suffixFormat = base2Units.includes(unit) ? 'b' : 'a';
+
+  return numeral(value)
+    .format(`0.[00] ${suffixFormat}`)
+    .trim()
+    .replace('B', '');
+};
 
 interface Props {
   endpoint: string;
@@ -109,21 +129,6 @@ const PerformanceGraph = ({
   const sortedLines = sortBy(prop('name'), lineData);
   const displayedLines = reject(propEq('display', false), sortedLines);
 
-  const formatValue = ({ value, unit }): string => {
-    const base2Units = [
-      'B',
-      'bytes',
-      'bytespersecond',
-      'B/s',
-      'B/sec',
-      'o',
-      'octets',
-    ];
-    const base = base2Units.includes(unit) ? 2 : 10;
-
-    return filesize(value, { base }).replace('B', '');
-  };
-
   const formatTooltipValue = (value, metric, { unit }): Array<string> => {
     const legendName = pipe(
       find(propEq('metric', metric)),
@@ -179,11 +184,14 @@ const PerformanceGraph = ({
             tick={{ fontSize: 13 }}
           />
 
-          {getGraphLines({ lines: displayedLines, formatValue })}
+          {getGraphLines(displayedLines)}
 
           <Tooltip
             labelFormatter={formatTooltipTime}
             formatter={formatTooltipValue}
+            contentStyle={{ fontFamily }}
+            wrapperStyle={{ opacity: 0.7 }}
+            isAnimationActive={false}
           />
         </ComposedChart>
       </ResponsiveContainer>
@@ -201,3 +209,4 @@ const PerformanceGraph = ({
 };
 
 export default PerformanceGraph;
+export { fontFamily, formatValue };
