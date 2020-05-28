@@ -5,6 +5,8 @@ import { pipe, uniq, prop, map } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
+import { fontFamily } from '.';
+
 const getGraphLines = ({ lines, formatValue }): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
@@ -22,6 +24,7 @@ const getGraphLines = ({ lines, formatValue }): Array<JSX.Element> => {
             yAxisId={unit}
             key={unit}
             orientation={index === 0 ? 'left' : 'right'}
+            tick={{ fontFamily }}
             tickFormatter={(tick): string => formatValue({ value: tick, unit })}
             {...props}
           />

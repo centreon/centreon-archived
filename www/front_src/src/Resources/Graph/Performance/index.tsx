@@ -33,6 +33,8 @@ import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import getGraphLines from './Lines';
 
+const fontFamily = 'Roboto, sans-serif';
+
 interface Props {
   endpoint: string;
   xAxisTickFormat?: string;
@@ -176,7 +178,7 @@ const PerformanceGraph = ({
           <XAxis
             dataKey="time"
             tickFormatter={formatXAxisTick}
-            tick={{ fontSize: 13 }}
+            tick={{ fontSize: 13, fontFamily }}
           />
 
           {getGraphLines({ lines: displayedLines, formatValue })}
@@ -184,6 +186,7 @@ const PerformanceGraph = ({
           <Tooltip
             labelFormatter={formatTooltipTime}
             formatter={formatTooltipValue}
+            contentStyle={{ fontFamily }}
           />
         </ComposedChart>
       </ResponsiveContainer>
@@ -201,3 +204,4 @@ const PerformanceGraph = ({
 };
 
 export default PerformanceGraph;
+export { fontFamily };
