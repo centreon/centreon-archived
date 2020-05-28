@@ -40,6 +40,7 @@ import {
   labelCommand,
   labelResourceFlapping,
   labelNo,
+  labelComment,
 } from '../translatedLabels';
 import { detailsTabId, graphTabId } from './Body/tabs';
 import * as Context from '../Context';
@@ -87,15 +88,18 @@ const retrievedDetails = {
     {
       start_time: '2020-01-18T18:57:59',
       end_time: '2020-01-18T19:57:59',
+      comment: 'First downtime set by Admin',
     },
     {
       start_time: '2020-02-18T18:57:59',
       end_time: '2020-02-18T19:57:59',
+      comment: 'Second downtime set by Admin',
     },
   ],
   acknowledgement: {
     author_name: 'Admin',
     entry_time: '2020-03-18T19:57:59',
+    comment: 'Acknowledged by Admin',
   },
   performance_data:
     'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
@@ -160,14 +164,19 @@ describe(Details, () => {
 
     expect(getByText('OK - 127.0.0.1 rta 0.97ms lost 0%')).toBeInTheDocument();
 
+    expect(getAllByText(labelComment)).toHaveLength(3);
+
     expect(getAllByText(labelDowntimeDuration)).toHaveLength(2);
     expect(getByText(`${labelFrom} 01/18/2020 18:57`)).toBeInTheDocument();
     expect(getByText(`${labelTo} 01/18/2020 19:57`)).toBeInTheDocument();
     expect(getByText(`${labelFrom} 02/18/2020 18:57`)).toBeInTheDocument();
     expect(getByText(`${labelTo} 02/18/2020 19:57`)).toBeInTheDocument();
+    expect(getByText('First downtime set by Admin'));
+    expect(getByText('Second downtime set by Admin'));
 
     expect(getByText(labelAcknowledgedBy)).toBeInTheDocument();
     expect(getByText(`Admin ${labelAt} 03/18/2020 19:57`)).toBeInTheDocument();
+    expect(getByText('Acknowledged by Admin'));
 
     expect(getByText(labelTimezone)).toBeInTheDocument();
     expect(getByText('Europe/Paris')).toBeInTheDocument();

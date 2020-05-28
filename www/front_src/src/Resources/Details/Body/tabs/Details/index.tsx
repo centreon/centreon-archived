@@ -104,16 +104,19 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
         content={details.output}
         severityCode={details.status.severity_code}
       />
-      {details.downtimes?.map(({ start_time, end_time }) => (
+      {details.downtimes?.map(({ start_time, end_time, comment }) => (
         <StateCard
           key={`downtime-${start_time}-${end_time}`}
           title={labelDowntimeDuration}
           contentLines={[
-            { prefix: labelFrom, time: start_time },
-            { prefix: labelTo, time: end_time },
-          ].map(
-            ({ prefix, time }) => `${prefix} ${getFormattedDateTime(time)}`,
-          )}
+            ...[
+              { prefix: labelFrom, time: start_time },
+              { prefix: labelTo, time: end_time },
+            ].map(
+              ({ prefix, time }) => `${prefix} ${getFormattedDateTime(time)}`,
+            ),
+          ]}
+          commentLine={comment}
           chip={<DowntimeChip />}
         />
       ))}
@@ -127,6 +130,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
               details.acknowledgement.entry_time,
             )}`,
           ]}
+          commentLine={details.acknowledgement.comment}
           chip={<AcknowledgeChip />}
         />
       )}
