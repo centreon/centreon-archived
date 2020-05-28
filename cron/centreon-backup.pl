@@ -366,7 +366,7 @@ sub databasesBackup() {
 
         if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
             print "Dumping Db with LVM snapshot (full)\n";
-            `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            `sudo $centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }

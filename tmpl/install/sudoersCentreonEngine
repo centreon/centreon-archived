@@ -4,8 +4,7 @@ User_Alias      CENTREON=%@CENTREON_GROUP@
 Defaults:CENTREON !requiretty
 
 # Database backup script
-CENTREON   ALL = NOPASSWD: /usr/sbin/lvdisplay -c *
-CENTREON   ALL = NOPASSWD: /usr/sbin/vgdisplay -c *
+CENTREON   ALL = NOPASSWD: /usr/sbin/lvdisplay -c *, /usr/sbin/vgdisplay -c *
 
 # centreontrapd
 CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd start
