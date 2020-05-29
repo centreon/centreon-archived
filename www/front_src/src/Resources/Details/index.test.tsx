@@ -165,7 +165,6 @@ describe(Details, () => {
     expect(getByText('OK - 127.0.0.1 rta 0.97ms lost 0%')).toBeInTheDocument();
 
     expect(getAllByText(labelComment)).toHaveLength(3);
-
     expect(getAllByText(labelDowntimeDuration)).toHaveLength(2);
     expect(getByText(`${labelFrom} 01/18/2020 18:57`)).toBeInTheDocument();
     expect(getByText(`${labelTo} 01/18/2020 19:57`)).toBeInTheDocument();
