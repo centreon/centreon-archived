@@ -5,7 +5,9 @@ import { pipe, uniq, prop, map } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
-const getGraphLines = ({ lines, formatValue }): Array<JSX.Element> => {
+import { fontFamily, formatValue } from '.';
+
+const getGraphLines = (lines): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
   };
@@ -22,6 +24,7 @@ const getGraphLines = ({ lines, formatValue }): Array<JSX.Element> => {
             yAxisId={unit}
             key={unit}
             orientation={index === 0 ? 'left' : 'right'}
+            tick={{ fontFamily }}
             tickFormatter={(tick): string => formatValue({ value: tick, unit })}
             {...props}
           />
@@ -29,7 +32,13 @@ const getGraphLines = ({ lines, formatValue }): Array<JSX.Element> => {
       });
     }
 
-    return [<YAxis key="single-y-axis" {...props} />];
+    return [
+      <YAxis
+        key="single-y-axis"
+        tickFormatter={(tick): string => formatValue({ value: tick, unit: '' })}
+        {...props}
+      />,
+    ];
   };
 
   return [
