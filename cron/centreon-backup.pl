@@ -375,7 +375,7 @@ sub databasesBackup() {
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
         if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
             print "Dumping Db with LVM snapshot (partial)\n";
-            `$centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            `sudo $centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -449,7 +449,7 @@ sub databasesBackup() {
     	move($TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz", $BACKUP_DIR."/".$today."-centreon_storage.sql.gz");
     }
 
-	# Delete temporary directoriess
+	# Delete temporary directories
 	chdir;
 	rmtree($TEMP_DB_DIR, {mode => 0755, error => \my $err_list});
 	if (@$err_list) {
