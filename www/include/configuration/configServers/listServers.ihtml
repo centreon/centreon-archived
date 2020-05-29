@@ -101,8 +101,8 @@
                 </a>
                 {/if}
 
-                {if $elemArr[elem].RowMenu_gorgone_protocol == 1 &&
-                $elemArr[elem].RowMenu_statusVal == 1}
+                {if ($elemArr[elem].RowMenu_gorgone_protocol == 1 && $elemArr[elem].RowMenu_statusVal == 1)
+                || $elemArr[elem].RowMenu_type == 'Central'}
                 <!-- Link for edit poller monitoring engine configuration -->
                 <span  {literal}onclick="displayPopup('{/literal}{$elemArr[elem].RowMenu_server_id}{literal}'){/literal}" >
                     <img src="./img/icons/show_template.png" class="ico-16" style="cursor: pointer" title="Gorgone configuration">
