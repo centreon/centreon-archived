@@ -49,7 +49,7 @@ if (!isset($_SESSION['centreon']) || !isset($_POST['host_id'])) {
 $centreon = $_SESSION['centreon'];
 $db = new CentreonDB();
 
-$hostId = $_POST['host_id'];
+$hostId = filter_var($_POST['host_id'], FILTER_SANITIZE_NUMBER_INT);
 $acl = $centreon->user->access;
 $xml = new CentreonXML();
 $xml->startElement("response");
@@ -64,7 +64,7 @@ if ($hostId != "") {
     		  WHERE s.service_id = hsr.service_service_id
     		  AND hsr.host_host_id = h.host_id ";
     if ($hostId) {
-        $query .= " AND h.host_id = " . $db->escape($hostId);
+        $query .= " AND h.host_id = " . (int)$hostId;
     }
     $query .= " AND s.service_register = '1' ";
     if (!$centreon->user->admin) {

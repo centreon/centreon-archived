@@ -60,7 +60,7 @@ if (!isset($_SESSION['centreon']) || !isset($_POST['host_id'])) {
  */
 $centreon = $_SESSION['centreon'];
 $acl = $centreon->user->access;
-$hostId = $_POST['host_id'];
+$hostId = filter_var($_POST['host_id'], FILTER_SANITIZE_NUMBER_INT);
 
 /*
  * Init DB Object
@@ -107,7 +107,7 @@ if (isset($hostId)) {
 					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
 					FROM service s, host h, host_service_relation hsr 
 					WHERE hsr.hostgroup_hg_id IS NULL 
-                                        AND h.host_id = '" . $db->escape($hostId). "' 
+                                        AND h.host_id = " . (int)$hostId . " 
                                         AND h.host_id = hsr.host_host_id 
                                         AND s.service_id = hsr.service_service_id 
                                         AND s.service_register = '1' 
@@ -117,8 +117,8 @@ if (isset($hostId)) {
 					WHERE hsr.host_host_id IS NULL 
                                         AND hsr.hostgroup_hg_id IN (SELECT hostgroup_hg_id 
                                                                     FROM hostgroup_relation 
-                                                                    WHERE host_host_id = '" . $db->escape($hostId). "') 
-                                        AND h.host_id = '" . $db->escape($hostId). "' 
+                                                                    WHERE host_host_id = " . (int)$hostId . ") 
+                                        AND h.host_id = " . (int)$hostId . " 
                                         AND s.service_id = hsr.service_service_id 
                                         AND s.service_register = '1' 
                                 ) AS res $aclFrom $aclCond
