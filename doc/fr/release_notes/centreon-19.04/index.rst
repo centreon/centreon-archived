@@ -7,6 +7,7 @@ Please find here the release notes dedicated to the last 19.04.x version of Cent
 .. toctree::
     :maxdepth: 1
 
+    centreon-19.04.16
     centreon-19.04.15
     centreon-19.04.13
     centreon-19.04.12
