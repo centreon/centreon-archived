@@ -21,7 +21,6 @@ type Props = {
 
 const ActionButton = ({
   title,
-  onClick,
   ariaLabel,
   disabled,
   ...props
@@ -34,7 +33,6 @@ const ActionButton = ({
         <IconButton
           className={classes.button}
           color="primary"
-          onClick={onClick}
           disabled={disabled}
           {...props}
         />
