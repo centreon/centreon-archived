@@ -1,6 +1,6 @@
 {
   "name": "centreon",
-  "version": "20.04.0",
+  "version": "20.10.0",
   "description": "centreon web package",
   "scripts": {
     "build": "webpack --mode production",

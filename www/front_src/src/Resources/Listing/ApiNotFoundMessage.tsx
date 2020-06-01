@@ -17,7 +17,7 @@ const ApiNotFoundMessage = (): JSX.Element => {
       </p>
       <p style={{ margin: 0 }}>
         <Link
-          href="https://docs.centreon.com/20.04/en/upgrade/upgrade-from-19-10.html#configure-apache-api-access"
+          href="https://docs.centreon.com/20.10/en/upgrade/upgrade-from-19-10.html#configure-apache-api-access"
           target="_blank"
           color="inherit"
         >
