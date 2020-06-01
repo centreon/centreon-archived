@@ -19,23 +19,13 @@ type Props = {
   ariaLabel: string;
 } & IconButtonProps;
 
-const ActionButton = ({
-  title,
-  ariaLabel,
-  disabled,
-  ...props
-}: Props): JSX.Element => {
+const ActionButton = ({ title, ariaLabel, ...props }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <Tooltip title={title} aria-label={ariaLabel}>
       <span>
-        <IconButton
-          className={classes.button}
-          color="primary"
-          disabled={disabled}
-          {...props}
-        />
+        <IconButton className={classes.button} color="primary" {...props} />
       </span>
     </Tooltip>
   );
