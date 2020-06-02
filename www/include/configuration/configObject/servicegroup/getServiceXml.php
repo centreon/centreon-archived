@@ -49,7 +49,7 @@ if (!isset($_SESSION['centreon']) || !isset($_POST['host_id'])) {
 $centreon = $_SESSION['centreon'];
 $db = new CentreonDB();
 
-$hostId = filter_var($_POST['host_id'], FILTER_SANITIZE_NUMBER_INT);
+$hostId = filter_var($_POST['host_id'], FILTER_VALIDATE_INT);
 $acl = $centreon->user->access;
 $xml = new CentreonXML();
 $xml->startElement("response");
