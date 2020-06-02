@@ -34,6 +34,7 @@ use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
+use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
@@ -174,7 +175,13 @@ class MonitoringResourceController extends AbstractController
         $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
 
         foreach ($resources as $resource) {
-            $this->iconUrlNormalizer->normalize($resource);
+            if ($resource->getIcon() instanceof Icon) {
+                $this->iconUrlNormalizer->normalize($resource->getIcon());
+            }
+
+            if ($resource->getParent() !== null && $resource->getParent()->getIcon() instanceof Icon) {
+                $this->iconUrlNormalizer->normalize($resource->getParent()->getIcon());
+            }
 
             // set paths to endpoints
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
