@@ -53,7 +53,7 @@ $hostId = filter_var($_POST['host_id'], FILTER_VALIDATE_INT);
 $acl = $centreon->user->access;
 $xml = new CentreonXML();
 $xml->startElement("response");
-if ($hostId != "") {
+if ($hostId) {
     $aclFrom = "";
     if (!$centreon->user->admin) {
         $aclDbName = $acl->getNameDBAcl('broker');
@@ -61,20 +61,20 @@ if ($hostId != "") {
     }
     $query = "SELECT DISTINCT h.host_id, h.host_name, s.service_id, s.service_description
     		  FROM service s, host_service_relation hsr, host h $aclFrom
-    		  WHERE s.service_id = hsr.service_service_id
-    		  AND hsr.host_host_id = h.host_id ";
-    if ($hostId) {
-        $query .= " AND h.host_id = " . (int)$hostId;
-    }
-    $query .= " AND s.service_register = '1' ";
+    		  WHERE s.service_id = hsr.service_service_id 
+    		  AND hsr.host_host_id = h.host_id 
+    		  AND h.host_id = :hostId 
+    		  AND s.service_register = '1' ";
     if (!$centreon->user->admin) {
         $query .= " AND h.host_id = acl.host_id
                     AND acl.service_id = s.service_id
                     AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     }
     $query .= " ORDER BY h.host_name, s.service_description ";
-    $res = $db->query($query);
-    while ($row = $res->fetchRow()) {
+    $stmt = $db->query($query);
+    $stmt->bindValue(':hostId', $hostId, PDO::PARAM_INT);
+    $stmt->execute();
+    while ($row = $stmt->fetchRow()) {
         $xml->startElement("services");
         $xml->writeElement("id", $row['host_id'] . "-" . $row['service_id']);
         $xml->writeElement("description", sprintf("%s - %s", $row['host_name'], $row['service_description']));
