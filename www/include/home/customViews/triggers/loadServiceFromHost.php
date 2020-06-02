@@ -48,7 +48,7 @@ if (!isset($_POST['data']) || !isset($_SESSION['centreon'])) {
 }
 
 $centreon = $_SESSION['centreon'];
-$hostId = filter_var($_POST['data'], FILTER_SANITIZE_NUMBER_INT);
+$hostId = filter_var($_POST['data'], FILTER_VALIDATE_INT);
 $db = new CentreonDB();
 $pearDB = $db;
 
