@@ -113,6 +113,10 @@ $inputArguments = array(
     'search_service' => FILTER_SANITIZE_STRING,
     'export' => FILTER_SANITIZE_STRING,
 );
+
+// Saving bound values
+$queryValues = [];
+
 $inputGet = filter_input_array(
     INPUT_GET,
     $inputArguments
@@ -172,6 +176,7 @@ if (isset($sid) && $sid) {
 
 $num = isset($inputs["num"]) ? (int) $inputs["num"] : 0;
 $limit = isset($inputs["limit"]) ? (int) $inputs["limit"] : 30;
+$queryValues['limit'] = [\PDO::PARAM_INT => $limit];
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
 $EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
 $StartTime = isset($inputs["StartTime"]) ? $StartTime = htmlentities($inputs["StartTime"]) : "";
@@ -360,13 +365,15 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
-    $whereOutput = " AND logs.output like '%" . $pearDBO->escape($output) . "%' ";
+    $whereOutput = " AND logs.output like '%" . CentreonUtils::escapeSecure($output) . "%' ";
 }
 
 $innerJoinEngineLog = "";
 if ($engine == "true" && isset($openid) && $openid != "") {
-    $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name AND i.instance_id IN (" .
-        $pearDBO->escape($openid) . ") ";
+    if (preg_match('/([0-9]+)?(,[0-9]+)*/', $openid, $matches)) {
+        $queryValues['openid'] = [\PDO::PARAM_STR => CentreonUtils::escapeSecure($openid)];
+        $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name AND i.instance_id IN ( :openid );";
+    }
 }
 
 if ($notification == 'true') {
@@ -451,10 +458,10 @@ foreach ($tab_id as $openid) {
     $hostId = "";
 
     if (isset($tab_tmp[2])) {
-        $hostId = $tab_tmp[1];
-        $id = $tab_tmp[2];
+        $hostId = (int)$tab_tmp[1];
+        $id = (int)$tab_tmp[2];
     } elseif (isset($tab_tmp[1])) {
-        $id = $tab_tmp[1];
+        $id = (int)$tab_tmp[1];
     }
 
     if ($id == "") {
@@ -616,20 +623,33 @@ if (isset($req) && $req) {
     }
 
     $limitReq = "";
-    $limitReq2 = "";
     if ($export !== "1") {
-        $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
+        $offset = $num * $limit;
+        $queryValues['offset'] = [\PDO::PARAM_INT => $offset];
+        $limitReq = " LIMIT :offset, :limit";
     }
-    $dbResult = $pearDBO->query($req . $limitReq);
-    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
-
-    if (!($dbResult->rowCount()) && ($num != 0)) {
-        if ($export !== "1") {
-            $limitReq2 = " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+    $stmt = $pearDBO->prepare($req . $limitReq);
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+                $stmt->bindValue($bindId, $bindValue, $bindType);
         }
-        $dbResult = $pearDBO->query($req . $limitReq2);
     }
 
+    $stmt->execute();
+    
+    if (!($stmt->rowCount()) && ($num != 0)) {
+        if ($export !== "1") {
+            $offset = floor($rows / $limit) * $limit;
+        }
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    $logs = $stmt->fetchAll();
+    $stmt->closeCursor();
+
+    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
+    
     $buffer->startElement("selectLimit");
     for ($i = 10; $i <= 100; $i = $i + 10) {
         $buffer->writeElement("limitValue", $i);
@@ -730,7 +750,7 @@ if (isset($req) && $req) {
      * Full Request
      */
     $cpts = 0;
-    while ($log = $dbResult->fetch()) {
+    foreach ($logs as $log) {
         $buffer->startElement("line");
         $buffer->writeElement("msg_type", $log["msg_type"]);
         $displayType = $log['type'];
