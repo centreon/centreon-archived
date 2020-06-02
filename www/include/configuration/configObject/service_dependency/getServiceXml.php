@@ -60,7 +60,7 @@ if (!isset($_SESSION['centreon']) || !isset($_POST['host_id'])) {
  */
 $centreon = $_SESSION['centreon'];
 $acl = $centreon->user->access;
-$hostId = filter_var($_POST['host_id'], FILTER_SANITIZE_NUMBER_INT);
+$hostId = filter_var($_POST['host_id'], FILTER_VALIDATE_INT);
 
 /*
  * Init DB Object
