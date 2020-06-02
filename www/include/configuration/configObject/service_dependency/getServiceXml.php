@@ -129,7 +129,7 @@ if (isset($hostId)) {
     $stmt->execute();
     while ($row = $stmt->fetchRow()) {
         $xml->startElement("services");
-        $xml->writeElement("id", $row['host_id']."_".$row['service_id']);
+        $xml->writeElement("id", $row['host_id'] . "_" . $row['service_id']);
         $xml->writeElement("description", $row['host_name'] . " - " . $row['service_description']);
         $xml->endElement();
     }
