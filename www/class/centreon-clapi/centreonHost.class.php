@@ -83,6 +83,7 @@ class CentreonHost extends CentreonObject
     const ORDER_HOSTGROUP = 5;
     const MISSING_INSTANCE = "Instance name is mandatory";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    const UNKNOWN_GEO_COORDS = "Invalid geo coords";
     const UNKNOWN_TIMEZONE = "Invalid timezone";
     const HOST_LOCATION = "timezone";
 
@@ -617,6 +618,9 @@ class CentreonHost extends CentreonObject
                     $params[2] = $tpObj->getTimeperiodId($params[2]);
                     break;
                 case "geo_coords":
+                    if (!$this->validateLatLong($params[2])) {
+                        throw new CentreonClapiException(self::UNKNOWN_GEO_COORDS);
+                    }
                 case "contact_additive_inheritance":
                 case "cg_additive_inheritance":
                 case "flap_detection_options":
@@ -685,6 +689,18 @@ class CentreonHost extends CentreonObject
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }
+    }
+
+    /**
+     * @param $coords
+     * @return false|int
+     * @throws \HTML_QuickForm_Error
+     */
+    public function validateLatLong($coords) {
+        return preg_match(
+            '/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
+            $coords
+        );
     }
 
     /**
