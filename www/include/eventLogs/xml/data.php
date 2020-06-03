@@ -514,19 +514,19 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . " 
-        logs.ctime, 
-        logs.host_id, 
-        logs.host_name, 
-        logs.service_id, 
-        logs.service_description, 
-        logs.msg_type, 
-        logs.notification_cmd, 
-        logs.notification_contact, 
-        logs.output, 
-        logs.retry, 
-        logs.status, 
-        logs.type, 
+$req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
+        logs.ctime,
+        logs.host_id,
+        logs.host_name,
+        logs.service_id,
+        logs.service_description,
+        logs.msg_type,
+        logs.notification_cmd,
+        logs.notification_contact,
+        logs.output,
+        logs.retry,
+        logs.status,
+        logs.type,
         logs.instance_name
         FROM logs " . $innerJoinEngineLog
     . (
@@ -636,7 +636,7 @@ if (isset($req) && $req) {
     }
 
     $stmt->execute();
-    
+
     if (!($stmt->rowCount()) && ($num != 0)) {
         if ($export !== "1") {
             $offset = floor($rows / $limit) * $limit;
@@ -649,7 +649,7 @@ if (isset($req) && $req) {
     $stmt->closeCursor();
 
     $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
-    
+
     $buffer->startElement("selectLimit");
     for ($i = 10; $i <= 100; $i = $i + 10) {
         $buffer->writeElement("limitValue", $i);
