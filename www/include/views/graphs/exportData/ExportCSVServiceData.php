@@ -58,31 +58,59 @@ if (isset($sid)) {
     get_error('need session id !');
 }
 
-isset($_GET["index"]) ? $index = htmlentities($_GET["index"], ENT_QUOTES, "UTF-8") : $index = null;
-isset($_POST["index"]) ? $index = htmlentities($_POST["index"], ENT_QUOTES, "UTF-8") : $index = $index;
+$index = filter_var(
+    $_GET['index'] ?? $_POST['index'] ?? null,
+    FILTER_VALIDATE_INT
+);
+$period = filter_var(
+    $_GET['period'] ?? $_POST['period'] ?? 'today',
+    FILTER_SANITIZE_STRING
+);
+$start = filter_var(
+    $_GET['start'] ?? null,
+    FILTER_VALIDATE_INT
+);
+$end = filter_var(
+    $_GET['end'] ?? null,
+    FILTER_VALIDATE_INT
+);
+$chartId = filter_var(
+    $_GET['chartId'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-if (isset($_GET['chartId'])) {
+if (isset($chartId)) {
     list($hostId, $serviceId) = explode('_', $_GET['chartId']);
-    if (false === isset($hostId) || false === isset($serviceId)) {
+    if (!isset($hostId) || !isset($serviceId)) {
         die('Resource not found');
     }
-    $res = $pearDBO->query('SELECT id
-        FROM index_data
-        WHERE host_id = ' . $pearDBO->escape($hostId) .
-        ' AND service_id = ' . $pearDBO->escape($serviceId));
-    if ($res->rowCount()) {
-        $row = $res->fetchRow();
-        $index = $row['id'];
-    } else {
-        die('Resource not found');
+
+    // Making sure that splitted values are int.
+    if (is_numeric($hostId) && is_numeric($serviceId)) {
+        $query = 'SELECT id'
+            . ' FROM index_data'
+            . ' WHERE host_id = :hostId'
+            . ' AND service_id = :serviceId';
+
+        $stmt = $pearDBO->prepare($query);
+        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $stmt->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->rowCount()) {
+            $row = $stmt->fetchRow();
+            $index = $row['id'];
+        } else {
+            die('Resource not found');
+        }
     }
 }
 
-$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES, "UTF-8") : "today";
-$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $period;
-
-$DBRESULT = $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
-while ($res = $DBRESULT->fetchRow()) {
+$stmt = $pearDBO->prepare(
+    'SELECT host_name, service_description FROM index_data WHERE id = :index'
+);
+$stmt->bindValue(':index', $index, \PDO::PARAM_INT);
+$stmt->execute();
+while ($res = $stmt->fetchRow()) {
     $hName = $res["host_name"];
     $sName = $res["service_description"];
 }
@@ -98,17 +126,27 @@ $listMetric = array();
 $datas = array();
 $listEmptyMetric = array();
 
-$query = "SELECT DISTINCT metric_id, metric_name FROM metrics, index_data " .
-    "WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name";
-$DBRESULT = $pearDBO->query($query);
-while ($index_data = $DBRESULT->fetchRow()) {
+$stmt = $pearDBO->prepare(
+    'SELECT DISTINCT metric_id, metric_name ' .
+    'FROM metrics, index_data ' .
+    'WHERE metrics.index_id = index_data.id AND id = :index ORDER BY metric_name'
+);
+
+$stmt->bindValue(':index', $index, \PDO::PARAM_INT);
+$stmt->execute();
+
+while ($index_data = $stmt->fetchRow()) {
     $listMetric[$index_data["metric_id"]] = $index_data["metric_name"];
     $listEmptyMetric[$index_data["metric_id"]] = '';
-    $query2 = "SELECT ctime,value FROM data_bin WHERE id_metric = '" . $index_data["metric_id"] .
-        "' AND ctime >= '" . htmlentities($_GET["start"], ENT_QUOTES, "UTF-8") .
-        "' AND ctime < '" . htmlentities($_GET["end"], ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT2 = $pearDBO->query($query2);
-    while ($data = $DBRESULT2->fetchRow()) {
+    $stmt2 = $pearDBO->prepare(
+        "SELECT ctime,value FROM data_bin WHERE id_metric = ':metricId' " .
+        "AND ctime >= ':start' AND ctime < ':end'"
+    );
+    $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
+    $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
+    $stmt2->bindValue(':metricId', $index_data["metric_id"], \PDO::PARAM_INT);
+    $stmt2->execute();
+    while ($data = $stmt2->fetchRow()) {
         $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
     }
 }
