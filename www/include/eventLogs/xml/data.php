@@ -372,7 +372,8 @@ $innerJoinEngineLog = "";
 if ($engine == "true" && isset($openid) && $openid != "") {
     if (preg_match('/([0-9]+)?(,[0-9]+)*/', $openid, $matches)) {
         $queryValues['openid'] = [\PDO::PARAM_STR => CentreonUtils::escapeSecure($openid)];
-        $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name AND i.instance_id IN ( :openid );";
+        $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name"
+            . " AND i.instance_id IN ( :openid );";
     }
 }
 
