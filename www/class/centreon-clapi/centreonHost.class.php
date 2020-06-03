@@ -619,7 +619,7 @@ class CentreonHost extends CentreonObject
                     break;
                 case "geo_coords":
                     if (!$this->validateLatLong($params[2])) {
-                        throw new CentreonClapiException(self::UNKNOWN_GEO_COORDS);
+                        throw new CentreonClapiException(self::INVALID_GEO_COORDS);
                     }
                 case "contact_additive_inheritance":
                 case "cg_additive_inheritance":
