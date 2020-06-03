@@ -157,7 +157,11 @@ $form->addElement(
  * Further informations
  */
 $form->addElement('text', 'hg_rrd_retention', _('RRD retention'), array('size' => 5));
+
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addRule('geo_coords', _("geo coords not valid"), 'validate_geo_coords');
+
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 

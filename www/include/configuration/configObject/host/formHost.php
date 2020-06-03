@@ -95,23 +95,6 @@ function childSameInstance()
     return allInSameInstance($listChild, $instanceId);
 }
 
-
-/**
- * Quickform rule that validate geo_coords
- *
- * @return false|int
- * @throws HTML_QuickForm_Error
- */
-function validateLatLong()
-{
-    global $form;
-    $coords = $form->getElementValue('geo_coords');
-    return preg_match(
-        '/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
-        $coords
-    );
-}
-
 /**
  * @return bool
  * @throws HTML_QuickForm_Error
@@ -340,7 +323,7 @@ $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 $form->registerRule('validate_childs', 'function', 'childSameInstance');
 $form->registerRule('validate_parents', 'function', 'parentSameInstance');
-$form->registerRule('validate_geo_coords', 'function', 'validateLatLong');
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Host"));

@@ -2301,3 +2301,19 @@ function get_child($id_page, $lcaTStr)
     $redirect = $DBRESULT->fetch();
     return $redirect;
 }
+
+/**
+ * Quickform rule that validate geo_coords
+ *
+ * @return false|int
+ * @throws HTML_QuickForm_Error
+ */
+function validateGeoCoords()
+{
+    global $form;
+    $coords = $form->getElementValue('geo_coords');
+    return preg_match(
+        '/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
+        $coords
+    );
+}
