@@ -87,13 +87,23 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 $inputArguments = array(
     'lang' => FILTER_SANITIZE_STRING,
     'id' => FILTER_SANITIZE_STRING,
-    'num' => FILTER_SANITIZE_NUMBER_INT,
-    'limit' => FILTER_SANITIZE_NUMBER_INT,
+    'num' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => 0
+        ]
+    ],
+    'limit' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => 30
+        ]
+    ],
     'StartDate' => FILTER_SANITIZE_STRING,
     'EndDate' => FILTER_SANITIZE_STRING,
     'StartTime' => FILTER_SANITIZE_STRING,
     'EndTime' => FILTER_SANITIZE_STRING,
-    'period' => FILTER_SANITIZE_NUMBER_INT,
+    'period' => FILTER_VALIDATE_INT,
     'engine' => FILTER_SANITIZE_STRING,
     'up' => FILTER_SANITIZE_STRING,
     'down' => FILTER_SANITIZE_STRING,
@@ -174,9 +184,9 @@ if (isset($sid) && $sid) {
     );
 }
 
-$num = isset($inputs["num"]) ? (int) $inputs["num"] : 0;
-$limit = isset($inputs["limit"]) ? (int) $inputs["limit"] : 30;
+// binding limit value
 $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
+
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
 $EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
 $StartTime = isset($inputs["StartTime"]) ? $StartTime = htmlentities($inputs["StartTime"]) : "";
@@ -365,16 +375,20 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
-    $whereOutput = " AND logs.output like '%" . CentreonUtils::escapeSecure($output) . "%' ";
+    $queryValues['whereOutput'] = CentreonUtils::escapeSecure($output);
+    $whereOutput = " AND logs.output like '%:whereOutput%";
 }
 
 $innerJoinEngineLog = "";
 if ($engine == "true" && isset($openid) && $openid != "") {
-    if (preg_match('/([0-9]+)?(,[0-9]+)*/', $openid, $matches)) {
-        $queryValues['openid'] = [\PDO::PARAM_STR => CentreonUtils::escapeSecure($openid)];
-        $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name"
-            . " AND i.instance_id IN ( :openid );";
-    }
+    // filtering poller ids and keeping only real ids
+    $pollerIds = explode(',', $openid);
+    $filteredIds = array_filter($pollerIds, function ($id) {
+        return is_numeric($id);
+    });
+    $queryValues['openid'] = [\PDO::PARAM_STR => implode(", ", $filteredIds)];
+    $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name"
+        . " AND i.instance_id IN ( :openid );";
 }
 
 if ($notification == 'true') {
