@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2018 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -584,7 +585,8 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if ((count($tab_svc) || count($tab_host_ids)) &&
+    if (
+        (count($tab_svc) || count($tab_host_ids)) &&
         (
             $up == 'true' ||
             $down == 'true' ||
@@ -782,7 +784,8 @@ if (isset($req) && $req) {
          */
         $color = '';
         if (isset($log["status"])) {
-            if (isset($tab_color_service[$log["status"]])
+            if (
+                isset($tab_color_service[$log["status"]])
                 && !empty($log["service_description"])
             ) {
                 $color = $tab_color_service[$log["status"]];
