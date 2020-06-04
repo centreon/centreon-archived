@@ -80,7 +80,7 @@ $chartId = filter_var(
 );
 
 if (isset($chartId)) {
-    list($hostId, $serviceId) = explode('_', $_GET['chartId']);
+    list($hostId, $serviceId) = explode('_', $chartId);
     if (!isset($hostId) || !isset($serviceId)) {
         die('Resource not found');
     }
