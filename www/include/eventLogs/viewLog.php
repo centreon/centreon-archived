@@ -73,7 +73,7 @@ $tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
 /**
  * filteredArrayId
  *
- * @param  mixed $ids
+ * @param  int[] $ids
  * @return array filtered
  */
 function filteredArrayId(array $ids) {
