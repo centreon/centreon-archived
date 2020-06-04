@@ -68,20 +68,6 @@ $FlagSearchService = 1;
 $tpl = new Smarty();
 $tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
 
-
-
-/**
- * filteredArrayId
- *
- * @param  int[] $ids
- * @return int[] filtered
- */
-function filteredArrayId(array $ids): array {
-    return array_filter($ids, function ($id) {
-        return is_numeric($id);
-    });
-}
-
 $filterParameters = [
     'engine' => [
         'filter' => FILTER_VALIDATE_BOOLEAN,
@@ -118,9 +104,8 @@ $pollerArray = array();
 $defaultHosts = array();
 if (isset($getInputs['h'])) {
     $h = explode(",", $getInputs['h']);
-    $hostIds = filteredArrayId($h);
     $hostObj = new CentreonHost($pearDB);
-    $hostArray = $hostObj->getHostsNames($hostIds);
+    $hostArray = $hostObj->getHostsNames($h);
     foreach ($hostArray as $defaultHost) {
         $defaultHosts[$defaultHost['name']] = $defaultHost['id'];
     }
@@ -129,9 +114,8 @@ if (isset($getInputs['h'])) {
 $defaultHostgroups = array();
 if (isset($getInputs['hg'])) {
     $hg = explode(",", $getInputs['hg']);
-    $hostGroupsIds = filteredArrayId($hg);
     $hostGrpObj = new CentreonHostgroups($pearDB);
-    $hostGrpArray = $hostGrpObj->getHostsgroups($hostGroupsIds);
+    $hostGrpArray = $hostGrpObj->getHostsgroups($hg);
     foreach ($hostGrpArray as $defaultHostgroup) {
         $defaultHostgroups[$defaultHostgroup['name']] = $defaultHostgroup['id'];
     }
@@ -140,9 +124,8 @@ if (isset($getInputs['hg'])) {
 $defaultServices = array();
 if (isset($getInputs['svc'])) {
     $svc = explode(",", $getInputs['svc']);
-    $svcIds = filteredArrayId($svc);
     $serviceObj = new CentreonService($pearDB);
-    $serviceArray = $serviceObj->getServicesDescr($svcIds);
+    $serviceArray = $serviceObj->getServicesDescr($svc);
     foreach ($serviceArray as $defaultService) {
         if ($defaultService['host_name'] == '_Module_Meta'
             && preg_match('/^meta_(\d+)/', $defaultService['description'], $matches)
@@ -159,9 +142,8 @@ if (isset($getInputs['svc'])) {
 $defaultServicegroups = array();
 if (isset($getInputs['svcg'])) {
     $svcg = explode(",", $getInputs['svcg']);
-    $svcGroupsIds = filteredArrayId($svcg);
     $serviceGrpObj = new CentreonServicegroups($pearDB);
-    $serviceGrpArray = $serviceGrpObj->getServicesGroups($svcGroupsIds);
+    $serviceGrpArray = $serviceGrpObj->getServicesGroups($svcg);
     foreach ($serviceGrpArray as $defaultServicegroup) {
         $defaultServicegroups[$defaultServicegroup['name']] = $defaultServicegroup['id'];
     }
@@ -170,9 +152,8 @@ if (isset($getInputs['svcg'])) {
 $defaultPollers = array();
 if (isset($getInputs['poller'])) {
     $poller = explode(",", $getInputs['poller']);
-    $pollerIds = filteredArrayId($pollerIds);
     $pollerObj = new CentreonInstance($pearDB, $pearDBO);
-    $pollerArray = $pollerObj->getInstancesMonitoring($pollerIds);
+    $pollerArray = $pollerObj->getInstancesMonitoring($poller);
     foreach ($pollerArray as $defaultPoller) {
         $defaultPollers[$defaultPoller['name']] = $defaultPoller['id'];
     }

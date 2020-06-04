@@ -83,20 +83,51 @@ class CentreonInstance
         }
     }
 
-    public function getInstancesMonitoring($poller_id = array())
+    /**
+     * filteredArrayId
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    private function filteredArrayId(array $ids): array {
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
+
+    /**
+     * getInstancesMonitoring - returns instance_id and name from instances ids
+     *
+     * @param  int[] $pollerIds
+     * @return array $retArr
+     */
+    public function getInstancesMonitoring($pollerIds = [])
     {
-        $pollers = array();
-        if (!empty($poller_id)) {
-            $query = "SELECT i.instance_id, i.name
-                FROM instances i
-                WHERE i.instance_id IN (" . $this->dbo->escape(implode(",", $poller_id)) . ") ";
-            $res = $this->dbo->query($query);
-            while ($row = $res->fetchRow()) {
-                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['name']);
+        $retArr = [];
+
+        if (!empty($pollerIds)) {
+            /* checking here that the array provided as parameter
+             * is exclusively made of integers (servicegroup ids)
+             */
+            $filteredPollerIds = $this->filteredArrayId($pollerIds);
+            if (count($filteredPollerIds) > 0) {
+                $stmt = $this->DB->prepare(
+                    'SELECT i.instance_id, i.name FROM instances i ' .
+                    'WHERE i.instance_id IN ( :instanceIds )'
+                );
+                $stmt->bindValue(':instanceIds', implode(',', $filteredPollerIds), \PDO::PARAM_STR);
+                $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $retArr[] = [
+                        'id' => $row['instance_id'],
+                        'name' => $row['name']
+                    ];
+                }
             }
         }
 
-        return $pollers;
+        return $retArr;
     }
 
 

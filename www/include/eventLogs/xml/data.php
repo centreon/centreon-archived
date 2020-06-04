@@ -186,6 +186,8 @@ if (isset($sid) && $sid) {
 }
 
 // binding limit value
+$limit = $inputs['limit'];
+$num = $inputs['num'];
 $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
 
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
@@ -376,8 +378,8 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
-    $queryValues['whereOutput'] = [\PDO::PARAM_STR => CentreonUtils::escapeSecure($output)];
-    $whereOutput = " AND logs.output like '%:whereOutput%";
+    $queryValues['whereOutput'] = [\PDO::PARAM_STR => '%' . CentreonUtils::escapeSecure($output) . '%'];
+    $whereOutput = " AND logs.output like :whereOutput";
 }
 
 $innerJoinEngineLog = "";
@@ -387,9 +389,12 @@ if ($engine == "true" && isset($openid) && $openid != "") {
     $filteredIds = array_filter($pollerIds, function ($id) {
         return is_numeric($id);
     });
-    $queryValues['openid'] = [\PDO::PARAM_STR => implode(", ", $filteredIds)];
-    $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name"
-        . " AND i.instance_id IN ( :openid );";
+
+    if (count($filteredIds) > 0) {
+        $queryValues['openid'] = [\PDO::PARAM_STR => implode(", ", $filteredIds)];
+        $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name"
+            . " AND i.instance_id IN ( :openid )";
+    }
 }
 
 if ($notification == 'true') {
@@ -651,14 +656,13 @@ if (isset($req) && $req) {
                 $stmt->bindValue($bindId, $bindValue, $bindType);
         }
     }
-
     $stmt->execute();
 
     if (!($stmt->rowCount()) && ($num != 0)) {
         if ($export !== "1") {
             $offset = floor($rows / $limit) * $limit;
         }
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
     }
 

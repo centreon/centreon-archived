@@ -154,6 +154,18 @@ class CentreonHost
     }
 
     /**
+     * filteredArrayId
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    private function filteredArrayId(array $ids): array {
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
+
+    /**
      *  get list of inherited templates from plugin pack
      *
      * @return array
@@ -405,40 +417,36 @@ class CentreonHost
     }
 
     /**
-     * @param array $hostId
-     * @return array
-     * @throws Exception
+     * @param int[] $hostId
+     * @return array $retArr
      */
-    public function getHostsNames($hostId = array())
-    {
-        $arrayReturn = array();
+    public function getHostsNames($hostId = []): array {
+        $retArr = [];
         $explodedValues = '';
         if (!empty($hostId)) {
-            $query = 'SELECT host_id, host_name ' .
-                'FROM host where host_id IN (';
+            /* checking here that the array provided as parameter
+             * is exclusively made of integers (host ids)
+             */
+            $filteredHostIds = $this->filteredArrayId($hostId);
+            if (count($filteredHostIds) > 0) {
+                $query = 'SELECT host_id, host_name ' .
+                    'FROM host where host_id IN ( :hostIds )';
+                $stmt = $this->db->prepare($query);
+                $stmt->bindValue(':hostIds', implode(',', $filteredHostIds), \PDO::PARAM_STR);
+                $dbResult = $stmt->execute();
+/*                 if (!$dbResult) {
+                    throw new \Exception("An error occured");
+                } */
 
-            for ($i = 1; $i <= count($hostId); $i++) {
-                $explodedValues .= '?,';
-            }
-            $explodedValues = rtrim($explodedValues, ',');
-            $hostId = array_map(
-                function ($var) {
-                    return (int)$var;
-                },
-                $hostId
-            );
-            $query .= $explodedValues . ') ';
-            $stmt = $this->db->prepare($query);
-            $dbResult = $stmt->execute($hostId);
-            if (!$dbResult) {
-                throw new \Exception("An error occured");
-            }
-
-            while ($row = $stmt->fetch()) {
-                $arrayReturn[] = array("id" => $row['host_id'], "name" => $row['host_name']);
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $retArr[] = [
+                        'id' => $row['host_id'],
+                        'name' => $row['host_name']
+                    ];
+                }
             }
         }
-        return $arrayReturn;
+        return $retArr;
     }
 
     /**

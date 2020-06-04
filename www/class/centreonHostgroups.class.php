@@ -70,6 +70,18 @@ class CentreonHostgroups
     }
 
     /**
+     * filteredArrayId
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    private function filteredArrayId(array $ids): array {
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
+
+    /**
      *
      * Enter description here ...
      * @param unknown_type $hg_id
@@ -140,24 +152,35 @@ class CentreonHostgroups
 
 
     /**
-     * Get Hostgroup Id/Name
+     * Get Hostgroups ids and names from ids
      *
-     * @param int $hg_id
-     * @return string
+     * @param int[] $hostGroupsIds
+     * @return array $retArr
      */
-    public function getHostsgroups($hg_id = array())
-    {
-        $arrayReturn = array();
-        if (!empty($hg_id)) {
-            $query = "SELECT hg_id, hg_name FROM hostgroup
-                WHERE hg_id IN (" . $this->DB->escape(implode(",", $hg_id)) . ")";
-            $res = $this->DB->query($query);
-            $arrayReturn = array();
-            while ($row = $res->fetchRow()) {
-                $arrayReturn[] = array("id" => $row['hg_id'], "name" => $row['hg_name']);
+    public function getHostsgroups($hostGroupsIds = []): array {
+        $retArr = [];
+
+        if (!empty($hostGroupsIds)) {
+            $filteredHgIds = $this->filteredArrayId($hostGroupsIds);
+
+            if (count($filteredHgIds) > 0) {
+                $stmt = $this->DB->prepare(
+                    'SELECT hg_id, hg_name FROM hostgroup ' .
+                    'WHERE hg_id IN ( :hgIds )'
+                );
+                $stmt->bindValue(':hgIds', implode(',', $filteredHgIds), \PDO::PARAM_STR);
+                $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $retArr[] = [
+                        'id' => $row['hg_id'],
+                        'name' => $row['hg_name']
+                    ];
+                }
             }
         }
-        return $arrayReturn;
+
+        return $retArr;
     }
 
 

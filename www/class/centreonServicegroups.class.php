@@ -101,27 +101,49 @@ class CentreonServicegroups
     }
 
     /**
-     * @param array $sgId
-     * @return array
+     * filteredArrayId
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
      */
-    public function getServicesGroups($sgId = array())
-    {
-        $arrayReturn = array();
+    private function filteredArrayId(array $ids): array {
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
 
-        if (!empty($sgId)) {
-            $query = "SELECT sg_id, sg_name "
-                . "FROM servicegroup "
-                . "WHERE sg_id IN (" . $this->DB->escape(implode(",", $sgId)) . " ) ";
-            $res = $this->DB->query($query);
-            while ($row = $res->fetchRow()) {
-                $arrayReturn[] = array(
-                    "id" => $row['sg_id'],
-                    "name" => $row['sg_name']
+    /**
+     * @param int[] $serviceGroupsIds
+     * @return array $retArr
+     */
+    public function getServicesGroups($serviceGroupsIds = [])
+    {
+        $retArr = [];
+
+        if (!empty($serviceGroupsIds)) {
+            /* checking here that the array provided as parameter
+             * is exclusively made of integers (servicegroup ids)
+             */
+            $filteredSgIds = $this->filteredArrayId($serviceGroupsIds);
+
+            if (count($filteredSgIds) > 0) {
+                $stmt = $this->DB->prepare(
+                    'SELECT sg_id, sg_name FROM servicegroup ' .
+                    'WHERE sg_id IN ( :sgIds )'
                 );
+                $stmt->bindValue(':sgIds', implode(",", $filteredSgIds), \PDO::PARAM_STR);
+                $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $retArr[] = [
+                        'id' => $row['sg_id'],
+                        'name' => $row['sg_name']
+                    ];
+                }
             }
         }
 
-        return $arrayReturn;
+        return $retArr;
     }
 
 
