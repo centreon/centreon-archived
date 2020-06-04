@@ -114,6 +114,17 @@ class CentreonUtils
         return $str;
     }
 
+    /**
+     * @param $coords
+     * @return false|int
+     */
+    public static function validateGeoCoords($coords) {
+        return preg_match(
+            '/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
+            $coords
+        );
+    }
+
     public static function setUserName($userName)
     {
         self::$clapiUserName = $userName;

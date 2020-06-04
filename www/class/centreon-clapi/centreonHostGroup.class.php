@@ -56,6 +56,7 @@ class CentreonHostGroup extends CentreonObject
 {
     const ORDER_UNIQUENAME = 0;
     const ORDER_ALIAS = 1;
+    const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
         'HOST'
@@ -160,6 +161,10 @@ class CentreonHostGroup extends CentreonObject
             }
             if (!preg_match("/^hg_/", $params[1]) && $params[1] != "geo_coords") {
                 $params[1] = "hg_" . $params[1];
+            } elseif ($params[1] === "geo_coords") {
+                if (!CentreonUtils::validateGeoCoords($params[2])) {
+                    throw new CentreonClapiException(self::INVALID_GEO_COORDS);
+                }
             }
 
             $updateParams = array($params[1] => $params[2]);
