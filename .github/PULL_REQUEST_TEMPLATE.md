@@ -15,11 +15,10 @@ Please include a short resume of the changes and what is the purpose of PR. Any 
 
 ## Target serie
 
-- [ ] 2.8.x
-- [ ] 18.10.x
 - [ ] 19.04.x
 - [ ] 19.10.x
-- [ ] 20.04.x (master)
+- [ ] 20.04.x
+- [ ] 20.10.x (master)
 
 <h2> How this pull request can be tested ? </h2>
 
