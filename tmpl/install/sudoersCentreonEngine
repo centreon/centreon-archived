@@ -1,12 +1,22 @@
 ## BEGIN: CENTREON SUDO
 
 User_Alias      CENTREON=%@CENTREON_GROUP@
-Cmnd_Alias      LVM_commands = /usr/sbin/lvdisplay -c *, /usr/sbin/vgdisplay -c *
-
 Defaults:CENTREON !requiretty
 
-# Database backup script
-CENTREON   ALL = (ALL) NOPASSWD: LVM_Commands
+## Database backup script
+# LVM management required commands
+CENTREON   ALL = NOPASSWD: /usr/sbin/lvdisplay -c *
+CENTREON   ALL = NOPASSWD: /usr/sbin/vgdisplay -c *
+CENTREON   ALL = NOPASSWD: /usr/sbin/lvcreate -l *
+CENTREON   ALL = NOPASSWD: /usr/sbin/lvremove -f *
+CENTREON   ALL = NOPASSWD: /usr/bin/mount -o *
+CENTREON   ALL = NOPASSWD: /usr/bin/umount *
+# mariadb service
+CENTREON   ALL = NOPASSWD: /etc/init.d/mysql start
+CENTREON   ALL = NOPASSWD: /etc/init.d/mysql stop
+# mysql service
+CENTREON   ALL = NOPASSWD: /etc/init.d/mysqld start
+CENTREON   ALL = NOPASSWD: /etc/init.d/mysqld stop
 
 # centreontrapd
 CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd start
