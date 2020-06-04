@@ -51,7 +51,8 @@ SAVE_LAST_FILE="backup.last"
 DO_ARCHIVE=1
 INIT_SCRIPT="" # try to find it
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
-MNTOPTIONS="-o nouuid"
+# warning this option will fail on partition type different than 'xfs'. The partition will be checked later
+MNTOPTIONS="-o nouuid" 
 
 ###
 # Check MySQL launch
@@ -237,6 +238,14 @@ $INIT_SCRIPT start
 ###
 output_log "Mount LVM snapshot"
 mkdir -p "$SNAPSHOT_MOUNT"
+
+# check for ext4 type of the LVM partition.
+partition_type=$(df /dev/$vg_name/dbbackup --print-type | grep -i "xfs");
+if [ -z "$partition_type"]; then
+    # the new partition is not an 'xfs', removing the '-o nouuid' mount option
+    MNTOPTIONS="";
+fi
+
 mount $MNTOPTIONS /dev/$vg_name/dbbackup "$SNAPSHOT_MOUNT"
 if [ $? -eq 0 ]; then
     output_log "Device mounted successfully"
