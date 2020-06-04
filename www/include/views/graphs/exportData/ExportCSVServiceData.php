@@ -104,50 +104,51 @@ if (isset($chartId)) {
         }
     }
 }
-
-$stmt = $pearDBO->prepare(
-    'SELECT host_name, service_description FROM index_data WHERE id = :index'
-);
-$stmt->bindValue(':index', $index, \PDO::PARAM_INT);
-$stmt->execute();
-while ($res = $stmt->fetchRow()) {
-    $hName = $res["host_name"];
-    $sName = $res["service_description"];
-}
-
-header("Content-Type: application/csv-tab-delimited-table");
-if (isset($hName) && isset($sName)) {
-    header("Content-disposition: filename=" . $hName . "_" . $sName . ".csv");
-} else {
-    header("Content-disposition: filename=" . $index . ".csv");
-}
-
-$listMetric = array();
-$datas = array();
-$listEmptyMetric = array();
-
-$stmt = $pearDBO->prepare(
-    'SELECT DISTINCT metric_id, metric_name ' .
-    'FROM metrics, index_data ' .
-    'WHERE metrics.index_id = index_data.id AND id = :index ORDER BY metric_name'
-);
-
-$stmt->bindValue(':index', $index, \PDO::PARAM_INT);
-$stmt->execute();
-
-while ($index_data = $stmt->fetchRow()) {
-    $listMetric[$index_data["metric_id"]] = $index_data["metric_name"];
-    $listEmptyMetric[$index_data["metric_id"]] = '';
-    $stmt2 = $pearDBO->prepare(
-        "SELECT ctime,value FROM data_bin WHERE id_metric = ':metricId' " .
-        "AND ctime >= ':start' AND ctime < ':end'"
+if (isset($index) && is_numeric($index)) {
+    $stmt = $pearDBO->prepare(
+        'SELECT host_name, service_description FROM index_data WHERE id = :index'
     );
-    $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
-    $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
-    $stmt2->bindValue(':metricId', $index_data["metric_id"], \PDO::PARAM_INT);
-    $stmt2->execute();
-    while ($data = $stmt2->fetchRow()) {
-        $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
+    $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
+    $stmt->execute();
+    while ($res = $stmt->fetchRow()) {
+        $hName = $res["host_name"];
+        $sName = $res["service_description"];
+    }
+
+    header("Content-Type: application/csv-tab-delimited-table");
+    if (isset($hName) && isset($sName)) {
+        header("Content-disposition: filename=" . $hName . "_" . $sName . ".csv");
+    } else {
+        header("Content-disposition: filename=" . $index . ".csv");
+    }
+
+    $listMetric = array();
+    $datas = array();
+    $listEmptyMetric = array();
+
+    $stmt = $pearDBO->prepare(
+        'SELECT DISTINCT metric_id, metric_name ' .
+        'FROM metrics, index_data ' .
+        'WHERE metrics.index_id = index_data.id AND id = :index ORDER BY metric_name'
+    );
+
+    $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    while ($index_data = $stmt->fetchRow()) {
+        $listMetric[$index_data['metric_id']] = $index_data['metric_name'];
+        $listEmptyMetric[$index_data['metric_id']] = '';
+        $stmt2 = $pearDBO->prepare(
+            "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
+            "AND ctime >= :start AND ctime < :end"
+        );
+        $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
+        $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
+        $stmt2->bindValue(':metricId', $index_data['metric_id'], \PDO::PARAM_INT);
+        $stmt2->execute();
+        while ($data = $stmt2->fetchRow()) {
+            $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
+        }
     }
 }
 
