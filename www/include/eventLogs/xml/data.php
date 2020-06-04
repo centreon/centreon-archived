@@ -376,7 +376,7 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
-    $queryValues['whereOutput'] = CentreonUtils::escapeSecure($output);
+    $queryValues['whereOutput'] = [\PDO::PARAM_STR => CentreonUtils::escapeSecure($output)];
     $whereOutput = " AND logs.output like '%:whereOutput%";
 }
 
