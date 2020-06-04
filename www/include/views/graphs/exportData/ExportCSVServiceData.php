@@ -138,16 +138,18 @@ if (isset($index) && is_numeric($index)) {
     while ($index_data = $stmt->fetchRow()) {
         $listMetric[$index_data['metric_id']] = $index_data['metric_name'];
         $listEmptyMetric[$index_data['metric_id']] = '';
-        $stmt2 = $pearDBO->prepare(
-            "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
-            "AND ctime >= :start AND ctime < :end"
-        );
-        $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
-        $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
-        $stmt2->bindValue(':metricId', $index_data['metric_id'], \PDO::PARAM_INT);
-        $stmt2->execute();
-        while ($data = $stmt2->fetchRow()) {
-            $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
+        if (isset($start) && isset($end)) {
+            $stmt2 = $pearDBO->prepare(
+                "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
+                "AND ctime >= :start AND ctime < :end"
+            );
+            $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
+            $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
+            $stmt2->bindValue(':metricId', $index_data['metric_id'], \PDO::PARAM_INT);
+            $stmt2->execute();
+            while ($data = $stmt2->fetchRow()) {
+                $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
+            }
         }
     }
 }
