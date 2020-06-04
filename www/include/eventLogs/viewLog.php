@@ -80,7 +80,6 @@ function filteredArrayId(array $ids): array {
     $filtered = array_filter($ids, function ($id) {
         return is_numeric($id);
     });
-    return $filtered;
 }
 
 $filterParameters = [
