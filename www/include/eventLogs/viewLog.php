@@ -76,7 +76,7 @@ $tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
  * @param  int[] $ids
  * @return array filtered
  */
-function filteredArrayId(array $ids) {
+function filteredArrayId(array $ids): array {
     $filtered = array_filter($ids, function ($id) {
         return is_numeric($id);
     });
