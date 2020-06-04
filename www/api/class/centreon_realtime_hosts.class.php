@@ -141,20 +141,20 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         } else {
             $this->viewType = null;
         }
-        if (isset($this->arguments['sortType'])) {
-            if (strtolower($this->arguments['sortType']) === 'asc' ||
-                strtolower($this->arguments['sortType']) === 'desc') {
-                $this->sortType = $this->arguments['sortType'];
+        if (isset($this->arguments['order'])) {
+            if (strtolower($this->arguments['order']) === 'asc' ||
+                strtolower($this->arguments['order']) === 'desc') {
+                $this->order = $this->arguments['order'];
             } else {
-                throw new \RestBadRequestException('Bad sort type parameter');
+                throw new \RestBadRequestException('Bad order parameter');
             }
         } else {
-            $this->sortType = null;
-        }
-        if (isset($this->arguments['order'])) {
-            $this->order = $this->arguments['order'];
-        } else {
             $this->order = null;
+        }
+        if (isset($this->arguments['sortType'])) {
+            $this->sortType = $this->arguments['sortType'];
+        } else {
+            $this->sortType = null;
         }
     }
 
