@@ -242,10 +242,10 @@ mkdir -p "$SNAPSHOT_MOUNT"
 # check for ext4 type of the LVM partition.
 partition_type=$(df /dev/$vg_name/dbbackup --print-type | grep -i "xfs");
 if [ -z "$partition_type"]; then
-    parameters = "/dev/$vg_name/dbbackup"
+    parameters="/dev/$vg_name/dbbackup"
 else
     # the new partition is an 'xfs', adding the mount option 'nouuid'
-    parameters = "$MNTOPTIONS /dev/$vg_name/dbbackup"
+    parameters="$MNTOPTIONS /dev/$vg_name/dbbackup"
 fi
 
 mount "$parameters" "$SNAPSHOT_MOUNT"
