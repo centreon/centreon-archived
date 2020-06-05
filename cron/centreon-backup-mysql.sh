@@ -227,22 +227,16 @@ save_timestamp=$(date '+%s')
 output_log "Create LVM snapshot"
 sudo lvcreate -l $free_pe -s -n dbbackup $lv_name
 
-echo "line 229";
-
 ###
 # Start server
 ###
 output_log "Start mysqld:"
 $INIT_SCRIPT start
 
-echo "line 237";
-
 ###
 # Mount snapshot
 ###
 output_log "Mount LVM snapshot"
-
-echo "line 244";
 echo "SNAPSHOT_MOUNT = $SNAPSHOT_MOUNT";
 mkdir -p "$SNAPSHOT_MOUNT"
 
@@ -263,16 +257,7 @@ else
     exit 1;
 fi
 
-
-echo "line 260";
-
-
 concat_datadir=$(echo "$datadir" | sed "s#^${mount_point}##")
-
-
-echo "line 266";
-
-
 
 ###
 # Do DB save
@@ -301,11 +286,6 @@ for tmp_file in $(find "$tmp_path" -type f); do
 fi
 done
 
-
-
-echo "line 299";
-
-
 output_log "Save files"
 cd $SNAPSHOT_MOUNT
 if [ "$DO_ARCHIVE" -eq "0" ] ; then
@@ -319,21 +299,12 @@ else
 fi
 cd -
 
-
-echo "line 316";
-
 ###
 # Deleting snapshot
 ###
 output_log "Umount and Delete LVM snapshot"
 sudo umount "$SNAPSHOT_MOUNT"
-
-echo "line 324";
-
 sudo lvremove -f /dev/$vg_name/dbbackup
-
-echo "line 328";
-
 echo "$save_timestamp" > "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
 
 exit 0
