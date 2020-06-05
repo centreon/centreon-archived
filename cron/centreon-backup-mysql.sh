@@ -51,7 +51,7 @@ SAVE_LAST_FILE="backup.last"
 DO_ARCHIVE=1
 INIT_SCRIPT="" # try to find it
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
-# warning this option will fail on partition type different than 'xfs'. The partition will be checked later
+# this option is required for 'xfs' partition type
 MNTOPTIONS="-o nouuid" 
 
 ###
@@ -242,11 +242,14 @@ mkdir -p "$SNAPSHOT_MOUNT"
 # check for ext4 type of the LVM partition.
 partition_type=$(df /dev/$vg_name/dbbackup --print-type | grep -i "xfs");
 if [ -z "$partition_type"]; then
-    # the new partition is not an 'xfs', removing the '-o nouuid' mount option
-    MNTOPTIONS="";
-fi
+    parameters = "/dev/$vg_name/dbbackup"
+else;
+    # the new partition is an 'xfs', adding the mount option 'nouuid'
+    parameters = "$MNTOPTIONS /dev/$vg_name/dbbackup"
+    fi
 
-mount $MNTOPTIONS /dev/$vg_name/dbbackup "$SNAPSHOT_MOUNT"
+mount "$parameters" "$SNAPSHOT_MOUNT"
+
 if [ $? -eq 0 ]; then
     output_log "Device mounted successfully"
 else
