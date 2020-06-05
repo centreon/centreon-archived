@@ -233,7 +233,6 @@ $INIT_SCRIPT start
 # Mount snapshot
 ###
 output_log "Mount LVM snapshot"
-echo "SNAPSHOT_MOUNT = $SNAPSHOT_MOUNT";
 mkdir -p "$SNAPSHOT_MOUNT"
 
 # check for new partition type.
