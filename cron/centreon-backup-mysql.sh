@@ -243,10 +243,10 @@ mkdir -p "$SNAPSHOT_MOUNT"
 partition_type=$(df /dev/$vg_name/dbbackup --print-type | grep -i "xfs");
 if [ -z "$partition_type"]; then
     parameters = "/dev/$vg_name/dbbackup"
-else;
+else
     # the new partition is an 'xfs', adding the mount option 'nouuid'
     parameters = "$MNTOPTIONS /dev/$vg_name/dbbackup"
-    fi
+fi
 
 mount "$parameters" "$SNAPSHOT_MOUNT"
 
