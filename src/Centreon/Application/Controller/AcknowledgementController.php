@@ -32,16 +32,13 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Domain\Service\JsonValidator\ValidatorException;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Used to manage all requests of hosts acknowledgements
@@ -76,13 +73,8 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
         $hostsAcknowledgements = $this->acknowledgementService
-            ->filterByContact($contact)
+            ->filterByContact($this->getUser())
             ->findHostsAcknowledgements();
 
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
@@ -106,11 +98,6 @@ class AcknowledgementController extends AbstractController
     public function findAcknowledgementsByHost(RequestParametersInterface $requestParameters, int $hostId): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
 
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
@@ -137,11 +124,6 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findServicesAcknowledgements();
@@ -167,10 +149,7 @@ class AcknowledgementController extends AbstractController
         int $hostId,
         int $serviceId
     ): View {
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
@@ -463,16 +442,8 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (
-            !$contact->isAdmin()
-            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
-                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
-        ) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
         $acknowledgement = $this->acknowledgementService
-            ->filterByContact($contact)
+            ->filterByContact($this->getUser())
             ->findOneAcknowledgement($acknowledgementId);
 
         if ($acknowledgement !== null) {
@@ -497,16 +468,8 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (
-            !$contact->isAdmin()
-            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
-                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
-        ) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
         $acknowledgements = $this->acknowledgementService
-            ->filterByContact($contact)
+            ->filterByContact($this->getUser())
             ->findAcknowledgements();
 
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
@@ -538,10 +501,6 @@ class AcknowledgementController extends AbstractController
          * @var Contact $contact
          */
         $contact = $this->getUser();
-
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
 
         /**
          * @var ResourceEntity[] $resources
@@ -581,13 +540,15 @@ class AcknowledgementController extends AbstractController
         foreach ($resources as $resource) {
             //start disacknowledgement process
             try {
-                if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                    $this->acknowledgementService->disacknowledgeService(
-                        (int)$resource->getParent()->getId(),
-                        (int)$resource->getId()
-                    );
-                } else {
-                    $this->acknowledgementService->disacknowledgeHost((int)$resource->getId());
+                if ($this->hasAckRightsForResource($contact, $resource)) {
+                    if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                        $this->acknowledgementService->disacknowledgeService(
+                            (int)$resource->getParent()->getId(),
+                            (int)$resource->getId()
+                        );
+                    } else {
+                        $this->acknowledgementService->disacknowledgeHost((int)$resource->getId());
+                    }
                 }
             } catch (\Exception $e) {
                 continue;

@@ -141,7 +141,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $request =
             'SELECT topology.topology_name, topology.topology_page,
                     topology.topology_parent, access.access_right
-            FROM `:db`.topology 
+            FROM `:db`.topology
             LEFT JOIN (
                 SELECT topology.topology_id, acltr.access_right
                 FROM `:db`.contact contact
