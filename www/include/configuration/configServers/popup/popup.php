@@ -25,8 +25,27 @@ require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'bootstrap.php';
 require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
-
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 $pearDB = $dependencyInjector['configuration_db'];
+
+/* Check Session */
+CentreonSession::start(1);
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    print "Bad Session";
+    exit();
+}
+$centreon = $_SESSION['centreon'];
+$pollerId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+$userId = $centreon->user->user_id;
+$isAdmin = $centreon->user->admin;
+
+$acl = new CentreonACL($userId, $isAdmin);
+$aclPollers = $acl->getPollers();
+
+if (!array_key_exists($pollerId, $aclPollers)) {
+    print "Bad Poller Id";
+    exit();
+}
 
 $tpl = new Smarty();
 $tpl = initSmartyTpl(null, $tpl);
@@ -45,7 +64,7 @@ LEFT JOIN remote_servers AS rs ON (rs.ip = ns.ns_ip_address)
 LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id`) 
 LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id`) 
 WHERE ns.ns_activate = '1' 
-AND ns.`id` =" . (int)$_GET['id'];
+AND ns.`id` =" . (int)$pollerId;
 
 $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();
