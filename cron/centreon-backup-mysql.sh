@@ -241,7 +241,7 @@ mkdir -p "$SNAPSHOT_MOUNT"
 
 # check for new partition type.
 patition_type=$(lsblk -n -o FSTYPE /dev/$vg_name/dbbackup)
-if [ $? = "xfs" ]; then
+if [ "$partition_type" = "xfs" ]; then
     # the new partition is an 'xfs', adding specific mount option 'nouuid'
     mount $MNT_OPTIONS_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
 else
