@@ -126,13 +126,25 @@ class CentreonServicegroups
              * is exclusively made of integers (servicegroup ids)
              */
             $filteredSgIds = $this->filteredArrayId($serviceGroupsIds);
-
+            $sgParams = [];
             if (count($filteredSgIds) > 0) {
+                /*
+                 * Building the sgParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredSgIds as $index => $filteredSgId) {
+                    $sgParams[':sgId' . $index] = $filteredSgId;
+                }
+
                 $stmt = $this->DB->prepare(
                     'SELECT sg_id, sg_name FROM servicegroup ' .
-                    'WHERE sg_id IN ( :sgIds )'
+                    'WHERE sg_id IN ( ' . implode(',', array_keys($sgParams)) . ' )'
                 );
-                $stmt->bindValue(':sgIds', implode(",", $filteredSgIds), \PDO::PARAM_STR);
+
+                foreach ($sgParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+
                 $stmt->execute();
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

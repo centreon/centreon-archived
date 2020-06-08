@@ -430,15 +430,24 @@ class CentreonHost
              * is exclusively made of integers (host ids)
              */
             $filteredHostIds = $this->filteredArrayId($hostId);
+            $hostParams = [];
             if (count($filteredHostIds) > 0) {
-                $query = 'SELECT host_id, host_name ' .
-                    'FROM host where host_id IN ( :hostIds )';
-                $stmt = $this->db->prepare($query);
-                $stmt->bindValue(':hostIds', implode(',', $filteredHostIds), \PDO::PARAM_STR);
+                /*
+                 * Building the hostParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredHostIds as $index => $filteredHostId) {
+                    $hostParams[':hostId' . $index] = $filteredHostId;
+                }
+
+                $stmt = $this->db->prepare('SELECT host_id, host_name ' .
+                    'FROM host where host_id IN ( ' . implode(',', array_keys($hostParams)) . ' )');
+
+                foreach ($hostParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+
                 $dbResult = $stmt->execute();
-/*                 if (!$dbResult) {
-                    throw new \Exception("An error occured");
-                } */
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                     $retArr[] = [

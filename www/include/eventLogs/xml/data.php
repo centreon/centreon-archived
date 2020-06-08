@@ -390,10 +390,16 @@ if ($engine == "true" && isset($openid) && $openid != "") {
         return is_numeric($id);
     });
 
+    $pollerParams = [];
     if (count($filteredIds) > 0) {
-        $queryValues['openid'] = [\PDO::PARAM_STR => implode(", ", $filteredIds)];
-        $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name"
-            . " AND i.instance_id IN ( :openid )";
+        $in = '';
+        foreach ($filteredIds as $index => $filteredId) {
+            $key = ':pollerId' . $index;
+            $queryValues[$key] = [\PDO::PARAM_INT => $filteredId];
+            $in .= $key . ',';
+        }
+        $innerJoinEngineLog = ' INNER JOIN instances i ON i.name = logs.instance_name'
+            . ' AND i.instance_id IN ( ' . rtrim($in, ',') . ')';
     }
 }
 

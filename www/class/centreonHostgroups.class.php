@@ -164,13 +164,25 @@ class CentreonHostgroups
 
         if (!empty($hostGroupsIds)) {
             $filteredHgIds = $this->filteredArrayId($hostGroupsIds);
-
+            $hgParams = [];
             if (count($filteredHgIds) > 0) {
+                /*
+                 * Building the hgParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredHgIds as $index => $filteredHgId) {
+                    $sgParams[':hgId' . $index] = $filteredHgIds;
+                }
+
                 $stmt = $this->DB->prepare(
                     'SELECT hg_id, hg_name FROM hostgroup ' .
-                    'WHERE hg_id IN ( :hgIds )'
+                    'WHERE hg_id IN ( ' . implode(',', array_keys($hgParams)) . ' )'
                 );
-                $stmt->bindValue(':hgIds', implode(',', $filteredHgIds), \PDO::PARAM_STR);
+
+                foreach ($hgParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+
                 $stmt->execute();
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
