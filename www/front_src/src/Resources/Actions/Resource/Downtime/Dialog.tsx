@@ -266,7 +266,7 @@ const DialogDowntime = ({
                 control={
                   <Checkbox
                     checked={values.downtimeAttachedResources}
-                    disabled={!canDowntimeServices}
+                    disabled={!canDowntimeServices()}
                     inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                     color="primary"
                     onChange={handleChange('downtimeAttachedResources')}
