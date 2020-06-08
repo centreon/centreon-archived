@@ -84,7 +84,8 @@ class CentreonService
      * @param  int[] $ids
      * @return int[] filtered
      */
-    function filteredArrayId(array $ids): array {
+    function filteredArrayId(array $ids): array
+    {
         /* Slight difference here. Array parameter is made
          * of combined ids HOSTID_SERVICEID
          */
