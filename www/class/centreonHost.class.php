@@ -421,7 +421,8 @@ class CentreonHost
      * @param int[] $hostId
      * @return array $retArr
      */
-    public function getHostsNames($hostId = []): array {
+    public function getHostsNames($hostId = []): array
+    {
         $retArr = [];
         $explodedValues = '';
         if (!empty($hostId)) {
