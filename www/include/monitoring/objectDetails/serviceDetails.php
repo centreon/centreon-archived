@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -79,9 +80,11 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = $centreon->user->access->getActions();
 }
 
-if (isset($_GET["host_name"]) &&
-    $_GET["host_name"] != "" &&
-    isset($_GET["service_description"]) && $_GET["service_description"] != ""
+if (
+    isset($_GET["host_name"])
+    && $_GET["host_name"] != ""
+    && isset($_GET["service_description"])
+    && $_GET["service_description"] != ""
 ) {
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
@@ -532,9 +535,7 @@ if (!is_null($host_id)) {
             $service_status["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
         }
 
-        if (isset($service_status["scheduled_downtime_depth"]) &&
-            $service_status["scheduled_downtime_depth"]
-        ) {
+        if (isset($service_status["scheduled_downtime_depth"]) && $service_status["scheduled_downtime_depth"]) {
             $service_status["scheduled_downtime_depth"] = 1;
         }
 
@@ -798,9 +799,10 @@ if (!is_null($host_id)) {
         $tools = array();
         $DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
         while ($module = $DBRESULT->fetchrow()) {
-            if (isset($module['svc_tools']) &&
-                $module['svc_tools'] == 1 &&
-                file_exists('modules/' . $module['name'] . '/svc_tools.php')
+            if (
+                isset($module['svc_tools'])
+                && $module['svc_tools'] == 1
+                && file_exists('modules/' . $module['name'] . '/svc_tools.php')
             ) {
                 include('modules/' . $module['name'] . '/svc_tools.php');
             }

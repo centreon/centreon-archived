@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact;
 
-
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 

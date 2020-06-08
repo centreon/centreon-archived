@@ -329,7 +329,8 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function findCommandLineOfService(int $hostId, int $serviceId): ?string {
+    public function findCommandLineOfService(int $hostId, int $serviceId): ?string
+    {
         try {
             $service = $this->findOneService($hostId, $serviceId);
             if ($service === null) {
