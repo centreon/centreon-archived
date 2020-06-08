@@ -50,7 +50,7 @@ sub new {
     );
 
     bless $self, $class;
-    $self->{sshOptions} = "-o ConnectTimeout=5 -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
+    $self->{sshOptions} = "-o ConnectTimeout=5 -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes -q ";
     $self->{interval} = 300;
     $self->{heartbeatFactor} = 10;
     $self->{heartbeat} = $self->{interval} * $self->{heartbeatFactor};
