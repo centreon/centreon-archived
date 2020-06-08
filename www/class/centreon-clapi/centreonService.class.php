@@ -76,7 +76,7 @@ class CentreonService extends CentreonObject
     const ORDER_SVCTPL = 2;
     const NB_UPDATE_PARAMS = 4;
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
-    const INVALID_GEO_COORDS = "Invalid geo coords";
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
         'CMD',
