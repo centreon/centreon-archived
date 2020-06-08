@@ -251,7 +251,8 @@ class CentreonService
      * @param int[] $serviceIds
      * @return array retArr
      */
-    public function getServicesDescr($serviceIds = []): array {
+    public function getServicesDescr($serviceIds = []): array
+    {
         $retArr = [];
 
         if (!empty($serviceIds)) {
