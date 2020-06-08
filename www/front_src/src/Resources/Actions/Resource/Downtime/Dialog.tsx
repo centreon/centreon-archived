@@ -3,7 +3,12 @@ import * as React from 'react';
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range';
 import MomentUtils from '@date-io/moment';
 
-import { Typography, Checkbox, FormHelperText, Grid } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+} from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -91,7 +96,7 @@ const DialogDowntime = ({
   setFieldValue,
   loading,
 }: Props): JSX.Element => {
-  const { getDowntimeDeniedTypeAlert } = useAclQuery();
+  const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
 
   const open = resources.length > 0;
 
@@ -193,20 +198,19 @@ const DialogDowntime = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid container item direction="column">
-            <Grid item container xs alignItems="center">
-              <Grid item xs={1}>
+          <Grid item>
+            <FormControlLabel
+              control={
                 <Checkbox
                   checked={values.fixed}
                   inputProps={{ 'aria-label': labelFixed }}
                   color="primary"
                   onChange={handleChange('fixed')}
+                  size="small"
                 />
-              </Grid>
-              <Grid item xs>
-                <Typography>{labelFixed}</Typography>
-              </Grid>
-            </Grid>
+              }
+              label={labelFixed}
+            />
           </Grid>
           <Grid item>
             <FormHelperText>{labelDuration}</FormHelperText>
@@ -257,20 +261,20 @@ const DialogDowntime = ({
             />
           </Grid>
           {hasHosts && (
-            <Grid container item direction="column">
-              <Grid item container xs alignItems="center">
-                <Grid item xs={1}>
+            <Grid item>
+              <FormControlLabel
+                control={
                   <Checkbox
                     checked={values.downtimeAttachedResources}
+                    disabled={!canDowntimeServices}
                     inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                     color="primary"
                     onChange={handleChange('downtimeAttachedResources')}
+                    size="small"
                   />
-                </Grid>
-                <Grid item xs>
-                  <Typography>{labelSetDowntimeOnServices}</Typography>
-                </Grid>
-              </Grid>
+                }
+                label={labelSetDowntimeOnServices}
+              />
             </Grid>
           )}
         </Grid>
