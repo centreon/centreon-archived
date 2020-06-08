@@ -253,7 +253,7 @@ $form->addElement('textarea', 'meta_comment', _("Comments"), $attrsTextarea);
 
 $form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
-$form->addRule('geo_coords', _("geo coords not valid"), 'validate_geo_coords');
+$form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 $form->addElement('hidden', 'meta_id');
 $redirect = $form->addElement('hidden', 'o');
