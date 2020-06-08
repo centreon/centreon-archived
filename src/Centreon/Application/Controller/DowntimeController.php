@@ -671,6 +671,10 @@ class DowntimeController extends AbstractController
             //start applying downtime process
             try {
                 if ($this->hasDtRightsForResource($contact, $resource)) {
+                    if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
+                        $downtime->setWithServices(false);
+                    }
+
                     $this->downtimeService->addResourceDowntime(
                         $resource,
                         $downtime
