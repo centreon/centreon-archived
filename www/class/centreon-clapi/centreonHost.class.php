@@ -83,7 +83,7 @@ class CentreonHost extends CentreonObject
     const ORDER_HOSTGROUP = 5;
     const MISSING_INSTANCE = "Instance name is mandatory";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
-    const INVALID_GEO_COORDS = "Invalid geo coords";
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
     const UNKNOWN_TIMEZONE = "Invalid timezone";
     const HOST_LOCATION = "timezone";
 
