@@ -668,7 +668,7 @@ if (isset($req) && $req) {
         if ($export !== "1") {
             $offset = floor($rows / $limit) * $limit;
         }
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
     }
 
