@@ -159,7 +159,8 @@ class CentreonHost
      * @param  int[] $ids
      * @return int[] filtered
      */
-    private function filteredArrayId(array $ids): array {
+    private function filteredArrayId(array $ids): array
+    {
         return array_filter($ids, function ($id) {
             return is_numeric($id);
         });
