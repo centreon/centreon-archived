@@ -640,20 +640,20 @@ class DowntimeController extends AbstractController
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
                 ));
             } else {
-                throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
+                throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
             }
         }
 
-        //validate downtime
+        // validate downtime
         $downtime = $dtRequest->getDowntime();
         $errorList->addAll(
             $entityValidator->validate(
