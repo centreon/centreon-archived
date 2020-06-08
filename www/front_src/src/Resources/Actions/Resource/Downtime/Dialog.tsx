@@ -265,7 +265,9 @@ const DialogDowntime = ({
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={values.downtimeAttachedResources}
+                    checked={
+                      canDowntimeServices() && values.downtimeAttachedResources
+                    }
                     disabled={!canDowntimeServices()}
                     inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                     color="primary"

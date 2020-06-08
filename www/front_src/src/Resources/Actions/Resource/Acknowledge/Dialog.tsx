@@ -106,7 +106,10 @@ const DialogAcknowledge = ({
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={values.acknowledgeAttachedResources}
+                  checked={
+                    canAcknowledgeServices() &&
+                    values.acknowledgeAttachedResources
+                  }
                   disabled={!canAcknowledgeServices()}
                   inputProps={{ 'aria-label': labelAcknowledgeServices }}
                   color="primary"
