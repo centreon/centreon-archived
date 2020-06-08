@@ -653,7 +653,7 @@ if (isset($req) && $req) {
     $stmt = $pearDBO->prepare($req . $limitReq);
     foreach ($queryValues as $bindId => $bindData) {
         foreach ($bindData as $bindType => $bindValue) {
-                $stmt->bindValue($bindId, $bindValue, $bindType);
+            $stmt->bindValue($bindId, $bindValue, $bindType);
         }
     }
     $stmt->execute();
