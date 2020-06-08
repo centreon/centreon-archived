@@ -329,6 +329,24 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
+    public function findCommandLineOfService(int $hostId, int $serviceId): ?string {
+        try {
+            $service = $this->findOneService($hostId, $serviceId);
+            if ($service === null) {
+                throw new MonitoringServiceException('Service not found');
+            }
+            $this->hidePasswordInCommandLine($service);
+            return $service->getCommandLine();
+        } catch (MonitoringServiceException $ex) {
+            throw $ex;
+        } catch (\Throwable $ex) {
+            throw new MonitoringServiceException('Error when getting the command line');
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void
     {
         $monitoringCommand = $monitoringService->getCommandLine();

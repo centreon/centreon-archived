@@ -33,6 +33,8 @@
  *
  */
 
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -42,7 +44,18 @@ include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
 include_once("./class/centreonMeta.class.php");
-include_once($centreon_path . "www/include/monitoring/objectDetails/common-func.php");
+
+// We initialize the kernel of Symfony to retrieve its container.
+include_once($centreon_path . "config/bootstrap.php");
+$kernel = new App\Kernel('prod', false);
+$kernel->boot();
+$container = $kernel->getContainer();
+$monitoringService = $container->get(Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface::class);
+$contactService = $container->get(Centreon\Domain\Contact\Interfaces\ContactServiceInterface::class);
+$contact = $contactService->findBySession(session_id());
+if ($contact !== null) {
+    $monitoringService->filterByContact($contact);
+}
 
 /*
  * Create Object env
@@ -234,10 +247,9 @@ if (!is_null($host_id)) {
         $DBRESULT->closeCursor();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status["command_line"] = hidePasswordInCommand(
-                $service_status["check_command"],
-                $host_id,
-                $service_status["service_id"]
+            $service_status["command_line"] = $monitoringService->findCommandLineOfService(
+                (int) $host_id,
+                (int) $service_status["service_id"]
             );
         }
 

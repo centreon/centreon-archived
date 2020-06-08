@@ -89,6 +89,7 @@ services:
 
     Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
         class: Centreon\Domain\Monitoring\MonitoringService
+        public: true
 
     Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB
@@ -150,4 +151,8 @@ services:
 
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
+        public: true
+
+    Centreon\Domain\Contact\Interfaces\ContactServiceInterface:
+        class: Centreon\Domain\Contact\ContactService
         public: true
