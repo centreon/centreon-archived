@@ -158,7 +158,8 @@ class CentreonHostgroups
      * @param int[] $hostGroupsIds
      * @return array $retArr
      */
-    public function getHostsgroups($hostGroupsIds = []): array {
+    public function getHostsgroups($hostGroupsIds = []): array
+    {
         $retArr = [];
 
         if (!empty($hostGroupsIds)) {
