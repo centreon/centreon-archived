@@ -48,7 +48,7 @@ sub new {
     $self->{"centstatus"} = shift;
     if (@_) {
         $self->{"centstorage"}  = shift;
-    }    
+    }
     bless $self, $class;
     return $self;
 }
@@ -62,9 +62,9 @@ sub getDownTime {
     my $end = shift;
     my $type = shift; # if 1 => host, if 2 => service
     my $query;
-    
+
     $query = "SELECT DISTINCT h.name as name1, s.description as name2, " .
-             "d.start_time, d.end_time " .
+             "d.actual_start_time, d.actual_end_time " .
              "FROM `hosts` h, `downtimes` d " .
              "LEFT JOIN services s ON s.service_id = d.service_id " .
              "WHERE started = 1 " .
@@ -74,12 +74,12 @@ sub getDownTime {
     } elsif ($type == 2) {
         $query .= "AND d.type = 1 "; # That can be confusing, but downtime_type 1 is for service
     }
-    $query .= "AND start_time < " . $end . " " .
-             "AND (end_time > " . $start . " || end_time = 0) " .
-             "ORDER BY name1 ASC, start_time ASC, end_time ASC";        
-    
+    $query .= "AND (actual_start_time < " . $end . " AND actual_start_time IS NOT NULL) " .
+             "AND (actual_end_time > " . $start . " OR actual_end_time IS NULL) " .
+             "ORDER BY name1 ASC, actual_start_time ASC, actual_end_time ASC";
+
     my ($status, $sth) = $centreon->query($query);
-    
+
     my @periods = ();
     while (my $row = $sth->fetchrow_hashref()) {
         my $id = $row->{"name1"};
@@ -87,28 +87,28 @@ sub getDownTime {
             $id .= ";;".$row->{"name2"}
         }
         if (defined($allIds->{$id})) {
-            if ($row->{"start_time"} < $start) {
-                $row->{"start_time"} = $start;
+            if ($row->{"actual_start_time"} < $start) {
+                $row->{"actual_start_time"} = $start;
             }
-            if ($row->{"end_time"} > $end || $row->{"end_time"} == 0) {
-                $row->{"end_time"} = $end;
+            if ($row->{"actual_end_time"} > $end || !defined $row->{"actual_end_time"}) {
+                $row->{"actual_end_time"} = $end;
             }
-            
+
             my $insert = 1;
             for (my $i = 0; $i < scalar(@periods) && $insert; $i++) {
                 my $checkTab = $periods[$i];
                 if ($checkTab->[0] eq $allIds->{$id}){
-                    if ($row->{"start_time"} <= $checkTab->[2] && $row->{"end_time"} <= $checkTab->[2]) {
+                    if ($row->{"actual_start_time"} <= $checkTab->[2] && $row->{"actual_end_time"} <= $checkTab->[2]) {
                         $insert = 0;
-                    } elsif ($row->{"start_time"} <= $checkTab->[2] && $row->{"end_time"} > $checkTab->[2]) {
-                        $checkTab->[2] = $row->{"end_time"};
+                    } elsif ($row->{"actual_start_time"} <= $checkTab->[2] && $row->{"actual_end_time"} > $checkTab->[2]) {
+                        $checkTab->[2] = $row->{"actual_end_time"};
                         $periods[$i] = $checkTab;
                         $insert = 0;
                     }
                 }
             }
             if ($insert) {
-                my @tab = ($allIds->{$id}, $row->{"start_time"}, $row->{"end_time"});
+                my @tab = ($allIds->{$id}, $row->{"actual_start_time"}, $row->{"actual_end_time"});
                 $periods[scalar(@periods)] = \@tab;
             }
         }
