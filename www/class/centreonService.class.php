@@ -274,8 +274,7 @@ class CentreonService
                     } else {
                         $where .= " AND ( ";
                     }
-                    $where .= " (h.host_id = " . $tmp[0];
-                    $where .= " AND s.service_id = " . $tmp[1] . " ) ";
+                    $where .= " (h.host_id = $tmp[0] AND s.service_id = $tmp[1]) ";
                 }
                 if ($where !== "") {
                     $where .= " ) ";
