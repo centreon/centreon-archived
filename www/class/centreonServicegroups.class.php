@@ -114,12 +114,14 @@ class CentreonServicegroups
     }
 
     /**
+     * Get service groups id and name from ids
+     *
      * @param int[] $serviceGroupsIds
      * @return array $retArr [['id' => integer, 'name' => string],...]
      */
     public function getServicesGroups($serviceGroupsIds = [])
     {
-        $retArr = [];
+        $servicesGroups = [];
 
         if (!empty($serviceGroupsIds)) {
             /* checking here that the array provided as parameter
@@ -148,7 +150,7 @@ class CentreonServicegroups
                 $stmt->execute();
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                    $retArr[] = [
+                    $servicesGroups[] = [
                         'id' => $row['sg_id'],
                         'name' => $row['sg_name']
                     ];
@@ -156,7 +158,7 @@ class CentreonServicegroups
             }
         }
 
-        return $retArr;
+        return $servicesGroups;
     }
 
 

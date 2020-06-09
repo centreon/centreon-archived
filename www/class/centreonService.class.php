@@ -253,12 +253,12 @@ class CentreonService
      * Gets the service description of a service
      *
      * @param int[] $serviceIds
-     * @return array retArr
+     * @return array serviceDescriptions
      * ['service_id' => integer, 'description' => string, 'host_name' => string, 'host_id' => integer],...]
      */
     public function getServicesDescr($serviceIds = []): array
     {
-        $retArr = [];
+        $serviceDescriptions = [];
 
         if (!empty($serviceIds)) {
             $where = '';
@@ -282,7 +282,7 @@ class CentreonService
                         WHERE " . $where;
                     $res = $this->db->query($query);
                     while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
-                        $retArr[] = [
+                        $serviceDescriptions[] = [
                             'service_id' => $row['service_id'],
                             'description' => $row['service_description'],
                             'host_name' => $row['host_name'],
@@ -292,7 +292,7 @@ class CentreonService
                 }
             }
         }
-        return $retArr;
+        return $serviceDescriptions;
     }
 
 

@@ -97,14 +97,14 @@ class CentreonInstance
     }
 
     /**
-     * getInstancesMonitoring - returns instance_id and name from instances ids
+     * Get instance_id and name from instances ids
      *
      * @param  int[] $pollerIds
-     * @return array $retArr
+     * @return array $pollers [['instance_id => integer, 'name' => string],...]
      */
     public function getInstancesMonitoring($pollerIds = [])
     {
-        $retArr = [];
+        $pollers = [];
 
         if (!empty($pollerIds)) {
             /* checking here that the array provided as parameter
@@ -130,7 +130,7 @@ class CentreonInstance
                 $stmt->execute();
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                    $retArr[] = [
+                    $pollers[] = [
                         'id' => $row['instance_id'],
                         'name' => $row['name']
                     ];
@@ -138,7 +138,7 @@ class CentreonInstance
             }
         }
 
-        return $retArr;
+        return $pollers;
     }
 
 
