@@ -156,11 +156,11 @@ class CentreonHostgroups
      * Get Hostgroups ids and names from ids
      *
      * @param int[] $hostGroupsIds
-     * @return array $retArr
+     * @return array $hostsGroups [['id' => integer, 'name' => string],...]
      */
     public function getHostsgroups($hostGroupsIds = []): array
     {
-        $retArr = [];
+        $hostsGroups = [];
 
         if (!empty($hostGroupsIds)) {
             $filteredHgIds = $this->filteredArrayId($hostGroupsIds);
@@ -171,7 +171,7 @@ class CentreonHostgroups
                  * bind ids as ints for the request.
                  */
                 foreach ($filteredHgIds as $index => $filteredHgId) {
-                    $sgParams[':hgId' . $index] = $filteredHgIds;
+                    $hgParams[':hgId' . $index] = $filteredHgIds;
                 }
 
                 $stmt = $this->DB->prepare(
@@ -186,7 +186,7 @@ class CentreonHostgroups
                 $stmt->execute();
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                    $retArr[] = [
+                    $hostsGroups[] = [
                         'id' => $row['hg_id'],
                         'name' => $row['hg_name']
                     ];
@@ -194,7 +194,7 @@ class CentreonHostgroups
             }
         }
 
-        return $retArr;
+        return $hostsGroups;
     }
 
 

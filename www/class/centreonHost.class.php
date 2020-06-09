@@ -419,14 +419,13 @@ class CentreonHost
 
     /**
      * @param int[] $hostId
-     * @return array $retArr
+     * @return array $hosts [['id' => integer, 'name' => string],...]
      */
     public function getHostsNames($hostId = []): array
     {
-        $retArr = [];
-        $explodedValues = '';
+        $hosts = [];
         if (!empty($hostId)) {
-            /* 
+            /*
             * Checking here that the array provided as parameter
              * is exclusively made of integers (host ids)
              */
@@ -451,14 +450,14 @@ class CentreonHost
                 $dbResult = $stmt->execute();
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                    $retArr[] = [
+                    $hosts[] = [
                         'id' => $row['host_id'],
                         'name' => $row['host_name']
                     ];
                 }
             }
         }
-        return $retArr;
+        return $hosts;
     }
 
     /**

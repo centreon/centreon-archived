@@ -115,7 +115,7 @@ class CentreonServicegroups
 
     /**
      * @param int[] $serviceGroupsIds
-     * @return array $retArr
+     * @return array $retArr [['id' => integer, 'name' => string],...]
      */
     public function getServicesGroups($serviceGroupsIds = [])
     {

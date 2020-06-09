@@ -53,6 +53,9 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();
 }
 
+/**
+ * @var Centreon $centreon
+ */
 $centreon = $_SESSION["centreon"];
 
 /**
@@ -82,7 +85,9 @@ include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-$defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1 ? $centreon->optGen['maxViewConfiguration'] : 30;
+$defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1
+    ? (int) $centreon->optGen['maxViewConfiguration']
+    : 30;
 
 /**
  * Get input vars
@@ -398,10 +403,10 @@ if ($engine == "true" && isset($openid) && $openid != "") {
         foreach ($filteredIds as $index => $filteredId) {
             $key = ':pollerId' . $index;
             $queryValues[$key] = [\PDO::PARAM_INT => $filteredId];
-            $in .= $key . ',';
+            $pollerIds[] = $key;
         }
         $innerJoinEngineLog = ' INNER JOIN instances i ON i.name = logs.instance_name'
-            . ' AND i.instance_id IN ( ' . rtrim($in, ',') . ')';
+            . ' AND i.instance_id IN ( ' . implode(',', array_values($pollerIds)) . ')';
     }
 }
 

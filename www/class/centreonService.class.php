@@ -254,6 +254,7 @@ class CentreonService
      *
      * @param int[] $serviceIds
      * @return array retArr
+     * ['service_id' => integer, 'description' => string, 'host_name' => string, 'host_id' => integer],...]
      */
     public function getServicesDescr($serviceIds = []): array
     {
@@ -267,24 +268,20 @@ class CentreonService
             $filteredSvcIds = $this->filteredArrayId($serviceIds);
 
             if (count($filteredSvcIds) > 0) {
-                foreach ($filteredSvcIds as $s) {
-                    $tmp = explode("_", $s);
-                    if ($where !== "") {
-                        $where .= " OR ";
-                    } else {
-                        $where .= " AND ( ";
-                    }
-                    $where .= " (h.host_id = $tmp[0] AND s.service_id = $tmp[1]) ";
+                foreach ($filteredSvcIds as $hostAndServiceId) {
+                    list($hostId, $serviceId) = explode("_", $hostAndServiceId);
+                    $where .= empty($where) ? " ( " : " OR ";
+                    $where .= " (h.host_id = $hostId AND s.service_id = $serviceId) ";
                 }
                 if ($where !== "") {
                     $where .= " ) ";
-                    $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id " .
-                        "FROM service s " .
-                        "INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id " .
-                        "INNER JOIN host h ON hsr.host_host_id = h.host_id " .
-                        "WHERE  1 = 1 " . $where;
+                    $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
+                        FROM service s
+                        INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
+                        INNER JOIN host h ON hsr.host_host_id = h.host_id
+                        WHERE " . $where;
                     $res = $this->db->query($query);
-                    while ($row = $res->fetchRow()) {
+                    while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
                         $retArr[] = [
                             'service_id' => $row['service_id'],
                             'description' => $row['service_description'],
@@ -293,7 +290,7 @@ class CentreonService
                         ];
                     }
                 }
-        }
+            }
         }
         return $retArr;
     }
