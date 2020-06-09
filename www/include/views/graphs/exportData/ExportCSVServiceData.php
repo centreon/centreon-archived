@@ -79,7 +79,7 @@ $chartId = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if (isset($chartId)) {
+if (!empty($chartId)) {
     if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
         // Should be allowed chartId matching int_int regexp
         $hostId = (int)$matches[1];
