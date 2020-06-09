@@ -281,11 +281,11 @@ class CentreonService
                 }
                 if ($where !== "") {
                     $where .= " ) ";
-                    $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
-                            FROM service s
-                            INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
-                            INNER JOIN host h ON hsr.host_host_id = h.host_id
-                            WHERE  1 = 1 " . $where;
+                    $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id " .
+                        "FROM service s " .
+                        "INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id " .
+                        "INNER JOIN host h ON hsr.host_host_id = h.host_id " .
+                        "WHERE  1 = 1 " . $where;
                     $res = $this->db->query($query);
                     while ($row = $res->fetchRow()) {
                         $retArr[] = [
