@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ################################################################################
-# Copyright 2005-2016 Centreon
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# Copyright 2005-2020 Centreon
+# Centreon is developed by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -111,7 +111,7 @@ my $VERSION = "1.0";
 # Get backup configuration from database #
 ##########################################
 
-my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host.";port=".$mysql_port, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0});
+my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=" . $mysql_host . ";port=" . $mysql_port, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0});
 if (!$dbh) {
     print STDERR "Couldn't connect: " . $DBI::errstr . "\n";
     exit 1;
@@ -166,7 +166,7 @@ if ( -e $BACKUP_DIR) {
     exit 1;
 }
 
-
+$centreonDir = @INSTALL_DIR_CENTREON@;
 # Parameters for SCP export
 $scp_enabled = $backupOptions->{'backup_export_scp_enabled'}->{'value'};
 $scp_user = $backupOptions->{'backup_export_scp_user'}->{'value'};
@@ -179,7 +179,7 @@ $scp_directory = $backupOptions->{'backup_export_scp_directory'}->{'value'};
 
 sub print_usage () {
     		print "Usage: ";
-    		print $PROGNAME."\n";
+    		print $PROGNAME . "\n";
     		print "\t-V | --version\t\tShow plugin version\n";
     		print "\t-h | --help\t\tUsage help\n";
 		print "\t-d | --debug\t\tPdisplay debug information\n";
@@ -243,7 +243,8 @@ sub exportBackup($) {
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
             } else {
-                print "All files were copied with success using SCP on ".$scp_user."@".$scp_host.":".$scp_directory."\n";
+                print "All files were copied with success using SCP on " . $scp_user .
+                    "@" . $scp_host . ":" . $scp_directory . "\n";
             }
         }
 
@@ -254,7 +255,8 @@ sub exportBackup($) {
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_CENTRAL_DIR . "\n";
             } else {
-                print "All files were copied with success using SCP on ".$scp_user."@".$scp_host.":".$scp_directory."\n";
+                print "All files were copied with success using SCP on " . $scp_user . "@" . $scp_host .
+                    ":" . $scp_directory . "\n";
             }
         }
     } elsif ($scp_enabled == '1') {
@@ -263,20 +265,20 @@ sub exportBackup($) {
 }
 
 sub cleanOldBackup() {
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time-($BACKUP_RETENTION*3600*24));
-	my $max_backup_age = sprintf('%04d-%02d-%02d',(1900+$year),($mon+1),$mday);
+	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time - ($BACKUP_RETENTION * 3600 * 24));
+	my $max_backup_age = sprintf('%04d-%02d-%02d',(1900 + $year),($mon + 1),$mday);
 
 	my $dir = IO::Dir->new($BACKUP_DIR);
 
 	if(!defined($dir)) {
-		print STDERR "Unable to get list of backup files from: ".$BACKUP_DIR."\n";
+		print STDERR "Unable to get list of backup files from: " . $BACKUP_DIR . "\n";
 	} else {
 		chdir($BACKUP_DIR);
 		while(defined($_ = $dir->read)) {
 			if ($_ =~ m/^(\d{4}\-\d{2}\-\d{2}).*/) {
 				if ($1 le $max_backup_age)
 				{
-					print "Delete file: ".$_."\n";
+					print "Delete file: " . $_ . "\n";
 					unlink $_;
 				}
 			}
@@ -366,7 +368,7 @@ sub databasesBackup() {
 
         if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
             print "Dumping Db with LVM snapshot (full)\n";
-            `sudo $centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            `sudo $CentreonDir/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -375,7 +377,7 @@ sub databasesBackup() {
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
         if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
             print "Dumping Db with LVM snapshot (partial)\n";
-            `sudo $centreon_config->{CentreonDir}cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            `sudo $CentreonDir/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -667,11 +669,11 @@ sub centralBackup() {
         }
     }
 
-	find(\&getLicFile, $centreon_config->{CentreonDir}.$CENTREON_MODULES_PATH);
+	find(\&getLicFile, $CentreonDir . / . $CENTREON_MODULES_PATH);
 
     foreach my $licfile ( @licfiles ) {
         my $origFile = $licfile;
-        my $path = $centreon_config->{CentreonDir}.$CENTREON_MODULES_PATH;
+        my $path = $CentreonDir . / . $CENTREON_MODULES_PATH;
         $path =~ s/\//\\\//g;
         $licfile =~ s/$path//;
         my $tempLicDir = $TEMP_CENTRAL_LIC_DIR.dirname($licfile);
@@ -757,9 +759,9 @@ sub monitoringengineBackup() {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
 			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+				print STDERR "Unable to create temporary directories because: " . $message . "\n";
 			} else {
-				print STDERR "Problem with file  ".$file.": ".$message . "\n";
+				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
 			}
 		}
 	}
@@ -779,9 +781,9 @@ sub monitoringengineBackup() {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
 			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+				print STDERR "Unable to create temporary directories because: " . $message . "\n";
 			} else {
-				print STDERR "Problem with file  ".$file.": ".$message . "\n";
+				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
 			}
 		}
 	}
@@ -793,9 +795,9 @@ sub monitoringengineBackup() {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
 			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+				print STDERR "Unable to create temporary directories because: " . $message . "\n";
 			} else {
-				print STDERR "Problem with file  ".$file.": ".$message . "\n";
+				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
 			}
 		}
 	}
@@ -812,9 +814,9 @@ sub monitoringengineBackup() {
 		for my $diag (@$err_list) {
 			my ($file, $message) = %$diag;
 	    	if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: ".$message . "\n";
+				print STDERR "Unable to create temporary directories because: ". $message . "\n";
 			} else {
-    			print STDERR "Problem with file  ".$file.": ".$message."\n";
+    			print STDERR "Problem with file  " . $file . ": " . $message."\n";
 			}
 		}
 	}
@@ -826,7 +828,7 @@ sub monitoringengineBackup() {
 	#########################
 	# Script initialisation #
 	#########################
-	copy($nagios_server->{init_script}, ($TEMP_CENTRAL_DIR."/init_d_centengine"));
+	copy($nagios_server->{init_script}, ($TEMP_CENTRAL_DIR . "/init_d_centengine"));
 
 	###############
 	# Sudo rights #
@@ -843,7 +845,7 @@ sub monitoringengineBackup() {
     		if ($file eq '') {
 				print STDERR "Unable to create temporary directories because: " . $message . "\n";
 			} else {
-				print STDERR "Problem with file  ".$file.": ".$message . "\n";
+				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
 			}
 		}
 	}
@@ -887,7 +889,8 @@ sub monitoringengineBackup() {
     # Export archives #
     ###################
     exportBackup(1);
-    move ($TEMP_CENTRAL_DIR."/".$today."-centreon-engine.tar.gz", $BACKUP_DIR."/".$today."-centreon-engine.tar.gz");
+    move ($TEMP_CENTRAL_DIR . "/" . $today . "-centreon-engine.tar.gz", $BACKUP_DIR .
+        "/" . $today . "-centreon-engine.tar.gz");
 
 	# Remove all temp directory
 	chdir;
@@ -907,7 +910,8 @@ sub monitoringengineBackup() {
 	$dbh->disconnect;
 
 	my ($tsec,$tmin,$thour,$tmday,$tmon,$tyear,$twday,$tyday,$tisdst) = localtime(time);
-	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$tyear), ($tmon+1), $tmday, $thour, $tmin, $tsec) . "] Finish monitoring engine backup processus\n";
+    print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$tyear), ($tmon+1), $tmday, $thour, $tmin, $tsec) .
+        "] Finish monitoring engine backup processus\n";
 }
 
 ################
