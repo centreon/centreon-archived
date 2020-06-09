@@ -269,15 +269,13 @@ class CentreonService
             if (count($filteredSvcIds) > 0) {
                 foreach ($filteredSvcIds as $s) {
                     $tmp = explode("_", $s);
-                    if (!empty($tmp[0]) && !empty($tmp[1])) {
-                        if ($where !== "") {
-                            $where .= " OR ";
-                        } else {
-                            $where .= " AND ( ";
-                        }
-                        $where .= " (h.host_id = " . $this->db->escape($tmp[0]);
-                        $where .= " AND s.service_id = " . $this->db->escape($tmp[1]) . " ) ";
+                    if ($where !== "") {
+                        $where .= " OR ";
+                    } else {
+                        $where .= " AND ( ";
                     }
+                    $where .= " (h.host_id = " . $tmp[0];
+                    $where .= " AND s.service_id = " . $tmp[1] . " ) ";
                 }
                 if ($where !== "") {
                     $where .= " ) ";
