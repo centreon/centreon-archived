@@ -80,28 +80,29 @@ $chartId = filter_var(
 );
 
 if (isset($chartId)) {
-    list($hostId, $serviceId) = explode('_', $chartId);
-    if (!isset($hostId) || !isset($serviceId)) {
-        die('Resource not found');
-    }
+    if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
+        // Should be allowed chartId matching int_int regexp
+        $hostId = (int)$matches[1];
+        $serviceId = (int)$matches[2];
 
-    // Making sure that splitted values are int.
-    if (is_numeric($hostId) && is_numeric($serviceId)) {
-        $query = 'SELECT id'
-            . ' FROM index_data'
-            . ' WHERE host_id = :hostId'
-            . ' AND service_id = :serviceId';
+        // Making sure that splitted values are positive.
+        if ($hostId > 0 && $serviceId > 0) {
+            $query = 'SELECT id'
+                . ' FROM index_data'
+                . ' WHERE host_id = :hostId'
+                . ' AND service_id = :serviceId';
 
-        $stmt = $pearDBO->prepare($query);
-        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-        $stmt->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
-        $stmt->execute();
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetchRow();
-            $index = $row['id'];
-        } else {
-            die('Resource not found');
+            $stmt = $pearDBO->prepare($query);
+            $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+            $stmt->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+            $stmt->execute();
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $index = $row['id'];
+            }
         }
+    }
+    else {
+        die('Resource not found');
     }
 }
 if ($index !== false) {
@@ -135,9 +136,9 @@ if ($index !== false) {
     $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
     $stmt->execute();
 
-    while ($indexdata = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        $listMetric[$indexdata['metric_id']] = $indexindexdatadata['metric_name'];
-        $listEmptyMetric[$indexdata['metric_id']] = '';
+    while ($indexData = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $listMetric[$indexData['metric_id']] = $indexData['metric_name'];
+        $listEmptyMetric[$indexData['metric_id']] = '';
         if (isset($start) && isset($end)) {
             $stmt2 = $pearDBO->prepare(
                 "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
@@ -145,10 +146,10 @@ if ($index !== false) {
             );
             $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
             $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
-            $stmt2->bindValue(':metricId', $indexdata['metric_id'], \PDO::PARAM_INT);
+            $stmt2->bindValue(':metricId', $indexData['metric_id'], \PDO::PARAM_INT);
             $stmt2->execute();
             while ($data = $stmt2->fetch(\PDO::FETCH_ASSOC)) {
-                $datas[$data["ctime"]][$indexdata["metric_id"]] = $data["value"];
+                $datas[$data["ctime"]][$indexData["metric_id"]] = $data["value"];
             }
         }
     }
