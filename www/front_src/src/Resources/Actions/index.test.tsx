@@ -23,6 +23,7 @@ import {
   labelAcknowledge,
   labelDowntime,
   labelSetDowntime,
+  labelSetDowntimeOnServices,
   labelAcknowledgeServices,
   labelNotify,
   labelFixed,
@@ -550,6 +551,50 @@ describe(Actions, () => {
 
       await waitFor(() => {
         expect(getByText(labelWarning)).toBeInTheDocument();
+      });
+    },
+  );
+
+  it.each([
+    [
+      labelSetDowntime,
+      labelDowntime,
+      labelSetDowntimeOnServices,
+      cannotDowntimeServicesAcl,
+    ],
+    [
+      labelAcknowledge,
+      labelAcknowledge,
+      labelAcknowledgeServices,
+      cannotAcknowledgeServicesAcl,
+    ],
+  ])(
+    'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
+    async (_, labelAction, labelAppliesOnServices, acl) => {
+      mockedUserContext.useUserContext.mockReset().mockReturnValue({
+        ...mockUserContext,
+        acl,
+      });
+
+      const { getByText } = renderActions();
+
+      const selectedHost = {
+        id: 0,
+        type: 'host',
+      } as Resource;
+
+      act(() => {
+        context.setSelectedResources([selectedHost]);
+      });
+
+      fireEvent.click(getByText(labelAction));
+
+      await waitFor(() => {
+        expect(
+          getByText(labelAppliesOnServices).parentElement?.querySelector(
+            'input[type="checkbox"]',
+          ),
+        ).toBeDisabled();
       });
     },
   );

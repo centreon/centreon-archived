@@ -1,6 +1,11 @@
 import * as React from 'react';
 
-import { Typography, Checkbox, FormHelperText, Grid } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, Loader } from '@centreon/ui';
@@ -39,7 +44,10 @@ const DialogAcknowledge = ({
   handleChange,
   loading,
 }: Props): JSX.Element => {
-  const { getAcknowledgementDeniedTypeAlert } = useAclQuery();
+  const {
+    getAcknowledgementDeniedTypeAlert,
+    canAcknowledgeServices,
+  } = useAclQuery();
 
   const deniedTypeAlert = getAcknowledgementDeniedTypeAlert(resources);
 
@@ -78,42 +86,39 @@ const DialogAcknowledge = ({
             helperText={errors?.comment}
           />
         </Grid>
-        <Grid container item direction="column">
-          <Grid item container xs alignItems="center">
-            <Grid item xs={1}>
+        <Grid item>
+          <FormControlLabel
+            control={
               <Checkbox
+                checked={values.notify}
                 inputProps={{ 'aria-label': labelNotify }}
                 color="primary"
-                value={values.notify}
                 onChange={handleChange('notify')}
+                size="small"
               />
-            </Grid>
-            <Grid item xs>
-              <Typography>{labelNotify}</Typography>
-            </Grid>
-          </Grid>
-          <Grid item container xs>
-            <Grid item xs={1} />
-            <Grid item xs>
-              <FormHelperText>{labelNotifyHelpCaption}</FormHelperText>
-            </Grid>
-          </Grid>
+            }
+            label={labelNotify}
+          />
+          <FormHelperText>{labelNotifyHelpCaption}</FormHelperText>
         </Grid>
         {hasHosts && (
-          <Grid container item direction="column">
-            <Grid item container xs alignItems="center">
-              <Grid item xs={1}>
+          <Grid item>
+            <FormControlLabel
+              control={
                 <Checkbox
-                  checked={values.acknowledgeAttachedResources}
+                  checked={
+                    canAcknowledgeServices() &&
+                    values.acknowledgeAttachedResources
+                  }
+                  disabled={!canAcknowledgeServices()}
                   inputProps={{ 'aria-label': labelAcknowledgeServices }}
                   color="primary"
                   onChange={handleChange('acknowledgeAttachedResources')}
+                  size="small"
                 />
-              </Grid>
-              <Grid item xs>
-                <Typography>{labelAcknowledgeServices}</Typography>
-              </Grid>
-            </Grid>
+              }
+              label={labelAcknowledgeServices}
+            />
           </Grid>
         )}
       </Grid>
