@@ -426,7 +426,8 @@ class CentreonHost
         $retArr = [];
         $explodedValues = '';
         if (!empty($hostId)) {
-            /* checking here that the array provided as parameter
+            /* 
+            * Checking here that the array provided as parameter
              * is exclusively made of integers (host ids)
              */
             $filteredHostIds = $this->filteredArrayId($hostId);
