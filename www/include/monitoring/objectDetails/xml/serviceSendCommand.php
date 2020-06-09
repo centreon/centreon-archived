@@ -49,10 +49,10 @@ require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 CentreonSession::start(1);
 $centreon = $_SESSION["centreon"];
 if (!isset($_SESSION["centreon"]) ||
-    !isset($_GET["host_id"]) ||
-    !isset($_GET["service_id"]) ||
-    !isset($_GET["cmd"]) ||
-    !isset($_GET["actiontype"])
+    !isset($_POST["host_id"]) ||
+    !isset($_POST["service_id"]) ||
+    !isset($_POST["cmd"]) ||
+    !isset($_POST["actiontype"])
 ) {
     exit();
 }
@@ -60,12 +60,13 @@ if (!isset($_SESSION["centreon"]) ||
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
 $svcObj = new CentreonService($pearDB);
-$host_id = $_GET["host_id"];
-$svc_id = $_GET["service_id"];
-$poller = $hostObj->getHostPollerId($host_id);
+$hostId = filter_var($_POST['host_id'], FILTER_VALIDATE_INT);
+$svcId = filter_var($_POST['service_id'], FILTER_VALIDATE_INT);
+$poller = $hostObj->getHostPollerId($hostId);
 $cmd = $_GET["cmd"];
 $sid = session_id();
-$act_type = $_GET["actiontype"];
+$actType = $_GET["actiontype"];
+$actType ? $returnType = 1 : $returnType = 0;
 
 $pearDB = new CentreonDB();
 
@@ -78,29 +79,28 @@ if ($centreon->user->is_admin() === 0) {
     if (!$centreon->user->access->checkAction($cmd)) {
         exit();
     }
-    if (!$centreon->user->access->checkHost($host_id)) {
+    if (!$centreon->user->access->checkHost($hostId)) {
         exit();
     }
-    if (!$centreon->user->access->checkService($svc_id)) {
+    if (!$centreon->user->access->checkService($svcId)) {
         exit();
     }
 }
 
 
 $command = new CentreonExternalCommand($centreon);
-$cmd_list = $command->getExternalCommandList();
+$cmdList = $command->getExternalCommandList();
 
-$send_cmd = $cmd_list[$cmd][$act_type];
+$send_cmd = $cmdList[$cmd][$actType];
 
-$send_cmd .= ";" . $hostObj->getHostName($host_id) . ";" . $svcObj->getServiceDesc($svc_id) . ";" . time();
+$send_cmd .= ";" . $hostObj->getHostName($hostId) . ";" . $svcObj->getServiceDesc($svcId) . ";" . time();
 $command->setProcessCommand($send_cmd, $poller);
-$act_type ? $return_type = 1 : $return_type = 0;
 $result = $command->write();
 $buffer = new CentreonXML();
 $buffer->startElement("root");
 $buffer->writeElement("result", $result);
 $buffer->writeElement("cmd", $cmd);
-$buffer->writeElement("actiontype", $return_type);
+$buffer->writeElement("actiontype", $returnType);
 $buffer->endElement();
 header('Content-type: text/xml; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');

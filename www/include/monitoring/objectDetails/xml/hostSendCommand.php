@@ -44,16 +44,17 @@ require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
 CentreonSession::start(1);
 $centreon = $_SESSION["centreon"];
-if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["cmd"]) || !isset($_GET["actiontype"])) {
+if (!isset($_SESSION["centreon"]) || !isset($_POST["host_id"]) || !isset($_POST["cmd"]) || !isset($_POST["actiontype"])) {
     exit();
 }
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
-$host_id = $_GET["host_id"];
-$poller = $hostObj->getHostPollerId($host_id);
-$cmd = $_GET["cmd"];
+$hostId = filter_var($_POST['host_id'], FILTER_VALIDATE_INT);
+$poller = $hostObj->getHostPollerId($hostId);
+$cmd = $_POST["cmd"];
 $sid = session_id();
-$act_type = $_GET["actiontype"];
+$act_type = $_POST['actiontype'];
+$act_type ? $returnType = 1 : $returnType = 0;
 
 $pearDB = new CentreonDB();
 
@@ -65,7 +66,7 @@ if ($centreon->user->is_admin() === 0) {
     if (!$centreon->user->access->checkAction($cmd)) {
         exit();
     }
-    if (!$centreon->user->access->checkHost($host_id)) {
+    if (!$centreon->user->access->checkHost($hostId)) {
         exit();
     }
 }
@@ -73,15 +74,14 @@ if ($centreon->user->is_admin() === 0) {
 $command = new CentreonExternalCommand($centreon);
 $cmd_list = $command->getExternalCommandList();
 $send_cmd = $cmd_list[$cmd][$act_type];
-$send_cmd .= ";" . $hostObj->getHostName($host_id) . ";" . time();
+$send_cmd .= ";" . $hostObj->getHostName($hostId) . ";" . time();
 $command->setProcessCommand($send_cmd, $poller);
-$act_type ? $return_type = 1 : $return_type = 0;
 $result = $command->write();
 $buffer = new CentreonXML();
 $buffer->startElement("root");
 $buffer->writeElement("result", $result);
 $buffer->writeElement("cmd", $cmd);
-$buffer->writeElement("actiontype", $return_type);
+$buffer->writeElement("actiontype", $returnType);
 $buffer->endElement();
 header('Content-type: text/xml; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
