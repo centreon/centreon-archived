@@ -60,27 +60,28 @@ my $CENTREON_ETC = '@CENTREON_ETC@';
 my @licfiles;
 
 # Require DB configuration files
-if (-e $CENTREON_ETC.'/conf.pm'){
-	require $CENTREON_ETC.'/conf.pm';
-}elsif (-e $CENTREON_ETC.'/centreon-config.pm'){
-	require $CENTREON_ETC.'/centreon-config.pm';
+if (-e $CENTREON_ETC . '/conf.pm') {
+    require $CENTREON_ETC . '/conf.pm';
+}
+elsif (-e $CENTREON_ETC . '/centreon-config.pm') {
+    require $CENTREON_ETC . '/centreon-config.pm';
 }
 
 ## Convert new configuration to old
 if (!defined($mysql_host)) {
-	$mysql_host = $centreon_config->{db_host};
+    $mysql_host = $centreon_config->{db_host};
 }
 if (!defined($mysql_user)) {
-	$mysql_user = $centreon_config->{db_user};
+    $mysql_user = $centreon_config->{db_user};
 }
 if (!defined($mysql_passwd)) {
-	$mysql_passwd = $centreon_config->{db_passwd};
+    $mysql_passwd = $centreon_config->{db_passwd};
 }
 if (!defined($mysql_database_oreon)) {
-	$mysql_database_oreon = $centreon_config->{centreon_db};
+    $mysql_database_oreon = $centreon_config->{centreon_db};
 }
 if (!defined($mysql_database_ods)) {
-	$mysql_database_ods = $centreon_config->{centstorage_db};
+    $mysql_database_ods = $centreon_config->{centstorage_db};
 }
 
 if (defined($mysql_host)) {
@@ -91,7 +92,8 @@ if (defined($mysql_host)) {
         }
         if (defined($tab[1])) {
             $mysql_port = $tab[1];
-        }  else {
+        }
+        else {
             $mysql_port = 3306;
         }
     }
@@ -111,7 +113,8 @@ my $VERSION = "1.0";
 # Get backup configuration from database #
 ##########################################
 
-my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=" . $mysql_host . ";port=" . $mysql_port, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0});
+my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=" . $mysql_host . ";port=" .
+    $mysql_port, $mysql_user, $mysql_passwd, { 'RaiseError' => 0, 'PrintError' => 0 });
 if (!$dbh) {
     print STDERR "Couldn't connect: " . $DBI::errstr . "\n";
     exit 1;
@@ -134,14 +137,14 @@ $CENTREON_MODULES_PATH = "www/modules";
 
 $BACKUP_DIR = $backupOptions->{'backup_backup_directory'}->{'value'};
 $TEMP_DIR = $backupOptions->{'backup_tmp_directory'}->{'value'};
-$TEMP_DB_DIR = $TEMP_DIR."/db";
-$TEMP_CENTRAL_DIR = $TEMP_DIR."/central";
-$TEMP_CENTRAL_ETC_DIR = $TEMP_CENTRAL_DIR."/etc";
-$TEMP_CENTRAL_INIT_DIR = $TEMP_CENTRAL_DIR."/init";
-$TEMP_CENTRAL_CRON_DIR = $TEMP_CENTRAL_DIR."/cron";
-$TEMP_CENTRAL_LOG_DIR = $TEMP_CENTRAL_DIR."/log";
-$TEMP_CENTRAL_BIN_DIR = $TEMP_CENTRAL_DIR."/bin";
-$TEMP_CENTRAL_LIC_DIR = $TEMP_CENTRAL_DIR."/lic";
+$TEMP_DB_DIR = $TEMP_DIR . "/db";
+$TEMP_CENTRAL_DIR = $TEMP_DIR . "/central";
+$TEMP_CENTRAL_ETC_DIR = $TEMP_CENTRAL_DIR . "/etc";
+$TEMP_CENTRAL_INIT_DIR = $TEMP_CENTRAL_DIR . "/init";
+$TEMP_CENTRAL_CRON_DIR = $TEMP_CENTRAL_DIR . "/cron";
+$TEMP_CENTRAL_LOG_DIR = $TEMP_CENTRAL_DIR . "/log";
+$TEMP_CENTRAL_BIN_DIR = $TEMP_CENTRAL_DIR . "/bin";
+$TEMP_CENTRAL_LIC_DIR = $TEMP_CENTRAL_DIR . "/lic";
 
 $BACKUP_DATABASE_CENTREON = $backupOptions->{'backup_database_centreon'}->{'value'};
 $BACKUP_DATABASE_CENTREON_STORAGE = $backupOptions->{'backup_database_centreon_storage'}->{'value'};
@@ -156,17 +159,19 @@ $MYSQL_CONF = $backupOptions->{'backup_mysql_conf'}->{'value'};
 $BIN_GZIP = "";
 $BIN_TAR = "";
 
-if ( -e $BACKUP_DIR) {
-    if (! -w $BACKUP_DIR) {
+if (-e $BACKUP_DIR) {
+    if (!-w $BACKUP_DIR) {
         print STDERR "Backup directory \"$BACKUP_DIR\" is not writable.\n";
         exit 1;
     }
-} else {
+}
+else {
     print STDERR "Backup directory \"$BACKUP_DIR\" does not exist.\n";
     exit 1;
 }
 
-$centreonDir = @INSTALL_DIR_CENTREON@;
+$centreonDir = @INSTALL_DIR_CENTREON
+@;
 # Parameters for SCP export
 $scp_enabled = $backupOptions->{'backup_export_scp_enabled'}->{'value'};
 $scp_user = $backupOptions->{'backup_export_scp_user'}->{'value'};
@@ -177,63 +182,63 @@ $scp_directory = $backupOptions->{'backup_export_scp_directory'}->{'value'};
 # Functions #
 #############
 
-sub print_usage () {
-    		print "Usage: ";
-    		print $PROGNAME . "\n";
-    		print "\t-V | --version\t\tShow plugin version\n";
-    		print "\t-h | --help\t\tUsage help\n";
-		print "\t-d | --debug\t\tPdisplay debug information\n";
-		print "\n";
-		print "Obligatory options:\n";
-		print "\t-T | --backup-type <value> Type of backup in (central, databases, poller).\n";
-		print "\t\tIf you use option \"poller\" please use option \"-P | --poller <value>\"\n";
-		print "\t\t\"<value>\" is the name of Monitoring Engine poller in Centreon configuration.\n";
-		print "\t\tIf \"<value>\" is \"all\", all Monitoring Engine poller will be saved.\n";
-		print "\n";
-		print "\t--preexec <value> Execute command before backup.\n";
-		print "\n";
-                print "\t--postexec <value> Execute command after backup.\n";
+sub print_usage() {
+    print "Usage: ";
+    print $PROGNAME . "\n";
+    print "\t-V | --version\t\tShow plugin version\n";
+    print "\t-h | --help\t\tUsage help\n";
+    print "\t-d | --debug\t\tPdisplay debug information\n";
+    print "\n";
+    print "Obligatory options:\n";
+    print "\t-T | --backup-type <value> Type of backup in (central, databases, poller).\n";
+    print "\t\tIf you use option \"poller\" please use option \"-P | --poller <value>\"\n";
+    print "\t\t\"<value>\" is the name of Monitoring Engine poller in Centreon configuration.\n";
+    print "\t\tIf \"<value>\" is \"all\", all Monitoring Engine poller will be saved.\n";
+    print "\n";
+    print "\t--preexec <value> Execute command before backup.\n";
+    print "\n";
+    print "\t--postexec <value> Execute command after backup.\n";
 }
 
-sub print_help () {
-		print "##############################################\n";
-		print "#    Copyright (c) 2005-2014 Centreon        #\n";
-		print "#    Bugs to http://forge.centreon.com       #\n";
-		print "##############################################\n";
-    		print "\n";
-    		print_usage();
-    		print "\n";
+sub print_help() {
+    print "##############################################\n";
+    print "#    Copyright (c) 2005-2014 Centreon        #\n";
+    print "#    Bugs to http://forge.centreon.com       #\n";
+    print "##############################################\n";
+    print "\n";
+    print_usage();
+    print "\n";
 }
 
 sub trim($) {
-        my $string = shift;
-        $string =~ s/^\s+//;
-        $string =~ s/\s+$//;
-        return $string;
+    my $string = shift;
+    $string =~ s/^\s+//;
+    $string =~ s/\s+$//;
+    return $string;
 }
 
 sub getbinaries() {
-	$BIN_GZIP = `which gzip`;
-	$BIN_GZIP = trim($BIN_GZIP);
+    $BIN_GZIP = `which gzip`;
+    $BIN_GZIP = trim($BIN_GZIP);
 
-	if ( $BIN_GZIP =~ /no .* in/ ) {
-		print STDERR "Unable to get gzip binary\n";
-	}
+    if ($BIN_GZIP =~ /no .* in/) {
+        print STDERR "Unable to get gzip binary\n";
+    }
 
-	$BIN_TAR = `which tar`;
-	$BIN_TAR = trim($BIN_TAR);
+    $BIN_TAR = `which tar`;
+    $BIN_TAR = trim($BIN_TAR);
 
-	if ( $BIN_TAR =~ /no .* in/ ) {
-		print STDERR"Unable to get tar binary\n";
-	}
+    if ($BIN_TAR =~ /no .* in/) {
+        print STDERR "Unable to get tar binary\n";
+    }
 }
 
 sub exportBackup($) {
     my $export_type = shift; # 0 : database, 1 : configuration
     if ($scp_enabled == '1' &&
-		(!defined($scp_host) || $scp_host ne '') &&
-		(!defined($scp_directory) || $scp_directory ne '') &&
-		(!defined($scp_user) || $scp_user ne '')
+        (!defined($scp_host) || $scp_host ne '') &&
+        (!defined($scp_directory) || $scp_directory ne '') &&
+        (!defined($scp_user) || $scp_user ne '')
     ) {
 
         # Export database backups
@@ -242,7 +247,8 @@ sub exportBackup($) {
             `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
-            } else {
+            }
+            else {
                 print "All files were copied with success using SCP on " . $scp_user .
                     "@" . $scp_host . ":" . $scp_directory . "\n";
             }
@@ -254,37 +260,40 @@ sub exportBackup($) {
             `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_CENTRAL_DIR . "\n";
-            } else {
+            }
+            else {
                 print "All files were copied with success using SCP on " . $scp_user . "@" . $scp_host .
                     ":" . $scp_directory . "\n";
             }
         }
-    } elsif ($scp_enabled == '1') {
-		print STDERR "The export by SCP is enabled but a configuration is missing\n";
-	}
+    }
+    elsif ($scp_enabled == '1') {
+        print STDERR "The export by SCP is enabled but a configuration is missing\n";
+    }
 }
 
 sub cleanOldBackup() {
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time - ($BACKUP_RETENTION * 3600 * 24));
-	my $max_backup_age = sprintf('%04d-%02d-%02d',(1900 + $year),($mon + 1),$mday);
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
+        localtime(time - ($BACKUP_RETENTION * 3600 * 24));
+    my $max_backup_age = sprintf('%04d-%02d-%02d', (1900 + $year), ($mon + 1), $mday);
 
-	my $dir = IO::Dir->new($BACKUP_DIR);
+    my $dir = IO::Dir->new($BACKUP_DIR);
 
-	if(!defined($dir)) {
-		print STDERR "Unable to get list of backup files from: " . $BACKUP_DIR . "\n";
-	} else {
-		chdir($BACKUP_DIR);
-		while(defined($_ = $dir->read)) {
-			if ($_ =~ m/^(\d{4}\-\d{2}\-\d{2}).*/) {
-				if ($1 le $max_backup_age)
-				{
-					print "Delete file: " . $_ . "\n";
-					unlink $_;
-				}
-			}
-		}
-		undef($dir);
-	}
+    if (!defined($dir)) {
+        print STDERR "Unable to get list of backup files from: " . $BACKUP_DIR . "\n";
+    }
+    else {
+        chdir($BACKUP_DIR);
+        while (defined($_ = $dir->read)) {
+            if ($_ =~ m/^(\d{4}\-\d{2}\-\d{2}).*/) {
+                if ($1 le $max_backup_age) {
+                    print "Delete file: " . $_ . "\n";
+                    unlink $_;
+                }
+            }
+        }
+        undef($dir);
+    }
 }
 
 ###############################################
@@ -292,24 +301,28 @@ sub cleanOldBackup() {
 ###############################################
 
 sub getApacheDirectory() {
-    if ( -d '/opt/rh/httpd24/root/etc/httpd/conf.d' ) {
+    if (-d '/opt/rh/httpd24/root/etc/httpd/conf.d') {
         return '/opt/rh/httpd24/root/etc/httpd/conf.d';
-    } elsif ( -d '/etc/httpd/conf.d' ) {
+    }
+    elsif (-d '/etc/httpd/conf.d') {
         return '/etc/httpd/conf.d';
-    } else {
+    }
+    else {
         print STDERR "Unable to get Apache conf directory\n";
     }
 }
 
 sub getMySQLConfFile() {
-	if (defined($MYSQL_CONF)) {
-		if ( -e $MYSQL_CONF) {
-			return $MYSQL_CONF;
-		}
-	} elsif ( -e '/etc/my.cnf' ) {
-		return '/etc/my.cnf';
-	} else {
-		print STDERR "Unable to get Mysql configuration\n";
+    if (defined($MYSQL_CONF)) {
+        if (-e $MYSQL_CONF) {
+            return $MYSQL_CONF;
+        }
+    }
+    elsif (-e '/etc/my.cnf') {
+        return '/etc/my.cnf';
+    }
+    else {
+        print STDERR "Unable to get Mysql configuration\n";
     }
 }
 
@@ -320,21 +333,21 @@ sub getLicFile() {
 }
 
 sub getPHPConfFile() {
-	my @tab_php_ini;
+    my @tab_php_ini;
 
-	# PHP CLI
-	my $result = `@PHP_BIN@ -r 'echo php_ini_loaded_file();'`;
-	push(@tab_php_ini, trim($result));
+    # PHP CLI
+    my $result = `@PHP_BIN@ -r 'echo php_ini_loaded_file();'`;
+    push(@tab_php_ini, trim($result));
 
     # PHP configuration files
-	my @ini=`@PHP_BIN@ -r "echo php_ini_scanned_files();"`;
-	for (@ini) {
-	    chomp;
-	    s/,$//;
-	    push(@tab_php_ini, $_);
+    my @ini = `@PHP_BIN@ -r "echo php_ini_scanned_files();"`;
+    for (@ini) {
+        chomp;
+        s/,$//;
+        push(@tab_php_ini, $_);
     }
 
-	return @tab_php_ini;
+    return @tab_php_ini;
 }
 
 ############################
@@ -342,23 +355,25 @@ sub getPHPConfFile() {
 ############################
 
 sub databasesBackup() {
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-	my $today = sprintf("%d-%02d-%02d",(1900+$year),($mon+1),$mday);
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
+    my $today = sprintf("%d-%02d-%02d", (1900 + $year), ($mon + 1), $mday);
 
-	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$year), ($mon+1), $mday, $hour, $min, $sec) . "] Start database backup processus\n";
+    print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900 + $year), ($mon + 1), $mday, $hour, $min, $sec) .
+        "] Start database backup processus\n";
 
-	# Create path
-	mkpath($TEMP_DB_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Database BACKUP: Unable to create temporary directories because: ".$message."\n";
-			} else {
-				print STDERR "Database BACKUP: Problem with file  " . $file . ": " . $message . "\n";
-			}
-		}
-	}
+    # Create path
+    mkpath($TEMP_DB_DIR, { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Database BACKUP: Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Database BACKUP: Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
 
     my @localtime = localtime(time);
     my $dayOfWeek = @localtime[6];
@@ -366,7 +381,7 @@ sub databasesBackup() {
     if ($BACKUP_DATABASE_TYPE == '1') {
         # Do LVM snapshot backup or fall into degraded mode with mysqldump
 
-        if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
+        if (grep $_ == $dayOfWeek, @fullBackupDays) {
             print "Dumping Db with LVM snapshot (full)\n";
             `sudo $CentreonDir/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
             if ($? ne 0) {
@@ -375,47 +390,51 @@ sub databasesBackup() {
         }
 
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
-        if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
+        if (grep $_ == $dayOfWeek, @partialBackupDays) {
             print "Dumping Db with LVM snapshot (partial)\n";
             `sudo $CentreonDir/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
         }
-    } elsif ( grep $_ == $dayOfWeek, @fullBackupDays ) {
+    }
+    elsif (grep $_ == $dayOfWeek, @fullBackupDays) {
         my $mysql_database_ndo;
-        my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=".$mysql_host.";port=".$mysql_port, $mysql_user, $mysql_passwd,{'RaiseError' => 0, 'PrintError' => 0});
+        my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=" . $mysql_host . ";port=" .
+            $mysql_port, $mysql_user, $mysql_passwd, { 'RaiseError' => 0, 'PrintError' => 0 });
         if (!$dbh) {
             print STDERR sprintf("Couldn't connect: %s", $DBI::errstr) . "\n";
         }
 
         my $file = "";
 
-    	# Make archives from databases dump
-    	if ($BACKUP_DATABASE_CENTREON == '1') {
-    	    $file = $TEMP_DB_DIR."/".$today."-centreon.sql.gz";
-    	    `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_oreon | $BIN_GZIP  > $file`;
-    	    if ($? ne 0) {
-    	        print STDERR "Unable to dump database: " . $mysql_database_oreon . "\n";
-    	    } else {
-    		    print "Get mysqldump of \"" . $mysql_database_oreon . "\" database\n";
-    	    }
-    	}
+        # Make archives from databases dump
+        if ($BACKUP_DATABASE_CENTREON == '1') {
+            $file = $TEMP_DB_DIR . "/" . $today . "-centreon.sql.gz";
+            `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_oreon | $BIN_GZIP  > $file`;
+            if ($? ne 0) {
+                print STDERR "Unable to dump database: " . $mysql_database_oreon . "\n";
+            }
+            else {
+                print "Get mysqldump of \"" . $mysql_database_oreon . "\" database\n";
+            }
+        }
 
 
-    	# Make centreon_storage dump only if backup type is full
-    	if ($BACKUP_DATABASE_CENTREON_STORAGE == '1') {
+        # Make centreon_storage dump only if backup type is full
+        if ($BACKUP_DATABASE_CENTREON_STORAGE == '1') {
 
             # Check if process already exist
             my $process_number = `ps aux | grep -v grep |grep "centstorage" | wc -l | bc`;
 
             if ($process_number == 0) {
-                $file = $TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz";
+                $file = $TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.gz";
                 `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_ods | $BIN_GZIP  > $file`;
                 if ($? ne 0) {
                     print STDERR "Unable to dump database: " . $mysql_database_ods . "\n";
-                } else {
-                    print "Get mysqldump of \"".$mysql_database_ods."\" database\n";
+                }
+                else {
+                    print "Get mysqldump of \"" . $mysql_database_ods . "\" database\n";
                 }
             }
         }
@@ -423,318 +442,344 @@ sub databasesBackup() {
     }
     # End of Db dump
 
-	# Copy archives to local dir
-	mkpath($BACKUP_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create backup directory because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with " . $file . ": " . $message . "\n";
-			}
-		}
-	}
-
-	# Export archives
-	exportBackup(0);
-    if (-r $TEMP_DB_DIR."/".$today."-mysql-full.tar.gz") {
-        move($TEMP_DB_DIR."/".$today."-mysql-full.tar.gz", $BACKUP_DIR."/".$today."-mysql-full.tar.gz");
-    }
-    if (-r $TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz") {
-        move($TEMP_DB_DIR."/".$today."-mysql-partial.tar.gz", $BACKUP_DIR."/".$today."-mysql-partial.tar.gz");
-    }
-    if (-r $TEMP_DB_DIR."/".$today."-centreon.sql.gz") {
-    	move($TEMP_DB_DIR."/".$today."-centreon.sql.gz", $BACKUP_DIR."/".$today."-centreon.sql.gz");
-    }
-    if (-r $TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz") {
-    	move($TEMP_DB_DIR."/".$today."-centreon_storage.sql.gz", $BACKUP_DIR."/".$today."-centreon_storage.sql.gz");
-    }
-
-	# Delete temporary directories
-	chdir;
-	rmtree($TEMP_DB_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-			    print STDERR "Unable to remove temporary directories because: ".$message . "\n";
-			} else {
-			    print STDERR "Problem unlinking ".$file.": ".$message, . "\n";
-			}
-		}
-	}
-
-	my ($tsec,$tmin,$thour,$tmday,$tmon,$tyear,$twday,$tyday,$tisdst) = localtime(time);
-	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$tyear), ($tmon+1), $tmday, $thour, $tmin, $tsec) . "] Finish database backup processus\n";
-}
-
-sub centralBackup() {
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-	my $today = sprintf("%d-%02d-%02d",(1900+$year),($mon+1),$mday);
-	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$year), ($mon+1), $mday, $hour, $min, $sec) . "] Start central backup processus\n";
-
-	###################################
-	# Get configuration program files #
-	###################################
-
-
-
-	# Create path
-	mkpath($TEMP_CENTRAL_ETC_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-			}
-		}
-	}
-
-	# Apache or httpd
-	my $ApacheConfdir = getApacheDirectory();
-	mkpath($TEMP_CENTRAL_ETC_DIR."/apache", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-			}
-		}
-	}
-	`cp -pr $ApacheConfdir* $TEMP_CENTRAL_ETC_DIR/apache/`;
-	if ($? ne 0) {
-		print STDERR "Unable to copy Apache configuration files\n";
-	}
-
-	# Centreon etc
-	mkpath($TEMP_CENTRAL_ETC_DIR."/centreon", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: ".$message . "\n";
-			} else {
-				print STDERR "Problem with file  ".$file.": ".$message. "\n";
-			}
-		}
-	}
-	`cp -pr $CENTREON_ETC/* $TEMP_CENTRAL_ETC_DIR/centreon/`;
-	if ($? ne 0) {
-		print STDERR "Unable to copy Centreon configuration files\n";
-	}
-
-	# Centreon Broker etc
-	my $cb_path = "/etc/centreon-broker";
-	mkpath($TEMP_CENTRAL_ETC_DIR."/centreon-broker", {mode => 0755, error => \my $err_list});
+    # Copy archives to local dir
+    mkpath($BACKUP_DIR, { mode => 0755, error => \my $err_list });
     if (@$err_list) {
         for my $diag (@$err_list) {
             my ($file, $message) = %$diag;
             if ($file eq '') {
-                 print STDERR "Unable to create temporary directories because: ".$message . "\n";
-            } else {
-                print STDERR "Problem with file  ".$file.": ".$message . "\n";
+                print STDERR "Unable to create backup directory because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with " . $file . ": " . $message . "\n";
             }
         }
     }
-	`cp -r $cb_path $TEMP_CENTRAL_ETC_DIR"/centreon-broker/"`;
 
-	# SNMP configuration
-	mkpath($TEMP_CENTRAL_ETC_DIR."/snmp", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: ".$message . "\n";
-			} else {
-				print STDERR "Problem with file  ".$file.": ".$message . "\n";
-			}
-		}
-	}
-	`cp -pr /etc/snmp/* $TEMP_CENTRAL_ETC_DIR/snmp/`;
-	if ($? ne 0) {
-		print STDERR "Unable to copy SNMP configuration files\n";
-	}
+    # Export archives
+    exportBackup(0);
+    if (-r $TEMP_DB_DIR . "/" . $today . "-mysql-full.tar.gz") {
+        move($TEMP_DB_DIR . "/" . $today . "-mysql-full.tar.gz", $BACKUP_DIR . "/" . $today . "-mysql-full.tar.gz");
+    }
+    if (-r $TEMP_DB_DIR . "/" . $today . "-mysql-partial.tar.gz") {
+        move($TEMP_DB_DIR . "/" . $today . "-mysql-partial.tar.gz", $BACKUP_DIR . "/" .
+            $today . "-mysql-partial.tar.gz");
+    }
+    if (-r $TEMP_DB_DIR . "/" . $today . "-centreon.sql.gz") {
+        move($TEMP_DB_DIR . "/" . $today . "-centreon.sql.gz", $BACKUP_DIR . "/" . $today . "-centreon.sql.gz");
+    }
+    if (-r $TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.gz") {
+        move($TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.gz", $BACKUP_DIR . "/" .
+            $today . "-centreon_storage.sql.gz");
+    }
 
-	# MySQL configuration
-	mkpath($TEMP_CENTRAL_ETC_DIR."/mysql", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: ".$message . "\n";
-			} else {
-				print STDERR "Problem with file  ".$file.": ".$message . "\n";
-			}
-		}
-	}
-	$MYSQL_CONF = getMySQLConfFile();
-	`cp -pr $MYSQL_CONF $TEMP_CENTRAL_ETC_DIR/mysql/`;
-	if ($? ne 0) {
-		print STDERR "Unable to copy MySQL configuration file\n";
-	}
+    # Delete temporary directories
+    chdir;
+    rmtree($TEMP_DB_DIR, { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to remove temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem unlinking " . $file . ": " . $message, . "\n";
+            }
+        }
+    }
 
-	# PHP.ini
-	mkpath($TEMP_CENTRAL_ETC_DIR."/php", {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem with file  ".$file.": ".$message . "\n";
-			}
-		}
-	}
-	my @tab_php_ini = getPHPConfFile();
-	foreach my $file (@tab_php_ini) {
-		my $file_dest = $file;
-		$file_dest  =~ s/\//_/g;
-		`cp -p $file $TEMP_CENTRAL_ETC_DIR/php/$file_dest`;
-		if ($? ne 0) {
-			print STDERR "Unable to copy PHP configuration file\n";
-		}
-	}
+    my ($tsec, $tmin, $thour, $tmday, $tmon, $tyear, $twday, $tyday, $tisdst) = localtime(time);
+    print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900 + $tyear), ($tmon + 1), $tmday, $thour, $tmin, $tsec) .
+        "] Finish database backup processus\n";
+}
 
-	#####################
-	# Get Centreon logs #
-	#####################
-    # This backup is crazy ! We backup system logs, it's not a good choice to backup them like that.
-	mkpath($TEMP_CENTRAL_LOG_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				 print STDERR "Unable to create temporary directories because: " . $message . "\n";
-			} else {
-				 print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-			}
-		}
-	}
+sub centralBackup() {
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
+    my $today = sprintf("%d-%02d-%02d", (1900 + $year), ($mon + 1), $mday);
+    print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900 + $year), ($mon + 1), $mday, $hour, $min, $sec) .
+        "] Start central backup processus\n";
 
-	# Try to Centreon logs directory
-	my $centreon_log_path = "";
-	my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host.";port=".$mysql_port, $mysql_user, $mysql_passwd,{'RaiseError' => 0, 'PrintError' => 0});
-	if (!$dbh) {
-		print STDERR sprintf("Couldn't connect: %s", $DBI::errstr) . "\n";
-	}
+    ###################################
+    # Get configuration program files #
+    ###################################
 
-	my $sth = $dbh->prepare("SELECT value FROM options WHERE `key` LIKE 'debug_path';");
-	if (!$sth) {
-		print STDERR "Error: " . $dbh->errstr . "\n";
-	}
 
-	if (!$sth->execute()) {
-		$sth = $dbh->prepare("SELECT debug_path FROM general_opt;");
-		if (!$sth) {
-			print STDERR "Error: " . $dbh->errstr . "\n";
-		}
-		if (!$sth->execute()) {
-			print STDERR "Error: " . $dbh->errstr . "\n";
-		} else {
-			$centreon_log_path = $sth->fetchrow_array();
-		}
-	} else {
-		$centreon_log_path = $sth->fetchrow_array();
-	}
-	$sth->finish();
-
-	if ($centreon_log_path =~/^$/) {
-		print STDERR "Unable to get Centreon logs directory from database\n";
-	} else {
-		$centreon_log_path =~ s/\/$//;
-		`cp -pr $centreon_log_path/ $TEMP_CENTRAL_LOG_DIR/`;
-		if ($? ne 0) {
-			print STDERR "Unable to copy Centreon logs files\n";
-		}
-	}
-
-	################
-	# Licences     #
-	################
-	# Centreon licences
-    mkpath($TEMP_CENTRAL_LIC_DIR, {mode => 0755, error => \my $err_list});
+    # Create path
+    mkpath($TEMP_CENTRAL_ETC_DIR, { mode => 0755, error => \my $err_list });
     if (@$err_list) {
         for my $diag (@$err_list) {
             my ($file, $message) = %$diag;
             if ($file eq '') {
                 print STDERR "Unable to create temporary directories because: " . $message . "\n";
-            } else {
+            }
+            else {
                 print STDERR "Problem with file  " . $file . ": " . $message . "\n";
             }
         }
     }
 
-	find(\&getLicFile, $CentreonDir . / . $CENTREON_MODULES_PATH);
+    # Apache or httpd
+    my $ApacheConfdir = getApacheDirectory();
+    mkpath($TEMP_CENTRAL_ETC_DIR . "/apache", { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+    `cp -pr $ApacheConfdir* $TEMP_CENTRAL_ETC_DIR/apache/`;
+    if ($? ne 0) {
+        print STDERR "Unable to copy Apache configuration files\n";
+    }
+
+    # Centreon etc
+    mkpath($TEMP_CENTRAL_ETC_DIR . "/centreon", { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+    `cp -pr $CENTREON_ETC/* $TEMP_CENTRAL_ETC_DIR/centreon/`;
+    if ($? ne 0) {
+        print STDERR "Unable to copy Centreon configuration files\n";
+    }
+
+    # Centreon Broker etc
+    my $cb_path = "/etc/centreon-broker";
+    mkpath($TEMP_CENTRAL_ETC_DIR . "/centreon-broker", { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+    `cp -r $cb_path $TEMP_CENTRAL_ETC_DIR"/centreon-broker/"`;
+
+    # SNMP configuration
+    mkpath($TEMP_CENTRAL_ETC_DIR . "/snmp", { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+    `cp -pr /etc/snmp/* $TEMP_CENTRAL_ETC_DIR/snmp/`;
+    if ($? ne 0) {
+        print STDERR "Unable to copy SNMP configuration files\n";
+    }
+
+    # MySQL configuration
+    mkpath($TEMP_CENTRAL_ETC_DIR . "/mysql", { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+    $MYSQL_CONF = getMySQLConfFile();
+    `cp -pr $MYSQL_CONF $TEMP_CENTRAL_ETC_DIR/mysql/`;
+    if ($? ne 0) {
+        print STDERR "Unable to copy MySQL configuration file\n";
+    }
+
+    # PHP.ini
+    mkpath($TEMP_CENTRAL_ETC_DIR . "/php", { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+    my @tab_php_ini = getPHPConfFile();
+    foreach my $file (@tab_php_ini) {
+        my $file_dest = $file;
+        $file_dest =~ s/\//_/g;
+        `cp -p $file $TEMP_CENTRAL_ETC_DIR/php/$file_dest`;
+        if ($? ne 0) {
+            print STDERR "Unable to copy PHP configuration file\n";
+        }
+    }
+
+    #####################
+    # Get Centreon logs #
+    #####################
+    # This backup is crazy ! We backup system logs, it's not a good choice to backup them like that.
+    mkpath($TEMP_CENTRAL_LOG_DIR, { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+
+    # Try to Centreon logs directory
+    my $centreon_log_path = "";
+    my $dbh = DBI->connect("DBI:mysql:database=" . $mysql_database_oreon . ";host=" . $mysql_host . ";port=" .
+        $mysql_port, $mysql_user, $mysql_passwd, { 'RaiseError' => 0, 'PrintError' => 0 });
+    if (!$dbh) {
+        print STDERR sprintf("Couldn't connect: %s", $DBI::errstr) . "\n";
+    }
+
+    my $sth = $dbh->prepare("SELECT value FROM options WHERE `key` LIKE 'debug_path';");
+    if (!$sth) {
+        print STDERR "Error: " . $dbh->errstr . "\n";
+    }
+
+    if (!$sth->execute()) {
+        $sth = $dbh->prepare("SELECT debug_path FROM general_opt;");
+        if (!$sth) {
+            print STDERR "Error: " . $dbh->errstr . "\n";
+        }
+        if (!$sth->execute()) {
+            print STDERR "Error: " . $dbh->errstr . "\n";
+        }
+        else {
+            $centreon_log_path = $sth->fetchrow_array();
+        }
+    }
+    else {
+        $centreon_log_path = $sth->fetchrow_array();
+    }
+    $sth->finish();
+
+    if ($centreon_log_path =~ /^$/) {
+        print STDERR "Unable to get Centreon logs directory from database\n";
+    }
+    else {
+        $centreon_log_path =~ s/\/$//;
+        `cp -pr $centreon_log_path/ $TEMP_CENTRAL_LOG_DIR/`;
+        if ($? ne 0) {
+            print STDERR "Unable to copy Centreon logs files\n";
+        }
+    }
+
+    ################
+    # Licences     #
+    ################
+    # Centreon licences
+    mkpath($TEMP_CENTRAL_LIC_DIR, { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
+            }
+        }
+    }
+
+    find(\&getLicFile, $CentreonDir . / . $CENTREON_MODULES_PATH);
 
     foreach my $licfile ( @licfiles ) {
         my $origFile = $licfile;
         my $path = $CentreonDir . / . $CENTREON_MODULES_PATH;
-        $path =~ s/\//\\\//g;
-        $licfile =~ s/$path//;
-        my $tempLicDir = $TEMP_CENTRAL_LIC_DIR.dirname($licfile);
-        mkpath($tempLicDir, {mode => 0755, error => \my $err_list});
-        if (@$err_list) {
-            for my $diag (@$err_list) {
-                my ($file, $message) = %$diag;
-                if ($file eq '') {
-                    print STDERR "Unable to create temporary directories because: " . $message . "\n";
-                } else {
-                    print STDERR "Problem with file  " . $file  .": " . $message . "\n";
-                }
+    $path =~ s/\//\\\//g;
+    $licfile =~ s/$path//;
+    my $tempLicDir = $TEMP_CENTRAL_LIC_DIR . dirname($licfile);
+    mkpath($tempLicDir, { mode => 0755, error => \my $err_list });
+    if (@$err_list) {
+        for my $diag (@$err_list) {
+            my ($file, $message) = %$diag;
+            if ($file eq '') {
+                print STDERR "Unable to create temporary directories because: " . $message . "\n";
+            }
+            else {
+                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
             }
         }
-        `cp -pr $origFile $tempLicDir`;
-        if ($? ne 0) {
-            print STDERR "Unable to copy Centreon configuration files\n";
+    }
+    `cp -pr $origFile $tempLicDir`;
+    if ($? ne 0) {
+        print STDERR "Unable to copy Centreon configuration files\n";
+    }
+}
+
+################
+# Make archive #
+################
+chdir($TEMP_DIR);
+`$BIN_TAR -czf $today-central.tar.gz central`;
+move("$today-central.tar.gz", "central/$today-central.tar.gz");
+if ($? ne 0) {
+    print STDERR "Unable to make tar of backup\n";
+}
+
+# Export archives
+exportBackup(1);
+move($TEMP_CENTRAL_DIR . "/" . $today . "-central.tar.gz", $BACKUP_DIR . "/" . $today . "-central.tar.gz");
+
+# Remove all temp directory
+chdir;
+rmtree($TEMP_CENTRAL_DIR, { mode => 0755, error => \my $err_list });
+if (@$err_list) {
+    for my $diag (@$err_list) {
+        my ($file, $message) = %$diag;
+        if ($file eq '') {
+            print STDERR "Unable to remove temporary directories because: " . $message . "\n";
+        }
+        else {
+            print STDERR "Problem unlinking " . $file . ": " . $message . "\n";
         }
     }
+}
 
-	################
-	# Make archive #
-	################
-	chdir($TEMP_DIR);
-	`$BIN_TAR -czf $today-central.tar.gz central`;
-	move("$today-central.tar.gz", "central/$today-central.tar.gz");
-	if ($? ne 0) {
-		print STDERR "Unable to make tar of backup\n";
-	}
-
-	# Export archives
-	exportBackup(1);
-	move ($TEMP_CENTRAL_DIR."/".$today."-central.tar.gz", $BACKUP_DIR."/".$today."-central.tar.gz");
-
-	# Remove all temp directory
-	chdir;
-	rmtree($TEMP_CENTRAL_DIR, {mode => 0755, error => \my $err_list});
-	if (@$err_list) {
-		for my $diag (@$err_list) {
-			my ($file, $message) = %$diag;
-			if ($file eq '') {
-				print STDERR "Unable to remove temporary directories because: " . $message . "\n";
-			} else {
-				print STDERR "Problem unlinking " . $file . ": " . $message . "\n";
-			}
-		}
-	}
-
-	my ($tsec,$tmin,$thour,$tmday,$tmon,$tyear,$twday,$tyday,$tisdst) = localtime(time);
-	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$tyear), ($tmon+1), $tmday, $thour, $tmin, $tsec) . "] Finish central backup processus\n";
+my ($tsec, $tmin, $thour, $tmday, $tmon, $tyear, $twday, $tyday, $tisdst) = localtime(time);
+print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900 + $tyear), ($tmon + 1), $tmday, $thour, $tmin, $tsec) .
+    "] Finish central backup processus\n";
 }
 
 sub monitoringengineBackup() {
 	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 	my $today = sprintf("%d-%02d-%02d",(1900+$year),($mon+1),$mday);
-	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$year), ($mon+1), $mday, $hour, $min, $sec) . "] Start monitoring engine backup processus\n";
+	print "[" . sprintf("%4d-%02d-%02d %02d:%02d:%02d", (1900+$year), ($mon+1), $mday, $hour, $min, $sec) .
+	 "] Start monitoring engine backup processus\n";
 
     # create path
     mkpath($TEMP_CENTRAL_DIR, {mode => 0755, error => \my $err_list});
 
-	my $sth2 = $dbh->prepare("SELECT n.nagios_name, n.cfg_dir, n.log_file, n.log_archive_path, ns.* FROM nagios_server ns, cfg_nagios n WHERE ns.id = n.nagios_server_id AND n.nagios_activate = '1' AND ns.localhost = '1';");
+	my $sth2 = $dbh->prepare(
+	    "SELECT n.nagios_name, n.cfg_dir, n.log_file, n.log_archive_path, ns.*
+	    FROM nagios_server ns, cfg_nagios n
+	    WHERE ns.id = n.nagios_server_id AND n.nagios_activate = '1' AND ns.localhost = '1';"
+    );
 	if (!$sth2->execute()) {
 		print STDERR "Error: " . $dbh->errstr . "\n";
 		return 1;
@@ -789,7 +834,11 @@ sub monitoringengineBackup() {
 	}
 
 	copy($nagios_server->{log_file}, ($TEMP_CENTRAL_DIR."/logs/centengine.log"));
-	my $logs_archive_directory = substr($nagios_server->{log_archive_path}, 0, rindex($nagios_server->{log_archive_path}, "/"));
+	my $logs_archive_directory = substr(
+	    $nagios_server->{log_archive_path},
+	    0,
+        rindex($nagios_server->{log_archive_path}, "/")
+    );
 	mkpath($TEMP_CENTRAL_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
     if (@$err_list) {
 		for my $diag (@$err_list) {
