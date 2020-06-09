@@ -42,7 +42,7 @@ $isAdmin = $centreon->user->admin;
 $acl = new CentreonACL($userId, $isAdmin);
 $aclPollers = $acl->getPollers();
 
-if (!array_key_exists($pollerId, $aclPollers)) {
+if ($pollerId === false || !array_key_exists($pollerId, $aclPollers)) {
     print "Bad Poller Id";
     exit();
 }
