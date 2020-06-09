@@ -59,7 +59,7 @@ if (isset($sid)) {
 }
 
 $index = filter_var(
-    $_GET['index'] ?? $_POST['index'] ?? null,
+    $_GET['index'] ?? $_POST['index'] ?? false,
     FILTER_VALIDATE_INT
 );
 $period = filter_var(
