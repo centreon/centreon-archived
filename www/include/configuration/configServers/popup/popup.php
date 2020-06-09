@@ -35,7 +35,7 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();
 }
 $centreon = $_SESSION['centreon'];
-$pollerId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+$pollerId = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT);
 $userId = $centreon->user->user_id;
 $isAdmin = $centreon->user->admin;
 
