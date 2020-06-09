@@ -573,7 +573,7 @@ describe(Actions, () => {
       cannotAcknowledgeServicesAcl,
     ],
   ])(
-    'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient,
+    'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
     async (_, labelAction, labelAppliesOnServices, acl) => {
       mockedUserContext.useUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
