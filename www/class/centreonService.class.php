@@ -79,7 +79,10 @@ class CentreonService
     }
 
     /**
-     * filteredArrayId
+     * filteredArrayId takes an array of combined ID (HOSTID_SVCID) as parameter.
+     * It will check for each combined ID if:
+     *   - HOSTID is defined and > 0
+     *   - SVCID is defined and > 0
      *
      * @param  int[] $ids
      * @return int[] filtered
@@ -91,11 +94,11 @@ class CentreonService
          */
         $combinedIds = [];
         return array_filter($ids, function ($combinedId) {
-            $combinedIds = explode("_", $combinedId);
-            $hostId = $combinedIds[0];
-            $serviceId = $combinedIds[1];
-            if (!empty($hostId) && !empty($serviceId)) {
-                return (is_numeric($hostId) && is_numeric($serviceId));
+            // Only valid combined ID are authorized (HOSTID_SVCID)
+            if (preg_match('/([0-9]+)_([0-9]+)/', $combinedId, $matches)) {
+                $hostId = (int)$matches[1];
+                $serviceId = (int)$matches[2];
+                return ($hostId > 0 && $serviceId > 0);
             }
             return false;
         });
