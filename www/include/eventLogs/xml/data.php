@@ -591,7 +591,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
         }
     }
     if ($str_unitH != "") {
-        $str_unitH = "(logs.host_id IN ($str_unitH) AND logs.service_id IS NULL)";
+        $str_unitH = "(logs.host_id IN ($str_unitH) AND (logs.service_id IS NULL OR logs.service_id = 0))";
         if (isset($search_host) && $search_host != "") {
             $host_search_sql = " AND logs.host_name LIKE '%" . $pearDBO->escape($search_host) . "%' ";
         }
