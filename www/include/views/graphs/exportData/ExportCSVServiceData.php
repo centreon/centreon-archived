@@ -135,9 +135,9 @@ if ($index !== false) {
     $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
     $stmt->execute();
 
-    while ($index_data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        $listMetric[$index_data['metric_id']] = $index_data['metric_name'];
-        $listEmptyMetric[$index_data['metric_id']] = '';
+    while ($indexdata = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $listMetric[$indexdata['metric_id']] = $indexindexdatadata['metric_name'];
+        $listEmptyMetric[$indexdata['metric_id']] = '';
         if (isset($start) && isset($end)) {
             $stmt2 = $pearDBO->prepare(
                 "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
@@ -145,10 +145,10 @@ if ($index !== false) {
             );
             $stmt2->bindValue(':start', $start, \PDO::PARAM_INT);
             $stmt2->bindValue(':end', $end, \PDO::PARAM_INT);
-            $stmt2->bindValue(':metricId', $index_data['metric_id'], \PDO::PARAM_INT);
+            $stmt2->bindValue(':metricId', $indexdata['metric_id'], \PDO::PARAM_INT);
             $stmt2->execute();
             while ($data = $stmt2->fetch(\PDO::FETCH_ASSOC)) {
-                $datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];
+                $datas[$data["ctime"]][$indexdata["metric_id"]] = $data["value"];
             }
         }
     }
