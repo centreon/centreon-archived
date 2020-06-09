@@ -82,6 +82,8 @@ include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
+$defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1 ? $centreon->optGen['maxViewConfiguration'] : 30;
+
 /**
  * Get input vars
  */
@@ -97,7 +99,7 @@ $inputArguments = array(
     'limit' => [
         'filter' => FILTER_VALIDATE_INT,
         'options' => [
-            'default' => 30
+            'default' => $defaultLimit
         ]
     ],
     'StartDate' => FILTER_SANITIZE_STRING,
