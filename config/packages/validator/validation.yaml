@@ -202,17 +202,17 @@ Centreon\Domain\Monitoring\Resource:
         id:
             - Type:
                 type: int
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, downtime_host, downtime_service]
         type:
             - Type:
                 type: string
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, downtime_host, downtime_service]
             - Choice:
                 choices:
                     - service
                     - host
                 multiple: false
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, downtime_host, downtime_service]
         parent:
             - NotNull:
-                groups: [disack_service]
+                groups: [ack_service, downtime_service]
