@@ -104,7 +104,7 @@ if (isset($chartId)) {
         }
     }
 }
-if (isset($index) && is_numeric($index)) {
+if ($index !== false) {
     $stmt = $pearDBO->prepare(
         'SELECT host_name, service_description FROM index_data WHERE id = :index'
     );
