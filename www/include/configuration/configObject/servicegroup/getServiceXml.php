@@ -53,7 +53,7 @@ $hostId = filter_var($_POST['host_id'], FILTER_VALIDATE_INT);
 $acl = $centreon->user->access;
 $xml = new CentreonXML();
 $xml->startElement("response");
-if ($hostId) {
+if ($hostId !== false && $hostId > 0) {
     $aclFrom = "";
     if (!$centreon->user->admin) {
         $aclDbName = $acl->getNameDBAcl('broker');
