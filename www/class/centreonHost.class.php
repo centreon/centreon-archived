@@ -154,7 +154,7 @@ class CentreonHost
     }
 
     /**
-     * filteredArrayId
+     * Returns a filtered array with only integer ids
      *
      * @param  int[] $ids
      * @return int[] filtered
