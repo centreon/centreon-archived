@@ -67,7 +67,7 @@ $period = filter_var(
     FILTER_SANITIZE_STRING
 );
 $start = filter_var(
-    $_GET['start'] ?? null,
+    $_GET['start'] ?? false,
     FILTER_VALIDATE_INT
 );
 $end = filter_var(
