@@ -62,7 +62,7 @@ $xml = new CentreonXML();
 $xml->startElement('response');
 try {
     $xml->startElement('options');
-    if ($hostId) {
+    if ($hostId !== false && $hostId > 0) {
         $aclString = $centreon->user->access->queryBuilder(
             'AND',
             's.service_id',
