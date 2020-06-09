@@ -100,8 +100,7 @@ if (isset($chartId)) {
                 $index = $row['id'];
             }
         }
-    }
-    else {
+    } else {
         die('Resource not found');
     }
 }
