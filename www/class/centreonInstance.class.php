@@ -113,27 +113,20 @@ class CentreonInstance
             $filteredPollerIds = $this->filteredArrayId($pollerIds);
             $pollerParams = [];
             if (count($filteredPollerIds) > 0) {
-                $query = 'SELECT i.instance_id, i.name FROM instances i';
-                // If -1 is provided as id return all instances
-                if(array_search('-1', $filteredPollerIds) === false) {
-                    /*
-                    * Building the pollerParams hash table in order to correctly
-                    * bind ids as ints for the request.
-                    */
-                    foreach ($filteredPollerIds as $index => $filteredPollerId) {
-                        $pollerParams[':pollerId' . $index] = $filteredPollerId;
-                    }
-                    $stmt = $this->DB->prepare($query .
-                        ' WHERE i.instance_id IN ( ' . implode(',', array_keys($pollerParams)) . ' )'
-                    );
-                    foreach ($pollerParams as $index => $value) {
-                        $stmt->bindValue($index, $value, \PDO::PARAM_INT);
-                    }
-                } else {
-                    // return all the instances
-                    $stmt = $this->DB->prepare($query);
+                /*
+                 * Building the pollerParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredPollerIds as $index => $filteredPollerId) {
+                    $pollerParams[':pollerId' . $index] = $filteredPollerId;
                 }
-
+                $stmt = $this->DB->prepare(
+                    'SELECT i.instance_id, i.name FROM instances i ' .
+                    'WHERE i.instance_id IN ( ' . implode(',', array_keys($pollerParams)) . ' )'
+                );
+                foreach ($pollerParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
                 $stmt->execute();
 
                 while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
