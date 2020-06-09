@@ -52,7 +52,7 @@ class CentreonServiceGroup extends CentreonObject
 {
     const ORDER_UNIQUENAME = 0;
     const ORDER_ALIAS = 1;
-    const INVALID_GEO_COORDS = "Invalid geo coords";
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
         'HOST',
