@@ -71,7 +71,7 @@ $start = filter_var(
     FILTER_VALIDATE_INT
 );
 $end = filter_var(
-    $_GET['end'] ?? null,
+    $_GET['end'] ?? false,
     FILTER_VALIDATE_INT
 );
 $chartId = filter_var(
