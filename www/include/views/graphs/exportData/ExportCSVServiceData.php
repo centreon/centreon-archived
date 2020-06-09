@@ -135,7 +135,7 @@ if (isset($index) && is_numeric($index)) {
     $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
     $stmt->execute();
 
-    while ($index_data = $stmt->fetchRow()) {
+    while ($index_data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         $listMetric[$index_data['metric_id']] = $index_data['metric_name'];
         $listEmptyMetric[$index_data['metric_id']] = '';
         if (isset($start) && isset($end)) {
