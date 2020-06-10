@@ -520,13 +520,13 @@ class AcknowledgementController extends AbstractController
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_ACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_ACK_HOST
+                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
                 throw new \RestBadRequestException(_('Incorrect resource type for disacknowledgement'));
