@@ -176,17 +176,17 @@ if [ ! -d "$BACKUP_DIR_TOTAL" ] ; then
     output_log "ERROR: Directory '$BACKUP_DIR_TOTAL' doesn't exist." 1
     exit 1
 fi
-if [ ! -w "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
-    output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1
-    exit 1
-fi
 
 ###
 # Check Last DIR
 ###
 mkdir -p "$SAVE_LAST_DIR"
 if [ ! -f "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
-    touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
+    sudo -g centreon touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
+fi
+if [ ! -w "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
+    output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1
+    exit 1
 fi
 
 #############
