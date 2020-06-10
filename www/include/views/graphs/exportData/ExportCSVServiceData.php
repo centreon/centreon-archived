@@ -110,7 +110,7 @@ if ($index !== false) {
     );
     $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
     $stmt->execute();
-    while ($res = $stmt->fetchRow()) {
+    while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         $hName = $res["host_name"];
         $sName = $res["service_description"];
     }
