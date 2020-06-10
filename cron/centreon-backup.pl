@@ -108,6 +108,7 @@ if (!defined($mysql_port)) {
 #######################
 my $PROGNAME = $0;
 my $VERSION = "1.0";
+my $CENTREONDIR = "@INSTALL_DIR_CENTREON@";
 
 ##########################################
 # Get backup configuration from database #
@@ -170,7 +171,6 @@ else {
     exit 1;
 }
 
-$centreonDir = @INSTALL_DIR_CENTREON@;
 # Parameters for SCP export
 $scp_enabled = $backupOptions->{'backup_export_scp_enabled'}->{'value'};
 $scp_user = $backupOptions->{'backup_export_scp_user'}->{'value'};
@@ -382,7 +382,7 @@ sub databasesBackup() {
 
         if (grep $_ == $dayOfWeek, @fullBackupDays) {
             print "Dumping Db with LVM snapshot (full)\n";
-            `sudo $CentreonDir/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            `sudo $CENTREONDIR/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -391,7 +391,7 @@ sub databasesBackup() {
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
         if (grep $_ == $dayOfWeek, @partialBackupDays) {
             print "Dumping Db with LVM snapshot (partial)\n";
-            `sudo $CentreonDir/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            `sudo $CENTREONDIR/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -705,11 +705,11 @@ sub centralBackup() {
         }
     }
 
-    find(\&getLicFile, $CentreonDir . / . $CENTREON_MODULES_PATH);
+    find(\&getLicFile, $CENTREONDIR . / . $CENTREON_MODULES_PATH);
 
     foreach my $licfile ( @licfiles ) {
         my $origFile = $licfile;
-        my $path = $CentreonDir . / . $CENTREON_MODULES_PATH;
+        my $path = $CENTREONDIR . / . $CENTREON_MODULES_PATH;
     $path =~ s/\//\\\//g;
     $licfile =~ s/$path//;
     my $tempLicDir = $TEMP_CENTRAL_LIC_DIR . dirname($licfile);
