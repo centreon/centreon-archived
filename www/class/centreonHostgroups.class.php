@@ -70,6 +70,19 @@ class CentreonHostgroups
     }
 
     /**
+     * Returns a filtered array with only integer ids
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    private function filteredArrayId(array $ids): array
+    {
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
+
+    /**
      *
      * Enter description here ...
      * @param unknown_type $hg_id
@@ -140,24 +153,48 @@ class CentreonHostgroups
 
 
     /**
-     * Get Hostgroup Id/Name
+     * Get Hostgroups ids and names from ids
      *
-     * @param int $hg_id
-     * @return string
+     * @param int[] $hostGroupsIds
+     * @return array $hostsGroups [['id' => integer, 'name' => string],...]
      */
-    public function getHostsgroups($hg_id = array())
+    public function getHostsgroups($hostGroupsIds = []): array
     {
-        $arrayReturn = array();
-        if (!empty($hg_id)) {
-            $query = "SELECT hg_id, hg_name FROM hostgroup
-                WHERE hg_id IN (" . $this->DB->escape(implode(",", $hg_id)) . ")";
-            $res = $this->DB->query($query);
-            $arrayReturn = array();
-            while ($row = $res->fetchRow()) {
-                $arrayReturn[] = array("id" => $row['hg_id'], "name" => $row['hg_name']);
+        $hostsGroups = [];
+
+        if (!empty($hostGroupsIds)) {
+            $filteredHgIds = $this->filteredArrayId($hostGroupsIds);
+            $hgParams = [];
+            if (count($filteredHgIds) > 0) {
+                /*
+                 * Building the hgParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredHgIds as $index => $filteredHgId) {
+                    $hgParams[':hgId' . $index] = $filteredHgIds;
+                }
+
+                $stmt = $this->DB->prepare(
+                    'SELECT hg_id, hg_name FROM hostgroup ' .
+                    'WHERE hg_id IN ( ' . implode(',', array_keys($hgParams)) . ' )'
+                );
+
+                foreach ($hgParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+
+                $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $hostsGroups[] = [
+                        'id' => $row['hg_id'],
+                        'name' => $row['hg_name']
+                    ];
+                }
             }
         }
-        return $arrayReturn;
+
+        return $hostsGroups;
     }
 
 
