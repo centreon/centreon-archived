@@ -202,7 +202,7 @@ sub print_usage() {
 
 sub print_help() {
     print "##############################################\n";
-    print "#    Copyright (c) 2005-2014 Centreon        #\n";
+    print "#    Copyright (c) 2005-2020 Centreon        #\n";
     print "#    Bugs to http://forge.centreon.com       #\n";
     print "##############################################\n";
     print "\n";
