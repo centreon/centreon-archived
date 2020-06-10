@@ -122,7 +122,7 @@ if ($index !== false) {
         header("Content-disposition: filename=" . $index . ".csv");
     }
 
-    if ($start === false && $end === false) {
+    if ($start === false || $end === false) {
         die('Start or end time is not consistent or not an integer');
     }
 
