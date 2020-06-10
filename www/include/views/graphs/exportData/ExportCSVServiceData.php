@@ -138,7 +138,7 @@ if ($index !== false) {
     while ($indexData = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         $listMetric[$indexData['metric_id']] = $indexData['metric_name'];
         $listEmptyMetric[$indexData['metric_id']] = '';
-        if (isset($start) && isset($end)) {
+        if ($start !== false && $end !== false) {
             $stmt2 = $pearDBO->prepare(
                 "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
                 "AND ctime >= :start AND ctime < :end"
@@ -150,6 +150,8 @@ if ($index !== false) {
             while ($data = $stmt2->fetch(\PDO::FETCH_ASSOC)) {
                 $datas[$data["ctime"]][$indexData["metric_id"]] = $data["value"];
             }
+        } else {
+            die('Start and end time were not provided');
         }
     }
 }
