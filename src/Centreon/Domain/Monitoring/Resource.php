@@ -42,6 +42,8 @@ class Resource
     // Groups for validation
     public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];
     public const VALIDATION_GROUP_ACK_SERVICE = ['ack_service'];
+    public const VALIDATION_GROUP_DISACK_HOST = ['disack_host'];
+    public const VALIDATION_GROUP_DISACK_SERVICE = ['disack_service'];
     public const VALIDATION_GROUP_DOWNTIME_HOST = ['downtime_host'];
     public const VALIDATION_GROUP_DOWNTIME_SERVICE = ['downtime_service'];
 
