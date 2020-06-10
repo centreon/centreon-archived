@@ -38,7 +38,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceService;
 
@@ -265,7 +264,7 @@ class DowntimeController extends AbstractController
         $this->downtimeService->filterByContact($contact);
 
         /**
-         * @var Downtime[] $downtime
+         * @var Downtime $downtime
          */
         $downtime = $serializer->deserialize(
             (string) $request->getContent(),
@@ -364,10 +363,11 @@ class DowntimeController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $hostsDowntime = $this->downtimeService
             ->filterByContact($contact)
             ->findHostDowntimes();
@@ -393,10 +393,11 @@ class DowntimeController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $servicesDowntimes = $this->downtimeService
             ->filterByContact($contact)
             ->findServicesDowntimes();
@@ -427,10 +428,11 @@ class DowntimeController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $this->monitoringService->filterByContact($contact);
 
         if ($this->monitoringService->isHostExists($hostId)) {
@@ -462,10 +464,11 @@ class DowntimeController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $downtime = $this->downtimeService
             ->filterByContact($contact)
             ->findOneDowntime($downtimeId);
@@ -492,10 +495,11 @@ class DowntimeController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $hostsDowntime = $this->downtimeService
             ->filterByContact($contact)
             ->findDowntimes();
@@ -522,10 +526,11 @@ class DowntimeController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $this->monitoringService->filterByContact($contact);
         $withServices = $requestParameters->getExtraParameter('with_services') === 'true';
 
@@ -565,9 +570,6 @@ class DowntimeController extends AbstractController
          * @var Contact $contact
          */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
 
         $downtime = $this->downtimeService
             ->filterByContact($contact)
@@ -617,10 +619,6 @@ class DowntimeController extends AbstractController
          */
         $contact = $this->getUser();
 
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
         /**
          * @var DowntimeRequest $dtRequest
          */
@@ -642,20 +640,20 @@ class DowntimeController extends AbstractController
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
                 ));
             } else {
-                throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
+                throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
             }
         }
 
-        //validate downtime
+        // validate downtime
         $downtime = $dtRequest->getDowntime();
         $errorList->addAll(
             $entityValidator->validate(
@@ -673,6 +671,10 @@ class DowntimeController extends AbstractController
             //start applying downtime process
             try {
                 if ($this->hasDtRightsForResource($contact, $resource)) {
+                    if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
+                        $downtime->setWithServices(false);
+                    }
+
                     $this->downtimeService->addResourceDowntime(
                         $resource,
                         $downtime

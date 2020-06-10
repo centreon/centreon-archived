@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -52,6 +53,9 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();
 }
 
+/**
+ * @var Centreon $centreon
+ */
 $centreon = $_SESSION["centreon"];
 
 /**
@@ -81,19 +85,33 @@ include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
+$defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1
+    ? (int) $centreon->optGen['maxViewConfiguration']
+    : 30;
+
 /**
  * Get input vars
  */
 $inputArguments = array(
     'lang' => FILTER_SANITIZE_STRING,
     'id' => FILTER_SANITIZE_STRING,
-    'num' => FILTER_SANITIZE_NUMBER_INT,
-    'limit' => FILTER_SANITIZE_NUMBER_INT,
+    'num' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => 0
+        ]
+    ],
+    'limit' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => $defaultLimit
+        ]
+    ],
     'StartDate' => FILTER_SANITIZE_STRING,
     'EndDate' => FILTER_SANITIZE_STRING,
     'StartTime' => FILTER_SANITIZE_STRING,
     'EndTime' => FILTER_SANITIZE_STRING,
-    'period' => FILTER_SANITIZE_NUMBER_INT,
+    'period' => FILTER_VALIDATE_INT,
     'engine' => FILTER_SANITIZE_STRING,
     'up' => FILTER_SANITIZE_STRING,
     'down' => FILTER_SANITIZE_STRING,
@@ -113,6 +131,10 @@ $inputArguments = array(
     'search_service' => FILTER_SANITIZE_STRING,
     'export' => FILTER_SANITIZE_STRING,
 );
+
+// Saving bound values
+$queryValues = [];
+
 $inputGet = filter_input_array(
     INPUT_GET,
     $inputArguments
@@ -170,8 +192,11 @@ if (isset($sid) && $sid) {
     );
 }
 
-$num = isset($inputs["num"]) ? (int) $inputs["num"] : 0;
-$limit = isset($inputs["limit"]) ? (int) $inputs["limit"] : 30;
+// binding limit value
+$limit = $inputs['limit'];
+$num = $inputs['num'];
+$queryValues['limit'] = [\PDO::PARAM_INT => $limit];
+
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
 $EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
 $StartTime = isset($inputs["StartTime"]) ? $StartTime = htmlentities($inputs["StartTime"]) : "";
@@ -360,13 +385,29 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
-    $whereOutput = " AND logs.output like '%" . $pearDBO->escape($output) . "%' ";
+    $queryValues['whereOutput'] = [\PDO::PARAM_STR => '%' . CentreonUtils::escapeSecure($output) . '%'];
+    $whereOutput = " AND logs.output like :whereOutput";
 }
 
 $innerJoinEngineLog = "";
 if ($engine == "true" && isset($openid) && $openid != "") {
-    $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name AND i.instance_id IN (" .
-        $pearDBO->escape($openid) . ") ";
+    // filtering poller ids and keeping only real ids
+    $pollerIds = explode(',', $openid);
+    $filteredIds = array_filter($pollerIds, function ($id) {
+        return is_numeric($id);
+    });
+
+    $pollerParams = [];
+    if (count($filteredIds) > 0) {
+        $in = '';
+        foreach ($filteredIds as $index => $filteredId) {
+            $key = ':pollerId' . $index;
+            $queryValues[$key] = [\PDO::PARAM_INT => $filteredId];
+            $pollerIds[] = $key;
+        }
+        $innerJoinEngineLog = ' INNER JOIN instances i ON i.name = logs.instance_name'
+            . ' AND i.instance_id IN ( ' . implode(',', array_values($pollerIds)) . ')';
+    }
 }
 
 if ($notification == 'true') {
@@ -451,10 +492,10 @@ foreach ($tab_id as $openid) {
     $hostId = "";
 
     if (isset($tab_tmp[2])) {
-        $hostId = $tab_tmp[1];
-        $id = $tab_tmp[2];
+        $hostId = (int)$tab_tmp[1];
+        $id = (int)$tab_tmp[2];
     } elseif (isset($tab_tmp[1])) {
-        $id = $tab_tmp[1];
+        $id = (int)$tab_tmp[1];
     }
 
     if ($id == "") {
@@ -507,19 +548,19 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . " 
-        logs.ctime, 
-        logs.host_id, 
-        logs.host_name, 
-        logs.service_id, 
-        logs.service_description, 
-        logs.msg_type, 
-        logs.notification_cmd, 
-        logs.notification_contact, 
-        logs.output, 
-        logs.retry, 
-        logs.status, 
-        logs.type, 
+$req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
+        logs.ctime,
+        logs.host_id,
+        logs.host_name,
+        logs.service_id,
+        logs.service_description,
+        logs.msg_type,
+        logs.notification_cmd,
+        logs.notification_contact,
+        logs.output,
+        logs.retry,
+        logs.status,
+        logs.type,
         logs.instance_name
         FROM logs " . $innerJoinEngineLog
     . (
@@ -550,7 +591,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
         }
     }
     if ($str_unitH != "") {
-        $str_unitH = "(logs.host_id IN ($str_unitH) AND logs.service_id IS NULL)";
+        $str_unitH = "(logs.host_id IN ($str_unitH) AND (logs.service_id IS NULL OR logs.service_id = 0))";
         if (isset($search_host) && $search_host != "") {
             $host_search_sql = " AND logs.host_name LIKE '%" . $pearDBO->escape($search_host) . "%' ";
         }
@@ -562,7 +603,8 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if ((count($tab_svc) || count($tab_host_ids)) &&
+    if (
+        (count($tab_svc) || count($tab_host_ids)) &&
         (
             $up == 'true' ||
             $down == 'true' ||
@@ -616,19 +658,31 @@ if (isset($req) && $req) {
     }
 
     $limitReq = "";
-    $limitReq2 = "";
     if ($export !== "1") {
-        $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
+        $offset = $num * $limit;
+        $queryValues['offset'] = [\PDO::PARAM_INT => $offset];
+        $limitReq = " LIMIT :offset, :limit";
     }
-    $dbResult = $pearDBO->query($req . $limitReq);
-    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
-
-    if (!($dbResult->rowCount()) && ($num != 0)) {
-        if ($export !== "1") {
-            $limitReq2 = " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+    $stmt = $pearDBO->prepare($req . $limitReq);
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $stmt->bindValue($bindId, $bindValue, $bindType);
         }
-        $dbResult = $pearDBO->query($req . $limitReq2);
     }
+    $stmt->execute();
+
+    if (!($stmt->rowCount()) && ($num != 0)) {
+        if ($export !== "1") {
+            $offset = floor($rows / $limit) * $limit;
+        }
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    $logs = $stmt->fetchAll();
+    $stmt->closeCursor();
+
+    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     $buffer->startElement("selectLimit");
     for ($i = 10; $i <= 100; $i = $i + 10) {
@@ -730,7 +784,7 @@ if (isset($req) && $req) {
      * Full Request
      */
     $cpts = 0;
-    while ($log = $dbResult->fetch()) {
+    foreach ($logs as $log) {
         $buffer->startElement("line");
         $buffer->writeElement("msg_type", $log["msg_type"]);
         $displayType = $log['type'];
@@ -747,7 +801,8 @@ if (isset($req) && $req) {
          */
         $color = '';
         if (isset($log["status"])) {
-            if (isset($tab_color_service[$log["status"]])
+            if (
+                isset($tab_color_service[$log["status"]])
                 && !empty($log["service_description"])
             ) {
                 $color = $tab_color_service[$log["status"]];

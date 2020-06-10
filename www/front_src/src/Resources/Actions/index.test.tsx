@@ -23,6 +23,7 @@ import {
   labelAcknowledge,
   labelDowntime,
   labelSetDowntime,
+  labelSetDowntimeOnServices,
   labelAcknowledgeServices,
   labelNotify,
   labelFixed,
@@ -145,7 +146,7 @@ describe(Actions, () => {
 
     await waitFor(() => expect(refreshButton).toBeEnabled());
 
-    fireEvent.click(refreshButton);
+    fireEvent.click(refreshButton.firstElementChild as HTMLElement);
 
     expect(onRefresh).toHaveBeenCalled();
   });
@@ -155,11 +156,15 @@ describe(Actions, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    fireEvent.click(getByLabelText(labelDisableAutorefresh));
+    fireEvent.click(
+      getByLabelText(labelDisableAutorefresh).firstElementChild as HTMLElement,
+    );
 
     expect(getByLabelText(labelEnableAutorefresh)).toBeTruthy();
 
-    fireEvent.click(getByLabelText(labelEnableAutorefresh));
+    fireEvent.click(
+      getByLabelText(labelEnableAutorefresh).firstElementChild as HTMLElement,
+    );
 
     expect(getByLabelText(labelDisableAutorefresh)).toBeTruthy();
   });
@@ -550,6 +555,50 @@ describe(Actions, () => {
 
       await waitFor(() => {
         expect(getByText(labelWarning)).toBeInTheDocument();
+      });
+    },
+  );
+
+  it.each([
+    [
+      labelSetDowntime,
+      labelDowntime,
+      labelSetDowntimeOnServices,
+      cannotDowntimeServicesAcl,
+    ],
+    [
+      labelAcknowledge,
+      labelAcknowledge,
+      labelAcknowledgeServices,
+      cannotAcknowledgeServicesAcl,
+    ],
+  ])(
+    'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
+    async (_, labelAction, labelAppliesOnServices, acl) => {
+      mockedUserContext.useUserContext.mockReset().mockReturnValue({
+        ...mockUserContext,
+        acl,
+      });
+
+      const { getByText } = renderActions();
+
+      const selectedHost = {
+        id: 0,
+        type: 'host',
+      } as Resource;
+
+      act(() => {
+        context.setSelectedResources([selectedHost]);
+      });
+
+      fireEvent.click(getByText(labelAction));
+
+      await waitFor(() => {
+        expect(
+          getByText(labelAppliesOnServices).parentElement?.querySelector(
+            'input[type="checkbox"]',
+          ),
+        ).toBeDisabled();
       });
     },
   );

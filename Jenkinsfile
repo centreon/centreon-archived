@@ -2,7 +2,7 @@
 ** Variables.
 */
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
-def serie = '20.04'
+def serie = '20.10'
 def maintenanceBranch = "${serie}.x"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
@@ -55,8 +55,6 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
-        if (currentBuild.result == 'UNSTABLE')
-          currentBuild.result = 'FAILURE'
         step([
           $class: 'CloverPublisher',
           cloverReportDir: '.',
@@ -106,15 +104,14 @@ try {
           }
         }
       }
-//    },
-//    'debian9': {
-//      node {
-//        sh 'setup_centreon_build.sh'
-//        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh debian9"
-//        junit 'ut.xml'
-//        if (currentBuild.result == 'UNSTABLE')
-//          currentBuild.result = 'FAILURE'
-//      }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
+        junit 'ut-be.xml,ut-fe.xml'
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -128,12 +125,13 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
       }
-//    },
-//    'debian9': {
-//      node {
-//        sh 'setup_centreon_build.sh'
-//        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh debian9"
-//      }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
@@ -145,6 +143,12 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
+      }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {

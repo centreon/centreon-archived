@@ -35,7 +35,7 @@ const toTimeValue = (
 
 const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   const isGreaterThanLowerLimit = (value): boolean =>
-    value > pathOr(value - 1, ['global', 'lower-limit'], graphData);
+    value >= pathOr(value - 1, ['global', 'lower-limit'], graphData);
 
   const rejectLowerThanLimit = ({ time, ...metrics }: TimeValue): TimeValue => {
     return {
