@@ -177,8 +177,8 @@ if [ ! -d "$BACKUP_DIR_TOTAL" ] ; then
     exit 1
 fi
 if [ ! -w "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
-	output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1
-	exit 1
+    output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1
+    exit 1
 fi
 
 ###
