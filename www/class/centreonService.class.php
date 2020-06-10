@@ -79,6 +79,32 @@ class CentreonService
     }
 
     /**
+     * filteredArrayId takes an array of combined ID (HOSTID_SVCID) as parameter.
+     * It will check for each combined ID if:
+     *   - HOSTID is defined and > 0
+     *   - SVCID is defined and > 0
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    function filteredArrayId(array $ids): array
+    {
+        /* Slight difference here. Array parameter is made
+         * of combined ids HOSTID_SERVICEID
+         */
+        $combinedIds = [];
+        return array_filter($ids, function ($combinedId) {
+            // Only valid combined ID are authorized (HOSTID_SVCID)
+            if (preg_match('/([0-9]+)_([0-9]+)/', $combinedId, $matches)) {
+                $hostId = (int)$matches[1];
+                $serviceId = (int)$matches[2];
+                return ($hostId > 0 && $serviceId > 0);
+            }
+            return false;
+        });
+    }
+
+    /**
      *  Method that returns service description from service_id
      *
      * @param int $svc_id
@@ -224,48 +250,49 @@ class CentreonService
     }
 
     /**
-     * Get Service alias
+     * Gets the service description of a service
      *
-     * @param int $sid
-     * @return string
+     * @param int[] $serviceIds
+     * @return array serviceDescriptions
+     * ['service_id' => integer, 'description' => string, 'host_name' => string, 'host_id' => integer],...]
      */
-    public function getServicesDescr($sid = array())
+    public function getServicesDescr($serviceIds = []): array
     {
-        $arrayReturn = array();
+        $serviceDescriptions = [];
 
-        if (!empty($sid)) {
-            $where = "";
-            foreach ($sid as $s) {
-                $tmp = explode("_", $s);
-                if (isset($tmp[0]) && isset($tmp[1])) {
-                    if ($where !== "") {
-                        $where .= " OR ";
-                    } else {
-                        $where .= " AND ( ";
-                    }
-                    $where .= " (h.host_id = " . $this->db->escape($tmp[0]);
-                    $where .= " AND s.service_id = " . $this->db->escape($tmp[1]) . " ) ";
+        if (!empty($serviceIds)) {
+            $where = '';
+            /* checking here that the array provided as parameter
+             * is exclusively made of integers (service ids)
+             */
+            $filteredSvcIds = $this->filteredArrayId($serviceIds);
+
+            if (count($filteredSvcIds) > 0) {
+                foreach ($filteredSvcIds as $hostAndServiceId) {
+                    list($hostId, $serviceId) = explode("_", $hostAndServiceId);
+                    $where .= empty($where) ? " ( " : " OR ";
+                    $where .= " (h.host_id = $hostId AND s.service_id = $serviceId) ";
                 }
-            }
-            if ($where !== "") {
-                $where .= " ) ";
-                $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
-                          FROM service s
-                          INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
-                          INNER JOIN host h ON hsr.host_host_id = h.host_id
-                          WHERE  1 = 1 " . $where;
-                $res = $this->db->query($query);
-                while ($row = $res->fetchRow()) {
-                    $arrayReturn[] = array(
-                        "service_id" => $row['service_id'],
-                        "description" => $row['service_description'],
-                        "host_name" => $row['host_name'],
-                        "host_id" => $row['host_id']
-                    );
+                if ($where !== "") {
+                    $where .= " ) ";
+                    $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
+                        FROM service s
+                        INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
+                        INNER JOIN host h ON hsr.host_host_id = h.host_id
+                        WHERE " . $where;
+                    $res = $this->db->query($query);
+                    while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
+                        $serviceDescriptions[] = [
+                            'service_id' => $row['service_id'],
+                            'description' => $row['service_description'],
+                            'host_name' => $row['host_name'],
+                            'host_id' => $row['host_id']
+                        ];
+                    }
                 }
             }
         }
-        return $arrayReturn;
+        return $serviceDescriptions;
     }
 
 
