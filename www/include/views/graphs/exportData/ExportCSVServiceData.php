@@ -122,6 +122,10 @@ if ($index !== false) {
         header("Content-disposition: filename=" . $index . ".csv");
     }
 
+    if ($start === false && $end === false) {
+        die('Start or end time is not consistent or not an integer');
+    }
+
     $listMetric = array();
     $datas = array();
     $listEmptyMetric = array();
@@ -138,9 +142,6 @@ if ($index !== false) {
     while ($indexData = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         $listMetric[$indexData['metric_id']] = $indexData['metric_name'];
         $listEmptyMetric[$indexData['metric_id']] = '';
-        if ($start === false && $end === false) {
-            die('Start or end time is not consistent or not an integer');
-        }
         $stmt2 = $pearDBO->prepare(
             "SELECT ctime, `value` FROM data_bin WHERE id_metric = :metricId " .
             "AND ctime >= :start AND ctime < :end"
