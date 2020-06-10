@@ -520,7 +520,7 @@ class AcknowledgementController extends AbstractController
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_ACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll(ResourceService::validateResource(
@@ -599,7 +599,7 @@ class AcknowledgementController extends AbstractController
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_ACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll(ResourceService::validateResource(
