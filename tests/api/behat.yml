@@ -1,0 +1,6 @@
+default:
+  autoload: [ "%paths.base%/contexts/" ]
+  suites:
+    host:
+      paths: [ "%paths.base%/features/Host.feature" ]
+      contexts: [ HostContext ]
