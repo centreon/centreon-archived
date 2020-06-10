@@ -47,7 +47,7 @@ VG_FREESIZE_NEEDED=1
 STOP_TIMEOUT=60
 SNAPSHOT_MOUNT="/mnt/snap-backup"
 SAVE_LAST_DIR="/var/lib/centreon-backup"
-SAVE_LAST_FILE="backup.last"
+SAVE_LAST_FILE="LastBackupDate.last"
 DO_ARCHIVE=1
 INIT_SCRIPT="" # will try to find it later
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
@@ -175,6 +175,10 @@ mkdir -p "$BACKUP_DIR_TOTAL"
 if [ ! -d "$BACKUP_DIR_TOTAL" ] ; then
     output_log "ERROR: Directory '$BACKUP_DIR_TOTAL' doesn't exist." 1
     exit 1
+fi
+if [ ! -w "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
+	output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1
+	exit 1
 fi
 
 ###
