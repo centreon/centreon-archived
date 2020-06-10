@@ -170,8 +170,7 @@ else {
     exit 1;
 }
 
-$centreonDir = @INSTALL_DIR_CENTREON
-@;
+$centreonDir = @INSTALL_DIR_CENTREON@;
 # Parameters for SCP export
 $scp_enabled = $backupOptions->{'backup_export_scp_enabled'}->{'value'};
 $scp_user = $backupOptions->{'backup_export_scp_user'}->{'value'};
