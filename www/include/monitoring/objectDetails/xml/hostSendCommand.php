@@ -44,7 +44,12 @@ require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
 CentreonSession::start(1);
 $centreon = $_SESSION["centreon"];
-if (!isset($_SESSION["centreon"]) || !isset($_POST["host_id"]) || !isset($_POST["cmd"]) || !isset($_POST["actiontype"])) {
+if (
+    !isset($_SESSION["centreon"])
+    || !isset($_POST["host_id"])
+    || !isset($_POST["cmd"])
+    || !isset($_POST["actiontype"])
+) {
     exit();
 }
 $pearDB = new CentreonDB();
