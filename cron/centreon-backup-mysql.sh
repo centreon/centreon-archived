@@ -11,7 +11,6 @@
 OPT_PARTIAL=0
 BACKUP_DIR="/var/cache/centreon/backup"
 DEBUG=0
-today=$(date +%F) #gives a default value to today variable
 
 while getopts "pb:l:Dd:" option
 do
