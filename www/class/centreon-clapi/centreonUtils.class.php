@@ -114,6 +114,24 @@ class CentreonUtils
         return $str;
     }
 
+    /**
+     *
+     * @param $coords -90.0,180.0
+     * @return bool
+     */
+    public static function validateGeoCoords($coords): bool
+    {
+        if (
+            preg_match(
+                '/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
+                $coords
+            )
+        ) {
+            return true;
+        }
+        return false;
+    }
+
     public static function setUserName($userName)
     {
         self::$clapiUserName = $userName;

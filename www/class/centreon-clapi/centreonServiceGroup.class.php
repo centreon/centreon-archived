@@ -52,6 +52,7 @@ class CentreonServiceGroup extends CentreonObject
 {
     const ORDER_UNIQUENAME = 0;
     const ORDER_ALIAS = 1;
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
         'HOST',
@@ -136,9 +137,14 @@ class CentreonServiceGroup extends CentreonObject
 
         $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
         if ($objectId != 0) {
-            if (!preg_match("/^sg_/", $params[1])) {
+            if (!preg_match("/^sg_/", $params[1]) && $params[1] != "geo_coords") {
                 $params[1] = "sg_" . $params[1];
+            } elseif ($params[1] === "geo_coords") {
+                if (!CentreonUtils::validateGeoCoords($params[2])) {
+                    throw new CentreonClapiException(self::INVALID_GEO_COORDS);
+                }
             }
+
             $updateParams = array($params[1] => $params[2]);
             $updateParams['objectId'] = $objectId;
             return $updateParams;
