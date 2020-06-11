@@ -4,21 +4,17 @@ Feature:
   I want to have CRUD api endpoints
 
   Scenario: Host CRUD
-    When I send a POST request to "/configuration/hosts" with date provided by "host/host1.json"
-    Then the response code should be "204"
+    Given I send a GET request to "https://licenseapi.herokuapp.com/licenses"
+    Then the response should be in JSON
+    And the JSON node "licenses[0]" should contain "BSD"
 
-    When I send a GET request to "/configuration/hosts" with parameters:
-      | key     | value              |
-      | search  | {"name":"host1"}   |
-    Then the response code should be "200"
-    And the json format should be as described in "configuration/hosts/listing.json"
-    And the json node "result" should have 1 elements
-    And the JSON node "result[0].name" should be equal to "host1"
+#    When I send a POST request to "/configuration/hosts" with data provided by "host/host1.json"
+#    Then the response code should be "204"
 
-  Scenario: Host update
-    When I create a host
-    Then the host is properly created
-
-  Scenario: Host deletion
-    When I create a host
-    Then the host is properly created
+#    When I send a GET request to "/configuration/hosts" with parameters:
+#      | key     | value              |
+#      | search  | {"name":"host1"}   |
+#    Then the response code should be "200"
+#    And the json format should be as described in "configuration/hosts/listing.json"
+#    And the json node "result" should have 1 elements
+#    And the JSON node "result[0].name" should be equal to "host1"
