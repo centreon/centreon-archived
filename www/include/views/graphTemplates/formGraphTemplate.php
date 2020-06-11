@@ -37,23 +37,22 @@ if (!isset($centreon)) {
     exit();
 }
 
-$graph = array();
+$graph = [];
 if (($o == "c" || $o == "w") && $graph_id) {
-    $res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '" . $graph_id . "' LIMIT 1");
-    // set base value
-    $graph = array_map("myDecode", $res->fetchRow());
+    $stmt = $pearDB->prepare('SELECT * FROM giv_graphs_template WHERE graph_id = :graphId LIMIT 1');
+    $stmt->bindValue(':graphId', $graph_id, \PDO::PARAM_INT);
+    $stmt->execute();
+    $graph = array_map("myDecode", $stmt->fetch(\PDO::FETCH_ASSOC));
 }
-#
-## Database retrieve information for differents elements list we need on the page
-#
-# Components comes from DB -> Store in $compos Array
 
+/*
+ * Database retrieve information for differents elements list we need on the page
+ */
 $compos = array();
-$res = $pearDB->query("SELECT compo_id, name FROM giv_components_template ORDER BY name");
-while ($compo = $res->fetchRow()) {
+$stmt = $pearDB->query('SELECT compo_id, name FROM giv_components_template ORDER BY name');
+while ($compo = $stmt->fetch(\PDO::FETCH_ASSOC)) {
     $compos[$compo["compo_id"]] = $compo["name"];
 }
-$res->closeCursor();
 
 #
 # End of "database-retrieved" information

@@ -61,35 +61,56 @@ function testExistence($name = null)
     }
 }
 
-function deleteGraphTemplateInDB($graphs = array())
+/**
+ * Deletes from the DB the graph templates provided
+ *
+ * @param  int[] $graphs
+ * @return void
+ */
+function deleteGraphTemplateInDB($graphs = []): void
 {
     global $pearDB;
 
     foreach ($graphs as $key => $value) {
-        $pearDB->query("DELETE FROM giv_graphs_template WHERE graph_id = '" . $key . "'");
+        $stmt = $pearDB->prepare('DELETE FROM giv_graphs_template WHERE graph_id = :graphTemplateId');
+        $stmt->bindValue(':graphTemplateId', $key, \PDO::PARAM_INT);
+        $stmt->execute();
     }
+
     defaultOreonGraph();
 }
 
-function multipleGraphTemplateInDB($graphs = array(), $nbrDup = array())
+/*
+ * Duplicates the selected graph templates in the DB
+ * by adding _n to the duplicated graph template name
+ *
+ * @param  int[] $graphs
+ * @param  int[] $nbrDup
+ * @return void
+ */
+function multipleGraphTemplateInDB($graphs = [], $nbrDup = []): void
 {
-    foreach ($graphs as $key => $value) {
-        global $pearDB;
-        $res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '" . $key . "' LIMIT 1");
-        $row = $res->fetch();
-        $row["graph_id"] = '';
-        $row["default_tpl1"] = '0';
-        for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
-            foreach ($row as $key2 => $value2) {
-                $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
-                $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
-            }
-            if (testExistence($name)) {
-                $val ? $rq = "INSERT INTO giv_graphs_template VALUES (" . $val . ")" : $rq = null;
-                $pearDB->query($rq);
+    global $pearDB;
+    if (!empty($graphs) && !empty($nbrDup)) {
+        foreach ($graphs as $key => $value) {
+            $stmt = $pearDB->prepare('SELECT * FROM giv_graphs_template WHERE graph_id = :graphTemplateId LIMIT 1');
+            $stmt->bindValue(':graphTemplateId', $key, \PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $row["graph_id"] = '';
+            $row["default_tpl1"] = '0';
+            for ($i = 1; $i <= $nbrDup[$key]; $i++) {
+                $val = null;
+                foreach ($row as $key2 => $value2) {
+                    $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
+                    $val
+                        ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                        : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                }
+                if (testExistence($name)) {
+                    $val ? $rq = "INSERT INTO giv_graphs_template VALUES (" . $val . ")" : $rq = null;
+                    $pearDB->query($rq);
+                }
             }
         }
     }

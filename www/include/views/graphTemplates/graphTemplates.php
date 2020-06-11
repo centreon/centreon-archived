@@ -38,18 +38,45 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["graph_id"]) ? $cG = $_GET["graph_id"] : $cG = null;
-isset($_POST["graph_id"]) ? $cP = $_POST["graph_id"] : $cP = null;
-$cG ? $graph_id = $cG : $graph_id = $cP;
+$duplicationNumbers = [];
+$selectedGraphTemplates = [];
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+/*
+ * $_GET['graph_id'] $_POST['graph_id']
+ * id of the graph template
+ */
+$graph_id = filter_var(
+    $_GET['graph_id'] ?? $_POST['graph_id'] ?? false,
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+ /*
+  * Corresponding to the lines selected in the listing
+  * $_POST['select'] = [
+  *     'graphIdSelected' => 'duplicationFactor'
+  * ]
+  */
+if (isset($_POST['select']) && !empty($_POST['select'])) {
+    foreach ($_POST['select'] as $gIdSelected => $dupFactor) {
+        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+            $selectedGraphTemplates[$gIdSelected] = (int) $dupFactor;
+        }
+    }
+}
 
+/*
+ * End of line text fields (duplicationFactor) in the UI for each lines
+ * $_POST['dupNbr'] = [
+ *     'graphId' => 'duplicationFactor'
+ * ]
+ */
+if (isset($_POST['dupNbr']) && !empty($_POST['dupNbr'])) {
+    foreach ($_POST['dupNbr'] as $gId => $dupFactor) {
+        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+            $duplicationNumbers[$gId] = (int) $dupFactor;
+        }
+    }
+}
 
 /*
  * Path to the configuration dir
@@ -64,12 +91,15 @@ require_once "./include/common/common-Func.php";
 
 switch ($o) {
     case "a":
+        // Add a graph template
         require_once $path . "formGraphTemplate.php";
-        break; #Add a Graph Template
+        break;
     case "w":
+        // watch aGraph template
         require_once $path . "formGraphTemplate.php";
-        break; #Watch aGraph Template
+        break;
     case "c":
+        // Modify a graph template
         require_once $path . "formGraphTemplate.php";
         break; #Modify a Graph Template
     case "s":
@@ -81,13 +111,15 @@ switch ($o) {
         require_once $path . "listGraphTemplates.php";
         break; #Desactivate a Graph Template
     case "m":
-        multipleGraphTemplateInDB(isset($select) ? $select : array(), $dupNbr);
+        // duplicate n time selected graph template(s)
+        multipleGraphTemplateInDB($selectedGraphTemplates, $duplicationNumbers);
         require_once $path . "listGraphTemplates.php";
-        break; #Duplicate n Graph Templates
+        break;
     case "d":
-        deleteGraphTemplateInDB(isset($select) ? $select : array());
+        // delete selected graph template(s)
+        deleteGraphTemplateInDB($selectedGraphTemplates);
         require_once $path . "listGraphTemplates.php";
-        break; #Delete n Graph Templates
+        break;
     default:
         require_once $path . "listGraphTemplates.php";
         break;
