@@ -239,7 +239,7 @@ sub exportBackup($) {
         # Export database backups
         if ($export_type == 0 && ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1')) {
             chdir($TEMP_DB_DIR);
-            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+            `sudo scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
             } else {
@@ -250,7 +250,7 @@ sub exportBackup($) {
         # Export configuration files backup
         if ($export_type == 1 && $BACKUP_CONFIGURATION_FILES == '1') {
             chdir($TEMP_CENTRAL_DIR);
-            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+            `sudo scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_CENTRAL_DIR . "\n";
             } else {
@@ -366,7 +366,7 @@ sub databasesBackup() {
 
         if ( grep $_ == $dayOfWeek, @fullBackupDays ) {
             print "Dumping Db with LVM snapshot (full)\n";
-            `sudo $CENTREONDIR/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
+            `$CENTREONDIR/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -375,7 +375,7 @@ sub databasesBackup() {
         my @partialBackupDays = split(/,/, $BACKUP_DATABASE_PARTIAL);
         if ( grep $_ == $dayOfWeek, @partialBackupDays ) {
             print "Dumping Db with LVM snapshot (partial)\n";
-            `sudo $CENTREONDIR/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
+            `$CENTREONDIR/cron/centreon-backup-mysql.sh -b $TEMP_DB_DIR -d $today -p`;
             if ($? ne 0) {
                 print STDERR "Cannot backup with LVM snapshot. Maybe you can try with mysqldump\n";
             }
@@ -504,7 +504,7 @@ sub centralBackup() {
             }
         }
     }
-    `cp -pr $ApacheConfdir* $TEMP_CENTRAL_ETC_DIR/apache/`;
+    `sudo cp -pr $ApacheConfdir* $TEMP_CENTRAL_ETC_DIR/apache/`;
     if ($? ne 0) {
         print STDERR "Unable to copy Apache configuration files\n";
     }
@@ -521,7 +521,7 @@ sub centralBackup() {
             }
         }
     }
-    `cp -pr $CENTREON_ETC/* $TEMP_CENTRAL_ETC_DIR/centreon/`;
+    `sudo cp -pr $CENTREON_ETC/* $TEMP_CENTRAL_ETC_DIR/centreon/`;
     if ($? ne 0) {
         print STDERR "Unable to copy Centreon configuration files\n";
     }
@@ -539,7 +539,7 @@ sub centralBackup() {
             }
         }
     }
-    `cp -r $cb_path $TEMP_CENTRAL_ETC_DIR"/centreon-broker/"`;
+    `sudo cp -r $cb_path $TEMP_CENTRAL_ETC_DIR"/centreon-broker/"`;
 
     # SNMP configuration
     mkpath($TEMP_CENTRAL_ETC_DIR."/snmp", {mode => 0755, error => \my $err_list});
@@ -553,7 +553,7 @@ sub centralBackup() {
             }
         }
     }
-    `cp -pr /etc/snmp/* $TEMP_CENTRAL_ETC_DIR/snmp/`;
+    `sudo cp -pr /etc/snmp/* $TEMP_CENTRAL_ETC_DIR/snmp/`;
     if ($? ne 0) {
         print STDERR "Unable to copy SNMP configuration files\n";
     }
@@ -571,7 +571,7 @@ sub centralBackup() {
         }
     }
     $MYSQL_CONF = getMySQLConfFile();
-    `cp -pr $MYSQL_CONF $TEMP_CENTRAL_ETC_DIR/mysql/`;
+    `sudo cp -pr $MYSQL_CONF $TEMP_CENTRAL_ETC_DIR/mysql/`;
     if ($? ne 0) {
         print STDERR "Unable to copy MySQL configuration file\n";
     }
@@ -592,7 +592,7 @@ sub centralBackup() {
     foreach my $file (@tab_php_ini) {
         my $file_dest = $file;
         $file_dest  =~ s/\//_/g;
-        `cp -p $file $TEMP_CENTRAL_ETC_DIR/php/$file_dest`;
+        `sudo cp -p $file $TEMP_CENTRAL_ETC_DIR/php/$file_dest`;
         if ($? ne 0) {
             print STDERR "Unable to copy PHP configuration file\n";
         }
@@ -645,7 +645,7 @@ sub centralBackup() {
         print STDERR "Unable to get Centreon logs directory from database\n";
     } else {
         $centreon_log_path =~ s/\/$//;
-        `cp -pr $centreon_log_path/ $TEMP_CENTRAL_LOG_DIR/`;
+        `sudo cp -pr $centreon_log_path/ $TEMP_CENTRAL_LOG_DIR/`;
         if ($? ne 0) {
             print STDERR "Unable to copy Centreon logs files\n";
         }
@@ -686,7 +686,7 @@ sub centralBackup() {
                 }
             }
         }
-        `cp -pr $origFile $tempLicDir`;
+        `sudo cp -pr $origFile $tempLicDir`;
         if ($? ne 0) {
             print STDERR "Unable to copy Centreon configuration files\n";
         }
@@ -765,7 +765,7 @@ sub monitoringengineBackup() {
     }
     my $plugins_dir = "/usr/lib64/nagios/plugins";
     if ($plugins_dir ne "") {
-        `cp -pr $plugins_dir/* $TEMP_CENTRAL_DIR/plugins/`;
+        `sudo cp -pr $plugins_dir/* $TEMP_CENTRAL_DIR/plugins/`;
         if ($? != 0) {
             print STDERR "Unable to copy plugins\n";
         }
@@ -799,7 +799,7 @@ sub monitoringengineBackup() {
             }
         }
     }
-    `cp -p $logs_archive_directory/* $TEMP_CENTRAL_DIR/logs/archives/`;
+    `sudo cp -p $logs_archive_directory/* $TEMP_CENTRAL_DIR/logs/archives/`;
     if ($? != 0) {
         print STDERR "Unable to copy monitoring engine logs archives\n";
     }
@@ -818,7 +818,7 @@ sub monitoringengineBackup() {
             }
         }
     }
-    `cp -pr $nagios_server->{cfg_dir}/* $TEMP_CENTRAL_DIR/etc/centreon-engine`;
+    `sudo cp -pr $nagios_server->{cfg_dir}/* $TEMP_CENTRAL_DIR/etc/centreon-engine`;
     if ($? != 0) {
         print STDERR "Unable to copy Monitoring Engine configuration files\n";
     }
@@ -849,7 +849,7 @@ sub monitoringengineBackup() {
     }
     my $centreon_home = "/var/spool/centreon";
     if (-d "$centreon_home/.ssh" ) {
-        `cp -pr $centreon_home/.ssh/* $TEMP_CENTRAL_DIR/ssh`;
+        `sudo cp -pr $centreon_home/.ssh/* $TEMP_CENTRAL_DIR/ssh`;
     } else {
         print STDERR "No SSH keys for Centreon\n";
     }
@@ -868,7 +868,7 @@ sub monitoringengineBackup() {
 
     my $centreonengine_home = "/var/lib/centreon-engine/";
     if (-d "$centreonengine_home/.ssh") {
-        `cp -pr $centreonengine_home/.ssh/* $TEMP_CENTRAL_DIR/ssh-centreon-engine/`;
+        `sudo cp -pr $centreonengine_home/.ssh/* $TEMP_CENTRAL_DIR/ssh-centreon-engine/`;
     } else {
         print STDERR "No ssh keys for Centreon Engine\n";
     }
