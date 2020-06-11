@@ -1,4 +1,5 @@
 <?php
+
 /*
 * Copyright 2005-2015 Centreon
 * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -49,15 +50,11 @@ function testExistence($name = null)
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
     $res = $pearDB->query($query);
     $graph = $res->fetch();
-    /*
-	 * Modif case
-	 */
+    // Modif case
     if ($res->rowCount() >= 1 && $graph["graph_id"] == $id) {
         return true;
-    } /*
-	 * Duplicate entry
-	 */
-    elseif ($res->rowCount() >= 1 && $graph["graph_id"] != $id) {
+    } elseif ($res->rowCount() >= 1 && $graph["graph_id"] != $id) {
+        // duplicate entry
         return false;
     } else {
         return true;
