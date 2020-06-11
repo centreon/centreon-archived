@@ -870,7 +870,10 @@ $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
     "onkeyup" => "this.blur();this.focus();"
 ));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
+
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 /*
  * Criticality

@@ -93,7 +93,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
         'icon' => '       centreon (png)',
         'alt_icon' => 'serviceAltIcon',
         'severity' => 'serviceCategory2Name (2)',
-        'geo_coordinates' => 'Paris',
+        'geo_coordinates' => '2.3522219,48.856614',
         'status' => 1,
         'comments' => 'serviceComments'
     );
@@ -155,7 +155,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
         'icon' => '       centreon (png)',
         'alt_icon' => 'serviceAltIcon',
         'severity' => 'serviceCategory2Name (2)',
-        'geo_coordinates' => 'Paris',
+        'geo_coordinates' => '2.3522219,48.856614',
         'status' => 1,
         'comments' => 'serviceComments'
     );
@@ -213,7 +213,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
         'icon' => '',
         'alt_icon' => 'Empty',
         'severity' => 'serviceCategory1Name (3)',
-        'geo_coordinates' => '1.2.3.4',
+        'geo_coordinates' => '2.3522219,48.856614',
         'status' => 1,
         'comments' => 'serviceCommentsChanged'
     );
@@ -278,7 +278,7 @@ class HostGroupServiceConfigurationContext extends CentreonContext
         'icon' => '',
         'alt_icon' => 'Empty',
         'severity' => 'serviceCategory1Name (3)',
-        'geo_coordinates' => '1.2.3.4',
+        'geo_coordinates' => '2.3522219,48.856614',
         'status' => 1,
         'comments' => 'serviceCommentsChanged'
     );

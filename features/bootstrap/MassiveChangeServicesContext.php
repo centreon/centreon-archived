@@ -141,7 +141,7 @@ class MassiveChangeServicesContext extends CentreonContext
         'icon' => '       centreon (png)',
         'alt_icon' => 'serviceIcon',
         'severity' => 'serviceCategoryName (12)',
-        'geo_coordinates' => 'serviceGeoCoordinates',
+        'geo_coordinates' => '2.3522219,48.856614',
         'status' => 0,
         'comments' => 'serviceComments'
     );
@@ -205,7 +205,7 @@ class MassiveChangeServicesContext extends CentreonContext
         'icon' => '       centreon (png)',
         'alt_icon' => 'serviceIcon',
         'severity' => 'serviceCategoryName (12)',
-        'geo_coordinates' => 'serviceGeoCoordinates',
+        'geo_coordinates' => '2.3522219,48.856614',
         'status' => 0,
         'comments' => 'serviceComments'
     );
@@ -269,7 +269,7 @@ class MassiveChangeServicesContext extends CentreonContext
         'icon' => '       centreon (png)',
         'alt_icon' => 'serviceIcon',
         'severity' => 'serviceCategoryName (12)',
-        'geo_coordinates' => 'serviceGeoCoordinates',
+        'geo_coordinates' => '2.3522219,48.856614',
         'status' => 0,
         'comments' => 'serviceComments'
     );
