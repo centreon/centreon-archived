@@ -46,13 +46,15 @@ shift $((OPTIND-1))
 VG_FREESIZE_NEEDED=1
 STOP_TIMEOUT=60
 SNAPSHOT_MOUNT="/mnt/snap-backup"
-SAVE_LAST_DIR="/var/lib/centreon-backup"
-SAVE_LAST_FILE="lastBackupDate.last"
+SAVE_LAST_DIR="/var/run/centreon" # move the last timestamp backup's file to a centreon's owned folder
+SAVE_LAST_FILE="lastBackupDate.last" # create a new timestamp backup's file
 DO_ARCHIVE=1
 INIT_SCRIPT="" # will try to find it later
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
 MNT_OPTIONS_XFS="-o nouuid"
 MNT_OPTIONS_NOT_XFS=""
+WHO_AM_I=$(whoami) # find the user name to be able to create a new file owned by the user
+WICH_GROUP_AM_I=$(groups) # find the user group to be able to create a new file owned by the user's group
 
 ###
 # Check MySQL launch
@@ -182,7 +184,7 @@ fi
 ###
 mkdir -p "$SAVE_LAST_DIR"
 if [ ! -f "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
-    sudo -g centreon touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
+    sudo -u "$WHO_AM_I" -g "$WICH_GROUP_AM_I" touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
 fi
 if [ ! -w "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
     output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1

@@ -11,7 +11,7 @@ CENTREON   ALL = NOPASSWD: /usr/sbin/lvcreate -l *
 CENTREON   ALL = NOPASSWD: /usr/sbin/lvremove -f *
 CENTREON   ALL = NOPASSWD: /usr/bin/mount -o *
 CENTREON   ALL = NOPASSWD: /usr/bin/umount *
-CENTREON   ALL = NOPASSWD: /usr/bin/touch /var/lib/centreon-backup/lastBackupDate.last
+CENTREON   ALL = (%@CENTREON_GROUP@:CENTREON) NOPASSWD: /usr/bin/touch /var/run/centreon/lastBackupDate.last
 # mariadb service
 CENTREON   ALL = NOPASSWD: /etc/init.d/mysql start
 CENTREON   ALL = NOPASSWD: /etc/init.d/mysql stop
