@@ -53,8 +53,7 @@ INIT_SCRIPT="" # will try to find it later
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
 MNT_OPTIONS_XFS="-o nouuid"
 MNT_OPTIONS_NOT_XFS=""
-WHO_AM_I=$(whoami) # find the user name to be able to create a new file owned by the user
-WICH_GROUP_AM_I=$(groups) # find the user group to be able to create a new file owned by the user's group
+DELEGATE=$(whoami) # find the user name to be able to create a new file owned by the user
 
 ###
 # Check MySQL launch
@@ -184,7 +183,7 @@ fi
 ###
 mkdir -p "$SAVE_LAST_DIR"
 if [ ! -f "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
-    sudo -u "$WHO_AM_I" -g "$WICH_GROUP_AM_I" touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
+    sudo -u "$DELEGATE" -g "$DELEGATE" touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
 fi
 if [ ! -w "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
     output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1
