@@ -84,7 +84,7 @@ try {
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':hostId', $hostId, PDO::PARAM_INT);
         $stmt->execute();
-        while ($row = $stmt->fetchRow()) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $xml->startElement('option');
             $xml->writeElement('id', $row['service_id']);
             $xml->writeElement('label', $row['service_description']);
