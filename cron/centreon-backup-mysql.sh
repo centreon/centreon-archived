@@ -47,14 +47,13 @@ shift $((OPTIND-1))
 VG_FREESIZE_NEEDED=1
 STOP_TIMEOUT=60
 SNAPSHOT_MOUNT="/mnt/snap-backup"
-SAVE_LAST_DIR="/var/run/centreon" # move the last timestamp backup's file to a centreon's owned folder
-SAVE_LAST_FILE="lastBackupDate.last" # create a new timestamp backup's file
+SAVE_LAST_DIR="/var/lib/centreon-backup"
+SAVE_LAST_FILE="backup.last"
 DO_ARCHIVE=1
 INIT_SCRIPT="" # will try to find it later
 PARTITION_NAME="centreon_storage/data_bin centreon_storage/logs"
 MNT_OPTIONS_XFS="-o nouuid"
 MNT_OPTIONS_NOT_XFS=""
-DELEGATE=$(whoami) # find the user name to be able to create a new file owned by the user
 
 ###
 # Check MySQL launch
@@ -102,9 +101,9 @@ output_log "MySQL datadir finded: $datadir"
 
 # Get init script
 if [ -e "/etc/init.d/mysql" ] ; then
-    INIT_SCRIPT="sudo /etc/init.d/mysql"
+    INIT_SCRIPT="/etc/init.d/mysql"
 elif [ -e "/etc/init.d/mysqld" ] ; then
-    INIT_SCRIPT="sudo /etc/init.d/mysqld"
+    INIT_SCRIPT="/etc/init.d/mysqld"
 fi
 if [ -z "$INIT_SCRIPT" ] ; then
     output_log "ERROR: Can't find init MySQL script." 1
@@ -130,8 +129,8 @@ output_log "Mount point finded: $mount_point"
 ###
 # Get Volume group Name
 ###
-vg_name=$(sudo lvdisplay -c "$mount_device" | cut -d : -f 2)
-lv_name=$(sudo lvdisplay -c "$mount_device" | cut -d : -f 1)
+vg_name=$(lvdisplay -c "$mount_device" | cut -d : -f 2)
+lv_name=$(lvdisplay -c "$mount_device" | cut -d : -f 1)
 if [ -z "$vg_name" ] ; then
     output_log "ERROR: Can't get VolumeGroup name for datadir." 1
     exit 1
@@ -145,8 +144,8 @@ output_log "VolumeGroup finded: $vg_name"
 ###
 # Get free Space
 ###
-free_pe=$(sudo vgdisplay -c "$vg_name" | cut -d : -f 16)
-size_pe=$(sudo vgdisplay -c "$vg_name" | cut -d : -f 13)
+free_pe=$(vgdisplay -c "$vg_name" | cut -d : -f 16)
+size_pe=$(vgdisplay -c "$vg_name" | cut -d : -f 13)
 if [ -z "$free_pe" ] ; then
     output_log "ERROR: Can't get free PE value for the VolumeGroup." 1
     exit 1
@@ -184,7 +183,7 @@ fi
 ###
 mkdir -p "$SAVE_LAST_DIR"
 if [ ! -f "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
-    sudo -u "$DELEGATE" -g "$DELEGATE" touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
+    touch "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
 fi
 if [ ! -w "$SAVE_LAST_DIR/$SAVE_LAST_FILE" ] ; then
     output_log "ERROR: Don't have permission on '$SAVE_LAST_DIR/$SAVE_LAST_FILE' file." 1
@@ -227,7 +226,7 @@ save_timestamp=$(date '+%s')
 # Do snapshot
 ###
 output_log "Create LVM snapshot"
-sudo lvcreate -l $free_pe -s -n dbbackup $lv_name
+lvcreate -l $free_pe -s -n dbbackup $lv_name
 
 ###
 # Start server
@@ -245,16 +244,16 @@ mkdir -p "$SNAPSHOT_MOUNT"
 partition_type=$(lsblk -n -o FSTYPE /dev/$vg_name/dbbackup)
 if [ "$partition_type" = "xfs" ]; then
     # the new partition is an 'xfs', adding specific mount option 'nouuid'
-    sudo mount $MNT_OPTIONS_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
+    mount $MNT_OPTIONS_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
 else
-    sudo mount $MNT_OPTIONS_NOT_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
+    mount $MNT_OPTIONS_NOT_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
 fi
 
 if [ $? -eq 0 ]; then
     output_log "Device mounted successfully"
 else
     output_log "Unable to mount device, backup aborted"
-    sudo lvremove -f /dev/$vg_name/dbbackup
+    lvremove -f /dev/$vg_name/dbbackup
     exit 1;
 fi
 
@@ -279,7 +278,7 @@ if [ $OPT_PARTIAL -eq 1 ] && [ -n "$last_save_time" ] ; then
 fi
 save_files=""
 tmp_path=$(echo "$SNAPSHOT_MOUNT/$concat_datadir" | sed "s#/\+#/#g")
-for tmp_file in $(sudo find "$tmp_path" -type f); do
+for tmp_file in $(find "$tmp_path" -type f); do
     tmp_result=$(echo $tmp_file | awk -v excludefiles="$ar_exclude_file" '{ if (match(excludefiles, "\"" $0 "\"")) {  print "OK"; exit(0) } } { print "NOK"; exit (0) }')
     if [ "$tmp_result" = "NOK" ] ; then
         tmp_file=$(echo "$tmp_file" | sed "s#^$SNAPSHOT_MOUNT/##")
@@ -293,9 +292,9 @@ if [ "$DO_ARCHIVE" -eq "0" ] ; then
     eval cp --parent -pf $save_files \"$BACKUP_DIR_TOTAL/\"
 else
     if [ $OPT_PARTIAL -eq 1 ] ; then
-        eval sudo tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-partial.tar.gz\" $save_files
+        eval tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-partial.tar.gz\" $save_files
     else
-        eval sudo tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-full.tar.gz\" $save_files
+        eval tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-full.tar.gz\" $save_files
     fi
 fi
 cd -
@@ -304,8 +303,8 @@ cd -
 # Deleting snapshot
 ###
 output_log "Umount and Delete LVM snapshot"
-sudo umount "$SNAPSHOT_MOUNT"
-sudo lvremove -f /dev/$vg_name/dbbackup
+umount "$SNAPSHOT_MOUNT"
+lvremove -f /dev/$vg_name/dbbackup
 echo "$save_timestamp" > "$SAVE_LAST_DIR/$SAVE_LAST_FILE"
 
 exit 0

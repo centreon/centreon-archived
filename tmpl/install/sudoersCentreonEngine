@@ -3,25 +3,6 @@
 User_Alias      CENTREON=%@CENTREON_GROUP@
 Defaults:CENTREON !requiretty
 
-## Database backup script
-# LVM management required commands
-CENTREON   ALL = NOPASSWD: /usr/sbin/lvdisplay -c *
-CENTREON   ALL = NOPASSWD: /usr/sbin/vgdisplay -c *
-CENTREON   ALL = NOPASSWD: /usr/sbin/lvcreate -l *
-CENTREON   ALL = NOPASSWD: /usr/sbin/lvremove -f *
-CENTREON   ALL = NOPASSWD: /usr/bin/mount *
-CENTREON   ALL = NOPASSWD: /usr/bin/umount *
-CENTREON   ALL = NOPASSWD: /usr/bin/cp *
-CENTREON   ALL = NOPASSWD: /usr/bin/scp *
-CENTREON   ALL = (%@CENTREON_GROUP@:CENTREON) NOPASSWD: /usr/bin/touch /var/run/centreon/lastBackupDate.last
-CENTREON   ALL = NOPASSWD: /bin/tar czvf *
-# mariadb service
-CENTREON   ALL = NOPASSWD: /etc/init.d/mysql start
-CENTREON   ALL = NOPASSWD: /etc/init.d/mysql stop
-# mysql service
-CENTREON   ALL = NOPASSWD: /etc/init.d/mysqld start
-CENTREON   ALL = NOPASSWD: /etc/init.d/mysqld stop
-
 # centreontrapd
 CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd start
 CENTREON   ALL = NOPASSWD: /sbin/service centreontrapd stop
