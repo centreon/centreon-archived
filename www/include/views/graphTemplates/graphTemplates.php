@@ -101,15 +101,7 @@ switch ($o) {
     case "c":
         // Modify a graph template
         require_once $path . "formGraphTemplate.php";
-        break; #Modify a Graph Template
-    case "s":
-        enableGraphTemplateInDB($lca_id);
-        require_once $path . "listGraphTemplates.php";
-        break; #Activate a Graph Template
-    case "u":
-        disableGraphTemplateInDB($lca_id);
-        require_once $path . "listGraphTemplates.php";
-        break; #Desactivate a Graph Template
+        break;
     case "m":
         // duplicate n time selected graph template(s)
         multipleGraphTemplateInDB($selectedGraphTemplates, $duplicationNumbers);
