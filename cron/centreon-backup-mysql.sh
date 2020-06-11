@@ -11,6 +11,7 @@
 OPT_PARTIAL=0
 BACKUP_DIR="/var/cache/centreon/backup"
 DEBUG=0
+today=$(date +%F) #gives a default value to today variable
 
 while getopts "pb:l:Dd:" option
 do
@@ -244,9 +245,9 @@ mkdir -p "$SNAPSHOT_MOUNT"
 partition_type=$(lsblk -n -o FSTYPE /dev/$vg_name/dbbackup)
 if [ "$partition_type" = "xfs" ]; then
     # the new partition is an 'xfs', adding specific mount option 'nouuid'
-    mount $MNT_OPTIONS_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
+    sudo mount $MNT_OPTIONS_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
 else
-    mount $MNT_OPTIONS_NOT_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
+    sudo mount $MNT_OPTIONS_NOT_XFS "/dev/$vg_name/dbbackup" "$SNAPSHOT_MOUNT"
 fi
 
 if [ $? -eq 0 ]; then
@@ -278,7 +279,7 @@ if [ $OPT_PARTIAL -eq 1 ] && [ -n "$last_save_time" ] ; then
 fi
 save_files=""
 tmp_path=$(echo "$SNAPSHOT_MOUNT/$concat_datadir" | sed "s#/\+#/#g")
-for tmp_file in $(find "$tmp_path" -type f); do
+for tmp_file in $(sudo find "$tmp_path" -type f); do
     tmp_result=$(echo $tmp_file | awk -v excludefiles="$ar_exclude_file" '{ if (match(excludefiles, "\"" $0 "\"")) {  print "OK"; exit(0) } } { print "NOK"; exit (0) }')
     if [ "$tmp_result" = "NOK" ] ; then
         tmp_file=$(echo "$tmp_file" | sed "s#^$SNAPSHOT_MOUNT/##")
@@ -292,9 +293,9 @@ if [ "$DO_ARCHIVE" -eq "0" ] ; then
     eval cp --parent -pf $save_files \"$BACKUP_DIR_TOTAL/\"
 else
     if [ $OPT_PARTIAL -eq 1 ] ; then
-        eval tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-partial.tar.gz\" $save_files
+        eval sudo tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-partial.tar.gz\" $save_files
     else
-        eval tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-full.tar.gz\" $save_files
+        eval sudo tar czvf \"$BACKUP_DIR_TOTAL/$today-mysql-full.tar.gz\" $save_files
     fi
 fi
 cd -
