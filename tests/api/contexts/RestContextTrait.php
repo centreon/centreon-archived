@@ -1,17 +1,34 @@
 <?php
 
+/*
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace Centreon\Tests\Api\Contexts;
 
+use Symfony\Component\HttpClient\CurlHttpClient;
+use Symfony\Component\HttpClient\Response\CurlResponse;
 use Behat\Gherkin\Node\PyStringNode;
-
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Exception\ExpectationException;
-use Centreon\Tests\Api\Contexts\Asserter;
+use Webmozart\Assert\Assert;
 
 Trait RestContextTrait
 {
-    //use Asserter;
-
     public function locatePath($path)
     {
         //$startUrl = rtrim($this->getMinkParameter('base_url'), '/') . '/';
@@ -20,19 +37,27 @@ Trait RestContextTrait
         return 0 !== strpos($path, 'http') ? $startUrl . ltrim($path, '/') : $path;
     }
 
-
-
-
+    /**
+     * @return CurlHttpClient
+     */
+    abstract protected function getHttpClient();
 
     /**
-     * @return Symfony\Component\HttpClient\CurlHttpClient
+     * @param CurlHttpClient $httpClient
+     * @return void
      */
-    //abstract protected function getHttpClient();
+    abstract protected function setHttpClient(CurlHttpClient $httpClient);
 
     /**
-     * @return Symfony\Component\HttpClient\Response\CurlResponse
+     * @return CurlResponse
      */
-    //abstract protected function getHttpResponse();
+    abstract protected function getHttpResponse();
+
+    /**
+     * @param CurlResponse $httpResponse
+     * @return void
+     */
+    abstract protected function setHttpResponse(CurlResponse $httpResponse);
 
     /**
      * Sends a HTTP request
@@ -41,13 +66,17 @@ Trait RestContextTrait
      */
     public function iSendARequestTo($method, $url, PyStringNode $body = null, $files = [])
     {
-        return $this->getHttpClient()->request(
-            $method,
-            $this->locatePath($url),
-            [],
-            $files,
-            $body !== null ? $body->getRaw() : null
+        $this->setHttpResponse(
+            $this->getHttpClient()->request(
+                $method,
+                $this->locatePath($url),
+                [],
+                $files,
+                $body !== null ? $body->getRaw() : null
+            )
         );
+
+        return $this->getHttpResponse();
     }
 
     /**
@@ -102,7 +131,7 @@ Trait RestContextTrait
         $expected = str_replace('\\"', '"', $expected);
         $actual   = $this->getHttpResponse()->getContent();
         $message = "Actual response is '$actual', but expected '$expected'";
-        $this->assertEquals($expected, $actual, $message);
+        Assert::eq($expected, $actual, $message);
     }
 
     /**
@@ -114,7 +143,7 @@ Trait RestContextTrait
     {
         $actual = $this->getHttpResponse()->getContent();
         $message = "The response of the current page is not empty, it is: $actual";
-        $this->assertTrue(null === $actual || "" === $actual, $message);
+        Assert::true(null === $actual || "" === $actual, $message);
     }
 
     /**
@@ -125,7 +154,9 @@ Trait RestContextTrait
     public function theHeaderShouldBeEqualTo($name, $value)
     {
         $actual = $this->getHttpResponse()->getHeaders()[$name];
-        $this->assertEquals(strtolower($value), strtolower($actual),
+        Assert::eq(
+            strtolower($value),
+            strtolower($actual),
             "The header '$name' should be equal to '$value', but it is: '$actual'"
         );
     }
@@ -137,21 +168,11 @@ Trait RestContextTrait
     */
     public function theHeaderShouldNotBeEqualTo($name, $value) {
         $actual = $this->getHttpResponse()->getHeaders()[$name];
-        if (strtolower($value) == strtolower($actual)) {
-            throw new ExpectationException(
-                "The header '$name' is equal to '$actual'",
-                $this->getSession()->getDriver()
-            );
-        }
-    }
-
-    public function theHeaderShouldBeContains($name, $value)
-    {
-        trigger_error(
-            sprintf('The %s function is deprecated since version 3.1 and will be removed in 4.0. Use the %s::theHeaderShouldContain function instead.', __METHOD__, __CLASS__),
-            E_USER_DEPRECATED
+        Assert::notEq(
+            strtolower($value),
+            strtolower($actual),
+            "The header '$name' is equal to '$actual'"
         );
-        $this->theHeaderShouldContain($name, $value);
     }
 
     /**
@@ -162,7 +183,9 @@ Trait RestContextTrait
     public function theHeaderShouldContain($name, $value)
     {
         $actual = $this->getHttpResponse()->getHeaders()[$name];
-        $this->assertContains($value, $actual,
+        Assert::contains(
+            $value,
+            $actual,
             "The header '$name' should contain value '$value', but actual value is '$actual'"
         );
     }
@@ -174,7 +197,9 @@ Trait RestContextTrait
      */
     public function theHeaderShouldNotContain($name, $value)
     {
-        $this->assertNotContains($value, $this->getHttpResponse()->getHeaders()[$name],
+        Assert::notContains(
+            $value,
+            $this->getHttpResponse()->getHeaders()[$name],
             "The header '$name' contains '$value'"
         );
     }
@@ -186,9 +211,12 @@ Trait RestContextTrait
      */
     public function theHeaderShouldNotExist($name)
     {
-        $this->not(function () use($name) {
-            $this->theHeaderShouldExist($name);
-        }, "The header '$name' exists");
+        Assert::not(
+            function () use($name) {
+                $this->theHeaderShouldExist($name);
+            },
+            "The header '$name' exists"
+        );
     }
 
     protected function theHeaderShouldExist($name)
@@ -203,7 +231,7 @@ Trait RestContextTrait
     {
         $actual = $this->getHttpResponse()->getHeaders()[$name];
 
-        $this->assertEquals(
+        Assert::eq(
             1,
             preg_match($regex, $actual),
             "The header '$name' should match '$regex', but it is: '$actual'"
@@ -215,7 +243,7 @@ Trait RestContextTrait
      */
     public function theHeaderShouldNotMatch($name, $regex)
     {
-        $this->not(
+        Assert::not(
             function () use ($name, $regex) {
                 $this->theHeaderShouldMatch($name, $regex);
             },
@@ -233,7 +261,9 @@ Trait RestContextTrait
         $date = new \DateTime($this->getHttpResponse()->getHeaders()['Date'][0]);
         $expires = new \DateTime($this->getHttpResponse()->getHeaders()['Expires'][0]);
 
-        $this->assertSame(1, $expires->diff($date)->invert,
+        Assert::same(
+            1,
+            $expires->diff($date)->invert,
             sprintf('The response doesn\'t expire in the future (%s)', $expires->format(DATE_ATOM))
         );
     }

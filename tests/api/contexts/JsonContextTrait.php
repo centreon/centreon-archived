@@ -1,31 +1,51 @@
 <?php
 
+/*
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace Centreon\Tests\Api\Contexts;
 
+use Symfony\Component\HttpClient\Response\CurlResponse;
 use Behat\Gherkin\Node\PyStringNode;
-
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Exception\ExpectationException;
+use Webmozart\Assert\Assert;
 use Centreon\Tests\Api\Contexts\Json\Json;
 use Centreon\Tests\Api\Contexts\Json\JsonSchema;
 use Centreon\Tests\Api\Contexts\Json\JsonInspector;
-use Behatch\HttpCall\HttpCallResultPool;
-use PhpParser\Node\Stmt\TraitUse;
-use Centreon\Tests\Api\Contexts\Asserter;
 
 Trait JsonContextTrait
 {
-    use Asserter;
-
     /**
      * @var JsonSchema
      */
     protected $inspector;
 
     /**
-     * @return Symfony\Component\HttpClient\Response\CurlResponse
+     * @return CurlResponse
      */
-    //abstract protected function getHttpResponse();
+    abstract protected function getHttpResponse();
+
+    /**
+     * @param CurlResponse $httpResponse
+     * @return void
+     */
+    abstract protected function setHttpResponse(CurlResponse $httpResponse);
 
     /**
      * @return JsonInspector
@@ -73,11 +93,11 @@ Trait JsonContextTrait
 
         $actual = $this->getInspector()->evaluate($json, $node);
 
-        if ($actual != $text) {
-            throw new \Exception(
-                sprintf("The node value is '%s'", json_encode($actual))
-            );
-        }
+        Assert::neq(
+            $text,
+            $actual,
+            sprintf("The node value is '%s'", json_encode($actual))
+        );
     }
 
     /**
@@ -103,11 +123,11 @@ Trait JsonContextTrait
 
         $actual = $this->getInspector()->evaluate($json, $node);
 
-        if (preg_match($pattern, $actual) === 0) {
-            throw new \Exception(
-                sprintf("The node value is '%s'", json_encode($actual))
-            );
-        }
+        Assert::regex(
+            $actual,
+            $pattern,
+            sprintf("The node value is '%s'", json_encode($actual))
+        );
     }
 
     /**
@@ -121,11 +141,10 @@ Trait JsonContextTrait
 
         $actual = $this->getInspector()->evaluate($json, $node);
 
-        if (null !== $actual) {
-            throw new \Exception(
-                sprintf('The node value is `%s`', json_encode($actual))
-            );
-        }
+        Assert::notNull(
+            $actual,
+            sprintf('The node value is `%s`', json_encode($actual))
+        );
     }
 
     /**
@@ -237,7 +256,7 @@ Trait JsonContextTrait
 
         $actual = $this->getInspector()->evaluate($json, $node);
 
-        $this->assertContains($text, (string) $actual);
+        Assert::contains((string) $actual, $text);
     }
 
     /**
@@ -263,7 +282,7 @@ Trait JsonContextTrait
 
         $actual = $this->getInspector()->evaluate($json, $node);
 
-        $this->assertNotContains($text, (string) $actual);
+        Assert::notContains($text, (string) $actual);
     }
 
     /**
