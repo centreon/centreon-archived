@@ -57,7 +57,8 @@ class MetaCommand extends AbstractObject
         $this->generateObjectInFile($object, 0);
 
         $object['command_name'] = 'check_meta_host_alive';
-        $object['command_line'] = '$USER1$/check_ping -H $HOSTADDRESS$ -w 3000.0,80% -c 5000.0,100% -p 1';
+        $object['command_line'] = '$CENTREONPLUGINS$/centreon_centreon_central.pl ' .
+            '--plugin=apps::centreon::local::plugin --mode=dummy --status=\'0\' --output=\'This is a dummy check\'';
         $this->generateObjectInFile($object, 0);
     }
 }
