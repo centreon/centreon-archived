@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 $graph = [];
-if (($o == "c" || $o == "w") && $graph_id) {
+if (($o == "c" || $o == "w") && $graph_id !== false && $graph_Id > 0) {
     $stmt = $pearDB->prepare('SELECT * FROM giv_graphs_template WHERE graph_id = :graphId LIMIT 1');
     $stmt->bindValue(':graphId', $graph_id, \PDO::PARAM_INT);
     $stmt->execute();
