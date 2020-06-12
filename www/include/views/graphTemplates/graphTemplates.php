@@ -70,7 +70,7 @@ if (isset($_POST['select']) && !empty($_POST['select'])) {
  *     'graphId' => 'duplicationFactor'
  * ]
  */
-if (isset($_POST['dupNbr']) && !empty($_POST['dupNbr'])) {
+if (!empty($_POST['dupNbr'])) {
     foreach ($_POST['dupNbr'] as $gId => $dupFactor) {
         if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
             $duplicationNumbers[$gId] = (int) $dupFactor;
