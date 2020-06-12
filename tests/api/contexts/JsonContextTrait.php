@@ -451,4 +451,25 @@ Trait JsonContextTrait
             );
         }
     }
+
+    /**
+     * Validate response following json format file
+     *
+     * @Given the response should be formatted like JSON format ":path"
+     */
+    public function theResponseShouldBeFormattedLikeJsonFormat(string $path)
+    {
+        $this->theResponseShouldBeInJson();
+
+        $fullPath = __DIR__ . '/../fixtures/validation/' . $path;
+        $content = json_decode($this->getHttpResponse()->getContent());
+        if (file_exists($fullPath)) {
+            $validator = new \JsonSchema\Validator();
+            $validator->validate(
+                $content,
+                ['$ref' => 'file://' . $fullPath],
+                \JsonSchema\Constraints\Constraint::CHECK_MODE_EXCEPTIONS
+            );
+        }
+    }
 }

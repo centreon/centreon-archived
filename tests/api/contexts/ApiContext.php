@@ -41,6 +41,16 @@ class ApiContext implements Context
     protected $httpClient;
 
     /**
+     * @var array
+     */
+    protected $httpHeaders = [];
+
+    /**
+     * @var string
+     */
+    protected $token;
+
+    /**
      * @var CurlResponse
      */
     protected $httpResponse;
@@ -68,6 +78,46 @@ class ApiContext implements Context
     }
 
     /**
+     * @return array
+     */
+    protected function getHttpHeaders()
+    {
+        $httpHeaders = $this->httpHeaders;
+
+        if (isset($this->token)) {
+            $httpHeaders['X-AUTH-TOKEN'] = $this->token;
+        }
+
+        return $httpHeaders;
+    }
+
+    /**
+     * @param array $httpHeaders
+     * @return void
+     */
+    protected function setHttpHeaders(array $httpHeaders)
+    {
+        $this->httpHeaders = $httpHeaders;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string $token
+     * @return void
+     */
+    protected function setToken(string $token)
+    {
+        $this->token = $token;
+    }
+
+    /**
      * @return CurlResponse
      */
     protected function getHttpResponse()
@@ -82,5 +132,43 @@ class ApiContext implements Context
     protected function setHttpResponse(CurlResponse $httpResponse)
     {
         $this->httpResponse = $httpResponse;
+    }
+
+    /**
+     * Log in API
+     *
+     * @Given I am logged in
+     */
+    public function iAmLoggedIn()
+    {
+        $this->setHttpHeaders(['Content-Type' => 'application/json']);
+        $response = $this->iSendARequestToWithBody(
+            'POST',
+            'http://10.30.2.72/centreon/api/latest/login',
+            '{
+                "security": {
+                    "credentials": {
+                        "login": "admin",
+                        "password": "centreon"
+                    }
+                }
+            }'
+        );
+
+        $response = json_decode($response->getContent(), true);
+        $this->setToken(
+            $response['security']['token']
+        );
+    }
+
+    /**
+     * Validate response following json format file
+     *
+     * @Then the response should use :type centreon JSON format
+     */
+    public function theResponseShouldUseCentreonJsonFormat(string $type)
+    {
+        $this->theResponseCodeShouldBe(200);
+        $this->theResponseShouldBeFormattedLikeJsonFormat("monitoring/service/" . $type . ".json");
     }
 }

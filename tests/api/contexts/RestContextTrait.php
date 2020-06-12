@@ -49,6 +49,17 @@ Trait RestContextTrait
     abstract protected function setHttpClient(CurlHttpClient $httpClient);
 
     /**
+     * @return array
+     */
+    abstract protected function getHttpHeaders();
+
+    /**
+     * @param array $httpHeaders
+     * @return void
+     */
+    abstract protected function setHttpHeaders(array $httpHeaders);
+
+    /**
      * @return CurlResponse
      */
     abstract protected function getHttpResponse();
@@ -61,18 +72,31 @@ Trait RestContextTrait
 
     /**
      * Sends a HTTP request
+     * @return CurlResponse
      *
      * @Given I send a :method request to :url
      */
-    public function iSendARequestTo($method, $url, PyStringNode $body = null, $files = [])
+    public function iSendARequestTo($method, $url, $body = null, $files = [])
     {
+        if ($body !== null) {
+            if (is_string($body)) {
+                $body = new PyStringNode([$body], 1);
+            } elseif (is_array($body)) {
+                $body = new PyStringNode($body, 1);
+            } elseif (!($body instanceof PyStringNode)) {
+                throw new \Exception('body format not supported');
+            }
+        }
+
         $this->setHttpResponse(
             $this->getHttpClient()->request(
                 $method,
                 $this->locatePath($url),
-                [],
-                $files,
-                $body !== null ? $body->getRaw() : null
+                [
+                    'headers' => $this->getHttpHeaders(),
+                    'body' => $body !== null ? $body->getRaw() : null
+                ],
+                $files
             )
         );
 
@@ -115,7 +139,7 @@ Trait RestContextTrait
      *
      * @Given I send a :method request to :url with body:
      */
-    public function iSendARequestToWithBody($method, $url, PyStringNode $body)
+    public function iSendARequestToWithBody($method, $url, $body)
     {
         return $this->iSendARequestTo($method, $url, $body);
     }
@@ -329,5 +353,15 @@ Trait RestContextTrait
         }
 
         echo "curl -X $method$data$headers '$url'";
+    }
+
+    /**
+     * @Then the response code should be :code
+     */
+    public function theResponseCodeShouldBe(int $expectedCode)
+    {
+        $actualCode = $this->getHttpResponse()->getStatusCode();
+        $message = "Actual response is '$actualCode', but expected '$expectedCode'";
+        Assert::eq($expectedCode, $actualCode, $message);
     }
 }
