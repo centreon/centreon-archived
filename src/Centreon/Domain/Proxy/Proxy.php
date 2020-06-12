@@ -81,12 +81,14 @@ class Proxy
     }
 
     /**
-     * @param string|null $url
+     * @param string|null $url An empty url will not be taken into account.
      * @return Proxy
      */
     public function setUrl(?string $url): Proxy
     {
-        $this->url = $url;
+        if (!empty($url)) {
+            $this->url = $url;
+        }
         return $this;
     }
 
@@ -99,12 +101,20 @@ class Proxy
     }
 
     /**
-     * @param int|null $port
+     * @param int|null $port Numerical value (0 >= PORT >= 65535)
      * @return Proxy
+     * @throws \InvalidArgumentException
      */
     public function setPort(?int $port): Proxy
     {
-        $this->port = $port;
+        if ($port >= 0 && $port <= 65535) {
+            $this->port = $port;
+        } else {
+            throw new \InvalidArgumentException(
+                sprintf(_('The port can only be between 0 and 65535 inclusive'))
+            );
+        }
+
         return $this;
     }
 
@@ -117,12 +127,14 @@ class Proxy
     }
 
     /**
-     * @param string|null $user
+     * @param string|null $user An empty user will not be taken into account.
      * @return Proxy
      */
     public function setUser(?string $user): Proxy
     {
-        $this->user = $user;
+        if (!empty($user)) {
+            $this->user = $user;
+        }
         return $this;
     }
 
@@ -184,12 +196,13 @@ class Proxy
      */
     public function __toString()
     {
-        $uri = $this->protocol;
-        if ($this->url !== null) {
-            if ($this->user !== null) {
+        $uri = '';
+        if (!empty($this->url)) {
+            $uri .= $this->protocol;
+            if (!empty($this->user)) {
                 $uri .= $this->user . ':' . $this->password . '@';
             }
-            if ($this->port !== null && $this->port >= 0) {
+            if (!empty($this->port) && $this->port >= 0) {
                 $uri .= $this->url . ':' . $this->port;
             } else {
                 $uri .= $this->url;
