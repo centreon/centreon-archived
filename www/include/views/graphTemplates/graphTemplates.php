@@ -56,7 +56,7 @@ $graph_id = filter_var(
   *     'graphIdSelected' => 'duplicationFactor'
   * ]
   */
-if (isset($_POST['select']) && !empty($_POST['select'])) {
+if (!empty($_POST['select'])) {
     foreach ($_POST['select'] as $gIdSelected => $dupFactor) {
         if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
             $selectedGraphTemplates[$gIdSelected] = (int) $dupFactor;
