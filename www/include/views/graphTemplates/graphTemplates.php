@@ -42,7 +42,6 @@ $duplicationNumbers = [];
 $selectedGraphTemplates = [];
 
 /*
- * $_GET['graph_id'] $_POST['graph_id']
  * id of the graph template
  */
 $graph_id = filter_var(
