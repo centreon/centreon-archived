@@ -109,8 +109,10 @@ function massiveHostAck($key)
                     $_POST["author"],
                     $_POST["comment"]
                 );
-                if ($force_check == 1 &&
-                    $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
+                if (
+                    $force_check == 1
+                    && $centreon->user->access->checkAction("service_schedule_forced_check") == true
+                ) {
                     $extCmdObj->scheduleForcedCheckService(
                         $hostName,
                         $value
@@ -256,8 +258,11 @@ function massiveHostDowntime($key)
         $host = getMyHostID($host_name);
 
         $with_services = false;
-        if (($centreon->user->access->checkAction("service_schedule_downtime") == true)
-            && isset($_POST['downtimehostservice']) && $_POST['downtimehostservice'] == "true") {
+        if (
+            ($centreon->user->access->checkAction("service_schedule_downtime") == true)
+            && isset($_POST['downtimehostservice'])
+            && $_POST['downtimehostservice'] == "true"
+        ) {
             $with_services = true;
         }
 
