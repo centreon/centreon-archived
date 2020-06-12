@@ -46,7 +46,7 @@ if (($o == "c" || $o == "w") && $graph_id) {
 }
 
 /*
- * Database retrieve information for differents elements list we need on the page
+ * Retrieve information from database for differents elements list we need on the page
  */
 $compos = array();
 $stmt = $pearDB->query('SELECT compo_id, name FROM giv_components_template ORDER BY name');
