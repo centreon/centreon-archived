@@ -96,20 +96,21 @@ function multipleGraphTemplateInDB($graphs = [], $nbrDup = []): void
             $stmt = $pearDB->prepare('SELECT * FROM giv_graphs_template WHERE graph_id = :graphTemplateId LIMIT 1');
             $stmt->bindValue(':graphTemplateId', $key, \PDO::PARAM_INT);
             $stmt->execute();
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $row["graph_id"] = '';
-            $row["default_tpl1"] = '0';
-            for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-                $val = null;
-                foreach ($row as $key2 => $value2) {
-                    $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
-                    $val
-                        ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                        : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
-                }
-                if (testExistence($name)) {
-                    $val ? $rq = "INSERT INTO giv_graphs_template VALUES (" . $val . ")" : $rq = null;
-                    $pearDB->query($rq);
+            if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $row["graph_id"] = '';
+                $row["default_tpl1"] = '0';
+                for ($i = 1; $i <= $nbrDup[$key]; $i++) {
+                    $val = null;
+                    foreach ($row as $key2 => $value2) {
+                        $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
+                        $val
+                            ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                            : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    }
+                    if (testExistence($name)) {
+                        $val ? $rq = "INSERT INTO giv_graphs_template VALUES (" . $val . ")" : $rq = null;
+                        $pearDB->query($rq);
+                    }
                 }
             }
         }
