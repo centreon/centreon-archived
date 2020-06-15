@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af6d10a0b847cbe229f70c8909762027",
+    "content-hash": "a9c78c12be48ac5a51f5ac64cf165bdc",
     "packages": [
         {
             "name": "curl/curl",
@@ -5727,16 +5727,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "dev-MON-5020-api-test",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "24f45ae86d44868f349080c4242e298a5e983e8b"
+                "reference": "7348e7dda480af658fe55e2c73e965f0a182d44d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/24f45ae86d44868f349080c4242e298a5e983e8b",
-                "reference": "24f45ae86d44868f349080c4242e298a5e983e8b",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/7348e7dda480af658fe55e2c73e965f0a182d44d",
+                "reference": "7348e7dda480af658fe55e2c73e965f0a182d44d",
                 "shasum": ""
             },
             "require": {
@@ -5774,7 +5774,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-04-06T08:35:40+00:00"
+            "time": "2020-06-15T13:26:00+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

@@ -19,7 +19,9 @@
  *
  */
 
-namespace Centreon\Tests\Api\Contexts;
+namespace Centreon\Test\Api\Context;
+
+use Centreon\Test\Behat\Api\Context\ApiContext;
 
 class HostConfigurationContext extends ApiContext
 {

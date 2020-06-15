@@ -3,4 +3,4 @@ default:
     host_configuration:
       paths: [ "%paths.base%/features/HostConfiguration.feature" ]
       contexts:
-        - Centreon\Tests\Api\Contexts\HostConfigurationContext
+        - Centreon\Test\Api\Context\HostConfigurationContext
