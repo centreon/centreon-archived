@@ -79,14 +79,13 @@ try {
         $sql .= " SELECT service_id, service_description
         		FROM service s, host_service_relation hsr, hostgroup_relation hgr
         		WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
-        		AND hgr.host_host_id = :hostId
+        		AND hgr.host_host_id = ?
         		AND hsr.service_service_id = s.service_id ";
         $sql .= $aclString;
         $sql .= " ORDER BY service_description ";
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':hostId', $hostId, PDO::PARAM_INT);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $dbResult = $this->pearDB->execute($stmt, array($hostId));
+        while ($row = $dbResult->fetchRow()) {
             $xml->startElement('option');
             $xml->writeElement('id', $row['service_id']);
             $xml->writeElement('label', $row['service_description']);
