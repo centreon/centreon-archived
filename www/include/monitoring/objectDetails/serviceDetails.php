@@ -888,7 +888,7 @@ if (!is_null($host_id)) {
             var data = new FormData();
             data.append('cmd', cmd);
             data.append('host_id', host_id);
-            data.append('service_id', service_id);
+            data.append('service_id', svc_id);
             data.append('actiontype', actiontype);
             xhr_cmd.send(data);
         }
