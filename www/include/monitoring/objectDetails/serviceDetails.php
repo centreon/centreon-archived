@@ -886,7 +886,7 @@ if (!is_null($host_id)) {
                 true
             );
             var data = new FormData();
-            data.append('cmd', _cmd);
+            data.append('cmd', cmd);
             data.append('host_id', host_id);
             data.append('service_id', service_id);
             data.append('actiontype', actiontype);

@@ -786,7 +786,7 @@ if (!$is_admin && !$haveAccess) {
                 true
             );
             var data = new FormData();
-            data.append('cmd', _cmd);
+            data.append('cmd', cmd);
             data.append('host_id', host_id);
             data.append('actiontype', actiontype);
             xhr_cmd.send(data);
