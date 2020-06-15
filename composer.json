@@ -108,6 +108,7 @@
         }
     },
     "scripts": {
+        "test:api": "behat --config tests/api/behat.yml",
         "auto-scripts": {
             "security-checker security:check": "script",
             "cache:clear": "symfony-cmd",

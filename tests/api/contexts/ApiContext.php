@@ -27,6 +27,7 @@ use Behat\Behat\Context\Context;
 use Symfony\Component\HttpClient\HttpClient;
 use Centreon\Tests\Api\Contexts\JsonContextTrait;
 use Centreon\Tests\Api\Contexts\RestContextTrait;
+use Centreon\Test\Behat\Container;
 
 /**
  * This context class contains the main definitions of the steps used by contexts to validate API
@@ -48,6 +49,11 @@ class ApiContext implements Context
     /**
      * @var string
      */
+    protected $baseUri;
+
+    /**
+     * @var string
+     */
     protected $token;
 
     /**
@@ -57,7 +63,9 @@ class ApiContext implements Context
 
     public function __construct()
     {
-        $this->httpClient = HttpClient::create();
+        $this->setHttpClient(HttpClient::create());
+        $this->setHttpHeaders(['Content-Type' => 'application/json']);
+
     }
 
     /**
@@ -103,6 +111,23 @@ class ApiContext implements Context
     /**
      * @return string
      */
+    protected function getBaseUri()
+    {
+        return $this->baseUri;
+    }
+
+    /**
+     * @param string $baseUri
+     * @return void
+     */
+    protected function setBaseUri(string $baseUri)
+    {
+        $this->baseUri = $baseUri;
+    }
+
+    /**
+     * @return string
+     */
     protected function getToken()
     {
         return $this->token;
@@ -135,6 +160,94 @@ class ApiContext implements Context
     }
 
     /**
+     * Waiting an action
+     *
+     * @param closure $closure The function to execute for test the loading.
+     * @param string $timeoutMsg The custom message on timeout.
+     * @param int $wait The timeout in seconds.
+     * @return bool
+     * @throws \Exception
+     */
+    public function spin($closure, $timeoutMsg = 'Load timeout', $wait = 60)
+    {
+        $limit = time() + $wait;
+        $lastException = null;
+        while (time() <= $limit) {
+            try {
+                if ($closure($this)) {
+                    return true;
+                }
+            } catch (\Exception $e) {
+                $lastException = $e;
+            }
+            sleep(1);
+        }
+        if (is_null($lastException)) {
+            throw new \Exception($timeoutMsg);
+        } else {
+            throw new \Exception(
+                $timeoutMsg . ': ' . $lastException->getMessage() . ' (code ' .
+                $lastException->getCode() . ', file ' . $lastException->getFile() .
+                ':' . $lastException->getLine() . ')'
+            );
+        }
+    }
+
+    /**
+     *  Get a container Compose file.
+     */
+    public function getContainerComposeFile($name)
+    {
+        $this->composeFiles[$name] = 'mon-' . $name . '-dev.yml';
+        if (empty($this->composeFiles[$name])) {
+            throw new \Exception("Can't get container compose file of " . $name);
+        }
+        return $this->composeFiles[$name];
+    }
+
+    /**
+     * launch Centreon Web container
+     *
+     * @Given a running instance of Centreon API
+     */
+    public function aRunningInstanceOfCentreonApi(string $name = 'web')
+    {
+        $composeFile = $this->getContainerComposeFile($name);
+        if (empty($composeFile)) {
+            throw new \Exception(
+                'Could not launch containers without Docker Compose file for ' . $name . ': '
+                . 'check the configuration of your ContainerExtension in behat.yml.'
+            );
+        }
+        $this->container = new Container($composeFile);
+        $this->setBaseUri(
+            'http://' . $this->container->getHost() . ':' . $this->container->getPort(80, $name) . '/centreon/api'
+        );
+
+        $this->spin(
+            function() {
+                $response = $this->iSendARequestToWithBody(
+                    'POST',
+                    $this->getBaseUri() . '/latest/login',
+                    '{
+                        "security": {
+                            "credentials": {
+                                "login": "admin",
+                                "password": "centreon"
+                            }
+                        }
+                    }'
+                );
+                if ($response->getStatusCode() === 200) {
+                    return true;
+                }
+            },
+            'timeout',
+            15
+        );
+    }
+
+    /**
      * Log in API
      *
      * @Given I am logged in
@@ -144,7 +257,7 @@ class ApiContext implements Context
         $this->setHttpHeaders(['Content-Type' => 'application/json']);
         $response = $this->iSendARequestToWithBody(
             'POST',
-            'http://10.30.2.72/centreon/api/latest/login',
+            $this->getBaseUri() . '/latest/login',
             '{
                 "security": {
                     "credentials": {

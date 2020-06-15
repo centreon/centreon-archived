@@ -31,10 +31,9 @@ Trait RestContextTrait
 {
     public function locatePath($path)
     {
-        //$startUrl = rtrim($this->getMinkParameter('base_url'), '/') . '/';
-        $startUrl = '/';
-
-        return 0 !== strpos($path, 'http') ? $startUrl . ltrim($path, '/') : $path;
+        return 0 !== strpos($path, 'http')
+            ? rtrim($this->getBaseUri(), '/') . '/' . ltrim($path, '/')
+            : $path;
     }
 
     /**
@@ -69,6 +68,11 @@ Trait RestContextTrait
      * @return void
      */
     abstract protected function setHttpResponse(CurlResponse $httpResponse);
+
+    /**
+     * @return string
+     */
+    abstract protected function getBaseUri();
 
     /**
      * Sends a HTTP request

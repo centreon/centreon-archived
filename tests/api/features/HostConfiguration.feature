@@ -3,12 +3,15 @@ Feature:
   As a user
   I want to have CRUD api endpoints
 
+  Background:
+    Given a running instance of Centreon API
+
   Scenario: Host CRUD
     Given I am logged in
-    When I send a GET request to "http://10.30.2.72/centreon/api/beta/monitoring/services"
+    When I send a GET request to "/beta/monitoring/services"
     Then the response should use "listing" centreon JSON format
 #    Then the response should be formatted like JSON format "monitoring/service/listing.json"
-    Then the response should be in JSON
+#    Then the response should be in JSON
     And the JSON node "result[0]" should contain "50"
 
 #    When I send a POST request to "/configuration/hosts" with data provided by "host/host1.json"
