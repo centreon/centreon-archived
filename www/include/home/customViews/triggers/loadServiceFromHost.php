@@ -72,7 +72,7 @@ try {
         );
         $sql = "SELECT service_id, service_description
         		FROM service s, host_service_relation hsr
-        		WHERE hsr.host_host_id = :hostId
+        		WHERE hsr.host_host_id = ?
         		AND hsr.service_service_id = s.service_id ";
         $sql .= $aclString;
         $sql .= " UNION ";
@@ -84,7 +84,7 @@ try {
         $sql .= $aclString;
         $sql .= " ORDER BY service_description ";
         $stmt = $db->prepare($sql);
-        $dbResult = $this->pearDB->execute($stmt, array($hostId));
+        $dbResult = $this->pearDB->execute($stmt, array($hostId, $hostId));
         while ($row = $dbResult->fetchRow()) {
             $xml->startElement('option');
             $xml->writeElement('id', $row['service_id']);
