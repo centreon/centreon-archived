@@ -1,4 +1,23 @@
 =====================
+Centreon Web 19.10.14
+=====================
+
+Bug fixes
+---------
+
+* [Backup] Unable to mount ext4 partitions (PR #8770)
+* [Configuration] Invalid check command prevent notification of meta-services (PR #8783)
+* [Reporting] Scheduled downtimes are wrongly managed when cancelled (PR #8775)
+* [Trap] Remove default value when options are configured (PR #8767)
+
+Security fixes
+--------------
+
+* [Backup] Privilege escalation from backup cron
+* [Configuration] Sanitize geocoords values in the form
+* [Web] Multiple SQL injections
+
+=====================
 Centreon Web 19.10.13
 =====================
 
