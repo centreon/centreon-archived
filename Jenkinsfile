@@ -146,7 +146,7 @@ try {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
-    },
+    }
 //    'centos8': {
 //      node {
 //        sh 'setup_centreon_build.sh'
