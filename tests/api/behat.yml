@@ -4,7 +4,7 @@ default:
   gherkin:
     cache: ~
   suites:
-    host_configuration:
-      paths: [ "%paths.base%/features/HostConfiguration.feature" ]
+    host_monitoring:
+      paths: [ "%paths.base%/features/HostMonitoring.feature" ]
       contexts:
-        - Centreon\Test\Api\Context\HostConfigurationContext
+        - Centreon\Test\Api\Context\HostMonitoringContext

@@ -1,12 +1,12 @@
 Feature:
-  In order to manipulate hosts
+  In order to monitor hosts
   As a user
-  I want to have CRUD api endpoints
+  I want to get host information using api
 
   Background:
     Given a running instance of Centreon Web API
 
-  Scenario: Host CRUD
+  Scenario: Host listing
     Given I am logged in
     When I send a GET request to '/beta/monitoring/hosts?search={"host.name":"Centreon-Server"}'
     Then the response code should be "200"
