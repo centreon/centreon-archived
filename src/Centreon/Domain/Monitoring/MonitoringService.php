@@ -122,7 +122,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      */
     public function findServicesByHost(int $hostId): array
     {
-        return $this->monitoringRepository->findServicesByHost($hostId);
+        return $this->monitoringRepository->findServicesByHostWithParameters($hostId);
     }
 
     /**
