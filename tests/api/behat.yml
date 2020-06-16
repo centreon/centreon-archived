@@ -1,4 +1,8 @@
 default:
+  extensions:
+    Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
   suites:
     host_configuration:
       paths: [ "%paths.base%/features/HostConfiguration.feature" ]
