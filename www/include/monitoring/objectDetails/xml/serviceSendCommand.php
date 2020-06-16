@@ -58,9 +58,9 @@ $svcObj = new CentreonService($pearDB);
 $hostId = filter_var($_POST['host_id'], FILTER_VALIDATE_INT);
 $svcId = filter_var($_POST['service_id'], FILTER_VALIDATE_INT);
 $poller = $hostObj->getHostPollerId($hostId);
-$cmd = $_GET["cmd"];
+$cmd = $_POST["cmd"];
 $sid = session_id();
-$actType = $_GET["actiontype"];
+$actType = $_POST["actiontype"];
 $actType ? $returnType = 1 : $returnType = 0;
 
 $pearDB = new CentreonDB();
