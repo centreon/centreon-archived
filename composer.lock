@@ -5731,12 +5731,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "7348e7dda480af658fe55e2c73e965f0a182d44d"
+                "reference": "69a383f3b403f9ff7dc856321f2842c98e1cb91f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/7348e7dda480af658fe55e2c73e965f0a182d44d",
-                "reference": "7348e7dda480af658fe55e2c73e965f0a182d44d",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/69a383f3b403f9ff7dc856321f2842c98e1cb91f",
+                "reference": "69a383f3b403f9ff7dc856321f2842c98e1cb91f",
                 "shasum": ""
             },
             "require": {
@@ -5774,7 +5774,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-06-15T13:26:00+00:00"
+            "time": "2020-06-15T15:15:47+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
