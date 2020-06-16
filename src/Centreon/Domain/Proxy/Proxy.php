@@ -101,7 +101,7 @@ class Proxy
     }
 
     /**
-     * @param int|null $port Numerical value (0 >= PORT >= 65535)
+     * @param int|null $port Numerical value (0 >= PORT <= 65535)
      * @return Proxy
      * @throws \InvalidArgumentException
      */
