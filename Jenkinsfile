@@ -146,13 +146,13 @@ try {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
-//    },
+    },
 //    'centos8': {
 //      node {
 //        sh 'setup_centreon_build.sh'
 //        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
-      }
-    }
+//      }
+//    }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
     }
