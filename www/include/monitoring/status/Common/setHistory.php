@@ -81,7 +81,7 @@ if (isset($_POST["url"])) {
             $centreon->historySearchOutput[$url] = $searchOutput;
         }
 
-        $defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1
+        $defaultLimit = $centreon->optGen['maxViewConfiguration'] >= 1
             ? (int)$centreon->optGen['maxViewConfiguration']
             : 30;
         if (isset($_POST["limit"])) {
