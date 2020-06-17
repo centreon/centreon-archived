@@ -107,7 +107,13 @@ paths:
       tags:
         - Icons
       summary: "List all icons"
-      description: "List all icons from centreon configuration."
+      description: |
+        List all icons from centreon configuration.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
       responses:
         '200':
           description: "OK"

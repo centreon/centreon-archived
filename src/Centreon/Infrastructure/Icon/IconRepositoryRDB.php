@@ -24,11 +24,18 @@ namespace Centreon\Infrastructure\Icon;
 
 use Centreon\Domain\Configuration\Icon\Interfaces\IconRepositoryInterface;
 use Centreon\Domain\Configuration\Icon\Icon;
+use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 class IconRepositoryRDB extends AbstractRepositoryDRB implements IconRepositoryInterface
 {
+    /**
+     * @var SqlRequestParametersTranslator
+     */
+    private $sqlRequestTranslator;
+
     /**
      * IconRepositoryRDB constructor.
      *
@@ -40,21 +47,56 @@ class IconRepositoryRDB extends AbstractRepositoryDRB implements IconRepositoryI
     }
 
     /**
+     * Initialized by the dependency injector.
+     *
+     * @param SqlRequestParametersTranslator $sqlRequestTranslator
+     */
+    public function setSqlRequestTranslator(SqlRequestParametersTranslator $sqlRequestTranslator): void
+    {
+        $this->sqlRequestTranslator = $sqlRequestTranslator;
+        $this->sqlRequestTranslator
+            ->getRequestParameters()
+            ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
+    }
+
+    /**
      * @inheritDoc
      */
     public function getIcons(): array
     {
-        $icons = [];
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'id' => 'vi.img_id',
+            'name' => 'vi.img_name',
+        ]);
 
         $request = $this->translateDbName('
             SELECT vi.*, vid.dir_name AS `img_dir`
             FROM `view_img` AS `vi`
             LEFT JOIN `:db`.`view_img_dir_relation` AS `vidr` ON vi.img_id = vidr.img_img_id
             LEFT JOIN `:db`.`view_img_dir` AS `vid` ON vid.dir_id = vidr.dir_dir_parent_id
-            GROUP BY vi.img_id
         ');
-        $statement = $this->db->query($request);
 
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= !is_null($searchRequest) ? $searchRequest : '';
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY vi.img_id ASC';
+
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+
+        $statement = $this->db->prepare($request);
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+
+        $statement->execute();
+
+        $icons = [];
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $icon = new Icon();
             $icon

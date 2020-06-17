@@ -76,11 +76,12 @@ class IconController extends AbstractController
             $this->iconUrlNormalizer->normalize($icon);
         }
 
+        $context = (new Context())
+            ->setGroups(self::SERIALIZER_GROUPS_MAIN);
+
         return $this->view([
             'result' => $icons,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
-            ]
-        ])->setContext((new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN));
+            'meta' => $requestParameters->toArray(),
+        ])->setContext($context);
     }
 }

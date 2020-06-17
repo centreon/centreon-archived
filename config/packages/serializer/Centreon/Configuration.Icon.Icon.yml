@@ -1,4 +1,4 @@
-Centreon\Domain\Configuration\Icon:
+Centreon\Domain\Configuration\Icon\Icon:
     properties:
         id:
             type: int
