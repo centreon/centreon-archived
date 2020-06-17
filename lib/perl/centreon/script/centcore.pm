@@ -1249,6 +1249,17 @@ sub initEngine($$$) {
 }
 
 ##################################################
+# Function to execute command
+# Arguments:
+#     $cmd: string command
+#
+sub postCmd($) {
+    my $self = shift;
+    my $cmd = $_[0];
+    system $cmd;
+}
+
+##################################################
 # Function to reload Centreon Broker
 # Arguments:
 #     $id: int Poller id to reload
@@ -1690,6 +1701,8 @@ sub parseRequest($) {
     # Checks keys for launching commands
     if ($action =~ /^RESTART\:([0-9]*)/){
         $self->initEngine($1, "restart", $action);
+    } elsif ($action =~ /^POSTCMD\:(.*)/){
+        $self->postCmd($1);
     } elsif ($action =~ /^RELOAD\:([0-9]*)/){
         $self->initEngine($1, "reload", $action);
     } elsif ($action =~ /^START\:([0-9]*)/){
