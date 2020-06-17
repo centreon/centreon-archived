@@ -84,7 +84,7 @@ try {
         $sql .= $aclString;
         $sql .= " ORDER BY service_description ";
         $stmt = $db->prepare($sql);
-        $dbResult = $this->pearDB->execute($stmt, array($hostId, $hostId));
+        $dbResult = $db->execute($stmt, array($hostId, $hostId));
         while ($row = $dbResult->fetchRow()) {
             $xml->startElement('option');
             $xml->writeElement('id', $row['service_id']);
