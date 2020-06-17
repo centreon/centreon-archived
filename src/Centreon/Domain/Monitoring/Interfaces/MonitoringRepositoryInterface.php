@@ -118,7 +118,7 @@ interface MonitoringRepositoryInterface
      * @return Service[]
      * @throws \Exception
      */
-    public function findServicesByHostWithParameters(int $hostId): array;
+    public function findServicesByHostWithRequestParameters(int $hostId): array;
 
     /**
      * Retrieve all real time services according to ACL of contact and host id
@@ -128,7 +128,7 @@ interface MonitoringRepositoryInterface
      * @return Service[]
      * @throws \Exception
      */
-    public function findServicesByHostWithoutParameters(int $hostId): array;
+    public function findServicesByHostWithoutRequestParameters(int $hostId): array;
 
     /**
      * Find services according to the host id and service ids given

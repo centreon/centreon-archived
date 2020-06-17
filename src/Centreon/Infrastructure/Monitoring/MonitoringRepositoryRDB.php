@@ -730,7 +730,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findServicesByHostWithParameters(int $hostId): array
+    public function findServicesByHostWithRequestParameters(int $hostId): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'service.id' => 'srv.service_id',
@@ -756,7 +756,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findServicesByHostWithoutParameters(int $hostId): array
+    public function findServicesByHostWithoutRequestParameters(int $hostId): array
     {
         return $this->findServicesByHost($hostId, null, null, null);
     }
