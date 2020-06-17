@@ -52,6 +52,6 @@ class IconService implements IconServiceInterface
      */
     public function getIcons(): array
     {
-        return $this->iconRepository->getIcons();
+        return $this->iconRepository->getIconsWithRequestParameters();
     }
 }

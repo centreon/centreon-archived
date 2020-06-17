@@ -62,13 +62,46 @@ class IconRepositoryRDB extends AbstractRepositoryDRB implements IconRepositoryI
     /**
      * @inheritDoc
      */
-    public function getIcons(): array
+    public function getIconsWithRequestParameters(): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'vi.img_id',
             'name' => 'vi.img_name',
         ]);
 
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+
+        // Pagination
+        $paginationRequest = $this->sqlRequestTranslator->translatePaginationToSql();
+
+        return $this->getIcons($searchRequest, $sortRequest, $paginationRequest);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIconsWithoutRequestParameters(): array
+    {
+        return $this->getIcons(null, null, null);
+    }
+
+    /**
+     * Retrieve all icons according to ACL of contact
+     *
+     * @param string|null $searchRequest search request
+     * @param string|null $sortRequest sort request
+     * @param string|null $paginationRequest pagination request
+     * @return Icon[]
+     */
+    private function getIcons(
+        ?string $searchRequest = null,
+        ?string $sortRequest = null,
+        ?string $paginationRequest = null
+    ): array {
         $request = $this->translateDbName('
             SELECT vi.*, vid.dir_name AS `img_dir`
             FROM `view_img` AS `vi`
@@ -77,15 +110,13 @@ class IconRepositoryRDB extends AbstractRepositoryDRB implements IconRepositoryI
         ');
 
         // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
 
         // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY vi.img_id ASC';
 
         // Pagination
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $request .= !is_null($paginationRequest) ? $paginationRequest : '';
 
         $statement = $this->db->prepare($request);
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {

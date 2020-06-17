@@ -27,9 +27,16 @@ use Centreon\Domain\Configuration\Icon\Icon;
 interface IconRepositoryInterface
 {
     /**
-     * Retrieve icons
+     * Retrieve icons using request parameters (search, sort, pagination)
      *
      * @return Icon[]
      */
-    public function getIcons(): array;
+    public function getIconsWithRequestParameters(): array;
+
+    /**
+     * Retrieve icons without request parameters (no search, no sort, no pagination)
+     *
+     * @return Icon[]
+     */
+    public function getIconsWithoutRequestParameters(): array;
 }
