@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -169,13 +170,13 @@ class CentreonCustomView
 
     /**
      * Check Permission
-     * Checks if user is allowed to modify view
+     * Checks if user is allowed to modify a view
      * Returns true if user can, false otherwise
      *
      * @param int $viewId
      * @return bool
      */
-    public function checkPermission($viewId)
+    public function checkPermission(int $viewId): bool
     {
         $views = $this->getCustomViews();
         if (!isset($views[$viewId]) || $views[$viewId]['locked']) {
@@ -183,6 +184,44 @@ class CentreonCustomView
         }
 
         return true;
+    }
+
+    /**
+     * checkUserActions - Check wether or not the user
+     * can do the provided action
+     *
+     * @param  string $action
+     * @return bool
+     */
+    public function checkUserActions(string $action): bool
+    {
+        /* associate the called action with the toplogy page.
+         * Special behaviour for the deleteWidget action which does not have any possible configuration in ACL Menus.
+         * We do consider through that if user can create a widget then he also can delete it.
+         * Also "defaultEditMode" action has no link with ACL this action is authorized for all.
+         */
+        if ($action == 'defaultEditMode') {
+            return true;
+        }
+        $associativeActions = [
+            'edit' => '10301',
+            'share' => '10302',
+            'setPreferences' => '10303',
+            'addWidget' => '10304',
+            'deleteWidget' => '10304',
+            'setRotate' => '10305',
+            'deleteView' => '10306',
+            'add' => '10307',
+            'setDefault' => '10308'
+        ];
+
+        // retrieving menu access rights of the current user.
+        $acls = new CentreonACL($this->userId);
+        $userCustomViewActions = $acls->getTopology();
+        if (array_key_exists($associativeActions[$action], $userCustomViewActions)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -351,23 +390,28 @@ class CentreonCustomView
     /**
      * Add Custom View
      *
-     * @param $params
-     * @return int
+     * @param string $name
+     * @param string $layout
+     * @param ?int $publicView
+     * @param bool $authorized
+     * @return int $lastId
      * @throws Exception
      */
-    public function addCustomView($params)
+    public function addCustomView(string $name, string $layout, ?int $publicView, bool $authorized): int
     {
-        if (!isset($params['public']) || is_null($params['public'])) {
+        if (!$authorized) {
+            throw new CentreonCustomViewException('You are not allowed to add a custom view.');
+        }
+        $public = 1;
+        if (!$publicView) {
             $public = 0;
-        } else {
-            $public = 1;
         }
 
         $query = 'INSERT INTO custom_views (`name`, `layout`, `public`) ' .
             'VALUES (:viewName, :layout , "' . $public . '")';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':viewName', $params['name'], PDO::PARAM_STR);
-        $stmt->bindParam(':layout', $params['layout']['layout'], PDO::PARAM_STR);
+        $stmt->bindParam(':viewName', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':layout', $layout, PDO::PARAM_STR);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
@@ -387,18 +431,23 @@ class CentreonCustomView
     }
 
     /**
-     * @param $viewId
+     * @param $customViewId
+     * @param bool $permission
+     * @param bool $authorized
      * @throws Exception
      */
-    public function deleteCustomView($viewId)
+    public function deleteCustomView($customViewId, bool $permission, bool $authorized)
     {
+        if (!$authorized || !$permission) {
+            throw new CentreonCustomViewException('You are not allowed to delete the view');
+        }
         //owner
-        if ($this->checkOwnership($viewId)) {
+        if ($this->checkOwnership($customViewId)) {
             //if not shared view consumed
-            if (!$this->checkOtherShareViewUnlocked($this->userId, $viewId)) {
+            if (!$this->checkOtherShareViewUnlocked($this->userId, $customViewId)) {
                 $query = 'DELETE FROM custom_views WHERE custom_view_id = :viewId';
                 $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+                $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
@@ -408,7 +457,7 @@ class CentreonCustomView
                     'WHERE custom_view_id = :viewId ' .
                     'AND (is_consumed = 0 OR is_owner = 1)';
                 $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+                $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
@@ -417,12 +466,12 @@ class CentreonCustomView
             //other
         } else {
             // if owner consumed = 0 -> delete
-            if ($this->checkOwnerViewStatus($viewId) == 0) {
+            if ($this->checkOwnerViewStatus($customViewId) == 0) {
                 //if not other shared view consumed, delete all
                 if (!$this->checkOtherShareViewUnlocked($viewId, $this->userId)) {
                     $query = 'DELETE FROM custom_views WHERE custom_view_id = :viewId ';
                     $stmt = $this->db->prepare($query);
-                    $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                     $dbResult = $stmt->execute();
                     if (!$dbResult) {
                         throw new \Exception("An error occured");
@@ -434,7 +483,7 @@ class CentreonCustomView
                         'AND custom_view_id = :viewId';
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
-                    $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                     $dbResult = $stmt->execute();
                     if (!$dbResult) {
                         throw new \Exception("An error occured");
@@ -445,14 +494,14 @@ class CentreonCustomView
                 // delete widget pref
                 try {
                     $stmt = $this->db->prepare(
-                        'DELETE FROM widget_preferences 
-                        WHERE user_id = :userId 
+                        'DELETE FROM widget_preferences
+                        WHERE user_id = :userId
                         AND widget_view_id IN (
                             SELECT widget_view_id FROM widget_views WHERE custom_view_id = :viewId
                         )'
                     );
                     $stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
-                    $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, \PDO::PARAM_INT);
                     $stmt->execute();
                 } catch (\PDOException $e) {
                     throw new Exception(
@@ -467,7 +516,7 @@ class CentreonCustomView
                         'WHERE custom_view_id = :viewId AND user_id = :userId '
                     );
                     $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
-                    $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                     $stmt->execute();
                 } catch (\PDOException $e) {
                     throw new Exception(
@@ -481,30 +530,42 @@ class CentreonCustomView
     /**
      * Update Custom View
      *
-     * @param $params
-     * @return mixed
+     * @param int $customViewId
+     * @param string $name
+     * @param string $layout
+     * @param int $public
+     * @param bool $permission
+     * @param bool $authorized
+     * @return int $customViewId
      * @throws Exception
      */
-    public function updateCustomView($params)
-    {
-        if ($this->checkPermission($params['custom_view_id']) === true) {
-            $public = 0;
-            if (isset($params['public'])) {
-                $public = $params['public'];
-            }
-            $query = 'UPDATE custom_views SET `name` = :viewName, `layout` = :layout, `public` = :typeView ' .
-                'WHERE `custom_view_id` = :viewId';
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewName', $params['name'], PDO::PARAM_STR);
-            $stmt->bindParam(':layout', $params['layout']['layout'], PDO::PARAM_STR);
-            $stmt->bindParam(':typeView', $public, PDO::PARAM_INT);
-            $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
-            $dbResult = $stmt->execute();
-            if (!$dbResult) {
-                throw new \Exception("An error occured");
-            }
+    public function updateCustomView(
+        int $customViewId,
+        string $name,
+        string $layout,
+        int $public,
+        bool $permission,
+        bool $authorized
+    ): int {
+        if (!$authorized || !$permission) {
+            throw new CentreonCustomViewException('You are not allowed to edit the custom view');
         }
-        return $params['custom_view_id'];
+        $viewType = 0;
+        if (!empty($public)) {
+            $viewType = $public;
+        }
+        $query = 'UPDATE custom_views SET `name` = :viewName, `layout` = :layout, `public` = :typeView ' .
+            'WHERE `custom_view_id` = :viewId';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':viewName', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':layout', $layout, PDO::PARAM_STR);
+        $stmt->bindParam(':typeView', $viewType, PDO::PARAM_INT);
+        $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
+        $dbResult = $stmt->execute();
+        if (!$dbResult) {
+            throw new \Exception("An error occured");
+        }
+        return $customViewId;
     }
 
 
@@ -610,12 +671,17 @@ class CentreonCustomView
     }
 
     /**
-     * @param $params
-     * @return mixed
+     * Loads the Custom View attached to the viewLoadId
+     * @param int $viewLoad
+     * @param bool $authorized
+     * @return int $viewLoad
      * @throws Exception
      */
-    public function loadCustomView($params)
+    public function loadCustomView(int $viewLoadId, bool $authorized): int
     {
+        if (!$authorized) {
+            throw new CentreonCustomViewException('You are not allowed to add a custom view');
+        }
         $isLocked = 1;
         $update = false;
         $query = 'SELECT custom_view_id, locked, user_id, usergroup_id ' .
@@ -630,7 +696,7 @@ class CentreonCustomView
             ') ORDER BY user_id DESC';
 
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
+        $stmt->bindParam(':viewLoad', $viewLoadId, PDO::PARAM_INT);
         $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
@@ -649,13 +715,13 @@ class CentreonCustomView
             $query = 'UPDATE custom_view_user_relation SET is_consumed=1 WHERE ' .
                 ' custom_view_id = :viewLoad AND user_id = :userId';
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
+            $stmt->bindParam(':viewLoad', $viewLoadId, PDO::PARAM_INT);
             $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
         } else {
             $query = 'INSERT INTO custom_view_user_relation (custom_view_id,user_id,is_owner,locked,is_share) ' .
                 'VALUES (:viewLoad, :userId, 0, :isLocked, 1)';
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewLoad', $params['viewLoad'], PDO::PARAM_INT);
+            $stmt->bindParam(':viewLoad', $viewLoadId, PDO::PARAM_INT);
             $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
             $stmt->bindParam(':isLocked', $isLocked, PDO::PARAM_INT);
         }
@@ -663,13 +729,13 @@ class CentreonCustomView
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
-        
+
         //if the view is being added for the first time, we make sure that the widget parameters are going to be set
         if (!$update) {
-            $this->addPublicViewWidgetParams($params['viewLoad'], $this->userId);
+            $this->addPublicViewWidgetParams($viewLoadId, $this->userId);
         }
-        
-        return $params['viewLoad'];
+
+        return $viewLoadId;
     }
 
     /**
@@ -719,31 +785,52 @@ class CentreonCustomView
     }
 
     /**
-     * @param $params
+     * @param int $customViewId
+     * @param int[] $lockedUsers
+     * @param int[] $unlockedUsers
+     * @param int[] $lockedUsergroups
+     * @param int[] $unlockedUsergroups
+     * @param bool $permission
+     * @param bool $authorized
      * @param $userId
      * @throws Exception
+     * @throws CentreonCustomViewExpection
      */
-    public function shareCustomView($params, $userId)
-    {
+    public function shareCustomView(
+        int $customViewId,
+        array $lockedUsers,
+        array $unlockedUsers,
+        array $lockedUsergroups,
+        array $unlockedUsergroups,
+        int $userId,
+        bool $permission,
+        bool $authorized
+    ) {
+        if (!$authorized || !$permission) {
+            throw new CentreonCustomViewException('You are not allowed to share the view');
+        }
         global $centreon;
         $queryValue = array();
 
-        if ($this->checkPermission($params['custom_view_id'])) {
+        if ($this->checkPermission($customViewId)) {
             //////////////////////
             // share with users //
             //////////////////////
             $sharedUsers = array();
             $alwaysSharedUsers = array();
-            $params['lockedUsers'] = isset($params['lockedUsers']) ? $params['lockedUsers'] : array();
-            foreach ($params['lockedUsers'] as $lockedUser) {
-                if ($lockedUser != $centreon->user->user_id) {
-                    $sharedUsers[$lockedUser] = 1;
+
+            if (!empty($lockedUsers)) {
+                foreach ($lockedUsers as $lockedUser) {
+                    if ($lockedUser != $centreon->user->user_id) {
+                        $sharedUsers[$lockedUser] = 1;
+                    }
                 }
             }
-            $params['unlockedUsers'] = isset($params['unlockedUsers']) ? $params['unlockedUsers'] : array();
-            foreach ($params['unlockedUsers'] as $unlockedUser) {
-                if ($unlockedUser != $centreon->user->user_id) {
-                    $sharedUsers[$unlockedUser] = 0;
+            if (!empty($unlockedUsers)) {
+                foreach ($unlockedUsers as $unlockedUser) {
+                    if ($unlockedUser != $centreon->user->user_id) {
+                        $sharedUsers[$unlockedUser] = 0;
+                    }
                 }
             }
 
@@ -754,7 +841,7 @@ class CentreonCustomView
                 'AND user_id <> :userId ' .
                 'AND usergroup_id IS NULL '
             );
-            $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
             $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
@@ -775,7 +862,7 @@ class CentreonCustomView
                     );
                     $stmt->bindParam(':isLocked', $locked, PDO::PARAM_INT);
                     $stmt->bindParam(':userId', $sharedUserId, PDO::PARAM_INT);
-                    $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                     $dbResult = $stmt->execute();
                     if (!$dbResult) {
                         throw new \Exception("An error occured");
@@ -787,7 +874,7 @@ class CentreonCustomView
                         '(custom_view_id, user_id, locked, is_consumed, is_share ) ' .
                         'VALUES ( :viewId, :sharedUser, :isLocked, 0, 1) '
                     );
-                    $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                     $stmt->bindParam(':sharedUser', $sharedUserId, PDO::PARAM_INT);
                     $stmt->bindParam(':isLocked', $locked, PDO::PARAM_INT);
                     $dbResult = $stmt->execute();
@@ -796,9 +883,9 @@ class CentreonCustomView
                     }
                 }
                 $alwaysSharedUsers[] = $sharedUserId;
-                $this->copyPreferences($params['custom_view_id'], $sharedUserId);
+                $this->copyPreferences($customViewId, $sharedUserId);
             }
-            $queryValue[] = (int)$params['custom_view_id'];
+            $queryValue[] = (int)$customViewId;
             $userIdKey = '';
 
             //prepare old user entries
@@ -839,21 +926,22 @@ class CentreonCustomView
             // share with user groups //
             ////////////////////////////
             $sharedUsergroups = array();
-            $params['lockedUsergroups'] = isset($params['lockedUsergroups']) ? $params['lockedUsergroups'] : array();
-            foreach ($params['lockedUsergroups'] as $lockedUsergroup) {
-                $sharedUsergroups[$lockedUsergroup] = 1;
+            if (!empty($lockedUsergroups)) {
+                foreach ($lockedUsergroups as $lockedUsergroup) {
+                    $sharedUsergroups[$lockedUsergroup] = 1;
+                }
             }
-            $params['unlockedUsergroups'] = isset($params['unlockedUsergroups']) ?
-                $params['unlockedUsergroups'] : array();
-            foreach ($params['unlockedUsergroups'] as $unlockedUsergroup) {
-                $sharedUsergroups[$unlockedUsergroup] = 0;
+            if (!empty($unlockedUsergroups)) {
+                foreach ($unlockedUsergroups as $unlockedUsergroup) {
+                    $sharedUsergroups[$unlockedUsergroup] = 0;
+                }
             }
 
             $query = 'SELECT usergroup_id FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = :viewId ' .
                 'AND user_id IS NULL ';
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception("An error occured");
@@ -873,7 +961,7 @@ class CentreonCustomView
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':isLocked', $locked, PDO::PARAM_INT);
                     $stmt->bindParam(':sharedUser', $sharedUsergroupId, PDO::PARAM_INT);
-                    $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                     $dbResult = $stmt->execute();
                     if (!$dbResult) {
                         throw new \Exception("An error occured");
@@ -884,7 +972,7 @@ class CentreonCustomView
                         '(custom_view_id, usergroup_id, locked, is_consumed, is_share ) ' .
                         'VALUES (:viewId, :sharedUser, :isLocked, 0, 1) ';
                     $stmt = $this->db->prepare($query);
-                    $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                     $stmt->bindParam(':sharedUser', $sharedUsergroupId, PDO::PARAM_INT);
                     $stmt->bindParam(':isLocked', $locked, PDO::PARAM_INT);
                     $dbResult = $stmt->execute();
@@ -892,12 +980,12 @@ class CentreonCustomView
                         throw new \Exception("An error occured");
                     }
                 }
-                $this->copyPreferences($params['custom_view_id'], null, $sharedUsergroupId);
+                $this->copyPreferences($customViewId, null, $sharedUsergroupId);
             }
 
             $queryValue2 = array();
             $queryCgId = array();
-            $queryValue2[] = (int)$params['custom_view_id'];
+            $queryValue2[] = (int)$customViewId;
             $userGroupIdKey = '';
             if (!empty($oldSharedUsergroups)) {
                 foreach ($oldSharedUsergroups as $k => $v) {
@@ -921,7 +1009,7 @@ class CentreonCustomView
 
             $queryValueWidgetPref = array();
             $tmpValueWidgetPref = array();
-            $queryValueWidgetPref[] = (int)$params['custom_view_id'];
+            $queryValueWidgetPref[] = (int)$customViewId;
             $oldSharedUserOfUsergroups = '';
             while ($row = $stmt->fetch()) {
                 $tmpValueWidgetPref[] = (int)$row['contact_contact_id'];
@@ -1046,20 +1134,26 @@ class CentreonCustomView
     }
 
     /**
-     * @param $params
+     * Remove user from view shared viewer
+     *
+     * @param int $userId
+     * @param int $customViewId
+     * @param bool $permission
      * @throws Exception
      */
-    public function removeUserFromView($params)
+    public function removeUserFromView(int $userId, int $customViewId, bool $permission)
     {
-
+        if (!$permission) {
+            throw new CentreonCustomViewException('You are not allowed to remove user from view');
+        }
         $query = 'SELECT is_public ' .
             'FROM custom_view_user_relation ' .
             'WHERE user_id = :userId ' .
             'AND custom_view_id = :viewId';
 
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':userId', $params['user_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
@@ -1075,8 +1169,8 @@ class CentreonCustomView
                 'AND custom_view_id = :viewId';
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':userId', $params['user_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception("An error occured");
@@ -1086,8 +1180,8 @@ class CentreonCustomView
                 'WHERE user_id = :userId ' .
                 'AND custom_view_id = :viewId';
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':userId', $params['user_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception("An error occured");
@@ -1096,10 +1190,13 @@ class CentreonCustomView
     }
 
     /**
-     * @param $params
+     * Remove usergroup from view shared viewers
+     *
+     * @param int $customViewId
+     * @param int $userGroupId
      * @throws Exception
      */
-    public function removeUsergroupFromView($params)
+    public function removeUsergroupFromView(int $customViewId, int $userGroupId)
     {
         $query = 'DELETE FROM custom_view_user_relation ' .
             'WHERE usergroup_id = :groupId ' .
@@ -1107,8 +1204,8 @@ class CentreonCustomView
             'AND custom_view_id = :viewId';
 
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':groupId', $params['usergroup_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':groupId', $userGroupId, PDO::PARAM_INT);
+        $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
