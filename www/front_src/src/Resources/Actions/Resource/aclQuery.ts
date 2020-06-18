@@ -22,8 +22,10 @@ import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
 interface AclQuery {
   canDowntime: (resources) => boolean;
   getDowntimeDeniedTypeAlert: (resources) => string | undefined;
+  canDowntimeServices: () => boolean;
   canAcknowledge: (resources) => boolean;
   getAcknowledgementDeniedTypeAlert: (resources) => string | undefined;
+  canAcknowledgeServices: () => boolean;
   canCheck: (resources) => boolean;
 }
 
@@ -81,6 +83,9 @@ const useAclQuery = (): AclQuery => {
     return getDeniedTypeAlert({ resources, action: 'downtime' });
   };
 
+  const canDowntimeServices = (): boolean =>
+    pathEq(['actions', 'service', 'downtime'], true)(acl);
+
   const canAcknowledge = (resources: Array<Resource>): boolean => {
     return can({ resources, action: 'acknowledgement' });
   };
@@ -91,6 +96,9 @@ const useAclQuery = (): AclQuery => {
     return getDeniedTypeAlert({ resources, action: 'acknowledgement' });
   };
 
+  const canAcknowledgeServices = (): boolean =>
+    pathEq(['actions', 'service', 'acknowledgement'], true)(acl);
+
   const canCheck = (resources: Array<Resource>): boolean => {
     return can({ resources, action: 'check' });
   };
@@ -98,8 +106,10 @@ const useAclQuery = (): AclQuery => {
   return {
     canDowntime,
     getDowntimeDeniedTypeAlert,
+    canDowntimeServices,
     canAcknowledge,
     getAcknowledgementDeniedTypeAlert,
+    canAcknowledgeServices,
     canCheck,
   };
 };

@@ -540,7 +540,7 @@ class AcknowledgementController extends AbstractController
         foreach ($resources as $resource) {
             //start disacknowledgement process
             try {
-                if ($this->hasAckRightsForResource($contact, $resource)) {
+                if ($this->hasDisackRightsForResource($contact, $resource)) {
                     if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
                         $this->acknowledgementService->disacknowledgeService(
                             (int)$resource->getParent()->getId(),
@@ -599,13 +599,13 @@ class AcknowledgementController extends AbstractController
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_ACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                    ResourceEntity::VALIDATION_GROUP_ACK_HOST
                 ));
             } else {
                 throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
@@ -626,14 +626,18 @@ class AcknowledgementController extends AbstractController
             throw new ValidationFailedException($errorList);
         }
 
-        //set default values [sticky, persistent_comment] to true
+        // set default values [sticky, persistent_comment] to true
         $acknowledgement->setSticky(true);
         $acknowledgement->setPersistentComment(true);
 
         foreach ($resources as $resource) {
-            //start acknowledgement process
+            // start acknowledgement process
             try {
                 if ($this->hasAckRightsForResource($contact, $resource)) {
+                    if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+                        $acknowledgement->setWithServices(false);
+                    }
+
                     $this->acknowledgementService->acknowledgeResource(
                         $resource,
                         $acknowledgement
@@ -648,18 +652,48 @@ class AcknowledgementController extends AbstractController
     }
 
     /**
+     * Check if the resource can be acknowledged
+     *
      * @param Contact $contact
      * @param ResourceEntity $resouce
      * @return bool
      */
-    private function hasAckRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    private function hasAckRightsForResource(Contact $contact, ResourceEntity $resource): bool
     {
+        if ($contact->isAdmin()) {
+            return true;
+        }
+
         $hasRights = false;
 
-        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
-            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
-        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
-            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
+        }
+
+        return $hasRights;
+    }
+
+    /**
+     * Check if the resource can be disacknowledged
+     *
+     * @param Contact $contact
+     * @param ResourceEntity $resouce
+     * @return bool
+     */
+    private function hasDisackRightsForResource(Contact $contact, ResourceEntity $resource): bool
+    {
+        if ($contact->isAdmin()) {
+            return true;
+        }
+
+        $hasRights = false;
+
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
         }
 
         return $hasRights;

@@ -154,6 +154,19 @@ class CentreonHost
     }
 
     /**
+     * Returns a filtered array with only integer ids
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    private function filteredArrayId(array $ids): array
+    {
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
+
+    /**
      *  get list of inherited templates from plugin pack
      *
      * @return array
@@ -405,40 +418,46 @@ class CentreonHost
     }
 
     /**
-     * @param array $hostId
-     * @return array
-     * @throws Exception
+     * @param int[] $hostId
+     * @return array $hosts [['id' => integer, 'name' => string],...]
      */
-    public function getHostsNames($hostId = array())
+    public function getHostsNames($hostId = []): array
     {
-        $arrayReturn = array();
-        $explodedValues = '';
+        $hosts = [];
         if (!empty($hostId)) {
-            $query = 'SELECT host_id, host_name ' .
-                'FROM host where host_id IN (';
+            /*
+            * Checking here that the array provided as parameter
+             * is exclusively made of integers (host ids)
+             */
+            $filteredHostIds = $this->filteredArrayId($hostId);
+            $hostParams = [];
+            if (count($filteredHostIds) > 0) {
+                /*
+                 * Building the hostParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredHostIds as $index => $filteredHostId) {
+                    $hostParams[':hostId' . $index] = $filteredHostId;
+                }
 
-            for ($i = 1; $i <= count($hostId); $i++) {
-                $explodedValues .= '?,';
-            }
-            $explodedValues = rtrim($explodedValues, ',');
-            $hostId = array_map(
-                function ($var) {
-                    return (int)$var;
-                },
-                $hostId
-            );
-            $query .= $explodedValues . ') ';
-            $stmt = $this->db->prepare($query);
-            $dbResult = $stmt->execute($hostId);
-            if (!$dbResult) {
-                throw new \Exception("An error occured");
-            }
+                $stmt = $this->db->prepare('SELECT host_id, host_name ' .
+                    'FROM host where host_id IN ( ' . implode(',', array_keys($hostParams)) . ' )');
 
-            while ($row = $stmt->fetch()) {
-                $arrayReturn[] = array("id" => $row['host_id'], "name" => $row['host_name']);
+                foreach ($hostParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+
+                $dbResult = $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $hosts[] = [
+                        'id' => $row['host_id'],
+                        'name' => $row['host_name']
+                    ];
+                }
             }
         }
-        return $arrayReturn;
+        return $hosts;
     }
 
     /**
