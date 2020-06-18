@@ -730,14 +730,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findServicesByHost(int $hostId): array
+    public function findServicesByHostWithRequestParameters(int $hostId): array
     {
-        $services = [];
-
-        if ($this->hasNotEnoughRightsToContinue()) {
-            return $services;
-        }
-
         $this->sqlRequestTranslator->setConcordanceArray([
             'service.id' => 'srv.service_id',
             'service.description' => 'srv.description',
@@ -746,6 +740,48 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'service.is_acknowledged' => 'srv.acknowledged',
             'service.state' => 'srv.state'
         ]);
+
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+
+        // Pagination
+        $paginationRequest = $this->sqlRequestTranslator->translatePaginationToSql();
+
+        return $this->findServicesByHost($hostId, $searchRequest, $sortRequest, $paginationRequest);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServicesByHostWithoutRequestParameters(int $hostId): array
+    {
+        return $this->findServicesByHost($hostId, null, null, null);
+    }
+
+    /**
+     * Retrieve all real time services according to ACL of contact and host id
+     *
+     * @param int $hostId Host ID for which we want to find services
+     * @param string|null $searchRequest search request
+     * @param string|null $sortRequest sort request
+     * @param string|null $paginationRequest pagination request
+     * @return Service[]
+     * @throws \Exception
+     */
+    private function findServicesByHost(
+        int $hostId,
+        ?string $searchRequest = null,
+        ?string $sortRequest = null,
+        ?string $paginationRequest = null
+    ): array {
+        $services = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $services;
+        }
 
         $accessGroupFilter = $this->isAdmin()
             ? ' '
@@ -776,18 +812,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request = $this->translateDbName($request);
 
         // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
 
         // Group
         $request .= ' GROUP BY srv.service_id';
 
         // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest) ? $sortRequest : '';
 
         // Pagination
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $request .= !is_null($paginationRequest) ? $paginationRequest : '';
 
         $statement = $this->db->prepare($request);
         $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
@@ -1042,10 +1076,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT DISTINCT 
-                srv.service_id, 
-                srv.display_name, 
-                srv.description, 
+            'SELECT DISTINCT
+                srv.service_id,
+                srv.display_name,
+                srv.description,
                 srv.host_id,
                 srv.state
             FROM :dbstg.services srv
