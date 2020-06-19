@@ -14,13 +14,15 @@ Feature:
     HOST;ADD;test2;Test host2;127.0.0.1;generic-host;central;
     """
     And the configuration is generated and exported
-    And I wait until host "test" is monitored
-    When I send a GET request to '/beta/monitoring/hosts?search={"host.name":"Centreon-Server"}'
+    And I wait until host "test2" is monitored
+
+    When I send a GET request to '/beta/monitoring/hosts?search={"host.name":{"$rg":"^test2$"}}'
     Then the response code should be "200"
     And the response should be formatted like JSON format "standard/listing.json"
     And the response should be formatted like JSON format "monitoring/host/listing.json"
     And the json node "result" should have 1 elements
-    And the JSON node "result[0].name" should be equal to the string "Centreon-Server"
+    And the JSON node "result[0].name" should be equal to the string "test2"
+
     When I send a GET request to '/beta/monitoring/hosts'
-    And the json node "result" should have 3 elements
+    Then the json node "result" should have 3 elements
 
