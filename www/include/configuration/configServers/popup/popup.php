@@ -43,7 +43,7 @@ if ($pollerId === false) {
 $userId = (int)$centreon->user->user_id;
 $isAdmin = (bool)$centreon->user->admin;
 
-if ($isAdmin !== 1) {
+if ($isAdmin === false) {
     $acl = new CentreonACL($userId, $isAdmin);
     $aclPollers = $acl->getPollers();
     if (!array_key_exists($pollerId, $aclPollers)) {
