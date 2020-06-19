@@ -363,9 +363,10 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
         $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
         if (empty($configurationCommand)) {
-            throw new MonitoringServiceException(
-                _('The command line in the configuration is empty while in the monitoring it is not')
-            );
+            // If there is no command line defined in the configuration, it's useless to continue.
+            // So, we define the configuration command line with the monitoring command line
+            $monitoringService->setCommandLine($monitoringCommand);
+            return;
         }
 
         $serviceMacrosPassword = $this->serviceConfiguration->findServiceMacrosPassword(

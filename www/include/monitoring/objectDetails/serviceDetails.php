@@ -34,7 +34,7 @@
  *
  */
 
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 
 if (!isset($centreon)) {
     exit();
@@ -248,10 +248,16 @@ if (!is_null($host_id)) {
         $DBRESULT->closeCursor();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status["command_line"] = $monitoringService->findCommandLineOfService(
-                (int) $host_id,
-                (int) $service_status["service_id"]
-            );
+            $commandLine = '';
+            try {
+                $commandLine = $monitoringService->findCommandLineOfService(
+                    (int) $host_id,
+                    (int) $service_status["service_id"]
+                );
+            } catch (MonitoringServiceException $ex) {
+                $commandLine = 'Error: ' . $ex->getMessage();
+            }
+            $service_status["command_line"] = $commandLine;
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
