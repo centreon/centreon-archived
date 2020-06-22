@@ -31,6 +31,7 @@ use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Monitoring\TimelineEvent;
+use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
@@ -148,6 +149,7 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws MonitoringServiceException
      * @throws RepositoryException
      * @throws ServiceConfigurationException
+     * @throws MonitoringServerException
      */
     public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void;
 
