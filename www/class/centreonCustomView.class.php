@@ -432,13 +432,12 @@ class CentreonCustomView
 
     /**
      * @param $customViewId
-     * @param bool $permission
      * @param bool $authorized
      * @throws Exception
      */
-    public function deleteCustomView($customViewId, bool $permission, bool $authorized)
+    public function deleteCustomView($customViewId, bool $authorized)
     {
-        if (!$authorized || !$permission) {
+        if (!$authorized) {
             throw new CentreonCustomViewException('You are not allowed to delete the view');
         }
         //owner

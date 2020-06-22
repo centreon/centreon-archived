@@ -279,7 +279,7 @@ try {
             break;
         case 'deleteView':
             if ($postInputs['custom_view_id']) {
-                $viewObj->deleteCustomView($postInputs['custom_view_id'], $permission, $authorized);
+                $viewObj->deleteCustomView($postInputs['custom_view_id'], $authorized);
             }
             break;
         case 'addWidget':
