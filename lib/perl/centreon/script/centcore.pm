@@ -1254,8 +1254,7 @@ sub initEngine($$$) {
 #     $cmd: string command
 #
 sub postCmd($) {
-    my $self = shift;
-    my $cmd = $_[0];
+    my $cmd = shift;
     system $cmd;
 }
 
