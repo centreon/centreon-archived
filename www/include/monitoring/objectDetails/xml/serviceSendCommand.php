@@ -49,7 +49,8 @@ require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
 CentreonSession::start(1);
 $centreon = $_SESSION["centreon"];
-if (!isset($_SESSION["centreon"]) ||
+if (
+    !isset($_SESSION["centreon"]) ||
     !isset($_GET["host_id"]) ||
     !isset($_GET["service_id"]) ||
     !isset($_GET["cmd"]) ||
