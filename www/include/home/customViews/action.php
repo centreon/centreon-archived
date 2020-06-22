@@ -267,7 +267,12 @@ try {
             $widgetObj->updateUserWidgetPreferences($_POST, $permission, $authorized);
             break;
         case 'deleteWidget':
-            $widgetObj->deleteWidgetFromView($postInputs['custom_view_id'], $postInputs['widget_id'], $authorized, $permission);
+            $widgetObj->deleteWidgetFromView(
+                $postInputs['custom_view_id'],
+                $postInputs['widget_id'],
+                $authorized,
+                $permission
+            );
             break;
         case 'position':
             $widgetObj->updateWidgetPositions($postInputs['custom_view_id'], $positions, $permission);
