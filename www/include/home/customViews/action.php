@@ -297,7 +297,7 @@ try {
             }
             break;
         case 'setRotate':
-            if ($postInputs['timer']) {
+            if ($postInputs['timer'] >= 0) {
                 $centreon->user->setContactParameters($db, array('widget_view_rotation' => $postInputs['timer']));
             }
             break;
