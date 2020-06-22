@@ -43,11 +43,7 @@ require_once _CENTREON_PATH_ . '/www/class/centreonXML.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonInstance.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 
-if (defined('_CENTREON_VARLIB_')) {
-    $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
-} else {
-    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
-}
+$centcorePipe = defined('_CENTREON_VARLIB_') ? _CENTREON_VARLIB_ . "/centcore.cmd" : "/var/lib/centreon/centcore.cmd";
 
 $db = new CentreonDB();
 
@@ -79,13 +75,13 @@ while ($row = $res->fetchRow()) {
         $str .= "<br/><strong>{$row['name']}</strong><br/>";
 
         foreach ($commands as $command) {
-            if ($fh = @fopen($centcore_pipe, 'a+')) {
+            if ($fh = @fopen($centcorePipe, 'a+')) {
                 fwrite($fh, "POSTCMD:" . $command['command_line'] . "\n");
             } else {
                 throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
             }
             fclose($fh);
-            $str .= $command['command_name'] . ": <font color='green'>executed</font><br/>";
+            $str .= _("Executing command") . ": " . $command['command_name'] . "<br/>";
         }
     }
 }
