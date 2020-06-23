@@ -749,9 +749,6 @@ class CentreonWidget
                     $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
                     $dbResult = $stmt->execute();
 
-                    if (!$dbResult) {
-                        throw new \Exception("An error occured");
-                    }
                 }
             }
         }
