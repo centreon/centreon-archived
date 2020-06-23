@@ -83,6 +83,7 @@ class CentreonHost extends CentreonObject
     const ORDER_HOSTGROUP = 5;
     const MISSING_INSTANCE = "Instance name is mandatory";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
     const UNKNOWN_TIMEZONE = "Invalid timezone";
     const HOST_LOCATION = "timezone";
 
@@ -617,6 +618,9 @@ class CentreonHost extends CentreonObject
                     $params[2] = $tpObj->getTimeperiodId($params[2]);
                     break;
                 case "geo_coords":
+                    if (!CentreonUtils::validateGeoCoords($params[2])) {
+                        throw new CentreonClapiException(self::INVALID_GEO_COORDS);
+                    }
                 case "contact_additive_inheritance":
                 case "cg_additive_inheritance":
                 case "flap_detection_options":
