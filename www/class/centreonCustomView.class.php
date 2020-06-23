@@ -930,10 +930,8 @@ class CentreonCustomView
                     $sharedUsergroups[$lockedUsergroup] = 1;
                 }
             }
-            if (!empty($unlockedUsergroups)) {
-                foreach ($unlockedUsergroups as $unlockedUsergroup) {
-                    $sharedUsergroups[$unlockedUsergroup] = 0;
-                }
+            foreach ($unlockedUsergroups as $unlockedUsergroup) {
+                $sharedUsergroups[$unlockedUsergroup] = 0;
             }
 
             $query = 'SELECT usergroup_id FROM custom_view_user_relation ' .
