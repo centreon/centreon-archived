@@ -818,11 +818,9 @@ class CentreonCustomView
             $sharedUsers = array();
             $alwaysSharedUsers = array();
 
-            if (!empty($lockedUsers)) {
-                foreach ($lockedUsers as $lockedUser) {
-                    if ($lockedUser != $centreon->user->user_id) {
-                        $sharedUsers[$lockedUser] = 1;
-                    }
+            foreach ($lockedUsers as $lockedUser) {
+                if ($lockedUser != $centreon->user->user_id) {
+                    $sharedUsers[$lockedUser] = 1;
                 }
             }
             if (!empty($unlockedUsers)) {
