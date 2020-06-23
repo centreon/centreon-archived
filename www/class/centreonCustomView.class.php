@@ -925,10 +925,8 @@ class CentreonCustomView
             // share with user groups //
             ////////////////////////////
             $sharedUsergroups = array();
-            if (!empty($lockedUsergroups)) {
-                foreach ($lockedUsergroups as $lockedUsergroup) {
-                    $sharedUsergroups[$lockedUsergroup] = 1;
-                }
+            foreach ($lockedUsergroups as $lockedUsergroup) {
+                $sharedUsergroups[$lockedUsergroup] = 1;
             }
             foreach ($unlockedUsergroups as $unlockedUsergroup) {
                 $sharedUsergroups[$unlockedUsergroup] = 0;
