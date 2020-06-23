@@ -252,10 +252,7 @@ class CentreonWidget
         if (!$authorized || !$permission) {
             throw new CentreonWidgetException('You are not allowed to add a widget.');
         }
-        if (
-            empty($customViewId)
-            || empty($widgetModelId)
-        ) {
+        if (empty($customViewId) || empty($widgetModelId)) {
             throw new CentreonWidgetException('No custom view or no widget selected');
         }
         $query = 'INSERT INTO widgets (title, widget_model_id) VALUES (:title, :id)';
