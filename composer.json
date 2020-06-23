@@ -15,6 +15,15 @@
             "php": "7.2"
         }
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../centreon-test-lib",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require-dev": {
         "behat/behat": "^3.7",
         "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
