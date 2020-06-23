@@ -12,3 +12,7 @@ default:
       paths: [ "%paths.base%/features/ServiceMonitoring.feature" ]
       contexts:
         - Centreon\Test\Api\Context\ServiceMonitoringContext
+    resource_monitoring:
+      paths: [ "%paths.base%/features/ResourceMonitoring.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\ResourceMonitoringContext
