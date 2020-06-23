@@ -542,7 +542,7 @@ class CentreonCustomView
         int $customViewId,
         string $name,
         string $layout,
-        int $public,
+        ?int $public,
         bool $permission,
         bool $authorized
     ): int {
