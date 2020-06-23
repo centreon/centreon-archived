@@ -74,10 +74,12 @@ $notifCgs = $acl->getContactGroupAclConf(array(
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-/*
+/**
  * Validate function for all host is in the same instances
+ *
+ * @return bool
+ * @throws HTML_QuickForm_Error
  */
-
 function childSameInstance()
 {
     global $form;
@@ -93,6 +95,10 @@ function childSameInstance()
     return allInSameInstance($listChild, $instanceId);
 }
 
+/**
+ * @return bool
+ * @throws HTML_QuickForm_Error
+ */
 function parentSameInstance()
 {
     global $form;
@@ -317,6 +323,7 @@ $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 $form->registerRule('validate_childs', 'function', 'childSameInstance');
 $form->registerRule('validate_parents', 'function', 'parentSameInstance');
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Host"));
@@ -965,6 +972,7 @@ $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extIm
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 if (!$centreon->user->admin && $o == "a") {
     $aclDeRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup'

@@ -164,7 +164,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         $this->engineService->addHostAcknowledgement($acknowledgement, $host);
 
         if ($acknowledgement->isWithServices()) {
-            $services = $this->monitoringRepository->findServicesByHost($host->getId());
+            $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
             foreach ($services as $service) {
                 $service->setHost($host);
                 $this->engineService->addServiceAcknowledgement($acknowledgement, $service);
@@ -292,7 +292,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
             $this->engineService->addHostAcknowledgement($ack, $host);
             if ($ack->isWithServices()) {
-                $services = $this->monitoringRepository->findServicesByHost($host->getId());
+                $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
                 foreach ($services as $service) {
                     $service->setHost($host);
                     $this->engineService->addServiceAcknowledgement($ack, $service);
