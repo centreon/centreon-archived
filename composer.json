@@ -15,15 +15,6 @@
             "php": "7.2"
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../centreon-test-lib",
-            "options": {
-                "symlink": true
-            }
-        }
-    ],
     "require-dev": {
         "behat/behat": "^3.7",
         "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
@@ -35,7 +26,7 @@
         "adlawson/vfs": "^0.12.1",
         "zircote/swagger-php": "^3.0",
         "symfony/phpunit-bridge": "4.4.*",
-        "centreon/centreon-test-lib": "dev-MON-5020-api-test",
+        "centreon/centreon-test-lib": "dev-master",
         "sensiolabs/security-checker": "^6.0",
         "symfony/var-dumper": "4.4.*",
         "symfony/profiler-pack": "^1.0",
