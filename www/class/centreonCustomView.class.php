@@ -823,11 +823,9 @@ class CentreonCustomView
                     $sharedUsers[$lockedUser] = 1;
                 }
             }
-            if (!empty($unlockedUsers)) {
-                foreach ($unlockedUsers as $unlockedUser) {
-                    if ($unlockedUser != $centreon->user->user_id) {
-                        $sharedUsers[$unlockedUser] = 0;
-                    }
+            foreach ($unlockedUsers as $unlockedUser) {
+                if ($unlockedUser != $centreon->user->user_id) {
+                    $sharedUsers[$unlockedUser] = 0;
                 }
             }
 
