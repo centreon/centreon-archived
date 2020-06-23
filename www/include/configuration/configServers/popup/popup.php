@@ -36,15 +36,20 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
 }
 $centreon = $_SESSION['centreon'];
 $pollerId = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT);
-$userId = $centreon->user->user_id;
-$isAdmin = $centreon->user->admin;
-
-$acl = new CentreonACL($userId, $isAdmin);
-$aclPollers = $acl->getPollers();
-
-if ($pollerId === false || !array_key_exists($pollerId, $aclPollers)) {
+if ($pollerId === false) {
     print "Bad Poller Id";
     exit();
+}
+$userId = (int)$centreon->user->user_id;
+$isAdmin = (bool)$centreon->user->admin;
+
+if ($isAdmin === false) {
+    $acl = new CentreonACL($userId, $isAdmin);
+    $aclPollers = $acl->getPollers();
+    if (!array_key_exists($pollerId, $aclPollers)) {
+        print "No access rights to this Poller";
+        exit();
+    }
 }
 
 $tpl = new Smarty();
