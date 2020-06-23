@@ -658,7 +658,7 @@ class CentreonHost
             }
             if ($stmt->rowCount()) {
                 $row = $stmt->fetch();
-                $pollerId = $row['nagios_server_id'];
+                $pollerId = (int) $row['nagios_server_id'];
             } else {
                 $hostName = $this->getHostName($hostId);
                 if (preg_match('/^_Module_Meta/', $hostName)) {
@@ -669,7 +669,7 @@ class CentreonHost
                     $res = $this->db->query($query);
                     if ($res->rowCount()) {
                         $row = $res->fetch();
-                        $pollerId = $row['id'];
+                        $pollerId = (int) $row['id'];
                     }
                 }
             }

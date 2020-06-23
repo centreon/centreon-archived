@@ -58,7 +58,13 @@ $hostId = filter_var(
 
 $pollerId = $hostObj->getHostPollerId($hostId);
 
-$cmd = $_GET['cmd'];
+$cmd = filter_var(
+    $_GET['cmd'] ?? '',
+    FILTER_SANITIZE_STRING
+);
+
+$cmd = CentreonUtils::escapeSecure($cmd, CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+
 $actionType = (int) $_GET['actiontype'];
 
 $pearDB = new CentreonDB();
