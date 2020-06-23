@@ -26,13 +26,13 @@ use Centreon\Test\Behat\Api\Context\ApiContext;
 class ServiceMonitoringContext extends ApiContext
 {
     /**
-     * @When I send a request to have the details of service :service from host :host 
+     * @When I send a request to have the details of service :service from host :host
      */
-    public function iSendARequestToHaveTheDetailsOfServiceFromHost($service,$host)
+    public function iSendARequestToHaveTheDetailsOfServiceFromHost($service, $host)
     {
         $hostId = $this->iWaitUntilServiceIsMonitored($service, $host)[0];
         $serviceId = $this->iWaitUntilServiceIsMonitored($service, $host)[1];
         $response = $this->iSendARequestTo('GET', "/beta/monitoring/hosts/$hostId/services/$serviceId");
         return $response;
-    }    
+    }
 }
