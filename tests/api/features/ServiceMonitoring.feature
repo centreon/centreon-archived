@@ -6,7 +6,7 @@ Feature:
     Background:
         Given a running instance of Centreon Web API
 
-    Scenario: Browse Services
+    Scenario: Service listing and details
         Given I am logged in
         And the following CLAPI import data:
         """
