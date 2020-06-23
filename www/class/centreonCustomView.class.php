@@ -56,6 +56,16 @@ class CentreonCustomView
     protected $currentView;
     protected $defaultView;
 
+    public const TOPOLOGY_PAGE_EDIT_VIEW = 10301;
+    public const TOPOLOGY_PAGE_SHARE_VIEW = 10302;
+    public const TOPOLOGY_PAGE_SET_WIDGET_PREFERENCES = 10303;
+    public const TOPOLOGY_PAGE_ADD_WIDGET = 10304;
+    public const TOPOLOGY_PAGE_DELETE_WIDGET = 10304;
+    public const TOPOLOGY_PAGE_SET_ROTATE = 10305;
+    public const TOPOLOGY_PAGE_DELETE_VIEW = 10306;
+    public const TOPOLOGY_PAGE_ADD_VIEW = 10307;
+    public const TOPOLOGY_PAGE_SET_DEFAULT_VIEW = 10308;
+
     /**
      * CentreonCustomView constructor.
      *
@@ -204,15 +214,15 @@ class CentreonCustomView
             return true;
         }
         $associativeActions = [
-            'edit' => '10301',
-            'share' => '10302',
-            'setPreferences' => '10303',
-            'addWidget' => '10304',
-            'deleteWidget' => '10304',
-            'setRotate' => '10305',
-            'deleteView' => '10306',
-            'add' => '10307',
-            'setDefault' => '10308'
+            'edit' => TOPOLOGY_PAGE_EDIT_VIEW,
+            'share' => TOPOLOGY_PAGE_SHARE_VIEW,
+            'setPreferences' => TOPOLOGY_PAGE_SET_WIDGET_PREFERENCES,
+            'addWidget' => TOPOLOGY_PAGE_ADD_WIDGET,
+            'deleteWidget' => TOPOLOGY_PAGE_DELETE_WIDGET,
+            'setRotate' => TOPOLOGY_PAGE_SET_ROTATE,
+            'deleteView' => TOPOLOGY_PAGE_DELETE_VIEW,
+            'add' => TOPOLOGY_PAGE_ADD_VIEW,
+            'setDefault' => TOPOLOGY_PAGE_SET_DEFAULT_VIEW
         ];
 
         // retrieving menu access rights of the current user.
