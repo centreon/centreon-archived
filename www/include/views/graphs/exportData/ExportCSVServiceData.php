@@ -111,8 +111,8 @@ if ($index !== false) {
     $stmt->bindValue(':index', $index, \PDO::PARAM_INT);
     $stmt->execute();
     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        $hName = $res["host_name"];
-        $sName = $res["service_description"];
+        $hName = $row["host_name"];
+        $sName = $row["service_description"];
     }
 
     header("Content-Type: application/csv-tab-delimited-table");
