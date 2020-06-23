@@ -400,14 +400,14 @@ class CentreonCustomView
     /**
      * Add Custom View
      *
-     * @param string $name
+     * @param string $viewName
      * @param string $layout
      * @param ?int $publicView
      * @param bool $authorized
      * @return int $lastId
      * @throws Exception
      */
-    public function addCustomView(string $name, string $layout, ?int $publicView, bool $authorized): int
+    public function addCustomView(string $viewName, string $layout, ?int $publicView, bool $authorized): int
     {
         if (!$authorized) {
             throw new CentreonCustomViewException('You are not allowed to add a custom view.');
@@ -420,7 +420,7 @@ class CentreonCustomView
         $query = 'INSERT INTO custom_views (`name`, `layout`, `public`) ' .
             'VALUES (:viewName, :layout , "' . $public . '")';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':viewName', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':viewName', $viewName, PDO::PARAM_STR);
         $stmt->bindParam(':layout', $layout, PDO::PARAM_STR);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
@@ -429,9 +429,9 @@ class CentreonCustomView
 
         $lastId = $this->getLastViewId();
         $query = 'INSERT INTO custom_view_user_relation (custom_view_id, user_id, locked, is_owner) ' .
-            'VALUES (:viewId, :userId, 0, 1)';
+            'VALUES (:lastId, :userId, 0, 1)';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':viewId', $lastId, PDO::PARAM_INT);
+        $stmt->bindParam(':lastId', $lastId, PDO::PARAM_INT);
         $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
@@ -539,8 +539,8 @@ class CentreonCustomView
     /**
      * Update Custom View
      *
-     * @param int $customViewId
-     * @param string $name
+     * @param int $viewId
+     * @param string $viewName
      * @param string $layout
      * @param int $public
      * @param bool $permission
@@ -549,8 +549,8 @@ class CentreonCustomView
      * @throws Exception
      */
     public function updateCustomView(
-        int $customViewId,
-        string $name,
+        int $viewId,
+        string $viewName,
         string $layout,
         ?int $public,
         bool $permission,
@@ -559,17 +559,17 @@ class CentreonCustomView
         if (!$authorized || !$permission) {
             throw new CentreonCustomViewException('You are not allowed to edit the custom view');
         }
-        $viewType = 0;
+        $typeView = 0;
         if (!empty($public)) {
-            $viewType = $public;
+            $typeView = $public;
         }
         $query = 'UPDATE custom_views SET `name` = :viewName, `layout` = :layout, `public` = :typeView ' .
             'WHERE `custom_view_id` = :viewId';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':viewName', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':viewName', $viewName, PDO::PARAM_STR);
         $stmt->bindParam(':layout', $layout, PDO::PARAM_STR);
-        $stmt->bindParam(':typeView', $viewType, PDO::PARAM_INT);
-        $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
+        $stmt->bindParam(':typeView', $typeView, PDO::PARAM_INT);
+        $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
         return $customViewId;
     }
