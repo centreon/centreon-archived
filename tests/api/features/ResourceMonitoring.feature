@@ -24,6 +24,3 @@ Feature:
     # ping (from default container data) and service_ping should be returned
     And the json node "result" should have 2 elements
     And the JSON node "result[0].name" should be equal to the string "service_ping"
-
-    When I send a GET request to '/beta/monitoring/services'
-    Then the json node "result" should have 1 elements
