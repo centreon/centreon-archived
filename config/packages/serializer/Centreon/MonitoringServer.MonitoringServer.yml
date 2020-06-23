@@ -8,7 +8,7 @@ Centreon\Domain\MonitoringServer\MonitoringServer:
             groups:
               - monitoringserver_main
               - monitoringserver_min
-              - monitoringserver_mapper_simulation
+              - mapper_monitoringserver
         isLocalhost:
             type: bool
             groups: [monitoringserver_main, monitoringserver_min]

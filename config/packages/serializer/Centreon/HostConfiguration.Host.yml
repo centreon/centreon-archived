@@ -4,32 +4,32 @@ Centreon\Domain\HostConfiguration\Host:
       type: int
       groups:
         - 'host_conf_min'
-        - 'host_mapper_simulation'
+        - 'mapper_host'
     name:
       type: string
       groups:
         - 'host_conf_name'
         - 'host_conf_min'
-        - 'host_mapper_simulation'
+        - 'mapper_host'
     alias:
       type: string
       groups:
         - 'host_conf_min'
-        - 'host_mapper_simulation'
+        - 'mapper_host'
     ipAddress:
       type: string
       groups:
         - 'host_conf_full'
-        - 'host_mapper_simulation'
+        - 'mapper_host'
     monitoringServer:
       type: "Centreon\\Domain\\MonitoringServer\\MonitoringServer"
       groups:
         - 'host_conf_full'
-        - 'host_mapper_simulation'
+        - 'mapper_host'
     templates:
       type: array<Centreon\Domain\HostConfiguration\Host>
       groups:
-        - 'host_mapper_simulation'
+        - 'mapper_host'
         - 'host_conf_full'
     comment:
       type: string
@@ -47,4 +47,4 @@ Centreon\Domain\HostConfiguration\Host:
       type: "Centreon\\Domain\\HostConfiguration\\ExtendedHost"
       groups:
         - 'host_conf_full'
-        - 'host_mapper_simulation'
+        - 'mapper_host'
