@@ -15,13 +15,14 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until host "host_test" is monitored
-    And I wait until service "service_ping" is monitored
+    And I wait until service "service_ping" from host "host_test" is monitored
 
-    When I send a GET request to '/beta/monitoring/resources?search={"service.description":{"$rg":"^service"}}'
+    When I send a GET request to '/beta/monitoring/resources?search={"service.description":{"$rg":"ping$"}}'
     Then the response code should be "200"
     And the response should be formatted like JSON format "standard/listing.json"
     And the response should be formatted like JSON format "monitoring/service/listing.json"
-    And the json node "result" should have 1 elements
+    # ping (from default container data) and service_ping should be returned
+    And the json node "result" should have 2 elements
     And the JSON node "result[0].name" should be equal to the string "service_ping"
 
     When I send a GET request to '/beta/monitoring/services'
