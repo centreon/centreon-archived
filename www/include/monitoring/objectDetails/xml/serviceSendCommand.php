@@ -76,7 +76,7 @@ $serviceId = filter_var(
 $pollerId = $hostObj->getHostPollerId($hostId);
 
 $cmd = $_GET['cmd'];
-$actionType = $_GET['actiontype'];
+$actionType = (int) $_GET['actiontype'];
 
 $pearDB = new CentreonDB();
 
