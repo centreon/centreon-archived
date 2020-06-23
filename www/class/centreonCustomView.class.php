@@ -571,7 +571,7 @@ class CentreonCustomView
         $stmt->bindParam(':typeView', $typeView, PDO::PARAM_INT);
         $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
         $dbResult = $stmt->execute();
-        return $customViewId;
+        return $viewId;
     }
 
 
