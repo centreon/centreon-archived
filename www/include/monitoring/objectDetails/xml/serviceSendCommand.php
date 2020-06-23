@@ -115,7 +115,7 @@ $sendCommand = $commandList[$cmd][$actionType];
 
 $sendCommand .= ";" . $hostObj->getHostName($hostId) . ";" . $svcObj->getServiceDesc($serviceId) . ";" . time();
 $command->setProcessCommand($sendCommand, $pollerId);
-$actionType ? $returnType = 1 : $returnType = 0;
+$returnType = $actionType ? 1 : 0;
 $result = $command->write();
 $buffer = new CentreonXML();
 $buffer->startElement("root");
