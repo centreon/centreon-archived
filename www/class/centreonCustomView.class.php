@@ -825,14 +825,18 @@ class CentreonCustomView
             $sharedUsers = array();
             $alwaysSharedUsers = array();
 
-            foreach ($lockedUsers as $lockedUser) {
-                if ($lockedUser != $centreon->user->user_id) {
-                    $sharedUsers[$lockedUser] = 1;
+            if (!empty($lockedUsers)) {
+                foreach ($lockedUsers as $lockedUser) {
+                    if ($lockedUser != $centreon->user->user_id) {
+                        $sharedUsers[$lockedUser] = 1;
+                    }
                 }
             }
-            foreach ($unlockedUsers as $unlockedUser) {
-                if ($unlockedUser != $centreon->user->user_id) {
-                    $sharedUsers[$unlockedUser] = 0;
+            if (!empty($unlockedUsers)) {
+                foreach ($unlockedUsers as $unlockedUser) {
+                    if ($unlockedUser != $centreon->user->user_id) {
+                        $sharedUsers[$unlockedUser] = 0;
+                    }
                 }
             }
 
@@ -928,11 +932,15 @@ class CentreonCustomView
             // share with user groups //
             ////////////////////////////
             $sharedUsergroups = array();
-            foreach ($lockedUsergroups as $lockedUsergroup) {
-                $sharedUsergroups[$lockedUsergroup] = 1;
+            if (!empty($lockedUsergroups)) {
+                foreach ($lockedUsergroups as $lockedUsergroup) {
+                    $sharedUsergroups[$lockedUsergroup] = 1;
+                }
             }
-            foreach ($unlockedUsergroups as $unlockedUsergroup) {
-                $sharedUsergroups[$unlockedUsergroup] = 0;
+            if (!empty($unlockedUsergroups)) {
+                foreach ($unlockedUsergroups as $unlockedUsergroup) {
+                    $sharedUsergroups[$unlockedUsergroup] = 0;
+                }
             }
 
             $query = 'SELECT usergroup_id FROM custom_view_user_relation ' .
