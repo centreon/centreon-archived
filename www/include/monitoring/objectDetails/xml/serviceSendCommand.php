@@ -82,7 +82,7 @@ $pearDB = new CentreonDB();
 
 if ($sessionId = session_id()) {
     $res = $pearDB->prepare("SELECT * FROM `session` WHERE `session_id` = :sid");
-    $res->bindValue(':sid', session_id(), PDO::PARAM_STR);
+    $res->bindValue(':sid', $sessionId, PDO::PARAM_STR);
     $res->execute();
     if (!$session = $res->fetch(PDO::FETCH_ASSOC)) {
         exit();
