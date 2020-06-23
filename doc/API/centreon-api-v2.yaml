@@ -102,6 +102,53 @@ paths:
                 $ref: '#/components/schemas/LogoutAuthenticationResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
+  /configuration/icons:
+    get:
+      tags:
+        - Icons
+      summary: "List all icons"
+      description: |
+        List all icons from centreon configuration.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "id if the icon"
+                          example: 1
+                        directory:
+                          type: string
+                          description: "directory if the icon"
+                          example: "ppm"
+                        name:
+                          type: string
+                          description: "name if the icon"
+                          example: "operatingsystems-linux-snmp-linux-128.png"
+                        url:
+                          type: string
+                          description: "url to get the icon"
+                          example: "/centreon/img/media/ppm/operatingsystems-linux-snmp-linux-128.png"
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/proxy:
     get:
       tags:
