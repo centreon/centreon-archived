@@ -8,6 +8,7 @@ Centreon\Domain\HostConfiguration\Host:
     name:
       type: string
       groups:
+        - 'host_conf_name'
         - 'host_conf_min'
         - 'host_mapper_simulation'
     alias:
@@ -20,6 +21,16 @@ Centreon\Domain\HostConfiguration\Host:
       groups:
         - 'host_conf_full'
         - 'host_mapper_simulation'
+    monitoringServer:
+      type: "Centreon\\Domain\\MonitoringServer\\MonitoringServer"
+      groups:
+        - 'host_conf_full'
+        - 'host_mapper_simulation'
+    templates:
+      type: array<Centreon\Domain\HostConfiguration\Host>
+      groups:
+        - 'host_mapper_simulation'
+        - 'host_conf_full'
     comment:
       type: string
       groups:
