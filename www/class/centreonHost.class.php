@@ -645,7 +645,7 @@ class CentreonHost
      * @return int $pollerId
      * @throws Exception
      */
-    public function getHostPollerId(int $hostId): int
+    public function getHostPollerId(int $hostId): ?int
     {
         $pollerId = null;
         if ($hostId) {
