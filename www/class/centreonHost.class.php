@@ -642,7 +642,7 @@ class CentreonHost
     /**
      * Returns the poller id of the host linked to hostId provided
      * @param int $hostId
-     * @return int $pollerId
+     * @return int|null $pollerId
      * @throws Exception
      */
     public function getHostPollerId(int $hostId): ?int
