@@ -640,34 +640,37 @@ class CentreonHost
     }
 
     /**
-     * @param $hostId
-     * @return null
+     * Returns the poller id of the host linked to hostId provided
+     * @param int $hostId
+     * @return int|null $pollerId
      * @throws Exception
      */
-    public function getHostPollerId($hostId)
+    public function getHostPollerId(int $hostId): ?int
     {
         $pollerId = null;
-        $query = 'SELECT nagios_server_id FROM ns_host_relation WHERE host_host_id = :hostId LIMIT 1';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetch();
-            $pollerId = $row['nagios_server_id'];
-        } else {
-            $hostName = $this->getHostName($hostId);
-            if (preg_match('/^_Module_Meta/', $hostName)) {
-                $query = 'SELECT id ' .
-                    'FROM nagios_server ' .
-                    'WHERE localhost = "1" ' .
-                    'LIMIT 1 ';
-                $res = $this->db->query($query);
-                if ($res->rowCount()) {
-                    $row = $res->fetch();
-                    $pollerId = $row['id'];
+        if ($hostId) {
+            $query = 'SELECT nagios_server_id FROM ns_host_relation WHERE host_host_id = :hostId LIMIT 1';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
+            if ($stmt->rowCount()) {
+                $row = $stmt->fetch();
+                $pollerId = (int) $row['nagios_server_id'];
+            } else {
+                $hostName = $this->getHostName($hostId);
+                if (preg_match('/^_Module_Meta/', $hostName)) {
+                    $query = 'SELECT id ' .
+                        'FROM nagios_server ' .
+                        'WHERE localhost = "1" ' .
+                        'LIMIT 1 ';
+                    $res = $this->db->query($query);
+                    if ($res->rowCount()) {
+                        $row = $res->fetch();
+                        $pollerId = (int) $row['id'];
+                    }
                 }
             }
         }
