@@ -1,0 +1,18 @@
+default:
+  extensions:
+    Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
+  suites:
+    host_monitoring:
+      paths: [ "%paths.base%/features/HostMonitoring.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostMonitoringContext
+    service_monitoring:
+      paths: [ "%paths.base%/features/ServiceMonitoring.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\ServiceMonitoringContext
+    resource_monitoring:
+      paths: [ "%paths.base%/features/ResourceMonitoring.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\ResourceMonitoringContext
