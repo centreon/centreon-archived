@@ -105,27 +105,29 @@ class CentreonService
     }
 
     /**
-     *  Method that returns service description from service_id
+     *  Method that returns service description from serviceId
      *
-     * @param int $svc_id
-     * @return string
+     * @param int $serviceId
+     * @return ?string
      */
-    public function getServiceDesc($svc_id)
+    public function getServiceDesc(int $serviceId): ?string
     {
         static $svcTab = null;
 
-        if (is_null($svcTab)) {
-            $svcTab = array();
+        if ($serviceId) {
+            if (is_null($svcTab)) {
+                $svcTab = array();
 
-            $rq = "SELECT service_id, service_description
-     			   FROM service";
-            $res = $this->db->query($rq);
-            while ($row = $res->fetchRow()) {
-                $svcTab[$row['service_id']] = $row['service_description'];
+                $rq = "SELECT service_id, service_description
+     	    		   FROM service";
+                $res = $this->db->query($rq);
+                while ($row = $res->fetchRow()) {
+                    $svcTab[$row['service_id']] = $row['service_description'];
+                }
             }
-        }
-        if (isset($svcTab[$svc_id])) {
-            return $svcTab[$svc_id];
+            if (isset($svcTab[$serviceId])) {
+                return $svcTab[$serviceId];
+            }
         }
         return null;
     }
