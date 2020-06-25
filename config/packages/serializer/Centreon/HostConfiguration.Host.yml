@@ -22,11 +22,13 @@ Centreon\Domain\HostConfiguration\Host:
         - 'host_conf_full'
         - 'mapper_host'
     monitoringServer:
+      since_version: 2.1
       type: "Centreon\\Domain\\MonitoringServer\\MonitoringServer"
       groups:
         - 'host_conf_full'
         - 'mapper_host'
     templates:
+      since_version: 2.1
       type: array<Centreon\Domain\HostConfiguration\Host>
       groups:
         - 'mapper_host'
