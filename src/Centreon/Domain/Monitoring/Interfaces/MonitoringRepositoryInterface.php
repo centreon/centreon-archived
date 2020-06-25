@@ -112,12 +112,23 @@ interface MonitoringRepositoryInterface
 
     /**
      * Retrieve all real time services according to ACL of contact and host id
+     * using request parameters (search, sort, pagination)
      *
      * @param int $hostId Host ID for which we want to find services
      * @return Service[]
      * @throws \Exception
      */
-    public function findServicesByHost(int $hostId): array;
+    public function findServicesByHostWithRequestParameters(int $hostId): array;
+
+    /**
+     * Retrieve all real time services according to ACL of contact and host id
+     * without request parameters (no search, no sort, no pagination)
+     *
+     * @param int $hostId Host ID for which we want to find services
+     * @return Service[]
+     * @throws \Exception
+     */
+    public function findServicesByHostWithoutRequestParameters(int $hostId): array;
 
     /**
      * Find services according to the host id and service ids given

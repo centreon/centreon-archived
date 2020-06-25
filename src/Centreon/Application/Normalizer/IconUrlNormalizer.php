@@ -22,7 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Normalizer;
 
-use Centreon\Domain\Monitoring\Icon;
+use Centreon\Domain\Configuration\Icon\Icon as ConfigurationIcon;
+use Centreon\Domain\Monitoring\Icon as MonitoringIcon;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 /**
@@ -50,6 +51,6 @@ class IconUrlNormalizer implements ContextAwareNormalizerInterface
      */
     public function supportsNormalization($data, $format = null, array $context = [])
     {
-        return $data instanceof Icon;
+        return $data instanceof ConfigurationIcon || $data instanceof MonitoringIcon;
     }
 }

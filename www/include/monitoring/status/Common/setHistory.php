@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +34,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 
 $path = _CENTREON_PATH_ . "/www";
 require_once("$path/class/centreon.class.php");
@@ -46,26 +47,62 @@ CentreonSession::start();
 if (!CentreonSession::checkSession(session_id(), $DB)) {
     print "Bad Session ID";
     exit();
-} else {
-    $centreon = $_SESSION['centreon'];
+}
 
-    if (isset($_POST["limit"]) && isset($_POST["url"])) {
-        $centreon->historyLimit[$_POST["url"]] = $_POST["limit"];
-    }
+$centreon = $_SESSION['centreon'];
 
-    if (isset($_POST["page"]) && isset($_POST["url"])) {
-        $centreon->historyPage[$_POST["url"]] = $_POST["page"];
-    }
+if (isset($_POST["url"])) {
+    $url = filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL);
+    if (!empty($url)) {
+        if (isset($_POST["search"])) {
+            $search = filter_input(
+                INPUT_POST,
+                'search',
+                FILTER_SANITIZE_STRING
+            );
+            $centreon->historySearchService[$url] = $search;
+        }
 
-    if (isset($_POST["search"]) && isset($_POST["url"])) {
-        $centreon->historySearchService[$_POST["url"]] = addslashes($_POST["search"]);
-    }
+        if (isset($_POST["search_host"])) {
+            $searchHost = filter_input(
+                INPUT_POST,
+                'seach_host',
+                FILTER_SANITIZE_STRING
+            );
+            $centreon->historySearch[$url] = $searchHost;
+        }
 
-    if (isset($_POST["search_host"]) && isset($_POST["url"])) {
-        $centreon->historySearch[$_POST["url"]] = addslashes($_POST["search_host"]);
-    }
+        if (isset($_POST["search_output"])) {
+            $searchOutput = filter_input(
+                INPUT_POST,
+                'search_output',
+                FILTER_SANITIZE_STRING
+            );
+            $centreon->historySearchOutput[$url] = $searchOutput;
+        }
 
-    if (isset($_POST["search_output"]) && isset($_POST["url"])) {
-        $centreon->historySearchOutput[$_POST["url"]] = addslashes($_POST["search_output"]);
+        $defaultLimit = $centreon->optGen['maxViewConfiguration'] >= 1
+            ? (int)$centreon->optGen['maxViewConfiguration']
+            : 30;
+        if (isset($_POST["limit"])) {
+            $limit = filter_input(
+                INPUT_POST,
+                'limit',
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1, 'default' => $defaultLimit]]
+            );
+            $centreon->historyLimit[$url] = $limit;
+        }
+
+        if (isset($_POST["page"])) {
+            $page = filter_input(
+                INPUT_POST,
+                'page',
+                FILTER_VALIDATE_INT
+            );
+            if (false !== $page) {
+                $centreon->historyPage[$url] = $page;
+            }
+        }
     }
 }

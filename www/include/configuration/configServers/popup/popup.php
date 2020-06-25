@@ -25,8 +25,32 @@ require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'bootstrap.php';
 require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
-
+require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
 $pearDB = $dependencyInjector['configuration_db'];
+
+/* Check Session */
+CentreonSession::start(1);
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    print "Bad Session";
+    exit();
+}
+$centreon = $_SESSION['centreon'];
+$pollerId = filter_var($_GET['id'] ?? false, FILTER_VALIDATE_INT);
+if ($pollerId === false) {
+    print "Bad Poller Id";
+    exit();
+}
+$userId = (int)$centreon->user->user_id;
+$isAdmin = (bool)$centreon->user->admin;
+
+if ($isAdmin === false) {
+    $acl = new CentreonACL($userId, $isAdmin);
+    $aclPollers = $acl->getPollers();
+    if (!array_key_exists($pollerId, $aclPollers)) {
+        print "No access rights to this Poller";
+        exit();
+    }
+}
 
 $tpl = new Smarty();
 $tpl = initSmartyTpl(null, $tpl);
@@ -41,11 +65,11 @@ $query = "
 SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`, ns.remote_id, 
 remote_server_use_as_proxy, cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id 
 FROM nagios_server AS ns 
-LEFT JOIN remote_servers AS rs ON (rs.ip = ns.ns_ip_address) 
-LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id`) 
-LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id`) 
+    LEFT JOIN remote_servers AS rs ON (rs.ip = ns.ns_ip_address) 
+    LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id`) 
+    LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id`) 
 WHERE ns.ns_activate = '1' 
-AND ns.`id` =" . (int)$_GET['id'];
+AND ns.`id` =" . (int)$pollerId;
 
 $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();

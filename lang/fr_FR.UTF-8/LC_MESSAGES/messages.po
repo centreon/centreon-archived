@@ -15392,3 +15392,9 @@ msgstr "Les services ne seront pas affectés car vous ne disposez pas de droits 
 
 msgid "Hosts will not be affected because you don't have sufficient permission"
 msgstr "Les hôtes ne seront pas affectés car vous ne disposez pas de droits suffisants"
+
+msgid "Protocol %s is not allowed"
+msgstr "Le protocole %s n'est pas autorisé"
+
+msgid "The port can only be between 0 and 65535 inclusive"
+msgstr "Le port ne peut être compris qu'entre 0 et 65535 inclus"

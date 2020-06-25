@@ -73,6 +73,16 @@ services:
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
+    # Icon configuration
+    Centreon\Domain\Configuration\Icon\Interfaces\IconServiceInterface:
+        class: Centreon\Domain\Configuration\Icon\IconService
+
+    Centreon\Domain\Configuration\Icon\Interfaces\IconRepositoryInterface:
+        class: Centreon\Infrastructure\Icon\IconRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
     # Poller configuration
     Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface:
         class: Centreon\Domain\MonitoringServer\MonitoringServerService
