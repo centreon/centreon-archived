@@ -90,7 +90,7 @@ sub getDownTime {
             if ($row->{"actual_start_time"} < $start) {
                 $row->{"actual_start_time"} = $start;
             }
-            if ($row->{"actual_end_time"} > $end || !defined $row->{"actual_end_time"}) {
+            if (!defined $row->{"actual_end_time"} || $row->{"actual_end_time"} > $end) {
                 $row->{"actual_end_time"} = $end;
             }
 
