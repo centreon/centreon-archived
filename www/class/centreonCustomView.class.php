@@ -214,15 +214,15 @@ class CentreonCustomView
             return true;
         }
         $associativeActions = [
-            'edit' => TOPOLOGY_PAGE_EDIT_VIEW,
-            'share' => TOPOLOGY_PAGE_SHARE_VIEW,
-            'setPreferences' => TOPOLOGY_PAGE_SET_WIDGET_PREFERENCES,
-            'addWidget' => TOPOLOGY_PAGE_ADD_WIDGET,
-            'deleteWidget' => TOPOLOGY_PAGE_DELETE_WIDGET,
-            'setRotate' => TOPOLOGY_PAGE_SET_ROTATE,
-            'deleteView' => TOPOLOGY_PAGE_DELETE_VIEW,
-            'add' => TOPOLOGY_PAGE_ADD_VIEW,
-            'setDefault' => TOPOLOGY_PAGE_SET_DEFAULT_VIEW
+            'edit' => self::TOPOLOGY_PAGE_EDIT_VIEW,
+            'share' => self::TOPOLOGY_PAGE_SHARE_VIEW,
+            'setPreferences' => self::TOPOLOGY_PAGE_SET_WIDGET_PREFERENCES,
+            'addWidget' => self::TOPOLOGY_PAGE_ADD_WIDGET,
+            'deleteWidget' => self::TOPOLOGY_PAGE_DELETE_WIDGET,
+            'setRotate' => self::TOPOLOGY_PAGE_SET_ROTATE,
+            'deleteView' => self::TOPOLOGY_PAGE_DELETE_VIEW,
+            'add' => self::TOPOLOGY_PAGE_ADD_VIEW,
+            'setDefault' => self::TOPOLOGY_PAGE_SET_DEFAULT_VIEW
         ];
 
         // retrieving menu access rights of the current user.
