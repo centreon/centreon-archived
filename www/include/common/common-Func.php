@@ -82,7 +82,7 @@ WHERE session.session_id = ? AND contact.contact_id = session.user_id", Centreon
  * </code>
  *
  * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
- * @param{TAB}string{TAB}$argument2{TAB}Mon deuxi�me argument
+ * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
  * @return{TAB}int{TAB}Ma valeur de retour
  */
 
