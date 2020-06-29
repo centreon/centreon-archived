@@ -48,7 +48,7 @@ sub new {
     $self->{centstatus} = shift;
     if (@_) {
         $self->{centstorage}  = shift;
-    }    
+    }
     bless $self, $class;
     return $self;
 }
@@ -59,21 +59,18 @@ sub getServiceAckTime {
     my $centreon = $self->{centstatus};
     my $start = shift;
     my $end = shift;
-    my $hostName = shift;
-    my $serviceDescription = shift;
+    my $hostId = shift;
+    my $serviceId = shift;
     my $query;
-    
+
     $query = "SELECT `entry_time` as ack_time, sticky ".
-    " FROM `acknowledgements` a, `services` s, `hosts` h ".
-    " WHERE h.`name` = '".$hostName. "'".
-    " AND h.`host_id` = s.`host_id`".   
-    " AND s.`description` = '".$serviceDescription. "'".
-    " AND s.`host_id` = a.`host_id`".
-    " AND s.`service_id` = a.`service_id`".
-    " AND `type` = 1".
-    " AND `entry_time` >= ".$start.
-    " AND `entry_time` <= ".$end. 
-    " ORDER BY `entry_time` asc";
+    " FROM `acknowledgements`".
+    " WHERE `host_id` = " . $hostId .
+    " AND `service_id` = ". $serviceId .
+    " AND `type` = 1" .
+    " AND `entry_time` >= " . $start .
+    " AND `entry_time` <= " . $end .
+    " ORDER BY `entry_time` ASC";
 
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
@@ -92,17 +89,16 @@ sub getHostAckTime {
     my $centreon = $self->{centstatus};
     my $start = shift;
     my $end = shift;
-    my $hostName = shift;
+    my $hostId = shift;
     my $query;
-    
+
     $query = "SELECT entry_time as ack_time, sticky ".
-        " FROM `acknowledgements` a, `hosts` h".
-        " WHERE h.`host_id` = a.`host_id`".
-        " AND `type` = 0".
-        " AND `entry_time` >= ".$start.
-        " AND `entry_time` <= ".$end.
-        " AND h.`name` = '".$hostName. "'".
-        " ORDER BY `entry_time` asc";
+        " FROM `acknowledgements`".
+        " WHERE `type` = 0".
+        " AND `entry_time` >= " . $start .
+        " AND `entry_time` <= " . $end .
+        " AND `host_id` = " . $hostId .
+        " ORDER BY `entry_time` ASC";
 
     my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";

@@ -106,26 +106,26 @@ sub getStateEventDurations {
 # Get last events for each host
 # Parameters:
 # $start: max date possible for each event
-# $serviceNames: references a hash table containing a list of host
+# $hostIds: references a hash table containing a list of host ids
 sub getLastStates {
     my $self = shift;
     my $centstorage = $self->{centstorage};
-    my $hostNames = shift;
-    
+    my $hostIds = shift;
+
     my %currentStates;
-    
+
     my $query = "SELECT `host_id`, `state`, `hoststateevent_id`, `end_time`, `in_downtime`, `in_ack`".
                 " FROM `hoststateevents`".
                 " WHERE `last_update` = 1";
     my ($status, $sth) = $centstorage->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
-        if (defined($hostNames->{$row->{host_id}})) {
+        if (defined($hostIds->{$row->{host_id}})) {
             my @tab = ($row->{end_time}, $row->{state}, $row->{hoststateevent_id}, $row->{in_downtime}, $row->{in_ack});
-            $currentStates{$hostNames->{$row->{host_id}}} = \@tab;
+            $currentStates{$row->{host_id}} = \@tab;
         }
     }
     $sth->finish();
-    
+
     return (\%currentStates);
 }
 
@@ -139,7 +139,7 @@ sub updateEventEndTime {
     my $centreonDownTime = $self->{centreonDownTime};
     my $centreonAck = $self->{centreonAck};
 
-    my ($id, $hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime, $inAck) = @_;
+    my ($hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime, $inAck) = @_;
     my $return = {};
 
     my ($events, $updateTime);
@@ -149,7 +149,7 @@ sub updateEventEndTime {
     if (defined($events)) {
         $totalEvents = scalar(@$events);
     }
-    my ($ack, $sticky) = $centreonAck->getHostAckTime($start, $updateTime, $id);
+    my ($ack, $sticky) = $centreonAck->getHostAckTime($start, $updateTime, $hostId);
     if (defined($ack) && $sticky == 1) {
         $inAck = 1;
     }
@@ -163,9 +163,9 @@ sub updateEventEndTime {
                 " WHERE `hoststateevent_id` = ".$eventId;
             $centstorage->query($query);
         }
-        return $self->insertEventTable($id, $hostId, $state, $lastUpdate, $events, $inAck);
+        return $self->insertEventTable($hostId, $state, $lastUpdate, $events, $inAck);
     }
-    
+
     $return->{in_ack} = $inAck;
     return $return;
 }
@@ -181,14 +181,14 @@ sub insertEvent {
     my $self = shift;
     my $centreonDownTime = $self->{centreonDownTime};
 
-    my ($id, $hostId, $state, $start, $end, $lastUpdate, $downTime, $inAck) = @_;
+    my ($hostId, $state, $start, $end, $lastUpdate, $downtimes, $inAck) = @_;
     my $return = { in_ack => $inAck };
 
-    my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime, $state);
+    my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downtimes, $state);
     if ($state ne "") {
-        return $self->insertEventTable($id, $hostId, $state, $lastUpdate, $events, $inAck);
+        return $self->insertEventTable($hostId, $state, $lastUpdate, $events, $inAck);
     }
-    
+
     return $return;
 }
 
@@ -197,11 +197,11 @@ sub insertEventTable {
     my $centstorage = $self->{centstorage};
     my $centreonAck = $self->{centreonAck};
 
-    my ($id, $hostId, $state, $lastUpdate, $events, $inAck) =  @_;
+    my ($hostId, $state, $lastUpdate, $events, $inAck) =  @_;
     my $return = {};
 
     my $query_start = "INSERT INTO `hoststateevents`".
-        " (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`, `in_ack`)".
+        " (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`, `in_ack`)" .
         " VALUES (";
     my $count = 0;
     my $totalEvents = 0;
@@ -212,7 +212,7 @@ sub insertEventTable {
     }
     for($count = 0; $count < scalar(@$events) - 1; $count++) {
         my $tab = $events->[$count];
-        my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $id);
+        my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $hostId);
         if ($inAck == 1) {
             $sticky = 1;
             $ack = $tab->[0];
@@ -226,7 +226,7 @@ sub insertEventTable {
     if (scalar(@$events)) {
         my $tab = $events->[$count];
         if (defined($hostId) && defined($state)) {
-            my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $id);
+            my ($ack, $sticky) = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $hostId);
             if ($inAck == 1) {
                 $sticky = 1;
                 $ack = $tab->[0];
@@ -234,11 +234,12 @@ sub insertEventTable {
             if (defined($ack) && $sticky == 1) {
                 $inAck = 1;
             }
-            my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].", ".$ack.", '$sticky')";        
+            my $query_end = $hostId . ", " . $state . ", " . $tab->[0] . ", " . $tab->[1] . ", " .
+                $lastUpdate . ", " . $tab->[2] . ", " . $ack . ", '$sticky')";
             $centstorage->query($query_start.$query_end);
         }
     }
-    
+
     $return->{in_ack} = $inAck;
     return $return;
 }

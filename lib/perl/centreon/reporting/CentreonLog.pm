@@ -65,13 +65,13 @@ sub getLogOfServices {
         $start = shift;
         $end = shift;
     }
-    my $query = "SELECT `status`, `ctime`, `host_name`, `service_description`".
-        " FROM `logs`".
-        " WHERE `ctime` >= ".$start.
-        " AND `ctime` < ".$end.
-        " AND (`type` = 1 OR (`status` = 0 AND `type` = 0))".
-        " AND ((`service_id` != 0 AND `service_id` IS NOT NULL) OR `service_description` IS NOT NULL) ".
-        " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
+    my $query = "SELECT `status`, `ctime`, `host_id`, `service_id`" .
+        " FROM `logs`" .
+        " WHERE `ctime` >= " . $start .
+        " AND `ctime` < " . $end .
+        " AND (`type` = 1 OR (`status` = 0 AND `type` = 0))" .
+        " AND ((`service_id` != 0 AND `service_id` IS NOT NULL) OR `service_description` IS NOT NULL) " .
+        " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')" .
         " ORDER BY `ctime`";
     my ($status, $result) = $centstorage->query($query);
     return $result;
@@ -89,12 +89,12 @@ sub getLogOfHosts {
         $start = shift;
         $end = shift;
     }
-    my $query = "SELECT `status`, `ctime`, `host_name`".
-            " FROM `logs`".
+    my $query = "SELECT `status`, `ctime`, `host_id`" .
+            " FROM `logs`" .
             " WHERE `ctime` >= " . $start .
             " AND `ctime` < " . $end .
-            " AND (`type` = 1 OR (`status` = 0 AND `type` = 0))".
-            " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
+            " AND (`type` = 1 OR (`status` = 0 AND `type` = 0))" .
+            " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')" .
             " AND (`service_id` = 0 OR `service_id` IS NULL) AND (service_description = '' OR service_description IS NULL) ".
             " ORDER BY `ctime`";
     my ($status, $result) = $centstorage->query($query);

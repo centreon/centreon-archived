@@ -106,28 +106,28 @@ sub getStateEventDurations {
 # Get last events for each service
 # Parameters:
 # $start: max date possible for each event
-# $serviceNames: references a hash table containing a list of services
+# $serviceIds: references a hash table containing a list of services
 sub getLastStates {
     my $self = shift;
     my $centstorage = $self->{centstorage};
-    
-    my $serviceNames = shift;
-    
+
+    my $serviceIds = shift;
+
     my $currentStates = {};
-    
+
     my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevent_id`, `end_time`, `in_downtime`, `in_ack`".
                 " FROM `servicestateevents`".
                 " WHERE `last_update` = 1";
     my ($status, $sth) = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
-        my $serviceId = $row->{host_id}.";;".$row->{service_id};
-        if (defined($serviceNames->{$serviceId})) {
+        my $serviceId = $row->{host_id} . ";;" . $row->{service_id};
+        if (defined($serviceIds->{$serviceId})) {
             my @tab = ($row->{end_time}, $row->{state}, $row->{servicestateevent_id}, $row->{in_downtime}, $row->{in_ack});
-            $currentStates->{$serviceNames->{$serviceId}} = \@tab;
+            $currentStates->{$serviceId} = \@tab;
         }
     }
     $sth->finish();
-    
+
     return ($currentStates);
 }
 
@@ -141,17 +141,16 @@ sub updateEventEndTime {
     my $centstatus = $self->{centstatus};
     my $centreonAck = $self->{centreonAck};
     my $centreonDownTime = $self->{centreonDownTime};
-    my ($id, $hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime, $inAck) = @_;
+    my ($hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downtimes, $inAck) = @_;
     my $return = {};
-    
-    my ($hostName, $serviceDescription) = split (";;", $id);
+
     my ($events, $updateTime);
-    ($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId.";;".$serviceId, $start, $end, $downTimeFlag, $downTime, $state);
+    ($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId . ";;" . $serviceId, $start, $end, $downTimeFlag, $downtimes, $state);
     my $totalEvents = 0;
     if (defined($events)) {
         $totalEvents = scalar(@$events);
     }
-    my ($ack, $sticky) = $centreonAck->getServiceAckTime($start, $updateTime, $hostName, $serviceDescription);
+    my ($ack, $sticky) = $centreonAck->getServiceAckTime($start, $updateTime, $hostId, $serviceId);
     if (defined($ack) && $sticky == 1) {
         $inAck = 1;
     }
@@ -165,9 +164,9 @@ sub updateEventEndTime {
                     " WHERE `servicestateevent_id` = ".$eventId;
             $centstorage->query($query);
         }
-        return $self->insertEventTable($id, $hostId, $serviceId, $state, $lastUpdate, $events, $inAck);
+        return $self->insertEventTable($hostId, $serviceId, $state, $lastUpdate, $events, $inAck);
     }
-    
+
     $return->{in_ack} = $inAck;
     return $return;
 }
@@ -182,14 +181,14 @@ sub updateEventEndTime {
 sub insertEvent {
     my $self = shift;
     my $centreonDownTime = $self->{centreonDownTime};
-    my ($id, $hostId, $serviceId, $state, $start, $end, $lastUpdate, $downTime, $inAck) = @_;
-    my $events = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime, $state);    
+    my ($hostId, $serviceId, $state, $start, $end, $lastUpdate, $downtimes, $inAck) = @_;
+    my $events = $centreonDownTime->splitInsertEventDownTime($hostId . ";;" . $serviceId, $start, $end, $downtimes, $state);
     my $return = { in_ack => $inAck };
-    
+
     if ($state ne "") {
-        return $self->insertEventTable($id, $hostId, $serviceId, $state, $lastUpdate, $events, $inAck);
+        return $self->insertEventTable($hostId, $serviceId, $state, $lastUpdate, $events, $inAck);
     }
-    
+
     return $return;
 }
 
@@ -197,23 +196,22 @@ sub insertEventTable {
     my $self = shift;
     my $centstorage = $self->{centstorage};
     my $centreonAck = $self->{centreonAck};
-    my ($id, $hostId, $serviceId, $state, $lastUpdate, $events, $inAck) =  @_;
+    my ($hostId, $serviceId, $state, $lastUpdate, $events, $inAck) =  @_;
     my $return = {};
-    
+
     my $query_start = "INSERT INTO `servicestateevents`".
                       " (`host_id`, `service_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`, `in_ack`)".
                       " VALUES (";
-    
+
     # Stick ack is removed
     if ($state == 0) {
         $inAck = 0;
     }
     my $count = 0;
-    my ($hostName, $serviceDescription) = split (";;", $id);
     for ($count = 0; $count < scalar(@$events) - 1; $count++) {
         my $tab = $events->[$count];
-        
-        my ($ack, $sticky) = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostName, $serviceDescription);
+
+        my ($ack, $sticky) = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostId, $serviceId);
         if ($inAck == 1) {
             $sticky = 1;
             $ack = $tab->[0];
@@ -227,7 +225,7 @@ sub insertEventTable {
     if (scalar(@$events)) {
         my $tab = $events->[$count];
         if (defined($hostId) && defined($serviceId) && defined($state)) {
-            my ($ack, $sticky) = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostName, $serviceDescription);
+            my ($ack, $sticky) = $centreonAck->getServiceAckTime($tab->[0], $tab->[1], $hostId, $serviceId);
             if ($inAck == 1) {
                 $sticky = 1;
                 $ack = $tab->[0];
@@ -239,7 +237,7 @@ sub insertEventTable {
             $centstorage->query($query_start.$query_end);
         }
     }
-    
+
     $return->{in_ack} = $inAck;
     return $return;
 }
@@ -264,7 +262,7 @@ sub truncateStateEvents {
 sub getFirstLastIncidentTimes {
     my $self = shift;
     my $centstorage = $self->{centstorage};
-    
+
     my $query = "SELECT min(`start_time`) as minc, max(`end_time`) as maxc FROM `servicestateevents`";
     my ($status, $sth) = $centstorage->query($query);
     my ($start, $end) = (0,0);
