@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-$searchOptions = array(
+$searchOptions = [
     'host' => 0,
     'service' => 0,
     'hostTemplate' => 0,
@@ -50,9 +50,9 @@ $searchOptions = array(
     'servicegroup' => 0,
     'hasNoProcedure' => 0,
     'templatesWithNoProcedure' => 0
-);
+];
 
-$labels = array(
+$labels = [
     'host' => _("Host"),
     'service' => _("Service"),
     'hostTemplate' => _("Host Template"),
@@ -63,7 +63,7 @@ $labels = array(
     'hasNoProcedure' => _("Show wiki pageless only"),
     'templatesWithNoProcedure' => _("Show wiki pageless only - inherited templates included"),
     'search' => _("Search")
-);
+];
 
 if ($currentPage  == "hosts") {
     $searchOptions['host'] = 1;
@@ -89,22 +89,22 @@ if ($currentPage  == "hosts") {
     $searchOptions['templatesWithNoProcedure'] = 1;
 }
 
-$tpl->assign('searchHost', isset($_REQUEST['searchHost']) ? $_REQUEST['searchHost'] : "");
-$tpl->assign('searchService', isset($_REQUEST['searchService']) ? $_REQUEST['searchService'] : "");
-$tpl->assign('searchHostTemplate', isset($_REQUEST['searchHostTemplate']) ? $_REQUEST['searchHostTemplate'] : "");
+$tpl->assign('searchHost', isset($_POST['searchHost']) ? $_POST['searchHost'] : "");
+$tpl->assign('searchService', isset($_POST['searchService']) ? $_POST['searchService'] : "");
+$tpl->assign('searchHostTemplate', isset($_POST['searchHostTemplate']) ? $_POST['searchHostTemplate'] : "");
 $tpl->assign(
     'searchServiceTemplate',
-    isset($_REQUEST['searchServiceTemplate']) ? $_REQUEST['searchServiceTemplate'] : ""
+    isset($_POST['searchServiceTemplate']) ? $_POST['searchServiceTemplate'] : ""
 );
 
 $checked = "";
-if (isset($_REQUEST['searchHasNoProcedure'])) {
+if (isset($_POST['searchHasNoProcedure'])) {
     $checked = 'checked';
 }
 $tpl->assign('searchHasNoProcedure', $checked);
 
 $checked2 = "";
-if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+if (isset($_POST['searchTemplatesWithNoProcedure'])) {
     $checked2 = 'checked';
 }
 $tpl->assign('searchTemplatesWithNoProcedure', $checked2);
@@ -119,7 +119,7 @@ if ($searchOptions['poller']) {
     );
     $searchPoller = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_REQUEST['searchPoller']) && $row['id'] == $_REQUEST['searchPoller']) {
+        if (isset($_POST['searchPoller']) && $row['id'] == $_POST['searchPoller']) {
             $searchPoller .= "<option value='".$row['id']."' selected>" . $row['name'] . "</option>";
         } else {
             $searchPoller .= "<option value='".$row['id']."'>" .$row['name']. "</option>";
@@ -137,7 +137,7 @@ if ($searchOptions['hostgroup']) {
     );
     $searchHostgroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_REQUEST['searchHostgroup']) && $row['hg_id'] == $_REQUEST['searchHostgroup']) {
+        if (isset($_POST['searchHostgroup']) && $row['hg_id'] == $_POST['searchHostgroup']) {
             $searchHostgroup .= "<option value ='".$row['hg_id']."' selected>" . $row['hg_name'] . "</option>";
         } else {
             $searchHostgroup .= "<option value ='".$row['hg_id']."'>" . $row['hg_name'] . "</option>";
@@ -155,7 +155,7 @@ if ($searchOptions['servicegroup']) {
     );
     $searchServicegroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_REQUEST['searchServicegroup']) && $row['sg_id'] == $_REQUEST['searchServicegroup']) {
+        if (isset($_POST['searchServicegroup']) && $row['sg_id'] == $_POST['searchServicegroup']) {
             $searchServicegroup .= "<option value ='".$row['sg_id']."' selected>" . $row['sg_name'] . "</option>";
         } else {
             $searchServicegroup .= "<option value ='".$row['sg_id']."'>" . $row['sg_name'] . "</option>";
