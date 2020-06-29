@@ -54,7 +54,7 @@ $order = "ASC";
 
 // Use whitelist as we can't bind ORDER BY values
 if (!empty($_POST['order'])) {
-    if (in_array($_POST['order'], ["ASC", "DESC"])){
+    if (in_array($_POST['order'], ["ASC", "DESC"])) {
         $order = $_POST['order'];
     }
 }
@@ -107,7 +107,7 @@ try {
     $query .= "ORDER BY " . $orderby . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
     $statement = $pearDB->prepare($query);
     if (!empty($postHostTemplate)) {
-        $statement->bindValue(':postHostTemplate', '%' . $postHostTemplate . '%',PDO::PARAM_STR);
+        $statement->bindValue(':postHostTemplate', '%' . $postHostTemplate . '%', PDO::PARAM_STR);
     }
 
     $statement->execute();

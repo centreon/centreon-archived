@@ -45,7 +45,7 @@ require_once $modules_path . 'functions.php';
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-if (!isset($limit) || !$limit ||$limit < 0) {
+if (!isset($limit) || !$limit || $limit < 0) {
     $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
@@ -54,7 +54,7 @@ $orderby = "host_name";
 
 // Use whitelist as we can't bind ORDER BY values
 if (!empty($_POST['order']) && !empty($_POST['orderby'])) {
-    if (in_array($_POST['order'], ["ASC", "DESC"])){
+    if (in_array($_POST['order'], ["ASC", "DESC"])) {
         $order = $_POST['order'];
     }
     if (in_array($_POST['orderby'], ["host_name", "service_description"])) {
@@ -89,7 +89,7 @@ try {
         ? filter_input(INPUT_POST, 'searchServicegroup', FILTER_VALIDATE_INT)
         : false;
     $postPoller = !empty($_POST['searchPoller'])
-        ? filter_input(INPUT_POST, 'searchPoller',FILTER_VALIDATE_INT)
+        ? filter_input(INPUT_POST, 'searchPoller', FILTER_VALIDATE_INT)
         : false;
 
     $conf = getWikiConfig($pearDB);

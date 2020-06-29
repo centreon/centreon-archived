@@ -54,7 +54,7 @@ $order = "ASC";
 
 // Use whitelist as we can't bind ORDER BY values
 if (!empty($_POST['order'])) {
-    if (in_array($_POST['order'], ["ASC", "DESC"])){
+    if (in_array($_POST['order'], ["ASC", "DESC"])) {
         $order = $_POST['order'];
     }
 }
@@ -80,7 +80,7 @@ try {
         ? filter_input(INPUT_POST, 'searchHostgroup', FILTER_VALIDATE_INT)
         : false;
     $postPoller = !empty($_POST['searchPoller'])
-        ? filter_input(INPUT_POST, 'searchPoller',FILTER_VALIDATE_INT)
+        ? filter_input(INPUT_POST, 'searchPoller', FILTER_VALIDATE_INT)
         : false;
 
     $conf = getWikiConfig($pearDB);
