@@ -251,7 +251,8 @@ try {
         }
 
         if (!empty($templatesHasNoProcedure)) {
-            if ($diff[$key] == 1
+            if (
+                $diff[$key] == 1
                 || $proc->serviceHasProcedure($key_nospace, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
             ) {
                 $rows--;
