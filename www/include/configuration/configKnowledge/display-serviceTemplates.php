@@ -45,11 +45,11 @@ require_once $modules_path . 'functions.php';
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-if (!isset($limit) || !$limit || $limit < 0) {
+if (!isset($limit) || (int) $limit < 0) {
     $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
-$orderby = "service_description";
+$orderBy = "service_description";
 $order = "ASC";
 
 // Use whitelist as we can't bind ORDER BY values
@@ -74,8 +74,14 @@ $tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
     $postServiceTemplate = !empty($_POST['searchServiceTemplate'])
-    ? filter_input(INPUT_POST, 'searchServiceTemplate', FILTER_SANITIZE_STRING)
-    : '';
+        ? filter_input(INPUT_POST, 'searchServiceTemplate', FILTER_SANITIZE_STRING)
+        : '';
+    $hasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+    $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
 
     $conf = getWikiConfig($pearDB);
     $WikiURL = $conf['kb_wiki_url'];
@@ -99,14 +105,15 @@ try {
     $proc->setServiceInformations();
 
     // Get Services Template Informations
-    $query = "SELECT SQL_CALC_FOUND_ROWS service_description, service_id " .
-        "FROM service " .
-        "WHERE service_register = '0' " .
-        "AND service_locked = '0' ";
+    $query = "
+        SELECT SQL_CALC_FOUND_ROWS service_description, service_id
+            FROM service
+            WHERE service_register = '0'
+            AND service_locked = '0' ";
     if (!empty($postServiceTemplate)) {
         $query .= " AND service_description LIKE :postServiceTemplate ";
     }
-    $query .= "ORDER BY " . $orderby . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
+    $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
     $statement = $pearDB->prepare($query);
     if (!empty($postServiceTemplate)) {
         $statement->bindValue(':postServiceTemplate', '%' . $postServiceTemplate . '%', PDO::PARAM_STR);
@@ -140,7 +147,7 @@ try {
             $diff[$key] = 0;
         }
 
-        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+        if (!empty($templatesHasNoProcedure)) {
             if ($diff[$key] == 1
                 || $proc->serviceTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
             ) {
@@ -148,7 +155,7 @@ try {
                 unset($diff[$key]);
                 continue;
             }
-        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+        } elseif (!empty($hasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);
@@ -201,7 +208,7 @@ try {
     $tpl->assign('limit', $limit);
 
     $tpl->assign('order', $order);
-    $tpl->assign('orderby', $orderby);
+    $tpl->assign('orderby', $orderBy);
     $tpl->assign('defaultOrderby', 'service_description');
 
     // Apply a template definition

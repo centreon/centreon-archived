@@ -45,18 +45,16 @@ require_once $modules_path . 'functions.php';
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-if (!isset($limit) || !$limit || $limit < 0) {
+if (!isset($limit) || (int) $limit < 0) {
     $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
-$orderby = "host_name";
+$orderBy = "host_name";
 $order = "ASC";
 
-// Use whitelist as we can't bind ORDER BY values
-if (!empty($_POST['order'])) {
-    if (in_array($_POST['order'], ["ASC", "DESC"])) {
-        $order = $_POST['order'];
-    }
+// Use whitelist as we can't bind ORDER BY sort parameter
+if (!empty($_POST['order']) && in_array($_POST['order'], ["ASC", "DESC"])) {
+    $order = $_POST['order'];
 }
 
 require_once "./include/common/autoNumLimit.php";
@@ -82,6 +80,12 @@ try {
     $postPoller = !empty($_POST['searchPoller'])
         ? filter_input(INPUT_POST, 'searchPoller', FILTER_VALIDATE_INT)
         : false;
+    $hasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+    $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
 
     $conf = getWikiConfig($pearDB);
     $WikiURL = $conf['kb_wiki_url'];
@@ -101,8 +105,11 @@ try {
     $proc->setHostInformations();
     $proc->setServiceInformations();
 
-    $query = "SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image " .
-        "FROM extended_host_information ehi, host ";
+    $queryValues = [];
+    $query = "
+        SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image
+        FROM extended_host_information ehi, host ";
+
     if ($postPoller !== false) {
         $query .= "JOIN ns_host_relation nhr ON nhr.host_host_id = host.host_id ";
     }
@@ -112,24 +119,30 @@ try {
     $query .= "WHERE host.host_id = ehi.host_host_id ";
     if ($postPoller !== false) {
         $query .= "AND nhr.nagios_server_id = :postPoller ";
+        $queryValues[':postPoller'] = [
+            PDO::PARAM_INT => $postPoller
+        ];
     }
     $query .= "AND host.host_register = '1' ";
     if ($postHostgroup !== false) {
         $query .= "AND hgr.hostgroup_hg_id = :postHostgroup ";
+        $queryValues[':postHostgroup'] = [
+            PDO::PARAM_INT => $postHostgroup
+        ];
     }
     if (!empty($postHost)) {
         $query .= "AND host_name LIKE :postHost ";
+        $queryValues[':postHost'] = [
+            PDO::PARAM_STR => "%" . $postHost . "%"
+        ];
     }
-    $query .= "ORDER BY " . $orderby . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
+    $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
     $statement = $pearDB->prepare($query);
-    if ($postPoller !== false) {
-        $statement->bindValue(':postPoller', $postPoller, PDO::PARAM_INT);
-    }
-    if ($postHostgroup !== false) {
-        $statement->bindValue(':postHostgroup', $postHostgroup, PDO::PARAM_INT);
-    }
-    if (!empty($postHost)) {
-        $statement->bindValue(':postHost', '%' . $postHost . '%', PDO::PARAM_STR);
+
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $statement->bindValue($bindId, $bindValue, $bindType);
+        }
     }
 
     $statement->execute();
@@ -161,14 +174,13 @@ try {
         } else {
             $diff[$key] = 0;
         }
-
-        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+        if (!empty($templatesHasNoProcedure)) {
             if ($diff[$key] == 1 || $proc->hostHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true) {
                 $rows--;
                 unset($diff[$key]);
                 continue;
             }
-        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+        } elseif (!empty($hasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);
@@ -222,7 +234,7 @@ try {
     $tpl->assign('limit', $limit);
 
     $tpl->assign('order', $order);
-    $tpl->assign('orderby', $orderby);
+    $tpl->assign('orderby', $orderBy);
     $tpl->assign('defaultOrderby', 'host_name');
 
     // Apply a template definition

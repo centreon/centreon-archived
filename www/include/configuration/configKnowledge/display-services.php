@@ -45,12 +45,12 @@ require_once $modules_path . 'functions.php';
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-if (!isset($limit) || !$limit || $limit < 0) {
+if (!isset($limit) || (int) $limit < 0) {
     $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
 $order = "ASC";
-$orderby = "host_name";
+$orderBy = "host_name";
 
 // Use whitelist as we can't bind ORDER BY values
 if (!empty($_POST['order']) && !empty($_POST['orderby'])) {
@@ -58,7 +58,7 @@ if (!empty($_POST['order']) && !empty($_POST['orderby'])) {
         $order = $_POST['order'];
     }
     if (in_array($_POST['orderby'], ["host_name", "service_description"])) {
-        $orderby = $_POST['orderby'];
+        $orderBy = $_POST['orderby'];
     }
 }
 
@@ -91,6 +91,12 @@ try {
     $postPoller = !empty($_POST['searchPoller'])
         ? filter_input(INPUT_POST, 'searchPoller', FILTER_VALIDATE_INT)
         : false;
+    $hasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+    $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
 
     $conf = getWikiConfig($pearDB);
     $WikiURL = $conf['kb_wiki_url'];
@@ -113,83 +119,99 @@ try {
     $proc->setHostInformations();
     $proc->setServiceInformations();
 
-    $query = "SELECT SQL_CALC_FOUND_ROWS t1.* FROM ( ";
-    $query .= "SELECT s.service_id, s.service_description, h.host_name, h.host_id ";
-    $query .= "FROM service s ";
-    $query .= "LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id ";
-    $query .= "RIGHT JOIN host h ON h.host_id = hsr.host_host_id ";
-    $query .= "WHERE s.service_register = '1' ";
+    $queryValues = [];
+    $query = "
+        SELECT SQL_CALC_FOUND_ROWS t1.* FROM (
+            SELECT s.service_id, s.service_description, h.host_name, h.host_id
+            FROM service s
+                LEFT JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
+                RIGHT JOIN host h ON h.host_id = hsr.host_host_id
+            WHERE s.service_register = '1' ";
     if (!empty($postHost)) {
         $query .= "AND h.host_name LIKE :postHost ";
+        $queryValues[':postHost'] = [
+            \PDO::PARAM_STR => "%" . $postHost . "%"
+        ];
     }
     if ($postHostgroup !== false) {
-        $query .= "AND hsr.host_host_id IN ";
-        $query .= "(SELECT host_host_id FROM hostgroup_relation hgr
-        			    WHERE hgr.hostgroup_hg_id = :postHostgroup ) ";
+        $query .= "
+            AND hsr.host_host_id IN
+            (SELECT host_host_id FROM hostgroup_relation hgr
+                WHERE hgr.hostgroup_hg_id = :postHostgroup ) ";
+        $queryValues[':postHostgroup'] = [
+            \PDO::PARAM_INT => $postHostgroup
+        ];
     }
     if ($postServicegroup !== false) {
-        $query .= "AND s.service_id IN ";
-        $query .= "(SELECT service_service_id FROM servicegroup_relation
-                        WHERE servicegroup_sg_id = :postServicegroup )";
+        $query .= "
+            AND s.service_id IN
+            (SELECT service_service_id FROM servicegroup_relation
+                WHERE servicegroup_sg_id = :postServicegroup ) ";
+        $queryValues[':postServicegroup'] = [
+            \PDO::PARAM_INT => $postServicegroup
+        ];
     }
     if ($postPoller !== false) {
-        $query .= "AND hsr.host_host_id IN ";
-        $query .= "(SELECT host_host_id FROM ns_host_relation
-        			    WHERE nagios_server_id = :postPoller ) ";
+        $query .= "
+            AND hsr.host_host_id IN
+            (SELECT host_host_id FROM ns_host_relation
+                WHERE nagios_server_id = :postPoller ) ";
+        $queryValues[':postPoller'] = [
+            \PDO::PARAM_INT => $postPoller
+        ];
     }
     if (!empty($postService)) {
         $query .= "AND s.service_description LIKE :postService ";
+        $queryValues[':postService'] = [
+            \PDO::PARAM_STR => "%" . $postService . "%"
+        ];
     }
 
-    $query .= "UNION ";
-    $query .= "SELECT s2.service_id, s2.service_description, h2.host_name, h2.host_id ";
-    $query .= "FROM service s2 ";
-    $query .= "LEFT JOIN host_service_relation hsr2 ON hsr2.service_service_id = s2.service_id ";
-    $query .= "RIGHT JOIN hostgroup_relation hgr ON hgr.hostgroup_hg_id = hsr2.hostgroup_hg_id ";
-    $query .= "LEFT JOIN host h2 ON h2.host_id = hgr.host_host_id ";
-    $query .= "WHERE s2.service_register = '1' ";
+    $query .= "
+        UNION
+        SELECT s2.service_id, s2.service_description, h2.host_name, h2.host_id
+            FROM service s2
+                LEFT JOIN host_service_relation hsr2 ON hsr2.service_service_id = s2.service_id
+                RIGHT JOIN hostgroup_relation hgr ON hgr.hostgroup_hg_id = hsr2.hostgroup_hg_id
+                LEFT JOIN host h2 ON h2.host_id = hgr.host_host_id
+            WHERE s2.service_register = '1' ";
     if ($postHostgroup !== false) {
-        $query .= "AND (h2.host_id IN ";
-        $query .= "(SELECT host_host_id FROM hostgroup_relation hgr
-        				 WHERE hgr.hostgroup_hg_id = :postHostgroup ) ";
-        $query .= "OR hgr.hostgroup_hg_id = :postHostgroup ) ";
+        $query .= "
+            AND (h2.host_id IN
+            (SELECT host_host_id FROM hostgroup_relation hgr
+                WHERE hgr.hostgroup_hg_id = :postHostgroup )
+            OR hgr.hostgroup_hg_id = :postHostgroup ) ";
     }
     if (!empty($postHost)) {
-        $query .= "AND h2.host_name LIKE  :postHost ";
+        $query .= "AND h2.host_name LIKE :postHost ";
     }
     if ($postServicegroup !== false) {
-        $query .= "AND s2.service_id IN ";
-        $query .= "(SELECT service_service_id FROM servicegroup_relation
-                     WHERE servicegroup_sg_id = :postServicegroup) ";
+        $query .= "
+            AND s2.service_id IN
+            (SELECT service_service_id FROM servicegroup_relation
+                WHERE servicegroup_sg_id = :postServicegroup) ";
     }
     if ($postPoller !== false) {
-        $query .= "AND h2.host_id IN ";
-        $query .= "(SELECT host_host_id FROM ns_host_relation
-        			WHERE nagios_server_id = :postPoller ) ";
+        $query .= "
+            AND h2.host_id IN
+            (SELECT host_host_id FROM ns_host_relation
+                WHERE nagios_server_id = :postPoller ) ";
     }
     if (!empty($postService)) {
         $query .= "AND s2.service_description LIKE :postService ";
     }
     $query .= ") as t1 ";
-    $query .= "ORDER BY $orderby " . $order . " LIMIT " . $num * $limit . ", " . $limit;
+    $query .= "ORDER BY $orderBy " . $order . " LIMIT :offset, :limit";
 
     $statement = $pearDB->prepare($query);
-    if (!empty($postHost)) {
-        $statement->bindValue(':postHost', $postHost, PDO::PARAM_STR);
-    }
-    if (!empty($postService)) {
-        $statement->bindValue(':postService', $postService, PDO::PARAM_STR);
-    }
-    if ($postPoller !== false) {
-        $statement->bindValue(':postPoller', $postPoller, PDO::PARAM_INT);
-    }
-    if ($postServicegroup !== false) {
-        $statement->bindValue(':postServicegroup', $postServicegroup, PDO::PARAM_INT);
-    }
-    if ($postHostgroup !== false) {
-        $statement->bindValue(':postHostgroup', $postHostgroup, PDO::PARAM_INT);
-    }
 
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $statement->bindValue($bindId, $bindValue, $bindType);
+        }
+    }
+    $statement->bindValue(':offset', $num * $limit, PDO::PARAM_INT);
+    $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
     $statement->execute();
 
     $serviceList = [];
@@ -228,7 +250,7 @@ try {
             $diff[$key] = 0;
         }
 
-        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+        if (!empty($templatesHasNoProcedure)) {
             if ($diff[$key] == 1
                 || $proc->serviceHasProcedure($key_nospace, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
             ) {
@@ -237,7 +259,7 @@ try {
                 unset($serviceList[$key]);
                 continue;
             }
-        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+        } elseif (!empty($hasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);
@@ -292,7 +314,7 @@ try {
     $tpl->assign('limit', $limit);
 
     $tpl->assign('order', $order);
-    $tpl->assign('orderby', $orderby);
+    $tpl->assign('orderby', $orderBy);
     $tpl->assign('defaultOrderby', 'host_name');
 
     // Apply a template definition

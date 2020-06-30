@@ -89,22 +89,22 @@ if ($currentPage  == "hosts") {
     $searchOptions['templatesWithNoProcedure'] = 1;
 }
 
-$tpl->assign('searchHost', isset($_POST['searchHost']) ? $_POST['searchHost'] : "");
-$tpl->assign('searchService', isset($_POST['searchService']) ? $_POST['searchService'] : "");
-$tpl->assign('searchHostTemplate', isset($_POST['searchHostTemplate']) ? $_POST['searchHostTemplate'] : "");
+$tpl->assign('searchHost', isset($postHost) ? $postHost : "");
+$tpl->assign('searchService', isset($postService) ? $postService : "");
+$tpl->assign('searchHostTemplate', isset($postHostTemplate) ? $postHostTemplate : "");
 $tpl->assign(
     'searchServiceTemplate',
-    isset($_POST['searchServiceTemplate']) ? $_POST['searchServiceTemplate'] : ""
+    isset($postServiceTemplate) ? $postServiceTemplate : ""
 );
 
 $checked = "";
-if (isset($_POST['searchHasNoProcedure'])) {
+if (!empty($hasNoProcedure)) {
     $checked = 'checked';
 }
 $tpl->assign('searchHasNoProcedure', $checked);
 
 $checked2 = "";
-if (isset($_POST['searchTemplatesWithNoProcedure'])) {
+if (!empty($templatesHasNoProcedure)) {
     $checked2 = 'checked';
 }
 $tpl->assign('searchTemplatesWithNoProcedure', $checked2);
@@ -119,7 +119,11 @@ if ($searchOptions['poller']) {
     );
     $searchPoller = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_POST['searchPoller']) && $row['id'] == $_POST['searchPoller']) {
+        if (
+            isset($postPoller)
+            && $postPoller !== false
+            && $row['id'] == $postPoller
+        ) {
             $searchPoller .= "<option value='" . $row['id'] . "' selected>" . $row['name'] . "</option>";
         } else {
             $searchPoller .= "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
@@ -137,7 +141,11 @@ if ($searchOptions['hostgroup']) {
     );
     $searchHostgroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_POST['searchHostgroup']) && $row['hg_id'] == $_POST['searchHostgroup']) {
+        if (
+            isset($postHostgroup)
+            && $postHostgroup !== false
+            && $row['hg_id'] == $postHostgroup
+        ) {
             $searchHostgroup .= "<option value ='" . $row['hg_id'] . "' selected>" . $row['hg_name'] . "</option>";
         } else {
             $searchHostgroup .= "<option value ='" . $row['hg_id'] . "'>" . $row['hg_name'] . "</option>";
@@ -155,7 +163,11 @@ if ($searchOptions['servicegroup']) {
     );
     $searchServicegroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_POST['searchServicegroup']) && $row['sg_id'] == $_POST['searchServicegroup']) {
+        if (
+            isset($postServicegroup)
+            && $postServicegroup !== false
+            && $row['sg_id'] == $postServicegroup
+        ) {
             $searchServicegroup .= "<option value ='" . $row['sg_id'] . "' selected>" . $row['sg_name'] . "</option>";
         } else {
             $searchServicegroup .= "<option value ='" . $row['sg_id'] . "'>" . $row['sg_name'] . "</option>";

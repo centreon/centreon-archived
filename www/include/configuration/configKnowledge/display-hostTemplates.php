@@ -45,18 +45,16 @@ require_once $modules_path . 'functions.php';
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-if (!isset($limit) || !$limit || $limit < 0) {
+if (!isset($limit) || (int) $limit < 0) {
     $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
-$orderby = "host_name";
+$orderBy = "host_name";
 $order = "ASC";
 
-// Use whitelist as we can't bind ORDER BY values
-if (!empty($_POST['order'])) {
-    if (in_array($_POST['order'], ["ASC", "DESC"])) {
-        $order = $_POST['order'];
-    }
+// Use whitelist as we can't bind ORDER BY sort parameter
+if (!empty($_POST['order']) && in_array($_POST['order'], ["ASC", "DESC"])) {
+    $order = $_POST['order'];
 }
 
 require_once "./include/common/autoNumLimit.php";
@@ -75,6 +73,12 @@ $tpl = initSmartyTpl($modules_path, $tpl);
 try {
     $postHostTemplate = !empty($_POST['searchHostTemplate'])
         ? filter_input(INPUT_POST, 'searchHostTemplate', FILTER_SANITIZE_STRING)
+        : '';
+    $hasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
+        : '';
+    $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
+        ? filter_input(INPUT_POST, 'searchTemplatesWithNoProcedure', FILTER_SANITIZE_STRING)
         : '';
 
     $conf = getWikiConfig($pearDB);
@@ -96,20 +100,23 @@ try {
     $proc->setHostInformations();
     $proc->setServiceInformations();
 
-    $query = "SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image " .
-        "FROM host, extended_host_information ehi " .
-        "WHERE host.host_id = ehi.host_host_id " .
-        "AND host.host_register = '0' " .
-        "AND host.host_locked = '0' ";
+    $query = "
+        SELECT SQL_CALC_FOUND_ROWS host_name, host_id, host_register, ehi_icon_image
+        FROM host, extended_host_information ehi
+        WHERE host.host_id = ehi.host_host_id
+            AND host.host_register = '0'
+            AND host.host_locked = '0' ";
+
     if (!empty($postHostTemplate)) {
         $query .= "AND host.host_name LIKE :postHostTemplate ";
     }
-    $query .= "ORDER BY " . $orderby . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
+    $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT :offset, :limit";
     $statement = $pearDB->prepare($query);
     if (!empty($postHostTemplate)) {
         $statement->bindValue(':postHostTemplate', '%' . $postHostTemplate . '%', PDO::PARAM_STR);
     }
-
+    $statement->bindValue(':offset', $num * $limit, PDO::PARAM_INT);
+    $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
     $statement->execute();
     $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
@@ -140,7 +147,7 @@ try {
             $diff[$key] = 0;
         }
 
-        if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+        if (!empty($templatesHasNoProcedure)) {
             if ($diff[$key] == 1
                 || $proc->hostTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
             ) {
@@ -148,7 +155,7 @@ try {
                 unset($diff[$key]);
                 continue;
             }
-        } elseif (isset($_REQUEST['searchHasNoProcedure'])) {
+        } elseif (!empty($hasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);
@@ -200,7 +207,7 @@ try {
     $tpl->assign('limit', $limit);
 
     $tpl->assign('order', $order);
-    $tpl->assign('orderby', $orderby);
+    $tpl->assign('orderBy', $orderBy);
     $tpl->assign('defaultOrderby', 'host_name');
 
     // Apply a template definition
