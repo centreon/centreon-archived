@@ -1,33 +1,33 @@
 ################################################################################
-# Copyright 2005-2013 Centreon
+# Copyright 2005-2020 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
 # Foundation ; either version 2 of the License.
-# 
+#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
+#
+# You should have received a copy of the GNU General Public License along with
 # this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
+#
+# Linking this program statically or dynamically with other modules is making a
+# combined work based on this program. Thus, the terms and conditions of the GNU
 # General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give Centreon 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of Centreon choice, provided that 
-# Centreon also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
+#
+# As a special exception, the copyright holders of this program give Centreon
+# permission to link this program with independent modules to produce an executable,
+# regardless of the license terms of these independent modules, and to copy and
+# distribute the resulting executable under terms of Centreon choice, provided that
+# Centreon also meet, for each linked independent module, the terms  and conditions
+# of the license of that module. An independent module is a module which is not
+# derived from this program. If you modify this program, you may extend this
 # exception to your version of the program, but you are not obliged to do so. If you
 # do not wish to do so, delete this exception statement from your version.
-# 
+#
 #
 ####################################################################################
 
@@ -40,7 +40,7 @@ package centreon::reporting::CentreonServiceStateEvents;
 # parameters:
 # $logger: instance of class CentreonLogger
 # $centreon: Instance of centreonDB class for connection to Centreon database
-# $centstorage: (optionnal) Instance of centreonDB class for connection to Centstorage database
+# $centstorage: (optional) Instance of centreonDB class for connection to Centstorage database
 sub new {
     my $class = shift;
     my $self  = {};
@@ -80,9 +80,9 @@ sub getStateEventDurations {
             my @tab = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             # index 0: OK, index 1: WARNING, index 2: CRITICAL, index 3: UNKNOWN, index 4: DOWNTIME, index 5: UNDETERMINED
             # index 6: OK alerts, index 7: WARNING alerts, index 8: CRITICAL alerts, index 9: UNKNOWN alerts
-            $services{$row->{host_id}.";;".$row->{service_id}} = \@tab;            
+            $services{$row->{host_id}.";;".$row->{service_id}} = \@tab;
         }
-        
+
         my $stats = $services{$row->{host_id}.";;".$row->{service_id}};
         if ($row->{in_downtime} == 0) {
             $stats->[$row->{state}] += $row->{end_time} - $row->{start_time};
@@ -119,7 +119,7 @@ sub getLastStates {
                 " FROM `servicestateevents`".
                 " WHERE `last_update` = 1";
     my ($status, $sth) = $centstorage->query($query);
-    while(my $row = $sth->fetchrow_hashref()) {
+    while (my $row = $sth->fetchrow_hashref()) {
         my $serviceId = $row->{host_id} . ";;" . $row->{service_id};
         if (defined($serviceIds->{$serviceId})) {
             my @tab = ($row->{end_time}, $row->{state}, $row->{servicestateevent_id}, $row->{in_downtime}, $row->{in_ack});

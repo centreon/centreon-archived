@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 2005-2013 Centreon
+# Copyright 2005-2020 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 #
@@ -64,9 +64,9 @@ sub getAllServiceIds {
 
     my %serviceIds;
     # getting services linked to hosts
-    my $query = "SELECT host_id, service_id" .
-                " FROM host, service, host_service_relation" .
-                " WHERE host_id = host_host_id and service_service_id = service_id" .
+    my $query = "SELECT host_host_id as host_id, service_id" .
+                " FROM service, host_service_relation" .
+                " WHERE service_service_id = service_id" .
                 " AND service_register = '1'";
     if ($activated == 1) {
         $query .= " AND `service_activate`='1'";
@@ -80,7 +80,7 @@ sub getAllServiceIds {
     # getting services linked to hostgroup
     $query = "SELECT host_id, service_id" .
         " FROM host, service, host_service_relation hr, hostgroup_relation hgr, hostgroup hg" .
-        " WHERE hr.hostgroup_hg_id is not null" .
+        " WHERE hr.hostgroup_hg_id IS NOT NULL" .
         " AND hr.service_service_id = service_id" .
         " AND hr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
         " AND hgr.host_host_id = host_id" .
