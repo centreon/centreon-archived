@@ -253,7 +253,7 @@ sub insertLastHostEvents {
     my $events = $self->{"hostEvents"};
 
     # parameters:
-    my ($end, $currentEvents, $downtimes)  = (shift, shift, shift, shift, shift);
+    my ($end, $currentEvents, $downtimes)  = (shift, shift, shift);
 
     while (my ($hostId, $eventInfos) = each (%$currentEvents)) {
         if ($eventInfos->[2] != 0) {
