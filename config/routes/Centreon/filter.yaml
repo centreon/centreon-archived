@@ -1,0 +1,5 @@
+centreon_application_user_getFilters:
+  methods: GET
+  path: /users/filters
+  controller: 'Centreon\Application\Controller\FilterController::getFilters'
+  condition: "request.attributes.get('version.is_beta') == true"
