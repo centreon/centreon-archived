@@ -75,9 +75,12 @@ class CentreonTraps
      *  then inserts data into the  traps_matching_properties
      * @param int $trapId
      */
-    private function setMatchingOptions($trapId)
+    private function setMatchingOptions(int $trapId)
     {
-        $this->db->query("DELETE FROM traps_matching_properties WHERE trap_id = '" . $trapId . "'");
+        $query = "DELETE FROM traps_matching_properties WHERE trap_id = :trapId";
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+        $statement->execute();
 
         $insertStr = "";
         if (isset($_REQUEST['rule'])) {
@@ -96,17 +99,18 @@ class CentreonTraps
                 if ($severity[$key] == "") {
                     $severity[$key] = "NULL";
                 }
-                $insertStr .= "($trapId, '" . $this->db->escape($value) . "', '" .
+                $insertStr .= "(:trapId, '" . $this->db->escape($value) . "', '" .
                     $this->db->escape($regexp[$key]) . "', " . $this->db->escape($status[$key]) . ", " .
                     $this->db->escape($severity[$key]) . ", $i)";
                 $i++;
             }
         }
         if ($insertStr) {
-            $this->db->query(
-                "INSERT INTO traps_matching_properties
-                    (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr"
-            );
+            $query = "INSERT INTO traps_matching_properties
+                        (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr";
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
         }
     }
 
@@ -127,20 +131,22 @@ class CentreonTraps
      */
     public function testTrapExistence($oid = null)
     {
-        $id = null;
-        if (isset($this->form)) {
-            $id = $this->form->getSubmitValue('traps_id');
-        }
-        $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '" . $this->db->escape($oid) . "'";
-        $res = $this->db->query($query);
-        $trap = $res->fetchRow();
+        if(preg_match('/^(\.([0-2]))|([0-2])((\.0)|(\.([1-9][0-9]*)))*$/', $oid) == true) {
+            $id = null;
+            if (isset($this->form)) {
+                $id = $this->form->getSubmitValue('traps_id');
+            }
+            $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '" . $this->db->escape($oid) . "'";
+            $res = $this->db->query($query);
+            $trap = $res->fetchRow();
 
-        if ($res->rowCount() >= 1 && $trap["traps_id"] == $id) {
-            return true;
-        } elseif ($res->rowCount() >= 1 && $trap["traps_id"] != $id) {
-            return false;
-        } else {
-            return true;
+            if ($res->rowCount() >= 1 && $trap["traps_id"] == $id) {
+                return true;
+            } elseif ($res->rowCount() >= 1 && $trap["traps_id"] != $id) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 
@@ -149,15 +155,24 @@ class CentreonTraps
      * Delete Traps
      * @param $traps
      */
-    public function delete($traps = array())
+    public function delete($traps = [])
     {
+        $isAnArrayOfInt = true;
         foreach ($traps as $key => $value) {
-            $res2 = $this->db->query(
-                "SELECT traps_name FROM `traps` WHERE `traps_id` = '" . $this->db->escape($key) . "' LIMIT 1"
-            );
-            $row = $res2->fetchRow();
-            $res = $this->db->query("DELETE FROM traps WHERE traps_id = '" . $this->db->escape($key) . "'");
-            $this->centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
+            if (gettype($key) !== 'int') {
+                $isAnArrayOfInt = false;
+            }
+        }
+
+        if($isAnArrayOfInt) {
+            foreach ($traps as $key => $value) {
+                $res2 = $this->db->query(
+                    "SELECT traps_name FROM `traps` WHERE `traps_id` = '" . $this->db->escape($key) . "' LIMIT 1"
+                );
+                $row = $res2->fetchRow();
+                $res = $this->db->query("DELETE FROM traps WHERE traps_id = '" . $this->db->escape($key) . "'");
+                $this->centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
+            }
         }
     }
 
@@ -167,7 +182,7 @@ class CentreonTraps
      * @param string $trapName Trap name to find
      * @return boolean
      */
-    public function trapNameExists($trapName)
+    public function trapNameExists(string $trapName)
     {
         if (!empty($trapName)) {
             $prepare = $this->db->prepare(
@@ -187,7 +202,7 @@ class CentreonTraps
      * @param $traps
      * @param $nbrDup
      */
-    public function duplicate($traps = array(), $nbrDup = array())
+    public function duplicate($traps = [], $nbrDup = [])
     {
         foreach (array_keys($traps) as $trapsId) {
             if (is_int($trapsId)) {
@@ -510,9 +525,13 @@ class CentreonTraps
      *
      * @param int $trapId
      */
-    protected function setPreexec($trapId)
+    protected function setPreexec(int $trapId)
     {
-        $this->db->query("DELETE FROM traps_preexec WHERE trap_id = " . $this->db->escape($trapId));
+        $query = "DELETE FROM traps_preexec WHERE trap_id = :trapId";
+        $statement = $this->db->prepare($query);
+        $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+        $statement->execute();
+
         $insertStr = "";
         if (isset($_REQUEST['preexec'])) {
             $preexec = $_REQUEST['preexec'];
@@ -524,12 +543,16 @@ class CentreonTraps
                 if ($insertStr) {
                     $insertStr .= ", ";
                 }
-                $insertStr .= "($trapId, '" . $this->db->escape($value) . "', $i)";
+                $insertStr .= "(:trapId, '" . $this->db->escape($value) . "', $i)";
                 $i++;
             }
         }
         if ($insertStr) {
-            $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr");
+            $query = "INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr";
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
+
         }
     }
 
