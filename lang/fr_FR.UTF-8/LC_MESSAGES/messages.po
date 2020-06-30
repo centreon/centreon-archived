@@ -15400,4 +15400,4 @@ msgid "The port can only be between 0 and 65535 inclusive"
 msgstr "Le port ne peut être compris qu'entre 0 et 65535 inclus"
 
 msgid "No results found"
-msgstr "Pas de résultat trouvé"
+msgstr "Aucun résultat trouvé"
