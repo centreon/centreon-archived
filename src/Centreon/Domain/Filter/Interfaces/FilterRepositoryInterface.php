@@ -38,8 +38,9 @@ interface FilterRepositoryInterface
     /**
      * Find filters.
      *
+     * @param int $userId current user id
      * @return Filter[]
      * @throws \Exception
      */
-    public function findFilters(): array;
+    public function findFiltersByUserId(int $userId): array;
 }

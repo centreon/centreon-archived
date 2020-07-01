@@ -40,6 +40,11 @@ class Filter
     private $name;
 
     /**
+     * @var string|null Page name
+     */
+    private $pageName;
+
+    /**
      * @var array Criterias
      */
     private $criterias = [];
@@ -77,6 +82,24 @@ class Filter
     public function setName(?string $name): Filter
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPageName(): ?string
+    {
+        return $this->pageName;
+    }
+
+    /**
+     * @param string|null $pageName
+     * @return Filter
+     */
+    public function setPageName(?string $pageName): Filter
+    {
+        $this->pageName = $pageName;
         return $this;
     }
 

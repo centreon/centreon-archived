@@ -6,6 +6,9 @@ Centreon\Domain\Filter\Filter:
         name:
             type: string
             groups: [filter_main]
+        pageName:
+            type: string
+            groups: [filter_main]
         criterias:
             type: array
             groups: [filter_main]

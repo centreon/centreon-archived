@@ -39,8 +39,9 @@ interface FilterServiceInterface
     /**
      * Find filters.
      *
+     * @param int $userId current user id
      * @return Filter[]
      * @throws FilterException
      */
-    public function findFilters(): array;
+    public function findFiltersByUserId(int $userId): array;
 }

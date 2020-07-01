@@ -72,7 +72,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
-    public function findFilters(): array
+    public function findFiltersByUserId(int $userId): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'id',
@@ -80,8 +80,8 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         ]);
 
         $request = $this->translateDbName('
-            SELECT SQL_CALC_FOUND_ROWS id, user_id, name, criterias
-            FROM `:db`.filter
+            SELECT SQL_CALC_FOUND_ROWS id, name, user_id, page_name, criterias
+            FROM `:db`.user_filter
         ');
 
         // Search

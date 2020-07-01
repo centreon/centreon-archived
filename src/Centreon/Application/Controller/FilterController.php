@@ -71,6 +71,7 @@ class FilterController extends AbstractController
 
         $filter = (new Filter())
             ->setName($filterToAdd['name'])
+            ->setPageName($filterToAdd['page_name'])
             ->setCriterias($filterToAdd['criterias']);
 
         $this->filterService->addFilter($filter);
