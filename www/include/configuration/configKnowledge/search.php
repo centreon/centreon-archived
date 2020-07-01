@@ -98,7 +98,7 @@ $tpl->assign(
 );
 
 $checked = "";
-if (!empty($hasNoProcedure)) {
+if (!empty($searchHasNoProcedure)) {
     $checked = 'checked';
 }
 $tpl->assign('searchHasNoProcedure', $checked);

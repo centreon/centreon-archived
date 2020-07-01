@@ -91,7 +91,7 @@ try {
     $postPoller = !empty($_POST['searchPoller'])
         ? filter_input(INPUT_POST, 'searchPoller', FILTER_VALIDATE_INT)
         : false;
-    $hasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+    $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
         ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
         : '';
     $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
@@ -204,7 +204,6 @@ try {
     $query .= "ORDER BY $orderBy " . $order . " LIMIT :offset, :limit";
 
     $statement = $pearDB->prepare($query);
-
     foreach ($queryValues as $bindId => $bindData) {
         foreach ($bindData as $bindType => $bindValue) {
             $statement->bindValue($bindId, $bindValue, $bindType);
@@ -260,7 +259,7 @@ try {
                 unset($serviceList[$key]);
                 continue;
             }
-        } elseif (!empty($hasNoProcedure)) {
+        } elseif (!empty($searchHasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);

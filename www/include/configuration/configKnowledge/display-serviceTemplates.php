@@ -76,7 +76,7 @@ try {
     $postServiceTemplate = !empty($_POST['searchServiceTemplate'])
         ? filter_input(INPUT_POST, 'searchServiceTemplate', FILTER_SANITIZE_STRING)
         : '';
-    $hasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+    $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
         ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
         : '';
     $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
@@ -113,13 +113,16 @@ try {
     if (!empty($postServiceTemplate)) {
         $query .= " AND service_description LIKE :postServiceTemplate ";
     }
-    $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
+    $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT :offset, :limit";
+
     $statement = $pearDB->prepare($query);
     if (!empty($postServiceTemplate)) {
         $statement->bindValue(':postServiceTemplate', '%' . $postServiceTemplate . '%', PDO::PARAM_STR);
     }
-
+    $statement->bindValue(':offset', $num * $limit, PDO::PARAM_INT);
+    $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
     $statement->execute();
+
     $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     $selection = [];
@@ -156,7 +159,7 @@ try {
                 unset($diff[$key]);
                 continue;
             }
-        } elseif (!empty($hasNoProcedure)) {
+        } elseif (!empty($searchHasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);

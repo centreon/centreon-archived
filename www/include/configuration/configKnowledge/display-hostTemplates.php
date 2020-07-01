@@ -74,7 +74,7 @@ try {
     $postHostTemplate = !empty($_POST['searchHostTemplate'])
         ? filter_input(INPUT_POST, 'searchHostTemplate', FILTER_SANITIZE_STRING)
         : '';
-    $hasNoProcedure = !empty($_POST['searchHasNoProcedure'])
+    $searchHasNoProcedure = !empty($_POST['searchHasNoProcedure'])
         ? filter_input(INPUT_POST, 'searchHasNoProcedure', FILTER_SANITIZE_STRING)
         : '';
     $templatesHasNoProcedure = !empty($_POST['searchTemplatesWithNoProcedure'])
@@ -111,6 +111,7 @@ try {
         $query .= "AND host.host_name LIKE :postHostTemplate ";
     }
     $query .= "ORDER BY " . $orderBy . " " . $order . " LIMIT :offset, :limit";
+
     $statement = $pearDB->prepare($query);
     if (!empty($postHostTemplate)) {
         $statement->bindValue(':postHostTemplate', '%' . $postHostTemplate . '%', PDO::PARAM_STR);
@@ -118,6 +119,7 @@ try {
     $statement->bindValue(':offset', $num * $limit, PDO::PARAM_INT);
     $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
     $statement->execute();
+
     $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     $selection = [];
@@ -156,7 +158,7 @@ try {
                 unset($diff[$key]);
                 continue;
             }
-        } elseif (!empty($hasNoProcedure)) {
+        } elseif (!empty($searchHasNoProcedure)) {
             if ($diff[$key] == 1) {
                 $rows--;
                 unset($diff[$key]);
