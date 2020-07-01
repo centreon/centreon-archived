@@ -6,7 +6,7 @@ import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 
-import { TABLE_COLUMN_TYPES, StatusChip, SeverityCode } from '@centreon/ui';
+import { ColumnType, StatusChip, SeverityCode } from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
 import {
@@ -211,7 +211,7 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
-    type: TABLE_COLUMN_TYPES.component,
+    type: ColumnType.component,
     Component: SeverityColumn,
     sortField: 'severity_level',
     width: 50,
@@ -219,7 +219,7 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'status',
     label: labelStatus,
-    type: TABLE_COLUMN_TYPES.component,
+    type: ColumnType.component,
     Component: StatusColumn(actions),
     sortField: 'status_severity_code',
     clickable: true,
@@ -228,7 +228,7 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'resource',
     label: labelResource,
-    type: TABLE_COLUMN_TYPES.component,
+    type: ColumnType.component,
     Component: ResourceColumn,
     sortField: 'name',
     width: 200,
@@ -236,7 +236,7 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'parent_resource',
     label: '',
-    type: TABLE_COLUMN_TYPES.component,
+    type: ColumnType.component,
     Component: ParentResourceColumn,
     sortable: false,
     width: 200,
@@ -244,7 +244,7 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'graph',
     label: '',
-    type: TABLE_COLUMN_TYPES.component,
+    type: ColumnType.component,
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
     width: 50,
@@ -252,7 +252,7 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'duration',
     label: labelDuration,
-    type: TABLE_COLUMN_TYPES.string,
+    type: ColumnType.string,
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
     width: 125,
@@ -260,27 +260,27 @@ export const getColumns = (actions): Array<Column> => [
   {
     id: 'tries',
     label: labelTries,
-    type: TABLE_COLUMN_TYPES.string,
+    type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
     width: 125,
   },
   {
     id: 'last_check',
     label: labelLastCheck,
-    type: TABLE_COLUMN_TYPES.string,
+    type: ColumnType.string,
     getFormattedString: ({ last_check }): string => last_check,
     width: 125,
   },
   {
     id: 'information',
     label: labelInformation,
-    type: TABLE_COLUMN_TYPES.string,
+    type: ColumnType.string,
     getFormattedString: pipe(propOr('', 'information'), split('\n'), head),
   },
   {
     id: 'state',
     label: labelState,
-    type: TABLE_COLUMN_TYPES.component,
+    type: ColumnType.component,
     Component: StateColumn,
     sortable: false,
     width: 80,

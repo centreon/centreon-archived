@@ -82,7 +82,7 @@ WHERE session.session_id = ? AND contact.contact_id = session.user_id", Centreon
  * </code>
  *
  * @param{TAB}int{TAB}$argument1{TAB}Mon premier argument
- * @param{TAB}string{TAB}$argument2{TAB}Mon deuxi�me argument
+ * @param{TAB}string{TAB}$argument2{TAB}Mon deuxième argument
  * @return{TAB}int{TAB}Ma valeur de retour
  */
 
@@ -2314,7 +2314,7 @@ function validateGeoCoords()
     $coords = $form->getElementValue('geo_coords');
     if (
         preg_match(
-            '/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/',
+            '/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/',
             $coords
         )
     ) {
