@@ -162,7 +162,7 @@ class Host extends AbstractHost
                 $contacts = array();
                 $cg = array();
                 while (($hostId = array_shift($stack))) {
-                    if (isset($loop[$hostId])) {
+                    if (isset($loop[$hostId]) || !isset($hostsTpl[$hostId])) {
                         continue;
                     }
                     $loop[$hostId] = 1;
@@ -410,7 +410,7 @@ class Host extends AbstractHost
 
         $hosts_tpl = &HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $stack = $this->hosts[$host_id_arg]['htpl'];
-        while ((is_null($severity_id) && ($host_id = array_shift($stack)))) {
+        while ((is_null($severity_id) && (!is_null($stack) && ($host_id = array_shift($stack))))) {
             if (isset($loop[$host_id])) {
                 continue;
             }
@@ -425,7 +425,7 @@ class Host extends AbstractHost
             }
 
             $stack2 = $hosts_tpl[$host_id]['htpl'];
-            while ((is_null($severity_id) && ($host_id2 = array_shift($stack2)))) {
+            while ((is_null($severity_id) && (!is_null($stack2) && ($host_id2 = array_shift($stack2))))) {
                 if (isset($loop[$host_id2])) {
                     continue;
                 }
