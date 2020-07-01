@@ -464,9 +464,9 @@ describe(Actions, () => {
     });
 
     await waitFor(() => {
-      expect(getByText(labelCheck)).toBeDisabled();
-      expect(getByText(labelAcknowledge)).toBeDisabled();
-      expect(getByText(labelSetDowntime)).toBeDisabled();
+      expect(getByText(labelCheck).parentElement).toBeDisabled();
+      expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
+      expect(getByText(labelSetDowntime).parentElement).toBeDisabled();
     });
   });
 

@@ -82,8 +82,7 @@ const DialogAcknowledge = ({
             label={labelComment}
             fullWidth
             rows={3}
-            error={errors?.comment !== undefined}
-            helperText={errors?.comment}
+            error={errors?.comment}
           />
         </Grid>
         <Grid item>
