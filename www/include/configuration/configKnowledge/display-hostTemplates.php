@@ -123,7 +123,7 @@ try {
     $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     $selection = [];
-    while ($data = $statement->fetch()) {
+    while ($data = $statement->fetch(PDO::FETCH_ASSOC)) {
         if ($data["host_register"] == 0) {
             $selection[$data["host_name"]] = $data["host_id"];
         }
