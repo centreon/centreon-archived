@@ -10573,6 +10573,9 @@ msgstr "Services utilisés"
 msgid "Check"
 msgstr "Vérification"
 
+msgid "check"
+msgstr "Vérifier"
+
 #: centreon-web/www/include/configuration/configObject/command/listCommand.php:157
 msgid "Host links (host template links)"
 msgstr "Liés aux modèles d'hôtes"
@@ -12728,6 +12731,9 @@ msgstr "Problèmes"
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:69
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:69
 msgid "Acknowledge"
+msgstr "Acquitter"
+
+msgid "Acknowlegment"
 msgstr "Acquittement"
 
 #: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:96
@@ -12986,7 +12992,7 @@ msgstr ""
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:134
 msgid "Set downtime"
-msgstr "Configurer un temps d'arrêt"
+msgstr "Planifier une maintenance"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:96
 msgid "Acknowledge problems"
@@ -15251,6 +15257,9 @@ msgstr "Changer l'heure de début"
 
 msgid "Host group"
 msgstr "Groupe d'hôtes"
+
+msgid "DownTime"
+msgstr "Planifier une maintenance"
 
 msgid "Downtime"
 msgstr "Temps d'arrêt"
