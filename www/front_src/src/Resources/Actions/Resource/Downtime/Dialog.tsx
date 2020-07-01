@@ -221,8 +221,7 @@ const DialogDowntime = ({
                   type="number"
                   onChange={handleChange('duration.value')}
                   value={values.duration.value}
-                  error={errors?.duration?.value !== undefined}
-                  helperText={errors?.duration?.value}
+                  error={errors?.duration?.value}
                 />
               </Grid>
               <Grid item style={{ width: 150 }}>
@@ -256,8 +255,7 @@ const DialogDowntime = ({
               label={labelComment}
               fullWidth
               rows={3}
-              error={errors?.comment !== undefined}
-              helperText={errors?.comment}
+              error={errors?.comment}
             />
           </Grid>
           {hasHosts && (

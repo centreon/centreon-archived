@@ -150,7 +150,7 @@ const Filter = (): JSX.Element => {
     setCurrentSearch(nextSearch);
   };
 
-  const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
+  const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed) {

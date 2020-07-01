@@ -161,3 +161,4 @@ export const labelServicesDenied = I18n.t(
 export const labelHostsDenied = I18n.t(
   "Hosts will not be affected because you don't have sufficient permission",
 );
+export const labelNoResultsFound = I18n.t('No results found');
