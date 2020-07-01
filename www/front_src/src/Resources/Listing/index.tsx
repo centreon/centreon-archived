@@ -8,7 +8,11 @@ import { Listing } from '@centreon/ui';
 
 import { detailsTabId, graphTabId } from '../Details/Body/tabs';
 import { rowColorConditions } from '../colors';
-import { labelRowsPerPage, labelOf } from '../translatedLabels';
+import {
+  labelRowsPerPage,
+  labelOf,
+  labelNoResultsFound,
+} from '../translatedLabels';
 import { getColumns } from './columns';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
@@ -128,6 +132,7 @@ const ResourceListing = (): JSX.Element => {
       selectedRows={selectedResources}
       onRowClick={selectResource}
       innerScrollDisabled={false}
+      emptyDataMessage={labelNoResultsFound}
     />
   );
 };

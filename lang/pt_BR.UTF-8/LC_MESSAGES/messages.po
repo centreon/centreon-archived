@@ -14759,191 +14759,195 @@ msgstr "Erro ao recuperar o número de tokens"
 #:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:232
 msgid "Error when deleting tokens for one contact"
 msgstr "Erro ao remover tokens de um contato"
-msgid "Acknowledged by"
-msgstr ""
 
-msgid "Acknowledge services attached to host"
-msgstr ""
+#  msgid "Acknowledged by"
+#  msgstr ""
 
-msgid "at"
-msgstr ""
+#  msgid "Acknowledge services attached to host"
+#  msgstr ""
 
-msgid "Clear all"
-msgstr ""
+#  msgid "at"
+#  msgstr ""
 
-msgid "Criterias"
-msgstr ""
+#  msgid "Clear all"
+#  msgstr ""
 
-msgid "Copy"
-msgstr ""
+#  msgid "Criterias"
+#  msgstr ""
 
-msgid "Command copied to clipboard"
-msgstr ""
+#  msgid "Copy"
+#  msgstr ""
 
-msgid "Current notification number"
-msgstr ""
+#  msgid "Command copied to clipboard"
+#  msgstr ""
 
-msgid "Current state duration"
-msgstr ""
+#  msgid "Current notification number"
+#  msgstr ""
 
-msgid "Downtime duration"
-msgstr ""
+#  msgid "Current state duration"
+#  msgstr ""
 
-msgid "End date must be greater than start date"
-msgstr ""
+#  msgid "Downtime duration"
+#  msgstr ""
 
-msgid "End time"
-msgstr ""
+#  msgid "End date must be greater than start date"
+#  msgstr ""
 
-msgid "Is this resource flapping?"
-msgstr ""
+#  msgid "End time"
+#  msgstr ""
 
-msgid "Show criterias filters"
-msgstr ""
+#  msgid "Is this resource flapping?"
+#  msgstr ""
 
-msgid "Start date"
-msgstr ""
+#  msgid "Show criterias filters"
+#  msgstr ""
 
-msgid "Change start date"
-msgstr ""
+#  msgid "Start date"
+#  msgstr ""
 
-msgid "Change start time"
-msgstr ""
+#  msgid "Change start date"
+#  msgstr ""
 
-msgid "Host group"
-msgstr ""
+#  msgid "Change start time"
+#  msgstr ""
 
-msgid "In downtime"
-msgstr ""
+#  msgid "Host group"
+#  msgstr ""
 
-msgid "Last 24 hours"
-msgstr ""
+#  msgid "In downtime"
+#  msgstr ""
 
-msgid "Last 7 days"
-msgstr ""
+#  msgid "Last 24 hours"
+#  msgstr ""
 
-msgid "Last 31 days"
-msgstr ""
+#  msgid "Last 7 days"
+#  msgstr ""
 
-msgid "Set downtime on"
-msgstr ""
+#  msgid "Last 31 days"
+#  msgstr ""
 
-msgid "Downtime set by"
-msgstr ""
+#  msgid "Set downtime on"
+#  msgstr ""
 
-msgid "Set downtime on services attached to host"
-msgstr ""
+#  msgid "Downtime set by"
+#  msgstr ""
 
-msgid "Last notification"
-msgstr ""
+#  msgid "Set downtime on services attached to host"
+#  msgstr ""
 
-msgid "Last state change"
-msgstr ""
+#  msgid "Last notification"
+#  msgstr ""
 
-msgid "Next check"
-msgstr ""
+#  msgid "Last state change"
+#  msgstr ""
 
-msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
-msgstr ""
+#  msgid "Next check"
+#  msgstr ""
 
-msgid "Open"
-msgstr ""
+#  msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
+#  msgstr ""
 
-msgid "Percent state change"
-msgstr ""
+#  msgid "Open"
+#  msgstr ""
 
-msgid "Resource name"
-msgstr ""
+#  msgid "Percent state change"
+#  msgstr ""
 
-msgid "Resource problems"
-msgstr ""
+#  msgid "Resource name"
+#  msgstr ""
 
-msgid "Rows per page"
-msgstr ""
+#  msgid "Resource problems"
+#  msgstr ""
 
-msgid "of"
-msgstr ""
+#  msgid "Rows per page"
+#  msgstr ""
 
-msgid "More"
-msgstr ""
+#  msgid "of"
+#  msgstr ""
 
-msgid "Disable autorefresh"
-msgstr ""
+#  msgid "More"
+#  msgstr ""
 
-msgid "Enable autorefresh"
-msgstr ""
+#  msgid "Disable autorefresh"
+#  msgstr ""
 
-msgid "Search help"
-msgstr ""
+#  msgid "Enable autorefresh"
+#  msgstr ""
 
-msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
-msgstr ""
+#  msgid "Search help"
+#  msgstr ""
 
-msgid "You can use regular expression syntax to retrieve more relevant results"
-msgstr ""
+#  msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
+#  msgstr ""
 
-msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
-msgstr ""
+#  msgid "You can use regular expression syntax to retrieve more relevant results"
+#  msgstr ""
 
-msgid "Some examples:"
-msgstr ""
+#  msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
+#  msgstr ""
 
-msgid "will display resources with host name starting by'"
-msgstr ""
+#  msgid "Some examples:"
+#  msgstr ""
 
-msgid "will display resources with service description finishing by"
-msgstr ""
+#  msgid "will display resources with host name starting by'"
+#  msgstr ""
 
-msgid "will display all resources with host having alias containing"
-msgstr ""
+#  msgid "will display resources with service description finishing by"
+#  msgstr ""
 
-msgid "will display resources having FQDN that doesn't contain"
-msgstr ""
+#  msgid "will display all resources with host having alias containing"
+#  msgstr ""
 
-msgid "and host alias containing"
-msgstr ""
+#  msgid "will display resources having FQDN that doesn't contain"
+#  msgstr ""
 
-msgid "Tips"
-msgstr ""
+#  msgid "and host alias containing"
+#  msgstr ""
 
-msgid "get some help while creating your regular expression query at"
-msgstr ""
+#  msgid "Tips"
+#  msgstr ""
 
-msgid "Service group"
-msgstr ""
+#  msgid "get some help while creating your regular expression query at"
+#  msgstr ""
 
-msgid "State filter"
-msgstr ""
+#  msgid "Service group"
+#  msgstr ""
 
-msgid "Acknowledge command sent"
-msgstr ""
+#  msgid "State filter"
+#  msgstr ""
 
-msgid "Downtime command sent"
-msgstr ""
+#  msgid "Acknowledge command sent"
+#  msgstr ""
 
-msgid "Check command sent"
-msgstr ""
+#  msgid "Downtime command sent"
+#  msgstr ""
 
-msgid "Type of resource"
-msgstr ""
+#  msgid "Check command sent"
+#  msgstr ""
 
-msgid "Unhandled problems"
-msgstr ""
+#  msgid "Type of resource"
+#  msgstr ""
 
-msgid "Oops, something went wrong"
-msgstr ""
+#  msgid "Unhandled problems"
+#  msgstr ""
 
-msgid "Seems that your Apache configuration is not up-to-date"
-msgstr ""
+#  msgid "Oops, something went wrong"
+#  msgstr ""
 
-msgid "Contact your Centreon administrator or update the following file"
-msgstr ""
+#  msgid "Seems that your Apache configuration is not up-to-date"
+#  msgstr ""
 
-msgid "See Documentation"
-msgstr ""
+#  msgid "Contact your Centreon administrator or update the following file"
+#  msgstr ""
+
+#  msgid "See Documentation"
+#  msgstr ""
 
 #  msgid "Services will not be affected because you don't have sufficient permission"
 #  msgstr ""
 
 #  msgid "Hosts will not be affected because you don't have sufficient permission"
+#  msgstr ""
+
+#  msgid "No results found"
 #  msgstr ""

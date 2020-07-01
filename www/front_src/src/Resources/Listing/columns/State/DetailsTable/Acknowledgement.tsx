@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 
 import { makeStyles } from '@material-ui/core';
 
-import { TABLE_COLUMN_TYPES } from '@centreon/ui';
+import { ColumnType } from '@centreon/ui';
 
 import {
   labelAuthor,
@@ -43,21 +43,21 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
     {
       id: 'author',
       label: labelAuthor,
-      type: TABLE_COLUMN_TYPES.string,
+      type: ColumnType.string,
       getContent: ({ author_name }): string => author_name,
       width: 100,
     },
     {
       id: 'entry_time',
       label: labelEntryTime,
-      type: TABLE_COLUMN_TYPES.string,
+      type: ColumnType.string,
       getContent: ({ entry_time }): string => getFormattedDateTime(entry_time),
       width: 150,
     },
     {
       id: 'is_persistent',
       label: labelPersistent,
-      type: TABLE_COLUMN_TYPES.string,
+      type: ColumnType.string,
       getContent: ({ is_persistent_comment }): string =>
         getYesNoLabel(is_persistent_comment),
       width: 100,
@@ -65,7 +65,7 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
     {
       id: 'is_sticky',
       label: labelSticky,
-      type: TABLE_COLUMN_TYPES.string,
+      type: ColumnType.string,
       getContent: ({ is_sticky }): string => getYesNoLabel(is_sticky),
       width: 100,
     },
@@ -73,7 +73,7 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
     {
       id: 'comment',
       label: labelComment,
-      type: TABLE_COLUMN_TYPES.string,
+      type: ColumnType.string,
       width: 250,
       getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {
         return (
