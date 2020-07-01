@@ -546,6 +546,10 @@ class Service extends AbstractService
             return $this->service_cache[$serviceId]['service_description'];
         }
 
+        // we reset notifications for service multiples and hg
+        $this->service_cache[$serviceId]['contacts'] = '';
+        $this->service_cache[$serviceId]['contact_groups'] = '';
+
         $this->getImages($this->service_cache[$serviceId]);
         $this->getMacros($this->service_cache[$serviceId]);
         $this->service_cache[$serviceId]['macros']['_SERVICE_ID'] = $serviceId;
