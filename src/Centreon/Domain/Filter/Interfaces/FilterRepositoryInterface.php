@@ -26,6 +26,14 @@ use Centreon\Domain\Filter\Filter;
 
 interface FilterRepositoryInterface
 {
+    /**
+     * Add filter.
+     *
+     * @param Filter $filter
+     * @return void
+     * @throws FilterException
+     */
+    public function addFilter(Filter $filter): void;
 
     /**
      * Find filters.

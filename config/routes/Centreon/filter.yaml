@@ -3,3 +3,9 @@ centreon_application_user_getFilters:
   path: /users/filters
   controller: 'Centreon\Application\Controller\FilterController::getFilters'
   condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_user_getFilters:
+  methods: POST
+  path: /users/filters
+  controller: 'Centreon\Application\Controller\FilterController::addFilter'
+  condition: "request.attributes.get('version.is_beta') == true"

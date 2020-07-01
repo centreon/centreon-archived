@@ -65,6 +65,13 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
+    public function addFilter(Filter $filter): void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findFilters(): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
@@ -104,6 +111,8 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
 
         $filters = [];
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $result['criterias'] = json_decode($result['criterias'], true);
+
             /**
              * @var Filter $filter
              */

@@ -24,8 +24,11 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Filter\Interfaces\FilterServiceInterface;
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 
 /**
@@ -49,6 +52,30 @@ class FilterController extends AbstractController
     public function __construct(FilterServiceInterface $filterService)
     {
         $this->filterService = $filterService;
+    }
+
+    /**
+     * Entry point to save a filter for a user.
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function addFilter(Request $request): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $filterToAdd = json_decode((string) $request->getContent(), true);
+        if (!is_array($filterToAdd)) {
+            throw new FilterException('Error when decoding your sent data');
+        }
+
+        $filter = (new Filter())
+            ->setName($filterToAdd['name'])
+            ->setCriterias($filterToAdd['criterias']);
+
+        $this->filterService->addFilter($filter);
+
+        return View::create(null, Response::HTTP_NO_CONTENT, []);
     }
 
     /**

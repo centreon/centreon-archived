@@ -40,6 +40,11 @@ class Filter
     private $name;
 
     /**
+     * @var array Criterias
+     */
+    private $criterias = [];
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -72,6 +77,24 @@ class Filter
     public function setName(?string $name): Filter
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCriterias(): array
+    {
+        return $this->criterias;
+    }
+
+    /**
+     * @param array $criterias
+     * @return Filter
+     */
+    public function setCriterias(array $criterias): Filter
+    {
+        $this->criterias = $criterias;
         return $this;
     }
 }

@@ -49,6 +49,18 @@ class FilterService implements FilterServiceInterface
     /**
      * @inheritDoc
      */
+    public function addFilter(Filter $filter): void
+    {
+        try {
+            $this->filterRepository->addFilter($filter);
+        } catch (\Exception $ex) {
+            throw new FilterException('Error when adding a filter', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findFilters(): array
     {
         try {

@@ -28,6 +28,15 @@ use Centreon\Domain\Filter\FilterException;
 interface FilterServiceInterface
 {
     /**
+     * Add filter.
+     *
+     * @param Filter $filter
+     * @return void
+     * @throws FilterException
+     */
+    public function addFilter(Filter $filter): void;
+
+    /**
      * Find filters.
      *
      * @return Filter[]
