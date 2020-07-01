@@ -10571,9 +10571,6 @@ msgstr "Services utilisés"
 #: centreon-web/www/include/configuration/configObject/command/commandType.php:39
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:186
 msgid "Check"
-msgstr "Vérification"
-
-msgid "check"
 msgstr "Vérifier"
 
 #: centreon-web/www/include/configuration/configObject/command/listCommand.php:157
