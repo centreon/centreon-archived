@@ -214,7 +214,7 @@ try {
     $statement->execute();
 
     $serviceList = [];
-    while ($row = $statement->fetch()) {
+    while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
         $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
         $row['service_description'] = str_replace("#BS#", "\\", $row['service_description']);
         if (isset($row['host_id']) && $row['host_id']) {
