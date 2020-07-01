@@ -1,33 +1,33 @@
 ################################################################################
-# Copyright 2005-2013 Centreon
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# Copyright 2005-2020 Centreon
+# Centreon is developed by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
 # Foundation ; either version 2 of the License.
-# 
+#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
+#
+# You should have received a copy of the GNU General Public License along with
 # this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
+#
+# Linking this program statically or dynamically with other modules is making a
+# combined work based on this program. Thus, the terms and conditions of the GNU
 # General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give Centreon 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of Centreon choice, provided that 
-# Centreon also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
+#
+# As a special exception, the copyright holders of this program give Centreon
+# permission to link this program with independent modules to produce an executable,
+# regardless of the license terms of these independent modules, and to copy and
+# distribute the resulting executable under terms of Centreon choice, provided that
+# Centreon also meet, for each linked independent module, the terms  and conditions
+# of the license of that module. An independent module is a module which is not
+# derived from this program. If you modify this program, you may extend this
 # exception to your version of the program, but you are not obliged to do so. If you
 # do not wish to do so, delete this exception statement from your version.
-# 
+#
 #
 ####################################################################################
 
@@ -54,7 +54,7 @@ sub new {
 }
 
 # returns two references to two hash tables => hosts indexed by id and hosts indexed by name
-sub getDownTime {
+sub getDowntimes {
     my $self = shift;
     my $centreon = $self->{"centstatus"};
     my $allIds = shift;
@@ -63,7 +63,7 @@ sub getDownTime {
     my $type = shift; # if 1 => host, if 2 => service
     my $query;
 
-    $query = "SELECT DISTINCT h.name as name1, s.description as name2, " .
+    $query = "SELECT DISTINCT h.host_id, s.service_id, " .
              "d.actual_start_time, d.actual_end_time " .
              "FROM `hosts` h, `downtimes` d " .
              "LEFT JOIN services s ON s.service_id = d.service_id " .
@@ -76,15 +76,15 @@ sub getDownTime {
     }
     $query .= "AND (actual_start_time < " . $end . " AND actual_start_time IS NOT NULL) " .
              "AND (actual_end_time > " . $start . " OR actual_end_time IS NULL) " .
-             "ORDER BY name1 ASC, actual_start_time ASC, actual_end_time ASC";
+             "ORDER BY h.host_id ASC, actual_start_time ASC, actual_end_time ASC";
 
     my ($status, $sth) = $centreon->query($query);
 
     my @periods = ();
     while (my $row = $sth->fetchrow_hashref()) {
-        my $id = $row->{"name1"};
+        my $id = $row->{"host_id"};
         if ($type == 2) {
-            $id .= ";;".$row->{"name2"}
+            $id .= ";;" . $row->{"service_id"}
         }
         if (defined($allIds->{$id})) {
             if ($row->{"actual_start_time"} < $start) {
@@ -97,7 +97,7 @@ sub getDownTime {
             my $insert = 1;
             for (my $i = 0; $i < scalar(@periods) && $insert; $i++) {
                 my $checkTab = $periods[$i];
-                if ($checkTab->[0] eq $allIds->{$id}){
+                if ($checkTab->[0] eq $id){
                     if ($row->{"actual_start_time"} <= $checkTab->[2] && $row->{"actual_end_time"} <= $checkTab->[2]) {
                         $insert = 0;
                     } elsif ($row->{"actual_start_time"} <= $checkTab->[2] && $row->{"actual_end_time"} > $checkTab->[2]) {
@@ -108,7 +108,7 @@ sub getDownTime {
                 }
             }
             if ($insert) {
-                my @tab = ($allIds->{$id}, $row->{"actual_start_time"}, $row->{"actual_end_time"});
+                my @tab = ($id, $row->{"actual_start_time"}, $row->{"actual_end_time"});
                 $periods[scalar(@periods)] = \@tab;
             }
         }
@@ -119,24 +119,24 @@ sub getDownTime {
 
 sub splitInsertEventDownTime {
     my $self = shift;
-    
+
     my $objectId = shift;
     my $start = shift;
     my $end = shift;
-    my $downTimes = shift;
+    my $downtimes = shift;
     my $state = shift;
-    
+
     my @events = ();
     my $total = 0;
-    if ($state ne "" && defined($downTimes) && defined($state) && $state != 0) {
-        $total = scalar(@$downTimes);
+    if ($state ne "" && defined($downtimes) && defined($state) && $state != 0) {
+        $total = scalar(@$downtimes);
     }
     for (my $i = 0; $i < $total && $start < $end; $i++) {
-         my $tab = $downTimes->[$i];
+         my $tab = $downtimes->[$i];
          my $id = $tab->[0];
          my $downTimeStart = $tab->[1];
          my $downTimeEnd = $tab->[2];
-         
+
          if ($id eq $objectId) {
              if ($downTimeStart < $start) {
                  $downTimeStart = $start;
@@ -164,14 +164,14 @@ sub splitInsertEventDownTime {
 
 sub splitUpdateEventDownTime {
     my $self = shift;
-    
+
     my $objectId = shift;
     my $start = shift;
     my $end = shift;
     my $downTimeFlag = shift;
     my $downTimes = shift;
     my $state = shift;
-    
+
     my $updated = 0;
     my @events = ();
     my $updateTime = 0;
@@ -184,7 +184,7 @@ sub splitUpdateEventDownTime {
          my $id = $tab->[0];
          my $downTimeStart = $tab->[1];
          my $downTimeEnd = $tab->[2];
- 
+
          if ($id eq $objectId) {
              if ($downTimeStart < $start) {
                  $downTimeStart = $start;
@@ -210,7 +210,7 @@ sub splitUpdateEventDownTime {
                         }else {
                             my @tab = ($downTimeStart, $downTimeEnd, 1);
                             $events[scalar(@events)] = \@tab;
-                        }            
+                        }
                     }
                 }else {
                     if ($downTimeStart > $start) {
