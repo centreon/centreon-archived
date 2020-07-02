@@ -94,6 +94,7 @@
     "html-react-parser": "^0.10.3",
     "install": "^0.13.0",
     "jsdom": "^16.2.2",
+    "kind-of": "^6.0.3",
     "loaders.css": "^0.1.2",
     "moment": "2.25.3",
     "moment-timezone": "^0.5.31",
