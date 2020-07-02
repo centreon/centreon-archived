@@ -99,7 +99,7 @@ class FilterControllerTest extends TestCase
             ->willReturnOnConsecutiveCalls(
                 $authorizationChecker,
                 $tokenStorage,
-                new class() {
+                new class () {
                     public function get()
                     {
                         return __DIR__ . '/../../../../../';
