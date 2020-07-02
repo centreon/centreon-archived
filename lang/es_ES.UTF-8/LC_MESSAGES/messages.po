@@ -14503,3 +14503,6 @@ msgstr ""
 
 #  msgid "No results found"
 #  msgstr ""
+
+#  msgid "Save filter"
+#  msgstr ""

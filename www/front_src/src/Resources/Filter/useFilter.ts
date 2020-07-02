@@ -1,11 +1,14 @@
 import * as React from 'react';
 
+import { useRequest, getData } from '@centreon/ui';
+
 import {
   getStoredOrDefaultFilter,
   clearCachedFilter,
   storeFilter,
 } from './storedFilter';
-import { Filter, FilterGroup, Criterias } from './models';
+import { Filter, FilterGroup, Criterias, toFilterGroup } from './models';
+import { listCustomFiltersDecoder, listCustomFilters } from './api';
 
 const getDefaultFilter = (): FilterGroup => getStoredOrDefaultFilter();
 const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
@@ -24,6 +27,7 @@ type FiltersDispatch = React.Dispatch<React.SetStateAction<Array<Filter>>>;
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 
 export interface FilterState {
+  customFilters?: Array<FilterGroup>;
   filter: FilterGroup;
   setFilter: FilterGroupDispatch;
   currentSearch?: string;
@@ -43,6 +47,14 @@ export interface FilterState {
 }
 
 const useFilter = (): FilterState => {
+  const { sendRequest: sendListCustomFiltersRequest } = useRequest({
+    request: listCustomFilters,
+    decoder: listCustomFiltersDecoder,
+  });
+
+  const [customFilters, setCustomFilters] = React.useState<
+    Array<FilterGroup>
+  >();
   const [filter, setFilter] = React.useState(getStoredOrDefaultFilter());
   const [currentSearch, setCurrentSearch] = React.useState<string | undefined>(
     getDefaultSearch(),
@@ -63,6 +75,12 @@ const useFilter = (): FilterState => {
   const [serviceGroups, setServiceGroups] = React.useState<Array<Filter>>(
     getDefaultServiceGroups(),
   );
+
+  React.useEffect(() => {
+    sendListCustomFiltersRequest().then(({ result }) => {
+      setCustomFilters(result.map(toFilterGroup));
+    });
+  }, []);
 
   React.useEffect(() => {
     setCurrentSearch(nextSearch);
@@ -97,6 +115,7 @@ const useFilter = (): FilterState => {
   return {
     filter,
     setFilter,
+    customFilters,
     currentSearch,
     setCurrentSearch,
     nextSearch,

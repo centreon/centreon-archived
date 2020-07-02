@@ -4,7 +4,7 @@ import { isNil } from 'ramda';
 
 import { makeStyles, Slide } from '@material-ui/core';
 
-import { withSnackbar } from '@centreon/ui';
+import { withSnackbar, Loader } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Resources = (): JSX.Element => {
+const Resources = (): JSX.Element | null => {
   const classes = useStyles();
 
   const listingContext = useListing();
@@ -50,6 +50,10 @@ const Resources = (): JSX.Element => {
   const actionsContext = useActions();
 
   const { selectedDetailsEndpoints } = detailsContext;
+
+  if (!filterContext.customFilters) {
+    return null;
+  }
 
   return (
     <Context.Provider

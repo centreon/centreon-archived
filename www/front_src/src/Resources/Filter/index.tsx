@@ -10,8 +10,11 @@ import {
   ExpansionPanelSummary as MuiExpansionPanelSummary,
   ExpansionPanelDetails as MuiExpansionPanelDetails,
   withStyles,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import {
   MultiAutocompleteField,
@@ -19,6 +22,7 @@ import {
   SelectField,
   SearchField,
   SelectEntry,
+  IconButton,
 } from '@centreon/ui';
 
 import {
@@ -35,6 +39,10 @@ import {
   labelClearAll,
   labelOpen,
   labelShowCriteriasFilters,
+  labelSaveFilter,
+  labelSaveAsNew,
+  labelSave,
+  labelNewFilter,
 } from '../translatedLabels';
 import {
   unhandledProblemsFilter,
@@ -45,6 +53,7 @@ import {
   statuses as availableStatuses,
   FilterGroup,
   filterById,
+  isCustom,
 } from './models';
 import SearchHelpTooltip from './SearchHelpTooltip';
 import {
@@ -107,6 +116,7 @@ const Filter = (): JSX.Element => {
   const classes = useStyles();
 
   const [expanded, setExpanded] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
 
   const {
     filter,
@@ -124,6 +134,7 @@ const Filter = (): JSX.Element => {
     setHostGroups,
     serviceGroups,
     setServiceGroups,
+    customFilters,
   } = useResourceContext();
 
   const toggleExpanded = (): void => {
@@ -146,6 +157,13 @@ const Filter = (): JSX.Element => {
 
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
+  const setNewFilter = (): void => {
+    if (isCustom(filter)) {
+      return;
+    }
+    setFilter({ id: '', name: labelNewFilter } as FilterGroup);
+  };
+
   const requestSearch = (): void => {
     setCurrentSearch(nextSearch);
   };
@@ -160,12 +178,15 @@ const Filter = (): JSX.Element => {
 
   const prepareSearch = (event): void => {
     setNextSearch(event.target.value);
+    setNewFilter();
   };
 
   const changeFilterGroup = (event): void => {
     const filterId = event.target.value;
 
-    const updatedFilter = filterById[filterId];
+    const updatedFilter =
+      filterById[filterId] || customFilters?.find(({ id }) => id === filterId);
+
     setFilter(updatedFilter);
 
     if (!updatedFilter.criterias) {
@@ -190,23 +211,19 @@ const Filter = (): JSX.Element => {
     setCurrentSearch('');
   };
 
-  const setEmptyFilter = (): void => {
-    setFilter({ id: '', name: '' } as FilterGroup);
-  };
-
   const changeResourceTypes = (_, updatedResourceTypes): void => {
     setResourceTypes(updatedResourceTypes);
-    setEmptyFilter();
+    setNewFilter();
   };
 
   const changeStates = (_, updatedStates): void => {
     setStates(updatedStates);
-    setEmptyFilter();
+    setNewFilter();
   };
 
   const changeStatuses = (_, updatedStatuses): void => {
     setStatuses(updatedStatuses);
-    setEmptyFilter();
+    setNewFilter();
   };
 
   const changeHostGroups = (_, updatedHostGroups): void => {
@@ -215,6 +232,14 @@ const Filter = (): JSX.Element => {
 
   const changeServiceGroups = (_, updatedServiceGroups): void => {
     setServiceGroups(updatedServiceGroups);
+  };
+
+  const openSaveFilterMenu = (event: React.MouseEvent): void => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeSaveFilterMenu = (): void => {
+    setAnchorEl(null);
   };
 
   return (
@@ -236,12 +261,30 @@ const Filter = (): JSX.Element => {
             </Typography>
           </Grid>
           <Grid item>
+            <IconButton title={labelSaveFilter} onClick={openSaveFilterMenu}>
+              <SettingsIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={closeSaveFilterMenu}
+            >
+              <MenuItem onClick={closeSaveFilterMenu}>
+                {labelSaveAsNew}
+              </MenuItem>
+              <MenuItem onClick={closeSaveFilterMenu}>{labelSave}</MenuItem>
+            </Menu>
+          </Grid>
+          <Grid item>
             <SelectField
               className={classes.filterGroup}
               options={[
+                { id: '', name: labelNewFilter },
                 unhandledProblemsFilter,
                 resourceProblemsFilter,
                 allFilter,
+                ...(customFilters as Array<FilterGroup>),
               ]}
               selectedOptionId={filter.id}
               onChange={changeFilterGroup}

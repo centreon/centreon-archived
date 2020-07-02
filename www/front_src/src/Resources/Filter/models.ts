@@ -1,3 +1,4 @@
+import { merge } from 'ramda';
 import {
   labelUnhandledProblems,
   labelResourceProblems,
@@ -16,6 +17,7 @@ import {
   labelUnknown,
   labelPending,
 } from '../translatedLabels';
+import { CustomFilter } from './api';
 
 export interface Filter {
   id: string;
@@ -28,6 +30,7 @@ export interface Criterias {
   statuses: Array<Filter>;
   hostGroups: Array<Filter>;
   serviceGroups: Array<Filter>;
+  search?: string;
 }
 
 export type FilterGroup = {
@@ -81,6 +84,15 @@ const allFilter = {
   },
 };
 
+const toFilterGroup = ({ name, criterias }: CustomFilter): FilterGroup => ({
+  id: name,
+  name,
+  criterias: criterias.reduce(
+    (acc, criteria) => merge(acc, { [criteria.name]: criteria.value }),
+    {} as FilterGroup,
+  ),
+});
+
 const unhandledProblemsFilter: FilterGroup = {
   id: 'unhandled_problems',
   name: labelUnhandledProblems,
@@ -111,6 +123,10 @@ const filterById = {
   unhandled_problems: unhandledProblemsFilter,
 };
 
+const isCustom = ({ id }: FilterGroup): boolean => {
+  return filterById[id] === undefined;
+};
+
 export {
   allFilter,
   unhandledProblemsFilter,
@@ -119,4 +135,6 @@ export {
   states,
   statuses,
   filterById,
+  toFilterGroup,
+  isCustom,
 };

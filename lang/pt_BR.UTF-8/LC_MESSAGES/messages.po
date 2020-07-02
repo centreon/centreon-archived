@@ -14951,3 +14951,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "No results found"
 #  msgstr ""
+
+#  msgid "Save filter"
+#  msgstr ""

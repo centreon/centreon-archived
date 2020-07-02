@@ -15401,3 +15401,6 @@ msgstr "Le port ne peut être compris qu'entre 0 et 65535 inclus"
 
 msgid "No results found"
 msgstr "Aucun résultat trouvé"
+
+msgid "Save filter"
+msgstr "Sauvegarder le filtre"
