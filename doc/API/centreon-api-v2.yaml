@@ -221,6 +221,196 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /users/filters/{page_name}:
+    get:
+      tags:
+        - User filters
+      summary: "List user filters by page"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.5`
+
+        List user filters saved for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: filter id
+                          example: 1
+                        name:
+                          type: string
+                          description: filter name
+                          example: my filter 1
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - User filters
+      summary: "Add user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.5`
+
+        Add user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: filter id
+                  example: 1
+                name:
+                  type: string
+                  description: filter name
+                  example: my filter 1
+                criterias:
+                  type: array
+                  description: list of filter criterias
+                  items:
+                    type: object
+                    example:
+                      type: text
+                      name: field1
+                      value: search value 1
+      responses:
+        '204':
+          description: "OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/filters/{page_name}/{filter_id}:
+    get:
+      tags:
+        - User filters
+      summary: "Detailed user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.5`
+
+        Get detailed information of a user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: filter id
+                    example: 1
+                  name:
+                    type: string
+                    description: filter name
+                    example: my filter 1
+                  criterias:
+                    type: array
+                    description: list of filter criterias
+                    items:
+                      type: object
+                      example:
+                        type: text
+                        name: field1
+                        value: search value 1
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - User filters
+      summary: "Update user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.5`
+
+        Add user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: filter id
+                  example: 1
+                name:
+                  type: string
+                  description: filter name
+                  example: my filter 1
+                criterias:
+                    type: array
+                    description: list of filter criterias
+                    items:
+                      type: object
+                      example:
+                        type: text
+                        name: field1
+                        value: search value 1
+      responses:
+        '204':
+          description: "OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - User filters
+      summary: "Delete user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.5`
+
+        Delete user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      responses:
+        '204':
+          description: "OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources:
     get:
       tags:
@@ -2004,6 +2194,23 @@ components:
         type: integer
         format: int64
         example: 329
+    FilterPageName:
+      in: path
+      name: page_name
+      description: "name of the page"
+      required: true
+      schema:
+        type: string
+        example: events-view
+    FilterId:
+      in: path
+      name: page_name
+      description: "id of the filter"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
   responses:
     Unauthorized:
       description: "Unauthorized"
