@@ -70,6 +70,27 @@ class FilterService implements FilterServiceInterface
     /**
      * @inheritDoc
      */
+    public function updateFilter(Filter $filter): void
+    {
+        $foundFilter = $this->filterRepository->findFilterByUserIdAndId(
+            $filter->getUserId(),
+            $filter->getPageName(),
+            $filter->getId()
+        );
+        if ($foundFilter === null) {
+            throw new FilterException('Filter not found');
+        }
+
+        try {
+            $this->filterRepository->updateFilter($filter);
+        } catch (\Exception $ex) {
+            throw new FilterException('Error when updating filter', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void
     {
         $foundFilter = $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);

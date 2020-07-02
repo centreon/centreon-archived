@@ -36,6 +36,15 @@ interface FilterRepositoryInterface
     public function addFilter(Filter $filter): void;
 
     /**
+     * Update filter.
+     *
+     * @param Filter $filter
+     * @return void
+     * @throws FilterException
+     */
+    public function updateFilter(Filter $filter): void;
+
+    /**
      * Delete filter.
      *
      * @param int $userId current user id

@@ -83,6 +83,27 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
+    public function updateFilter(Filter $filter): void
+    {
+        $request = $this->translateDbName('
+            UPDATE `:db`.user_filter
+            SET name = :name, criterias = :criterias
+            WHERE user_id = :user_id
+            AND page_name = :page_name
+            AND id = :filter_id
+        ');
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':name', $filter->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':criterias', json_encode($filter->getCriterias()), \PDO::PARAM_STR);
+        $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
+        $statement->bindValue(':filter_id', $filter->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void
     {
         $request = $this->translateDbName('

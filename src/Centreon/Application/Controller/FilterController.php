@@ -58,6 +58,38 @@ class FilterController extends AbstractController
     }
 
     /**
+     * validate filter data according to json schema
+     *
+     * @param array $filter sent json
+     * @return void
+     * @throws Exception
+     * @throws FilterException
+     */
+    private function validateFilterSchema(array $filter): void
+    {
+        $filterToValidate = Validator::arrayToObjectRecursive($filter);
+        $validator = new Validator();
+        $centreonPath = $this->getParameter('centreon_path');
+        $validator->validate(
+            $filterToValidate,
+            (object) [
+                '$ref' => 'file://' . realpath(
+                    $centreonPath . 'config/json_validator/latest/Centreon/AddOrUpdateFilter.json'
+                )
+            ],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new FilterException($message);
+        }
+    }
+
+    /**
      * Entry point to save a filter for a user.
      *
      * @param Request $request
@@ -75,26 +107,7 @@ class FilterController extends AbstractController
             throw new FilterException('Error when decoding your sent data');
         }
 
-        $filterToValidate = Validator::arrayToObjectRecursive($filterToAdd);
-        $validator = new Validator();
-        $centreonPath = $this->getParameter('centreon_path');
-        $validator->validate(
-            $filterToValidate,
-            (object) [
-                '$ref' => 'file://' . realpath(
-                    $centreonPath . 'config/json_validator/latest/Centreon/AddFilter.json'
-                )
-            ],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new FilterException($message);
-        }
+        $this->validateFilterSchema($filterToAdd);
 
         $filter = (new Filter())
             ->setPageName($pageName)
@@ -103,6 +116,39 @@ class FilterController extends AbstractController
             ->setCriterias($filterToAdd['criterias']);
 
         $this->filterService->addFilter($filter);
+
+        return View::create(null, Response::HTTP_NO_CONTENT, []);
+    }
+
+    /**
+     * Entry point to save a filter for a user.
+     *
+     * @param Request $request
+     * @param string $pageName
+     * @param int $filterId
+     * @return View
+     */
+    public function updateFilter(Request $request, string $pageName, int $filterId): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $user = $this->getUser();
+
+        $filterToUpdate = json_decode((string) $request->getContent(), true);
+        if (!is_array($filterToUpdate)) {
+            throw new FilterException('Error when decoding your sent data');
+        }
+
+        $this->validateFilterSchema($filterToUpdate);
+
+        $filter = (new Filter())
+            ->setId($filterId)
+            ->setPageName($pageName)
+            ->setUserId($user->getId())
+            ->setName($filterToUpdate['name'])
+            ->setCriterias($filterToUpdate['criterias']);
+
+        $this->filterService->updateFilter($filter);
 
         return View::create(null, Response::HTTP_NO_CONTENT, []);
     }
