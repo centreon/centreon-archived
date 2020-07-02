@@ -42,16 +42,17 @@ interface FilterRepositoryInterface
      * @return Filter[]
      * @throws \Exception
      */
-    public function findFiltersByUserIdWithRequestParameters(int $userId): array;
+    public function findFiltersByUserIdWithRequestParameters(int $userId, string $pageName): array;
 
     /**
      * Find filters linked to a user id without using request parameters.
      *
      * @param int $userId current user id
+     * @param string $pageName page name
      * @return Filter[]
      * @throws \Exception
      */
-    public function findFiltersByUserIdWithoutRequestParameters(int $userId): array;
+    public function findFiltersByUserIdWithoutRequestParameters(int $userId, string $pageName): array;
 
     /**
      * Find filter by id
@@ -61,5 +62,16 @@ interface FilterRepositoryInterface
      * @param string $name
      * @return Filter|null
      */
-    public function findFilterByUserId(int $userId, string $pageName, string $name): ?Filter;
+    public function findFilterByUserIdAndName(int $userId, string $pageName, string $name): ?Filter;
+
+    /**
+     * Find filter by user id and filter id.
+     *
+     * @param int $userId current user id
+     * @param string $pageName page name
+     * @param int $filterId Filter id to search
+     * @return Filter
+     * @throws FilterException
+     */
+    public function findFilterByUserIdAndId(int $userId, string $pageName, int $filterId): ?Filter;
 }

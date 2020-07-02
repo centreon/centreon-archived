@@ -40,8 +40,20 @@ interface FilterServiceInterface
      * Find filters.
      *
      * @param int $userId current user id
+     * @param string $pageName page name
      * @return Filter[]
      * @throws FilterException
      */
-    public function findFiltersByUserId(int $userId): array;
+    public function findFiltersByUserId(int $userId, string $pageName): array;
+
+    /**
+     * Find filter by user id and filter id.
+     *
+     * @param int $userId current user id
+     * @param string $pageName page name
+     * @param int $filterId Filter id to search
+     * @return Filter
+     * @throws FilterException
+     */
+    public function findFilterByUserId(int $userId, string $pageName, int $filterId): ?Filter;
 }

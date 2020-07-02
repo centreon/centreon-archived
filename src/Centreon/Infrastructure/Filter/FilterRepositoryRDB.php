@@ -83,7 +83,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
-    public function findFiltersByUserIdWithRequestParameters(int $userId): array
+    public function findFiltersByUserIdWithRequestParameters(int $userId, string $pageName): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'id',
@@ -99,21 +99,22 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         // Pagination
         $paginationRequest = $this->sqlRequestTranslator->translatePaginationToSql();
 
-        return $this->findFiltersByUserId($userId, $searchRequest, $sortRequest, $paginationRequest);
+        return $this->findFiltersByUserId($userId, $pageName, $searchRequest, $sortRequest, $paginationRequest);
     }
 
     /**
      * @inheritDoc
      */
-    public function findFiltersByUserIdWithoutRequestParameters(int $userId): array
+    public function findFiltersByUserIdWithoutRequestParameters(int $userId, string $pageName): array
     {
-        return $this->findFiltersByUserId($userId, null, null, null);
+        return $this->findFiltersByUserId($userId, $pageName, null, null, null);
     }
 
     /**
      * Retrieve all filters linked to a user id
      *
      * @param int $userId user id for which we want to find filters
+     * @param string $pageName page name
      * @param string|null $searchRequest search request
      * @param string|null $sortRequest sort request
      * @param string|null $paginationRequest pagination request
@@ -122,6 +123,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
      */
     private function findFiltersByUserId(
         int $userId,
+        string $pageName,
         ?string $searchRequest = null,
         ?string $sortRequest = null,
         ?string $paginationRequest = null
@@ -133,8 +135,9 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
 
         // Search
         $request .= !is_null($searchRequest) ? $searchRequest . ' AND ' : ' WHERE ';
-        $request .= 'user_id = :userId';
-        $this->sqlRequestTranslator->addSearchValue(':userId', [\PDO::PARAM_INT => $userId]);
+        $request .= 'user_id = :user_id AND page_name = :page_name';
+        $this->sqlRequestTranslator->addSearchValue(':user_id', [\PDO::PARAM_INT => $userId]);
+        $this->sqlRequestTranslator->addSearchValue(':page_name', [\PDO::PARAM_STR => $pageName]);
 
         // Sort
         $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY id ASC';
@@ -178,7 +181,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
-    public function findFilterByUserId(int $userId, string $pageName, string $name): ?Filter
+    public function findFilterByUserIdAndName(int $userId, string $pageName, string $name): ?Filter
     {
         $request = $this->translateDbName('
             SELECT id, name, user_id, page_name, criterias
@@ -192,6 +195,36 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->bindValue(':user_id', $userId, \PDO::PARAM_INT);
         $statement->bindValue(':page_name', $pageName, \PDO::PARAM_STR);
         $statement->bindValue(':name', $name, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $filter['criterias'] = json_decode($filter['criterias'], true);
+            return EntityCreator::createEntityByArray(
+                Filter::class,
+                $filter
+            );
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findFilterByUserIdAndId(int $userId, string $pageName, int $filterId): ?Filter
+    {
+        $request = $this->translateDbName('
+            SELECT id, name, user_id, page_name, criterias
+            FROM `:db`.user_filter
+            WHERE user_id = :user_id
+            AND id = :filter_id
+            AND page_name = :page_name
+        ');
+
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $statement->bindValue(':filter_id', $filterId, \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $pageName, \PDO::PARAM_STR);
         $statement->execute();
 
         if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {

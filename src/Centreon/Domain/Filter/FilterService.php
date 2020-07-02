@@ -51,7 +51,7 @@ class FilterService implements FilterServiceInterface
      */
     public function addFilter(Filter $filter): void
     {
-        $foundFilter = $this->filterRepository->findFilterByUserId(
+        $foundFilter = $this->filterRepository->findFilterByUserIdAndName(
             $filter->getUserId(),
             $filter->getPageName(),
             $filter->getName()
@@ -70,10 +70,22 @@ class FilterService implements FilterServiceInterface
     /**
      * @inheritDoc
      */
-    public function findFiltersByUserId(int $userId): array
+    public function findFiltersByUserId(int $userId, string $pageName): array
     {
         try {
-            return $this->filterRepository->findFiltersByUserIdWithRequestParameters($userId);
+            return $this->filterRepository->findFiltersByUserIdWithRequestParameters($userId, $pageName);
+        } catch (\Exception $ex) {
+            throw new FilterException('Error when searching for filters', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findFilterByUserId(int $userId, string $pageName, int $filterId): ?Filter
+    {
+        try {
+            return $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
         } catch (\Exception $ex) {
             throw new FilterException('Error when searching for filters', 0, $ex);
         }

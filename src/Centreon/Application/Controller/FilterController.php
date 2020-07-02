@@ -46,6 +46,7 @@ class FilterController extends AbstractController
     private $filterService;
 
     public const SERIALIZER_GROUPS_MAIN = ['filter_main'];
+    public const SERIALIZER_GROUPS_EXTENDED = ['filter_extended'];
 
     /**
      * PollerController constructor.
@@ -110,20 +111,40 @@ class FilterController extends AbstractController
      * Entry point to get filters saved by the user.
      *
      * @param RequestParametersInterface $requestParameters
+     * @param string $pageName
      * @return View
      */
-    public function getFilters(RequestParametersInterface $requestParameters): View
+    public function getFilters(RequestParametersInterface $requestParameters, string $pageName): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         $user = $this->getUser();
 
-        $filters = $this->filterService->findFiltersByUserId($user->getId());
+        $filters = $this->filterService->findFiltersByUserId($user->getId(), $pageName);
         $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
 
         return $this->view([
             'result' => $filters,
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
+    }
+
+    /**
+     * Entry point to get filter details by id.
+     *
+     * @param string $pageName
+     * @param int $filterId
+     * @return View
+     */
+    public function getFilter(string $pageName, int $filterId): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $user = $this->getUser();
+
+        $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
+        $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_EXTENDED);
+
+        return $this->view($filter)->setContext($context);
     }
 }
