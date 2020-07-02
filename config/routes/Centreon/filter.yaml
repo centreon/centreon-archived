@@ -15,3 +15,9 @@ centreon_application_user_addFilter:
   path: /users/filters/{pageName}
   controller: 'Centreon\Application\Controller\FilterController::addFilter'
   condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_user_deleteFilter:
+  methods: DELETE
+  path: /users/filters/{pageName}/{filterId}
+  controller: 'Centreon\Application\Controller\FilterController::deleteFilter'
+  condition: "request.attributes.get('version.is_beta') == true"

@@ -63,7 +63,24 @@ class FilterService implements FilterServiceInterface
         try {
             $this->filterRepository->addFilter($filter);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when adding a filter', 0, $ex);
+            throw new FilterException('Error when adding filter', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void
+    {
+        $foundFilter = $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
+        if ($foundFilter === null) {
+            throw new FilterException('Filter not found');
+        }
+
+        try {
+            $this->filterRepository->deleteFilterByUserId($userId, $pageName, $filterId);
+        } catch (\Exception $ex) {
+            throw new FilterException('Error when deleting filter', 0, $ex);
         }
     }
 

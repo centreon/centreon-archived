@@ -108,6 +108,25 @@ class FilterController extends AbstractController
     }
 
     /**
+     * Entry point to delete a filter for a user.
+     *
+     * @param Request $request
+     * @param string $pageName
+     * @param int $filterId
+     * @return View
+     */
+    public function deleteFilter(string $pageName, int $filterId): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $user = $this->getUser();
+
+        $this->filterService->deleteFilterByUserId($user->getId(), $pageName, $filterId);
+
+        return View::create(null, Response::HTTP_NO_CONTENT, []);
+    }
+
+    /**
      * Entry point to get filters saved by the user.
      *
      * @param RequestParametersInterface $requestParameters

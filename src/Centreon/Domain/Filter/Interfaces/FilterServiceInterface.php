@@ -37,6 +37,17 @@ interface FilterServiceInterface
     public function addFilter(Filter $filter): void;
 
     /**
+     * Delete filter.
+     *
+     * @param int $userId current user id
+     * @param string $pageName page name
+     * @param int $filterId Filter id to search
+     * @return void
+     * @throws FilterException
+     */
+    public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void;
+
+    /**
      * Find filters.
      *
      * @param int $userId current user id
