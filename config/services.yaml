@@ -49,6 +49,3 @@ services:
     Centreon\Application\Controller\Router:
         decorates: 'router'
         arguments: ['@Centreon\Application\Controller\Router.inner']
-
-imports:
-    resource: './Modules/*.yaml'
