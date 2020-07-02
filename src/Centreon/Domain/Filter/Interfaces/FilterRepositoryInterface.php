@@ -36,11 +36,30 @@ interface FilterRepositoryInterface
     public function addFilter(Filter $filter): void;
 
     /**
-     * Find filters.
+     * Find filters linked to a user id using request parameters.
      *
      * @param int $userId current user id
      * @return Filter[]
      * @throws \Exception
      */
-    public function findFiltersByUserId(int $userId): array;
+    public function findFiltersByUserIdWithRequestParameters(int $userId): array;
+
+    /**
+     * Find filters linked to a user id without using request parameters.
+     *
+     * @param int $userId current user id
+     * @return Filter[]
+     * @throws \Exception
+     */
+    public function findFiltersByUserIdWithoutRequestParameters(int $userId): array;
+
+    /**
+     * Find filter by id
+     *
+     * @param integer $userId
+     * @param string $pageName
+     * @param string $name
+     * @return Filter|null
+     */
+    public function findFilterByUserId(int $userId, string $pageName, string $name): ?Filter;
 }

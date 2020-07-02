@@ -67,33 +67,81 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
      */
     public function addFilter(Filter $filter): void
     {
+        $request = $this->translateDbName(
+            'INSERT INTO `:db`.user_filter
+            (name, user_id, page_name, criterias)
+            VALUES (:name, :user_id, :page_name, :criterias)'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':name', $filter->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
+        $statement->bindValue(':criterias', json_encode($filter->getCriterias()), \PDO::PARAM_STR);
+        $statement->execute();
     }
 
     /**
      * @inheritDoc
      */
-    public function findFiltersByUserId(int $userId): array
+    public function findFiltersByUserIdWithRequestParameters(int $userId): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'id',
             'name' => 'name',
         ]);
 
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+
+        // Pagination
+        $paginationRequest = $this->sqlRequestTranslator->translatePaginationToSql();
+
+        return $this->findFiltersByUserId($userId, $searchRequest, $sortRequest, $paginationRequest);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findFiltersByUserIdWithoutRequestParameters(int $userId): array
+    {
+        return $this->findFiltersByUserId($userId, null, null, null);
+    }
+
+    /**
+     * Retrieve all filters linked to a user id
+     *
+     * @param int $userId user id for which we want to find filters
+     * @param string|null $searchRequest search request
+     * @param string|null $sortRequest sort request
+     * @param string|null $paginationRequest pagination request
+     * @return Filter[]
+     * @throws \Exception
+     */
+    private function findFiltersByUserId(
+        int $userId,
+        ?string $searchRequest = null,
+        ?string $sortRequest = null,
+        ?string $paginationRequest = null
+    ): array {
         $request = $this->translateDbName('
             SELECT SQL_CALC_FOUND_ROWS id, name, user_id, page_name, criterias
             FROM `:db`.user_filter
         ');
 
         // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $request .= !is_null($searchRequest) ? $searchRequest : '';
+        $request .= !is_null($searchRequest) ? $searchRequest . ' AND ' : ' WHERE ';
+        $request .= 'user_id = :userId';
+        $this->sqlRequestTranslator->addSearchValue(':userId', [\PDO::PARAM_INT => $userId]);
 
         // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY id ASC';
 
         // Pagination
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $request .= !is_null($paginationRequest) ? $paginationRequest : '';
+
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
@@ -125,5 +173,35 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         }
 
         return $filters;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findFilterByUserId(int $userId, string $pageName, string $name): ?Filter
+    {
+        $request = $this->translateDbName('
+            SELECT id, name, user_id, page_name, criterias
+            FROM `:db`.user_filter
+            WHERE user_id = :user_id
+            AND page_name = :page_name
+            AND name = :name
+        ');
+
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $pageName, \PDO::PARAM_STR);
+        $statement->bindValue(':name', $name, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $filter['criterias'] = json_decode($filter['criterias'], true);
+            return EntityCreator::createEntityByArray(
+                Filter::class,
+                $filter
+            );
+        } else {
+            return null;
+        }
     }
 }

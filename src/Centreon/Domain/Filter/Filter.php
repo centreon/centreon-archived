@@ -40,6 +40,11 @@ class Filter
     private $name;
 
     /**
+     * @var int|null User id
+     */
+    private $userId;
+
+    /**
      * @var string|null Page name
      */
     private $pageName;
@@ -82,6 +87,24 @@ class Filter
     public function setName(?string $name): Filter
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param int|null $userId
+     * @return Filter
+     */
+    public function setUserId(?int $userId): Filter
+    {
+        $this->userId = $userId;
         return $this;
     }
 

@@ -58,11 +58,14 @@ class FilterController extends AbstractController
      * Entry point to save a filter for a user.
      *
      * @param Request $request
+     * @param string $pageName
      * @return View
      */
-    public function addFilter(Request $request): View
+    public function addFilter(Request $request, string $pageName): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $user = $this->getUser();
 
         $filterToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToAdd)) {
@@ -70,8 +73,9 @@ class FilterController extends AbstractController
         }
 
         $filter = (new Filter())
+            ->setPageName($pageName)
+            ->setUserId($user->getId())
             ->setName($filterToAdd['name'])
-            ->setPageName($filterToAdd['page_name'])
             ->setCriterias($filterToAdd['criterias']);
 
         $this->filterService->addFilter($filter);
@@ -89,7 +93,9 @@ class FilterController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        $filters = $this->filterService->findFilters();
+        $user = $this->getUser();
+
+        $filters = $this->filterService->findFiltersByUserId($user->getId());
         $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
 
         return $this->view([

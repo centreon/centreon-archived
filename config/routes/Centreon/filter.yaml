@@ -6,6 +6,6 @@ centreon_application_user_getFilters:
 
 centreon_application_user_addFilter:
   methods: POST
-  path: /users/filters
+  path: /users/filters/{pageName}
   controller: 'Centreon\Application\Controller\FilterController::addFilter'
   condition: "request.attributes.get('version.is_beta') == true"
