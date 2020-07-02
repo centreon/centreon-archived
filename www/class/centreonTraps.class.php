@@ -131,18 +131,22 @@ class CentreonTraps
      */
     public function testTrapExistence($oid = null)
     {
-        if(preg_match('/^(\.([0-2]))|([0-2])((\.0)|(\.([1-9][0-9]*)))*$/', $oid) == true) {
+        if (preg_match('/^(\.([0-2]))|([0-2])((\.0)|(\.([1-9][0-9]*)))*$/', $oid) == true) {
             $id = null;
             if (isset($this->form)) {
                 $id = $this->form->getSubmitValue('traps_id');
             }
-            $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '" . $this->db->escape($oid) . "'";
-            $res = $this->db->query($query);
-            $trap = $res->fetchRow();
+            $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = :oid ";
 
-            if ($res->rowCount() >= 1 && $trap["traps_id"] == $id) {
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':oid', $oid, PDO::PARAM_INT);
+            $statement->execute();
+
+            $trap = $statement->fetchRow();
+
+            if ($statement->rowCount() >= 1 && $trap["traps_id"] == $id) {
                 return true;
-            } elseif ($res->rowCount() >= 1 && $trap["traps_id"] != $id) {
+            } elseif ($statement->rowCount() >= 1 && $trap["traps_id"] != $id) {
                 return false;
             } else {
                 return true;
@@ -157,21 +161,23 @@ class CentreonTraps
      */
     public function delete($traps = [])
     {
-        $isAnArrayOfInt = true;
-        foreach ($traps as $key => $value) {
-            if (gettype($key) !== 'int') {
-                $isAnArrayOfInt = false;
-            }
-        }
+        foreach (array_keys($traps) as $trapsId) {
+            if(is_int($trapsId)){
+                $query = "SELECT traps_name FROM `traps` WHERE `traps_id` = :trapsId LIMIT 1";
+                $statement = $this->db->prepare($query);
+                $statement->bindValue(':trapsId', $trapsId, PDO::PARAM_INT);
+                $statement->execute();
 
-        if($isAnArrayOfInt) {
-            foreach ($traps as $key => $value) {
-                $res2 = $this->db->query(
-                    "SELECT traps_name FROM `traps` WHERE `traps_id` = '" . $this->db->escape($key) . "' LIMIT 1"
-                );
-                $row = $res2->fetchRow();
-                $res = $this->db->query("DELETE FROM traps WHERE traps_id = '" . $this->db->escape($key) . "'");
-                $this->centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
+                $row = $statement->fetchRow();
+
+                $query = "DELETE FROM traps WHERE traps_id = :trapsId ";
+                $statement = $this->db->prepare($query);
+                $statement->bindValue(':trapsId', $trapsId, PDO::PARAM_INT);
+                $statement->execute();
+
+                if ($statement->rowCount() > 0) {
+                    $this->centreon->CentreonLogAction->insertLog("traps", $trapsId, $row['traps_name'], "d");
+                }
             }
         }
     }
@@ -206,10 +212,12 @@ class CentreonTraps
     {
         foreach (array_keys($traps) as $trapsId) {
             if (is_int($trapsId)) {
-                $res = $this->db->query(
-                    "SELECT * FROM traps WHERE traps_id = $trapsId LIMIT 1"
-                );
-                $trapConfigurations = $res->fetchRow();
+                $query = "SELECT * FROM traps WHERE traps_id = :trapsId LIMIT 1";
+                $statement = $this->db->prepare($query);
+                $statement->bindValue(':trapsId', $trapsId, PDO::PARAM_INT);
+                $statement->execute();
+
+                $trapConfigurations = $statement->fetchRow();
                 $trapConfigurations["traps_id"] = '';
                 for ($newIndex = 1; $newIndex <= $nbrDup[$trapsId]; $newIndex++) {
                     $val = null;
@@ -227,11 +235,11 @@ class CentreonTraps
                         if (is_null($val)) {
                             $val .= ($cfgValue == null)
                                 ? 'NULL'
-                                : "'" . $this->db->escape($cfgValue) . "'";
+                                : ":cfgValue";
                         } else {
                             $val .= ($cfgValue == null)
                                 ? ', NULL'
-                                : ", '" . $this->db->escape($cfgValue) . "'";
+                                : ", :cfgValue";
                         }
                     }
 
@@ -243,17 +251,17 @@ class CentreonTraps
                         $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                         $maxId = $res2->fetch();
 
-                        $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
-                                        (SELECT " . $maxId['MAX(traps_id)'] . ", service_id 
-                                            FROM traps_service_relation 
+                        $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id)
+                                        (SELECT " . $maxId['MAX(traps_id)'] . ", service_id
+                                            FROM traps_service_relation
                                             WHERE traps_id = $trapsId)");
 
-                        $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
+                        $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order)
                                         (SELECT " . $maxId['MAX(traps_id)'] . ", tpe_string, tpe_order
-                                            FROM traps_preexec 
+                                            FROM traps_preexec
                                             WHERE trap_id = $trapsId)");
 
-                        $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$trapsId;
+                        $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int) $trapsId;
 
                         $dbResult = $this->db->query($query);
 
