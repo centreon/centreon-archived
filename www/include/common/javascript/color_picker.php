@@ -87,7 +87,7 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 //             sur les palettes (bouton gauche enfoncé)
 
 /*****************************************************************
-* Script Color Picker �crit par Frosty (Maxime Pacary) - Mai 2003
+* Script Color Picker écrit par Frosty (Maxime Pacary) - Mai 2003
 ******************************************************************/
     
     // var. globale
@@ -104,7 +104,7 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
         return strhex.charAt(Math.floor(n/16)) + strhex.charAt(n%16);
     }
     
-    // détection d'un clic/mouvement souris sur la "palette" (� gauche)
+    // détection d'un clic/mouvement souris sur la "palette" (à gauche)
     function compute_color(e)
     {
         x = e.offsetX ? e.offsetX : (e.target ? e.clientX-e.target.x : 0);

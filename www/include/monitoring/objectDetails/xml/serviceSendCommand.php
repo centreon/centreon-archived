@@ -44,6 +44,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreonHost.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonService.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonUtils.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 

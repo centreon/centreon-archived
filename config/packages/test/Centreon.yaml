@@ -14,13 +14,13 @@ parameters:
 
 services:
     _defaults:
-        public: false
+        public: true
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
 
     Centreon\:
-        resource: '../../src/Centreon/*'
-        exclude: '../../src/Centreon/Tests'
+        resource: '../../../src/Centreon/*'
+        exclude: '../../../src/Centreon/Tests'
 
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
@@ -58,7 +58,6 @@ services:
 
     contact.provider:
         class: Centreon\Domain\Contact\ContactProvider
-        public: true
 
     # Authentication
     Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface:
@@ -72,16 +71,6 @@ services:
 
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
-
-    # Icon configuration
-    Centreon\Domain\Configuration\Icon\Interfaces\IconServiceInterface:
-        class: Centreon\Domain\Configuration\Icon\IconService
-
-    Centreon\Domain\Configuration\Icon\Interfaces\IconRepositoryInterface:
-        class: Centreon\Infrastructure\Icon\IconRepositoryRDB
-        calls:
-            - method: setSqlRequestTranslator
-              arguments: ['@sqlRequestTranslator']
 
     # Poller configuration
     Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface:
@@ -138,8 +127,6 @@ services:
 
     Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface:
         class: Centreon\Domain\Gorgone\GorgoneService
-        public: true
-
 
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
@@ -160,4 +147,3 @@ services:
 
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
-        public: true
