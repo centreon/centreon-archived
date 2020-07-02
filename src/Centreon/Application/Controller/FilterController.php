@@ -30,6 +30,8 @@ use FOS\RestBundle\Context\Context;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
+use JsonSchema\Constraints\Constraint;
+use JsonSchema\Validator;
 
 /**
  * Used to manage filters of the current user
@@ -70,6 +72,27 @@ class FilterController extends AbstractController
         $filterToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToAdd)) {
             throw new FilterException('Error when decoding your sent data');
+        }
+
+        $filterToValidate = Validator::arrayToObjectRecursive($filterToAdd);
+        $validator = new Validator();
+        $centreonPath = $this->getParameter('centreon_path');
+        $validator->validate(
+            $filterToValidate,
+            (object) [
+                '$ref' => 'file://' . realpath(
+                    $centreonPath . 'config/json_validator/latest/Centreon/AddFilter.json'
+                )
+            ],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new FilterException($message);
         }
 
         $filter = (new Filter())
