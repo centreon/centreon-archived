@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
-$searchOptions = array(
+$searchOptions = [
     'host' => 0,
     'service' => 0,
     'hostTemplate' => 0,
@@ -50,9 +50,9 @@ $searchOptions = array(
     'servicegroup' => 0,
     'hasNoProcedure' => 0,
     'templatesWithNoProcedure' => 0
-);
+];
 
-$labels = array(
+$labels = [
     'host' => _("Host"),
     'service' => _("Service"),
     'hostTemplate' => _("Host Template"),
@@ -63,7 +63,7 @@ $labels = array(
     'hasNoProcedure' => _("Show wiki pageless only"),
     'templatesWithNoProcedure' => _("Show wiki pageless only - inherited templates included"),
     'search' => _("Search")
-);
+];
 
 if ($currentPage  == "hosts") {
     $searchOptions['host'] = 1;
@@ -89,22 +89,22 @@ if ($currentPage  == "hosts") {
     $searchOptions['templatesWithNoProcedure'] = 1;
 }
 
-$tpl->assign('searchHost', isset($_REQUEST['searchHost']) ? $_REQUEST['searchHost'] : "");
-$tpl->assign('searchService', isset($_REQUEST['searchService']) ? $_REQUEST['searchService'] : "");
-$tpl->assign('searchHostTemplate', isset($_REQUEST['searchHostTemplate']) ? $_REQUEST['searchHostTemplate'] : "");
+$tpl->assign('searchHost', isset($postHost) ? $postHost : "");
+$tpl->assign('searchService', isset($postService) ? $postService : "");
+$tpl->assign('searchHostTemplate', isset($postHostTemplate) ? $postHostTemplate : "");
 $tpl->assign(
     'searchServiceTemplate',
-    isset($_REQUEST['searchServiceTemplate']) ? $_REQUEST['searchServiceTemplate'] : ""
+    isset($postServiceTemplate) ? $postServiceTemplate : ""
 );
 
 $checked = "";
-if (isset($_REQUEST['searchHasNoProcedure'])) {
+if (!empty($searchHasNoProcedure)) {
     $checked = 'checked';
 }
 $tpl->assign('searchHasNoProcedure', $checked);
 
 $checked2 = "";
-if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
+if (!empty($templatesHasNoProcedure)) {
     $checked2 = 'checked';
 }
 $tpl->assign('searchTemplatesWithNoProcedure', $checked2);
@@ -119,10 +119,14 @@ if ($searchOptions['poller']) {
     );
     $searchPoller = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_REQUEST['searchPoller']) && $row['id'] == $_REQUEST['searchPoller']) {
-            $searchPoller .= "<option value='".$row['id']."' selected>" . $row['name'] . "</option>";
+        if (
+            isset($postPoller)
+            && $postPoller !== false
+            && $row['id'] == $postPoller
+        ) {
+            $searchPoller .= "<option value='" . $row['id'] . "' selected>" . $row['name'] . "</option>";
         } else {
-            $searchPoller .= "<option value='".$row['id']."'>" .$row['name']. "</option>";
+            $searchPoller .= "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
         }
     }
     $tpl->assign('searchPoller', $searchPoller);
@@ -137,10 +141,14 @@ if ($searchOptions['hostgroup']) {
     );
     $searchHostgroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_REQUEST['searchHostgroup']) && $row['hg_id'] == $_REQUEST['searchHostgroup']) {
-            $searchHostgroup .= "<option value ='".$row['hg_id']."' selected>" . $row['hg_name'] . "</option>";
+        if (
+            isset($postHostgroup)
+            && $postHostgroup !== false
+            && $row['hg_id'] == $postHostgroup
+        ) {
+            $searchHostgroup .= "<option value ='" . $row['hg_id'] . "' selected>" . $row['hg_name'] . "</option>";
         } else {
-            $searchHostgroup .= "<option value ='".$row['hg_id']."'>" . $row['hg_name'] . "</option>";
+            $searchHostgroup .= "<option value ='" . $row['hg_id'] . "'>" . $row['hg_name'] . "</option>";
         }
     }
     $tpl->assign('searchHostgroup', $searchHostgroup);
@@ -155,10 +163,14 @@ if ($searchOptions['servicegroup']) {
     );
     $searchServicegroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
-        if (isset($_REQUEST['searchServicegroup']) && $row['sg_id'] == $_REQUEST['searchServicegroup']) {
-            $searchServicegroup .= "<option value ='".$row['sg_id']."' selected>" . $row['sg_name'] . "</option>";
+        if (
+            isset($postServicegroup)
+            && $postServicegroup !== false
+            && $row['sg_id'] == $postServicegroup
+        ) {
+            $searchServicegroup .= "<option value ='" . $row['sg_id'] . "' selected>" . $row['sg_name'] . "</option>";
         } else {
-            $searchServicegroup .= "<option value ='".$row['sg_id']."'>" . $row['sg_name'] . "</option>";
+            $searchServicegroup .= "<option value ='" . $row['sg_id'] . "'>" . $row['sg_name'] . "</option>";
         }
     }
     $tpl->assign('searchServicegroup', $searchServicegroup);
