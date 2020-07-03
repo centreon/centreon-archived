@@ -141,6 +141,16 @@ services:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
 
+    # Filters
+    Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
+        class: Centreon\Domain\Filter\FilterService
+
+    Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface:
+        class: Centreon\Infrastructure\Filter\FilterRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
     # Monitoring Timeline
     Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\TimelineRepositoryRDB
