@@ -2625,7 +2625,7 @@ msgstr "Statistiques du moteur"
 
 #: centreon-web/www/install/smarty_translate.php:942
 msgid "No downtime scheduled"
-msgstr "Pas de temps d'arrêt programmé"
+msgstr "Pas de plage de maintenance programmé"
 
 #: centreon-web/www/install/smarty_translate.php:945
 msgid "Add downtime"
@@ -5267,7 +5267,7 @@ msgstr "Port d'accès au proxy internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:166
 msgid "Display downtime and acknowledgment on chart"
-msgstr "Afficher les temps d'arrêts et acquittements sur les ghraphiques"
+msgstr "Afficher les plages de maintenances et acquittements sur les ghraphiques"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
 msgid "Display comment on chart"
@@ -5497,7 +5497,7 @@ msgstr "Options d'acquittement par défaut"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:210
 msgid "Default downtime settings"
-msgstr "Options de temps d'arrêt par défaut"
+msgstr "Options de la maintenance par défaut"
 
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:78
 msgid "Directory + RRDTOOL Binary"
@@ -6479,7 +6479,7 @@ msgstr "Re-planifier la prochaine vérification d'un service (Forcé)"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:107
 msgid "Schedule downtime for a service"
-msgstr "Planifier un temps d'arrêt pour un service"
+msgstr "Planifier une plage de maintenance pour un service"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:108
 msgid "Add/Delete a comment for a service"
@@ -6532,7 +6532,7 @@ msgstr "Planifier la vérification pour un hôte (Forcé)"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:122
 msgid "Schedule downtime for a host"
-msgstr "Planifier un temps d'arrêt pour un hôte"
+msgstr "Planifier une plage de maintenance pour un hôte"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:123
 msgid "Add/Delete a comment for a host"
@@ -9966,7 +9966,7 @@ msgstr "Bagotant"
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:260
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:630
 msgid "Downtime Scheduled"
-msgstr "Temps d'arrêt programmés"
+msgstr "Maintenances programmées"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:779
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:632
@@ -11885,7 +11885,7 @@ msgstr "Lié avec le groupe de services"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:230
 msgid "Downtime Configuration"
-msgstr "Configuration des temps d'arrêt"
+msgstr "Configuration des plages de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:234
 msgid "Add new period"
@@ -11917,7 +11917,7 @@ msgstr "Secondes"
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:71
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:131
 msgid "Downtime type"
-msgstr "Type de temps d'arrêt"
+msgstr "Type de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:339
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:73
@@ -12979,7 +12979,7 @@ msgstr "Configurer des temps d'arrêt"
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:80
 #, php-format
 msgid "Downtime set by %s"
-msgstr "Temps d'arrêt fixé par %s"
+msgstr "Plage de maintenance fixée par %s"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:88
 msgid "*The timezone used is configured on your user settings"
@@ -13102,7 +13102,7 @@ msgstr "Soumettre un résultat pour ce service"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:477
 msgid "Schedule downtime for this service"
-msgstr "Planifier un arrêt pour ce service"
+msgstr "Planifier une plage de maintenance pour ce service"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:478
 msgid "Add a comment for this service"
@@ -13353,7 +13353,7 @@ msgstr "Commandes disponibles"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:482
 msgid "Schedule downtime for this host"
-msgstr "Planifier un temps d'arrêt pour cet hôte"
+msgstr "Planifier une plage de maintenance pour cet hôte"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:483
 msgid "Add Comment for this host"
@@ -13542,7 +13542,7 @@ msgstr ""
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:240
 msgid "Set downtime for hosts services"
-msgstr "Configurer un temps d'arrêt pour les services des hôtes"
+msgstr "Configurer une plage de maintenance pour les services des hôtes"
 
 #~ msgid " element(s) found"
 #~ msgstr "élément(s) trouvé(s)"
@@ -13591,7 +13591,7 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Statuts de services"
 
 #~ msgid "No downtime scheduled for services"
-#~ msgstr "Aucun temps d'arrêt planifié pour les services"
+#~ msgstr "Aucune plage de maintenance planifiée pour les services"
 
 #~ msgid "Host category"
 #~ msgstr "Catégorie d'hôtes"
@@ -13696,7 +13696,7 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Ajouter un temps d'arrêt pour un hôte"
 
 #~ msgid "Select a downtime type"
-#~ msgstr "Sélectionner un type de temps d'arrêt"
+#~ msgstr "Sélectionner un type de maintenance"
 
 #~ msgid "Connection Error to NDO DataBase ! \n"
 #~ msgstr "Erreur de connexion à la base de données NDO ! \n"
@@ -14275,7 +14275,7 @@ msgstr "Poubelle"
 #~ msgstr "Couleur des hôtes ou des services acquittés"
 
 #~ msgid "Downtime host or service Color"
-#~ msgstr "Couleur des hôtes ou des services en temps d'arrêt"
+#~ msgstr "Couleur des hôtes ou des services en maintenance"
 
 #~ msgid "Color for host Down (Service view)"
 #~ msgstr ""
@@ -14577,10 +14577,10 @@ msgstr "Poubelle"
 #~ msgstr "Temps d'arrêt des hôtes"
 
 #~ msgid "No downtime scheduled for hosts"
-#~ msgstr "Aucun temps d'arrêt planifié pour les hôtes"
+#~ msgstr "Aucune plage de maintenance planifiée pour les hôtes"
 
 #~ msgid "View downtimes of services"
-#~ msgstr "Visualiser les temps d'arrêt des services"
+#~ msgstr "Visualiser les maintenances des services"
 
 #~ msgid "PENDING"
 #~ msgstr "EN ATTENTE"
@@ -14826,7 +14826,7 @@ msgid "Latency detected, check configuration for better optimization"
 msgstr "Latence détectée, vérifiez la configuration pour une meilleure optimisation"
 
 msgid "You can't edit this downtime because you don't have access to all of its resources"
-msgstr "Vous ne pouvez pas éditer ce temps d’arrêt car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
+msgstr "Vous ne pouvez pas éditer cette plage de maintenance car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
 
 msgid "You can't edit this hostgroup because you don't have access to all its resources"
 msgstr "Vous ne pouvez pas éditer groupe d'hote car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
@@ -15229,7 +15229,7 @@ msgid "Current state duration"
 msgstr "Durée de l'état actuel"
 
 msgid "Downtime duration"
-msgstr "Durée du temps d'arrêt"
+msgstr "Durée de la maintenance"
 
 msgid "End date must be greater than start date"
 msgstr "La date de fin doit être supérieure à la date de début"
@@ -15274,13 +15274,13 @@ msgid "Last 31 days"
 msgstr "31 derniers jours"
 
 msgid "Set downtime on"
-msgstr "Programmer un temps d'arrêt sur"
+msgstr "Programmer une maintenance sur"
 
 msgid "Downtime set by"
-msgstr "Temps d'arrêt programmé par"
+msgstr "Maintenance programmée par"
 
 msgid "Set downtime on services attached to host"
-msgstr "Programmer le temps d'arrêt sur les services attachés à l'hôte"
+msgstr "Programmer une plage maintenance sur les services attachés à l'hôte"
 
 msgid "Last notification"
 msgstr "Dernière notification"
@@ -15367,7 +15367,7 @@ msgid "Acknowledge command sent"
 msgstr "Commande d'acquittement envoyée"
 
 msgid "Downtime command sent"
-msgstr "Commande de temps d'arrêt envoyée"
+msgstr "Demande de maintenance envoyée"
 
 msgid "Check command sent"
 msgstr "Commande de contrôle envoyée"
