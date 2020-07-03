@@ -306,7 +306,6 @@ class CentreonTraps
                         $statement->execute();
 
                         $query = "SELECT * FROM traps_matching_properties WHERE trap_id = :trapsId";
-
                         $statement = $this->db->prepare($query);
                         $statement->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
                         $statement->execute();
