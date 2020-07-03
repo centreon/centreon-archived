@@ -78,13 +78,13 @@ while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
         $str .= "<br/><strong>{$row['name']}</strong><br/>";
         foreach ($commands as $command) {
             $requestData = json_encode(
-                array(
-                    (object)array(
+                [
+                    [
                         "command" => $command['command_line'],
                         "timeout" => 30,
                         "continue_on_error" => true
-                    )
-                )
+                    ]
+                ]
             );
             $gorgoneCommand = new \Centreon\Domain\Gorgone\Command\Command((int)$row['id'], $requestData);
             $gorgoneResponse = $gorgoneService->send($gorgoneCommand);
