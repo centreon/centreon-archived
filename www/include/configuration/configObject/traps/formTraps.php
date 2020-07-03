@@ -37,16 +37,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-/**
- * Database retrieve information for Trap
- */
-function testTrapExistence()
-{
-    global $trapObj;
-
-    return $trapObj->testTrapExistence();
-}
-
 function myDecodeTrap($arg)
 {
     $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
@@ -389,7 +379,9 @@ $form->addRule('traps_name', _("Compulsory Name"), 'required');
 $form->addRule('traps_oid', _("Compulsory Name"), 'required');
 $form->addRule('manufacturer_id', _("Compulsory Name"), 'required');
 $form->addRule('traps_args', _("Compulsory Name"), 'required');
-$form->registerRule('exist', 'callback', 'testTrapExistence');
+$form->registerRule('exist', 'callback', [$trapObj, "testTrapExistence"], $oid);
+$form->registerRule('wellFormated', 'callback', [$trapObj, "testOidFormat"], $oid);
+$form->addRule('traps_oid', _("Bad OID Format"), 'wellFormated');
 $form->addRule('traps_oid', _("The same OID element already exists"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
