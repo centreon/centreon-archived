@@ -287,7 +287,15 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 $requestApiVersion = $betaVersion;
             }
 
+            /**
+             * Used for the routing conditions.
+             * @todo We need to use an other name because after routing,
+             *       its value is overwritten by the value of the 'version' property from uri
+             */
             $event->getRequest()->attributes->set('version', (float) $requestApiVersion);
+
+            // Used for controllers
+            $event->getRequest()->attributes->set('version_number', (float) $requestApiVersion);
         }
     }
 

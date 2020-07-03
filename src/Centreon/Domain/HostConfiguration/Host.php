@@ -105,7 +105,7 @@ class Host
     /**
      * @var Host[] Host templates
      */
-    private $template = [];
+    private $templates = [];
 
     /**
      * @var HostMacro[]
@@ -311,18 +311,18 @@ class Host
     /**
      * @return Host[]
      */
-    public function getTemplate(): array
+    public function getTemplates(): array
     {
-        return $this->template;
+        return $this->templates;
     }
 
     /**
-     * @param Host[] $template
+     * @param Host[] $templates
      * @return Host
      */
-    public function setTemplate(array $template): Host
+    public function setTemplates(array $templates): Host
     {
-        $this->template = $template;
+        $this->templates = $templates;
         return $this;
     }
 
@@ -334,7 +334,7 @@ class Host
      */
     public function addTemplate(Host $hostTemplate): Host
     {
-        $this->template[] = $hostTemplate;
+        $this->templates[] = $hostTemplate;
         return $this;
     }
 
