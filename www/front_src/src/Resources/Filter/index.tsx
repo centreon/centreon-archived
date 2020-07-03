@@ -25,6 +25,7 @@ import {
   IconButton,
 } from '@centreon/ui';
 
+import { equals, any } from 'ramda';
 import {
   labelFilter,
   labelCriterias,
@@ -51,9 +52,10 @@ import {
   states as availableStates,
   resourceTypes as availableResourceTypes,
   statuses as availableStatuses,
-  FilterGroup,
-  filterById,
+  Filter as FilterModel,
+  standardFilterById,
   isCustom,
+  newFilter,
 } from './models';
 import SearchHelpTooltip from './SearchHelpTooltip';
 import {
@@ -135,6 +137,7 @@ const Filter = (): JSX.Element => {
     serviceGroups,
     setServiceGroups,
     customFilters,
+    currentSearch,
   } = useResourceContext();
 
   const toggleExpanded = (): void => {
@@ -161,7 +164,7 @@ const Filter = (): JSX.Element => {
     if (isCustom(filter)) {
       return;
     }
-    setFilter({ id: '', name: labelNewFilter } as FilterGroup);
+    setFilter(newFilter);
   };
 
   const requestSearch = (): void => {
@@ -185,7 +188,8 @@ const Filter = (): JSX.Element => {
     const filterId = event.target.value;
 
     const updatedFilter =
-      filterById[filterId] || customFilters?.find(({ id }) => id === filterId);
+      standardFilterById[filterId] ||
+      customFilters?.find(({ id }) => id === filterId);
 
     setFilter(updatedFilter);
 
@@ -198,6 +202,8 @@ const Filter = (): JSX.Element => {
     setStates(updatedFilter.criterias.states);
     setHostGroups(updatedFilter.criterias.hostGroups);
     setServiceGroups(updatedFilter.criterias.serviceGroups);
+    setNextSearch(updatedFilter.criterias.search);
+    setCurrentSearch(updatedFilter.criterias.search);
   };
 
   const clearAllFilters = (): void => {
@@ -242,6 +248,27 @@ const Filter = (): JSX.Element => {
     setAnchorEl(null);
   };
 
+  const isFilterDirty = (): boolean => {
+    if (!isCustom(filter)) {
+      return false;
+    }
+
+    const currentCustomFilter = customFilters?.find(
+      ({ id }) => id === filter.id,
+    );
+
+    const currentCriterias = currentCustomFilter?.criterias;
+
+    return any(([a, b]) => !equals(a, b), [
+      [resourceTypes, currentCriterias?.resourceTypes],
+      [states, currentCriterias?.states],
+      [statuses, currentCriterias?.statuses],
+      [nextSearch, currentCriterias?.search],
+      [serviceGroups, currentCriterias?.serviceGroups],
+      [hostGroups, currentCriterias?.hostGroups],
+    ]);
+  };
+
   return (
     <ExpansionPanel square expanded={expanded}>
       <ExpansionPanelSummary
@@ -270,10 +297,18 @@ const Filter = (): JSX.Element => {
               open={Boolean(anchorEl)}
               onClose={closeSaveFilterMenu}
             >
-              <MenuItem onClick={closeSaveFilterMenu}>
+              <MenuItem
+                onClick={closeSaveFilterMenu}
+                disabled={!isFilterDirty() && filter.id !== ''}
+              >
                 {labelSaveAsNew}
               </MenuItem>
-              <MenuItem onClick={closeSaveFilterMenu}>{labelSave}</MenuItem>
+              <MenuItem
+                disabled={!isFilterDirty() || filter.id === ''}
+                onClick={closeSaveFilterMenu}
+              >
+                {labelSave}
+              </MenuItem>
             </Menu>
           </Grid>
           <Grid item>
@@ -284,7 +319,7 @@ const Filter = (): JSX.Element => {
                 unhandledProblemsFilter,
                 resourceProblemsFilter,
                 allFilter,
-                ...(customFilters as Array<FilterGroup>),
+                ...(customFilters as Array<FilterModel>),
               ]}
               selectedOptionId={filter.id}
               onChange={changeFilterGroup}

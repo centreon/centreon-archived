@@ -8,39 +8,26 @@ import {
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
+import { RowFilter, RowCriteria, CriteriaValue } from '../models';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
-interface CriteriaIdValue {
-  id: number | string;
-  name?: string;
-}
-
-interface Criteria {
-  name: string;
-  objectType?: string;
-  value: Array<CriteriaIdValue> | string | boolean;
-}
-
-export interface CustomFilter {
-  name: string;
-  criterias: Array<Criteria>;
-}
-
-const entityDecoder = JsonDecoder.object<CustomFilter>(
+const entityDecoder = JsonDecoder.object<RowFilter>(
   {
+    id: JsonDecoder.number,
     name: JsonDecoder.string,
-    criterias: JsonDecoder.array<Criteria>(
-      JsonDecoder.object<Criteria>(
+    criterias: JsonDecoder.array<RowCriteria>(
+      JsonDecoder.object<RowCriteria>(
         {
           name: JsonDecoder.string,
           objectType: JsonDecoder.optional(JsonDecoder.string),
-          value: JsonDecoder.oneOf<string | boolean | Array<CriteriaIdValue>>(
+          type: JsonDecoder.string,
+          value: JsonDecoder.oneOf<string | boolean | Array<CriteriaValue>>(
             [
               JsonDecoder.string,
               JsonDecoder.boolean,
-              JsonDecoder.array<CriteriaIdValue>(
-                JsonDecoder.object<CriteriaIdValue>(
+              JsonDecoder.array<CriteriaValue>(
+                JsonDecoder.object<CriteriaValue>(
                   {
                     id: JsonDecoder.oneOf<number | string>(
                       [JsonDecoder.number, JsonDecoder.string],
@@ -79,8 +66,8 @@ const buildListCustomFiltersEndpoint = (params): string =>
 
 const listCustomFilters = (cancelToken) => (
   params,
-): Promise<ListingModel<CustomFilter>> =>
-  getData<ListingModel<CustomFilter>>(cancelToken)(
+): Promise<ListingModel<RowFilter>> =>
+  getData<ListingModel<RowFilter>>(cancelToken)(
     buildListCustomFiltersEndpoint(params),
   );
 
