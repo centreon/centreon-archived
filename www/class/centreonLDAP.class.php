@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -53,7 +54,6 @@ function errorLdapHandler($errno, $errstr, $errfile, $errline, $errcontext)
  */
 class CentreonLDAP
 {
-
     public $centreonLog;
     private $ds;
     private $db = null;
@@ -65,6 +65,8 @@ class CentreonLDAP
     private $groupSearchInfo = null;
     private $debugImport = false;
     private $debugPath = "";
+
+    private CONST DISABLED = true;
 
     /**
      * Constructor
@@ -310,6 +312,10 @@ class CentreonLDAP
         $this->setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($username), $this->userSearchInfo['filter']);
         $result = ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+        // no results were returned using this base_search
+        if ($result === false) {
+            return false;
+        }
         $entries = ldap_get_entries($this->ds, $result);
         restore_error_handler();
         if ($entries['count'] == 0) {
@@ -585,8 +591,17 @@ class CentreonLDAP
         $this->debug('LDAP Search : Timeout : ' . $searchTimeout);
         /* Search */
         $filter = preg_replace('/%s/', '*', $filter);
+
+        // Override the custom errorHandler to avoid false errors in the log,
+        // as the $searchLimit value must be consistent in the ldap.conf server configuration and
+        // as the $sizelimit error thrown is not related with the results.
+        // Error message will still be available in the debug log if enabled
+        $this->setErrorHandler(self::DISABLED);
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
+        // Re-enable native error handling
+        restore_error_handler();
         $this->debug("LDAP Search : Error : " . ldap_error($this->ds));
+
         /* Sort */
         @ldap_sort($this->ds, $sr, "dn");
         $number_returned = ldap_count_entries($this->ds, $sr);
@@ -786,13 +801,20 @@ class CentreonLDAP
     }
 
     /**
-     * Set the error hanlder for LDAP
-     *
+     * Set the error handler for LDAP
+     * @param bool $override if true, disable errors on the php logs
+     *                       if false, override the error handler with the custom function parameters
      * @see errorLdapHandler
      */
-    private function setErrorHandler()
+    private function setErrorHandler(bool $override = false): void
     {
-        set_error_handler('errorLdapHandler');
+        if ($override === self::DISABLED) {
+            set_error_handler(static function() {
+                return self::DISABLED;
+            });
+        } else {
+            set_error_handler('errorLdapHandler');
+        }
     }
 
     /**
@@ -882,8 +904,8 @@ class CentreonLDAP
     {
         $stmt = $this->db->prepare(
             'UPDATE contact SET
-               `contact_ldap_last_sync` = :currentTime,
-               `contact_ldap_required_sync` = "0"
+                `contact_ldap_last_sync` = :currentTime,
+                `contact_ldap_required_sync` = "0"
             WHERE contact_id = :contactId'
         );
         try {
@@ -971,7 +993,7 @@ class CentreonLDAP
         }
         $this->centreonLog->insertLog(
             3,
-            'LDAP AUTH : LDAP synchronization on login is disabled'
+            'LDAP AUTH : Synchronization was skipped. For more details, check your LDAP parameters in Administration'
         );
         return false;
     }
