@@ -1,4 +1,4 @@
-import { merge, isNil } from 'ramda';
+import { merge, isNil, propEq, pipe } from 'ramda';
 import {
   labelUnhandledProblems,
   labelResourceProblems,
@@ -43,10 +43,10 @@ export interface RowCriteria {
   name: string;
   objectType?: string;
   type: string;
-  value: Array<CriteriaValue> | string | boolean;
+  value?: Array<CriteriaValue> | string | boolean;
 }
 
-export interface RowFilter {
+export interface RawFilter {
   id: number;
   name: string;
   criterias: Array<RowCriteria>;
@@ -172,23 +172,76 @@ const newFilter = {
   name: labelNewFilter,
 } as Filter;
 
-const toFilter = ({ name, criterias }: RowFilter): Filter => {
+const toFilter = ({ name, criterias }: RawFilter): Filter => {
+  const findCriteriaByName = (criteriaName): RowCriteria =>
+    criterias.find(propEq('name', criteriaName)) as RowCriteria;
+
+  const toStandardMultiSelectCriteriaValue = (criteria): Array<CriteriaValue> =>
+    criteria.value.map(({ id }) => criteriaValueNameById[id]);
+
+  const getStandardMultiSelectCriteriaValue = (rawName): Array<CriteriaValue> =>
+    pipe(findCriteriaByName, toStandardMultiSelectCriteriaValue)(rawName);
+
   return {
     id: name,
     name,
-    criterias: criterias.reduce((acc, criteria) => {
-      const isStandardMultiSelect =
-        isNil(criteria.objectType) && criteria.type === 'multi_select';
+    criterias: {
+      resourceTypes: getStandardMultiSelectCriteriaValue('resource_types'),
+      states: getStandardMultiSelectCriteriaValue('states'),
+      statuses: getStandardMultiSelectCriteriaValue('statuses'),
+      hostGroups: findCriteriaByName('host_groups').value as Array<
+        CriteriaValue
+      >,
+      serviceGroups: findCriteriaByName('service_groups').value as Array<
+        CriteriaValue
+      >,
+      search: findCriteriaByName('search').value as string | undefined,
+    },
+  };
+};
 
-      const criteriaValue = isStandardMultiSelect
-        ? (criteria.value as Array<CriteriaValue>).map(({ id }) => ({
-            id,
-            name: criteriaValueNameById[id],
-          }))
-        : criteria.value;
-
-      return { ...acc, [criteria.name]: criteriaValue };
-    }, {} as Filter),
+const toRawFilter = ({ name, criterias }: Filter): Omit<RawFilter, 'id'> => {
+  return {
+    name,
+    criterias: [
+      {
+        name: 'resource_types',
+        value: criterias.resourceTypes,
+        type: 'multi_select',
+      },
+      {
+        name: 'states',
+        value: criterias.states,
+        type: 'multi_select',
+      },
+      {
+        name: 'statuses',
+        value: criterias.statuses,
+        type: 'multi_select',
+      },
+      {
+        name: 'host_groups',
+        value: criterias.hostGroups,
+        type: 'multi_select',
+      },
+      {
+        name: 'service_groups',
+        value: criterias.serviceGroups,
+        type: 'multi_select',
+        objectType: 'service_groups',
+      },
+      {
+        name: 'host_groups',
+        value: criterias.hostGroups,
+        type: 'multi_select',
+        objectType: 'host_groups',
+      },
+      {
+        name: 'search',
+        value: criterias.search,
+        type: 'text',
+      },
+    ],
   };
 };
 
@@ -236,5 +289,6 @@ export {
   statuses,
   standardFilterById,
   toFilter,
+  toRawFilter,
   isCustom,
 };

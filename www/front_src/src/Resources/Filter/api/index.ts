@@ -8,11 +8,11 @@ import {
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
-import { RowFilter, RowCriteria, CriteriaValue } from '../models';
+import { RawFilter, RowCriteria, CriteriaValue } from '../models';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
-const entityDecoder = JsonDecoder.object<RowFilter>(
+const entityDecoder = JsonDecoder.object<RawFilter>(
   {
     id: JsonDecoder.number,
     name: JsonDecoder.string,
@@ -66,8 +66,8 @@ const buildListCustomFiltersEndpoint = (params): string =>
 
 const listCustomFilters = (cancelToken) => (
   params,
-): Promise<ListingModel<RowFilter>> =>
-  getData<ListingModel<RowFilter>>(cancelToken)(
+): Promise<ListingModel<RawFilter>> =>
+  getData<ListingModel<RawFilter>>(cancelToken)(
     buildListCustomFiltersEndpoint(params),
   );
 
