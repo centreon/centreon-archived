@@ -2629,7 +2629,7 @@ msgstr "Pas de plage de maintenance programmée"
 
 #: centreon-web/www/install/smarty_translate.php:945
 msgid "Add downtime"
-msgstr "Ajouter un temps d'arrêt"
+msgstr "Ajouter une plage de maintenance"
 
 #: centreon-web/www/install/smarty_translate.php:948
 msgid "General informations"
@@ -4972,7 +4972,7 @@ msgstr "Durée de rétention des données dans MySQL"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:121
 msgid "Retention Duration for Downtimes"
-msgstr "Durée de rétention des temps d'arrêt"
+msgstr "Durée de rétention des plages de maintenance"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:122
 msgid "Retention Duration for Comments"
@@ -5453,7 +5453,7 @@ msgstr "Acquitter les services liés à l'hôte"
 #: centreon-web/www/include/Administration/parameters/engine/form.php:108
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:126
 msgid "Set downtimes on services attached to hosts"
-msgstr "Fixer des temps d'arrêt aux services attachés aux hôtes"
+msgstr "Fixer des plages de maintenance aux services attachés aux hôtes"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:113
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:229
@@ -9497,7 +9497,7 @@ msgstr "Historisé (recherche en base)"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:334
 msgid "Check Downtime"
-msgstr "Contrôle si le service est en temps d'arrêt"
+msgstr "Contrôle si le service est en plage de maintenance"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:343
 msgid "Preexec definition"
@@ -11856,15 +11856,15 @@ msgstr "Exporter la configuration"
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:114
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:237
 msgid "Add a downtime"
-msgstr "Ajouter un temps d'arrêt"
+msgstr "Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:116
 msgid "Modify a downtime"
-msgstr "Modifier un temps d'arrêt"
+msgstr "Modifier une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:118
 msgid "View a downtime"
-msgstr "Visualiser un temps d'arrêt"
+msgstr "Visualiser une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:121
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:232
@@ -11898,7 +11898,7 @@ msgstr "La date de fin doit être plus grande que la date de début."
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:266
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:355
 msgid "No relation set for this downtime"
-msgstr "Aucune relation faite avec ce temps d'arrêt"
+msgstr "Aucune relation faite avec cette plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:334
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:77
@@ -12468,7 +12468,7 @@ msgstr "Hôtes : Désactiver la vérification"
 #: centreon-web/www/include/monitoring/status/Services/service.php:278
 #: centreon-web/www/include/monitoring/status/Services/service.php:298
 msgid "Hosts : Set Downtime"
-msgstr "Hôtes : Ajouter un temps d'arrêt"
+msgstr "Hôtes : Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/monitoring/status/HostGroups/hostGroupJS.php:71
 msgid "Hosts Status"
@@ -12857,7 +12857,7 @@ msgstr "Services : Planifier un contrôle immédiat (Forcé)"
 #: centreon-web/www/include/monitoring/status/Services/service.php:251
 #: centreon-web/www/include/monitoring/status/Services/service.php:289
 msgid "Services : Set Downtime"
-msgstr "Services : Ajouter un temps d'arrêt"
+msgstr "Services : Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/monitoring/status/Services/service.php:339
 msgid "Service Problems"
@@ -12974,7 +12974,7 @@ msgstr "Commentaire"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:74
 msgid "Set downtimes"
-msgstr "Configurer des temps d'arrêt"
+msgstr "Configurer des plages de maintenance"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:80
 #, php-format
@@ -13517,15 +13517,15 @@ msgstr "s"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:250
 msgid "View downtimes of hosts"
-msgstr "Visualiser les temps d'arrêt des hôtes"
+msgstr "Visualiser les plages de maintenance des hôtes"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:261
 msgid "Display Finished Downtimes"
-msgstr "Afficher les temps d'arrêt terminés"
+msgstr "Afficher les plages de maintenance terminés"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:262
 msgid "Display Recurring Downtimes"
-msgstr "Afficher les temps d'arrêt cycliques"
+msgstr "Afficher les plages de maintenance cycliques"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172
 msgid "Hostgroups"
@@ -13693,7 +13693,7 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgstr "Planifier pour un hôte"
 
 #~ msgid "Add a Host downtime"
-#~ msgstr "Ajouter un temps d'arrêt pour un hôte"
+#~ msgstr "Ajouter une plage de maintenance pour un hôte"
 
 #~ msgid "Select a downtime type"
 #~ msgstr "Sélectionner un type de plage de maintenance"
@@ -13723,10 +13723,10 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgstr "Dernière fois dans un état critique"
 
 #~ msgid "Services: Set Downtime"
-#~ msgstr "Services: Planifier un temps d'arrêt"
+#~ msgstr "Services: Planifier une plage de maintenance"
 
 #~ msgid "Hosts: Set Downtime"
-#~ msgstr "Hôtes: Planifier un temps d'arrêt"
+#~ msgstr "Hôtes: Planifier une plage de maintenance"
 
 #~ msgid "Disacknowledge"
 #~ msgstr "Désacquittement"
@@ -15259,7 +15259,7 @@ msgid "Downtime"
 msgstr "Temps d'arrêt"
 
 msgid "In downtime"
-msgstr "En temps arrêt"
+msgstr "En plage de maintenance"
 
 msgid "Last 24 hours"
 msgstr "24 dernières heures"
