@@ -15271,7 +15271,7 @@ msgid "Last 31 days"
 msgstr "31 derniers jours"
 
 msgid "Set downtime on"
-msgstr "Programmer une maintenance sur"
+msgstr "Programmer une plage de maintenance sur"
 
 msgid "Downtime set by"
 msgstr "Maintenance programmée par"
