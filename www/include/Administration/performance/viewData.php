@@ -138,7 +138,16 @@ if (isset($inputs['Search'])) {
 $brk = new CentreonBroker($pearDB);
 
 if ((isset($inputs["o1"]) && $inputs["o1"]) || (isset($inputs["o2"]) && $inputs["o2"])) {
-    $selected = $inputs["select"];
+    //filter integer keys
+    $selected = array_filter(
+        $inputs["select"],
+        function ($k) {
+            if (is_int($k)) {
+                return $k;
+            }
+        },
+        ARRAY_FILTER_USE_KEY
+    );
     if ($inputs["o"] == REBUILD_RRD && !empty($selected)) {
         foreach (array_keys($selected) as $id) {
             $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = " . $id);
