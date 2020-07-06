@@ -11917,7 +11917,7 @@ msgstr "Secondes"
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:71
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:131
 msgid "Downtime type"
-msgstr "Type de maintenance"
+msgstr "Type de plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:339
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:73
