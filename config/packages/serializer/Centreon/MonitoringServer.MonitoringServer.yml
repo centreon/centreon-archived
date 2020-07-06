@@ -5,7 +5,10 @@ Centreon\Domain\MonitoringServer\MonitoringServer:
             groups: [monitoringserver_main, monitoringserver_min]
         name:
             type: string
-            groups: [monitoringserver_main, monitoringserver_min]
+            groups:
+              - monitoringserver_main
+              - monitoringserver_min
+              - monitoringserver_group_1
         isLocalhost:
             type: bool
             groups: [monitoringserver_main, monitoringserver_min]
