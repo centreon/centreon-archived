@@ -13696,7 +13696,7 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgstr "Ajouter un temps d'arrêt pour un hôte"
 
 #~ msgid "Select a downtime type"
-#~ msgstr "Sélectionner un type de maintenance"
+#~ msgstr "Sélectionner un type de plage de maintenance"
 
 #~ msgid "Connection Error to NDO DataBase ! \n"
 #~ msgstr "Erreur de connexion à la base de données NDO ! \n"
