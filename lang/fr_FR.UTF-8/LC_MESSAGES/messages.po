@@ -5497,7 +5497,7 @@ msgstr "Options d'acquittement par défaut"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:210
 msgid "Default downtime settings"
-msgstr "Options de la maintenance par défaut"
+msgstr "Options de la plage de maintenance par défaut"
 
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:78
 msgid "Directory + RRDTOOL Binary"
