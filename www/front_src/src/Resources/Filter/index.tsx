@@ -10,11 +10,8 @@ import {
   ExpansionPanelSummary as MuiExpansionPanelSummary,
   ExpansionPanelDetails as MuiExpansionPanelDetails,
   withStyles,
-  Menu,
-  MenuItem,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import SettingsIcon from '@material-ui/icons/Settings';
 
 import {
   MultiAutocompleteField,
@@ -22,10 +19,8 @@ import {
   SelectField,
   SearchField,
   SelectEntry,
-  IconButton,
 } from '@centreon/ui';
 
-import { equals, any } from 'ramda';
 import {
   labelFilter,
   labelCriterias,
@@ -40,9 +35,6 @@ import {
   labelClearAll,
   labelOpen,
   labelShowCriteriasFilters,
-  labelSaveFilter,
-  labelSaveAsNew,
-  labelSave,
   labelNewFilter,
 } from '../translatedLabels';
 import {
@@ -63,6 +55,7 @@ import {
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
 import { useResourceContext } from '../Context';
+import SaveFilter from './Save';
 
 const ExpansionPanelSummary = withStyles((theme) => ({
   root: {
@@ -118,7 +111,6 @@ const Filter = (): JSX.Element => {
   const classes = useStyles();
 
   const [expanded, setExpanded] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
 
   const {
     filter,
@@ -137,7 +129,6 @@ const Filter = (): JSX.Element => {
     serviceGroups,
     setServiceGroups,
     customFilters,
-    currentSearch,
   } = useResourceContext();
 
   const toggleExpanded = (): void => {
@@ -240,35 +231,6 @@ const Filter = (): JSX.Element => {
     setServiceGroups(updatedServiceGroups);
   };
 
-  const openSaveFilterMenu = (event: React.MouseEvent): void => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const closeSaveFilterMenu = (): void => {
-    setAnchorEl(null);
-  };
-
-  const isFilterDirty = (): boolean => {
-    if (!isCustom(filter)) {
-      return false;
-    }
-
-    const currentCustomFilter = customFilters?.find(
-      ({ id }) => id === filter.id,
-    );
-
-    const currentCriterias = currentCustomFilter?.criterias;
-
-    return any(([a, b]) => !equals(a, b), [
-      [resourceTypes, currentCriterias?.resourceTypes],
-      [states, currentCriterias?.states],
-      [statuses, currentCriterias?.statuses],
-      [nextSearch, currentCriterias?.search],
-      [serviceGroups, currentCriterias?.serviceGroups],
-      [hostGroups, currentCriterias?.hostGroups],
-    ]);
-  };
-
   return (
     <ExpansionPanel square expanded={expanded}>
       <ExpansionPanelSummary
@@ -288,28 +250,7 @@ const Filter = (): JSX.Element => {
             </Typography>
           </Grid>
           <Grid item>
-            <IconButton title={labelSaveFilter} onClick={openSaveFilterMenu}>
-              <SettingsIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={closeSaveFilterMenu}
-            >
-              <MenuItem
-                onClick={closeSaveFilterMenu}
-                disabled={!isFilterDirty() && filter.id !== ''}
-              >
-                {labelSaveAsNew}
-              </MenuItem>
-              <MenuItem
-                disabled={!isFilterDirty() || filter.id === ''}
-                onClick={closeSaveFilterMenu}
-              >
-                {labelSave}
-              </MenuItem>
-            </Menu>
+            <SaveFilter />
           </Grid>
           <Grid item>
             <SelectField

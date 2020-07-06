@@ -7,7 +7,8 @@ import {
   clearCachedFilter,
   storeFilter,
 } from './storedFilter';
-import { Filter, Criterias, toFilter, CriteriaValue } from './models';
+import { Filter, Criterias, CriteriaValue } from './models';
+import { toFilter } from './adapters';
 import { listCustomFiltersDecoder, listCustomFilters } from './api';
 
 const getDefaultFilter = (): Filter => getStoredOrDefaultFilter();
@@ -48,6 +49,7 @@ export interface FilterState {
   setHostGroups: CriteriaValuesDispatch;
   serviceGroups: Array<CriteriaValue>;
   setServiceGroups: CriteriaValuesDispatch;
+  loadCustomFilters: () => Promise<Array<Filter>>;
 }
 
 const useFilter = (): FilterState => {
@@ -80,10 +82,18 @@ const useFilter = (): FilterState => {
     Array<CriteriaValue>
   >(getDefaultServiceGroups());
 
-  React.useEffect(() => {
-    sendListCustomFiltersRequest().then(({ result }) => {
+  const loadCustomFilters = (): Promise<Array<Filter>> => {
+    return sendListCustomFiltersRequest().then(({ result }) => {
+      const retrievedCustomFilters = result.map(toFilter);
+
       setCustomFilters(result.map(toFilter));
+
+      return retrievedCustomFilters;
     });
+  };
+
+  React.useEffect(() => {
+    loadCustomFilters();
   }, []);
 
   React.useEffect(() => {
@@ -134,6 +144,7 @@ const useFilter = (): FilterState => {
     setHostGroups,
     serviceGroups,
     setServiceGroups,
+    loadCustomFilters,
   };
 };
 

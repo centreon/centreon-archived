@@ -5,10 +5,13 @@ import {
   buildListingDecoder,
   getData,
   ListingModel,
+  postData,
+  patchData,
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
-import { RawFilter, RowCriteria, CriteriaValue } from '../models';
+import { RawFilter, RawCriteria, CriteriaValue, Filter } from '../models';
+import { toRawFilter } from '../adapters';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
@@ -16,8 +19,8 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
   {
     id: JsonDecoder.number,
     name: JsonDecoder.string,
-    criterias: JsonDecoder.array<RowCriteria>(
-      JsonDecoder.object<RowCriteria>(
+    criterias: JsonDecoder.array<RawCriteria>(
+      JsonDecoder.object<RawCriteria>(
         {
           name: JsonDecoder.string,
           objectType: JsonDecoder.optional(JsonDecoder.string),
@@ -71,8 +74,22 @@ const listCustomFilters = (cancelToken) => (
     buildListCustomFiltersEndpoint(params),
   );
 
+const createFilter = (cancelToken) => (params): Promise<number> =>
+  postData<Omit<RawFilter, 'id'>, number>(cancelToken)({
+    endpoint: filterEndpoint,
+    data: toRawFilter(params),
+  });
+
+const updateFilter = (cancelToken) => (params): Promise<void> =>
+  patchData<Filter, void>(cancelToken)({
+    endpoint: `${filterEndpoint}/${params.id}`,
+    data: params,
+  });
+
 export {
   listCustomFilters,
   buildListCustomFiltersEndpoint,
   listCustomFiltersDecoder,
+  createFilter,
+  updateFilter,
 };
