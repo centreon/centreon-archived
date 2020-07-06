@@ -15364,7 +15364,7 @@ msgid "Acknowledge command sent"
 msgstr "Commande d'acquittement envoyée"
 
 msgid "Downtime command sent"
-msgstr "Demande de maintenance envoyée"
+msgstr "Commande de configuration de plage de maintenance envoyée"
 
 msgid "Check command sent"
 msgstr "Commande de contrôle envoyée"
