@@ -35,21 +35,6 @@
  */
 
 /**
- *
- * @param int $errno The error num
- * @param string $errstr The error message
- * @param string $errfile The error file
- * @param int $errline The error line
- * @param array $errcontext
- * @return boolean
- */
-function errorLdapHandler($errno, $errstr, $errfile, $errline, $errcontext)
-{
-    // @todo LOG
-    return false;
-}
-
-/**
  * The utils class for LDAP
  */
 class CentreonLDAP
@@ -67,7 +52,6 @@ class CentreonLDAP
     private $debugPath = "";
 
     private CONST DISABLED = true;
-
     /**
      * Constructor
      * @param \CentreonDB $pearDB The database connection
@@ -591,16 +575,7 @@ class CentreonLDAP
         $this->debug('LDAP Search : Timeout : ' . $searchTimeout);
         /* Search */
         $filter = preg_replace('/%s/', '*', $filter);
-
-        // Override the custom errorHandler to avoid false errors in the log,
-        // as the $searchLimit value must be consistent in the ldap.conf server configuration and
-        // as the $sizelimit error thrown is not related with the results.
-        // Error message will still be available in the debug log if enabled
-        $this->setErrorHandler(self::DISABLED);
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
-        // Re-enable native error handling
-        restore_error_handler();
-        $this->debug("LDAP Search : Error : " . ldap_error($this->ds));
 
         /* Sort */
         @ldap_sort($this->ds, $sr, "dn");
@@ -801,20 +776,40 @@ class CentreonLDAP
     }
 
     /**
+     * Override the custom errorHandler to avoid false errors in the log,
+     *
+     * @param int $errno The error num
+     * @param string $errstr The error message
+     * @param string $errfile The error file
+     * @param int $errline The error line
+     * @return boolean
+     */
+    private function errorLdapHandler($errno, $errstr, $errfile, $errline): bool
+    {
+        if ($errno === 2 && ldap_errno($this->ds) === 4) {
+            /* Silencing : 'size limit exceeded' warnings in the logs
+             As the $searchLimit value needs to be consistent with the ldap server's configuration and
+             as the $sizelimit error thrown is not related with the results.
+             ldap_errno == 4 means LDAP_SIZELIMIT_EXCEEDED
+             $errno == 2 means PHP_WARNING
+            */
+            $this->debug("LDAP Error : Size limit exceeded error. This error was not added to php log. "
+                . "Kindly, check your LDAP server's configuration and your Centreon's LDAP parameters.");
+            return self::DISABLED;
+        }
+
+        // throwing all errors
+        $this->debug("LDAP Error : " . ldap_error($this->ds));
+        return  false;
+    }
+
+    /**
      * Set the error handler for LDAP
-     * @param bool $override if true, disable errors on the php logs
-     *                       if false, override the error handler with the custom function parameters
      * @see errorLdapHandler
      */
-    private function setErrorHandler(bool $override = false): void
+    private function setErrorHandler(): void
     {
-        if ($override === self::DISABLED) {
-            set_error_handler(static function() {
-                return self::DISABLED;
-            });
-        } else {
-            set_error_handler('errorLdapHandler');
-        }
+        set_error_handler(array('CentreonLDAP', 'errorLdapHandler'));
     }
 
     /**
@@ -904,8 +899,8 @@ class CentreonLDAP
     {
         $stmt = $this->db->prepare(
             'UPDATE contact SET
-                `contact_ldap_last_sync` = :currentTime,
-                `contact_ldap_required_sync` = "0"
+               `contact_ldap_last_sync` = :currentTime,
+               `contact_ldap_required_sync` = "0"
             WHERE contact_id = :contactId'
         );
         try {
