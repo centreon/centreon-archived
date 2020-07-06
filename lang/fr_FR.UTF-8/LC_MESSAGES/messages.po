@@ -15229,7 +15229,7 @@ msgid "Current state duration"
 msgstr "Durée de l'état actuel"
 
 msgid "Downtime duration"
-msgstr "Durée de la maintenance"
+msgstr "Durée de la plage de maintenance"
 
 msgid "End date must be greater than start date"
 msgstr "La date de fin doit être supérieure à la date de début"
