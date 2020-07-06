@@ -67,9 +67,11 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
         $listMetricsId = array_keys($selected);
         if (count($listMetricsId) > 0) {
             $brk = new CentreonBroker($pearDB);
-            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" .
+                implode(', ', $listMetricsId) . ")");
             $brk->reload();
-            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" .
+                implode(', ', $listMetricsId) . ")");
         }
     } elseif ($_POST["o1"] == HIDE_GRAPH || $_POST["o2"] == HIDE_GRAPH) {
         foreach (array_keys($selected) as $id) {

@@ -159,11 +159,12 @@ if ((isset($inputs["o1"]) && $inputs["o1"]) || (isset($inputs["o2"]) && $inputs[
         }
         $listMetricsToDelete = array_unique($listMetricsToDelete);
         if (count($listMetricsToDelete) > 0) {
-            $query = "UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")";
+            $query = "UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" .
+                implode(', ', $listMetricsToDelete) . ")";
             $pearDBO->query($query);
-            $query = "UPDATE index_data SET to_delete = 1 WHERE id IN (" . join(', ', array_keys($selected)) . ")";
+            $query = "UPDATE index_data SET to_delete = 1 WHERE id IN (" . implode(', ', array_keys($selected)) . ")";
             $pearDBO->query($query);
-            $query = "DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")";
+            $query = "DELETE FROM ods_view_details WHERE metric_id IN (" . implode(', ', $listMetricsToDelete) . ")";
             $pearDB->query($query);
             $brk->reload();
         }
