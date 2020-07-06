@@ -14580,7 +14580,7 @@ msgstr "Poubelle"
 #~ msgstr "Aucune plage de maintenance planifiée pour les hôtes"
 
 #~ msgid "View downtimes of services"
-#~ msgstr "Visualiser les maintenances des services"
+#~ msgstr "Visualiser les plages de maintenance des services"
 
 #~ msgid "PENDING"
 #~ msgstr "EN ATTENTE"
