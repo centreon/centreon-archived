@@ -15274,7 +15274,7 @@ msgid "Set downtime on"
 msgstr "Programmer une plage de maintenance sur"
 
 msgid "Downtime set by"
-msgstr "Maintenance programmée par"
+msgstr "Plage de maintenance programmée par"
 
 msgid "Set downtime on services attached to host"
 msgstr "Programmer une plage maintenance sur les services attachés à l'hôte"
