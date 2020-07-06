@@ -9966,7 +9966,7 @@ msgstr "Bagotant"
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:260
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:630
 msgid "Downtime Scheduled"
-msgstr "Maintenances programmées"
+msgstr "Plages de maintenance programmées"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:779
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:632
