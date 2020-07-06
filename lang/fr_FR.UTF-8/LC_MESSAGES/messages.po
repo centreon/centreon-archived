@@ -2433,7 +2433,7 @@ msgstr "Acquittés"
 
 #: centreon-web/www/install/smarty_translate.php:840
 msgid "In Downtime"
-msgstr "Temps d'arrêt démarré"
+msgstr "Plage de maintenance démarrée"
 
 #: centreon-web/www/install/smarty_translate.php:843
 #: centreon-web/www/install/menu_translation.php:88
@@ -2600,7 +2600,7 @@ msgstr "Fin Actuelle"
 
 #: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:217
 msgid "Recurrent downtimes"
-msgstr "Temps d'arrêt récurrents"
+msgstr "Plages de maintenance récurrentes"
 
 #: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:156
 msgid "Plugin Packs"
@@ -3076,7 +3076,7 @@ msgstr "Découverte"
 #: centreon-web/www/install/menu_translation.php:79
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:704
 msgid "Downtimes"
-msgstr "Temps d'arrêt"
+msgstr "Planifier des plages de maintenance"
 
 #: centreon-web/www/install/menu_translation.php:80
 msgid "Edit"
@@ -8007,7 +8007,7 @@ msgstr "Moyenne"
 
 #: centreon-web/www/include/reporting/dashboard/initReport.php:174
 msgid "Scheduled downtime"
-msgstr "Temps d'arrêt planifié"
+msgstr "Plage de maintenance planifiée"
 
 #: centreon-web/www/include/reporting/dashboard/initReport.php:177
 msgid "Total"
@@ -13509,7 +13509,7 @@ msgstr "Confirmez-vous l'annulation ?"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:248
 msgid "Services Downtimes"
-msgstr "Temps d'arrêt des services"
+msgstr "Plages de maintenance des services"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:249
 msgid "s"
@@ -14574,7 +14574,7 @@ msgstr "Poubelle"
 #~ msgstr "Confirmez-vous l'annulation?"
 
 #~ msgid "Hosts Downtimes"
-#~ msgstr "Temps d'arrêt des hôtes"
+#~ msgstr "Plages de maintenance des hôtes"
 
 #~ msgid "No downtime scheduled for hosts"
 #~ msgstr "Aucune plage de maintenance planifiée pour les hôtes"
@@ -15256,7 +15256,7 @@ msgid "Host group"
 msgstr "Groupe d'hôtes"
 
 msgid "Downtime"
-msgstr "Temps d'arrêt"
+msgstr "Plannifier une plage de maintenance"
 
 msgid "In downtime"
 msgstr "En plage de maintenance"
