@@ -2625,7 +2625,7 @@ msgstr "Statistiques du moteur"
 
 #: centreon-web/www/install/smarty_translate.php:942
 msgid "No downtime scheduled"
-msgstr "Pas de plage de maintenance programmé"
+msgstr "Pas de plage de maintenance programmée"
 
 #: centreon-web/www/install/smarty_translate.php:945
 msgid "Add downtime"
