@@ -661,7 +661,7 @@ msgid ""
 "Duration of retention regarding downtimes stored in database. 0 means that no "
 "retention will be applied."
 msgstr ""
-"Durée de rétention concernant les plages de maintenance stockés en base de données. 0 "
+"Durée de rétention concernant les plages de maintenance stockées en base de données. 0 "
 "signifie qu'aucune rétention n'est appliquée."
 
 #: centreon-web/www/include/Administration/parameters/centstorage/help.php:32
