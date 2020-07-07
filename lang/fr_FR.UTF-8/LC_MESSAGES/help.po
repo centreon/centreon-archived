@@ -1110,7 +1110,7 @@ msgstr ""
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:73
 msgid "Default duration of scheduled downtimes."
-msgstr "Durée par défaut des plages de maintenance planifiés."
+msgstr "Durée par défaut des plages de maintenance planifiées."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:80
 msgid ""
