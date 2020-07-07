@@ -21,7 +21,6 @@ import {
   labelDisableAutorefresh,
   labelEnableAutorefresh,
   labelAcknowledge,
-  labelDowntime,
   labelSetDowntime,
   labelSetDowntimeOnServices,
   labelAcknowledgeServices,
@@ -171,7 +170,7 @@ describe(Actions, () => {
 
   it.each([
     [labelAcknowledge, labelAcknowledgedByAdmin, labelAcknowledge],
-    [labelDowntime, labelDowntimeByAdmin, labelSetDowntime],
+    [labelSetDowntime, labelDowntimeByAdmin, labelSetDowntime],
   ])(
     'cannot send a %p request when the corresponding action is fired and the comment field is left empty',
     async (labelAction, labelComment, labelConfirmAction) => {
@@ -274,8 +273,8 @@ describe(Actions, () => {
 
   it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
     const {
-      getByText,
       findByText,
+      getAllByText,
       getByLabelText,
       getByDisplayValue,
     } = renderActions();
@@ -286,7 +285,7 @@ describe(Actions, () => {
       context.setSelectedResources(selectedResources);
     });
 
-    fireEvent.click(getByText(labelDowntime));
+    fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     await findByText(labelDowntimeByAdmin);
 
@@ -296,7 +295,9 @@ describe(Actions, () => {
     });
 
     await waitFor(() =>
-      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
+      expect(
+        (last(getAllByText(labelSetDowntime)) as HTMLElement).parentElement,
+      ).toBeDisabled(),
     );
   });
 
@@ -304,7 +305,7 @@ describe(Actions, () => {
     const {
       container,
       getByLabelText,
-      getByText,
+      getAllByText,
       findByText,
     } = renderActions();
 
@@ -314,9 +315,11 @@ describe(Actions, () => {
       context.setSelectedResources(selectedResources);
     });
 
-    await waitFor(() => expect(getByText(labelDowntime)).toBeEnabled());
+    await waitFor(() =>
+      expect(last(getAllByText(labelSetDowntime))).toBeEnabled(),
+    );
 
-    fireEvent.click(getByText(labelDowntime));
+    fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     await findByText(labelDowntimeByAdmin);
 
@@ -326,12 +329,14 @@ describe(Actions, () => {
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
     await waitFor(() =>
-      expect(getByText(labelSetDowntime).parentElement).toBeDisabled(),
+      expect(
+        (last(getAllByText(labelSetDowntime)) as HTMLElement).parentElement,
+      ).toBeDisabled(),
     );
   });
 
   it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
-    const { getByText, findByText } = renderActions();
+    const { findAllByText, getAllByText } = renderActions();
 
     const selectedResources = [
       {
@@ -344,14 +349,14 @@ describe(Actions, () => {
       context.setSelectedResources(selectedResources);
     });
 
-    fireEvent.click(getByText(labelDowntime));
+    fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
 
-    await findByText(labelDowntimeByAdmin);
+    await findAllByText(labelDowntimeByAdmin);
 
-    fireEvent.click(getByText(labelSetDowntime));
+    fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     const now = new Date();
     const twoHoursMs = 2 * 60 * 60 * 1000;
@@ -461,7 +466,7 @@ describe(Actions, () => {
     await waitFor(() => {
       expect(getByText(labelCheck).parentElement).toBeDisabled();
       expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
-      expect(getByText(labelDowntime).parentElement).toBeDisabled();
+      expect(getByText(labelSetDowntime).parentElement).toBeDisabled();
     });
   });
 
@@ -508,7 +513,7 @@ describe(Actions, () => {
   it.each([
     [
       labelSetDowntime,
-      labelDowntime,
+      labelSetDowntime,
       labelServicesDenied,
       cannotDowntimeServicesAcl,
     ],
@@ -518,7 +523,12 @@ describe(Actions, () => {
       labelServicesDenied,
       cannotAcknowledgeServicesAcl,
     ],
-    [labelSetDowntime, labelDowntime, labelHostsDenied, cannotDowntimeHostsAcl],
+    [
+      labelSetDowntime,
+      labelSetDowntime,
+      labelHostsDenied,
+      cannotDowntimeHostsAcl,
+    ],
     [
       labelAcknowledge,
       labelAcknowledge,
@@ -562,7 +572,7 @@ describe(Actions, () => {
   it.each([
     [
       labelSetDowntime,
-      labelDowntime,
+      labelSetDowntime,
       labelSetDowntimeOnServices,
       cannotDowntimeServicesAcl,
     ],
