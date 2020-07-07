@@ -70,6 +70,7 @@
     "connected-react-router": "^6.5.2",
     "dom-serializer": "^0.1.1",
     "install": "^0.13.0",
+    "kind-of": "^6.0.3",
     "loaders.css": "^0.1.2",
     "moment-timezone": "^0.5.26",
     "numeral": "^2.0.6",
