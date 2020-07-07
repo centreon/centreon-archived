@@ -1,8 +1,13 @@
 import * as React from 'react';
 
-import { equals, any, or, and, propEq, find } from 'ramda';
+import { equals, any, or, and, propEq, find, not } from 'ramda';
 
-import { Menu, MenuItem, CircularProgress } from '@material-ui/core';
+import {
+  Menu,
+  MenuItem,
+  CircularProgress,
+  makeStyles,
+} from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import { IconButton, useRequest, useSnackbar, Severity } from '@centreon/ui';
@@ -19,7 +24,18 @@ import { useResourceContext } from '../../Context';
 import CreateFilterDialog from './CreateFilterDialog';
 import { updateFilter as updateFilterRequest } from '../api';
 
+const useStyles = makeStyles((theme) => ({
+  save: {
+    display: 'grid',
+    gridAutoFlow: 'column',
+    gridGap: theme.spacing(2),
+    alignItems: 'center',
+  },
+}));
+
 const SaveFilterMenu = (): JSX.Element => {
+  const classes = useStyles();
+
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [createFilterDialogOpen, setCreateFilterDialogOpen] = React.useState(
     false,
@@ -36,14 +52,8 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const {
     filter,
+    updatedFilter,
     setFilter,
-    nextSearch,
-    resourceTypes,
-    states,
-    statuses,
-    hostGroups,
-    serviceGroups,
-    customFilters,
     loadCustomFilters,
   } = useResourceContext();
 
@@ -64,26 +74,32 @@ const SaveFilterMenu = (): JSX.Element => {
     setCreateFilterDialogOpen(false);
   };
 
-  const createFilter = (id: number | string): void => {
-    loadCustomFilters()
-      .then((filters) => {
-        const updatedFilter = find<Filter>(propEq('id', id), filters);
-        setFilter(updatedFilter as Filter);
-      })
-      .then(() => {
-        showMessage({
-          message: labelFilterCreated,
-          severity: Severity.success,
-        });
-      });
+  const loadFiltersAndUpdateCurrent = (id: number | string): void => {
+    closeCreateFilterDialog();
+
+    loadCustomFilters().then((filters) => {
+      const foundFilter = find<Filter>(propEq('id', id), filters) as Filter;
+      setFilter(foundFilter);
+    });
+  };
+
+  const confirmCreateFilter = (id: number | string): void => {
+    showMessage({
+      message: labelFilterCreated,
+      severity: Severity.success,
+    });
+
+    loadFiltersAndUpdateCurrent(id);
   };
 
   const updateFilter = (): void => {
-    sendUpdateFilterRequest(filter).then(() => {
+    sendUpdateFilterRequest(updatedFilter).then(() => {
       showMessage({
         message: labelFilterSaved,
         severity: Severity.success,
       });
+
+      loadFiltersAndUpdateCurrent(filter.id);
     });
   };
 
@@ -92,24 +108,11 @@ const SaveFilterMenu = (): JSX.Element => {
       return false;
     }
 
-    const currentCustomFilter = customFilters?.find(
-      ({ id }) => id === filter.id,
-    );
-
-    const currentCriterias = currentCustomFilter?.criterias;
-
-    return any(([a, b]) => !equals(a, b), [
-      [resourceTypes, currentCriterias?.resourceTypes],
-      [states, currentCriterias?.states],
-      [statuses, currentCriterias?.statuses],
-      [nextSearch, currentCriterias?.search],
-      [serviceGroups, currentCriterias?.serviceGroups],
-      [hostGroups, currentCriterias?.hostGroups],
-    ]);
+    return !equals(filter, updatedFilter);
   };
 
   const isNewFilter = filter.id === '';
-  const canSaveFilter = and(isFilterDirty(), !isNewFilter);
+  const canSaveFilter = and(isFilterDirty(), not(isNewFilter));
   const canSaveFilterAsNew = or(isFilterDirty(), isNewFilter);
 
   return (
@@ -130,18 +133,20 @@ const SaveFilterMenu = (): JSX.Element => {
           {labelSaveAsNew}
         </MenuItem>
         <MenuItem disabled={!canSaveFilter} onClick={updateFilter}>
-          <div>
-            {labelSave}
-            {sendingUpdateFilterRequest && <CircularProgress size={3} />}
+          <div className={classes.save}>
+            <span>{labelSave}</span>
+            {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
         </MenuItem>
       </Menu>
-      <CreateFilterDialog
-        open={createFilterDialogOpen}
-        onConfirm={createFilter}
-        filter={filter}
-        onCancel={closeCreateFilterDialog}
-      />
+      {createFilterDialogOpen && (
+        <CreateFilterDialog
+          open
+          onCreate={confirmCreateFilter}
+          filter={updatedFilter}
+          onCancel={closeCreateFilterDialog}
+        />
+      )}
     </>
   );
 };

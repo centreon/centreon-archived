@@ -10,10 +10,12 @@ import {
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
-import { RawFilter, RawCriteria, CriteriaValue, Filter } from '../models';
+import { RawFilter, RawCriteria, CriteriaValue } from '../models';
 import { toRawFilter } from '../adapters';
 
-const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
+// const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
+
+const filterEndpoint = 'http://localhost:5000/mock/filters';
 
 const entityDecoder = JsonDecoder.object<RawFilter>(
   {
@@ -36,7 +38,7 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
                       [JsonDecoder.number, JsonDecoder.string],
                       'string | id ',
                     ),
-                    name: JsonDecoder.optional(JsonDecoder.string),
+                    name: JsonDecoder.string,
                   },
                   'FilterCriteriaValue',
                 ),
@@ -63,7 +65,7 @@ const listCustomFiltersDecoder = buildListingDecoder({
 
 const buildListCustomFiltersEndpoint = (params): string =>
   buildListingEndpoint({
-    baseEndpoint: 'http://localhost:5000/mock/filters',
+    baseEndpoint: filterEndpoint,
     params,
   });
 
@@ -74,16 +76,17 @@ const listCustomFilters = (cancelToken) => (
     buildListCustomFiltersEndpoint(params),
   );
 
-const createFilter = (cancelToken) => (params): Promise<number> =>
-  postData<Omit<RawFilter, 'id'>, number>(cancelToken)({
+const createFilter = (cancelToken) => (params): Promise<number> => {
+  return postData<Omit<RawFilter, 'id'>, { id: number }>(cancelToken)({
     endpoint: filterEndpoint,
     data: toRawFilter(params),
-  });
+  }).then(({ id }) => id);
+};
 
 const updateFilter = (cancelToken) => (params): Promise<void> =>
-  patchData<Filter, void>(cancelToken)({
-    endpoint: `${filterEndpoint}/${params.id}`,
-    data: params,
+  patchData<Omit<RawFilter, 'id'>, void>(cancelToken)({
+    endpoint: filterEndpoint,
+    data: toRawFilter(params),
   });
 
 export {

@@ -34,6 +34,7 @@ type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 export interface FilterState {
   customFilters?: Array<Filter>;
   filter: Filter;
+  updatedFilter: Filter;
   setFilter: FilterDispatch;
   currentSearch?: string;
   setCurrentSearch: SearchDispatch;
@@ -83,13 +84,27 @@ const useFilter = (): FilterState => {
   >(getDefaultServiceGroups());
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
+    setCustomFilters(undefined);
+
     return sendListCustomFiltersRequest().then(({ result }) => {
       const retrievedCustomFilters = result.map(toFilter);
-
-      setCustomFilters(result.map(toFilter));
+      setCustomFilters(retrievedCustomFilters);
 
       return retrievedCustomFilters;
     });
+  };
+
+  const updatedFilter = {
+    id: filter.id,
+    name: filter.name,
+    criterias: {
+      search: nextSearch,
+      resourceTypes,
+      states,
+      statuses,
+      hostGroups,
+      serviceGroups,
+    },
   };
 
   React.useEffect(() => {
@@ -103,13 +118,13 @@ const useFilter = (): FilterState => {
   React.useEffect(() => {
     storeFilter({
       ...filter,
-      search: nextSearch,
       criterias: {
         resourceTypes,
         states,
         statuses,
         hostGroups,
         serviceGroups,
+        search: nextSearch,
       },
     });
   }, [
@@ -129,6 +144,7 @@ const useFilter = (): FilterState => {
   return {
     filter,
     setFilter,
+    updatedFilter,
     customFilters,
     currentSearch,
     setCurrentSearch,

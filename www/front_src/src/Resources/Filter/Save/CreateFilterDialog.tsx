@@ -16,6 +16,8 @@ import {
 import { createFilter } from '../api';
 import { Filter } from '../models';
 
+type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
+
 interface Props {
   onCreate: (id: number) => void;
   onCancel: () => void;
@@ -41,7 +43,10 @@ const CreateFilterDialog = ({
       name: Yup.string().required(labelRequired),
     }),
     onSubmit: (values) => {
-      sendRequest({ name: values.name, criterias: filter.criterias })
+      sendRequest({
+        name: values.name,
+        criterias: filter.criterias,
+      })
         .then((id: number) => {
           onCreate(id);
         })
@@ -71,7 +76,8 @@ const CreateFilterDialog = ({
         label={labelName}
         value={form.values.name}
         error={form.errors.name}
-        onChange={form.handleChange('name')}
+        onChange={form.handleChange('name') as InputChangeEvent}
+        ariaLabel={labelName}
       />
     </Dialog>
   );

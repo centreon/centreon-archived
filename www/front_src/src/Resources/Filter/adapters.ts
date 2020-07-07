@@ -8,21 +8,21 @@ import {
   Filter,
 } from './models';
 
-const toFilter = ({ name, criterias }: RawFilter): Filter => {
+const toFilter = ({ id: filterId, name, criterias }: RawFilter): Filter => {
   const findCriteriaByName = (criteriaName): RawCriteria =>
     criterias.find(propEq('name', criteriaName)) as RawCriteria;
 
   const toStandardMultiSelectCriteriaValue = (criteria): Array<CriteriaValue> =>
-    criteria.value.map(({ id }) => ({
-      id,
-      name: criteriaValueNameById[id],
+    criteria.value.map(({ id: criteriaId }) => ({
+      id: criteriaId,
+      name: criteriaValueNameById[criteriaId],
     }));
 
   const getStandardMultiSelectCriteriaValue = (rawName): Array<CriteriaValue> =>
     pipe(findCriteriaByName, toStandardMultiSelectCriteriaValue)(rawName);
 
   return {
-    id: name,
+    id: filterId,
     name,
     criterias: {
       resourceTypes: getStandardMultiSelectCriteriaValue('resource_types'),

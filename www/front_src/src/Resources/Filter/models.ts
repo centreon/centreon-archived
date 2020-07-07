@@ -1,4 +1,4 @@
-import { isNil, propEq, pipe } from 'ramda';
+import { isNil } from 'ramda';
 import {
   labelUnhandledProblems,
   labelResourceProblems,
@@ -21,7 +21,7 @@ import {
 
 export interface CriteriaValue {
   id: number | string;
-  name?: string;
+  name: string;
 }
 
 export interface Criterias {
@@ -164,18 +164,20 @@ const allFilter = {
     statuses: [],
     hostGroups: [],
     serviceGroups: [],
+    search: undefined,
   },
 };
 
 const newFilter = {
   id: '',
   name: labelNewFilter,
-} as Filter;
+};
 
 const unhandledProblemsFilter: Filter = {
   id: 'unhandled_problems',
   name: labelUnhandledProblems,
   criterias: {
+    search: undefined,
     resourceTypes: [],
     states: [unhandledState],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
@@ -193,6 +195,7 @@ const resourceProblemsFilter: Filter = {
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
     hostGroups: [],
     serviceGroups: [],
+    search: undefined,
   },
 };
 

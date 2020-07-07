@@ -155,7 +155,7 @@ const Filter = (): JSX.Element => {
     if (isCustom(filter)) {
       return;
     }
-    setFilter(newFilter);
+    setFilter({ ...newFilter, criterias: filter.criterias });
   };
 
   const requestSearch = (): void => {

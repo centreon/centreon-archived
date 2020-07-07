@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { makeStyles, Slide } from '@material-ui/core';
+import { makeStyles, Slide, CircularProgress } from '@material-ui/core';
 
 import { withSnackbar, Loader } from '@centreon/ui';
 
@@ -16,6 +16,13 @@ import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
 
 const useStyles = makeStyles((theme) => ({
+  loadingIndicator: {
+    width: '100%',
+    heihgt: '100%',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+  },
   page: {
     display: 'grid',
     gridTemplateRows: 'auto 1fr',
@@ -41,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Resources = (): JSX.Element | null => {
+const Resources = (): JSX.Element => {
   const classes = useStyles();
 
   const listingContext = useListing();
@@ -51,8 +58,8 @@ const Resources = (): JSX.Element | null => {
 
   const { selectedDetailsEndpoints } = detailsContext;
 
-  if (!filterContext.customFilters) {
-    return null;
+  if (isNil(filterContext.customFilters)) {
+    return <CircularProgress className={classes.loadingIndicator} />;
   }
 
   return (
