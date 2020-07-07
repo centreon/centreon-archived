@@ -674,7 +674,7 @@ class CentreonTraps
                     } else {
                         $first = false;
                     }
-                    $insertStr .= "(:trapId, $t[1])";
+                    $insertStr .= "(:trapId, " . (int)$t[1] . ")";
                     $already[$t[1]] = true;
                 }
             }
