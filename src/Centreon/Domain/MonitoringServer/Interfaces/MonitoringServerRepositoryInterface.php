@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,21 @@ use Centreon\Infrastructure\MonitoringServer\MonitoringServerRepositoryRDB;
 
 interface MonitoringServerRepositoryInterface
 {
-
     /**
-     * Find monitoring servers.
+     * Find monitoring servers taking into account the request parameters.
      *
      * @return MonitoringServer[]
      * @throws \Exception
      */
-    public function findServers(): array;
+    public function findServersWithRequestParameters(): array;
+
+    /**
+     * Find monitoring servers without taking into account the request parameters.
+     *
+     * @return MonitoringServer[]
+     * @throws \Exception
+     */
+    public function findServersWithoutRequestParameters(): array;
 
     /**
      * Find a resource of monitoring servers identified by his name.
