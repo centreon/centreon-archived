@@ -318,7 +318,11 @@ class CentreonTraps
                         $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                         $maxId = $res2->fetch();
 
-                        $stmtInsertTrapServiceRelation->bindValue(':maxTrapsId', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
+                        $stmtInsertTrapServiceRelation->bindValue(
+                            ':maxTrapsId',
+                            $maxId['MAX(traps_id)'],
+                            \PDO::PARAM_INT
+                        );
                         $stmtInsertTrapServiceRelation->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
                         $stmtInsertTrapServiceRelation->execute();
 
