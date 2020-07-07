@@ -38,11 +38,12 @@ if (!isset($_POST['poller'])) {
 }
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonXML.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonInstance.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonXML.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 
+$centcorePipe = _CENTREON_VARLIB_ . "/centcore.cmd";
 $db = new CentreonDB();
 
 /* Check Session */
@@ -72,22 +73,17 @@ while ($row = $res->fetchRow()) {
         }
         $str .= "<br/><strong>{$row['name']}</strong><br/>";
         foreach ($commands as $command) {
-            $output = array();
-            exec($command['command_line'], $output, $result);
-            $resultColor = "green";
-            if ($result != 0) {
-                $resultColor = "red";
-                $ok = false;
+            if ($fh = @fopen($centcorePipe, 'a+')) {
+                fwrite($fh, "POSTCMD:" . $command['command_line'] . "\n");
+            } else {
+                throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
             }
-            $str .= $command['command_name'] . ": <font color='$resultColor'>".implode(";", $output)."</font><br/>";
+            fclose($fh);
+            $str .= _("Executing command") . ": " . $command['command_name'] . "<br/>";
         }
     }
 }
-if ($ok === false) {
-    $statusStr = "<b><font color='red'>NOK</font></b>";
-} else {
-    $statusStr = "<b><font color='green'>OK</font></b>";
-}
+$statusStr = "<b><font color='green'>OK</font></b>";
 
 $xml->writeElement('result', $str);
 $xml->writeElement('status', $statusStr);
