@@ -10075,6 +10075,9 @@ msgstr "Retenção RRD"
 msgid "OID"
 msgstr "OID"
 
+# msgid "Bad OID Format"
+# msgstr ""
+
 #: centreon-web/www/include/configuration/configObject/traps/listTraps.php:104
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:171
 msgid "Output Message"

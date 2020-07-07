@@ -8905,6 +8905,9 @@ msgstr "Nombre del fabricante"
 msgid "OID"
 msgstr "OID"
 
+# msgid "Bad OID Format"
+# msgstr ""
+
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:169
 msgid "Default Status"
 msgstr "Estado por defecto"
