@@ -98,7 +98,7 @@ class CentreonTraps
                     }
                     $value = filter_var($value, FILTER_SANITIZE_STRING);
                     $regexp[$key] = filter_var($regexp[$key], FILTER_SANITIZE_STRING) ? $regexp[$key] : "";
-                    $status[$key] = filter_var($status[$key], FILTER_VALIDATE_INT) ? $status[$key] : 0;
+                    $status[$key] = filter_var($status[$key], FILTER_VALIDATE_INT) ? (int) $status[$key] : 0;
                     $severity[$key] = filter_var($severity[$key], FILTER_VALIDATE_INT);
 
                     if ($insertStr) {
@@ -130,7 +130,7 @@ class CentreonTraps
             }
             if ($insertStr) {
                 $query = "INSERT INTO traps_matching_properties
-                        (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr";
+                    (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr";
                 $statement = $this->db->prepare($query);
                 $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
                 if (isset($queryValues)) {
@@ -208,21 +208,20 @@ class CentreonTraps
      */
     public function delete($traps = [])
     {
-        $query = "SELECT traps_name FROM `traps` WHERE `traps_id` = :trapsId LIMIT 1";
-        $query2 = "DELETE FROM traps WHERE traps_id = :trapsId ";
+        $querySelect = "SELECT traps_name FROM `traps` WHERE `traps_id` = :trapsId LIMIT 1";
+        $queryDelete = "DELETE FROM traps WHERE traps_id = :trapsId ";
+
+        $statementSelect = $this->db->prepare($querySelect);
+        $statementDelete = $this->db->prepare($queryDelete);
         foreach (array_keys($traps) as $trapsId) {
             if (is_int($trapsId)) {
-                $statement = $this->db->prepare($query);
-                $statement->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
-                $statement->execute();
+                $statementSelect->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                $statementSelect->execute();
+                $row = $statementSelect->fetch(\PDO::FETCH_ASSOC);
 
-                $row = $statement->fetch(\PDO::FETCH_ASSOC);
-
-                $statement = $this->db->prepare($query2);
-                $statement->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
-                $statement->execute();
-
-                if ($statement->rowCount() > 0) {
+                $statementDelete->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                $statementDelete->execute();
+                if ($statementDelete->rowCount() > 0) {
                     $this->centreon->CentreonLogAction->insertLog("traps", $trapsId, $row['traps_name'], "d");
                 }
             }
@@ -257,30 +256,35 @@ class CentreonTraps
      */
     public function duplicate($traps = [], $nbrDup = [])
     {
-        $query = "SELECT * FROM traps WHERE traps_id = :trapsId LIMIT 1";
-        $query2 = "
+        $querySelectTrap = "SELECT * FROM traps WHERE traps_id = :trapsId LIMIT 1";
+        $queryInsertTrapServiceRelation = "
             INSERT INTO traps_service_relation (traps_id, service_id)
             (SELECT :maxTrapsId, service_id
                 FROM traps_service_relation
                 WHERE traps_id = :trapsId)";
-        $query3 = "
+        $queryInsertPreexec = "
             INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order)
             (SELECT :maxTrapsId, tpe_string, tpe_order
                 FROM traps_preexec
                 WHERE trap_id = :trapsId)";
-        $query4 = "SELECT * FROM traps_matching_properties WHERE trap_id = :trapsId";
-        $query5 = "
-            INSERT INTO traps_matching_properties " .
-            "(`trap_id`,`tmo_order`,`tmo_regexp`,`tmo_string`,`tmo_status`,`severity_id`) " .
-            "VALUES (:trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status, :severity_id)";
+        $querySelectMatching = "SELECT * FROM traps_matching_properties WHERE trap_id = :trapsId";
+        $queryInsertMatching = "
+            INSERT INTO traps_matching_properties
+            (`trap_id`,`tmo_order`,`tmo_regexp`,`tmo_string`,`tmo_status`,`severity_id`)
+            VALUES (:trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status, :severity_id)";
 
+        $stmtSelectTrap = $this->db->prepare($querySelectTrap);
+        $stmtInsertTrapServiceRelation = $this->db->prepare($queryInsertTrapServiceRelation);
+        $stmtInsertPreexec = $this->db->prepare($queryInsertPreexec);
+        $stmtSelectMatching = $this->db->prepare($querySelectMatching);
+        $stmtInsertMatching = $this->db->prepare($queryInsertMatching);
         foreach (array_keys($traps) as $trapsId) {
             if (is_int($trapsId)) {
-                $statement = $this->db->prepare($query);
-                $statement->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
-                $statement->execute();
 
-                $trapConfigurations = $statement->fetch(\PDO::FETCH_ASSOC);
+                $stmtSelectTrap->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                $stmtSelectTrap->execute();
+
+                $trapConfigurations = $stmtSelectTrap->fetch(\PDO::FETCH_ASSOC);
                 $trapConfigurations["traps_id"] = '';
                 for ($newIndex = 1; $newIndex <= $nbrDup[$trapsId]; $newIndex++) {
                     $val = null;
@@ -314,31 +318,27 @@ class CentreonTraps
                         $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                         $maxId = $res2->fetch();
 
-                        $statement = $this->db->prepare($query2);
-                        $statement->bindValue(':maxTrapsId', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
-                        $statement->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
-                        $statement->execute();
+                        $stmtInsertTrapServiceRelation->bindValue(':maxTrapsId', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
+                        $stmtInsertTrapServiceRelation->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                        $stmtInsertTrapServiceRelation->execute();
 
-                        $statement = $this->db->prepare($query3);
-                        $statement->bindValue(':maxTrapsId', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
-                        $statement->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
-                        $statement->execute();
+                        $stmtInsertPreexec->bindValue(':maxTrapsId', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
+                        $stmtInsertPreexec->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                        $stmtInsertPreexec->execute();
 
-                        $statement = $this->db->prepare($query4);
-                        $statement->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
-                        $statement->execute();
+                        $stmtSelectMatching->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                        $stmtSelectMatching->execute();
 
-                        while ($row = $statement->fetch()) {
+                        while ($row = $stmtSelectMatching->fetch()) {
                             $severity = $row['severity_id'] ?? null;
 
-                            $stmt = $this->db->prepare($query5);
-                            $stmt->bindValue(':trap_id', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
-                            $stmt->bindValue(':tmo_order', $row['tmo_order'], \PDO::PARAM_INT);
-                            $stmt->bindValue(':tmo_regexp', $row['tmo_regexp'], \PDO::PARAM_STR);
-                            $stmt->bindValue(':tmo_string', $row['tmo_string'], \PDO::PARAM_STR);
-                            $stmt->bindValue(':tmo_status', $row['tmo_status'], \PDO::PARAM_INT);
-                            $stmt->bindValue(':severity_id', $severity, \PDO::PARAM_INT);
-                            $stmt->execute();
+                            $stmtInsertMatching->bindValue(':trap_id', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
+                            $stmtInsertMatching->bindValue(':tmo_order', $row['tmo_order'], \PDO::PARAM_INT);
+                            $stmtInsertMatching->bindValue(':tmo_regexp', $row['tmo_regexp'], \PDO::PARAM_STR);
+                            $stmtInsertMatching->bindValue(':tmo_string', $row['tmo_string'], \PDO::PARAM_STR);
+                            $stmtInsertMatching->bindValue(':tmo_status', $row['tmo_status'], \PDO::PARAM_INT);
+                            $stmtInsertMatching->bindValue(':severity_id', $severity, \PDO::PARAM_INT);
+                            $stmtInsertMatching->execute();
                         }
 
                         $this->centreon->CentreonLogAction->insertLog(
@@ -648,7 +648,8 @@ class CentreonTraps
             $query = "
                 DELETE FROM traps_service_relation
                     WHERE traps_id = :trapId
-                    AND NOT EXISTS (SELECT s.service_id
+                    AND NOT EXISTS (
+                        SELECT s.service_id
                         FROM service s
                         WHERE s.service_register = '0'
                         AND s.service_id = traps_service_relation.service_id)";
