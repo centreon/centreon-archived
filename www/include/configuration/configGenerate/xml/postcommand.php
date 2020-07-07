@@ -60,6 +60,9 @@ $xml = new CentreonXML();
 $kernel = App\Kernel::createForWeb();
 $gorgoneService = $kernel->getContainer()->get(\Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface::class);
 
+$res = $db->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1'");
+$idCentral = (int)$res->fetch(\PDO::FETCH_COLUMN);
+
 $res = $db->query("SELECT `name`, `id`, `localhost` 
     FROM `nagios_server` 
     WHERE `ns_activate` = '1' 
@@ -86,7 +89,7 @@ while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
                     ]
                 ]
             );
-            $gorgoneCommand = new \Centreon\Domain\Gorgone\Command\Command((int)$row['id'], $requestData);
+            $gorgoneCommand = new \Centreon\Domain\Gorgone\Command\Command($idCentral, $requestData);
             $gorgoneResponse = $gorgoneService->send($gorgoneCommand);
             $str .= _("Executing command") . ": " . $command['command_name'] . "<br/>";
         }
