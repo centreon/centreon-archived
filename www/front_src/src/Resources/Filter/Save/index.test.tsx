@@ -8,7 +8,7 @@ import {
   act,
 } from '@testing-library/react';
 import axios from 'axios';
-import { last, head } from 'ramda';
+import { last } from 'ramda';
 
 import userEvent from '@testing-library/user-event';
 import SaveMenu from '.';
@@ -16,14 +16,12 @@ import useFilter from '../useFilter';
 import Context, { ResourceContext } from '../../Context';
 import {
   labelSaveFilter,
-  labelUnhandledProblems,
   labelSave,
   labelSaveAsNew,
-  labelNewFilter,
   labelName,
 } from '../../translatedLabels';
-import { toFilter, toRawFilter } from '../adapters';
-import { unhandledProblemsFilter, newFilter } from '../models';
+import { toRawFilter } from '../adapters';
+import { newFilter } from '../models';
 
 let filterState;
 
