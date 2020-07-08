@@ -787,11 +787,12 @@ class CentreonLDAP
     private function errorLdapHandler($errno, $errstr, $errfile, $errline): bool
     {
         if ($errno === 2 && ldap_errno($this->ds) === 4) {
-            /* Silencing : 'size limit exceeded' warnings in the logs
-             As the $searchLimit value needs to be consistent with the ldap server's configuration and
-             as the $sizelimit error thrown is not related with the results.
-             ldap_errno == 4 means LDAP_SIZELIMIT_EXCEEDED
-             $errno == 2 means PHP_WARNING
+            /*
+            Silencing : 'size limit exceeded' warnings in the logs
+            As the $searchLimit value needs to be consistent with the ldap server's configuration and
+            as the size limit error thrown is not related with the results.
+                ldap_errno : 4 = LDAP_SIZELIMIT_EXCEEDED
+                $errno     : 2 = PHP_WARNING
             */
             $this->debug("LDAP Error : Size limit exceeded error. This error was not added to php log. "
                 . "Kindly, check your LDAP server's configuration and your Centreon's LDAP parameters.");
