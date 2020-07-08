@@ -21,6 +21,7 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
+import { empty, not, isEmpty } from 'ramda';
 import {
   labelFilter,
   labelCriterias,
@@ -36,6 +37,7 @@ import {
   labelOpen,
   labelShowCriteriasFilters,
   labelNewFilter,
+  labelMyFilters,
 } from '../translatedLabels';
 import {
   unhandledProblemsFilter,
@@ -231,6 +233,25 @@ const Filter = (): JSX.Element => {
     setServiceGroups(updatedServiceGroups);
   };
 
+  const customFilterOptions = isEmpty(customFilters)
+    ? []
+    : [
+        {
+          id: 'my_filters',
+          name: labelMyFilters,
+          type: 'header',
+        },
+        ...(customFilters as Array<FilterModel>),
+      ];
+
+  const options = [
+    { id: '', name: labelNewFilter },
+    unhandledProblemsFilter,
+    resourceProblemsFilter,
+    allFilter,
+    ...customFilterOptions,
+  ];
+
   return (
     <ExpansionPanel square expanded={expanded}>
       <ExpansionPanelSummary
@@ -255,13 +276,7 @@ const Filter = (): JSX.Element => {
           <Grid item>
             <SelectField
               className={classes.filterGroup}
-              options={[
-                { id: '', name: labelNewFilter },
-                unhandledProblemsFilter,
-                resourceProblemsFilter,
-                allFilter,
-                ...(customFilters as Array<FilterModel>),
-              ]}
+              options={options}
               selectedOptionId={filter.id}
               onChange={changeFilterGroup}
               aria-label={labelStateFilter}

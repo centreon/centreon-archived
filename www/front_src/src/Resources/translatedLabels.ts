@@ -169,3 +169,4 @@ export const labelNewFilter = I18n.t('New filter');
 export const labelName = I18n.t('Name');
 export const labelFilterCreated = I18n.t('Filter created');
 export const labelFilterSaved = I18n.t('Filter saved');
+export const labelMyFilters = I18n.t('My filters');
