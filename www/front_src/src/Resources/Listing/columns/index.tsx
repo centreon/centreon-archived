@@ -275,7 +275,9 @@ export const getColumns = (actions): Array<Column> => [
     id: 'information',
     label: labelInformation,
     type: ColumnType.string,
-    getFormattedString: pipe(propOr('', 'information'), split('\n'), head),
+    getFormattedString: pipe(propOr('', 'information'), split('\n'), head) as (
+      row,
+    ) => string,
   },
   {
     id: 'state',

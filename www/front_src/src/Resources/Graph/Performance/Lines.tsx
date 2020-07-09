@@ -15,7 +15,7 @@ const getGraphLines = (lines): Array<JSX.Element> => {
   const multipleYAxes = getUnits().length < 3;
 
   const getYAxes = (): Array<JSX.Element> => {
-    const props = { tick: { fontSize: 12 } };
+    const props = { tick: { fontSize: 12, fontFamily } };
 
     if (multipleYAxes) {
       return getUnits().map((unit, index) => {
@@ -24,7 +24,6 @@ const getGraphLines = (lines): Array<JSX.Element> => {
             yAxisId={unit}
             key={unit}
             orientation={index === 0 ? 'left' : 'right'}
-            tick={{ fontFamily }}
             tickFormatter={(tick): string => formatValue({ value: tick, unit })}
             {...props}
           />
