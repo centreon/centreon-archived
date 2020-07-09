@@ -407,7 +407,6 @@ if (isset($searchS)) {
     $tpl->assign('searchS', $searchS);
 }
 
-
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
