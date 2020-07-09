@@ -809,7 +809,7 @@ class CentreonLDAP
      */
     private function setErrorHandler(): void
     {
-        set_error_handler(array('CentreonLDAP', 'errorLdapHandler'));
+        set_error_handler(array($this, 'errorLdapHandler'));
     }
 
     /**
