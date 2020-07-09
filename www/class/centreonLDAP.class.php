@@ -51,7 +51,6 @@ class CentreonLDAP
     private $debugImport = false;
     private $debugPath = "";
 
-    private const DISABLED = true;
     /**
      * Constructor
      * @param \CentreonDB $pearDB The database connection
@@ -796,7 +795,7 @@ class CentreonLDAP
             */
             $this->debug("LDAP Error : Size limit exceeded error. This error was not added to php log. "
                 . "Kindly, check your LDAP server's configuration and your Centreon's LDAP parameters.");
-            return self::DISABLED;
+            return true;
         }
 
         // throwing all errors
