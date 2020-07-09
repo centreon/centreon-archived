@@ -65,7 +65,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
-    public function addFilter(Filter $filter): void
+    public function addFilter(Filter $filter): int
     {
         $request = $this->translateDbName(
             'INSERT INTO `:db`.user_filter
@@ -78,6 +78,8 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
         $statement->bindValue(':criterias', json_encode($filter->getCriterias()), \PDO::PARAM_STR);
         $statement->execute();
+
+        return (int) $this->db->lastInsertId();
     }
 
     /**

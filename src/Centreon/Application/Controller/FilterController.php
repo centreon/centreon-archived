@@ -46,7 +46,6 @@ class FilterController extends AbstractController
     private $filterService;
 
     public const SERIALIZER_GROUPS_MAIN = ['filter_main'];
-    public const SERIALIZER_GROUPS_EXTENDED = ['filter_extended'];
 
     /**
      * PollerController constructor.
@@ -115,9 +114,12 @@ class FilterController extends AbstractController
             ->setName($filterToAdd['name'])
             ->setCriterias($filterToAdd['criterias']);
 
-        $this->filterService->addFilter($filter);
+        $filterId = $this->filterService->addFilter($filter);
 
-        return View::create(null, Response::HTTP_NO_CONTENT, []);
+        $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
+        $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
+
+        return $this->view($filter)->setContext($context);
     }
 
     /**
@@ -208,7 +210,7 @@ class FilterController extends AbstractController
         $user = $this->getUser();
 
         $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
-        $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_EXTENDED);
+        $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
 
         return $this->view($filter)->setContext($context);
     }

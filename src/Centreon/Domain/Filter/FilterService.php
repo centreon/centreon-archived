@@ -49,7 +49,7 @@ class FilterService implements FilterServiceInterface
     /**
      * @inheritDoc
      */
-    public function addFilter(Filter $filter): void
+    public function addFilter(Filter $filter): int
     {
         $foundFilter = $this->filterRepository->findFilterByUserIdAndName(
             $filter->getUserId(),
@@ -61,7 +61,7 @@ class FilterService implements FilterServiceInterface
         }
 
         try {
-            $this->filterRepository->addFilter($filter);
+            return $this->filterRepository->addFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException('Error when adding filter', 0, $ex);
         }
