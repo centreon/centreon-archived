@@ -6,9 +6,9 @@ import {
   Typography,
   Button,
   makeStyles,
-  ExpansionPanel,
-  ExpansionPanelSummary as MuiExpansionPanelSummary,
-  ExpansionPanelDetails as MuiExpansionPanelDetails,
+  Accordion,
+  AccordionSummary as MuiAccordionSummary,
+  AccordionDetails as MuiAccordionDetails,
   withStyles,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -53,7 +53,7 @@ import {
 } from '../api/endpoint';
 import { useResourceContext } from '../Context';
 
-const ExpansionPanelSummary = withStyles((theme) => ({
+const AccordionSummary = withStyles((theme) => ({
   root: {
     padding: theme.spacing(0, 3, 0, 2),
     minHeight: 'auto',
@@ -74,13 +74,13 @@ const ExpansionPanelSummary = withStyles((theme) => ({
   },
   focused: {},
   expanded: {},
-}))(MuiExpansionPanelSummary);
+}))(MuiAccordionSummary);
 
-const ExpansionPanelDetails = withStyles((theme) => ({
+const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(0, 0.5, 1, 2),
   },
-}))(MuiExpansionPanelDetails);
+}))(MuiAccordionDetails);
 
 const useStyles = makeStyles((theme) => ({
   filterBox: {
@@ -218,8 +218,8 @@ const Filter = (): JSX.Element => {
   };
 
   return (
-    <ExpansionPanel square expanded={expanded}>
-      <ExpansionPanelSummary
+    <Accordion square expanded={expanded}>
+      <AccordionSummary
         expandIcon={
           <ExpandMoreIcon
             color="primary"
@@ -264,8 +264,8 @@ const Filter = (): JSX.Element => {
             </Button>
           </Grid>
         </Grid>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
+      </AccordionSummary>
+      <AccordionDetails>
         <Grid spacing={1} container alignItems="center">
           <Grid item>
             <Typography className={classes.filterLineLabel} variant="subtitle1">
@@ -332,8 +332,8 @@ const Filter = (): JSX.Element => {
             </Button>
           </Grid>
         </Grid>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 
