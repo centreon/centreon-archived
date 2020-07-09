@@ -51,7 +51,7 @@ class CentreonLDAP
     private $debugImport = false;
     private $debugPath = "";
 
-    private CONST DISABLED = true;
+    private const DISABLED = true;
     /**
      * Constructor
      * @param \CentreonDB $pearDB The database connection
