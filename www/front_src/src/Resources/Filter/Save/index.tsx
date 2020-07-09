@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, any, or, and, propEq, find, not } from 'ramda';
+import { equals, or, and, not } from 'ramda';
 
 import {
   Menu,
