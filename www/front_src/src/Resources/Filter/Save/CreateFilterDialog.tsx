@@ -19,7 +19,7 @@ import { Filter } from '../models';
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
 
 interface Props {
-  onCreate: (id: number) => void;
+  onCreate: (filter) => void;
   onCancel: () => void;
   open: boolean;
   filter: Filter;
@@ -31,7 +31,7 @@ const CreateFilterDialog = ({
   open,
   onCancel,
 }: Props): JSX.Element => {
-  const { sendRequest, sending } = useRequest<number>({
+  const { sendRequest, sending } = useRequest<Filter>({
     request: createFilter,
   });
 
@@ -47,9 +47,7 @@ const CreateFilterDialog = ({
         name: values.name,
         criterias: filter.criterias,
       })
-        .then((id: number) => {
-          onCreate(id);
-        })
+        .then(onCreate)
         .catch((requestError) => {
           form.setFieldError(
             'name',
@@ -78,6 +76,7 @@ const CreateFilterDialog = ({
         error={form.errors.name}
         onChange={form.handleChange('name') as InputChangeEvent}
         ariaLabel={labelName}
+        autoFocus
       />
     </Dialog>
   );

@@ -74,12 +74,11 @@ const SaveFilterMenu = (): JSX.Element => {
     setCreateFilterDialogOpen(false);
   };
 
-  const loadFiltersAndUpdateCurrent = (id: number | string): void => {
+  const loadFiltersAndUpdateCurrent = (newFilter: Filter): void => {
     closeCreateFilterDialog();
 
-    loadCustomFilters().then((filters) => {
-      const foundFilter = find<Filter>(propEq('id', id), filters) as Filter;
-      setFilter(foundFilter);
+    loadCustomFilters().then(() => {
+      setFilter(newFilter);
     });
   };
 

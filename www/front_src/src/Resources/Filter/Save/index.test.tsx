@@ -8,7 +8,7 @@ import {
   act,
 } from '@testing-library/react';
 import axios from 'axios';
-import { last } from 'ramda';
+import { last, omit } from 'ramda';
 
 import userEvent from '@testing-library/user-event';
 import SaveMenu from '.';
@@ -22,6 +22,7 @@ import {
 } from '../../translatedLabels';
 import { toRawFilter } from '../api/adapters';
 import { newFilter } from '../models';
+import { filterEndpoint } from '../api';
 
 let filterState;
 
@@ -118,13 +119,13 @@ const retrievedCustomFilters = {
   },
 };
 
-const newFilterId = 0;
+const [createdFilter] = retrievedCustomFilters.result;
 
 describe(SaveMenu, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValue({ data: retrievedCustomFilters });
-    mockedAxios.patch.mockResolvedValue({ data: {} });
-    mockedAxios.post.mockResolvedValue({ data: { id: newFilterId } });
+    mockedAxios.put.mockResolvedValue({ data: {} });
+    mockedAxios.post.mockResolvedValue({ data: createdFilter });
   });
 
   afterEach(() => {
@@ -176,15 +177,18 @@ describe(SaveMenu, () => {
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:5000/mock/filters',
-        toRawFilter({ ...filterState.updatedFilter, name: 'My new filter' }),
+        filterEndpoint,
+        omit(
+          ['id'],
+          toRawFilter({ ...filterState.updatedFilter, name: 'My new filter' }),
+        ),
         expect.anything(),
       );
     });
   });
 
   it('sends an updateFilter request when the "Save" command is clicked', async () => {
-    const { getAllByText, getByLabelText } = renderSaveMenu();
+    const { getAllByText } = renderSaveMenu();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -197,22 +201,12 @@ describe(SaveMenu, () => {
       last(getAllByText(labelSave))?.parentElement?.parentElement,
     ).toHaveAttribute('aria-disabled', 'true');
 
-    fireEvent.click(last(getAllByText(labelSaveAsNew)) as HTMLElement);
-
-    act(() => {
-      fireEvent.change(getByLabelText(labelName), {
-        target: {
-          value: 'My new filter',
-        },
-      });
-    });
-
     fireEvent.click(last(getAllByText(labelSave)) as HTMLElement);
 
     await waitFor(() => {
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:5000/mock/filters',
-        toRawFilter({ ...filterState.updatedFilter, name: 'My new filter' }),
+      expect(mockedAxios.put).toHaveBeenCalledWith(
+        `${filterEndpoint}/${filterState.updatedFilter.id}`,
+        omit(['id'], toRawFilter(filterState.updatedFilter)),
         expect.anything(),
       );
     });
