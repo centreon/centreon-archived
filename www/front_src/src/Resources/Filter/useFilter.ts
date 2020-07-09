@@ -9,7 +9,8 @@ import {
 } from './storedFilter';
 import { Filter, Criterias, CriteriaValue } from './models';
 import { toFilter } from './api/adapters';
-import { listCustomFiltersDecoder, listCustomFilters } from './api';
+import { listCustomFilters } from './api';
+import { listCustomFiltersDecoder } from './api/decoders';
 
 const getDefaultFilter = (): Filter => getStoredOrDefaultFilter();
 const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;

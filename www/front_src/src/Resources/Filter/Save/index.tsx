@@ -82,13 +82,13 @@ const SaveFilterMenu = (): JSX.Element => {
     });
   };
 
-  const confirmCreateFilter = (id: number | string): void => {
+  const confirmCreateFilter = (newFilter: Filter): void => {
     showMessage({
       message: labelFilterCreated,
       severity: Severity.success,
     });
 
-    loadFiltersAndUpdateCurrent(id);
+    loadFiltersAndUpdateCurrent(newFilter);
   };
 
   const updateFilter = (): void => {
@@ -98,7 +98,7 @@ const SaveFilterMenu = (): JSX.Element => {
         severity: Severity.success,
       });
 
-      loadFiltersAndUpdateCurrent(filter.id);
+      loadFiltersAndUpdateCurrent(filter);
     });
   };
 

@@ -21,7 +21,7 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
-import { isEmpty } from 'ramda';
+import { isEmpty, propEq, pick } from 'ramda';
 import {
   labelFilter,
   labelCriterias,
@@ -182,7 +182,7 @@ const Filter = (): JSX.Element => {
 
     const updatedFilter =
       standardFilterById[filterId] ||
-      customFilters?.find(({ id }) => id === filterId);
+      customFilters?.find(propEq('id', filterId));
 
     setFilter(updatedFilter);
 
@@ -276,7 +276,7 @@ const Filter = (): JSX.Element => {
           <Grid item>
             <SelectField
               className={classes.filterGroup}
-              options={options}
+              options={options.map(pick(['id', 'name', 'type']))}
               selectedOptionId={filter.id}
               onChange={changeFilterGroup}
               aria-label={labelStateFilter}
