@@ -21,7 +21,7 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
-import { empty, not, isEmpty } from 'ramda';
+import { isEmpty } from 'ramda';
 import {
   labelFilter,
   labelCriterias,

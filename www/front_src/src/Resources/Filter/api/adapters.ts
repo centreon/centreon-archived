@@ -6,7 +6,7 @@ import {
   RawFilter,
   RawCriteria,
   Filter,
-} from './models';
+} from '../models';
 
 const toFilter = ({ id: filterId, name, criterias }: RawFilter): Filter => {
   const findCriteriaByName = (criteriaName): RawCriteria =>

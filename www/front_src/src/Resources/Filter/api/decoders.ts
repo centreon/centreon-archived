@@ -1,0 +1,53 @@
+import { JsonDecoder } from 'ts.data.json';
+
+import { buildListingDecoder } from '@centreon/ui';
+
+import { CriteriaValue, RawCriteria, RawFilter } from '../models';
+
+const entityDecoder = JsonDecoder.object<RawFilter>(
+  {
+    id: JsonDecoder.number,
+    name: JsonDecoder.string,
+    criterias: JsonDecoder.array<RawCriteria>(
+      JsonDecoder.object<RawCriteria>(
+        {
+          name: JsonDecoder.string,
+          objectType: JsonDecoder.optional(JsonDecoder.string),
+          type: JsonDecoder.string,
+          value: JsonDecoder.oneOf<string | boolean | Array<CriteriaValue>>(
+            [
+              JsonDecoder.string,
+              JsonDecoder.boolean,
+              JsonDecoder.array<CriteriaValue>(
+                JsonDecoder.object<CriteriaValue>(
+                  {
+                    id: JsonDecoder.oneOf<number | string>(
+                      [JsonDecoder.number, JsonDecoder.string],
+                      'FilterCriteriaMilteSelectId',
+                    ),
+                    name: JsonDecoder.string,
+                  },
+                  'FilterCriteriaMultiSelectValue',
+                ),
+                'FilterCriteriaValues',
+              ),
+            ],
+            'FilterCriteriaValue',
+          ),
+        },
+        'FilterCriterias',
+        { objectType: 'object_type' },
+      ),
+      'FilterCriterias',
+    ),
+  },
+  'CustomFilter',
+);
+
+const listCustomFiltersDecoder = buildListingDecoder({
+  entityDecoder,
+  entityDecoderName: 'CustomFilter',
+  listingDecoderName: 'CustomFilters',
+});
+
+export { listCustomFiltersDecoder };

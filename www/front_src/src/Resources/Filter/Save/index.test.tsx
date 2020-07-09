@@ -20,7 +20,7 @@ import {
   labelSaveAsNew,
   labelName,
 } from '../../translatedLabels';
-import { toRawFilter } from '../adapters';
+import { toRawFilter } from '../api/adapters';
 import { newFilter } from '../models';
 
 let filterState;

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 
 import { isNil } from 'ramda';
 
 import { makeStyles, Slide, CircularProgress } from '@material-ui/core';
 
-import { withSnackbar, Loader } from '@centreon/ui';
+import { withSnackbar } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
