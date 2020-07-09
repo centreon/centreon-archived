@@ -30,10 +30,10 @@ interface FilterRepositoryInterface
      * Add filter.
      *
      * @param Filter $filter
-     * @return void
+     * @return int created filter id
      * @throws FilterException
      */
-    public function addFilter(Filter $filter): void;
+    public function addFilter(Filter $filter): int;
 
     /**
      * Update filter.

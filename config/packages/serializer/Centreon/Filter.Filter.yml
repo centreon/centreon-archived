@@ -2,10 +2,10 @@ Centreon\Domain\Filter\Filter:
     properties:
         id:
             type: int
-            groups: [filter_main, filter_extended]
+            groups: [filter_main]
         name:
             type: string
-            groups: [filter_main, filter_extended]
+            groups: [filter_main]
         criterias:
             type: array
-            groups: [filter_extended]
+            groups: [filter_main]

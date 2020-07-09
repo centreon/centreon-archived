@@ -327,10 +327,6 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
-                  description: filter id
-                  example: 1
                 name:
                   type: string
                   description: filter name
