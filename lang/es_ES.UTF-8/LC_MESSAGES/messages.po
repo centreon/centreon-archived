@@ -8914,6 +8914,9 @@ msgstr "Nombre del fabricante"
 msgid "OID"
 msgstr "OID"
 
+# msgid "Bad OID Format"
+# msgstr ""
+
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:169
 msgid "Default Status"
 msgstr "Estado por defecto"
@@ -14499,4 +14502,7 @@ msgstr ""
 #  msgstr ""
 
 #  msgid "Hosts will not be affected because you don't have sufficient permission"
+#  msgstr ""
+
+#  msgid "No results found"
 #  msgstr ""

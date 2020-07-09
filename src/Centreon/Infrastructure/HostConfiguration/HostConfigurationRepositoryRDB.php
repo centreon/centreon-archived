@@ -85,7 +85,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             if ($host->getExtendedHost() !== null) {
                 $this->addExtendedHost($hostId, $host->getExtendedHost());
             }
-            $this->addHostTemplate($hostId, $host->getTemplate());
+            $this->addHostTemplate($hostId, $host->getTemplates());
             $this->addHostMacro($hostId, $host->getMacros());
 
             $this->db->commit();

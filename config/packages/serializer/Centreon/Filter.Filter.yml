@@ -1,0 +1,11 @@
+Centreon\Domain\Filter\Filter:
+    properties:
+        id:
+            type: int
+            groups: [filter_main, filter_extended]
+        name:
+            type: string
+            groups: [filter_main, filter_extended]
+        criterias:
+            type: array
+            groups: [filter_extended]

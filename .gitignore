@@ -6,6 +6,8 @@ doc/API/centreon-api-v2.html
 
 #backend development and project files
 .idea/
+.vscode/
+.scannerwork/
 vendor/
 nbproject/
 GPL_LIB/SmartyCache/*
@@ -61,5 +63,3 @@ src/Centreon*
 www/modules/centreon-*
 www/widgets
 !www/widgets/require.php
-
-.vscode/

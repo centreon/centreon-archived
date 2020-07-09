@@ -14,13 +14,13 @@ parameters:
 
 services:
     _defaults:
-        public: false
+        public: true
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
 
     Centreon\:
-        resource: '../../src/Centreon/*'
-        exclude: '../../src/Centreon/Tests'
+        resource: '../../../src/Centreon/*'
+        exclude: '../../../src/Centreon/Tests'
 
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
@@ -58,7 +58,6 @@ services:
 
     contact.provider:
         class: Centreon\Domain\Contact\ContactProvider
-        public: true
 
     # Authentication
     Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface:
@@ -129,8 +128,6 @@ services:
 
     Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface:
         class: Centreon\Domain\Gorgone\GorgoneService
-        public: true
-
 
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
@@ -138,6 +135,16 @@ services:
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\ResourceRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
+    # Filters
+    Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
+        class: Centreon\Domain\Filter\FilterService
+
+    Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface:
+        class: Centreon\Infrastructure\Filter\FilterRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']

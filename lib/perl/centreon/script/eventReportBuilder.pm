@@ -1,33 +1,33 @@
 ################################################################################
-# Copyright 2005-2013 Centreon
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# Copyright 2005-2020 Centreon
+# Centreon is developed by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
 # Foundation ; either version 2 of the License.
-# 
+#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
+#
+# You should have received a copy of the GNU General Public License along with
 # this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
+#
+# Linking this program statically or dynamically with other modules is making a
+# combined work based on this program. Thus, the terms and conditions of the GNU
 # General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give Centreon 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of Centreon choice, provided that 
-# Centreon also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
+#
+# As a special exception, the copyright holders of this program give Centreon
+# permission to link this program with independent modules to produce an executable,
+# regardless of the license terms of these independent modules, and to copy and
+# distribute the resulting executable under terms of Centreon choice, provided that
+# Centreon also meet, for each linked independent module, the terms  and conditions
+# of the license of that module. An independent module is a module which is not
+# derived from this program. If you modify this program, you may extend this
 # exception to your version of the program, but you are not obliged to do so. If you
 # do not wish to do so, delete this exception statement from your version.
-# 
+#
 #
 ####################################################################################
 
@@ -77,7 +77,7 @@ sub new {
 # program exit function
 sub exit_pgr() {
     my $self = shift;
-    
+
     $self->{logger}->writeLogInfo("Exiting program...");
     exit (0);
 }
@@ -86,11 +86,11 @@ sub exit_pgr() {
 sub initVars {
     my $self = shift;
     my $centstatus;
-    
+
     # Getting centstatus database name
     $centstatus = $self->{csdb};
-    
-    # classes to query database tables 
+
+    # classes to query database tables
     $self->{host} = centreon::reporting::CentreonHost->new($self->{logger}, $self->{cdb});
     $self->{service} = centreon::reporting::CentreonService->new($self->{logger}, $self->{cdb});
     $self->{nagiosLog} = centreon::reporting::CentreonLog->new($self->{logger}, $self->{csdb});
@@ -98,16 +98,24 @@ sub initVars {
     my $centreonAck = centreon::reporting::CentreonAck->new($self->{logger}, $centstatus);
     $self->{serviceEvents} = centreon::reporting::CentreonServiceStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
     $self->{hostEvents} = centreon::reporting::CentreonHostStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
-    
+
     # Class that builds events
-    $self->{processEvents} = centreon::reporting::CentreonProcessStateEvents->new($self->{logger}, $self->{host}, $self->{service}, $self->{nagiosLog}, $self->{hostEvents}, $self->{serviceEvents}, $centreonDownTime);
+    $self->{processEvents} = centreon::reporting::CentreonProcessStateEvents->new(
+        $self->{logger},
+        $self->{host},
+        $self->{service},
+        $self->{nagiosLog},
+        $self->{hostEvents},
+        $self->{serviceEvents},
+        $centreonDownTime
+    );
 }
 
-# For a given period returns in a table each    
+# For a given period returns in a table each
 sub getDaysFromPeriod {
     my $self = shift;
     my ($start, $end) = (shift, shift);
-    
+
     my @days;
     # Check if $end is > to current time
     my ($day,$month,$year) = (localtime(time))[3,4,5];
@@ -119,7 +127,7 @@ sub getDaysFromPeriod {
     ($day,$month,$year) = (localtime($start))[3,4,5];
     $start =  mktime(0,0,0,$day,$month,$year,0,0,-1);
     my $previousDay = mktime(0,0,0,$day - 1,$month,$year,0,0,-1);
-    
+
     while ($start < $end) {
         # getting day beginning => 00h 00min
         # if there is few hour gap (time change : winter/summer), we also readjust it
@@ -130,7 +138,7 @@ sub getDaysFromPeriod {
         my $dayEnd = mktime(0, 0, 0, ++$day, $month, $year, 0, 0, -1);
         my %period = (day_start => $start, day_end => $dayEnd);
         $days[scalar(@days)] = \%period;
-        
+
         $previousDay = $start;
         $start = $dayEnd;
     }
@@ -139,7 +147,7 @@ sub getDaysFromPeriod {
 
 sub get_date {
     my ($self, %options) = @_;
-    
+
     my ($date, $midnight);
     if (defined($self->{$options{option_label}})) {
         if ($self->{$options{option_label}} !~ /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/) {
@@ -149,9 +157,9 @@ sub get_date {
         if (!defined($self->{opt_no_validate_date})) {
             require DateTime;
             eval {
-                my $dt = DateTime->new( 
-                    year => $1, 
-                    month => $2, 
+                my $dt = DateTime->new(
+                    year => $1,
+                    month => $2,
                     day => $3);
             };
             if ($@) {
@@ -162,7 +170,7 @@ sub get_date {
         $date = mktime(0,0,0,$3,$2-1,$1-1900,0,0,-1);
         $midnight = mktime(0,0,0,$3+1,$2-1,$1-1900,0,0,-1);
     }
-    
+
     return ($date, $midnight);
 }
 
@@ -170,7 +178,7 @@ sub get_date {
 sub rebuildIncidents {
     my $self = shift;
     my $time_period = shift;
-    
+
     my ($start, $midnight) = $self->get_date(option_label => 'opt_stime', option => '--start-time');
     my ($start2, $end2);
     my ($end) = $self->get_date(option_label => 'opt_etime', option => '--end-time');
@@ -182,13 +190,13 @@ sub rebuildIncidents {
         $self->{logger}->writeLogError("start date couldn't be more recent than end date");
         $self->exit_pgr();
     }
-    
+
     # Empty tables
     $self->{serviceEvents}->truncateStateEvents(start => $start, midnight => $midnight);
-    $self->{hostEvents}->truncateStateEvents(start => $start, midnight => $midnight);    
+    $self->{hostEvents}->truncateStateEvents(start => $start, midnight => $midnight);
     $start = $start2 if (!defined($start));
     $end = $end2 if (!defined($end));
-    
+
     my $periods = $self->getDaysFromPeriod($start, $end);
     # archiving logs for each days
     foreach(@$periods) {
@@ -204,17 +212,17 @@ sub run {
     $self->SUPER::run();
     $self->{logger}->redirect_output();
     $self->initVars();
-    
+
     $self->{logger}->writeLogInfo("Starting program...");
-    
+
     if (defined($self->{opt_rebuild})) {
         $self->rebuildIncidents();
     } else {
         my $currentTime = time;
-        my ($day,$month,$year) = (localtime($currentTime))[3,4,5];
-        my $end = mktime(0,0,0,$day,$month,$year,0,0,-1);
-        my $start = mktime(0,0,0,$day-1,$month,$year,0,0,-1);
-        $self->{logger}->writeLogInfo("Processing period: ".localtime($start)." => ".localtime($end));
+        my ($day,$month,$year) = (localtime($currentTime))[3, 4, 5];
+        my $end = mktime(0, 0, 0, $day, $month, $year, 0, 0, -1);
+        my $start = mktime(0, 0, 0, $day - 1, $month, $year, 0, 0, -1);
+        $self->{logger}->writeLogInfo("Processing period: " . localtime($start) . " => " . localtime($end));
         $self->{processEvents}->parseHostLog($start, $end);
         $self->{processEvents}->parseServiceLog($start, $end);
     }
