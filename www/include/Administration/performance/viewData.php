@@ -269,7 +269,7 @@ for ($i = 0; $indexData = $DBRESULT->fetchRow(); $i++) {
 }
 
 //select2 Poller
-$poller = $searchP;
+$poller = $searchP ?? '';
 $pollerRoute = './api/internal.php?object=centreon_configuration_poller&action=list';
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
