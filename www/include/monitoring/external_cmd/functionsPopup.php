@@ -67,12 +67,12 @@ function massiveHostAck($key)
     }
     $processedHosts[$hostName] = true;
 
-    $persistent = isset($_GET['persistent']) && $_GET['persistent'] == "true" ? "1" : "0";
-    $notify = isset($_GET['notify']) && $_GET['notify'] == "true" ? "1" : "0";
-    $sticky = isset($_GET['sticky']) && $_GET['sticky'] == "true" ? "2" : "1";
-    $force_check = isset($_GET['force_check']) && $_GET['force_check'] == "true" ? "1" : "0";
+    $persistent = isset($_POST['persistent']) && $_POST['persistent'] == "true" ? "1" : "0";
+    $notify = isset($_POST['notify']) && $_POST['notify'] == "true" ? "1" : "0";
+    $sticky = isset($_POST['sticky']) && $_POST['sticky'] == "true" ? "2" : "1";
+    $force_check = isset($_POST['force_check']) && $_POST['force_check'] == "true" ? "1" : "0";
 
-    $_GET["comment"] = sanitizeShellString($_GET["comment"]);
+    $_POST["comment"] = sanitizeShellString($_POST["comment"]);
 
     $extCmdObj = new CentreonExternalCommand($centreon);
 
@@ -82,8 +82,8 @@ function massiveHostAck($key)
             $sticky,
             $notify,
             $persistent,
-            $_GET["author"],
-            $_GET["comment"]
+            $_POST["author"],
+            $_POST["comment"]
         );
 
         if ($force_check == 1) {
@@ -94,7 +94,7 @@ function massiveHostAck($key)
     }
 
     $actions = $centreon->user->access->checkAction("service_acknowledgement");
-    if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
+    if (($actions == true || $is_admin) && isset($_POST['ackhostservice']) && $_POST['ackhostservice'] == "true") {
         $DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '" . $hostName . "' LIMIT 1");
         $row = $DBRES->fetchRow();
         $svc_tab = getMyHostServices($row['host_id']);
@@ -106,11 +106,13 @@ function massiveHostAck($key)
                     $sticky,
                     $notify,
                     $persistent,
-                    $_GET["author"],
-                    $_GET["comment"]
+                    $_POST["author"],
+                    $_POST["comment"]
                 );
-                if ($force_check == 1 &&
-                    $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
+                if (
+                    $force_check == 1
+                    && $centreon->user->access->checkAction("service_schedule_forced_check") == true
+                ) {
                     $extCmdObj->scheduleForcedCheckService(
                         $hostName,
                         $value
@@ -159,13 +161,13 @@ function massiveServiceAck($key)
         $serviceDescription = $tmp[1];
     }
 
-    isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
-    isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
-    isset($_GET['sticky']) && $_GET['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
-    isset($_GET['force_check']) && $_GET['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
+    isset($_POST['persistent']) && $_POST['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
+    isset($_POST['notify']) && $_POST['notify'] == "true" ? $notify = "1" : $notify = "0";
+    isset($_POST['sticky']) && $_POST['sticky'] == "true" ? $sticky = "2" : $sticky = "1";
+    isset($_POST['force_check']) && $_POST['force_check'] == "true" ? $force_check = "1" : $force_check = "0";
 
     if ($actions == true || $is_admin) {
-        $_GET["comment"] = sanitizeShellString($_GET["comment"]);
+        $_POST["comment"] = sanitizeShellString($_POST["comment"]);
 
         $extCmdObj = new CentreonExternalCommand($centreon);
         $extCmdObj->acknowledgeService(
@@ -174,8 +176,8 @@ function massiveServiceAck($key)
             $sticky,
             $notify,
             $persistent,
-            $_GET["author"],
-            $_GET["comment"]
+            $_POST["author"],
+            $_POST["comment"]
         );
 
         if ($force_check == 1 && $centreon->user->access->checkAction("service_schedule_forced_check") == true) {
@@ -223,17 +225,17 @@ function massiveHostDowntime($key)
         }
         $processedHosts[$host_name] = true;
 
-        $start = isset($_GET['start']) && $_GET['start'] ? $_GET['start'] : time();
-        $end = isset($_GET['end']) && $_GET['end'] ? $_GET['end'] : time();
-        $comment = isset($_GET['comment']) && $_GET['comment'] ? sanitizeShellString($_GET["comment"]) : "";
-        $fixed = isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
-        $duration = isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration'])
-            ? $duration = $_GET['duration']
+        $start = isset($_POST['start']) && $_POST['start'] ? $_POST['start'] : time();
+        $end = isset($_POST['end']) && $_POST['end'] ? $_POST['end'] : time();
+        $comment = isset($_POST['comment']) && $_POST['comment'] ? sanitizeShellString($_POST["comment"]) : "";
+        $fixed = isset($_POST['fixed']) && $_POST['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
+        $duration = isset($_POST['duration']) && $_POST['duration'] && is_numeric($_POST['duration'])
+            ? $duration = $_POST['duration']
             : $duration = 0;
-        $duration_scale = isset($_GET['duration_scale']) && $_GET['duration_scale']
-            ? $duration_scale = $_GET['duration_scale']
+        $duration_scale = isset($_POST['duration_scale']) && $_POST['duration_scale']
+            ? $duration_scale = $_POST['duration_scale']
             : $duration_scale = "s";
-        $hostTime = isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" ? "1" : "0";
+        $hostTime = isset($_POST['host_or_centreon_time']) && $_POST['host_or_centreon_time'] == "true" ? "1" : "0";
 
         if ($duration > 0) {
             switch ($duration_scale) {
@@ -256,8 +258,11 @@ function massiveHostDowntime($key)
         $host = getMyHostID($host_name);
 
         $with_services = false;
-        if (($centreon->user->access->checkAction("service_schedule_downtime") == true)
-            && isset($_GET['downtimehostservice']) && $_GET['downtimehostservice'] == "true") {
+        if (
+            ($centreon->user->access->checkAction("service_schedule_downtime") == true)
+            && isset($_POST['downtimehostservice'])
+            && $_POST['downtimehostservice'] == "true"
+        ) {
             $with_services = true;
         }
 
@@ -292,14 +297,14 @@ function massiveServiceDowntime($key)
             $svc_description = $tmp[1];
         }
 
-        $start = isset($_GET['start']) && $_GET['start'] ? $_GET['start'] : time();
-        $end = isset($_GET['end']) && $_GET['end'] ? $_GET['end'] : time();
-        $comment = isset($_GET['comment']) && $_GET['comment'] ? sanitizeShellString($_GET["comment"]) : "";
-        $fixed = isset($_GET['fixed']) && $_GET['fixed'] == "true" ? 1 : 0;
-        $duration = isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ?
-            $_GET['duration'] : 0;
-        $duration_scale = isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $_GET['duration_scale'] : "s";
-        $hostTime = isset($_GET['host_or_centreon_time']) && $_GET['host_or_centreon_time'] == "true" ? "1" : "0";
+        $start = isset($_POST['start']) && $_POST['start'] ? $_POST['start'] : time();
+        $end = isset($_POST['end']) && $_POST['end'] ? $_POST['end'] : time();
+        $comment = isset($_POST['comment']) && $_POST['comment'] ? sanitizeShellString($_POST["comment"]) : "";
+        $fixed = isset($_POST['fixed']) && $_POST['fixed'] == "true" ? 1 : 0;
+        $duration = isset($_POST['duration']) && $_POST['duration'] && is_numeric($_POST['duration']) ?
+            $_POST['duration'] : 0;
+        $duration_scale = isset($_POST['duration_scale']) && $_POST['duration_scale'] ? $_POST['duration_scale'] : "s";
+        $hostTime = isset($_POST['host_or_centreon_time']) && $_POST['host_or_centreon_time'] == "true" ? "1" : "0";
 
         if ($duration > 0) {
             switch ($duration_scale) {
