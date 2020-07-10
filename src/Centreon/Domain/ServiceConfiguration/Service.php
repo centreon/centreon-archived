@@ -68,7 +68,7 @@ class Service
     private $isLocked;
 
     /**
-     * @var int Service type
+     * @var int
      * @see Service::TYPE_TEMPLATE          (0)
      * @see Service::TYPE_SERVICE           (1)
      * @see Service::TYPE_META_SERVICE      (2)
@@ -76,11 +76,6 @@ class Service
      * @see Service::TYPE_ANOMALY_DETECTION (3)
      */
     private $serviceType;
-
-    /**
-     * @var bool Indicates whether or not this service is registered
-     */
-    private $isRegistered;
 
     /**
      * @var bool Indicates whether or not this service is activated
@@ -96,7 +91,7 @@ class Service
     public function __construct()
     {
         $this->isLocked = false;
-        $this->isRegistered = true;
+        $this->serviceType = self::TYPE_SERVICE;
         $this->isActivated = true;
         $this->extendedService = new ExtendedService();
     }
@@ -212,24 +207,6 @@ class Service
     /**
      * @return bool
      */
-    public function isRegistered(): bool
-    {
-        return $this->isRegistered;
-    }
-
-    /**
-     * @param bool $isRegistered
-     * @return Service
-     */
-    public function setRegistered(bool $isRegistered): Service
-    {
-        $this->isRegistered = $isRegistered;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function isActivated(): bool
     {
         return $this->isActivated;
@@ -242,6 +219,36 @@ class Service
     public function setActivated(bool $isActivated): Service
     {
         $this->isActivated = $isActivated;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getServiceType(): int
+    {
+        return $this->serviceType;
+    }
+
+    /**
+     * @param int $serviceType
+     * @return $this
+     * @see Service::serviceType
+     * @throws \InvalidArgumentException When the service type is not recognized
+     */
+    public function setServiceType(int $serviceType): Service
+    {
+        $allowedServiceType = [
+            self::TYPE_TEMPLATE,
+            self::TYPE_SERVICE,
+            self::TYPE_META_SERVICE,
+            self::TYPE_BUSINESS_ACTIVITY,
+            self::TYPE_ANOMALY_DETECTION
+        ];
+        if (!in_array($serviceType, $allowedServiceType)) {
+            throw new \InvalidArgumentException('This service type is not recognized');
+        }
+        $this->serviceType = $serviceType;
         return $this;
     }
 
