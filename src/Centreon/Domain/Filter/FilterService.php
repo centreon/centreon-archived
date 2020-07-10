@@ -57,34 +57,33 @@ class FilterService implements FilterServiceInterface
             $filter->getName()
         );
         if ($foundFilter !== null) {
-            throw new FilterException('Filter already exists');
+            throw new FilterException(_('Filter already exists'));
         }
 
         try {
             return $this->filterRepository->addFilter($filter);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when adding filter', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when adding filter %s', $filter->getName())),
+                0,
+                $ex
+            );
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function updateFilter(Filter $filter): int
+    public function updateFilter(Filter $filter): void
     {
-        $foundFilter = $this->filterRepository->findFilterByUserIdAndId(
-            $filter->getUserId(),
-            $filter->getPageName(),
-            $filter->getId()
-        );
-        if ($foundFilter === null) {
-            throw new FilterException('Filter not found');
-        }
-
         try {
-            return $this->filterRepository->updateFilter($filter);
+            $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when updating filter', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when updating filter %s', $filter->getName())),
+                0,
+                $ex
+            );
         }
     }
 
@@ -93,15 +92,19 @@ class FilterService implements FilterServiceInterface
      */
     public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void
     {
-        $foundFilter = $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
-        if ($foundFilter === null) {
-            throw new FilterException('Filter not found');
+        $filter = $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
+        if ($filter === null) {
+            throw new FilterException(_('Filter not found'));
         }
 
         try {
-            $this->filterRepository->deleteFilterByUserId($userId, $pageName, $filterId);
+            $this->filterRepository->deleteFilter($filter);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when deleting filter', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when adding filter %s', $filter->getName())),
+                0,
+                $ex
+            );
         }
     }
 
@@ -113,7 +116,7 @@ class FilterService implements FilterServiceInterface
         try {
             return $this->filterRepository->findFiltersByUserIdWithRequestParameters($userId, $pageName);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when searching for filters', 0, $ex);
+            throw new FilterException(_('Error when searching filters'), 0, $ex);
         }
     }
 
@@ -125,7 +128,11 @@ class FilterService implements FilterServiceInterface
         try {
             return $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when searching for filters', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when sarch filter id %d', $filterId)),
+                0,
+                $ex
+            );
         }
     }
 }
