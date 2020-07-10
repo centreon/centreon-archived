@@ -61,31 +61,37 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
         }
     } elseif ($_POST["o1"] == "hg" || $_POST["o2"] == "hg") {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "nhg" || $_POST["o2"] == "nhg") {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "lk" || $_POST["o2"] == "lk") {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "nlk" || $_POST["o2"] == "nlk") {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '" . $key . "'");
         }
     } elseif ($_POST["o1"] == "dst_g" || $_POST["o2"] == "dst_g") {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query(
+                "UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '" . $key . "'"
+            );
         }
     } elseif ($_POST["o1"] == "dst_c" || $_POST["o2"] == "dst_c") {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query(
+                "UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '" . $key . "'"
+            );
         }
     } elseif ($_POST["o1"] == "dst_d" || $_POST["o2"] == "dst_d") {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '2' WHERE `metric_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query(
+                "UPDATE metrics SET `data_source_type` = '2' WHERE `metric_id` = '" . $key . "'"
+            );
         }
     } elseif ($_POST["o1"] == "dst_a" || $_POST["o2"] == "dst_a") {
         foreach ($selected as $key => $value) {
@@ -114,7 +120,11 @@ for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
     $metric["metric_name"] = str_replace("#S#", "/", $metric["metric_name"]);
     $metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
     $metric["unit_name"] = $metrics["unit_name"];
-    if (!isset($metrics["data_source_type"]) || isset($metrics["data_source_type"]) && $metrics["data_source_type"] == null) {
+    if (
+        !isset($metrics["data_source_type"])
+        || isset($metrics["data_source_type"])
+        && $metrics["data_source_type"] == null
+    ) {
         $metric["data_source_type"] = $rrd_dst["0"];
     } else {
         $metric["data_source_type"] = $rrd_dst[$metrics["data_source_type"]];
@@ -126,7 +136,7 @@ for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
     $metric["warn"] = $metrics["warn"];
     $metric["crit"] = $metrics["crit"];
 
-    $metric["path"] = _CENTREON_VARLIB_.'/metrics/'.$metric["metric_id"].".rrd";
+    $metric["path"] = _CENTREON_VARLIB_ . '/metrics/' . $metric["metric_id"] . ".rrd";
 
     $data[$im] = $metric;
     unset($metric);
@@ -140,35 +150,35 @@ include_once "./include/common/checkPagination.php";
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
+$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 
 /*
  * Toolbar select
  */
 ?>
-<script type="text/javascript">
-var confirm_messages = [
-    '<?php echo _("Do you confirm the deletion ?") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
-];
+    <script type="text/javascript">
+        var confirm_messages = [
+            '<?php echo _("Do you confirm the deletion ?") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+            '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
+        ];
 
-function setO(_i) {
-    document.forms['form'].elements['o'].value = _i;
-}
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
 
-function on_action_change(id) {
-    var selected_id = this.form.elements[id].selectedIndex - 1;
-    
-    if (selected_id in confirm_messages && !confirm(confirm_messages[selected_id])) {
-        return;
-    }
-    setO(this.form.elements[id].value);
-    document.forms['form'].submit();
-}
-</script>
+        function on_action_change(id) {
+            var selected_id = this.form.elements[id].selectedIndex - 1;
+
+            if (selected_id in confirm_messages && !confirm(confirm_messages[selected_id])) {
+                return;
+            }
+            setO(this.form.elements[id].value);
+            document.forms['form'].submit();
+        }
+    </script>
 <?php
 $actions = array(
     null => _("More actions..."),
