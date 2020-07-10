@@ -69,12 +69,11 @@ include("./include/common/autoNumLimit.php");
  * Prepare search engine
  */
 $inputArguments = array(
-    'search' => FILTER_SANITIZE_STRING,
+    'Search' => FILTER_SANITIZE_STRING,
     'searchH' => FILTER_SANITIZE_STRING,
     'num' => FILTER_SANITIZE_NUMBER_INT,
     'limit' => FILTER_SANITIZE_NUMBER_INT,
     'searchS' => FILTER_SANITIZE_STRING,
-    'search' => FILTER_SANITIZE_STRING,
     'searchP' => FILTER_SANITIZE_STRING,
     'o' => FILTER_SANITIZE_STRING,
     'o1' => FILTER_SANITIZE_STRING,
@@ -139,52 +138,60 @@ if (isset($inputs['searchP']) && is_numeric($inputs['searchP'])) {
 $brk = new CentreonBroker($pearDB);
 
 if ((isset($inputs["o1"]) && $inputs["o1"]) || (isset($inputs["o2"]) && $inputs["o2"])) {
-    if ($inputs["o"] == "rg" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
+
+    $selected = array_filter(
+        $inputs["select"],
+        function ($k) {
+            if (is_int($k)) {
+                return $k;
+            }
+        },
+        ARRAY_FILTER_USE_KEY
+    );
+
+    if ($inputs["o"] == "rg" && !empty($selected)) {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = " . $key);
         }
         $brk->reload();
-    } elseif ($inputs["o"] == "nrg" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
+    } elseif ($inputs["o"] == "nrg" && !empty($selected)) {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '" . $key . "' AND `must_be_rebuild` = '1'");
         }
-    } elseif ($inputs["o"] == "ed" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
+    } elseif ($inputs["o"] == "ed" && !empty($selected)) {
         $listMetricsToDelete = array();
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = '".$key."'");
+            $DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = " . $key);
             while ($metrics = $DBRESULT->fetchRow()) {
                 $listMetricsToDelete[] = $metrics['metric_id'];
             }
         }
         $listMetricsToDelete = array_unique($listMetricsToDelete);
         if (count($listMetricsToDelete) > 0) {
-            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
-            $pearDBO->query("UPDATE index_data SET to_delete = 1 WHERE id IN (" . join(', ', array_keys($selected)) . ")");
-            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
+            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ',
+                    $listMetricsToDelete) . ")");
+            $pearDBO->query("UPDATE index_data SET to_delete = 1 WHERE id IN (" . join(', ',
+                    array_keys($selected)) . ")");
+            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ',
+                    $listMetricsToDelete) . ")");
             $brk->reload();
         }
-    } elseif ($inputs["o"] == "hg" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
+    } elseif ($inputs["o"] == "hg" && !empty($selected)) {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = " . $key);
         }
-    } elseif ($inputs["o"] == "nhg" && isset($inputs["select"])) {
+    } elseif ($inputs["o"] == "nhg" && !empty($selected)) {
         $selected = $inputs["select"];
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = " . $key);
         }
-    } elseif ($inputs["o"] == "lk" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
+    } elseif ($inputs["o"] == "lk" && !empty($selected)) {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = " . $key);
         }
-    } elseif ($inputs["o"] == "nlk" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
+    } elseif ($inputs["o"] == "nlk" && !empty($selected)) {
         foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = " . $key);
         }
     }
 }
