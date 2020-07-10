@@ -29,6 +29,7 @@ use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
@@ -65,12 +66,17 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      * @var HostConfigurationServiceInterface
      */
     private $hostConfiguration;
+    /**
+     * @var MonitoringServerServiceInterface
+     */
+    private $monitoringServerService;
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ServiceConfigurationServiceInterface $serviceConfigurationService
      * @param HostConfigurationServiceInterface $hostConfigurationService
+     * @param MonitoringServerServiceInterface $monitoringServerService
      * @param TimelineRepositoryInterface|null $timelineRepository
      */
     public function __construct(
@@ -78,6 +84,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         AccessGroupRepositoryInterface $accessGroupRepository,
         ServiceConfigurationServiceInterface $serviceConfigurationService,
         HostConfigurationServiceInterface $hostConfigurationService,
+        MonitoringServerServiceInterface $monitoringServerService,
         TimelineRepositoryInterface $timelineRepository = null
     ) {
         $this->monitoringRepository = $monitoringRepository;
@@ -85,6 +92,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         $this->timelineRepository = $timelineRepository;
         $this->serviceConfiguration = $serviceConfigurationService;
         $this->hostConfiguration = $hostConfigurationService;
+        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
@@ -329,6 +337,25 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
+    public function findCommandLineOfService(int $hostId, int $serviceId): ?string
+    {
+        try {
+            $service = $this->findOneService($hostId, $serviceId);
+            if ($service === null) {
+                throw new MonitoringServiceException('Service not found');
+            }
+            $this->hidePasswordInCommandLine($service);
+            return $service->getCommandLine();
+        } catch (MonitoringServiceException $ex) {
+            throw $ex;
+        } catch (\Throwable $ex) {
+            throw new MonitoringServiceException('Error when getting the command line');
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void
     {
         $monitoringCommand = $monitoringService->getCommandLine();
@@ -344,9 +371,33 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
         $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
         if (empty($configurationCommand)) {
-            throw new MonitoringServiceException(
-                _('The command line in the configuration is empty while in the monitoring it is not')
-            );
+            // If there is no command line defined in the configuration, it's useless to continue.
+            $service = $this->serviceConfiguration->findService($monitoringService->getId());
+            if ($service->getServiceType() === \Centreon\Domain\ServiceConfiguration\Service::TYPE_META_SERVICE) {
+                // For META SERVICE we can define the configuration command line with the monitoring command line
+                $monitoringService->setCommandLine($monitoringCommand);
+            } else {
+                // The service is not a META SERVICE
+                $monitoringServerId = $monitoringService->getHost()->getPollerId();
+                if ($monitoringServerId !== null) {
+                    $monitoringServer = $this->monitoringServerService->findServer($monitoringServerId);
+                    // Has the configuration of the monitoring server changed ?
+                    if ($monitoringServer !== null) {
+                        if ($monitoringServer->isUpdated() === false) {
+                            // The configuration of the monitoring server has not changed.
+                            // So we can use the command line that has been stored in the monitoring service
+                            $monitoringService->setCommandLine($monitoringService->getCommandLine());
+                        } else {
+                            throw new MonitoringServiceException(
+                                'The configuration has changed. '
+                                . 'For security reasons we do not display the command line'
+                            );
+                        }
+                    }
+                }
+                // In other cases and for security reasons, we do not display the command line
+            }
+            return;
         }
 
         $serviceMacrosPassword = $this->serviceConfiguration->findServiceMacrosPassword(
