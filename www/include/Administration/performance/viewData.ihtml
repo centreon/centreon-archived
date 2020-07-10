@@ -14,15 +14,7 @@
         <tr>
             <td><input type='text' name='searchH' value="{$searchH}"/></td>
             <td><input type='text' name='searchS' value="{$searchS}"/></td>
-            <td>
-                <select name="searchP">
-                    <option value=""></option>
-                    {foreach from=$instances key=instanceId item=instanceName}
-                    <option value="{$instanceId}" {if $instanceId== $searchP} selected{
-                    /if}>{$instanceName}</option>
-                    {/foreach}
-                </select>
-            </td>
+            <td>{$form.searchP.html}</td>
             <td>{$form.Search.html}</td>
         </tr>
         </tbody>
