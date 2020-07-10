@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, or, and, not } from 'ramda';
+import { equals, or, and, not, isEmpty } from 'ramda';
 
 import {
   Menu,
@@ -18,6 +18,7 @@ import {
   labelSave,
   labelFilterCreated,
   labelFilterSaved,
+  labelEditFilters,
 } from '../../translatedLabels';
 import { isCustom, Filter } from '../models';
 import { useResourceContext } from '../../Context';
@@ -55,6 +56,7 @@ const SaveFilterMenu = (): JSX.Element => {
     updatedFilter,
     setFilter,
     loadCustomFilters,
+    customFilters,
   } = useResourceContext();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
@@ -136,6 +138,9 @@ const SaveFilterMenu = (): JSX.Element => {
             <span>{labelSave}</span>
             {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
+        </MenuItem>
+        <MenuItem onClick={() => {}} disabled={isEmpty(customFilters)}>
+          {labelEditFilters}
         </MenuItem>
       </Menu>
       {createFilterDialogOpen && (
