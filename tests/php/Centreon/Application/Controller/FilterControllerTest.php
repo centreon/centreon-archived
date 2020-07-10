@@ -221,7 +221,7 @@ class FilterControllerTest extends TestCase
             ->method('updateFilter')
             ->willReturn(1);
 
-        $this->filterService->expects($this->once())
+        $this->filterService->expects($this->any())
             ->method('findFilterByUserId')
             ->willReturn($this->filterObject);
 
