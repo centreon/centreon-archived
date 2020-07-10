@@ -5,7 +5,7 @@ import { isNil } from 'ramda';
 
 import { makeStyles, Slide, CircularProgress } from '@material-ui/core';
 
-import { withSnackbar } from '@centreon/ui';
+import { withSnackbar, RightPanel } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
