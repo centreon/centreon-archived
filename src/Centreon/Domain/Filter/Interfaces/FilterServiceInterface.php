@@ -31,19 +31,19 @@ interface FilterServiceInterface
      * Add filter.
      *
      * @param Filter $filter
-     * @return void
+     * @return int created filter id
      * @throws FilterException
      */
-    public function addFilter(Filter $filter): void;
+    public function addFilter(Filter $filter): int;
 
     /**
      * Update filter.
      *
      * @param Filter $filter
-     * @return void
+     * @return int created filter id
      * @throws FilterException
      */
-    public function updateFilter(Filter $filter): void;
+    public function updateFilter(Filter $filter): int;
 
     /**
      * Delete filter.
