@@ -75,7 +75,6 @@ const SaveFilterMenu = (): JSX.Element => {
   };
 
   const loadFiltersAndUpdateCurrent = (newFilter: Filter): void => {
-    console.log(newFilter);
     closeCreateFilterDialog();
 
     loadCustomFilters().then(() => {
