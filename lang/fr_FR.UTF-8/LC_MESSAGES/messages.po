@@ -15424,4 +15424,4 @@ msgid "Filter created"
 msgstr "Filtre créé"
 
 msgid "Filter saved"
-msgid "Filtre sauvegardé"
+msgstr "Filtre sauvegardé"
