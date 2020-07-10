@@ -70,7 +70,7 @@ class FilterService implements FilterServiceInterface
     /**
      * @inheritDoc
      */
-    public function updateFilter(Filter $filter): void
+    public function updateFilter(Filter $filter): int
     {
         $foundFilter = $this->filterRepository->findFilterByUserIdAndId(
             $filter->getUserId(),
@@ -82,7 +82,7 @@ class FilterService implements FilterServiceInterface
         }
 
         try {
-            $this->filterRepository->updateFilter($filter);
+            return $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException('Error when updating filter', 0, $ex);
         }

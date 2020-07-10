@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,6 +34,8 @@
  *
  */
 
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -42,7 +45,18 @@ include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
 include_once("./class/centreonMeta.class.php");
-include_once($centreon_path . "www/include/monitoring/objectDetails/common-func.php");
+
+// We initialize the kernel of Symfony to retrieve its container.
+include_once($centreon_path . "config/bootstrap.php");
+$kernel = new App\Kernel('prod', false);
+$kernel->boot();
+$container = $kernel->getContainer();
+$monitoringService = $container->get(Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface::class);
+$contactService = $container->get(Centreon\Domain\Contact\Interfaces\ContactServiceInterface::class);
+$contact = $contactService->findBySession(session_id());
+if ($contact !== null) {
+    $monitoringService->filterByContact($contact);
+}
 
 /*
  * Create Object env
@@ -66,9 +80,9 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = $centreon->user->access->getActions();
 }
 
-if (isset($_GET["host_name"]) &&
-    $_GET["host_name"] != "" &&
-    isset($_GET["service_description"]) && $_GET["service_description"] != ""
+if (
+    !empty($_GET["host_name"])
+    && !empty($_GET["service_description"])
 ) {
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
@@ -234,11 +248,16 @@ if (!is_null($host_id)) {
         $DBRESULT->closeCursor();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status["command_line"] = hidePasswordInCommand(
-                $service_status["check_command"],
-                $host_id,
-                $service_status["service_id"]
-            );
+            $commandLine = '';
+            try {
+                $commandLine = $monitoringService->findCommandLineOfService(
+                    (int) $host_id,
+                    (int) $service_status["service_id"]
+                );
+            } catch (MonitoringServiceException $ex) {
+                $commandLine = 'Error: ' . $ex->getMessage();
+            }
+            $service_status["command_line"] = $commandLine;
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
@@ -520,9 +539,7 @@ if (!is_null($host_id)) {
             $service_status["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
         }
 
-        if (isset($service_status["scheduled_downtime_depth"]) &&
-            $service_status["scheduled_downtime_depth"]
-        ) {
+        if (isset($service_status["scheduled_downtime_depth"]) && $service_status["scheduled_downtime_depth"]) {
             $service_status["scheduled_downtime_depth"] = 1;
         }
 
@@ -786,9 +803,10 @@ if (!is_null($host_id)) {
         $tools = array();
         $DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
         while ($module = $DBRESULT->fetchrow()) {
-            if (isset($module['svc_tools']) &&
-                $module['svc_tools'] == 1 &&
-                file_exists('modules/' . $module['name'] . '/svc_tools.php')
+            if (
+                isset($module['svc_tools'])
+                && $module['svc_tools'] == 1
+                && file_exists('modules/' . $module['name'] . '/svc_tools.php')
             ) {
                 include('modules/' . $module['name'] . '/svc_tools.php');
             }
@@ -881,12 +899,16 @@ if (!is_null($host_id)) {
                 display_result(xhr_cmd, cmd);
             };
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd +
-                "&host_id=" + host_id + "&service_id=" + svc_id + "&actiontype=" + actiontype,
+                "POST",
+                "./include/monitoring/objectDetails/xml/serviceSendCommand.php",
                 true
             );
-            xhr_cmd.send(null);
+            var data = new FormData();
+            data.append('cmd', cmd);
+            data.append('host_id', host_id);
+            data.append('service_id', svc_id);
+            data.append('actiontype', actiontype);
+            xhr_cmd.send(data);
         }
 
         function display_result(xhr_cmd, cmd) {

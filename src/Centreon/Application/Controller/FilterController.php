@@ -150,9 +150,12 @@ class FilterController extends AbstractController
             ->setName($filterToUpdate['name'])
             ->setCriterias($filterToUpdate['criterias']);
 
-        $this->filterService->updateFilter($filter);
+        $filterId = $this->filterService->updateFilter($filter);
 
-        return View::create(null, Response::HTTP_NO_CONTENT, []);
+        $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
+        $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
+
+        return $this->view($filter)->setContext($context);
     }
 
     /**

@@ -85,7 +85,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
-    public function updateFilter(Filter $filter): void
+    public function updateFilter(Filter $filter): int
     {
         $request = $this->translateDbName('
             UPDATE `:db`.user_filter
@@ -101,6 +101,9 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
         $statement->bindValue(':filter_id', $filter->getId(), \PDO::PARAM_INT);
         $statement->execute();
+
+        $updatedFilter = $this->findFilterByUserIdAndId($filter->getUserId(), $filter->getPageName(), $filter->getId());
+        return $updatedFilter->getId();
     }
 
     /**

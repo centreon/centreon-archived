@@ -23,6 +23,7 @@ namespace Tests\Centreon\Application\Controller\Filter;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Application\Controller\FilterController;
+use Centreon\Domain\Filter\Filter;
 use Centreon\Domain\Filter\FilterException;
 use Centreon\Domain\Filter\Interfaces\FilterServiceInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -30,6 +31,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
@@ -40,6 +42,7 @@ class FilterControllerTest extends TestCase
 
     protected $goodJsonFilter;
     protected $badJsonFilter;
+    protected $filterObject;
 
     protected $filterService;
 
@@ -57,14 +60,23 @@ class FilterControllerTest extends TestCase
             ->setAdmin(true)
             ->setTimezone($timezone);
 
-        $this->goodJsonFilter = json_encode([
+        $goodJsonFilter = [
             'name' => 'filter1',
             'criterias' => [
                 [
                     'field1' => 'value1',
                 ],
             ],
-        ]);
+        ];
+
+        $this->goodJsonFilter = json_encode($goodJsonFilter);
+
+        $this->filterObject = (new Filter())
+            ->setPageName('events-view')
+            ->setUserId(1)
+            ->setName($goodJsonFilter['name'])
+            ->setCriterias($goodJsonFilter['criterias']);
+        $this->goodJsonFilterWithId = json_encode(array_merge($goodJsonFilter, ['id' => 1]));
 
         $this->badJsonFilter = json_encode([
             'unknown_property' => 'unknown',
@@ -146,6 +158,14 @@ class FilterControllerTest extends TestCase
      */
     public function testAddFilterSuccess()
     {
+        $this->filterService->expects($this->once())
+            ->method('addFilter')
+            ->willReturn(1);
+
+        $this->filterService->expects($this->once())
+            ->method('findFilterByUserId')
+            ->willReturn($this->filterObject);
+
         $filterController = new FilterController($this->filterService);
         $filterController->setContainer($this->container);
 
@@ -153,9 +173,11 @@ class FilterControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->goodJsonFilter);
         $view = $filterController->addFilter($this->request, 'events-view');
+
+        $context = (new Context())->setGroups(FilterController::SERIALIZER_GROUPS_MAIN);
         $this->assertEquals(
             $view,
-            View::create(null, Response::HTTP_NO_CONTENT, [])
+            View::create($this->filterObject)->setContext($context)
         );
     }
 
@@ -195,6 +217,14 @@ class FilterControllerTest extends TestCase
      */
     public function testUpdateFilterSuccess()
     {
+        $this->filterService->expects($this->once())
+            ->method('updateFilter')
+            ->willReturn(1);
+
+        $this->filterService->expects($this->once())
+            ->method('findFilterByUserId')
+            ->willReturn($this->filterObject);
+
         $filterController = new FilterController($this->filterService);
         $filterController->setContainer($this->container);
 
@@ -202,9 +232,11 @@ class FilterControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->goodJsonFilter);
         $view = $filterController->updateFilter($this->request, 'events-view', 1);
+
+        $context = (new Context())->setGroups(FilterController::SERIALIZER_GROUPS_MAIN);
         $this->assertEquals(
             $view,
-            View::create(null, Response::HTTP_NO_CONTENT, [])
+            View::create($this->filterObject)->setContext($context)
         );
     }
 }
