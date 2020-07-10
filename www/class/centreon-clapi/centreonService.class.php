@@ -485,6 +485,7 @@ class CentreonService extends CentreonObject
                 if (!CentreonUtils::validateGeoCoords($params[3])) {
                     throw new CentreonClapiException(self::INVALID_GEO_COORDS);
                 }
+                break;
             case "template":
                 $params[2] = "service_template_model_stm_id";
                 $tmp = $this->object->getList(
