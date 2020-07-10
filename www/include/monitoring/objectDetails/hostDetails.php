@@ -783,12 +783,15 @@ if (!$is_admin && !$haveAccess) {
                 display_result(xhr_cmd, cmd);
             };
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd="
-                + cmd + "&host_id=" + host_id + "&actiontype=" + actiontype,
+                "POST",
+                "./include/monitoring/objectDetails/xml/hostSendCommand.php",
                 true
             );
-            xhr_cmd.send(null);
+            var data = new FormData();
+            data.append('cmd', cmd);
+            data.append('host_id', host_id);
+            data.append('actiontype', actiontype);
+            xhr_cmd.send(data);
         }
 
         function display_result(xhr_cmd, cmd) {
