@@ -15410,3 +15410,18 @@ msgstr "Aucun résultat trouvé"
 
 msgid "Save filter"
 msgstr "Sauvegarder le filtre"
+
+msgid "Save as new"
+msgstr "Sauvegarder comme nouveau"
+
+msgid "My filters"
+msgstr "Mes filtres"
+
+msgid "New filter"
+msgstr "Nouveau filtre"
+
+msgid "Filter created"
+msgstr "Filtre créé"
+
+msgid "Filter saved"
+msgid "Filtre sauvegardé"
