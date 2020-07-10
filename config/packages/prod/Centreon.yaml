@@ -53,6 +53,10 @@ services:
         arguments: ["%kernel.cache_dir%/JsonValidatorCache", '%kernel.debug%']
 
     # Contact
+    Centreon\Domain\Contact\Interfaces\ContactServiceInterface:
+        class: Centreon\Domain\Contact\ContactService
+        public: true
+
     Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface:
         class: Centreon\Infrastructure\Contact\ContactRepositoryRDB
 
@@ -99,6 +103,7 @@ services:
 
     Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
         class: Centreon\Domain\Monitoring\MonitoringService
+        public: true
 
     Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB
