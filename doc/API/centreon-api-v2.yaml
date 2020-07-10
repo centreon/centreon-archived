@@ -292,16 +292,7 @@ paths:
                   result:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          description: filter id
-                          example: 1
-                        name:
-                          type: string
-                          description: filter name
-                          example: my filter 1
+                      $ref: '#/components/schemas/User.Filter'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -327,10 +318,6 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
-                  description: filter id
-                  example: 1
                 name:
                   type: string
                   description: filter name
@@ -345,8 +332,12 @@ paths:
                       name: field1
                       value: search value 1
       responses:
-        '204':
+        '200':
           description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -371,25 +362,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: filter id
-                    example: 1
-                  name:
-                    type: string
-                    description: filter name
-                    example: my filter 1
-                  criterias:
-                    type: array
-                    description: list of filter criterias
-                    items:
-                      type: object
-                      example:
-                        type: text
-                        name: field1
-                        value: search value 1
+                $ref: '#/components/schemas/User.Filter'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -412,28 +385,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  description: filter id
-                  example: 1
-                name:
-                  type: string
-                  description: filter name
-                  example: my filter 1
-                criterias:
-                    type: array
-                    description: list of filter criterias
-                    items:
-                      type: object
-                      example:
-                        type: text
-                        name: field1
-                        value: search value 1
+              $ref: '#/components/schemas/User.Filter'
       responses:
-        '204':
+        '200':
           description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2721,6 +2680,26 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    User.Filter:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: filter id
+          example: 1
+        name:
+          type: string
+          description: filter name
+          example: my filter 1
+        criterias:
+          type: array
+          description: list of filter criterias
+          items:
+            type: object
+            example:
+              type: text
+              name: field1
+              value: search value 1
     Configuration.MonitoringServerMain:
       type: object
       properties:
