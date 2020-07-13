@@ -735,6 +735,7 @@ paths:
           description: |
             List all the host groups in real-time monitoring by host id
           parameters:
+            - $ref: '#/components/parameters/HostId'
             - $ref: '#/components/parameters/Limit'
             - $ref: '#/components/parameters/Page'
             - $ref: '#/components/parameters/SortBy'
@@ -1769,7 +1770,7 @@ paths:
                         data:
                           type: array
                           items:
-                            type: float
+                            type: number
                             description: value of the metric
                           example:
                             - 1.0
@@ -1784,11 +1785,11 @@ paths:
                               description: label to display in legend
                               example: 'Last:1.00'
                         minimum_value:
-                          type: float
+                          type: number
                           description: minimum value
                           example: 1.0
                         maximum_value:
-                          type: float
+                          type: number
                           description: maximum value
                           example: 1.0
                   times:
@@ -2175,7 +2176,7 @@ components:
       schema:
         type: array
         items:
-            type: int
+            type: integer
             format: int64
         example: '[13, 22, 31]'
     ResourceFilterServicegroupId:
@@ -2186,7 +2187,7 @@ components:
       schema:
         type: array
         items:
-            type: int
+            type: integer
             format: int64
         example: '[2033]'
     ShowHost:
@@ -2251,7 +2252,7 @@ components:
         example: events-view
     FilterId:
       in: path
-      name: page_name
+      name: filter_id
       description: "id of the filter"
       required: true
       schema:
@@ -2805,9 +2806,10 @@ components:
       properties:
         is_forced:
           type: boolean
-          required: false
           description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
           example: true
+      required:
+        - is_forced
     Check.Hosts:
       type: array
       items:
@@ -2998,12 +3000,18 @@ components:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
-        downtime_endpoint: "/monitoring/hosts/12/services/12/downtimes"
+        downtime_endpoint:
+          type: string
+          description: "URL of the downtimes list"
+          example: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        acknowledgement_endpoint: "/monitoring/hosts/12/services/12/acknowledgements"
+        acknowledgement_endpoint:
+          type: string
+          description: "URL of the acknowledgement endpoint"
+          example: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
           properties:
@@ -3183,7 +3191,7 @@ components:
               description: "Is the host flapping or not"
               example: false
             percent_state_change:
-              type: float
+              type: number
               description: "Percent state change since last check"
               example: 3.5
             downtimes:
@@ -3193,7 +3201,9 @@ components:
             acknowledgement:
               type: object
               properties:
-                $ref: '#/components/schemas/Acknowledgement.Host'
+                host:
+                  allOf:
+                    - $ref: '#/components/schemas/Acknowledgement.Host'
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
@@ -3487,7 +3497,9 @@ components:
             acknowledgement:
               type: object
               properties:
-                $ref: '#/components/schemas/Acknowledgement.Service'
+                service:
+                  allOf:
+                    - $ref: '#/components/schemas/Acknowledgement.Service'
     Monitoring.ServiceWithHost:
       type: object
       properties:
