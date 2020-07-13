@@ -617,6 +617,7 @@ class CentreonHost extends CentreonObject
                     if (!CentreonUtils::validateGeoCoords($params[2])) {
                         throw new CentreonClapiException(self::INVALID_GEO_COORDS);
                     }
+                    break;
                 case "contact_additive_inheritance":
                 case "cg_additive_inheritance":
                 case "flap_detection_options":
