@@ -90,18 +90,13 @@ class FilterService implements FilterServiceInterface
     /**
      * @inheritDoc
      */
-    public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void
+    public function deleteFilter(Filter $filter): void
     {
-        $filter = $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
-        if ($filter === null) {
-            throw new FilterException(_('Filter not found'));
-        }
-
         try {
             $this->filterRepository->deleteFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException(
-                sprintf(_('Error when adding filter %s', $filter->getName())),
+                sprintf(_('Error when deleting filter %s', $filter->getName())),
                 0,
                 $ex
             );
