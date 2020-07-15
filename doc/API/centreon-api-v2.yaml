@@ -26,7 +26,7 @@ externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
 servers:
-  - url: '{protocol}://{server}:{port}/centreon/api/{version}'
+  - url: '/centreon/api/{version}'
     variables:
       protocol:
         enum:
@@ -511,6 +511,11 @@ paths:
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/SortBy'
+#        - in: query
+#          name: titi
+#          schema:
+#            type: string
+#          required: true
       responses:
         '200':
           description: "OK"
@@ -1393,12 +1398,12 @@ paths:
         - Downtime
       summary: "List all downtimes of a service"
       parameters:
-        - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
       description: |
         List all downtimes of a service.
 
@@ -1969,7 +1974,6 @@ components:
     Cookie:
       description: |
         If you have already connected on the Centreon web application, you can reused the PHPSESSID cookie.
-
         The cookie will be valid as long as the connection to Centreon is maintained.
       type: apiKey
       name: PHPSESSID
@@ -2977,12 +2981,16 @@ components:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
-        downtime_endpoint: "/monitoring/hosts/12/services/12/downtimes"
+        downtime_endpoint:
+          type: string
+          example: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        acknowledgement_endpoint: "/monitoring/hosts/12/services/12/acknowledgements"
+        acknowledgement_endpoint:
+          type: string
+          example: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
           properties:
@@ -3170,9 +3178,7 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Host'
             acknowledgement:
-              type: object
-              properties:
-                $ref: '#/components/schemas/Acknowledgement.Host'
+              $ref: '#/components/schemas/Acknowledgement.Host'
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
@@ -3464,9 +3470,7 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Service'
             acknowledgement:
-              type: object
-              properties:
-                $ref: '#/components/schemas/Acknowledgement.Service'
+              $ref: '#/components/schemas/Acknowledgement.Service'
     Monitoring.ServiceWithHost:
       type: object
       properties:
