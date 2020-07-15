@@ -171,3 +171,5 @@ export const labelFilterCreated = I18n.t('Filter created');
 export const labelFilterSaved = I18n.t('Filter saved');
 export const labelMyFilters = I18n.t('My filters');
 export const labelEditFilters = I18n.t('Edit filters');
+export const labelRename = I18n.t('Rename');
+export const labelDelete = I18n.t('Delete');

@@ -15,6 +15,7 @@ import useFilter from './Filter/useFilter';
 import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
+import EditFiltersPanel from './Filter/Edit';
 
 const useStyles = makeStyles((theme) => ({
   loadingIndicator: {

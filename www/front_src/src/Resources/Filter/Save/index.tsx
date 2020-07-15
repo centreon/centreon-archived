@@ -57,6 +57,7 @@ const SaveFilterMenu = (): JSX.Element => {
     setFilter,
     loadCustomFilters,
     customFilters,
+    setEditPanelOpen,
   } = useResourceContext();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
@@ -104,6 +105,11 @@ const SaveFilterMenu = (): JSX.Element => {
     });
   };
 
+  const openEditPanel = (): void => {
+    setEditPanelOpen(true);
+    closeSaveFilterMenu();
+  };
+
   const isFilterDirty = (): boolean => {
     if (!isCustom(filter)) {
       return false;
@@ -139,7 +145,7 @@ const SaveFilterMenu = (): JSX.Element => {
             {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
         </MenuItem>
-        <MenuItem onClick={() => {}} disabled={isEmpty(customFilters)}>
+        <MenuItem onClick={openEditPanel} disabled={isEmpty(customFilters)}>
           {labelEditFilters}
         </MenuItem>
       </Menu>
