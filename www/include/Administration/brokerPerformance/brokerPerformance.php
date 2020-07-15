@@ -50,7 +50,8 @@ function createArrayStats($arryFromJson)
         $io[_('State')]['value'] = $arryFromJson['state'];
         if ($arryFromJson['state'] == "disconnected") {
             $io[_('State')]['class'] = "badge service_critical";
-        } elseif ($arryFromJson['state'] == "listening"
+        } elseif (
+            $arryFromJson['state'] == "listening"
             || $arryFromJson['state'] == "connected"
             || $arryFromJson['state'] == "connecting"
         ) {
@@ -96,7 +97,8 @@ function createArrayStats($arryFromJson)
         );
     }
 
-    if (isset($arryFromJson['queue file'])
+    if (
+        isset($arryFromJson['queue file'])
         && isset($arryFromJson['queue file enabled'])
         && $arryFromJson['queue file enabled'] != "no"
     ) {
@@ -168,8 +170,9 @@ function parseStatsFile($statfile)
                 $matches[1] = "external-commands";
             }
 
-            if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected")
-                || (!preg_match('/.*external commands.*/', $key))
+            if (
+                (preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected")
+                || !preg_match('/.*external commands.*/', $key)
             ) {
                 $keySepByDash = explode('-', $key);
                 $keySepBySpace = explode(' ', $key);
@@ -182,9 +185,11 @@ function parseStatsFile($statfile)
                 /* force type of io  */
                 if (preg_match('/.*external commands.*/', $key)) {
                     $result['io'][$matches[1]]['type'] = 'input';
-                } elseif (preg_match(
-                    '/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/',
-                    $key)
+                } elseif (
+                    preg_match(
+                        '/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/',
+                        $key
+                    )
                 ) {
                     $result['io'][$matches[1]]['type'] = 'output';
                 } elseif (preg_match('/.*(centreon-bam-monitoring|centreon-bam-reporting).*/', $key)) {
@@ -310,7 +315,8 @@ try {
         /**
          * check if file exists, is readable and inside proper folder
          */
-        if (!file_exists($statsfile)
+        if (
+            !file_exists($statsfile)
             || !is_readable($statsfile)
             || (substr(realpath($statsfile), 0, strlen(_CENTREON_VARLIB_)) !== _CENTREON_VARLIB_ )
         ) {
