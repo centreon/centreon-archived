@@ -52,6 +52,7 @@ export interface FilterState {
   serviceGroups: Array<CriteriaValue>;
   setServiceGroups: CriteriaValuesDispatch;
   loadCustomFilters: () => Promise<Array<Filter>>;
+  editPanelOpen: boolean;
 }
 
 const useFilter = (): FilterState => {
@@ -83,6 +84,8 @@ const useFilter = (): FilterState => {
   const [serviceGroups, setServiceGroups] = React.useState<
     Array<CriteriaValue>
   >(getDefaultServiceGroups());
+
+  const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
     setCustomFilters(undefined);
@@ -162,6 +165,8 @@ const useFilter = (): FilterState => {
     serviceGroups,
     setServiceGroups,
     loadCustomFilters,
+    editPanelOpen,
+    setEditPanelOpen,
   };
 };
 

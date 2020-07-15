@@ -95,6 +95,7 @@ const Resources = (): JSX.Element => {
             <Listing />
           </div>
         </div>
+        <EditFiltersPanel />
       </div>
     </Context.Provider>
   );
