@@ -16,15 +16,9 @@ import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
 import EditFiltersPanel from './Filter/Edit';
+import ContentWithLoading from './ContentWithLoading';
 
 const useStyles = makeStyles((theme) => ({
-  loadingIndicator: {
-    width: '100%',
-    heihgt: '100%',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-  },
   page: {
     display: 'grid',
     gridTemplateRows: 'auto 1fr',
@@ -60,9 +54,7 @@ const Resources = (): JSX.Element => {
 
   const { selectedDetailsEndpoints } = detailsContext;
 
-  if (isNil(filterContext.customFilters)) {
-    return <CircularProgress className={classes.loadingIndicator} />;
-  }
+  const loading = isNil(filterContext.customFilters);
 
   return (
     <Context.Provider
@@ -73,31 +65,34 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <div className={classes.page}>
-        <div className={classes.filter}>
-          <Filter />
-        </div>
-        <div className={classes.body}>
-          {selectedDetailsEndpoints && (
-            <Slide
-              direction="left"
-              in={!isNil(selectedDetailsEndpoints)}
-              timeout={{
-                enter: 150,
-                exit: 50,
-              }}
-            >
-              <div className={classes.panel}>
-                <Details />
-              </div>
-            </Slide>
-          )}
-          <div className={classes.listing}>
-            <Listing />
+      <ContentWithLoading loading={loading}>
+        <div className={classes.page}>
+          <div className={classes.filter}>
+            <Filter />
+          </div>
+          <div className={classes.body}>
+            {selectedDetailsEndpoints && (
+              <Slide
+                direction="left"
+                in={!isNil(selectedDetailsEndpoints)}
+                timeout={{
+                  enter: 150,
+                  exit: 50,
+                }}
+              >
+                <div className={classes.panel}>
+                  <Details />
+                </div>
+              </Slide>
+            )}
+            <div className={classes.listing}>
+              <Listing />
+            </div>
           </div>
         </div>
-        <EditFiltersPanel />
-      </div>
+      </ContentWithLoading>
+      )
+      <EditFiltersPanel />
     </Context.Provider>
   );
 };

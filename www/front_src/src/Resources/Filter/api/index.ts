@@ -4,6 +4,7 @@ import {
   ListingModel,
   postData,
   putData,
+  deleteData,
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
@@ -32,11 +33,16 @@ const createFilter = (cancelToken) => (params): Promise<Filter> => {
   }).then(toFilter);
 };
 
-const updateFilter = (cancelToken) => (params): Promise<void> =>
-  putData<Omit<RawFilter, 'id'>, void>(cancelToken)({
+const updateFilter = (cancelToken) => (params): Promise<void> => {
+  return putData<Omit<RawFilter, 'id'>, void>(cancelToken)({
     endpoint: `${filterEndpoint}/${params.id}`,
     data: toRawFilter(params),
   });
+};
+
+const deleteFilter = (cancelToken) => (params): Promise<void> => {
+  return deleteData<void>(cancelToken)(`${filterEndpoint}/${params.id}}`);
+};
 
 export {
   filterEndpoint,
@@ -44,4 +50,5 @@ export {
   buildListCustomFiltersEndpoint,
   createFilter,
   updateFilter,
+  deleteFilter,
 };
