@@ -37,7 +37,7 @@ Feature:
 
     When I send a GET request to '/beta/users/filters/events-view/1'
     Then the response code should be "200"
-    And the json node "name" should be equal to the string "my filter2"
+    And the json node "name" should be equal to the string "filter1"
 
     When I send a POST request to '/beta/users/filters/events-view' with body:
     """
