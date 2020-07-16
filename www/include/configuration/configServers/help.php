@@ -53,6 +53,6 @@ $help['no_proxy'] = dgettext(
 );
 $help['remote_server_centcore_ssh_proxy'] = dgettext(
     "help",
-    "If checked, the Central server will send configuration and external commands directly to the poller "
-        . "and will not use the Remote Server as a proxy."
+    "If disabled, the Central server will send configuration and external commands directly to the poller "
+    . "and will not use the Remote Server as a proxy."
 );

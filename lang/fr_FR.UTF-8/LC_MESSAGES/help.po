@@ -6386,10 +6386,10 @@ msgid "Short description of the poller"
 msgstr "Brève description du collecteur"
 
 msgid ""
-"If checked, the Central server will send configuration and external commands directly to the poller "
+"If disabled, the Central server will send configuration and external commands directly to the poller "
 "and will not use the Remote Server as a proxy"
 msgstr ""
-"Si activé, le serveur Central se connectera directement au collecteur pour transférer la configuration"
+"Si désactivé, le serveur Central se connectera directement au collecteur pour transférer la configuration"
 "et les commandes externes et n'utilisera pas le Remote Server comme proxy."
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:8
