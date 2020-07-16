@@ -42,107 +42,107 @@ require_once "./class/centreonDB.class.php";
 require_once "./class/centreonGMT.class.php";
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
-function createArrayStats($arryFromJson)
+function createArrayStats($arrayFromJson)
 {
     $io = array('class' => 'stats_lv1');
 
-    if (isset($arryFromJson['state'])) {
-        $io[_('State')]['value'] = $arryFromJson['state'];
-        if ($arryFromJson['state'] == "disconnected") {
+    if (isset($arrayFromJson['state'])) {
+        $io[_('State')]['value'] = $arrayFromJson['state'];
+        if ($arrayFromJson['state'] == "disconnected") {
             $io[_('State')]['class'] = "badge service_critical";
         } elseif (
-            $arryFromJson['state'] == "listening"
-            || $arryFromJson['state'] == "connected"
-            || $arryFromJson['state'] == "connecting"
+            $arrayFromJson['state'] == "listening"
+            || $arrayFromJson['state'] == "connected"
+            || $arrayFromJson['state'] == "connecting"
         ) {
             $io[_('State')]['class'] = "badge service_ok";
-        } elseif ($arryFromJson['state'] == "sleeping" || $arryFromJson['state'] == "blocked") {
+        } elseif ($arrayFromJson['state'] == "sleeping" || $arrayFromJson['state'] == "blocked") {
             $io[_('State')]['class'] = "badge service_warning";
         }
     }
 
-    if (isset($arryFromJson['status']) && $arryFromJson['status']) {
-        $io[_('Status')] = array('value' => $arryFromJson['status'], 'isTimestamp' => false);
+    if (isset($arrayFromJson['status']) && $arrayFromJson['status']) {
+        $io[_('Status')] = array('value' => $arrayFromJson['status'], 'isTimestamp' => false);
     }
 
-    if (isset($arryFromJson['last_event_at']) && $arryFromJson['last_event_at'] != -1) {
-        $io[_('Last event at')] = array('value' => $arryFromJson['last_event_at'], 'isTimestamp' => true);
+    if (isset($arrayFromJson['last_event_at']) && $arrayFromJson['last_event_at'] != -1) {
+        $io[_('Last event at')] = array('value' => $arrayFromJson['last_event_at'], 'isTimestamp' => true);
     }
 
-    if (isset($arryFromJson['last_connection_attempt']) && $arryFromJson['last_connection_attempt'] != -1) {
+    if (isset($arrayFromJson['last_connection_attempt']) && $arrayFromJson['last_connection_attempt'] != -1) {
         $io[_('Last connection attempt')] = array(
-            'value' => $arryFromJson['last_connection_attempt'],
+            'value' => $arrayFromJson['last_connection_attempt'],
             'isTimestamp' => true
         );
     }
 
-    if (isset($arryFromJson['last_connection_success']) && $arryFromJson['last_connection_success'] != -1) {
+    if (isset($arrayFromJson['last_connection_success']) && $arrayFromJson['last_connection_success'] != -1) {
         $io[_('Last connection success')] = array(
-            'value' => $arryFromJson['last_connection_success'],
+            'value' => $arrayFromJson['last_connection_success'],
             'isTimestamp' => true
         );
     }
 
-    if (isset($arryFromJson['one_peer_retention_mode'])) {
+    if (isset($arrayFromJson['one_peer_retention_mode'])) {
         $io[_('One peer retention mode')] = array(
-            'value' => $arryFromJson['one_peer_retention_mode'],
+            'value' => $arrayFromJson['one_peer_retention_mode'],
             'isTimestamp' => false
         );
     }
 
-    if (isset($arryFromJson['event_processing_speed'])) {
+    if (isset($arrayFromJson['event_processing_speed'])) {
         $io[_('Event processing speed')] = array(
-            'value' => sprintf("%.2f events/s", $arryFromJson['event_processing_speed']),
+            'value' => sprintf("%.2f events/s", $arrayFromJson['event_processing_speed']),
             'isTimestamp' => false
         );
     }
 
     if (
-        isset($arryFromJson['queue file'])
-        && isset($arryFromJson['queue file enabled'])
-        && $arryFromJson['queue file enabled'] != "no"
+        isset($arrayFromJson['queue file'])
+        && isset($arrayFromJson['queue file enabled'])
+        && $arrayFromJson['queue file enabled'] != "no"
     ) {
         $io[_('Queue file')] = array(
-            'value' => $arryFromJson['queue file'],
+            'value' => $arrayFromJson['queue file'],
             'isTimestamp' => false
         );
     }
 
-    if (isset($arryFromJson['queue file enabled'])) {
-        $io[_('Queued file enabled')] = array('value' => $arryFromJson['queue file enabled'], 'isTimestamp' => false);
+    if (isset($arrayFromJson['queue file enabled'])) {
+        $io[_('Queued file enabled')] = array('value' => $arrayFromJson['queue file enabled'], 'isTimestamp' => false);
     }
 
-    if (isset($arryFromJson['queued_events'])) {
-        $io[_('Queued events')] = array('value' => $arryFromJson['queued_events'], 'isTimestamp' => false);
+    if (isset($arrayFromJson['queued_events'])) {
+        $io[_('Queued events')] = array('value' => $arrayFromJson['queued_events'], 'isTimestamp' => false);
     }
 
-    if (isset($arryFromJson['memory file'])) {
-        $io[_('Memory file')] = array('value' => $arryFromJson['memory file'], 'isTimestamp' => false);
+    if (isset($arrayFromJson['memory file'])) {
+        $io[_('Memory file')] = array('value' => $arrayFromJson['memory file'], 'isTimestamp' => false);
     }
 
-    if (isset($arryFromJson['read_filters']) && $arryFromJson['read_filters']) {
-        if ($arryFromJson['read_filters'] != 'all') {
+    if (isset($arrayFromJson['read_filters']) && $arrayFromJson['read_filters']) {
+        if ($arrayFromJson['read_filters'] != 'all') {
             $io[_('Input accepted events type')] = array(
-                'value' => substr($arryFromJson['read_filters'], 22),
+                'value' => substr($arrayFromJson['read_filters'], 22),
                 'isTimestamp' => false
             );
         } else {
             $io[_('Input accepted events type')] = array(
-                'value' => $arryFromJson['read_filters'],
+                'value' => $arrayFromJson['read_filters'],
                 'isTimestamp' => false
             );
         }
     }
 
-    if (isset($arryFromJson['write_filters']) && $arryFromJson['write_filters']) {
-        if ($arryFromJson['write_filters'] != 'all') {
+    if (isset($arrayFromJson['write_filters']) && $arrayFromJson['write_filters']) {
+        if ($arrayFromJson['write_filters'] != 'all') {
             $io[_('Output accepted events type')] = array(
-                'value' => substr($arryFromJson['write_filters'], 2),
+                'value' => substr($arrayFromJson['write_filters'], 2),
                 'isTimestamp' => false
             );
         } else {
             $io[_('Output accepted events type')] = array(
-                'value' => $arryFromJson['write_filters'],
+                'value' => $arrayFromJson['write_filters'],
                 'isTimestamp' => false
             );
         }
