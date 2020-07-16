@@ -139,7 +139,9 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $request .= !is_null($searchRequest) ? $searchRequest : '';
         $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY id DESC';
-        $request .= !is_null($paginationRequest) ? $paginationRequest : '';
+        $request .= $searchRequest ?? '';
+        $request .= $sortRequest ?? 'ORDER BY id DESC';
+        $request .= $paginationRequest ?? '';
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
