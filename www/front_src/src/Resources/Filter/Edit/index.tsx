@@ -1,6 +1,9 @@
 import React from 'react';
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 import { Typography, makeStyles } from '@material-ui/core';
+import MoveIcon from '@material-ui/icons/MoreVert';
 
 import { RightPanel } from '@centreon/ui';
 
@@ -21,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(3),
     gridTemplateRows: '1fr',
   },
+  filterCard: {
+    display: 'grid',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: 'auto 1fr',
+    alignItems: 'center',
+  },
 }));
 
 const EditFiltersPanel = (): JSX.Element | null => {
@@ -36,16 +45,48 @@ const EditFiltersPanel = (): JSX.Element | null => {
     setEditPanelOpen(false);
   };
 
+  const onDragEnd = (params): void => {
+    console.log(params);
+  };
+
   const Sections = [
     {
       expandable: false,
       id: 'edit',
       Section: (
-        <div className={classes.filters}>
-          {customFilters?.map((filter) => (
-            <EditFilterCard key={filter.id} filter={filter} />
-          ))}
-        </div>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(droppable): JSX.Element => (
+              <div
+                className={classes.filters}
+                ref={droppable.innerRef}
+                {...droppable.droppableProps}
+              >
+                {customFilters?.map((filter) => (
+                  <Draggable
+                    key={filter.id}
+                    draggableId={`filter${filter.id}`}
+                    index={filter.id}
+                  >
+                    {(draggable): JSX.Element => (
+                      <div
+                        className={classes.filterCard}
+                        ref={draggable.innerRef}
+                        {...draggable.draggableProps}
+                      >
+                        <div {...draggable.dragHandleProps}>
+                          <MoveIcon />
+                        </div>
+                        <EditFilterCard filter={filter} />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {droppable.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       ),
     },
   ];
