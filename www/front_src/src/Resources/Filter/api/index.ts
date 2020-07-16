@@ -41,7 +41,7 @@ const updateFilter = (cancelToken) => (params): Promise<void> => {
 };
 
 const deleteFilter = (cancelToken) => (params): Promise<void> => {
-  return deleteData<void>(cancelToken)(`${filterEndpoint}/${params.id}}`);
+  return deleteData<void>(cancelToken)(`${filterEndpoint}/${params.id}`);
 };
 
 export {

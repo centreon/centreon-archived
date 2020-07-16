@@ -91,7 +91,6 @@ const Resources = (): JSX.Element => {
           </div>
         </div>
       </ContentWithLoading>
-      )
       <EditFiltersPanel />
     </Context.Provider>
   );

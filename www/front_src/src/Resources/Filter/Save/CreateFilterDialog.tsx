@@ -57,6 +57,14 @@ const CreateFilterDialog = ({
     },
   });
 
+  const submitFormOnEnterKey = (event: React.KeyboardEvent): void => {
+    const enterKeyPressed = event.keyCode === 13;
+
+    if (enterKeyPressed) {
+      form.submitForm();
+    }
+  };
+
   const confirmDisabled = or(not(form.isValid), not(form.dirty));
 
   return (
@@ -75,6 +83,7 @@ const CreateFilterDialog = ({
         value={form.values.name}
         error={form.errors.name}
         onChange={form.handleChange('name') as InputChangeEvent}
+        onKeyDown={submitFormOnEnterKey}
         ariaLabel={labelName}
         autoFocus
       />

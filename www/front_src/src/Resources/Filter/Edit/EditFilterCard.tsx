@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { Typography, CircularProgress, makeStyles } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { makeStyles } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -14,8 +13,8 @@ import {
   Severity,
 } from '@centreon/ui';
 
-import { useFormik, Formik } from 'formik';
-import { or, isNil } from 'ramda';
+import { useFormik } from 'formik';
+import { or, isNil, and } from 'ramda';
 import {
   labelDelete,
   labelRename,
@@ -23,7 +22,8 @@ import {
   labelCancel,
   labelFilterDeleted,
   labelFilterUpdated,
-  labelAskDelete,
+  labelName,
+  labelFilter,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
 import { Filter } from '../models';
@@ -106,29 +106,38 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     setDeleting(false);
   };
 
-  const loading = or(sendingDeleteFilterRequest, sendingUpdateFilterRequest);
+  const loading = isNil(customFilters);
+  const sendingRequest = or(
+    sendingDeleteFilterRequest,
+    sendingUpdateFilterRequest,
+  );
+  const canSave = and(form.isValid, form.dirty);
 
   return (
-    <ContentWithLoading loading={isNil(customFilters)}>
+    <ContentWithLoading loading={loading}>
       <div className={classes.filterCard}>
         <TextField
+          ariaLabel={`${labelFilter}-${id}-${labelName}`}
           value={form.values.name}
-          onChange={form.handleChange('name')}
+          onChange={form.handleChange('name') as (event) => void}
         />
         <div className={classes.filterEditActions}>
-          {loading && <CircularProgress size={24} />}
-          {!loading && (
+          <ContentWithLoading
+            loading={sendingRequest}
+            loadingIndicatorSize={24}
+            alignCenter={false}
+          >
             <>
               <IconButton title={labelDelete} onClick={askDelete}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
-              {form.isValid && form.dirty && (
+              {canSave && (
                 <IconButton title={labelRename} onClick={form.submitForm}>
                   <SaveIcon fontSize="small" />
                 </IconButton>
               )}
             </>
-          )}
+          </ContentWithLoading>
         </div>
         {deleting && (
           <ConfirmDialog
