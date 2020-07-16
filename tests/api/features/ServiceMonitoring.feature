@@ -5,6 +5,7 @@ Feature:
 
     Background:
         Given a running instance of Centreon Web API
+        And the endpoints are described in Centreon Web API documentation
 
     Scenario: Service listing and details
         Given I am logged in
@@ -27,7 +28,7 @@ Feature:
         And the response should be formatted like JSON format "standard/listing.json"
         And the response should be formatted like JSON format "monitoring/service/listing.json"
 
-        When I send a request to have the details of service "test_service1" from host "test" 
+        When I send a request to have the details of service "test_service1" from host "test"
         Then the response code should be "200"
         And the response should be formatted like JSON format "monitoring/service/details.json"
         And the JSON node "description" should be equal to the string "test_service1"
