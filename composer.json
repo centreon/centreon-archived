@@ -15,15 +15,6 @@
             "php": "7.2"
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../centreon-test-lib",
-            "options": {
-                "symlink": true
-            }
-        }
-    ],
     "require-dev": {
         "behat/behat": "^3.7",
         "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
@@ -35,19 +26,15 @@
         "adlawson/vfs": "^0.12.1",
         "zircote/swagger-php": "^3.0",
         "symfony/phpunit-bridge": "4.4.*",
+        "centreon/centreon-test-lib": "dev-MON-4890-order",
         "sensiolabs/security-checker": "^6.0",
         "symfony/var-dumper": "4.4.*",
         "symfony/profiler-pack": "^1.0",
         "phpstan/phpstan": "^0.12.14",
-        "webmozart/assert": "^1.8",
-        "league/openapi-psr7-validator": "^0.9.0",
-        "php-http/httplug": "^2.1",
-        "php-http/message-factory": "^1.0",
-        "nyholm/psr7": "^1.3"
+        "webmozart/assert": "^1.8"
     },
     "require": {
         "php": ">=7.1.3",
-        "centreon/centreon-test-lib": "@dev",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "^3.2",
@@ -77,10 +64,7 @@
         "ext-json": "*",
         "justinrainbow/json-schema": "^5.2",
         "ext-openssl": "*",
-        "symfony/http-client": "4.4.*",
-        "php-http/curl-client": "^2.1",
-        "guzzlehttp/psr7": "^1.6",
-        "php-http/message": "^1.8"
+        "symfony/http-client": "4.4.*"
     },
     "autoload": {
         "psr-4": {
