@@ -382,7 +382,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $filters = $this->findFiltersByUserId($userId, $pageName, null, null, null);
 
         foreach ($filters as $filter) {
-            if ($filter->getOrder() > $lowOrder && $filter->getOrder() < $highOrder) {
+            if ($filter->getOrder() >= $lowOrder && $filter->getOrder() <= $highOrder) {
                 $filter->setOrder($filter->getOrder() - 1);
                 $this->updateFilterOrder($filter);
             }
