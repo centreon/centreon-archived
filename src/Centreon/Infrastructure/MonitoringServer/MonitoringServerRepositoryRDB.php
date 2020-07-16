@@ -137,8 +137,6 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.nagios_server'
         );
 
-        $request .= !is_null($searchRequest) ? $searchRequest : '';
-        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY id DESC';
         $request .= $searchRequest ?? '';
         $request .= $sortRequest ?? 'ORDER BY id DESC';
         $request .= $paginationRequest ?? '';
