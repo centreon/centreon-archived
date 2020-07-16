@@ -64,7 +64,7 @@ Feature:
     And the json node "order" should be equal to the number 1
 
     When I send a DELETE request to '/beta/users/filters/events-view/1'
-    Then the response code should be "200"
+    Then the response code should be "204"
 
     When I send a GET request to '/beta/users/filters/events-view'
     Then the response code should be "200"
