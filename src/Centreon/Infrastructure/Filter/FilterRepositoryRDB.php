@@ -353,25 +353,12 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     {
         $filters = $this->findFiltersByUserId($userId, $pageName, null, null, null);
 
-        $request = $this->translateDbName('
-            UPDATE `:db`.user_filter
-            SET `order` = :order
-            WHERE user_id = :user_id
-            AND page_name = :page_name
-            AND id = :filter_id
-        ');
-        $statement = $this->db->prepare($request);
-
         $currentOrder = 1;
         foreach ($filters as $filter) {
             if ($filter->getOrder() !== $currentOrder) {
                 $filter->setOrder($currentOrder);
 
-                $statement->bindValue(':order', $filter->getOrder(), \PDO::PARAM_INT);
-                $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
-                $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
-                $statement->bindValue(':filter_id', $filter->getId(), \PDO::PARAM_INT);
-                $statement->execute();
+                $this->updateFilterOrder($filter);
             }
             $currentOrder++;
         }
@@ -397,7 +384,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         foreach ($filters as $filter) {
             if ($filter->getOrder() > $lowOrder && $filter->getOrder() < $highOrder) {
                 $filter->setOrder($filter->getOrder() - 1);
-                $this->updateFilter($filter);
+                $this->updateFilterOrder($filter);
             }
         }
     }
@@ -422,8 +409,33 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         foreach ($filters as $filter) {
             if ($filter->getOrder() >= $lowOrder && $filter->getOrder() <= $highOrder) {
                 $filter->setOrder($filter->getOrder() + 1);
-                $this->updateFilter($filter);
+                $this->updateFilterOrder($filter);
             }
         }
+    }
+
+    /**
+     * Update filter order
+     *
+     * @param Filter $filter
+     * @return void
+     */
+    private function updateFilterOrder(Filter $filter): void
+    {
+        $request = $this->translateDbName('
+            UPDATE `:db`.user_filter
+            SET `order` = :order
+            WHERE user_id = :user_id
+            AND page_name = :page_name
+            AND id = :filter_id
+        ');
+        $statement = $this->db->prepare($request);
+
+        $statement->bindValue(':order', $filter->getOrder(), \PDO::PARAM_INT);
+        $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
+        $statement->bindValue(':filter_id', $filter->getId(), \PDO::PARAM_INT);
+
+        $statement->execute();
     }
 }

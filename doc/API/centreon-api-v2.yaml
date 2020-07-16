@@ -376,7 +376,7 @@ paths:
 
         `Since Centreon web 20.04.5`
 
-        Add user filter for a given page.
+        Update user filter for a given page.
       parameters:
         - $ref: '#/components/parameters/FilterPageName'
         - $ref: '#/components/parameters/FilterId'
@@ -386,6 +386,42 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User.Filter'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - User filters
+      summary: "Patch user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.5`
+
+        Patch user filter order for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order]
+              properties:
+                order:
+                  type: integer
+                  description: filter order
+                  example: 1
       responses:
         '200':
           description: "OK"
@@ -2367,6 +2403,10 @@ components:
               type: text
               name: field1
               value: search value 1
+        order:
+          type: integer
+          description: filter order
+          example: 1
     Configuration.MonitoringServerMain:
       type: object
       properties:
