@@ -5,6 +5,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import {
+  ContentWithCircularLoading,
   TextField,
   IconButton,
   useRequest,
@@ -14,7 +15,9 @@ import {
 } from '@centreon/ui';
 
 import { useFormik } from 'formik';
-import { or, isNil, and } from 'ramda';
+import * as Yup from 'yup';
+import { isNil, not, all, equals, any } from 'ramda';
+
 import {
   labelDelete,
   labelRename,
@@ -24,11 +27,11 @@ import {
   labelFilterUpdated,
   labelName,
   labelFilter,
+  labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
 import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
-import ContentWithLoading from '../../ContentWithLoading';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
@@ -36,12 +39,14 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     alignItems: 'center',
-    gridTemplateColumns: '200px auto',
+    gridTemplateColumns: '2fr 1fr',
   },
+  filterNameInput: {},
   filterEditActions: {
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
+    justifyContent: 'flex-start',
   },
 }));
 
@@ -52,7 +57,13 @@ interface Props {
 const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { loadCustomFilters, customFilters } = useResourceContext();
+  const {
+    setFilter,
+    filter: currentFilter,
+    loadCustomFilters,
+    customFilters,
+    sendingListCustomFiltersRequest,
+  } = useResourceContext();
 
   const { showMessage } = useSnackbar();
 
@@ -74,18 +85,30 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
   const { name, id } = filter;
 
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required(labelNameCannotBeEmpty),
+  });
+
   const form = useFormik({
     initialValues: {
       name,
     },
+    validationSchema,
     onSubmit: (values) => {
-      sendUpdateFilterRequest({ ...filter, name: values.name }).then(() => {
-        showMessage({
-          message: labelFilterUpdated,
-          severity: Severity.success,
-        });
-        loadCustomFilters();
-      });
+      sendUpdateFilterRequest({ ...filter, name: values.name }).then(
+        (updatedFilter) => {
+          if (equals(updatedFilter.id, currentFilter.id)) {
+            setFilter(updatedFilter);
+          }
+
+          showMessage({
+            message: labelFilterUpdated,
+            severity: Severity.success,
+          });
+
+          loadCustomFilters();
+        },
+      );
     },
   });
 
@@ -98,6 +121,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
     sendDeleteFilterRequest(filter).then(() => {
       showMessage({ message: labelFilterDeleted, severity: Severity.success });
+
       loadCustomFilters();
     });
   };
@@ -107,22 +131,30 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   };
 
   const loading = isNil(customFilters);
-  const sendingRequest = or(
+  const sendingRequest = any(equals(true), [
     sendingDeleteFilterRequest,
     sendingUpdateFilterRequest,
-  );
-  const canSave = and(form.isValid, form.dirty);
+    sendingListCustomFiltersRequest,
+  ]);
+
+  const canSave = all(equals(true), [
+    form.isValid,
+    form.dirty,
+    not(sendingListCustomFiltersRequest),
+  ]);
 
   return (
-    <ContentWithLoading loading={loading}>
+    <ContentWithCircularLoading loading={loading}>
       <div className={classes.filterCard}>
         <TextField
+          className={classes.filterNameInput}
           ariaLabel={`${labelFilter}-${id}-${labelName}`}
           value={form.values.name}
+          error={form.errors.name}
           onChange={form.handleChange('name') as (event) => void}
         />
         <div className={classes.filterEditActions}>
-          <ContentWithLoading
+          <ContentWithCircularLoading
             loading={sendingRequest}
             loadingIndicatorSize={24}
             alignCenter={false}
@@ -131,13 +163,14 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
               <IconButton title={labelDelete} onClick={askDelete}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
+
               {canSave && (
                 <IconButton title={labelRename} onClick={form.submitForm}>
                   <SaveIcon fontSize="small" />
                 </IconButton>
               )}
             </>
-          </ContentWithLoading>
+          </ContentWithCircularLoading>
         </div>
         {deleting && (
           <ConfirmDialog
@@ -150,7 +183,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
           />
         )}
       </div>
-    </ContentWithLoading>
+    </ContentWithCircularLoading>
   );
 };
 

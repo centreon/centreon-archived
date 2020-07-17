@@ -1156,6 +1156,13 @@ class CentreonLdapAdmin
             if (is_array($value)) { //radio buttons
                 $value = $value[$key];
             }
+            // Make all attributes lowercase since ldap_get_entries
+            // converts them to lowercase.
+            if (in_array($key, array("alias", "user_name", "user_email", "user_pager",
+                "user_firstname", "user_lastname", "group_name", "group_member"))
+            ) {
+                $value = strtolower($value);
+            }
             if (isset($gopt[$key])) {
                 $query = "UPDATE `auth_ressource_info` 
                          SET `ari_value` = '" . $this->db->escape($value, false) . "' 
