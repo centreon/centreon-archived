@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Filter;
 
-use Centreon\Domain\Filter\FilterCriteria;
-
 /**
  * This class is designed to represent a monitoring server entity.
  *
@@ -52,7 +50,7 @@ class Filter
     private $pageName;
 
     /**
-     * @var FilterCriteria[] Criterias
+     * @var array Criterias
      */
     private $criterias = [];
 
@@ -134,7 +132,7 @@ class Filter
     }
 
     /**
-     * @return FilterCriteria[]
+     * @return array
      */
     public function getCriterias(): array
     {
@@ -142,7 +140,7 @@ class Filter
     }
 
     /**
-     * @param FilterCriteria[] $criterias
+     * @param array $criterias
      * @return Filter
      */
     public function setCriterias(array $criterias): Filter

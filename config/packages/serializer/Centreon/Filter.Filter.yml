@@ -7,7 +7,7 @@ Centreon\Domain\Filter\Filter:
             type: string
             groups: [filter_main]
         criterias:
-            type: array<Centreon\Domain\Filter\FilterCriteria>
+            type: array
             groups: [filter_main]
         order:
             type: int
