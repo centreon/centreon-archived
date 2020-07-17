@@ -1,12 +1,33 @@
 <?php
 
+/**
+ * Get script params and assign them
+ */
 $opt = getopt('u:p:t:h:');
+try {
+    if (isset($opt['u'], $opt['p'], $opt['t'], $opt['h'])) {
+        $username = $opt['u'];
+        $password = $opt['p'];
+        $serverType = (int) $opt['t'];
+        $centralIp = $opt['h'];
+    } else {
+        throw new \InvalidArgumentException('missing parameter: -u -p -t -h are mandatories');
+    }
+} catch (\InvalidArgumentException $e) {
+    echo $e->getMessage();
+    exit;
+}
 
-$username = $opt['u'];
-$password = $opt['p'];
-$serverType = $opt['t'];
-$centralIp = $opt['h'];
 
+if (!in_array($serverType, [0,1,2,3,4])) {
+    echo '-t must be one of those value' . PHP_EOL;
+    echo '0 => Central, 1 => Poller, 2 => Remote Server, 3 => Map Server, 4 => MBI Server';
+    exit;
+}
+
+/**
+ * prepare payload for login to API
+ */
 $credentials = [
     "security" => [
         "credentials" => [
@@ -16,31 +37,74 @@ $credentials = [
     ]
 ];
 $credentials = json_encode($credentials);
+$version = "beta";
 
-$configAPIV2 = yaml_parse_file(__DIR__ . '/../config/routes/centreon.yaml');
-$version = $configAPIV2['centreon']['defaults']['version'];
-
+/**
+ * Parsing url part get from params -h
+ */
 $centralURL = parse_url($centralIp);
 $protocol = $centralURL['scheme'] ?? 'http';
 $host = $centralURL['host'] ?? $centralURL['path'];
 $port = $centralURL['port'] ?? '';
 
-$ch = curl_init("$protocol://$host:$port/centreon/api/$version/login");
+/**
+ * Try Connection to Api
+ */
+$loginUrl = $protocol . '://' . $host;
+if(!empty($port)){
+    $loginUrl .= ':' . $port;
+}
+$loginUrl .= '/centreon/api/' . $version . '/login';
+
+$ch = curl_init($loginUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch,CURLOPT_HTTPHEADER,['Content-Type: application/json']);
+// curl_setopt($ch, CURLOPT_PROXY, 'proxy.int.centreon.com');
+// curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $credentials);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$result = json_decode(curl_exec($ch), true);
+$result = curl_exec($ch);
 curl_close($ch);
+var_dump($result);
+die();
 
-$APIToken = $result['security']['token'];
-
-if (!in_array($serverType, ['0','1','2','3','4'])) {
-    echo '-t must be one of those value' . PHP_EOL;
-    echo '0 => Central, 1 => Poller, 2 => Remote Server, 3 => Map Server, 4 => MBI Server';
+$result = json_decode($result, true);
+/**
+ * Save Token or return the error message
+ */
+if (isset($result['security']['token'])) {
+    $APIToken = $result['security']['token'];
+} elseif (isset($result['code']) && $result['code'] === 500) {
+    echo 'error code: ' . $result['code'] . PHP_EOL;
+    echo 'error message: ' . $result['message'] . PHP_EOL;
+    exit;
+} else {
+    echo 'unhandled error' . PHP_EOL;
     exit;
 }
 
-$curlURL = "$protocol://$host:$port/centreon/api/$version/configuration/register";
+/**
+ * Prepare Poller Register payload
+ */
+$host = gethostname();
+$payload = [
+    "hostName" => $host,
+    "serverType" => $serverType,
+];
 
+
+/**
+ * POST Request to registration endpoint
+ */
+$curlURL = "$protocol://$host:$port/centreon/api/$version/configuration/register";
+$ch = curl_init($curlURL);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-TOKEN: $APIToken"]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$result = json_decode(curl_exec($ch), true);
+curl_close($ch);
+
+/**
+ * TODO: Handle Response
+ */
