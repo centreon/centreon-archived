@@ -25,6 +25,7 @@ namespace Centreon\Infrastructure\Filter;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -246,6 +247,13 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
                 $result
             );
 
+            $criterias = [];
+            foreach ($result['criterias'] as $criteria) {
+                $criterias[] = EntityCreator::createEntityByArray(FilterCriteria::class, $criteria);
+            }
+
+            $filter->setCriterias($criterias);
+
             $filters[] = $filter;
         }
 
@@ -271,12 +279,22 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->bindValue(':name', $name, \PDO::PARAM_STR);
         $statement->execute();
 
-        if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $filter['criterias'] = json_decode($filter['criterias'], true);
-            return EntityCreator::createEntityByArray(
+        if (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $result['criterias'] = json_decode($result['criterias'], true);
+
+            $filter = EntityCreator::createEntityByArray(
                 Filter::class,
-                $filter
+                $result
             );
+
+            $criterias = [];
+            foreach ($result['criterias'] as $criteria) {
+                $criterias[] = EntityCreator::createEntityByArray(FilterCriteria::class, $criteria);
+            }
+
+            $filter->setCriterias($criterias);
+
+            return $filter;
         }
 
         return null;
@@ -301,12 +319,22 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->bindValue(':page_name', $pageName, \PDO::PARAM_STR);
         $statement->execute();
 
-        if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $filter['criterias'] = json_decode($filter['criterias'], true);
-            return EntityCreator::createEntityByArray(
+        if (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $result['criterias'] = json_decode($result['criterias'], true);
+
+            $filter = EntityCreator::createEntityByArray(
                 Filter::class,
-                $filter
+                $result
             );
+
+            $criterias = [];
+            foreach ($result['criterias'] as $criteria) {
+                $criterias[] = EntityCreator::createEntityByArray(FilterCriteria::class, $criteria);
+            }
+
+            $filter->setCriterias($criterias);
+
+            return $filter;
         }
 
         return null;
