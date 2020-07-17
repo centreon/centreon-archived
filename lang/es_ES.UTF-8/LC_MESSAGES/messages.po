@@ -14531,9 +14531,6 @@ msgstr ""
 #  msgid "Rename"
 #  msgstr ""
 
-#  msgid "Delete"
-#  msgstr ""
-
 #  msgid "Delete filter?"
 #  msgstr ""
 

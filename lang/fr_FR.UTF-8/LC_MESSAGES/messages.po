@@ -15432,9 +15432,6 @@ msgstr "Éditer les filtres"
 msgid "Rename"
 msgstr "Renommer"
 
-msgid "Delete"
-msgstr "Supprimer"
-
 msgid "Delete filter?"
 msgstr "Supprimer le filtre?"
 
