@@ -1765,6 +1765,7 @@ paths:
                           type: array
                           items:
                             type: number
+                            format: float
                             description: value of the metric
                           example:
                             - 1.0
@@ -1780,10 +1781,12 @@ paths:
                               example: 'Last:1.00'
                         minimum_value:
                           type: number
+                          format: float
                           description: minimum value
                           example: 1.0
                         maximum_value:
                           type: number
+                          format: float
                           description: maximum value
                           example: 1.0
                   times:
@@ -3221,6 +3224,7 @@ components:
               example: false
             percent_state_change:
               type: number
+              format: float
               description: "Percent state change since last check"
               example: 3.5
             downtimes:
