@@ -5,6 +5,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import {
+  ContentWithCircularLoading,
   TextField,
   IconButton,
   useRequest,
@@ -31,7 +32,6 @@ import {
 import { updateFilter, deleteFilter } from '../api';
 import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
-import ContentWithLoading from '../../ContentWithLoading';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
@@ -140,7 +140,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   ]);
 
   return (
-    <ContentWithLoading loading={loading}>
+    <ContentWithCircularLoading loading={loading}>
       <div className={classes.filterCard}>
         <TextField
           className={classes.filterNameInput}
@@ -150,7 +150,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
           onChange={form.handleChange('name') as (event) => void}
         />
         <div className={classes.filterEditActions}>
-          <ContentWithLoading
+          <ContentWithCircularLoading
             loading={sendingRequest}
             loadingIndicatorSize={24}
             alignCenter={false}
@@ -165,7 +165,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
                 </IconButton>
               )}
             </>
-          </ContentWithLoading>
+          </ContentWithCircularLoading>
         </div>
         {deleting && (
           <ConfirmDialog
@@ -178,7 +178,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
           />
         )}
       </div>
-    </ContentWithLoading>
+    </ContentWithCircularLoading>
   );
 };
 

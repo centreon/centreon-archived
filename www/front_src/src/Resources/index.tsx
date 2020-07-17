@@ -3,9 +3,9 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { makeStyles, Slide, CircularProgress } from '@material-ui/core';
+import { makeStyles, Slide } from '@material-ui/core';
 
-import { withSnackbar, RightPanel } from '@centreon/ui';
+import { withSnackbar, ContentWithCircularLoading } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
@@ -16,7 +16,6 @@ import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
 import EditFiltersPanel from './Filter/Edit';
-import ContentWithLoading from './ContentWithLoading';
 
 const useStyles = makeStyles((theme) => ({
   loadingIndicator: {
@@ -72,7 +71,7 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <ContentWithLoading loading={loading}>
+      <ContentWithCircularLoading loading={loading}>
         <div className={classes.page}>
           <div className={classes.filter}>
             <Filter />
@@ -97,7 +96,7 @@ const Resources = (): JSX.Element => {
             </div>
           </div>
         </div>
-      </ContentWithLoading>
+      </ContentWithCircularLoading>
       <EditFiltersPanel />
     </Context.Provider>
   );
