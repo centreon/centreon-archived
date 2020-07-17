@@ -14,7 +14,9 @@ import {
 } from '@centreon/ui';
 
 import { useFormik } from 'formik';
-import { or, isNil, and } from 'ramda';
+import * as Yup from 'yup';
+import { or, isNil, not, all, equals } from 'ramda';
+
 import {
   labelDelete,
   labelRename,
@@ -24,6 +26,8 @@ import {
   labelFilterUpdated,
   labelName,
   labelFilter,
+  labelRequired,
+  labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
 import { Filter } from '../models';
@@ -36,12 +40,14 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     alignItems: 'center',
-    gridTemplateColumns: '200px auto',
+    gridTemplateColumns: '2fr 1fr',
   },
+  filterNameInput: {},
   filterEditActions: {
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
+    justifyContent: 'flex-start',
   },
 }));
 
@@ -52,7 +58,11 @@ interface Props {
 const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { loadCustomFilters, customFilters } = useResourceContext();
+  const {
+    loadCustomFilters,
+    customFilters,
+    sendingListCustomFiltersRequest,
+  } = useResourceContext();
 
   const { showMessage } = useSnackbar();
 
@@ -74,10 +84,15 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
   const { name, id } = filter;
 
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required(labelNameCannotBeEmpty),
+  });
+
   const form = useFormik({
     initialValues: {
       name,
     },
+    validationSchema,
     onSubmit: (values) => {
       sendUpdateFilterRequest({ ...filter, name: values.name }).then(() => {
         showMessage({
@@ -111,14 +126,20 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     sendingDeleteFilterRequest,
     sendingUpdateFilterRequest,
   );
-  const canSave = and(form.isValid, form.dirty);
+  const canSave = all(equals(true), [
+    form.isValid,
+    form.dirty,
+    not(sendingListCustomFiltersRequest),
+  ]);
 
   return (
     <ContentWithLoading loading={loading}>
       <div className={classes.filterCard}>
         <TextField
+          className={classes.filterNameInput}
           ariaLabel={`${labelFilter}-${id}-${labelName}`}
           value={form.values.name}
+          error={form.errors.name}
           onChange={form.handleChange('name') as (event) => void}
         />
         <div className={classes.filterEditActions}>

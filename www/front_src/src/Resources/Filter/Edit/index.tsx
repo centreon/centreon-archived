@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'row',
     gridGap: theme.spacing(3),
     gridTemplateRows: '1fr',
+    width: '100%',
   },
 }));
 

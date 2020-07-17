@@ -176,3 +176,4 @@ export const labelDelete = I18n.t('Delete');
 export const labelAskDelete = I18n.t('Delete filter?');
 export const labelFilterDeleted = I18n.t('Filter deleted');
 export const labelFilterUpdated = I18n.t('Filter updated');
+export const labelNameCannotBeEmpty = I18n.t('Name cannot be empty');
