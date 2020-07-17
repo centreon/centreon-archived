@@ -59,6 +59,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
   const {
     setFilter,
+    filter: currentFilter,
     loadCustomFilters,
     customFilters,
     sendingListCustomFiltersRequest,
@@ -96,7 +97,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     onSubmit: (values) => {
       sendUpdateFilterRequest({ ...filter, name: values.name }).then(
         (updatedFilter) => {
-          if (equals(updatedFilter.id, filter.id)) {
+          if (equals(updatedFilter.id, currentFilter.id)) {
             setFilter(updatedFilter);
           }
 
