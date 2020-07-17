@@ -458,9 +458,6 @@ class CentreonCustomView
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
-                if (!$dbResult) {
-                    throw new \Exception("An error occured");
-                }
             } else {
                 $query = 'DELETE FROM custom_view_user_relation ' .
                     'WHERE custom_view_id = :viewId ' .
@@ -468,16 +465,13 @@ class CentreonCustomView
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
-                if (!$dbResult) {
-                    throw new \Exception("An error occured");
-                }
             }
             //other
         } else {
             // if owner consumed = 0 -> delete
             if ($this->checkOwnerViewStatus($customViewId) == 0) {
                 //if not other shared view consumed, delete all
-                if (!$this->checkOtherShareViewUnlocked($viewId, $this->userId)) {
+                if (!$this->checkOtherShareViewUnlocked($customViewId, $this->userId)) {
                     $query = 'DELETE FROM custom_views WHERE custom_view_id = :viewId ';
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
@@ -500,25 +494,7 @@ class CentreonCustomView
                 }
                 //if owner not delete
             } else {
-                // delete widget pref
-                try {
-                    $stmt = $this->db->prepare(
-                        'DELETE FROM widget_preferences
-                        WHERE user_id = :userId
-                        AND widget_view_id IN (
-                            SELECT widget_view_id FROM widget_views WHERE custom_view_id = :viewId
-                        )'
-                    );
-                    $stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
-                    $stmt->bindParam(':viewId', $customViewId, \PDO::PARAM_INT);
-                    $stmt->execute();
-                } catch (\PDOException $e) {
-                    throw new Exception(
-                        "Error: cannot delete widget preferences , " . $e->getMessage() . "\n"
-                    );
-                }
-
-                //reset relation
+                // reset relation by setting is_consumed flag to 0
                 try {
                     $stmt = $this->db->prepare(
                         'UPDATE custom_view_user_relation SET is_consumed = 0 ' .
