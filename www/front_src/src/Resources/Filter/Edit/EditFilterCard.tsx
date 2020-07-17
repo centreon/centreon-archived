@@ -120,6 +120,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
     sendDeleteFilterRequest(filter).then(() => {
       showMessage({ message: labelFilterDeleted, severity: Severity.success });
+
       loadCustomFilters();
     });
   };
