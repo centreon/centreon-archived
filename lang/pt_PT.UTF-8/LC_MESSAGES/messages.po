@@ -14967,3 +14967,21 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "No results found"
 #  msgstr ""
+
+#  msgid "Save filter"
+#  msgstr ""
+
+#  msgid "Save as new"
+#  msgstr ""
+
+#  msgid "My filters"
+#  msgstr ""
+
+#  msgid "New filter"
+#  msgstr ""
+
+#  msgid "Filter created"
+#  msgstr ""
+
+#  msgid "Filter saved"
+#  msgid ""

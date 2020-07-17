@@ -11,6 +11,7 @@ import {
 import { Simulate } from 'react-dom/test-utils';
 
 import userEvent from '@testing-library/user-event';
+import { isNil } from 'ramda';
 import {
   labelTypeOfResource,
   labelHost,
@@ -31,7 +32,7 @@ import {
   labelSearchHelp,
   labelSearchOnFields,
 } from '../translatedLabels';
-import { allFilter } from './models';
+import { allFilter, newFilter } from './models';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
 import useFilter from './useFilter';
@@ -120,10 +121,14 @@ const FilterWithLoading = (): JSX.Element => {
   return <Filter />;
 };
 
-const FilterTest = (): JSX.Element => {
+const FilterTest = (): JSX.Element | null => {
+  const filterState = useFilter();
   const listingState = useListing();
   const actionsState = useActions();
-  const filterState = useFilter();
+
+  if (isNil(filterState.customFilters)) {
+    return null;
+  }
 
   return (
     <Context.Provider
@@ -154,7 +159,18 @@ mockAppStateSelector(useSelector);
 
 describe(Filter, () => {
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValueOnce({ data: {} });
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          result: [],
+          meta: {
+            page: 1,
+            limit: 30,
+            total: 0,
+          },
+        },
+      })
+      .mockResolvedValueOnce({ data: {} });
   });
 
   afterEach(() => {
@@ -178,6 +194,10 @@ describe(Filter, () => {
     'executes a listing request with an "$and" search param containing %p when %p is typed in the search field',
     async (searchableField) => {
       const { getByPlaceholderText, getByText } = renderFilter();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
 
       const search = 'foobar';
       const fieldSearchValue = `${searchableField}:${search}`;
@@ -207,6 +227,10 @@ describe(Filter, () => {
 
   it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', async () => {
     const { getByPlaceholderText, getByText } = renderFilter();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
 
     const searchValue = 'foobar';
 
@@ -269,6 +293,10 @@ describe(Filter, () => {
     async (filterGroup, criterias) => {
       const { getByText } = renderFilter();
 
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
       userEvent.click(getByText(labelUnhandledProblems));
@@ -303,6 +331,10 @@ describe(Filter, () => {
         findByText,
       } = renderFilter();
 
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
       fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
       selectEndpointMockAction?.();
@@ -335,13 +367,13 @@ describe(Filter, () => {
     const savedFilter = {
       id: '',
       name: '',
-      search: 'searching...',
       criterias: {
         resourceTypes: [{ id: 'host', name: labelHost }],
         states: [{ id: 'acknowledged', name: labelAcknowledged }],
         statuses: [{ id: 'OK', name: labelOk }],
         hostGroups: [linuxServersHostGroup],
         serviceGroups: [webAccessServiceGroup],
+        search: 'searching...',
       },
     };
 
@@ -350,7 +382,7 @@ describe(Filter, () => {
 
       const { getByText, getByDisplayValue, queryByLabelText } = renderFilter();
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
       expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterStorageKey);
       expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
@@ -365,13 +397,15 @@ describe(Filter, () => {
     it('stores filter values in localStorage when updated', async () => {
       const { getByText, getByPlaceholderText } = renderFilter();
 
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       mockedAxios.get.mockResolvedValue({ data: {} });
 
       userEvent.click(getByText(labelUnhandledProblems));
 
       fireEvent.click(getByText(labelAll));
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
         filterStorageKey,
@@ -386,8 +420,8 @@ describe(Filter, () => {
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
           filterStorageKey,
           JSON.stringify({
-            ...allFilter,
-            search: 'searching...',
+            ...newFilter,
+            criterias: { ...allFilter.criterias, search: 'searching...' },
           }),
         ),
       );
@@ -405,11 +439,13 @@ describe(Filter, () => {
         queryByText,
       } = renderFilter();
 
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
       fireEvent.click(getByText(labelClearAll));
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
       expect(getByText(labelAll)).toBeInTheDocument();
       expect(queryByDisplayValue('searching...')).toBeNull();
