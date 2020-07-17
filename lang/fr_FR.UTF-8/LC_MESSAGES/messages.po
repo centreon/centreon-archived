@@ -15412,7 +15412,7 @@ msgid "Save filter"
 msgstr "Sauvegarder le filtre"
 
 msgid "Save as new"
-msgstr "Sauvegarder comme nouveau"
+msgstr "Créer un nouveau filtre"
 
 msgid "My filters"
 msgstr "Mes filtres"

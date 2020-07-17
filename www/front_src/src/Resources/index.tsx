@@ -19,6 +19,13 @@ import EditFiltersPanel from './Filter/Edit';
 import ContentWithLoading from './ContentWithLoading';
 
 const useStyles = makeStyles((theme) => ({
+  loadingIndicator: {
+    width: '100%',
+    heihgt: '100%',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+  },
   page: {
     display: 'grid',
     gridTemplateRows: 'auto 1fr',

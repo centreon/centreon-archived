@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
+
 import * as React from 'react';
 
 import {
@@ -20,7 +21,7 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
-import { isEmpty, propEq, pick, repeat } from 'ramda';
+import { isEmpty, propEq, pick } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import {
