@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,9 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
      */
     public function findLocalServer(): ?MonitoringServer
     {
-        $request = $this->translateDbName('SELECT * FROM `:db`.nagios_server WHERE localhost = \'1\'');
+        $request = $this->translateDbName(
+            'SELECT * FROM `:db`.nagios_server WHERE localhost = \'1\' AND ns_activate = \'1\''
+        );
         $statement = $this->db->query($request);
         if ($statement !== false && ($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             /**
@@ -90,7 +92,7 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findServers(): array
+    public function findServersWithRequestParameters(): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'id',
@@ -100,20 +102,44 @@ class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'is_activate' => 'ns_activate'
         ]);
 
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+
+        // Pagination
+        $paginationRequest = $this->sqlRequestTranslator->translatePaginationToSql();
+
+        return $this->findServers($searchRequest, $sortRequest, $paginationRequest);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServersWithoutRequestParameters(): array
+    {
+        return $this->findServers(null, null, null);
+    }
+
+    /**
+     * Find servers.
+     *
+     * @param string|null $searchRequest Search request
+     * @param string|null $sortRequest Sort request
+     * @param string|null $paginationRequest Pagination request
+     * @return MonitoringServer[]
+     * @throws \Exception
+     */
+    private function findServers(?string $searchRequest, ?string $sortRequest, ?string $paginationRequest): array
+    {
         $request = $this->translateDbName(
             'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.nagios_server'
         );
 
-        // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $request .= !is_null($searchRequest) ? $searchRequest : '';
-
-        // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY id DESC';
-
-        // Pagination
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $request .= $searchRequest ?? '';
+        $request .= $sortRequest ?? 'ORDER BY id DESC';
+        $request .= $paginationRequest ?? '';
         $statement = $this->db->prepare($request);
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
