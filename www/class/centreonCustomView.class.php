@@ -472,13 +472,10 @@ class CentreonCustomView
             if ($this->checkOwnerViewStatus($customViewId) == 0) {
                 //if not other shared view consumed, delete all
                 if (!$this->checkOtherShareViewUnlocked($customViewId, $this->userId)) {
-                    $query = 'DELETE FROM custom_views WHERE custom_view_id = :viewId ';
+                    $query = 'DELETE FROM custom_views WHERE custom_view_id = :viewId';
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
-                    $dbResult = $stmt->execute();
-                    if (!$dbResult) {
-                        throw new \Exception("An error occured");
-                    }
+                    $stmt->execute();
                     //if shared view consumed, delete for me
                 } else {
                     $query = 'DELETE FROM custom_view_user_relation ' .
@@ -487,10 +484,7 @@ class CentreonCustomView
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
                     $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
-                    $dbResult = $stmt->execute();
-                    if (!$dbResult) {
-                        throw new \Exception("An error occured");
-                    }
+                    $stmt->execute();
                 }
                 //if owner not delete
             } else {
@@ -505,7 +499,7 @@ class CentreonCustomView
                     $stmt->execute();
                 } catch (\PDOException $e) {
                     throw new Exception(
-                        "Error: cannot reset widget preferences , " . $e->getMessage() . "\n"
+                        "Cannot reset widget preferences, " . $e->getMessage() . "\n"
                     );
                 }
             }
