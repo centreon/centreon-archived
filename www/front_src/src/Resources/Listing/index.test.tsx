@@ -104,7 +104,19 @@ describe(Listing, () => {
     useSelector.mockImplementation((callback) => {
       return callback(appState);
     });
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedListing });
+
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          result: [],
+          meta: {
+            page: 1,
+            limit: 30,
+            total: 0,
+          },
+        },
+      })
+      .mockResolvedValueOnce({ data: retrievedListing });
   });
 
   afterEach(() => {
@@ -151,10 +163,12 @@ describe(Listing, () => {
 
       fireEvent.click(getByLabelText(`Column ${label}`));
 
-      expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
-        cancelTokenRequestParam,
-      );
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenLastCalledWith(
+          getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
+          cancelTokenRequestParam,
+        );
+      });
 
       fireEvent.click(getByLabelText(`Column ${label}`));
 
@@ -183,10 +197,12 @@ describe(Listing, () => {
 
     fireEvent.click(getByLabelText('Next Page'));
 
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
-      getListingEndpoint({ page: 2 }),
-      cancelTokenRequestParam,
-    );
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenLastCalledWith(
+        getListingEndpoint({ page: 2 }),
+        cancelTokenRequestParam,
+      );
+    });
 
     mockedAxios.get.mockResolvedValueOnce({
       data: {

@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useSelector } from 'react-redux';
 
+import { isNil, equals, not } from 'ramda';
 import { useResourceContext } from '../Context';
 
 export interface LoadResources {
@@ -24,6 +25,7 @@ const useLoadResources = (): LoadResources => {
     setListing,
     sendRequest,
     enabledAutorefresh,
+    customFilters,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
@@ -59,6 +61,10 @@ const useLoadResources = (): LoadResources => {
   };
 
   const initAutorefreshAndLoad = (): void => {
+    if (isNil(customFilters)) {
+      return;
+    }
+
     initAutorefresh();
     load();
   };
@@ -74,9 +80,10 @@ const useLoadResources = (): LoadResources => {
   }, []);
 
   React.useEffect(() => {
-    if (currentSearch !== nextSearch) {
+    if (not(equals(currentSearch, nextSearch))) {
       return;
     }
+
     initAutorefreshAndLoad();
   }, [
     sortf,
@@ -89,6 +96,7 @@ const useLoadResources = (): LoadResources => {
     resourceTypes,
     hostGroups,
     serviceGroups,
+    customFilters,
   ]);
 
   return { initAutorefreshAndLoad };
