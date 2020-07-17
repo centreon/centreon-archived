@@ -26,7 +26,7 @@ externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
 servers:
-  - url: '/centreon/api/{version}'
+  - url: '{protocol}://{server}:{port}/centreon/api/{version}'
     variables:
       protocol:
         enum:
