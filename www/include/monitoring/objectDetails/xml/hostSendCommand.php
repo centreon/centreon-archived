@@ -46,27 +46,27 @@ require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
 CentreonSession::start(1);
 $centreon = $_SESSION["centreon"];
-if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["cmd"]) || !isset($_GET["actiontype"])) {
+if (!isset($_SESSION["centreon"], $_POST["host_id"], $_POST["cmd"], $_POST["actiontype"])) {
     exit();
 }
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
 
 $hostId = filter_var(
-    $_GET['host_id'] ?? false,
+    $_POST['host_id'] ?? false,
     FILTER_VALIDATE_INT
 );
 
 $pollerId = $hostObj->getHostPollerId($hostId);
 
 $cmd = filter_var(
-    $_GET['cmd'] ?? '',
+    $_POST['cmd'] ?? '',
     FILTER_SANITIZE_STRING
 );
 
 $cmd = CentreonUtils::escapeSecure($cmd, CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
-$actionType = (int) $_GET['actiontype'];
+$actionType = (int)$_POST['actiontype'];
 
 $pearDB = new CentreonDB();
 

@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,26 +35,10 @@
  */
 
 /**
- *
- * @param int $errno The error num
- * @param string $errstr The error message
- * @param string $errfile The error file
- * @param int $errline The error line
- * @param array $errcontext
- * @return boolean
- */
-function errorLdapHandler($errno, $errstr, $errfile, $errline, $errcontext)
-{
-    // @todo LOG
-    return false;
-}
-
-/**
  * The utils class for LDAP
  */
 class CentreonLDAP
 {
-
     public $centreonLog;
     private $ds;
     private $db = null;
@@ -310,6 +295,10 @@ class CentreonLDAP
         $this->setErrorHandler();
         $filter = preg_replace('/%s/', $this->replaceFilter($username), $this->userSearchInfo['filter']);
         $result = ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+        // no results were returned using this base_search
+        if ($result === false) {
+            return false;
+        }
         $entries = ldap_get_entries($this->ds, $result);
         restore_error_handler();
         if ($entries['count'] == 0) {
@@ -586,7 +575,7 @@ class CentreonLDAP
         /* Search */
         $filter = preg_replace('/%s/', '*', $filter);
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
-        $this->debug("LDAP Search : Error : " . ldap_error($this->ds));
+
         /* Sort */
         @ldap_sort($this->ds, $sr, "dn");
         $number_returned = ldap_count_entries($this->ds, $sr);
@@ -781,18 +770,46 @@ class CentreonLDAP
     private function debug($msg)
     {
         if ($this->debugImport) {
-            error_log("[" . date("d/m/Y H:i") . "]" . $msg . "\n", 3, $this->debugPath . "ldapsearch.log");
+            error_log("[" . date("d/m/Y H:i") . "] " . $msg . "\n", 3, $this->debugPath . "ldapsearch.log");
         }
     }
 
     /**
-     * Set the error hanlder for LDAP
+     * Override the custom errorHandler to avoid false errors in the log,
      *
+     * @param int $errno The error num
+     * @param string $errstr The error message
+     * @param string $errfile The error file
+     * @param int $errline The error line
+     * @return boolean
+     */
+    private function errorLdapHandler($errno, $errstr, $errfile, $errline): bool
+    {
+        if ($errno === 2 && ldap_errno($this->ds) === 4) {
+            /*
+            Silencing : 'size limit exceeded' warnings in the logs
+            As the $searchLimit value needs to be consistent with the ldap server's configuration and
+            as the size limit error thrown is not related with the results.
+                ldap_errno : 4 = LDAP_SIZELIMIT_EXCEEDED
+                $errno     : 2 = PHP_WARNING
+            */
+            $this->debug("LDAP Error : Size limit exceeded error. This error was not added to php log. "
+                . "Kindly, check your LDAP server's configuration and your Centreon's LDAP parameters.");
+            return true;
+        }
+
+        // throwing all errors
+        $this->debug("LDAP Error : " . ldap_error($this->ds));
+        return  false;
+    }
+
+    /**
+     * Set the error handler for LDAP
      * @see errorLdapHandler
      */
-    private function setErrorHandler()
+    private function setErrorHandler(): void
     {
-        set_error_handler('errorLdapHandler');
+        set_error_handler(array($this, 'errorLdapHandler'));
     }
 
     /**
@@ -971,7 +988,7 @@ class CentreonLDAP
         }
         $this->centreonLog->insertLog(
             3,
-            'LDAP AUTH : LDAP synchronization on login is disabled'
+            'LDAP AUTH : Synchronization was skipped. For more details, check your LDAP parameters in Administration'
         );
         return false;
     }
@@ -1138,6 +1155,13 @@ class CentreonLdapAdmin
             }
             if (is_array($value)) { //radio buttons
                 $value = $value[$key];
+            }
+            // Make all attributes lowercase since ldap_get_entries
+            // converts them to lowercase.
+            if (in_array($key, array("alias", "user_name", "user_email", "user_pager",
+                "user_firstname", "user_lastname", "group_name", "group_member"))
+            ) {
+                $value = strtolower($value);
             }
             if (isset($gopt[$key])) {
                 $query = "UPDATE `auth_ressource_info` 

@@ -27,9 +27,11 @@ use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Monitoring\TimelineEvent;
+use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
@@ -147,6 +149,19 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws MonitoringServiceException
      * @throws RepositoryException
      * @throws ServiceConfigurationException
+     * @throws MonitoringServerException
      */
     public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void;
+
+    /**
+     * Find the command line of a service.
+     *
+     * If a password exists, it will be hidden.
+     *
+     * @param int $hostId Host id associated to the service
+     * @param int $serviceId Service id
+     * @return string|null Return the command line if it exists
+     * @throws MonitoringServiceException
+     */
+    public function findCommandLineOfService(int $hostId, int $serviceId): ?string;
 }
