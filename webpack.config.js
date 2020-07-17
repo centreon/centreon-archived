@@ -7,6 +7,12 @@ const baseConfig = require('@centreon/frontend-core/webpack/base');
 const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');
 
 module.exports = merge(baseConfig, extractCssConfig, {
+  performance: {
+    assetFilter: (assetFilename) => assetFilename.endsWith('.js'),
+    maxAssetSize: 1200000,
+    maxEntrypointSize: 3000000,
+    hints: 'error',
+  },
   entry: [
     'react-hot-loader/patch',
     '@babel/polyfill',
