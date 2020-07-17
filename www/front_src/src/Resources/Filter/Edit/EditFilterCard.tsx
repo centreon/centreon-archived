@@ -16,7 +16,7 @@ import {
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { or, isNil, not, all, equals } from 'ramda';
+import { isNil, not, all, equals, any } from 'ramda';
 
 import {
   labelDelete,
@@ -130,10 +130,12 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   };
 
   const loading = isNil(customFilters);
-  const sendingRequest = or(
+  const sendingRequest = any(equals(true), [
     sendingDeleteFilterRequest,
     sendingUpdateFilterRequest,
-  );
+    sendingListCustomFiltersRequest,
+  ]);
+
   const canSave = all(equals(true), [
     form.isValid,
     form.dirty,
@@ -160,6 +162,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
               <IconButton title={labelDelete} onClick={askDelete}>
                 <DeleteIcon fontSize="small" />
               </IconButton>
+
               {canSave && (
                 <IconButton title={labelRename} onClick={form.submitForm}>
                   <SaveIcon fontSize="small" />
