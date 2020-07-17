@@ -9,8 +9,8 @@ const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractC
 module.exports = merge(baseConfig, extractCssConfig, {
   performance: {
     assetFilter: (assetFilename) => assetFilename.endsWith('.js'),
-    maxAssetSize: 1200000,
-    maxEntrypointSize: 3000000,
+    maxAssetSize: 1250000,
+    maxEntrypointSize: 1500000,
     hints: 'error',
   },
   entry: [
