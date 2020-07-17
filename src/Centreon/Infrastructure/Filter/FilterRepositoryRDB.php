@@ -378,7 +378,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         string $pageName,
         int $lowOrder,
         int $highOrder
-    ) : void {
+    ): void {
         $filters = $this->findFiltersByUserId($userId, $pageName, null, null, null);
 
         foreach ($filters as $filter) {
@@ -403,7 +403,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         string $pageName,
         int $lowOrder,
         int $highOrder
-    ) : void {
+    ): void {
         $filters = $this->findFiltersByUserId($userId, $pageName, null, null, null);
 
         foreach ($filters as $filter) {
