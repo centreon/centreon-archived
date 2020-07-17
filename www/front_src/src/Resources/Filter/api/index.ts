@@ -33,8 +33,8 @@ const createFilter = (cancelToken) => (params): Promise<Filter> => {
   }).then(toFilter);
 };
 
-const updateFilter = (cancelToken) => (params): Promise<void> => {
-  return putData<Omit<RawFilter, 'id'>, void>(cancelToken)({
+const updateFilter = (cancelToken) => (params): Promise<Filter> => {
+  return putData<Omit<RawFilter, 'id'>, Filter>(cancelToken)({
     endpoint: `${filterEndpoint}/${params.id}`,
     data: toRawFilter(params),
   });

@@ -26,7 +26,6 @@ import {
   labelFilterUpdated,
   labelName,
   labelFilter,
-  labelRequired,
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
@@ -59,6 +58,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
   const {
+    setFilter,
     loadCustomFilters,
     customFilters,
     sendingListCustomFiltersRequest,
@@ -94,13 +94,20 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     },
     validationSchema,
     onSubmit: (values) => {
-      sendUpdateFilterRequest({ ...filter, name: values.name }).then(() => {
-        showMessage({
-          message: labelFilterUpdated,
-          severity: Severity.success,
-        });
-        loadCustomFilters();
-      });
+      sendUpdateFilterRequest({ ...filter, name: values.name }).then(
+        (updatedFilter) => {
+          if (equals(updatedFilter.id, filter.id)) {
+            setFilter(updatedFilter);
+          }
+
+          showMessage({
+            message: labelFilterUpdated,
+            severity: Severity.success,
+          });
+
+          loadCustomFilters();
+        },
+      );
     },
   });
 

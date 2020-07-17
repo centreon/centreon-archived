@@ -14985,3 +14985,24 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Filter saved"
 #  msgid ""
+
+#  msgid "Edit filters"
+#  msgstr ""
+
+#  msgid "Rename"
+#  msgstr ""
+
+#  msgid "Delete"
+#  msgstr ""
+
+#  msgid "Delete filter?"
+#  msgstr ""
+
+#  msgid "Filter deleted"
+#  msgstr ""
+
+#  msgid "Filter updated"
+#  msgstr ""
+
+#  msgid "Name cannot be empty"
+#  msgstr ""

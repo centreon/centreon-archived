@@ -96,6 +96,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest(updatedFilter).then(() => {
+      closeSaveFilterMenu();
       showMessage({
         message: labelFilterSaved,
         severity: Severity.success,
