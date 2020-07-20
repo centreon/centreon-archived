@@ -569,7 +569,7 @@ p.description a, p.description a:visited {
 .pending    {background-color: #2AD1D4;}
 .service_unknown    {background-color: #bcbdc0;}
 .info {background-color: #00bfb3;}
-.ack {background-color: #fcf17f;}
+.ack {background-color: #AA9C24;}
 
 .bdg_dtm:before {
     padding: 2px 4px;
