@@ -66,7 +66,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
                 {customFilters?.map((filter) => (
                   <Draggable
                     key={filter.id}
-                    draggableId={`filter${filter.id}`}
+                    draggableId={`filter-${filter.id}`}
                     index={filter.id}
                   >
                     {(draggable): JSX.Element => (
