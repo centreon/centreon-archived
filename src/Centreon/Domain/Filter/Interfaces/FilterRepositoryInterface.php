@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Filter\Interfaces;
 
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterException;
 
 interface FilterRepositoryInterface
 {
@@ -39,21 +40,19 @@ interface FilterRepositoryInterface
      * Update filter.
      *
      * @param Filter $filter
-     * @return int created filter id
+     * @return void
      * @throws FilterException
      */
-    public function updateFilter(Filter $filter): int;
+    public function updateFilter(Filter $filter): void;
 
     /**
      * Delete filter.
      *
-     * @param int $userId current user id
-     * @param string $pageName page name
-     * @param int $filterId Filter id to search
+     * @param Filter $filter
      * @return void
      * @throws FilterException
      */
-    public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void;
+    public function deleteFilter(Filter $filter): void;
 
     /**
      * Find filters linked to a user id using request parameters.

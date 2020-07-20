@@ -229,7 +229,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         List user filters saved for a given page.
       parameters:
@@ -259,7 +259,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Add user filter for a given page.
       parameters:
@@ -303,7 +303,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Get detailed information of a user filter for a given page.
       parameters:
@@ -327,9 +327,9 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
-        Add user filter for a given page.
+        Update user filter for a given page.
       parameters:
         - $ref: '#/components/parameters/FilterPageName'
         - $ref: '#/components/parameters/FilterId'
@@ -350,6 +350,42 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - User filters
+      summary: "Patch user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.6`
+
+        Patch user filter order for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order]
+              properties:
+                order:
+                  type: integer
+                  description: filter order
+                  example: 1
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - User filters
@@ -357,7 +393,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Delete user filter for a given page.
       parameters:
@@ -1346,12 +1382,12 @@ paths:
         - Downtime
       summary: "List all downtimes of a service"
       parameters:
-        - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
       description: |
         List all downtimes of a service.
 
@@ -1681,7 +1717,8 @@ paths:
                         data:
                           type: array
                           items:
-                            type: float
+                            type: number
+                            format: float
                             description: value of the metric
                           example:
                             - 1.0
@@ -1696,11 +1733,13 @@ paths:
                               description: label to display in legend
                               example: 'Last:1.00'
                         minimum_value:
-                          type: float
+                          type: number
+                          format: float
                           description: minimum value
                           example: 1.0
                         maximum_value:
-                          type: float
+                          type: number
+                          format: float
                           description: maximum value
                           example: 1.0
                   times:
@@ -1922,7 +1961,6 @@ components:
     Cookie:
       description: |
         If you have already connected on the Centreon web application, you can reused the PHPSESSID cookie.
-
         The cookie will be valid as long as the connection to Centreon is maintained.
       type: apiKey
       name: PHPSESSID
@@ -1933,73 +1971,70 @@ components:
       name: search
       required: false
       schema:
-        type: object
-        properties:
-          allOf:
-            type: object
-            description: >
-              Retrieve only data matching the defined search value.
+        type: string
+      description: >
+        Retrieve only data matching the defined search value.
 
-              Simple search can be done like the following example:
-                ```
-                search={"host.name":"Central"}
-                ```
+        Simple search can be done like the following example:
+        ```
+        search={"host.name":"Central"}
+        ```
 
-              Complex search can be done with aggregators and operators.
+        Complex search can be done with aggregators and operators.
 
-              Available search aggregators are:
-                * `$or`
-                * `$and`
+        Available search aggregators are:
+          * `$or`
+          * `$and`
 
-              Available search operators are:
-                * `$eq` → equal
-                * `$neq` → not equal
-                * `$lt` → less than
-                * `$le` → less or equal than
-                * `$gt` → greater than
-                * `$ge` → greater or equal than
-                * `$lk` → like
-                * `$nk` → not like
-                * `$in` → in
-                * `$ni` → not in
+        Available search operators are:
+          * `$eq` → equal
+          * `$neq` → not equal
+          * `$lt` → less than
+          * `$le` → less or equal than
+          * `$gt` → greater than
+          * `$ge` → greater or equal than
+          * `$lk` → like
+          * `$nk` → not like
+          * `$in` → in
+          * `$ni` → not in
 
-              Examples without nested aggregators:
-                ```
-                search={
-                  "$or":[
-                    {"host.name":{"$eq":"name_1"}},
-                    {"host.name":{"$eq":"name_2"}}
-                  ]
-                }
-                ```
-                ```
-                search={
-                  "$and":[
-                    {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
-                    {"host.name":{"$lk":"fr%"}}
-                  ]
-                }
-                ```
+        Examples without nested aggregators:
+          ```
+          search={
+            "$or":[
+              {"host.name":{"$eq":"name_1"}},
+              {"host.name":{"$eq":"name_2"}}
+            ]
+          }
+          ```
+          ```
+          search={
+            "$and":[
+              {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
+              {"host.name":{"$lk":"fr%"}}
+            ]
+          }
+          ```
 
-              Example with nested aggregators:
-                ```
-                search={
-                  "$or":[
-                    {
-                      "$and":[
-                        {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
-                        {"host.name":{"$lk":"fr%"}}
-                      ]
-                    },
-                    {
-                      "$and":[
-                        {"host.address":{"$rg":"^192\.168\.0\.\d+$"}},
-                        {"host.name":{"$lk":"us%"}}
-                      ]
-                    }
-                  ]
-                }
-                ```
+        Example with nested aggregators:
+          ```
+          search={
+            "$or":[
+              {
+                "$and":[
+                  {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
+                  {"host.name":{"$lk":"fr%"}}
+                ]
+              },
+              {
+                "$and":[
+                  {"host.address":{"$rg":"^192\.168\.0\.\d+$"}},
+                  {"host.name":{"$lk":"us%"}}
+                ]
+              }
+            ]
+          }
+          ```
     Limit:
       in: query
       name: limit
@@ -2087,7 +2122,7 @@ components:
       schema:
         type: array
         items:
-            type: int
+            type: integer
             format: int64
         example: '[13, 22, 31]'
     ResourceFilterServicegroupId:
@@ -2098,7 +2133,7 @@ components:
       schema:
         type: array
         items:
-            type: int
+            type: integer
             format: int64
         example: '[2033]'
     ShowHost:
@@ -2163,7 +2198,7 @@ components:
         example: events-view
     FilterId:
       in: path
-      name: page_name
+      name: filter_id
       description: "id of the filter"
       required: true
       schema:
@@ -2305,6 +2340,7 @@ components:
           example: 1
     User.Filter:
       type: object
+      required: [name, criterias]
       properties:
         id:
           type: integer
@@ -2323,6 +2359,10 @@ components:
               type: text
               name: field1
               value: search value 1
+        order:
+          type: integer
+          description: filter order
+          example: 1
     Configuration.MonitoringServerMain:
       type: object
       properties:
@@ -2465,6 +2505,7 @@ components:
             - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Host:
       type: object
+      nullable: true
       properties:
         id:
           type: integer
@@ -2523,9 +2564,11 @@ components:
              * `3` - UNKNOWN
           example: 1
     Acknowledgement.Service:
+      nullable: true
       allOf:
         - $ref: '#/components/schemas/Acknowledgement.Host'
         - type: object
+          nullable: true
           properties:
             service_id:
               type: integer
@@ -2737,7 +2780,6 @@ components:
       properties:
         is_forced:
           type: boolean
-          required: false
           description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
           example: true
     Check.Hosts:
@@ -2809,10 +2851,12 @@ components:
           example: "Ping"
         details_endpoint:
           type: string
+          nullable: true
           description: "Resource url to details page"
           example: "/centreon/monitoring/resources/hosts/12/services/12"
         icon:
           type: object
+          nullable: true
           properties:
             id:
               type: integer
@@ -2829,6 +2873,7 @@ components:
               example: "/media/memory.png"
         parent:
           type: object
+          nullable: true
           properties:
             id:
               type: integer
@@ -2841,6 +2886,7 @@ components:
               example: "Central"
             details_endpoint:
               type: string
+              nullable: true
               description: "Parent resource url to details page"
               example: "/centreon/monitoring/resources/hosts/12"
             status:
@@ -2881,6 +2927,7 @@ components:
                   example: 1
             icon:
               type: object
+              nullable: true
               properties:
                 name:
                   type: string
@@ -2930,14 +2977,19 @@ components:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
-        downtime_endpoint: "/monitoring/hosts/12/services/12/downtimes"
+        downtime_endpoint:
+          type: string
+          example: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        acknowledgement_endpoint: "/monitoring/hosts/12/services/12/acknowledgements"
+        acknowledgement_endpoint:
+          type: string
+          example: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
+          nullable: true
           properties:
             level:
               type: integer
@@ -2953,30 +3005,37 @@ components:
           example: 4
         action_url:
           type: string
+          nullable: true
           description: "action URL of the resource"
           example: http://mediawiki/host/central
         status_graph_endpoint:
           type: string
+          nullable: true
           description: "URL of the status chart linked to the resource"
           example: "/monitoring/hosts/1/services/2/metrics/status"
         performance_graph_endpoint:
           type: string
+          nullable: true
           description: "URL of the performance chart linked to the resource"
           example: "/monitoring/hosts/1/services/2/metrics/performance"
         duration:
           type: string
+          nullable: true
           description: "Duration since last status change"
           example: "2h 3m"
         last_status_change:
           type: string
           format: date-time
+          nullable: true
           description: "Date of the last status change (ISO8601)"
         tries:
           type: string
+          nullable: true
           description: "Number of check tries"
           example: "3/3 (H)"
         last_check:
           type: string
+          nullable: true
           description: "Duration since last check"
           example: "1h 45m"
         information:
@@ -3059,10 +3118,12 @@ components:
               example: 0
             last_hard_state:
               type: string
+              nullable: true
               format: date-time
               description: "Date of the last hard state (ISO8601)"
             last_notification:
               type: string
+              nullable: true
               format: date-time
               description: "Date of the last notification (ISO8601)"
             latency:
@@ -3115,7 +3176,8 @@ components:
               description: "Is the host flapping or not"
               example: false
             percent_state_change:
-              type: float
+              type: number
+              format: float
               description: "Percent state change since last check"
               example: 3.5
             downtimes:
@@ -3123,9 +3185,7 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Host'
             acknowledgement:
-              type: object
-              properties:
-                $ref: '#/components/schemas/Acknowledgement.Host'
+              $ref: '#/components/schemas/Acknowledgement.Host'
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
@@ -3157,6 +3217,7 @@ components:
             execution_time:
               type: number
               format: float
+              nullable: true
               description: "Time duration to check the host"
               example: 0.070906
             icon_image:
@@ -3170,30 +3231,37 @@ components:
             last_check:
               type: string
               format: date-time
+              nullable: true
               description: "Date of last check (ISO8601)"
             last_hard_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last hard state change (ISO8601)"
             last_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last state change (soft or hard) (ISO8601)"
             last_time_down:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the host was DOWN (ISO8601)"
             last_time_unreachable:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the host was UNREACHABLE (ISO8601)"
             last_time_up:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the host was UP (ISO8601)"
             last_update:
               type: string
               format: date-time
+              nullable: true
               description: "Date of last update (ISO8601)"
             max_check_attempts:
               type: integer
@@ -3203,7 +3271,7 @@ components:
             output:
               type: string
               description: "Output of the last host check"
-              example: "OK - 127.0.0.1 rta 0.100ms lost 0%\n" 
+              example: "OK - 127.0.0.1 rta 0.100ms lost 0%\n"
             passive_checks:
               type: boolean
               description: "Indicates whether the check script is passive or not"
@@ -3225,6 +3293,7 @@ components:
               example: 0
             criticality:
               type: integer
+              nullable: true
               description: "Host criticality level (for display purposes)"
               example: 10
     Monitoring.HostWithService:
@@ -3282,8 +3351,7 @@ components:
         - type: object
           properties:
             check_attempt:
-              type: integer
-              format: int64
+              type: string
               description: "Number of the current check attempt"
               example: 1
             icon_image:
@@ -3297,10 +3365,12 @@ components:
             last_check:
               type: string
               format: date-time
+              nullable: true
               description: "Date of last check (ISO8601)"
             last_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last state change (ISO8601)"
             max_check_attempts:
               type: integer
@@ -3319,6 +3389,7 @@ components:
               example: 1
             criticality:
               type: integer
+              nullable: true
               description: "Service criticality level (for display purposes)"
               example: 10
     Monitoring.ServiceFull:
@@ -3348,6 +3419,7 @@ components:
               example: 0
             command_line:
               type: string
+              nullable: true
               description: "Command used for active checks"
               example: "/usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 -n 5 -w 200,20% -c 400,50%"
             execution_time:
@@ -3370,30 +3442,37 @@ components:
             last_hard_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last hard state change (ISO8601)"
             last_notification:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last notification (ISO8601)"
             last_time_critical:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was CRITICAL (ISO8601)"
             last_time_ok:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was OK (ISO8601)"
             last_time_unknown:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was UNKNOWN (ISO8601)"
             last_time_warning:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was WARNING (ISO8601)"
             last_update:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last update (ISO8601)"
             latency:
               type: number
@@ -3417,9 +3496,7 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Service'
             acknowledgement:
-              type: object
-              properties:
-                $ref: '#/components/schemas/Acknowledgement.Service'
+              $ref: '#/components/schemas/Acknowledgement.Service'
     Monitoring.ServiceWithHost:
       type: object
       properties:
