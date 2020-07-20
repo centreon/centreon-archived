@@ -134,7 +134,7 @@ class FilterControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(FilterException::class);
-        $this->expectExceptionMessage('Error when decoding your sent data');
+        $this->expectExceptionMessage('Error when decoding sent data');
         $filterController->addFilter($this->request, 'events-view');
     }
 
@@ -193,7 +193,7 @@ class FilterControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(FilterException::class);
-        $this->expectExceptionMessage('Error when decoding your sent data');
+        $this->expectExceptionMessage('Error when decoding sent data');
         $filterController->updateFilter($this->request, 'events-view', 1);
     }
 
@@ -221,7 +221,7 @@ class FilterControllerTest extends TestCase
             ->method('updateFilter')
             ->willReturn(1);
 
-        $this->filterService->expects($this->once())
+        $this->filterService->expects($this->any())
             ->method('findFilterByUserId')
             ->willReturn($this->filterObject);
 

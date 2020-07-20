@@ -55,6 +55,11 @@ class Filter
     private $criterias = [];
 
     /**
+     * @var int|null Order
+     */
+    private $order;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -141,6 +146,24 @@ class Filter
     public function setCriterias(array $criterias): Filter
     {
         $this->criterias = $criterias;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getOrder(): ?int
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param int|null $order
+     * @return Filter
+     */
+    public function setOrder(?int $order): Filter
+    {
+        $this->order = $order;
         return $this;
     }
 }

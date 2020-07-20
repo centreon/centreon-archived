@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { makeStyles, Slide } from '@material-ui/core';
+import { makeStyles, Slide, CircularProgress } from '@material-ui/core';
 
 import { withSnackbar } from '@centreon/ui';
 
@@ -16,6 +17,13 @@ import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
 
 const useStyles = makeStyles((theme) => ({
+  loadingIndicator: {
+    width: '100%',
+    heihgt: '100%',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+  },
   page: {
     display: 'grid',
     gridTemplateRows: 'auto 1fr',
@@ -50,6 +58,10 @@ const Resources = (): JSX.Element => {
   const actionsContext = useActions();
 
   const { selectedDetailsEndpoints } = detailsContext;
+
+  if (isNil(filterContext.customFilters)) {
+    return <CircularProgress className={classes.loadingIndicator} />;
+  }
 
   return (
     <Context.Provider
