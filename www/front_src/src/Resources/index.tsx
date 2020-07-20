@@ -60,7 +60,7 @@ const Resources = (): JSX.Element => {
 
   const { selectedDetailsEndpoints } = detailsContext;
 
-  const loading = isNil(filterContext.customFilters);
+  const customFiltersEmpty = isNil(filterContext.customFilters);
 
   return (
     <Context.Provider
