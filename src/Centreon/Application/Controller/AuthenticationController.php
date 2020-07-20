@@ -75,7 +75,7 @@ class AuthenticationController extends AbstractFOSRestController
         if (!$contact) {
             return $this->view([
                 "code" => Response::HTTP_UNAUTHORIZED,
-                "error" => 'Invalid credentials'
+                "message" => 'Invalid credentials'
             ], Response::HTTP_UNAUTHORIZED);
         }
 

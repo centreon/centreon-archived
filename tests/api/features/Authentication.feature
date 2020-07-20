@@ -11,4 +11,4 @@ Feature:
         Given I log in with invalid credentials
         And the response code should be "401"
         And the JSON node "code" should be equal to the number "401"
-        And the JSON node "error" should be equal to the string "Invalid credentials"
+        And the JSON node "message" should be equal to the string "Invalid credentials"
