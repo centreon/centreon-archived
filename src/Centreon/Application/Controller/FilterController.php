@@ -99,7 +99,7 @@ class FilterController extends AbstractController
 
         $filterToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToAdd)) {
-            throw new FilterException(_('Error when decoding your sent data'));
+            throw new FilterException(_('Error when decoding sent data'));
         }
 
         $this->validateFilterSchema(
