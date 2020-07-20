@@ -22,16 +22,24 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Filter;
 
+use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
 use Centreon\Domain\Filter\Interfaces\FilterServiceInterface;
+use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
 
 /**
  * This class is designed to manage monitoring servers and their associated resources.
  *
  * @package Centreon\Domain\Filter
  */
-class FilterService implements FilterServiceInterface
+class FilterService extends AbstractCentreonService implements FilterServiceInterface
 {
+    /**
+     * @var HostGroupServiceInterface
+     */
+    private $hostGroupService;
+
     /**
      * @var FilterRepositoryInterface
      */
@@ -39,11 +47,29 @@ class FilterService implements FilterServiceInterface
 
     /**
      * FilterService constructor.
+     *
+     * @param HostGroupServiceInterface $hostGroupService
      * @param FilterRepositoryInterface $filterRepository
      */
-    public function __construct(FilterRepositoryInterface $filterRepository)
-    {
+    public function __construct(
+        HostGroupServiceInterface $hostGroupService,
+        FilterRepositoryInterface $filterRepository
+    ) {
+        $this->hostGroupService = $hostGroupService;
         $this->filterRepository = $filterRepository;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param Contact|null $contact
+     * @return FilterServiceInterface
+     */
+    public function filterByContact($contact): FilterServiceInterface
+    {
+        parent::filterByContact($contact);
+        $this->hostGroupService->filterByContact($contact);
+
+        return $this;
     }
 
     /**
@@ -77,18 +103,32 @@ class FilterService implements FilterServiceInterface
     public function updateFilter(Filter $filter): void
     {
         try {
+            $criterias = [];
             foreach ($filter->getCriterias() as $criteria) {
                 if (isset($criteria['object_type']) && isset($criteria['value'])) {
                     switch ($criteria['object_type']) {
-                        case 'host_groups':
-                            $hostgroupIds = [];
+                        case 'host_group':
+                            $hostGroupIds = [];
                             foreach ($criteria['value'] as $value) {
-                                $hostgroupIds[] = $value['id'];
+                                $hostGroupIds[] = $value['id'];
                             }
+                            $hostGroups = $this->hostGroupService
+                                ->filterByContact($this->contact)
+                                ->findHostGroupsByIds($hostGroupIds);
+                            $values = [];
+                            foreach ($hostGroups as $hostGroup) {
+                                $values[] = [
+                                    'id' => $hostGroup->getId(),
+                                    'name' => $hostGroup->getName(),
+                                ];
+                            }
+                            $criteria['value'] = $values;
                             break;
                     }
+                    $criterias[] = $criteria;
                 }
             }
+            $filter->setCriterias($criterias);
 
             $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {

@@ -137,6 +137,7 @@ class FilterController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         $user = $this->getUser();
+        $this->filterService->filterByContact($user);
 
         $filterToUpdate = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToUpdate)) {
@@ -163,7 +164,8 @@ class FilterController extends AbstractController
             ->setCriterias($filterToUpdate['criterias'])
             ->setOrder($filter->getOrder());
 
-        $this->filterService->updateFilter($filter);
+        $this->filterService
+            ->updateFilter($filter);
 
         $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
         $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);

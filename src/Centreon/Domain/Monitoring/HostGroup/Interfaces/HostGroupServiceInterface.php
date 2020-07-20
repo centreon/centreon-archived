@@ -22,11 +22,21 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\HostGroup\Interfaces;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\HostGroup;
 
-interface HostGroupRepositoryInterface
+interface HostGroupServiceInterface
 {
+    /**
+     * Used to filter requests according to a contact.
+     * If the filter is defined, all requests will use the ACL of the contact
+     * to fetch data.
+     *
+     * @param mixed $contact Contact to use as a ACL filter
+     * @return HostGroupServiceInterface
+     * @throws \Exception
+     */
+    public function filterByContact($contact): HostGroupServiceInterface;
+
     /**
      * Retrieve hostgroups from their ids
      *
@@ -34,18 +44,4 @@ interface HostGroupRepositoryInterface
      * @return HostGroup[]
      */
     public function findHostGroupsByIds(array $hostGroupIds): array;
-
-    /**
-     * @param ContactInterface $contact
-     * @return HostGroupRepositoryInterface
-     */
-    public function setContact(ContactInterface $contact): HostGroupRepositoryInterface;
-
-    /**
-     * Sets the access groups that will be used to filter.
-     *
-     * @param \Centreon\Domain\Security\AccessGroup[]|null $accessGroups
-     * @return HostGroupRepositoryInterface
-     */
-    public function filterByAccessGroups(?array $accessGroups): HostGroupRepositoryInterface;
 }

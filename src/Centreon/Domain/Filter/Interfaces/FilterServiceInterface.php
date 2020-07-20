@@ -28,6 +28,17 @@ use Centreon\Domain\Filter\FilterException;
 interface FilterServiceInterface
 {
     /**
+     * Used to filter requests according to a contact.
+     * If the filter is defined, all requests will use the ACL of the contact
+     * to fetch data.
+     *
+     * @param mixed $contact Contact to use as a ACL filter
+     * @return FilterServiceInterface
+     * @throws \Exception
+     */
+    public function filterByContact($contact): FilterServiceInterface;
+
+    /**
      * Add filter.
      *
      * @param Filter $filter
