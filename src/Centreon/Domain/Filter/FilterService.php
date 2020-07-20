@@ -77,6 +77,18 @@ class FilterService implements FilterServiceInterface
     public function updateFilter(Filter $filter): void
     {
         try {
+            foreach ($filter->getCriterias() as $criteria) {
+                if (isset($criteria['object_type']) && isset($criteria['value'])) {
+                    switch ($criteria['object_type']) {
+                        case 'host_groups':
+                            $hostgroupIds = [];
+                            foreach ($criteria['value'] as $value) {
+                                $hostgroupIds[] = $value['id'];
+                            }
+                            break;
+                    }
+                }
+            }
             $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException(
