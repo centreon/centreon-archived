@@ -9,3 +9,6 @@ Centreon\Domain\Filter\Filter:
         criterias:
             type: array
             groups: [filter_main]
+        order:
+            type: int
+            groups: [filter_main]

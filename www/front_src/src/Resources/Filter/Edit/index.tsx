@@ -5,11 +5,14 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Typography, makeStyles } from '@material-ui/core';
 import MoveIcon from '@material-ui/icons/MoreVert';
 
-import { RightPanel } from '@centreon/ui';
+import { RightPanel, useRequest } from '@centreon/ui';
 
+import { find, pipe, propEq } from 'ramda';
 import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
 import EditFilterCard from './EditFilterCard';
+import { patchFilter } from '../api';
+import { Filter } from '../models';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -40,7 +43,12 @@ const EditFiltersPanel = (): JSX.Element | null => {
     editPanelOpen,
     setEditPanelOpen,
     customFilters,
+    loadCustomFilters,
   } = useResourceContext();
+
+  const { sendRequest, sending } = useRequest({
+    request: patchFilter,
+  });
 
   if (!editPanelOpen) {
     return null;
@@ -50,8 +58,19 @@ const EditFiltersPanel = (): JSX.Element | null => {
     setEditPanelOpen(false);
   };
 
-  const onDragEnd = (params): void => {
-    console.log(params);
+  const onDragEnd = ({ draggableId, source, destination }): void => {
+    // sendRequest()
+    // console.log(params);
+
+    const id = Number(draggableId) as string | number;
+    const draggedFilter = find(
+      propEq('id', id),
+      customFilters as Array<Filter>,
+    );
+
+    sendRequest({ ...draggedFilter, order: destination.index }).then(() => {
+      loadCustomFilters();
+    });
   };
 
   const Sections = [
@@ -67,11 +86,11 @@ const EditFiltersPanel = (): JSX.Element | null => {
                 ref={droppable.innerRef}
                 {...droppable.droppableProps}
               >
-                {customFilters?.map((filter) => (
+                {customFilters?.map((filter, index) => (
                   <Draggable
                     key={filter.id}
-                    draggableId={`filter-${filter.id}`}
-                    index={filter.id}
+                    draggableId={`${filter.id}`}
+                    index={index}
                   >
                     {(draggable): JSX.Element => (
                       <div
