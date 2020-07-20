@@ -305,10 +305,10 @@ $tab_status_service = array(
     "2" => "CRITICAL",
     "3" => "UNKNOWN"
 );
-$acknowlegementMessageType = array(
+$acknowlegementMessageType = [
     'badgeColor' => 'ack',
     'badgeText' => 'ACK'
-);
+];
 
 /*
  * Create IP Cache
