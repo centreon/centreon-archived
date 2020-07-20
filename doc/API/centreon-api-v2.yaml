@@ -3883,11 +3883,14 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Service'
             acknowledgement:
+              allOf:
+                - $ref: '#/components/schemas/Acknowledgement.Service'
               type: object
-              properties:
-                service:
-                  allOf:
-                    - $ref: '#/components/schemas/Acknowledgement.Service'
+              nullable: true
+            flapping:
+              type: boolean
+              description: "Is the host flapping or not"
+              example: false
     Monitoring.ServiceWithHost:
       type: object
       properties:
