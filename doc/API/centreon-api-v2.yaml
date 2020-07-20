@@ -276,7 +276,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         List user filters saved for a given page.
       parameters:
@@ -306,7 +306,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Add user filter for a given page.
       parameters:
@@ -350,7 +350,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Get detailed information of a user filter for a given page.
       parameters:
@@ -374,7 +374,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Update user filter for a given page.
       parameters:
@@ -404,7 +404,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Patch user filter order for a given page.
       parameters:
@@ -440,7 +440,7 @@ paths:
       description: |
         `internal`
 
-        `Since Centreon web 20.04.5`
+        `Since Centreon web 20.04.6`
 
         Delete user filter for a given page.
       parameters:

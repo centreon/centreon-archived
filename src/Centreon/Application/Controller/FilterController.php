@@ -99,7 +99,7 @@ class FilterController extends AbstractController
 
         $filterToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToAdd)) {
-            throw new FilterException(_('Error when decoding your sent data'));
+            throw new FilterException(_('Error when decoding sent data'));
         }
 
         $this->validateFilterSchema(
@@ -140,7 +140,7 @@ class FilterController extends AbstractController
 
         $filterToUpdate = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToUpdate)) {
-            throw new FilterException(_('Error when decoding your sent data'));
+            throw new FilterException(_('Error when decoding sent data'));
         }
 
         $this->validateFilterSchema(
@@ -187,7 +187,7 @@ class FilterController extends AbstractController
 
         $propertyToPatch = json_decode((string) $request->getContent(), true);
         if (!is_array($propertyToPatch)) {
-            throw new FilterException(_('Error when decoding your sent data'));
+            throw new FilterException(_('Error when decoding sent data'));
         }
 
         $this->validateFilterSchema(

@@ -89,6 +89,7 @@ class FilterService implements FilterServiceInterface
                     }
                 }
             }
+
             $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException(
@@ -136,7 +137,7 @@ class FilterService implements FilterServiceInterface
             return $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
         } catch (\Exception $ex) {
             throw new FilterException(
-                sprintf(_('Error when sarch filter id %d', $filterId)),
+                sprintf(_('Error when searching filter id %d', $filterId)),
                 0,
                 $ex
             );
