@@ -2,12 +2,12 @@ import * as React from 'react';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-import { Typography, makeStyles } from '@material-ui/core';
+import { Typography, makeStyles, LinearProgress } from '@material-ui/core';
 import MoveIcon from '@material-ui/icons/MoreVert';
 
 import { RightPanel, useRequest } from '@centreon/ui';
 
-import { find, pipe, propEq } from 'ramda';
+import { find, pipe, propEq, move } from 'ramda';
 import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
 import EditFilterCard from './EditFilterCard';
@@ -20,6 +20,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  container: {
+    width: '100%',
+  },
+  loadingIndicator: {
+    height: theme.spacing(1),
+    width: '100%',
+    marginBottom: theme.spacing(1),
   },
   filters: {
     display: 'grid',
@@ -44,6 +52,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
     setEditPanelOpen,
     customFilters,
     loadCustomFilters,
+    setCustomFilters,
   } = useResourceContext();
 
   const { sendRequest, sending } = useRequest({
@@ -59,18 +68,17 @@ const EditFiltersPanel = (): JSX.Element | null => {
   };
 
   const onDragEnd = ({ draggableId, source, destination }): void => {
-    // sendRequest()
-    // console.log(params);
+    const id = Number(draggableId);
 
-    const id = Number(draggableId) as string | number;
-    const draggedFilter = find(
-      propEq('id', id),
+    const reordedCustomFilters = move(
+      source.index,
+      destination.index,
       customFilters as Array<Filter>,
     );
 
-    sendRequest({ ...draggedFilter, order: destination.index }).then(() => {
-      loadCustomFilters();
-    });
+    setCustomFilters(reordedCustomFilters);
+
+    sendRequest({ id, order: destination.index }).then(() => {});
   };
 
   const Sections = [
@@ -78,39 +86,44 @@ const EditFiltersPanel = (): JSX.Element | null => {
       expandable: false,
       id: 'edit',
       Section: (
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable">
-            {(droppable): JSX.Element => (
-              <div
-                className={classes.filters}
-                ref={droppable.innerRef}
-                {...droppable.droppableProps}
-              >
-                {customFilters?.map((filter, index) => (
-                  <Draggable
-                    key={filter.id}
-                    draggableId={`${filter.id}`}
-                    index={index}
-                  >
-                    {(draggable): JSX.Element => (
-                      <div
-                        className={classes.filterCard}
-                        ref={draggable.innerRef}
-                        {...draggable.draggableProps}
-                      >
-                        <div {...draggable.dragHandleProps}>
-                          <MoveIcon />
+        <div className={classes.container}>
+          <div className={classes.loadingIndicator}>
+            {sending && <LinearProgress style={{ width: '100%' }} />}
+          </div>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(droppable): JSX.Element => (
+                <div
+                  className={classes.filters}
+                  ref={droppable.innerRef}
+                  {...droppable.droppableProps}
+                >
+                  {customFilters?.map((filter, index) => (
+                    <Draggable
+                      key={filter.id}
+                      draggableId={`${filter.id}`}
+                      index={index}
+                    >
+                      {(draggable): JSX.Element => (
+                        <div
+                          className={classes.filterCard}
+                          ref={draggable.innerRef}
+                          {...draggable.draggableProps}
+                        >
+                          <div {...draggable.dragHandleProps}>
+                            <MoveIcon />
+                          </div>
+                          <EditFilterCard filter={filter} />
                         </div>
-                        <EditFilterCard filter={filter} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {droppable.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+                      )}
+                    </Draggable>
+                  ))}
+                  {droppable.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
       ),
     },
   ];

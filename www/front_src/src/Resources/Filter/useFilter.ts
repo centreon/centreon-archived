@@ -169,6 +169,7 @@ const useFilter = (): FilterState => {
     serviceGroups,
     setServiceGroups,
     loadCustomFilters,
+    setCustomFilters,
     sendingListCustomFiltersRequest,
     editPanelOpen,
     setEditPanelOpen,

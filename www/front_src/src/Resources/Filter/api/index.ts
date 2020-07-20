@@ -43,14 +43,14 @@ const updateFilter = (cancelToken) => (params): Promise<Filter> => {
   });
 };
 
-type PatchFilterProps = {
+interface PatchFilterProps {
   order: number;
-} & RawFilterWithoutId;
+}
 
 const patchFilter = (cancelToken) => (params): Promise<Filter> => {
   return patchData<PatchFilterProps, Filter>(cancelToken)({
     endpoint: `${filterEndpoint}/${params.id}`,
-    data: { ...toRawFilter(params), order: params.order },
+    data: { order: params.order },
   });
 };
 
