@@ -22,6 +22,12 @@ centreon_application_user_updateFilter:
   controller: 'Centreon\Application\Controller\FilterController::updateFilter'
   condition: "request.attributes.get('version.is_beta') == true"
 
+centreon_application_user_patchFilter:
+  methods: PATCH
+  path: /users/filters/{pageName}/{filterId}
+  controller: 'Centreon\Application\Controller\FilterController::patchFilter'
+  condition: "request.attributes.get('version.is_beta') == true"
+
 centreon_application_user_deleteFilter:
   methods: DELETE
   path: /users/filters/{pageName}/{filterId}

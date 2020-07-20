@@ -15408,6 +15408,30 @@ msgstr "Le port ne peut être compris qu'entre 0 et 65535 inclus"
 msgid "No results found"
 msgstr "Aucun résultat trouvé"
 
+msgid "Error when decoding sent data"
+msgstr "Erreur lors du décodage des données envoyées"
+
+msgid "Filter id %d not found"
+msgstr "Filtre id %s non trouvé"
+
+msgid "Filter already exists"
+msgstr "Le filtre existe déjà"
+
+msgid "Error when adding filter %s"
+msgstr "Erreur lors de l'ajout du filtre %s"
+
+msgid "Error when updating filter %s"
+msgstr "Erreur lors de la mise à jour du filtre %s"
+
+msgid "Error when deleting filter %s"
+msgstr "Erreur lors de la suppression du filtre %s"
+
+msgid "Error when searching filters"
+msgstr "Erreur lors de la recherche des filtres"
+
+msgid "Error when searching filter id %d"
+msgstr "Erreur lors de la recherche du filtre id %d"
+
 msgid "Save filter"
 msgstr "Sauvegarder le filtre"
 
