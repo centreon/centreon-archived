@@ -162,3 +162,11 @@ export const labelHostsDenied = I18n.t(
   "Hosts will not be affected because you don't have sufficient permission",
 );
 export const labelNoResultsFound = I18n.t('No results found');
+export const labelSaveFilter = I18n.t('Save filter');
+export const labelSaveAsNew = I18n.t('Save as new');
+export const labelSave = I18n.t('Save');
+export const labelNewFilter = I18n.t('New filter');
+export const labelName = I18n.t('Name');
+export const labelFilterCreated = I18n.t('Filter created');
+export const labelFilterSaved = I18n.t('Filter saved');
+export const labelMyFilters = I18n.t('My filters');

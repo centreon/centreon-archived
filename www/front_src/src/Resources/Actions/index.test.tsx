@@ -119,6 +119,16 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        result: [],
+        meta: {
+          page: 1,
+          limit: 30,
+          total: 0,
+        },
+      },
+    });
     mockedAxios.get.mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);

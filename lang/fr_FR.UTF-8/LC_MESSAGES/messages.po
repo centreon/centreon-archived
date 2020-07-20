@@ -15431,3 +15431,21 @@ msgstr "Erreur lors de la recherche des filtres"
 
 msgid "Error when searching filter id %d"
 msgstr "Erreur lors de la recherche du filtre id %d"
+
+msgid "Save filter"
+msgstr "Sauvegarder le filtre"
+
+msgid "Save as new"
+msgstr "Créer un nouveau filtre"
+
+msgid "My filters"
+msgstr "Mes filtres"
+
+msgid "New filter"
+msgstr "Nouveau filtre"
+
+msgid "Filter created"
+msgstr "Filtre créé"
+
+msgid "Filter saved"
+msgstr "Filtre sauvegardé"

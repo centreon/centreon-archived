@@ -21,6 +21,7 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
+import { isEmpty, propEq, pick } from 'ramda';
 import {
   labelFilter,
   labelCriterias,
@@ -35,6 +36,8 @@ import {
   labelClearAll,
   labelOpen,
   labelShowCriteriasFilters,
+  labelNewFilter,
+  labelMyFilters,
 } from '../translatedLabels';
 import {
   unhandledProblemsFilter,
@@ -43,8 +46,10 @@ import {
   states as availableStates,
   resourceTypes as availableResourceTypes,
   statuses as availableStatuses,
-  FilterGroup,
-  filterById,
+  Filter as FilterModel,
+  standardFilterById,
+  isCustom,
+  newFilter,
 } from './models';
 import SearchHelpTooltip from './SearchHelpTooltip';
 import {
@@ -52,6 +57,7 @@ import {
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
 import { useResourceContext } from '../Context';
+import SaveFilter from './Save';
 
 const AccordionSummary = withStyles((theme) => ({
   root: {
@@ -124,6 +130,7 @@ const Filter = (): JSX.Element => {
     setHostGroups,
     serviceGroups,
     setServiceGroups,
+    customFilters,
   } = useResourceContext();
 
   const toggleExpanded = (): void => {
@@ -146,6 +153,13 @@ const Filter = (): JSX.Element => {
 
   const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
+  const setNewFilter = (): void => {
+    if (isCustom(filter)) {
+      return;
+    }
+    setFilter({ ...newFilter, criterias: filter.criterias });
+  };
+
   const requestSearch = (): void => {
     setCurrentSearch(nextSearch);
   };
@@ -160,12 +174,16 @@ const Filter = (): JSX.Element => {
 
   const prepareSearch = (event): void => {
     setNextSearch(event.target.value);
+    setNewFilter();
   };
 
   const changeFilterGroup = (event): void => {
     const filterId = event.target.value;
 
-    const updatedFilter = filterById[filterId];
+    const updatedFilter =
+      standardFilterById[filterId] ||
+      customFilters?.find(propEq('id', filterId));
+
     setFilter(updatedFilter);
 
     if (!updatedFilter.criterias) {
@@ -177,6 +195,8 @@ const Filter = (): JSX.Element => {
     setStates(updatedFilter.criterias.states);
     setHostGroups(updatedFilter.criterias.hostGroups);
     setServiceGroups(updatedFilter.criterias.serviceGroups);
+    setNextSearch(updatedFilter.criterias.search);
+    setCurrentSearch(updatedFilter.criterias.search);
   };
 
   const clearAllFilters = (): void => {
@@ -190,23 +210,19 @@ const Filter = (): JSX.Element => {
     setCurrentSearch('');
   };
 
-  const setEmptyFilter = (): void => {
-    setFilter({ id: '', name: '' } as FilterGroup);
-  };
-
   const changeResourceTypes = (_, updatedResourceTypes): void => {
     setResourceTypes(updatedResourceTypes);
-    setEmptyFilter();
+    setNewFilter();
   };
 
   const changeStates = (_, updatedStates): void => {
     setStates(updatedStates);
-    setEmptyFilter();
+    setNewFilter();
   };
 
   const changeStatuses = (_, updatedStatuses): void => {
     setStatuses(updatedStatuses);
-    setEmptyFilter();
+    setNewFilter();
   };
 
   const changeHostGroups = (_, updatedHostGroups): void => {
@@ -216,6 +232,25 @@ const Filter = (): JSX.Element => {
   const changeServiceGroups = (_, updatedServiceGroups): void => {
     setServiceGroups(updatedServiceGroups);
   };
+
+  const customFilterOptions = isEmpty(customFilters)
+    ? []
+    : [
+        {
+          id: 'my_filters',
+          name: labelMyFilters,
+          type: 'header',
+        },
+        ...(customFilters as Array<FilterModel>),
+      ];
+
+  const options = [
+    { id: '', name: labelNewFilter },
+    unhandledProblemsFilter,
+    resourceProblemsFilter,
+    allFilter,
+    ...customFilterOptions,
+  ];
 
   return (
     <Accordion square expanded={expanded}>
@@ -236,13 +271,12 @@ const Filter = (): JSX.Element => {
             </Typography>
           </Grid>
           <Grid item>
+            <SaveFilter />
+          </Grid>
+          <Grid item>
             <SelectField
               className={classes.filterGroup}
-              options={[
-                unhandledProblemsFilter,
-                resourceProblemsFilter,
-                allFilter,
-              ]}
+              options={options.map(pick(['id', 'name', 'type']))}
               selectedOptionId={filter.id}
               onChange={changeFilterGroup}
               aria-label={labelStateFilter}
