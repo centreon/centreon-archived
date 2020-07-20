@@ -41,7 +41,7 @@ export interface Filter {
 
 export interface RawCriteria {
   name: string;
-  objectType?: string;
+  object_type?: string;
   type: string;
   value?: Array<CriteriaValue> | string | boolean;
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, or, and, not } from 'ramda';
+import { equals, or, and, not, isEmpty } from 'ramda';
 
 import {
   Menu,
@@ -18,6 +18,7 @@ import {
   labelSave,
   labelFilterCreated,
   labelFilterSaved,
+  labelEditFilters,
 } from '../../translatedLabels';
 import { isCustom, Filter } from '../models';
 import { useResourceContext } from '../../Context';
@@ -55,6 +56,8 @@ const SaveFilterMenu = (): JSX.Element => {
     updatedFilter,
     setFilter,
     loadCustomFilters,
+    customFilters,
+    setEditPanelOpen,
   } = useResourceContext();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
@@ -93,6 +96,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest(updatedFilter).then(() => {
+      closeSaveFilterMenu();
       showMessage({
         message: labelFilterSaved,
         severity: Severity.success,
@@ -100,6 +104,11 @@ const SaveFilterMenu = (): JSX.Element => {
 
       loadFiltersAndUpdateCurrent(updatedFilter);
     });
+  };
+
+  const openEditPanel = (): void => {
+    setEditPanelOpen(true);
+    closeSaveFilterMenu();
   };
 
   const isFilterDirty = (): boolean => {
@@ -136,6 +145,9 @@ const SaveFilterMenu = (): JSX.Element => {
             <span>{labelSave}</span>
             {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
+        </MenuItem>
+        <MenuItem onClick={openEditPanel} disabled={isEmpty(customFilters)}>
+          {labelEditFilters}
         </MenuItem>
       </Menu>
       {createFilterDialogOpen && (
