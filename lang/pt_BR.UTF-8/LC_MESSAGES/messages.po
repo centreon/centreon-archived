@@ -14954,3 +14954,27 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "No results found"
 #  msgstr ""
+
+#  msgid "Error when decoding sent data"
+#  msgstr ""
+
+#  msgid "Filter id %d not found"
+#  msgstr ""
+
+#  msgid "Filter already exists"
+#  msgstr ""
+
+#  msgid "Error when adding filter %s"
+#  msgstr ""
+
+#  msgid "Error when updating filter %s"
+#  msgstr ""
+
+#  msgid "Error when deleting filter %s"
+#  msgstr ""
+
+#  msgid "Error when searching filters"
+#  msgstr ""
+
+#  msgid "Error when searching filter id %d"
+#  msgstr ""
