@@ -827,16 +827,14 @@ if (isset($req) && $req) {
             || $log['msg_type'] == SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
         ) {
             $color = $acknowlegementMessageType['badgeColor'];
-        } else {
-            if (isset($log["status"])) {
-                if (
-                    isset($tab_color_service[$log["status"]])
-                    && !empty($log["service_description"])
-                ) {
-                    $color = $tab_color_service[$log["status"]];
-                } elseif (isset($tab_color_host[$log["status"]])) {
-                    $color = $tab_color_host[$log["status"]];
-                }
+        } elseif (isset($log["status"])) {
+            if (
+                isset($tab_color_service[$log["status"]])
+                && !empty($log["service_description"])
+            ) {
+                $color = $tab_color_service[$log["status"]];
+            } elseif (isset($tab_color_host[$log["status"]])) {
+                $color = $tab_color_host[$log["status"]];
             }
         }
 
