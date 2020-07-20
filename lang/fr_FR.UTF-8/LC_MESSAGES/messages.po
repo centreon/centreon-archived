@@ -15442,4 +15442,4 @@ msgid "Filter updated"
 msgstr "Filtre actualisé"
 
 msgid "Name cannot be empty"
-msgstr "Le nom ne peut être vide"
+msgstr "Le nom ne peut pas être vide"
