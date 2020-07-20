@@ -140,7 +140,7 @@ class FilterController extends AbstractController
 
         $filterToUpdate = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToUpdate)) {
-            throw new FilterException(_('Error when decoding your sent data'));
+            throw new FilterException(_('Error when decoding sent data'));
         }
 
         $this->validateFilterSchema(
