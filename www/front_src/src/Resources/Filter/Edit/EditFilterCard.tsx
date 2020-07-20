@@ -128,7 +128,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     setDeleting(false);
   };
 
-  const loading = isNil(customFilters);
+  const customFiltersEmpty = isNil(customFilters);
   const sendingRequest = any(equals(true), [
     sendingDeleteFilterRequest,
     sendingUpdateFilterRequest,
