@@ -187,7 +187,7 @@ class FilterController extends AbstractController
 
         $propertyToPatch = json_decode((string) $request->getContent(), true);
         if (!is_array($propertyToPatch)) {
-            throw new FilterException(_('Error when decoding your sent data'));
+            throw new FilterException(_('Error when decoding sent data'));
         }
 
         $this->validateFilterSchema(
