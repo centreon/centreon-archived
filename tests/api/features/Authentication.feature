@@ -5,6 +5,7 @@ Feature:
 
     Background:
         Given a running instance of Centreon Web API
+        And the endpoints are described in Centreon Web API documentation
 
     Scenario:
         Given I log in with invalid credentials
