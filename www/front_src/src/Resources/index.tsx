@@ -71,7 +71,7 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <ContentWithCircularLoading loading={loading}>
+      <ContentWithCircularLoading loading={customFiltersEmpty}>
         <div className={classes.page}>
           <div className={classes.filter}>
             <Filter />
