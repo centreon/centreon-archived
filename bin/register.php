@@ -1,29 +1,40 @@
 <?php
 
 /**
- * Get script params and assign them
+ * Get script params
  */
 $opt = getopt('u:p:t:h:', ["help::","proxy:"]);
-$helpMessage = PHP_EOL;
-$helpMessage .= "Global Options:" . PHP_EOL;
-$helpMessage .= PHP_EOL;
-$helpMessage .= "  -u <mandatory>              username of your centreon-web account" . PHP_EOL;
-$helpMessage .= "  -p <mandatory>              password of your centreon-web account" . PHP_EOL;
-$helpMessage .= "  -t <mandatory>              the server type you want to register:" . PHP_EOL;
-$helpMessage .= "            0: Central" . PHP_EOL;
-$helpMessage .= "            1: Poller" . PHP_EOL;
-$helpMessage .= "            2: Remote Server" . PHP_EOL;
-$helpMessage .= "            3: Map Server" . PHP_EOL;
-$helpMessage .= "            4: MBI Server" . PHP_EOL;
-$helpMessage .= "  -h <mandatory>              URL of your Central platform" . PHP_EOL;
-$helpMessage .= "  --help <optional>           get informations about the parameters available" . PHP_EOL;
-$helpMessage .= "  --proxy <optional>          if using a proxy, provide this parameter" . PHP_EOL;
 
+/**
+ * Format the --help message
+ */
+$helpMessage = <<<'EOD'
+Global Options: 
+
+  -u <mandatory>              username of your centreon-web account 
+  -p <mandatory>              password of your centreon-web account 
+  -t <mandatory>              the server type you want to register: 
+            0: Central 
+            1: Poller 
+            2: Remote Server 
+            3: Map Server 
+            4: MBI Server 
+  -h <mandatory>              URL of your Central platform 
+  --help <optional>           get informations about the parameters available 
+  --proxy <optional>          if using a proxy, provide this parameter as follow: <username>:<password>@<host>:<port>
+EOD;
+
+/**
+ * Display --help message
+ */
 if (isset($opt['help'])) {
     echo $helpMessage;
     exit;
 }
 
+/**
+ * Assign options to variables
+ */
 try {
     if (isset($opt['u'], $opt['p'], $opt['t'], $opt['h'])) {
         $username = $opt['u'];
@@ -32,7 +43,7 @@ try {
         $centralIp = $opt['h'];
     } else {
         throw new \InvalidArgumentException(
-            'missing parameter: -u -p -t -h are mandatories, use --help for further informations' . $helpMessage
+            'missing parameter: -u -p -t -h are mandatories, use --help for further informations'. PHP_EOL . $helpMessage
         );
     }
 } catch (\InvalidArgumentException $e) {
@@ -40,21 +51,44 @@ try {
     exit;
 }
 
+/**
+ * Check availability of serverType
+ */
 if (!in_array($serverType, [0,1,2,3,4])) {
     echo '-t must be one of those value' . PHP_EOL;
     echo '0 => Central, 1 => Poller, 2 => Remote Server, 3 => Map Server, 4 => MBI Server';
     exit;
 }
 
+/**
+ * Parsing url part get from params -h
+ */
+$centralURL = parse_url($centralIp);
+$protocol = $centralURL['scheme'] ?? 'http';
+$host = $centralURL['host'] ?? $centralURL['path'];
+$port = $centralURL['port'] ?? '';
+
+/**
+ * Check proxy format
+ */
 if (isset($opt['proxy'])) {
     $proxy = preg_split("/[:@]/", $opt['proxy']);
 
-    $proxyInfo['username'] = $proxy[0];
-    $proxyInfo['password'] = $proxy[1];
-    $proxyInfo['host'] = $proxy[2];
-    $proxyInfo['port'] = (int) $proxy[3];
-    var_dump($proxyInfo);
-    die();
+    try {
+        if(count($proxy) === 4) {
+            $proxyInfo['username'] = $proxy[0];
+            $proxyInfo['password'] = $proxy[1];
+            $proxyInfo['host'] = $proxy[2];
+            $proxyInfo['port'] = (int) $proxy[3];
+        }else{
+            throw new \InvalidArgumentException(
+                "bad proxy format : <username>:<password>@<host>:<port> needed, {$opt['proxy']} given"
+            );
+        }
+    } catch (\InvalidArgumentException $e) {
+        echo $e->getMessage();
+        exit;
+    }
 }
 
 /**
@@ -70,14 +104,6 @@ $credentials = [
 ];
 $credentials = json_encode($credentials);
 $version = "beta";
-
-/**
- * Parsing url part get from params -h
- */
-$centralURL = parse_url($centralIp);
-$protocol = $centralURL['scheme'] ?? 'http';
-$host = $centralURL['host'] ?? $centralURL['path'];
-$port = $centralURL['port'] ?? '';
 
 /**
  * Try Connection to Api
@@ -99,6 +125,7 @@ var_dump($result);
 die();
 
 $result = json_decode($result, true);
+
 /**
  * Save Token or return the error message
  */
