@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 
 import { isNil } from 'ramda';
@@ -60,7 +59,7 @@ const Resources = (): JSX.Element => {
 
   const { selectedDetailsEndpoints } = detailsContext;
 
-  const loading = isNil(filterContext.customFilters);
+  const customFiltersEmpty = isNil(filterContext.customFilters);
 
   return (
     <Context.Provider
@@ -71,7 +70,7 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <ContentWithCircularLoading loading={loading}>
+      <ContentWithCircularLoading loading={customFiltersEmpty}>
         <div className={classes.page}>
           <div className={classes.filter}>
             <Filter />
