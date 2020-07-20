@@ -13,12 +13,7 @@ import { omit } from 'ramda';
 import EditFilterPanel from '.';
 import Context, { ResourceContext } from '../../Context';
 import useFilter from '../useFilter';
-import {
-  labelFilter,
-  labelName,
-  labelRename,
-  labelDelete,
-} from '../../translatedLabels';
+import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -107,8 +102,8 @@ describe(EditFilterPanel, () => {
     mockedAxios.delete.mockReset();
   });
 
-  it('sends an update request when a filter input is changed and the corresponding save button is clicked', async () => {
-    const { getByLabelText, getByTitle } = renderEditFilterPanel();
+  it('sends an update request when a filter input is changed and the enter key is pressed', async () => {
+    const { getByLabelText } = renderEditFilterPanel();
 
     act(() => {
       filterState.loadCustomFilters();
@@ -121,16 +116,19 @@ describe(EditFilterPanel, () => {
 
     const newName = 'New name';
 
-    fireEvent.change(
-      getByLabelText(`${labelFilter}-${customFilter.id}-${labelName}`),
-      {
-        target: {
-          value: newName,
-        },
-      },
+    const renameFilterInput = getByLabelText(
+      `${labelFilter}-${customFilter.id}-${labelName}`,
     );
 
-    fireEvent.click(getByTitle(labelRename).firstElementChild as HTMLElement);
+    fireEvent.change(renameFilterInput, {
+      target: {
+        value: newName,
+      },
+    });
+
+    fireEvent.keyDown(renameFilterInput, {
+      keyCode: 13,
+    });
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(

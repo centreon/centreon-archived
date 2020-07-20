@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -41,6 +41,10 @@ const EditFiltersPanel = (): JSX.Element | null => {
     setEditPanelOpen,
     customFilters,
   } = useResourceContext();
+
+  if (!editPanelOpen) {
+    return null;
+  }
 
   const closeEditPanel = (): void => {
     setEditPanelOpen(false);
@@ -99,10 +103,6 @@ const EditFiltersPanel = (): JSX.Element | null => {
       </Typography>
     </div>
   );
-
-  if (!editPanelOpen) {
-    return null;
-  }
 
   return (
     <RightPanel
