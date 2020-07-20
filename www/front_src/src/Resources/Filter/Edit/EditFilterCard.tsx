@@ -158,7 +158,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   };
 
   return (
-    <ContentWithCircularLoading loading={loading}>
+    <ContentWithCircularLoading loading={customFiltersEmpty}>
       <div className={classes.filterCard}>
         <TextField
           className={classes.filterNameInput}
