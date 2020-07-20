@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e1e246567a25a3bdfa5d470d09bda78",
+    "content-hash": "af6d10a0b847cbe229f70c8909762027",
     "packages": [
         {
             "name": "curl/curl",
@@ -5987,16 +5987,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-MON-4890-order",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "ce72cd478eaff6adcfc4c0fa9ad22268bc1bf997"
+                "reference": "a7d30fce251366efcae38cb18adf0548dbf343f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/ce72cd478eaff6adcfc4c0fa9ad22268bc1bf997",
-                "reference": "ce72cd478eaff6adcfc4c0fa9ad22268bc1bf997",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/a7d30fce251366efcae38cb18adf0548dbf343f8",
+                "reference": "a7d30fce251366efcae38cb18adf0548dbf343f8",
                 "shasum": ""
             },
             "require": {
@@ -6041,7 +6041,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-07-16T14:27:19+00:00"
+            "time": "2020-07-20T08:23:18+00:00"
         },
         {
             "name": "dflydev/fig-cookies",
@@ -6885,20 +6885,20 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.32",
+            "version": "0.12.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "d03863f504c8432b3de4d1881f73f6acb8c0e67c"
+                "reference": "46e698a0452526a05c4a351d7c47c4b8c37a548d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d03863f504c8432b3de4d1881f73f6acb8c0e67c",
-                "reference": "d03863f504c8432b3de4d1881f73f6acb8c0e67c",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/46e698a0452526a05c4a351d7c47c4b8c37a548d",
+                "reference": "46e698a0452526a05c4a351d7c47c4b8c37a548d",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1"
+                "php": "^7.1|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
@@ -6937,7 +6937,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-07-01T11:57:52+00:00"
+            "time": "2020-07-19T22:10:11+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
