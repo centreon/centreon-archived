@@ -33,6 +33,10 @@ const EditFiltersPanel = (): JSX.Element | null => {
     customFilters,
   } = useResourceContext();
 
+  if (!editPanelOpen) {
+    return null;
+  }
+
   const closeEditPanel = (): void => {
     setEditPanelOpen(false);
   };
@@ -58,10 +62,6 @@ const EditFiltersPanel = (): JSX.Element | null => {
       </Typography>
     </div>
   );
-
-  if (!editPanelOpen) {
-    return null;
-  }
 
   return (
     <RightPanel
