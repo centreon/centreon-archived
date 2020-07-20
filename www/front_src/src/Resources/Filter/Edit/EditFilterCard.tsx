@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { makeStyles } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import {
@@ -20,7 +19,6 @@ import { isNil, not, all, equals, any } from 'ramda';
 
 import {
   labelDelete,
-  labelRename,
   labelAskDelete,
   labelCancel,
   labelFilterDeleted,
@@ -137,11 +135,27 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     sendingListCustomFiltersRequest,
   ]);
 
-  const canSave = all(equals(true), [
+  const canRename = all(equals(true), [
     form.isValid,
     form.dirty,
     not(sendingListCustomFiltersRequest),
   ]);
+
+  const rename = (): void => {
+    if (!canRename) {
+      return;
+    }
+
+    form.submitForm();
+  };
+
+  const renameOnEnterKey = (event: React.KeyboardEvent): void => {
+    const enterKeyPressed = event.keyCode === 13;
+
+    if (enterKeyPressed) {
+      rename();
+    }
+  };
 
   return (
     <ContentWithCircularLoading loading={loading}>
@@ -152,6 +166,8 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
           value={form.values.name}
           error={form.errors.name}
           onChange={form.handleChange('name') as (event) => void}
+          onKeyDown={renameOnEnterKey}
+          onBlur={rename}
         />
         <div className={classes.filterEditActions}>
           <ContentWithCircularLoading
@@ -159,17 +175,9 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
             loadingIndicatorSize={24}
             alignCenter={false}
           >
-            <>
-              <IconButton title={labelDelete} onClick={askDelete}>
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-
-              {canSave && (
-                <IconButton title={labelRename} onClick={form.submitForm}>
-                  <SaveIcon fontSize="small" />
-                </IconButton>
-              )}
-            </>
+            <IconButton title={labelDelete} onClick={askDelete}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
           </ContentWithCircularLoading>
         </div>
         {deleting && (
