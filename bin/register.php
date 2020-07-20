@@ -3,7 +3,26 @@
 /**
  * Get script params and assign them
  */
-$opt = getopt('u:p:t:h:');
+$opt = getopt('u:p:t:h:', ["help::","proxy:"]);
+
+if (isset($opt['help'])) {
+    echo PHP_EOL;
+    echo "Global Options:" . PHP_EOL;
+    echo PHP_EOL;
+    echo "  -u <mandatory>              username of your centreon-web account" . PHP_EOL;
+    echo "  -p <mandatory>              password of your centreon-web account" . PHP_EOL;
+    echo "  -t <mandatory>              the server type you want to register:" . PHP_EOL;
+    echo "            0: Central" . PHP_EOL;
+    echo "            1: Poller" . PHP_EOL;
+    echo "            2: Remote Server" . PHP_EOL;
+    echo "            3: Map Server" . PHP_EOL;
+    echo "            4: MBI Server" . PHP_EOL;
+    echo "  -h <mandatory>              URL of your Central platform" . PHP_EOL;
+    echo "  --help <optional>           get informations about the parameters available" . PHP_EOL;
+    echo "  --proxy <optional>          if using a proxy, provide this parameter" . PHP_EOL;
+    exit;
+}
+
 try {
     if (isset($opt['u'], $opt['p'], $opt['t'], $opt['h'])) {
         $username = $opt['u'];
@@ -11,7 +30,9 @@ try {
         $serverType = (int) $opt['t'];
         $centralIp = $opt['h'];
     } else {
-        throw new \InvalidArgumentException('missing parameter: -u -p -t -h are mandatories');
+        throw new \InvalidArgumentException(
+            'missing parameter: -u -p -t -h are mandatories, use --help for further informations'
+        );
     }
 } catch (\InvalidArgumentException $e) {
     echo $e->getMessage();
