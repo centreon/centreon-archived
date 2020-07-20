@@ -849,18 +849,16 @@ if (isset($req) && $req) {
 
         $buffer->startElement("status");
         $buffer->writeAttribute("color", $color);
+        $displayStatus = $log["status"];
         if (
             $log['msg_type'] == HOST_ACKNOWLEDGEMENT_MSG_TYPE
             || $log['msg_type'] == SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
         ) {
             $displayStatus = $acknowlegementMessageType['badgeText'];
-        } else {
-            $displayStatus = $log["status"];
-            if ($log['service_description'] && isset($tab_status_service[$log['status']])) {
-                $displayStatus = $tab_status_service[$log['status']];
-            } elseif (isset($tab_status_host[$log['status']])) {
-                $displayStatus = $tab_status_host[$log['status']];
-            }
+        } elseif ($log['service_description'] && isset($tab_status_service[$log['status']])) {
+            $displayStatus = $tab_status_service[$log['status']];
+        } elseif (isset($tab_status_host[$log['status']])) {
+            $displayStatus = $tab_status_host[$log['status']];
         }
         $buffer->text($displayStatus);
         $buffer->endElement();
