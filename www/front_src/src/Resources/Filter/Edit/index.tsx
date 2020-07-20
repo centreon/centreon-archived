@@ -7,7 +7,7 @@ import MoveIcon from '@material-ui/icons/MoreVert';
 
 import { RightPanel, useRequest } from '@centreon/ui';
 
-import { find, pipe, propEq, move } from 'ramda';
+import { move } from 'ramda';
 import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
 import EditFilterCard from './EditFilterCard';
@@ -51,7 +51,6 @@ const EditFiltersPanel = (): JSX.Element | null => {
     editPanelOpen,
     setEditPanelOpen,
     customFilters,
-    loadCustomFilters,
     setCustomFilters,
   } = useResourceContext();
 

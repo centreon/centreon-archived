@@ -32,6 +32,9 @@ type CriteriaValuesDispatch = React.Dispatch<
 >;
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
+type CustomFiltersDispatch = React.Dispatch<
+  React.SetStateAction<Array<Filter> | undefined>
+>;
 
 export interface FilterState {
   customFilters?: Array<Filter>;
@@ -53,6 +56,7 @@ export interface FilterState {
   serviceGroups: Array<CriteriaValue>;
   setServiceGroups: CriteriaValuesDispatch;
   loadCustomFilters: () => Promise<Array<Filter>>;
+  setCustomFilters: CustomFiltersDispatch;
   sendingListCustomFiltersRequest: boolean;
   editPanelOpen: boolean;
   setEditPanelOpen: EditPanelOpenDitpach;

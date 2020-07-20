@@ -15,7 +15,7 @@ import {
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { isNil, not, all, equals, any } from 'ramda';
+import { not, all, equals, any, reject } from 'ramda';
 
 import {
   labelDelete,
@@ -28,7 +28,7 @@ import {
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
-import { Filter } from '../models';
+import { Filter, newFilter } from '../models';
 import { useResourceContext } from '../../Context';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,15 +37,9 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     alignItems: 'center',
-    gridTemplateColumns: '2fr 1fr',
+    gridTemplateColumns: 'auto 1fr',
   },
   filterNameInput: {},
-  filterEditActions: {
-    display: 'grid',
-    gridAutoFlow: 'column',
-    gridGap: theme.spacing(1),
-    justifyContent: 'flex-start',
-  },
 }));
 
 interface Props {
@@ -59,6 +53,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     setFilter,
     filter: currentFilter,
     loadCustomFilters,
+    setCustomFilters,
     customFilters,
     sendingListCustomFiltersRequest,
   } = useResourceContext();
@@ -88,6 +83,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   });
 
   const form = useFormik({
+    enableReinitialize: true,
     initialValues: {
       name,
     },
@@ -120,7 +116,11 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     sendDeleteFilterRequest(filter).then(() => {
       showMessage({ message: labelFilterDeleted, severity: Severity.success });
 
-      loadCustomFilters();
+      if (equals(filter.id, currentFilter.id)) {
+        setFilter(newFilter as Filter);
+      }
+
+      setCustomFilters(reject(equals(filter), customFilters as Array<Filter>));
     });
   };
 
@@ -128,11 +128,9 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     setDeleting(false);
   };
 
-  const loading = isNil(customFilters);
   const sendingRequest = any(equals(true), [
     sendingDeleteFilterRequest,
     sendingUpdateFilterRequest,
-    sendingListCustomFiltersRequest,
   ]);
 
   const canRename = all(equals(true), [
@@ -158,40 +156,38 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   };
 
   return (
-    <ContentWithCircularLoading loading={loading}>
-      <div className={classes.filterCard}>
-        <TextField
-          className={classes.filterNameInput}
-          ariaLabel={`${labelFilter}-${id}-${labelName}`}
-          value={form.values.name}
-          error={form.errors.name}
-          onChange={form.handleChange('name') as (event) => void}
-          onKeyDown={renameOnEnterKey}
-          onBlur={rename}
+    <div className={classes.filterCard}>
+      <ContentWithCircularLoading
+        loading={sendingRequest}
+        loadingIndicatorSize={24}
+        alignCenter={false}
+      >
+        <IconButton title={labelDelete} onClick={askDelete}>
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </ContentWithCircularLoading>
+      <TextField
+        className={classes.filterNameInput}
+        ariaLabel={`${labelFilter}-${id}-${labelName}`}
+        value={form.values.name}
+        error={form.errors.name}
+        onChange={form.handleChange('name') as (event) => void}
+        onKeyDown={renameOnEnterKey}
+        onBlur={rename}
+        transparent
+      />
+
+      {deleting && (
+        <ConfirmDialog
+          labelConfirm={labelDelete}
+          labelCancel={labelCancel}
+          onConfirm={confirmDelete}
+          labelTitle={labelAskDelete}
+          onCancel={cancelDelete}
+          open
         />
-        <div className={classes.filterEditActions}>
-          <ContentWithCircularLoading
-            loading={sendingRequest}
-            loadingIndicatorSize={24}
-            alignCenter={false}
-          >
-            <IconButton title={labelDelete} onClick={askDelete}>
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </ContentWithCircularLoading>
-        </div>
-        {deleting && (
-          <ConfirmDialog
-            labelConfirm={labelDelete}
-            labelCancel={labelCancel}
-            onConfirm={confirmDelete}
-            labelTitle={labelAskDelete}
-            onCancel={cancelDelete}
-            open
-          />
-        )}
-      </div>
-    </ContentWithCircularLoading>
+      )}
+    </div>
   );
 };
 
