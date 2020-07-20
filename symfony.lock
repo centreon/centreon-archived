@@ -44,11 +44,20 @@
     "behatch/contexts": {
         "version": "3.3.0"
     },
+    "cebe/php-openapi": {
+        "version": "1.4.2"
+    },
     "centreon/centreon-test-lib": {
         "version": "dev-master"
     },
+    "clue/stream-filter": {
+        "version": "v1.4.1"
+    },
     "curl/curl": {
         "version": "1.9.3"
+    },
+    "dflydev/fig-cookies": {
+        "version": "v2.0.1"
     },
     "doctrine/annotations": {
         "version": "1.0",
@@ -127,6 +136,9 @@
     "justinrainbow/json-schema": {
         "version": "5.2.10"
     },
+    "league/openapi-psr7-validator": {
+        "version": "0.9"
+    },
     "mehr-als-nix/parallel": {
         "version": "v1.0.0"
     },
@@ -147,6 +159,18 @@
     },
     "nikic/php-parser": {
         "version": "v4.5.0"
+    },
+    "nyholm/psr7": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "7c0a9352a57376f04f5444e74565102c3a23d0c7"
+        },
+        "files": [
+            "./config/packages/nyholm_psr7.yaml"
+        ]
     },
     "openpsa/quickform": {
         "version": "v3.3.6.3"
@@ -171,6 +195,24 @@
     },
     "php": {
         "version": "7.2"
+    },
+    "php-http/curl-client": {
+        "version": "2.1.0"
+    },
+    "php-http/discovery": {
+        "version": "1.9.0"
+    },
+    "php-http/httplug": {
+        "version": "2.1.0"
+    },
+    "php-http/message": {
+        "version": "1.8.0"
+    },
+    "php-http/message-factory": {
+        "version": "v1.0.2"
+    },
+    "php-http/promise": {
+        "version": "1.1.0"
     },
     "phpcollection/phpcollection": {
         "version": "0.5.0"
@@ -231,7 +273,19 @@
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/http-client": {
+        "version": "1.0.1"
+    },
+    "psr/http-factory": {
+        "version": "1.0.1"
+    },
     "psr/http-message": {
+        "version": "1.0.1"
+    },
+    "psr/http-server-handler": {
+        "version": "1.0.1"
+    },
+    "psr/http-server-middleware": {
         "version": "1.0.1"
     },
     "psr/log": {
@@ -239,6 +293,12 @@
     },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
+    },
+    "respect/validation": {
+        "version": "1.1.31"
+    },
+    "riverline/multipart-parser": {
+        "version": "2.0.8"
     },
     "sebastian/code-unit-reverse-lookup": {
         "version": "1.0.1"
@@ -449,6 +509,9 @@
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.17.0"
+    },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.0"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.17.0"
