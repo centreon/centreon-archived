@@ -79,6 +79,12 @@ define("STATUS_UNREACHABLE", 2);
 define("TYPE_SOFT", 0);
 define("TYPE_HARD", 1);
 
+/**
+ * Defining constants for the ACK message types
+ */
+define('SERVICE_ACKNOWLEDGEMENT_MSG_TYPE', 10);
+define('HOST_ACKNOWLEDGEMENT_MSG_TYPE', 11);
+
 // Include Access Class
 include_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
@@ -299,6 +305,10 @@ $tab_status_service = array(
     "2" => "CRITICAL",
     "3" => "UNKNOWN"
 );
+$acknowlegementMessageType = [
+    'badgeColor' => 'ack',
+    'badgeText' => 'ACK'
+];
 
 /*
  * Create IP Cache
@@ -786,21 +796,39 @@ if (isset($req) && $req) {
     foreach ($logs as $log) {
         $buffer->startElement("line");
         $buffer->writeElement("msg_type", $log["msg_type"]);
-        $displayType = $log['type'];
-        if (isset($tab_type[$log['type']])) {
-            $displayType = $tab_type[$log['type']];
+
+        /**
+         * For an ACK there is no point to display RETRY and TYPE columns
+         */
+        $displayType = '';
+        if (
+            $log['msg_type'] != HOST_ACKNOWLEDGEMENT_MSG_TYPE
+            && $log['msg_type'] != SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
+        ) {
+            $displayType = $log['type'];
+
+            if (isset($tab_type[$log['type']])) {
+                $displayType = $tab_type[$log['type']];
+            }
+            $log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
+            $log["msg_type"] == 2 || $log["msg_type"] == 3
+                ? $buffer->writeElement("type", "NOTIF")
+                : $buffer->writeElement("type", $displayType);
         }
-        $log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
-        $log["msg_type"] == 2 || $log["msg_type"] == 3
-            ? $buffer->writeElement("type", "NOTIF")
-            : $buffer->writeElement("type", $displayType);
 
         /*
          * Color initialisation for services and hosts status
+         * For ACK message types, display a badge 'ACK' in Yellow
          */
         $color = '';
-        if (isset($log["status"])) {
-            if (isset($tab_color_service[$log["status"]])
+        if (
+            $log['msg_type'] == HOST_ACKNOWLEDGEMENT_MSG_TYPE
+            || $log['msg_type'] == SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
+        ) {
+            $color = $acknowlegementMessageType['badgeColor'];
+        } elseif (isset($log["status"])) {
+            if (
+                isset($tab_color_service[$log["status"]])
                 && !empty($log["service_description"])
             ) {
                 $color = $tab_color_service[$log["status"]];
@@ -819,7 +847,12 @@ if (isset($req) && $req) {
         $buffer->startElement("status");
         $buffer->writeAttribute("color", $color);
         $displayStatus = $log["status"];
-        if ($log['service_description'] && isset($tab_status_service[$log['status']])) {
+        if (
+            $log['msg_type'] == HOST_ACKNOWLEDGEMENT_MSG_TYPE
+            || $log['msg_type'] == SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
+        ) {
+            $displayStatus = $acknowlegementMessageType['badgeText'];
+        } elseif ($log['service_description'] && isset($tab_status_service[$log['status']])) {
             $displayStatus = $tab_status_service[$log['status']];
         } elseif (isset($tab_status_host[$log['status']])) {
             $displayStatus = $tab_status_host[$log['status']];
