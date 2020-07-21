@@ -12,7 +12,7 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
       JsonDecoder.object<RawCriteria>(
         {
           name: JsonDecoder.string,
-          objectType: JsonDecoder.optional(JsonDecoder.string),
+          object_type: JsonDecoder.optional(JsonDecoder.string),
           type: JsonDecoder.string,
           value: JsonDecoder.optional(
             JsonDecoder.oneOf<string | boolean | Array<CriteriaValue>>(
@@ -38,7 +38,6 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
           ),
         },
         'FilterCriterias',
-        { objectType: 'object_type' },
       ),
       'FilterCriterias',
     ),

@@ -59,21 +59,16 @@ const toRawFilter = ({ name, criterias }: Filter): Omit<RawFilter, 'id'> => {
         type: 'multi_select',
       },
       {
-        name: 'host_groups',
-        value: criterias.hostGroups,
-        type: 'multi_select',
-      },
-      {
         name: 'service_groups',
         value: criterias.serviceGroups,
         type: 'multi_select',
-        objectType: 'service_groups',
+        object_type: 'service_groups',
       },
       {
         name: 'host_groups',
         value: criterias.hostGroups,
         type: 'multi_select',
-        objectType: 'host_groups',
+        object_type: 'host_groups',
       },
       {
         name: 'search',

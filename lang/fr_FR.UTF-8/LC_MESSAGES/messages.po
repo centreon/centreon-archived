@@ -15449,3 +15449,21 @@ msgstr "Filtre créé"
 
 msgid "Filter saved"
 msgstr "Filtre sauvegardé"
+
+msgid "Edit filters"
+msgstr "Éditer les filtres"
+
+msgid "Rename"
+msgstr "Renommer"
+
+msgid "Delete filter?"
+msgstr "Supprimer le filtre?"
+
+msgid "Filter deleted"
+msgstr "Filtre supprimé"
+
+msgid "Filter updated"
+msgstr "Filtre actualisé"
+
+msgid "Name cannot be empty"
+msgstr "Le nom ne peut pas être vide"

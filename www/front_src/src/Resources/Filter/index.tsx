@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-wrap-multilines */
+
 import * as React from 'react';
 
 import {
-  Grid,
   Typography,
   Button,
   makeStyles,
@@ -22,6 +22,8 @@ import {
 } from '@centreon/ui';
 
 import { isEmpty, propEq, pick } from 'ramda';
+import { Skeleton } from '@material-ui/lab';
+import clsx from 'clsx';
 import {
   labelFilter,
   labelCriterias,
@@ -89,23 +91,35 @@ const AccordionDetails = withStyles((theme) => ({
 }))(MuiAccordionDetails);
 
 const useStyles = makeStyles((theme) => ({
-  filterBox: {
-    padding: theme.spacing(),
-    backgroundColor: theme.palette.common.white,
+  grid: {
+    display: 'grid',
+    gridGap: theme.spacing(1),
+    gridAutoFlow: 'column',
+
+    alignItems: 'center',
+    justifyItems: 'center',
+  },
+  filterRow: {
+    gridTemplateColumns: 'auto 30px 200px 500px auto auto',
+  },
+  filterLoadingSkeleton: {
+    transform: 'none',
+    height: '100%',
+    width: '100%',
+  },
+  criteriaRow: {
+    gridTemplateColumns: `auto 30px repeat(4, auto) auto`,
+  },
+  autoCompleteField: {
+    minWidth: 200,
+    maxWidth: 400,
+  },
+  filterSelect: {
+    width: 200,
   },
   filterLineLabel: {
     width: 60,
     textAlign: 'center',
-  },
-  filterGroup: {
-    minWidth: 200,
-  },
-  searchField: {
-    width: 500,
-  },
-  autocompleteField: {
-    minWidth: 200,
-    maxWidth: 400,
   },
 }));
 
@@ -131,6 +145,7 @@ const Filter = (): JSX.Element => {
     serviceGroups,
     setServiceGroups,
     customFilters,
+    sendingListCustomFiltersRequest,
   } = useResourceContext();
 
   const toggleExpanded = (): void => {
@@ -264,108 +279,89 @@ const Filter = (): JSX.Element => {
         IconButtonProps={{ onClick: toggleExpanded }}
         style={{ cursor: 'default' }}
       >
-        <Grid spacing={1} container alignItems="center">
-          <Grid item>
-            <Typography className={classes.filterLineLabel} variant="h6">
-              {labelFilter}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <SaveFilter />
-          </Grid>
-          <Grid item>
+        <div className={clsx([classes.grid, classes.filterRow])}>
+          <Typography className={classes.filterLineLabel} variant="h6">
+            {labelFilter}
+          </Typography>
+          <SaveFilter />
+          {sendingListCustomFiltersRequest ? (
+            <Skeleton className={classes.filterLoadingSkeleton} />
+          ) : (
             <SelectField
-              className={classes.filterGroup}
               options={options.map(pick(['id', 'name', 'type']))}
               selectedOptionId={filter.id}
               onChange={changeFilterGroup}
               aria-label={labelStateFilter}
+              fullWidth
             />
-          </Grid>
-          <Grid item>
-            <SearchField
-              className={classes.searchField}
-              EndAdornment={SearchHelpTooltip}
-              value={nextSearch || ''}
-              onChange={prepareSearch}
-              placeholder={labelResourceName}
-              onKeyDown={requestSearchOnEnterKey}
-            />
-          </Grid>
-          <Grid item>
-            <Button variant="contained" color="primary" onClick={requestSearch}>
-              {labelSearch}
-            </Button>
-          </Grid>
-        </Grid>
+          )}
+          <SearchField
+            fullWidth
+            EndAdornment={SearchHelpTooltip}
+            value={nextSearch || ''}
+            onChange={prepareSearch}
+            placeholder={labelResourceName}
+            onKeyDown={requestSearchOnEnterKey}
+          />
+          <Button variant="contained" color="primary" onClick={requestSearch}>
+            {labelSearch}
+          </Button>
+        </div>
       </AccordionSummary>
       <AccordionDetails>
-        <Grid spacing={1} container alignItems="center">
-          <Grid item>
-            <Typography className={classes.filterLineLabel} variant="subtitle1">
-              {labelCriterias}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <MultiAutocompleteField
-              className={classes.autocompleteField}
-              options={availableResourceTypes}
-              label={labelTypeOfResource}
-              onChange={changeResourceTypes}
-              value={resourceTypes || []}
-              openText={`${labelOpen} ${labelTypeOfResource}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiAutocompleteField
-              className={classes.autocompleteField}
-              options={availableStates}
-              label={labelState}
-              onChange={changeStates}
-              value={states || []}
-              openText={`${labelOpen} ${labelState}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiAutocompleteField
-              className={classes.autocompleteField}
-              options={availableStatuses}
-              label={labelStatus}
-              onChange={changeStatuses}
-              value={statuses || []}
-              openText={`${labelOpen} ${labelStatus}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiConnectedAutocompleteField
-              className={classes.autocompleteField}
-              baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
-              getSearchEndpoint={getHostGroupSearchEndpoint}
-              getOptionsFromResult={getOptionsFromResult}
-              label={labelHostGroup}
-              onChange={changeHostGroups}
-              value={hostGroups || []}
-              openText={`${labelOpen} ${labelHostGroup}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiConnectedAutocompleteField
-              className={classes.autocompleteField}
-              baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
-              getSearchEndpoint={getServiceGroupSearchEndpoint}
-              label={labelServiceGroup}
-              onChange={changeServiceGroups}
-              getOptionsFromResult={getOptionsFromResult}
-              value={serviceGroups || []}
-              openText={`${labelOpen} ${labelServiceGroup}`}
-            />
-          </Grid>
-          <Grid item>
-            <Button color="primary" onClick={clearAllFilters}>
-              {labelClearAll}
-            </Button>
-          </Grid>
-        </Grid>
+        <div className={clsx([classes.grid, classes.criteriaRow])}>
+          <Typography className={classes.filterLineLabel} variant="subtitle1">
+            {labelCriterias}
+          </Typography>
+          <div> </div>
+          <MultiAutocompleteField
+            className={classes.autoCompleteField}
+            options={availableResourceTypes}
+            label={labelTypeOfResource}
+            onChange={changeResourceTypes}
+            value={resourceTypes || []}
+            openText={`${labelOpen} ${labelTypeOfResource}`}
+          />
+          <MultiAutocompleteField
+            className={classes.autoCompleteField}
+            options={availableStates}
+            label={labelState}
+            onChange={changeStates}
+            value={states || []}
+            openText={`${labelOpen} ${labelState}`}
+          />
+          <MultiAutocompleteField
+            className={classes.autoCompleteField}
+            options={availableStatuses}
+            label={labelStatus}
+            onChange={changeStatuses}
+            value={statuses || []}
+            openText={`${labelOpen} ${labelStatus}`}
+          />
+          <MultiConnectedAutocompleteField
+            className={classes.autoCompleteField}
+            baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
+            getSearchEndpoint={getHostGroupSearchEndpoint}
+            getOptionsFromResult={getOptionsFromResult}
+            label={labelHostGroup}
+            onChange={changeHostGroups}
+            value={hostGroups || []}
+            openText={`${labelOpen} ${labelHostGroup}`}
+          />
+          <MultiConnectedAutocompleteField
+            className={classes.autoCompleteField}
+            baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
+            getSearchEndpoint={getServiceGroupSearchEndpoint}
+            label={labelServiceGroup}
+            onChange={changeServiceGroups}
+            getOptionsFromResult={getOptionsFromResult}
+            value={serviceGroups || []}
+            openText={`${labelOpen} ${labelServiceGroup}`}
+          />
+          <Button color="primary" onClick={clearAllFilters}>
+            {labelClearAll}
+          </Button>
+        </div>
       </AccordionDetails>
     </Accordion>
   );

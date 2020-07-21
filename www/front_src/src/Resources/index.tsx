@@ -3,9 +3,9 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { makeStyles, Slide, CircularProgress } from '@material-ui/core';
+import { makeStyles, Slide } from '@material-ui/core';
 
-import { withSnackbar } from '@centreon/ui';
+import { withSnackbar, ContentWithCircularLoading } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
@@ -15,6 +15,7 @@ import useFilter from './Filter/useFilter';
 import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
+import EditFiltersPanel from './Filter/Edit';
 
 const useStyles = makeStyles((theme) => ({
   loadingIndicator: {
@@ -59,9 +60,7 @@ const Resources = (): JSX.Element => {
 
   const { selectedDetailsEndpoints } = detailsContext;
 
-  if (isNil(filterContext.customFilters)) {
-    return <CircularProgress className={classes.loadingIndicator} />;
-  }
+  const customFiltersEmpty = isNil(filterContext.customFilters);
 
   return (
     <Context.Provider
@@ -72,30 +71,33 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <div className={classes.page}>
-        <div className={classes.filter}>
-          <Filter />
-        </div>
-        <div className={classes.body}>
-          {selectedDetailsEndpoints && (
-            <Slide
-              direction="left"
-              in={!isNil(selectedDetailsEndpoints)}
-              timeout={{
-                enter: 150,
-                exit: 50,
-              }}
-            >
-              <div className={classes.panel}>
-                <Details />
-              </div>
-            </Slide>
-          )}
-          <div className={classes.listing}>
-            <Listing />
+      <ContentWithCircularLoading loading={customFiltersEmpty}>
+        <div className={classes.page}>
+          <div className={classes.filter}>
+            <Filter />
+          </div>
+          <div className={classes.body}>
+            {selectedDetailsEndpoints && (
+              <Slide
+                direction="left"
+                in={!isNil(selectedDetailsEndpoints)}
+                timeout={{
+                  enter: 150,
+                  exit: 50,
+                }}
+              >
+                <div className={classes.panel}>
+                  <Details />
+                </div>
+              </Slide>
+            )}
+            <div className={classes.listing}>
+              <Listing />
+            </div>
           </div>
         </div>
-      </div>
+      </ContentWithCircularLoading>
+      <EditFiltersPanel />
     </Context.Provider>
   );
 };
