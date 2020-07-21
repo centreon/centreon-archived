@@ -38,9 +38,4 @@ interface PlatformTopologyInterface
      * @return string Returns the server IP address
      */
     public function getServerAddress(): string;
-
-    /**
-     * @return int Returns the server Id
-     */
-    public function getServerId(): ?int;
 }
