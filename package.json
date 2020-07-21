@@ -59,6 +59,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-safe-parser": "^4.0.2",
     "prettier": "^2.0.5",
+    "react-beautiful-dnd-test-utils": "^3.2.1",
     "react-hot-loader": "^4.12.21",
     "react-mock-router": "^1.0.15",
     "redux-mock-store": "^1.5.4",
