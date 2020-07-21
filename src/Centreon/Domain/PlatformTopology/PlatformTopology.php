@@ -25,7 +25,7 @@ namespace Centreon\Domain\PlatformTopology;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyInterface;
 
 /**
- * Class designed to retrieve pending servers to be added using the wizard
+ * Class designed to retrieve servers to be added using the wizard
  *
  */
 class PlatformTopology implements PlatformTopologyInterface
