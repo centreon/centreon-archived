@@ -37,10 +37,10 @@ class PlatformTopology implements PlatformTopologyInterface
 
     /**
      * @var int Server type
-     *      0 = central,
-     *      1 = poller,
-     *      2 = remote server,
-     *      3 = map server,
+     *      0 = central
+     *      1 = poller
+     *      2 = remote server
+     *      3 = map server
      *      4 = mbi server
      */
     private $serverType;
@@ -51,16 +51,21 @@ class PlatformTopology implements PlatformTopologyInterface
     private $serverAddress;
 
     /**
-     * @var int Id of the server
-     */
-    private $serverId;
-
-    /**
      * @return string
      */
     public function getServerName(): string
     {
         return $this->serverName;
+    }
+
+    /**
+     * @param string $serverName
+     * @return $this
+     */
+    public function setServerName(string $serverName): self
+    {
+        $this->serverName = $serverName;
+        return $this;
     }
 
     /**
@@ -72,6 +77,22 @@ class PlatformTopology implements PlatformTopologyInterface
     }
 
     /**
+     * @param int $serverType server type
+     *      0 = central
+     *      1 = poller
+     *      2 = remote server
+     *      3 = map server
+     *      4 = mbi server
+     *
+     * @return self
+     */
+    public function setserverType(int $serverType): self
+    {
+        $this->serverType = $serverType;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getServerAddress(): string
@@ -80,21 +101,13 @@ class PlatformTopology implements PlatformTopologyInterface
     }
 
     /**
-     * @param int $serverAddress
+     * @param string $serverAddress
      * @return self
      */
-    public function setServerAddress(int $serverAddress): self
+    public function setServerAddress(string $serverAddress): self
     {
         $this->serverAddress = $serverAddress;
         return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getServerId(): ?int
-    {
-        return $this->serverId;
     }
 }
 
