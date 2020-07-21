@@ -57,6 +57,16 @@ interface FilterServiceInterface
     public function updateFilter(Filter $filter): void;
 
     /**
+     * Check filter criterias
+     * Remove object if does not exist anymore
+     * Rename object if has been renamed since filter creation
+     *
+     * @param array $criterias
+     * @return array The filtered criterias
+     */
+    public function checkCriterias(array $criterias): array;
+
+    /**
      * Delete filter.
      *
      * @param Filter $filter

@@ -127,14 +127,9 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
     }
 
     /**
-     * Check filter criterias
-     * Remove object if does not exist anymore
-     * Rename object if has been renamed since filter creation
-     *
-     * @param array $criterias
-     * @return array The filtered criterias
+     * @inheritDoc
      */
-    private function checkCriterias(array $criterias): array
+    public function checkCriterias(array $criterias): array
     {
         foreach ($criterias as &$criteria) {
             if (isset($criteria['object_type']) && isset($criteria['value'])) {
