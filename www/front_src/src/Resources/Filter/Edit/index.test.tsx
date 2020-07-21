@@ -10,11 +10,7 @@ import {
   act,
 } from '@testing-library/react';
 import { omit, head, prop } from 'ramda';
-import {
-  makeDnd,
-  DND_DIRECTION_DOWN,
-  DND_DRAGGABLE_DATA_ATTR,
-} from 'react-beautiful-dnd-test-utils';
+import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
 
 import EditFilterPanel from '.';
 import Context, { ResourceContext } from '../../Context';
