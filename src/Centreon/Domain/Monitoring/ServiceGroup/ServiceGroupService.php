@@ -52,9 +52,7 @@ final class ServiceGroupService extends AbstractCentreonService implements Servi
     }
 
     /**
-     * {@inheritDoc}
-     * @param Contact $contact
-     * @return ServiceGroupServiceInterface
+     * @inheritDoc
      */
     public function filterByContact($contact): ServiceGroupServiceInterface
     {

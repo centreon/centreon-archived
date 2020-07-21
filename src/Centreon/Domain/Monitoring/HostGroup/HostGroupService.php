@@ -52,9 +52,7 @@ final class HostGroupService extends AbstractCentreonService implements HostGrou
     }
 
     /**
-     * {@inheritDoc}
-     * @param Contact $contact
-     * @return HostGroupServiceInterface
+     * @inheritDoc
      */
     public function filterByContact($contact): HostGroupServiceInterface
     {
