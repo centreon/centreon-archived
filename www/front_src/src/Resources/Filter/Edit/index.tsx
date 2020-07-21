@@ -7,12 +7,11 @@ import MoveIcon from '@material-ui/icons/MoreVert';
 
 import { RightPanel, useRequest } from '@centreon/ui';
 
-import { move } from 'ramda';
+import { move, isNil } from 'ramda';
 import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
 import EditFilterCard from './EditFilterCard';
 import { patchFilter } from '../api';
-import { Filter } from '../models';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -69,15 +68,19 @@ const EditFiltersPanel = (): JSX.Element | null => {
   const onDragEnd = ({ draggableId, source, destination }): void => {
     const id = Number(draggableId);
 
+    if (isNil(destination)) {
+      return;
+    }
+
     const reordedCustomFilters = move(
       source.index,
       destination.index,
-      customFilters as Array<Filter>,
+      customFilters,
     );
 
     setCustomFilters(reordedCustomFilters);
 
-    sendRequest({ id, order: destination.index }).then(() => {});
+    sendRequest({ id, order: destination.index });
   };
 
   const Sections = [

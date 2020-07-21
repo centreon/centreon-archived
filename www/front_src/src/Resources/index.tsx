@@ -4,7 +4,7 @@ import { isNil } from 'ramda';
 
 import { makeStyles, Slide } from '@material-ui/core';
 
-import { withSnackbar, ContentWithCircularLoading } from '@centreon/ui';
+import { withSnackbar } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
@@ -59,8 +59,6 @@ const Resources = (): JSX.Element => {
 
   const { selectedDetailsEndpoints } = detailsContext;
 
-  const customFiltersEmpty = isNil(filterContext.customFilters);
-
   return (
     <Context.Provider
       value={{
@@ -70,32 +68,30 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <ContentWithCircularLoading loading={customFiltersEmpty}>
-        <div className={classes.page}>
-          <div className={classes.filter}>
-            <Filter />
-          </div>
-          <div className={classes.body}>
-            {selectedDetailsEndpoints && (
-              <Slide
-                direction="left"
-                in={!isNil(selectedDetailsEndpoints)}
-                timeout={{
-                  enter: 150,
-                  exit: 50,
-                }}
-              >
-                <div className={classes.panel}>
-                  <Details />
-                </div>
-              </Slide>
-            )}
-            <div className={classes.listing}>
-              <Listing />
-            </div>
+      <div className={classes.page}>
+        <div className={classes.filter}>
+          <Filter />
+        </div>
+        <div className={classes.body}>
+          {selectedDetailsEndpoints && (
+            <Slide
+              direction="left"
+              in={!isNil(selectedDetailsEndpoints)}
+              timeout={{
+                enter: 150,
+                exit: 50,
+              }}
+            >
+              <div className={classes.panel}>
+                <Details />
+              </div>
+            </Slide>
+          )}
+          <div className={classes.listing}>
+            <Listing />
           </div>
         </div>
-      </ContentWithCircularLoading>
+      </div>
       <EditFiltersPanel />
     </Context.Provider>
   );

@@ -21,7 +21,7 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
-import { isEmpty, propEq, pick } from 'ramda';
+import { isEmpty, propEq, pick, find } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import {
@@ -48,7 +48,6 @@ import {
   states as availableStates,
   resourceTypes as availableResourceTypes,
   statuses as availableStatuses,
-  Filter as FilterModel,
   standardFilterById,
   isCustom,
   newFilter,
@@ -145,7 +144,7 @@ const Filter = (): JSX.Element => {
     serviceGroups,
     setServiceGroups,
     customFilters,
-    sendingListCustomFiltersRequest,
+    customFiltersLoading,
   } = useResourceContext();
 
   const toggleExpanded = (): void => {
@@ -256,7 +255,7 @@ const Filter = (): JSX.Element => {
           name: labelMyFilters,
           type: 'header',
         },
-        ...(customFilters as Array<FilterModel>),
+        ...customFilters,
       ];
 
   const options = [
@@ -266,6 +265,8 @@ const Filter = (): JSX.Element => {
     allFilter,
     ...customFilterOptions,
   ];
+
+  const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
 
   return (
     <Accordion square expanded={expanded}>
@@ -284,12 +285,12 @@ const Filter = (): JSX.Element => {
             {labelFilter}
           </Typography>
           <SaveFilter />
-          {sendingListCustomFiltersRequest ? (
+          {customFiltersLoading ? (
             <Skeleton className={classes.filterLoadingSkeleton} />
           ) : (
             <SelectField
               options={options.map(pick(['id', 'name', 'type']))}
-              selectedOptionId={filter.id}
+              selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
               onChange={changeFilterGroup}
               aria-label={labelStateFilter}
               fullWidth

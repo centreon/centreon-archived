@@ -15,7 +15,7 @@ import {
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { not, all, equals, any, reject } from 'ramda';
+import { all, equals, any, reject, update, findIndex, propEq } from 'ramda';
 
 import {
   labelDelete,
@@ -52,10 +52,8 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const {
     setFilter,
     filter: currentFilter,
-    loadCustomFilters,
     setCustomFilters,
     customFilters,
-    sendingListCustomFiltersRequest,
   } = useResourceContext();
 
   const { showMessage } = useSnackbar();
@@ -89,20 +87,22 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     },
     validationSchema,
     onSubmit: (values) => {
-      sendUpdateFilterRequest({ ...filter, name: values.name }).then(
-        (updatedFilter) => {
-          if (equals(updatedFilter.id, currentFilter.id)) {
-            setFilter(updatedFilter);
-          }
+      const updatedFilter = { ...filter, name: values.name };
 
-          showMessage({
-            message: labelFilterUpdated,
-            severity: Severity.success,
-          });
+      sendUpdateFilterRequest(updatedFilter).then(() => {
+        showMessage({
+          message: labelFilterUpdated,
+          severity: Severity.success,
+        });
 
-          loadCustomFilters();
-        },
-      );
+        if (equals(updatedFilter.id, currentFilter.id)) {
+          setFilter(updatedFilter);
+        }
+
+        const index = findIndex(propEq('id', updatedFilter.id), customFilters);
+
+        setCustomFilters(update(index, updatedFilter, customFilters));
+      });
     },
   });
 
@@ -120,7 +120,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         setFilter(newFilter as Filter);
       }
 
-      setCustomFilters(reject(equals(filter), customFilters as Array<Filter>));
+      setCustomFilters(reject(equals(filter), customFilters));
     });
   };
 
@@ -133,11 +133,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     sendingUpdateFilterRequest,
   ]);
 
-  const canRename = all(equals(true), [
-    form.isValid,
-    form.dirty,
-    not(sendingListCustomFiltersRequest),
-  ]);
+  const canRename = all(equals(true), [form.isValid, form.dirty]);
 
   const rename = (): void => {
     if (!canRename) {
