@@ -140,8 +140,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                             ->filterByContact($this->contact)
                             ->findHostGroupsByIds($hostGroupIds);
                         $criteria['value'] = array_map(
-                            function($hostGroup)
-                            {
+                            function ($hostGroup) {
                                 return [
                                     'id' => $hostGroup->getId(),
                                     'name' => $hostGroup->getName(),
@@ -156,8 +155,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                             ->filterByContact($this->contact)
                             ->findServiceGroupsByIds($serviceGroupIds);
                         $criteria['value'] = array_map(
-                            function($serviceGroup)
-                            {
+                            function ($serviceGroup) {
                                 return [
                                     'id' => $serviceGroup->getId(),
                                     'name' => $serviceGroup->getName(),
