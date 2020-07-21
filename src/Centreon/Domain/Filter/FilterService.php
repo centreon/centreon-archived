@@ -27,6 +27,7 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
 use Centreon\Domain\Filter\Interfaces\FilterServiceInterface;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
+use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface;
 
 /**
  * This class is designed to manage monitoring servers and their associated resources.
@@ -41,6 +42,11 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
     private $hostGroupService;
 
     /**
+     * @var ServiceGroupServiceInterface
+     */
+    private $serviceGroupService;
+
+    /**
      * @var FilterRepositoryInterface
      */
     private $filterRepository;
@@ -49,13 +55,16 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
      * FilterService constructor.
      *
      * @param HostGroupServiceInterface $hostGroupService
+     * @param ServiceGroupServiceInterface $serviceGroupService
      * @param FilterRepositoryInterface $filterRepository
      */
     public function __construct(
         HostGroupServiceInterface $hostGroupService,
+        ServiceGroupServiceInterface $serviceGroupService,
         FilterRepositoryInterface $filterRepository
     ) {
         $this->hostGroupService = $hostGroupService;
+        $this->serviceGroupService = $serviceGroupService;
         $this->filterRepository = $filterRepository;
     }
 
@@ -103,32 +112,9 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
     public function updateFilter(Filter $filter): void
     {
         try {
-            $criterias = [];
-            foreach ($filter->getCriterias() as $criteria) {
-                if (isset($criteria['object_type']) && isset($criteria['value'])) {
-                    switch ($criteria['object_type']) {
-                        case 'host_group':
-                            $hostGroupIds = [];
-                            foreach ($criteria['value'] as $value) {
-                                $hostGroupIds[] = $value['id'];
-                            }
-                            $hostGroups = $this->hostGroupService
-                                ->filterByContact($this->contact)
-                                ->findHostGroupsByIds($hostGroupIds);
-                            $values = [];
-                            foreach ($hostGroups as $hostGroup) {
-                                $values[] = [
-                                    'id' => $hostGroup->getId(),
-                                    'name' => $hostGroup->getName(),
-                                ];
-                            }
-                            $criteria['value'] = $values;
-                            break;
-                    }
-                    $criterias[] = $criteria;
-                }
-            }
-            $filter->setCriterias($criterias);
+            $filter->setCriterias(
+                $this->checkCriterias($filter->getCriterias())
+            );
 
             $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {
@@ -138,6 +124,58 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                 $ex
             );
         }
+    }
+
+    /**
+     * Check filter criterias
+     * Remove object if does not exist anymore
+     * Rename object if has been renamed since filter creation
+     *
+     * @param array $criterias
+     * @return array The filtered criterias
+     */
+    private function checkCriterias(array $criterias): array
+    {
+        foreach ($criterias as &$criteria) {
+            if (isset($criteria['object_type']) && isset($criteria['value'])) {
+                switch ($criteria['object_type']) {
+                    case 'host_group':
+                        $hostGroupIds = array_column($criteria['value'], 'id');
+                        $hostGroups = $this->hostGroupService
+                            ->filterByContact($this->contact)
+                            ->findHostGroupsByIds($hostGroupIds);
+                        $criteria['value'] = array_map(
+                            function($hostGroup)
+                            {
+                                return [
+                                    'id' => $hostGroup->getId(),
+                                    'name' => $hostGroup->getName(),
+                                ];
+                            },
+                            $hostGroups
+                        );
+                        break;
+                    case 'service_group':
+                        $serviceGroupIds = array_column($criteria['value'], 'id');
+                        $serviceGroups = $this->serviceGroupService
+                            ->filterByContact($this->contact)
+                            ->findServiceGroupsByIds($serviceGroupIds);
+                        $criteria['value'] = array_map(
+                            function($serviceGroup)
+                            {
+                                return [
+                                    'id' => $serviceGroup->getId(),
+                                    'name' => $serviceGroup->getName(),
+                                ];
+                            },
+                            $serviceGroups
+                        );
+                        break;
+                }
+            }
+        }
+
+        return $criterias;
     }
 
     /**

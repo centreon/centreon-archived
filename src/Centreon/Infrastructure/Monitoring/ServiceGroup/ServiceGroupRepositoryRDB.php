@@ -20,22 +20,22 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Monitoring\HostGroup;
+namespace Centreon\Infrastructure\Monitoring\ServiceGroup;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupRepositoryInterface;
+use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
 /**
- * Database repository for the real time monitoring of hostgroups.
+ * Database repository for the real time monitoring of servicegroups.
  *
  * @package Centreon\Infrastructure\Monitoring
  */
-final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupRepositoryInterface
+final class ServiceGroupRepositoryRDB extends AbstractRepositoryDRB implements ServiceGroupRepositoryInterface
 {
     /**
      * @var AccessGroup[] List of access group used to filter the requests
@@ -60,7 +60,7 @@ final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements Host
     /**
      * @inheritDoc
      */
-    public function filterByAccessGroups(?array $accessGroups): HostGroupRepositoryInterface
+    public function filterByAccessGroups(?array $accessGroups): ServiceGroupRepositoryInterface
     {
         $this->accessGroups = $accessGroups;
         return $this;
@@ -69,12 +69,12 @@ final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements Host
     /**
      * @inheritDoc
      */
-    public function findHostGroupsByIds(array $hostGroupIds): array
+    public function findServiceGroupsByIds(array $serviceGroupIds): array
     {
-        $hostGroups = [];
+        $serviceGroups = [];
 
-        if ($this->hasNotEnoughRightsToContinue() || empty($hostGroupIds)) {
-            return $hostGroups;
+        if ($this->hasNotEnoughRightsToContinue() || empty($serviceGroupIds)) {
+            return $serviceGroups;
         }
 
         $bindValues = [];
@@ -84,10 +84,10 @@ final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements Host
 
             // Not an admin, we must to filter on contact
             $subRequest .=
-                ' INNER JOIN `:db`.acl_resources_hg_relations hgr
-                    ON hgr.hg_hg_id = hg.hostgroup_id
+                ' INNER JOIN `:db`.acl_resources_sg_relations sgr
+                    ON sgr.sg_id = sg.servicegroup_id
                 INNER JOIN `:db`.acl_resources res
-                    ON res.acl_res_id = hgr.acl_res_id
+                    ON res.acl_res_id = sgr.acl_res_id
                     AND res.acl_res_activate = \'1\'
                 INNER JOIN `:db`.acl_res_group_relations rgr
                     ON rgr.acl_res_id = res.acl_res_id
@@ -106,18 +106,18 @@ final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements Host
                     OR gcr.contact_contact_id = :contact_id';
         }
 
-        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.* FROM `:dbstg`.`hostgroups` hg ' . $subRequest;
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.* FROM `:dbstg`.`servicegroups` sg ' . $subRequest;
         $request = $this->translateDbName($request);
 
-        $bindHostGroupIds = [];
-        foreach ($hostGroupIds as $index => $hostGroupId) {
-            $bindHostGroupIds[':host_group_id_' . $index] = [\PDO::PARAM_INT => $hostGroupId];
+        $bindServiceGroupIds = [];
+        foreach ($serviceGroupIds as $index => $serviceGroupId) {
+            $bindServiceGroupIds[':service_group_id_' . $index] = [\PDO::PARAM_INT => $serviceGroupId];
         }
-        $bindValues = array_merge($bindValues, $bindHostGroupIds);
-        $request .= ' WHERE hg.hostgroup_id IN (' . implode(',', array_keys($bindHostGroupIds)) . ')';
+        $bindValues = array_merge($bindValues, $bindServiceGroupIds);
+        $request .= ' WHERE sg.servicegroup_id IN (' . implode(',', array_keys($bindServiceGroupIds)) . ')';
 
         // Sort
-        $request .= ' ORDER BY hg.name ASC';
+        $request .= ' ORDER BY sg.name ASC';
 
         $statement = $this->db->prepare($request);
 
@@ -131,13 +131,13 @@ final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements Host
         $statement->execute();
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $hostGroups[] = EntityCreator::createEntityByArray(
-                HostGroup::class,
+            $serviceGroups[] = EntityCreator::createEntityByArray(
+                ServiceGroup::class,
                 $result
             );
         }
 
-        return $hostGroups;
+        return $serviceGroups;
     }
 
     /**
@@ -155,7 +155,7 @@ final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements Host
     /**
      * {@inheritDoc}
      */
-    public function setContact(ContactInterface $contact): HostGroupRepositoryInterface
+    public function setContact(ContactInterface $contact): ServiceGroupRepositoryInterface
     {
         $this->contact = $contact;
 
