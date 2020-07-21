@@ -20,15 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Configuration\PendingServer;
+namespace Centreon\Domain\PlatformTopology;
 
-use Centreon\Domain\Configuration\PendingServer\Interfaces\PendingServerInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyInterface;
 
 /**
  * Class designed to retrieve pending servers to be added using the wizard
  *
  */
-class PendingServer implements PendingServerInterface
+class PlatformTopology implements PlatformTopologyInterface
 {
     /**
      * @var string Server name

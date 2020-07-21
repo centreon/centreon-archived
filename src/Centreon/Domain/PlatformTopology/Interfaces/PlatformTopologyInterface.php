@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Configuration\PendingServer\Interfaces;
+namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-interface PendingServerInterface
+interface PlatformTopologyInterface
 {
     /**
      * @return string Returns the server name
