@@ -6,7 +6,7 @@ Security
 --------
 
 * [Security] Fix sql injection in Parameters/Data
-* [Security] Post cmd execute by centcore
+* [Security] Post cmd execute by centcore - CVE-2019-19699
 * [Security] Sanitize service grid history inputs (#8790)
 * [Security] Fix sql injection on loadServiceFromHost (#8757)
 * [Security] Fix sql injection on dead code (#8758)
