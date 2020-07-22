@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   filterCard: {
     display: 'grid',
     gridGap: theme.spacing(2),
-    gridTemplateColumns: 'auto 1fr',
+    gridTemplateColumns: '1fr auto',
     alignItems: 'center',
     padding: theme.spacing(1),
   },
@@ -119,10 +119,10 @@ const EditFiltersPanel = (): JSX.Element | null => {
                           ref={draggable.innerRef}
                           {...draggable.draggableProps}
                         >
+                          <EditFilterCard filter={filter} />
                           <div {...draggable.dragHandleProps}>
                             <MoveIcon />
                           </div>
-                          <EditFilterCard filter={filter} />
                         </Paper>
                       )}
                     </Draggable>
