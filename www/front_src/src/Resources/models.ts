@@ -76,4 +76,5 @@ export interface ResourceEndpoints {
   details: string;
   statusGraph?: string;
   performanceGraph?: string;
+  timeline: string;
 }
