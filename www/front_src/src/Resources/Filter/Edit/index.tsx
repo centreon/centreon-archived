@@ -2,8 +2,13 @@ import * as React from 'react';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-import { Typography, makeStyles, LinearProgress } from '@material-ui/core';
-import MoveIcon from '@material-ui/icons/MoreVert';
+import {
+  Typography,
+  makeStyles,
+  LinearProgress,
+  Paper,
+} from '@material-ui/core';
+import MoveIcon from '@material-ui/icons/UnfoldMore';
 
 import { RightPanel, useRequest } from '@centreon/ui';
 
@@ -40,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(2),
     gridTemplateColumns: 'auto 1fr',
     alignItems: 'center',
+    padding: theme.spacing(1),
   },
 }));
 
@@ -107,7 +113,8 @@ const EditFiltersPanel = (): JSX.Element | null => {
                       index={index}
                     >
                       {(draggable): JSX.Element => (
-                        <div
+                        <Paper
+                          square
                           className={classes.filterCard}
                           ref={draggable.innerRef}
                           {...draggable.draggableProps}
@@ -116,7 +123,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
                             <MoveIcon />
                           </div>
                           <EditFilterCard filter={filter} />
-                        </div>
+                        </Paper>
                       )}
                     </Draggable>
                   ))}
