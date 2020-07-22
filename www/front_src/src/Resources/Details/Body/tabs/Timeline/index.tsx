@@ -18,12 +18,16 @@ import {
   merge,
   pipe,
   prop,
+  sortBy,
+  sort,
+  gt,
 } from 'ramda';
+import { Skeleton } from '@material-ui/lab';
 import { getFormattedDate } from '../../../../dateTime';
 import { ResourceEndpoints } from '../../../../models';
 import EventChip from './Chip/Event';
 import { TimelineEventByType } from './Event';
-import { TimelineEvent as TimelineEventModel } from './models';
+import { TimelineEvent } from './models';
 
 interface Props {
   endpoints: Pick<ResourceEndpoints, 'timeline'>;
@@ -52,6 +56,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const LoadingSkeleton = (): JSX.Element => {
+  return (
+    <>
+      <Skeleton width={125} height={20} style={{ transform: 'none' }} />
+      <Skeleton height={100} style={{ transform: 'none' }} />
+      <Skeleton height={100} style={{ transform: 'none' }} />
+    </>
+  );
+};
+
 const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -69,20 +83,23 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
 
   const timelineResult = timeline?.result || [];
 
-  const eventsByDate = reduceBy(
-    (acc, event) => acc.concat(event),
-    new Array<TimelineEventModel>(),
-    pipe(prop('date'), getFormattedDate),
-    timelineResult,
-  );
-
-  console.log(toPairs(eventsByDate));
+  const eventsByDate = pipe(
+    reduceBy<TimelineEvent, Array<TimelineEvent>>(
+      (acc, event) => acc.concat(event),
+      [] as Array<TimelineEvent>,
+      pipe(prop('date'), getFormattedDate),
+    ),
+    toPairs,
+    sortBy(([date]) => date),
+  )(timelineResult);
 
   return (
     <div className={classes.container}>
-      <ContentWithCircularLoading loading={isNil(timeline)} alignCenter>
-        <div className={classes.events}>
-          {toPairs(eventsByDate).map(
+      <div className={classes.events}>
+        {isNil(timeline) ? (
+          <LoadingSkeleton />
+        ) : (
+          eventsByDate.map(
             ([date, events]): JSX.Element => {
               return (
                 <div key={date} className={classes.events}>
@@ -91,20 +108,20 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
                   {events.map((event) => {
                     const { id, type } = event;
 
-                    const TimelineEvent = TimelineEventByType[type];
+                    const Event = TimelineEventByType[type];
 
                     return (
-                      <Paper key={id} square className={classes.event}>
-                        <TimelineEvent event={event} />
+                      <Paper key={id} className={classes.event}>
+                        <Event event={event} />
                       </Paper>
                     );
                   })}
                 </div>
               );
             },
-          )}
-        </div>
-      </ContentWithCircularLoading>
+          )
+        )}
+      </div>
     </div>
   );
 };
