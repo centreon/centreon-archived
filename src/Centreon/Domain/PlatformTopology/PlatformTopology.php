@@ -30,6 +30,13 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyInterface;
  */
 class PlatformTopology implements PlatformTopologyInterface
 {
+    // Type of servers
+    public const SERVER_TYPE_CENTRAL = 0;
+    public const SERVER_TYPE_POLLER = 1;
+    public const SERVER_TYPE_REMOTE = 2;
+    public const SERVER_TYPE_MAP = 3;
+    public const SERVER_TYPE_MBI = 4;
+
     /**
      * @var string Server name
      */
@@ -49,6 +56,11 @@ class PlatformTopology implements PlatformTopologyInterface
      * @var string Server IP address
      */
     private $serverAddress;
+
+    /**
+     * @var string Server parent IP
+     */
+    private $serverParentAddress;
 
     /**
      * @return string
@@ -107,6 +119,24 @@ class PlatformTopology implements PlatformTopologyInterface
     public function setServerAddress(string $serverAddress): self
     {
         $this->serverAddress = $serverAddress;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerParentAddress(): string
+    {
+        return $this->serverParentAddress;
+    }
+
+    /**
+     * @param string $serverParentAddress
+     * @return $this
+     */
+    public function setServerParentAddress(string $serverParentAddress): self
+    {
+        $this->serverAddress = $serverParentAddress;
         return $this;
     }
 }

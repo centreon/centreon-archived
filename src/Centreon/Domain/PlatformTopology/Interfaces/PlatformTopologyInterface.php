@@ -38,4 +38,10 @@ interface PlatformTopologyInterface
      * @return string Returns the server IP address
      */
     public function getServerAddress(): string;
+
+    /**
+     * @return string Returns the server parent IP
+     */
+    public function getServerParentAddress(): string;
+
 }
