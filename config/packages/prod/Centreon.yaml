@@ -113,14 +113,12 @@ services:
 
     Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface:
         class: Centreon\Domain\Monitoring\HostGroup\HostGroupService
-        public: true
 
     Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\HostGroup\HostGroupRepositoryRDB
 
     Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface:
         class: Centreon\Domain\Monitoring\ServiceGroup\ServiceGroupService
-        public: true
 
     Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\ServiceGroup\ServiceGroupRepositoryRDB
