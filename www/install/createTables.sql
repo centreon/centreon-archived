@@ -2326,6 +2326,15 @@ CREATE TABLE `user_filter` (
     CONSTRAINT `filter_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create platform_topology table
+CREATE TABLE `platform_topology` (
+    `ip_address` varchar(255) NOT NULL,
+    `hostname` varchar(255) NOT NULL,
+    `server_type` tinyint(1) NOT NULL DEFAULT 0,
+    `parent` varchar(255),
+    PRIMARY KEY (`ip_address`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

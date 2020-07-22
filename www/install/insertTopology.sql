@@ -270,6 +270,20 @@ INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./in
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60903,'./include/common/javascript/centreon/doClone.js',NULL);
 
 /*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
+
+-- Insert the current platform into the platform_topology table
+INSERT INTO `platform_topology` (
+    `ip_address`,
+    `hostname`,
+    `server_type`,
+    `parent`
+) VALUES (
+    (SELECT `ns_ip_address` FROM nagios_server WHERE localhost = '1'),
+    (SELECT `name` FROM nagios_server WHERE localhost = '1'),
+    0,
+    NULL
+);
+
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
