@@ -34,7 +34,22 @@
  *
  */
 
-function askQuestion($question, $hidden = false)
+require __DIR__ . '/../vendor/autoload.php';
+
+use Symfony\Component\Yaml\Yaml;
+
+/************************ */
+/*    UTILITY FUNCTIONS
+/************************ */
+
+ /**
+  * Ask question. The echo of keyboard can be disabled
+  *
+  * @param string $question
+  * @param boolean $hidden
+  * @return string
+  */
+function askQuestion(string $question, $hidden = false) : string
 {
     if ($hidden) {
         system("stty -echo");
@@ -50,13 +65,15 @@ function askQuestion($question, $hidden = false)
     return $response;
 }
 
+/************************ */
+/*     DATA RESOLVING
+/************************ */
+
 /**
  * Get script params
  */
-$opt = getopt('u:t:h:', ["help:","proxy::"]);
-/**
- * Gestion de  mdp CHEKC /tools/update_centreon_storage_logs
- */
+$opt = getopt('u:t:h:', ["help::","proxy::"]);
+
 /**
  * Format the --help message
  */
@@ -64,7 +81,6 @@ $helpMessage = <<<'EOD'
 Global Options:
   -u <mandatory>              username of your centreon-web account
   -t <mandatory>              the server type you want to register:
-            0: Central
             1: Poller
             2: Remote Server
             3: MAP Server
@@ -96,14 +112,14 @@ try {
     $username = $opt['u'];
     $serverType =
         filter_var($opt['t'], FILTER_VALIDATE_INT)
-        && in_array($opt['t'],[0, 1, 2, 3, 4])
+        && in_array($opt['t'], [1, 2, 3, 4])
         ? $opt['t']
         : false;
 
     if (!$serverType) {
         throw new \InvalidArgumentException(
             "-t must be one of those value"
-            . PHP_EOL . "0 => Central, 1 => Poller, 2 => Remote Server, 3 => Map Server, 4 => MBI Server" . PHP_EOL
+            . PHP_EOL . "1 => Poller, 2 => Remote Server, 3 => Map Server, 4 => MBI Server" . PHP_EOL
         );
     }
 
@@ -130,13 +146,12 @@ if (isset($opt['proxy'])) {
     $proxyInfo['password'] = askQuestion('proxy password: ', true);
     $proxyInfo['host'] = askQuestion('proxy host: ');
     $proxyInfo['port'] = (int) askQuestion('proxy port: ');
-    var_dump($proxyInfo);
 }
 
 /**
- * prepare payload for login to API
+ * prepare Login payload
  */
-$credentials = [
+$loginCredentials = [
     "security" => [
         "credentials" => [
             "login" => $username,
@@ -144,8 +159,60 @@ $credentials = [
         ]
     ]
 ];
-$credentials = json_encode($credentials);
-$version = "beta";
+
+/**
+ * Prepare Server Register payload
+ */
+$serverHostName = gethostname();
+$serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
+$registerPayload = [
+    "server_name" => $serverHostName,
+    "server_type" => (int) $serverType,
+    "ip_address" => $serverIp
+];
+
+/**
+ * Convert payloads to JSON
+ */
+$loginCredentials = json_encode($loginCredentials);
+$registerPayload = json_encode($registerPayload);
+
+/**
+ * Get API Version
+ */
+$apiConfig = Yaml::parseFile(__DIR__ . '/../config/routes/centreon.yaml');
+$version = $apiConfig['centreon']['defaults']['version'];
+
+/**
+ * Display Summary of action
+ */
+$summary = <<<EOD
+Summary of the informations that will be send:
+
+Api Connection:
+username: $username
+password: $password
+target server: $host
+
+Pending Registration Server:
+server name: $serverHostName
+server type: $serverType
+server IP: $serverIp
+
+
+EOD;
+
+echo $summary;
+
+$proceed = askQuestion('Do you want to register this server with those informations ? (y/n)');
+$proceed = strtolower($proceed);
+if($proceed !== "y"){
+    exit;
+}
+
+/************************ */
+/*     API REQUEST
+/************************ */
 
 /**
  * Connection to Api
@@ -159,7 +226,7 @@ $loginUrl .= '/centreon/api/' . $version . '/login';
 $ch = curl_init($loginUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $credentials);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 if (isset($proxyInfo)) {
@@ -184,41 +251,28 @@ $result = json_decode($result, true);
 if (isset($result['security']['token'])) {
     $APIToken = $result['security']['token'];
 } elseif (isset($result['code'])) {
-    echo 'error code: ' . $result['code'] . PHP_EOL;
-    echo 'error message: ' . $result['message'] . PHP_EOL;
+    echo 'error code: ' . $result['code'] . PHP_EOL .
+    'error message: ' . $result['message'] . PHP_EOL;
     exit;
 } else {
-    echo 'unhandled error' . PHP_EOL;
+    echo 'error code: 400' . PHP_EOL .
+    'error message: Can\'t connect to the api' . PHP_EOL;
     exit;
 }
 
-/**
- * Prepare Server Register payload
- */
-$host = gethostname();
-
-$serverIp = shell_exec("hostname -I | awk ' {print $1}'");
-
-$payload = [
-    "server_name" => $host,
-    "server_type" => $serverType,
-    "ip_address" => trim($serverIp)
-];
-var_dump($APIToken,$payload);
-die;
 /**
  * POST Request to server registration endpoint
  */
-$curlURL = $protocol . '://' . $host;
+$registerUrl = $protocol . '://' . $host;
 if(!empty($port)){
-    $curlURL .= ':' . $port;
+    $registerUrl .= ':' . $port;
 }
-$curlURL .= "/centreon/api/$version/configuration/register";
+$registerUrl .= "/centreon/api/$version/configuration/register";
 
-$ch = curl_init($curlURL);
+$ch = curl_init($registerUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-TOKEN: $APIToken"]);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 if (isset($proxyInfo)) {
@@ -229,12 +283,16 @@ if (isset($proxyInfo)) {
 
 $result = curl_exec($ch);
 
-if(!$result){
+if (!$result) {
     echo curl_error($ch);
     exit;
 }
 
 curl_close($ch);
-/**
- * TODO: Handle Response
- */
+$result = json_decode($result, true);
+
+if (isset($result['code'],$result['message'])) {
+    echo 'code: ' . $result['code'] . PHP_EOL .
+    'message: ' . $result['message'] . PHP_EOL;
+}
+exit;
