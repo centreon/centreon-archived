@@ -1,5 +1,4 @@
 const { merge } = require('webpack-merge');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const baseConfig = require('./webpack.config');
 
@@ -10,5 +9,4 @@ module.exports = merge(baseConfig, {
     maxEntrypointSize: 1500000,
     hints: 'error',
   },
-  plugins: [new BundleAnalyzerPlugin()],
 });
