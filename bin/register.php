@@ -291,6 +291,9 @@ if (!$result) {
 curl_close($ch);
 $result = json_decode($result, true);
 
+/**
+ * Display response of API
+ */
 if (isset($result['code'],$result['message'])) {
     echo 'code: ' . $result['code'] . PHP_EOL .
     'message: ' . $result['message'] . PHP_EOL;
