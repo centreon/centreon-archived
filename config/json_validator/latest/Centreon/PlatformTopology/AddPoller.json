@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Add or update a user filter",
+  "type": "object",
+  "required": ["server_name", "server_type", "ip_address"],
+  "additionalProperties": false,
+  "properties": {
+    "server_name": {
+      "type": "string"
+    },
+    "server_type": {
+      "type": "integer"
+    },
+    "ip_address": {
+      "type": "string"
+    }
+  }
+}
