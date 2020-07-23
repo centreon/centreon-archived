@@ -126,11 +126,11 @@ class FilterServiceTest extends TestCase
             $this->filterRepository
         );
 
-        $checkedCriterias = $filterService->checkCriterias($this->filter->getCriterias());
+        $filterService->checkCriterias($this->filter->getCriterias());
 
         $this->assertCount(
             1,
-            $checkedCriterias[0]->getValue()
+            $this->filter->getCriterias()[0]->getValue()
         );
 
         $this->assertEquals(
@@ -138,7 +138,7 @@ class FilterServiceTest extends TestCase
                 'id' => $renamedHostGroup->getId(),
                 'name' => $renamedHostGroup->getName(),
             ],
-            $checkedCriterias[0]->getValue()[0]
+            $this->filter->getCriterias()[0]->getValue()[0]
         );
     }
 
@@ -160,11 +160,11 @@ class FilterServiceTest extends TestCase
             $this->filterRepository
         );
 
-        $checkedCriterias = $filterService->checkCriterias($this->filter->getCriterias());
+        $filterService->checkCriterias($this->filter->getCriterias());
 
         $this->assertCount(
             0,
-            $checkedCriterias[1]->getValue()
+            $this->filter->getCriterias()[1]->getValue()
         );
     }
 }
