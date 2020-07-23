@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Filter;
 
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
@@ -99,7 +100,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
             return $this->filterRepository->addFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException(
-                sprintf(_('Error when adding filter %s', $filter->getName())),
+                sprintf(_('Error when adding filter %s'), $filter->getName()),
                 0,
                 $ex
             );
@@ -112,14 +113,12 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
     public function updateFilter(Filter $filter): void
     {
         try {
-            $filter->setCriterias(
-                $this->checkCriterias($filter->getCriterias())
-            );
+            $this->checkCriterias($filter->getCriterias());
 
             $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException(
-                sprintf(_('Error when updating filter %s', $filter->getName())),
+                sprintf(_('Error when updating filter %s'), $filter->getName()),
                 0,
                 $ex
             );
@@ -131,15 +130,15 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
      */
     public function checkCriterias(array $criterias): array
     {
-        foreach ($criterias as &$criteria) {
-            if (isset($criteria['object_type']) && isset($criteria['value'])) {
-                switch ($criteria['object_type']) {
+        foreach ($criterias as $criteria) {
+            if ($criteria->getType() === 'multi_select') {
+                switch ($criteria->getObjectType()) {
                     case 'host_group':
-                        $hostGroupIds = array_column($criteria['value'], 'id');
+                        $hostGroupIds = array_column($criteria->getValue(), 'id');
                         $hostGroups = $this->hostGroupService
                             ->filterByContact($this->contact)
                             ->findHostGroupsByIds($hostGroupIds);
-                        $criteria['value'] = array_map(
+                        $criteria->setValue(array_map(
                             function ($hostGroup) {
                                 return [
                                     'id' => $hostGroup->getId(),
@@ -147,14 +146,14 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                                 ];
                             },
                             $hostGroups
-                        );
+                        ));
                         break;
                     case 'service_group':
-                        $serviceGroupIds = array_column($criteria['value'], 'id');
+                        $serviceGroupIds = array_column($criteria->getValue(), 'id');
                         $serviceGroups = $this->serviceGroupService
                             ->filterByContact($this->contact)
                             ->findServiceGroupsByIds($serviceGroupIds);
-                        $criteria['value'] = array_map(
+                        $criteria->setValue(array_map(
                             function ($serviceGroup) {
                                 return [
                                     'id' => $serviceGroup->getId(),
@@ -162,7 +161,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                                 ];
                             },
                             $serviceGroups
-                        );
+                        ));
                         break;
                 }
             }
@@ -180,7 +179,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
             $this->filterRepository->deleteFilter($filter);
         } catch (\Exception $ex) {
             throw new FilterException(
-                sprintf(_('Error when deleting filter %s', $filter->getName())),
+                sprintf(_('Error when deleting filter %s'), $filter->getName()),
                 0,
                 $ex
             );
@@ -208,7 +207,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
             return $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
         } catch (\Exception $ex) {
             throw new FilterException(
-                sprintf(_('Error when searching filter id %d', $filterId)),
+                sprintf(_('Error when searching filter id %d'), $filterId),
                 0,
                 $ex
             );

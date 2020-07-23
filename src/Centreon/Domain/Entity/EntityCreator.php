@@ -292,7 +292,7 @@ class EntityCreator
                 $camelCaseName .= $char;
             }
         }
-        return 'set' . $camelCaseName;
+        return 'set' . ucfirst($this->convertSnakeCaseToCamelCase($property));
     }
 
     /**
@@ -301,7 +301,7 @@ class EntityCreator
      * @param string $camelCaseName Name in camelCase format
      * @return string Returns the name converted in snake case format
      */
-    private function convertCamelCaseToSnakeCase(string $camelCaseName): string
+    public static function convertCamelCaseToSnakeCase(string $camelCaseName): string
     {
         $snakeCaseName = '';
         for ($index = 0; $index < strlen($camelCaseName); $index++) {
@@ -313,5 +313,27 @@ class EntityCreator
             }
         }
         return $snakeCaseName;
+    }
+
+    /**
+     * Convert a string in snake case format to camel case
+     *
+     * @param string $snakeCaseName Name in snake format
+     * @return string Returns the name converted in camel case format
+     */
+    public static function convertSnakeCaseToCamelCase(string $snakeCaseName): string
+    {
+        $camelCaseName = '';
+        for ($index = 0; $index < strlen($snakeCaseName); $index++) {
+            $char = $snakeCaseName[$index];
+            if ($char === '_') {
+                $index++;
+                $camelCaseName .= strtoupper($snakeCaseName[$index]);
+            } else {
+                $camelCaseName .= $char;
+            }
+        }
+
+        return $camelCaseName;
     }
 }

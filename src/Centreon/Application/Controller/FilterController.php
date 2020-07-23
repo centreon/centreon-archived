@@ -24,6 +24,7 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Filter\Interfaces\FilterServiceInterface;
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\Filter\FilterException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
@@ -33,6 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
+use Centreon\Domain\Entity\EntityCreator;
 
 /**
  * Used to manage filters of the current user
@@ -110,11 +112,22 @@ class FilterController extends AbstractController
             )
         );
 
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = [];
+        foreach ($filterToAdd['criterias'] as $filterCriteria) {
+            $filterCriterias[] = EntityCreator::createEntityByArray(
+                FilterCriteria::class,
+                $filterCriteria
+            );
+        }
+
         $filter = (new Filter())
             ->setPageName($pageName)
             ->setUserId($user->getId())
             ->setName($filterToAdd['name'])
-            ->setCriterias($filterToAdd['criterias']);
+            ->setCriterias($filterCriterias);
 
         $filterId = $this->filterService->addFilter($filter);
 
@@ -128,12 +141,16 @@ class FilterController extends AbstractController
      * Entry point to update a filter for a user.
      *
      * @param Request $request
+     * @param SerializerInterface $serializer
      * @param string $pageName
      * @param int $filterId
      * @return View
      */
-    public function updateFilter(Request $request, string $pageName, int $filterId): View
-    {
+    public function updateFilter(
+        Request $request,
+        string $pageName,
+        int $filterId
+    ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         $user = $this->getUser();
@@ -159,13 +176,23 @@ class FilterController extends AbstractController
             );
         }
 
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = [];
+        foreach ($filterToUpdate['criterias'] as $filterCriteria) {
+            $filterCriterias[] = EntityCreator::createEntityByArray(
+                FilterCriteria::class,
+                $filterCriteria
+            );
+        }
+
         $filter
             ->setName($filterToUpdate['name'])
-            ->setCriterias($filterToUpdate['criterias'])
+            ->setCriterias($filterCriterias)
             ->setOrder($filter->getOrder());
 
-        $this->filterService
-            ->updateFilter($filter);
+        $this->filterService->updateFilter($filter);
 
         $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
         $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
@@ -186,6 +213,7 @@ class FilterController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         $user = $this->getUser();
+        $this->filterService->filterByContact($user);
 
         $propertyToPatch = json_decode((string) $request->getContent(), true);
         if (!is_array($propertyToPatch)) {

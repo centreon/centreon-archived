@@ -25,10 +25,12 @@ namespace Centreon\Infrastructure\Filter;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use JMS\Serializer\SerializerInterface;
 
 /**
  * This class is designed to manage the repository of the monitoring servers
@@ -42,9 +44,10 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
      */
     private $sqlRequestTranslator;
 
-    public function __construct(DatabaseConnection $db)
+    public function __construct(DatabaseConnection $db, SerializerInterface $serializer)
     {
         $this->db = $db;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -69,6 +72,14 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     {
         $maxOrder = $this->findMaxOrderByUserId($filter->getUserId(), $filter->getPageName());
 
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = $this->serializer->serialize(
+            $filter->getCriterias(),
+            'json'
+        );
+
         $request = $this->translateDbName(
             'INSERT INTO `:db`.user_filter
             (name, user_id, page_name, criterias, `order`)
@@ -78,7 +89,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->bindValue(':name', $filter->getName(), \PDO::PARAM_STR);
         $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
         $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
-        $statement->bindValue(':criterias', json_encode($filter->getCriterias()), \PDO::PARAM_STR);
+        $statement->bindValue(':criterias', $filterCriterias, \PDO::PARAM_STR);
         $statement->bindValue(':order', $maxOrder + 1, \PDO::PARAM_INT);
         $statement->execute();
 
@@ -114,6 +125,14 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
             );
         }
 
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = $this->serializer->serialize(
+            $filter->getCriterias(),
+            'json'
+        );
+
         $request = $this->translateDbName('
             UPDATE `:db`.user_filter
             SET name = :name, criterias = :criterias, `order` = :order
@@ -121,9 +140,10 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
             AND page_name = :page_name
             AND id = :filter_id
         ');
+
         $statement = $this->db->prepare($request);
         $statement->bindValue(':name', $filter->getName(), \PDO::PARAM_STR);
-        $statement->bindValue(':criterias', json_encode($filter->getCriterias()), \PDO::PARAM_STR);
+        $statement->bindValue(':criterias', $filterCriterias, \PDO::PARAM_STR);
         $statement->bindValue(':order', $filter->getOrder(), \PDO::PARAM_INT);
         $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
         $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
@@ -235,18 +255,29 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         }
 
         $filters = [];
-        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $result['criterias'] = json_decode($result['criterias'], true);
+        while (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            /**
+             * @var FilterCriteria[] $filterCriterias
+             */
+            $filterCriterias = [];
+            foreach (json_decode($filter['criterias'], true) as $filterCriteria) {
+                $filterCriterias[] = EntityCreator::createEntityByArray(
+                    FilterCriteria::class,
+                    $filterCriteria
+                );
+            }
+
+            $filter['criterias'] = $filterCriterias;
 
             /**
-             * @var Filter $filter
+             * @var Filter $filterEntity
              */
-            $filter = EntityCreator::createEntityByArray(
+            $filterEntity = EntityCreator::createEntityByArray(
                 Filter::class,
-                $result
+                $filter
             );
 
-            $filters[] = $filter;
+            $filters[] = $filterEntity;
         }
 
         return $filters;
@@ -272,11 +303,28 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->execute();
 
         if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $filter['criterias'] = json_decode($filter['criterias'], true);
-            return EntityCreator::createEntityByArray(
+            /**
+             * @var FilterCriteria[] $filterCriterias
+             */
+            $filterCriterias = [];
+            foreach (json_decode($filter['criterias'], true) as $filterCriteria) {
+                $filterCriterias[] = EntityCreator::createEntityByArray(
+                    FilterCriteria::class,
+                    $filterCriteria
+                );
+            }
+
+            $filter['criterias'] = $filterCriterias;
+
+            /**
+             * @var Filter $filterEntity
+             */
+            $filterEntity = EntityCreator::createEntityByArray(
                 Filter::class,
                 $filter
             );
+
+            return $filterEntity;
         }
 
         return null;
@@ -302,11 +350,28 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->execute();
 
         if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $filter['criterias'] = json_decode($filter['criterias'], true);
-            return EntityCreator::createEntityByArray(
+            /**
+             * @var FilterCriteria[] $filterCriterias
+             */
+            $filterCriterias = [];
+            foreach (json_decode($filter['criterias'], true) as $filterCriteria) {
+                $filterCriterias[] = EntityCreator::createEntityByArray(
+                    FilterCriteria::class,
+                    $filterCriteria
+                );
+            }
+
+            $filter['criterias'] = $filterCriterias;
+
+            /**
+             * @var Filter $filterEntity
+             */
+            $filterEntity = EntityCreator::createEntityByArray(
                 Filter::class,
                 $filter
             );
+
+            return $filterEntity;
         }
 
         return null;
