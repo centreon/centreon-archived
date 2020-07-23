@@ -30,15 +30,17 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
     public function __construct(PlatformTopologyRepositoryInterface $PlatformTopologyRepository)
     {
-
+        // TODO
     }
 
-/*
-    public function addServerToTopology()
+    /**
+     * @param PlatformTopology $platformTopology
+     * @return int
+     */
+    public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
-
+        // TODO: Implement addPlatformToTopology() method.
     }
-    */
 }
 
 

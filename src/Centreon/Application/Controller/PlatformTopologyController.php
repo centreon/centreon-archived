@@ -22,7 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Filter\FilterException;
+use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
+use JsonSchema\Constraints\Constraint;
+use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
@@ -50,7 +54,38 @@ class PlatformTopologyController extends AbstractController
     }
 
     // WIP ;)
-    private function validatePlatformTopologySchema(array $platformToAdd, string $realpath) {}
+
+    /**
+     * Validate platform topology filter according to json schema
+     *
+     * @param array $platformToAdd json sent
+     * @param string $schemaPath
+     * @return void
+     * @throws FilterException
+     */
+    private function validatePlatformTopologySchema(array $platformToAdd, string $schemaPath): void
+    {
+        $platformTopologySchemaToValidate = Validator::arrayToObjectRecursive($platformToAdd);
+        $validator = new Validator();
+        $validator->validate(
+            $platformTopologySchemaToValidate,
+            (object) ['ref' => 'file://' . $schemaPath],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new FilterException($message);
+        }
+    }
+
+    // WIP
+    private function checkPlatformTopologyUnicity(array $platformToAdd)
+    {
+    }
 
     /**
      * Entry point to register a new server
@@ -62,40 +97,41 @@ class PlatformTopologyController extends AbstractController
      */
     public function addServerToTopology(Request $request): View
     {
+        // check user rights
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        $user = $this->getUser();
-
+        // get http request content
         $platformToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($platformToAdd)) {
             throw new PlatformTopologyException(_('Error when decoding sent data'));
         }
 
+        // check data consistency
         $this->validatePlatformTopologySchema(
             $platformToAdd,
             realpath(
                 $this->getParameter('centreon_path')
-                . 'config/json_validator/latest/Centreon/PlatformTopology/AddPoller.json'
+                . 'config/json_validator/latest/Centreon/PlatformTopology/AddServer.json'
             )
         );
-        
-        
-        if (!$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
 
-        
-        // validate consistency of data
+        // get parent address
+        // currently, only pollers are added, so the parent IP is a central
+        // temporarily hard coding its address
+        $parentAddress = "127.0.0.1";
 
-        // instanciate object
+        // check that server_name and server_ip are not already saved in the DB
+        $this->checkPlatformTopologyUnicity($platformToAdd);
 
-        // set data
+        $setPlatformTopology = (new PlatformTopology())
+            ->setServerAddress($platformToAdd['ip_address'])
+            ->setServerName($platformToAdd['server_name'])
+            ->setserverType($platformToAdd['server_type'])
+            ->setServerParentAddress($parentAddress);
 
-        // send data to service
+        $this->platformTopologyService->addPlatformToTopology($setPlatformTopology);
 
-            // service -> call repository -> insert in DB
-    
-    
-    
+        // not sure about the consistency of the return
+        return $this->view($setPlatformTopology);
     }
 }
