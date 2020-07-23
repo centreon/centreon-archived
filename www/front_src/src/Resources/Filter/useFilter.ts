@@ -33,11 +33,11 @@ type CriteriaValuesDispatch = React.Dispatch<
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
 type CustomFiltersDispatch = React.Dispatch<
-  React.SetStateAction<Array<Filter> | undefined>
+  React.SetStateAction<Array<Filter>>
 >;
 
 export interface FilterState {
-  customFilters?: Array<Filter>;
+  customFilters: Array<Filter>;
   filter: Filter;
   updatedFilter: Filter;
   setFilter: FilterDispatch;
@@ -57,7 +57,7 @@ export interface FilterState {
   setServiceGroups: CriteriaValuesDispatch;
   loadCustomFilters: () => Promise<Array<Filter>>;
   setCustomFilters: CustomFiltersDispatch;
-  sendingListCustomFiltersRequest: boolean;
+  customFiltersLoading: boolean;
   editPanelOpen: boolean;
   setEditPanelOpen: EditPanelOpenDitpach;
 }
@@ -65,13 +65,13 @@ export interface FilterState {
 const useFilter = (): FilterState => {
   const {
     sendRequest: sendListCustomFiltersRequest,
-    sending: sendingListCustomFiltersRequest,
+    sending: customFiltersLoading,
   } = useRequest({
     request: listCustomFilters,
     decoder: listCustomFiltersDecoder,
   });
 
-  const [customFilters, setCustomFilters] = React.useState<Array<Filter>>();
+  const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
   const [filter, setFilter] = React.useState(getStoredOrDefaultFilter());
   const [currentSearch, setCurrentSearch] = React.useState<string | undefined>(
     getDefaultSearch(),
@@ -174,7 +174,7 @@ const useFilter = (): FilterState => {
     setServiceGroups,
     loadCustomFilters,
     setCustomFilters,
-    sendingListCustomFiltersRequest,
+    customFiltersLoading,
     editPanelOpen,
     setEditPanelOpen,
   };

@@ -9,7 +9,9 @@ import {
   fireEvent,
   act,
 } from '@testing-library/react';
-import { omit } from 'ramda';
+import { omit, head, prop } from 'ramda';
+import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
+
 import EditFilterPanel from '.';
 import Context, { ResourceContext } from '../../Context';
 import useFilter from '../useFilter';
@@ -37,54 +39,50 @@ const EditFilterPanelTest = (): JSX.Element => {
 };
 
 const retrievedCustomFilters = {
-  result: [
-    {
-      id: 0,
-      name: 'MyFilter',
-      criterias: [
-        {
-          name: 'resource_types',
-          type: 'multi_select',
-          value: [],
-        },
-        {
-          name: 'states',
-          type: 'multi_select',
-          value: [],
-        },
-        {
-          name: 'statuses',
-          type: 'multi_select',
-          value: [],
-        },
-        {
-          name: 'service_groups',
-          type: 'multi_select',
-          value: [],
-          object_type: 'service_groups',
-        },
-        {
-          name: 'host_groups',
-          type: 'multi_select',
-          value: [],
-          object_type: 'host_groups',
-        },
-        {
-          name: 'search',
-          type: 'text',
-          value: undefined,
-        },
-      ],
-    },
-  ],
+  result: [0, 1].map((index) => ({
+    id: index,
+    name: `My filter ${index}`,
+    criterias: [
+      {
+        name: 'resource_types',
+        type: 'multi_select',
+        value: [],
+      },
+      {
+        name: 'states',
+        type: 'multi_select',
+        value: [],
+      },
+      {
+        name: 'statuses',
+        type: 'multi_select',
+        value: [],
+      },
+      {
+        name: 'service_groups',
+        type: 'multi_select',
+        value: [],
+        object_type: 'service_groups',
+      },
+      {
+        name: 'host_groups',
+        type: 'multi_select',
+        value: [],
+        object_type: 'host_groups',
+      },
+      {
+        name: 'search',
+        type: 'text',
+        value: undefined,
+      },
+    ],
+  })),
   meta: {
     page: 1,
     limit: 30,
     total: 1,
   },
 };
-
-const [customFilter] = retrievedCustomFilters.result;
 
 const renderEditFilterPanel = (): RenderResult =>
   render(<EditFilterPanelTest />);
@@ -93,6 +91,7 @@ describe(EditFilterPanel, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValue({ data: retrievedCustomFilters });
     mockedAxios.put.mockResolvedValue({ data: {} });
+    mockedAxios.patch.mockResolvedValue({ data: {} });
     mockedAxios.delete.mockResolvedValue({ data: {} });
   });
 
@@ -102,8 +101,10 @@ describe(EditFilterPanel, () => {
     mockedAxios.delete.mockReset();
   });
 
-  it('sends an update request when a filter input is changed and the enter key is pressed', async () => {
+  it('renames the filter and sends an update request the corresponding input is changed and the enter key is pressed', async () => {
     const { getByLabelText } = renderEditFilterPanel();
+
+    const [firstFilter] = retrievedCustomFilters.result;
 
     act(() => {
       filterState.loadCustomFilters();
@@ -117,7 +118,7 @@ describe(EditFilterPanel, () => {
     const newName = 'New name';
 
     const renameFilterInput = getByLabelText(
-      `${labelFilter}-${customFilter.id}-${labelName}`,
+      `${labelFilter}-${firstFilter.id}-${labelName}`,
     );
 
     fireEvent.change(renameFilterInput, {
@@ -131,17 +132,19 @@ describe(EditFilterPanel, () => {
     });
 
     await waitFor(() => {
+      expect(filterState.customFilters[0].name).toEqual(newName);
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        `${filterEndpoint}/${customFilter.id}`,
-        omit(['id'], { ...customFilter, name: newName }),
+        `${filterEndpoint}/${firstFilter.id}`,
+        omit(['id'], { ...firstFilter, name: newName }),
         expect.anything(),
       );
-      expect(mockedAxios.get).toHaveBeenCalled();
     });
   });
 
-  it('sends a delete request when a filter delete button is clicked', async () => {
-    const { getByTitle, getByText } = renderEditFilterPanel();
+  it('deletes a filter and sends a delete request when the corresponding delete button is clicked', async () => {
+    const { getAllByTitle, getByText } = renderEditFilterPanel();
+
+    const [firstFilter] = retrievedCustomFilters.result;
 
     act(() => {
       filterState.loadCustomFilters();
@@ -152,15 +155,54 @@ describe(EditFilterPanel, () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
-    fireEvent.click(getByTitle(labelDelete).firstElementChild as HTMLElement);
+    fireEvent.click(
+      head(getAllByTitle(labelDelete))?.firstElementChild as HTMLElement,
+    );
     fireEvent.click(getByText(labelDelete).parentElement as HTMLElement);
 
     await waitFor(() => {
+      expect(filterState.customFilters.map(prop('id'))).not.toContain(
+        firstFilter.id,
+      );
       expect(mockedAxios.delete).toHaveBeenCalledWith(
-        `${filterEndpoint}/${customFilter.id}`,
+        `${filterEndpoint}/${firstFilter.id}`,
         expect.anything(),
       );
+    });
+  });
+
+  it('reorders the filter and sends a reorder request when it is dragged to a different position', async () => {
+    const [firstFilter] = retrievedCustomFilters.result;
+
+    const { getByText, container } = renderEditFilterPanel();
+
+    act(() => {
+      filterState.loadCustomFilters();
+      filterState.setEditPanelOpen(true);
+    });
+
+    await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    const firstFilterDraggable = container.querySelector(
+      `[data-rbd-drag-handle-draggable-id="${firstFilter.id}"]`,
+    );
+
+    await makeDnd({
+      getByText,
+      getDragEl: () => firstFilterDraggable,
+      direction: DND_DIRECTION_DOWN,
+      positions: 1,
+    });
+
+    await waitFor(() => {
+      expect(filterState.customFilters.map(prop('id'))).toEqual([1, 0]);
+      expect(mockedAxios.patch).toHaveBeenCalledWith(
+        `${filterEndpoint}/${firstFilter.id}`,
+        { order: 1 },
+        expect.anything(),
+      );
     });
   });
 });
