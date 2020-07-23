@@ -35,7 +35,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
     /**
      * @param PlatformTopology $platformTopology
-     * @return int
+     * @return void
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {

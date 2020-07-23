@@ -30,7 +30,7 @@ interface PlatformTopologyServiceInterface
     /**
      * Add new server to DB
      * @param PlatformTopology $platformTopology
-     * @return int the return code to be send to the script
+     * @return void
      * @throws PlatformTopologyException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
