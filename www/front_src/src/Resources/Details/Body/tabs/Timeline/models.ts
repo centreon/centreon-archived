@@ -5,6 +5,7 @@ export interface TimelineEventObject {
   status?: string;
   type?: string;
   severity_code?: number;
+  notification_contact?: string;
 }
 
 export interface TimelineEvent {

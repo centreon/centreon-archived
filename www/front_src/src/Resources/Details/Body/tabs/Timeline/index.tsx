@@ -5,9 +5,15 @@ import {
   getData,
   ListingModel,
   ContentWithCircularLoading,
+  useIntersectionObserver,
 } from '@centreon/ui';
 
-import { makeStyles, Paper, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Paper,
+  Typography,
+  CircularProgress,
+} from '@material-ui/core';
 import {
   isNil,
   groupBy,
@@ -21,6 +27,9 @@ import {
   sortBy,
   sort,
   gt,
+  last,
+  concat,
+  isEmpty,
 } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import { getFormattedDate } from '../../../../dateTime';
@@ -28,23 +37,28 @@ import { ResourceEndpoints } from '../../../../models';
 import EventChip from './Chip/Event';
 import { TimelineEventByType } from './Event';
 import { TimelineEvent } from './models';
+import { listTimelineEvents } from './api';
 
 interface Props {
   endpoints: Pick<ResourceEndpoints, 'timeline'>;
 }
 
-type TimelineListing = ListingModel<TimelineEventModel>;
+type TimelineListing = ListingModel<TimelineEvent>;
 
 const useStyles = makeStyles((theme) => ({
   container: {
     width: '100%',
     height: '100%',
+    display: 'grid',
+    alignItems: 'center',
+    justifyItems: 'center',
+    gridGap: theme.spacing(1),
   },
   events: {
     display: 'grid',
     gridAutoFlow: 'row',
-    padding: theme.spacing(1),
     gridGap: theme.spacing(1),
+    width: '100%',
   },
   event: {
     display: 'grid',
@@ -69,19 +83,36 @@ const LoadingSkeleton = (): JSX.Element => {
 const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const [timeline, setTimeline] = React.useState<TimelineListing>();
+  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
+  const [page, setPage] = React.useState(1);
+  const [limit] = React.useState(2);
+  const [maxPage, setMaxPage] = React.useState(1);
 
   const { timeline: timelineEndpoint } = endpoints;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
-    request: getData,
+    request: listTimelineEvents,
   });
 
   React.useEffect(() => {
-    sendRequest('http://localhost:5000/mock/timeline').then(setTimeline);
-  }, []);
+    sendRequest({
+      endpoint: 'http://localhost:5000/mock/timeline',
+      params: { page, limit },
+    }).then(({ result, meta }) => {
+      setTimeline(timeline.concat(result));
 
-  const timelineResult = timeline?.result || [];
+      setMaxPage(Math.ceil(meta.total / meta.limit));
+    });
+  }, [page]);
+
+  const infiniteScrollTriggerRef = useIntersectionObserver({
+    maxPage,
+    page,
+    loading: sending,
+    action: () => {
+      setPage(page + 1);
+    },
+  });
 
   const eventsByDate = pipe(
     reduceBy<TimelineEvent, Array<TimelineEvent>>(
@@ -91,37 +122,53 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
     ),
     toPairs,
     sortBy(([date]) => date),
-  )(timelineResult);
+  )(timeline);
+
+  const dates = eventsByDate.map(([date]) => date);
+
+  const loading = isEmpty(timeline) && sending;
+  const loadingMore = !isEmpty(timeline) && sending;
 
   return (
     <div className={classes.container}>
       <div className={classes.events}>
-        {isNil(timeline) ? (
+        {loading ? (
           <LoadingSkeleton />
         ) : (
           eventsByDate.map(
             ([date, events]): JSX.Element => {
+              const isLastDate = equals(last(dates), date);
+              const refProp = isLastDate
+                ? { ref: infiniteScrollTriggerRef }
+                : {};
+
               return (
-                <div key={date} className={classes.events}>
-                  <Typography variant="h6">{date}</Typography>
+                <>
+                  <div key={date} className={classes.events}>
+                    <Typography variant="h6">{date}</Typography>
 
-                  {events.map((event) => {
-                    const { id, type } = event;
+                    {events.map((event) => {
+                      const { id, type } = event;
 
-                    const Event = TimelineEventByType[type];
+                      const Event = TimelineEventByType[type];
 
-                    return (
-                      <Paper key={id} className={classes.event}>
-                        <Event event={event} />
-                      </Paper>
-                    );
-                  })}
-                </div>
+                      return (
+                        <>
+                          <Paper key={id} className={classes.event}>
+                            <Event event={event} />
+                          </Paper>
+                        </>
+                      );
+                    })}
+                  </div>
+                  <div {...refProp} />
+                </>
               );
             },
           )
         )}
       </div>
+      {loadingMore && <CircularProgress />}
     </div>
   );
 };
