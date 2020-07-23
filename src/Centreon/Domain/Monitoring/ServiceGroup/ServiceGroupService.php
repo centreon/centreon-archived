@@ -70,6 +70,10 @@ final class ServiceGroupService extends AbstractCentreonService implements Servi
      */
     public function findServiceGroupsByIds(array $serviceGroupIds): array
     {
-        return $this->serviceGroupRepository->findServiceGroupsByIds($serviceGroupIds);
+        try {
+            return $this->serviceGroupRepository->findServiceGroupsByIds($serviceGroupIds);
+        } catch (\Throwable $e) {
+            throw new ServiceGroupException(_('Error when searching servicegroups'), 0, $e);
+        }
     }
 }
