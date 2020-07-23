@@ -64,7 +64,7 @@ class FilterController extends AbstractController
      *
      * @param array $filter sent json
      * @return void
-     * @throws Exception
+     * @throws \Exception
      * @throws FilterException
      */
     private function validateFilterSchema(array $filter, string $schemaPath): void
@@ -141,7 +141,6 @@ class FilterController extends AbstractController
      * Entry point to update a filter for a user.
      *
      * @param Request $request
-     * @param SerializerInterface $serializer
      * @param string $pageName
      * @param int $filterId
      * @return View
@@ -248,7 +247,6 @@ class FilterController extends AbstractController
     /**
      * Entry point to delete a filter for a user.
      *
-     * @param Request $request
      * @param string $pageName
      * @param int $filterId
      * @return View
