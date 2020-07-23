@@ -19,29 +19,3 @@
  *
  */
 declare(strict_types=1);
-
-namespace Centreon\Domain\PlatformTopology\Interfaces;
-
-interface PlatformTopologyInterface
-{
-    /**
-     * @return string Returns the server name
-     */
-    public function getServerName(): string;
-
-    /**
-     * @return int Returns the server type
-     */
-    public function getServerType(): int;
-
-    /**
-     * @return string Returns the server IP address
-     */
-    public function getServerAddress(): string;
-
-    /**
-     * @return string Returns the server parent IP
-     */
-    public function getServerParentAddress(): string;
-
-}

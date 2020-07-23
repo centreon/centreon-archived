@@ -20,30 +20,18 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology;
+namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
+use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 
-
-class PlatformTopologyService implements PlatformTopologyServiceInterface
+interface PlatformTopologyServiceInterface
 {
-
-    public function __construct(PlatformTopologyRepositoryInterface $PlatformTopologyRepository)
-    {
-
-    }
-
-/*
-    public function addServerToTopology()
-    {
-
-    }
-    */
+    /**
+     * Add new server to DB
+     * @param PlatformTopology $platformTopology
+     * @return int the return code to be send to the script
+     * @throws PlatformTopologyException
+     */
+    public function addServerToTopology(PlatformTopology $platformTopology): int;
 }
-
-
-
-
-
-
-// methodes qui gereront l'ajout d'un server

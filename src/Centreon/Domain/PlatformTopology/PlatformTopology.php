@@ -22,13 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyInterface;
-
 /**
  * Class designed to retrieve servers to be added using the wizard
  *
  */
-class PlatformTopology implements PlatformTopologyInterface
+class PlatformTopology
 {
     // Type of servers
     public const SERVER_TYPE_CENTRAL = 0;
@@ -76,6 +74,8 @@ class PlatformTopology implements PlatformTopologyInterface
      */
     public function setServerName(string $serverName): self
     {
+        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
+
         $this->serverName = $serverName;
         return $this;
     }
