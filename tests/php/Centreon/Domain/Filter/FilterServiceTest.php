@@ -24,6 +24,7 @@ namespace Tests\Centreon\Domain\Monitoring;
 use Centreon\Domain\Filter\FilterService;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface;
@@ -71,33 +72,30 @@ class FilterServiceTest extends TestCase
         ->setUserId(1)
         ->setPageName('events-view')
         ->setCriterias([
-            [
-              "name" => "host_groups",
-              "type" => "multi_select",
-              "value" => [
-                [
-                  "id" => 1,
-                  "name" => "linux"
-                ]
-              ],
-              "object_type" => "host_group"
-            ],
-            [
-                "name" => "service_groups",
-                "type" => "multi_select",
-                "value" => [
+            (new FilterCriteria())
+                ->setName("host_groups")
+                ->setType("multi_select")
+                ->setValue([
                     [
-                        "id" => 1,
-                        "name" => "sg_ping"
+                      "id" => 1,
+                      "name" => "linux"
                     ]
-                ],
-                "object_type" => "service_group"
-            ],
-            [
-                "name" => "search",
-                "type" => "text",
-                "value" => "my search"
-            ]
+                ])
+                ->setObjectType("host_group"),
+            (new FilterCriteria())
+                ->setName("service_groups")
+                ->setType("multi_select")
+                ->setValue([
+                    [
+                      "id" => 1,
+                      "name" => "sg_ping"
+                    ]
+                ])
+                ->setObjectType("service_group"),
+            (new FilterCriteria())
+                ->setName("search")
+                ->setType("text")
+                ->setValue("my search"),
         ]);
 
         $this->filterRepository = $this->createMock(FilterRepositoryInterface::class);
@@ -132,7 +130,7 @@ class FilterServiceTest extends TestCase
 
         $this->assertCount(
             1,
-            $checkedCriterias[0]['value']
+            $checkedCriterias[0]->getValue()
         );
 
         $this->assertEquals(
@@ -140,7 +138,7 @@ class FilterServiceTest extends TestCase
                 'id' => $renamedHostGroup->getId(),
                 'name' => $renamedHostGroup->getName(),
             ],
-            $checkedCriterias[0]['value'][0]
+            $checkedCriterias[0]->getValue()[0]
         );
     }
 
@@ -166,7 +164,7 @@ class FilterServiceTest extends TestCase
 
         $this->assertCount(
             0,
-            $checkedCriterias[1]['value']
+            $checkedCriterias[1]->getValue()
         );
     }
 }
