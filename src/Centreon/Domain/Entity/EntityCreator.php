@@ -303,7 +303,7 @@ class EntityCreator
      */
     public static function convertCamelCaseToSnakeCase(string $camelCaseName): string
     {
-        $snakeCaseName = '';
+        $snakeCaseName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $camelCaseName));
         for ($index = 0; $index < strlen($camelCaseName); $index++) {
             $char = $camelCaseName[$index];
             if (strtoupper($char) === $char) {
