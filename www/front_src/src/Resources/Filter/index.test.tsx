@@ -159,18 +159,16 @@ mockAppStateSelector(useSelector);
 
 describe(Filter, () => {
   beforeEach(() => {
-    mockedAxios.get
-      .mockResolvedValueOnce({
-        data: {
-          result: [],
-          meta: {
-            page: 1,
-            limit: 30,
-            total: 0,
-          },
+    mockedAxios.get.mockResolvedValueOnce({ data: {} }).mockResolvedValueOnce({
+      data: {
+        result: [],
+        meta: {
+          page: 1,
+          limit: 30,
+          total: 0,
         },
-      })
-      .mockResolvedValueOnce({ data: {} });
+      },
+    });
   });
 
   afterEach(() => {
@@ -294,7 +292,7 @@ describe(Filter, () => {
       const { getByText } = renderFilter();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalled();
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
 
       mockedAxios.get.mockResolvedValueOnce({ data: {} });

@@ -96,7 +96,6 @@ const useLoadResources = (): LoadResources => {
     resourceTypes,
     hostGroups,
     serviceGroups,
-    customFilters,
   ]);
 
   return { initAutorefreshAndLoad };
