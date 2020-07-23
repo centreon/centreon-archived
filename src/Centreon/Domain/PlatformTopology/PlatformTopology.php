@@ -140,4 +140,3 @@ class PlatformTopology implements PlatformTopologyInterface
         return $this;
     }
 }
-
