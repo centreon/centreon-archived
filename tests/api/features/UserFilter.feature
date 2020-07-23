@@ -16,7 +16,16 @@ Feature:
 
     When I send a POST request to '/beta/users/filters/events-view' with body:
     """
-    {"name":"my filter1","criterias":[{"filter1":"value1"}]}
+    {
+      "name": "my filter1",
+      "criterias": [
+        {
+          "name": "name1",
+          "value": "value1",
+          "type": "type1"
+        }
+      ]
+    }
     """
     Then the response code should be "200"
 
@@ -31,7 +40,16 @@ Feature:
 
     When I send a PUT request to '/beta/users/filters/events-view/1' with body:
     """
-    {"name":"filter1","criterias":[{"filter1":"value1"}]}
+    {
+      "name": "filter1",
+      "criterias": [
+        {
+          "name": "name1",
+          "value": "value1",
+          "type": "type1"
+        }
+      ]
+    }
     """
     Then the response code should be "200"
 
@@ -41,7 +59,16 @@ Feature:
 
     When I send a POST request to '/beta/users/filters/events-view' with body:
     """
-    {"name":"filter2","criterias":[{"filter1":"value1"}]}
+    {
+      "name": "filter2",
+      "criterias": [
+        {
+          "name": "name1",
+          "value": "value1",
+          "type": "type1"
+        }
+      ]
+    }
     """
     Then the response code should be "200"
 
@@ -51,7 +78,9 @@ Feature:
 
     When I send a PATCH request to '/beta/users/filters/events-view/1' with body:
     """
-    {"order":2}
+    {
+      "order": 2
+    }
     """
     Then the response code should be "200"
 
