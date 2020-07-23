@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\ServiceGroup\Interfaces;
 
 use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Monitoring\ServiceGroup\ServiceGroupException;
 
 interface ServiceGroupServiceInterface
 {
@@ -42,6 +43,7 @@ interface ServiceGroupServiceInterface
      *
      * @param array $serviceGroupIds
      * @return ServiceGroup[]
+     * @throws ServiceGroupException
      */
     public function findServiceGroupsByIds(array $serviceGroupIds): array;
 }

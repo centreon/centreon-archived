@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\HostGroup\Interfaces;
 
 use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\HostGroup\HostGroupException;
 
 interface HostGroupServiceInterface
 {
@@ -42,6 +43,7 @@ interface HostGroupServiceInterface
      *
      * @param array $hostGroupIds
      * @return HostGroup[]
+     * @throws HostGroupException
      */
     public function findHostGroupsByIds(array $hostGroupIds): array;
 }
