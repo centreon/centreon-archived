@@ -62,9 +62,9 @@ interface FilterServiceInterface
      * Rename object if has been renamed since filter creation
      *
      * @param array $criterias
-     * @return array The filtered criterias
+     * @return void
      */
-    public function checkCriterias(array $criterias): array;
+    public function checkCriterias(array $criterias): void;
 
     /**
      * Delete filter.

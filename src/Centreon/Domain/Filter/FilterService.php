@@ -128,7 +128,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
     /**
      * @inheritDoc
      */
-    public function checkCriterias(array $criterias): array
+    public function checkCriterias(array $criterias): void
     {
         foreach ($criterias as $criteria) {
             if ($criteria->getType() === 'multi_select') {
@@ -166,8 +166,6 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                 }
             }
         }
-
-        return $criterias;
     }
 
     /**
