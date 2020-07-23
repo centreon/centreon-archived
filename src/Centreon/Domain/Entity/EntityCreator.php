@@ -324,15 +324,7 @@ class EntityCreator
     public static function convertSnakeCaseToCamelCase(string $snakeCaseName): string
     {
         $camelCaseName = '';
-        for ($index = 0; $index < strlen($snakeCaseName); $index++) {
-            $char = $snakeCaseName[$index];
-            if ($char === '_') {
-                $index++;
-                $camelCaseName .= strtoupper($snakeCaseName[$index]);
-            } else {
-                $camelCaseName .= $char;
-            }
-        }
+    $camelCaseName = lcfirst(str_replace('_', '', ucwords($snakeCaseName, '_')));
 
         return $camelCaseName;
     }
