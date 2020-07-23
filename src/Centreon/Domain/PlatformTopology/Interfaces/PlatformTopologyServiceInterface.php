@@ -33,5 +33,5 @@ interface PlatformTopologyServiceInterface
      * @return int the return code to be send to the script
      * @throws PlatformTopologyException
      */
-    public function addServerToTopology(PlatformTopology $platformTopology): int;
+    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
 }
