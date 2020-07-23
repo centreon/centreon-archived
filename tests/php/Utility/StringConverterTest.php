@@ -24,7 +24,7 @@ namespace Tests\Centreon\Domain\Monitoring;
 use PHPUnit\Framework\TestCase;
 use Utility\StringConverter;
 
-class FilterServiceTest extends TestCase
+class StringConverterTest extends TestCase
 {
     /**
      * test convertCamelCaseToSnakeCase
