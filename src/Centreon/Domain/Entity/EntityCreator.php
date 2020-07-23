@@ -303,16 +303,7 @@ class EntityCreator
      */
     public static function convertCamelCaseToSnakeCase(string $camelCaseName): string
     {
-        $snakeCaseName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $camelCaseName));
-        for ($index = 0; $index < strlen($camelCaseName); $index++) {
-            $char = $camelCaseName[$index];
-            if (strtoupper($char) === $char) {
-                $snakeCaseName .= '_' . strtolower($char);
-            } else {
-                $snakeCaseName .= $char;
-            }
-        }
-        return $snakeCaseName;
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $camelCaseName));
     }
 
     /**
@@ -323,9 +314,6 @@ class EntityCreator
      */
     public static function convertSnakeCaseToCamelCase(string $snakeCaseName): string
     {
-        $camelCaseName = '';
-    $camelCaseName = lcfirst(str_replace('_', '', ucwords($snakeCaseName, '_')));
-
-        return $camelCaseName;
+        return lcfirst(str_replace('_', '', ucwords($snakeCaseName, '_')));
     }
 }
