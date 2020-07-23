@@ -257,7 +257,7 @@ class EntityCreator
             );
             $key = ($annotation !== null && $annotation->column !== null)
                 ? $annotation->column
-                : $this->convertCamelCaseToSnakeCase($property->getName());
+                : StringConverter::convertCamelCaseToSnakeCase($property->getName());
             $this->entityDescriptors[$key] = $annotation;
         }
 
