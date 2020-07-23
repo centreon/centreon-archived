@@ -28,6 +28,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 use Centreon\Domain\Contact\Contact;
 use ReflectionClass;
+use Utility\StringConverter;
 
 class EntityCreator
 {
@@ -280,40 +281,6 @@ class EntityCreator
      */
     private function createSetterMethod(string $property): string
     {
-        $camelCaseName = '';
-        for ($index = 0; $index < strlen($property); $index++) {
-            $char = $property[$index];
-            if ($index === 0) {
-                $camelCaseName .= strtoupper($char);
-            } elseif ($char === '_') {
-                $index++;
-                $camelCaseName .= strtoupper($property[$index]);
-            } else {
-                $camelCaseName .= $char;
-            }
-        }
-        return 'set' . ucfirst($this->convertSnakeCaseToCamelCase($property));
-    }
-
-    /**
-     * Convert a string in camel case format to snake case
-     *
-     * @param string $camelCaseName Name in camelCase format
-     * @return string Returns the name converted in snake case format
-     */
-    public static function convertCamelCaseToSnakeCase(string $camelCaseName): string
-    {
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $camelCaseName));
-    }
-
-    /**
-     * Convert a string in snake case format to camel case
-     *
-     * @param string $snakeCaseName Name in snake format
-     * @return string Returns the name converted in camel case format
-     */
-    public static function convertSnakeCaseToCamelCase(string $snakeCaseName): string
-    {
-        return lcfirst(str_replace('_', '', ucwords($snakeCaseName, '_')));
+        return 'set' . ucfirst(StringConverter::convertSnakeCaseToCamelCase($property));
     }
 }
