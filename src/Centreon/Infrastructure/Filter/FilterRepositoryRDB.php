@@ -44,6 +44,11 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
      */
     private $sqlRequestTranslator;
 
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
     public function __construct(DatabaseConnection $db, SerializerInterface $serializer)
     {
         $this->db = $db;
@@ -106,6 +111,10 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
             $filter->getPageName(),
             $filter->getId()
         );
+        if ($previousFilter === null) {
+            return;
+        }
+
         $previousOrder = $previousFilter->getOrder();
         $order = $filter->getOrder();
 
@@ -284,7 +293,8 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws \Exception
      */
     public function findFilterByUserIdAndName(int $userId, string $pageName, string $name): ?Filter
     {
@@ -331,7 +341,8 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws \Exception
      */
     public function findFilterByUserIdAndId(int $userId, string $pageName, int $filterId): ?Filter
     {

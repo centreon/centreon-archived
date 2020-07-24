@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Filter;
 
-use Centreon\Domain\Entity\EntityCreator;
-
 /**
  * This class is designed to represent a filter criteria entity.
  *
@@ -42,7 +40,7 @@ class FilterCriteria
     private $type;
 
     /**
-     * @var string|array|null Value of the criteria
+     * @var string|array<mixed>|boolean|null Value of the criteria
      */
     private $value;
 
@@ -61,7 +59,7 @@ class FilterCriteria
 
     /**
      * @param string|null $name
-     * @return Filter
+     * @return FilterCriteria
      */
     public function setName(?string $name): FilterCriteria
     {
@@ -79,7 +77,7 @@ class FilterCriteria
 
     /**
      * @param string|null $type
-     * @return Filter
+     * @return FilterCriteria
      */
     public function setType(?string $type): FilterCriteria
     {
@@ -88,7 +86,7 @@ class FilterCriteria
     }
 
     /**
-     * @return string|array|null
+     * @return string|array<mixed>|boolean|null
      */
     public function getValue()
     {
@@ -96,8 +94,8 @@ class FilterCriteria
     }
 
     /**
-     * @param string|array|null $value
-     * @return Filter
+     * @param string|array<mixed>|boolean|null $value
+     * @return FilterCriteria
      */
     public function setValue($value): FilterCriteria
     {
@@ -115,7 +113,7 @@ class FilterCriteria
 
     /**
      * @param string|null $objectType
-     * @return Filter
+     * @return FilterCriteria
      */
     public function setObjectType(?string $objectType): FilterCriteria
     {

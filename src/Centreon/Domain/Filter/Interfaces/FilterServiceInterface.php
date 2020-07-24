@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Filter\Interfaces;
 
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\Filter\FilterException;
 
 interface FilterServiceInterface
@@ -61,7 +62,7 @@ interface FilterServiceInterface
      * Remove object if does not exist anymore
      * Rename object if has been renamed since filter creation
      *
-     * @param array $criterias
+     * @param FilterCriteria[] $criterias
      * @return void
      */
     public function checkCriterias(array $criterias): void;

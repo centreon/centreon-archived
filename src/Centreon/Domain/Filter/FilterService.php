@@ -131,7 +131,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
     public function checkCriterias(array $criterias): void
     {
         foreach ($criterias as $criteria) {
-            if ($criteria->getType() === 'multi_select') {
+            if ($criteria->getType() === 'multi_select' && is_array($criteria->getValue())) {
                 switch ($criteria->getObjectType()) {
                     case 'host_group':
                         $hostGroupIds = array_column($criteria->getValue(), 'id');
