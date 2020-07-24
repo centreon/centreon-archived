@@ -38,6 +38,8 @@ use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Exception\EntityNotFoundException;
 
 /**
  * @package Centreon\Application\Controller
@@ -358,9 +360,41 @@ class MonitoringHostsController extends AbstractController
         int $hostId,
         RequestParametersInterface $requestParameters
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $this->monitoring->filterByContact($this->getUser());
+        /**
+         * @var Contact $user
+         */
+        $user = $this->getUser();
+        $this->monitoring->filterByContact($user);
 
+        $host = $this->monitoring->findOneHost($hostId);
+        if ($host === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Host id %d not found'), $hostId)
+            );
+        }
+
+        $timeline = $this->monitoring->findTimelineEvents($hostId, 0);
+
+        $context = (new Context())
+            ->setGroups([
+                LogEventObject::SERIALIZER_GROUP_LIST,
+                CommentEventObject::SERIALIZER_GROUP_LIST,
+                DowntimeEventObject::SERIALIZER_GROUP_LIST,
+                AckEventObject::SERIALIZER_GROUP_LIST,
+                TimelineEvent::SERIALIZER_GROUP_LIST,
+            ])
+            ->enableMaxDepth();
+
+        return $this->view(
+            [
+                'result' => $timeline,
+                'meta' => $requestParameters->toArray()
+            ]
+        )->setContext($context);
+
+        /*
         if ($this->monitoring->isHostExists($hostId)) {
             $timeline = $this->monitoring->findTimelineEvents($hostId, 0);
 
@@ -383,5 +417,6 @@ class MonitoringHostsController extends AbstractController
         } else {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
+        */
     }
 }

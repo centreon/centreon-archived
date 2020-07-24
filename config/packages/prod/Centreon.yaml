@@ -167,8 +167,11 @@ services:
               arguments: ['@sqlRequestTranslator']
 
     # Monitoring Timeline
-    Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface:
-        class: Centreon\Infrastructure\Monitoring\TimelineRepositoryRDB
+    Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface:
+        class: Centreon\Domain\Monitoring\Timeline\TimelineService
+
+    Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\Timeline\TimelineRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
