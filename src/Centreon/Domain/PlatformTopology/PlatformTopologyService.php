@@ -23,29 +23,82 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformTopology;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 
-
+/**
+ * Class intended to register a new server to the platform topology
+ *
+ * @package Centreon\Domain\PlatformTopology
+ */
 class PlatformTopologyService implements PlatformTopologyServiceInterface
 {
+    /**
+     * @var PlatformTopologyRepositoryInterface
+     */
+    private $platformTopologyRepository;
 
-    public function __construct(PlatformTopologyRepositoryInterface $PlatformTopologyRepository)
+    /**
+     * PlatformTopologyService constructor.
+     * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
+     */
+    public function __construct(PlatformTopologyRepositoryInterface $platformTopologyRepository)
     {
-        // TODO
+        $this->platformTopologyRepository = $platformTopologyRepository;
     }
 
     /**
-     * @param PlatformTopology $platformTopology
-     * @return void
+     * @inheritDoc
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
-        // TODO: Implement addPlatformToTopology() method.
+        $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopology(
+            $platformTopology->getServerAddress(),
+            $platformTopology->getServerName(),
+            $platformTopology->getServerType(),
+            $platformTopology->getServerParentAddress()
+        );
+        if (null !== $foundPlatformTopology) {
+            throw new PlatformTopologyException(_('Platform already exists'));
+        }
+
+        try {
+            $this->platformTopologyRepository->addPlatformToTopology($platformTopology);
+        } catch (\Exception $ex) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _('Error when adding in topology the platform : %s @ %s'),
+                    $platformTopology->getServerName(),
+                    $platformTopology->getServerAddress()
+                ),
+                0,
+                $ex
+            );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function checkUniquenessInPlatformTopology(
+        string $serverAddress,
+        string $serverName,
+        int $serverType,
+        string$serverParentAddress
+    ): bool
+    {
+        try {
+            return $this->platformTopologyRepository->checkUniquenessInPlatformTopology(
+                $serverAddress,
+                $serverName,
+                $serverType,
+                $serverParentAddress
+            );
+        } catch (\Exception $ex) {
+            throw new PlatformTopologyException(
+                sprintf(_('Error when searching server %s @ %s', $serverName, $serverAddress)),
+                    0,
+                    $ex
+            );
+        }
     }
 }
-
-
-
-
-
-
-// methodes qui gereront l'ajout d'un server

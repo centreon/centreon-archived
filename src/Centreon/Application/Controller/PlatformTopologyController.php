@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Filter\FilterException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
@@ -61,7 +60,7 @@ class PlatformTopologyController extends AbstractController
      * @param array $platformToAdd json sent
      * @param string $schemaPath
      * @return void
-     * @throws FilterException
+     * @throws PlatformTopologyException
      */
     private function validatePlatformTopologySchema(array $platformToAdd, string $schemaPath): void
     {
@@ -78,14 +77,18 @@ class PlatformTopologyController extends AbstractController
             foreach ($validator->getErrors() as $error) {
                 $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
-            throw new FilterException($message);
+            throw new PlatformTopologyException($message);
         }
     }
+
+
 
     // WIP
     private function checkPlatformTopologyUnicity(array $platformToAdd)
     {
     }
+
+
 
     /**
      * Entry point to register a new server
@@ -95,7 +98,7 @@ class PlatformTopologyController extends AbstractController
      * @return View
      * @throws PlatformTopologyException
      */
-    public function addServerToTopology(Request $request): View
+    public function addPlatformToTopology(Request $request): View
     {
         // check user rights
         $this->denyAccessUnlessGrantedForApiConfiguration();
@@ -109,10 +112,8 @@ class PlatformTopologyController extends AbstractController
         // check data consistency
         $this->validatePlatformTopologySchema(
             $platformToAdd,
-            realpath(
-                $this->getParameter('centreon_path')
-                . 'config/json_validator/latest/Centreon/PlatformTopology/AddServer.json'
-            )
+            $this->getParameter('centreon_path')
+            . 'config/json_validator/latest/Centreon/PlatformTopology/AddServer.json'
         );
 
         // get parent address

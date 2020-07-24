@@ -3,7 +3,7 @@
   "title": "Add or update a user filter",
   "type": "object",
   "required": ["server_name", "server_type", "ip_address"],
-  "additionalProperties": false,
+  "additionalProperties": true,
   "properties": {
     "server_name": {
       "type": "string"
@@ -12,6 +12,9 @@
       "type": "integer"
     },
     "ip_address": {
+      "type": "string"
+    },
+    "server_parent": {
       "type": "string"
     }
   }

@@ -34,4 +34,20 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformTopologyException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+
+
+    /**
+     * @param string $serverAddress
+     * @param string $serverName
+     * @param int $serverType
+     * @param string $serverParentAddress
+     * @return bool
+     * @throws PlatformTopologyException
+     */
+    public function checkUniquenessInPlatformTopology(
+        string $serverAddress,
+        string $serverName,
+        int $serverType,
+        string$serverParentAddress
+    ): bool;
 }

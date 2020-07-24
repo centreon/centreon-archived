@@ -98,7 +98,7 @@ class PlatformTopology
      *
      * @return self
      */
-    public function setserverType(int $serverType): self
+    public function setServerType(int $serverType): self
     {
         $this->serverType = $serverType;
         return $this;
