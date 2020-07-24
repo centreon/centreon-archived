@@ -3931,6 +3931,11 @@ components:
           type: string
           description: "Password used to connect to proxy"
           example: "proxy-pass"
+        protocol_available:
+          type: array
+          items:
+            type: string
+          example: ["http://", "https://", "connect://"]
       required:
         - url
         - port
