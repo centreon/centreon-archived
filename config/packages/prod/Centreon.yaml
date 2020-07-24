@@ -97,6 +97,16 @@ services:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
 
+    # Platform topology register server
+    Centreon\Domain\PlatformTopology\PlatformTopologyServiceInterface:
+        class: Centreon\Domain\PlatformTopology\PlatformTopologyService
+
+    Centreon\Domain\PlatformTopology\PlatformTopologyRepositoryInterface:
+        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
     # Real time monitoring
     sqlRequestTranslator:
         class: Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator

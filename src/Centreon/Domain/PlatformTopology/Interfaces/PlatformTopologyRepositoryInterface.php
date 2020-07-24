@@ -19,3 +19,33 @@
  *
  */
 declare(strict_types=1);
+
+namespace Centreon\Domain\PlatformTopology\Interfaces;
+
+use Centreon\Domain\PlatformTopology\PlatformTopology;
+
+interface PlatformTopologyRepositoryInterface
+{
+    /**
+     * Register a new platform to topology
+     *
+     * @param PlatformTopology $platformTopology
+     */
+    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+
+    /**
+     * Check if the platform was already added in topology
+     *
+     * @param string $serverAddress
+     * @param string $serverName
+     * @param int $serverType
+     * @param string $serverParentAddress
+     * @return boolean
+     */
+    public function checkUniquenessInPlatformTopology(
+        string $serverAddress,
+        string $serverName,
+        int $serverType,
+        string$serverParentAddress
+    ): bool;
+}
