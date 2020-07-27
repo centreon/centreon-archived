@@ -37,13 +37,13 @@ interface PlatformTopologyServiceInterface
 
 
     /**
-     * Check if this platform was not already saved
+     * Check if this platform was not already added
      * @param string $serverAddress
      * @param string $serverName
      * @return bool
      * @throws PlatformTopologyException
      */
-    public function checkUniquenessInPlatformTopology(
+    public function isPlatformExistsInTopology(
         string $serverAddress,
         string $serverName
     ): bool;

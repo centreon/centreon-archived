@@ -51,7 +51,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
-        $foundPlatformTopology = $this->platformTopologyRepository->checkUniquenessInPlatformTopology(
+        $foundPlatformTopology = $this->platformTopologyRepository->isPlatformExistsInTopology(
             $platformTopology->getServerAddress(),
             $platformTopology->getServerName()
         );
@@ -77,13 +77,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function checkUniquenessInPlatformTopology(
+    public function isPlatformExistsInTopology(
         string $serverAddress,
         string $serverName
     ): bool
     {
         try {
-            return $this->platformTopologyRepository->checkUniquenessInPlatformTopology(
+            return $this->platformTopologyRepository->isPlatformExistsInTopology(
                 $serverAddress,
                 $serverName
             );
