@@ -1,0 +1,5 @@
+configuration.platform_topology.add_platform_to_topology:
+  methods: POST
+  path: /configuration/platorm_topology
+  controller: 'Centreon\Application\Controller\Configuration\PlatformTopologyController::addPlatformToTopology'
+  condition: "request.attributes.get('version.is_beta') == true"
