@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use Throwable;
-
 /**
  * This class is designed to represent a business exception in the 'Platform status' context.
  *
@@ -31,8 +29,4 @@ use Throwable;
  */
 class PlatformTopologyException extends \Exception
 {
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
 }

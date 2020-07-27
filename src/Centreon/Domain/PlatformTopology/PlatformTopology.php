@@ -74,8 +74,6 @@ class PlatformTopology
      */
     public function setServerName(string $serverName): self
     {
-        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
-
         $this->serverName = $serverName;
         return $this;
     }
