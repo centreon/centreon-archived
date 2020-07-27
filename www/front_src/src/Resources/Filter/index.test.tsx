@@ -11,7 +11,6 @@ import {
 import { Simulate } from 'react-dom/test-utils';
 
 import userEvent from '@testing-library/user-event';
-import { isNil } from 'ramda';
 import {
   labelTypeOfResource,
   labelHost,
@@ -96,7 +95,13 @@ const filtersParams = [
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
-        data: { result: [linuxServersHostGroup] },
+        data: {
+          result: [linuxServersHostGroup],
+          meta: {
+            limit: 10,
+            total: 1,
+          },
+        },
       });
     },
   ],
@@ -109,7 +114,13 @@ const filtersParams = [
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
-        data: { result: [webAccessServiceGroup] },
+        data: {
+          result: [webAccessServiceGroup],
+          meta: {
+            limit: 10,
+            total: 1,
+          },
+        },
       });
     },
   ],
@@ -125,10 +136,6 @@ const FilterTest = (): JSX.Element | null => {
   const filterState = useFilter();
   const listingState = useListing();
   const actionsState = useActions();
-
-  if (isNil(filterState.customFilters)) {
-    return null;
-  }
 
   return (
     <Context.Provider
@@ -393,13 +400,15 @@ describe(Filter, () => {
     });
 
     it('stores filter values in localStorage when updated', async () => {
-      const { getByText, getByPlaceholderText } = renderFilter();
+      const { getByText, getByPlaceholderText, findByText } = renderFilter();
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
       mockedAxios.get.mockResolvedValue({ data: {} });
 
-      userEvent.click(getByText(labelUnhandledProblems));
+      const unhandledProblemsOption = await findByText(labelUnhandledProblems);
+
+      userEvent.click(unhandledProblemsOption);
 
       fireEvent.click(getByText(labelAll));
 

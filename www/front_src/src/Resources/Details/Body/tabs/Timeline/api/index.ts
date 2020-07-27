@@ -16,4 +16,4 @@ const listTimelineEvents = (cancelToken) => ({
   );
 };
 
-export { listTimelineEvents };
+export { listTimelineEvents, buildListTimelineEventsEndpoint };

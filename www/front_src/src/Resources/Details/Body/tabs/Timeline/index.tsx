@@ -2,9 +2,7 @@ import * as React from 'react';
 
 import {
   useRequest,
-  getData,
   ListingModel,
-  ContentWithCircularLoading,
   useIntersectionObserver,
 } from '@centreon/ui';
 
@@ -15,28 +13,23 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import {
-  isNil,
-  groupBy,
-  groupWith,
   equals,
   toPairs,
   reduceBy,
-  merge,
   pipe,
   prop,
-  sortBy,
-  sort,
-  gt,
   last,
-  concat,
   isEmpty,
+  head,
+  sortWith,
+  descend,
 } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import { getFormattedDate } from '../../../../dateTime';
 import { ResourceEndpoints } from '../../../../models';
-import EventChip from './Chip/Event';
 import { TimelineEventByType } from './Event';
 import { TimelineEvent } from './models';
+import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
 
 interface Props {
@@ -52,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     alignItems: 'center',
     justifyItems: 'center',
+    alignContent: 'flex-start',
     gridGap: theme.spacing(1),
   },
   events: {
@@ -85,18 +79,19 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
   const [page, setPage] = React.useState(1);
-  const [limit] = React.useState(2);
+  const [limit] = React.useState(10);
   const [maxPage, setMaxPage] = React.useState(1);
 
   const { timeline: timelineEndpoint } = endpoints;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,
+    decoder: listTimelineEventsDecoder,
   });
 
   React.useEffect(() => {
     sendRequest({
-      endpoint: 'http://localhost:5000/mock/timeline',
+      endpoint: timelineEndpoint,
       params: { page, limit },
     }).then(({ result, meta }) => {
       setTimeline(timeline.concat(result));
@@ -114,17 +109,19 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
     },
   });
 
+  type DateEvents = Array<[string, Array<TimelineEvent>]>;
+
   const eventsByDate = pipe(
     reduceBy<TimelineEvent, Array<TimelineEvent>>(
       (acc, event) => acc.concat(event),
-      [] as Array<TimelineEvent>,
+      [],
       pipe(prop('date'), getFormattedDate),
     ),
     toPairs,
-    sortBy(([date]) => date),
-  )(timeline);
+    sortWith([descend(head)]),
+  )(timeline) as DateEvents;
 
-  const dates = eventsByDate.map(([date]) => date);
+  const dates = eventsByDate.map(head);
 
   const loading = isEmpty(timeline) && sending;
   const loadingMore = !isEmpty(timeline) && sending;
@@ -138,13 +135,10 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
           eventsByDate.map(
             ([date, events]): JSX.Element => {
               const isLastDate = equals(last(dates), date);
-              const refProp = isLastDate
-                ? { ref: infiniteScrollTriggerRef }
-                : {};
 
               return (
-                <>
-                  <div key={date} className={classes.events}>
+                <React.Fragment key={date}>
+                  <div className={classes.events}>
                     <Typography variant="h6">{date}</Typography>
 
                     {events.map((event) => {
@@ -153,16 +147,14 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
                       const Event = TimelineEventByType[type];
 
                       return (
-                        <>
-                          <Paper key={id} className={classes.event}>
-                            <Event event={event} />
-                          </Paper>
-                        </>
+                        <Paper key={id} className={classes.event}>
+                          <Event event={event} />
+                        </Paper>
                       );
                     })}
                   </div>
-                  <div {...refProp} />
-                </>
+                  {isLastDate && <div ref={infiniteScrollTriggerRef} />}
+                </React.Fragment>
               );
             },
           )

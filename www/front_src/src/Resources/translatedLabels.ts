@@ -179,3 +179,5 @@ export const labelFilterUpdated = I18n.t('Filter updated');
 export const labelNameCannotBeEmpty = I18n.t('Name cannot be empty');
 export const labelTimeline = I18n.t('Timeline');
 export const labelEvent = I18n.t('Event');
+export const labelAcknowledgement = I18n.t('Acknowledgement');
+export const labelBy = I18n.t('by');

@@ -64,4 +64,4 @@ const TabById = ({
   return <Component details={details} endpoints={endpoints} />;
 };
 
-export { detailsTabId, graphTabId, tabs, TabById };
+export { detailsTabId, timelineTabId, graphTabId, tabs, TabById };

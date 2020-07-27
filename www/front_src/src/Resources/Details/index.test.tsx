@@ -42,9 +42,10 @@ import {
   labelNo,
   labelComment,
 } from '../translatedLabels';
-import { detailsTabId, graphTabId } from './Body/tabs';
+import { detailsTabId, graphTabId, timelineTabId } from './Body/tabs';
 import * as Context from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
+import { buildListTimelineEventsEndpoint } from './Body/tabs/Timeline/api';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -59,6 +60,7 @@ const mockedUseResourceContext = Context.useResourceContext as jest.Mock<
 const detailsEndpoint = '/resource';
 const performanceGraphEndpoint = '/performance';
 const statusGraphEndpoint = '/status';
+const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
   display_name: 'Central',
@@ -113,6 +115,61 @@ const performanceGraphData = {
   metrics: [],
 };
 
+const retrievedTimeline = {
+  result: [
+    {
+      type: 'event',
+      id: 1,
+      date: '2020-06-22T10:40:00',
+      tries: '1/1 (Hard)',
+      content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
+      status: {
+        severity_code: 5,
+        name: 'UP',
+      },
+    },
+    {
+      type: 'event',
+      id: 2,
+      date: '2020-06-22T10:35:00',
+      tries: '3/3 (Hard)',
+      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
+      status: {
+        severity_code: 1,
+        name: 'DOWN',
+      },
+    },
+    {
+      type: 'notif',
+      id: 3,
+      date: '2020-06-21T09:40:00',
+      content: 'My little comment',
+      author_name: 'admin',
+    },
+    {
+      type: 'ack',
+      id: 4,
+      date: '2020-06-20T09:35:00Z',
+      author_name: 'admin',
+      content: 'My little ack',
+    },
+    {
+      type: 'downtime',
+      id: 5,
+      date: '2020-06-20T09:30:00',
+      start_date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      author_name: 'admin',
+      content: 'My little dt',
+    },
+  ],
+  meta: {
+    page: 1,
+    limit: 10,
+    total: 5,
+  },
+};
+
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
 const mockUseResourceContext = ({ openTabId }): void => {
@@ -122,6 +179,7 @@ const mockUseResourceContext = ({ openTabId }): void => {
       details: detailsEndpoint,
       performanceGraph: performanceGraphEndpoint,
       statusGraph: statusGraphEndpoint,
+      timeline: timelineEndpoint,
     },
     setDefaultDetailsTabIdToOpen: jest.fn(),
   });
@@ -275,5 +333,67 @@ describe(Details, () => {
         retrievedDetails.command_line,
       ),
     );
+  });
+
+  it('displays retrieved timeline events, grouped by date, when the Timeline tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockUseResourceContext({ openTabId: timelineTabId });
+
+    const { getByText, getAllByText } = renderDetails();
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: timelineEndpoint,
+          params: { limit: 10, page: 1 },
+        }),
+        expect.anything(),
+      ),
+    );
+
+    expect(getByText('06/22/2020')).toBeInTheDocument();
+
+    expect(getByText('10:40')).toBeInTheDocument();
+    expect(getAllByText('Event')).toHaveLength(2);
+    expect(getByText('UP')).toBeInTheDocument();
+    expect(getByText('1/1 (Hard)')).toBeInTheDocument();
+    expect(
+      getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
+    ).toBeInTheDocument();
+
+    expect(getByText('10:35')).toBeInTheDocument();
+    expect(getByText('DOWN')).toBeInTheDocument();
+    expect(getByText('3/3 (Hard)')).toBeInTheDocument();
+    expect(
+      getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;'),
+    ).toBeInTheDocument();
+
+    expect(getByText('06/21/2020')).toBeInTheDocument();
+
+    expect(getByText('09:40')).toBeInTheDocument();
+    expect(getByText('Comment by admin')).toBeInTheDocument();
+    expect(getByText('My little comment'));
+
+    expect(getByText('06/20/2020')).toBeInTheDocument();
+
+    expect(getByText('09:35')).toBeInTheDocument();
+    expect(getByText('Acknowledgement by admin')).toBeInTheDocument();
+    expect(getByText('My little ack'));
+
+    expect(getByText('09:30')).toBeInTheDocument();
+    expect(getByText('Downtime by admin')).toBeInTheDocument();
+    expect(
+      getByText('From 06/20/2020 09:30 To 06/22/2020 09:33'),
+    ).toBeInTheDocument();
+    expect(getByText('My little dt'));
+
+    const dateRegExp = /\d+\/\d+\/\d+$/;
+
+    expect(getAllByText(dateRegExp).map((baba) => baba.textContent)).toEqual([
+      '06/22/2020',
+      '06/21/2020',
+      '06/20/2020',
+    ]);
   });
 });

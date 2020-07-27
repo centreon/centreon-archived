@@ -18,7 +18,6 @@ import {
   MultiConnectedAutocompleteField,
   SelectField,
   SearchField,
-  SelectEntry,
 } from '@centreon/ui';
 
 import { isEmpty, propEq, pick, find } from 'ramda';
@@ -151,21 +150,21 @@ const Filter = (): JSX.Element => {
     setExpanded(!expanded);
   };
 
-  const getHostGroupSearchEndpoint = (searchValue): string => {
+  const getHostgroupEndpoint = ({ search, page }): string => {
     return buildHostGroupsEndpoint({
       limit: 10,
-      search: searchValue ? `name:${searchValue}` : undefined,
+      search: search ? `name:${search}` : undefined,
+      page,
     });
   };
 
-  const getServiceGroupSearchEndpoint = (searchValue): string => {
+  const getServiceGroupSearchEndpoint = ({ search, page }): string => {
     return buildServiceGroupsEndpoint({
       limit: 10,
-      search: searchValue ? `name:${searchValue}` : undefined,
+      search: search ? `name:${search}` : undefined,
+      page,
     });
   };
-
-  const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
   const setNewFilter = (): void => {
     if (isCustom(filter)) {
@@ -341,9 +340,7 @@ const Filter = (): JSX.Element => {
           />
           <MultiConnectedAutocompleteField
             className={classes.autoCompleteField}
-            baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
-            getSearchEndpoint={getHostGroupSearchEndpoint}
-            getOptionsFromResult={getOptionsFromResult}
+            getEndpoint={getHostgroupEndpoint}
             label={labelHostGroup}
             onChange={changeHostGroups}
             value={hostGroups || []}
@@ -351,11 +348,9 @@ const Filter = (): JSX.Element => {
           />
           <MultiConnectedAutocompleteField
             className={classes.autoCompleteField}
-            baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
-            getSearchEndpoint={getServiceGroupSearchEndpoint}
+            getEndpoint={getServiceGroupSearchEndpoint}
             label={labelServiceGroup}
             onChange={changeServiceGroups}
-            getOptionsFromResult={getOptionsFromResult}
             value={serviceGroups || []}
             openText={`${labelOpen} ${labelServiceGroup}`}
           />
