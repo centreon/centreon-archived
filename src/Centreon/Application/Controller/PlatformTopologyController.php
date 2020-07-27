@@ -30,7 +30,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
-
 /**
  * This controller is designed to platform topology API requests to register new servers.
  *
