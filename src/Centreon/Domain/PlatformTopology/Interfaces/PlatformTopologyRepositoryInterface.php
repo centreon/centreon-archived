@@ -40,7 +40,7 @@ interface PlatformTopologyRepositoryInterface
      * @param string $serverName
      * @return boolean
      */
-    public function checkUniquenessInPlatformTopology(
+    public function isPlatformExistsInTopology(
         string $serverAddress,
         string $serverName
     ): bool;
