@@ -158,6 +158,20 @@ try {
 $password = askQuestion($targetHost . ': enter your password ', true);
 
 /**
+ * Enable Remote Server Mode
+ */
+
+// 1 - Hide Menu
+
+// 2 - set Remote Server to yes in db
+
+// 3 - Authorize Centreon IP in local db
+
+// 4 - Apply Remote Server mode in configuration file
+
+// 5 - Add Option to contact API for Remote Server
+
+/**
  * Parsing url part from params -h
  */
 $targetURL = parse_url($targetHost);
@@ -295,7 +309,7 @@ $registerUrl = $protocol . '://' . $host;
 if(!empty($port)){
     $registerUrl .= ':' . $port;
 }
-$registerUrl .= "/centreon/api/$version/configuration/register";
+$registerUrl .= "/centreon/api/$version/configuration/platform_topology";
 
 $ch = curl_init($registerUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
