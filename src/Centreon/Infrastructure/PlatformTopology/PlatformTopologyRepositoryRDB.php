@@ -44,7 +44,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @var DatabaseConnection
      */
-    private $db;
+    protected $db;
 
     public function __construct(DatabaseConnection $db)
     {
