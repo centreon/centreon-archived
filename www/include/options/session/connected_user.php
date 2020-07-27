@@ -51,9 +51,9 @@ $action = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$selectedUserSid = filter_var(
-    $_GET['session'] ?? null, // the sessionId of the chosen user
-    FILTER_SANITIZE_STRING
+$selectedUserId = filter_var(
+    $_GET['user'] ?? null, // the sessionId of the chosen user
+    FILTER_VALIDATE_INT
 );
 
 $currentPage = filter_var(
@@ -61,7 +61,7 @@ $currentPage = filter_var(
     FILTER_VALIDATE_INT
 );
 
-if ($selectedUserSid) {
+if ($selectedUserId) {
     $msg = new CentreonMsg();
     $msg->setTextStyle("bold");
     $msg->setTimeOut("3");
@@ -69,8 +69,8 @@ if ($selectedUserSid) {
     switch ($action) {
         // logout action
         case KICK_USER:
-            $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
-            $stmt->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
+            $stmt = $pearDB->prepare("DELETE FROM session WHERE user_id = :userId");
+            $stmt->bindValue(':userId', $selectedUserId, \PDO::PARAM_INT);
             $stmt->execute();
             $msg->setText(_("User kicked"));
             break;
@@ -122,7 +122,7 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     if ($centreon->user->admin) {
         // adding the link to be able to kick the user
         $session_data[$cpt]["actions"] =
-            "<a href='./main.php?p=" . $p . "&o=k&session=" . $r['session_id'] . "'>" .
+            "<a href='./main.php?p=" . $p . "&o=k&user=" . $r['user_id'] . "'>" .
                 "<img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
                 "' title='" . _("Kick User") . "'>" .
             "</a>";
