@@ -45,8 +45,9 @@ class CentreonWiki extends CentreonWebService
     public function postCheckConnection()
     {
         $sql_host = explode(':', $this->arguments['host']);
-        $host = $sql_host[0];
-        $port = isset($sql_host[1]) ? $sql_host[1] : '3306';
+
+        $host = filter_var($sql_host[0], FILTER_SANITIZE_STRING);
+        $port = filter_var(isset($sql_host[1]), FILTER_VALIDATE_INT) ? $sql_host[1] : '3306';
         $user = $this->arguments['user'];
         $password = $this->arguments['pwd'];
         $db = $this->arguments['name'];
