@@ -38,14 +38,10 @@ interface PlatformTopologyRepositoryInterface
      *
      * @param string $serverAddress
      * @param string $serverName
-     * @param int $serverType
-     * @param string $serverParentAddress
      * @return boolean
      */
     public function checkUniquenessInPlatformTopology(
         string $serverAddress,
-        string $serverName,
-        int $serverType,
-        string$serverParentAddress
+        string $serverName
     ): bool;
 }

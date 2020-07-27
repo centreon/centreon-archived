@@ -52,8 +52,6 @@ class PlatformTopologyController extends AbstractController
         $this->platformTopologyService = $platformTopologyService;
     }
 
-    // WIP ;)
-
     /**
      * Validate platform topology filter according to json schema
      *
