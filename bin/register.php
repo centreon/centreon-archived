@@ -65,6 +65,14 @@ function askQuestion(string $question, $hidden = false) : string
     return $response;
 }
 
+/**
+ * Format the response for API Request
+ *
+ * @param integer $code
+ * @param string $message
+ * @param string $type
+ * @return string
+ */
 function responseMessageHandler(int $code, string $message, string $type = 'success') : string
 {
     switch ($type) {
