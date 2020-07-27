@@ -47,7 +47,9 @@ class CentreonWiki extends CentreonWebService
         $sql_host = explode(':', $this->arguments['host']);
 
         $host = filter_var($sql_host[0], FILTER_SANITIZE_STRING);
-        $port = filter_var(isset($sql_host[1]), FILTER_VALIDATE_INT) ? $sql_host[1] : '3306';
+        if (isset($sql_host[1])) {
+            $port = filter_var($sql_host[1], FILTER_VALIDATE_INT) ? $sql_host[1] : '3306';
+        }
         $user = $this->arguments['user'];
         $password = $this->arguments['pwd'];
         $db = $this->arguments['name'];
