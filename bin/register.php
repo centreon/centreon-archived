@@ -65,6 +65,23 @@ function askQuestion(string $question, $hidden = false) : string
     return $response;
 }
 
+function responseMessageHandler(int $code, string $message, string $type = 'success') : string
+{
+    switch ($type) {
+        case 'error':
+            $responseMessage = 'error code: ' . $code . PHP_EOL .
+            'error message: ' . $message . PHP_EOL;
+            break;
+        case 'success':
+        default:
+            $responseMessage = 'code: ' . $code . PHP_EOL .
+            'message: ' . $message . PHP_EOL;
+        break;
+    }
+
+    return sprintf('%s', $responseMessage);
+}
+
 /************************ */
 /*     DATA RESOLVING
 /************************ */
@@ -78,6 +95,7 @@ $opt = getopt('u:t:h:', ["help::","proxy::"]);
  * Format the --help message
  */
 $helpMessage = <<<'EOD'
+
 Global Options:
   -u <mandatory>              username of your centreon-web account
   -t <mandatory>              the server type you want to register:
@@ -88,6 +106,7 @@ Global Options:
   -h <mandatory>              URL of the Central / Remote Server target platform
   --help <optional>           get informations about the parameters available
   --proxy <optional>          provide the differents asked informations
+
 
 EOD;
 
@@ -105,7 +124,7 @@ if (isset($opt['help'])) {
 try {
     if (!isset($opt['u'], $opt['t'], $opt['h'])) {
         throw new \InvalidArgumentException(
-            'missing parameter: -u -t -h are mandatories:' . PHP_EOL . $helpMessage
+            PHP_EOL . 'missing parameter: -u -t -h are mandatories:' . PHP_EOL . $helpMessage
         );
     }
 
@@ -187,6 +206,7 @@ $version = $apiConfig['centreon']['defaults']['version'];
  * Display Summary of action
  */
 $summary = <<<EOD
+
 Summary of the informations that will be send:
 
 Api Connection:
@@ -251,12 +271,12 @@ $result = json_decode($result, true);
 if (isset($result['security']['token'])) {
     $APIToken = $result['security']['token'];
 } elseif (isset($result['code'])) {
-    echo 'error code: ' . $result['code'] . PHP_EOL .
-    'error message: ' . $result['message'] . PHP_EOL;
+    $response = responseMessageHandler($result['code'], $result['message'], 'error');
+    echo $response;
     exit;
 } else {
-    echo 'error code: 400' . PHP_EOL .
-    'error message: Can\'t connect to the api' . PHP_EOL;
+    $response = responseMessageHandler(400, 'Can\'t connect to the api', 'error');
+    echo $response;
     exit;
 }
 
@@ -295,7 +315,10 @@ $result = json_decode($result, true);
  * Display response of API
  */
 if (isset($result['code'],$result['message'])) {
-    echo 'code: ' . $result['code'] . PHP_EOL .
-    'message: ' . $result['message'] . PHP_EOL;
+    $response = responseMessageHandler($result['code'], $result['message'], 'success');
+    echo $response;
+} else {
+    $response = responseMessageHandler(400, 'An error occured while registering', 'error');
+    echo $response;
 }
 exit;
