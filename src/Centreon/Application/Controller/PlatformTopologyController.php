@@ -57,7 +57,7 @@ class PlatformTopologyController extends AbstractController
     /**
      * Validate platform topology filter according to json schema
      *
-     * @param array $platformToAdd json sent
+     * @param array<mixed> $platformToAdd data sent in json
      * @param string $schemaPath
      * @return void
      * @throws PlatformTopologyException
@@ -80,15 +80,6 @@ class PlatformTopologyController extends AbstractController
             throw new PlatformTopologyException($message);
         }
     }
-
-
-
-    // WIP
-    private function checkPlatformTopologyUnicity(array $platformToAdd)
-    {
-    }
-
-
 
     /**
      * Entry point to register a new server
@@ -120,9 +111,6 @@ class PlatformTopologyController extends AbstractController
         // currently, only pollers are added, so the parent IP is a central
         // temporarily hard coding its address
         $parentAddress = "127.0.0.1";
-
-        // check that server_name and server_ip are not already saved in the DB
-        $this->checkPlatformTopologyUnicity($platformToAdd);
 
         $setPlatformTopology = (new PlatformTopology())
             ->setServerAddress($platformToAdd['ip_address'])
