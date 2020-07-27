@@ -53,9 +53,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     {
         $foundPlatformTopology = $this->platformTopologyRepository->checkUniquenessInPlatformTopology(
             $platformTopology->getServerAddress(),
-            $platformTopology->getServerName(),
-            $platformTopology->getServerType(),
-            $platformTopology->getServerParentAddress()
+            $platformTopology->getServerName()
         );
         if (!empty($foundPlatformTopology)) {
             throw new PlatformTopologyException(_('Platform already exists'));
@@ -81,17 +79,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function checkUniquenessInPlatformTopology(
         string $serverAddress,
-        string $serverName,
-        int $serverType,
-        string$serverParentAddress
+        string $serverName
     ): bool
     {
         try {
             return $this->platformTopologyRepository->checkUniquenessInPlatformTopology(
                 $serverAddress,
-                $serverName,
-                $serverType,
-                $serverParentAddress
+                $serverName
             );
         } catch (\Exception $ex) {
             throw new PlatformTopologyException(

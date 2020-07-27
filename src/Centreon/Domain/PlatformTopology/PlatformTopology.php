@@ -28,13 +28,6 @@ namespace Centreon\Domain\PlatformTopology;
  */
 class PlatformTopology
 {
-    // Type of servers
-    public const SERVER_TYPE_CENTRAL = 0;
-    public const SERVER_TYPE_POLLER = 1;
-    public const SERVER_TYPE_REMOTE = 2;
-    public const SERVER_TYPE_MAP = 3;
-    public const SERVER_TYPE_MBI = 4;
-
     /**
      * @var string Server name
      */
@@ -121,18 +114,18 @@ class PlatformTopology
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getServerParentAddress(): string
+    public function getServerParentAddress(): ?string
     {
         return $this->serverParentAddress;
     }
 
     /**
-     * @param string $serverParentAddress
+     * @param string|null $serverParentAddress
      * @return $this
      */
-    public function setServerParentAddress(string $serverParentAddress): self
+    public function setServerParentAddress(?string $serverParentAddress): self
     {
         $this->serverAddress = $serverParentAddress;
         return $this;

@@ -41,11 +41,6 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
      */
     private $sqlRequestTranslator;
 
-    /**
-     * @var DatabaseConnection
-     */
-    protected $db;
-
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
@@ -89,13 +84,11 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
      */
     public function checkUniquenessInPlatformTopology(
         string $serverAddress,
-        string $serverName,
-        int $serverType,
-        string $serverParentAddress
+        string $serverName
     ): bool
     {
         $request = $this->translateDbName('
-            SELECT * FROM `:db`.`platform_topology` WHERE `ip.address` = :serverAddress AND `hostname` = :serverName
+            SELECT * FROM `:db`.platform_topology WHERE ip.address = :serverAddress AND hostname = :serverName
         ');
 
         $this->sqlRequestTranslator->addSearchValue(':serverAddress', [\PDO::PARAM_STR => $serverAddress]);
