@@ -93,7 +93,6 @@ class CentreonLdapSynchro extends CentreonWebService
 
         $this->pearDB->beginTransaction();
         try {
-            // (getting the contactId to homogenize the next request's bindValue variable name)
             $resUser = $this->pearDB->prepare(
                 'SELECT `contact_id`, `contact_name` FROM `contact`
                 WHERE `contact_id` = :contactId'
