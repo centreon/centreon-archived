@@ -351,9 +351,6 @@ $form->addElement(
 /*
  * Send variable to template
  */
-
-var_dump($o);
-
 $tpl->assign('o', $o);
 $tpl->assign("sorting", _("Sorting"));
 $tpl->assign("notification", _("Notification"));
