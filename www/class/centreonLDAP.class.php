@@ -1111,8 +1111,7 @@ class CentreonLdapAdmin
     public function setGeneralOptions($arId, $options)
     {
         $gopt = $this->getGeneralOptions($arId);
-
-        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === "******") {
+        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === "******" && $arId == 0) {
             unset($gopt["bind_pass"]);
         }
         if (!count($gopt)
@@ -1152,6 +1151,9 @@ class CentreonLdapAdmin
             );
         }
         $knownParameters = $this->getLdapParameters();
+        if (isset($options["bind_pass"]) && $options["bind_pass"] === "******") {
+            unset($options["bind_pass"]);
+        }
         foreach ($options as $key => $value) {
             if (!in_array($key, $knownParameters)) {
                 continue;
@@ -1177,7 +1179,6 @@ class CentreonLdapAdmin
                          VALUES (" . $this->db->escape($arId) . ", '" . $this->db->escape($key) . "', '" .
                          $this->db->escape($value, false) . "')";
             }
-            var_dump($query);
             $this->db->query($query);
         }
         $this->updateLdapServers($arId);
