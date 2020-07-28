@@ -3180,6 +3180,7 @@ components:
               example: 0.005
             next_check:
               type: string
+              nullable: true
               format: date-time
               description: "Scheduled date for the next check (ISO8601)"
             next_host_notification:
@@ -3528,6 +3529,7 @@ components:
               example: 0.031
             next_check:
               type: string
+              nullable: true
               format: date-time
               description: "Scheduled date for the next check (ISO8601)"
             performance_data:
