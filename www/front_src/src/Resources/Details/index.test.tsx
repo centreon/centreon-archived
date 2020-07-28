@@ -252,7 +252,8 @@ describe(Details, () => {
     [labelLast24h, '2020-06-19T20:00:00.000Z'],
     [labelLast7Days, '2020-06-13T20:00:00.000Z'],
     [labelLast31Days, '2020-05-20T20:00:00.000Z'],
-  ])(`queries performance graphs with %s period when the Graph tab is selected`,
+  ])(
+    `queries performance graphs with %p period when the Graph tab is selected`,
     async (period, startIsoString) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: performanceGraphData })
@@ -273,7 +274,8 @@ describe(Details, () => {
           cancelTokenRequestParam,
         ),
       );
-    });
+    },
+  );
 
   it('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
@@ -305,9 +307,6 @@ describe(Details, () => {
       context.setListing({} as ResourceListing);
     });
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
-
-    });
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
   });
 });
