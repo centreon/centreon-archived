@@ -114,13 +114,13 @@ class PlatformTopologyController extends AbstractController
             . 'config/json_validator/latest/Centreon/PlatformTopology/AddServer.json'
         );
 
-        // check consistency and sanitize data
+        // sanitize data
         $platformToAdd['ip_address'] = filter_var($platformToAdd['ip_address'], FILTER_VALIDATE_IP);
         $platformToAdd['server_name'] = filter_var($platformToAdd['server_name'], FILTER_SANITIZE_STRING);
         $platformToAdd['server_type'] = filter_var($platformToAdd['server_type'], FILTER_VALIDATE_INT);
         $platformToAdd['server_parent'] = !empty($platformToAdd['server_parent'])
             ? filter_var($platformToAdd['server_parent'], FILTER_VALIDATE_IP)
-            // define the central as parent
+            // if not server_parent is sent, then adding it to the central
             : $_SERVER['SERVER_ADDR'];
 
         if (empty($platformToAdd['server_name'])) {
