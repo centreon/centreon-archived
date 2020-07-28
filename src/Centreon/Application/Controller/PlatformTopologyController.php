@@ -177,7 +177,7 @@ class PlatformTopologyController extends AbstractController
         return $this->view([
             'code' => Response::HTTP_OK,
             'message' => sprintf(
-                _("The '%s' Platform : '%s'@'%s' linked to '%s' was added"),
+                _("The '%s' Platform : '%s'@'%s' linked to '%s' has been added"),
                 $this->allowedType[$platformToAdd['server_type']],
                 $platformToAdd['server_name'],
                 $platformToAdd['ip_address'],
