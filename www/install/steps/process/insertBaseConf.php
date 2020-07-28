@@ -91,7 +91,7 @@ try {
 }
 
 // Insert Central to 'platfrom_topology' table, as first server and parent of all others.
-$stmt = $pearDB->prepare(
+$stmt = $link->prepare(
     "INSERT INTO `platform_topology` (
         `ip_address`,
         `hostname`,
