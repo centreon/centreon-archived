@@ -52,7 +52,7 @@ $action = filter_var(
 );
 
 $selectedUserId = filter_var(
-    $_GET['user'] ?? null, // the sessionId of the chosen user
+    $_GET['user'] ?? null,
     FILTER_VALIDATE_INT
 );
 
@@ -139,7 +139,7 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
                 "<a href='#'>" .
                     "<img src='./img/icons/refresh.png' border='0' " .
                         "alt='" . _("Synchronize LDAP") . "' title='" . _("Synchronize LDAP") . "' " .
-                        "onclick='submitSync(" . $currentPage . ", \"" . $r['session_id'] . "\")'>" .
+                        "onclick='submitSync(" . $currentPage . ", \"" . $r['user_id'] . "\")'>" .
                 "</a>";
         } else {
             // hiding the synchronization option and details
@@ -171,7 +171,7 @@ $tpl->display("connected_user.ihtml");
     formatDateMoment();
 
     // ask for confirmation when requesting to resynchronize contact data from the LDAP
-    function submitSync(p, sessionId) {
+    function submitSync(p, contactId) {
         // msg = localized message to be displayed in the confirmation popup
         let msg = "<?= _('All this contact sessions will be closed. Are you sure you want to request a ' .
             'synchronization at the next login of this Contact ?'); ?>";
@@ -181,7 +181,7 @@ $tpl->display("connected_user.ihtml");
                 url: './api/internal.php?object=centreon_ldap_synchro&action=requestLdapSynchro',
                 type: 'POST',
                 async: false,
-                data: {sessionId: sessionId},
+                data: {contactId: contactId},
                 success: function(data) {
                     if (data === true) {
                         window.location.href = "?p=" + p;

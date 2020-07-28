@@ -78,16 +78,12 @@ class CentreonLdapSynchro extends CentreonWebService
             $_POST['contactId'] ?? null,
             FILTER_VALIDATE_INT
         );
-        $sessionId = filter_var(
-            $_POST['sessionId'] ?? null,
-            FILTER_SANITIZE_STRING
-        );
 
         if (!$this->isLdapEnabled()) {
             return $result;
         }
 
-        if (empty($contactId) && empty($sessionId)) {
+        if (empty($contactId)) {
             $this->centreonLog->insertLog(
                 3, //ldap.log
                 "LDAP MANUAL SYNC : Error - Chosen contact data are missing."
@@ -105,13 +101,6 @@ class CentreonLdapSynchro extends CentreonWebService
                     WHERE `contact_id` = :contactId'
                 );
                 $resUser->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-            } elseif ($sessionId) {
-                $resUser = $this->pearDB->prepare(
-                    'SELECT `contact_id`, `contact_name` FROM contact
-                    LEFT JOIN session ON session.user_id = contact.contact_id
-                    WHERE session.session_id = :userSessionId'
-                );
-                $resUser->bindValue(':userSessionId', $sessionId, PDO::PARAM_STR);
             }
             $resUser->execute();
             $contact = $resUser->fetch();
