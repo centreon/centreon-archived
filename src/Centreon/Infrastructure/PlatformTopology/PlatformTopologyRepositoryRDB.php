@@ -24,12 +24,8 @@ namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use Dropbox\Exception;
 
 /**
  * This class is designed to manage the repository of the platform topology requests
@@ -39,28 +35,12 @@ use Dropbox\Exception;
 class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements PlatformTopologyRepositoryInterface
 {
     /**
-     * @var SqlRequestParametersTranslator
+     * PlatformTopologyRepositoryRDB constructor.
+     * @param DatabaseConnection $db
      */
-    private $sqlRequestTranslator;
-
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
-    }
-
-    /**
-     * Initialized by the dependency injector.
-     *
-     * @param SqlRequestParametersTranslator $sqlRequestTranslator
-     */
-    public function setSqlRequestTranslator(SqlRequestParametersTranslator $sqlRequestTranslator): void
-    {
-        $this->sqlRequestTranslator = $sqlRequestTranslator;
-        $this->sqlRequestTranslator
-            ->getRequestParameters()
-            ->setConcordanceStrictMode(
-                RequestParameters::CONCORDANCE_MODE_STRICT
-            );
     }
 
     /**
@@ -84,57 +64,21 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * {@inheritDoc}
      */
-    public function isPlatformExistsInTopology(
+    public function findPlatformInTopology(
         string $serverAddress,
         string $serverName
-    ): bool
+    ): array
     {
         $request = $this->translateDbName(
-            'SELECT * FROM `:db`.platform_topology WHERE `ip_address` = :serverAddress AND `hostname` = :serverName'
+            'SELECT `ip_address`, `hostname`, `server_type` FROM `:db`.platform_topology WHERE `ip_address` = :serverAddress OR `hostname` = :serverName'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':serverAddress', $serverAddress, \PDO::PARAM_STR);
         $statement->bindValue(':serverName', $serverName, \PDO::PARAM_STR);
         $statement->execute();
 
-        $errorMessage = '';
-        /*
-        try {
-            while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                if ($result['ip_address'] === $serverAddress) {
-                    throw new \Exception("The IP address of this platform already exists : %s @ %s");
-                }
-                if ($result['hostname'] === $serverName) {
-                    throw new \Exception("The name of this platform already exists : %s @ %s");
-                }
-            }
-        } catch (\Exception $ex) {
-            throw new PlatformTopologyException(
-                sprintf(_($errorMessage), $serverAddress, $serverName),
-                0,
-                $ex
-            );
-        }
-        */
-
-        // DEBUG
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
-        $isArray = "NO";
-        $isSet = "NO";
-        $isEmpty = "NO";
-        if (isset($result)) {
-            $isSet = "YES";
-        }
-        if (empty($result)) {
-            $isEmpty = "YES";
-        }
-        if (is_array($result)) {
-            $isArray = "YES";
-            $result = implode(';', $result);
-        }
 
-        throw new \Exception("\nquery result => " . $result . "  \n- isArray : " . $isArray . " \n- isSet : " . $isSet . " \n- isEmpty : " . $isEmpty . "\n");
-
-        return ($statement->fetch(\PDO::FETCH_ASSOC));
+        return (is_array($result) ? $result : []);
     }
 }

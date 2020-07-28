@@ -38,10 +38,10 @@ interface PlatformTopologyRepositoryInterface
      *
      * @param string $serverAddress
      * @param string $serverName
-     * @return boolean
+     * @return array<mixed> return found server in the DB
      */
-    public function isPlatformExistsInTopology(
+    public function findPlatformInTopology(
         string $serverAddress,
         string $serverName
-    ): bool;
+    ): array;
 }
