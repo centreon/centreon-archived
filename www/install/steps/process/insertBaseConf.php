@@ -124,10 +124,11 @@ $link->exec("INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezone
 
 # Generate random key for this instance and set it to be not central and not remote
 $uniqueKey = md5(uniqid(rand(), true));
-$informationsTableInsert = 'INSERT INTO `informations` (`key`,`value`) VALUES ' .
-    "('appKey', '{$uniqueKey}'), ".
-    "('isRemote', 'no'), ".
-    "('isCentral', 'no')";
+$informationsTableInsert = "INSERT INTO `informations` (`key`,`value`) VALUES
+    ('appKey', '{$uniqueKey}'),
+    ('isRemote', 'no'),
+    ('isCentral', 'no')";
+
 $link->exec($informationsTableInsert);
 
 splitQueries('../../insertACL.sql', ';', $link, '../../tmp/insertACL');
