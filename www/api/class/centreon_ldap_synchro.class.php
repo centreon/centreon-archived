@@ -86,7 +86,7 @@ class CentreonLdapSynchro extends CentreonWebService
         if ($contactId === false) {
             $this->centreonLog->insertLog(
                 3, //ldap.log
-                "LDAP MANUAL SYNC : Error - Chosen contact data are missing."
+                "LDAP MANUAL SYNC : Error - Chosen contact id is not consistent."
             );
             return $result;
         }
