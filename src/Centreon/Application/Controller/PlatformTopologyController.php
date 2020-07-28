@@ -148,7 +148,7 @@ class PlatformTopologyController extends AbstractController
             return $this->view([
                 'code' => Response::HTTP_BAD_REQUEST,
                 'message' => sprintf(
-                    _("The type of platform '%s@%s' is not consistent"),
+                    _("The type of platform '%s'@%'s' is not consistent"),
                     $platformToAdd['server_name'],
                     $platformToAdd['ip_address']
                 )
