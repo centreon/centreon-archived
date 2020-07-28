@@ -58,7 +58,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (!empty($foundPlatformTopology)) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("The platform '%s@%s' already exists"),
+                    _("A platform using the same name : '%s' or address : '%s' already exists"),
                     $platformTopology->getServerName(),
                     $platformTopology->getServerAddress()
                 )

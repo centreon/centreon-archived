@@ -29,6 +29,7 @@ use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * This controller is designed to platform topology API requests to register new servers.
@@ -37,6 +38,11 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface
  */
 class PlatformTopologyController extends AbstractController
 {
+    /**
+     * @var array<string> Allowed server types
+     */
+    private $allowedType = ["Central", "Poller", "Remote", "MAP", "MBI"];
+
     /**
      * @var PlatformTopologyServiceInterface
      */
@@ -93,7 +99,12 @@ class PlatformTopologyController extends AbstractController
         // get http request content
         $platformToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($platformToAdd)) {
-            throw new PlatformTopologyException(_('Error when decoding sent data'));
+            return $this->view([
+                'code' => Response::HTTP_BAD_REQUEST,
+                'message' => sprintf(
+                    _('Error when decoding sent data')
+                )
+            ]);
         }
 
         // check data consistency
@@ -113,36 +124,46 @@ class PlatformTopologyController extends AbstractController
             : $_SERVER['SERVER_ADDR'];
 
         if (empty($platformToAdd['server_name'])) {
-            throw new PlatformTopologyException(_("The name of the platform is not consistent"));
+            return $this->view([
+                'code' => Response::HTTP_BAD_REQUEST,
+                'message' => _('The name of the platform is not consistent')
+            ]);
         }
 
         if (false === $platformToAdd['ip_address']) {
-            throw new PlatformTopologyException(
-                sprintf(
+            return $this->view([
+                'code' => Response::HTTP_BAD_REQUEST,
+                'message' => sprintf(
                     _("The address of the platform '%s 'is not consistent"),
                     $platformToAdd['server_name']
                 )
-            );
+            ]);
         }
 
-        if (false === $platformToAdd['server_type']) {
-            throw new PlatformTopologyException(
-                sprintf(
+        // check server type consistency
+        if (
+            false === $platformToAdd['server_type']
+            || !isset($this->allowedType[$platformToAdd['server_type']])
+        ) {
+            return $this->view([
+                'code' => Response::HTTP_BAD_REQUEST,
+                'message' => sprintf(
                     _("The type of platform '%s@%s' is not consistent"),
                     $platformToAdd['server_name'],
                     $platformToAdd['ip_address']
                 )
-            );
+            ]);
         }
 
         if (false === $platformToAdd['server_parent']) {
-            throw new PlatformTopologyException(
-                sprintf(
+            return $this->view([
+                'code' => Response::HTTP_BAD_REQUEST,
+                'message' => sprintf(
                     _("The address of the parent of the platform '%s@%s' is not consistent"),
                     $platformToAdd['server_name'],
                     $platformToAdd['ip_address']
                 )
-            );
+            ]);
         }
 
         $setPlatformTopology = (new PlatformTopology())
@@ -153,6 +174,15 @@ class PlatformTopologyController extends AbstractController
 
         $this->platformTopologyService->addPlatformToTopology($setPlatformTopology);
 
-        return $this->view($setPlatformTopology);
+        return $this->view([
+            'code' => Response::HTTP_OK,
+            'message' => sprintf(
+                _("The '%s' Platform : '%s'@'%s' linked to '%s' was added"),
+                $this->allowedType[$platformToAdd['server_type']],
+                $platformToAdd['server_name'],
+                $platformToAdd['server_parent'],
+                $platformToAdd['ip_address']
+            )
+        ]);
     }
 }
