@@ -90,7 +90,24 @@ try {
     exit;
 }
 
-# Manage timezone
+// Insert Central to 'platfrom_topology' table, as first server and parent of all others.
+$stmt = $pearDB->prepare(
+    "INSERT INTO `platform_topology` (
+        `ip_address`,
+        `hostname`,
+        `server_type`,
+        `parent`
+    ) VALUES (
+        :centralAddress,
+        (SELECT `name` FROM nagios_server WHERE localhost = '1'),
+        0,
+        NULL
+    )"
+);
+$stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
+$stmt->execute();
+
+// Manage timezone
 $timezone = date_default_timezone_get();
 $resTimezone = $link->query("SELECT timezone_id FROM timezone WHERE timezone_name= '" . $timezone . "'");
 if (!$resTimezone) {
