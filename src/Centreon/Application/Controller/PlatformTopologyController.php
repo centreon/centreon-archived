@@ -180,8 +180,8 @@ class PlatformTopologyController extends AbstractController
                 _("The '%s' Platform : '%s'@'%s' linked to '%s' was added"),
                 $this->allowedType[$platformToAdd['server_type']],
                 $platformToAdd['server_name'],
-                $platformToAdd['server_parent'],
-                $platformToAdd['ip_address']
+                $platformToAdd['ip_address'],
+                $platformToAdd['server_parent']
             )
         ]);
     }
