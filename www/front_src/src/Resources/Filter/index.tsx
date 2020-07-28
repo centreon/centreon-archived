@@ -23,6 +23,7 @@ import {
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
+import Filters from '@centreon/ui/src/ListingPage/Filters';
 import {
   labelFilter,
   labelCriterias,
@@ -58,35 +59,6 @@ import {
 } from '../api/endpoint';
 import { useResourceContext } from '../Context';
 import SaveFilter from './Save';
-
-const AccordionSummary = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 3, 0, 2),
-    minHeight: 'auto',
-    '&$expanded': {
-      minHeight: 'auto',
-    },
-    '&$focused': {
-      backgroundColor: 'unset',
-    },
-    justifyContent: 'flex-start',
-  },
-  content: {
-    margin: theme.spacing(1, 0),
-    '&$expanded': {
-      margin: theme.spacing(1, 0),
-    },
-    flexGrow: 0,
-  },
-  focused: {},
-  expanded: {},
-}))(MuiAccordionSummary);
-
-const AccordionDetails = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 0.5, 1, 2),
-  },
-}))(MuiAccordionDetails);
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -124,8 +96,6 @@ const useStyles = makeStyles((theme) => ({
 const Filter = (): JSX.Element => {
   const classes = useStyles();
 
-  const [expanded, setExpanded] = React.useState(false);
-
   const {
     filter,
     setFilter,
@@ -145,10 +115,6 @@ const Filter = (): JSX.Element => {
     customFilters,
     customFiltersLoading,
   } = useResourceContext();
-
-  const toggleExpanded = (): void => {
-    setExpanded(!expanded);
-  };
 
   const getHostgroupEndpoint = ({ search, page }): string => {
     return buildHostGroupsEndpoint({
@@ -268,17 +234,10 @@ const Filter = (): JSX.Element => {
   const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
 
   return (
-    <Accordion square expanded={expanded}>
-      <AccordionSummary
-        expandIcon={
-          <ExpandMoreIcon
-            color="primary"
-            aria-label={labelShowCriteriasFilters}
-          />
-        }
-        IconButtonProps={{ onClick: toggleExpanded }}
-        style={{ cursor: 'default' }}
-      >
+    <Filters
+      filtersExpandable
+      labelFiltersIcon={labelShowCriteriasFilters}
+      filters={
         <div className={clsx([classes.grid, classes.filterRow])}>
           <Typography className={classes.filterLineLabel} variant="h6">
             {labelFilter}
@@ -307,8 +266,8 @@ const Filter = (): JSX.Element => {
             {labelSearch}
           </Button>
         </div>
-      </AccordionSummary>
-      <AccordionDetails>
+      }
+      expandableFilters={
         <div className={clsx([classes.grid, classes.criteriaRow])}>
           <Typography className={classes.filterLineLabel} variant="subtitle1">
             {labelCriterias}
@@ -358,8 +317,8 @@ const Filter = (): JSX.Element => {
             {labelClearAll}
           </Button>
         </div>
-      </AccordionDetails>
-    </Accordion>
+      }
+    />
   );
 };
 
