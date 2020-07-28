@@ -32,7 +32,7 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * This controller is designed to platform topology API requests to register new servers.
+ * This controller is designed to manage platform topology API requests and register new servers.
  *
  * @package Centreon\Application\Controller
  */
