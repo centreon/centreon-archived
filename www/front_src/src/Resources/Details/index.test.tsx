@@ -295,7 +295,7 @@ describe(Details, () => {
     );
   });
 
-  it('refresh the detailed informations panel in same time to refresh listing', async () => {
+  it('refreshes the details when the listing is updated, async () => {
     mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
 
     const { getByText } = renderDetails();
