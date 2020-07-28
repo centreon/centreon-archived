@@ -2332,8 +2332,8 @@ CREATE TABLE `platform_topology` (
     `hostname` varchar(255) NOT NULL,
     `server_type` tinyint(1) NOT NULL DEFAULT 0,
     `parent` varchar(255),
-    PRIMARY KEY (`ip_address`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    PRIMARY KEY (`ip_address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Registration and parent relation Table used to get the platform topology';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
