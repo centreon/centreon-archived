@@ -291,7 +291,6 @@ $cbtls->setText('');
 $cloneSet[] = $cbtls;
 
 $gopt = array_merge($defaultOpt, $gopt);
-
 $form->setDefaults($gopt);
 
 $ar = $form->addElement('hidden', 'ar_id');
