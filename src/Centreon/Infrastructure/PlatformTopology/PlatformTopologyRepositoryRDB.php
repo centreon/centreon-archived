@@ -67,8 +67,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function findPlatformInTopology(
         string $serverAddress,
         string $serverName
-    ): array
-    {
+    ): array {
         $request = $this->translateDbName(
             'SELECT `ip_address`, `hostname`, `server_type`
             FROM `:db`.platform_topology
