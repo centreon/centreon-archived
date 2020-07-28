@@ -80,6 +80,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
+        // if nothing is found, convert $result to an empty array as expected
         return (is_array($result) ? $result : []);
     }
 }
