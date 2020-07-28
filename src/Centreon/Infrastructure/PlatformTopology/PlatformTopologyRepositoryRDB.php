@@ -70,7 +70,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     ): array
     {
         $request = $this->translateDbName(
-            'SELECT `ip_address`, `hostname`, `server_type` FROM `:db`.platform_topology WHERE `ip_address` = :serverAddress OR `hostname` = :serverName'
+            'SELECT `ip_address`, `hostname`, `server_type`
+            FROM `:db`.platform_topology
+            WHERE `ip_address` = :serverAddress OR `hostname` = :serverName'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':serverAddress', $serverAddress, \PDO::PARAM_STR);
