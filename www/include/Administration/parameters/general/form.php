@@ -57,7 +57,7 @@ $transcoKey = array(
     'send_statistics' => 'yes'
 );
 
-$dbResult = $pearDB->query("SELECT * FROM `options`");
+$dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` <> 'proxy_password'");
 while ($opt = $dbResult->fetch()) {
     if (isset($transcoKey[$opt["key"]])) {
         $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
@@ -65,6 +65,7 @@ while ($opt = $dbResult->fetch()) {
         $gopt[$opt["key"]] = myDecode($opt["value"]);
     }
 }
+$gopt['proxy_password'] = '******';
 
 /*
  * Style
@@ -350,6 +351,9 @@ $form->addElement(
 /*
  * Send variable to template
  */
+
+var_dump($o);
+
 $tpl->assign('o', $o);
 $tpl->assign("sorting", _("Sorting"));
 $tpl->assign("notification", _("Notification"));

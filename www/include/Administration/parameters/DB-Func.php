@@ -620,12 +620,13 @@ function updateGeneralConfigData($gopt_id = null)
         isset($ret["proxy_user"]) && $ret["proxy_user"] != null
             ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8"): "NULL"
     );
-    updateOption(
-        $pearDB,
-        'proxy_password',
-        isset($ret["proxy_password"]) && $ret["proxy_password"] != null
-            ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8"): "NULL"
-    );
+    if(isset($ret["proxy_password"]) && $ret['proxy_password'] != '******'){
+        updateOption(
+            $pearDB,
+            'proxy_password',
+            $ret["proxy_password"] != null ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8"): "NULL"
+        );
+    }
     updateOption(
         $pearDB,
         'display_downtime_chart',
@@ -963,6 +964,11 @@ function updateKnowledgeBaseData($db, $form, $centreon)
     if (!isset($ret['kb_wiki_certificate'])) {
         $ret['kb_wiki_certificate'] = 0;
     }
+
+    if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === "******") {
+        unset($ret["kb_wiki_password"]);
+    }
+
     foreach ($ret as $key => $value) {
         if (preg_match('/^kb_/', $key)) {
                 updateOption($db, $key, $value);

@@ -1148,6 +1148,10 @@ class CentreonLdapAdmin
             );
         }
 
+        if (isset($options["bind_pass"]) && $options["bind_pass"] === "******") {
+            unset($options["bind_pass"]);
+        }
+
         $knownParameters = $this->getLdapParameters();
         foreach ($options as $key => $value) {
             if (!in_array($key, $knownParameters)) {
@@ -1193,13 +1197,13 @@ class CentreonLdapAdmin
     public function getGeneralOptions($arId)
     {
         $gopt = array();
-        $query = "SELECT `ari_name`, `ari_value` 
-                 FROM `auth_ressource_info`
-                 WHERE ar_id = " . $this->db->escape($arId);
+        $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info` 
+WHERE `ari_name` <> 'bind_pass' AND ar_id = " . $this->db->escape($arId);
         $res = $this->db->query($query);
         while ($row = $res->fetch()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
         }
+        $gopt['bind_pass'] = '******';
         return $gopt;
     }
 
