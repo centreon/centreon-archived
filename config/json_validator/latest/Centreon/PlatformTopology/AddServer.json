@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Add or update a user filter",
+  "title": "Add a new server to the platform topology",
   "type": "object",
   "required": ["server_name", "server_type", "ip_address"],
   "additionalProperties": true,
