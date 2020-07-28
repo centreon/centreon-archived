@@ -58,7 +58,7 @@ class PlatformTopologyController extends AbstractController
     }
 
     /**
-     * Validate platform topology filter according to json schema
+     * Validate platform topology data according to json schema
      *
      * @param array<mixed> $platformToAdd data sent in json
      * @param string $schemaPath
