@@ -127,7 +127,7 @@ class PlatformTopology
      */
     public function setServerParentAddress(?string $serverParentAddress): self
     {
-        $this->serverAddress = $serverParentAddress;
+        $this->serverParentAddress = $serverParentAddress;
         return $this;
     }
 }

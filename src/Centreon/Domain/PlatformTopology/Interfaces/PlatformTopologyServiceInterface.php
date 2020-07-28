@@ -34,17 +34,4 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformTopologyException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
-
-
-    /**
-     * Check if this platform was not already added
-     * @param string $serverAddress
-     * @param string $serverName
-     * @return bool
-     * @throws PlatformTopologyException
-     */
-    public function isPlatformExistsInTopology(
-        string $serverAddress,
-        string $serverName
-    ): bool;
 }

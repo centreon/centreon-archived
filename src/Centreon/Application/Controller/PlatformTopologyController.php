@@ -80,7 +80,6 @@ class PlatformTopologyController extends AbstractController
 
     /**
      * Entry point to register a new server
-     * api/version/monitoring/register
      *
      * @param Request $request
      * @return View
@@ -104,20 +103,56 @@ class PlatformTopologyController extends AbstractController
             . 'config/json_validator/latest/Centreon/PlatformTopology/AddServer.json'
         );
 
-        // get parent address
-        // currently, only pollers are added, so the parent IP is a central
-        // temporarily hard coding its address
-        $parentAddress = "127.0.0.1";
+        // check consistency and sanitize data
+        $platformToAdd['ip_address'] = filter_var($platformToAdd['ip_address'], FILTER_VALIDATE_IP);
+        $platformToAdd['server_name'] = filter_var($platformToAdd['server_name'], FILTER_SANITIZE_STRING);
+        $platformToAdd['server_type'] = filter_var($platformToAdd['server_type'], FILTER_VALIDATE_INT);
+        $platformToAdd['server_parent'] = !empty($platformToAdd['server_parent'])
+            ? filter_var($platformToAdd['server_parent'], FILTER_VALIDATE_IP)
+            // define the central as parent
+            : $_SERVER['SERVER_ADDR'];
+
+        if (empty($platformToAdd['server_name'])) {
+            throw new PlatformTopologyException(_("The name of the platform is not consistent"));
+        }
+
+        if (false === $platformToAdd['ip_address']) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The address of the platform '%s 'is not consistent"),
+                    $platformToAdd['server_name']
+                )
+            );
+        }
+
+        if (false === $platformToAdd['server_type']) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The type of platform '%s@%s' is not consistent"),
+                    $platformToAdd['server_name'],
+                    $platformToAdd['ip_address']
+                )
+            );
+        }
+
+        if (false === $platformToAdd['server_parent']) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The address of the parent of the platform '%s@%s' is not consistent"),
+                    $platformToAdd['server_name'],
+                    $platformToAdd['ip_address']
+                )
+            );
+        }
 
         $setPlatformTopology = (new PlatformTopology())
             ->setServerAddress($platformToAdd['ip_address'])
             ->setServerName($platformToAdd['server_name'])
             ->setserverType($platformToAdd['server_type'])
-            ->setServerParentAddress($parentAddress);
+            ->setServerParentAddress($platformToAdd['server_parent']);
 
         $this->platformTopologyService->addPlatformToTopology($setPlatformTopology);
 
-        // not sure about the consistency of the return
         return $this->view($setPlatformTopology);
     }
 }

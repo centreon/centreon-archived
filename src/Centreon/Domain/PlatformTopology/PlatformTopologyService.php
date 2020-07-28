@@ -51,12 +51,18 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
-        $foundPlatformTopology = $this->platformTopologyRepository->isPlatformExistsInTopology(
+        $foundPlatformTopology = $this->platformTopologyRepository->findPlatformInTopology(
             $platformTopology->getServerAddress(),
             $platformTopology->getServerName()
         );
         if (!empty($foundPlatformTopology)) {
-            throw new PlatformTopologyException(_('Platform already exists'));
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The platform '%s@%s' already exists"),
+                    $platformTopology->getServerName(),
+                    $platformTopology->getServerAddress()
+                )
+            );
         }
 
         try {
@@ -70,28 +76,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 ),
                 0,
                 $ex
-            );
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isPlatformExistsInTopology(
-        string $serverAddress,
-        string $serverName
-    ): bool
-    {
-        try {
-            return $this->platformTopologyRepository->isPlatformExistsInTopology(
-                $serverAddress,
-                $serverName
-            );
-        } catch (\Exception $ex) {
-            throw new PlatformTopologyException(
-                sprintf(_('Error when searching server %s @ %s'), $serverName, $serverAddress),
-                    0,
-                    $ex
             );
         }
     }
