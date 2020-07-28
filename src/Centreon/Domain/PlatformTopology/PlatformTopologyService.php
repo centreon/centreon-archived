@@ -26,7 +26,7 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 
 /**
- * Class intended to register a new server to the platform topology
+ * Service intended to register a new server to the platform topology
  *
  * @package Centreon\Domain\PlatformTopology
  */
