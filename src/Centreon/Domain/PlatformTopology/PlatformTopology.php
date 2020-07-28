@@ -114,18 +114,18 @@ class PlatformTopology
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getServerParentAddress(): ?string
+    public function getServerParentAddress(): string
     {
         return $this->serverParentAddress;
     }
 
     /**
-     * @param string|null $serverParentAddress
+     * @param string $serverParentAddress
      * @return $this
      */
-    public function setServerParentAddress(?string $serverParentAddress): self
+    public function setServerParentAddress(string $serverParentAddress): self
     {
         $this->serverParentAddress = $serverParentAddress;
         return $this;
