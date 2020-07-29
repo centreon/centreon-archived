@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -47,6 +48,33 @@ if (!isset($_SESSION['centreon'])) {
     exit();
 }
 
+$elementId = filter_input(
+    INPUT_POST,
+    'elementId',
+    FILTER_VALIDATE_REGEXP,
+    [
+        'options' => ['regexp' => '/^title_\d+$/']
+    ]
+);
+
+if ($elementId === null) {
+    echo 'missing elementId argument';
+    exit();
+} elseif ($elementId === false) {
+    echo 'elementId must use following regexp format : "title_\d+"';
+    exit();
+}
+
+$newName = filter_input(
+    INPUT_POST,
+    'newName',
+    FILTER_SANITIZE_STRING
+);
+if ($newName === null) {
+    echo 'missing newName argument';
+    exit();
+}
+
 $centreon = $_SESSION['centreon'];
 $db = new CentreonDB();
 
@@ -56,7 +84,7 @@ if (CentreonSession::checkSession(session_id(), $db) == 0) {
 
 $widgetObj = new CentreonWidget($centreon, $db);
 try {
-    echo $widgetObj->rename($_REQUEST);
+    echo $widgetObj->rename($elementId, $newName);
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage();
 }
