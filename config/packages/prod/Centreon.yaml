@@ -103,9 +103,6 @@ services:
 
     Centreon\Domain\PlatformTopology\PlatformTopologyRepositoryInterface:
         class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRepositoryRDB
-        calls:
-            - method: setSqlRequestTranslator
-              arguments: ['@sqlRequestTranslator']
 
     # Real time monitoring
     sqlRequestTranslator:
