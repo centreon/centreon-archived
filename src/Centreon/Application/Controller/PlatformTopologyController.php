@@ -41,7 +41,7 @@ class PlatformTopologyController extends AbstractController
     /**
      * @var array<string> Allowed server types
      */
-    private $allowedType = ["Central", "Poller", "Remote", "MAP", "MBI"];
+    private const ALLOWED_TYPES = ["Central", "Poller", "Remote", "MAP", "MBI"];
 
     /**
      * @var PlatformTopologyServiceInterface
