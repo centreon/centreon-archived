@@ -89,7 +89,7 @@ if (CentreonSession::checkSession(session_id(), $db) == 0) {
 
 $widgetObj = new CentreonWidget($centreon, $db);
 try {
-    echo $widgetObj->rename($elementId, $widgetId);
+    echo $widgetObj->rename($widgetId, $newName);
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage();
 }
