@@ -33,11 +33,6 @@
  * For more information : contact@centreon.com
  *
  */
-
-require __DIR__ . '/../vendor/autoload.php';
-
-use Symfony\Component\Yaml\Yaml;
-
 /************************ */
 /*    UTILITY FUNCTIONS
 /************************ */
@@ -158,20 +153,6 @@ try {
 $password = askQuestion($targetHost . ': enter your password ', true);
 
 /**
- * Enable Remote Server Mode
- */
-
-// 1 - Hide Menu
-
-// 2 - set Remote Server to yes in db
-
-// 3 - Authorize Centreon IP in local db
-
-// 4 - Apply Remote Server mode in configuration file
-
-// 5 - Add Option to contact API for Remote Server
-
-/**
  * Parsing url part from params -h
  */
 $targetURL = parse_url($targetHost);
@@ -219,12 +200,6 @@ $loginCredentials = json_encode($loginCredentials);
 $registerPayload = json_encode($registerPayload);
 
 /**
- * Get API Version
- */
-$apiConfig = Yaml::parseFile(__DIR__ . '/../config/routes/centreon.yaml');
-$version = $apiConfig['centreon']['defaults']['version'];
-
-/**
  * Display Summary of action
  */
 $summary = <<<EOD
@@ -263,7 +238,7 @@ $loginUrl = $protocol . '://' . $host;
 if(!empty($port)){
     $loginUrl .= ':' . $port;
 }
-$loginUrl .= '/centreon/api/' . $version . '/login';
+$loginUrl .= '/centreon/api/latest/login';
 
 $ch = curl_init($loginUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
@@ -309,7 +284,7 @@ $registerUrl = $protocol . '://' . $host;
 if(!empty($port)){
     $registerUrl .= ':' . $port;
 }
-$registerUrl .= "/centreon/api/$version/configuration/platform_topology";
+$registerUrl .= "/centreon/api/latest/platform_topology";
 
 $ch = curl_init($registerUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
@@ -340,7 +315,7 @@ if (isset($result['code'],$result['message'])) {
     $response = responseMessageHandler($result['code'], $result['message'], 'success');
     echo $response;
 } else {
-    $response = responseMessageHandler(400, 'An error occured while registering', 'error');
+    $response = responseMessageHandler(500, 'An error occured while registering', 'error');
     echo $response;
 }
 exit;
