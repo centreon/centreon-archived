@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { Paper, makeStyles, Divider } from '@material-ui/core';
-
 import { getData, useRequest, SlidePanel } from '@centreon/ui';
 
 import Header from './Header';

@@ -53,12 +53,12 @@ import {
   newFilter,
 } from './models';
 import SearchHelpTooltip from './SearchHelpTooltip';
+import { useResourceContext } from '../Context';
+import SaveFilter from './Save';
 import {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
-} from '../api/endpoint';
-import { useResourceContext } from '../Context';
-import SaveFilter from './Save';
+} from './api/endpoint';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     justifyItems: 'center',
   },
   filterRow: {
-    gridTemplateColumns: 'auto 30px 200px 500px auto auto',
+    gridTemplateColumns: 'auto 30px 200px minmax(200px, 500px) auto auto',
   },
   filterLoadingSkeleton: {
     transform: 'none',
@@ -95,6 +95,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Filter = (): JSX.Element => {
   const classes = useStyles();
+
+  const [showCriteria, setShowCriteria] = React.useState(false);
 
   const {
     filter,
@@ -233,10 +235,24 @@ const Filter = (): JSX.Element => {
 
   const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
 
+  const hideCriteriaOnClose = (expanded): void => {
+    if (!expanded) {
+      setShowCriteria(false);
+    }
+  };
+
+  const showCriteriaOnExpand = (): void => {
+    if (!showCriteria) {
+      setShowCriteria(true);
+    }
+  };
+
   return (
     <Filters
       filtersExpandable
       labelFiltersIcon={labelShowCriteriasFilters}
+      onExpandTransitionFinish={hideCriteriaOnClose}
+      onExpandTransitionStart={showCriteriaOnExpand}
       filters={
         <div className={clsx([classes.grid, classes.filterRow])}>
           <Typography className={classes.filterLineLabel} variant="h6">
@@ -268,55 +284,57 @@ const Filter = (): JSX.Element => {
         </div>
       }
       expandableFilters={
-        <div className={clsx([classes.grid, classes.criteriaRow])}>
-          <Typography className={classes.filterLineLabel} variant="subtitle1">
-            {labelCriterias}
-          </Typography>
-          <div> </div>
-          <MultiAutocompleteField
-            className={classes.autoCompleteField}
-            options={availableResourceTypes}
-            label={labelTypeOfResource}
-            onChange={changeResourceTypes}
-            value={resourceTypes || []}
-            openText={`${labelOpen} ${labelTypeOfResource}`}
-          />
-          <MultiAutocompleteField
-            className={classes.autoCompleteField}
-            options={availableStates}
-            label={labelState}
-            onChange={changeStates}
-            value={states || []}
-            openText={`${labelOpen} ${labelState}`}
-          />
-          <MultiAutocompleteField
-            className={classes.autoCompleteField}
-            options={availableStatuses}
-            label={labelStatus}
-            onChange={changeStatuses}
-            value={statuses || []}
-            openText={`${labelOpen} ${labelStatus}`}
-          />
-          <MultiConnectedAutocompleteField
-            className={classes.autoCompleteField}
-            getEndpoint={getHostgroupEndpoint}
-            label={labelHostGroup}
-            onChange={changeHostGroups}
-            value={hostGroups || []}
-            openText={`${labelOpen} ${labelHostGroup}`}
-          />
-          <MultiConnectedAutocompleteField
-            className={classes.autoCompleteField}
-            getEndpoint={getServiceGroupSearchEndpoint}
-            label={labelServiceGroup}
-            onChange={changeServiceGroups}
-            value={serviceGroups || []}
-            openText={`${labelOpen} ${labelServiceGroup}`}
-          />
-          <Button color="primary" onClick={clearAllFilters}>
-            {labelClearAll}
-          </Button>
-        </div>
+        showCriteria ? (
+          <div className={clsx([classes.grid, classes.criteriaRow])}>
+            <Typography className={classes.filterLineLabel} variant="subtitle1">
+              {labelCriterias}
+            </Typography>
+            <div />
+            <MultiAutocompleteField
+              className={classes.autoCompleteField}
+              options={availableResourceTypes}
+              label={labelTypeOfResource}
+              onChange={changeResourceTypes}
+              value={resourceTypes || []}
+              openText={`${labelOpen} ${labelTypeOfResource}`}
+            />
+            <MultiAutocompleteField
+              className={classes.autoCompleteField}
+              options={availableStates}
+              label={labelState}
+              onChange={changeStates}
+              value={states || []}
+              openText={`${labelOpen} ${labelState}`}
+            />
+            <MultiAutocompleteField
+              className={classes.autoCompleteField}
+              options={availableStatuses}
+              label={labelStatus}
+              onChange={changeStatuses}
+              value={statuses || []}
+              openText={`${labelOpen} ${labelStatus}`}
+            />
+            <MultiConnectedAutocompleteField
+              className={classes.autoCompleteField}
+              getEndpoint={getHostgroupEndpoint}
+              label={labelHostGroup}
+              onChange={changeHostGroups}
+              value={hostGroups || []}
+              openText={`${labelOpen} ${labelHostGroup}`}
+            />
+            <MultiConnectedAutocompleteField
+              className={classes.autoCompleteField}
+              getEndpoint={getServiceGroupSearchEndpoint}
+              label={labelServiceGroup}
+              onChange={changeServiceGroups}
+              value={serviceGroups || []}
+              openText={`${labelOpen} ${labelServiceGroup}`}
+            />
+            <Button color="primary" onClick={clearAllFilters}>
+              {labelClearAll}
+            </Button>
+          </div>
+        ) : undefined
       }
     />
   );

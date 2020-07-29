@@ -12,8 +12,8 @@ import {
 } from '../../../translatedLabels';
 import DialogAcknowledge from './Dialog';
 import { Resource } from '../../../models';
-import { acknowledgeResources } from '../../../api';
 import { useUserContext } from '../../../../Provider/UserContext';
+import { acknowledgeResources } from '../../api';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),

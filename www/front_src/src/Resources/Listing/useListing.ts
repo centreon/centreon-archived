@@ -6,9 +6,9 @@ import { useRequest } from '@centreon/ui';
 
 import { ResourceListing } from '../models';
 import { defaultSortOrder, defaultSortField } from './columns';
-import { listResources } from '../api';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { labelSomethingWentWrong } from '../translatedLabels';
+import { listResources } from './api';
 
 type SortOrder = 'asc' | 'desc';
 

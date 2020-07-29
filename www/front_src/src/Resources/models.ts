@@ -1,3 +1,5 @@
+import { ListingModel } from '@centreon/ui';
+
 export interface Icon {
   url: string;
   name: string;
@@ -42,20 +44,7 @@ export interface Resource {
   timeline_endpoint: string;
 }
 
-interface ListingMeta {
-  page: number;
-  limit: number;
-  search: {};
-  sort_by: {};
-  total: number;
-}
-
-export interface Listing<TEntity> {
-  result: Array<TEntity>;
-  meta: ListingMeta;
-}
-
-export type ResourceListing = Listing<Resource>;
+export type ResourceListing = ListingModel<Resource>;
 
 export interface Downtime {
   author_name: string;

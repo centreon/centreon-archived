@@ -39,13 +39,13 @@ import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { mockAppStateSelector, cancelTokenRequestParam } from '../testUtils';
 import { Resource } from '../models';
+import * as UserContext from '../../Provider/UserContext';
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   hostCheckEndpoint,
   serviceCheckEndpoint,
-} from '../api/endpoint';
-import * as UserContext from '../../Provider/UserContext';
+} from './api/endpoint';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

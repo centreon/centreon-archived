@@ -14,7 +14,7 @@ import {
 } from '../../../translatedLabels';
 import DialogDowntime from './Dialog';
 import { Resource } from '../../../models';
-import { setDowntimeOnResources } from '../../../api';
+import { setDowntimeOnResources } from '../../api';
 
 interface DateParams {
   dateStart: Date;
