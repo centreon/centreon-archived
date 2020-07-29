@@ -30,7 +30,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Psr\Container\ContainerInterface;
@@ -64,7 +63,9 @@ class FilterControllerTest extends TestCase
             'name' => 'filter1',
             'criterias' => [
                 [
-                    'field1' => 'value1',
+                    'name' => 'name1',
+                    'type' => 'type1',
+                    'value' => 'value1',
                 ],
             ],
         ];
