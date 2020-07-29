@@ -87,7 +87,7 @@ class PlatformTopology
      *      3 = map server
      *      4 = mbi server
      *
-     * @return self
+     * @return $this
      */
     public function setServerType(int $serverType): self
     {
