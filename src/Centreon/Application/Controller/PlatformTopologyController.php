@@ -159,7 +159,7 @@ class PlatformTopologyController extends AbstractController
             return $this->view([
                 'code' => Response::HTTP_BAD_REQUEST,
                 'message' => sprintf(
-                    _("The address of the parent of the platform '%s@%s' is not consistent"),
+                    _("The address of the parent platform '%s@%s' is not consistent"),
                     $platformToAdd['server_name'],
                     $platformToAdd['ip_address']
                 )
