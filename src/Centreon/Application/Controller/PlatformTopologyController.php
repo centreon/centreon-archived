@@ -143,7 +143,7 @@ class PlatformTopologyController extends AbstractController
         // check server type consistency
         if (
             false === $platformToAdd['server_type']
-            || !isset($this->allowedType[$platformToAdd['server_type']])
+            || !isset(static::ALLOWED_TYPES[$platformToAdd['server_type']])
         ) {
             return $this->view([
                 'code' => Response::HTTP_BAD_REQUEST,
