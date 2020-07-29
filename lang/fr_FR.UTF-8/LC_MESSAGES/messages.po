@@ -15491,8 +15491,8 @@ msgstr "L'adresse de la plateforme parente '%s@%s' n'est pas cohérente"
 msgid "The '%s' Platform : '%s'@'%s' linked to '%s' has been added"
 msgstr "La plateforme '%s' : '%s'@'%s' liée à '%s' a été ajoutée"
 
-msgid "A platform using the same name : '%s' or address : '%s' already exists"
-msgstr "Une plateforme avec le même nom : '%s' ou la même adresse : '%s' existe déjà"
+msgid "A platform using the name : '%s' or address : '%s' already exists"
+msgstr "Une plateforme avec le nom : '%s' ou l'adresse : '%s' existe déjà"
 
 msgid "Error when adding in topology the platform : %s @ %s"
 msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : %s @ %s"
