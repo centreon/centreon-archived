@@ -105,7 +105,7 @@ class PlatformTopology
 
     /**
      * @param string $serverAddress
-     * @return self
+     * @return $this
      */
     public function setServerAddress(string $serverAddress): self
     {
