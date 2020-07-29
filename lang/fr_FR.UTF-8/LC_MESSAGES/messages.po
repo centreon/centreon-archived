@@ -15489,5 +15489,5 @@ msgstr "La plateforme '%s' : '%s'@'%s' liée à '%s' a été ajoutée"
 msgid "A platform using the name : '%s' or address : '%s' already exists"
 msgstr "Une plateforme avec le nom : '%s' ou l'adresse : '%s' existe déjà"
 
-msgid "Error when adding in topology the platform : %s @ %s"
-msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : %s @ %s"
+msgid "Error when adding in topology the platform : '%s'@'%s'"
+msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
