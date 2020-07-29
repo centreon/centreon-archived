@@ -44,7 +44,7 @@
   * @param boolean $hidden
   * @return string
   */
-function askQuestion(string $question, $hidden = false) : string
+function askQuestion(string $question, $hidden = false): string
 {
     if ($hidden) {
         system("stty -echo");
@@ -68,7 +68,7 @@ function askQuestion(string $question, $hidden = false) : string
  * @param string $type
  * @return string
  */
-function responseMessageHandler(int $code, string $message, string $type = 'success') : string
+function responseMessageHandler(int $code, string $message, string $type = 'success'): string
 {
     switch ($type) {
         case 'error':
@@ -79,7 +79,7 @@ function responseMessageHandler(int $code, string $message, string $type = 'succ
         default:
             $responseMessage = 'code: ' . $code . PHP_EOL .
             'message: ' . $message . PHP_EOL;
-        break;
+            break;
     }
 
     return sprintf('%s', $responseMessage);
@@ -223,7 +223,7 @@ echo $summary;
 
 $proceed = askQuestion('Do you want to register this server with those informations ? (y/n)');
 $proceed = strtolower($proceed);
-if($proceed !== "y"){
+if ($proceed !== "y") {
     exit;
 }
 
@@ -235,7 +235,7 @@ if($proceed !== "y"){
  * Connection to Api
  */
 $loginUrl = $protocol . '://' . $host;
-if(!empty($port)) {
+if (!empty($port)) {
     $loginUrl .= ':' . $port;
 }
 $loginUrl .= '/centreon/api/latest/login';
@@ -254,7 +254,7 @@ if (isset($proxyInfo)) {
 
 $result = curl_exec($ch);
 
-if(!$result) {
+if (!$result) {
     echo curl_error($ch);
     exit;
 }
@@ -281,7 +281,7 @@ if (isset($result['security']['token'])) {
  * POST Request to server registration endpoint
  */
 $registerUrl = $protocol . '://' . $host;
-if(!empty($port)){
+if (!empty($port)) {
     $registerUrl .= ':' . $port;
 }
 $registerUrl .= "/centreon/api/latest/platform_topology";
