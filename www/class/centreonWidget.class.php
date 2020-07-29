@@ -1385,19 +1385,12 @@ class CentreonWidget
     /**
      * Rename widget
      *
-     * @param string $elementId element id using format "title_<id>"
+     * @param int $elementId widget id
      * @param string $newName widget new name
      * @return string
      */
-    public function rename(string $elementId, string $newName)
+    public function rename(int $widgetId, string $newName)
     {
-        $widgetId = null;
-        if (preg_match("/title_(\d+)/", $elementId, $matches)) {
-            $widgetId = $matches[1];
-        } else {
-            throw new CentreonWidgetException('Missing widget id');
-        }
-
         $query = 'UPDATE widgets ' .
             'SET title = :title ' .
             'WHERE widget_id = :widgetId';

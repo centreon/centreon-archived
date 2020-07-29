@@ -65,6 +65,11 @@ if ($elementId === null) {
     exit();
 }
 
+$widgetId = null;
+if (preg_match('/^title_(\d+)$/', $_POST['elementId'], $matches)) {
+    $widgetId = $matches[1];
+}
+
 $newName = filter_input(
     INPUT_POST,
     'newName',
@@ -84,7 +89,7 @@ if (CentreonSession::checkSession(session_id(), $db) == 0) {
 
 $widgetObj = new CentreonWidget($centreon, $db);
 try {
-    echo $widgetObj->rename($elementId, $newName);
+    echo $widgetObj->rename($elementId, $widgetId);
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage();
 }
