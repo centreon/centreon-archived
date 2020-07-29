@@ -33,6 +33,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 /************************ */
 /*    UTILITY FUNCTIONS
 /************************ */
@@ -94,6 +95,7 @@ function responseMessageHandler(int $code, string $message, string $type = 'succ
  */
 $opt = getopt('u:t:h:', ["help::", "proxy::", "dns:"]);
 const SERVERTYPE = ["poller", "remote server", "map", "mbi"];
+
 /**
  * Format the --help message
  */
