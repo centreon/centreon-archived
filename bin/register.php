@@ -144,7 +144,7 @@ try {
 
     if (isset($opt['dns'])) {
         $dns = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN) ? $opt['dns'] : false;
-        if(!$dns) {
+        if (!$dns) {
             throw new \InvalidArgumentException(
                 PHP_EOL . "Bad DNS Format" . PHP_EOL
             );
