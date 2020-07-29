@@ -107,7 +107,7 @@ class PlatformTopologyController extends AbstractController
             ]);
         }
 
-        // check data consistency
+        // validate data consistency
         $this->validatePlatformTopologySchema(
             $platformToAdd,
             $this->getParameter('centreon_path')
@@ -133,18 +133,27 @@ class PlatformTopologyController extends AbstractController
             return $this->view([
                 'code' => Response::HTTP_BAD_REQUEST,
                 'message' => sprintf(
-                    _("The address of the platform '%s 'is not consistent"),
+                    _("The address of the platform '%s' is not consistent"),
                     $platformToAdd['server_name']
                 )
             ]);
         }
 
         // check server type consistency
-        if (!isset(static::ALLOWED_TYPES[$platformToAdd['server_type']])) {
+        if (0 === $platformToAdd['server_type']) {
             return $this->view([
                 'code' => Response::HTTP_BAD_REQUEST,
                 'message' => sprintf(
-                    _("The type of platform '%s'@%'s' is not consistent"),
+                    _("You cannot link the Central '%s'@'%s' to another Central"),
+                    $platformToAdd['server_name'],
+                    $platformToAdd['ip_address']
+                )
+            ]);
+        } elseif (!isset(static::ALLOWED_TYPES[$platformToAdd['server_type']])) {
+            return $this->view([
+                'code' => Response::HTTP_BAD_REQUEST,
+                'message' => sprintf(
+                    _("The type of platform '%s'@'%s' is not consistent"),
                     $platformToAdd['server_name'],
                     $platformToAdd['ip_address']
                 )
