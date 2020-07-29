@@ -15471,8 +15471,11 @@ msgstr "Le nom ne peut pas être vide"
 msgid "The name of the platform is not consistent"
 msgstr "Le nom de cette plateforme n'est pas cohérent"
 
-msgid "The address of the platform '%s 'is not consistent"
+msgid "The address of the platform '%s' is not consistent"
 msgstr "L'adresse de la plateforme '%s' n'est pas cohérente"
+
+msgid "You cannot link the Central '%s'@'%s' to another Central"
+msgstr "Vous ne pouvez pas lier le Central '%s'@'%s' sur un autre Central"
 
 msgid "The type of platform '%s'@'%s' is not consistent"
 msgstr "Le type de la plateforme '%s'@'%s' n'est pas cohérent"
