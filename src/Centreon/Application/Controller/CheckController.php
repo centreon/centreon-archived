@@ -22,17 +22,23 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Check\Check;
-use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
-use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Exception\EntityNotFoundException;
+use DateTime;
+use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
-use JMS\Serializer\DeserializationContext;
+use Centreon\Domain\Check\Check;
+use Centreon\Domain\Contact\Contact;
+use JsonSchema\Constraints\Constraint;
 use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Check\CheckException;
+use JMS\Serializer\DeserializationContext;
+use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\HttpFoundation\Request;
+use Centreon\Application\Request\CheckRequest;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 
 /**
  * Used to manage all requests to schedule checks on hosts and services
@@ -121,6 +127,30 @@ class CheckController extends AbstractController
         }
 
         return $this->view();
+    }
+
+    /**
+     * Check if the resource can be checked by the current user
+     *
+     * @param Contact $contact
+     * @param ResourceEntity $resource
+     * @return bool
+     */
+    private function hasCheckRightsForResource(Contact $contact, ResourceEntity $resource): bool
+    {
+        if ($contact->isAdmin()) {
+            return true;
+        }
+
+        $hasRights = false;
+
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->hasRole(Contact::ROLE_HOST_CHECK);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_CHECK);
+        }
+
+        return $hasRights;
     }
 
     /**
@@ -300,6 +330,77 @@ class CheckController extends AbstractController
         $this->checkService
             ->filterByContact($contact)
             ->checkService($check);
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to check resources.
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     * @throws CheckException
+     */
+    function checkResources(
+        Request $request,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $user
+         */
+        $user = $this->getUser();
+
+        $checks = json_decode((string) $request->getContent(), true);
+        if (!is_array($checks)) {
+            throw new \Exception(_('Error when decoding sent data'));
+        }
+
+        /*
+         * Validate the content of the POST request against the JSON schema validator
+         */
+        $validator = new Validator();
+        $content = json_decode((string) $request->getContent());
+        $validator->validate(
+            $content,
+            (object) ['$ref' => 'file://' . $this->getParameter('centreon_path') . 'config/json_validator/latest/Centreon/Check/AddChecks.json'],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new CheckException($message);
+        }
+
+        /**
+         * @var CheckRequest $checkRequest
+         */
+        $checkRequest = $serializer->deserialize(
+            (string)$request->getContent(),
+            CheckRequest::class,
+            'json'
+        );
+
+        $checkRequest->setCheck((new Check())->setCheckTime(new DateTime()));
+
+        foreach ($checkRequest->getResources() as $resource) {
+            // start check process
+            try {
+                if ($this->hasCheckRightsForResource($user, $resource)) {
+                    $this->checkService
+                        ->filterByContact($user)
+                        ->checkResource($checkRequest->getCheck(), $resource);
+                }
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
 
         return $this->view();
     }
