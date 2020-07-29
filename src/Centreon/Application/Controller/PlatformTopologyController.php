@@ -117,7 +117,6 @@ class PlatformTopologyController extends AbstractController
         // sanitize data
         $platformToAdd['ip_address'] = filter_var($platformToAdd['ip_address'], FILTER_VALIDATE_IP);
         $platformToAdd['server_name'] = filter_var($platformToAdd['server_name'], FILTER_SANITIZE_STRING);
-        $platformToAdd['server_type'] = filter_var($platformToAdd['server_type'], FILTER_VALIDATE_INT);
         $platformToAdd['server_parent'] = !empty($platformToAdd['server_parent'])
             ? filter_var($platformToAdd['server_parent'], FILTER_VALIDATE_IP)
             // if not server_parent is sent, then adding it to the central
@@ -141,10 +140,7 @@ class PlatformTopologyController extends AbstractController
         }
 
         // check server type consistency
-        if (
-            false === $platformToAdd['server_type']
-            || !isset(static::ALLOWED_TYPES[$platformToAdd['server_type']])
-        ) {
+        if (!isset(static::ALLOWED_TYPES[$platformToAdd['server_type']])) {
             return $this->view([
                 'code' => Response::HTTP_BAD_REQUEST,
                 'message' => sprintf(
@@ -159,7 +155,7 @@ class PlatformTopologyController extends AbstractController
             return $this->view([
                 'code' => Response::HTTP_BAD_REQUEST,
                 'message' => sprintf(
-                    _("The address of the parent platform '%s@%s' is not consistent"),
+                    _("The address of the parent platform '%s'@'%s' is not consistent"),
                     $platformToAdd['server_name'],
                     $platformToAdd['ip_address']
                 )
