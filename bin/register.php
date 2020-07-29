@@ -92,8 +92,8 @@ function responseMessageHandler(int $code, string $message, string $type = 'succ
 /**
  * Get script params
  */
-$opt = getopt('u:t:h:', ["help::","proxy::"]);
-
+$opt = getopt('u:t:h:', ["help::", "proxy::", "dns:"]);
+const SERVERTYPE = ["poller", "remote server", "map", "mbi"];
 /**
  * Format the --help message
  */
@@ -102,13 +102,14 @@ $helpMessage = <<<'EOD'
 Global Options:
   -u <mandatory>              username of your centreon-web account
   -t <mandatory>              the server type you want to register:
-            1: Poller
-            2: Remote Server
-            3: MAP Server
-            4: MBI Server
+            - Poller
+            - Remote Server
+            - MAP Server
+            - MBI Server
   -h <mandatory>              URL of the Central / Remote Server target platform
   --help <optional>           get informations about the parameters available
   --proxy <optional>          provide the differents asked informations
+  --dns <optional>            provide your DNS instead of automaticaly get server IP
 
 
 EOD;
@@ -132,17 +133,22 @@ try {
     }
 
     $username = $opt['u'];
-    $serverType =
-        filter_var($opt['t'], FILTER_VALIDATE_INT)
-        && in_array($opt['t'], [1, 2, 3, 4])
-        ? $opt['t']
-        : false;
+    $serverType = in_array(strtolower($opt['t']), SERVERTYPE) ? strtolower($opt['t']) : false;
 
     if (!$serverType) {
         throw new \InvalidArgumentException(
             "-t must be one of those value"
-            . PHP_EOL . "1 => Poller, 2 => Remote Server, 3 => Map Server, 4 => MBI Server" . PHP_EOL
+            . PHP_EOL . "Poller, Remote Server, MAP, MBI" . PHP_EOL
         );
+    }
+
+    if (isset($opt['dns'])) {
+        $dns = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN) ? $opt['dns'] : false;
+        if(!$dns) {
+            throw new \InvalidArgumentException(
+                PHP_EOL . "Bad DNS Format" . PHP_EOL
+            );
+        }
     }
 
     $targetHost = $opt['h'];
@@ -190,14 +196,8 @@ $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $registerPayload = [
     "server_name" => $serverHostName,
     "server_type" => (int) $serverType,
-    "ip_address" => $serverIp
+    "address" => $dns ?? $serverIp
 ];
-
-/**
- * Convert payloads to JSON
- */
-$loginCredentials = json_encode($loginCredentials);
-$registerPayload = json_encode($registerPayload);
 
 /**
  * Display Summary of action
@@ -214,10 +214,16 @@ target server: $host
 Pending Registration Server:
 server name: $serverHostName
 server type: $serverType
-server IP: $serverIp
+address: {$registerPayload["address"]}
 
 
 EOD;
+
+/**
+ * Convert payloads to JSON
+ */
+$loginCredentials = json_encode($loginCredentials);
+$registerPayload = json_encode($registerPayload);
 
 echo $summary;
 
