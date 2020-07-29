@@ -37,6 +37,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 const VERTICAL_NOTIFICATION = 1;
 const CLOSE_NOTIFICATION = 2;
 const CUMULATIVE_NOTIFICATION = 3;
+const PWS_OCCULTATION = '******';
 
 if (!isset($centreon)) {
     exit();
@@ -65,7 +66,7 @@ while ($opt = $dbResult->fetch()) {
         $gopt[$opt["key"]] = myDecode($opt["value"]);
     }
 }
-$gopt['proxy_password'] = '******';
+$gopt['proxy_password'] = PWS_OCCULTATION;
 
 /*
  * Style
