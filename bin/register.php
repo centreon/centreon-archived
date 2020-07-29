@@ -94,7 +94,12 @@ function responseMessageHandler(int $code, string $message, string $type = 'succ
  * Get script params
  */
 $opt = getopt('u:t:h:', ["help::", "proxy::", "dns:"]);
-const SERVERTYPE = ["poller", "remote server", "map", "mbi"];
+const SERVERTYPE = [
+    1 => "poller",
+    2 => "remote",
+    3 => "map",
+    4 => "mbi"
+];
 
 /**
  * Format the --help message
@@ -105,9 +110,9 @@ Global Options:
   -u <mandatory>              username of your centreon-web account
   -t <mandatory>              the server type you want to register:
             - Poller
-            - Remote Server
-            - MAP Server
-            - MBI Server
+            - Remote
+            - MAP
+            - MBI
   -h <mandatory>              URL of the Central / Remote Server target platform
   --help <optional>           get informations about the parameters available
   --proxy <optional>          provide the differents asked informations
@@ -135,12 +140,14 @@ try {
     }
 
     $username = $opt['u'];
-    $serverType = in_array(strtolower($opt['t']), SERVERTYPE) ? strtolower($opt['t']) : false;
+    $serverType = in_array(strtolower($opt['t']), SERVERTYPE)
+        ? array_search(strtolower($opt['t']), SERVERTYPE)
+        : false;
 
     if (!$serverType) {
         throw new \InvalidArgumentException(
             "-t must be one of those value"
-            . PHP_EOL . "Poller, Remote Server, MAP, MBI" . PHP_EOL
+            . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
         );
     }
 
@@ -197,7 +204,7 @@ $serverHostName = gethostname();
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $registerPayload = [
     "server_name" => $serverHostName,
-    "server_type" => (int) $serverType,
+    "server_type" => $serverType,
     "address" => $dns ?? $serverIp
 ];
 
@@ -215,7 +222,7 @@ target server: $host
 
 Pending Registration Server:
 server name: $serverHostName
-server type: $serverType
+server type: {SERVERTYPE[$serverType]}
 address: {$registerPayload["address"]}
 
 
