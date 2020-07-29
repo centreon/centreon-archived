@@ -16,7 +16,16 @@ Feature:
 
     When I send a POST request to '/beta/users/filters/events-view' with body:
     """
-    {"name":"my filter1","criterias":[{"filter1":"value1"}]}
+    {
+      "name": "my filter1",
+      "criterias": [
+        {
+          "name": "name1",
+          "value": "value1",
+          "type": "type1"
+        }
+      ]
+    }
     """
     Then the response code should be "200"
 
@@ -31,7 +40,16 @@ Feature:
 
     When I send a PUT request to '/beta/users/filters/events-view/1' with body:
     """
-    {"name":"filter1","criterias":[{"filter1":"value1"}]}
+    {
+      "name": "filter1",
+      "criterias": [
+        {
+          "name": "name1",
+          "value": "value1",
+          "type": "type1"
+        }
+      ]
+    }
     """
     Then the response code should be "200"
 
@@ -41,7 +59,16 @@ Feature:
 
     When I send a POST request to '/beta/users/filters/events-view' with body:
     """
-    {"name":"filter2","criterias":[{"filter1":"value1"}]}
+    {
+      "name": "filter2",
+      "criterias": [
+        {
+          "name": "name1",
+          "value": "value1",
+          "type": "type1"
+        }
+      ]
+    }
     """
     Then the response code should be "200"
 
@@ -51,7 +78,9 @@ Feature:
 
     When I send a PATCH request to '/beta/users/filters/events-view/1' with body:
     """
-    {"order":2}
+    {
+      "order": 2
+    }
     """
     Then the response code should be "200"
 
@@ -69,3 +98,27 @@ Feature:
     When I send a GET request to '/beta/users/filters/events-view'
     Then the response code should be "200"
     And the json node "result" should have 1 elements
+
+  Scenario: Updated criterias
+    Given I am logged in
+    And the following CLAPI import data:
+    """
+    HG;ADD;hostgroup_test;hostgroup test
+    HOST;ADD;host_test;Test host;127.0.0.1;generic-host;central;
+    HOST;ADDHOSTGROUP;host_test;hostgroup_test
+    """
+    And the configuration is generated and exported
+    And I wait until host "host_test" is monitored
+    And I add a filter linked to hostgroup "hostgroup_test"
+
+    When the following CLAPI import data:
+    """
+    HG;SETPARAM;hostgroup_test;name;hostgroup_test_2
+    """
+    And the configuration is generated and exported
+    And I wait until hostgroup "hostgroup_test_2" is monitored
+    And I update the filter with the creation values
+    And I send a GET request to '/beta/users/filters/events-view/1'
+
+    Then the response code should be "200"
+    And the json node "criterias[0].value[0].name" should be equal to the string "hostgroup_test_2"
