@@ -235,7 +235,7 @@ if($proceed !== "y"){
  * Connection to Api
  */
 $loginUrl = $protocol . '://' . $host;
-if(!empty($port)){
+if(!empty($port)) {
     $loginUrl .= ':' . $port;
 }
 $loginUrl .= '/centreon/api/latest/login';
@@ -254,7 +254,7 @@ if (isset($proxyInfo)) {
 
 $result = curl_exec($ch);
 
-if(!$result){
+if(!$result) {
     echo curl_error($ch);
     exit;
 }
@@ -311,7 +311,7 @@ $result = json_decode($result, true);
 /**
  * Display response of API
  */
-if (isset($result['code'],$result['message'])) {
+if (isset($result['code'], $result['message'])) {
     $response = responseMessageHandler($result['code'], $result['message'], 'success');
     echo $response;
 } else {
