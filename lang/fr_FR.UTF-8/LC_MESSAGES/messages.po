@@ -15477,8 +15477,8 @@ msgstr "L'adresse de la plateforme '%s' n'est pas cohérente"
 msgid "The type of platform '%s'@'%s' is not consistent"
 msgstr "Le type de la plateforme '%s'@'%s' n'est pas cohérent"
 
-msgid "The address of the parent of the platform '%s@%s' is not consistent"
-msgstr "L'adresse du parent de la plateforme '%s@%s' n'est pas cohérente"
+msgid "The address of the parent platform '%s@%s' is not consistent"
+msgstr "L'adresse de la plateforme parente '%s@%s' n'est pas cohérente"
 
 msgid "The '%s' Platform : '%s'@'%s' linked to '%s' has been added"
 msgstr "La plateforme '%s' : '%s'@'%s' liée à '%s' a été ajoutée"
