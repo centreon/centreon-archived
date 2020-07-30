@@ -15474,6 +15474,9 @@ msgstr "Le nom de cette plateforme n'est pas cohérent"
 msgid "The address of the platform '%s' is not consistent"
 msgstr "L'adresse de la plateforme '%s' n'est pas cohérente"
 
+msgid "The address of the parent platform '%s' is not consistent"
+msgstr "L'adresse de la plateforme parente '%s' n'est pas cohérente"
+
 msgid "You cannot link the Central '%s'@'%s' to another Central"
 msgstr "Vous ne pouvez pas lier le Central '%s'@'%s' sur un autre Central"
 
@@ -15485,6 +15488,9 @@ msgstr "L'adresse de la plateforme parente '%s'@'%s' n'est pas cohérente"
 
 msgid "A platform using the name : '%s' or address : '%s' already exists"
 msgstr "Une plateforme avec le nom : '%s' ou l'adresse : '%s' existe déjà"
+
+msgid "No parent platform was found for : '%s'@'%s'"
+msgstr "Aucune plateforme parente n'a été trouvée pour : '%s'@'%s'"
 
 msgid "Error when adding in topology the platform : '%s'@'%s'"
 msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"

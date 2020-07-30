@@ -73,7 +73,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (empty($foundParentData)) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("No platform to link to found using the address : '%s'"),
+                    _("No parent platform was found for : '%s'@'%s'"),
                     $platformTopology->getServerParentAddress()
                 )
             );
@@ -87,7 +87,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         } catch (\Exception $ex) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("Error when adding in topology the platform : '%s'@'%s"),
+                    _("Error when adding in topology the platform : '%s'@'%s'"),
                     $platformTopology->getServerName(),
                     $platformTopology->getServerAddress()
                 ),
