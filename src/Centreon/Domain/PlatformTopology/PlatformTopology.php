@@ -49,6 +49,15 @@ class PlatformTopology
     private $serverParentAddress;
 
     /**
+     * Available server types
+     */
+    private const SERVER_TYPE_CENTRAL = 0;
+    private const SERVER_TYPE_POLLER = 1;
+    private const SERVER_TYPE_REMOTE = 2;
+    private const SERVER_TYPE_MAP = 3;
+    private const SERVER_TYPE_MBI = 4;
+
+    /**
      * @return string
      */
     public function getServerName(): string
@@ -59,10 +68,91 @@ class PlatformTopology
     /**
      * @param string $serverName
      * @return $this
+     * @throws PlatformTopologyException
      */
     public function setServerName(string $serverName): self
     {
+        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
+        if (empty($serverName)) {
+            throw new PlatformTopologyException(
+                _('The name of the platform is not consistent')
+            );
+        }
         $this->serverName = $serverName;
+        return $this;
+    }
+
+    /**
+     * Validate address consistency
+     *
+     * @param string $address the address to be tested
+     * @param string $kind
+     *
+     * @return string
+     * @throws PlatformTopologyException
+     */
+    private function checkIpAddress(string $address = '', string $kind = ''): string
+    {
+        // Server linked to the Central, may not send a parent address in the data
+        if (empty($address) && empty($kind)) {
+            return $_SERVER['SERVER_ADDR'];
+        }
+
+        // Check for valid IPv4 or IPv6 IP
+        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
+            return $address;
+        }
+
+        // check for DNS to be resolved
+        if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The address of the $kind platform '%s' is not consistent"),
+                    $this->getServerName()
+                )
+            );
+        }
+
+        return $address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerAddress(): string
+    {
+        return $this->serverAddress;
+    }
+
+    /**
+     * @param string $serverAddress
+     *
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setServerAddress(string $serverAddress): self
+    {
+        $this->serverAddress = $this->checkIpAddress($serverAddress);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerParentAddress(): string
+    {
+        return $this->serverParentAddress;
+    }
+
+    /**
+     * @param string|null $serverParentAddress
+     *
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setServerParentAddress(?string $serverParentAddress): self
+    {
+        $this->serverParentAddress = $this->checkIpAddress($serverParentAddress, 'parent');
         return $this;
     }
 
@@ -76,53 +166,45 @@ class PlatformTopology
 
     /**
      * @param int $serverType server type
-     *      0 = central
-     *      1 = poller
-     *      2 = remote server
-     *      3 = map server
-     *      4 = mbi server
+     *      SERVER_TYPE_CENTRAL = 0
+     *      SERVER_TYPE_POLLER  = 1
+     *      SERVER_TYPE_REMOTE  = 2
+     *      SERVER_TYPE_MAP     = 3
+     *      SERVER_TYPE_MBI     = 4
      *
      * @return $this
+     * @throws PlatformTopologyException
      */
     public function setServerType(int $serverType): self
     {
+        // The API should not be used to add a Central to another Central
+        if (self::SERVER_TYPE_CENTRAL === $serverType) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("You cannot link the Central '%s'@%'s' to another Central"),
+                    $this->getServerName(),
+                    $this->getServerAddress()
+                )
+            );
+        }
+
+        // Check if the server_type is available
+        $availableServerType = [
+            self::SERVER_TYPE_POLLER,
+            self::SERVER_TYPE_REMOTE,
+            self::SERVER_TYPE_MAP,
+            self::SERVER_TYPE_MBI
+        ];
+        if (!in_array($serverType,$availableServerType)) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The type of platform '%s'@'%s' is not consistent"),
+                    $this->getServerName(),
+                    $this->getServerAddress()
+                )
+            );
+        }
         $this->serverType = $serverType;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServerAddress(): string
-    {
-        return $this->serverAddress;
-    }
-
-    /**
-     * @param string $serverAddress
-     * @return $this
-     */
-    public function setServerAddress(string $serverAddress): self
-    {
-        $this->serverAddress = $serverAddress;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServerParentAddress(): string
-    {
-        return $this->serverParentAddress;
-    }
-
-    /**
-     * @param string $serverParentAddress
-     * @return $this
-     */
-    public function setServerParentAddress(string $serverParentAddress): self
-    {
-        $this->serverParentAddress = $serverParentAddress;
         return $this;
     }
 }
