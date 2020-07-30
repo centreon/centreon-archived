@@ -28,7 +28,8 @@ use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 interface PlatformTopologyServiceInterface
 {
     /**
-     * Add new server to DB
+     * Add new server
+     *
      * @param PlatformTopology $platformTopology
      * @return void
      * @throws PlatformTopologyException

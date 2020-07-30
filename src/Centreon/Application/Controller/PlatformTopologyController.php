@@ -84,6 +84,16 @@ class PlatformTopologyController extends AbstractController
         }
     }
 
+    /**
+     * Sanitize and cCheck data before computation
+     *
+     * @param string $ipAddress
+     * @param string $serverName
+     * @param string $serverType
+     * @param string $serverParent
+     * @return array|null
+     *
+     */
     private function checkDataConsistency(
         string $ipAddress,
         string $serverName,
