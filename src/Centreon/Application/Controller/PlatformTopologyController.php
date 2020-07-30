@@ -118,7 +118,7 @@ class PlatformTopologyController extends AbstractController
             $setPlatformTopology = (new PlatformTopology())
                 ->setServerName($platformToAdd['server_name'])
                 ->setServerAddress($platformToAdd['address'])
-                ->setserverType($platformToAdd['server_type'])
+                ->setServerType($platformToAdd['server_type'])
                 ->setServerParentAddress($platformToAdd['server_parent']);
 
             $this->platformTopologyService->addPlatformToTopology($setPlatformTopology);

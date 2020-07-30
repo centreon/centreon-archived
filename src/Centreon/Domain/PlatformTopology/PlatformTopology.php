@@ -29,26 +29,6 @@ namespace Centreon\Domain\PlatformTopology;
 class PlatformTopology
 {
     /**
-     * @var string Server name
-     */
-    private $serverName;
-
-    /**
-     * @var int Server type
-     */
-    private $serverType;
-
-    /**
-     * @var string Server IP address
-     */
-    private $serverAddress;
-
-    /**
-     * @var string Server parent IP
-     */
-    private $serverParentAddress;
-
-    /**
      * Available server types
      */
     private const SERVER_TYPE_CENTRAL = 0;
@@ -58,83 +38,35 @@ class PlatformTopology
     private const SERVER_TYPE_MBI = 4;
 
     /**
-     * @return string
+     * Used to dynamically concatenate the thrown error when checking IP validity
      */
-    public function getServerName(): string
-    {
-        return $this->serverName;
-    }
+    private const SERVER_ADDRESS = '';
+    private const SERVER_PARENT = 'parent';
 
     /**
-     * @param string $serverName
-     * @return $this
-     * @throws PlatformTopologyException
+     * @var string Server name
      */
-    public function setServerName(string $serverName): self
-    {
-        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
-        if (empty($serverName)) {
-            throw new PlatformTopologyException(
-                _('The name of the platform is not consistent')
-            );
-        }
-        $this->serverName = $serverName;
-        return $this;
-    }
-
+    private $serverName;
     /**
-     * Validate address consistency
-     *
-     * @param string $address the address to be tested
-     * @param string $kind
-     *
-     * @return string
-     * @throws PlatformTopologyException
+     * @var int Server type
      */
-    private function checkIpAddress(string $address = '', string $kind = ''): string
-    {
-        // Server linked to the Central, may not send a parent address in the data
-        if (empty($address) && empty($kind)) {
-            return $_SERVER['SERVER_ADDR'];
-        }
-
-        // Check for valid IPv4 or IPv6 IP
-        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
-            return $address;
-        }
-
-        // check for DNS to be resolved
-        if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("The address of the $kind platform '%s' is not consistent"),
-                    $this->getServerName()
-                )
-            );
-        }
-
-        return $address;
-    }
-
+    private $serverType;
     /**
-     * @return string
+     * @var string Server IP address
      */
-    public function getServerAddress(): string
-    {
-        return $this->serverAddress;
-    }
-
+    private $serverAddress;
     /**
-     * @param string $serverAddress
-     *
-     * @return $this
-     * @throws PlatformTopologyException
+     * @var string Server parent IP
      */
-    public function setServerAddress(string $serverAddress): self
-    {
-        $this->serverAddress = $this->checkIpAddress($serverAddress);
-        return $this;
-    }
+    private $serverParentAddress;
+    /**
+     * @var int Server parent id
+     */
+    private $serverParentId;
+    /**
+     * @var int Server id bound to
+     */
+    private $boundServerId;
 
     /**
      * @return string
@@ -152,7 +84,7 @@ class PlatformTopology
      */
     public function setServerParentAddress(?string $serverParentAddress): self
     {
-        $this->serverParentAddress = $this->checkIpAddress($serverParentAddress, 'parent');
+        $this->serverParentAddress = $this->checkIpAddress($serverParentAddress, self::SERVER_PARENT);
         return $this;
     }
 
@@ -205,6 +137,107 @@ class PlatformTopology
             );
         }
         $this->serverType = $serverType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerAddress(): string
+    {
+        return $this->serverAddress;
+    }
+
+    /**
+     * @param string $serverAddress
+     *
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setServerAddress(string $serverAddress): self
+    {
+        $this->serverAddress = $this->checkIpAddress($serverAddress, self::SERVER_ADDRESS);
+        return $this;
+    }
+
+    /**
+     * Validate address consistency
+     *
+     * @param string|null $address the address to be tested
+     * @param string $kind
+     *
+     * @return string
+     * @throws PlatformTopologyException
+     */
+    private function checkIpAddress(?string $address, string $kind): string
+    {
+        // Server linked to the Central, may not send a parent address in the data
+        if (empty($address) && self::SERVER_ADDRESS === $kind) {
+            return $_SERVER['SERVER_ADDR'];
+        }
+
+        // Check for valid IPv4 or IPv6 IP
+        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
+            return $address;
+        }
+
+        // check for DNS to be resolved
+        if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The address of the $kind platform '%s' is not consistent"),
+                    $this->getServerName()
+                )
+            );
+        }
+
+        return $address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerName(): string
+    {
+        return $this->serverName;
+    }
+
+    /**
+     * @param string $serverName
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setServerName(string $serverName): self
+    {
+        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
+        if (empty($serverName)) {
+            throw new PlatformTopologyException(
+                _('The name of the platform is not consistent')
+            );
+        }
+        $this->serverName = $serverName;
+        return $this;
+    }
+
+    public function getServerParentId(): int
+    {
+        return $this->serverParentId;
+    }
+
+    public function setServerParentId(int $parentId): self
+    {
+        $this->serverParentId = $parentId;
+        return $this;
+    }
+
+    public function getBoundServerId(): int
+    {
+        return $this->boundServerId;
+    }
+
+    public function setBoundServerId(int $boundId): self
+    {
+        $this->boundServerId = $boundId;
         return $this;
     }
 }

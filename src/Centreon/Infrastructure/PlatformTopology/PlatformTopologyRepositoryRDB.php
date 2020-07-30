@@ -49,8 +49,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         $request = $this->translateDbName('
-            INSERT INTO `:db`.platform_topology (`address`, `hostname`, `server_type`, `parent`)
-            VALUES (:serverAddress, :serverName, :serverType, :serverParent)
+            INSERT INTO `:db`.platform_topology (`address`, `hostname`, `server_type`, `parent_id`, `server_id`)
+            VALUES (:serverAddress, :serverName, :serverType, :serverParent, :parentId, :serverId)
         ');
 
         $statement = $this->db->prepare($request);
@@ -58,16 +58,16 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':serverName', $platformTopology->getServerName(), \PDO::PARAM_STR);
         $statement->bindValue(':serverType', $platformTopology->getServerType(), \PDO::PARAM_INT);
         $statement->bindValue(':serverParent', $platformTopology->getServerParentAddress(), \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $platformTopology->getServerParentId(), \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $platformTopology->getBoundServerId(), \PDO::PARAM_INT);
         $statement->execute();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function findPlatformInTopology(
-        string $serverAddress,
-        string $serverName
-    ): array {
+    public function findRegisteredPlatformsInTopology(string $serverAddress, string $serverName): array
+    {
         $request = $this->translateDbName(
             'SELECT `address`, `hostname`, `server_type`
             FROM `:db`.platform_topology
@@ -76,6 +76,27 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement = $this->db->prepare($request);
         $statement->bindValue(':serverAddress', $serverAddress, \PDO::PARAM_STR);
         $statement->bindValue(':serverName', $serverName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        // if nothing is found, convert $result to an empty array as expected
+        return (is_array($result) ? $result : []);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findParentInTopology(string $serverAddress): array
+    {
+        $request = $this->translateDbName(
+            'SELECT nagios_server.id AS server_id, platform_topology.id AS parent_id
+            FROM platform_topology
+            INNER JOIN nagios_server ON nagios_server.id = platform_topology.server_id
+            WHERE address = :address'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':address', $serverAddress, \PDO::PARAM_STR);
         $statement->execute();
 
         $result = $statement->fetch(\PDO::FETCH_ASSOC);

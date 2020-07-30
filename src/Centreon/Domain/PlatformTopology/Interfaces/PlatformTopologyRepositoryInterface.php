@@ -34,14 +34,26 @@ interface PlatformTopologyRepositoryInterface
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
 
     /**
-     * Check if the platform was already added in topology
+     * Search for already registered servers using same name or address
      *
      * @param string $serverAddress
      * @param string $serverName
-     * @return array<mixed> return found server in the DB
+     *
+     * @return array<mixed> returns already registered servers
      */
-    public function findPlatformInTopology(
+    public function findRegisteredPlatformsInTopology(
         string $serverAddress,
         string $serverName
+    ): array;
+
+    /**
+     * Search for parent data
+     *
+     * @param string $serverAddress
+     *
+     * @return array<mixed> return nagios_server ID and parent_id found in DB
+     */
+    public function findParentInTopology(
+        string $serverAddress
     ): array;
 }
