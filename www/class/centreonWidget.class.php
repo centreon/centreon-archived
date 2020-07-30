@@ -1385,34 +1385,20 @@ class CentreonWidget
     /**
      * Rename widget
      *
-     * @param array $params
+     * @param int $elementId widget id
+     * @param string $newName widget new name
      * @return string
      */
-    public function rename($params)
+    public function rename(int $widgetId, string $newName)
     {
-        if (!isset($params['elementId']) || !isset($params['newName'])) {
-            throw new CentreonWidgetException('Missing mandatory parameters elementId or newName');
-        }
-        if (preg_match("/title_(\d+)/", $params['elementId'], $matches)) {
-            if (isset($matches[1])) {
-                $widgetId = $matches[1];
-            }
-        }
-        if (!isset($widgetId)) {
-            throw new CentreonWidgetException('Missing widget id');
-        }
-
         $query = 'UPDATE widgets ' .
             'SET title = :title ' .
             'WHERE widget_id = :widgetId';
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':title', $params['newName'], PDO::PARAM_STR);
+        $stmt->bindParam(':title', $newName, PDO::PARAM_STR);
         $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
+        $stmt->execute();
 
-        return $params['newName'];
+        return $newName;
     }
 }
