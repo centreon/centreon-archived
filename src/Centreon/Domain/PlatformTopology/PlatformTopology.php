@@ -69,65 +69,6 @@ class PlatformTopology
     private $boundServerId;
 
     /**
-     * @return string
-     */
-    public function getServerName(): string
-    {
-        return $this->serverName;
-    }
-
-    /**
-     * @param string $serverName
-     * @return $this
-     * @throws PlatformTopologyException
-     */
-    public function setServerName(string $serverName): self
-    {
-        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
-        if (empty($serverName)) {
-            throw new PlatformTopologyException(
-                _('The name of the platform is not consistent')
-            );
-        }
-        $this->serverName = $serverName;
-        return $this;
-    }
-
-    /**
-     * Validate address consistency
-     *
-     * @param string|null $address the address to be tested
-     * @param string $kind
-     *
-     * @return string
-     * @throws PlatformTopologyException
-     */
-    private function checkIpAddress(?string $address, string $kind): string
-    {
-        // Server linked to the Central, may not send a parent address in the data
-        if (empty($address) && self::SERVER_ADDRESS === $kind) {
-            return $_SERVER['SERVER_ADDR'];
-        }
-
-        // Check for valid IPv4 or IPv6 IP
-        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
-            return $address;
-        }
-
-        // check for DNS to be resolved
-        if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("The address of the $kind '%s' is not consistent"),
-                    $this->getServerName()
-                )
-            );
-        }
-
-        return $address;
-    }
-
-    /**
      * @return int
      */
     public function getServerType(): int
@@ -182,6 +123,31 @@ class PlatformTopology
     /**
      * @return string
      */
+    public function getServerName(): string
+    {
+        return $this->serverName;
+    }
+
+    /**
+     * @param string $serverName
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setServerName(string $serverName): self
+    {
+        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
+        if (empty($serverName)) {
+            throw new PlatformTopologyException(
+                _('The name of the platform is not consistent')
+            );
+        }
+        $this->serverName = $serverName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getServerAddress(): string
     {
         return $this->serverAddress;
@@ -197,6 +163,40 @@ class PlatformTopology
     {
         $this->serverAddress = $this->checkIpAddress($serverAddress, self::SERVER_ADDRESS);
         return $this;
+    }
+
+    /**
+     * Validate address consistency
+     *
+     * @param string|null $address the address to be tested
+     * @param string $kind
+     *
+     * @return string
+     * @throws PlatformTopologyException
+     */
+    private function checkIpAddress(?string $address, string $kind): string
+    {
+        // Server linked to the Central, may not send a parent address in the data
+        if (empty($address) && self::SERVER_ADDRESS === $kind) {
+            return $_SERVER['SERVER_ADDR'];
+        }
+
+        // Check for valid IPv4 or IPv6 IP
+        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
+            return $address;
+        }
+
+        // check for DNS to be resolved
+        if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The address of the $kind '%s' is not consistent"),
+                    $this->getServerName()
+                )
+            );
+        }
+
+        return $address;
     }
 
     /**
