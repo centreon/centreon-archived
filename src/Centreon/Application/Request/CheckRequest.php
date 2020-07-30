@@ -24,7 +24,8 @@ namespace Centreon\Application\Request;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
-class CheckRequest {
+class CheckRequest
+{
     /**
      * resources
      *

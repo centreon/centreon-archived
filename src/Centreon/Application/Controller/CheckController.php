@@ -343,7 +343,7 @@ class CheckController extends AbstractController
      * @throws \Exception
      * @throws CheckException
      */
-    function checkResources(
+    public function checkResources(
         Request $request,
         SerializerInterface $serializer
     ): View {
@@ -364,9 +364,11 @@ class CheckController extends AbstractController
          */
         $validator = new Validator();
         $content = json_decode((string) $request->getContent());
+        $file = 'file://' . $this->getParameter('centreon_path') .
+            'config/json_validator/latest/Centreon/Check/AddChecks.json';
         $validator->validate(
             $content,
-            (object) ['$ref' => 'file://' . $this->getParameter('centreon_path') . 'config/json_validator/latest/Centreon/Check/AddChecks.json'],
+            (object) ['$ref' => $file],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
         );
 
