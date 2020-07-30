@@ -33,11 +33,11 @@ try {
     $errorMessage = "Unable to create the new platform_topology table.";
     $pearDB->exec(
         "CREATE TABLE `platform_topology` (
-            `ip_address` varchar(255) NOT NULL,
+            `address` varchar(255) NOT NULL,
             `hostname` varchar(255) NOT NULL,
             `server_type` tinyint(1) NOT NULL DEFAULT 0,
             `parent` varchar(255),
-            PRIMARY KEY (`ip_address`)
+            PRIMARY KEY (`address`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         COMMENT='Registration and parent relation Table used to get the platform topology'"
     );
@@ -46,7 +46,7 @@ try {
     $errorMessage = "Unable to insert the central in the platform_topology table.";
     $stmt = $pearDB->prepare(
         "INSERT INTO `platform_topology` (
-            `ip_address`,
+            `address`,
             `hostname`,
             `server_type`,
             `parent`

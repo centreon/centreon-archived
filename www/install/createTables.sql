@@ -2328,11 +2328,11 @@ CREATE TABLE `user_filter` (
 
 -- Create platform_topology table
 CREATE TABLE `platform_topology` (
-    `ip_address` varchar(255) NOT NULL,
+    `address` varchar(255) NOT NULL,
     `hostname` varchar(255) NOT NULL,
     `server_type` tinyint(1) NOT NULL DEFAULT 0,
     `parent` varchar(255),
-    PRIMARY KEY (`ip_address`)
+    PRIMARY KEY (`address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Registration and parent relation Table used to get the platform topology';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

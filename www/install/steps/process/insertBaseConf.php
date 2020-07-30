@@ -93,7 +93,7 @@ try {
 // Insert Central to 'platfrom_topology' table, as first server and parent of all others.
 $stmt = $link->prepare(
     "INSERT INTO `platform_topology` (
-        `ip_address`,
+        `address`,
         `hostname`,
         `server_type`,
         `parent`

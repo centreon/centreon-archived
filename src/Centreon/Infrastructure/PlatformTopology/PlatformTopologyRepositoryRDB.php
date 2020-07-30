@@ -49,7 +49,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         $request = $this->translateDbName('
-            INSERT INTO `:db`.platform_topology (`ip_address`, `hostname`, `server_type`, `parent`)
+            INSERT INTO `:db`.platform_topology (`address`, `hostname`, `server_type`, `parent`)
             VALUES (:serverAddress, :serverName, :serverType, :serverParent)
         ');
 
@@ -69,9 +69,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         string $serverName
     ): array {
         $request = $this->translateDbName(
-            'SELECT `ip_address`, `hostname`, `server_type`
+            'SELECT `address`, `hostname`, `server_type`
             FROM `:db`.platform_topology
-            WHERE `ip_address` = :serverAddress OR `hostname` = :serverName'
+            WHERE `address` = :serverAddress AND `hostname` = :serverName'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':serverAddress', $serverAddress, \PDO::PARAM_STR);
