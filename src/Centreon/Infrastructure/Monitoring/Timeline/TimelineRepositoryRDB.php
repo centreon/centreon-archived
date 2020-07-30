@@ -120,6 +120,12 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             return $timelineEvents;
         }
 
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'type' => 'log.type',
+            'content' => 'log.content',
+            'date' => 'log.date',
+        ]);
+
         $collector = new StatementCollector();
 
         $request = "
@@ -172,11 +178,29 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             $request .= " AND centreon_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") ";
         }
 
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= !is_null($searchRequest) ? $searchRequest : '';
+
+        // Sort
         $request .= $this->sqlRequestTranslator->translateSortParameterToSql() ?: ' ORDER BY log.date DESC';
 
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+
         $statement = $this->db->prepare($request);
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $collector->addValue($key, $value, $type);
+        }
         $collector->bind($statement);
         $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+            (int) $result->fetchColumn()
+        );
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $timelineEvent = EntityCreator::createEntityByArray(
