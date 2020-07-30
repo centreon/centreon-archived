@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Add a new server to the platform topology",
   "type": "object",
-  "required": ["server_name", "server_type", "ip_address"],
+  "required": ["server_name", "server_type", "address"],
   "additionalProperties": true,
   "properties": {
     "server_name": {
@@ -11,7 +11,7 @@
     "server_type": {
       "type": "integer"
     },
-    "ip_address": {
+    "address": {
       "type": "string"
     },
     "server_parent": {
