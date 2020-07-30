@@ -211,6 +211,8 @@ $registerPayload = [
 /**
  * Display Summary of action
  */
+$serverTypeSummary = SERVERTYPE[$serverType];
+$address = $registerPayload["address"];
 $summary = <<<EOD
 
 Summary of the informations that will be send:
@@ -222,8 +224,8 @@ target server: $host
 
 Pending Registration Server:
 server name: $serverHostName
-server type: {SERVERTYPE[$serverType]}
-address: {$registerPayload["address"]}
+server type: $serverTypeSummary
+address: $address
 
 
 EOD;
