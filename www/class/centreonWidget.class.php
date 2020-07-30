@@ -1328,27 +1328,17 @@ class CentreonWidget
     /**
      * Rename widget
      *
-     * @param array $params
+     * @param int $elementId widget id
+     * @param string $newName widget new name
      * @return string
      */
-    public function rename($params)
+    public function rename($widgetId, $newName)
     {
-        if (!isset($params['elementId']) || !isset($params['newName'])) {
-            throw new CentreonWidgetException('Missing mandatory parameters elementId or newName');
-        }
-        if (preg_match("/title_(\d+)/", $params['elementId'], $matches)) {
-            if (isset($matches[1])) {
-                $widgetId = $matches[1];
-            }
-        }
-        if (!isset($widgetId)) {
-            throw new CentreonWidgetException('Missing widget id');
-        }
         $queryValues = array();
         $query = 'UPDATE widgets ' .
             'SET title = ? ' .
             'WHERE widget_id = ?';
-        $queryValues[] = (string)$params['newName'];
+        $queryValues[] = (string)$newName;
         $queryValues[] = (int)$widgetId;
 
         $stmt = $this->db->prepare($query);
@@ -1356,6 +1346,7 @@ class CentreonWidget
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
-        return $params['newName'];
+
+        return $newName;
     }
 }
