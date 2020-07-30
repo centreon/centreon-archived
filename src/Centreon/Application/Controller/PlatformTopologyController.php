@@ -84,6 +84,72 @@ class PlatformTopologyController extends AbstractController
         }
     }
 
+    private function checkDataConsistency(
+        string $ipAddress,
+        string $serverName,
+        string $serverType,
+        string $serverParent
+    ): ?array {
+        // sanitize data
+        $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP);
+        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
+        $serverParent = !empty($serverParent)
+            ? filter_var($serverParent, FILTER_VALIDATE_IP)
+            // if server_parent is not sent, then adding it to the central
+            : $_SERVER['SERVER_ADDR'];
+
+        if (empty($serverName)) {
+            return ([
+                HTTP_BAD_REQUEST,
+                _('The name of the platform is not consistent')
+            ]);
+        }
+
+        if (false === $ipAddress) {
+            // as it is not an IP v4 or v6, sanitize the string and try to resolve it as a DNS
+
+            return ([
+                HTTP_BAD_REQUEST,
+                sprintf(
+                    _("The address of the platform '%s' is not consistent"),
+                    $serverName
+                )
+            ]);
+        }
+
+        // check server type consistency
+        if (0 === $serverType) {
+            return ([
+                HTTP_BAD_REQUEST,
+                sprintf(
+                    _("You cannot link the Central '%s'@%'s' to another Central"),
+                    $serverName,
+                    $ipAddress
+                )
+            ]);
+        } elseif (!isset(static::ALLOWED_TYPES[$serverType])) {
+            return ([
+                HTTP_BAD_REQUEST,
+                sprintf(
+                    _("The type of platform '%s'@'%s' is not consistent"),
+                    $serverName,
+                    $ipAddress)
+            ]);
+        }
+
+        if (false === $serverParent) {
+            return ([
+                HTTP_BAD_REQUEST,
+                sprintf(
+                    _("The address of the parent platform '%s'@'%s' is not consistent"),
+                    $serverName,
+                    $ipAddress)
+            ]);
+        }
+
+        return null;
+    }
+
     /**
      * Entry point to register a new server
      *
@@ -114,80 +180,42 @@ class PlatformTopologyController extends AbstractController
             . 'config/json_validator/latest/Centreon/PlatformTopology/AddServer.json'
         );
 
-        // sanitize data
-        $platformToAdd['ip_address'] = filter_var($platformToAdd['ip_address'], FILTER_VALIDATE_IP);
-        $platformToAdd['server_name'] = filter_var($platformToAdd['server_name'], FILTER_SANITIZE_STRING);
-        $platformToAdd['server_parent'] = !empty($platformToAdd['server_parent'])
-            ? filter_var($platformToAdd['server_parent'], FILTER_VALIDATE_IP)
-            // if not server_parent is sent, then adding it to the central
-            : $_SERVER['SERVER_ADDR'];
-
-        if (empty($platformToAdd['server_name'])) {
+        // sanitize and check sent data
+        $dataError = $this->checkDataConsistency(
+            $platformToAdd['address'],
+            $platformToAdd['server_name'],
+            $platformToAdd['server_type'],
+            $platformToAdd['server_parent']
+        );
+        // return a view with error code and message
+        if (is_array($dataError)) {
             return $this->view([
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => _('The name of the platform is not consistent')
-            ]);
-        }
-
-        if (false === $platformToAdd['ip_address']) {
-            return $this->view([
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => sprintf(
-                    _("The address of the platform '%s' is not consistent"),
-                    $platformToAdd['server_name']
-                )
-            ]);
-        }
-
-        // check server type consistency
-        if (0 === $platformToAdd['server_type']) {
-            return $this->view([
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => sprintf(
-                    _("You cannot link the Central '%s'@'%s' to another Central"),
-                    $platformToAdd['server_name'],
-                    $platformToAdd['ip_address']
-                )
-            ]);
-        } elseif (!isset(static::ALLOWED_TYPES[$platformToAdd['server_type']])) {
-            return $this->view([
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => sprintf(
-                    _("The type of platform '%s'@'%s' is not consistent"),
-                    $platformToAdd['server_name'],
-                    $platformToAdd['ip_address']
-                )
-            ]);
-        }
-
-        if (false === $platformToAdd['server_parent']) {
-            return $this->view([
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => sprintf(
-                    _("The address of the parent platform '%s'@'%s' is not consistent"),
-                    $platformToAdd['server_name'],
-                    $platformToAdd['ip_address']
-                )
+                'code' => $dataError[0],
+                'message' => $dataError[1]
             ]);
         }
 
         $setPlatformTopology = (new PlatformTopology())
-            ->setServerAddress($platformToAdd['ip_address'])
+            ->setServerAddress($platformToAdd['address'])
             ->setServerName($platformToAdd['server_name'])
             ->setserverType($platformToAdd['server_type'])
             ->setServerParentAddress($platformToAdd['server_parent']);
 
-        $this->platformTopologyService->addPlatformToTopology($setPlatformTopology);
+        try {
+            $this->platformTopologyService->addPlatformToTopology($setPlatformTopology);
 
-        return $this->view([
-            'code' => Response::HTTP_OK,
-            'message' => sprintf(
-                _("The '%s' Platform : '%s'@'%s' linked to '%s' has been added"),
-                static::ALLOWED_TYPES[$platformToAdd['server_type']],
-                $platformToAdd['server_name'],
-                $platformToAdd['ip_address'],
-                $platformToAdd['server_parent']
-            )
-        ]);
+            return $this->view([
+                'code' => Response::HTTP_OK,
+                'message' => sprintf(
+                    _("The '%s' Platform : '%s'@'%s' linked to '%s' has been added"),
+                    static::ALLOWED_TYPES[$platformToAdd['server_type']],
+                    $platformToAdd['server_name'],
+                    $platformToAdd['address'],
+                    $platformToAdd['server_parent']
+                )
+            ]);
+        } catch (\Exception $ex) {
+            throw new PlatformTopologyException($ex->getMessage(), $ex->getCode(), $ex);
+        }
     }
 }
