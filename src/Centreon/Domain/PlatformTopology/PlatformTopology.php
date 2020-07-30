@@ -35,11 +35,6 @@ class PlatformTopology
 
     /**
      * @var int Server type
-     *      0 = central -> not authorized using the API to register a new server
-     *      1 = poller
-     *      2 = remote server
-     *      3 = map server
-     *      4 = mbi server
      */
     private $serverType;
 
