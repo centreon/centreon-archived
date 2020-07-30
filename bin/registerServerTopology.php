@@ -34,57 +34,7 @@
  *
  */
 
-/************************ */
-/*    UTILITY FUNCTIONS
-/************************ */
-
- /**
-  * Ask question. The echo of keyboard can be disabled
-  *
-  * @param string $question
-  * @param boolean $hidden
-  * @return string
-  */
-function askQuestion(string $question, $hidden = false): string
-{
-    if ($hidden) {
-        system("stty -echo");
-    }
-    printf("%s", $question);
-    $handle = fopen("php://stdin", "r");
-    $response = trim(fgets($handle));
-    fclose($handle);
-    if ($hidden) {
-        system("stty echo");
-    }
-    printf("\n");
-    return $response;
-}
-
-/**
- * Format the response for API Request
- *
- * @param integer $code
- * @param string $message
- * @param string $type
- * @return string
- */
-function responseMessageHandler(int $code, string $message, string $type = 'success'): string
-{
-    switch ($type) {
-        case 'error':
-            $responseMessage = 'error code: ' . $code . PHP_EOL .
-            'error message: ' . $message . PHP_EOL;
-            break;
-        case 'success':
-        default:
-            $responseMessage = 'code: ' . $code . PHP_EOL .
-            'message: ' . $message . PHP_EOL;
-            break;
-    }
-
-    return sprintf('%s', $responseMessage);
-}
+require_once('registerServerTopology-func.php');
 
 /************************ */
 /*     DATA RESOLVING
@@ -94,7 +44,7 @@ function responseMessageHandler(int $code, string $message, string $type = 'succ
  * Get script params
  */
 $opt = getopt('u:t:h:', ["help::", "proxy::", "dns:"]);
-const SERVERTYPE = [
+const SERVER_TYPE = [
     1 => "poller",
     2 => "remote",
     3 => "map",
@@ -125,8 +75,7 @@ EOD;
  * Display --help message
  */
 if (isset($opt['help'])) {
-    echo $helpMessage;
-    exit;
+    exit($helpMessage);
 }
 
 /**
@@ -140,8 +89,8 @@ try {
     }
 
     $username = $opt['u'];
-    $serverType = in_array(strtolower($opt['t']), SERVERTYPE)
-        ? array_search(strtolower($opt['t']), SERVERTYPE)
+    $serverType = in_array(strtolower($opt['t']), SERVER_TYPE)
+        ? array_search(strtolower($opt['t']), SERVER_TYPE)
         : false;
 
     if (!$serverType) {
@@ -152,7 +101,7 @@ try {
     }
 
     if (isset($opt['dns'])) {
-        $dns = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN) ? $opt['dns'] : false;
+        $dns = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN);
         if (!$dns) {
             throw new \InvalidArgumentException(
                 PHP_EOL . "Bad DNS Format" . PHP_EOL
@@ -162,8 +111,7 @@ try {
 
     $targetHost = $opt['h'];
 } catch (\InvalidArgumentException $e) {
-    echo $e->getMessage();
-    exit;
+    exit($e->getMessage());
 }
 $password = askQuestion($targetHost . ': enter your password ', true);
 
@@ -211,7 +159,7 @@ $registerPayload = [
 /**
  * Display Summary of action
  */
-$serverTypeSummary = SERVERTYPE[$serverType];
+$serverTypeSummary = SERVER_TYPE[$serverType];
 $address = $registerPayload["address"];
 $summary = <<<EOD
 
@@ -241,7 +189,7 @@ echo $summary;
 $proceed = askQuestion('Do you want to register this server with those informations ? (y/n)');
 $proceed = strtolower($proceed);
 if ($proceed !== "y") {
-    exit;
+    exit();
 }
 
 /************************ */
@@ -272,8 +220,7 @@ if (isset($proxyInfo)) {
 $result = curl_exec($ch);
 
 if (!$result) {
-    echo curl_error($ch);
-    exit;
+    exit(curl_error($ch));
 }
 
 curl_close($ch);
@@ -285,13 +232,9 @@ $result = json_decode($result, true);
 if (isset($result['security']['token'])) {
     $APIToken = $result['security']['token'];
 } elseif (isset($result['code'])) {
-    $response = responseMessageHandler($result['code'], $result['message'], 'error');
-    echo $response;
-    exit;
+    exit(formatResponseMessage($result['code'], $result['message'], 'error'));
 } else {
-    $response = responseMessageHandler(400, 'Can\'t connect to the api', 'error');
-    echo $response;
-    exit;
+    exit(formatResponseMessage(400, 'Can\'t connect to the api', 'error'));
 }
 
 /**
@@ -318,8 +261,7 @@ if (isset($proxyInfo)) {
 $result = curl_exec($ch);
 
 if (!$result) {
-    echo curl_error($ch);
-    exit;
+    exit(curl_error($ch));
 }
 
 curl_close($ch);
@@ -329,10 +271,7 @@ $result = json_decode($result, true);
  * Display response of API
  */
 if (isset($result['code'], $result['message'])) {
-    $response = responseMessageHandler($result['code'], $result['message'], 'success');
-    echo $response;
+    exit(formatResponseMessage($result['code'], $result['message'], 'success'));
 } else {
-    $response = responseMessageHandler(500, 'An error occured while registering', 'error');
-    echo $response;
+    exit(formatResponseMessage(500, 'An error occured while registering', 'error'));
 }
-exit;
