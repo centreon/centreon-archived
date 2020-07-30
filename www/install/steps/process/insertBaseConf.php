@@ -96,12 +96,14 @@ $stmt = $link->prepare(
         `address`,
         `hostname`,
         `server_type`,
-        `parent`
+        `parent_id`,
+        `server_id`
     ) VALUES (
         :centralAddress,
         (SELECT `name` FROM nagios_server WHERE localhost = '1'),
         0,
-        NULL
+        0,
+        1
     )"
 );
 $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);

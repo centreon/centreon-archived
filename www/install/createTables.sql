@@ -2328,12 +2328,16 @@ CREATE TABLE `user_filter` (
 
 -- Create platform_topology table
 CREATE TABLE `platform_topology` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
     `address` varchar(255) NOT NULL,
     `hostname` varchar(255) NOT NULL,
     `server_type` tinyint(1) NOT NULL DEFAULT 0,
-    `parent` varchar(255),
-    PRIMARY KEY (`address`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Registration and parent relation Table used to get the platform topology';
+    `parent_id` int(11) DEFAULT 0,
+    `server_id` int(11),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`)
+    REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Registration and parent relation Table used to set the platform topology';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
