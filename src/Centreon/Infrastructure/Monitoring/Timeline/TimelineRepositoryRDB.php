@@ -30,7 +30,11 @@ use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\Author;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 
 /**
@@ -90,46 +94,354 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
      */
     public function findTimelineEventsByHost(Host $host): array
     {
+        return $this->findTimelineEvents($host->getId(), null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findTimelineEventsByService(Service $service): array
+    {
+        return $this->findTimelineEvents($service->getHost()->getId(), $service->getId());
+    }
+
+    /**
+     * find timeline events
+     *
+     * @param integer $hostId
+     * @param integer|null $serviceId
+     * @return TimelineEvent[]
+     */
+    private function findTimelineEvents(int $hostId, ?int $serviceId): array
+    {
         $timelineEvents = [];
 
-        $sql = $this->translateDbName("SELECT
-            l.log_id AS `id`,
-            'event' as `type`,
-            l.output AS `content`,
-            l.ctime AS `timestamp`
-            FROM `:dbstg`.`logs` l
-            WHERE l.host_id = :host_id
-        ");
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $timelineEvents;
+        }
 
-        $statement = $this->db->prepare($sql);
-        $statement->bindValue(':host_id', $host->getId());
+        $collector = new StatementCollector();
+
+        $request = "
+            SELECT SQL_CALC_FOUND_ROWS
+                log.id,
+                log.type,
+                log.date,
+                log.start_date,
+                log.end_date,
+                log.content,
+                log.author_id,
+                log.author_name,
+                log.status_code,
+                log.status_name,
+                log.status_severity_code,
+                log.tries
+            FROM (
+        ";
+
+        $subRequests = [];
+
+        // status events
+        $subRequests[] = $this->prepareQueryForTimelineStatusEvents($collector, $hostId, $serviceId);
+
+        // notification events
+        $subRequests[] = $this->prepareQueryForTimelineNotificationEvents($collector, $hostId, $serviceId);
+
+        // downtime events
+        $subRequests[] = $this->prepareQueryForTimelineDowntimeEvents($collector, $hostId, $serviceId);
+
+        // acknowledgement events
+        $subRequests[] = $this->prepareQueryForTimelineAcknowledgementEvents($collector, $hostId, $serviceId);
+
+        if (empty($subRequests)) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(0);
+
+            return [];
+        }
+
+        $request .= implode('UNION ALL ', $subRequests);
+
+        $request .= ') AS `log` ';
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $request .= " INNER JOIN `:dbstg`.`centreon_acl` ON centreon_acl.host_id = log.host_id";
+            if ($serviceId) {
+                $request .= " AND centreon_acl.service_id = log.service_id";
+            }
+            $request .= " AND centreon_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") ";
+        }
+
+        $request .= $this->sqlRequestTranslator->translateSortParameterToSql() ?: ' ORDER BY log.date DESC';
+
+        $statement = $this->db->prepare($request);
+        $collector->bind($statement);
         $statement->execute();
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $timelineEvents[] = EntityCreator::createEntityByArray(
+            $timelineEvent = EntityCreator::createEntityByArray(
                 TimelineEvent::class,
                 $result
             );
-        }
 
-        /*
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = l.host_id";
-            if ($serviceId) {
-                $sql .= " AND service_acl.service_id = l.service_id";
+            if ($result['author_id'] !== null) {
+                $timelineEvent->setAuthor(
+                    EntityCreator::createEntityByArray(
+                        Author::class,
+                        $result,
+                        'author_'
+                    )
+                );
             }
-            $sql .= " AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") ";
+
+            if ($result['status_code'] !== null) {
+                $timelineEvent->setStatus(
+                    EntityCreator::createEntityByArray(
+                        ResourceStatus::class,
+                        $result,
+                        'status_'
+                    )
+                );
+            }
+
+            $timelineEvents[] = $timelineEvent;
         }
-        $sql .= " WHERE l.host_id = :hostId AND l.service_id = :serviceId";
-
-        //Group to avoid duplicate entries
-        $sql .= ' GROUP BY l.log_id';
-
-        $sql .= $this->sqlRequestTranslator->translateSortParameterToSql() ?: ' ORDER BY timestamp DESC';
-        */
 
         return $timelineEvents;
+    }
+
+    /**
+     * get subquery to find status events
+     *
+     * @param StatementCollector $collector
+     * @param integer $hostId
+     * @param integer|null $serviceId
+     * @return string subquery
+     */
+    private function prepareQueryForTimelineStatusEvents(
+        StatementCollector $collector,
+        int $hostId,
+        ?int $serviceId
+    ): string {
+        $request = $this->translateDbName("SELECT
+            l.log_id AS `id`,
+            'event' AS `type`,
+            l.ctime AS `date`,
+            NULL AS `start_date`,
+            NULL AS `end_date`,
+            l.output AS `content`,
+            NULL AS `author_id`,
+            NULL AS `author_name`,
+            l.status AS `status_code`,
+            CASE
+                WHEN l.status = 0 THEN :status_code_0
+                WHEN l.status = 1 THEN :status_code_1
+                WHEN l.status = 2 THEN :status_code_2
+                WHEN l.status = 3 THEN :status_code_3
+                WHEN l.status = 4 THEN :status_code_4
+            END AS `status_name`,
+            CASE
+                WHEN l.status = 0 THEN :status_severity_code_0
+                WHEN l.status = 1 THEN :status_severity_code_1
+                WHEN l.status = 2 THEN :status_severity_code_2
+                WHEN l.status = 3 THEN :status_severity_code_3
+                WHEN l.status = 4 THEN :status_severity_code_4
+            END AS `status_severity_code`,
+            l.retry AS `tries`
+            FROM `:dbstg`.`logs` l
+            WHERE l.host_id = :host_id
+            AND (l.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR l.service_id IS NULL)') . "
+            AND l.msg_type IN (0,1,8,9)
+        ");
+
+        $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
+        if ($serviceId === null) {
+            $collector->addValue(':status_code_0', ResourceStatus::STATUS_NAME_UP, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_1', ResourceStatus::STATUS_NAME_DOWN, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_2', ResourceStatus::STATUS_NAME_UNREACHABLE, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_3', ResourceStatus::STATUS_NAME_PENDING, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_4', null, \PDO::PARAM_STR);
+
+            $collector->addValue(':status_severity_code_0', ResourceStatus::SEVERITY_OK, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_1', ResourceStatus::SEVERITY_HIGH, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_2', ResourceStatus::SEVERITY_LOW, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_3', ResourceStatus::SEVERITY_PENDING, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_4', null, \PDO::PARAM_INT);
+        } else {
+            $collector->addValue(':service_id', $serviceId, \PDO::PARAM_INT);
+
+            $collector->addValue(':status_code_0', ResourceStatus::STATUS_NAME_OK, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_1', ResourceStatus::STATUS_NAME_WARNING, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_2', ResourceStatus::STATUS_NAME_CRITICAL, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_3', ResourceStatus::STATUS_NAME_UNKNOWN, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_4', ResourceStatus::STATUS_NAME_PENDING, \PDO::PARAM_STR);
+
+            $collector->addValue(':status_severity_code_0', ResourceStatus::SEVERITY_OK, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_1', ResourceStatus::SEVERITY_MEDIUM, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_2', ResourceStatus::SEVERITY_HIGH, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_3', ResourceStatus::SEVERITY_LOW, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_4', ResourceStatus::SEVERITY_PENDING, \PDO::PARAM_INT);
+        }
+
+        return $request;
+    }
+
+    /**
+     * get subquery to find notification events
+     *
+     * @param StatementCollector $collector
+     * @param integer $hostId
+     * @param integer|null $serviceId
+     * @return string subquery
+     */
+    private function prepareQueryForTimelineNotificationEvents(
+        StatementCollector $collector,
+        int $hostId,
+        ?int $serviceId
+    ): string {
+        $request = $this->translateDbName("SELECT
+            l.log_id AS `id`,
+            'notification' AS `type`,
+            l.ctime AS `date`,
+            NULL AS `start_date`,
+            NULL AS `end_date`,
+            l.output AS `content`,
+            c.contact_id AS `author_id`,
+            c.contact_alias AS `author_name`,
+            l.status AS `status_code`,
+            CASE
+                WHEN l.status = 0 THEN :status_code_0
+                WHEN l.status = 1 THEN :status_code_1
+                WHEN l.status = 2 THEN :status_code_2
+                WHEN l.status = 3 THEN :status_code_3
+                WHEN l.status = 4 THEN :status_code_4
+            END AS `status_name`,
+            CASE
+                WHEN l.status = 0 THEN :status_severity_code_0
+                WHEN l.status = 1 THEN :status_severity_code_1
+                WHEN l.status = 2 THEN :status_severity_code_2
+                WHEN l.status = 3 THEN :status_severity_code_3
+                WHEN l.status = 4 THEN :status_severity_code_4
+            END AS `status_severity_code`,
+            l.retry AS `tries`
+            FROM `:dbstg`.`logs` l
+            LEFT JOIN `:db`.contact AS `c` ON c.contact_name = l.notification_contact
+            WHERE l.host_id = :host_id
+            AND (l.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR l.service_id IS NULL)') . "
+            AND l.msg_type IN (2,3)
+        ");
+
+        $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
+        if ($serviceId === null) {
+            $collector->addValue(':status_code_0', ResourceStatus::STATUS_NAME_UP, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_1', ResourceStatus::STATUS_NAME_DOWN, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_2', ResourceStatus::STATUS_NAME_UNREACHABLE, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_3', ResourceStatus::STATUS_NAME_PENDING, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_4', null, \PDO::PARAM_STR);
+
+            $collector->addValue(':status_severity_code_0', ResourceStatus::SEVERITY_OK, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_1', ResourceStatus::SEVERITY_HIGH, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_2', ResourceStatus::SEVERITY_LOW, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_3', ResourceStatus::SEVERITY_PENDING, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_4', null, \PDO::PARAM_INT);
+        } else {
+            $collector->addValue(':service_id', $serviceId, \PDO::PARAM_INT);
+
+            $collector->addValue(':status_code_0', ResourceStatus::STATUS_NAME_OK, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_1', ResourceStatus::STATUS_NAME_WARNING, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_2', ResourceStatus::STATUS_NAME_CRITICAL, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_3', ResourceStatus::STATUS_NAME_UNKNOWN, \PDO::PARAM_STR);
+            $collector->addValue(':status_code_4', ResourceStatus::STATUS_NAME_PENDING, \PDO::PARAM_STR);
+
+            $collector->addValue(':status_severity_code_0', ResourceStatus::SEVERITY_OK, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_1', ResourceStatus::SEVERITY_MEDIUM, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_2', ResourceStatus::SEVERITY_HIGH, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_3', ResourceStatus::SEVERITY_LOW, \PDO::PARAM_INT);
+            $collector->addValue(':status_severity_code_4', ResourceStatus::SEVERITY_PENDING, \PDO::PARAM_INT);
+        }
+
+        return $request;
+    }
+
+    /**
+     * get subquery to find downtime events
+     *
+     * @param StatementCollector $collector
+     * @param integer $hostId
+     * @param integer|null $serviceId
+     * @return string subquery
+     */
+    private function prepareQueryForTimelineDowntimeEvents(
+        StatementCollector $collector,
+        int $hostId,
+        ?int $serviceId
+    ): string {
+        $request = $this->translateDbName("SELECT
+            d.downtime_id AS `id`,
+            'downtime' AS `type`,
+            d.actual_start_time AS `date`,
+            d.actual_start_time AS `start_date`,
+            d.actual_end_time AS `end_date`,
+            d.comment_data AS `content`,
+            c.contact_id AS `author_id`,
+            d.author AS `author_name`,
+            NULL AS `status_code`,
+            NULL AS `status_name`,
+            NULL AS `status_severity_code`,
+            NULL AS `tries`
+            FROM `:dbstg`.`downtimes` d
+            LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author
+            WHERE d.host_id = :host_id
+            AND (d.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR d.service_id IS NULL)') . "
+            AND d.actual_start_time < " . time() . "
+        ");
+
+        $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
+        if ($serviceId !== null) {
+            $collector->addValue(':service_id', $serviceId, \PDO::PARAM_INT);
+        }
+
+        return $request;
+    }
+
+    /**
+     * get subquery to find acknowledgement events
+     *
+     * @param StatementCollector $collector
+     * @param integer $hostId
+     * @param integer|null $serviceId
+     * @return string subquery
+     */
+    private function prepareQueryForTimelineAcknowledgementEvents(
+        StatementCollector $collector,
+        int $hostId,
+        ?int $serviceId
+    ): string {
+        $request = $this->translateDbName("SELECT
+            a.acknowledgement_id AS `id`,
+            'acknowledgement' AS `type`,
+            a.entry_time AS `date`,
+            NULL AS `start_date`,
+            NULL AS `end_date`,
+            a.comment_data AS `content`,
+            c.contact_id AS `author_id`,
+            a.author AS `author_name`,
+            NULL AS `status_code`,
+            NULL AS `status_name`,
+            NULL AS `status_severity_code`,
+            NULL AS `tries`
+            FROM `:dbstg`.`acknowledgements` a
+            LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author
+            WHERE a.host_id = :host_id
+            AND (a.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR a.service_id IS NULL)') . "
+        ");
+
+        $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
+        if ($serviceId !== null) {
+            $collector->addValue(':service_id', $serviceId, \PDO::PARAM_INT);
+        }
+
+        return $request;
     }
 
     private function isAdmin(): bool
@@ -150,7 +462,9 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     }
 
     /**
-     * @return bool Return FALSE if the contact is an admin or has at least one access group.
+     * check if contact has enough rights to get events
+     *
+     * @return bool
      */
     private function hasNotEnoughRightsToContinue(): bool
     {

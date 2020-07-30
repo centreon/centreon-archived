@@ -25,6 +25,7 @@ namespace Centreon\Domain\Monitoring\Timeline\Interfaces;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 
 interface TimelineServiceInterface extends ContactFilterInterface
 {
@@ -35,4 +36,12 @@ interface TimelineServiceInterface extends ContactFilterInterface
      * @return TimelineEvent[]
      */
     public function findTimelineEventsByHost(Host $host): array;
+
+    /**
+     * Find all timeline events for given service
+     *
+     * @param Service $service
+     * @return TimelineEvent[]
+     */
+    public function findTimelineEventsByService(Service $service): array;
 }

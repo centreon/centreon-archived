@@ -23,15 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller\Monitoring;
 
 use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\Monitoring\Entity\AckEventObject;
-use Centreon\Domain\Monitoring\Entity\CommentEventObject;
-use Centreon\Domain\Monitoring\Entity\DowntimeEventObject;
-use Centreon\Domain\Monitoring\Entity\LogEventObject;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface;
-use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Exception\EntityNotFoundException;
@@ -65,7 +59,6 @@ class TimelineController extends AbstractController
         $this->timelineService = $timelineService;
     }
 
-
     /**
      * Entry point to get timeline for a host
      *
@@ -85,6 +78,7 @@ class TimelineController extends AbstractController
          */
         $user = $this->getUser();
         $this->monitoringService->filterByContact($user);
+        $this->timelineService->filterByContact($user);
 
         $host = $this->monitoringService->findOneHost($hostId);
         if ($host === null) {
@@ -100,23 +94,58 @@ class TimelineController extends AbstractController
                 'result' => $timeline,
                 'meta' => $requestParameters->toArray()
             ]
-            );
+        );
+    }
 
-        $context = (new Context())
-            ->setGroups([
-                LogEventObject::SERIALIZER_GROUP_LIST,
-                CommentEventObject::SERIALIZER_GROUP_LIST,
-                DowntimeEventObject::SERIALIZER_GROUP_LIST,
-                AckEventObject::SERIALIZER_GROUP_LIST,
-                TimelineEvent::SERIALIZER_GROUP_LIST,
-            ])
-            ->enableMaxDepth();
+    /**
+     * Entry point to get timeline for a service
+     *
+     * @param int $hostId id of host
+     * @param int $serviceId id of service
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws EntityNotFoundException
+     */
+    public function getServiceTimeline(
+        int $hostId,
+        int $serviceId,
+        RequestParametersInterface $requestParameters
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $user
+         */
+        $user = $this->getUser();
+        $this->monitoringService->filterByContact($user);
+        $this->timelineService->filterByContact($user);
+
+        $host = $this->monitoringService->findOneHost($hostId);
+        if ($host === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Host id %d not found'), $hostId)
+            );
+        }
+
+        $service = $this->monitoringService->findOneService($hostId, $serviceId);
+        if ($service === null) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Service %d on host %d not found'),
+                    $hostId,
+                    $serviceId
+                )
+            );
+        }
+        $service->setHost($host);
+
+        $timeline = $this->timelineService->findTimelineEventsByService($service);
 
         return $this->view(
             [
                 'result' => $timeline,
                 'meta' => $requestParameters->toArray()
             ]
-        )->setContext($context);
+        );
     }
 }

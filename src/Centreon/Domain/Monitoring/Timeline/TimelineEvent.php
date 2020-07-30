@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Timeline;
 
+use Centreon\Domain\Monitoring\Author;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use DateTime;
 
 /**
@@ -45,14 +47,39 @@ class TimelineEvent
     private $type;
 
     /**
-     * @var string|null
+     * @var DateTime|null
      */
-    private $output;
+    private $date;
 
     /**
      * @var DateTime|null
      */
-    private $timestamp;
+    private $startDate;
+
+    /**
+     * @var DateTime|null
+     */
+    private $endDate;
+
+    /**
+     * @var string|null
+     */
+    private $content;
+
+    /**
+     * @var Author|null
+     */
+    private $author;
+
+    /**
+     * @var ResourceStatus|null
+     */
+    private $status;
+
+    /**
+     * @var int|null
+     */
+    private $tries;
 
     /**
      * @return int|null
@@ -91,38 +118,128 @@ class TimelineEvent
     }
 
     /**
-     * @return string|null
+     * @return DateTime|null
      */
-    public function getOutput(): ?string
+    public function getDate(): ?DateTime
     {
-        return $this->output;
+        return $this->date;
     }
 
     /**
-     * @param string|null $output
+     * @param DateTime|null $date
      * @return TimelineEvent
      */
-    public function setOutput(?string $output): TimelineEvent
+    public function setDate(?DateTime $date): TimelineEvent
     {
-        $this->output = $output;
+        $this->date = $date;
         return $this;
     }
 
     /**
      * @return DateTime|null
      */
-    public function getTimestamp(): ?DateTime
+    public function getStartDate(): ?DateTime
     {
-        return $this->timestamp;
+        return $this->startDate;
     }
 
     /**
-     * @param DateTime|null $timestamp
+     * @param DateTime|null $startDate
      * @return TimelineEvent
      */
-    public function setTimestamp(?DateTime $timestamp): TimelineEvent
+    public function setStartDate(?DateTime $startDate): TimelineEvent
     {
-        $this->timestamp = $timestamp;
+        $this->startDate = $startDate;
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getEndDate(): ?DateTime
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @param DateTime|null $endDate
+     * @return TimelineEvent
+     */
+    public function setEndDate(?DateTime $endDate): TimelineEvent
+    {
+        $this->endDate = $endDate;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string|null $content
+     * @return TimelineEvent
+     */
+    public function setContent(?string $content): TimelineEvent
+    {
+        $this->content = $content;
+        return $this;
+    }
+
+    /**
+     * @return Author|null
+     */
+    public function getAuthor(): ?Author
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param Author|null $author
+     * @return TimelineEvent
+     */
+    public function setAuthor(?Author $author): TimelineEvent
+    {
+        $this->author = $author;
+        return $this;
+    }
+
+    /**
+     * @return ResourceStatus|null
+     */
+    public function getStatus(): ?ResourceStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param ResourceStatus|null $status
+     * @return TimelineEvent
+     */
+    public function setStatus(?ResourceStatus $status): TimelineEvent
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTries(): ?int
+    {
+        return $this->tries;
+    }
+
+    /**
+     * @param int|null $tries
+     * @return TimelineEvent
+     */
+    public function setTries(?int $tries): TimelineEvent
+    {
+        $this->tries = $tries;
         return $this;
     }
 }

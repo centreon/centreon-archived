@@ -24,8 +24,10 @@ namespace Centreon\Domain\Monitoring\Timeline;
 
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface;
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineRepositoryInterface;
+use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 
 /**
  * Monitoring class used to manage the real time services and hosts
@@ -40,11 +42,20 @@ class TimelineService extends AbstractCentreonService implements TimelineService
     private $timelineRepository;
 
     /**
-     * @param TimelineRepositoryInterface $timelineRepository
+     * @var AccessGroupRepositoryInterface
      */
-    public function __construct(TimelineRepositoryInterface $timelineRepository)
-    {
+    private $accessGroupRepository;
+
+    /**
+     * @param TimelineRepositoryInterface $timelineRepository
+     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     */
+    public function __construct(
+        TimelineRepositoryInterface $timelineRepository,
+        AccessGroupRepositoryInterface $accessGroupRepository
+    ) {
         $this->timelineRepository = $timelineRepository;
+        $this->accessGroupRepository = $accessGroupRepository;
     }
 
     /**
@@ -52,6 +63,13 @@ class TimelineService extends AbstractCentreonService implements TimelineService
      */
     public function filterByContact($contact)
     {
+        parent::filterByContact($contact);
+
+        $this->timelineRepository
+            ->setContact($this->contact)
+            ->filterByAccessGroups($this->accessGroupRepository->findByContact($contact));
+
+        return $this;
     }
 
     /**
@@ -60,5 +78,13 @@ class TimelineService extends AbstractCentreonService implements TimelineService
     public function findTimelineEventsByHost(Host $host): array
     {
         return $this->timelineRepository->findTimelineEventsByHost($host);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findTimelineEventsByService(Service $service): array
+    {
+        return $this->timelineRepository->findTimelineEventsByService($service);
     }
 }

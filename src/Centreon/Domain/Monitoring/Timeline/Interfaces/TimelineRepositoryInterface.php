@@ -26,6 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 
 interface TimelineRepositoryInterface
 {
@@ -50,4 +51,12 @@ interface TimelineRepositoryInterface
      * @return TimelineEvent[]
      */
     public function findTimelineEventsByHost(Host $host): array;
+
+    /**
+     * Find timeline events for given service
+     *
+     * @param Service $service
+     * @return TimelineEvent[]
+     */
+    public function findTimelineEventsByService(Service $service): array;
 }
