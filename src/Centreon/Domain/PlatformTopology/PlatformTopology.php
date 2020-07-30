@@ -40,8 +40,8 @@ class PlatformTopology
     /**
      * Used to dynamically concatenate the thrown error when checking IP validity
      */
-    private const SERVER_ADDRESS = '';
-    private const SERVER_PARENT = 'parent';
+    private const SERVER_ADDRESS = 'platform';
+    private const SERVER_PARENT = 'parent platform';
 
     /**
      * @var string Server name
@@ -113,7 +113,7 @@ class PlatformTopology
         if (self::SERVER_TYPE_CENTRAL === $serverType) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("You cannot link the Central '%s'@%'s' to another Central"),
+                    _("You cannot link the Central '%s'@'%s' to another Central"),
                     $this->getServerName(),
                     $this->getServerAddress()
                 )
@@ -185,7 +185,7 @@ class PlatformTopology
         if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("The address of the $kind platform '%s' is not consistent"),
+                    _("The address of the $kind '%s' is not consistent"),
                     $this->getServerName()
                 )
             );
