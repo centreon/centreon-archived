@@ -161,20 +161,20 @@ class PlatformTopology
      */
     public function setServerAddress(string $serverAddress): self
     {
-        $this->serverAddress = $this->checkIpAddress($serverAddress, self::SERVER_ADDRESS);
+        $this->serverAddress = $this->checkIpAddress(self::SERVER_ADDRESS, $serverAddress);
         return $this;
     }
 
     /**
      * Validate address consistency
      *
-     * @param string|null $address the address to be tested
-     * @param string $kind
+     * @param string $kind server or parent of the server
+     * @param string $address the address to be tested
      *
      * @return string
      * @throws PlatformTopologyException
      */
-    private function checkIpAddress(?string $address, string $kind): string
+    private function checkIpAddress(string $kind, string $address): string
     {
         // Server linked to the Central, may not send a parent address in the data
         if (empty($address) && self::SERVER_ADDRESS === $kind) {
@@ -215,7 +215,7 @@ class PlatformTopology
      */
     public function setServerParentAddress(?string $serverParentAddress): self
     {
-        $this->serverParentAddress = $this->checkIpAddress($serverParentAddress, self::SERVER_PARENT);
+        $this->serverParentAddress = $this->checkIpAddress(self::SERVER_PARENT, $serverParentAddress ?? '');
         return $this;
     }
 
