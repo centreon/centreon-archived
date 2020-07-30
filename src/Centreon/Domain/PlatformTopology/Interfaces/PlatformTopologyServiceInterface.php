@@ -31,8 +31,6 @@ interface PlatformTopologyServiceInterface
      * Add new server
      *
      * @param PlatformTopology $platformTopology
-     * @return void
-     * @throws PlatformTopologyException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
 }
