@@ -195,7 +195,7 @@ class PlatformTopology
             self::SERVER_TYPE_MAP,
             self::SERVER_TYPE_MBI
         ];
-        if (!in_array($serverType,$availableServerType)) {
+        if (!in_array($serverType, $availableServerType)) {
             throw new PlatformTopologyException(
                 sprintf(
                     _("The type of platform '%s'@'%s' is not consistent"),
