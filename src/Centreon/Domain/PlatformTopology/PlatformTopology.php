@@ -46,6 +46,10 @@ class PlatformTopology
     private const KIND_PARENT = 'parent platform';
 
     /**
+     * @var int Id of server
+     */
+    private $id;
+    /**
      * @var string Server name
      */
     private $serverName;
@@ -65,6 +69,23 @@ class PlatformTopology
      * @var int Server parent id
      */
     private $serverParentId;
+
+    /**
+     * @return int|null
+     */
+    public function getId():?int {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return $this
+     */
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     /**
      * @return int
