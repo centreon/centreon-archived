@@ -9,92 +9,36 @@ Feature:
 
   Scenario: Host timeline
     Given I am logged in
-
-    When I send a GET request to '/beta/users/filters/events-view'
-    Then the response code should be "200"
-    And the json node "result" should have 0 elements
-
-    When I send a POST request to '/beta/users/filters/events-view' with body:
+    And the following CLAPI import data:
     """
-    {
-      "name": "my filter1",
-      "criterias": [
-        {
-          "name": "name1",
-          "value": "value1",
-          "type": "type1"
-        }
-      ]
-    }
+    HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
     """
-    Then the response code should be "200"
+    And the configuration is generated and exported
+    And I wait until host "test" is monitored
+    And I send a GET request to '/beta/monitoring/hosts?search={"host.name":"test"}'
+    And I store response values in:
+      | name   | path         |
+      | hostId | result[0].id |
 
-    When I send a GET request to '/beta/users/filters/events-view'
-    Then the response code should be "200"
-    And the json node "result" should have 1 elements
+    When I send a GET request to '/beta/monitoring/hosts/<hostId>/timeline'
 
-    When I send a GET request to '/beta/users/filters/events-view/1'
-    Then the response code should be "200"
-    And the json node "name" should be equal to the string "my filter1"
-    And the json node "order" should be equal to the number 1
+    Then the JSON node "result[0].content" should contain "INITIAL HOST STATE"
 
-    When I send a PUT request to '/beta/users/filters/events-view/1' with body:
+  Scenario: Service timeline
+    Given I am logged in
+    And the following CLAPI import data:
     """
-    {
-      "name": "filter1",
-      "criterias": [
-        {
-          "name": "name1",
-          "value": "value1",
-          "type": "type1"
-        }
-      ]
-    }
+    HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
+    SERVICE;ADD;test;test_service1;Ping-LAN;
     """
-    Then the response code should be "200"
+    And the configuration is generated and exported
+    And I wait until service "test_service1" from host "test" is monitored
+    And I send a GET request to '/beta/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service1"}]}'
+    And I store response values in:
+      | name      | path              |
+      | hostId    | result[0].host.id |
+      | serviceId | result[0].id      |
 
-    When I send a GET request to '/beta/users/filters/events-view/1'
-    Then the response code should be "200"
-    And the json node "name" should be equal to the string "filter1"
+    When I send a GET request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline'
 
-    When I send a POST request to '/beta/users/filters/events-view' with body:
-    """
-    {
-      "name": "filter2",
-      "criterias": [
-        {
-          "name": "name1",
-          "value": "value1",
-          "type": "type1"
-        }
-      ]
-    }
-    """
-    Then the response code should be "200"
-
-    When I send a GET request to '/beta/users/filters/events-view'
-    Then the response code should be "200"
-    And the json node "result" should have 2 elements
-
-    When I send a PATCH request to '/beta/users/filters/events-view/1' with body:
-    """
-    {
-      "order": 2
-    }
-    """
-    Then the response code should be "200"
-
-    When I send a GET request to '/beta/users/filters/events-view/1'
-    Then the response code should be "200"
-    And the json node "order" should be equal to the number 2
-
-    When I send a GET request to '/beta/users/filters/events-view/2'
-    Then the response code should be "200"
-    And the json node "order" should be equal to the number 1
-
-    When I send a DELETE request to '/beta/users/filters/events-view/1'
-    Then the response code should be "204"
-
-    When I send a GET request to '/beta/users/filters/events-view'
-    Then the response code should be "200"
-    And the json node "result" should have 1 elements
+    Then the JSON node "result[0].content" should contain "INITIAL SERVICE STATE"
