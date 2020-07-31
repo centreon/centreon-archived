@@ -78,7 +78,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         AccessGroupRepositoryInterface $accessGroupRepository,
         ServiceConfigurationServiceInterface $serviceConfigurationService,
         HostConfigurationServiceInterface $hostConfigurationService,
-        MonitoringServerServiceInterface $monitoringServerService,
+        MonitoringServerServiceInterface $monitoringServerService
     ) {
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
