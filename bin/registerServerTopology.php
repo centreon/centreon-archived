@@ -264,6 +264,8 @@ if (!$result) {
     exit(curl_error($ch));
 }
 
+$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
 curl_close($ch);
 $result = json_decode($result, true);
 
@@ -272,6 +274,11 @@ $result = json_decode($result, true);
  */
 if (isset($result['code'], $result['message'])) {
     exit(formatResponseMessage($result['code'], $result['message'], 'success'));
+} elseif ($responseCode === 201) {
+    $responseMessage = 'The' . $serverTypeSummary . 'Platform : ' . $serverHostName . '@' . $address . 'linked to '
+        . $host .'has been added';
+
+    exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
 } else {
-    exit(formatResponseMessage(500, 'An error occured while registering', 'error'));
+    exit(formatResponseMessage(500,'An error occured while contacting the API', 'error'));
 }
