@@ -93,13 +93,12 @@ class PlatformTopologyController extends AbstractController
 
         // get http request content
         $platformToAdd = json_decode((string) $request->getContent(), true);
+        $platformToAdd = "tto";
         if (!is_array($platformToAdd)) {
-            return $this->view([
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => sprintf(
-                    _('Error when decoding sent data')
-                )
-            ]);
+            throw new PlatformTopologyException(
+                _('Error when decoding sent data'),
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         // validate data consistency
@@ -120,7 +119,7 @@ class PlatformTopologyController extends AbstractController
 
             return $this->view(null, Response::HTTP_CREATED);
         } catch (\Throwable $ex) {
-            throw new PlatformTopologyException($ex->getMessage(), $ex->getCode(), $ex);
+            throw new PlatformTopologyException($ex->getMessage(), $ex->getCode());
         }
     }
 }
