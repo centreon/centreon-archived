@@ -38,22 +38,20 @@ interface PlatformTopologyRepositoryInterface
      *
      * @param string $serverAddress
      * @param string $serverName
-     *
-     * @return array<mixed> returns already registered servers
+     * @return bool returns true if a server is already registered using same address or name
      */
-    public function findRegisteredPlatformsInTopology(
+    public function isPlatformAlreadyRegisteredInTopology(
         string $serverAddress,
         string $serverName
-    ): array;
+    ): bool;
 
     /**
-     * Search for parent data
+     * Search for platform id using its address
      *
      * @param string $serverAddress
-     *
-     * @return array<mixed> return nagios_server ID and parent_id found in DB
+     * @return PlatformTopology|null
      */
-    public function findParentInTopology(
+    public function findPlatformTopologyByAddress(
         string $serverAddress
-    ): array;
+    ): ?PlatformTopology;
 }

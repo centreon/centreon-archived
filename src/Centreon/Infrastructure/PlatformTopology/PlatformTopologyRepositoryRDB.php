@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology;
 
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -44,7 +45,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
@@ -62,9 +63,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function findRegisteredPlatformsInTopology(string $serverAddress, string $serverName): array
+    public function isPlatformAlreadyRegisteredInTopology(string $serverAddress, string $serverName): bool
     {
         $request = $this->translateDbName(
             'SELECT `address`, `hostname`, `server_type`
@@ -76,19 +77,16 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':serverName', $serverName, \PDO::PARAM_STR);
         $statement->execute();
 
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
-
-        // if nothing is found, convert $result to an empty array as expected
-        return (is_array($result) ? $result : []);
+        return (!empty($statement->fetch(\PDO::FETCH_ASSOC)));
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function findParentInTopology(string $serverAddress): array
+    public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology
     {
         $request = $this->translateDbName(
-            'SELECT platform_topology.id AS parent_id
+            'SELECT platform_topology.id
             FROM `:db`.platform_topology
             WHERE address = :address'
         );
@@ -96,9 +94,18 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':address', $serverAddress, \PDO::PARAM_STR);
         $statement->execute();
 
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        $platformTopology = null;
 
-        // if nothing is found, convert $result to an empty array as expected
-        return (is_array($result) ? $result : []);
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var PlatformTopology $platformTopology
+             */
+            $platformTopology = EntityCreator::createEntityByArray(
+                PlatformTopology::class,
+                $result
+            );
+        }
+
+        return $platformTopology;
     }
 }
