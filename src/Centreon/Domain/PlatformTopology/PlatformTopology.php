@@ -65,10 +65,6 @@ class PlatformTopology
      * @var int Server parent id
      */
     private $serverParentId;
-    /**
-     * @var int Server id bound to
-     */
-    private $boundServerId;
 
     /**
      * @return int
@@ -233,17 +229,6 @@ class PlatformTopology
     public function setServerParentId(int $parentId): self
     {
         $this->serverParentId = $parentId;
-        return $this;
-    }
-
-    public function getBoundServerId(): int
-    {
-        return $this->boundServerId;
-    }
-
-    public function setBoundServerId(int $boundId): self
-    {
-        $this->boundServerId = $boundId;
         return $this;
     }
 }

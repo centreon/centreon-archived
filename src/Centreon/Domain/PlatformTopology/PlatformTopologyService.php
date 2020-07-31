@@ -84,7 +84,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
         $platformTopology->setServerParentId((int)$foundParentData['parent_id']);
-        $platformTopology->setBoundServerId((int)$foundParentData['server_id']);
 
         try {
             // add the new platform
