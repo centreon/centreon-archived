@@ -3626,18 +3626,18 @@ components:
         content:
           type: string
           description: "The content of the event"
-        author:
+        contact:
           type: object
           nullable: true
-          description: "The author of the event"
+          description: "The contact of the event"
           properties:
             id:
               type: integer
               nullable: true
-              description: "Id of the author"
+              description: "Id of the contact"
             name:
               type: string
-              description: "Name of the author"
+              description: "Name of the contact"
         status:
           $ref: '#/components/schemas/Monitoring.ResourceStatus'
         tries:
