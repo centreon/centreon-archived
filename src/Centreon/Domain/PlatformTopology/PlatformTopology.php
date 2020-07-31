@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
+use Symfony\Component\HttpFoundation\Response;
+
 /**
  * Class designed to retrieve servers to be added using the wizard
  *
@@ -40,8 +42,8 @@ class PlatformTopology
     /**
      * Used to dynamically concatenate the thrown error when checking IP validity
      */
-    private const SERVER_ADDRESS = 'platform';
-    private const SERVER_PARENT = 'parent platform';
+    private const KIND_SERVER = 'platform';
+    private const KIND_PARENT = 'parent platform';
 
     /**
      * @var string Server name
@@ -96,7 +98,8 @@ class PlatformTopology
                     _("You cannot link the Central '%s'@'%s' to another Central"),
                     $this->getServerName(),
                     $this->getServerAddress()
-                )
+                ),
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -113,7 +116,8 @@ class PlatformTopology
                     _("The type of platform '%s'@'%s' is not consistent"),
                     $this->getServerName(),
                     $this->getServerAddress()
-                )
+                ),
+                Response::HTTP_BAD_REQUEST
             );
         }
         $this->serverType = $serverType;
@@ -138,7 +142,8 @@ class PlatformTopology
         $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
         if (empty($serverName)) {
             throw new PlatformTopologyException(
-                _('The name of the platform is not consistent')
+                _('The name of the platform is not consistent'),
+                Response::HTTP_BAD_REQUEST
             );
         }
         $this->serverName = $serverName;
@@ -161,7 +166,7 @@ class PlatformTopology
      */
     public function setServerAddress(string $serverAddress): self
     {
-        $this->serverAddress = $this->checkIpAddress(self::SERVER_ADDRESS, $serverAddress);
+        $this->serverAddress = $this->checkIpAddress(self::KIND_SERVER, $serverAddress);
         return $this;
     }
 
@@ -169,15 +174,15 @@ class PlatformTopology
      * Validate address consistency
      *
      * @param string $kind server or parent of the server
-     * @param string $address the address to be tested
+     * @param string|null $address the address to be tested
      *
      * @return string
      * @throws PlatformTopologyException
      */
-    private function checkIpAddress(string $kind, string $address): string
+    private function checkIpAddress(string $kind, ?string $address): string
     {
         // Server linked to the Central, may not send a parent address in the data
-        if (empty($address) && self::SERVER_ADDRESS === $kind) {
+        if (!isset($address) && self::KIND_PARENT === $kind) {
             return $_SERVER['SERVER_ADDR'];
         }
 
@@ -190,9 +195,10 @@ class PlatformTopology
         if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("The address of the $kind '%s' is not consistent"),
+                    _("The address of the " . $kind . " '%s' is not consistent"),
                     $this->getServerName()
-                )
+                ),
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -215,7 +221,7 @@ class PlatformTopology
      */
     public function setServerParentAddress(?string $serverParentAddress): self
     {
-        $this->serverParentAddress = $this->checkIpAddress(self::SERVER_PARENT, $serverParentAddress ?? '');
+        $this->serverParentAddress = $this->checkIpAddress(self::KIND_PARENT, $serverParentAddress);
         return $this;
     }
 
