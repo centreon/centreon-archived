@@ -168,26 +168,6 @@ class PlatformTopology
     }
 
     /**
-     * @return string
-     */
-    public function getServerAddress(): string
-    {
-        return $this->serverAddress;
-    }
-
-    /**
-     * @param string $serverAddress
-     *
-     * @return $this
-     * @throws PlatformTopologyException
-     */
-    public function setServerAddress(string $serverAddress): self
-    {
-        $this->serverAddress = $this->checkIpAddress(self::KIND_SERVER, $serverAddress);
-        return $this;
-    }
-
-    /**
      * Validate address consistency
      *
      * @param string $kind server or parent of the server
@@ -209,7 +189,7 @@ class PlatformTopology
         }
 
         // check for DNS to be resolved
-        if (false === filter_var($address, FILTER_VALIDATE_DOMAIN)) {
+        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
             throw new PlatformTopologyException(
                 sprintf(
                     _("The address of the " . $kind . " '%s' is not consistent"),
@@ -220,6 +200,26 @@ class PlatformTopology
         }
 
         return $address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServerAddress(): string
+    {
+        return $this->serverAddress;
+    }
+
+    /**
+     * @param string $serverAddress
+     *
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setServerAddress(string $serverAddress): self
+    {
+        $this->serverAddress = $this->checkIpAddress(self::KIND_SERVER, $serverAddress);
+        return $this;
     }
 
     /**
