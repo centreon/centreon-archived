@@ -208,7 +208,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
                 $result
             );
 
-            if ($result['author_id'] !== null) {
+            if ($result['author_name'] !== null) {
                 $timelineEvent->setAuthor(
                     EntityCreator::createEntityByArray(
                         Author::class,
