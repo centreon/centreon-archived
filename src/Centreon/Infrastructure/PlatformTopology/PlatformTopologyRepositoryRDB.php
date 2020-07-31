@@ -70,7 +70,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $request = $this->translateDbName(
             'SELECT `address`, `hostname`, `server_type`
             FROM `:db`.platform_topology
-            WHERE `address` = :serverAddress AND `hostname` = :serverName'
+            WHERE `address` = :serverAddress OR `hostname` = :serverName'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':serverAddress', $serverAddress, \PDO::PARAM_STR);
@@ -89,9 +89,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function findParentInTopology(string $serverAddress): array
     {
         $request = $this->translateDbName(
-            'SELECT nagios_server.id AS server_id, platform_topology.id AS parent_id
+            'SELECT platform_topology.id AS parent_id
             FROM `:db`.platform_topology
-            INNER JOIN `:db`.nagios_server ON nagios_server.id = platform_topology.server_id
             WHERE address = :address'
         );
         $statement = $this->db->prepare($request);
