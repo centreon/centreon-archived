@@ -280,5 +280,5 @@ if (isset($result['code'], $result['message'])) {
 
     exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
 } else {
-    exit(formatResponseMessage(500,'An error occured while contacting the API', 'error'));
+    exit(formatResponseMessage(500, 'An error occured while contacting the API', 'error'));
 }
