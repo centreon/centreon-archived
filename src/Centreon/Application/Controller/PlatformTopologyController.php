@@ -106,7 +106,7 @@ class PlatformTopologyController extends AbstractController
         $this->validatePlatformTopologySchema(
             $platformToAdd,
             $this->getParameter('centreon_path')
-            . 'config/json_validator/latest/Centreon/PlatformTopology/AddServer.json'
+            . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
         );
 
         try {
