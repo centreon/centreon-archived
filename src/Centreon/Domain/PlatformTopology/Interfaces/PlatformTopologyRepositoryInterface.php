@@ -51,7 +51,5 @@ interface PlatformTopologyRepositoryInterface
      * @param string $serverAddress
      * @return PlatformTopology|null
      */
-    public function findPlatformTopologyByAddress(
-        string $serverAddress
-    ): ?PlatformTopology;
+    public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology;
 }
