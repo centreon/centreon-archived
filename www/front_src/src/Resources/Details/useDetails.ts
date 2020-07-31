@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { ResourceEndpoints } from '../models';
-import { TabId, detailsTabId } from './Body/tabs';
+import { TabId, detailsTabId } from './tabs';
 
 export interface DetailsState {
   selectedDetailsEndpoints: ResourceEndpoints | null;

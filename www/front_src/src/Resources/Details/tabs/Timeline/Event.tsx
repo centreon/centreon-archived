@@ -16,10 +16,10 @@ import {
   labelBy,
   labelFrom,
   labelTo,
-} from '../../../../translatedLabels';
-import { getFormattedTime, getFormattedDateTime } from '../../../../dateTime';
-import DowntimeChip from '../../../../Chip/Downtime';
-import AcknowledgeChip from '../../../../Chip/Acknowledge';
+} from '../../../translatedLabels';
+import { getFormattedTime, getFormattedDateTime } from '../../../dateTime';
+import DowntimeChip from '../../../Chip/Downtime';
+import AcknowledgeChip from '../../../Chip/Acknowledge';
 
 const useStyles = makeStyles((theme) => ({
   info: {

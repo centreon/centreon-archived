@@ -222,8 +222,8 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      filtersExpandable
-      labelFiltersIcon={labelShowCriteriasFilters}
+      expandable
+      expandLabel={labelShowCriteriasFilters}
       filters={
         <div className={clsx([classes.grid, classes.filterRow])}>
           <Typography className={classes.filterLineLabel} variant="h6">

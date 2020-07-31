@@ -7,10 +7,10 @@ import {
   labelDetails,
   labelGraph,
   labelTimeline,
-} from '../../../translatedLabels';
+} from '../../translatedLabels';
 import GraphTab from './Graph';
-import { ResourceDetails } from '../../models';
-import { TabEndpoints, GraphEndpoints } from '../models';
+import { ResourceDetails } from '../models';
+import { TabEndpoints, GraphEndpoints } from './models';
 import TimelineTab from './Timeline';
 
 const detailsTabId = 0;

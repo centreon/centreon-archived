@@ -10,7 +10,7 @@ import {
   RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as clipboard from './Body/tabs/Details/clipboard';
+import * as clipboard from './tabs/Details/clipboard';
 
 import Details from '.';
 import {
@@ -42,15 +42,15 @@ import {
   labelNo,
   labelComment,
 } from '../translatedLabels';
-import { detailsTabId, graphTabId, timelineTabId } from './Body/tabs';
+import { detailsTabId, graphTabId, timelineTabId } from './tabs';
 import * as Context from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
-import { buildListTimelineEventsEndpoint } from './Body/tabs/Timeline/api';
+import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('./Body/tabs/Details/clipboard');
+jest.mock('./tabs/Details/clipboard');
 jest.mock('../Context');
 
 const mockedUseResourceContext = Context.useResourceContext as jest.Mock<
