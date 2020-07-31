@@ -74,7 +74,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             throw new PlatformTopologyException(
                 sprintf(
                     _("No parent platform was found for : '%s'@'%s'"),
-                    $platformTopology->getServerParentAddress()
+                    $platformTopology->getServerName(),
+                    $platformTopology->getServerAddress()
                 )
             );
         }
