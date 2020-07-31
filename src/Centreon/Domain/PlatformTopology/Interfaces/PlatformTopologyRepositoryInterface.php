@@ -53,7 +53,5 @@ interface PlatformTopologyRepositoryInterface
      *
      * @return array<mixed> return nagios_server ID and parent_id found in DB
      */
-    public function findParentInTopology(
-        string $serverAddress
-    ): array;
+    public function findParentInTopology(string $serverAddress): array;
 }
