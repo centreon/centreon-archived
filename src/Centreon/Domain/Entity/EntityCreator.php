@@ -28,6 +28,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 use Centreon\Domain\Contact\Contact;
 use ReflectionClass;
+use Utility\StringConverter;
 
 class EntityCreator
 {
@@ -256,7 +257,7 @@ class EntityCreator
             );
             $key = ($annotation !== null && $annotation->column !== null)
                 ? $annotation->column
-                : $this->convertCamelCaseToSnakeCase($property->getName());
+                : StringConverter::convertCamelCaseToSnakeCase($property->getName());
             $this->entityDescriptors[$key] = $annotation;
         }
 
@@ -280,38 +281,6 @@ class EntityCreator
      */
     private function createSetterMethod(string $property): string
     {
-        $camelCaseName = '';
-        for ($index = 0; $index < strlen($property); $index++) {
-            $char = $property[$index];
-            if ($index === 0) {
-                $camelCaseName .= strtoupper($char);
-            } elseif ($char === '_') {
-                $index++;
-                $camelCaseName .= strtoupper($property[$index]);
-            } else {
-                $camelCaseName .= $char;
-            }
-        }
-        return 'set' . $camelCaseName;
-    }
-
-    /**
-     * Convert a string in camel case format to snake case
-     *
-     * @param string $camelCaseName Name in camelCase format
-     * @return string Returns the name converted in snake case format
-     */
-    private function convertCamelCaseToSnakeCase(string $camelCaseName): string
-    {
-        $snakeCaseName = '';
-        for ($index = 0; $index < strlen($camelCaseName); $index++) {
-            $char = $camelCaseName[$index];
-            if (strtoupper($char) === $char) {
-                $snakeCaseName .= '_' . strtolower($char);
-            } else {
-                $snakeCaseName .= $char;
-            }
-        }
-        return $snakeCaseName;
+        return 'set' . ucfirst(StringConverter::convertSnakeCaseToCamelCase($property));
     }
 }

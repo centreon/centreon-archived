@@ -111,6 +111,18 @@ services:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
 
+    Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface:
+        class: Centreon\Domain\Monitoring\HostGroup\HostGroupService
+
+    Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\HostGroup\HostGroupRepositoryRDB
+
+    Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface:
+        class: Centreon\Domain\Monitoring\ServiceGroup\ServiceGroupService
+
+    Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\ServiceGroup\ServiceGroupRepositoryRDB
+
     # Downtime
     Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface:
         class: Centreon\Domain\Downtime\DowntimeService

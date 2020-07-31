@@ -44,6 +44,7 @@ const Details = (): JSX.Element | null => {
     setDefaultDetailsTabIdToOpen,
     selectedDetailsEndpoints,
     setSelectedDetailsEndpoints,
+    listing,
   } = useResourceContext();
 
   const {
@@ -66,7 +67,7 @@ const Details = (): JSX.Element | null => {
     sendRequest(detailsEndpoint).then((retrievedDetails) =>
       setDetails(retrievedDetails),
     );
-  }, [detailsEndpoint]);
+  }, [detailsEndpoint, listing]);
 
   return (
     <Paper elevation={5} className={classes.details}>

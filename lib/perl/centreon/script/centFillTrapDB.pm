@@ -527,7 +527,7 @@ sub main {
             }
 
             my $trap_lookup;
-            if ($mib_name eq '') {
+            if ($mib_name eq '' || $mib_name !~ m/(^[A-Za-z0-9_-]+$)/) {
                 $trap_lookup = $trapname;
             } else {
                 $trap_lookup = "$mib_name\:\:$trapname";
