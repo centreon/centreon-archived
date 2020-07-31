@@ -93,7 +93,6 @@ class PlatformTopologyController extends AbstractController
 
         // get http request content
         $platformToAdd = json_decode((string) $request->getContent(), true);
-        $platformToAdd = "tto";
         if (!is_array($platformToAdd)) {
             throw new PlatformTopologyException(
                 _('Error when decoding sent data'),
