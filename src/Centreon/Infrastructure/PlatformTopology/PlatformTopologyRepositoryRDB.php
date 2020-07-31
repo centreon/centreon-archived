@@ -49,8 +49,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         $request = $this->translateDbName('
-            INSERT INTO `:db`.platform_topology (`address`, `hostname`, `server_type`, `parent_id`, `server_id`)
-            VALUES (:serverAddress, :serverName, :serverType, :parentId, :serverId)
+            INSERT INTO `:db`.platform_topology (`address`, `hostname`, `server_type`, `parent_id`)
+            VALUES (:serverAddress, :serverName, :serverType, :parentId)
         ');
 
         $statement = $this->db->prepare($request);
@@ -58,7 +58,6 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':serverName', $platformTopology->getServerName(), \PDO::PARAM_STR);
         $statement->bindValue(':serverType', $platformTopology->getServerType(), \PDO::PARAM_INT);
         $statement->bindValue(':parentId', $platformTopology->getServerParentId(), \PDO::PARAM_INT);
-        $statement->bindValue(':serverId', $platformTopology->getBoundServerId(), \PDO::PARAM_INT);
         $statement->execute();
     }
 
