@@ -39,11 +39,6 @@ use Symfony\Component\HttpFoundation\Response;
 class PlatformTopologyController extends AbstractController
 {
     /**
-     * @var array<string> Allowed server types
-     */
-    private const ALLOWED_TYPES = ["Central", "Poller", "Remote", "MAP", "MBI"];
-
-    /**
      * @var PlatformTopologyServiceInterface
      */
     private $platformTopologyService;
