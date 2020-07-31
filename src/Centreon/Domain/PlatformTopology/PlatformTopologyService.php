@@ -24,6 +24,7 @@ namespace Centreon\Domain\PlatformTopology;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -56,13 +57,15 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             $platformTopology->getServerAddress(),
             $platformTopology->getServerName()
         );
+
         if (!empty($foundRegisteredPlatformTopology)) {
             throw new PlatformTopologyException(
                 sprintf(
                     _("A platform using the name : '%s' or address : '%s' already exists"),
                     $platformTopology->getServerName(),
                     $platformTopology->getServerAddress()
-                )
+                ),
+                Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -76,7 +79,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     _("No parent platform was found for : '%s'@'%s'"),
                     $platformTopology->getServerName(),
                     $platformTopology->getServerAddress()
-                )
+                ),
+                Response::HTTP_BAD_REQUEST
             );
         }
         $platformTopology->setServerParentId((int)$foundParentData['parent_id']);
@@ -92,8 +96,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $platformTopology->getServerName(),
                     $platformTopology->getServerAddress()
                 ),
-                0,
-                $ex
+                Response::HTTP_BAD_REQUEST
             );
         }
     }
