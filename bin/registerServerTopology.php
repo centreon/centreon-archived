@@ -260,11 +260,11 @@ if (isset($proxyInfo)) {
 
 $result = curl_exec($ch);
 
-if (!$result) {
+$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+if ($result === false) {
     exit(curl_error($ch));
 }
-
-$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 curl_close($ch);
 $result = json_decode($result, true);
@@ -272,13 +272,11 @@ $result = json_decode($result, true);
 /**
  * Display response of API
  */
-if (isset($result['code'], $result['message'])) {
-    exit(formatResponseMessage($result['code'], $result['message'], 'success'));
-} elseif ($responseCode === 201) {
-    $responseMessage = 'The' . $serverTypeSummary . 'Platform : ' . $serverHostName . '@' . $address . 'linked to '
-        . $host .'has been added';
-
+if ($responseCode === 201) {
+    $responseMessage = "The '$serverTypeSummary' Platform: '$serverHostName@$address' linked to '$host' has been added";
     exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
+} elseif (isset($result['code'], $result['message'])) {
+    exit(formatResponseMessage($result['code'], $result['message'], 'success'));
 } else {
     exit(formatResponseMessage(500, 'An error occured while contacting the API', 'error'));
 }
