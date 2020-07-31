@@ -37,8 +37,8 @@ try {
             `address` varchar(255) NOT NULL,
             `hostname` varchar(255) NOT NULL,
             `server_type` tinyint(1) NOT NULL DEFAULT 0,
-            `parent_id` int(11) DEFAULT 0,
-            `server_id` int(11) NOT NULL DEFAULT 1,
+            `parent_id` int(11),
+            `server_id` int(11),
             PRIMARY KEY (`id`),
             CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`)
             REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
