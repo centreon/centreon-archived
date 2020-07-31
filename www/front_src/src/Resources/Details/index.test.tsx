@@ -120,7 +120,7 @@ const retrievedTimeline = {
       type: 'event',
       id: 1,
       date: '2020-06-22T10:40:00',
-      tries: '1/1 (Hard)',
+      tries: 1,
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
       status: {
         severity_code: 5,
@@ -131,7 +131,7 @@ const retrievedTimeline = {
       type: 'event',
       id: 2,
       date: '2020-06-22T10:35:00',
-      tries: '3/3 (Hard)',
+      tries: 3,
       content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
       status: {
         severity_code: 1,
@@ -139,17 +139,21 @@ const retrievedTimeline = {
       },
     },
     {
-      type: 'notif',
+      type: 'notification',
       id: 3,
       date: '2020-06-21T09:40:00',
-      content: 'My little comment',
-      author_name: 'admin',
+      content: 'My little notification',
+      contact: {
+        name: 'admin',
+      },
     },
     {
       type: 'ack',
       id: 4,
       date: '2020-06-20T09:35:00Z',
-      author_name: 'admin',
+      author: {
+        name: 'admin',
+      },
       content: 'My little ack',
     },
     {
@@ -158,8 +162,21 @@ const retrievedTimeline = {
       date: '2020-06-20T09:30:00',
       start_date: '2020-06-20T09:30:00',
       end_date: '2020-06-22T09:33:00',
-      author_name: 'admin',
+      author: {
+        name: 'admin',
+      },
       content: 'My little dt',
+    },
+    {
+      type: 'comment',
+      id: 6,
+      date: '2020-06-20T08:55:00',
+      start_date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      author: {
+        name: 'admin',
+      },
+      content: 'My little comment',
     },
   ],
   meta: {
@@ -389,14 +406,14 @@ describe(Details, () => {
     expect(getByText('10:40')).toBeInTheDocument();
     expect(getAllByText('Event')).toHaveLength(2);
     expect(getByText('UP')).toBeInTheDocument();
-    expect(getByText('1/1 (Hard)')).toBeInTheDocument();
+    expect(getByText('Tries: 1')).toBeInTheDocument();
     expect(
       getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
     ).toBeInTheDocument();
 
     expect(getByText('10:35')).toBeInTheDocument();
     expect(getByText('DOWN')).toBeInTheDocument();
-    expect(getByText('3/3 (Hard)')).toBeInTheDocument();
+    expect(getByText('Tries: 3')).toBeInTheDocument();
     expect(
       getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;'),
     ).toBeInTheDocument();
@@ -404,8 +421,8 @@ describe(Details, () => {
     expect(getByText('06/21/2020')).toBeInTheDocument();
 
     expect(getByText('09:40')).toBeInTheDocument();
-    expect(getByText('Comment by admin')).toBeInTheDocument();
-    expect(getByText('My little comment'));
+    expect(getByText('Notification sent to admin')).toBeInTheDocument();
+    expect(getByText('My little notification'));
 
     expect(getByText('06/20/2020')).toBeInTheDocument();
 
@@ -419,6 +436,10 @@ describe(Details, () => {
       getByText('From 06/20/2020 09:30 To 06/22/2020 09:33'),
     ).toBeInTheDocument();
     expect(getByText('My little dt'));
+
+    expect(getByText('08:55')).toBeInTheDocument();
+    expect(getByText('Comment by admin')).toBeInTheDocument();
+    expect(getByText('My little comment'));
 
     const dateRegExp = /\d+\/\d+\/\d+$/;
 

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { makeStyles, Typography } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
 import CommentIcon from '@material-ui/icons/Comment';
+import NotificationIcon from '@material-ui/icons/Notifications';
 
 import { StatusChip } from '@centreon/ui';
 import { gt } from 'ramda';
@@ -16,6 +17,8 @@ import {
   labelBy,
   labelFrom,
   labelTo,
+  labelNotificationSentTo,
+  labelTries,
 } from '../../../../translatedLabels';
 import { getFormattedTime, getFormattedDateTime } from '../../../../dateTime';
 import DowntimeChip from '../../../../Chip/Downtime';
@@ -77,7 +80,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-      <Typography>{event.tries}</Typography>
+      <Typography>{`${labelTries}: ${event.tries}`}</Typography>
     </>
   );
 };
@@ -91,7 +94,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelComment} ${labelBy} ${event.authorName}`}</Typography>
+          <Typography variant="h6">{`${labelComment} ${labelBy} ${event.author?.name}`}</Typography>
         </div>
         <Content event={event} />
       </div>
@@ -108,7 +111,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelAcknowledgement} ${labelBy} ${event.authorName}`}</Typography>
+          <Typography variant="h6">{`${labelAcknowledgement} ${labelBy} ${event.author?.name}`}</Typography>
         </div>
         <Content event={event} />
       </div>
@@ -125,7 +128,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelDowntime} ${labelBy} ${event.authorName}`}</Typography>
+          <Typography variant="h6">{`${labelDowntime} ${labelBy} ${event.author?.name}`}</Typography>
         </div>
         <Typography variant="caption">
           {`${labelFrom} ${getFormattedDateTime(
@@ -138,9 +141,27 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   );
 };
 
+const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <>
+      <NotificationIcon color="primary" />
+      <div className={classes.info}>
+        <Date event={event} />
+        <div className={classes.title}>
+          <Typography variant="h6">{`${labelNotificationSentTo} ${event.contact?.name}`}</Typography>
+        </div>
+        <Content event={event} />
+      </div>
+    </>
+  );
+};
+
 const TimelineEventByType = {
   event: EventTimelineEvent,
-  notif: CommentTimelineEvent,
+  notification: NotificationTimelineEvent,
+  comment: CommentTimelineEvent,
   ack: AcknowledgeTimelineEvent,
   downtime: DowntimeTimelineEvent,
 };

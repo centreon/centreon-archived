@@ -3,6 +3,10 @@ export interface Status {
   name: string;
 }
 
+export interface WithName {
+  name: string;
+}
+
 export interface TimelineEvent {
   type: string;
   id: number;
@@ -11,6 +15,7 @@ export interface TimelineEvent {
   endDate?: string;
   content: string;
   status?: Status;
-  tries?: string;
-  authorName?: string;
+  tries?: number;
+  author?: WithName;
+  contact?: WithName;
 }
