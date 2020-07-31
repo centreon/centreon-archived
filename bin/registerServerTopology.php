@@ -276,7 +276,7 @@ if (isset($result['code'], $result['message'])) {
     exit(formatResponseMessage($result['code'], $result['message'], 'success'));
 } elseif ($responseCode === 201) {
     $responseMessage = 'The' . $serverTypeSummary . 'Platform : ' . $serverHostName . '@' . $address . 'linked to '
-        . $host .'has been added';
+        . $host . 'has been added';
 
     exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
 } else {
