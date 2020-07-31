@@ -508,8 +508,8 @@ class Broker extends AbstractObjectJSON
                         ) .  $proxy;
 
                 $proxy .= (filter_var($proxyInfo['proxy_url'], FILTER_VALIDATE_IP))
-                              ? $proxyInfo['proxy_url']
-                              :  parse_url($proxyInfo['proxy_url'], PHP_URL_HOST);
+                    ? $proxyInfo['proxy_url']
+                    : parse_url($proxyInfo['proxy_url'], PHP_URL_HOST);
                 if (isset($proxyInfo['proxy_port']) && !empty($proxyInfo['proxy_port'])) {
                     $proxy .= ':' . $proxyInfo['proxy_port'];
                 }
