@@ -32,10 +32,6 @@ use DateTime;
  */
 class TimelineEvent
 {
-    // Groups for serilizing
-    public const SERIALIZER_GROUP_LIST = 'timeline_list';
-    public const SERIALIZER_GROUP_FULL = 'timeline_full';
-
     /**
      * @var int|null
      */

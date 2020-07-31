@@ -89,12 +89,10 @@ class TimelineController extends AbstractController
 
         $timeline = $this->timelineService->findTimelineEventsByHost($host);
 
-        return $this->view(
-            [
-                'result' => $timeline,
-                'meta' => $requestParameters->toArray()
-            ]
-        );
+        return $this->view([
+            'result' => $timeline,
+            'meta' => $requestParameters->toArray()
+        ]);
     }
 
     /**
