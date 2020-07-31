@@ -53,7 +53,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         // search for already registered platforms using same name of address
-        $foundRegisteredPlatformTopology = $this->platformTopologyRepository->findRegisteredPlatformsInTopology(
+        $foundRegisteredPlatformTopology = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
             $platformTopology->getServerAddress(),
             $platformTopology->getServerName()
         );
@@ -70,10 +70,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         // search for parent platform in topology
-        $foundParentData = $this->platformTopologyRepository->findParentInTopology(
+        $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
             $platformTopology->getServerParentAddress()
         );
-        if (empty($foundParentData)) {
+        if (null === $foundPlatformTopology) {
             throw new PlatformTopologyException(
                 sprintf(
                     _("No parent platform was found for : '%s'@'%s'"),
@@ -83,7 +83,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 Response::HTTP_BAD_REQUEST
             );
         }
-        $platformTopology->setServerParentId((int)$foundParentData['parent_id']);
+        $platformTopology->setServerParentId($foundPlatformTopology->getId());
 
         try {
             // add the new platform
