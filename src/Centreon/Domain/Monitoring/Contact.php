@@ -23,11 +23,11 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 /**
- * Class representing an author of a monitoring action.
+ * Class representing a contact of a monitoring action.
  *
  * @package Centreon\Domain\Monitoring
  */
-class Author
+class Contact
 {
     /**
      * @var int|null
@@ -49,9 +49,9 @@ class Author
 
     /**
      * @param int|null $id
-     * @return Author
+     * @return Contact
      */
-    public function setId(?int $id): Author
+    public function setId(?int $id): Contact
     {
         $this->id = $id;
         return $this;
@@ -67,9 +67,9 @@ class Author
 
     /**
      * @param string|null $name
-     * @return Author
+     * @return Contact
      */
-    public function setName(?string $name): Author
+    public function setName(?string $name): Contact
     {
         $this->name = $name;
         return $this;

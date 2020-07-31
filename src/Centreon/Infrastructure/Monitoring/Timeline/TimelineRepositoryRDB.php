@@ -33,7 +33,7 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Author;
+use Centreon\Domain\Monitoring\Contact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 
@@ -136,8 +136,8 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
                 log.start_date,
                 log.end_date,
                 log.content,
-                log.author_id,
-                log.author_name,
+                log.contact_id,
+                log.contact_name,
                 log.status_code,
                 log.status_name,
                 log.status_severity_code,
@@ -158,6 +158,9 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
 
         // acknowledgement events
         $subRequests[] = $this->prepareQueryForTimelineAcknowledgementEvents($collector, $hostId, $serviceId);
+
+        // comment events
+        $subRequests[] = $this->prepareQueryForTimelineCommentEvents($collector, $hostId, $serviceId);
 
         if (empty($subRequests)) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal(0);
@@ -208,12 +211,12 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
                 $result
             );
 
-            if ($result['author_name'] !== null) {
-                $timelineEvent->setAuthor(
+            if ($result['contact_name'] !== null) {
+                $timelineEvent->setContact(
                     EntityCreator::createEntityByArray(
-                        Author::class,
+                        Contact::class,
                         $result,
-                        'author_'
+                        'contact_'
                     )
                 );
             }
@@ -254,8 +257,8 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             NULL AS `start_date`,
             NULL AS `end_date`,
             l.output AS `content`,
-            NULL AS `author_id`,
-            NULL AS `author_name`,
+            NULL AS `contact_id`,
+            NULL AS `contact_name`,
             l.status AS `status_code`,
             CASE
                 WHEN l.status = 0 THEN :status_code_0
@@ -330,8 +333,8 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             NULL AS `start_date`,
             NULL AS `end_date`,
             l.output AS `content`,
-            c.contact_id AS `author_id`,
-            c.contact_alias AS `author_name`,
+            c.contact_id AS `contact_id`,
+            c.contact_alias AS `contact_name`,
             l.status AS `status_code`,
             CASE
                 WHEN l.status = 0 THEN :status_code_0
@@ -347,7 +350,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
                 WHEN l.status = 3 THEN :status_severity_code_3
                 WHEN l.status = 4 THEN :status_severity_code_4
             END AS `status_severity_code`,
-            l.retry AS `tries`
+            NULL AS `tries`
             FROM `:dbstg`.`logs` l
             LEFT JOIN `:db`.contact AS `c` ON c.contact_name = l.notification_contact
             WHERE l.host_id = :host_id
@@ -407,8 +410,8 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             d.actual_start_time AS `start_date`,
             d.actual_end_time AS `end_date`,
             d.comment_data AS `content`,
-            c.contact_id AS `author_id`,
-            d.author AS `author_name`,
+            c.contact_id AS `contact_id`,
+            d.author AS `contact_name`,
             NULL AS `status_code`,
             NULL AS `status_name`,
             NULL AS `status_severity_code`,
@@ -448,8 +451,8 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             NULL AS `start_date`,
             NULL AS `end_date`,
             a.comment_data AS `content`,
-            c.contact_id AS `author_id`,
-            a.author AS `author_name`,
+            c.contact_id AS `contact_id`,
+            a.author AS `contact_name`,
             NULL AS `status_code`,
             NULL AS `status_name`,
             NULL AS `status_severity_code`,
@@ -458,6 +461,46 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author
             WHERE a.host_id = :host_id
             AND (a.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR a.service_id IS NULL)') . "
+        ");
+
+        $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
+        if ($serviceId !== null) {
+            $collector->addValue(':service_id', $serviceId, \PDO::PARAM_INT);
+        }
+
+        return $request;
+    }
+
+    /**
+     * get subquery to find acknowledgement events
+     *
+     * @param StatementCollector $collector
+     * @param integer $hostId
+     * @param integer|null $serviceId
+     * @return string subquery
+     */
+    private function prepareQueryForTimelineCommentEvents(
+        StatementCollector $collector,
+        int $hostId,
+        ?int $serviceId
+    ): string {
+        $request = $this->translateDbName("SELECT
+            c.comment_id AS `id`,
+            'comment' AS `type`,
+            c.entry_time AS `date`,
+            NULL AS `start_date`,
+            NULL AS `end_date`,
+            c.data AS `content`,
+            ct.contact_id AS `contact_id`,
+            c.author AS `contact_name`,
+            NULL AS `status_code`,
+            NULL AS `status_name`,
+            NULL AS `status_severity_code`,
+            NULL AS `tries`
+            FROM `:dbstg`.`comments` c
+            LEFT JOIN `:db`.contact AS `ct` ON ct.contact_alias = c.author
+            WHERE c.host_id = :host_id
+            AND (c.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR c.service_id IS NULL)') . "
         ");
 
         $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);

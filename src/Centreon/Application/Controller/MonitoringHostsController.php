@@ -24,12 +24,7 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Monitoring\Entity\AckEventObject;
-use Centreon\Domain\Monitoring\Entity\CommentEventObject;
-use Centreon\Domain\Monitoring\Entity\DowntimeEventObject;
-use Centreon\Domain\Monitoring\Entity\LogEventObject;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Monitoring\TimelineEvent;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
@@ -38,8 +33,6 @@ use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
-use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Exception\EntityNotFoundException;
 
 /**
  * @package Centreon\Application\Controller
@@ -346,77 +339,5 @@ class MonitoringHostsController extends AbstractController
             'result' => $hostGroups,
             'meta' => $requestParameters->toArray()
         ])->setContext($context);
-    }
-
-
-    /**
-     * Entry point to get timeline for a host
-     * @param int $hostId id of host
-     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
-     * @throws \Exception
-     */
-    public function getHostTimeline(
-        int $hostId,
-        RequestParametersInterface $requestParameters
-    ): View {
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $user
-         */
-        $user = $this->getUser();
-        $this->monitoring->filterByContact($user);
-
-        $host = $this->monitoring->findOneHost($hostId);
-        if ($host === null) {
-            throw new EntityNotFoundException(
-                sprintf(_('Host id %d not found'), $hostId)
-            );
-        }
-
-        $timeline = $this->monitoring->findTimelineEvents($hostId, 0);
-
-        $context = (new Context())
-            ->setGroups([
-                LogEventObject::SERIALIZER_GROUP_LIST,
-                CommentEventObject::SERIALIZER_GROUP_LIST,
-                DowntimeEventObject::SERIALIZER_GROUP_LIST,
-                AckEventObject::SERIALIZER_GROUP_LIST,
-                TimelineEvent::SERIALIZER_GROUP_LIST,
-            ])
-            ->enableMaxDepth();
-
-        return $this->view(
-            [
-                'result' => $timeline,
-                'meta' => $requestParameters->toArray()
-            ]
-        )->setContext($context);
-
-        /*
-        if ($this->monitoring->isHostExists($hostId)) {
-            $timeline = $this->monitoring->findTimelineEvents($hostId, 0);
-
-            $context = (new Context())
-                ->setGroups([
-                    LogEventObject::SERIALIZER_GROUP_LIST,
-                    CommentEventObject::SERIALIZER_GROUP_LIST,
-                    DowntimeEventObject::SERIALIZER_GROUP_LIST,
-                    AckEventObject::SERIALIZER_GROUP_LIST,
-                    TimelineEvent::SERIALIZER_GROUP_LIST,
-                ])
-                ->enableMaxDepth();
-
-            return $this->view(
-                [
-                    'result' => $timeline,
-                    'meta' => $requestParameters->toArray()
-                ]
-            )->setContext($context);
-        } else {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-        */
     }
 }

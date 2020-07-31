@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Timeline;
 
-use Centreon\Domain\Monitoring\Author;
+use Centreon\Domain\Monitoring\Contact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use DateTime;
 
@@ -63,9 +63,9 @@ class TimelineEvent
     private $content;
 
     /**
-     * @var Author|null
+     * @var Contact|null
      */
-    private $author;
+    private $contact;
 
     /**
      * @var ResourceStatus|null
@@ -186,20 +186,20 @@ class TimelineEvent
     }
 
     /**
-     * @return Author|null
+     * @return Contact|null
      */
-    public function getAuthor(): ?Author
+    public function getContact(): ?Contact
     {
-        return $this->author;
+        return $this->contact;
     }
 
     /**
-     * @param Author|null $author
+     * @param Contact|null $contact
      * @return TimelineEvent
      */
-    public function setAuthor(?Author $author): TimelineEvent
+    public function setContact(?Contact $contact): TimelineEvent
     {
-        $this->author = $author;
+        $this->contact = $contact;
         return $this;
     }
 
