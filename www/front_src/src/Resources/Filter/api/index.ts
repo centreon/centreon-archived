@@ -9,7 +9,7 @@ import {
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
-import { RawFilter, Filter } from '../models';
+import { RawFilter } from '../models';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
@@ -54,8 +54,8 @@ interface PatchFilterProps {
   order: number;
 }
 
-const patchFilter = (cancelToken) => (params): Promise<Filter> => {
-  return patchData<PatchFilterProps, Filter>(cancelToken)({
+const patchFilter = (cancelToken) => (params): Promise<RawFilter> => {
+  return patchData<PatchFilterProps, RawFilter>(cancelToken)({
     endpoint: `${filterEndpoint}/${params.id}`,
     data: { order: params.order },
   });

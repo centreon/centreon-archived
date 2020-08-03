@@ -53,7 +53,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { newFilter } = useFilterModels();
-  const { toFilter, toRawFilter } = useAdapters();
+  const { toRawFilter } = useAdapters();
   const { t } = useTranslation();
   const {
     setFilter,
@@ -98,25 +98,20 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
       sendUpdateFilterRequest({
         rawFilter: toRawFilter(updatedFilter),
         id: updatedFilter.id,
-      })
-        .then(toFilter)
-        .then(() => {
-          showMessage({
-            message: t(labelFilterUpdated),
-            severity: Severity.success,
-          });
-
-          if (equals(updatedFilter.id, currentFilter.id)) {
-            setFilter(updatedFilter);
-          }
-
-          const index = findIndex(
-            propEq('id', updatedFilter.id),
-            customFilters,
-          );
-
-          setCustomFilters(update(index, updatedFilter, customFilters));
+      }).then(() => {
+        showMessage({
+          message: t(labelFilterUpdated),
+          severity: Severity.success,
         });
+
+        if (equals(updatedFilter.id, currentFilter.id)) {
+          setFilter(updatedFilter);
+        }
+
+        const index = findIndex(propEq('id', updatedFilter.id), customFilters);
+
+        setCustomFilters(update(index, updatedFilter, customFilters));
+      });
     },
   });
 

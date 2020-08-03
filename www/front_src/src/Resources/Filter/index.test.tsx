@@ -70,7 +70,12 @@ const webAccessServiceGroup = {
   name: 'Web-access',
 };
 
-const filtersParams = [
+const filtersParams: Array<[
+  string,
+  string,
+  { [key: string]: Array<string | number> },
+  (() => void) | undefined,
+]> = [
   [labelTypeOfResource, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,

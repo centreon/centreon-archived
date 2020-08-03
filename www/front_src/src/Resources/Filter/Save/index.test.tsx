@@ -19,12 +19,9 @@ import {
   labelSave,
   labelSaveAsNew,
   labelName,
-  labelNewFilter,
 } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 import { RawFilter, Filter } from '../models';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
 
 let filterState;
 
