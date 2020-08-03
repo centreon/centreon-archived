@@ -67,6 +67,11 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
+        timelineEndpoint:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         acknowledgementEndpoint:
             type: string
             groups:

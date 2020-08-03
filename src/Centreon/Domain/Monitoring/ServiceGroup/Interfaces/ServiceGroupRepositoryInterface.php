@@ -20,36 +20,32 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Interfaces;
+namespace Centreon\Domain\Monitoring\ServiceGroup\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\HostGroup;
-use Centreon\Domain\Security\AccessGroup;
-use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\ServiceGroup;
 
-interface TimelineRepositoryInterface
+interface ServiceGroupRepositoryInterface
 {
     /**
-     * Sets the access groups that will be used to filter services and the host.
+     * Retrieve servicegroups from their ids
      *
-     * @param AccessGroup[]|null $accessGroups
-     * @return self
+     * @param array $serviceGroupIds
+     * @return ServiceGroup[]
      */
-    public function filterByAccessGroups(?array $accessGroups): self;
+    public function findServiceGroupsByIds(array $serviceGroupIds): array;
 
     /**
      * @param ContactInterface $contact
-     * @return self
+     * @return ServiceGroupRepositoryInterface
      */
-    public function setContact(ContactInterface $contact): self;
+    public function setContact(ContactInterface $contact): ServiceGroupRepositoryInterface;
 
     /**
-     * Find timeline events for hosts or services
-     * @param int $hostid
-     * @param int $serviceId optional
-     * @return array
-     * @throws \Exception
+     * Sets the access groups that will be used to filter.
+     *
+     * @param \Centreon\Domain\Security\AccessGroup[]|null $accessGroups
+     * @return ServiceGroupRepositoryInterface
      */
-    public function findTimelineEventsByHostAndService(int $hostid, int $serviceId = null): array;
+    public function filterByAccessGroups(?array $accessGroups): ServiceGroupRepositoryInterface;
 }
