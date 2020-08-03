@@ -33,7 +33,6 @@
  *
  */
 
-const PWS_OCCULTATION = '******';
 
 if (!isset($oreon)) {
     exit();
@@ -45,7 +44,7 @@ $DBRESULT = $pearDB->query(
 while ($opt = $DBRESULT->fetchRow()) {
     $gopt[$opt["key"]] = myDecode($opt["value"]);
 }
-$gopt[$opt["kb_wiki_password"]] = PWS_OCCULTATION;
+$gopt[$opt["kb_wiki_password"]] = CentreonAuth::PWS_OCCULTATION;
 $DBRESULT->closeCursor();
 
 $attrsAdvSelect = null;

@@ -33,8 +33,6 @@
  *
  */
 
-const PWS_OCCULTATION = '******';
-
 function updateOption($pearDB, $key, $value)
 {
     /*
@@ -621,7 +619,7 @@ function updateGeneralConfigData($gopt_id = null)
         isset($ret["proxy_user"]) && $ret["proxy_user"] != null
             ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8") : "NULL"
     );
-    if (isset($ret["proxy_password"]) && $ret['proxy_password'] != PWS_OCCULTATION) {
+    if (isset($ret["proxy_password"]) && $ret['proxy_password'] != CentreonAuth::PWS_OCCULTATION) {
         updateOption(
             $pearDB,
             'proxy_password',
@@ -966,7 +964,7 @@ function updateKnowledgeBaseData($db, $form, $centreon)
         $ret['kb_wiki_certificate'] = 0;
     }
 
-    if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === PWS_OCCULTATION) {
+    if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === CentreonAuth::PWS_OCCULTATION) {
         unset($ret["kb_wiki_password"]);
     }
 

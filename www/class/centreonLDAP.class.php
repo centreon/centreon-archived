@@ -39,8 +39,6 @@
  */
 class CentreonLDAP
 {
-    const PWS_OCCULTATION = '******';
-
     public $centreonLog;
     private $ds;
     private $db = null;
@@ -1113,7 +1111,7 @@ class CentreonLdapAdmin
     public function setGeneralOptions($arId, $options)
     {
         $gopt = $this->getGeneralOptions($arId);
-        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === self::PWS_OCCULTATION && $arId == 0) {
+        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $arId == 0) {
             unset($gopt["bind_pass"]);
         }
         if (!count($gopt)
@@ -1153,7 +1151,7 @@ class CentreonLdapAdmin
             );
         }
         $knownParameters = $this->getLdapParameters();
-        if (isset($options["bind_pass"]) && $options["bind_pass"] === self::PWS_OCCULTATION) {
+        if (isset($options["bind_pass"]) && $options["bind_pass"] === CentreonAuth::PWS_OCCULTATION) {
             unset($options["bind_pass"]);
         }
         foreach ($options as $key => $value) {
@@ -1206,7 +1204,7 @@ WHERE `ari_name` <> 'bind_pass' AND ar_id = " . $this->db->escape($arId);
         while ($row = $res->fetch()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
         }
-        $gopt['bind_pass'] = self::PWS_OCCULTATION;
+        $gopt['bind_pass'] = CentreonAuth::PWS_OCCULTATION;
         return $gopt;
     }
 
