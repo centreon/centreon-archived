@@ -1,0 +1,11 @@
+centreon_application_monitoring_gettimelinebyhost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/timeline
+    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getHostTimeline'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_gettimelinebyhostandservice:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/timeline
+    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getServiceTimeline'
+    condition: "request.attributes.get('version.is_beta') == true"

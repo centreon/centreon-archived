@@ -20,11 +20,11 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Interfaces;
+namespace Centreon\Domain\Monitoring\Timeline\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Security\AccessGroup;
+use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 
@@ -36,20 +36,27 @@ interface TimelineRepositoryInterface
      * @param AccessGroup[]|null $accessGroups
      * @return self
      */
-    public function filterByAccessGroups(?array $accessGroups): self;
+    public function filterByAccessGroups(?array $accessGroups): TimelineRepositoryInterface;
 
     /**
      * @param ContactInterface $contact
      * @return self
      */
-    public function setContact(ContactInterface $contact): self;
+    public function setContact(ContactInterface $contact): TimelineRepositoryInterface;
 
     /**
-     * Find timeline events for hosts or services
-     * @param int $hostid
-     * @param int $serviceId optional
-     * @return array
-     * @throws \Exception
+     * Find timeline events for given host
+     *
+     * @param Host $host
+     * @return TimelineEvent[]
      */
-    public function findTimelineEventsByHostAndService(int $hostid, int $serviceId = null): array;
+    public function findTimelineEventsByHost(Host $host): array;
+
+    /**
+     * Find timeline events for given service
+     *
+     * @param Service $service
+     * @return TimelineEvent[]
+     */
+    public function findTimelineEventsByService(Service $service): array;
 }

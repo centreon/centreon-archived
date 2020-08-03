@@ -20,3 +20,7 @@ default:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
       contexts:
         - Centreon\Test\Api\Context\UserFilterContext
+    monitoring_timeline:
+      paths: [ "%paths.base%/features/MonitoringTimeline.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\MonitoringTimelineContext
