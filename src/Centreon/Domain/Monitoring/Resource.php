@@ -109,6 +109,11 @@ class Resource
     /**
      * @var string|null
      */
+    private $timelineEndpoint;
+
+    /**
+     * @var string|null
+     */
     private $statusGraphEndpoint;
 
     /**
@@ -413,6 +418,25 @@ class Resource
     public function setDetailsEndpoint(?string $detailsEndpoint): self
     {
         $this->detailsEndpoint = $detailsEndpoint ?: null;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimelineEndpoint(): ?string
+    {
+        return $this->timelineEndpoint;
+    }
+
+    /**
+     * @param string|null $timelineEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setTimelineEndpoint(?string $timelineEndpoint): self
+    {
+        $this->timelineEndpoint = $timelineEndpoint ?: null;
 
         return $this;
     }

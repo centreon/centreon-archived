@@ -187,17 +187,23 @@ class MonitoringResourceController extends AbstractController
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
             $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
             $routeNameDetails = 'centreon_application_monitoring_resource_details_host';
+            $routeNameTimeline = 'centreon_application_monitoring_gettimelinebyhost';
 
             $parameters = [
                 'hostId' => $resource->getId(),
             ];
 
             if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
+                $parameters['hostId'] = $resource->getParent()->getId();
+
+                $resource->getParent()->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
+                $resource->getParent()->setTimelineEndpoint($this->router->generate($routeNameTimeline, $parameters));
+
                 $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
                 $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
                 $routeNameDetails = 'centreon_application_monitoring_resource_details_service';
+                $routeNameTimeline = 'centreon_application_monitoring_gettimelinebyhostandservice';
 
-                $parameters['hostId'] = $resource->getParent()->getId();
                 $parameters['serviceId'] = $resource->getId();
             }
 
@@ -229,6 +235,7 @@ class MonitoringResourceController extends AbstractController
                 ]),
             ])));
             $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
+            $resource->setTimelineEndpoint($this->router->generate($routeNameTimeline, $parameters));
 
             if (
                 $resource->getParent() != null && in_array([
