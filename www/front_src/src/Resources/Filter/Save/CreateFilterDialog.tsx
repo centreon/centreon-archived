@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { Dialog, TextField, useRequest } from '@centreon/ui';
 
 import { path, not, or } from 'ramda';
+import { useTranslation } from 'react-i18next';
 import {
   labelSave,
   labelCancel,
@@ -14,7 +15,8 @@ import {
   labelRequired,
 } from '../../translatedLabels';
 import { createFilter } from '../api';
-import { Filter } from '../models';
+import { Filter, RawFilter } from '../models';
+import useAdapters from '../api/adapters';
 
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
 
@@ -31,7 +33,11 @@ const CreateFilterDialog = ({
   open,
   onCancel,
 }: Props): JSX.Element => {
-  const { sendRequest, sending } = useRequest<Filter>({
+  const { toFilter, toRawFilter } = useAdapters();
+
+  const { t } = useTranslation();
+
+  const { sendRequest, sending } = useRequest<RawFilter>({
     request: createFilter,
   });
 
@@ -43,10 +49,13 @@ const CreateFilterDialog = ({
       name: Yup.string().required(labelRequired),
     }),
     onSubmit: (values) => {
-      sendRequest({
-        name: values.name,
-        criterias: filter.criterias,
-      })
+      sendRequest(
+        toRawFilter({
+          name: values.name,
+          criterias: filter.criterias,
+        }),
+      )
+        .then(toFilter)
         .then(onCreate)
         .catch((requestError) => {
           form.setFieldError(
@@ -70,16 +79,16 @@ const CreateFilterDialog = ({
   return (
     <Dialog
       open={open}
-      labelCancel={labelCancel}
-      labelTitle={labelNewFilter}
-      labelConfirm={labelSave}
+      labelCancel={t(labelCancel)}
+      labelTitle={t(labelNewFilter)}
+      labelConfirm={t(labelSave)}
       onConfirm={form.submitForm}
       confirmDisabled={confirmDisabled}
       onCancel={onCancel}
       submitting={sending}
     >
       <TextField
-        label={labelName}
+        label={t(labelName)}
         value={form.values.name}
         error={form.errors.name}
         onChange={form.handleChange('name') as InputChangeEvent}

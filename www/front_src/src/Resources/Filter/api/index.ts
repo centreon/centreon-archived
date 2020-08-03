@@ -10,7 +10,6 @@ import {
 
 import { baseEndpoint } from '../../api/endpoint';
 import { RawFilter, Filter } from '../models';
-import { toRawFilter, toFilter } from './adapters';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
@@ -29,17 +28,25 @@ const listCustomFilters = (cancelToken) => (): Promise<
 
 type RawFilterWithoutId = Omit<RawFilter, 'id'>;
 
-const createFilter = (cancelToken) => (params): Promise<Filter> => {
+const createFilter = (cancelToken) => (params): Promise<RawFilter> => {
   return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: filterEndpoint,
-    data: toRawFilter(params),
-  }).then(toFilter);
+    data: params,
+  });
 };
 
-const updateFilter = (cancelToken) => (params): Promise<Filter> => {
-  return putData<RawFilterWithoutId, Filter>(cancelToken)({
-    endpoint: `${filterEndpoint}/${params.id}`,
-    data: toRawFilter(params),
+interface UpdateFilterParams {
+  id: number;
+  rawFilter: RawFilter;
+}
+
+const updateFilter = (cancelToken) => ({
+  id,
+  rawFilter,
+}: UpdateFilterParams): Promise<RawFilter> => {
+  return putData<RawFilterWithoutId, RawFilter>(cancelToken)({
+    endpoint: `${filterEndpoint}/${id}`,
+    data: rawFilter,
   });
 };
 

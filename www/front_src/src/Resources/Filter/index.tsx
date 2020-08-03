@@ -24,6 +24,7 @@ import {
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 import {
   labelFilter,
   labelCriterias,
@@ -41,17 +42,6 @@ import {
   labelNewFilter,
   labelMyFilters,
 } from '../translatedLabels';
-import {
-  unhandledProblemsFilter,
-  resourceProblemsFilter,
-  allFilter,
-  states as availableStates,
-  resourceTypes as availableResourceTypes,
-  statuses as availableStatuses,
-  standardFilterById,
-  isCustom,
-  newFilter,
-} from './models';
 import SearchHelpTooltip from './SearchHelpTooltip';
 import {
   buildHostGroupsEndpoint,
@@ -59,6 +49,7 @@ import {
 } from '../api/endpoint';
 import { useResourceContext } from '../Context';
 import SaveFilter from './Save';
+import useFilterModels from './useFilterModels';
 
 const AccordionSummary = withStyles((theme) => ({
   root: {
@@ -124,6 +115,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Filter = (): JSX.Element => {
   const classes = useStyles();
+
+  const { t } = useTranslation();
+
+  const {
+    unhandledProblemsFilter,
+    resourceProblemsFilter,
+    allFilter,
+    states: availableStates,
+    resourceTypes: availableResourceTypes,
+    statuses: availableStatuses,
+    standardFilterById,
+    isCustom,
+    newFilter,
+  } = useFilterModels();
 
   const [expanded, setExpanded] = React.useState(false);
 
@@ -252,14 +257,14 @@ const Filter = (): JSX.Element => {
     : [
         {
           id: 'my_filters',
-          name: labelMyFilters,
+          name: t(labelMyFilters),
           type: 'header',
         },
         ...customFilters,
       ];
 
   const options = [
-    { id: '', name: labelNewFilter },
+    { id: '', name: t(labelNewFilter) },
     unhandledProblemsFilter,
     resourceProblemsFilter,
     allFilter,
@@ -274,7 +279,7 @@ const Filter = (): JSX.Element => {
         expandIcon={
           <ExpandMoreIcon
             color="primary"
-            aria-label={labelShowCriteriasFilters}
+            aria-label={t(labelShowCriteriasFilters)}
           />
         }
         IconButtonProps={{ onClick: toggleExpanded }}
@@ -282,7 +287,7 @@ const Filter = (): JSX.Element => {
       >
         <div className={clsx([classes.grid, classes.filterRow])}>
           <Typography className={classes.filterLineLabel} variant="h6">
-            {labelFilter}
+            {t(labelFilter)}
           </Typography>
           <SaveFilter />
           {customFiltersLoading ? (
@@ -292,7 +297,7 @@ const Filter = (): JSX.Element => {
               options={options.map(pick(['id', 'name', 'type']))}
               selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
               onChange={changeFilterGroup}
-              aria-label={labelStateFilter}
+              aria-label={t(labelStateFilter)}
               fullWidth
             />
           )}
@@ -301,27 +306,27 @@ const Filter = (): JSX.Element => {
             EndAdornment={SearchHelpTooltip}
             value={nextSearch || ''}
             onChange={prepareSearch}
-            placeholder={labelResourceName}
+            placeholder={t(labelResourceName)}
             onKeyDown={requestSearchOnEnterKey}
           />
           <Button variant="contained" color="primary" onClick={requestSearch}>
-            {labelSearch}
+            {t(labelSearch)}
           </Button>
         </div>
       </AccordionSummary>
       <AccordionDetails>
         <div className={clsx([classes.grid, classes.criteriaRow])}>
           <Typography className={classes.filterLineLabel} variant="subtitle1">
-            {labelCriterias}
+            {t(labelCriterias)}
           </Typography>
           <div> </div>
           <MultiAutocompleteField
             className={classes.autoCompleteField}
             options={availableResourceTypes}
-            label={labelTypeOfResource}
+            label={t(labelTypeOfResource)}
             onChange={changeResourceTypes}
             value={resourceTypes || []}
-            openText={`${labelOpen} ${labelTypeOfResource}`}
+            openText={`${t(labelOpen)} ${t(labelTypeOfResource)}`}
           />
           <MultiAutocompleteField
             className={classes.autoCompleteField}
@@ -329,7 +334,7 @@ const Filter = (): JSX.Element => {
             label={labelState}
             onChange={changeStates}
             value={states || []}
-            openText={`${labelOpen} ${labelState}`}
+            openText={`${t(labelOpen)} ${t(labelState)}`}
           />
           <MultiAutocompleteField
             className={classes.autoCompleteField}
@@ -337,7 +342,7 @@ const Filter = (): JSX.Element => {
             label={labelStatus}
             onChange={changeStatuses}
             value={statuses || []}
-            openText={`${labelOpen} ${labelStatus}`}
+            openText={`${t(labelOpen)} ${t(labelStatus)}`}
           />
           <MultiConnectedAutocompleteField
             className={classes.autoCompleteField}
@@ -347,20 +352,20 @@ const Filter = (): JSX.Element => {
             label={labelHostGroup}
             onChange={changeHostGroups}
             value={hostGroups || []}
-            openText={`${labelOpen} ${labelHostGroup}`}
+            openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
           />
           <MultiConnectedAutocompleteField
             className={classes.autoCompleteField}
             baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
             getSearchEndpoint={getServiceGroupSearchEndpoint}
-            label={labelServiceGroup}
+            label={t(labelServiceGroup)}
             onChange={changeServiceGroups}
             getOptionsFromResult={getOptionsFromResult}
             value={serviceGroups || []}
-            openText={`${labelOpen} ${labelServiceGroup}`}
+            openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
           />
           <Button color="primary" onClick={clearAllFilters}>
-            {labelClearAll}
+            {t(labelClearAll)}
           </Button>
         </div>
       </AccordionDetails>

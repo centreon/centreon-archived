@@ -1,14 +1,11 @@
 import * as React from 'react';
 
 import { Provider } from 'react-redux';
-import { pick, pathEq } from 'ramda';
+import { pick, pathEq, toPairs, pipe, map, fromPairs } from 'ramda';
 
 import { useRequest, getData, Loader } from '@centreon/ui';
-import {
-  loadTranslations,
-  setLocale,
-  syncTranslationWithStore,
-} from 'react-redux-i18n';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 import App from '../App';
 import createStore from '../store';
@@ -44,10 +41,20 @@ const AppProvider = (): JSX.Element | null => {
       .then(([retrievedUser, retrievedTranslations, retrievedAcl]) => {
         setUser(pick(['username', 'locale', 'timezone'], retrievedUser));
         setActionAcl(retrievedAcl);
+        const locale = retrievedUser.locale?.slice(0, 2);
 
-        syncTranslationWithStore(store);
-        store.dispatch(loadTranslations(retrievedTranslations));
-        store.dispatch(setLocale(retrievedUser.locale?.slice(0, 2)));
+        i18n.use(initReactI18next).init({
+          fallbackLng: 'en',
+          lng: locale,
+          resources: pipe(
+            toPairs,
+            map(([language, translations]) => [
+              language,
+              { translation: translations },
+            ]),
+            fromPairs,
+          )(retrievedTranslations),
+        });
 
         setDataLoaded(true);
       })

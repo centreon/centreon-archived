@@ -16,6 +16,7 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { all, equals, any, reject, update, findIndex, propEq } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import {
   labelDelete,
@@ -28,8 +29,10 @@ import {
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
-import { Filter, newFilter } from '../models';
+import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
+import useFilterModels from '../useFilterModels';
+import useAdapters from '../api/adapters';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
@@ -49,6 +52,9 @@ interface Props {
 const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
+  const { newFilter } = useFilterModels();
+  const { toFilter, toRawFilter } = useAdapters();
+  const { t } = useTranslation();
   const {
     setFilter,
     filter: currentFilter,
@@ -77,7 +83,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const { name, id } = filter;
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required(labelNameCannotBeEmpty),
+    name: Yup.string().required(t(labelNameCannotBeEmpty)),
   });
 
   const form = useFormik({
@@ -89,20 +95,28 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     onSubmit: (values) => {
       const updatedFilter = { ...filter, name: values.name };
 
-      sendUpdateFilterRequest(updatedFilter).then(() => {
-        showMessage({
-          message: labelFilterUpdated,
-          severity: Severity.success,
+      sendUpdateFilterRequest({
+        rawFilter: toRawFilter(updatedFilter),
+        id: updatedFilter.id,
+      })
+        .then(toFilter)
+        .then(() => {
+          showMessage({
+            message: t(labelFilterUpdated),
+            severity: Severity.success,
+          });
+
+          if (equals(updatedFilter.id, currentFilter.id)) {
+            setFilter(updatedFilter);
+          }
+
+          const index = findIndex(
+            propEq('id', updatedFilter.id),
+            customFilters,
+          );
+
+          setCustomFilters(update(index, updatedFilter, customFilters));
         });
-
-        if (equals(updatedFilter.id, currentFilter.id)) {
-          setFilter(updatedFilter);
-        }
-
-        const index = findIndex(propEq('id', updatedFilter.id), customFilters);
-
-        setCustomFilters(update(index, updatedFilter, customFilters));
-      });
     },
   });
 
@@ -114,7 +128,10 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     setDeleting(false);
 
     sendDeleteFilterRequest(filter).then(() => {
-      showMessage({ message: labelFilterDeleted, severity: Severity.success });
+      showMessage({
+        message: t(labelFilterDeleted),
+        severity: Severity.success,
+      });
 
       if (equals(filter.id, currentFilter.id)) {
         setFilter(newFilter as Filter);
@@ -158,13 +175,13 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         loadingIndicatorSize={24}
         alignCenter={false}
       >
-        <IconButton title={labelDelete} onClick={askDelete}>
+        <IconButton title={t(labelDelete)} onClick={askDelete}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
         className={classes.filterNameInput}
-        ariaLabel={`${labelFilter}-${id}-${labelName}`}
+        ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
         value={form.values.name}
         error={form.errors.name}
         onChange={form.handleChange('name') as (event) => void}
@@ -175,10 +192,10 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
 
       {deleting && (
         <ConfirmDialog
-          labelConfirm={labelDelete}
-          labelCancel={labelCancel}
+          labelConfirm={t(labelDelete)}
+          labelCancel={t(labelCancel)}
           onConfirm={confirmDelete}
-          labelTitle={labelAskDelete}
+          labelTitle={t(labelAskDelete)}
           onCancel={cancelDelete}
           open
         />
