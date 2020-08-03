@@ -3925,17 +3925,14 @@ components:
           example: 3128
         user:
           type: string
+          nullable: true
           description: "Login used to connect to proxy"
           example: "proxy-user"
         password:
           type: string
+          nullable: true
           description: "Password used to connect to proxy"
           example: "proxy-pass"
-        protocol_available:
-          type: array
-          items:
-            type: string
-          example: ["http://", "https://", "connect://"]
       required:
         - url
         - port
