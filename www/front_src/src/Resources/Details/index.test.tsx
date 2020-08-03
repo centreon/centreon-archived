@@ -55,7 +55,7 @@ import { ResourceListing } from '../models';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('./Body/tabs/Details/clipboard');
+jest.mock('./tabs/Details/clipboard');
 
 const detailsEndpoint = '/resource';
 const performanceGraphEndpoint = '/performance';
