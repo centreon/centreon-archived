@@ -148,10 +148,10 @@ const retrievedTimeline = {
       },
     },
     {
-      type: 'ack',
+      type: 'acknowledgement',
       id: 4,
       date: '2020-06-20T09:35:00Z',
-      author: {
+      contact: {
         name: 'admin',
       },
       content: 'My little ack',
@@ -162,7 +162,7 @@ const retrievedTimeline = {
       date: '2020-06-20T09:30:00',
       start_date: '2020-06-20T09:30:00',
       end_date: '2020-06-22T09:33:00',
-      author: {
+      contact: {
         name: 'admin',
       },
       content: 'My little dt',
@@ -173,7 +173,7 @@ const retrievedTimeline = {
       date: '2020-06-20T08:55:00',
       start_date: '2020-06-20T09:30:00',
       end_date: '2020-06-22T09:33:00',
-      author: {
+      contact: {
         name: 'admin',
       },
       content: 'My little comment',

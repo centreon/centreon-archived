@@ -16,6 +16,5 @@ export interface TimelineEvent {
   content: string;
   status?: Status;
   tries?: number;
-  author?: WithName;
   contact?: WithName;
 }

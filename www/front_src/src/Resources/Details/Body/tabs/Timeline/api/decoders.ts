@@ -25,7 +25,6 @@ const entityDecoder = JsonDecoder.object<TimelineEvent>(
     startDate: JsonDecoder.optional(JsonDecoder.string),
     endDate: JsonDecoder.optional(JsonDecoder.string),
     tries: JsonDecoder.optional(JsonDecoder.number),
-    author: getWithNameDecoder('Author'),
     contact: getWithNameDecoder('Contact'),
     status: JsonDecoder.optional(
       JsonDecoder.object<Status>(

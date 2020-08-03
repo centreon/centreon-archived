@@ -94,7 +94,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelComment} ${labelBy} ${event.author?.name}`}</Typography>
+          <Typography variant="h6">{`${labelComment} ${labelBy} ${event.contact?.name}`}</Typography>
         </div>
         <Content event={event} />
       </div>
@@ -111,7 +111,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelAcknowledgement} ${labelBy} ${event.author?.name}`}</Typography>
+          <Typography variant="h6">{`${labelAcknowledgement} ${labelBy} ${event.contact?.name}`}</Typography>
         </div>
         <Content event={event} />
       </div>
@@ -128,7 +128,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelDowntime} ${labelBy} ${event.author?.name}`}</Typography>
+          <Typography variant="h6">{`${labelDowntime} ${labelBy} ${event.contact?.name}`}</Typography>
         </div>
         <Typography variant="caption">
           {`${labelFrom} ${getFormattedDateTime(
@@ -162,7 +162,7 @@ const TimelineEventByType = {
   event: EventTimelineEvent,
   notification: NotificationTimelineEvent,
   comment: CommentTimelineEvent,
-  ack: AcknowledgeTimelineEvent,
+  acknowledgement: AcknowledgeTimelineEvent,
   downtime: DowntimeTimelineEvent,
 };
 
