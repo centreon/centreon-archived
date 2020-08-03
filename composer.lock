@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af6d10a0b847cbe229f70c8909762027",
+    "content-hash": "e540bfb135c63d09b895eb4cf413c186",
     "packages": [
         {
             "name": "curl/curl",
@@ -5986,16 +5986,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "dev-MON-5559-fix",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "be61f186e10b64619ce4d703287a1a78c9f61935"
+                "reference": "46d255888d44f30c68f0e02748c7b5c7a4d5b1db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/be61f186e10b64619ce4d703287a1a78c9f61935",
-                "reference": "be61f186e10b64619ce4d703287a1a78c9f61935",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/46d255888d44f30c68f0e02748c7b5c7a4d5b1db",
+                "reference": "46d255888d44f30c68f0e02748c7b5c7a4d5b1db",
                 "shasum": ""
             },
             "require": {
@@ -6040,7 +6040,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-08-02T07:50:54+00:00"
+            "time": "2020-08-03T11:47:19+00:00"
         },
         {
             "name": "dflydev/fig-cookies",
