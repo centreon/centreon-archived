@@ -2905,6 +2905,11 @@ components:
           nullable: true
           description: "Resource url to details page"
           example: "/centreon/monitoring/resources/hosts/12/services/12"
+        timeline_endpoint:
+          type: string
+          nullable: true
+          description: "Resource url to get timeline information"
+          example: "/centreon/monitoring/resources/hosts/12/services/12/timeline"
         icon:
           type: object
           nullable: true
@@ -2940,6 +2945,11 @@ components:
               nullable: true
               description: "Parent resource url to details page"
               example: "/centreon/monitoring/resources/hosts/12"
+            timeline_endpoint:
+              type: string
+              nullable: true
+              description: "Parent resource url to get timeline information"
+              example: "/centreon/monitoring/resources/hosts/12/timeline"
             status:
               type: object
               properties:
