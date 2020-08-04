@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { I18n } from 'react-redux-i18n';
+import { withTranslation } from 'react-i18next';
 
 import {
   IconHeader,
@@ -126,6 +126,7 @@ class ServiceStatusMenu extends Component {
 
   render() {
     const { data, toggled } = this.state;
+    const { t } = this.props;
 
     // do not display service information until having data
     if (!data) {
@@ -140,7 +141,7 @@ class ServiceStatusMenu extends Component {
         <SubmenuHeader submenuType="top" active={toggled}>
           <IconHeader
             iconType="services"
-            iconName={I18n.t('Services')}
+            iconName={t('Services')}
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}
@@ -223,7 +224,7 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={I18n.t('All')}
+                  submenuTitle={t('All')}
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
@@ -234,7 +235,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Critical')}
+                  submenuTitle={t('Critical')}
                   submenuCount={`${numeral(
                     data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
@@ -247,7 +248,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="orange"
-                  submenuTitle={I18n.t('Warning')}
+                  submenuTitle={t('Warning')}
                   submenuCount={`${numeral(
                     data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
@@ -260,7 +261,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={I18n.t('Unknown')}
+                  submenuTitle={t('Unknown')}
                   submenuCount={`${numeral(
                     data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
@@ -273,7 +274,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={I18n.t('Ok')}
+                  submenuTitle={t('Ok')}
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
@@ -284,7 +285,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={I18n.t('Pending')}
+                  submenuTitle={t('Pending')}
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>
@@ -304,7 +305,9 @@ const mapStateToProps = ({ intervals }) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ServiceStatusMenu);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(ServiceStatusMenu),
+);
 
 ServiceStatusMenu.propTypes = {
   refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])

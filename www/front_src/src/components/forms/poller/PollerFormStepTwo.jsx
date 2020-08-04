@@ -7,7 +7,8 @@
 
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
-import { Translate, I18n } from 'react-redux-i18n';
+import { withTranslation } from 'react-i18next';
+
 import Select from 'react-select';
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from '../../form-fields/SelectField';
@@ -72,7 +73,7 @@ class PollerFormStepTwo extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, pollers } = this.props;
+    const { error, handleSubmit, onSubmit, pollers, t } = this.props;
     const { selectedMaster } = this.state;
 
     const availableAdditionals = this.getAvailableAdditionals();
@@ -84,7 +85,7 @@ class PollerFormStepTwo extends Component {
             {pollers.length ? (
               <>
                 <h2 className={styles['form-title']}>
-                  <Translate value="Attach poller to a master remote server" />
+                  {t('Attach poller to a master remote server')}
                 </h2>
                 <Field
                   name="linked_remote_master"
@@ -109,7 +110,7 @@ class PollerFormStepTwo extends Component {
             {selectedMaster && pollers.length >= 2 ? (
               <>
                 <h2 className={styles['form-title']}>
-                  <Translate value="Attach poller to additional remote servers" />
+                  {t('Attach poller to additional remote servers')}
                 </h2>
                 <div className={styles['form-item']}>
                   <Field
@@ -128,14 +129,12 @@ class PollerFormStepTwo extends Component {
             <Field
               name="open_broker_flow"
               component={CheckboxField}
-              label={I18n.t(
-                'Advanced: reverse Centreon Broker communication flow',
-              )}
+              label={t('Advanced: reverse Centreon Broker communication flow')}
               defaultValue={false}
             />
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
-                <Translate value="Apply" />
+                {t('Apply')}
               </button>
             </div>
             {error ? (
@@ -148,13 +147,11 @@ class PollerFormStepTwo extends Component {
   }
 }
 
-const validate = () => ({});
-
-export default connectForm({
-  form: 'PollerFormStepTwo',
-  validate,
-  warn: () => {},
-  enableReinitialize: true,
-  destroyOnUnmount: false,
-  keepDirtyOnReinitialize: true,
-})(PollerFormStepTwo);
+export default withTranslation()(
+  connectForm({
+    form: 'PollerFormStepTwo',
+    enableReinitialize: true,
+    destroyOnUnmount: false,
+    keepDirtyOnReinitialize: true,
+  })(PollerFormStepTwo),
+);

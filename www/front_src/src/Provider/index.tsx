@@ -1,26 +1,16 @@
 import * as React from 'react';
 
 import { Provider } from 'react-redux';
-import {
-  pick,
-  pathEq,
-  toPairs,
-  pipe,
-  map,
-  fromPairs,
-  KeyValuePair,
-} from 'ramda';
+import { pick, pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 
 import { useRequest, getData, Loader } from '@centreon/ui';
-import i18n from 'i18next';
+import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
-
-import { stringify } from 'query-string';
 import App from '../App';
 import createStore from '../store';
 import Context from './UserContext';
 import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
-import { User, Translations, Actions } from './models';
+import { User, Actions } from './models';
 import useUser from './useUser';
 import useAcl from './useAcl';
 
@@ -34,12 +24,29 @@ const AppProvider = (): JSX.Element | null => {
   const { sendRequest: getUser } = useRequest<User>({
     request: getData,
   });
-  const { sendRequest: getTranslations } = useRequest<Translations>({
+  const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
     request: getData,
   });
   const { sendRequest: getAcl } = useRequest<Actions>({
     request: getData,
   });
+
+  const initializeI18n = ({ retrievedUser, retrievedTranslations }): void => {
+    const locale = retrievedUser.locale?.slice(0, 2);
+
+    i18n.use(initReactI18next).init({
+      fallbackLng: 'en',
+      lng: locale,
+      resources: pipe(
+        toPairs as (t) => Array<[string, ResourceLanguage]>,
+        reduce(
+          (acc, [language, values]) =>
+            mergeAll([acc, { [language]: { translation: values } }]),
+          {},
+        ),
+      )(retrievedTranslations) as Resource,
+    });
+  };
 
   React.useEffect(() => {
     Promise.all([
@@ -50,20 +57,8 @@ const AppProvider = (): JSX.Element | null => {
       .then(([retrievedUser, retrievedTranslations, retrievedAcl]) => {
         setUser(pick(['username', 'locale', 'timezone'], retrievedUser));
         setActionAcl(retrievedAcl);
-        const locale = retrievedUser.locale?.slice(0, 2);
 
-        i18n.use(initReactI18next).init({
-          fallbackLng: 'en',
-          lng: locale,
-          resources: pipe(
-            toPairs,
-            map(([language, translations]) => [
-              language,
-              { translation: translations },
-            ]),
-            fromPairs,
-          )(retrievedTranslations),
-        });
+        initializeI18n({ retrievedUser, retrievedTranslations });
 
         setDataLoaded(true);
       })
