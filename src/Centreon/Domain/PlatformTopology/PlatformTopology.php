@@ -129,7 +129,7 @@ class PlatformTopology
             self::SERVER_TYPE_MBI
         ];
         if (!in_array($serverType, $availableServerType)) {
-            throw new PlatformTopologyException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     _("The type of platform '%s'@'%s' is not consistent"),
                     $this->getServerName(),
