@@ -33,7 +33,7 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Contact;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 
@@ -512,6 +512,11 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         return $request;
     }
 
+    /**
+     * Check if contact is an admin
+     *
+     * @return boolean
+     */
     private function isAdmin(): bool
     {
         return ($this->contact !== null)

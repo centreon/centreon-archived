@@ -26,6 +26,7 @@ use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Exception\EntityNotFoundException;
@@ -35,6 +36,8 @@ use Centreon\Domain\Exception\EntityNotFoundException;
  */
 class TimelineController extends AbstractController
 {
+    public const SERIALIZER_GROUPS_MAIN = ['timeline_main', 'contact_main', 'resource_status_main'];
+
     /**
      * @var MonitoringServiceInterface
      */
@@ -89,10 +92,14 @@ class TimelineController extends AbstractController
 
         $timeline = $this->timelineService->findTimelineEventsByHost($host);
 
+        $context = (new Context())
+            ->setGroups(static::SERIALIZER_GROUPS_MAIN)
+            ->enableMaxDepth();
+
         return $this->view([
             'result' => $timeline,
             'meta' => $requestParameters->toArray()
-        ]);
+        ])->setContext($context);
     }
 
     /**
