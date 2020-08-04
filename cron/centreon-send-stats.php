@@ -24,6 +24,12 @@ require_once __DIR__ . '/../www/class/centreonRestHttp.class.php';
 require_once __DIR__ . '/../config/centreon-statistics.config.php';
 require_once __DIR__ . '/../www/class/centreonStatistics.class.php';
 
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+$output = new ConsoleOutput();
+$logger = new ConsoleLogger($output);
+
 $shouldSendStatistics = false;
 $isRemote = false;
 $hasValidLicenses = false;
@@ -100,7 +106,7 @@ if ($row = $result->fetch()) {
 if ($isRemote === false) {
     try {
         $http = new CentreonRestHttp();
-        $oStatistics = new CentreonStatistics();
+        $oStatistics = new CentreonStatistics($logger);
         $timestamp = time();
         $uuid = $oStatistics->getCentreonUUID();
         if (empty($uuid)) {
@@ -116,7 +122,11 @@ if ($isRemote === false) {
          * or if at least a Centreon license is valid
          */
         if ($shouldSendStatistics || $hasValidLicenses || $isRemote) {
-            $additional = $oStatistics->getAdditionalData();
+            try {
+                $additional = $oStatistics->getAdditionalData();
+            } catch (\Throwable $e) {
+                $logger->error('Cannot get stats from modules');
+            }
         }
 
         // Construct the object gathering datas

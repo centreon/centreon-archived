@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,7 +34,10 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/centreonDB.class.php';
+
+use Psr\Log\LoggerInterface;
 
 class CentreonStatsModules
 {
@@ -43,11 +47,17 @@ class CentreonStatsModules
     private $db;
 
     /**
+     * @var LoggerInterface $logger
+     */
+    private $logger;
+
+    /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
         $this->db = new centreonDB();
+        $this->logger = $logger;
     }
 
     /**
@@ -82,11 +92,15 @@ class CentreonStatsModules
 
         foreach ($installedModules as $module) {
             if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/statistics/*.class.php')) {
-                foreach ($files as $full_file) {
-                    include_once $full_file;
-                    $file_name = str_replace('.class.php', '', basename($full_file));
-                    if (class_exists(ucfirst($file_name))) {
-                        $moduleObjects[] = ucfirst($file_name);
+                foreach ($files as $fullFile) {
+                    try {
+                        include_once $fullFile;
+                        $fileName = str_replace('.class.php', '', basename($fullFile));
+                        if (class_exists(ucfirst($fileName))) {
+                            $moduleObjects[] = ucfirst($fileName);
+                        }
+                    } catch (\Throwable $e) {
+                        $this->logger->error('Cannot get stats of module ' . $module);
                     }
                 }
             }
