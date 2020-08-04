@@ -43,7 +43,7 @@ class CheckRequest
     /**
      * Get resources
      *
-     * @return  ResourceEntity[]
+     * @return ResourceEntity[]
      */
     public function getResources(): array
     {
@@ -53,9 +53,9 @@ class CheckRequest
     /**
      * Set resources
      *
-     * @param  ResourceEntity[]  $resources  resources
+     * @param ResourceEntity[]  $resources  resources
      *
-     * @return  self
+     * @return self
      */
     public function setResources(array $resources): CheckRequest
     {
@@ -79,7 +79,7 @@ class CheckRequest
      *
      * @param Check $check check
      *
-     * @return  self
+     * @return self
      */
     public function setCheck(Check $check): CheckRequest
     {

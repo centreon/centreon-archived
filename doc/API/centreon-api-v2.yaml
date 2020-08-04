@@ -2867,7 +2867,6 @@ components:
           - $ref: '#/components/schemas/Bulk.Resource.Id'
     Check.Resources:
       type: object
-      resources:
       properties:
         resources:
           type: array
@@ -2876,6 +2875,7 @@ components:
             properties:
               type:
                 type: string
+                enum: [host, service]
                 description: "Type of resource"
                 example: "service"
               id:
@@ -2889,10 +2889,6 @@ components:
                     type: integer
                     description: "Parent resource ID"
                     example: 17
-                  name:
-                    type: string
-                    description: "Parent resource name"
-                    example: "Centreon-Central"
     Monitoring.Resource.Disacknowledge.Host:
       type: object
       properties:

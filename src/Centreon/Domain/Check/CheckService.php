@@ -156,7 +156,12 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
     {
         $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
         if (is_null($host)) {
-            throw new EntityNotFoundException(_('Host not found'));
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Host %d not found'),
+                    $resource->getId()
+                )
+            );
         }
 
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {

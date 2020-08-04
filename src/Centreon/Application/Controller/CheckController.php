@@ -356,7 +356,7 @@ class CheckController extends AbstractController
 
         $checks = json_decode((string) $request->getContent(), true);
         if (!is_array($checks)) {
-            throw new \Exception(_('Error when decoding sent data'));
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
 
         /*
