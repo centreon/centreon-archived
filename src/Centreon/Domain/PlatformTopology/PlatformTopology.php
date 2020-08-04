@@ -111,7 +111,7 @@ class PlatformTopology
     {
         // The API should not be used to add a Central to another Central
         if (self::SERVER_TYPE_CENTRAL === $serverType) {
-            throw new PlatformTopologyException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     _("You cannot link the Central '%s'@'%s' to another Central"),
                     $this->getServerName(),
