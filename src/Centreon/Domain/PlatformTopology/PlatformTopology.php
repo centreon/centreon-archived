@@ -191,7 +191,7 @@ class PlatformTopology
 
         // check for DNS to be resolved
         if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
-            throw new PlatformTopologyException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     _("The address of the " . $kind . " '%s' is not consistent"),
                     $this->getServerName()
