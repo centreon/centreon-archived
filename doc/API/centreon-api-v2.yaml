@@ -2884,6 +2884,7 @@ components:
                 example: 10
               parent:
                 type: object
+                nullable: true
                 properties:
                   id:
                     type: integer

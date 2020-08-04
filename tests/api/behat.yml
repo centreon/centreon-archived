@@ -20,3 +20,7 @@ default:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
       contexts:
         - Centreon\Test\Api\Context\UserFilterContext
+    check:
+      paths: [ "%paths.base%/features/Check.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\CheckContext
