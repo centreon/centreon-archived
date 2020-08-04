@@ -3491,7 +3491,7 @@ msgstr ""
 #: centreon-web/www/install/step_upgrade/step4.php:71
 #, php-format
 msgid "The SQL files are located in %s"
-msgstr "Les fichiers SQL sont situés dans %s"
+msgstr "Les fichiers SQL sont situés dans %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid ""
@@ -11726,16 +11726,16 @@ msgid "Monitoring Engine Init Script"
 msgstr "Script d'initialisation du moteur de supervision"
 
 msgid "Monitoring Engine start command"
-msgid "Commande de démarrage du moteur de supervision"
+msgstr "Commande de démarrage du moteur de supervision"
 
 msgid "Monitoring Engine stop command"
-msgid "Commande d'arrêt du moteur de supervision"
+msgstr "Commande d'arrêt du moteur de supervision"
 
 msgid "Monitoring Engine restart command"
-msgid "Commande de redémarrage du moteur de supervision"
+msgstr "Commande de redémarrage du moteur de supervision"
 
 msgid "Monitoring Engine reload command"
-msgid "Commande de rechargement du moteur de supervision"
+msgstr "Commande de rechargement du moteur de supervision"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:114
 msgid "Init System"
@@ -11766,7 +11766,7 @@ msgid "Is default poller ?"
 msgstr "Collecteur par défaut ?"
 
 msgid "Centreon Broker reload command"
-msgid "Commande de rechargement de Centreon Broker"
+msgstr "Commande de rechargement de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:157
 msgid "Centreon Broker configuration path"
