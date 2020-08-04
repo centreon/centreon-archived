@@ -11726,16 +11726,16 @@ msgid "Monitoring Engine Init Script"
 msgstr "Script d'initialisation du moteur de supervision"
 
 msgid "Monitoring Engine start command"
-msgstr "Commande de démarrage du moteur de supervision"
+msgid "Commande de démarrage du moteur de supervision"
 
 msgid "Monitoring Engine stop command"
-msgstr "Commande d'arrêt du moteur de supervision"
+msgid "Commande d'arrêt du moteur de supervision"
 
 msgid "Monitoring Engine restart command"
-msgstr "Commande de redémarrage du moteur de supervision"
+msgid "Commande de redémarrage du moteur de supervision"
 
 msgid "Monitoring Engine reload command"
-msgstr "Commande de rechargement du moteur de supervision"
+msgid "Commande de rechargement du moteur de supervision"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:114
 msgid "Init System"
@@ -11766,7 +11766,7 @@ msgid "Is default poller ?"
 msgstr "Collecteur par défaut ?"
 
 msgid "Centreon Broker reload command"
-msgstr "Commande de rechargement de Centreon Broker"
+msgid "Commande de rechargement de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:157
 msgid "Centreon Broker configuration path"
@@ -12726,4 +12726,2152 @@ msgstr "Problèmes"
 #: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceSummaryByHG.php:68
 #: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceGridByHG.php:61
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:69
-#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:69
+msgid "Acknowledge"
+msgstr "Acquittement"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:96
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:76
+#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceSummaryByHG.php:69
+#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceGridByHG.php:62
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:70
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:70
+msgid "Not Acknowledged"
+msgstr "Non acquittés"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:138
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:140
+#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceSummaryByHG.php:104
+#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceGridByHG.php:105
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:175
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:170
+msgid "Display "
+msgstr "Afficher"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:146
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:146
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:178
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:199
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:176
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:197
+msgid "Verification Check"
+msgstr "Vérification du contrôle"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:147
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:147
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:179
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:200
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:177
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:198
+msgid "Verification Check (Forced)"
+msgstr "Vérification du contrôle (Forcé)"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:148
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:148
+#: centreon-web/www/include/monitoring/status/Services/service.php:233
+#: centreon-web/www/include/monitoring/status/Services/service.php:283
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:180
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:201
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:178
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:199
+msgid "Services : Acknowledge"
+msgstr "Services : Acquitter"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:149
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:149
+#: centreon-web/www/include/monitoring/status/Services/service.php:236
+#: centreon-web/www/include/monitoring/status/Services/service.php:284
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:181
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:202
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:179
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:200
+msgid "Services : Disacknowledge"
+msgstr "Services : Dés-acquitter"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:150
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:150
+#: centreon-web/www/include/monitoring/status/Services/service.php:239
+#: centreon-web/www/include/monitoring/status/Services/service.php:285
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:182
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:203
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:180
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:201
+msgid "Services : Enable Notification"
+msgstr "Services : Activer la notification"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:151
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:151
+#: centreon-web/www/include/monitoring/status/Services/service.php:242
+#: centreon-web/www/include/monitoring/status/Services/service.php:286
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:183
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:204
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:181
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:202
+msgid "Services : Disable Notification"
+msgstr "Services : Désactiver la notification"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:152
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:152
+#: centreon-web/www/include/monitoring/status/Services/service.php:245
+#: centreon-web/www/include/monitoring/status/Services/service.php:287
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:184
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:205
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:182
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:203
+msgid "Services : Enable Check"
+msgstr "Services : Activer la vérification"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:153
+#: centreon-web/www/include/monitoring/status/Services/serviceGrid.php:153
+#: centreon-web/www/include/monitoring/status/Services/service.php:248
+#: centreon-web/www/include/monitoring/status/Services/service.php:288
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:185
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:206
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:183
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:204
+msgid "Services : Disable Check"
+msgstr "Services : Désactiver la vérification"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceGridJS.php:71
+msgid "Sort by Host Name"
+msgstr "Trier par nom d'hôte"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceGridJS.php:78
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySGJS.php:89
+msgid "Sort by Status"
+msgstr "Trier par statut"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:227
+#: centreon-web/www/include/monitoring/status/Services/service.php:281
+msgid "Services : Schedule immediate check"
+msgstr "Services : Planifier un contrôle immédiat"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:230
+#: centreon-web/www/include/monitoring/status/Services/service.php:282
+msgid "Services : Schedule immediate check (Forced)"
+msgstr "Services : Planifier un contrôle immédiat (Forcé)"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:251
+#: centreon-web/www/include/monitoring/status/Services/service.php:289
+msgid "Services : Set Downtime"
+msgstr "Services : Ajouter un temps d'arrêt"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:339
+msgid "Service Problems"
+msgstr "Problèmes en cours"
+
+#: centreon-web/www/include/monitoring/status/Common/commonJS.php:67
+msgid "Y/m/d H:i:s"
+msgstr "d/m/Y - H:i:s"
+
+#: centreon-web/www/include/monitoring/status/Common/commonJS.php:97
+msgid "Please enter a comment"
+msgstr "Merci d'entrer un commentaire"
+
+#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceSummaryByHGJS.php:75
+#: centreon-web/www/include/monitoring/status/ServicesHostGroups/serviceGridByHGJS.php:76
+msgid "Hostgroups / Hosts"
+msgstr "Groupes d'hôtes / Hôtes"
+
+#: centreon-web/www/include/monitoring/status/TopCounter/xml/statusCounter.php:260
+msgid "OK: all pollers are running"
+msgstr "OK: tous les collecteurs sont en cours d'exécution"
+
+#: centreon-web/www/include/monitoring/status/TopCounter/xml/statusCounter.php:264
+#, php-format
+msgid "Latency detected on %s; check configuration for better optimisation"
+msgstr ""
+"Latence détecté pour %s, contrôler la configuration pour améliorer les "
+"performances"
+
+#: centreon-web/www/include/monitoring/status/TopCounter/xml/statusCounter.php:266
+msgid "OK: no latency detected on your platform"
+msgstr "OK: aucune latence détectée sur votre plateforme"
+
+#: centreon-web/www/include/monitoring/status/TopCounter/xml/statusCounter.php:270
+msgid ""
+"Some database poller updates are not active; check your Monitoring platform"
+msgstr ""
+"Certains collecteurs ne mettent pas à jour la base de données; contrôler "
+"votre plate-forme de supervision"
+
+#: centreon-web/www/include/monitoring/status/TopCounter/xml/statusCounter.php:272
+msgid "OK: all database poller updates are active"
+msgstr ""
+"OK: toutes les mises à jour des bases de données de vos collecteurs sont "
+"actives"
+
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySGJS.php:79
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySGJS.php:80
+msgid "Servicegroups / Hosts"
+msgstr "Groupes de services / Hôtes"
+
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySGJS.php:85
+#: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySGJS.php:95
+msgid "Services informations"
+msgstr "Informations sur les services"
+
+#: centreon-web/www/include/monitoring/acknowlegement/hostAcknowledge.php:104
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:112
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:102
+#, php-format
+msgid "Acknowledged by %s"
+msgstr "Acquitté par %s"
+
+#: centreon-web/www/include/monitoring/acknowlegement/hostAcknowledge.php:106
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:114
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:131
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:131
+msgid "Comment is required"
+msgstr "Un commentaire est nécessaire"
+
+#: centreon-web/www/include/monitoring/acknowlegement/hostAcknowledge.php:107
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:115
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:132
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:132
+msgid "Invalid information entered"
+msgstr "Informations saisies invalides"
+
+#: centreon-web/www/include/monitoring/acknowlegement/hostAcknowledge.php:107
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:115
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:132
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:132
+msgid "Please correct these fields"
+msgstr "Merci de corriger ces champs"
+
+#: centreon-web/www/include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php:83
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:483
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:473
+msgid "Entry Time"
+msgstr "Date de saisie"
+
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:71
+msgid "Acknowledge a Service"
+msgstr "Acquitter un service"
+
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:82
+msgid "notify"
+msgstr "Notifier"
+
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:87
+msgid "sticky"
+msgstr "Acquittement persistant en cas de changement de statut non-OK"
+
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:92
+msgid "persistent"
+msgstr "Ré-insérer lors d'un redémarrage du moteur de supervision"
+
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:97
+msgid "Force active check"
+msgstr "Forcer le contrôle actif"
+
+#: centreon-web/www/include/monitoring/acknowlegement/serviceAcknowledge.php:111
+msgid "comment"
+msgstr "Commentaire"
+
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:74
+msgid "Set downtimes"
+msgstr "Configurer des temps d'arrêt"
+
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:80
+#, php-format
+msgid "Downtime set by %s"
+msgstr "Temps d'arrêt fixé par %s"
+
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:88
+msgid "*The timezone used is configured on your user settings"
+msgstr ""
+"*Le fuseau horaire utilisé est celui configuré dans vos paramètres "
+"utilisateur"
+
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:134
+msgid "Set downtime"
+msgstr "Configurer un temps d'arrêt"
+
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:96
+msgid "Acknowledge problems"
+msgstr "Acquitter le problème"
+
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:119
+msgid "Force active checks"
+msgstr "Forcer les contrôles actifs"
+
+#: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:134
+msgid "Acknowledge selected problems"
+msgstr "Acquitter les problèmes sélectionnés"
+
+#: centreon-web/www/include/monitoring/external_cmd/functions.php:75
+msgid "Command execution problem"
+msgstr "Problème d'exécution de la commande"
+
+#: centreon-web/www/include/monitoring/external_cmd/functions.php:376
+#: centreon-web/www/include/monitoring/external_cmd/functionsPopup.php:120
+#: centreon-web/www/include/monitoring/external_cmd/functionsPopup.php:171
+msgid "Your command has been sent"
+msgstr "Votre commande a été envoyée"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:288
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:74
+msgid "Delete Problem Acknowledgement"
+msgstr "Supprimer l'acquittement du problème"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:288
+msgid "Acknowledge Service Problem"
+msgstr "Acquitter le problème du service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:308
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:309
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:313
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:320
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:412
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:413
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:201
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:379
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:383
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:389
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:396
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:407
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:410
+msgid "Y/m/d - H:i:s"
+msgstr "d/m/Y - H:i:s"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:417
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:413
+msgid "ACKNOWLEDGED"
+msgstr "ACQUITTÉ"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:451
+msgid "on host"
+msgstr "sur l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:454
+msgid "Extended status information"
+msgstr "Informations d'état étendues"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:458
+msgid "Last Check Type"
+msgstr "Dernier contrôle de type"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:460
+msgid "Next Scheduled Active Check"
+msgstr "Prochain contrôle actif planifié"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:462
+msgid "Check Duration"
+msgstr "Temps d'exécution"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:465
+msgid "Last Service Notification"
+msgstr "Dernière notification du service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:467
+msgid "Is This Service Flapping?"
+msgstr "Est-ce que l'état du service bagote ?"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:468
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:469
+msgid "Percent State Change"
+msgstr "Pourcentage de changement d'état"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:471
+msgid "Tools"
+msgstr "Outils"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:472
+msgid "Service Commands"
+msgstr "Commandes du service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:473
+msgid "Checks for this service"
+msgstr "Vérifications pour ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:474
+msgid "Re-schedule the next check for this service"
+msgstr "Re-planifier le prochain contrôle pour ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:475
+msgid "Re-schedule the next check for this service (forced)"
+msgstr "Re-planifier le prochain contrôle pour ce service (Forcé)"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:476
+msgid "Submit result for this service"
+msgstr "Soumettre un résultat pour ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:477
+msgid "Schedule downtime for this service"
+msgstr "Planifier un arrêt pour ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:478
+msgid "Add a comment for this service"
+msgstr "Ajouter un commentaire pour ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:480
+msgid "All Comments for this service"
+msgstr "Tous les commentaires de ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:489
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:495
+msgid "Links"
+msgstr "Liens"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:491
+msgid "Executed Check Command Line"
+msgstr "Commande exécutée par le moteur"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:492
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:501
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:502
+msgid "Active Checks"
+msgstr "Contrôles actifs"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:493
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:494
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:503
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:504
+msgid "Passive Checks"
+msgstr "Contrôles passifs"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:495
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:496
+msgid "Service Notifications"
+msgstr "Notifications du service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:499
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:500
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:509
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:510
+msgid "Flap Detection"
+msgstr "Détection de bagotage des statuts"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:502
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:517
+msgid "Enable Active Checks"
+msgstr "Activer les contrôles actifs"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:503
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:518
+msgid "Disable Active Checks"
+msgstr "Désactiver les contrôles actifs"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:504
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:519
+msgid "Enable Passive Checks"
+msgstr "Activer les contrôles passifs"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:505
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:520
+msgid "Disable Passive Checks"
+msgstr "Désactiver les contrôles passifs"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:506
+msgid "Enable Service Notifications"
+msgstr "Activer les notifications du service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:507
+msgid "Disable Service Notifications"
+msgstr "Désactiver les notifications du service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:508
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:523
+msgid "Enable Event Handler"
+msgstr "Activer le gestionnaire d'évènements"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:509
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:524
+msgid "Disable Event Handler"
+msgstr "Désactiver le gestionnaire d'évènements"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:510
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:525
+msgid "Enable Flap Detection"
+msgstr "Activer la détection de bagotage des statuts"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:511
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:526
+msgid "Disable Flap Detection"
+msgstr "Désactiver la détection de bagotage des statuts"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:512
+msgid "Enable Obsess Over Service"
+msgstr "Activer la commande post contrôle"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:513
+msgid "Disable Obsess Over Service"
+msgstr "Désactiver la commande post contrôle"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:545
+msgid "Active"
+msgstr "Actif"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:545
+msgid "Passive"
+msgstr "Passif"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:546
+msgid "SOFT"
+msgstr "SOFT"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:546
+msgid "HARD"
+msgstr "HARD"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:565
+msgid "Status Graph"
+msgstr "Graphique des statuts"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:566
+msgid "Detailed Graph"
+msgstr "Graphique détaillé"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:571
+msgid "Contact groups notified for this service"
+msgstr "Groupes de contacts notifiés pour ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:579
+msgid "Contacts notified for this service"
+msgstr "Contacts notifiés pour ce service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:595
+msgid "Service groups"
+msgstr "Groupes de services"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:603
+msgid "Service Categories"
+msgstr "Catégories de service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:621
+msgid "Host Shortcuts"
+msgstr "Racourcis d'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:622
+msgid "Service Shortcuts"
+msgstr "Raccourcis de service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:623
+msgid "All Services"
+msgstr "Tous les services"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:624
+msgid "Configure host"
+msgstr "Configurer l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:625
+msgid "Configure service"
+msgstr "Configurer le service"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:626
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:534
+#, php-format
+msgid "View graphs for host %s"
+msgstr "Visualiser les graphiques de l'hôte %s"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:627
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:536
+#, php-format
+msgid "View report for host %s"
+msgstr "Visualiser les rapports de l'hôte %s"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:628
+#, php-format
+msgid "View report for service %s"
+msgstr "Visualiser le rapport pour le service %s"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:629
+msgid "View host status page"
+msgstr "Visualiser la page de détails de l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:630
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:533
+#, php-format
+msgid "View status of all services on host %s"
+msgstr "Voir le statut de tous les services de cet hôte %s"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:631
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:537
+#, php-format
+msgid "View logs for host %s"
+msgstr "Visualiser les évènements de l'hôte %s"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:632
+#, php-format
+msgid "View logs for service %s"
+msgstr "Visualiser les journaux pour le service %s"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:686
+msgid ""
+"The related host no longer exists in Centreon configuration. Please reload "
+"the configuration."
+msgstr ""
+"L'hôte n'existe pas dans la configuration Centreon. s'il vous plaît "
+"recharger la configuration."
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:691
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:690
+msgid "Submit command?"
+msgstr "Soumettre cette commande ?"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:692
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:691
+msgid "Command sent"
+msgstr "Commande envoyée"
+
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:693
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:692
+msgid "Failed to execute command"
+msgstr "Impossible d'exécuter la commande"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:74
+msgid "Acknowledge Host Problem"
+msgstr "Acquitter les problèmes de l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:452
+msgid "Ouput"
+msgstr "Statut détaillé"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:466
+msgid "Next Notification"
+msgstr "Prochaine notification"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:468
+msgid "Is This Host Flapping?"
+msgstr "Est-ce que le statut de hôte bagote ?"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:479
+msgid "Ping"
+msgstr "Ping"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:480
+msgid "Tracert"
+msgstr "Tracert"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:481
+msgid "Host Commands"
+msgstr "Commandes disponibles"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:482
+msgid "Schedule downtime for this host"
+msgstr "Planifier un temps d'arrêt pour cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:483
+msgid "Add Comment for this host"
+msgstr "Ajouter un commentaire pour cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:484
+msgid "Disable all service notifications on this host"
+msgstr "Désactiver toutes les notifications de service pour cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:485
+msgid "Enable all service notifications on this host"
+msgstr "Activer toutes les notifications de service pour cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:486
+msgid "Schedule an immediate check of all services on this host"
+msgstr "Planifier un contrôle immédiat de tous les services sur cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:489
+msgid "Schedule an immediate check of all services on this host (forced)"
+msgstr ""
+"Planifier un contrôle immédiat de tous les services sur cet hôte (Forcé)"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:491
+msgid "Disable all service checks on this host"
+msgstr "Désactiver tous les contrôles de service sur cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:492
+msgid "Enable all service checks on this host"
+msgstr "Activer tous les contrôle de services sur cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:493
+msgid "Acknowledge problem"
+msgstr "Acquitter le problème"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:497
+msgid "Notified"
+msgstr "Notifié"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:512
+msgid "Submit result for this host"
+msgstr "Soumettre un résultat pour cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:521
+msgid "Enable Host Notifications"
+msgstr "Activer les notifications pour l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:522
+msgid "Disable Host Notifications"
+msgstr "Désactiver les notifications pour l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:527
+msgid "Enable Obsess Over Host"
+msgstr "Activer le suivi précis de l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:528
+msgid "Disable Obsess Over Host"
+msgstr "Désactiver le suivi précis de l'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:535
+#, php-format
+msgid "Configure host %s"
+msgstr "Configurer l'hôte %s"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:571
+msgid "Member of Host Groups"
+msgstr "Membre du groupe d'hôtes"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:576
+msgid "Host Categories"
+msgstr "Catégories d'hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:586
+msgid "Contact groups notified for this host"
+msgstr "Groupes de contacts notifiés pour cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:594
+msgid "Contacts notified for this host"
+msgstr "Contacts notifiés pour cet hôte"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:622
+msgid "URL Notes"
+msgstr "Lien d'information"
+
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:676
+msgid ""
+"This host no longer exists in Centreon configuration. Please reload the "
+"configuration."
+msgstr ""
+"Cet hôte n'existe pas dans la configuration Centreon. s'il vous plaît "
+"recharger la configuration."
+
+#: centreon-web/www/include/monitoring/comments/AddHostComment.php:101
+msgid "Add a comment for Host"
+msgstr "Ajouter un commentaire pour un hôte"
+
+#: centreon-web/www/include/monitoring/comments/AddSvcComment.php:102
+msgid "Add a comment for Service"
+msgstr "Ajouter un commentaire au service"
+
+#: centreon-web/www/include/monitoring/comments/AddComment.php:101
+msgid "Comment type"
+msgstr "Type de commantaire"
+
+#: centreon-web/www/include/monitoring/comments/listComment.php:180
+msgid "Add a comment"
+msgstr "Ajouter un commentaire"
+
+#: centreon-web/www/include/monitoring/comments/listComment.php:189
+msgid "No Comment for services."
+msgstr "Pas de commentaires pour les services."
+
+#: centreon-web/www/include/monitoring/comments/listComment.php:190
+msgid "Services Comments"
+msgstr "Commentaires sur les services"
+
+#: centreon-web/www/include/monitoring/comments/listComment.php:192
+msgid "View comments of hosts"
+msgstr "Visualiser les commentaires des hôtes"
+
+#: centreon-web/www/include/monitoring/submitPassivResults/hostPassiveCheck.php:72
+#: centreon-web/www/include/monitoring/submitPassivResults/servicePassiveCheck.php:97
+msgid "Command Options"
+msgstr "Options de la commande"
+
+#: centreon-web/www/include/monitoring/submitPassivResults/hostPassiveCheck.php:82
+#: centreon-web/www/include/monitoring/submitPassivResults/servicePassiveCheck.php:101
+msgid "Check result"
+msgstr "Résultat du contrôle"
+
+#: centreon-web/www/include/monitoring/submitPassivResults/hostPassiveCheck.php:83
+#: centreon-web/www/include/monitoring/submitPassivResults/servicePassiveCheck.php:102
+msgid "Check output"
+msgstr "Sortie du contrôle"
+
+#: centreon-web/www/include/monitoring/submitPassivResults/hostPassiveCheck.php:84
+#: centreon-web/www/include/monitoring/submitPassivResults/servicePassiveCheck.php:103
+msgid "Performance data"
+msgstr "Données de performance"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:185
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:189
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:220
+msgid "Y/m/d H:i"
+msgstr "d/m/Y H:i"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:216
+msgid "Never Started"
+msgstr "Jamais démarré"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:238
+msgid "Do you confirm the cancellation ?"
+msgstr "Confirmez-vous l'annulation ?"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:248
+msgid "Services Downtimes"
+msgstr "Temps d'arrêt des services"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:249
+msgid "s"
+msgstr "s"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:250
+msgid "View downtimes of hosts"
+msgstr "Visualiser les temps d'arrêt des hôtes"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:261
+msgid "Display Finished Downtimes"
+msgstr "Afficher les temps d'arrêt terminés"
+
+#: centreon-web/www/include/monitoring/downtime/listDowntime.php:262
+msgid "Display Recurring Downtimes"
+msgstr "Afficher les temps d'arrêt cycliques"
+
+#: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172
+msgid "Hostgroups"
+msgstr "Groupe d'hôtes"
+
+#: centreon-web/www/include/monitoring/downtime/AddDowntime.php:181
+msgid "Servicegroups"
+msgstr "Groupes de services"
+
+#: centreon-web/www/include/monitoring/downtime/AddDowntime.php:217
+msgid " The timezone used is configured on your user settings"
+msgstr ""
+"Le fuseau horaire utilisé est celui configuré dans vos paramètres utilisateur"
+
+#: centreon-web/www/include/monitoring/downtime/AddDowntime.php:240
+msgid "Set downtime for hosts services"
+msgstr "Configurer un temps d'arrêt pour les services des hôtes"
+
+#~ msgid " element(s) found"
+#~ msgstr "élément(s) trouvé(s)"
+
+#~ msgid "Select all"
+#~ msgstr "Tout sélectionner"
+
+#~ msgid "Add "
+#~ msgstr "Ajouter"
+
+#~ msgid " elements to selection ?"
+#~ msgstr "éléments à sélectioner?"
+
+#~ msgid "Could not find utils database. Session probably expired."
+#~ msgstr ""
+#~ "Impossible de trouver la base de données du broker. La session a "
+#~ "probablement expirée"
+
+#~ msgid ""
+#~ "The installation is now finished. To get further information regarding "
+#~ "Centreon please visit the following links"
+#~ msgstr ""
+#~ "L'installation est maintenant terminée. Pour plus d'informations "
+#~ "concernant Centreon utiliser les liens suivants"
+
+#~ msgid "Official website"
+#~ msgstr "Site web officiel"
+
+#~ msgid "Forum"
+#~ msgstr "Forum"
+
+#~ msgid "Bug Tracker"
+#~ msgstr "Rapporter un bogue"
+
+#~ msgid ""
+#~ "For professional support subscription please contact the <a href=\"http://"
+#~ "support.centreon.com\">Centreon Support Center</a>."
+#~ msgstr ""
+#~ "Pour la souscription à un support professionnel, contacter le <a href="
+#~ "\"http://support.centreon.com\">Centre de Support Centreon</a>."
+
+#~ msgid "Utils database name"
+#~ msgstr "Nom de la base de données temps réel"
+
+#~ msgid "Service Statuses"
+#~ msgstr "Statuts de services"
+
+#~ msgid "No downtime scheduled for services"
+#~ msgstr "Aucun temps d'arrêt planifié pour les services"
+
+#~ msgid "Host category"
+#~ msgstr "Catégorie d'hôtes"
+
+#~ msgid "Service category"
+#~ msgstr "Catégories de service"
+
+#~ msgid "Inclusion"
+#~ msgstr "Inclusion"
+
+#~ msgid "Failover"
+#~ msgstr "Failover"
+
+#~ msgid "File read path"
+#~ msgstr "Chemin du fichier en cours de lecture"
+
+#~ msgid "File read offset"
+#~ msgstr "Indice de lecture du fichier"
+
+#~ msgid "File write path"
+#~ msgstr "Chemin du fichier en cours d'écriture"
+
+#~ msgid "File write offset"
+#~ msgstr "Indice d'écriture du fichier"
+
+#~ msgid "File max size"
+#~ msgstr "Taille maximale du fichier"
+
+#~ msgid "Temporary recovery mode"
+#~ msgstr "Activation du fichier temporaire"
+
+#~ msgid "Performance broker page work only with Centreon Broker."
+#~ msgstr "La page de performance fonctionne uniquement avec Centreon Broker."
+
+#~ msgid "Widget Title"
+#~ msgstr "Titre du Widget"
+
+#~ msgid "Tree Focus"
+#~ msgstr "Focus sur l'arborescence"
+
+#~ msgid "Metaservices"
+#~ msgstr "Méta-Service"
+
+#~ msgid "Split"
+#~ msgstr "Séparer"
+
+#~ msgid "Length"
+#~ msgstr "Taille"
+
+#~ msgid "SNMP information"
+#~ msgstr "Informations SNMP"
+
+#~ msgid "Global Community"
+#~ msgstr "Communauté globale"
+
+#~ msgid "Directory of traps configuration files"
+#~ msgstr "Répertoire des fichiers de configuration des traps"
+
+#~ msgid "snmpttconvertmib Directory + Binary"
+#~ msgstr "Chemin complet de l'exécutable snmpttconvertmib"
+
+#~ msgid "SNMPTT log file"
+#~ msgstr "Nom du Fichier de journalisation de SNMPTT"
+
+#~ msgid "Perl library directory"
+#~ msgstr "Répertoire des librairies Perl"
+
+#~ msgid "Can't read in directory"
+#~ msgstr "Impossible de lire dans le répertoire"
+
+#~ msgid "Reporting time period"
+#~ msgstr "Période de génération des rapports"
+
+#~ msgid "Start Hour"
+#~ msgstr "Heure de début"
+
+#~ msgid "Start Minute"
+#~ msgstr "Minute de début"
+
+#~ msgid "End Hour"
+#~ msgstr "Heure de fin"
+
+#~ msgid "End Minute"
+#~ msgstr "Minute de fin"
+
+#~ msgid "Centreon Broker socket path"
+#~ msgstr "Chemin d'accès au socket Unix de Centreon Broker"
+
+#~ msgid "Add a Service comment"
+#~ msgstr "Ajouter pour un service"
+
+#~ msgid "Add a Service downtime"
+#~ msgstr "Planifier pour un service"
+
+#~ msgid "Add a service downtime"
+#~ msgstr "Planifier pour service"
+
+#~ msgid "Add a host downtime"
+#~ msgstr "Planifier pour un hôte"
+
+#~ msgid "Add a Host downtime"
+#~ msgstr "Ajouter un temps d'arrêt pour un hôte"
+
+#~ msgid "Select a downtime type"
+#~ msgstr "Sélectionner un type de temps d'arrêt"
+
+#~ msgid "Connection Error to NDO DataBase ! \n"
+#~ msgstr "Erreur de connexion à la base de données NDO ! \n"
+
+#~ msgid "Active Check"
+#~ msgstr "Contrôle actif"
+
+#~ msgid "Last time up"
+#~ msgstr "Dernière fois dans un état up"
+
+#~ msgid "Last time unreachable"
+#~ msgstr "Dernière fois dans un état injoignable"
+
+#~ msgid "Last ok time"
+#~ msgstr "Dernière fois dans un état ok"
+
+#~ msgid "Last warning time"
+#~ msgstr "Derniere fois dans un état warning"
+
+#~ msgid "Last unknown time"
+#~ msgstr "Dernière fois dans un état inconnu"
+
+#~ msgid "Last critical time"
+#~ msgstr "Dernière fois dans un état critique"
+
+#~ msgid "Services: Set Downtime"
+#~ msgstr "Services: Planifier un temps d'arrêt"
+
+#~ msgid "Hosts: Set Downtime"
+#~ msgstr "Hôtes: Planifier un temps d'arrêt"
+
+#~ msgid "Disacknowledge"
+#~ msgstr "Désacquittement"
+
+#~ msgid "Enable Notification"
+#~ msgstr "Activer la Notification"
+
+#~ msgid "Disable Notification"
+#~ msgstr "Désactiver la Notification"
+
+#~ msgid "Enable Check"
+#~ msgstr "Activer la Vérification"
+
+#~ msgid "Disable Check"
+#~ msgstr "Désactiver la Vérification"
+
+#~ msgid "Sort by Name"
+#~ msgstr "Trier par nom"
+
+#~ msgid "Host Category Name"
+#~ msgstr "Nom de la catégorie d'hôte"
+
+#~ msgid "Parent Template"
+#~ msgstr "Modèles parent"
+
+#~ msgid "Service Template Name"
+#~ msgstr "Nom du modèle de service"
+
+#~ msgid "Service Templates names"
+#~ msgstr "Noms des modèles de service"
+
+#~ msgid "Parent Templates"
+#~ msgstr "Modèles parent"
+
+#~ msgid "Host Templates name"
+#~ msgstr "Nom des modèles d'hôtes"
+
+#~ msgid "Host Template Name"
+#~ msgstr "Nom du modèle d'hôte"
+
+#~ msgid "Host Parallel Templates"
+#~ msgstr "Modèles d'hôte parallèles"
+
+#~ msgid "Include Timeperiods"
+#~ msgstr "Inclure les périodes"
+
+#~ msgid "Meta Service Name"
+#~ msgstr "Nom du Méta-Service"
+
+#~ msgid "Compulsory Contact Group"
+#~ msgstr "Groupe de contacts obligatoire"
+
+#~ msgid "Service Group Name"
+#~ msgstr "Nom du groupe de services"
+
+#~ msgid "Include Comments"
+#~ msgstr "Inclure les commentaires"
+
+#~ msgid "Monitoring Engine Configuration Files Export"
+#~ msgstr "Export des fichiers de configuration du moteur de supervision"
+
+#~ msgid "Generate Files"
+#~ msgstr "Générer les fichiers"
+
+#~ msgid "Dependencies Management"
+#~ msgstr "Gestion des dépendances"
+
+#~ msgid "Current Activation"
+#~ msgstr "Activation actuelle"
+
+#~ msgid "Relations between Elements"
+#~ msgstr "Relations entre les éléments"
+
+#~ msgid "Export in XML too"
+#~ msgstr "Exporter également en XML"
+
+#~ msgid "Run debug (-v)"
+#~ msgstr "Lancer le débogage (-v)"
+
+#~ msgid "Run Optimisation test (-s)"
+#~ msgstr "Lancer un test d'Optimisation (-s)"
+
+#~ msgid "External Command"
+#~ msgstr "Commande externe"
+
+#~ msgid "Correlation"
+#~ msgstr "Activer la corrélation"
+
+#~ msgid "Apply configuration"
+#~ msgstr "Appliquer la configuration"
+
+#~ msgid "SSH Private key"
+#~ msgstr "Clé privée SSH"
+
+#~ msgid "Object Cache File"
+#~ msgstr "Fichier de cache des objets"
+
+#~ msgid "Precached Object File"
+#~ msgstr "Fichier de pre-cache des objets"
+
+#~ msgid "Free child process memory"
+#~ msgstr "Libérer la mémoire des processus enfants"
+
+#~ msgid "Child processes fork twice"
+#~ msgstr "Création de deux processus enfants pour chaque contrôle"
+
+#~ msgid "Enable embedded Perl"
+#~ msgstr "Utilisation de l'interpréteur Perl intégré"
+
+#~ msgid "Use embedded Perl implicitly"
+#~ msgstr "Utilisation implicite de l'interpréteur Perl intégré"
+
+#~ msgid "Embedded Perl initialisation file"
+#~ msgstr "Interpréteur Perl intégré"
+
+#~ msgid "Perl"
+#~ msgstr "Perl"
+
+#~ msgid "Export XML"
+#~ msgstr "Exporter au format XML"
+
+#~ msgid "You must set a poller for generate configuration."
+#~ msgstr "Sélectionner un collecteur pour générer la configuration."
+
+#~ msgid "Centstorage debug"
+#~ msgstr "Débogage Centstorage"
+
+#~ msgid "Mminutes"
+#~ msgstr "Minutes"
+
+#~ msgid "Disable submit result if no matched rules"
+#~ msgstr "Désactiver la mise à jour du service si aucune règle n'est valide"
+
+#~ msgid "The list of pollers is <a href=\"./main.php?p=60901\">here</a>."
+#~ msgstr ""
+#~ "La liste des collecteur est disponible <a href=\"./main.php?"
+#~ "p=60901\">ici</a>."
+
+#~ msgid "<br><b>Centreon : </b>A force-reload signal has been sent to "
+#~ msgstr ""
+#~ "<br><b>Centreon : </b>Une commande de redémarrage forcée a été envoyée "
+#~ "vers"
+
+#~ msgid "ACL rules"
+#~ msgstr "Règles d'accès"
+
+#~ msgid "All Graphs"
+#~ msgstr "Tous les graphiques"
+
+#~ msgid "Business Intelligence"
+#~ msgstr "Business Intelligence"
+
+#~ msgid "Centreon Map WS"
+#~ msgstr "Centreon Map WS"
+
+#~ msgid "Centreon-Broker"
+#~ msgstr "Centreon Broker"
+
+#~ msgid "CentStorage"
+#~ msgstr "CentStorage"
+
+#~ msgid "Check Version"
+#~ msgstr "Vérifier la version"
+
+#~ msgid "Donate"
+#~ msgstr "Donation"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "General options"
+msgstr "Paramètres globaux"
+
+#~ msgid "Host comments"
+#~ msgstr "Commentaires associés à l'hôte"
+
+#~ msgid "Interactive View"
+#~ msgstr "Vue interactive"
+
+#~ msgid "Interactive view access"
+#~ msgstr "Vue interactive"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Job groups"
+msgstr "Groupes de tâches"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Jobs"
+msgstr "Tâches"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Logos"
+msgstr "Logos"
+
+#~ msgid "Manage"
+#~ msgstr "Gérer"
+
+#~ msgid "Monitoring Engine Statistics"
+#~ msgstr "Statistiques de l'ordonnanceur"
+
+#~ msgid "Pre-Update"
+#~ msgstr "Pré-mise à jour"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Publication rules"
+msgstr "Règles de publication"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report design groups"
+msgstr "Groupes de modèles de rapport"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report designs"
+msgstr "Modèles de rapport"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Report view"
+msgstr "Visualisation des rapports"
+
+#~ msgid "Service comments"
+#~ msgstr "Commentaires pour ce service"
+
+#~ msgid "Support"
+#~ msgstr "Support"
+
+#: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:137(MBI)
+msgid "Trash"
+msgstr "Poubelle"
+
+#~ msgid "Web Site"
+#~ msgstr "Site web"
+
+#~ msgid "The CSRF * token is invalid, please click"
+#~ msgstr "Le jeton * CSRF est invalide, s'il vous plaît cliquer ici"
+
+#~ msgid "* Cross-Site Request Forgery : unauthorized commands are transmitted"
+#~ msgstr ""
+#~ "* Cross-Site Request Forgery : des requêtes non autorisées ont été "
+#~ "transmises"
+
+#~ msgid "Traceroute"
+#~ msgstr "Traceroute"
+
+#~ msgid "Please wait..."
+#~ msgstr "Merci de patienter..."
+
+#~ msgid "Exclude Timeperiods"
+#~ msgstr "Exclure les périodes"
+
+#~ msgid "Monitoring Engine configuration upload"
+#~ msgstr "Envoi de la configuration du moteur de supervision"
+
+#~ msgid "Poller/Centreon Server"
+#~ msgstr "Collecteur"
+
+#~ msgid "Upload Options"
+#~ msgstr "Options d'envoi"
+
+#~ msgid "Delete all configuration for the chosen type of files"
+#~ msgstr "Supprimer toute la configuration des types de fichiers choisis"
+
+#~ msgid "Update definition in case of double definition"
+#~ msgstr "Mettre à jour la définition en cas de définition en double"
+
+#~ msgid "Include comments"
+#~ msgstr "Inclure les commentaires"
+
+#~ msgid "File Type"
+#~ msgstr "Type de fichier"
+
+#~ msgid ""
+#~ "For archive upload, be sure that the first line of each file has no "
+#~ "importance because it is not handled.<br />Avoid to begin with a "
+#~ "definition."
+#~ msgstr ""
+#~ "Pour un envoi de fichier, assurez vous que la première ligne de chaque "
+#~ "fichier n'ait pas d'importance car elle n'est pas prise en compte.<br /"
+#~ ">Evitez de commencer avec une définition."
+
+#~ msgid "main.cfg"
+#~ msgstr "main.cfg"
+
+#~ msgid "ndo2db.cfg"
+#~ msgstr "ndo2db.cfg"
+
+#~ msgid "ndomod.cfg"
+#~ msgstr "ndomod.cfg"
+
+#~ msgid "cgi.cfg"
+#~ msgstr "cgi.cfg"
+
+#~ msgid "resource.cfg"
+#~ msgstr "resource.cfg"
+
+#~ msgid "Template based method file"
+#~ msgstr "Fichier de méthode basé sur le modèle"
+
+#~ msgid "Notification Command"
+#~ msgstr "Commande de notification"
+
+#~ msgid ""
+#~ "It is recommended to upload all the Command definitions first by "
+#~ "specifying their types."
+#~ msgstr ""
+#~ "Il est recommandé d'envoyer d'abord les définitions de commandes en "
+#~ "spécifiant leur type."
+
+#~ msgid ""
+#~ "Indeed, it's the only way to make a difference between Check and "
+#~ "Notification Commands."
+#~ msgstr ""
+#~ "En effet, c'est le seul moyen de différencier les commandes de "
+#~ "notification et de vérification."
+
+#~ msgid "File (zip, tar or cfg)"
+#~ msgstr "Fichier (zip, tar ou cfg)"
+
+#~ msgid "Manual Filling"
+#~ msgstr "Remplissage manuel"
+
+#~ msgid "Increment"
+#~ msgstr "Incrément"
+
+#~ msgid "Replace"
+#~ msgstr "Remplacement"
+
+#~ msgid "Group member update behavior"
+#~ msgstr "Comportement de mise à jour des membres du groupe"
+
+#~ msgid "Create new object with prefix"
+#~ msgstr "Créer un nouvel objet avec un prefix"
+
+#~ msgid "Replace existing ones"
+#~ msgstr "Remplacer les fichiers existants"
+
+#~ msgid "Behavior on duplicate names"
+#~ msgstr "Comportement sur les noms en doublon"
+
+#~ msgid "Prefix"
+#~ msgstr "Préfixe des tables"
+
+#~ msgid "Load"
+#~ msgstr "Charger"
+
+#~ msgid "Not supported extension"
+#~ msgstr "Extension non prise en charge"
+
+#~ msgid "File loading OK"
+#~ msgstr "Chargement du fichier OK"
+
+#~ msgid "Manual filling OK"
+#~ msgstr "Remplissage manuel OK"
+
+#~ msgid "File loading KO"
+#~ msgstr "Chargement du fichier KO"
+
+#~ msgid "Data recovery OK"
+#~ msgstr "Récupération des données OK"
+
+#~ msgid "Data recovery KO"
+#~ msgstr "Récupération des données KO"
+
+#~ msgid "Entries are registered"
+#~ msgstr "Les entrées sont enregistrées"
+
+#~ msgid "Could not import ndo2db"
+#~ msgstr "Impossible d'importer ndo2db"
+
+#~ msgid "Could not import ndomod"
+#~ msgstr "Impossible d'importer ndomod"
+
+#~ msgid "Import behavior"
+#~ msgstr "Résultat de l'import"
+
+#~ msgid "Display Options"
+#~ msgstr "Options d'affichage"
+
+#~ msgid "Archive logs of monitoring engine"
+#~ msgstr "Journaux d'archive du moteur de supervision"
+
+#~ msgid "Centstorage Configuration"
+#~ msgstr "Configuration de Centstorage"
+
+#~ msgid "in seconds - Must be higher than 10"
+#~ msgstr "en secondes - Doit être supérieur à 10"
+
+#~ msgid "in seconds - Must be higher than 2"
+#~ msgstr "en secondes - Doit etre supérieur à 2"
+
+#~ msgid "Retain Satus Information"
+#~ msgstr "Rétention des informations de statut"
+
+#~ msgid "Additionnal Information"
+#~ msgstr "Informations complémentaires"
+
+#~ msgid "Choose a host, then its associated service."
+#~ msgstr "Choisir un hôte, puis son service associé."
+
+#~ msgid "Host / Service Data Source"
+#~ msgstr "Source de données Hôte / Service"
+
+#~ msgid "Required Fields 'Host' and 'Service' list"
+#~ msgstr "Champs requis dans la liste des 'Hôtes' et des 'Services'"
+
+#~ msgid "Required Field 'Service' list"
+#~ msgstr "Champ requis dans la liste 'Service'"
+
+#~ msgid "Grid background color"
+#~ msgstr "Couleur d'arrière plan de la grille"
+
+#~ msgid "Main grid color"
+#~ msgstr "Couleur principale de la grille"
+
+#~ msgid "Secondary grid color"
+#~ msgstr "Couleur secondaire de la grille"
+
+#~ msgid "Outline color"
+#~ msgstr "Schéma de couleurs"
+
+#~ msgid "Background color"
+#~ msgstr "Couleur d'arrière plan"
+
+#~ msgid "Text color"
+#~ msgstr "Couleur du texte"
+
+#~ msgid "Arrow color"
+#~ msgstr "Couleur de la flèche des axes"
+
+#~ msgid "Top color"
+#~ msgstr "Couleur du haut"
+
+#~ msgid "Bottom color"
+#~ msgstr "Couleur du bas"
+
+#~ msgid "Data Source Choice"
+#~ msgstr "Choix de la source de données"
+
+#~ msgid "Data Source List"
+#~ msgstr "List des sources de données"
+
+#~ msgid "Hosts list"
+#~ msgstr "Hôtes"
+
+#~ msgid "Graph List"
+#~ msgstr "Liste des graphiques"
+
+#~ msgid "Force Reload"
+#~ msgstr "Forcer le rechargement"
+
+#~ msgid "Low Flap threshold"
+#~ msgstr "Seuil bas de détection de bagotage des statuts"
+
+#~ msgid "Implied Hosts"
+#~ msgstr "Hôtes liés"
+
+#~ msgid "Implied Services"
+#~ msgstr "Services liés"
+
+#~ msgid "Implied Host Groups"
+#~ msgstr "Groupes d'hôtes liés"
+
+#~ msgid "Implied Meta Services"
+#~ msgstr "Méta-Services liés"
+
+#~ msgid "Implied Service Groups"
+#~ msgstr "Groupes de services liés"
+
+#~ msgid "Meta Services Escalation"
+#~ msgstr "Escalades des Méta-Services"
+
+#~ msgid "Servicegroups Escalation"
+#~ msgstr "Escalades des groupes de services"
+
+#~ msgid "Default Engine"
+#~ msgstr "Moteur par défaut"
+
+#~ msgid "Enable strict mode for host parentship management"
+#~ msgstr "Activer le mode strict de gestion des relations de parentés"
+
+#~ msgid "Configuration UI behavior"
+#~ msgstr "Configuration du comportement de l'interface"
+
+#~ msgid "Censtorage Core Options"
+#~ msgstr "Options du processus Censtorage"
+
+#~ msgid "Drop possibility after parsing performance data"
+#~ msgstr "Actions après traitement des données de performances"
+
+#~ msgid "Logs Integration Properties"
+#~ msgstr "Propriétés des logs de Nagios"
+
+#~ msgid "Enable Centstorage Engine (require restart of centstorage)"
+#~ msgstr ""
+#~ "Active le Moteur de Centstorage (requiert le redémarrage de centstorage)"
+
+#~ msgid "RRDTool auto delete"
+#~ msgstr "Auto suppression des fichiers RRD non utilisés"
+
+#~ msgid "Purge check interval"
+#~ msgstr "Intervalle de contrôle de la purge"
+
+#~ msgid "Drop Data in another file"
+#~ msgstr "Copier les données dans un autre fichier"
+
+#~ msgid "Drop file"
+#~ msgstr "Copier dans le fichier"
+
+#~ msgid "RRDTool & MySQL"
+#~ msgstr "RRDTool & MySQL"
+
+#~ msgid "Hosts status colors"
+#~ msgstr "Couleurs pour le statut des hôtes"
+
+#~ msgid "Services status colors"
+#~ msgstr "Couleurs pour le statut des services"
+
+#~ msgid "Specifics for hosts"
+#~ msgstr "Spécificités des hôtes"
+
+#~ msgid "Host UP Color"
+#~ msgstr "Couleur d'hôte DISPONIBLE"
+
+#~ msgid "Host DOWN Color"
+#~ msgstr "Couleur d'hôte INDISPONIBLE"
+
+#~ msgid "Host UNREACHABLE Color"
+#~ msgstr "Couleur d'hôte INJOIGNABLE"
+
+#~ msgid "Service OK Color"
+#~ msgstr "Couleur de service OK"
+
+#~ msgid "Service WARNING Color"
+#~ msgstr "Couleur de service WARNING"
+
+#~ msgid "Service CRITICAL Color"
+#~ msgstr "Couleur de service CRITIQUE"
+
+#~ msgid "Row Color for Service CRITICAL"
+#~ msgstr "Couleur de la ligne pour un service CRITIQUE"
+
+#~ msgid "Service PENDING Color"
+#~ msgstr "Couleur de service en ATTENTE"
+
+#~ msgid "Service UNKNOWN Color"
+#~ msgstr "Couleur de service INCONNU"
+
+#~ msgid "Acknowledge host or service Color"
+#~ msgstr "Couleur des hôtes ou des services acquittés"
+
+#~ msgid "Downtime host or service Color"
+#~ msgstr "Couleur des hôtes ou des services en temps d'arrêt"
+
+#~ msgid "Color for host Down (Service view)"
+#~ msgstr ""
+#~ "Couleur pour les hôtes en statut problèmatique (page de supervision des "
+#~ "services)"
+
+#~ msgid "Color for host Unreachable (Service view)"
+#~ msgstr ""
+#~ "Couleur pour les hôtes non joignable (page de supervision des services)"
+
+#~ msgid "Status Color Properties"
+#~ msgstr "Définition des couleurs"
+
+#~ msgid "Browser detected"
+#~ msgstr "Navigateur détecté"
+
+#~ msgid "Status summarized by Hostgroups"
+#~ msgstr "Résumé des états par groupes d'hôtes"
+
+#~ msgid "Scheduling Queue"
+#~ msgstr "File d'attente"
+
+#~ msgid "All Logs"
+#~ msgstr "Tous les logs"
+
+#~ msgid "Warnings"
+#~ msgstr "Alertes"
+
+#~ msgid "nagios.cfg"
+#~ msgstr "nagios.cfg"
+
+#~ msgid "resources"
+#~ msgstr "ressources"
+
+#~ msgid "cgi"
+#~ msgstr "cgi"
+
+#~ msgid "Wiki"
+#~ msgstr "Wiki"
+
+#~ msgid "SNMP"
+#~ msgstr "SNMP"
+
+#~ msgid "Optimize"
+#~ msgstr "Optimiser"
+
+#~ msgid "Global Health"
+#~ msgstr "Santé globale"
+
+#~ msgid "Directories"
+#~ msgstr "Répertoires"
+
+#~ msgid "Process Info"
+#~ msgstr "Informations sur le processus"
+
+#~ msgid "Process Control"
+#~ msgstr "Informations sur le processus"
+
+#~ msgid "System Information"
+#~ msgstr "Information sur le système"
+
+#~ msgid "Monitoring Engines"
+#~ msgstr "Moteurs de supervision"
+
+#~ msgid "Extra"
+#~ msgstr "Extra"
+
+#~ msgid "command"
+#~ msgstr "commande"
+
+#~ msgid "timeperiod"
+#~ msgstr "période de temps"
+
+#~ msgid "contact"
+#~ msgstr "contact"
+
+#~ msgid "contactgroup"
+#~ msgstr "groupe de contacts"
+
+#~ msgid "hostgroup"
+#~ msgstr "groupe d'hôtes"
+
+#~ msgid "servicegroup"
+#~ msgstr "groupe de services"
+
+#~ msgid "snmp traps"
+#~ msgstr "traps snmp"
+
+#~ msgid "escalation"
+#~ msgstr "escalade"
+
+#~ msgid "host dependency"
+#~ msgstr "dépendance d'hôte"
+
+#~ msgid "hostgroup dependency"
+#~ msgstr "dépendance de groupe d'hôtes"
+
+#~ msgid "service dependency"
+#~ msgstr "dépendance de service"
+
+#~ msgid "servicegroup dependency"
+#~ msgstr "dépendance de groupe de services"
+
+#~ msgid "Yearly"
+#~ msgstr "Annuel"
+
+#~ msgid "Private key file. "
+#~ msgstr "Clé privée SSH"
+
+#~ msgid "Informational messages "
+#~ msgstr "Événements de type information"
+
+#~ msgid "Centreon Broker information"
+#~ msgstr "Information sur Centreon Broker"
+
+#~ msgid "Centreon-Broker Correlation"
+#~ msgstr "Corrélation Centreon Broker"
+
+#~ msgid "Centreon-Broker Input"
+#~ msgstr "Entrées Centreon Broker"
+
+#~ msgid "Centreon-Broker Logger"
+#~ msgstr "Journalisation Centreon Broker"
+
+#~ msgid "Centreon-Broker Output"
+#~ msgstr "Sorties Centreon Broker"
+
+#~ msgid "Centreon-Broker Stats"
+#~ msgstr "Statistiques Centreon Broker"
+
+#~ msgid "Centreon-Broker Temporary"
+#~ msgstr "Buffer Centreon Broker"
+
+#~ msgid "No Comment for hosts."
+#~ msgstr "Pas de commentaires pour les hôtes."
+
+#~ msgid "View comments of services"
+#~ msgstr "Visualiser les commentaires des services"
+
+#~ msgid "Useres"
+#~ msgstr "Utilisateurs"
+
+#~ msgid "Compulsory Contact"
+#~ msgstr "Contact obligatoire"
+
+#~ msgid "External commands"
+#~ msgstr "Commandes externes"
+
+#, fuzzy
+#~ msgid "Contact templace"
+#~ msgstr "Modèle de contact"
+
+#~ msgid "You are"
+#~ msgstr "Vous êtes"
+
+#~ msgid "Orphan hosts"
+#~ msgstr "Hôtes orphelins"
+
+#~ msgid "ServiceGroups"
+#~ msgstr "Groupes de services"
+
+#~ msgid "Orphan Hosts"
+#~ msgstr "Hôtes seuls"
+
+#~ msgid "Acknowledge/Disacknowledge a service"
+#~ msgstr "Acquitter/Désacquitter un service"
+
+#~ msgid "Acknowledge/Disaknowledge a host"
+#~ msgstr "Acquitter/Désacquitter un hôte"
+
+#~ msgid "Cannot get last version"
+#~ msgstr "Impossible d'obtenir la dernière version"
+
+#~ msgid "Security patch available"
+#~ msgstr "Correctif de sécurité disponible"
+
+#~ msgid "Update patch available"
+#~ msgstr "Correctif de mise à jour disponible"
+
+#~ msgid "Centreon is updated."
+#~ msgstr "Centreon a été mis à jour."
+
+#~ msgid "Execution start"
+#~ msgstr "Début de l'exécution"
+
+#~ msgid "Error when installing patch : %s."
+#~ msgstr "Erreur lors de l'installation du correctif : %s."
+
+#~ msgid "%s patch is installed."
+#~ msgstr "le correctif %s a été installé."
+
+#~ msgid "Can't get list of files."
+#~ msgstr "Impossible d'obtenir la liste des fichiers."
+
+#~ msgid "Can't open configuration file : /etc/oreon.conf"
+#~ msgstr "Impossible d'ouvrir le fichier de configuration : /etc/oreon.conf"
+
+#~ msgid "Can't get file'"
+#~ msgstr "Impossible d'obtenir le fichier"
+
+#~ msgid "%s is downloaded."
+#~ msgstr "%s est téléchargé."
+
+#~ msgid ""
+#~ "In order to complete your upgrade (%s), unzip the downloaded file, and "
+#~ "follow the instructions in README\n"
+#~ msgstr ""
+#~ "Afin de terminer la mise à jour (%s), décompressez le fichier téléchargé, "
+#~ "et suivez les instructions du fichier README\n"
+
+#~ msgid "Can't open patch"
+#~ msgstr "Impossible d'ouvrir le correctif"
+
+#~ msgid "launch %s with root permissions.\n"
+#~ msgstr "lancer %s avec les permissions root.\n"
+
+#~ msgid "Change update options"
+#~ msgstr "Modifier les options de mise à jour"
+
+#~ msgid "Check stable versions"
+#~ msgstr "Vérifier les mises à jour de version stable"
+
+#~ msgid "Check patches"
+#~ msgstr "Vérifier les mises à jour de correctifs"
+
+#~ msgid "Check secu-patches"
+#~ msgstr "Vérifier les mises à jour de correctifs de sécurité"
+
+#~ msgid "Check Release candidate"
+#~ msgstr "Vérifier les mises à jour de version candidate"
+
+#~ msgid "Check Beta"
+#~ msgstr "Vérifier les mises à jour de version beta"
+
+#~ msgid "Patch Download path"
+#~ msgstr "Répertoire pour le téléchargement des correctifs"
+
+#~ msgid "Broker engine used by Centreon"
+#~ msgstr "Broker utilisé par Centreon"
+
+#~ msgid "Refresh Interval"
+#~ msgstr "Intervalle de rafraîchissement"
+
+#~ msgid "First Refresh delay for statistics"
+#~ msgstr "Délai du premier rafraîchissement pour la page des statistiques"
+
+#~ msgid "First Refresh delay for monitoring"
+#~ msgstr "Délai du premier rafraîchissement pour la page de supervision"
+
+#~ msgid "Default host timezone"
+#~ msgstr "Timezone par défaut de l'hôte"
+
+#~ msgid "Enable resources's insertion in index_data by Centreon"
+#~ msgstr "Activer l'insertion de ressources dans index_data par Centreon"
+
+#~ msgid "Enable Perfdata Synchronisation"
+#~ msgstr "Activer la synchronisation des données de performance"
+
+#~ msgid "Enable Logs Synchronisation"
+#~ msgstr "Activer la synchronisation des logs"
+
+#~ msgid "Availability: %s%%"
+#~ msgstr "Disponibilité : %s%%"
+
+#~ msgid "On Problem Host"
+#~ msgstr "Sur Problème de l'hôte"
+
+#~ msgid "Unhandled"
+#~ msgstr "Non Traités"
+
+#~ msgid "Unhandled Service problems (last %s)"
+#~ msgstr "Problèmes de service non traités (%s derniers)"
+
+#~ msgid "No unhandled service problem"
+#~ msgstr "Aucun problème de service non acquitté"
+
+#~ msgid "Service Name"
+#~ msgstr "Nom du service"
+
+#~ msgid "C"
+#~ msgstr "C"
+
+#~ msgid "Status Output"
+#~ msgstr "Information sur le statut"
+
+#~ msgid "Unhandled Host problems (last %s)"
+#~ msgstr "Problèmes d'hôte non traités (%s derniers)"
+
+#~ msgid "No unhandled host problem"
+#~ msgstr "Aucun problème d'hôte non acquitté"
+
+#~ msgid "View name"
+#~ msgstr "Nom de la Vue"
+
+#~ msgid "Warning: "
+#~ msgstr "Warning:"
+
+#~ msgid "Do you confirm the cancelation?"
+#~ msgstr "Confirmez-vous l'annulation?"
+
+#~ msgid "Hosts Downtimes"
+#~ msgstr "Temps d'arrêt des hôtes"
+
+#~ msgid "No downtime scheduled for hosts"
+#~ msgstr "Aucun temps d'arrêt planifié pour les hôtes"
+
+#~ msgid "View downtimes of services"
+#~ msgstr "Visualiser les temps d'arrêt des services"
+
+#~ msgid "PENDING"
+#~ msgstr "EN ATTENTE"
+
+#~ msgid "Sort by criticality"
+#~ msgstr "Trier par criticité"
+
+#~ msgid "Poller :"
+#~ msgstr "Collecteur :"
+
+#~ msgid "Period :"
+#~ msgstr "Périodes :"
+
+#~ msgid "Scheduling Process Information"
+#~ msgstr "Information du processus d'ordonnancement"
+
+#~ msgid "Program Version"
+#~ msgstr "Version du programme"
+
+#~ msgid "Program Start Time"
+#~ msgstr "Heure de démarrage du programme"
+
+#~ msgid "Last Log File Rotation:"
+#~ msgstr "Dernière rotation du fichier de journalisation:"
+
+#~ msgid "Last External Command Check:"
+#~ msgstr "Heure de la dernière commande externe:"
+
+#~ msgid "Monitoring Engine PID"
+#~ msgstr "ID du moteur de supervision"
+
+#~ msgid "Currently running?"
+#~ msgstr "En cours d'exécution ?"
+
+#~ msgid "Host Checks Being Executed?"
+#~ msgstr "Contrôle des hôtes activé ?"
+
+#~ msgid "Passive Host Checks Being Accepted?"
+#~ msgstr "Contrôle passif des hôtes activé ?"
+
+#~ msgid "Service Checks Being Executed?"
+#~ msgstr "Contrôle des services activé ?"
+
+#~ msgid "Passive Service Checks Being Accepted?"
+#~ msgstr "Contrôle passif des services activé ?"
+
+#~ msgid "Event Handlers Enabled?"
+#~ msgstr "Gestionnaire d'évènements activé ?"
+
+#~ msgid "Obsessing Over Hosts?"
+#~ msgstr "Exécution des commandes post contrôle d'hôtes?"
+
+#~ msgid "Obsessing Over Services?"
+#~ msgstr "Exécution des commandes post contrôle des services ?"
+
+#~ msgid "Performance Data Being Processed?"
+#~ msgstr "Traitement des données de performances activé ?"
+
+#~ msgid "Flap detection enabled?"
+#~ msgstr "Détection de bagotage des statuts activée ?"
+
+#~ msgid "Shutdown the Monitoring Engine process"
+#~ msgstr "Arrêter le moteur de supervision"
+
+#~ msgid "Start the Monitoring Engine process"
+#~ msgstr "Démarrer le moteur de supervision"
+
+#~ msgid "Restart the Monitoring Engine process"
+#~ msgstr "Redémarrer le processus de supervision"
+
+#~ msgid "Disable notifications"
+#~ msgstr "Désactiver les notifications"
+
+#~ msgid "Start executing service checks"
+#~ msgstr "Démarrer l'exécution des contrôles de services"
+
+#~ msgid "Stop executing service checks"
+#~ msgstr "Arrêter l'exécution des contrôles de services"
+
+#~ msgid "Start accepting passive service checks"
+#~ msgstr "Démarrer le contrôle passif des services"
+
+#~ msgid "Stop accepting passive service checks"
+#~ msgstr "Arrêter le contrôle passif des services"
+
+#~ msgid "Start executing host checks"
+#~ msgstr "Démarrer le contrôle des hôtes"
+
+#~ msgid "Stop executing host checks"
+#~ msgstr "Arrêter le contrôle des hôtes"
+
+#~ msgid "Start accepting passive host checks"
+#~ msgstr "Démarrer le contrôle passif des hôtes"
+
+#~ msgid "Stop accepting passive host checks"
+#~ msgstr "Arrêter le contrôle passif des hôtes"
+
+#~ msgid "Enable event handlers"
+#~ msgstr "Activer le gestionnaire d'évènements"
+
+#~ msgid "Disable event handlers"
+#~ msgstr "Arrêter le gestionnaire d'évènements"
+
+#~ msgid "Start obsessing over hosts"
+#~ msgstr "Démarrer le suivi précis des hôtes"
+
+#~ msgid "Stop obsessing over hosts"
+#~ msgstr "Arrêter le suivi précis des hôtes"
+
+#~ msgid "Start obsessing over services"
+#~ msgstr "Démarrer l'exécution des commandes post contrôle"
+
+#~ msgid "Stop obsessing over services"
+#~ msgstr "Arrêter l'exécution des commandes post contrôle"
+
+#~ msgid "Enable flap detection"
+#~ msgstr "Démarrer la détection de bagotage des statuts"
+
+#~ msgid "Disable flap detection"
+#~ msgstr "Arrêter la détection de bagotage des statuts"
+
+#~ msgid "Enable performance data"
+#~ msgstr "Activer le traitement des données de performance"
+
+#~ msgid "Disable performance data"
+#~ msgstr "Arrêter le traitement des données de performance"
+
+#~ msgid "Process Commands"
+#~ msgstr "Commandes du processus"
+
+msgid "All pollers"
+msgstr "Tous les collecteurs"
+
+msgid "Configure pollers"
+msgstr "Configurer les collecteurs"
+
+msgid "services"
+msgstr "services"
+
+msgid "Critical services"
+msgstr "Services critiques"
+
+msgid "Warning services"
+msgstr "Services en alertes"
+
+msgid "Unknown services"
+msgstr "Services inconnus"
+
+msgid "Ok services"
+msgstr "Services Ok"
+
+msgid "Pending services"
+msgstr "Services en attente"
+
+msgid "Edit profile"
+msgstr "Editer le profil"
+
+msgid "Copy autologin link"
+msgstr "Copier le lien de connexion automatique"
+
+msgid "Server Configuration Wizard"
+msgstr "Assistant de configuration du serveur"
+
+msgid "Choose a server type"
+msgstr "Choisissez un type de serveur"
+
+msgid "Add a Centreon Remote Server"
+msgstr "Ajouter un serveur distant Centreon"
+
+msgid "Add a Centreon Poller"
+msgstr "Ajouter un collecteur Centreon"
+
+msgid "Remote Server Configuration"
+msgstr "Configuration du serveur distant"
+
+msgid "Create new Remote Server"
+msgstr "Créer un nouveau serveur distant"
+
+msgid "Server Name"
+msgstr "Nom du serveur"
+
+msgid "Server IP address"
+msgstr "Adresse IP du serveur"
+
+msgid "Database username"
+msgstr "Nom de l'utilisateur ayant accès à la base de données"
+
+msgid "Database password"
+msgstr "Mot de passe de l'utilisateur ayant accès à la base de données"
+
+msgid "Centreon Central IP address, as seen by this server"
+msgstr "Adresse IP du Central Centreon, telle que vue par ce serveur"
+
+msgid "Centreon Web Folder on Remote"
+msgstr "Dossier Centreon web sur le serveur distant"
+
+msgid "Select a Remote Server"
+msgstr "Sélectionnez un serveur distant"
+
+msgid "Select Pending Remote Links"
+msgstr "Sélectionner les liens distants en attente"
+
+msgid "Select IP"
+msgstr "Sélectionnez une IP"
+
+msgid "Select pollers to be attached to this new Remote Server"
+msgstr "Sélectionner les collecteurs à attacher à ce nouveau serveur distant"
+
+msgid "Finalizing Setup"
+msgstr "Finalisation de la configuration"
+
+msgid "Creating Export Task"
+msgstr "Création d'une tâche d'exportation"
+
+msgid "Generating Export Files"
+msgstr "Génération de fichiers d'exportation"
+
+msgid "Processing Remote Import/Configuration"
+msgstr "Traitement de l'importation/configuration à distance"
+
+msgid "The field is required"
+msgstr "Ce champ est requis"
+
+msgid "Not a valid IP address"
+msgstr "Adresse IP non valide"
+
+msgid "Add server with wizard"
+msgstr "Ajouter un serveur à l'aide de l'assistant"
+
+msgid "Select linked Remote Server"
+msgstr "Selectionez le serveur distant lié"
+
+msgid "as"
+msgstr "en tant que"
+
+msgid "Server Configuration"
+msgstr "Configuration du Serveur"
+
+msgid "Attach poller to a master remote server"
+msgstr "Attacher un collecteur à un remote server"
+
+msgid "Attach poller to additional remote servers"
+msgstr "Attacher un collecteur à des remote servers additionels"
+
+msgid "Advanced: reverse Centreon Broker communication flow"
+msgstr "Avancé: inversé le flux de communication du broker Centreon"
+
+msgid "%s is not valid."
+msgstr "%s n'est pas valide."
+
+msgid "You need to send '%s' in the request."
+msgstr "You devez envoyer le paramètre '%s' dans la requête."
+
+msgid "Some database poller updates are not active; check your configuration"
+msgstr "Certains collecteurs ne sont pas à jour en base de données; vérifiez votre configuration"
+
+msgid "Latency detected, check configuration for better optimization"
+msgstr "Latence détectée, vérifiez la configuration pour une meilleure optimisation"
+
+msgid "You can't edit this downtime because you don't have access to all of its resources"
+msgstr "Vous ne pouvez pas éditer ce temps d’arrêt car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
+
+msgid "You can't edit this hostgroup because you don't have access to all its resources"
+msgstr "Vous ne pouvez pas éditer groupe d'hote car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
+
+msgid "Filter by Host"
+msgstr "Filtrer par hôtes"
+
+msgid "Filter by Hostgroup"
+msgstr "Filtrer par groupe d'hôtes"
+
+msgid "Filter by Servicegroup"
+msgstr "Filtrer par groupe de services"
+
+msgid "Chart"
+msgstr "Graphiques"
+
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Un Remote Server principal doit être sélectionné, avant d'utiliser des Remote Server additionnels."
+
+msgid "Attach to Master Remote Server"
+msgstr "Lier à un Remote Server principal"
+
+msgid "Attach additional Remote Servers"
+msgstr "Lier à des Remote Server additionnels"
+
+msgid "Use the Remote Server as a proxy for SSH"
+msgstr "Utiliser le Remote Server comme proxy"
+
+msgid "Locked elements"
+msgstr "Eléments verrouillés"
+
+msgid "This value needs to be an integer lesser than"
+msgstr "Cette valeur doit être un entier inférieur à"
