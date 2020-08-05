@@ -9,12 +9,12 @@ import {
   MultiConnectedAutocompleteField,
   SelectField,
   SearchField,
+  FilteBar,
 } from '@centreon/ui';
 
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
-import Filters from '@centreon/ui/src/ListingPage/Filters';
 import {
   labelFilter,
   labelCriterias,
@@ -221,7 +221,7 @@ const Filter = (): JSX.Element => {
   const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
 
   return (
-    <Filters
+    <FilteBar
       expandable
       expandLabel={labelShowCriteriasFilters}
       filters={
