@@ -43,13 +43,8 @@ require_once('registerServerTopology-func.php');
 /**
  * Get script params
  */
-$opt = getopt('u:t:h:', ["help::", "proxy::", "dns:"]);
-const SERVER_TYPE = [
-    1 => "poller",
-    2 => "remote",
-    3 => "map",
-    4 => "mbi"
-];
+$opt = getopt('u:t:h:n:', ["help::", "proxy::", "dns:", "autosigned::"]);
+const SERVER_TYPE = ["poller", "remote", "map", "mbi"];
 
 /**
  * Format the --help message
@@ -64,9 +59,11 @@ Global Options:
             - MAP
             - MBI
   -h <mandatory>              URL of the Central / Remote Server target platform
+  -n <mandatory>              name of your registered server
   --help <optional>           get informations about the parameters available
   --proxy <optional>          provide the differents asked informations
   --dns <optional>            provide your DNS instead of automaticaly get server IP
+  --autosigned <optional>     allow autosigned certificate
 
 
 EOD;
@@ -82,15 +79,15 @@ if (isset($opt['help'])) {
  * Assign options to variables
  */
 try {
-    if (!isset($opt['u'], $opt['t'], $opt['h'])) {
+    if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'])) {
         throw new \InvalidArgumentException(
-            PHP_EOL . 'missing parameter: -u -t -h are mandatories:' . PHP_EOL . $helpMessage
+            PHP_EOL . 'missing parameter: -u -t -h -n are mandatories:' . PHP_EOL . $helpMessage
         );
     }
 
     $username = $opt['u'];
     $serverType = in_array(strtolower($opt['t']), SERVER_TYPE)
-        ? array_search(strtolower($opt['t']), SERVER_TYPE)
+        ? strtolower($opt['t'])
         : false;
 
     if (!$serverType) {
@@ -110,6 +107,7 @@ try {
     }
 
     $targetHost = $opt['h'];
+    $serverHostName = $opt['n'];
 } catch (\InvalidArgumentException $e) {
     exit($e->getMessage());
 }
@@ -148,18 +146,17 @@ $loginCredentials = [
 /**
  * Prepare Server Register payload
  */
-$serverHostName = gethostname();
+
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $registerPayload = [
-    "server_name" => $serverHostName,
-    "server_type" => $serverType,
+    "name" => $serverHostName,
+    "type" => $serverType,
     "address" => $dns ?? $serverIp
 ];
 
 /**
  * Display Summary of action
  */
-$serverTypeSummary = SERVER_TYPE[$serverType];
 $address = $registerPayload["address"];
 $summary = <<<EOD
 
@@ -171,8 +168,8 @@ password: $password
 target server: $host
 
 Pending Registration Server:
-server name: $serverHostName
-server type: $serverTypeSummary
+name: $serverHostName
+type: $serverType
 address: $address
 
 
@@ -210,6 +207,10 @@ curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+if(isset($opt['autosigned'])) {
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER	, false);
+}
 
 if (isset($proxyInfo)) {
     curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
@@ -252,6 +253,10 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-
 curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+if(isset($opt['autosigned'])) {
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER	, false);
+}
+
 if (isset($proxyInfo)) {
     curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
     curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
@@ -273,7 +278,7 @@ $result = json_decode($result, true);
  * Display response of API
  */
 if ($responseCode === 201) {
-    $responseMessage = "The '$serverTypeSummary' Platform: '$serverHostName@$address' linked to '$host' has been added";
+    $responseMessage = "The '$serverType' Platform: '$serverHostName@$address' linked to '$host' has been added";
     exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
 } elseif (isset($result['code'], $result['message'])) {
     exit(formatResponseMessage($result['code'], $result['message'], 'success'));
