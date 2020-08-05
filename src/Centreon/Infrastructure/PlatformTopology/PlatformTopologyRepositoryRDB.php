@@ -50,31 +50,31 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         $request = $this->translateDbName('
-            INSERT INTO `:db`.platform_topology (`address`, `hostname`, `server_type`, `parent_id`)
-            VALUES (:serverAddress, :serverName, :serverType, :parentId)
+            INSERT INTO `:db`.platform_topology (`address`, `name`, `type`, `parent_id`)
+            VALUES (:address, :name, :type, :parentId)
         ');
 
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':serverAddress', $platformTopology->getServerAddress(), \PDO::PARAM_STR);
-        $statement->bindValue(':serverName', $platformTopology->getServerName(), \PDO::PARAM_STR);
-        $statement->bindValue(':serverType', $platformTopology->getServerType(), \PDO::PARAM_INT);
-        $statement->bindValue(':parentId', $platformTopology->getServerParentId(), \PDO::PARAM_INT);
+        $statement->bindValue(':address', $platformTopology->getAddress(), \PDO::PARAM_STR);
+        $statement->bindValue(':name', $platformTopology->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':type', $platformTopology->getType(), \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $platformTopology->getParentId(), \PDO::PARAM_INT);
         $statement->execute();
     }
 
     /**
      * @inheritDoc
      */
-    public function isPlatformAlreadyRegisteredInTopology(string $serverAddress, string $serverName): bool
+    public function isPlatformAlreadyRegisteredInTopology(string $address, string $name): bool
     {
         $request = $this->translateDbName(
-            'SELECT `address`, `hostname`, `server_type`
+            'SELECT `address`, `name`, `type`
             FROM `:db`.platform_topology
-            WHERE `address` = :serverAddress OR `hostname` = :serverName'
+            WHERE `address` = :address OR `name` = :name'
         );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':serverAddress', $serverAddress, \PDO::PARAM_STR);
-        $statement->bindValue(':serverName', $serverName, \PDO::PARAM_STR);
+        $statement->bindValue(':address', $address, \PDO::PARAM_STR);
+        $statement->bindValue(':name', $name, \PDO::PARAM_STR);
         $statement->execute();
 
         return (!empty($statement->fetch(\PDO::FETCH_ASSOC)));
@@ -83,7 +83,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology
+    public function findPlatformTopologyByAddress(string $address): ?PlatformTopology
     {
         $request = $this->translateDbName(
             'SELECT platform_topology.id
@@ -91,7 +91,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             WHERE address = :address'
         );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':address', $serverAddress, \PDO::PARAM_STR);
+        $statement->bindValue(':address', $address, \PDO::PARAM_STR);
         $statement->execute();
 
         $platformTopology = null;

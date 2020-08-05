@@ -381,6 +381,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     'message' => 'Internal error'
                 ]);
             } else {
+                $httpCode = $event->getException()->getCode();
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => $event->getException()->getMessage()

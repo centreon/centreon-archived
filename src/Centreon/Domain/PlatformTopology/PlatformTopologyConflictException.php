@@ -20,16 +20,13 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology\Interfaces;
+namespace Centreon\Domain\PlatformTopology;
 
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-
-interface PlatformTopologyServiceInterface
+/**
+ * This class is designed to represent a business exception in the 'Platform status' context.
+ *
+ * @package Centreon\Domain\PlatformTopology
+ */
+class PlatformTopologyConflictException extends \Exception
 {
-    /**
-     * Add new server
-     *
-     * @param PlatformTopology $platformTopology
-     */
-    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
 }

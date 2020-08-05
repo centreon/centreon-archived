@@ -33,11 +33,7 @@ class PlatformTopology
     /**
      * Available server types
      */
-    private const SERVER_TYPE_CENTRAL = 0;
-    private const SERVER_TYPE_POLLER = 1;
-    private const SERVER_TYPE_REMOTE = 2;
-    private const SERVER_TYPE_MAP = 3;
-    private const SERVER_TYPE_MBI = 4;
+    private const AVAILABLE_TYPES = ['central', 'poller', 'remote', 'map', 'mbi'];
 
     /**
      * Used to dynamically concatenate the thrown error when checking IP validity
@@ -49,26 +45,31 @@ class PlatformTopology
      * @var int Id of server
      */
     private $id;
+
     /**
-     * @var string Server name
+     * @var string|null name
      */
-    private $serverName;
+    private $name;
+
     /**
-     * @var int Server type
+     * @var string|null Server type
      */
-    private $serverType;
+    private $type;
+
     /**
-     * @var string Server IP address
+     * @var string|null Server address
      */
-    private $serverAddress;
+    private $address;
+
     /**
-     * @var string Server parent IP
+     * @var string|null Server parent address
      */
-    private $serverParentAddress;
+    private $parentAddress;
+
     /**
-     * @var int Server parent id
+     * @var int|null Server parent id
      */
-    private $serverParentId;
+    private $parentId;
 
     /**
      * @return int|null
@@ -89,82 +90,68 @@ class PlatformTopology
     }
 
     /**
-     * @return int
+     * @return string|null
      */
-    public function getServerType(): int
+    public function getType(): ?string
     {
-        return $this->serverType;
+        return $this->type;
     }
 
     /**
-     * @param int $serverType server type
-     *      SERVER_TYPE_CENTRAL = 0
-     *      SERVER_TYPE_POLLER  = 1
-     *      SERVER_TYPE_REMOTE  = 2
-     *      SERVER_TYPE_MAP     = 3
-     *      SERVER_TYPE_MBI     = 4
+     * @param string|null $type server type: central, poller, remote, map or mbi
      *
      * @return $this
-     * @throws PlatformTopologyException
+     * @throws \InvalidArgumentException
      */
-    public function setServerType(int $serverType): self
+    public function setType(?string $type): self
     {
         // The API should not be used to add a Central to another Central
-        if (self::SERVER_TYPE_CENTRAL === $serverType) {
+        if ('central' === $type) {
             throw new \InvalidArgumentException(
                 sprintf(
                     _("You cannot link the Central '%s'@'%s' to another Central"),
-                    $this->getServerName(),
-                    $this->getServerAddress()
-                ),
-                Response::HTTP_BAD_REQUEST
+                    $this->getName(),
+                    $this->getAddress()
+                )
             );
         }
 
         // Check if the server_type is available
-        $availableServerType = [
-            self::SERVER_TYPE_POLLER,
-            self::SERVER_TYPE_REMOTE,
-            self::SERVER_TYPE_MAP,
-            self::SERVER_TYPE_MBI
-        ];
-        if (!in_array($serverType, $availableServerType)) {
+        if (!in_array($type, static::AVAILABLE_TYPES)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     _("The type of platform '%s'@'%s' is not consistent"),
-                    $this->getServerName(),
-                    $this->getServerAddress()
-                ),
-                Response::HTTP_BAD_REQUEST
+                    $this->getName(),
+                    $this->getAddress()
+                )
             );
         }
-        $this->serverType = $serverType;
+        $this->type = $type;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getServerName(): string
+    public function getName(): ?string
     {
-        return $this->serverName;
+        return $this->name;
     }
 
     /**
-     * @param string $serverName
+     * @param string|null $name
      * @return $this
-     * @throws PlatformTopologyException
+     * @throws \InvalidArgumentException
      */
-    public function setServerName(string $serverName): self
+    public function setName(?string $name): self
     {
-        $serverName = filter_var($serverName, FILTER_SANITIZE_STRING);
-        if (empty($serverName)) {
-            throw new PlatformTopologyException(
-                _('The name of the platform is not consistent'),
-                Response::HTTP_BAD_REQUEST
+        $name = filter_var($name, FILTER_SANITIZE_STRING);
+        if (empty($name)) {
+            throw new \InvalidArgumentException(
+                _('The name of the platform is not consistent')
             );
         }
-        $this->serverName = $serverName;
+        $this->name = $name;
         return $this;
     }
 
@@ -174,14 +161,13 @@ class PlatformTopology
      * @param string $kind server or parent of the server
      * @param string|null $address the address to be tested
      *
-     * @return string
-     * @throws PlatformTopologyException
+     * @return string|null
+     * @throws \InvalidArgumentException
      */
-    private function checkIpAddress(string $kind, ?string $address): string
+    private function checkIpAddress(string $kind, ?string $address): ?string
     {
-        // Server linked to the Central, may not send a parent address in the data
-        if (!isset($address) && self::KIND_PARENT === $kind) {
-            return $_SERVER['SERVER_ADDR'];
+        if ($address === null) {
+            return $address;
         }
 
         // Check for valid IPv4 or IPv6 IP
@@ -194,9 +180,8 @@ class PlatformTopology
             throw new \InvalidArgumentException(
                 sprintf(
                     _("The address of the " . $kind . " '%s' is not consistent"),
-                    $this->getServerName()
-                ),
-                Response::HTTP_BAD_REQUEST
+                    $this->getName()
+                )
             );
         }
 
@@ -204,53 +189,59 @@ class PlatformTopology
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getServerAddress(): string
+    public function getAddress(): ?string
     {
-        return $this->serverAddress;
+        return $this->address;
     }
 
     /**
-     * @param string $serverAddress
+     * @param string|null $address
      *
      * @return $this
-     * @throws PlatformTopologyException
      */
-    public function setServerAddress(string $serverAddress): self
+    public function setAddress(?string $address): self
     {
-        $this->serverAddress = $this->checkIpAddress(self::KIND_SERVER, $serverAddress);
+        $this->address = $this->checkIpAddress(self::KIND_SERVER, $address);
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getServerParentAddress(): string
+    public function getParentAddress(): ?string
     {
-        return $this->serverParentAddress;
+        return $this->parentAddress;
     }
 
     /**
-     * @param string|null $serverParentAddress
+     * @param string|null $parentAddress
      *
      * @return $this
-     * @throws PlatformTopologyException
      */
-    public function setServerParentAddress(?string $serverParentAddress): self
+    public function setParentAddress(?string $parentAddress): self
     {
-        $this->serverParentAddress = $this->checkIpAddress(self::KIND_PARENT, $serverParentAddress);
+        $this->parentAddress = $this->checkIpAddress(self::KIND_PARENT, $parentAddress);
         return $this;
     }
 
-    public function getServerParentId(): int
+    /**
+     * @return integer|null
+     */
+    public function getParentId(): ?int
     {
-        return $this->serverParentId;
+        return $this->parentId;
     }
 
-    public function setServerParentId(int $parentId): self
+    /**
+     * @param int|null $parentId
+     *
+     * @return $this
+     */
+    public function setParentId(?int $parentId): self
     {
-        $this->serverParentId = $parentId;
+        $this->parentId = $parentId;
         return $this;
     }
 }
