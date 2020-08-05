@@ -123,7 +123,7 @@
     "reselect": "^4.0.0",
     "systemjs": "^6.3.3",
     "systemjs-plugin-css": "^0.1.37",
-    "ts.data.json": "^1.1.0",
+    "ts.data.json": "^1.2.0",
     "yup": "^0.29.1"
   },
   "jest": {

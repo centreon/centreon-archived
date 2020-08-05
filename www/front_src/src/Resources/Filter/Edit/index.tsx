@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import MoveIcon from '@material-ui/icons/UnfoldMore';
 
-import { RightPanel, useRequest } from '@centreon/ui';
+import { PagePanel, useRequest } from '@centreon/ui';
 
 import { move, isNil } from 'ramda';
 import { useResourceContext } from '../../Context';
@@ -146,7 +146,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
   );
 
   return (
-    <RightPanel
+    <PagePanel
       active
       Sections={Sections}
       Header={Header}
