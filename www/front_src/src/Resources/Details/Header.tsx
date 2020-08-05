@@ -102,9 +102,7 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
   );
 };
 
-type HeaderProps = DetailsSectionProps & { onClickClose };
-
-const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
+const Header = ({ details }: DetailsSectionProps): JSX.Element => {
   const classes = useStyles({ details });
 
   return (
@@ -116,11 +114,6 @@ const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
       className={classes.header}
     >
       <HeaderContent details={details} />
-      <Grid item>
-        <IconButton onClick={onClickClose}>
-          <IconClose />
-        </IconButton>
-      </Grid>
     </Grid>
   );
 };

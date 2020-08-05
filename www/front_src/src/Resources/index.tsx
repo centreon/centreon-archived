@@ -4,6 +4,7 @@ import { isNil } from 'ramda';
 
 import { withSnackbar, ListingPage } from '@centreon/ui';
 
+import WithPanel from '@centreon/ui/src/Panel/WithPanel';
 import Context from './Context';
 import Filter from './Filter';
 import Listing from './Listing';
@@ -31,13 +32,17 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <ListingPage
-        slidePanelOpen={!isNil(selectedDetailsEndpoints)}
-        filters={<Filter />}
-        listing={<Listing />}
-        slidePanel={<Details />}
-      />
-      <EditFiltersPanel />
+      <WithPanel
+        panel={<EditFiltersPanel />}
+        open={filterContext.editPanelOpen}
+      >
+        <ListingPage
+          slidePanelOpen={!isNil(selectedDetailsEndpoints)}
+          filters={<Filter />}
+          listing={<Listing />}
+          slidePanel={<Details />}
+        />
+      </WithPanel>
     </Context.Provider>
   );
 };

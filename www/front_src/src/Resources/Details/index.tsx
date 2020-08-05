@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { getData, useRequest, SlidePanel } from '@centreon/ui';
+import { getData, useRequest, Panel } from '@centreon/ui';
 
 import { Tab } from '@material-ui/core';
 
@@ -54,8 +54,9 @@ const Details = (): JSX.Element | null => {
   };
 
   return (
-    <SlidePanel
-      header={<Header details={details} onClickClose={clearSelectedResource} />}
+    <Panel
+      onClose={clearSelectedResource}
+      header={<Header details={details} />}
       tabs={tabs
         .filter(({ visible }) => visible(selectedDetailsEndpoints))
         .map(({ id, title }) => (
