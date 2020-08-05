@@ -69,20 +69,22 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
 
-        // search for parent platform in topology
-        $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
-            $platformTopology->getParentAddress()
-        );
-        if (null === $foundPlatformTopology) {
-            throw new EntityNotFoundException(
-                sprintf(
-                    _("No parent platform was found for : '%s'@'%s'"),
-                    $platformTopology->getName(),
-                    $platformTopology->getAddress()
-                )
+        if ($platformTopology->getParentAddress() !== null) {
+            // search for parent platform in topology
+            $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
+                $platformTopology->getParentAddress()
             );
+            if (null === $foundPlatformTopology) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _("No parent platform was found for : '%s'@'%s'"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            $platformTopology->setParentId($foundPlatformTopology->getId());
         }
-        $platformTopology->setParentId($foundPlatformTopology->getId());
 
         try {
             // add the new platform
