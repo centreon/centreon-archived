@@ -542,7 +542,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     private function hasEnoughRightsToContinue(): bool
     {
         return ($this->contact !== null)
-            ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
-            : count($this->accessGroups) == 0;
+            ? ($this->contact->isAdmin() || count($this->accessGroups) > 0)
+            : count($this->accessGroups) > 0;
     }
 }
