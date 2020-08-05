@@ -146,11 +146,15 @@ class TimelineController extends AbstractController
 
         $timeline = $this->timelineService->findTimelineEventsByService($service);
 
+        $context = (new Context())
+            ->setGroups(static::SERIALIZER_GROUPS_MAIN)
+            ->enableMaxDepth();
+
         return $this->view(
             [
                 'result' => $timeline,
                 'meta' => $requestParameters->toArray()
             ]
-        );
+        )->setContext($context);
     }
 }
