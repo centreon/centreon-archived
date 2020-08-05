@@ -37,10 +37,10 @@ const Resources = (): JSX.Element => {
         open={filterContext.editPanelOpen}
       >
         <ListingPage
-          slidePanelOpen={!isNil(selectedDetailsEndpoints)}
+          panelOpen={!isNil(selectedDetailsEndpoints)}
           filters={<Filter />}
           listing={<Listing />}
-          slidePanel={<Details />}
+          panel={<Details />}
         />
       </WithPanel>
     </Context.Provider>
