@@ -209,7 +209,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 if (isset($opt['autosigned'])) {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER	, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 }
 
 if (isset($proxyInfo)) {
@@ -254,7 +254,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 if (isset($opt['autosigned'])) {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER	, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 }
 
 if (isset($proxyInfo)) {
