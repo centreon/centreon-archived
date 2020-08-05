@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-wrap-multilines */
-
 import * as React from 'react';
 
 import { Typography, Button, makeStyles } from '@material-ui/core';
