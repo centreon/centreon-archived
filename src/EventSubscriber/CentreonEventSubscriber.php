@@ -350,7 +350,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $httpCode = ($event->getException()->getCode() >= 100 && $event->getException()->getCode() < 600)
+                ? $event->getException()->getCode()
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
 
             if ($event->getException() instanceof EntityNotFoundException) {
                 $errorMessage = json_encode([
@@ -366,14 +368,12 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                         true
                     )
                 ]);
-                $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             } elseif ($event->getException() instanceof \PDOException) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
             } elseif ($event->getException() instanceof AccessDeniedException) {
-                $httpCode = $event->getException()->getCode();
                 $errorMessage = null;
             } elseif (get_class($event->getException()) == \Exception::class) {
                 $errorMessage = json_encode([
@@ -381,7 +381,6 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     'message' => 'Internal error'
                 ]);
             } else {
-                $httpCode = $event->getException()->getCode();
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => $event->getException()->getMessage()
