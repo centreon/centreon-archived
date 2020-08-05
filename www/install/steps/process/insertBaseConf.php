@@ -91,21 +91,21 @@ try {
 }
 
 // Insert Central to 'platfrom_topology' table, as first server and parent of all others.
-$stmt = $link->prepare(
-    "INSERT INTO `platform_topology` (
+$stmt = $link->prepare("
+    INSERT INTO `platform_topology` (
         `address`,
-        `hostname`,
-        `server_type`,
+        `name`,
+        `type`,
         `parent_id`,
         `server_id`
     ) VALUES (
         :centralAddress,
         (SELECT `name` FROM nagios_server WHERE localhost = '1'),
-        0,
-        0,
-        1
-    )"
-);
+        'central',
+        NULL,
+        (SELECT `id` FROM nagios_server WHERE localhost = '1')
+    )
+");
 $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
 $stmt->execute();
 

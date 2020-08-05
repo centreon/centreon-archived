@@ -35,32 +35,32 @@ try {
         CREATE TABLE `platform_topology` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `address` varchar(255) NOT NULL,
-            `hostname` varchar(255) NOT NULL,
-            `server_type` tinyint(1) NOT NULL DEFAULT 0,
+            `name` varchar(255) NOT NULL,
+            `type` varchar(255) NOT NULL,
             `parent_id` int(11),
             `server_id` int(11),
             PRIMARY KEY (`id`),
-            CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`)
-            REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+            CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+            CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE SET NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8
-        COMMENT='Registration and parent relation Table used to set the platform topology'"
-    );
+        COMMENT='Registration and parent relation Table used to set the platform topology'
+    ");
 
     // Then insert the central as first platform and parent of all others
     $errorMessage = "Unable to insert the central in the platform_topology table.";
     $stmt = $pearDB->prepare(
         "INSERT INTO `platform_topology` (
             `address`,
-            `hostname`,
-            `server_type`,
+            `name`,
+            `type`,
             `parent_id`,
             `server_id`
         ) VALUES (
             :centralAddress,
             (SELECT `name` FROM nagios_server WHERE localhost = '1'),
-            0,
-            0,
-            1
+            'central',
+            NULL,
+            (SELECT `id` FROM nagios_server WHERE localhost = '1')
         )"
     );
     $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);

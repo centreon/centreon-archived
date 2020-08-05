@@ -25,6 +25,7 @@ namespace Centreon\Domain\PlatformTopology;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Exception\EntityNotFoundException;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -54,36 +55,34 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     {
         // search for already registered platforms using same name of address
         $foundRegisteredPlatformTopology = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
-            $platformTopology->getServerAddress(),
-            $platformTopology->getServerName()
+            $platformTopology->getAddress(),
+            $platformTopology->getName()
         );
 
         if (!empty($foundRegisteredPlatformTopology)) {
-            throw new PlatformTopologyException(
+            throw new PlatformTopologyConflictException(
                 sprintf(
                     _("A platform using the name : '%s' or address : '%s' already exists"),
-                    $platformTopology->getServerName(),
-                    $platformTopology->getServerAddress()
-                ),
-                Response::HTTP_BAD_REQUEST
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
             );
         }
 
         // search for parent platform in topology
         $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
-            $platformTopology->getServerParentAddress()
+            $platformTopology->getParentAddress()
         );
         if (null === $foundPlatformTopology) {
-            throw new PlatformTopologyException(
+            throw new EntityNotFoundException(
                 sprintf(
                     _("No parent platform was found for : '%s'@'%s'"),
-                    $platformTopology->getServerName(),
-                    $platformTopology->getServerAddress()
-                ),
-                Response::HTTP_BAD_REQUEST
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
             );
         }
-        $platformTopology->setServerParentId($foundPlatformTopology->getId());
+        $platformTopology->setParentId($foundPlatformTopology->getId());
 
         try {
             // add the new platform
@@ -92,10 +91,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             throw new PlatformTopologyException(
                 sprintf(
                     _("Error when adding in topology the platform : '%s'@'%s'"),
-                    $platformTopology->getServerName(),
-                    $platformTopology->getServerAddress()
-                ),
-                Response::HTTP_BAD_REQUEST
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
             );
         }
     }

@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use Throwable;
-
 /**
  * This class is designed to represent a business exception in the 'Platform status' context.
  *

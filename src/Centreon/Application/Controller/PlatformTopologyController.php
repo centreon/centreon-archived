@@ -28,6 +28,7 @@ use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -108,17 +109,22 @@ class PlatformTopologyController extends AbstractController
         );
 
         try {
-            $setPlatformTopology = (new PlatformTopology())
-                ->setServerName($platformToAdd['server_name'])
-                ->setServerAddress($platformToAdd['address'])
-                ->setServerType($platformToAdd['server_type'])
-                ->setServerParentAddress($platformToAdd['server_parent']);
+            $platformTopology = (new PlatformTopology())
+                ->setName($platformToAdd['name'])
+                ->setType($platformToAdd['type'])
+                ->setAddress($platformToAdd['address']);
 
-            $this->platformTopologyService->addPlatformToTopology($setPlatformTopology);
+            if (isset($platformToAdd['parent_address'])) {
+                $platformTopology->setParentAddress($platformToAdd['parent_address']);
+            }
+
+            $this->platformTopologyService->addPlatformToTopology($platformTopology);
 
             return $this->view(null, Response::HTTP_CREATED);
+        } catch (PlatformTopologyConflictException $ex) {
+            throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_CONFLICT, $ex);
         } catch (\Throwable $ex) {
-            throw new PlatformTopologyException($ex->getMessage(), $ex->getCode());
+            throw new PlatformTopologyException($ex->getMessage(), 0, $ex);
         }
     }
 }

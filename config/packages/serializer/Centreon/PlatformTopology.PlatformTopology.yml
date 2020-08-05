@@ -1,14 +1,14 @@
 Centreon\Domain\PlatformTopology\PlatformTopology:
   properties:
-    ip_address:
+    address:
       type: string
       groups: [platform_topology_main]
-    hostname:
-      type: int
-      groups: [platform_topology_main]
-    server_type:
+    name:
       type: string
       groups: [platform_topology_main]
-    parent:
+    type:
+      type: string
+      groups: [platform_topology_main]
+    parentAddress:
       type: string
       groups: [platform_topology_main]
