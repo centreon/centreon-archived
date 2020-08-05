@@ -6322,6 +6322,18 @@ msgstr "Chemin du script de démarrage de l’ordonnanceur"
 msgid "Path of init script of centreontrapd"
 msgstr "Chemin du script de démarrage du processus centreontrapd"
 
+msgid "Command to start Centreon Engine process"
+msgstr "Commande pour démarrer le processus Centreon Engine"
+
+msgid "Command to stop Centreon Engine process"
+msgstr "Commande pour arrêter le processus Centreon Engine"
+
+msgid "Command to restart Centreon Engine process"
+msgstr "Commande pour redémarrer le processus Centreon Engine"
+
+msgid "Command to reload Centreon Engine process"
+msgstr "Commande pour recharger le processus Centreon Engine"
+
 #: centreon-web/www/include/configuration/configServers/help.php:11
 msgid "Path of binary of the scheduler"
 msgstr "Chemin du binaire de l’ordonnanceur"
@@ -6333,6 +6345,9 @@ msgstr "Chemin du binaire de statistiques de l’ordonnanceur"
 #: centreon-web/www/include/configuration/configServers/help.php:13
 msgid "Perfdata script"
 msgstr "Script pour les données de performance"
+
+msgid "Command to reload Centreon Broker process"
+msgstr "Commande pour recharger le processus Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/help.php:14
 msgid "Path of the configuration file for Centreon Broker"
@@ -6387,9 +6402,9 @@ msgstr "Brève description du collecteur"
 
 msgid ""
 "If disabled, the Central server will send configuration and external commands directly to the poller "
-"and will not use the Remote Server as a proxy"
+"and will not use the Remote Server as a proxy."
 msgstr ""
-"Si désactivé, le serveur Central se connectera directement au collecteur pour transférer la configuration"
+"Si désactivé, le serveur Central se connectera directement au collecteur pour transférer la configuration "
 "et les commandes externes et n'utilisera pas le Remote Server comme proxy."
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:8
@@ -7217,8 +7232,8 @@ msgstr ""
 #~ "est définie."
 
 #: centreon-web/www/include/configuration/configServers/help.php:7
-#~ msgid "Master Remote Server to which this server will be attached"
-#~ msgstr ""
+msgid "Master Remote Server to which this server will be attached"
+msgstr "Remote Server principal auquel ce collecteur sera lié"
 
-#~ msgid "Additional Remote Server to which this server will be attached"
-#~ msgstr ""
+msgid "Additional Remote Server to which this server will be attached"
+msgstr "Remote Server additionnel auquel ce collecteur sera lié"
