@@ -116,7 +116,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     {
         $timelineEvents = [];
 
-        if ($this->hasNotEnoughRightsToContinue()) {
+        if (!$this->hasEnoughRightsToContinue()) {
             return $timelineEvents;
         }
 
@@ -539,7 +539,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
      *
      * @return bool
      */
-    private function hasNotEnoughRightsToContinue(): bool
+    private function hasEnoughRightsToContinue(): bool
     {
         return ($this->contact !== null)
             ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
