@@ -2001,11 +2001,6 @@ paths:
         - Topology
       summary: "Register to platform topology"
       description: "Add a server to the platform topology"
-      parameters:
-        - $ref: '#/components/parameters/ServerAddress'
-        - $ref: '#/components/parameters/ServerName'
-        - $ref: '#/components/parameters/ServerType'
-        - $ref: '#/components/parameters/ServerParentAddress'
       requestBody:
         required: true
         content:
@@ -2019,6 +2014,8 @@ paths:
           description: "Bad argument. More details are specified in the response"
         '403':
           $ref: '#/components/responses/Forbidden'
+        '409':
+          description: "Conflict, platform already exists"
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
@@ -3647,6 +3644,7 @@ components:
           example: "myPoller"
         type:
           type: string
+          enum: [central, poller, remote, map, mbi]
           description: "Type of the server"
           example: "poller"
         address:
