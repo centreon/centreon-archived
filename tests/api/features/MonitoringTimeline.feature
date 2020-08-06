@@ -11,7 +11,7 @@ Feature:
     Given I am logged in
     And the following CLAPI import data:
     """
-    HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
+    HOST;ADD;test;Test host;192.192.192.192;generic-host;central;
     """
     And the configuration is generated and exported
     And I wait until host "test" is monitored
@@ -19,17 +19,21 @@ Feature:
     And I store response values in:
       | name   | path         |
       | hostId | result[0].id |
-    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline"
+    And I send a POST request to '/beta/monitoring/hosts/<hostId>/check' with body:
+    """
+    {}
+    """
+    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline" (tries: 20)
 
-    When I send a GET request to "/beta/monitoring/hosts/<hostId>/timeline"
+    When I send a GET request to '/beta/monitoring/hosts/<hostId>/timeline?search={"type":"event"}'
 
-    Then the JSON node "result[0].content" should contain "INITIAL HOST STATE"
+    Then the JSON node "result[0].status.name" should be equal to the string "DOWN"
 
   Scenario: Service timeline
     Given I am logged in
     And the following CLAPI import data:
     """
-    HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
+    HOST;ADD;test;Test host;192.192.192.192;generic-host;central;
     SERVICE;ADD;test;test_service1;Ping-LAN;
     """
     And the configuration is generated and exported
@@ -39,8 +43,12 @@ Feature:
       | name      | path              |
       | hostId    | result[0].host.id |
       | serviceId | result[0].id      |
-    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline"
+    And I send a POST request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/check' with body:
+    """
+    {}
+    """
+    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline" (tries: 20)
 
-    When I send a GET request to "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline"
+    When I send a GET request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline?search={"type":"event"}'
 
-    Then the JSON node "result[0].content" should contain "INITIAL SERVICE STATE"
+    Then the JSON node "result[0].status.name" should be equal to the string "UNKNOWN"
