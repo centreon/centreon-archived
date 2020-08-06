@@ -5990,12 +5990,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "e360c243351af39310d6b2a59af5c490134b41c9"
+                "reference": "ee1a665ee2def6d1f39b406ad469ac8f8383ade5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/e360c243351af39310d6b2a59af5c490134b41c9",
-                "reference": "e360c243351af39310d6b2a59af5c490134b41c9",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/ee1a665ee2def6d1f39b406ad469ac8f8383ade5",
+                "reference": "ee1a665ee2def6d1f39b406ad469ac8f8383ade5",
                 "shasum": ""
             },
             "require": {
@@ -6040,7 +6040,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-08-05T14:20:16+00:00"
+            "time": "2020-08-06T08:10:48+00:00"
         },
         {
             "name": "dflydev/fig-cookies",
