@@ -4149,7 +4149,7 @@ components:
           description: "The count of retry"
     Topology.Register:
       type: object
-      required: [name, type, address, parent_address]
+      required: [name, type, address]
       properties:
         name:
           type: string
