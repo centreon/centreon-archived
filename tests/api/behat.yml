@@ -20,3 +20,7 @@ default:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
       contexts:
         - Centreon\Test\Api\Context\UserFilterContext
+    platform_topology:
+      paths: [ "%paths.base%/features/PlatformTopology.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\PlatformTopologyContext
