@@ -11,7 +11,9 @@ Feature:
     Given I am logged in
     And the following CLAPI import data:
     """
+    CMD;ADD;dummy_down;check;cat unknown_file
     HOST;ADD;test;Test host;192.192.192.192;generic-host;central;
+    HOST;SETPARAM;test;check_command;dummy_down
     """
     And the configuration is generated and exported
     And I wait until host "test" is monitored
@@ -33,8 +35,10 @@ Feature:
     Given I am logged in
     And the following CLAPI import data:
     """
+    CMD;ADD;dummy_critical;check;cat unknown_file
     HOST;ADD;test;Test host;192.192.192.192;generic-host;central;
-    SERVICE;ADD;test;test_service1;Ping-LAN;
+    SERVICE;ADD;test;test_service1;generic-service;
+    SERVICE;SETPARAM;test;test_service1;check_command;dummy_critical
     """
     And the configuration is generated and exported
     And I wait until service "test_service1" from host "test" is monitored
