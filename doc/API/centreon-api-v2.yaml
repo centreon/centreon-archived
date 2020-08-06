@@ -2280,50 +2280,6 @@ components:
         type: integer
         format: int64
         example: 1
-    ServerAddress:
-      in: query
-      name: address
-      required: true
-      schema:
-        type: string
-        example: "1.1.1.2"
-      description: "Address of the server. IPv4, IPv6 or DNS"
-    ServerName:
-      in: query
-      name: name
-      required: true
-      schema:
-        type: string
-        example: "my_poller"
-      description: "Name of the server"
-    ServerType:
-      in: query
-      name: type
-      required: true
-      schema:
-        type: string
-        minimum: 1
-        default: 1
-        maximum: 4
-        example: 1
-      description: >
-        Type of the server value
-
-        Available Server types :
-          * '1' → Poller
-          * '2' → Remote
-          * '3' → MAP
-          * '4' → MBI
-    ServerParentAddress:
-      in: query
-      name: parent_address
-      description: >
-        Name of the parent of the server. Used when a poller is behind a remote
-        Default value is the Central on which the API is computed
-      required: false
-      schema:
-        type: string
-        example: "1.1.1.3"
   responses:
     Unauthorized:
       description: "Unauthorized"
@@ -3683,16 +3639,16 @@ components:
           description: "The detailed object properties of above types"
     Topology.Register:
       type: object
+      required: [name, type, address, parent_address]
       properties:
-        server_name:
+        name:
           type: string
           description: "Name of the server to register in the topology"
           example: "myPoller"
-        server_type:
-          type: integer
-          minimum: 1
-          maximum: 4
-          example: 1
+        type:
+          type: string
+          description: "Type of the server"
+          example: "poller"
         address:
           type: string
           description: "Address of the server. Either IPv4, IPv6 or DNS"
@@ -3701,7 +3657,3 @@ components:
           type: string
           description: "Address of the parent of the server. Used to link a poller behind a remote for example"
           example: "1.1.1.3"
-      required:
-        - server_name
-        - server_type
-        - address
