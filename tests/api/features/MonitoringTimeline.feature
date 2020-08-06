@@ -23,7 +23,7 @@ Feature:
     """
     {}
     """
-    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline" (tries: 20)
+    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline" (tries: 30)
 
     When I send a GET request to '/beta/monitoring/hosts/<hostId>/timeline?search={"type":"event"}'
 
@@ -47,8 +47,8 @@ Feature:
     """
     {}
     """
-    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline" (tries: 20)
+    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline" (tries: 30)
 
     When I send a GET request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline?search={"type":"event"}'
 
-    Then the JSON node "result[0].status.name" should be equal to the string "UNKNOWN"
+    Then the JSON node "result[0].status.name" should be equal to the string "CRITICAL"
