@@ -3636,7 +3636,7 @@ components:
           description: "The detailed object properties of above types"
     Topology.Register:
       type: object
-      required: [name, type, address, parent_address]
+      required: [name, type, address]
       properties:
         name:
           type: string
