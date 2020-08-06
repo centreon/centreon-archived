@@ -1199,7 +1199,8 @@ class CentreonLdapAdmin
     {
         $gopt = array();
         $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info` 
-WHERE `ari_name` <> 'bind_pass' AND ar_id = " . $this->db->escape($arId);
+                  WHERE `ari_name` <> 'bind_pass' 
+                  AND ar_id = " . $this->db->escape($arId);
         $res = $this->db->query($query);
         while ($row = $res->fetch()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
