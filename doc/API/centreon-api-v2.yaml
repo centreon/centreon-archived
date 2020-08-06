@@ -2670,7 +2670,7 @@ components:
           * '4' → MBI
     ServerParentAddress:
       in: query
-      name: server_parent
+      name: parent_address
       description: >
         Name of the parent of the server. Used when a poller is behind a remote
         Default value is the Central on which the API is computed
