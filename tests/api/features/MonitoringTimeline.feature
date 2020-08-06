@@ -19,9 +19,9 @@ Feature:
     And I store response values in:
       | name   | path         |
       | hostId | result[0].id |
-    And I wait to get 1 result from '/beta/monitoring/hosts/<hostId>/timeline'
+    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline"
 
-    When I send a GET request to '/beta/monitoring/hosts/<hostId>/timeline'
+    When I send a GET request to "/beta/monitoring/hosts/<hostId>/timeline"
 
     Then the JSON node "result[0].content" should contain "INITIAL HOST STATE"
 
@@ -39,8 +39,8 @@ Feature:
       | name      | path              |
       | hostId    | result[0].host.id |
       | serviceId | result[0].id      |
-    And I wait to get 1 result from '/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline'
+    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline"
 
-    When I send a GET request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline'
+    When I send a GET request to "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline"
 
     Then the JSON node "result[0].content" should contain "INITIAL SERVICE STATE"
