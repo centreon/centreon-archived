@@ -2644,7 +2644,7 @@ components:
       description: "Address of the server. IPv4, IPv6 or DNS"
     ServerName:
       in: query
-      name: server_name
+      name: name
       required: true
       schema:
         type: string
