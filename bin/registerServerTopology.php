@@ -131,7 +131,7 @@ $port = $targetURL['port'] ?? '';
 if (isset($opt['proxy'])) {
     $proxyInfo['host'] = askQuestion('proxy host: ');
     $proxyInfo['port'] = (int) askQuestion('proxy port: ');
-    $proxyInfo['username'] = askQuestion('proxy username: ');
+    $proxyInfo['username'] = askQuestion('proxy username (press enter if no username/password required): ');
     if (!empty($proxyInfo['username'])) {
         $proxyInfo['password'] = askQuestion('proxy password: ', true);
     }
