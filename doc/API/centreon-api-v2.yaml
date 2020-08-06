@@ -2301,7 +2301,7 @@ components:
       name: type
       required: true
       schema:
-        type: integer
+        type: string
         minimum: 1
         default: 1
         maximum: 4
