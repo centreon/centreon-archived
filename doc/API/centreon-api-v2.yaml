@@ -2369,7 +2369,7 @@ paths:
       responses:
         '201':
           description: "OK"
-        '400':
+        '409':
           description: "Bad argument. More details are specified in the response"
         '403':
           $ref: '#/components/responses/Forbidden'
@@ -4152,16 +4152,16 @@ components:
           description: "The count of retry"
     Topology.Register:
       type: object
+      required: [name, type, address, parent_address]
       properties:
-        server_name:
+        name:
           type: string
           description: "Name of the server to register in the topology"
           example: "myPoller"
-        server_type:
-          type: integer
-          minimum: 1
-          maximum: 4
-          example: 1
+        type:
+          type: string
+          description: "Type of the server"
+          example: "poller"
         address:
           type: string
           description: "Address of the server. Either IPv4, IPv6 or DNS"
@@ -4170,7 +4170,3 @@ components:
           type: string
           description: "Address of the parent of the server. Used to link a poller behind a remote for example"
           example: "1.1.1.1"
-      required:
-        - server_name
-        - server_type
-        - address
