@@ -7,7 +7,7 @@ import {
   MultiConnectedAutocompleteField,
   SelectField,
   SearchField,
-  FilteBar,
+  Filters,
 } from '@centreon/ui';
 
 import { isEmpty, propEq, pick, find } from 'ramda';
@@ -219,7 +219,7 @@ const Filter = (): JSX.Element => {
   const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
 
   return (
-    <FilteBar
+    <Filters
       expandable
       expandLabel={labelShowCriteriasFilters}
       filters={
