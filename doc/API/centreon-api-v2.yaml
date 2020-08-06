@@ -3697,7 +3697,7 @@ components:
           type: string
           description: "Address of the server. Either IPv4, IPv6 or DNS"
           example: "1.1.1.2"
-        server_parent:
+        parent_address:
           type: string
           description: "Address of the parent of the server. Used to link a poller behind a remote for example"
           example: "1.1.1.3"
