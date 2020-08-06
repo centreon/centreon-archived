@@ -43,7 +43,7 @@ require_once('registerServerTopology-func.php');
 /**
  * Get script params
  */
-$opt = getopt('u:t:h:n:', ["help::", "proxy::", "dns:", "autosigned::"]);
+$opt = getopt('u:t:h:n:', ["help::", "proxy::", "dns:", "insecure::"]);
 const SERVER_TYPE = ["poller", "remote", "map", "mbi"];
 
 /**
@@ -62,8 +62,12 @@ Global Options:
   -n <mandatory>              name of your registered server
   --help <optional>           get informations about the parameters available
   --proxy <optional>          provide the differents asked informations
+            - host <mandatory>
+            - port <mandatory>
+            - username <optional>
+            - password <optional>
   --dns <optional>            provide your DNS instead of automaticaly get server IP
-  --autosigned <optional>     allow autosigned certificate
+  --insecure <optional>       allow self-signed certificate
 
 
 EOD;
@@ -125,10 +129,12 @@ $port = $targetURL['port'] ?? '';
  * Proxy informations
  */
 if (isset($opt['proxy'])) {
-    $proxyInfo['username'] = askQuestion('proxy username: ');
-    $proxyInfo['password'] = askQuestion('proxy password: ', true);
     $proxyInfo['host'] = askQuestion('proxy host: ');
     $proxyInfo['port'] = (int) askQuestion('proxy port: ');
+    $proxyInfo['username'] = askQuestion('proxy username: ');
+    if (!empty($proxyInfo['username'])) {
+        $proxyInfo['password'] = askQuestion('proxy password: ', true);
+    }
 }
 
 /**
@@ -146,7 +152,6 @@ $loginCredentials = [
 /**
  * Prepare Server Register payload
  */
-
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $registerPayload = [
     "name" => $serverHostName,
@@ -200,7 +205,7 @@ $loginUrl = $protocol . '://' . $host;
 if (!empty($port)) {
     $loginUrl .= ':' . $port;
 }
-$loginUrl .= '/centreon/api/latest/login';
+$loginUrl .= '/api/latest/login';
 
 $ch = curl_init($loginUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
@@ -208,14 +213,16 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-if(isset($opt['autosigned'])) {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER	, false);
+if (isset($opt['insecure'])) {
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 }
 
 if (isset($proxyInfo)) {
     curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
     curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
-    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    if (!empty($proxyInfo['username'])) {
+        curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    }
 }
 
 $result = curl_exec($ch);
@@ -245,7 +252,7 @@ $registerUrl = $protocol . '://' . $host;
 if (!empty($port)) {
     $registerUrl .= ':' . $port;
 }
-$registerUrl .= "/centreon/api/latest/platform_topology";
+$registerUrl .= "/api/latest/platform/topology";
 
 $ch = curl_init($registerUrl);
 curl_setopt($ch, CURLOPT_POST, 1);
@@ -253,14 +260,16 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-
 curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-if(isset($opt['autosigned'])) {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER	, false);
+if (isset($opt['insecure'])) {
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 }
 
 if (isset($proxyInfo)) {
     curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
     curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
-    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    if (!empty($proxyInfo['username'])) {
+        curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    }
 }
 
 $result = curl_exec($ch);
