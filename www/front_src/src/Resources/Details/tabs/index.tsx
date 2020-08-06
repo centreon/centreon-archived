@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { isNil, find, propEq } from 'ramda';
 
+import { makeStyles } from '@material-ui/core';
 import DetailsTab from './Details';
 import {
   labelDetails,
@@ -48,6 +49,12 @@ const tabs: Array<Tab> = [
   },
 ];
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    padding: theme.spacing(1),
+  },
+}));
+
 interface TabByIdProps {
   details?: ResourceDetails;
   id: number;
@@ -59,9 +66,15 @@ const TabById = ({
   details,
   endpoints,
 }: TabByIdProps): JSX.Element | null => {
+  const classes = useStyles();
+
   const { Component } = find(propEq('id', id), tabs) as Tab;
 
-  return <Component details={details} endpoints={endpoints} />;
+  return (
+    <div className={classes.container}>
+      <Component details={details} endpoints={endpoints} />
+    </div>
+  );
 };
 
 export { detailsTabId, timelineTabId, graphTabId, tabs, TabById };
