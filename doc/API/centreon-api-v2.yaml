@@ -2298,7 +2298,7 @@ components:
       description: "Name of the server"
     ServerType:
       in: query
-      name: server_type
+      name: type
       required: true
       schema:
         type: integer
