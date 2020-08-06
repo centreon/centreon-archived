@@ -36,12 +36,6 @@ class PlatformTopology
     private const AVAILABLE_TYPES = ['central', 'poller', 'remote', 'map', 'mbi'];
 
     /**
-     * Used to dynamically concatenate the thrown error when checking IP validity
-     */
-    private const KIND_SERVER = 'platform';
-    private const KIND_PARENT = 'parent platform';
-
-    /**
      * @var int Id of server
      */
     private $id;
@@ -158,13 +152,12 @@ class PlatformTopology
     /**
      * Validate address consistency
      *
-     * @param string $kind server or parent of the server
      * @param string|null $address the address to be tested
      *
      * @return string|null
      * @throws \InvalidArgumentException
      */
-    private function checkIpAddress(string $kind, ?string $address): ?string
+    private function checkIpAddress(?string $address): ?string
     {
         if ($address === null) {
             return $address;
@@ -179,7 +172,7 @@ class PlatformTopology
         if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    _("The address of the " . $kind . " '%s' is not consistent"),
+                    _("The address '%s' is not valid"),
                     $this->getName()
                 )
             );
@@ -203,7 +196,7 @@ class PlatformTopology
      */
     public function setAddress(?string $address): self
     {
-        $this->address = $this->checkIpAddress(self::KIND_SERVER, $address);
+        $this->address = $this->checkIpAddress($address);
         return $this;
     }
 
@@ -222,7 +215,7 @@ class PlatformTopology
      */
     public function setParentAddress(?string $parentAddress): self
     {
-        $this->parentAddress = $this->checkIpAddress(self::KIND_PARENT, $parentAddress);
+        $this->parentAddress = $this->checkIpAddress($parentAddress);
         return $this;
     }
 
