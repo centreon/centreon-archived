@@ -183,7 +183,7 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
             $service->setHost($host);
             $this->engineService->scheduleServiceCheck($check, $service);
         } else {
-            throw new \Exception(
+            throw new \InvalidArgumentException(
                 sprintf(_('Incorrect Resource type: %s'), $resource->getType())
             );
         }
