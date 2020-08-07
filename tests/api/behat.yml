@@ -24,3 +24,7 @@ default:
       paths: [ "%paths.base%/features/PlatformTopology.feature" ]
       contexts:
         - Centreon\Test\Api\Context\PlatformTopologyContext
+    monitoring_timeline:
+      paths: [ "%paths.base%/features/MonitoringTimeline.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\MonitoringTimelineContext

@@ -1884,20 +1884,21 @@ paths:
           $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/timeline:
+  /monitoring/hosts/{host_id}/timeline:
     get:
       tags:
         - Timeline
-      summary: "List events related to a service"
+      summary: "Get host timeline"
       description: |
-        List all events for a given service
+        List all events for a given host
 
         The available parameters to **search** / **sort_by** are:
 
+        * type
+        * content
         * date
       parameters:
         - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
@@ -1922,19 +1923,22 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/timeline:
+  /monitoring/hosts/{host_id}/services/{service_id}/timeline:
     get:
       tags:
         - Timeline
-      summary: "List events related to a host"
+      summary: "Get service timeline"
       description: |
-        List all events for a given host
+        List all events for a given service
 
         The available parameters to **search** / **sort_by** are:
 
+        * type
+        * content
         * date
       parameters:
         - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
@@ -2926,6 +2930,11 @@ components:
           nullable: true
           description: "Resource url to details page"
           example: "/centreon/monitoring/resources/hosts/12/services/12"
+        timeline_endpoint:
+          type: string
+          nullable: true
+          description: "Resource url to get timeline information"
+          example: "/centreon/monitoring/resources/hosts/12/services/12/timeline"
         icon:
           type: object
           nullable: true
@@ -2961,6 +2970,11 @@ components:
               nullable: true
               description: "Parent resource url to details page"
               example: "/centreon/monitoring/resources/hosts/12"
+            timeline_endpoint:
+              type: string
+              nullable: true
+              description: "Parent resource url to get timeline information"
+              example: "/centreon/monitoring/resources/hosts/12/timeline"
             status:
               type: object
               properties:
@@ -3010,41 +3024,7 @@ components:
                   description: "Url of the icon"
                   example: "/img/media/topology/firewall.png"
         status:
-          type: object
-          properties:
-            code:
-              type: integer
-              description: |
-                resource status code
-                * `0` - UP or OK
-                * `1` - DOWN or WARNING
-                * `2` - UNREACHABLE or CRITICAL
-                * `3` - UNKNOWN
-                * `4` - PENDING
-              example: 0
-            name:
-              type: string
-              description: |
-                resource status name
-                * UP
-                * DOWN
-                * UNREACHABLE
-                * PENDING
-                * OK
-                * WARNING
-                * CRITICAL
-                * UNKNOWN
-              example: "UP"
-            severity_code:
-              type: integer
-              description: |
-                resource status name
-                * `1` - DOWN or CRITICAL
-                * `2` - WARNING
-                * `3` - UNKNOWN or UNREACHABLE
-                * `4` - PENDING
-                * `5` - UP or OK
-              example: 1
+          $ref: '#/components/schemas/Monitoring.ResourceStatus'
         in_downtime:
           type: boolean
           description: "Indicates whether resource is in downtime"
@@ -3114,6 +3094,42 @@ components:
           type: string
           description: "Output of the resource"
           example: "OK - Ping is ok"
+    Monitoring.ResourceStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: |
+            resource status code
+            * `0` - UP or OK
+            * `1` - DOWN or WARNING
+            * `2` - UNREACHABLE or CRITICAL
+            * `3` - UNKNOWN
+            * `4` - PENDING
+          example: 0
+        name:
+          type: string
+          description: |
+            resource status name
+            * UP
+            * DOWN
+            * UNREACHABLE
+            * PENDING
+            * OK
+            * WARNING
+            * CRITICAL
+            * UNKNOWN
+          example: "UP"
+        severity_code:
+          type: integer
+          description: |
+            resource status name
+            * `1` - DOWN or CRITICAL
+            * `2` - WARNING
+            * `3` - UNKNOWN or UNREACHABLE
+            * `4` - PENDING
+            * `5` - UP or OK
+          example: 1
     Monitoring.HostGroup:
       type: object
       properties:
@@ -3619,21 +3635,50 @@ components:
     Monitoring.TimelineEvent:
       type: object
       properties:
+        id:
+          type: integer
+          description: "Id of the event (it is not uniq)"
+          example: 1
         type:
           type: string
-          description: "Type of Event (L - log, C - Comment, A - Acknowledgement, D - Downtime"
-          example: "C"
-        id:
-          type: string
-          description: "Concatinated ID of Type + Object ID"
-          example: "C25"
+          enum: [event, notification, downtime, acknowledgement, comment]
+          description: "Type of event"
+          example: "event"
         date:
           type: string
           format: date-time
-          description: "The date the event was created (ISO8601)"
-        object:
+          description: "The date the event happened (ISO8601)"
+        start_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: "The date the event started (ISO8601) (start date of downtime)"
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: "The date the event ended (ISO8601) (end date of downtime)"
+        content:
+          type: string
+          description: "The content of the event"
+        contact:
           type: object
-          description: "The detailed object properties of above types"
+          nullable: true
+          description: "The contact of the event"
+          properties:
+            id:
+              type: integer
+              nullable: true
+              description: "Id of the contact"
+            name:
+              type: string
+              description: "Name of the contact"
+        status:
+          $ref: '#/components/schemas/Monitoring.ResourceStatus'
+        tries:
+          type: integer
+          nullable: true
+          description: "The count of retry"
     Topology.Register:
       type: object
       required: [name, type, address]
