@@ -12,7 +12,7 @@ Feature:
     And the following CLAPI import data:
     """
     CMD;ADD;dummy_down;check;cat unknown_file
-    HOST;ADD;test;Test host;192.192.192.192;generic-host;central;
+    HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
     HOST;SETPARAM;test;check_command;dummy_down
     """
     And the configuration is generated and exported
@@ -36,7 +36,7 @@ Feature:
     And the following CLAPI import data:
     """
     CMD;ADD;dummy_critical;check;cat unknown_file
-    HOST;ADD;test;Test host;192.192.192.192;generic-host;central;
+    HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
     SERVICE;ADD;test;test_service1;generic-service;
     SERVICE;SETPARAM;test;test_service1;check_command;dummy_critical
     """
@@ -55,4 +55,4 @@ Feature:
 
     When I send a GET request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline?search={"type":"event"}'
 
-    Then the JSON node "result[0].status.name" should be equal to the string "CRITICAL"
+    Then the JSON node "result[0].status.name" should be equal to the string "WARNING"
