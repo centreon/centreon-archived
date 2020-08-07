@@ -40,6 +40,7 @@ class CentreonAuth
      * The default page has to be Events view
      */
     public const DEFAULT_PAGE = 104;
+    public const PWS_OCCULTATION = '******';
 
     // Declare Values
     public $userInfos;
