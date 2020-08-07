@@ -57,10 +57,17 @@ const truncate = (content: string): string => {
 
   return content;
 };
+
 const Content = ({ event }: Props): JSX.Element => {
   const { content } = event;
 
   return <Typography variant="caption">{truncate(content)}</Typography>;
+};
+
+const Author = ({ event, label }: Props & { label: string }): JSX.Element => {
+  const suffix = event.contact ? `${labelBy} ${event.contact.name}` : '';
+
+  return <Typography variant="h6">{`${label} ${suffix}`}</Typography>;
 };
 
 const EventTimelineEvent = ({ event }: Props): JSX.Element => {
@@ -94,7 +101,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelComment} ${labelBy} ${event.contact?.name}`}</Typography>
+          <Author event={event} label={labelComment} />
         </div>
         <Content event={event} />
       </div>
@@ -111,7 +118,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelAcknowledgement} ${labelBy} ${event.contact?.name}`}</Typography>
+          <Author event={event} label={labelAcknowledgement} />
         </div>
         <Content event={event} />
       </div>
@@ -128,7 +135,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelDowntime} ${labelBy} ${event.contact?.name}`}</Typography>
+          <Author event={event} label={labelDowntime} />
         </div>
         <Typography variant="caption">
           {`${labelFrom} ${getFormattedDateTime(
