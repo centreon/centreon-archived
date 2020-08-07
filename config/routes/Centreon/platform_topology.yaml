@@ -1,5 +1,0 @@
-platform_topology.add_platform_to_topology:
-  methods: POST
-  path: /platform_topology
-  controller: 'Centreon\Application\Controller\PlatformTopologyController::addPlatformToTopology'
-  condition: "request.attributes.get('version') >= 2.0"
