@@ -1111,6 +1111,9 @@ class CentreonLdapAdmin
     public function setGeneralOptions($arId, $options)
     {
         $gopt = $this->getGeneralOptions($arId);
+        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $arId == 0) {
+            unset($gopt["bind_pass"]);
+        }
         if (!count($gopt)
             && isset($options['ar_name'])
             && isset($options['ar_description'])
@@ -1147,8 +1150,10 @@ class CentreonLdapAdmin
                 WHERE ar_id = " . $this->db->escape($arId)
             );
         }
-
         $knownParameters = $this->getLdapParameters();
+        if (isset($options["bind_pass"]) && $options["bind_pass"] === CentreonAuth::PWS_OCCULTATION) {
+            unset($options["bind_pass"]);
+        }
         foreach ($options as $key => $value) {
             if (!in_array($key, $knownParameters)) {
                 continue;
@@ -1193,13 +1198,14 @@ class CentreonLdapAdmin
     public function getGeneralOptions($arId)
     {
         $gopt = array();
-        $query = "SELECT `ari_name`, `ari_value` 
-                 FROM `auth_ressource_info`
-                 WHERE ar_id = " . $this->db->escape($arId);
+        $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info` 
+                  WHERE `ari_name` <> 'bind_pass' 
+                  AND ar_id = " . $this->db->escape($arId);
         $res = $this->db->query($query);
         while ($row = $res->fetch()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
         }
+        $gopt['bind_pass'] = CentreonAuth::PWS_OCCULTATION;
         return $gopt;
     }
 
