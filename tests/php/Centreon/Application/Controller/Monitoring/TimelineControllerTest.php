@@ -33,6 +33,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
@@ -134,12 +135,16 @@ class TimelineControllerTest extends TestCase
 
         $view = $timelineController->getHostTimeline(1, $this->requestParameters);
 
+        $context = (new Context())
+            ->setGroups(TimelineController::SERIALIZER_GROUPS_MAIN)
+            ->enableMaxDepth();
+
         $this->assertEquals(
             $view,
             View::create([
                 'result' => [$this->timelineEvent],
                 'meta' => []
-            ])
+            ])->setContext($context)
         );
     }
 
@@ -165,12 +170,16 @@ class TimelineControllerTest extends TestCase
 
         $view = $timelineController->getServiceTimeline(1, 1, $this->requestParameters);
 
+        $context = (new Context())
+            ->setGroups(TimelineController::SERIALIZER_GROUPS_MAIN)
+            ->enableMaxDepth();
+
         $this->assertEquals(
             $view,
             View::create([
                 'result' => [$this->timelineEvent],
                 'meta' => []
-            ])
+            ])->setContext($context)
         );
     }
 }

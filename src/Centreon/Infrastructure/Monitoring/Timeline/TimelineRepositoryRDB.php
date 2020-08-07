@@ -33,7 +33,7 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Contact;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 
@@ -116,7 +116,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
     {
         $timelineEvents = [];
 
-        if ($this->hasNotEnoughRightsToContinue()) {
+        if (!$this->hasEnoughRightsToContinue()) {
             return $timelineEvents;
         }
 
@@ -279,6 +279,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             WHERE l.host_id = :host_id
             AND (l.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR l.service_id IS NULL)') . "
             AND l.msg_type IN (0,1,8,9)
+            AND l.output NOT LIKE 'INITIAL % STATE:%'
         ");
 
         $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
@@ -512,6 +513,11 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         return $request;
     }
 
+    /**
+     * Check if contact is an admin
+     *
+     * @return boolean
+     */
     private function isAdmin(): bool
     {
         return ($this->contact !== null)
@@ -534,10 +540,10 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
      *
      * @return bool
      */
-    private function hasNotEnoughRightsToContinue(): bool
+    private function hasEnoughRightsToContinue(): bool
     {
         return ($this->contact !== null)
-            ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
-            : count($this->accessGroups) == 0;
+            ? ($this->contact->isAdmin() || count($this->accessGroups) > 0)
+            : count($this->accessGroups) > 0;
     }
 }
