@@ -14568,4 +14568,4 @@ msgstr ""
 #  msgstr ""
 
 #  msgid "sent to"
-#  msgid ""
+#  msgstr ""

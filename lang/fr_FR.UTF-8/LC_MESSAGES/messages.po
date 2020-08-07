@@ -15469,4 +15469,4 @@ msgid "Name cannot be empty"
 msgstr "Le nom ne peut pas être vide"
 
 msgid "sent to"
-msgid "envoyé à"
+msgstr "envoyé à"
