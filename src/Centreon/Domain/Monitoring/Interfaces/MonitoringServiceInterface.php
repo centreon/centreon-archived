@@ -29,7 +29,6 @@ use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
-use Centreon\Domain\Monitoring\TimelineEvent;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
@@ -127,16 +126,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @return array
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
-
-    /**
-     * Find all timeline events for given service by host and service id
-     *
-     * @param int $hostid
-     * @param int $serviceId
-     * @return TimelineEvent[]
-     * @throws \Exception
-     */
-    public function findTimelineEvents(int $hostid, int $serviceId): array;
 
     /**
      * Try to hide all macro password values of the command line.

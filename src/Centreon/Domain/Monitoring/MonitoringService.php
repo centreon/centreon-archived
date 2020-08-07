@@ -28,7 +28,6 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterfa
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Monitoring\Interfaces\TimelineRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
@@ -54,10 +53,6 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     private $accessGroupRepository;
 
     /**
-     * @var TimelineRepositoryInterface
-     */
-    private $timelineRepository;
-    /**
      * @var ServiceConfigurationServiceInterface
      */
     private $serviceConfiguration;
@@ -71,18 +66,15 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ServiceConfigurationServiceInterface $serviceConfigurationService
      * @param HostConfigurationServiceInterface $hostConfigurationService
-     * @param TimelineRepositoryInterface|null $timelineRepository
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
         AccessGroupRepositoryInterface $accessGroupRepository,
         ServiceConfigurationServiceInterface $serviceConfigurationService,
-        HostConfigurationServiceInterface $hostConfigurationService,
-        TimelineRepositoryInterface $timelineRepository = null
+        HostConfigurationServiceInterface $hostConfigurationService
     ) {
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
-        $this->timelineRepository = $timelineRepository;
         $this->serviceConfiguration = $serviceConfigurationService;
         $this->hostConfiguration = $hostConfigurationService;
     }
@@ -99,10 +91,6 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         $accessGroups = $this->accessGroupRepository->findByContact($contact);
 
         $this->monitoringRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        $this->timelineRepository
             ->setContact($this->contact)
             ->filterByAccessGroups($accessGroups);
 
@@ -293,14 +281,6 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array
     {
         return $this->monitoringRepository->findServiceGroupsByHostAndService($hostId, $serviceId);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findTimelineEvents(int $hostid, int $serviceId): array
-    {
-        return $this->timelineRepository->findTimelineEventsByHostAndService($hostid, $serviceId);
     }
 
     /**
