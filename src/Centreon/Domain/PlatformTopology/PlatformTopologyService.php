@@ -24,7 +24,6 @@ namespace Centreon\Domain\PlatformTopology;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 
 /**
@@ -54,12 +53,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         // search for already registered platforms using same name of address
-        $foundRegisteredPlatformTopology = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
+        $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
             $platformTopology->getAddress(),
             $platformTopology->getName()
         );
 
-        if (!empty($foundRegisteredPlatformTopology)) {
+        if ($isAlreadyRegistered === true) {
             throw new PlatformTopologyConflictException(
                 sprintf(
                     _("A platform using the name : '%s' or address : '%s' already exists"),
