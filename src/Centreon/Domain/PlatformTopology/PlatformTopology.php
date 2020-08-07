@@ -22,18 +22,28 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use Symfony\Component\HttpFoundation\Response;
-
 /**
  * Class designed to retrieve servers to be added using the wizard
  *
  */
 class PlatformTopology
 {
+    private const TYPE_CENTRAL = 'central';
+    private const TYPE_POLLER = 'poller';
+    private const TYPE_REMOTE = 'remote';
+    private const TYPE_MAP = 'map';
+    private const TYPE_MBI = 'mbi';
+
     /**
      * Available server types
      */
-    private const AVAILABLE_TYPES = ['central', 'poller', 'remote', 'map', 'mbi'];
+    private const AVAILABLE_TYPES = [
+        self::TYPE_CENTRAL,
+        self::TYPE_POLLER,
+        self::TYPE_REMOTE,
+        self::TYPE_MAP,
+        self::TYPE_MBI
+    ];
 
     /**
      * @var int Id of server
@@ -215,6 +225,9 @@ class PlatformTopology
      */
     public function setParentAddress(?string $parentAddress): self
     {
+        if ($this->getType() === static::TYPE_CENTRAL && $parentAddress !== null) {
+            throw new \InvalidArgumentException(_("Cannot set parent address to a central server"));
+        }
         $this->parentAddress = $this->checkIpAddress($parentAddress);
         return $this;
     }
@@ -234,6 +247,9 @@ class PlatformTopology
      */
     public function setParentId(?int $parentId): self
     {
+        if ($this->getType() === static::TYPE_CENTRAL && $parentId !== null) {
+            throw new \InvalidArgumentException(_("Cannot set parent id to a central server"));
+        }
         $this->parentId = $parentId;
         return $this;
     }
