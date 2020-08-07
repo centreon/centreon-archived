@@ -41,30 +41,35 @@ try {
             `server_id` int(11),
             PRIMARY KEY (`id`),
             CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-            CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE SET NULL
+            CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         COMMENT='Registration and parent relation Table used to set the platform topology'
     ");
 
     // Then insert the central as first platform and parent of all others
     $errorMessage = "Unable to insert the central in the platform_topology table.";
-    $stmt = $pearDB->prepare(
-        "INSERT INTO `platform_topology` (
-            `address`,
-            `name`,
-            `type`,
-            `parent_id`,
-            `server_id`
-        ) VALUES (
-            :centralAddress,
-            (SELECT `name` FROM nagios_server WHERE localhost = '1'),
-            'central',
-            NULL,
-            (SELECT `id` FROM nagios_server WHERE localhost = '1')
-        )"
-    );
-    $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
-    $stmt->execute();
+    $centralServerQuery = $pearDB->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
+    if ($row = $centralServerQuery->fetch()) {
+        $stmt = $pearDB->prepare("
+            INSERT INTO `platform_topology` (
+                `address`,
+                `name`,
+                `type`,
+                `parent_id`,
+                `server_id`
+            ) VALUES (
+                :centralAddress,
+                :name,
+                'central',
+                NULL,
+                :id
+            )
+        ");
+        $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
+        $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
+        $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
+        $stmt->execute();
+    }
 } catch (Exception $e) {
     $centreonLog->insertLog(
         4,

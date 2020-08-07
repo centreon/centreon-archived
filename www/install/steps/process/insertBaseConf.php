@@ -91,23 +91,28 @@ try {
 }
 
 // Insert Central to 'platfrom_topology' table, as first server and parent of all others.
-$stmt = $link->prepare("
-    INSERT INTO `platform_topology` (
-        `address`,
-        `name`,
-        `type`,
-        `parent_id`,
-        `server_id`
-    ) VALUES (
-        :centralAddress,
-        (SELECT `name` FROM nagios_server WHERE localhost = '1'),
-        'central',
-        NULL,
-        (SELECT `id` FROM nagios_server WHERE localhost = '1')
-    )
-");
-$stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
-$stmt->execute();
+$centralServerQuery = $link->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
+if ($row = $centralServerQuery->fetch()) {
+    $stmt = $link->prepare("
+        INSERT INTO `platform_topology` (
+            `address`,
+            `name`,
+            `type`,
+            `parent_id`,
+            `server_id`
+        ) VALUES (
+            :centralAddress,
+            :name,
+            'central',
+            NULL,
+            :id
+        )
+    ");
+    $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
+    $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
+    $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
+    $stmt->execute();
+}
 
 // Manage timezone
 $timezone = date_default_timezone_get();
