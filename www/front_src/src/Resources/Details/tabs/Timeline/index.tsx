@@ -4,6 +4,8 @@ import {
   useRequest,
   ListingModel,
   useIntersectionObserver,
+  MultiAutocompleteField,
+  SelectEntry,
 } from '@centreon/ui';
 
 import {
@@ -31,6 +33,13 @@ import { TimelineEventByType } from './Event';
 import { TimelineEvent } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
+import {
+  labelEvent,
+  labelNotification,
+  labelAcknowledgement,
+  labelDowntime,
+  labelComment,
+} from '../../../translatedLabels';
 
 interface Props {
   endpoints: Pick<ResourceEndpoints, 'timeline'>;
@@ -44,9 +53,16 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     display: 'grid',
     alignItems: 'center',
-    justifyItems: 'center',
+    justifyItems: 'flex-start',
     alignContent: 'flex-start',
     gridGap: theme.spacing(1),
+  },
+  filterContainer: {
+    width: '100%',
+  },
+  filterAutocomplete: {
+    margin: theme.spacing(2),
+    width: 250,
   },
   events: {
     display: 'grid',
@@ -74,10 +90,40 @@ const LoadingSkeleton = (): JSX.Element => {
   );
 };
 
+const types = [
+  {
+    id: 'event',
+    name: labelEvent,
+  },
+
+  {
+    id: 'notification',
+    name: labelNotification,
+  },
+
+  {
+    id: 'comment',
+    name: labelComment,
+  },
+
+  {
+    id: 'acknowledge',
+    name: labelAcknowledgement,
+  },
+
+  {
+    id: 'downtime',
+    name: labelDowntime,
+  },
+];
+
 const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
+  const [selectedTypes, setSelectedTypes] = React.useState<Array<SelectEntry>>(
+    types,
+  );
   const [page, setPage] = React.useState(1);
   const [limit] = React.useState(10);
   const [maxPage, setMaxPage] = React.useState(1);
@@ -92,13 +138,24 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   React.useEffect(() => {
     sendRequest({
       endpoint: timelineEndpoint,
-      params: { page, limit },
+      options: {
+        page,
+        limit,
+        search: {
+          lists: [
+            {
+              field: 'type',
+              values: selectedTypes.map(prop('id')),
+            },
+          ],
+        },
+      },
     }).then(({ result, meta }) => {
       setTimeline(timeline.concat(result));
 
       setMaxPage(Math.ceil(meta.total / meta.limit));
     });
-  }, [page]);
+  }, [page, selectedTypes]);
 
   const infiniteScrollTriggerRef = useIntersectionObserver({
     maxPage,
@@ -126,8 +183,24 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const loading = isEmpty(timeline) && sending;
   const loadingMore = !isEmpty(timeline) && sending;
 
+  const changeSelectedTypes = (_, typeIds): void => {
+    setPage(1);
+    setTimeline([]);
+    setSelectedTypes(typeIds);
+  };
+
   return (
     <div className={classes.container}>
+      <Paper className={classes.filterContainer}>
+        <MultiAutocompleteField
+          className={classes.filterAutocomplete}
+          label={labelEvent}
+          onChange={changeSelectedTypes}
+          value={selectedTypes}
+          options={types}
+          fullWidth
+        />
+      </Paper>
       <div className={classes.events}>
         {loading ? (
           <LoadingSkeleton />
