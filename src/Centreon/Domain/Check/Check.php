@@ -89,18 +89,18 @@ class Check
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getCheckTime(): \DateTime
+    public function getCheckTime(): ?\DateTime
     {
         return $this->checkTime;
     }
 
     /**
-     * @param \DateTime $checkTime
+     * @param \DateTime|null $checkTime
      * @return Check
      */
-    public function setCheckTime(\DateTime $checkTime): Check
+    public function setCheckTime(?\DateTime $checkTime): Check
     {
         $this->checkTime = $checkTime;
         return $this;
