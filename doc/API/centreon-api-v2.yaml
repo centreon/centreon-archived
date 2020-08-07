@@ -1995,7 +1995,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /platform_topology:
+  /platform/topology:
     post:
       tags:
         - Topology
