@@ -908,6 +908,9 @@ class CentreonLdapAdmin
     public function setGeneralOptions($arId, $options)
     {
         $gopt = $this->getGeneralOptions($arId);
+        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $arId == 0) {
+            unset($gopt["bind_pass"]);
+        }
         if (!count($gopt) && isset($options['ar_name']) && isset($options['ar_description'])) {
             $this->db->query(
                 "INSERT INTO auth_ressource (ar_name, ar_description, ar_type, ar_enable) 
@@ -934,6 +937,9 @@ class CentreonLdapAdmin
         }
 
         $knownParameters = $this->getLdapParameters();
+        if (isset($options["bind_pass"]) && $options["bind_pass"] === CentreonAuth::PWS_OCCULTATION) {
+            unset($options["bind_pass"]);
+        }
         foreach ($options as $key => $value) {
             if (!in_array($key, $knownParameters)) {
                 continue;
@@ -972,12 +978,14 @@ class CentreonLdapAdmin
     {
         $gopt = array();
         
-        $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info` WHERE ar_id = ?";
+        $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info` 
+                  WHERE `ari_name` <> 'bind_pass' AND ar_id = ?";
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, array($arId));
         while ($row = $res->fetchRow()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
         }
+        $gopt['bind_pass'] = CentreonAuth::PWS_OCCULTATION;
         return $gopt;
     }
 

@@ -41,6 +41,7 @@ class CentreonAuth
     /*
      * Declare Values
      */
+    public const PWS_OCCULTATION = '******';
 
     protected $login;
     protected $password;

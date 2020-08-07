@@ -48,7 +48,7 @@ $transcoKey = array(
     'display_comment_chart' => 'yes'
 );
 
-$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` <> 'proxy_password'");
 while ($opt = $DBRESULT->fetchRow()) {
     if (isset($transcoKey[$opt["key"]])) {
         $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
@@ -56,6 +56,7 @@ while ($opt = $DBRESULT->fetchRow()) {
         $gopt[$opt["key"]] = myDecode($opt["value"]);
     }
 }
+$gopt['proxy_password'] = CentreonAuth::PWS_OCCULTATION;
 
 /*
  * Style
