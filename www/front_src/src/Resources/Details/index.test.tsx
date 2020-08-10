@@ -392,7 +392,7 @@ describe(Details, () => {
     );
   });
 
-  it.only('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
+  it('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
