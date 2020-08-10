@@ -128,7 +128,7 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
       }
-    },
+    }
     /*
     'centos8': {
       node {
@@ -150,7 +150,7 @@ try {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
-    },
+    }
     /*
     'centos8': {
       node {
