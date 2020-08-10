@@ -344,49 +344,12 @@ Timeline.DurationEventPainter.prototype._showBubble = function(x, y, evt) {
         this._theme.event.bubble.imageStyler(img);
         div.appendChild(img);
     }
-    /*
-    var divTitle = doc.createElement("div");
-    var textTitle = doc.createTextNode(title);
-    if (link != null) {
-        var a = doc.createElement("a");
-        a.href = link;
-        a.appendChild(textTitle);
-        divTitle.appendChild(a);
-    } else {
-        divTitle.appendChild(textTitle);
-    }
-    this._theme.event.bubble.titleStyler(divTitle);
-    div.appendChild(divTitle);
-*/
+
     var divBody = doc.createElement("div");
     evt.fillDescription(divBody);
     this._theme.event.bubble.bodyStyler(divBody);
     div.appendChild(divBody);
 
-/*
-    var divTime = doc.createElement("div");
-    evt.fillTime(divTime, this._band.getLabeller());
-    this._theme.event.bubble.timeStyler(divTime);
-    div.appendChild(divTime);
-   */
-
-// get locale and GMT preferences from localStorage
-    var userTimezone = localStorage.getItem('realTimezone');
-    var userLocale = localStorage.getItem('locale');
-    moment.locale(userLocale);
-
-    //creating a collection of occurences
-    jQuery(".isTimeline").each(function(index, element) {
-        var myElement = jQuery(element);
-
-        //forcing a numeric timestamp
-        var currentDate = parseInt(myElement.text()) * 1000;
-
-        //checking the choosen format
-        if (!isNaN(currentDate)) {
-            if (myElement.hasClass("isDate")) {
-                myElement.text(moment(currentDate).tz(userTimezone).format('LL'));
-            }
-        }
-    });
+    // format date in event popin
+    formatDateMoment();
 };
