@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Timeline;
 
-use Centreon\Domain\Monitoring\Contact;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use DateTime;
 
