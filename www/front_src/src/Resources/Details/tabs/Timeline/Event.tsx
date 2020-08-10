@@ -6,9 +6,9 @@ import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
 import { StatusChip } from '@centreon/ui';
-import { gt } from 'ramda';
+import { gt, prop } from 'ramda';
 
-import { TimelineEvent } from './models';
+import { TimelineEvent, Type } from './models';
 import {
   labelEvent,
   labelComment,
@@ -19,10 +19,42 @@ import {
   labelTo,
   labelNotificationSentTo,
   labelTries,
+  labelNotification,
 } from '../../../translatedLabels';
 import { getFormattedTime, getFormattedDateTime } from '../../../dateTime';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
+
+const types: Array<Type> = [
+  {
+    id: 'event',
+    name: labelEvent,
+  },
+
+  {
+    id: 'notification',
+    name: labelNotification,
+  },
+
+  {
+    id: 'comment',
+    name: labelComment,
+  },
+
+  {
+    id: 'acknowledge',
+    name: labelAcknowledgement,
+  },
+
+  {
+    id: 'downtime',
+    name: labelDowntime,
+  },
+];
+
+const getTypeIds = (): Array<string> => {
+  return types.map(prop('id'));
+};
 
 const useStyles = makeStyles((theme) => ({
   info: {
@@ -173,4 +205,4 @@ const TimelineEventByType = {
   downtime: DowntimeTimelineEvent,
 };
 
-export { TimelineEventByType };
+export { TimelineEventByType, types, getTypeIds };

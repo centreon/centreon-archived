@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, pipe, not, and, defaultTo } from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo } from 'ramda';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 
@@ -70,7 +70,7 @@ const Details = (): JSX.Element | null => {
       return theme.palette.common.white;
     }
 
-    return fade(foundColorCondition.color, 0.8);
+    return fade(foundColorCondition.color || '#nnn', 0.8);
   };
 
   return (

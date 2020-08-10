@@ -6,6 +6,7 @@ import {
   useIntersectionObserver,
   MultiAutocompleteField,
   SelectEntry,
+  Search,
 } from '@centreon/ui';
 
 import {
@@ -30,8 +31,8 @@ import { Skeleton } from '@material-ui/lab';
 
 import { getFormattedDate } from '../../../dateTime';
 import { ResourceEndpoints } from '../../../models';
-import { TimelineEventByType } from './Event';
-import { TimelineEvent } from './models';
+import { TimelineEventByType, types } from './Event';
+import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
 import {
@@ -41,6 +42,7 @@ import {
   labelDowntime,
   labelComment,
 } from '../../../translatedLabels';
+import { useResourceContext } from '../../../Context';
 
 interface Props {
   endpoints: Pick<ResourceEndpoints, 'timeline'>;
@@ -54,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     display: 'grid',
     alignItems: 'center',
-    justifyItems: 'flex-start',
+    justifyItems: 'center',
     alignContent: 'flex-start',
     gridGap: theme.spacing(1),
   },
@@ -63,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
   },
   filterAutocomplete: {
     margin: theme.spacing(2),
-    width: 250,
   },
   events: {
     display: 'grid',
@@ -91,72 +92,69 @@ const LoadingSkeleton = (): JSX.Element => {
   );
 };
 
-const types = [
-  {
-    id: 'event',
-    name: labelEvent,
-  },
-
-  {
-    id: 'notification',
-    name: labelNotification,
-  },
-
-  {
-    id: 'comment',
-    name: labelComment,
-  },
-
-  {
-    id: 'acknowledge',
-    name: labelAcknowledgement,
-  },
-
-  {
-    id: 'downtime',
-    name: labelDowntime,
-  },
-];
-
 const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<SelectEntry>>(
-    types,
-  );
+  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
   const [page, setPage] = React.useState(1);
   const [limit] = React.useState(10);
   const [maxPage, setMaxPage] = React.useState(1);
 
   const { timeline: timelineEndpoint } = endpoints;
+  const { listing } = useResourceContext();
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
   });
 
-  React.useEffect(() => {
-    sendRequest({
+  const listTimeline = (): Promise<TimelineListing> => {
+    const getSearch = (): Search | undefined => {
+      if (isEmpty(selectedTypes)) {
+        return undefined;
+      }
+
+      return {
+        lists: [
+          {
+            field: 'type',
+            values: selectedTypes.map(prop('id')),
+          },
+        ],
+      };
+    };
+
+    return sendRequest({
       endpoint: timelineEndpoint,
       options: {
         page,
         limit,
-        search: {
-          lists: [
-            {
-              field: 'type',
-              values: selectedTypes.map(prop('id')),
-            },
-          ],
-        },
+        search: getSearch(),
       },
-    }).then(({ result, meta }) => {
-      setTimeline(timeline.concat(result));
-
+    }).then((retrievedListing) => {
+      const { meta } = retrievedListing;
       setMaxPage(Math.ceil(meta.total / meta.limit));
+
+      return retrievedListing;
     });
-  }, [page, selectedTypes]);
+  };
+
+  React.useEffect(() => {
+    if (isEmpty(timeline)) {
+      return;
+    }
+
+    listTimeline().then(({ result }) => {
+      setTimeline(timeline.concat(result));
+    });
+  }, [page]);
+
+  React.useEffect(() => {
+    setPage(1);
+    setTimeline([]);
+    listTimeline().then(({ result }) => setTimeline(result));
+  }, [listing, endpoints, selectedTypes]);
 
   const infiniteScrollTriggerRef = useIntersectionObserver({
     maxPage,
@@ -181,26 +179,26 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
 
   const dates = eventsByDate.map(head);
 
-  const loading = isEmpty(timeline) && sending;
+  const loading = sending;
   const loadingMore = !isEmpty(timeline) && sending;
 
   const changeSelectedTypes = (_, typeIds): void => {
-    setPage(1);
-    setTimeline([]);
     setSelectedTypes(typeIds);
   };
 
   return (
     <div className={classes.container}>
       <Paper className={classes.filterContainer}>
-        <MultiAutocompleteField
-          className={classes.filterAutocomplete}
-          label={labelEvent}
-          onChange={changeSelectedTypes}
-          value={selectedTypes}
-          options={types}
-          fullWidth
-        />
+        <div className={classes.filterAutocomplete}>
+          <MultiAutocompleteField
+            label={labelEvent}
+            onChange={changeSelectedTypes}
+            value={selectedTypes}
+            options={types}
+            fullWidth
+            limitTags={4}
+          />
+        </div>
       </Paper>
       <div className={classes.events}>
         {loading ? (

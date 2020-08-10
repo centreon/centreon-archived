@@ -1,3 +1,5 @@
+import { RegexSearch } from '@centreon/ui';
+
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
@@ -16,6 +18,8 @@ const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
+const searchableFields = ['h.name', 'h.alias', 'h.address', 's.description'];
+
 const getListingEndpoint = ({
   page = 1,
   limit = 30,
@@ -25,7 +29,7 @@ const getListingEndpoint = ({
   resourceTypes = defaultResourceTypes,
   hostGroupIds = [],
   serviceGroupIds = [],
-  search = '',
+  search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
     page,
@@ -33,7 +37,14 @@ const getListingEndpoint = ({
     sort,
     statuses,
     states,
-    search,
+    search: search
+      ? {
+          regex: {
+            value: search,
+            fields: ['h.name', 'h.alias', 'h.address', 's.description'],
+          },
+        }
+      : undefined,
     resourceTypes,
     hostGroupIds,
     serviceGroupIds,
@@ -58,4 +69,5 @@ export {
   defaultStatuses,
   defaultResourceTypes,
   defaultStates,
+  searchableFields,
 };
