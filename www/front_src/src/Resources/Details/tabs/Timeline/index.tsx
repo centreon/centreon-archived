@@ -5,7 +5,6 @@ import {
   ListingModel,
   useIntersectionObserver,
   MultiAutocompleteField,
-  SelectEntry,
   Search,
 } from '@centreon/ui';
 
@@ -35,13 +34,7 @@ import { TimelineEventByType, types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
-import {
-  labelEvent,
-  labelNotification,
-  labelAcknowledgement,
-  labelDowntime,
-  labelComment,
-} from '../../../translatedLabels';
+import { labelEvent } from '../../../translatedLabels';
 import { useResourceContext } from '../../../Context';
 
 interface Props {

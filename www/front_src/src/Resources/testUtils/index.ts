@@ -1,5 +1,3 @@
-import { RegexSearch } from '@centreon/ui';
-
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
