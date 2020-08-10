@@ -1,4 +1,10 @@
 Centreon\Domain\Monitoring\Service:
+    virtual_properties:
+        getActiveCheck:
+            serialized_name: active_checks
+            type: bool
+            groups:
+                - 'resource_details_service'
     properties:
         id:
             type: int
@@ -83,7 +89,6 @@ Centreon\Domain\Monitoring\Service:
             type: bool
             groups:
                 - 'service_full'
-                - 'resource_details_service'
         isChecked:
             type: bool
             groups:
@@ -194,6 +199,11 @@ Centreon\Domain\Monitoring\Service:
                 - 'resource_details_service'
         acknowledgement:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
+            groups:
+                - 'service_full'
+                - 'resource_details_service'
+        flapping:
+            type: bool
             groups:
                 - 'service_full'
                 - 'resource_details_service'

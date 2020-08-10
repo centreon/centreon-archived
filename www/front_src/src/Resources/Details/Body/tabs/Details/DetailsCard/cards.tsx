@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Typography, Grid, makeStyles } from '@material-ui/core';
+import { Typography, Grid, makeStyles, Box } from '@material-ui/core';
 import IconCheck from '@material-ui/icons/Check';
 
 import {
@@ -18,6 +18,7 @@ import {
   labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
+  labelNo,
 } from '../../../../../translatedLabels';
 import { getFormattedDate, getFormattedTime } from '../../../../../dateTime';
 import { ResourceDetails } from '../../../../models';
@@ -31,7 +32,13 @@ interface DetailCardLines {
 }
 
 const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
-  return <Typography variant="h5">{line}</Typography>;
+  return (
+    <Typography component="div">
+      <Box fontWeight={500} lineHeight={1}>
+        {line}
+      </Box>
+    </Typography>
+  );
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -148,7 +155,7 @@ const getDetailCardLines = (
       getLines: (): Lines => [
         {
           key: 'flapping',
-          line: <DetailsLine line={details.flapping ? 'N/A' : labelYes} />,
+          line: <DetailsLine line={details.flapping ? labelYes : labelNo} />,
         },
       ],
     },

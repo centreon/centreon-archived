@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,49 +40,72 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonHost.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonSession.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonUtils.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonXML.class.php";
 
 CentreonSession::start(1);
 $centreon = $_SESSION["centreon"];
-if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["cmd"]) || !isset($_GET["actiontype"])) {
+if (!isset($_SESSION["centreon"], $_POST["host_id"], $_POST["cmd"], $_POST["actiontype"])) {
     exit();
 }
 $pearDB = new CentreonDB();
 $hostObj = new CentreonHost($pearDB);
-$host_id = $_GET["host_id"];
-$poller = $hostObj->getHostPollerId($host_id);
-$cmd = $_GET["cmd"];
-$sid = session_id();
-$act_type = $_GET["actiontype"];
+
+$hostId = filter_var(
+    $_POST['host_id'] ?? false,
+    FILTER_VALIDATE_INT
+);
+
+$pollerId = $hostObj->getHostPollerId($hostId);
+
+$cmd = filter_var(
+    $_POST['cmd'] ?? '',
+    FILTER_SANITIZE_STRING
+);
+
+$cmd = CentreonUtils::escapeSecure($cmd, CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+
+$actionType = (int)$_POST['actiontype'];
 
 $pearDB = new CentreonDB();
 
-$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".CentreonDB::escape($sid)."'");
-if (!$DBRESULT->rowCount()) {
+if ($sessionId = session_id()) {
+    $res = $pearDB->prepare("SELECT * FROM `session` WHERE `session_id` = :sid");
+    $res->bindValue(':sid', $sessionId, PDO::PARAM_STR);
+    $res->execute();
+    if (!$session = $res->fetch(PDO::FETCH_ASSOC)) {
+        exit();
+    }
+} else {
     exit();
 }
-if ($centreon->user->is_admin() === 0) {
+
+/* If admin variable equals 1 it means that user admin
+ * otherwise it means that it is a simple user under ACL
+ */
+$isAdmin = (int) $centreon->user->access->admin;
+if ($isAdmin === 0) {
     if (!$centreon->user->access->checkAction($cmd)) {
         exit();
     }
-    if (!$centreon->user->access->checkHost($host_id)) {
+    if (!$centreon->user->access->checkHost($hostId)) {
         exit();
     }
 }
 
 $command = new CentreonExternalCommand($centreon);
-$cmd_list = $command->getExternalCommandList();
-$send_cmd = $cmd_list[$cmd][$act_type];
-$send_cmd .= ";" . $hostObj->getHostName($host_id) . ";" . time();
-$command->setProcessCommand($send_cmd, $poller);
-$act_type ? $return_type = 1 : $return_type = 0;
+$commandList = $command->getExternalCommandList();
+$sendCommand = $commandList[$cmd][$actionType];
+$sendCommand .= ";" . $hostObj->getHostName($hostId) . ";" . time();
+$command->setProcessCommand($sendCommand, $pollerId);
+$returnType = $actionType ? 1 : 0;
 $result = $command->write();
 $buffer = new CentreonXML();
 $buffer->startElement("root");
 $buffer->writeElement("result", $result);
 $buffer->writeElement("cmd", $cmd);
-$buffer->writeElement("actiontype", $return_type);
+$buffer->writeElement("actiontype", $returnType);
 $buffer->endElement();
 header('Content-type: text/xml; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');

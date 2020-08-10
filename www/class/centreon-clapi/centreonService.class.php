@@ -79,6 +79,7 @@ class CentreonService extends CentreonObject
     const ORDER_SVCTPL = 2;
     const NB_UPDATE_PARAMS = 4;
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
         'CMD',
@@ -668,6 +669,11 @@ class CentreonService extends CentreonObject
                 break;
             case "flap_detection_options":
                 break;
+            case "geo_coords":
+                if (!CentreonUtils::validateGeoCoords($params[3])) {
+                    throw new CentreonClapiException(self::INVALID_GEO_COORDS);
+                }
+                break;
             case "template":
                 $params[2] = "service_template_model_stm_id";
                 $tmp = $this->object->getList(
@@ -730,7 +736,7 @@ class CentreonService extends CentreonObject
                 $params[2] = "esi_" . $params[2];
                 if ($params[2] == "esi_icon_image") {
                     if ($params[3]) {
-                        $id = CentreonUtils::getImageId($params[3]);
+                        $id = CentreonUtils::getImageId($params[3], $this->db);
                         if (is_null($id)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[3]);
                         }

@@ -42,7 +42,7 @@ class Service implements EntityDescriptorMetadataInterface
     public const SERIALIZER_GROUP_WITH_HOST = 'service_with_host';
 
     /**
-     * @var int Unique index
+     * @var int|null Unique index
      */
     protected $id;
 
@@ -222,6 +222,11 @@ class Service implements EntityDescriptorMetadataInterface
     protected $acknowledgement;
 
     /**
+     * @var bool|null
+     */
+    protected $flapping;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -236,9 +241,9 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -465,6 +470,15 @@ class Service implements EntityDescriptorMetadataInterface
     {
         $this->isAcknowledged = $isAcknowledged;
         return $this;
+    }
+
+    /**
+     * virtual property used by resource details endpoint
+     * @return bool
+     */
+    public function getActiveCheck(): bool
+    {
+        return $this->isActiveCheck;
     }
 
     /**
@@ -878,6 +892,24 @@ class Service implements EntityDescriptorMetadataInterface
     public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return Service
+     */
+    public function setFlapping(?bool $flapping): self
+    {
+        $this->flapping = $flapping;
         return $this;
     }
 }

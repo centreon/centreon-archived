@@ -1,9 +1,5 @@
-import format from 'date-fns/format';
+const timeFormat = 'HH:mm';
+const dateTimeFormat = 'MM/DD HH:mm';
+const dateFormat = 'MM/DD';
 
-const formatTimeAxis = (tick): string => {
-  const tickTimestamp = Number(tick) * 1000;
-
-  return format(new Date(tickTimestamp), 'HH:mm');
-};
-
-export { formatTimeAxis };
+export { timeFormat, dateTimeFormat, dateFormat };

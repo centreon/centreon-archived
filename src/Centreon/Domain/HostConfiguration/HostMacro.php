@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\Annotation\EntityDescriptor;
+
 class HostMacro
 {
     /**
@@ -41,6 +43,7 @@ class HostMacro
 
     /**
      * @var bool Indicates whether this macro contains a password
+     * @EntityDescriptor(column="is_password", modifier="setPassword")
      */
     private $isPassword = false;
 
@@ -53,6 +56,11 @@ class HostMacro
      * @var int|null
      */
     private $order;
+
+    /**
+     * @var int|null
+     */
+    private $hostId;
 
     /**
      * @return int|null
@@ -169,6 +177,24 @@ class HostMacro
     public function setOrder(?int $order): HostMacro
     {
         $this->order = $order;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHostId(): ?int
+    {
+        return $this->hostId;
+    }
+
+    /**
+     * @param int|null $hostId
+     * @return HostMacro
+     */
+    public function setHostId(?int $hostId): HostMacro
+    {
+        $this->hostId = $hostId;
         return $this;
     }
 }

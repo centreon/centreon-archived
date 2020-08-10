@@ -3,15 +3,15 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
         comment:
             - Type:
                 type: string
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
             - NotNull:
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
         isNotifyContacts:
             - Type:
                 type: boolean
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
             - NotNull:
-                groups: [ack_resource]
+                groups: [Default, ack_resource]
         isPersistentComment:
             - Type:
                 type: boolean
@@ -202,17 +202,17 @@ Centreon\Domain\Monitoring\Resource:
         id:
             - Type:
                 type: int
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, disack_host, disack_service, downtime_host, downtime_service]
         type:
             - Type:
                 type: string
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, disack_host, disack_service, downtime_host, downtime_service]
             - Choice:
                 choices:
                     - service
                     - host
                 multiple: false
-                groups: [Default, disack_host, disack_service]
+                groups: [Default, ack_host, ack_service, disack_host, disack_service, downtime_host, downtime_service]
         parent:
             - NotNull:
-                groups: [disack_service]
+                groups: [ack_service, downtime_service]

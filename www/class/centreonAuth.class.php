@@ -36,6 +36,12 @@
 
 class CentreonAuth
 {
+    /**
+     * The default page has to be Events view
+     */
+    public const DEFAULT_PAGE = 104;
+    public const PWS_OCCULTATION = '******';
+
     // Declare Values
     public $userInfos;
     protected $login;
@@ -101,7 +107,7 @@ class CentreonAuth
         $this->debug = $this->getLogFlag();
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
-        $this->default_page = 1;
+        $this->default_page = self::DEFAULT_PAGE;
         $this->source = $source;
 
         $res = $pearDB->query(

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,28 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\MonitoringServer\MonitoringServerResource;
+use Centreon\Infrastructure\MonitoringServer\MonitoringServerRepositoryRDB;
 
 interface MonitoringServerRepositoryInterface
 {
-
     /**
-     * Find monitoring servers.
+     * Find monitoring servers taking into account the request parameters.
      *
      * @return MonitoringServer[]
      * @throws \Exception
      */
-    public function findServers(): array;
+    public function findServersWithRequestParameters(): array;
+
+    /**
+     * Find monitoring servers without taking into account the request parameters.
+     *
+     * @return MonitoringServer[]
+     * @throws \Exception
+     */
+    public function findServersWithoutRequestParameters(): array;
 
     /**
      * Find a resource of monitoring servers identified by his name.
@@ -52,4 +61,21 @@ interface MonitoringServerRepositoryInterface
      * @throws \Exception
      */
     public function findLocalServer(): ?MonitoringServer;
+
+    /**
+     * We notify that the configuration has changed.
+     *
+     * @param MonitoringServer $monitoringServer Monitoring server to notify
+     * @throws \Exception
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
+
+    /**
+     * Find a monitoring server.
+     *
+     * @param int $monitoringServerId Id of the monitoring server to be found
+     * @return MonitoringServer|null
+     * @throws \Exception
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer;
 }

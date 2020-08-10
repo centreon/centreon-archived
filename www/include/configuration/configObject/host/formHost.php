@@ -74,10 +74,12 @@ $notifCgs = $acl->getContactGroupAclConf(array(
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-/*
+/**
  * Validate function for all host is in the same instances
+ *
+ * @return bool
+ * @throws HTML_QuickForm_Error
  */
-
 function childSameInstance()
 {
     global $form;
@@ -93,6 +95,10 @@ function childSameInstance()
     return allInSameInstance($listChild, $instanceId);
 }
 
+/**
+ * @return bool
+ * @throws HTML_QuickForm_Error
+ */
 function parentSameInstance()
 {
     global $form;
@@ -241,17 +247,7 @@ $extImgStatusmap = array();
 $extImgStatusmap = return_image_list(2);
 
 // Host multiple templates relations stored in DB
-$mTp = array();
-$k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id 
-                            FROM host_template_relation 
-                            WHERE host_host_id = '" . $host_id . "' 
-                            ORDER BY `order`");
-while ($multiTp = $DBRESULT->fetch()) {
-    $mTp[$k] = $multiTp["host_tpl_id"];
-    $k++;
-}
-$DBRESULT->closeCursor();
+$mTp = $hostObj->getSavedTpl($host_id);
 
 
 // Var information to format the element
@@ -297,14 +293,6 @@ $attrHosts = array(
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
-$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates'
-    . '&action=list';
-$attrHostTpls = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $hostTplRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonHosttemplates'
-);
 $hostGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
@@ -335,6 +323,7 @@ $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
 $form->registerRule('validate_childs', 'function', 'childSameInstance');
 $form->registerRule('validate_parents', 'function', 'parentSameInstance');
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Host"));
@@ -392,7 +381,7 @@ $form->addElement('select2', 'host_location', _("Timezone / Location"), array(),
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 /*
- * Get deault poller id
+ * Get default poller id
  */
 $DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 $defaultServer = $DBRESULT->fetch();
@@ -456,13 +445,16 @@ $cloneSetMacro[] = $form->addElement(
     array('id' => 'macroFrom_#index#')
 );
 
-
 $cloneSetTemplate = array();
+$listPpTemplate = $hostObj->getLimitedList();
+$listAllTemplate = $hostObj->getList(false, true, null);
+$validTemplate = array_diff_key($listAllTemplate, $listPpTemplate);
+$listTemplate = array(null => null) + $mTp + $validTemplate;
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
     '',
-    (array(null => null) + $hostObj->getList(false, true)),
+    $listTemplate,
     array(
         "id" => "tpSelect_#index#",
         "class" => "select2",
@@ -980,6 +972,7 @@ $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extIm
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 if (!$centreon->user->admin && $o == "a") {
     $aclDeRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup'
@@ -1060,7 +1053,8 @@ if ($o != "mc") {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
-    if (isset($centreon->optGen["strict_hostParent_poller_management"])
+    if (
+        isset($centreon->optGen["strict_hostParent_poller_management"])
         && $centreon->optGen["strict_hostParent_poller_management"] == 1
     ) {
         $form->registerRule('testPollerDep', 'callback', 'testPollerDep');

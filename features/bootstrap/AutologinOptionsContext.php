@@ -2,7 +2,9 @@
 
 use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
+use Centreon\Test\Behat\Configuration\HostConfigurationListingPage;
 use Centreon\Test\Behat\CentreonContext;
+use Centreon\Test\Behat\External\LoginPage;
 
 class AutologinOptionsContext extends CentreonContext
 {
@@ -15,6 +17,7 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->currentPage = new CurrentUserConfigurationPage($this);
         $this->currentPage->setProperties(array(
+            'default' => 'Configuration > Hosts',
             'autologin_key' => 'autolog'
         ));
         $this->currentPage->save();
@@ -37,8 +40,12 @@ class AutologinOptionsContext extends CentreonContext
      */
     public function iTypeTheAutologinUrlWithTheFullscreenOptionInMyWebBrowser()
     {
-        $this->visit('main.php?autologin=1&useralias=admin&token=autolog&min=1');
-        $this->currentPage = $this->getSession()->getPage();
+        $this->iAmLoggedOut();
+
+        // log in with autologin
+        $this->visit('main.php?autologin=1&useralias=admin&token=autolog&min=1', false);
+        self::$lastUri = 'p=60101';
+        $this->switchToIframe();
     }
 
     /**
@@ -48,8 +55,8 @@ class AutologinOptionsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                $element = $this->currentPage->find('css', 'div.toggleEdit');
-                return !is_null($element);
+                new HostConfigurationListingPage($context, false);
+                return true;
             },
             'The current page is not valid.',
             5

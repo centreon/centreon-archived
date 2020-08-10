@@ -39,9 +39,13 @@ class Resource
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
 
-    //Groups for validation
+    // Groups for validation
+    public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];
+    public const VALIDATION_GROUP_ACK_SERVICE = ['ack_service'];
     public const VALIDATION_GROUP_DISACK_HOST = ['disack_host'];
     public const VALIDATION_GROUP_DISACK_SERVICE = ['disack_service'];
+    public const VALIDATION_GROUP_DOWNTIME_HOST = ['downtime_host'];
+    public const VALIDATION_GROUP_DOWNTIME_SERVICE = ['downtime_service'];
 
     // Types
     public const TYPE_SERVICE = 'service';
@@ -101,6 +105,11 @@ class Resource
      * @var string|null
      */
     private $detailsEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $timelineEndpoint;
 
     /**
      * @var string|null
@@ -409,6 +418,25 @@ class Resource
     public function setDetailsEndpoint(?string $detailsEndpoint): self
     {
         $this->detailsEndpoint = $detailsEndpoint ?: null;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimelineEndpoint(): ?string
+    {
+        return $this->timelineEndpoint;
+    }
+
+    /**
+     * @param string|null $timelineEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setTimelineEndpoint(?string $timelineEndpoint): self
+    {
+        $this->timelineEndpoint = $timelineEndpoint ?: null;
 
         return $this;
     }

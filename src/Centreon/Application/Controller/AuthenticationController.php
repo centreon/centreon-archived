@@ -73,7 +73,7 @@ class AuthenticationController extends AbstractFOSRestController
         $contact = $this->auth->findContactByCredentials($username, $password);
 
         if (!$contact) {
-            throw new HttpException(Response::HTTP_UNAUTHORIZED, "Invalid credentials");
+            throw new HttpException(Response::HTTP_UNAUTHORIZED, _('Invalid credentials'));
         }
 
         return $this->json([

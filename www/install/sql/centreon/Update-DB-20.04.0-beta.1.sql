@@ -33,7 +33,7 @@ UPDATE `nagios_server` SET `gorgone_communication_type` = '2';
 -- Update options for gorgone
 UPDATE options SET `key` = 'gorgone_illegal_characters' WHERE `key` = 'centcore_illegal_characters';
 UPDATE options SET `key` = 'gorgone_cmd_timeout' WHERE `key` = 'centcore_cmd_timeout';
-INSERT INTO `options` (`key`, `value`) SELECT 'gorgone_cmd_timeout', '5' WHERE NOT EXISTS (SELECT `value` FROM `options` WHERE `key` = 'gorgone_cmd_timeout');
+INSERT INTO `options` (`key`, `value`) SELECT 'gorgone_cmd_timeout', '5' FROM DUAL WHERE NOT EXISTS (SELECT `value` FROM `options` WHERE `key` = 'gorgone_cmd_timeout');
 UPDATE topology SET topology_url_opt = '&o=gorgone', topology_name = 'Gorgone' WHERE topology_page = 50117;
 UPDATE options SET `key` = 'debug_gorgone' WHERE `key` = 'debug_centcore';
 DELETE FROM `options` WHERE `key` = 'enable_perfdata_sync';
@@ -44,7 +44,7 @@ INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_port', '8085');
 INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_ssl', '0');
 INSERT INTO `options` (`key`, `value`) VALUES ('gorgone_api_allow_self_signed', '1');
 -- Add default value for enable_broker_stats if not set
-INSERT INTO `options` (`key`, `value`) SELECT 'enable_broker_stats', '0' WHERE NOT EXISTS (SELECT `value` FROM `options` WHERE `key` = 'enable_broker_stats');
+INSERT INTO `options` (`key`, `value`) SELECT 'enable_broker_stats', '0' FROM DUAL WHERE NOT EXISTS (SELECT `value` FROM `options` WHERE `key` = 'enable_broker_stats');
 
 -- Add missing index on ods_view_details
-ALTER TABLE `ods_view_details`ADD KEY `index_id` (`index_id`);
+ALTER TABLE `ods_view_details` ADD KEY `index_id` (`index_id`);

@@ -11,19 +11,15 @@ const DetailsCard = ({ title, lines }: Props): JSX.Element => {
   return (
     <Card style={{ height: '100%' }}>
       <CardContent>
-        <Grid container direction="column" spacing={1}>
-          <Grid item>
-            <Typography variant="subtitle2" color="textSecondary">
-              {title}
-            </Typography>
-          </Grid>
-          <Grid item direction="column" container>
-            {lines.map(({ key, line }) => (
-              <Grid item key={key}>
-                {line}
-              </Grid>
-            ))}
-          </Grid>
+        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+          {title}
+        </Typography>
+        <Grid direction="column" container spacing={1}>
+          {lines.map(({ key, line }) => (
+            <Grid item key={key}>
+              {line}
+            </Grid>
+          ))}
         </Grid>
       </CardContent>
     </Card>

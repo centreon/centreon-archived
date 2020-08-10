@@ -1,13 +1,13 @@
 import { map, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
 
-import { Metric, MetricData, GraphData } from './models';
+import { Metric, TimeValue, GraphData, Line } from './models';
 
-interface TimeMetrics {
+interface TimeWithMetrics {
   time: number;
   metrics: Array<Metric>;
 }
 
-const toTimeMetrics = ({ metrics, times }): Array<TimeMetrics> => {
+const toTimeWithMetrics = ({ metrics, times }): Array<TimeWithMetrics> => {
   return map(
     (time) => ({
       time,
@@ -17,12 +17,12 @@ const toTimeMetrics = ({ metrics, times }): Array<TimeMetrics> => {
   );
 };
 
-const toTimeWithMetrics = (
-  { time, metrics }: TimeMetrics,
+const toTimeValue = (
+  { time, metrics }: TimeWithMetrics,
   timeIndex: number,
-): MetricData => {
-  const getMetricsForIndex = (): MetricData => {
-    const addMetricForTimeIndex = (acc, { metric, data }): MetricData => ({
+): TimeValue => {
+  const getMetricsForIndex = (): TimeValue => {
+    const addMetricForTimeIndex = (acc, { metric, data }): TimeValue => ({
       ...acc,
       [metric]: data[timeIndex],
     });
@@ -33,27 +33,42 @@ const toTimeWithMetrics = (
   return { time, ...getMetricsForIndex() };
 };
 
-const getTimeSeries = (graphData: GraphData): Array<MetricData> => {
+const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   const isGreaterThanLowerLimit = (value): boolean =>
-    value > pathOr(value - 1, ['global', 'lower-limit'], graphData);
+    value >= pathOr(value - 1, ['global', 'lower-limit'], graphData);
 
-  const rejectLowerThanLimit = ({
-    time,
-    ...metrics
-  }: MetricData): MetricData => {
+  const rejectLowerThanLimit = ({ time, ...metrics }: TimeValue): TimeValue => {
     return {
       ...filter(isGreaterThanLowerLimit, metrics),
       time,
     };
   };
 
-  const indexedMap = addIndex<TimeMetrics, MetricData>(map);
+  const indexedMap = addIndex<TimeWithMetrics, TimeValue>(map);
 
   return pipe(
-    toTimeMetrics,
-    indexedMap(toTimeWithMetrics),
+    toTimeWithMetrics,
+    indexedMap(toTimeValue),
     map(rejectLowerThanLimit),
   )(graphData);
 };
 
+const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
+  metric,
+  name: legend,
+  color: ds_data.ds_color_line,
+  areaColor: ds_data.ds_color_area,
+  transparency: ds_data.ds_transparency,
+  lineColor: ds_data.ds_color_line,
+  filled: ds_data.ds_filled,
+  unit,
+  display: true,
+  highlight: undefined,
+});
+
+const getLineData = (graphData: GraphData): Array<Line> => {
+  return map(toLine, graphData.metrics);
+};
+
 export default getTimeSeries;
+export { getLineData };

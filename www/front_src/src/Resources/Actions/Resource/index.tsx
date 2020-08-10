@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { isEmpty } from 'ramda';
+
 import { Button, ButtonProps, Grid } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
@@ -9,54 +11,51 @@ import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 import IconDowntime from '../../icons/Downtime';
 import {
   labelAcknowledge,
-  labelDowntime,
+  labelSetDowntime,
   labelCheck,
   labelSomethingWentWrong,
   labelCheckCommandSent,
 } from '../../translatedLabels';
-import { Resource } from '../../models';
 import AcknowledgeForm from './Acknowledge';
 import DowntimeForm from './Downtime';
 import { checkResources } from '../../api';
-
-interface Props {
-  disabled: boolean;
-  resourcesToAcknowledge: Array<Resource>;
-  onPrepareToAcknowledge;
-  onCancelAcknowledge;
-  resourcesToSetDowntime: Array<Resource>;
-  onPrepareToSetDowntime;
-  onCancelSetDowntime;
-  resourcesToCheck: Array<Resource>;
-  onPrepareToCheck;
-  onSuccess;
-}
+import { useResourceContext } from '../../Context';
+import useAclQuery from './aclQuery';
 
 const ActionButton = (props: ButtonProps): JSX.Element => (
   <Button variant="contained" color="primary" size="small" {...props} />
 );
 
-const ResourceActions = ({
-  disabled,
-  resourcesToAcknowledge,
-  onPrepareToAcknowledge,
-  onCancelAcknowledge,
-  resourcesToSetDowntime,
-  onPrepareToSetDowntime,
-  onCancelSetDowntime,
-  resourcesToCheck,
-  onPrepareToCheck,
-  onSuccess,
-}: Props & Omit<ButtonProps, 'disabled'>): JSX.Element => {
+const ResourceActions = (): JSX.Element => {
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
+
+  const {
+    resourcesToCheck,
+    setSelectedResources,
+    selectedResources,
+    resourcesToAcknowledge,
+    setResourcesToAcknowledge,
+    resourcesToSetDowntime,
+    setResourcesToSetDowntime,
+    setResourcesToCheck,
+  } = useResourceContext();
 
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
+  const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
+
   const hasResourcesToCheck = resourcesToCheck.length > 0;
+
+  const confirmAction = (): void => {
+    setSelectedResources([]);
+    setResourcesToAcknowledge([]);
+    setResourcesToSetDowntime([]);
+    setResourcesToCheck([]);
+  };
 
   React.useEffect(() => {
     if (!hasResourcesToCheck) {
@@ -68,53 +67,84 @@ const ResourceActions = ({
       cancelToken: token,
     })
       .then(() => {
+        confirmAction();
         showSuccess(labelCheckCommandSent);
-        onSuccess();
       })
       .catch(() => showError(labelSomethingWentWrong));
   }, [resourcesToCheck]);
 
   React.useEffect(() => (): void => cancel(), []);
 
+  const prepareToAcknowledge = (): void => {
+    setResourcesToAcknowledge(selectedResources);
+  };
+
+  const prepareToSetDowntime = (): void => {
+    setResourcesToSetDowntime(selectedResources);
+  };
+
+  const prepareToCheck = (): void => {
+    setResourcesToCheck(selectedResources);
+  };
+
+  const cancelAcknowledge = (): void => {
+    setResourcesToAcknowledge([]);
+  };
+
+  const cancelSetDowntime = (): void => {
+    setResourcesToSetDowntime([]);
+  };
+
+  const noResourcesSelected = isEmpty(selectedResources);
+  const disableAcknowledge =
+    noResourcesSelected || !canAcknowledge(selectedResources);
+  const disableDowntime =
+    noResourcesSelected || !canDowntime(selectedResources);
+  const disableCheck = noResourcesSelected || !canCheck(selectedResources);
+
   return (
     <Grid container spacing={1}>
       <Grid item>
         <ActionButton
-          disabled={disabled}
+          disabled={disableAcknowledge}
           startIcon={<IconAcknowledge />}
-          onClick={onPrepareToAcknowledge}
+          onClick={prepareToAcknowledge}
         >
           {labelAcknowledge}
         </ActionButton>
       </Grid>
       <Grid item>
         <ActionButton
-          disabled={disabled}
+          disabled={disableDowntime}
           startIcon={<IconDowntime />}
-          onClick={onPrepareToSetDowntime}
+          onClick={prepareToSetDowntime}
         >
-          {labelDowntime}
+          {labelSetDowntime}
         </ActionButton>
       </Grid>
       <Grid item>
         <ActionButton
-          disabled={disabled}
+          disabled={disableCheck}
           startIcon={<IconCheck />}
-          onClick={onPrepareToCheck}
+          onClick={prepareToCheck}
         >
           {labelCheck}
         </ActionButton>
       </Grid>
-      <AcknowledgeForm
-        resources={resourcesToAcknowledge}
-        onClose={onCancelAcknowledge}
-        onSuccess={onSuccess}
-      />
-      <DowntimeForm
-        resources={resourcesToSetDowntime}
-        onClose={onCancelSetDowntime}
-        onSuccess={onSuccess}
-      />
+      {resourcesToAcknowledge.length > 0 && (
+        <AcknowledgeForm
+          resources={resourcesToAcknowledge}
+          onClose={cancelAcknowledge}
+          onSuccess={confirmAction}
+        />
+      )}
+      {resourcesToSetDowntime.length > 0 && (
+        <DowntimeForm
+          resources={resourcesToSetDowntime}
+          onClose={cancelSetDowntime}
+          onSuccess={confirmAction}
+        />
+      )}
     </Grid>
   );
 };

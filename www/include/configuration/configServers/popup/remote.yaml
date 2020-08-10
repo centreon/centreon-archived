@@ -29,11 +29,11 @@ gorgone:
     - name: legacycmd
       package: gorgone::modules::centreon::legacycmd::hooks
       enable: true
-      cmd_dir: "/var/lib/centreon/centcore/"
-      cmd_file: "/var/lib/centreon/centcore.cmd"
-      cache_dir: "/var/cache/centreon/"
+      cmd_dir: "__CENTREON_VARLIB__/centcore/"
+      cmd_file: "__CENTREON_VARLIB__/centcore.cmd"
+      cache_dir: "__CENTREON_CACHEDIR__/"
       cache_dir_trap: "/etc/snmp/centreon_traps/"
-      remote_dir: "/var/cache/centreon/config/remote-data/"
+      remote_dir: "__CENTREON_CACHEDIR__/config/remote-data/"
 
     - name: engine
       package: gorgone::modules::centreon::engine::hooks
@@ -43,7 +43,7 @@ gorgone:
     - name: statistics
       package: "gorgone::modules::centreon::statistics::hooks"
       enable: true
-      broker_cache_dir: "/var/cache/centreon/broker-stats/"
+      broker_cache_dir: "__CENTREON_CACHEDIR__/broker-stats/"
       cron:
         - id: broker_stats
           timespec: "*/5 * * * *"

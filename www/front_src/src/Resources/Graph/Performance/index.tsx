@@ -2,186 +2,211 @@ import * as React from 'react';
 
 import {
   ComposedChart,
-  Area,
-  Line,
   XAxis,
-  YAxis,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import filesize from 'filesize';
-import { pipe, map, uniq, prop, isEmpty } from 'ramda';
+import * as numeral from 'numeral';
+import {
+  pipe,
+  map,
+  prop,
+  propEq,
+  find,
+  path,
+  reject,
+  sortBy,
+  isEmpty,
+} from 'ramda';
 
-import { fade, makeStyles, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { makeStyles, Typography, Theme } from '@material-ui/core';
 
-import useGet from '../../useGet';
-import { formatTimeAxis } from '../format';
-import getTimeSeries from './timeSeries';
-import { GraphData } from './models';
+import { useRequest, getData } from '@centreon/ui';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'grid',
-    gridTemplateRows: '20px 1fr',
-    height: '100%',
-    justifyItems: 'center',
-  },
-  graph: {
-    height: '100%',
-    width: '100%',
-  },
-  loadingSkeleton: {
-    display: 'grid',
-    gridTemplateRows: '10px 1fr auto',
-    gridGap: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    height: '95%',
-  },
-  loadingSkeletonLine: {
-    transform: 'none',
-    paddingBottom: theme.spacing(1),
-  },
-}));
+import { timeFormat, dateTimeFormat } from '../format';
+import { parseAndFormat } from '../../dateTime';
+import getTimeSeries, { getLineData } from './timeSeries';
+import { GraphData, TimeValue, Line as LineModel } from './models';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import LoadingSkeleton from './LoadingSkeleton';
+import Legend from './Legend';
+import getGraphLines from './Lines';
+
+const fontFamily = 'Roboto, sans-serif';
+
+const formatValue = ({ value, unit }): string => {
+  const base2Units = [
+    'B',
+    'bytes',
+    'bytespersecond',
+    'B/s',
+    'B/sec',
+    'o',
+    'octets',
+  ];
+  const suffixFormat = base2Units.includes(unit) ? 'b' : 'a';
+
+  return numeral(value)
+    .format(`0.[00] ${suffixFormat}`)
+    .trim()
+    .replace('B', '');
+};
 
 interface Props {
   endpoint: string;
+  xAxisTickFormat?: string;
+  graphHeight: number;
+  toggableLegend?: boolean;
 }
 
-const LoadingSkeleton = (): JSX.Element => {
-  const classes = useStyles();
+const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
+  container: {
+    display: 'grid',
+    flexDirection: 'column',
+    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
+    gridGap: theme.spacing(1),
+    height: '100%',
+    justifyItems: 'center',
+  },
+  noDataContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+  },
+  graph: {
+    width: '100%',
+    height: '100%',
+  },
+  legend: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+}));
 
-  const skeletonLine = <Skeleton className={classes.loadingSkeletonLine} />;
+const PerformanceGraph = ({
+  endpoint,
+  graphHeight,
+  xAxisTickFormat = timeFormat,
+  toggableLegend = false,
+}: Props): JSX.Element | null => {
+  const classes = useStyles({ graphHeight });
 
-  return (
-    <div className={classes.loadingSkeleton}>
-      {skeletonLine}
-      {skeletonLine}
-      {skeletonLine}
-    </div>
-  );
-};
+  const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
+  const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
+  const [title, setTitle] = React.useState<string>();
 
-const PerformanceGraph = ({ endpoint }: Props): JSX.Element | null => {
-  const classes = useStyles();
-
-  const [graphData, setGraphData] = React.useState<GraphData>();
-
-  const get = useGet({
-    endpoint,
-    onSuccess: setGraphData,
+  const { sendRequest, sending } = useRequest<GraphData>({
+    request: getData,
   });
 
   React.useEffect(() => {
-    get();
+    sendRequest(endpoint).then((graphData) => {
+      setTimeSeries(getTimeSeries(graphData));
+      setLineData(getLineData(graphData));
+      setTitle(graphData.global.title);
+    });
   }, [endpoint]);
 
-  if (graphData === undefined) {
+  if (sending) {
     return <LoadingSkeleton />;
   }
 
-  const hasData = graphData.times.length > 0;
-
-  if (!hasData) {
-    return null;
+  if (isEmpty(timeSeries) || isEmpty(lineData)) {
+    return (
+      <div className={classes.noDataContainer}>
+        <Typography align="center" variant="body1">
+          {labelNoDataForThisPeriod}
+        </Typography>
+      </div>
+    );
   }
 
-  const getBase = (unit): 2 | 10 => {
-    const base2Units = [
-      'B',
-      'bytes',
-      'bytespersecond',
-      'B/s',
-      'B/sec',
-      'o',
-      'octets',
-    ];
+  const sortedLines = sortBy(prop('name'), lineData);
+  const displayedLines = reject(propEq('display', false), sortedLines);
 
-    return base2Units.includes(unit) ? 2 : 10;
+  const formatTooltipValue = (value, metric, { unit }): Array<string> => {
+    const legendName = pipe(
+      find(propEq('metric', metric)),
+      path(['name']),
+    )(lineData) as string;
+
+    return [formatValue({ value, unit }), legendName];
   };
 
-  const getUnits = (): Array<string> => {
-    return pipe(map(prop('unit')), uniq)(graphData.metrics);
+  const formatXAxisTick = (tick): string =>
+    parseAndFormat({ isoDate: tick, to: xAxisTickFormat });
+
+  const formatTooltipTime = (tick): string =>
+    parseAndFormat({ isoDate: tick, to: dateTimeFormat });
+
+  const getLineByMetric = (metric): LineModel => {
+    return find(propEq('metric', metric), lineData) as LineModel;
   };
 
-  const displayMultipleYAxes = getUnits().length < 3;
+  const toggleMetricDisplay = (metric): void => {
+    const line = getLineByMetric(metric);
 
-  const formatYAxis = ({ tick, unit }): string =>
-    isEmpty(unit)
-      ? tick
-      : filesize(tick, { base: getBase(unit) }).replace('B', '');
+    setLineData([
+      ...reject(propEq('metric', metric), lineData),
+      { ...line, display: !line.display },
+    ]);
+  };
 
-  const YAxes = displayMultipleYAxes ? (
-    getUnits().map((unit, index) => (
-      <YAxis
-        yAxisId={unit}
-        key={unit}
-        unit={unit}
-        orientation={index === 0 ? 'left' : 'right'}
-        tickFormatter={(tick): string => formatYAxis({ tick, unit })}
-      />
-    ))
-  ) : (
-    <YAxis />
-  );
+  const highlightLine = (metric): void => {
+    const fadedLines = map((line) => ({ ...line, highlight: false }), lineData);
 
-  const formatLegend = (value): JSX.Element => (
-    <Typography variant="caption" color="textPrimary">
-      {value}
-    </Typography>
-  );
+    setLineData([
+      ...reject(propEq('metric', metric), fadedLines),
+      { ...getLineByMetric(metric), highlight: true },
+    ]);
+  };
+
+  const clearHighlight = (): void => {
+    setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
+  };
 
   return (
     <div className={classes.container}>
-      <Typography variant="body2" color="textPrimary">
-        {graphData.global.title}
+      <Typography variant="body1" color="textPrimary">
+        {title}
       </Typography>
       <ResponsiveContainer className={classes.graph}>
-        <ComposedChart data={getTimeSeries(graphData)}>
-          <Legend
-            formatter={formatLegend}
-            iconType="circle"
-            iconSize={8}
-            wrapperStyle={{ bottom: 0 }}
-          />
+        <ComposedChart data={timeSeries} stackOffset="sign">
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" tickFormatter={formatTimeAxis} />
-          {YAxes}
-          {graphData.metrics.map(({ metric, ds_data, unit }, index) => {
-            const yAxisId = displayMultipleYAxes ? unit : undefined;
+          <XAxis
+            dataKey="time"
+            tickFormatter={formatXAxisTick}
+            tick={{ fontSize: 13 }}
+          />
 
-            return ds_data.ds_filled ? (
-              <Area
-                key={metric}
-                dot={false}
-                dataKey={metric}
-                stackId={index}
-                stroke={ds_data.ds_color_line}
-                fill={fade(
-                  ds_data.ds_color_area,
-                  ds_data.ds_transparency * 0.01,
-                )}
-                yAxisId={yAxisId}
-              />
-            ) : (
-              <Line
-                key={metric}
-                dataKey={metric}
-                stroke={ds_data.ds_color_line}
-                dot={false}
-                yAxisId={yAxisId}
-              />
-            );
-          })}
+          {getGraphLines(displayedLines)}
 
-          <Tooltip />
+          <Tooltip
+            labelFormatter={formatTooltipTime}
+            formatter={formatTooltipValue}
+            contentStyle={{ fontFamily }}
+            wrapperStyle={{ opacity: 0.7 }}
+            isAnimationActive={false}
+          />
         </ComposedChart>
       </ResponsiveContainer>
+      <div className={classes.legend}>
+        <Legend
+          lines={sortedLines}
+          onItemToggle={toggleMetricDisplay}
+          toggable={toggableLegend}
+          onItemHighlight={highlightLine}
+          onClearItemHighlight={clearHighlight}
+        />
+      </div>
     </div>
   );
 };
 
 export default PerformanceGraph;
+export { fontFamily, formatValue };

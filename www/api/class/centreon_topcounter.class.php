@@ -263,7 +263,7 @@ class CentreonTopCounter extends CentreonWebService
             'fullname' => $this->centreon->user->name,
             'username' => $this->centreon->user->alias,
             'locale' => $locale,
-            'timezone' => $this->centreon->user->gmt,
+            'timezone' => $this->centreon->CentreonGMT->getActiveTimezone($this->centreon->user->gmt),
             'hasAccessToProfile' => $this->hasAccessToProfile,
             'autologinkey' => $autoLoginKey,
             'soundNotificationsEnabled' => $this->soundNotificationsEnabled
@@ -474,14 +474,14 @@ class CentreonTopCounter extends CentreonWebService
                 $result['issues']['latency']['warning']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'since' => $poller['warning']['time']
+                    'since' => $poller['latency']['time']
                 );
                 $latWar++;
             } elseif ($poller['latency']['state'] === 2) {
                 $result['issues']['latency']['critical']['poller'][] = array(
                     'id' => $poller['id'],
                     'name' => $poller['name'],
-                    'since' => $poller['warning']['time']
+                    'since' => $poller['latency']['time']
                 );
                 $latCri++;
             }
@@ -810,7 +810,7 @@ class CentreonTopCounter extends CentreonWebService
         while ($row = $res->fetch()) {
             if ($row['stat_value'] >= 120) {
                 $listPoller[$row['instance_id']]['latency']['state'] = 2;
-                $listPoller[$row['instance_id']]['database']['time'] = $row['stat_value'];
+                $listPoller[$row['instance_id']]['latency']['time'] = $row['stat_value'];
             } elseif ($row['stat_value'] >= 60) {
                 $listPoller[$row['instance_id']]['latency']['state'] = 1;
                 $listPoller[$row['instance_id']]['latency']['time'] = $row['stat_value'];

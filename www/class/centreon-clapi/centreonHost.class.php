@@ -58,6 +58,7 @@ require_once "Centreon/Object/Contact/Group.php";
 require_once "Centreon/Object/Relation/Host/Template/Host.php";
 require_once "Centreon/Object/Relation/Host/Parent/Host.php";
 require_once "Centreon/Object/Relation/Host/Group/Host.php";
+require_once "Centreon/Object/Relation/Host/Child/Host.php";
 require_once "Centreon/Object/Relation/Host/Category/Host.php";
 require_once "Centreon/Object/Relation/Instance/Host.php";
 require_once "Centreon/Object/Relation/Contact/Host.php";
@@ -82,6 +83,7 @@ class CentreonHost extends CentreonObject
     const ORDER_HOSTGROUP = 5;
     const MISSING_INSTANCE = "Instance name is mandatory";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const INVALID_GEO_COORDS = "Invalid geo coords";
     const UNKNOWN_TIMEZONE = "Invalid timezone";
     const HOST_LOCATION = "timezone";
 
@@ -645,6 +647,10 @@ class CentreonHost extends CentreonObject
                     $params[2] = $tpObj->getTimeperiodId($params[2]);
                     break;
                 case "geo_coords":
+                    if (!CentreonUtils::validateGeoCoords($params[2])) {
+                        throw new CentreonClapiException(self::INVALID_GEO_COORDS);
+                    }
+                    break;
                 case "contact_additive_inheritance":
                 case "cg_additive_inheritance":
                 case "flap_detection_options":
@@ -697,7 +703,7 @@ class CentreonHost extends CentreonObject
                     || $params[1] == "ehi_statusmap_image"
                 ) {
                     if ($params[2]) {
-                        $id = CentreonUtils::getImageId($params[2]);
+                        $id = CentreonUtils::getImageId($params[2], $this->db);
                         if (is_null($id)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
                         }
@@ -1090,6 +1096,10 @@ class CentreonHost extends CentreonObject
                 case "parent":
                     $class = "Centreon_Object_Host";
                     $relclass = "Centreon_Object_Relation_Host_Parent_Host";
+                    break;
+                case "child":
+                    $class = "Centreon_Object_Host";
+                    $relclass = "Centreon_Object_Relation_Host_Child_Host";
                     break;
                 case "hostcategory":
                     $class = "Centreon_Object_Host_Category";

@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+
 import {
   Grid,
   Typography,
@@ -26,8 +28,8 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
     const foundColorCondition = rowColorConditions(theme).find(
       ({ condition }) =>
         condition({
-          in_downtime: details.downtimes !== undefined,
-          acknowledged: details.acknowledgement !== undefined,
+          in_downtime: details.downtimes.length > 0,
+          acknowledged: !isNil(details.acknowledgement),
         }),
     );
 
@@ -35,7 +37,7 @@ const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
 
     return {
       backgroundColor: backgroundColor
-        ? fade(backgroundColor, 0.2)
+        ? fade(backgroundColor, 0.8)
         : theme.palette.common.white,
     };
   },

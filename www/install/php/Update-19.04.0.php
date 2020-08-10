@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -25,6 +26,7 @@ $centreonLog = new CentreonLog();
  * New configuration options for Centreon Engine
  */
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
     if (!$pearDB->isColumnExist('cfg_nagios', 'enable_macros_filter')) {
         //$pearDB = "centreon"
         //$pearDBO = "realtime"
@@ -42,4 +44,6 @@ try {
         2,
         "UPGRADE : 19.04.0 Unable to modify centreon engine in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }

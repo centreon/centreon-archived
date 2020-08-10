@@ -34,6 +34,7 @@ use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
+use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
@@ -43,6 +44,7 @@ use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\RequestParameters\RequestParameters;
 
 /**
  * Resource APIs for the Unified View page
@@ -173,29 +175,67 @@ class MonitoringResourceController extends AbstractController
         $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
 
         foreach ($resources as $resource) {
-            $this->iconUrlNormalizer->normalize($resource);
+            if ($resource->getIcon() instanceof Icon) {
+                $this->iconUrlNormalizer->normalize($resource->getIcon());
+            }
+
+            if ($resource->getParent() !== null && $resource->getParent()->getIcon() instanceof Icon) {
+                $this->iconUrlNormalizer->normalize($resource->getParent()->getIcon());
+            }
 
             // set paths to endpoints
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
             $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
             $routeNameDetails = 'centreon_application_monitoring_resource_details_host';
+            $routeNameTimeline = 'centreon_application_monitoring_gettimelinebyhost';
 
             $parameters = [
                 'hostId' => $resource->getId(),
             ];
 
             if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
+                $parameters['hostId'] = $resource->getParent()->getId();
+
+                $resource->getParent()->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
+                $resource->getParent()->setTimelineEndpoint($this->router->generate($routeNameTimeline, $parameters));
+
                 $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
                 $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
                 $routeNameDetails = 'centreon_application_monitoring_resource_details_service';
+                $routeNameTimeline = 'centreon_application_monitoring_gettimelinebyhostandservice';
 
-                $parameters['hostId'] = $resource->getParent()->getId();
                 $parameters['serviceId'] = $resource->getId();
             }
 
-            $resource->setAcknowledgementEndpoint($this->router->generate($routeNameAcknowledgement, $parameters));
-            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, $parameters));
+            $resource->setAcknowledgementEndpoint(
+                $this->router->generate($routeNameAcknowledgement, array_merge($parameters, ['limit' => 1]))
+            );
+            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, array_merge($parameters, [
+                'search' => json_encode([
+                    RequestParameters::AGGREGATE_OPERATOR_AND => [
+                        [
+                            'start_time' => [
+                                RequestParameters::OPERATOR_LESS_THAN => time(),
+                            ],
+                            'end_time' => [
+                                RequestParameters::OPERATOR_GREATER_THAN => time(),
+                            ],
+                            [
+                                RequestParameters::AGGREGATE_OPERATOR_OR => [
+                                    'is_cancelled' => [
+                                        RequestParameters::OPERATOR_NOT_EQUAL => 1,
+                                    ],
+                                    'deletion_time' => [
+                                        RequestParameters::OPERATOR_GREATER_THAN => time(),
+                                    ],
+                                ],
+                            ]
+                        ]
+                    ],
+                ]),
+            ])));
             $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
+            $resource->setTimelineEndpoint($this->router->generate($routeNameTimeline, $parameters));
 
             if (
                 $resource->getParent() != null && in_array([
@@ -282,9 +322,20 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Service $service
+         */
         $service = $this->monitoring
             ->filterByContact($this->getUser())
             ->findOneService($hostId, $serviceId);
+        try {
+            $this->monitoring->hidePasswordInCommandLine($service);
+        } catch (\Throwable $ex) {
+            $service->setCommandLine(
+                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+            );
+        }
+
 
         if ($service === null) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);

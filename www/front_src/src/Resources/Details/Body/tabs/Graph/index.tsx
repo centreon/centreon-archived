@@ -7,9 +7,13 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 import { SelectField } from '@centreon/ui';
 
 import { ResourceEndpoints } from '../../../../models';
-import { TimePeriodId, timePeriods, getTimePeriodById } from './models';
+import {
+  timePeriods,
+  getTimePeriodById,
+  last24hPeriod,
+  TimePeriod,
+} from './models';
 import PerformanceGraph from '../../../../Graph/Performance';
-import StatusGraph from '../../../../Graph/Status';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -25,8 +29,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   graphContainer: {
     display: 'grid',
-    padding: theme.spacing(4),
-    gridTemplateRows: '250px 100px',
+    padding: theme.spacing(2, 1, 1),
+    gridTemplateRows: '1fr',
   },
   graph: {
     margin: 'auto',
@@ -37,11 +41,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   status: {
     marginTop: theme.spacing(2),
-    width: '90%',
+    width: '100%',
   },
 }));
 
 const timePeriodSelectOptions = map(pick(['id', 'name']), timePeriods);
+
+const defaultTimePeriod = last24hPeriod;
 
 interface Props {
   endpoints: Pick<ResourceEndpoints, 'statusGraph' | 'performanceGraph'>;
@@ -50,31 +56,30 @@ interface Props {
 const GraphTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const {
-    statusGraph: statusGraphEndpoint,
-    performanceGraph: performanceGraphEndpoint,
-  } = endpoints;
+  const { performanceGraph: performanceGraphEndpoint } = endpoints;
 
-  const [selectedTimePeriodId, setSelectedTimePeriodId] = React.useState<
-    TimePeriodId
-  >('last_24_h');
+  const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<
+    TimePeriod
+  >(defaultTimePeriod);
 
-  const getQueryParams = (timePeriodId): string => {
-    const selectedTimePeriod = getTimePeriodById(timePeriodId);
-
+  const getQueryParams = (timePeriod): string => {
     const now = new Date(Date.now()).toISOString();
-    const start = selectedTimePeriod.getStart().toISOString();
+    const start = timePeriod.getStart().toISOString();
 
     return `?start=${start}&end=${now}`;
   };
 
   const [periodQueryParams, setPeriodQueryParams] = React.useState(
-    getQueryParams(selectedTimePeriodId),
+    getQueryParams(selectedTimePeriod),
   );
 
   const changeSelectedPeriod = (event): void => {
-    setSelectedTimePeriodId(event.target.value);
-    const queryParamsForSelectedPeriodId = getQueryParams(event.target.value);
+    const timePeriodId = event.target.value;
+    const timePeriod = getTimePeriodById(timePeriodId);
+
+    setSelectedTimePeriod(timePeriod);
+
+    const queryParamsForSelectedPeriodId = getQueryParams(timePeriod);
     setPeriodQueryParams(queryParamsForSelectedPeriodId);
   };
 
@@ -84,7 +89,7 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
         <SelectField
           className={classes.periodSelect}
           options={timePeriodSelectOptions}
-          selectedOptionId={selectedTimePeriodId}
+          selectedOptionId={selectedTimePeriod.id}
           onChange={changeSelectedPeriod}
         />
       </Paper>
@@ -92,11 +97,9 @@ const GraphTab = ({ endpoints }: Props): JSX.Element => {
         <div className={`${classes.graph} ${classes.performance}`}>
           <PerformanceGraph
             endpoint={`${performanceGraphEndpoint}${periodQueryParams}`}
-          />
-        </div>
-        <div className={`${classes.graph} ${classes.status}`}>
-          <StatusGraph
-            endpoint={`${statusGraphEndpoint}${periodQueryParams}`}
+            graphHeight={280}
+            xAxisTickFormat={selectedTimePeriod.timeFormat}
+            toggableLegend
           />
         </div>
       </Paper>

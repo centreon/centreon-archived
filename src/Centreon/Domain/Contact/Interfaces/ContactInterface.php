@@ -43,9 +43,81 @@ interface ContactInterface
     public function isActive(): bool;
 
     /**
+     * Contact name.
+     *
+     * @return string
+     */
+    public function getName(): string;
+
+    /**
      * Contact alias.
      *
      * @return string
      */
     public function getAlias(): string;
+
+    /**
+     * Contact lang.
+     *
+     * @return string
+     */
+    public function getLang(): string;
+
+    /**
+     * Contact email.
+     *
+     * @return string
+     */
+    public function getEmail(): string;
+
+    /**
+     * Contact template id.
+     *
+     * @return int
+     */
+    public function getTemplateId(): int;
+
+    /**
+     * Contact token.
+     *
+     * @return string|null
+     */
+    public function getToken(): ?string;
+
+    /**
+     * Contact encoded password.
+     *
+     * @return string
+     */
+    public function getEncodedPassword(): string;
+
+    /**
+     * Returns the roles granted to the user.
+     *
+     *     public function getRoles()
+     *     {
+     *         return array('ROLE_USER');
+     *     }
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return string[] The user roles
+     */
+    public function getRoles(): array;
+
+    /**
+     * Contact timezone.
+     *
+     * @return \DateTimeZone
+     */
+    public function getTimezone(): \DateTimeZone;
+
+    /**
+     * Contact locale.
+     *
+     * @return string|null
+     */
+    public function getLocale(): ?string;
 }

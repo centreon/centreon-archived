@@ -2,7 +2,7 @@
 ** Variables.
 */
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
-def serie = '20.04'
+def serie = '20.10'
 def maintenanceBranch = "${serie}.x"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
@@ -12,6 +12,7 @@ if (env.BRANCH_NAME.startsWith('release-')) {
 } else {
   env.BUILD = 'CI'
 }
+def apiFeatureFiles = []
 def featureFiles = []
 
 /*
@@ -43,6 +44,7 @@ stage('Source') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
+    apiFeatureFiles = sh(script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
     featureFiles = sh(script: 'find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
   }
 }
@@ -55,8 +57,6 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
-        if (currentBuild.result == 'UNSTABLE')
-          currentBuild.result = 'FAILURE'
         step([
           $class: 'CloverPublisher',
           cloverReportDir: '.',
@@ -106,15 +106,14 @@ try {
           }
         }
       }
-//    },
-//    'debian9': {
-//      node {
-//        sh 'setup_centreon_build.sh'
-//        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh debian9"
-//        junit 'ut.xml'
-//        if (currentBuild.result == 'UNSTABLE')
-//          currentBuild.result = 'FAILURE'
-//      }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
+        junit 'ut-be.xml,ut-fe.xml'
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -127,13 +126,16 @@ try {
         sh 'setup_centreon_build.sh'
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
+        archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
       }
-//    },
-//    'debian9': {
-//      node {
-//        sh 'setup_centreon_build.sh'
-//        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh debian9"
-//      }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+        archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
@@ -146,9 +148,38 @@ try {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
+    }
+  }
+
+  stage('API integration tests') {
+    def parallelSteps = [:]
+    for (x in apiFeatureFiles) {
+      def feature = x
+      parallelSteps[feature] = {
+        node {
+          sh 'setup_centreon_build.sh'
+          unstash 'tar-sources'
+          unstash 'vendor'
+          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
+          junit 'xunit-reports/**/*.xml'
+          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+            currentBuild.result = 'FAILURE'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+        }
+      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('API integration tests stage failure.');
     }
   }
 
@@ -194,7 +225,7 @@ try {
       build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
       build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
       build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-bi-server/${env.BRANCH_NAME}", wait: false
+      build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
     }
   }
 } catch(e) {

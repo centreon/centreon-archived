@@ -29,6 +29,13 @@ namespace Centreon\Domain\Proxy;
  */
 class Proxy
 {
+    public const PROTOCOL_HTTP = 'http://';
+    public const PROTOCOL_HTTPS = 'https://';
+    /**
+     * @link https://metacpan.org/pod/LWP::Protocol::connect
+     */
+    public const PROTOCOL_CONNECT = 'connect://';
+
     /**
      * @var string|null
      */
@@ -50,6 +57,22 @@ class Proxy
     private $password;
 
     /**
+     * @var string Proxy connection protocol (default: Proxy::PROTOCOL_HTTP)
+     */
+    private $protocol;
+
+    /**
+     * @var string[]
+     */
+    private $protocolAvailable = [];
+
+    public function __construct()
+    {
+        $this->protocolAvailable = [self::PROTOCOL_HTTP, self::PROTOCOL_HTTPS, self::PROTOCOL_CONNECT];
+        $this->protocol = self::PROTOCOL_HTTP;
+    }
+
+    /**
      * @return string|null
      */
     public function getUrl(): ?string
@@ -58,12 +81,14 @@ class Proxy
     }
 
     /**
-     * @param string|null $url
+     * @param string|null $url An empty url will not be taken into account.
      * @return Proxy
      */
     public function setUrl(?string $url): Proxy
     {
-        $this->url = $url;
+        if (!empty($url)) {
+            $this->url = $url;
+        }
         return $this;
     }
 
@@ -76,12 +101,20 @@ class Proxy
     }
 
     /**
-     * @param int|null $port
+     * @param int|null $port Numerical value (0 >= PORT <= 65535)
      * @return Proxy
+     * @throws \InvalidArgumentException
      */
     public function setPort(?int $port): Proxy
     {
-        $this->port = $port;
+        if ($port >= 0 && $port <= 65535) {
+            $this->port = $port;
+        } else {
+            throw new \InvalidArgumentException(
+                sprintf(_('The port can only be between 0 and 65535 inclusive'))
+            );
+        }
+
         return $this;
     }
 
@@ -94,12 +127,14 @@ class Proxy
     }
 
     /**
-     * @param string|null $user
+     * @param string|null $user An empty user will not be taken into account.
      * @return Proxy
      */
     public function setUser(?string $user): Proxy
     {
-        $this->user = $user;
+        if (!empty($user)) {
+            $this->user = $user;
+        }
         return $this;
     }
 
@@ -121,14 +156,58 @@ class Proxy
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getProtocol(): string
+    {
+        return $this->protocol;
+    }
+
+    /**
+     * @param string $protocol
+     * @return Proxy
+     * @throws \InvalidArgumentException
+     * @see Proxy::PROTOCOL_HTTP
+     * @see Proxy::PROTOCOL_HTTPS
+     * @see Proxy::PROTOCOL_CONNECT
+     */
+    public function setProtocol(string $protocol): Proxy
+    {
+        if (!in_array($protocol, $this->protocolAvailable)) {
+            throw new \InvalidArgumentException(
+                sprintf(_('Protocol %s is not allowed'), $protocol)
+            );
+        }
+        $this->protocol = $protocol;
+        return $this;
+    }
+
+    /**
+     * **Formats available:**
+     *
+     * <<procotol>>://<<user>>:<<password>>@<<url>>:<<port>>
+     *
+     * <<procotol>>://<<user>>:<<password>>@<<url>>
+     *
+     * <<procotol>>://<<url>>:<<port>>
+     *
+     * <<procotol>>://<<url>>
+     */
     public function __toString()
     {
-        return sprintf(
-            '%s:%s@%s:%u',
-            $this->getUser(),
-            $this->getPassword(),
-            $this->getUrl(),
-            $this->getPort()
-        );
+        $uri = '';
+        if (!empty($this->url)) {
+            $uri .= $this->protocol;
+            if (!empty($this->user)) {
+                $uri .= $this->user . ':' . $this->password . '@';
+            }
+            if (!empty($this->port) && $this->port >= 0) {
+                $uri .= $this->url . ':' . $this->port;
+            } else {
+                $uri .= $this->url;
+            }
+        }
+        return $uri;
     }
 }

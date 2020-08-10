@@ -82,8 +82,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             if ($host->getMonitoringServer() !== null) {
                 $this->addMonitoringServer($hostId, $host->getMonitoringServer());
             }
-            $this->addExtendedHost($hostId, $host->getExtendedHost());
-            $this->addHostTemplate($hostId, $host->getTemplate());
+            if ($host->getExtendedHost() !== null) {
+                $this->addExtendedHost($hostId, $host->getExtendedHost());
+            }
+            $this->addHostTemplate($hostId, $host->getTemplates());
             $this->addHostMacro($hostId, $host->getMacros());
 
             $this->db->commit();
@@ -115,7 +117,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
             $statement->execute();
             if ($statement->rowCount() === 0) {
-                throw new \Exception('Monitoring server with id ' . $monitoringServer->getId() . ' not found');
+                throw new \Exception(sprintf(_('Monitoring server with id %d not found'), $monitoringServer->getId()));
             }
         } elseif (!empty($monitoringServer->getName())) {
             $request = $this->translateDbName(
@@ -130,7 +132,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
             $statement->execute();
             if ($statement->rowCount() === 0) {
-                throw new \Exception('Monitoring server ' . $monitoringServer->getName() . ' not found');
+                throw new \Exception(sprintf(_('Monitoring server %s not found'), $monitoringServer->getName()));
             }
         }
     }
@@ -184,7 +186,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 $statement->bindValue(':order', ((int) $order) + 1, \PDO::PARAM_INT);
                 $statement->execute();
                 if ($statement->rowCount() === 0) {
-                    throw new \Exception('Template with id ' . $template->getId() . ' not found');
+                    throw new \Exception(sprintf(_('Template with id %d not found'), $template->getId()));
                 }
             } elseif (!empty($template->getName())) {
                 // Associate the host and host template using template name
@@ -201,7 +203,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 $statement->bindValue(':order', ((int) $order), \PDO::PARAM_INT);
                 $statement->execute();
                 if ($statement->rowCount() === 0) {
-                    throw new \Exception('Template ' . $template->getName() . ' not found');
+                    throw new \Exception(sprintf(_('Template %s not found'), $template->getName()));
                 }
             }
         }
@@ -247,12 +249,12 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             host.host_activate AS host_is_activate, nagios.id AS monitoring_server_id,
             nagios.name AS monitoring_server_name, ext.*
             FROM `:db`.host host
-            LEFT JOIN `centreon`.extended_host_information ext
+            LEFT JOIN `:db`.extended_host_information ext
                 ON ext.host_host_id = host.host_id
-            INNER JOIN `centreon`.ns_host_relation host_server
+            INNER JOIN `:db`.ns_host_relation host_server
                 ON host_server.host_host_id = host.host_id
-            INNER JOIN `centreon`.nagios_server nagios
-                ON nagios.id = host_server.nagios_server_id 
+            INNER JOIN `:db`.nagios_server nagios
+                ON nagios.id = host_server.nagios_server_id
             WHERE host.host_id = :host_id
             AND host.host_register = \'1\''
         );
@@ -283,5 +285,103 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             return $host;
         }
         return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNumberOfHosts(): int
+    {
+        $request = $this->translateDbName('SELECT COUNT(*) AS total FROM `:db`.host WHERE host_register = \'1\'');
+        $statement = $this->db->query($request);
+
+        if ($statement !== false && ($result = $statement->fetchColumn()) !== false) {
+            return (int) $result;
+        }
+        return 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasHostWithSameName(string $hostName): bool
+    {
+        $request = $this->translateDbName('SELECT COUNT(*) FROM `:db`.host WHERE host_name = :host_name');
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_name', $hostName, \PDO::FETCH_ASSOC);
+        $statement->execute();
+        if (($result = $statement->fetchColumn()) !== false) {
+            return ((int) $result) > 0;
+        }
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array
+    {
+        if ($isUsingInheritance) {
+            $request = $this->translateDbName(
+                'WITH RECURSIVE inherite AS (
+                    SELECT relation.host_host_id, relation.host_tpl_id, relation.order, demand.host_macro_id,
+                        demand.host_macro_name, 0 AS level
+                    FROM `:db`.host
+                    LEFT JOIN `:db`.host_template_relation relation
+                        ON relation.host_host_id  = host.host_id
+                    LEFT JOIN on_demand_macro_host demand
+                        ON demand.host_host_id = host.host_id
+                    WHERE host.host_id = :host_id
+                    UNION ALL
+                    SELECT relation.host_host_id, relation.host_tpl_id, relation.order, demand.host_macro_id,
+                        demand.host_macro_name, inherite.level + 1
+                    FROM `:db`.host
+                    INNER JOIN inherite
+                        ON inherite.host_tpl_id = host.host_id
+                    LEFT JOIN `:db`.host_template_relation relation
+                        ON relation.host_host_id  = host.host_id
+                    LEFT JOIN on_demand_macro_host demand
+                        ON demand.host_host_id = host.host_id
+                )
+                SELECT macro.host_macro_id AS id, macro.host_macro_name AS name,
+                    macro.host_macro_value AS `value`, macro.macro_order AS `order`, macro.host_host_id AS host_id,
+                    CASE
+                        WHEN is_password IS NULL THEN \'0\'
+                        ELSE is_password
+                    END is_password, description
+                FROM (
+                    SELECT * FROM inherite
+                    WHERE host_macro_id IS NOT NULL
+                    GROUP BY inherite.level, inherite.order, host_macro_name
+                ) AS tpl
+                INNER JOIN `:db`.on_demand_macro_host macro
+                    ON macro.host_macro_id = tpl.host_macro_id
+                GROUP BY tpl.host_macro_name'
+            );
+        } else {
+            $request = $this->translateDbName(
+                'SELECT host_macro_id AS id, host_macro_name AS name, host_macro_value AS `value`,
+                    macro_order AS `order`, host_host_id AS host_id,
+                    CASE
+                        WHEN is_password IS NULL THEN \'0\'
+                        ELSE is_password
+                    END is_password, description
+                FROM `:db`.on_demand_macro_host
+                WHERE host_host_id = :host_id'
+            );
+        }
+
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $hostMacros = [];
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostMacros[] = EntityCreator::createEntityByArray(
+                HostMacro::class,
+                $record
+            );
+        }
+        return $hostMacros;
     }
 }

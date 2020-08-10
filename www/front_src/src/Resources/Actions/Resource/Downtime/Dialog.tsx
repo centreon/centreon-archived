@@ -1,8 +1,14 @@
 import * as React from 'react';
 
+import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range';
 import MomentUtils from '@date-io/moment';
 
-import { Typography, Checkbox, FormHelperText, Grid } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+} from '@material-ui/core';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -10,6 +16,7 @@ import {
   DatePickerProps,
   TimePickerProps,
 } from '@material-ui/pickers';
+import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
 
@@ -36,9 +43,11 @@ import {
   labelTo,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
+import useAclQuery from '../aclQuery';
 
 interface Props {
   locale: string | null;
+  timezone: string | null;
   resources: Array<Resource>;
   canConfirm: boolean;
   onCancel;
@@ -65,16 +74,17 @@ const pickerCommonProps = {
 const datePickerProps = {
   ...pickerCommonProps,
   format: 'LL',
-} as DatePickerProps;
+} as Omit<DatePickerProps, 'onChange'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
   ampm: false,
   format: 'LT',
-} as TimePickerProps;
+} as Omit<TimePickerProps, 'onChange'>;
 
 const DialogDowntime = ({
   locale,
+  timezone,
   resources,
   canConfirm,
   onCancel,
@@ -86,6 +96,8 @@ const DialogDowntime = ({
   setFieldValue,
   loading,
 }: Props): JSX.Element => {
+  const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
+
   const open = resources.length > 0;
 
   const hasHosts = resources.find((resource) => resource.type === 'host');
@@ -93,6 +105,16 @@ const DialogDowntime = ({
   const changeDate = (field) => (value): void => {
     setFieldValue(field, value);
   };
+
+  React.useEffect(() => {
+    moment.locale(locale);
+  }, [locale]);
+
+  React.useEffect(() => {
+    moment.tz.setDefault(timezone);
+  }, [timezone]);
+
+  const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
   return (
     <Dialog
@@ -107,7 +129,12 @@ const DialogDowntime = ({
       submitting={submitting}
     >
       {loading && <Loader fullContent />}
-      <MuiPickersUtilsProvider utils={MomentUtils} locale={locale}>
+      {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
+      <MuiPickersUtilsProvider
+        libInstance={moment}
+        utils={MomentUtils}
+        locale={locale}
+      >
         <Grid direction="column" container spacing={1}>
           <Grid item>
             <FormHelperText>{labelFrom}</FormHelperText>
@@ -171,20 +198,19 @@ const DialogDowntime = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid container item direction="column">
-            <Grid item container xs alignItems="center">
-              <Grid item xs={1}>
+          <Grid item>
+            <FormControlLabel
+              control={
                 <Checkbox
                   checked={values.fixed}
                   inputProps={{ 'aria-label': labelFixed }}
                   color="primary"
                   onChange={handleChange('fixed')}
+                  size="small"
                 />
-              </Grid>
-              <Grid item xs>
-                <Typography>{labelFixed}</Typography>
-              </Grid>
-            </Grid>
+              }
+              label={labelFixed}
+            />
           </Grid>
           <Grid item>
             <FormHelperText>{labelDuration}</FormHelperText>
@@ -195,8 +221,7 @@ const DialogDowntime = ({
                   type="number"
                   onChange={handleChange('duration.value')}
                   value={values.duration.value}
-                  error={errors?.duration?.value !== undefined}
-                  helperText={errors?.duration?.value}
+                  error={errors?.duration?.value}
                 />
               </Grid>
               <Grid item style={{ width: 150 }}>
@@ -230,25 +255,26 @@ const DialogDowntime = ({
               label={labelComment}
               fullWidth
               rows={3}
-              error={errors?.comment !== undefined}
-              helperText={errors?.comment}
+              error={errors?.comment}
             />
           </Grid>
           {hasHosts && (
-            <Grid container item direction="column">
-              <Grid item container xs alignItems="center">
-                <Grid item xs={1}>
+            <Grid item>
+              <FormControlLabel
+                control={
                   <Checkbox
-                    checked={values.downtimeAttachedResources}
+                    checked={
+                      canDowntimeServices() && values.downtimeAttachedResources
+                    }
+                    disabled={!canDowntimeServices()}
                     inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                     color="primary"
                     onChange={handleChange('downtimeAttachedResources')}
+                    size="small"
                   />
-                </Grid>
-                <Grid item xs>
-                  <Typography>{labelSetDowntimeOnServices}</Typography>
-                </Grid>
-              </Grid>
+                }
+                label={labelSetDowntimeOnServices}
+              />
             </Grid>
           )}
         </Grid>

@@ -577,7 +577,7 @@ class CentreonServiceTemplate extends CentreonObject
                 $params[1] = "esi_" . $params[1];
                 if ($params[1] == "esi_icon_image") {
                     if ($params[2]) {
-                        $id = CentreonUtils::getImageId($params[2]);
+                        $id = CentreonUtils::getImageId($params[2], $this->db);
                         if (is_null($id)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
                         }

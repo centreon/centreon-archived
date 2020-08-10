@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,9 +52,25 @@ class MonitoringServerService implements MonitoringServerServiceInterface
     public function findServers(): array
     {
         try {
-            return $this->monitoringServerRepository->findServers();
+            return $this->monitoringServerRepository->findServersWithRequestParameters();
         } catch (\Exception $ex) {
             throw new MonitoringServerException('Error when searching for monitoring servers', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer
+    {
+        try {
+            return $this->monitoringServerRepository->findServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException(
+                'Error when searching for a monitoring server (' . $monitoringServerId . ')',
+                0,
+                $ex
+            );
         }
     }
 
@@ -79,6 +95,23 @@ class MonitoringServerService implements MonitoringServerServiceInterface
             return $this->monitoringServerRepository->findLocalServer();
         } catch (\Exception $ex) {
             throw new MonitoringServerException('Error when searching for the local monitoring servers', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void
+    {
+        if ($monitoringServer->getId() === null && $monitoringServer->getName() === null) {
+            throw new MonitoringServerException(
+                'The id or name of the monitoring server must be defined and not null'
+            );
+        }
+        try {
+            $this->monitoringServerRepository->notifyConfigurationChanged($monitoringServer);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when notifying a configuration change', 0, $ex);
         }
     }
 }

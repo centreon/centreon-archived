@@ -3,18 +3,18 @@ import * as React from 'react';
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
+import { useUserContext } from '../../../../Provider/UserContext';
 import {
   labelRequired,
-  labelSomethingWentWrong,
   labelDowntimeCommandSent,
   labelDowntimeBy,
   labelEndDateMustBeGreater,
 } from '../../../translatedLabels';
 import DialogDowntime from './Dialog';
 import { Resource } from '../../../models';
-import { setDowntimeOnResources, getUser } from '../../../api';
+import { setDowntimeOnResources } from '../../../api';
 
 interface DateParams {
   dateStart: Date;
@@ -86,16 +86,19 @@ const DowntimeForm = ({
   onClose,
   onSuccess,
 }: Props): JSX.Element | null => {
-  const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
-  const showError = (message): void =>
-    showMessage({ message, severity: Severity.error });
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const [loaded, setLoaded] = React.useState(false);
-  const [locale, setLocale] = React.useState<string | null>('en');
+  const { locale, timezone, username } = useUserContext();
+
+  const {
+    sendRequest: sendSetDowntimeOnResources,
+    sending: sendingSetDowntingOnResources,
+  } = useRequest({
+    request: setDowntimeOnResources,
+  });
 
   const currentDate = new Date();
   const twoHoursMs = 2 * 60 * 60 * 1000;
@@ -128,47 +131,26 @@ const DowntimeForm = ({
       const durationDivider = unitMultipliers?.[values.duration.unit] || 1;
       const duration = values.duration.value * durationDivider;
 
-      setDowntimeOnResources({
+      sendSetDowntimeOnResources({
         resources,
         params: { ...values, startTime, endTime, duration },
-        cancelToken: token,
-      })
-        .then(() => {
-          showSuccess(labelDowntimeCommandSent);
-          onSuccess();
-        })
-        .catch(() => showError(labelSomethingWentWrong))
-        .finally(() => setSubmitting(false));
+      }).then(() => {
+        showSuccess(labelDowntimeCommandSent);
+        onSuccess();
+      });
     },
     validationSchema,
     validate,
   });
 
-  const hasResources = resources.length > 0;
-
   React.useEffect(() => {
-    if (!hasResources) {
-      return;
-    }
-
-    getUser(token)
-      .then((user) => {
-        form.setFieldValue('comment', `${labelDowntimeBy} ${user.username}`);
-        setLocale(user.locale);
-      })
-      .catch(() => showError(labelSomethingWentWrong))
-      .finally(() => setLoaded(true));
-  }, [hasResources]);
-
-  React.useEffect(() => (): void => cancel(), []);
-
-  if (resources.length === 0) {
-    return null;
-  }
+    form.setFieldValue('comment', `${labelDowntimeBy} ${username}`);
+  }, []);
 
   return (
     <DialogDowntime
       locale={locale}
+      timezone={timezone}
       resources={resources}
       onConfirm={form.submitForm}
       onCancel={onClose}
@@ -177,8 +159,8 @@ const DowntimeForm = ({
       values={form.values}
       handleChange={form.handleChange}
       setFieldValue={form.setFieldValue}
-      submitting={form.isSubmitting}
-      loading={!loaded}
+      submitting={sendingSetDowntingOnResources}
+      loading={form.values.comment === ''}
     />
   );
 };

@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
 use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\Repository\RepositoryException;
-use Centreon\Infrastructure\HostConfiguration\HostConfigurationRepositoryRDB;
 
 interface HostConfigurationRepositoryInterface
 {
@@ -43,7 +43,32 @@ interface HostConfigurationRepositoryInterface
      *
      * @param int $hostId Host Id to be found
      * @return Host|null Returns a host otherwise null
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function findHost(int $hostId): ?Host;
+
+    /**
+     * Indicates if a hostname is already in use.
+     *
+     * @param string $hostName Hostname to be found
+     * @return bool True if the hostname is already in use
+     */
+    public function hasHostWithSameName(string $hostName): bool;
+
+    /**
+     * Returns the number of hosts.
+     *
+     * @return int Number of hosts
+     */
+    public function getNumberOfHosts(): int;
+
+    /**
+     * Find all host macros for the host.
+     *
+     * @param int $hostId Id of the host
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find host macros (FALSE by default)
+     * @return array<HostMacro> List of host macros found
+     * @throws \Throwable
+     */
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
 }

@@ -32,16 +32,13 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Domain\Service\JsonValidator\ValidatorException;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Used to manage all requests of hosts acknowledgements
@@ -76,13 +73,8 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
         $hostsAcknowledgements = $this->acknowledgementService
-            ->filterByContact($contact)
+            ->filterByContact($this->getUser())
             ->findHostsAcknowledgements();
 
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
@@ -106,11 +98,6 @@ class AcknowledgementController extends AbstractController
     public function findAcknowledgementsByHost(RequestParametersInterface $requestParameters, int $hostId): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
 
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
@@ -137,11 +124,6 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findServicesAcknowledgements();
@@ -167,10 +149,7 @@ class AcknowledgementController extends AbstractController
         int $hostId,
         int $serviceId
     ): View {
-        $contact = $this->getUser();
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
@@ -463,16 +442,8 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (
-            !$contact->isAdmin()
-            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
-                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
-        ) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
         $acknowledgement = $this->acknowledgementService
-            ->filterByContact($contact)
+            ->filterByContact($this->getUser())
             ->findOneAcknowledgement($acknowledgementId);
 
         if ($acknowledgement !== null) {
@@ -497,16 +468,8 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
-        $contact = $this->getUser();
-        if (
-            !$contact->isAdmin()
-            && (!$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)
-                || !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT))
-        ) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
         $acknowledgements = $this->acknowledgementService
-            ->filterByContact($contact)
+            ->filterByContact($this->getUser())
             ->findAcknowledgements();
 
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
@@ -539,10 +502,6 @@ class AcknowledgementController extends AbstractController
          */
         $contact = $this->getUser();
 
-        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
-
         /**
          * @var ResourceEntity[] $resources
          */
@@ -570,7 +529,7 @@ class AcknowledgementController extends AbstractController
                     ResourceEntity::VALIDATION_GROUP_DISACK_HOST
                 ));
             } else {
-                throw new \RestBadRequestException('Incorrect resource type for disacknowledgement');
+                throw new \RestBadRequestException(_('Incorrect resource type for disacknowledgement'));
             }
         }
 
@@ -581,13 +540,15 @@ class AcknowledgementController extends AbstractController
         foreach ($resources as $resource) {
             //start disacknowledgement process
             try {
-                if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                    $this->acknowledgementService->disacknowledgeService(
-                        (int)$resource->getParent()->getId(),
-                        (int)$resource->getId()
-                    );
-                } else {
-                    $this->acknowledgementService->disacknowledgeHost((int)$resource->getId());
+                if ($this->hasDisackRightsForResource($contact, $resource)) {
+                    if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                        $this->acknowledgementService->disacknowledgeService(
+                            (int)$resource->getParent()->getId(),
+                            (int)$resource->getId()
+                        );
+                    } else {
+                        $this->acknowledgementService->disacknowledgeHost((int)$resource->getId());
+                    }
                 }
             } catch (\Exception $e) {
                 continue;
@@ -638,16 +599,16 @@ class AcknowledgementController extends AbstractController
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
+                    ResourceEntity::VALIDATION_GROUP_ACK_SERVICE
                 ));
             } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
                 $errorList->addAll(ResourceService::validateResource(
                     $entityValidator,
                     $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
+                    ResourceEntity::VALIDATION_GROUP_ACK_HOST
                 ));
             } else {
-                throw new \RestBadRequestException('Incorrect resource type for acknowledgement');
+                throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
             }
         }
 
@@ -665,14 +626,18 @@ class AcknowledgementController extends AbstractController
             throw new ValidationFailedException($errorList);
         }
 
-        //set default values [sticky, persistent_comment] to true
+        // set default values [sticky, persistent_comment] to true
         $acknowledgement->setSticky(true);
         $acknowledgement->setPersistentComment(true);
 
         foreach ($resources as $resource) {
-            //start acknowledgement process
+            // start acknowledgement process
             try {
                 if ($this->hasAckRightsForResource($contact, $resource)) {
+                    if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+                        $acknowledgement->setWithServices(false);
+                    }
+
                     $this->acknowledgementService->acknowledgeResource(
                         $resource,
                         $acknowledgement
@@ -687,18 +652,48 @@ class AcknowledgementController extends AbstractController
     }
 
     /**
+     * Check if the resource can be acknowledged
+     *
      * @param Contact $contact
      * @param ResourceEntity $resouce
      * @return bool
      */
-    private function hasAckRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    private function hasAckRightsForResource(Contact $contact, ResourceEntity $resource): bool
     {
+        if ($contact->isAdmin()) {
+            return true;
+        }
+
         $hasRights = false;
 
-        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
-            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
-        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
-            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
+        }
+
+        return $hasRights;
+    }
+
+    /**
+     * Check if the resource can be disacknowledged
+     *
+     * @param Contact $contact
+     * @param ResourceEntity $resouce
+     * @return bool
+     */
+    private function hasDisackRightsForResource(Contact $contact, ResourceEntity $resource): bool
+    {
+        if ($contact->isAdmin()) {
+            return true;
+        }
+
+        $hasRights = false;
+
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
         }
 
         return $hasRights;

@@ -298,7 +298,7 @@ function validateFeature(name, version, enabled) {
         ;
 
         // if it's a relative path, we can use the default redirection
-        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isHandled === false) {
+        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isHandled === false && !isReact) {
           e.preventDefault();
 
           // Manage centreon links

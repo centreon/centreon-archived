@@ -25,6 +25,7 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\HostConfiguration\HostConfigurationService;
+use Centreon\Domain\HostConfiguration\HostMacro;
 
 interface HostConfigurationServiceInterface
 {
@@ -45,4 +46,32 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findHost(int $hostId): ?Host;
+
+    /**
+     * Returns the number of host.
+     *
+     * @return int Number of host
+     * @throws HostConfigurationException
+     */
+    public function getNumberOfHosts(): int;
+
+    /**
+     * Find all host macros for the host.
+     *
+     * @param int $hostId Id of the host
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find host macros (FALSE by default)
+     * @return HostMacro[] List of host macros found
+     * @throws HostConfigurationException
+     */
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
+
+    /**
+     * Find all on-demand host macros of type password needed for this command.
+     *
+     * @param int $hostId Host id
+     * @param string $command Command to analyse
+     * @return HostMacro[] List of host macros of type password
+     * @throws HostConfigurationException
+     */
+    public function findHostMacrosPassword(int $hostId, string $command): array;
 }
