@@ -45,6 +45,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Domain\Contact\Contact;
 
 /**
  * Resource APIs for the Unified View page
@@ -65,6 +66,14 @@ class MonitoringResourceController extends AbstractController
         'hostgroup_ids',
         'servicegroup_ids',
     ];
+
+    private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id=<resource_id>';
+    private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id=<resource_id>';
+    private const HOST_LOGS_URI = '/main.php?p=20301&h=<resource_id>';
+    private const SERVICE_LOGS_URI = '/main.php?p=20301&svc=<parent_resource_id>_<resource_id>';
+    private const HOST_REPORTING_URI = '/centreon/main.php?p=307&host=<resource_id>';
+    private const SERVICE_REPORTING_URI =
+        '/main.php?p=30702&period=yesterday&start=&end=&host_id=<parent_resource_id>&item=<resource_id>';
 
     // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
@@ -128,6 +137,11 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
         // set default values of filter data
         $filterData = [];
         foreach (static::EXTRA_PARAMETERS_LIST as $param) {
@@ -169,7 +183,7 @@ class MonitoringResourceController extends AbstractController
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
-        $resources = $this->resource->filterByContact($this->getUser())
+        $resources = $this->resource->filterByContact($contact)
             ->findResources($filter);
 
         $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
@@ -182,6 +196,9 @@ class MonitoringResourceController extends AbstractController
             if ($resource->getParent() !== null && $resource->getParent()->getIcon() instanceof Icon) {
                 $this->iconUrlNormalizer->normalize($resource->getParent()->getIcon());
             }
+
+            // add shortcuts
+            $this->provideInternalUris($resource, $contact);
 
             // set paths to endpoints
             $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
@@ -352,5 +369,96 @@ class MonitoringResourceController extends AbstractController
         return $this
             ->view($this->resource->enrichServiceWithDetails($service))
             ->setContext($context);
+    }
+
+    /**
+     * Add internal uris (configuration, logs, reporting) to the given resource
+     *
+     * @param Resource $resource
+     * @param Contact $contact
+     * @return void
+     */
+    private function provideInternalUris(Resource $resource, Contact $contact): void
+    {
+        if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
+            $this->provideHostInternalUris($resource->getParent(), $contact);
+            $this->provideServiceInternalUris($resource, $contact);
+        } else {
+            $this->provideHostInternalUris($resource, $contact);
+        }
+    }
+
+    /**
+     * Add host internal uris (configuration, logs, reporting) to the given resource
+     *
+     * @param Resource $resource
+     * @param Contact $contact
+     * @return void
+     */
+    private function provideHostInternalUris(Resource $resource, Contact $contact): void
+    {
+        if ($contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS)) {
+            $resource->setConfigurationUri(
+                $this->generateResourceUri($resource, static::HOST_CONFIGURATION_URI)
+            );
+        }
+
+        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
+            $resource->setLogsUri(
+                $this->generateResourceUri($resource, static::HOST_LOGS_URI)
+            );
+        }
+
+        if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)) {
+            $resource->setReportingUri(
+                $this->generateResourceUri($resource, static::HOST_REPORTING_URI)
+            );
+        }
+    }
+
+    /**
+     * Add service internal uris (configuration, logs, reporting) to the given resource
+     *
+     * @param Resource $resource
+     * @param Contact $contact
+     * @return void
+     */
+    private function provideServiceInternalUris(Resource $resource, Contact $contact): void
+    {
+        if ($contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES)) {
+            $resource->setConfigurationUri(
+                $this->generateResourceUri($resource, static::SERVICE_CONFIGURATION_URI)
+            );
+        }
+
+        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
+            $resource->setLogsUri(
+                $this->generateResourceUri($resource, static::SERVICE_LOGS_URI)
+            );
+        }
+
+        if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
+            $resource->setReportingUri(
+                $this->generateResourceUri($resource, static::SERVICE_REPORTING_URI)
+            );
+        }
+    }
+
+    /**
+     * Generate full uri from relative path
+     *
+     * @param Resource $resource
+     * @param string $relativeUri
+     * @return string
+     */
+    private function generateResourceUri(Resource $resource, string $relativeUri): string
+    {
+        $uri = str_replace('<resource_id>', $resource->getId(), $relativeUri);
+
+        if ($resource->getParent() !== null) {
+            $uri = str_replace('<parent_resource_id>', $resource->getParent()->getId(), $uri);
+        }
+
+        return $this->getBaseUri() . $uri;
     }
 }
