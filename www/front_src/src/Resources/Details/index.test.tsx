@@ -443,10 +443,8 @@ describe(Details, () => {
 
     const dateRegExp = /\d+\/\d+\/\d+$/;
 
-    expect(getAllByText(dateRegExp).map((baba) => baba.textContent)).toEqual([
-      '06/22/2020',
-      '06/21/2020',
-      '06/20/2020',
-    ]);
+    expect(
+      getAllByText(dateRegExp).map((element) => element.textContent),
+    ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
   });
 });
