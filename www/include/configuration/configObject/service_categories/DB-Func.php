@@ -308,12 +308,11 @@ function updateServiceCategorieInDB()
     $centreon->user->access->updateACL();
 }
 
-function deleteServiceCategorieInDB(?int $sc_id = null)
+function deleteServiceCategorieInDB($idArray = null)
 {
     global $pearDB, $centreon;
 
-    $select = $_POST["select"];
-    foreach ($select as $key => $value) {
+    foreach ($idArray as $key => $value) {
         $scId = filter_var($key, FILTER_VALIDATE_INT);
         $query = "DELETE FROM `service_categories` WHERE `sc_id` = :sc_id";
         $statement = $pearDB->prepare($query);
