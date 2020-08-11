@@ -58,6 +58,8 @@ function checkSeverity($fields)
 function testHostCategorieExistence($name = null)
 {
     global $pearDB, $form;
+
+    $name = filter_var($name, FILTER_SANITIZE_STRING);
     $id = null;
     if (isset($form)) {
         $id = $form->getSubmitValue('hc_id');
@@ -84,7 +86,7 @@ function shouldNotBeEqTo0($value)
     }
 }
 
-function enableHostCategoriesInDB($hc_id = null, $hc_arr = [])
+function enableHostCategoriesInDB(?int $hc_id = null, $hc_arr = [])
 {
     global $pearDB, $centreon;
 
@@ -111,7 +113,7 @@ function enableHostCategoriesInDB($hc_id = null, $hc_arr = [])
     }
 }
 
-function disableHostCategoriesInDB($hc_id = null, $hc_arr = [])
+function disableHostCategoriesInDB(?int $hc_id = null, $hc_arr = [])
 {
     global $pearDB, $centreon;
 
@@ -141,6 +143,7 @@ function deleteHostCategoriesInDB($hostcategories = [])
     global $pearDB, $centreon;
 
     foreach ($hostcategories as $key => $value) {
+        $hcId = filter_var($key, FILTER_VALIDATE_INT);
         $dbResult3 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '" . $key . "' LIMIT 1");
         $row = $dbResult3->fetch();
         $pearDB->query("DELETE FROM hostcategories WHERE hc_id = '" . $key . "'");
