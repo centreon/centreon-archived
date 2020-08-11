@@ -181,3 +181,4 @@ export const labelAcknowledgement = I18n.t('Acknowledgement');
 export const labelBy = I18n.t('by');
 export const labelNotificationSentTo = I18n.t('Notification sent to');
 export const labelNotification = I18n.t('Notification');
+export const labelShortcuts = I18n.t('Shortcuts');

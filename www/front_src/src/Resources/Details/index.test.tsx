@@ -208,7 +208,7 @@ const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
     timeline: timelineEndpoint,
   };
 
-  detailState.detailsTabIdToOpen = defaultTabId;
+  detailState.openDetailsTabId = defaultTabId;
 
   context = {
     ...listingState,

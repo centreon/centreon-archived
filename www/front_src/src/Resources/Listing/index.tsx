@@ -1,12 +1,22 @@
 import * as React from 'react';
 
-import { isNil, equals } from 'ramda';
+import {
+  isNil,
+  equals,
+  pick,
+  pipe,
+  values,
+  reject,
+  isEmpty,
+  path,
+  prop,
+} from 'ramda';
 
 import { useTheme, fade } from '@material-ui/core';
 
 import { Listing } from '@centreon/ui';
 
-import { detailsTabId, graphTabId } from '../Details/tabs';
+import { detailsTabId, graphTabId, getVisibleTabs } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
 import {
   labelRowsPerPage,
@@ -17,6 +27,7 @@ import { getColumns } from './columns';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import useLoadResources from './useLoadResources';
+import { ResourceUris, ResourceLinks, Resource } from '../models';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -30,10 +41,10 @@ const ResourceListing = (): JSX.Element => {
     setLimit,
     page,
     setPage,
-    detailsTabIdToOpen,
-    setDefaultDetailsTabIdToOpen,
-    setSelectedDetailsEndpoints,
-    selectedDetailsEndpoints,
+    setOpenDetailsTabId,
+    setSelectedDetailsLinks,
+    openDetailsTabId,
+    selectedDetailsLinks,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,
@@ -59,29 +70,53 @@ const ResourceListing = (): JSX.Element => {
 
   const selectResource = ({
     details_endpoint,
-    status_graph_endpoint,
     performance_graph_endpoint,
     timeline_endpoint,
-  }): void => {
-    if (
-      isNil(performance_graph_endpoint) &&
-      detailsTabIdToOpen === graphTabId
-    ) {
-      setDefaultDetailsTabIdToOpen(detailsTabId);
+    parent,
+    configuration_uri,
+    logs_uri,
+    reporting_uri,
+  }: Resource): void => {
+    const uris = {
+      resource: {
+        configuration: configuration_uri,
+        logs: logs_uri,
+        reporting: reporting_uri,
+      },
+      parent: {
+        configuration: parent?.configuration_uri,
+        logs: parent?.logs_uri,
+        reporting: parent?.reporting_uri,
+      },
+    };
+
+    const links = {
+      endpoints: {
+        details: details_endpoint,
+        performanceGraph: performance_graph_endpoint,
+        timeline: timeline_endpoint,
+      },
+      uris,
+    };
+
+    const isOpenTabVisible = getVisibleTabs(links)
+      .map(prop('id'))
+      .includes(openDetailsTabId);
+
+    if (!isOpenTabVisible) {
+      setOpenDetailsTabId(detailsTabId);
     }
 
-    setSelectedDetailsEndpoints({
-      details: details_endpoint,
-      statusGraph: status_graph_endpoint,
-      performanceGraph: performance_graph_endpoint,
-      timeline: timeline_endpoint,
-    });
+    setSelectedDetailsLinks(links);
   };
 
   const resourceDetailsOpenCondition = {
     name: 'detailsOpen',
     condition: ({ details_endpoint }): boolean =>
-      equals(details_endpoint, selectedDetailsEndpoints?.details),
+      equals(
+        details_endpoint,
+        path(['endpoints', 'details'], selectedDetailsLinks),
+      ),
     color: fade(theme.palette.primary.main, 0.08),
   };
 
@@ -98,19 +133,10 @@ const ResourceListing = (): JSX.Element => {
     onCheck: (resource) => {
       setResourcesToCheck([resource]);
     },
-    onDisplayGraph: ({
-      details_endpoint,
-      status_graph_endpoint,
-      performance_graph_endpoint,
-      timeline_endpoint,
-    }) => {
-      setDefaultDetailsTabIdToOpen(graphTabId);
-      setSelectedDetailsEndpoints({
-        details: details_endpoint,
-        statusGraph: status_graph_endpoint,
-        performanceGraph: performance_graph_endpoint,
-        timeline: timeline_endpoint,
-      });
+    onDisplayGraph: (resource) => {
+      setOpenDetailsTabId(graphTabId);
+
+      selectResource(resource);
     },
   });
 

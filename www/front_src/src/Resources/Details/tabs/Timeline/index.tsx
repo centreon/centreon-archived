@@ -5,7 +5,6 @@ import {
   ListingModel,
   useIntersectionObserver,
   MultiAutocompleteField,
-  Search,
 } from '@centreon/ui';
 
 import {
@@ -29,7 +28,6 @@ import {
 import { Skeleton } from '@material-ui/lab';
 
 import { getFormattedDate } from '../../../dateTime';
-import { ResourceEndpoints } from '../../../models';
 import { TimelineEventByType, types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
@@ -38,7 +36,7 @@ import { labelEvent } from '../../../translatedLabels';
 import { useResourceContext } from '../../../Context';
 
 interface Props {
-  endpoints: Pick<ResourceEndpoints, 'timeline'>;
+  links: ResourceLinks;
 }
 
 type TimelineListing = ListingModel<TimelineEvent>;
@@ -85,7 +83,7 @@ const LoadingSkeleton = (): JSX.Element => {
   );
 };
 
-const TimelineTab = ({ endpoints }: Props): JSX.Element => {
+const TimelineTab = ({ links }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
@@ -94,6 +92,7 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const [limit] = React.useState(10);
   const [maxPage, setMaxPage] = React.useState(1);
 
+  const { endpoints } = links;
   const { timeline: timelineEndpoint } = endpoints;
   const { listing } = useResourceContext();
 
@@ -103,7 +102,7 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   });
 
   const listTimeline = (): Promise<TimelineListing> => {
-    const getSearch = (): Search | undefined => {
+    const getSearch = () => {
       if (isEmpty(selectedTypes)) {
         return undefined;
       }

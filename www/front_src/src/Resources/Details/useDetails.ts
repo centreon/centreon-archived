@@ -1,32 +1,43 @@
 import * as React from 'react';
 
-import { ResourceEndpoints } from '../models';
+import { ResourceEndpoints, ResourceLinks } from '../models';
 import { TabId, detailsTabId } from './tabs';
 
 export interface DetailsState {
+  selectedDetailsLinks?: ResourceLinks;
+  setSelectedDetailsLinks: React.Dispatch<
+    React.SetStateAction<ResourceLinks | undefined>
+  >;
+
   selectedDetailsEndpoints: ResourceEndpoints | null;
   setSelectedDetailsEndpoints: React.Dispatch<
     React.SetStateAction<ResourceEndpoints | null>
   >;
-  detailsTabIdToOpen: TabId;
-  setDefaultDetailsTabIdToOpen: React.Dispatch<React.SetStateAction<TabId>>;
+  openDetailsTabId: TabId;
+  setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
 }
 
 const useDetails = (): DetailsState => {
+  const [selectedDetailsLinks, setSelectedDetailsLinks] = React.useState<
+    ResourceLinks
+  >();
+
   const [
     selectedDetailsEndpoints,
     setSelectedDetailsEndpoints,
   ] = React.useState<ResourceEndpoints | null>(null);
 
-  const [detailsTabIdToOpen, setDefaultDetailsTabIdToOpen] = React.useState<
-    TabId
-  >(detailsTabId);
+  const [openDetailsTabId, setOpenDetailsTabId] = React.useState<TabId>(
+    detailsTabId,
+  );
 
   return {
+    selectedDetailsLinks,
+    setSelectedDetailsLinks,
     selectedDetailsEndpoints,
     setSelectedDetailsEndpoints,
-    detailsTabIdToOpen,
-    setDefaultDetailsTabIdToOpen,
+    openDetailsTabId,
+    setOpenDetailsTabId,
   };
 };
 
