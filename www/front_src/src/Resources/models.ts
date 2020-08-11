@@ -39,6 +39,7 @@ export interface Resource {
   performance_graph_endpoint?: string;
   type: 'host' | 'service';
   details_endpoint: string;
+  timeline_endpoint: string;
 }
 
 interface ListingMeta {
@@ -76,4 +77,5 @@ export interface ResourceEndpoints {
   details: string;
   statusGraph?: string;
   performanceGraph?: string;
+  timeline: string;
 }
