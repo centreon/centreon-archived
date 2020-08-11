@@ -156,7 +156,8 @@ $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $registerPayload = [
     "name" => $serverHostName,
     "type" => $serverType,
-    "address" => $dns ?? $serverIp
+    "address" => $dns ?? $serverIp,
+    "parent_address" => $host
 ];
 
 /**
@@ -176,6 +177,7 @@ Pending Registration Server:
 name: $serverHostName
 type: $serverType
 address: $address
+parent server address: $host
 
 
 EOD;
