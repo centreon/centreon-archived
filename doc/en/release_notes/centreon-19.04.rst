@@ -1,4 +1,29 @@
 =====================
+Centreon Web 19.04.18
+=====================
+
+Bug fixes
+---------
+
+* [LDAP] legacy errors in the logs
+* [Monitoring] Service limit when sending an external command
+
+Security fixes
+--------------
+
+* [Administration] SQL injection in "Administration > Parameters > Data"
+* [Configuration] RCE in Post command execution - CVE-2019-19699
+* [Configuration] SQL injection in Knowledge Base pages
+* [Configuration] SQL injection in centreonTraps.class.php
+* [Cron] Privilege Escalation from backup crontab
+* [Custom views] Missing access control mechanism in widget action
+* [Custom views] Missing access control mechanism in widget preferences
+* [Custom views] SQL injection in loadServiceFromHost
+* [Monitoring] Missing access control mechanism in hostSendCommand/ serviceSendCommand
+* [Monitoring] XSS in setHistory.php and commonJS.php
+* [Platform Status] Fix vulnerability for file loading
+
+=====================
 Centreon Web 19.04.17
 =====================
 
