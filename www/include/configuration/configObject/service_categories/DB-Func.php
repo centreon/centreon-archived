@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -113,7 +114,7 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
                 $query = "INSERT INTO service_categories_relation (service_service_id, sc_id) " .
                     "(SELECT service_service_id, " . $maxId['maxid'] .
                     " FROM service_categories_relation WHERE sc_id = :sc_id)";
-                $statement =$pearDB->prepare($query);
+                $statement = $pearDB->prepare($query);
                 $statement->bindValue(':sc_id', $key, \PDO::PARAM_INT);
                 $statement->execute();
             }
@@ -167,6 +168,7 @@ function insertServiceCategorieInDB()
     $scType = filter_var($_POST['sc_type'] ?? false, FILTER_VALIDATE_INT);
     $scSeverityIconId = filter_var($_POST['sc_severity_icon'], FILTER_VALIDATE_INT);
     $scActivate = filter_var($_POST['sc_activate']['sc_activate'], FILTER_VALIDATE_INT);
+
     $bindParams = [];
     $bindParams[':sc_name'] = [
         $scName => \PDO::PARAM_STR
@@ -183,16 +185,16 @@ function insertServiceCategorieInDB()
         : $bindParams[':sc_icon_id'] = [$scSeverityIconId => \PDO::PARAM_INT];
 
     ($scActivate === false)
-        ? $bindParams[':sc_activate'] = [0 => \PDO::PARAM_INT]
-        : $bindParams[':sc_activate'] = [$scActivate => \PDO::PARAM_INT];
+        ? $bindParams[':sc_activate'] = ['0' => \PDO::PARAM_STR]
+        : $bindParams[':sc_activate'] = [$scActivate => \PDO::PARAM_STR];
     if (testServiceCategorieExistence($scName)) {
         $query = "
             INSERT INTO `service_categories` (`sc_name`, `sc_description`, `level`, `icon_id`, `sc_activate`)
             VALUES (:sc_name, :sc_description, :sc_severity_level, :sc_icon_id, :sc_activate)";
         $statement = $pearDB->prepare($query);
 
-        foreach($bindParams as $token => $bindValues) {
-            foreach($bindValues as $value => $attr) {
+        foreach ($bindParams as $token => $bindValues) {
+            foreach ($bindValues as $value => $attr) {
                 $statement->bindValue($token, $value, $attr);
             }
         }
@@ -212,19 +214,53 @@ function updateServiceCategorieInDB()
 {
     global $pearDB, $centreon;
 
+    $scId = filter_var($_POST['sc_id'], FILTER_VALIDATE_INT);
+    $scName = filter_var($_POST['sc_name'], FILTER_SANITIZE_STRING);
+    $scDescription = filter_var($_POST['sc_description'], FILTER_SANITIZE_STRING);
+    $scSeverityLevel = filter_var($_POST['sc_severity_level'], FILTER_VALIDATE_INT);
+    $scType = filter_var($_POST['sc_type'] ?? false, FILTER_VALIDATE_INT);
+    $scSeverityIconId = filter_var($_POST['sc_severity_icon'], FILTER_VALIDATE_INT);
+    $scActivate = filter_var($_POST['sc_activate']['sc_activate'], FILTER_VALIDATE_INT);
 
-    $query = "UPDATE `service_categories` SET `sc_name` = '" . $_POST["sc_name"] .
-        "' , `sc_description` = '" . $_POST["sc_description"] .
-        "' , `level` = " . (isset($_POST['sc_severity_level']) && $_POST['sc_type']
-            ? $pearDB->escape($_POST['sc_severity_level'])
-            : "NULL") .
-        ", `icon_id` = " . (isset($_POST['sc_severity_icon']) && $_POST['sc_type']
-            ? $pearDB->escape($_POST['sc_severity_icon'])
-            : "NULL") .
-        ",`sc_activate` = '" . $_POST["sc_activate"]["sc_activate"] .
-        "' WHERE `sc_id` = '" . $_POST["sc_id"] . "'";
-    $pearDB->query($query);
-    updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES, "UTF-8"));
+    $bindParams = [];
+    $bindParams[':sc_id'] = [
+        $scId => \PDO::PARAM_INT
+    ];
+    $bindParams[':sc_name'] = [
+        $scName => \PDO::PARAM_STR
+    ];
+    $bindParams[':sc_description'] = [
+            $scDescription => \PDO::PARAM_STR
+    ];
+    ($scSeverityLevel === false || $scType === false)
+        ? $bindParams[':sc_severity_level'] = ["NULL" => \PDO::PARAM_NULL]
+        : $bindParams[':sc_severity_level'] = [$scSeverityLevel => \PDO::PARAM_INT];
+
+    ($scSeverityIconId === false || $scType === false)
+        ? $bindParams[':sc_icon_id'] = ["NULL" => \PDO::PARAM_NULL]
+        : $bindParams[':sc_icon_id'] = [$scSeverityIconId => \PDO::PARAM_INT];
+
+    ($scActivate === false)
+        ? $bindParams[':sc_activate'] = ['0' => \PDO::PARAM_STR]
+        : $bindParams[':sc_activate'] = [$scActivate => \PDO::PARAM_STR];
+
+    $query = "
+        UPDATE `service_categories`
+        SET `sc_name` = :sc_name,
+            `sc_description` = :sc_description,
+            `level` = :sc_severity_level,
+            `icon_id` = :sc_icon_id,
+            `sc_activate` = :sc_activate
+        WHERE `sc_id` = :sc_id";
+    $statement = $pearDB->prepare($query);
+    foreach ($bindParams as $token => $bindValues) {
+        foreach ($bindValues as $value => $attr) {
+            $statement->bindValue($token, $value, $attr);
+        }
+    }
+    $statement->execute();
+
+    updateServiceCategoriesServices($scId);
     $centreon->user->access->updateACL();
 }
 
@@ -234,27 +270,38 @@ function deleteServiceCategorieInDB($sc_id = null)
 
     $select = $_POST["select"];
     foreach ($select as $key => $value) {
-        $pearDB->query("DELETE FROM `service_categories` WHERE `sc_id` = '" . $key . "'");
+        $scId = filter_var($key, FILTER_VALIDATE_INT);
+        $query = "DELETE FROM `service_categories` WHERE `sc_id` = :sc_id";
+        $statement = $pearDB->prepare($query);
+        $statement->bindValue(':sc_id', $scId, \PDO::PARAM_INT);
+        $statement->execute();
     }
     $centreon->user->access->updateACL();
 }
 
-function updateServiceCategoriesServices($sc_id)
+function updateServiceCategoriesServices(int $sc_id)
 {
     global $pearDB, $form;
 
     if (!$sc_id) {
         return;
     }
-
-    $query = "DELETE FROM service_categories_relation WHERE sc_id = '" . $sc_id .
-        "' AND service_service_id IN (SELECT service_id FROM service WHERE service_register = '0')";
-    $pearDB->query($query);
+    $query = "
+        DELETE FROM service_categories_relation WHERE sc_id = :sc_id
+        AND service_service_id IN (SELECT service_id FROM service WHERE service_register = '0')";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':sc_id', $sc_id, \PDO::PARAM_INT);
+    $statement->execute();
     if (isset($_POST["sc_svcTpl"])) {
-        foreach ($_POST["sc_svcTpl"] as $key) {
-            $query = "INSERT INTO service_categories_relation (service_service_id, sc_id) " .
-                "VALUES ('" . $key . "', '" . $sc_id . "')";
-            $pearDB->query($query);
+        foreach ($_POST["sc_svcTpl"] as $serviceId) {
+            $serviceId = filter_var($serviceId, FILTER_VALIDATE_INT);
+            $query = "
+                INSERT INTO service_categories_relation (service_service_id, sc_id)
+                VALUES (:service_id, :sc_id)";
+            $statement = $pearDB->prepare($query);
+            $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
+            $statement->bindValue(':sc_id', $sc_id, \PDO::PARAM_INT);
+            $statement->execute();
         }
     }
 }
