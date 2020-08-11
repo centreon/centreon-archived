@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Grid, Typography, makeStyles, Theme, fade } from '@material-ui/core';
+import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { StatusChip, SeverityCode } from '@centreon/ui';
 
