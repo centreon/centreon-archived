@@ -11,6 +11,9 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { ThemeProvider } from '@centreon/ui';
+
 import * as clipboard from './tabs/Details/clipboard';
 
 import Details from '.';
@@ -212,9 +215,11 @@ const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <Context.Provider value={context}>
-      <Details />
-    </Context.Provider>
+    <ThemeProvider>
+      <Context.Provider value={context}>
+        <Details />
+      </Context.Provider>
+    </ThemeProvider>
   );
 };
 

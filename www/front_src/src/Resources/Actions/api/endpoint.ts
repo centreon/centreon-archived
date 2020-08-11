@@ -1,15 +1,7 @@
-import { monitoringEndpoint, resourcesEndpoint } from '../../api/endpoint';
+import { resourcesEndpoint } from '../../api/endpoint';
 
 const acknowledgeEndpoint = `${resourcesEndpoint}/acknowledge`;
 const downtimeEndpoint = `${resourcesEndpoint}/downtime`;
-const hostEndpoint = `${monitoringEndpoint}/hosts`;
-const hostCheckEndpoint = `${hostEndpoint}/check`;
-const serviceEndpoint = `${monitoringEndpoint}/services`;
-const serviceCheckEndpoint = `${serviceEndpoint}/check`;
+const checkEndpoint = `${resourcesEndpoint}/check`;
 
-export {
-  acknowledgeEndpoint,
-  downtimeEndpoint,
-  hostCheckEndpoint,
-  serviceCheckEndpoint,
-};
+export { acknowledgeEndpoint, downtimeEndpoint, checkEndpoint };

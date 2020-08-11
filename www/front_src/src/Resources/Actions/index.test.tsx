@@ -44,7 +44,7 @@ import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
-} from '../api/endpoint';
+} from './api/endpoint';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
