@@ -67,13 +67,13 @@ class MonitoringResourceController extends AbstractController
         'servicegroup_ids',
     ];
 
-    private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id=<resource_id>';
-    private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id=<resource_id>';
-    private const HOST_LOGS_URI = '/main.php?p=20301&h=<resource_id>';
-    private const SERVICE_LOGS_URI = '/main.php?p=20301&svc=<parent_resource_id>_<resource_id>';
-    private const HOST_REPORTING_URI = '/centreon/main.php?p=307&host=<resource_id>';
+    private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
+    private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
+    private const HOST_LOGS_URI = '/main.php?p=20301&h={resource_id}';
+    private const SERVICE_LOGS_URI = '/main.php?p=20301&svc={parent_resource_id}_{resource_id}';
+    private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
     private const SERVICE_REPORTING_URI =
-        '/main.php?p=30702&period=yesterday&start=&end=&host_id=<parent_resource_id>&item=<resource_id>';
+        '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
 
     // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
@@ -149,7 +149,7 @@ class MonitoringResourceController extends AbstractController
         }
 
         // load filter data with the query parameters
-        foreach ($request->query as $param => $data) {
+        foreach ($request->query->all() as $param => $data) {
             // skip pagination parameters
             if (in_array($param, ['search', 'limit', 'page', 'sort_by'])) {
                 continue;
@@ -453,10 +453,10 @@ class MonitoringResourceController extends AbstractController
      */
     private function generateResourceUri(Resource $resource, string $relativeUri): string
     {
-        $uri = str_replace('<resource_id>', $resource->getId(), $relativeUri);
+        $uri = str_replace('{resource_id}', $resource->getId(), $relativeUri);
 
         if ($resource->getParent() !== null) {
-            $uri = str_replace('<parent_resource_id>', $resource->getParent()->getId(), $uri);
+            $uri = str_replace('{parent_resource_id}', $resource->getParent()->getId(), $uri);
         }
 
         return $this->getBaseUri() . $uri;
