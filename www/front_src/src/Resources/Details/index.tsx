@@ -70,7 +70,7 @@ const Details = (): JSX.Element | null => {
       return theme.palette.common.white;
     }
 
-    return fade(foundColorCondition.color || '#nnn', 0.8);
+    return fade(foundColorCondition.color, 0.8);
   };
 
   return (
