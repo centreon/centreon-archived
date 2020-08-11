@@ -43,8 +43,7 @@ import * as UserContext from '../../Provider/UserContext';
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
-  hostCheckEndpoint,
-  serviceCheckEndpoint,
+  checkEndpoint,
 } from './api/endpoint';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -401,6 +400,9 @@ describe(Actions, () => {
     const service = {
       id: 1,
       type: 'service',
+      parent: {
+        id: 1,
+      },
     } as Resource;
 
     const selectedResources = [host, service];
@@ -417,19 +419,10 @@ describe(Actions, () => {
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        hostCheckEndpoint,
-        [
-          {
-            parent_resource_id: null,
-            resource_id: host.id,
-          },
-        ],
-        cancelTokenRequestParam,
-      );
-
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        serviceCheckEndpoint,
-        [{ parent_resource_id: null, resource_id: service.id }],
+        checkEndpoint,
+        {
+          resources: selectedResources,
+        },
         cancelTokenRequestParam,
       );
     });

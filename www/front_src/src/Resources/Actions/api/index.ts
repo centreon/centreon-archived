@@ -3,10 +3,9 @@ import axios, { AxiosResponse, CancelToken } from 'axios';
 import { map, pick } from 'ramda';
 
 import {
-  downtimeEndpoint,
-  hostCheckEndpoint,
-  serviceCheckEndpoint,
   acknowledgeEndpoint,
+  downtimeEndpoint,
+  checkEndpoint,
 } from './endpoint';
 import { Resource } from '../../models';
 
@@ -16,7 +15,7 @@ interface AcknowledgeParams {
   comment: string;
 }
 
-interface ResourcesWithAcknoweldgeParams {
+interface ResourcesWithAcknowledgeParams {
   resources: Array<Resource>;
   params: AcknowledgeParams;
   cancelToken: CancelToken;
@@ -25,7 +24,7 @@ interface ResourcesWithAcknoweldgeParams {
 const acknowledgeResources = (cancelToken) => ({
   resources,
   params,
-}: ResourcesWithAcknoweldgeParams): Promise<Array<AxiosResponse>> => {
+}: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
   return axios.post(
     acknowledgeEndpoint,
     {
@@ -76,38 +75,21 @@ const setDowntimeOnResources = (cancelToken) => ({
   );
 };
 
-interface CheckParams {
-  parent_resource_id?: number | null;
-  resource_id: number;
+interface ResourcesWithRequestParams {
+  resources: Array<Resource>;
+  cancelToken: CancelToken;
 }
-
-const toCheckParams = ({ id, parent }): CheckParams => ({
-  parent_resource_id: parent?.id || null,
-  resource_id: id,
-});
 
 const checkResources = ({
   resources,
   cancelToken,
-}): Promise<Array<AxiosResponse>> => {
-  const getResourceParamsForType = (resourceType): Array<CheckParams> =>
-    resources.filter(({ type }) => type === resourceType).map(toCheckParams);
-
-  return axios.all(
-    [
-      {
-        params: getResourceParamsForType('host'),
-        endpoint: hostCheckEndpoint,
-      },
-      {
-        params: getResourceParamsForType('service'),
-        endpoint: serviceCheckEndpoint,
-      },
-    ]
-      .filter(({ params }) => params.length > 0)
-      .map(({ endpoint, params }) =>
-        axios.post(endpoint, params, { cancelToken }),
-      ),
+}: ResourcesWithRequestParams): Promise<Array<AxiosResponse>> => {
+  return axios.post(
+    checkEndpoint,
+    {
+      resources: map(pick(['type', 'id', 'parent']), resources),
+    },
+    { cancelToken },
   );
 };
 

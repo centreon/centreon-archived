@@ -1574,6 +1574,27 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/check:
+    post:
+      tags:
+        - Check
+      summary: "Check resources"
+      description: "Schedule immediate check on chosen resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance:
     get:
       tags:
@@ -2848,6 +2869,31 @@ components:
         allOf:
           - $ref: '#/components/schemas/Check.Service'
           - $ref: '#/components/schemas/Bulk.Resource.Id'
+    Check.Resources:
+      type: object
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [host, service]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
     Monitoring.Resource.Disacknowledge.Host:
       type: object
       properties:
