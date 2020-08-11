@@ -59,6 +59,8 @@ function checkSeverity($fields)
 function testServiceCategorieExistence($name = null)
 {
     global $pearDB, $form;
+
+    $name = filter_var($name, FILTER_SANITIZE_STRING);
     $id = null;
     if (isset($form)) {
         $id = $form->getSubmitValue('sc_id');
@@ -90,24 +92,66 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
 
     $scAcl = [];
     foreach ($sc as $key => $value) {
+        $scId = filter_var($key, FILTER_VALIDATE_INT);
         $query = "SELECT * FROM `service_categories` WHERE `sc_id` = :sc_id LIMIT 1";
         $statement = $pearDB->prepare($query);
-        $statement->bindValue(':sc_id', $key, \PDO::PARAM_INT);
+        $statement->bindValue(':sc_id', $scId, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetch();
-        $row["sc_id"] = null;
-        for ($i = 1; $i <= $nbrDup[$key]; $i++) {
+        for ($i = 1; $i <= $nbrDup[$scId]; $i++) {
             $val = null;
+            $bindParams = [];
             foreach ($row as $key2 => $value2) {
-                $key2 == "sc_name" ? ($sc_name = $value2 = $value2 . "_" . $i) : null;
-                $key2 == "sc_description" ? $value2 : null;
+                switch ($key2) {
+                    case 'sc_name':
+                        $value2 = filter_var($value2, FILTER_SANITIZE_STRING);
+                        $sc_name = $value2 = $value2 . "_" . $i;
+                        $bindParams[':sc_name'] = [
+                            $value2 => \PDO::PARAM_STR
+                        ];
+                        break;
+                    case 'sc_description':
+                        $value2 = filter_var($value2, FILTER_SANITIZE_STRING);
+                        $bindParams[':sc_description'] = [
+                            $value2 => \PDO::PARAM_STR
+                        ];
+                        break;
+                    case 'level':
+                        $value2 = filter_var($value2 ?? false, FILTER_VALIDATE_INT);
+                        $value2
+                            ? $bindParams[':sc_level'] = [ $value2 => \PDO::PARAM_INT]
+                            : $bindParams[':sc_level'] = [ "NULL" => \PDO::PARAM_INT];
+                        break;
+                    case 'icon_id':
+                        $value2 = filter_var($value2 ?? false, FILTER_VALIDATE_INT);
+                        $value2
+                            ? $bindParams[':sc_icon_id'] = [ $value2 => \PDO::PARAM_INT]
+                            : $bindParams[':sc_icon_id'] = [ "NULL" => \PDO::PARAM_INT];
+                        break;
+                    case 'sc_activate':
+                        $value2 = filter_var($value2, FILTER_VALIDATE_INT);
+                        $value2
+                            ? $bindParams[':sc_activate'] = [ $value2 => \PDO::PARAM_STR]
+                            : $bindParams[':sc_activate'] = [ "0" => \PDO::PARAM_STR];
+                        break;
+                }
                 $val
                     ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
             if (testServiceCategorieExistence($sc_name)) {
-                $val ? $rq = "INSERT INTO `service_categories` VALUES (" . $val . ")" : $rq = null;
-                $pearDB->query($rq);
+                $val
+                    ? $query = "
+                        INSERT INTO `service_categories`
+                        VALUES (NULL, :sc_name, :sc_description, :sc_level, :sc_icon_id, :sc_activate)"
+                    : $query = null;
+                $statement = $pearDB->prepare($query);
+                foreach ($bindParams as $token => $bindValues) {
+                    foreach ($bindValues as $value => $attr) {
+                        $statement->bindValue($token, $value, $attr);
+                    }
+                }
+                $statement->execute();
                 $statement = $pearDB->query("SELECT MAX(sc_id) as maxid FROM `service_categories`");
                 $maxId = $statement->fetch();
                 $scAcl[$maxId['MAX(sc_id)']] = $key;
@@ -124,7 +168,7 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
     $centreon->user->access->updateACL();
 }
 
-function enableServiceCategorieInDB($sc_id = null, $sc_arr = [])
+function enableServiceCategorieInDB(?int $sc_id = null, $sc_arr = [])
 {
     if (!$sc_id && !count($sc_arr)) {
         return;
@@ -141,7 +185,7 @@ function enableServiceCategorieInDB($sc_id = null, $sc_arr = [])
     }
 }
 
-function disableServiceCategorieInDB($sc_id = null, $sc_arr = [])
+function disableServiceCategorieInDB(?int $sc_id = null, $sc_arr = [])
 {
     if (!$sc_id && !count($sc_arr)) {
         return;
@@ -185,7 +229,7 @@ function insertServiceCategorieInDB()
         : $bindParams[':sc_icon_id'] = [$scSeverityIconId => \PDO::PARAM_INT];
 
     ($scActivate === false)
-        ? $bindParams[':sc_activate'] = ['0' => \PDO::PARAM_STR]
+        ? $bindParams[':sc_activate'] = ["0" => \PDO::PARAM_STR]
         : $bindParams[':sc_activate'] = [$scActivate => \PDO::PARAM_STR];
     if (testServiceCategorieExistence($scName)) {
         $query = "
@@ -264,7 +308,7 @@ function updateServiceCategorieInDB()
     $centreon->user->access->updateACL();
 }
 
-function deleteServiceCategorieInDB($sc_id = null)
+function deleteServiceCategorieInDB(?int $sc_id = null)
 {
     global $pearDB, $centreon;
 
