@@ -116,13 +116,15 @@ print_step_end
 print_step_begin "PHP configuration"
 timezone=`php -r '
     $timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
-    if ($timezoneName === false) {
-        $timezoneName = "UTC";
-    }
 
     if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
         $timezoneName = $matches[1];
     }
+
+    if (date_default_timezone_set($timezoneName) === false) {
+      $timezoneName = "UTC";
+    }
+
     echo $timezoneName;
 ' 2> /dev/null`
 echo "date.timezone = $timezone" > /etc/opt/rh/rh-php72/php.d/10-centreon.ini
