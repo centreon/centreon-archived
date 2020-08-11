@@ -15467,3 +15467,12 @@ msgstr "Filtre actualisé"
 
 msgid "Name cannot be empty"
 msgstr "Le nom ne peut pas être vide"
+
+msgid "Timeline"
+msgstr "Historique"
+
+msgid "by"
+msgstr "par"
+
+msgid "Notification sent to"
+msgstr "Notification envoyée à"
