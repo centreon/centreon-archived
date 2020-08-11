@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, pipe, not, and, defaultTo } from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo } from 'ramda';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 

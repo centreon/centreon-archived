@@ -26,8 +26,8 @@ import {
 } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 
-import { getFormattedDate } from '../../../dateTime';
-import { ResourceEndpoints } from '../../../models';
+import { getFormattedDate } from '../../../../dateTime';
+import { ResourceEndpoints } from '../../../../models';
 import { TimelineEventByType } from './Event';
 import { TimelineEvent } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
