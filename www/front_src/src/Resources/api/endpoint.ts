@@ -12,7 +12,13 @@ const userEndpoint =
   './api/internal.php?object=centreon_topcounter&action=user';
 
 const buildResourcesEndpoint = (params): string => {
-  const searchOptions = ['h.name', 'h.alias', 'h.address', 's.description', 'information'];
+  const searchOptions = [
+    'h.name',
+    'h.alias',
+    'h.address',
+    's.description',
+    'information',
+  ];
 
   return buildListingEndpoint({
     baseEndpoint: resourcesEndpoint,
