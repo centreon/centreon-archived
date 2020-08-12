@@ -9,10 +9,10 @@ const buildListTimelineEventsEndpoint = ({ endpoint, parameters }): string =>
 
 const listTimelineEvents = (cancelToken) => ({
   endpoint,
-  options,
+  parameters,
 }): Promise<ListingModel<TimelineEvent>> => {
   return getData<ListingModel<TimelineEvent>>(cancelToken)(
-    buildListTimelineEventsEndpoint({ endpoint, options }),
+    buildListTimelineEventsEndpoint({ endpoint, parameters }),
   );
 };
 

@@ -1,4 +1,5 @@
 import { buildListingEndpoint } from '@centreon/ui';
+
 import { resourcesEndpoint } from '../../api/endpoint';
 
 const buildResourcesEndpoint = (parameters): string => {

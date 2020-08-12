@@ -405,7 +405,7 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
           endpoint: timelineEndpoint,
-          options: {
+          parameters: {
             limit: 10,
             page: 1,
             search: {
@@ -478,7 +478,7 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
           endpoint: timelineEndpoint,
-          options: {
+          parameters: {
             limit: 10,
             page: 1,
             search: {
