@@ -364,7 +364,7 @@ if (!is_null($host_id)) {
                 $i++;
             }
         }
-        $service_status["plugin_output"] = utf8_encode($service_status["plugin_output"]);
+
         $service_status["plugin_output"] = str_replace("'", "", $service_status["plugin_output"]);
         $service_status["plugin_output"] = str_replace("\"", "", $service_status["plugin_output"]);
         $service_status["plugin_output"] = str_replace("\\n", "<br>", $service_status["plugin_output"]);
