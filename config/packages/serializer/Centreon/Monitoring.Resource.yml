@@ -58,6 +58,21 @@ Centreon\Domain\Monitoring\Resource:
             type: bool
             groups:
                 - 'resource_main'
+        configurationUri:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        logsUri:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+        reportingUri:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         downtimeEndpoint:
             type: string
             groups:
