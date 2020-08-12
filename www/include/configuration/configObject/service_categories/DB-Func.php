@@ -64,7 +64,7 @@ function testServiceCategorieExistence($name = null)
     }
     $name = filter_var($name, FILTER_SANITIZE_STRING);
     $statement = $pearDB->prepare("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = ?");
-    $result = $pearDB->execute($statement,$name);
+    $result = $pearDB->execute($statement, $name);
     $sc = $result->fetchRow();
     if ($result->numRows() >= 1 && $sc["sc_id"] != $id) {
         return false;
