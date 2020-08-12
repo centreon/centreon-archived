@@ -10,7 +10,7 @@ import {
   Filters,
 } from '@centreon/ui';
 
-import { isEmpty, propEq, pick, find, defaultTo } from 'ramda';
+import { isEmpty, propEq, pick, find } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import {
