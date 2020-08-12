@@ -23,12 +23,12 @@ declare(strict_types=1);
 namespace Centreon\Application\Normalizer;
 
 use Centreon\Domain\Monitoring\Icon;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Normalize icon url to build full url
  */
-class IconUrlNormalizer implements ContextAwareNormalizerInterface
+class IconUrlNormalizer implements NormalizerInterface
 {
     private const IMG_DIR = '/img/media';
 
@@ -48,7 +48,7 @@ class IconUrlNormalizer implements ContextAwareNormalizerInterface
     /**
      * @inheritDoc
      */
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null)
     {
         return $data instanceof Icon;
     }
