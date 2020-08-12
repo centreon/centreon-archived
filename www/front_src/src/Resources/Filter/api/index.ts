@@ -14,10 +14,10 @@ import { toRawFilter, toFilter } from './adapters';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
-const buildListCustomFiltersEndpoint = (params): string =>
+const buildListCustomFiltersEndpoint = (parameters): string =>
   buildListingEndpoint({
     baseEndpoint: filterEndpoint,
-    params,
+    parameters,
   });
 
 const listCustomFilters = (cancelToken) => (): Promise<
@@ -29,17 +29,17 @@ const listCustomFilters = (cancelToken) => (): Promise<
 
 type RawFilterWithoutId = Omit<RawFilter, 'id'>;
 
-const createFilter = (cancelToken) => (params): Promise<Filter> => {
+const createFilter = (cancelToken) => (parameters): Promise<Filter> => {
   return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: filterEndpoint,
-    data: toRawFilter(params),
+    data: toRawFilter(parameters),
   }).then(toFilter);
 };
 
-const updateFilter = (cancelToken) => (params): Promise<Filter> => {
+const updateFilter = (cancelToken) => (parameters): Promise<Filter> => {
   return putData<RawFilterWithoutId, Filter>(cancelToken)({
-    endpoint: `${filterEndpoint}/${params.id}`,
-    data: toRawFilter(params),
+    endpoint: `${filterEndpoint}/${parameters.id}`,
+    data: toRawFilter(parameters),
   });
 };
 
@@ -47,15 +47,15 @@ interface PatchFilterProps {
   order: number;
 }
 
-const patchFilter = (cancelToken) => (params): Promise<Filter> => {
+const patchFilter = (cancelToken) => (parameters): Promise<Filter> => {
   return patchData<PatchFilterProps, Filter>(cancelToken)({
-    endpoint: `${filterEndpoint}/${params.id}`,
-    data: { order: params.order },
+    endpoint: `${filterEndpoint}/${parameters.id}`,
+    data: { order: parameters.order },
   });
 };
 
-const deleteFilter = (cancelToken) => (params): Promise<void> => {
-  return deleteData<void>(cancelToken)(`${filterEndpoint}/${params.id}`);
+const deleteFilter = (cancelToken) => (parameters): Promise<void> => {
+  return deleteData<void>(cancelToken)(`${filterEndpoint}/${parameters.id}`);
 };
 
 export {
