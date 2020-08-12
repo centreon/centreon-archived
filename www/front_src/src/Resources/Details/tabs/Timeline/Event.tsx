@@ -42,7 +42,7 @@ const types: Array<Type> = [
   },
 
   {
-    id: 'acknowledge',
+    id: 'acknowledgement',
     name: labelAcknowledgement,
   },
 
