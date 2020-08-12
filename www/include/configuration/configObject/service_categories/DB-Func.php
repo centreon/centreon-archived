@@ -62,11 +62,12 @@ function testServiceCategorieExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('sc_id');
     }
-    $name = filter_var($name, FILTER_SANITIZE_STRING);
-    $statement = $pearDB->prepare("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = ?");
-    $result = $pearDB->execute($statement, array($name));
-    $sc = $result->fetchRow();
-    if ($result->numRows() >= 1 && $sc["sc_id"] != $id) {
+    $name = CentreonUtils::escapeSecure($name, 4);
+    $DBRESULT = $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '" . $name . "'");
+    $sc = $DBRESULT->fetchRow();
+    if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] == $id) {
+        return true;
+    } elseif ($DBRESULT->numRows() >= 1 && $sc["sc_id"] != $id) {
         return false;
     } else {
         return true;
