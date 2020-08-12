@@ -834,7 +834,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Disacknowledge.Bulk'
+              $ref: '#/components/schemas/Acknowledgement.Disacknowledge.Bulk'
       responses:
         '204':
           description: "OK"
@@ -1924,7 +1924,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Bulk'
+              $ref: '#/components/schemas/Acknowledgement.Bulk'
       responses:
         '204':
           description: "Command Sent"
@@ -2490,10 +2490,10 @@ components:
           type: boolean
           description: "Indicates whether notification is sent to the contacts linked to the host or service"
           example: false
-    Acknowledgment.Bulk:
+    Acknowledgement.Bulk:
         type: object
         properties:
-          acknowledgment:
+          acknowledgement:
             $ref: '#/components/schemas/Acknowledgement.Resource'
           resources:
             type: array
@@ -2501,7 +2501,7 @@ components:
               allOf:
                 - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
                 - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
-    Acknowledgment.Disacknowledge.Bulk:
+    Acknowledgement.Disacknowledge.Bulk:
         type: array
         items:
           allOf:
