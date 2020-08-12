@@ -682,14 +682,8 @@
      * @return {Integer} - 1000 or 1024
      */
     getBase: function (id) {
-      // Of course no-unit series are 1000 based
-      for (var e in this.chartData.data) {
-        if((this.chartData.data[e].data[0] === id) && this.chartData.data[e].unit === "") {
-          return 1000;
-        }
-      }
-      if (this.chartData.base) {
-        return this.chartData.base;
+      if (this.chartData.global.base) {
+        return this.chartData.global.base;
       }
       return 1000;
     },
