@@ -1,16 +1,6 @@
 import * as React from 'react';
 
-import {
-  isNil,
-  find,
-  propEq,
-  filter,
-  reject,
-  isEmpty,
-  pipe,
-  values,
-  not,
-} from 'ramda';
+import { isNil, find, propEq, any } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import DetailsTab from './Details';
@@ -22,10 +12,10 @@ import {
 } from '../../translatedLabels';
 import GraphTab from './Graph';
 import { ResourceDetails } from '../models';
-import { TabEndpoints, GraphEndpoints } from './models';
 import TimelineTab from './Timeline';
-import { ResourceLinks, ResourceUris } from '../../models';
+import { ResourceLinks } from '../../models';
 import ShortcutsTab from './Shortcuts';
+import hasDefinedValues from '../../hasDefinedValues';
 
 const detailsTabId = 0;
 const timelineTabId = 1;
@@ -38,7 +28,7 @@ interface Tab {
   id: TabId;
   Component: (props) => JSX.Element;
   title: string;
-  visible: (endpoints) => boolean;
+  getIsVisible: (endpoints) => boolean;
 }
 
 const tabs: Array<Tab> = [
@@ -46,19 +36,19 @@ const tabs: Array<Tab> = [
     id: detailsTabId,
     Component: DetailsTab,
     title: labelDetails,
-    visible: (): boolean => true,
+    getIsVisible: (): boolean => true,
   },
   {
     id: timelineTabId,
     Component: TimelineTab,
     title: labelTimeline,
-    visible: (): boolean => true,
+    getIsVisible: (): boolean => true,
   },
   {
     id: graphTabId,
     Component: GraphTab,
     title: labelGraph,
-    visible: ({ endpoints }: ResourceLinks): boolean => {
+    getIsVisible: ({ endpoints }: ResourceLinks): boolean => {
       const { performanceGraph } = endpoints;
       return !isNil(performanceGraph);
     },
@@ -67,20 +57,16 @@ const tabs: Array<Tab> = [
     id: shortcutsTabId,
     Component: ShortcutsTab,
     title: labelShortcuts,
-    visible: (links: ResourceLinks): boolean => {
-      const hasDefinedUris = (uris: ResourceUris): boolean => {
-        return pipe(values, filter(isNil), isEmpty, not)(uris);
-      };
-
+    getIsVisible: (links: ResourceLinks): boolean => {
       const { parent, resource } = links.uris;
 
-      return hasDefinedUris(parent) || hasDefinedUris(resource);
+      return any(hasDefinedValues, [parent, resource]);
     },
   },
 ];
 
 const getVisibleTabs = (links): Array<Tab> => {
-  return tabs.filter(({ visible }) => visible(links));
+  return tabs.filter(({ getIsVisible }) => getIsVisible(links));
 };
 
 const useStyles = makeStyles((theme) => ({
