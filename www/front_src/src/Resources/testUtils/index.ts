@@ -16,7 +16,13 @@ const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
-const searchableFields = ['h.name', 'h.alias', 'h.address', 's.description'];
+const searchableFields = [
+  'h.name',
+  'h.alias',
+  'h.address',
+  's.description',
+  'information',
+];
 
 const getListingEndpoint = ({
   page = 1,
