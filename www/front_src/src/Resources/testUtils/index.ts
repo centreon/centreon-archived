@@ -45,7 +45,13 @@ const getListingEndpoint = ({
       ? {
           regex: {
             value: search,
-            fields: ['h.name', 'h.alias', 'h.address', 's.description'],
+            fields: [
+              'h.name',
+              'h.alias',
+              'h.address',
+              's.description',
+              'information',
+            ],
           },
         }
       : undefined,
