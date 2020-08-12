@@ -119,7 +119,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
 
     return sendRequest({
       endpoint: timelineEndpoint,
-      options: {
+      parameters: {
         page,
         limit,
         search: getSearch(),
