@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Card, CardContent, Typography, makeStyles } from '@material-ui/core';
-import { labelComment } from '../../../../translatedLabels';
+import { labelComment } from '../../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   container: {
