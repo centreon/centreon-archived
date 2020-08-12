@@ -9,7 +9,26 @@
       "type": "string"
     },
     "criterias": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "value"],
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": ["string", "integer", "object", "array", "null"]
+          },
+          "object_type": {
+            "type": ["string", "null"]
+          }
+        }
+      }
     }
   }
 }

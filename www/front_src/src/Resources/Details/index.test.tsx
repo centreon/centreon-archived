@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { last, head } from 'ramda';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import {
   waitFor,
   fireEvent,
   RenderResult,
+  act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as clipboard from './Body/tabs/Details/clipboard';
@@ -42,23 +43,23 @@ import {
   labelNo,
   labelComment,
 } from '../translatedLabels';
-import { detailsTabId, graphTabId } from './Body/tabs';
-import * as Context from '../Context';
+import { detailsTabId, graphTabId, TabId, timelineTabId } from './Body/tabs';
+import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
+import { buildListTimelineEventsEndpoint } from './Body/tabs/Timeline/api';
+
+import useListing from '../Listing/useListing';
+import useDetails from './useDetails';
+import { ResourceListing } from '../models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
 jest.mock('./Body/tabs/Details/clipboard');
-jest.mock('../Context');
-
-const mockedUseResourceContext = Context.useResourceContext as jest.Mock<
-  unknown
->;
 
 const detailsEndpoint = '/resource';
 const performanceGraphEndpoint = '/performance';
-const statusGraphEndpoint = '/status';
+const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
   display_name: 'Central',
@@ -113,21 +114,112 @@ const performanceGraphData = {
   metrics: [],
 };
 
-const currentDateIsoString = '2020-06-20T20:00:00.000Z';
-
-const mockUseResourceContext = ({ openTabId }): void => {
-  mockedUseResourceContext.mockReturnValue({
-    detailsTabIdToOpen: openTabId,
-    selectedDetailsEndpoints: {
-      details: detailsEndpoint,
-      performanceGraph: performanceGraphEndpoint,
-      statusGraph: statusGraphEndpoint,
+const retrievedTimeline = {
+  result: [
+    {
+      type: 'event',
+      id: 1,
+      date: '2020-06-22T10:40:00',
+      tries: 1,
+      content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
+      status: {
+        severity_code: 5,
+        name: 'UP',
+      },
     },
-    setDefaultDetailsTabIdToOpen: jest.fn(),
-  });
+    {
+      type: 'event',
+      id: 2,
+      date: '2020-06-22T10:35:00',
+      tries: 3,
+      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
+      status: {
+        severity_code: 1,
+        name: 'DOWN',
+      },
+    },
+    {
+      type: 'notification',
+      id: 3,
+      date: '2020-06-21T09:40:00',
+      content: 'My little notification',
+      contact: {
+        name: 'admin',
+      },
+    },
+    {
+      type: 'acknowledgement',
+      id: 4,
+      date: '2020-06-20T09:35:00Z',
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little ack',
+    },
+    {
+      type: 'downtime',
+      id: 5,
+      date: '2020-06-20T09:30:00',
+      start_date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little dt',
+    },
+    {
+      type: 'comment',
+      id: 6,
+      date: '2020-06-20T08:55:00',
+      start_date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment',
+    },
+  ],
+  meta: {
+    page: 1,
+    limit: 10,
+    total: 5,
+  },
 };
 
-const renderDetails = (): RenderResult => render(<Details />);
+const currentDateIsoString = '2020-06-20T20:00:00.000Z';
+
+let context: ResourceContext;
+
+interface Props {
+  defaultTabId: TabId;
+}
+
+const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
+  const listingState = useListing();
+  const detailState = useDetails();
+
+  detailState.selectedDetailsEndpoints = {
+    details: detailsEndpoint,
+    performanceGraph: performanceGraphEndpoint,
+    timeline: timelineEndpoint,
+  };
+
+  detailState.detailsTabIdToOpen = defaultTabId;
+
+  context = {
+    ...listingState,
+    ...detailState,
+  } as ResourceContext;
+
+  return (
+    <Context.Provider value={context}>
+      <Details />
+    </Context.Provider>
+  );
+};
+
+const renderDetails = (defaultTabId: TabId = detailsTabId): RenderResult =>
+  render(<DetailsTest defaultTabId={defaultTabId} />);
 
 describe(Details, () => {
   beforeEach(() => {
@@ -140,13 +232,16 @@ describe(Details, () => {
   });
 
   it('displays resource details information', async () => {
-    mockUseResourceContext({ openTabId: detailsTabId });
-
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = renderDetails();
 
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        detailsEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
 
     expect(getByText('10')).toBeInTheDocument();
     expect(getByText('CRITICAL')).toBeInTheDocument();
@@ -228,20 +323,34 @@ describe(Details, () => {
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
 
-  [
-    { period: labelLast24h, startIsoString: '2020-06-19T20:00:00.000Z' },
-    { period: labelLast7Days, startIsoString: '2020-06-13T20:00:00.000Z' },
-    { period: labelLast31Days, startIsoString: '2020-05-20T20:00:00.000Z' },
-  ].forEach(({ period, startIsoString }) =>
-    it(`queries performance and status graphs with ${period} period when the Graph tab is selected and ${period} is selected`, async () => {
-      mockUseResourceContext({ openTabId: graphTabId });
+  it('refreshes the details when the listing is updated', async () => {
+    mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
 
-      mockedAxios.get.mockResolvedValueOnce({ data: performanceGraphData });
+    const { getByText } = renderDetails();
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+    expect(getByText(labelStatusInformation)).toBeInTheDocument();
+
+    act(() => {
+      context.setListing({} as ResourceListing);
+    });
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+  });
+
+  it.each([
+    [labelLast24h, '2020-06-19T20:00:00.000Z'],
+    [labelLast7Days, '2020-06-13T20:00:00.000Z'],
+    [labelLast31Days, '2020-05-20T20:00:00.000Z'],
+  ])(
+    `queries performance graphs with %p period when the Graph tab is selected`,
+    async (period, startIsoString) => {
       mockedAxios.get
+        .mockResolvedValueOnce({ data: performanceGraphData })
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData });
 
-      const { getByText, getAllByText } = renderDetails();
+      const { getByText, getAllByText } = renderDetails(graphTabId);
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
 
@@ -255,12 +364,11 @@ describe(Details, () => {
           cancelTokenRequestParam,
         ),
       );
-    }),
+    },
   );
 
   it('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-    mockUseResourceContext({ openTabId: detailsTabId });
 
     const mockedClipboard = clipboard as jest.Mocked<typeof clipboard>;
 
@@ -275,5 +383,68 @@ describe(Details, () => {
         retrievedDetails.command_line,
       ),
     );
+  });
+
+  it('displays retrieved timeline events, grouped by date, when the Timeline tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+
+    const { getByText, getAllByText } = renderDetails(timelineTabId);
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: timelineEndpoint,
+          params: { limit: 10, page: 1 },
+        }),
+        expect.anything(),
+      ),
+    );
+
+    expect(getByText('06/22/2020')).toBeInTheDocument();
+
+    expect(getByText('10:40')).toBeInTheDocument();
+    expect(getAllByText('Event')).toHaveLength(2);
+    expect(getByText('UP')).toBeInTheDocument();
+    expect(getByText('Tries: 1')).toBeInTheDocument();
+    expect(
+      getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
+    ).toBeInTheDocument();
+
+    expect(getByText('10:35')).toBeInTheDocument();
+    expect(getByText('DOWN')).toBeInTheDocument();
+    expect(getByText('Tries: 3')).toBeInTheDocument();
+    expect(
+      getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;'),
+    ).toBeInTheDocument();
+
+    expect(getByText('06/21/2020')).toBeInTheDocument();
+
+    expect(getByText('09:40')).toBeInTheDocument();
+    expect(getByText('Notification sent to admin')).toBeInTheDocument();
+    expect(getByText('My little notification'));
+
+    expect(getByText('06/20/2020')).toBeInTheDocument();
+
+    expect(getByText('09:35')).toBeInTheDocument();
+    expect(getByText('Acknowledgement by admin')).toBeInTheDocument();
+    expect(getByText('My little ack'));
+
+    expect(getByText('09:30')).toBeInTheDocument();
+    expect(getByText('Downtime by admin')).toBeInTheDocument();
+    expect(
+      getByText('From 06/20/2020 09:30 To 06/22/2020 09:33'),
+    ).toBeInTheDocument();
+    expect(getByText('My little dt'));
+
+    expect(getByText('08:55')).toBeInTheDocument();
+    expect(getByText('Comment by admin')).toBeInTheDocument();
+    expect(getByText('My little comment'));
+
+    const dateRegExp = /\d+\/\d+\/\d+$/;
+
+    expect(
+      getAllByText(dateRegExp).map((element) => element.textContent),
+    ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
   });
 });

@@ -31,9 +31,13 @@ type CriteriaValuesDispatch = React.Dispatch<
   React.SetStateAction<Array<CriteriaValue>>
 >;
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
+type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
+type CustomFiltersDispatch = React.Dispatch<
+  React.SetStateAction<Array<Filter>>
+>;
 
 export interface FilterState {
-  customFilters?: Array<Filter>;
+  customFilters: Array<Filter>;
   filter: Filter;
   updatedFilter: Filter;
   setFilter: FilterDispatch;
@@ -52,15 +56,22 @@ export interface FilterState {
   serviceGroups: Array<CriteriaValue>;
   setServiceGroups: CriteriaValuesDispatch;
   loadCustomFilters: () => Promise<Array<Filter>>;
+  setCustomFilters: CustomFiltersDispatch;
+  customFiltersLoading: boolean;
+  editPanelOpen: boolean;
+  setEditPanelOpen: EditPanelOpenDitpach;
 }
 
 const useFilter = (): FilterState => {
-  const { sendRequest: sendListCustomFiltersRequest } = useRequest({
+  const {
+    sendRequest: sendListCustomFiltersRequest,
+    sending: customFiltersLoading,
+  } = useRequest({
     request: listCustomFilters,
     decoder: listCustomFiltersDecoder,
   });
 
-  const [customFilters, setCustomFilters] = React.useState<Array<Filter>>();
+  const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
   const [filter, setFilter] = React.useState(getStoredOrDefaultFilter());
   const [currentSearch, setCurrentSearch] = React.useState<string | undefined>(
     getDefaultSearch(),
@@ -84,9 +95,9 @@ const useFilter = (): FilterState => {
     Array<CriteriaValue>
   >(getDefaultServiceGroups());
 
-  const loadCustomFilters = (): Promise<Array<Filter>> => {
-    setCustomFilters(undefined);
+  const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
 
+  const loadCustomFilters = (): Promise<Array<Filter>> => {
     return sendListCustomFiltersRequest().then(({ result }) => {
       const retrievedCustomFilters = result.map(toFilter);
       setCustomFilters(retrievedCustomFilters);
@@ -162,6 +173,10 @@ const useFilter = (): FilterState => {
     serviceGroups,
     setServiceGroups,
     loadCustomFilters,
+    setCustomFilters,
+    customFiltersLoading,
+    editPanelOpen,
+    setEditPanelOpen,
   };
 };
 

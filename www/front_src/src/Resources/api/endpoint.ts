@@ -5,17 +5,20 @@ const monitoringEndpoint = `${baseEndpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
 const acknowledgeEndpoint = `${resourcesEndpoint}/acknowledge`;
 const downtimeEndpoint = `${resourcesEndpoint}/downtime`;
+const checkEndpoint = `${resourcesEndpoint}/check`;
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
-const hostEndpoint = `${monitoringEndpoint}/hosts`;
-const hostCheckEndpoint = `${hostEndpoint}/check`;
-const serviceEndpoint = `${monitoringEndpoint}/services`;
-const serviceCheckEndpoint = `${serviceEndpoint}/check`;
 const userEndpoint =
   './api/internal.php?object=centreon_topcounter&action=user';
 
 const buildResourcesEndpoint = (params): string => {
-  const searchOptions = ['h.name', 'h.alias', 'h.address', 's.description'];
+  const searchOptions = [
+    'h.name',
+    'h.alias',
+    'h.address',
+    's.description',
+    'information',
+  ];
 
   return buildListingEndpoint({
     baseEndpoint: resourcesEndpoint,
@@ -58,7 +61,6 @@ export {
   buildServiceGroupsEndpoint,
   acknowledgeEndpoint,
   downtimeEndpoint,
-  hostCheckEndpoint,
-  serviceCheckEndpoint,
+  checkEndpoint,
   userEndpoint,
 };

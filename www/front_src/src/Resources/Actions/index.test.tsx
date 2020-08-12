@@ -42,8 +42,7 @@ import { Resource } from '../models';
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
-  hostCheckEndpoint,
-  serviceCheckEndpoint,
+  checkEndpoint,
 } from '../api/endpoint';
 import * as UserContext from '../../Provider/UserContext';
 
@@ -119,7 +118,7 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValueOnce({
+    mockedAxios.get.mockResolvedValueOnce({ data: [] }).mockResolvedValueOnce({
       data: {
         result: [],
         meta: {
@@ -129,7 +128,6 @@ describe(Actions, () => {
         },
       },
     });
-    mockedAxios.get.mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
     mockAppStateSelector(useSelector);
@@ -402,6 +400,9 @@ describe(Actions, () => {
     const service = {
       id: 1,
       type: 'service',
+      parent: {
+        id: 1,
+      },
     } as Resource;
 
     const selectedResources = [host, service];
@@ -418,19 +419,10 @@ describe(Actions, () => {
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        hostCheckEndpoint,
-        [
-          {
-            parent_resource_id: null,
-            resource_id: host.id,
-          },
-        ],
-        cancelTokenRequestParam,
-      );
-
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        serviceCheckEndpoint,
-        [{ parent_resource_id: null, resource_id: service.id }],
+        checkEndpoint,
+        {
+          resources: selectedResources,
+        },
         cancelTokenRequestParam,
       );
     });

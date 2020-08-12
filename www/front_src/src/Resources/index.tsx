@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { makeStyles, Slide, CircularProgress } from '@material-ui/core';
+import { makeStyles, Slide } from '@material-ui/core';
 
 import { withSnackbar } from '@centreon/ui';
 
@@ -15,6 +14,7 @@ import useFilter from './Filter/useFilter';
 import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
+import EditFiltersPanel from './Filter/Edit';
 
 const useStyles = makeStyles((theme) => ({
   loadingIndicator: {
@@ -59,10 +59,6 @@ const Resources = (): JSX.Element => {
 
   const { selectedDetailsEndpoints } = detailsContext;
 
-  if (isNil(filterContext.customFilters)) {
-    return <CircularProgress className={classes.loadingIndicator} />;
-  }
-
   return (
     <Context.Provider
       value={{
@@ -96,6 +92,7 @@ const Resources = (): JSX.Element => {
           </div>
         </div>
       </div>
+      <EditFiltersPanel />
     </Context.Provider>
   );
 };

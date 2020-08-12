@@ -24,6 +24,7 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Filter\Interfaces\FilterServiceInterface;
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\Filter\FilterException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
@@ -33,6 +34,8 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
+use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\Contact\Contact;
 
 /**
  * Used to manage filters of the current user
@@ -60,9 +63,8 @@ class FilterController extends AbstractController
     /**
      * validate filter data according to json schema
      *
-     * @param array $filter sent json
+     * @param array<mixed> $filter sent json
      * @return void
-     * @throws Exception
      * @throws FilterException
      */
     private function validateFilterSchema(array $filter, string $schemaPath): void
@@ -90,11 +92,15 @@ class FilterController extends AbstractController
      * @param Request $request
      * @param string $pageName
      * @return View
+     * @throws FilterException
      */
     public function addFilter(Request $request, string $pageName): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
 
         $filterToAdd = json_decode((string) $request->getContent(), true);
@@ -104,17 +110,25 @@ class FilterController extends AbstractController
 
         $this->validateFilterSchema(
             $filterToAdd,
-            realpath(
-                $this->getParameter('centreon_path')
-                . 'config/json_validator/latest/Centreon/Filter/AddOrUpdate.json'
-            )
+            $this->getParameter('centreon_path') . 'config/json_validator/latest/Centreon/Filter/AddOrUpdate.json'
         );
+
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = [];
+        foreach ($filterToAdd['criterias'] as $filterCriteria) {
+            $filterCriterias[] = EntityCreator::createEntityByArray(
+                FilterCriteria::class,
+                $filterCriteria
+            );
+        }
 
         $filter = (new Filter())
             ->setPageName($pageName)
             ->setUserId($user->getId())
             ->setName($filterToAdd['name'])
-            ->setCriterias($filterToAdd['criterias']);
+            ->setCriterias($filterCriterias);
 
         $filterId = $this->filterService->addFilter($filter);
 
@@ -131,12 +145,21 @@ class FilterController extends AbstractController
      * @param string $pageName
      * @param int $filterId
      * @return View
+     * @throws EntityNotFoundException
+     * @throws FilterException
      */
-    public function updateFilter(Request $request, string $pageName, int $filterId): View
-    {
+    public function updateFilter(
+        Request $request,
+        string $pageName,
+        int $filterId
+    ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
+        $this->filterService->filterByContact($user);
 
         $filterToUpdate = json_decode((string) $request->getContent(), true);
         if (!is_array($filterToUpdate)) {
@@ -145,10 +168,7 @@ class FilterController extends AbstractController
 
         $this->validateFilterSchema(
             $filterToUpdate,
-            realpath(
-                $this->getParameter('centreon_path')
-                . 'config/json_validator/latest/Centreon/Filter/AddOrUpdate.json'
-            )
+            $this->getParameter('centreon_path') . 'config/json_validator/latest/Centreon/Filter/AddOrUpdate.json'
         );
 
         $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
@@ -158,9 +178,20 @@ class FilterController extends AbstractController
             );
         }
 
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = [];
+        foreach ($filterToUpdate['criterias'] as $filterCriteria) {
+            $filterCriterias[] = EntityCreator::createEntityByArray(
+                FilterCriteria::class,
+                $filterCriteria
+            );
+        }
+
         $filter
             ->setName($filterToUpdate['name'])
-            ->setCriterias($filterToUpdate['criterias'])
+            ->setCriterias($filterCriterias)
             ->setOrder($filter->getOrder());
 
         $this->filterService->updateFilter($filter);
@@ -178,12 +209,18 @@ class FilterController extends AbstractController
      * @param string $pageName
      * @param int $filterId
      * @return View
+     * @throws EntityNotFoundException
+     * @throws FilterException
      */
     public function patchFilter(Request $request, string $pageName, int $filterId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
+        $this->filterService->filterByContact($user);
 
         $propertyToPatch = json_decode((string) $request->getContent(), true);
         if (!is_array($propertyToPatch)) {
@@ -192,10 +229,7 @@ class FilterController extends AbstractController
 
         $this->validateFilterSchema(
             $propertyToPatch,
-            realpath(
-                $this->getParameter('centreon_path')
-                . 'config/json_validator/latest/Centreon/Filter/Patch.json'
-            )
+            $this->getParameter('centreon_path') . 'config/json_validator/latest/Centreon/Filter/Patch.json'
         );
 
         $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
@@ -218,15 +252,18 @@ class FilterController extends AbstractController
     /**
      * Entry point to delete a filter for a user.
      *
-     * @param Request $request
      * @param string $pageName
      * @param int $filterId
      * @return View
+     * @throws EntityNotFoundException
      */
     public function deleteFilter(string $pageName, int $filterId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
 
         $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
@@ -252,6 +289,9 @@ class FilterController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
 
         $filters = $this->filterService->findFiltersByUserId($user->getId(), $pageName);
@@ -270,11 +310,15 @@ class FilterController extends AbstractController
      * @param string $pageName
      * @param int $filterId
      * @return View
+     * @throws EntityNotFoundException
      */
     public function getFilter(string $pageName, int $filterId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
 
         $filter = $this->filterService->findFilterByUserId($user->getId(), $pageName, $filterId);
