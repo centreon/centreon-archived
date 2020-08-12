@@ -63,7 +63,7 @@ function testServiceCategorieExistence($name = null)
         $id = $form->getSubmitValue('sc_id');
     }
     $name = CentreonUtils::escapeSecure($name, 4);
-    $DBRESULT = $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '".$name."'");
+    $DBRESULT = $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '" . $name . "'");
     $sc = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] == $id) {
         return true;
