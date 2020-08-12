@@ -25,6 +25,7 @@ import { ResourceDetails } from '../models';
 import { TabEndpoints, GraphEndpoints } from './models';
 import TimelineTab from './Timeline';
 import { ResourceLinks, ResourceUris } from '../../models';
+import ShortcutsTab from './Shortcuts';
 
 const detailsTabId = 0;
 const timelineTabId = 1;
@@ -64,7 +65,7 @@ const tabs: Array<Tab> = [
   },
   {
     id: shortcutsTabId,
-    Component: () => <>Hello</>,
+    Component: ShortcutsTab,
     title: labelShortcuts,
     visible: (links: ResourceLinks): boolean => {
       const hasDefinedUris = (uris: ResourceUris): boolean => {

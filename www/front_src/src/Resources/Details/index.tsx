@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, pipe, not, defaultTo, prop } from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo } from 'ramda';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 
@@ -9,7 +9,7 @@ import { Tab, useTheme, fade } from '@material-ui/core';
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { useResourceContext } from '../Context';
-import { TabById, getVisibleTabs, detailsTabId } from './tabs';
+import { TabById, getVisibleTabs } from './tabs';
 import { rowColorConditions } from '../colors';
 import { ResourceLinks } from '../models';
 
@@ -80,7 +80,12 @@ const Details = (): JSX.Element | null => {
       header={<Header details={details} />}
       headerBackgroundColor={getHeaderBackgroundColor()}
       tabs={visibleTabs.map(({ id, title }) => (
-        <Tab key={id} label={title} disabled={isNil(details)} />
+        <Tab
+          style={{ minWidth: 'unset' }}
+          key={id}
+          label={title}
+          disabled={isNil(details)}
+        />
       ))}
       selectedTabId={openDetailsTabId}
       onTabSelect={changeSelectedTabId}
