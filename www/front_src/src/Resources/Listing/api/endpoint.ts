@@ -1,8 +1,15 @@
 import { buildListingEndpoint } from '@centreon/ui';
+
 import { resourcesEndpoint } from '../../api/endpoint';
 
 const buildResourcesEndpoint = (params): string => {
-  const searchOptions = ['h.name', 'h.alias', 'h.address', 's.description'];
+  const searchOptions = [
+    'h.name',
+    'h.alias',
+    'h.address',
+    's.description',
+    'information',
+  ];
 
   return buildListingEndpoint({
     baseEndpoint: resourcesEndpoint,
