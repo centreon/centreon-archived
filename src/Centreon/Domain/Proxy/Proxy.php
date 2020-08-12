@@ -37,6 +37,15 @@ class Proxy
     public const PROTOCOL_CONNECT = 'connect://';
 
     /**
+     * @var string[]
+     */
+    public const AVAILABLE_PROTOCOLS = [
+        self::PROTOCOL_HTTP,
+        self::PROTOCOL_HTTPS,
+        self::PROTOCOL_CONNECT,
+    ];
+
+    /**
      * @var string|null
      */
     private $url;
@@ -61,14 +70,8 @@ class Proxy
      */
     private $protocol;
 
-    /**
-     * @var string[]
-     */
-    private $protocolAvailable = [];
-
     public function __construct()
     {
-        $this->protocolAvailable = [self::PROTOCOL_HTTP, self::PROTOCOL_HTTPS, self::PROTOCOL_CONNECT];
         $this->protocol = self::PROTOCOL_HTTP;
     }
 
@@ -174,7 +177,7 @@ class Proxy
      */
     public function setProtocol(string $protocol): Proxy
     {
-        if (!in_array($protocol, $this->protocolAvailable)) {
+        if (!in_array($protocol, static::AVAILABLE_PROTOCOLS)) {
             throw new \InvalidArgumentException(
                 sprintf(_('Protocol %s is not allowed'), $protocol)
             );

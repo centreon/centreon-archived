@@ -94,6 +94,21 @@ class Resource
     /**
      * @var string|null
      */
+    private $configurationUri;
+
+    /**
+     * @var string|null
+     */
+    private $logsUri;
+
+    /**
+     * @var string|null
+     */
+    private $reportingUri;
+
+    /**
+     * @var string|null
+     */
     private $downtimeEndpoint;
 
     /**
@@ -362,6 +377,60 @@ class Resource
     {
         $this->acknowledged = $acknowledged;
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getConfigurationUri(): ?string
+    {
+        return $this->configurationUri;
+    }
+
+    /**
+     * @param string|null $configurationUri
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setConfigurationUri(string $configurationUri): self
+    {
+        $this->configurationUri = $configurationUri;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLogsUri(): ?string
+    {
+        return $this->logsUri;
+    }
+
+    /**
+     * @param string|null $logsUri
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setLogsUri(string $logsUri): self
+    {
+        $this->logsUri = $logsUri;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReportingUri(): ?string
+    {
+        return $this->reportingUri;
+    }
+
+    /**
+     * @param string|null $reportingUri
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setReportingUri(string $reportingUri): self
+    {
+        $this->reportingUri = $reportingUri;
         return $this;
     }
 

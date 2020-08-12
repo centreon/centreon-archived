@@ -73,10 +73,13 @@ class AuthenticationController extends AbstractFOSRestController
         $contact = $this->auth->findContactByCredentials($username, $password);
 
         if (!$contact) {
-            throw new HttpException(Response::HTTP_UNAUTHORIZED, _('Invalid credentials'));
+            return $this->view([
+                "code" => Response::HTTP_UNAUTHORIZED,
+                "message" => 'Invalid credentials'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
-        return $this->json([
+        return $this->view([
             'contact' => [
                 'id' => $contact->getId(),
                 'name' => $contact->getName(),
@@ -110,7 +113,7 @@ class AuthenticationController extends AbstractFOSRestController
             $token = $request->headers->get('X-AUTH-TOKEN');
             $this->auth->logout($token);
 
-            return $this->json([
+            return $this->view([
                 'message' => 'Successful logout'
             ]);
         } catch (\Exception $ex) {
