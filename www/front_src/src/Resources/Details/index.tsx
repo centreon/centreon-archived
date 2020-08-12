@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { omit } from 'ramda';
-
 import { Paper, makeStyles, Divider } from '@material-ui/core';
 
 import { getData, useRequest } from '@centreon/ui';
@@ -80,7 +78,7 @@ const Details = (): JSX.Element | null => {
       <div className={classes.body}>
         <Body
           details={details}
-          endpoints={omit(['details'], selectedDetailsEndpoints)}
+          endpoints={selectedDetailsEndpoints as ResourceEndpoints}
           openTabId={detailsTabIdToOpen}
           onSelectTab={setDefaultDetailsTabIdToOpen}
         />

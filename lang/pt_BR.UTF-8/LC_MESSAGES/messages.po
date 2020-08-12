@@ -15014,3 +15014,12 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Name cannot be empty"
 #  msgstr ""
+
+#  msgid "Timeline"
+#  msgstr ""
+
+#  msgid "by"
+#  msgstr ""
+
+#  msgid "Notification sent to"
+#  msgstr ""

@@ -3,15 +3,21 @@ import * as React from 'react';
 import { isNil, find, propEq } from 'ramda';
 
 import DetailsTab from './Details';
-import { labelDetails, labelGraph } from '../../../translatedLabels';
+import {
+  labelDetails,
+  labelGraph,
+  labelTimeline,
+} from '../../../translatedLabels';
 import GraphTab from './Graph';
 import { ResourceDetails } from '../../models';
 import { TabEndpoints, GraphEndpoints } from '../models';
+import TimelineTab from './Timeline';
 
 const detailsTabId = 0;
-const graphTabId = 1;
+const timelineTabId = 1;
+const graphTabId = 2;
 
-export type TabId = 0 | 1;
+export type TabId = 0 | 1 | 2;
 
 interface Tab {
   id: TabId;
@@ -25,6 +31,12 @@ const tabs: Array<Tab> = [
     id: detailsTabId,
     Component: DetailsTab,
     title: labelDetails,
+    visible: (): boolean => true,
+  },
+  {
+    id: timelineTabId,
+    Component: TimelineTab,
+    title: labelTimeline,
     visible: (): boolean => true,
   },
   {
@@ -52,4 +64,4 @@ const TabById = ({
   return <Component details={details} endpoints={endpoints} />;
 };
 
-export { detailsTabId, graphTabId, tabs, TabById };
+export { detailsTabId, timelineTabId, graphTabId, tabs, TabById };
