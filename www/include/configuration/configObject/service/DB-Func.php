@@ -350,12 +350,32 @@ function disableServiceInDB($service_id = null, $service_arr = array())
         $centreon->CentreonLogAction->insertLog("service", $key, $row['service_description'], "disable");
     }
 }
+/**
+ * @param int $serviceId
+ */
+function removeRelationLastServiceDependency (int $serviceId) :void
+{
+    global $pearDB;
+
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_serviceParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation 
+                                         WHERE service_service_id =  ' . $serviceId . ')' ;
+    $dbResult = $pearDB->query($query);
+    $result = $dbResult->fetch();
+
+    //is last parent
+    if($result['nb_dependency'] == 1){
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id'] );
+    }
+}
 
 function deleteServiceInDB($services = array())
 {
     global $pearDB, $centreon;
 
     foreach ($services as $key => $value) {
+        removeRelationLastServiceDependency((int)$key);
         $query = "SELECT service_id FROM service WHERE service_template_model_stm_id = '" . $key . "'";
         $dbResult = $pearDB->query($query);
         while ($row = $dbResult->fetch()) {
