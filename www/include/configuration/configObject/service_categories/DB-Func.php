@@ -131,7 +131,7 @@ function enableServiceCategorieInDB($sc_id = null, $sc_arr = array())
     }
     foreach ($sc_arr as $key => $value) {
         $scId = CentreonUtils::escapeSecure($key, 4);
-        $DBRESULT = $pearDB->query("UPDATE service_categories SET sc_activate = '1' WHERE sc_id = '".$scId."'");
+        $DBRESULT = $pearDB->query("UPDATE service_categories SET sc_activate = '1' WHERE sc_id = '" . $scId . "'");
     }
 }
 
@@ -146,7 +146,7 @@ function disableServiceCategorieInDB($sc_id = null, $sc_arr = array())
     }
     foreach ($sc_arr as $key => $value) {
         $scId = CentreonUtils::escapeSecure($key, 4);
-        $DBRESULT = $pearDB->query("UPDATE service_categories SET sc_activate = '0' WHERE sc_id = '".$scId."'");
+        $DBRESULT = $pearDB->query("UPDATE service_categories SET sc_activate = '0' WHERE sc_id = '" . $scId . "'");
     }
 }
 
@@ -170,7 +170,7 @@ function insertServiceCategorieInDB()
     if (testServiceCategorieExistence($scName)) {
             $DBRESULT = $pearDB->query("INSERT INTO `service_categories` (`sc_name`, `sc_description`, `level`, `icon_id`, `sc_activate` )
                 VALUES ('" . $scName . "', '" . $scDescription . "', '" . $scSeverityLevel . "', '" . $scSeverityIconId . "', '" . $scActivate . "')");
-            $DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$scName."'");
+            $DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '" . $scName . "'");
             $data = $DBRESULT->fetchRow();
     }
     updateServiceCategoriesServices($data["MAX(sc_id)"]);
