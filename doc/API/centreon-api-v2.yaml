@@ -3290,6 +3290,21 @@ components:
           nullable: true
           description: "Resource url to get timeline information"
           example: "/centreon/monitoring/resources/hosts/12/services/12/timeline"
+        configuration_uri:
+          type: string
+          nullable: true
+          description: "Centreon internal uri to configuration page"
+          example: "/centreon/main.php?p=60201&o=c&service_id=12"
+        logs_uri:
+          type: string
+          nullable: true
+          description: "Centreon internal uri to configuration page"
+          example: "/centreon/main.php?p=20301&svc=12_12"
+        reporting_uri:
+          type: string
+          nullable: true
+          description: "Centreon internal uri to configuration page"
+          example: "/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=12&item=12"
         icon:
           type: object
           nullable: true
@@ -3330,6 +3345,21 @@ components:
               nullable: true
               description: "Parent resource url to get timeline information"
               example: "/centreon/monitoring/resources/hosts/12/timeline"
+            configuration_uri:
+              type: string
+              nullable: true
+              description: "Centreon internal uri to configuration page"
+              example: "/centreon/main.php?p=60101&o=c&host_id=12"
+            logs_uri:
+              type: string
+              nullable: true
+              description: "Centreon internal uri to configuration page"
+              example: "/centreon/main.php?p=20301&h=12"
+            reporting_uri:
+              type: string
+              nullable: true
+              description: "Centreon internal uri to configuration page"
+              example: "/centreon/main.php?p=307&host=12"
             status:
               type: object
               properties:
