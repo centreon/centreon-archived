@@ -10,7 +10,7 @@ import {
   Filters,
 } from '@centreon/ui';
 
-import { isEmpty, propEq, pick, find } from 'ramda';
+import { isEmpty, propEq, pick, find, defaultTo } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import {
@@ -101,19 +101,14 @@ const Filter = (): JSX.Element => {
     customFiltersLoading,
   } = useResourceContext();
 
-  const getHostgroupEndpoint = ({ search, page }): string => {
-    return buildHostGroupsEndpoint({
+  const getConnectedAutocompleteEndpoint = (buildEndpoint) => ({
+    search,
+    page,
+  }): string => {
+    return buildEndpoint({
       limit: 10,
-      search: search ? `name:${search}` : undefined,
       page,
-    });
-  };
-
-  const getServiceGroupSearchEndpoint = ({ search, page }): string => {
-    return buildServiceGroupsEndpoint({
-      limit: 10,
-      search: search ? `name:${search}` : undefined,
-      page,
+      search,
     });
   };
 
@@ -286,19 +281,25 @@ const Filter = (): JSX.Element => {
             limitTags={2}
           />
           <MultiConnectedAutocompleteField
-            getEndpoint={getHostgroupEndpoint}
+            getEndpoint={getConnectedAutocompleteEndpoint(
+              buildHostGroupsEndpoint,
+            )}
             label={labelHostGroup}
             onChange={changeHostGroups}
             value={hostGroups || []}
             openText={`${labelOpen} ${labelHostGroup}`}
+            field="name"
             fullWidth
           />
           <MultiConnectedAutocompleteField
-            getEndpoint={getServiceGroupSearchEndpoint}
+            getEndpoint={getConnectedAutocompleteEndpoint(
+              buildServiceGroupsEndpoint,
+            )}
             label={labelServiceGroup}
             onChange={changeServiceGroups}
             value={serviceGroups || []}
             openText={`${labelOpen} ${labelServiceGroup}`}
+            field="name"
             fullWidth
           />
           <Button color="primary" onClick={clearAllFilters}>

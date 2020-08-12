@@ -5,7 +5,7 @@ import {
   ListingModel,
   useIntersectionObserver,
   MultiAutocompleteField,
-  Search,
+  SearchParameter,
 } from '@centreon/ui';
 
 import {
@@ -103,7 +103,7 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   });
 
   const listTimeline = (): Promise<TimelineListing> => {
-    const getSearch = (): Search | undefined => {
+    const getSearch = (): SearchParameter | undefined => {
       if (isEmpty(selectedTypes)) {
         return undefined;
       }
