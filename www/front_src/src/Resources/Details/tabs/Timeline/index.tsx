@@ -188,7 +188,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
             value={selectedTypes}
             options={types}
             fullWidth
-            limitTags={4}
+            limitTags={3}
           />
         </div>
       </Paper>

@@ -1,6 +1,16 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, pipe, not, defaultTo } from 'ramda';
+import {
+  isNil,
+  isEmpty,
+  pipe,
+  not,
+  defaultTo,
+  indexOf,
+  propEq,
+  find,
+  findIndex,
+} from 'ramda';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 
@@ -9,7 +19,7 @@ import { Tab, useTheme, fade } from '@material-ui/core';
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { useResourceContext } from '../Context';
-import { TabById, getVisibleTabs } from './tabs';
+import { TabById, getVisibleTabs, TabId } from './tabs';
 import { rowColorConditions } from '../colors';
 import { ResourceLinks } from '../models';
 
@@ -52,8 +62,12 @@ const Details = (): JSX.Element | null => {
     );
   }, [detailsEndpoint, listing]);
 
-  const changeSelectedTabId = (_, id): void => {
-    setOpenDetailsTabId(id);
+  const getTabIndex = (tabId: TabId): number => {
+    return findIndex(propEq('id', tabId), visibleTabs);
+  };
+
+  const changeSelectedTabId = (tabId: TabId) => (): void => {
+    setOpenDetailsTabId(tabId);
   };
 
   const getHeaderBackgroundColor = (): string | undefined => {
@@ -85,10 +99,10 @@ const Details = (): JSX.Element | null => {
           key={id}
           label={title}
           disabled={isNil(details)}
+          onClick={changeSelectedTabId(id)}
         />
       ))}
-      selectedTabId={openDetailsTabId}
-      onTabSelect={changeSelectedTabId}
+      selectedTabId={getTabIndex(openDetailsTabId)}
       selectedTab={
         <TabById id={openDetailsTabId} details={details} links={links} />
       }

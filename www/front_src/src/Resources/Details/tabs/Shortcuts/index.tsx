@@ -1,17 +1,17 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 
 import { ResourceLinks } from '../../../models';
 import Shortcuts from './Shortcuts';
 import hasDefinedValues from '../../../hasDefinedValues';
+import { labelHost } from '../../../translatedLabels';
 
 const useStyles = makeStyles((theme) => {
   return {
     container: {
       display: 'grid',
       gridGap: theme.spacing(1),
-      padding: theme.spacing(1),
     },
   };
 });
@@ -30,7 +30,12 @@ const ShortcutsTab = ({ links }: Props): JSX.Element => {
   return (
     <div className={classes.container}>
       {hasDefinedValues(resourceUris) && <Shortcuts uris={resourceUris} />}
-      {hasDefinedValues(parentUris) && <Shortcuts uris={parentUris} />}
+      {hasDefinedValues(parentUris) && (
+        <>
+          <Typography variant="h6">{labelHost}</Typography>
+          <Shortcuts uris={parentUris} />
+        </>
+      )}
     </div>
   );
 };

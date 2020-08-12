@@ -71,7 +71,7 @@ const getVisibleTabs = (links): Array<Tab> => {
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
   },
 }));
 
