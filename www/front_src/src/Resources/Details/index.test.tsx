@@ -45,15 +45,25 @@ import {
   labelResourceFlapping,
   labelNo,
   labelComment,
+  labelConfigure,
+  labelViewLogs,
+  labelViewReport,
+  labelHost,
 } from '../translatedLabels';
-import { detailsTabId, graphTabId, TabId, timelineTabId } from './tabs';
+import {
+  detailsTabId,
+  graphTabId,
+  TabId,
+  timelineTabId,
+  shortcutsTabId,
+} from './tabs';
 import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
-import { ResourceListing } from '../models';
+import { ResourceListing, ResourceUris } from '../models';
 import { getTypeIds } from './tabs/Timeline/Event';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -196,16 +206,20 @@ let context: ResourceContext;
 
 interface Props {
   defaultTabId: TabId;
+  uris: { resource: ResourceUris; parent: ResourceUris };
 }
 
-const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
+const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
   const listingState = useListing();
   const detailState = useDetails();
 
-  detailState.selectedDetailsEndpoints = {
-    details: detailsEndpoint,
-    performanceGraph: performanceGraphEndpoint,
-    timeline: timelineEndpoint,
+  detailState.selectedDetailsLinks = {
+    endpoints: {
+      details: detailsEndpoint,
+      performanceGraph: performanceGraphEndpoint,
+      timeline: timelineEndpoint,
+    },
+    uris,
   };
 
   detailState.openDetailsTabId = defaultTabId;
@@ -224,8 +238,31 @@ const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
   );
 };
 
-const renderDetails = (defaultTabId: TabId = detailsTabId): RenderResult =>
-  render(<DetailsTest defaultTabId={defaultTabId} />);
+const defaultUris = {
+  resource: {
+    configuration: undefined,
+    logs: undefined,
+    reporting: undefined,
+  },
+  parent: {
+    configuration: undefined,
+    logs: undefined,
+    reporting: undefined,
+  },
+};
+
+interface RenderDetailsProps {
+  defaultTabId?: TabId;
+  uris?: { resource: ResourceUris; parent: ResourceUris };
+}
+
+const renderDetails = (
+  { defaultTabId = detailsTabId, uris = defaultUris }: RenderDetailsProps = {
+    defaultTabId: detailsTabId,
+    uris: defaultUris,
+  },
+): RenderResult =>
+  render(<DetailsTest defaultTabId={defaultTabId} uris={uris} />);
 
 describe(Details, () => {
   beforeEach(() => {
@@ -357,7 +394,9 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData });
 
-      const { getByText, getAllByText } = renderDetails(graphTabId);
+      const { getByText, getAllByText } = renderDetails({
+        defaultTabId: graphTabId,
+      });
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
 
@@ -397,9 +436,9 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByText, baseElement } = renderDetails(
-      timelineTabId,
-    );
+    const { getByText, getAllByText, baseElement } = renderDetails({
+      defaultTabId: timelineTabId,
+    });
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -494,5 +533,88 @@ describe(Details, () => {
         expect.anything(),
       ),
     );
+  });
+
+  it('displays the shortcut links when the shortcuts tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+
+    const uris = {
+      resource: {
+        configuration: '/configuration',
+        logs: '/logs',
+        reporting: '/reporting',
+      },
+      parent: {
+        configuration: '/host/configuration',
+        logs: '/host/logs',
+        reporting: '/host/reporting',
+      },
+    };
+
+    const { getByText, getAllByText } = renderDetails({
+      defaultTabId: shortcutsTabId,
+      uris,
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    expect(getAllByText(labelConfigure)[0]).toHaveAttribute(
+      'href',
+      '/configuration',
+    );
+    expect(getAllByText(labelViewLogs)[0]).toHaveAttribute('href', '/logs');
+    expect(getAllByText(labelViewReport)[0]).toHaveAttribute(
+      'href',
+      '/reporting',
+    );
+
+    expect(getByText(labelHost)).toBeInTheDocument();
+
+    expect(getAllByText(labelConfigure)[1]).toHaveAttribute(
+      'href',
+      '/host/configuration',
+    );
+    expect(getAllByText(labelViewLogs)[1]).toHaveAttribute(
+      'href',
+      '/host/logs',
+    );
+    expect(getAllByText(labelViewReport)[1]).toHaveAttribute(
+      'href',
+      '/host/reporting',
+    );
+  });
+
+  it('does not display host shortcut links when the shortcuts tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+
+    const uris = {
+      resource: {
+        configuration: '/configuration',
+        logs: '/logs',
+        reporting: '/reporting',
+      },
+      parent: {
+        configuration: undefined,
+        logs: undefined,
+        reporting: undefined,
+      },
+    };
+
+    const { getByText, queryByText } = renderDetails({
+      defaultTabId: shortcutsTabId,
+      uris,
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    expect(getByText(labelConfigure)).toBeInTheDocument();
+    expect(getByText(labelViewLogs)).toBeInTheDocument();
+    expect(getByText(labelViewReport)).toBeInTheDocument();
+
+    expect(queryByText(labelHost)).toBeNull();
   });
 });

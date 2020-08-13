@@ -27,7 +27,7 @@ import { getColumns } from './columns';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import useLoadResources from './useLoadResources';
-import { ResourceUris, ResourceLinks, Resource } from '../models';
+import { Resource } from '../models';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();

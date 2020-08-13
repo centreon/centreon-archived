@@ -97,6 +97,7 @@ export {
   detailsTabId,
   timelineTabId,
   graphTabId,
+  shortcutsTabId,
   tabs,
   TabById,
   getVisibleTabs,
