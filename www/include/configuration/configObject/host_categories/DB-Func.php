@@ -350,7 +350,7 @@ function insertHostCategories($ret = [])
         VALUES (:hc_name, :hc_alias, :level, :icon_id, :hc_comment, :hc_activate)";
 
     $statement = $pearDB->prepare($query);
-    foreach($bindParams as $token => $bindValues) {
+    foreach ($bindParams as $token => $bindValues) {
         foreach ($bindValues as $paramType => $value) {
             $statement->bindValue($token, $value, $paramType);
         }
@@ -437,7 +437,7 @@ function updateHostCategories($hc_id)
         hc_activate = :hc_activate
         WHERE hc_id = :hc_id";
     $statement = $pearDB->prepare($query);
-    foreach($bindParams as $token => $bindValues) {
+    foreach ($bindParams as $token => $bindValues) {
         foreach ($bindValues as $paramType => $value) {
             $statement->bindValue($token, $value, $paramType);
         }
@@ -464,15 +464,15 @@ function updateHostCategoriesHosts($hc_id, $ret = [])
     }
     $hcId = filter_var($hc_id, FILTER_VALIDATE_INT);
     /*
-	 * Special Case, delete relation between host/service, when service
-	 * is linked to hostcategories in escalation, dependencies, osl
-	 *
-	 * Get initial Host list to make a diff after deletion
-	 */
+     * Special Case, delete relation between host/service, when service
+     * is linked to hostcategories in escalation, dependencies, osl
+     *
+     * Get initial Host list to make a diff after deletion
+     */
     $hostsOLD = [];
     $query = "SELECT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = :hc_id";
     $statement = $pearDB->prepare($query);
-    $statement->bindValue(':hc_id',$hcId, \PDO::PARAM_INT);
+    $statement->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
     $statement->execute();
     while ($host = $statement->fetch()) {
         $hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
