@@ -108,11 +108,6 @@ function multipleServiceCategorieInDB($sc = array(), $nbrDup = array())
                         $params[] = $value2;
                         break;
                     case 'level':
-                        $value2 = filter_var($value2, FILTER_VALIDATE_INT);
-                        $value2
-                            ? $params[] = $value2
-                            : $params[] = null;
-                        break;
                     case 'icon_id':
                         $value2 = filter_var($value2, FILTER_VALIDATE_INT);
                         $value2
