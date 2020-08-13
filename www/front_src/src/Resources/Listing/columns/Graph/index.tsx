@@ -3,11 +3,12 @@ import * as React from 'react';
 import { makeStyles, Paper } from '@material-ui/core';
 import IconGraph from '@material-ui/icons/BarChart';
 
+import { IconButton } from '@centreon/ui';
+
 import { labelGraph } from '../../../translatedLabels';
 import HoverChip from '../HoverChip';
 import { ColumnProps } from '..';
 import PerformanceGraph from '../../../Graph/Performance';
-import ActionButton from '../../../ActionButton';
 
 const useStyles = makeStyles((theme) => ({
   graph: {
@@ -33,13 +34,13 @@ const GraphColumn = ({
     return (
       <HoverChip
         Chip={(): JSX.Element => (
-          <ActionButton
+          <IconButton
             title={labelGraph}
             onClick={(): void => onClick(row)}
             ariaLabel={labelGraph}
           >
             <IconGraph fontSize="small" />
-          </ActionButton>
+          </IconButton>
         )}
         label={labelGraph}
       >

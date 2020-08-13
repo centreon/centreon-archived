@@ -19,9 +19,9 @@ import {
   labelLastNotification,
   labelCurrentNotificationNumber,
   labelNo,
-} from '../../../../../translatedLabels';
-import { getFormattedDate, getFormattedTime } from '../../../../../dateTime';
-import { ResourceDetails } from '../../../../models';
+} from '../../../../translatedLabels';
+import { getFormattedDate, getFormattedTime } from '../../../../dateTime';
+import { ResourceDetails } from '../../../models';
 
 type Lines = Array<{ key: string; line: JSX.Element | null }>;
 

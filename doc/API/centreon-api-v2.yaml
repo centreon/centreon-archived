@@ -129,15 +129,15 @@ paths:
                       properties:
                         id:
                           type: integer
-                          description: "id if the icon"
+                          description: "id of the icon"
                           example: 1
                         directory:
                           type: string
-                          description: "directory if the icon"
+                          description: "directory of the icon"
                           example: "ppm"
                         name:
                           type: string
-                          description: "name if the icon"
+                          description: "name of the icon"
                           example: "operatingsystems-linux-snmp-linux-128.png"
                         url:
                           type: string
@@ -730,6 +730,7 @@ paths:
           description: |
             List all the host groups in real-time monitoring by host id
           parameters:
+            - $ref: '#/components/parameters/HostId'
             - $ref: '#/components/parameters/Limit'
             - $ref: '#/components/parameters/Page'
             - $ref: '#/components/parameters/SortBy'
@@ -881,7 +882,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Disacknowledge.Bulk'
+              $ref: '#/components/schemas/Acknowledgement.Disacknowledge.Bulk'
       responses:
         '204':
           description: "OK"
@@ -1595,17 +1596,16 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
     get:
       tags:
         - Metrics
-      summary: 'Get service performance data'
+      summary: 'Get service metrics'
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/MetricStartDate'
         - $ref: '#/components/parameters/MetricEndDate'
-      description: 'Get metrics data from a service between given interval'
       responses:
         '200':
           description: "OK"
@@ -1622,19 +1622,17 @@ paths:
                         description: title of the graph
                         example: graph title
                       start:
-                        type: string
-                        format: date-time
-                        description: datetime of the start interval
-                        example: '2020-02-18T00:00:00'
+                        type: integer
+                        description: timestamp of the start interval
+                        example: 1594504800
                       end:
-                        type: string
-                        format: date-time
-                        description: datetime of the end interval
-                        example: '2020-02-19T00:00:00'
+                        type: integer
+                        description: timestamp of the end interval
+                        example: 1594591200
                       vertical-label:
                         type: string
                         description: vertical label (should not be used cause multiple y-axis possible)
-                        example: Value
+                        example: "Value"
                       base:
                         type: string
                         description: base scale
@@ -1675,11 +1673,11 @@ paths:
                         metric:
                           type: string
                           description: name of the metric
-                          example: cpu
+                          example: 'cpu'
                         metric_legend:
                           type: string
                           description: name of the metric in legend
-                          example: cpu
+                          example: 'cpu'
                         unit:
                           type: string
                           description: metric unit
@@ -1745,7 +1743,325 @@ paths:
                         legend:
                           type: string
                           description: metric name in legend
-                          example: cpu (%)
+                          example: 'cpu (%)'
+                        stack:
+                          type: integer
+                          description: if the metric is stacked with other metrics
+                          example: 0
+                        warn:
+                          type: string
+                          nullable: true
+                          description: warning threshold
+                          example: null
+                        warn_low:
+                          type: string
+                          nullable: true
+                          description: low warning threshold
+                          example: null
+                        crit:
+                          type: string
+                          nullable: true
+                          description: critical threshold
+                          example: null
+                        crit_low:
+                          type: string
+                          nullable: true
+                          description: low critical threshold
+                          example: null
+                        ds_color_area_warn:
+                          type: string
+                          description: color of the area under warning threshold
+                          example: '#ff9a13'
+                        ds_color_area_crit:
+                          type: string
+                          description: color of the area under critical threshold
+                          example: '#e00b3d'
+                        ds_order:
+                          type: integer
+                          description: order used for stacking
+                          example: 0
+                        data:
+                          type: array
+                          items:
+                            type: number
+                            description: value of the metric
+                          example:
+                            - 1.0
+                            - null
+                            - 1.0
+                        prints:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: string
+                              description: label to display in legend
+                              example: 'Last:1.00'
+                        minimum_value:
+                          type: number
+                          description: minimum value
+                          example: 1.0
+                        maximum_value:
+                          type: number
+                          description: maximum value
+                          example: 1.0
+                  times:
+                    type: array
+                    items:
+                      type: string
+                      format: timestamp
+                      description: timestamp of the tick
+                    example:
+                      - '1594505100'
+                      - '1594505400'
+                      - '1594505700'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundHostOrService'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/status/start/{start}/end/{end}:
+    get:
+      tags:
+        - Metrics
+      summary: 'Get service status data'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - $ref: '#/components/parameters/MetricStartDate'
+        - $ref: '#/components/parameters/MetricEndDate'
+      description: 'Get status data from a service between given interval'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  critical:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: "1581987121"
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: "1581987181"
+                  warning:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: "1581987121"
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: "1581987181"
+                  ok:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: "1581987121"
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: "1581987181"
+                  unknown:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: "1581987121"
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: "1581987181"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundHostOrService'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance:
+    get:
+      tags:
+        - Metrics
+      summary: 'Get service performance data'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - in: query
+          name: start
+          required: false
+          description: "Start date of metrics (default date is 24 hours in the past)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T00:00:00'
+        - in: query
+          name: end
+          required: false
+          description: "End date of metrics (default date is current date)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-19T00:00:00'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  global:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        description: title of the graph
+                        example: 'graph title'
+                      start:
+                        type: string
+                        format: date-time
+                        description: datetime of the start interval
+                        example: '2020-02-18T00:00:00'
+                      end:
+                        type: string
+                        format: date-time
+                        description: datetime of the end interval
+                        example: '2020-02-19T00:00:00'
+                      vertical-label:
+                        type: string
+                        description: vertical label (should not be used cause multiple y-axis possible)
+                        example: 'Value'
+                      base:
+                        type: string
+                        description: base scale
+                        example: '1024'
+                      width:
+                        type: string
+                        description: width of the graph (should not be used)
+                        example: '550'
+                      height:
+                        type: string
+                        description: height of the graph (should not be used)
+                        example: '140'
+                      lower-limit:
+                        type: string
+                        description: lower value of the graph
+                        example: '0'
+                      scaled:
+                        type: integer
+                        description: if the graph needs to be automatically scaled
+                        example: 1
+                      multiple_services:
+                        type: boolean
+                        description: if multiple services are selected (always false)
+                        example: false
+                  metrics:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        index_id:
+                          type: string
+                          description: index id in centreon_storage.index_data table
+                          example: '4'
+                        metric_id:
+                          type: string
+                          description: metric id in centreon_storage.metrics table
+                          example: '29'
+                        metric:
+                          type: string
+                          description: name of the metric
+                          example: 'cpu'
+                        metric_legend:
+                          type: string
+                          description: name of the metric in legend
+                          example: 'cpu'
+                        unit:
+                          type: string
+                          description: metric unit
+                          example: '%'
+                        hidden:
+                          type: integer
+                          description: if the metric is hidden
+                          example: 0
+                        min:
+                          type: string
+                          description: min value
+                          example: '0'
+                        max:
+                          type: string
+                          description: max value
+                          example: '100'
+                        virtual:
+                          type: integer
+                          description: if the metric is virtual
+                          example: 0
+                        ds_data:
+                          type: object
+                          description: metric line properties
+                          properties:
+                            ds_min:
+                              type: string
+                              description: minimum value
+                              example: '1'
+                            ds_max:
+                              type: string
+                              description: maximum value
+                              example: '1'
+                            ds_minmax_int:
+                              type: string
+                              nullable: true
+                              description: unknown
+                              example: null
+                            ds_last:
+                              type: string
+                              description: last value
+                              example: '1'
+                            ds_average:
+                              type: string
+                              description: average value
+                              example: '1'
+                            ds_total:
+                              type: string
+                              nullable: true
+                              description: unknown
+                              example: null
+                            ds_tickness:
+                              type: string
+                              description: unknown
+                              example: '1'
+                            ds_color_line_mode:
+                              type: string
+                              description: unknown
+                              example: '1'
+                            ds_color_line:
+                              type: string
+                              description: color of the line
+                              example: '#666600'
+                        legend:
+                          type: string
+                          description: metric name in legend
+                          example: 'cpu (%)'
                         stack:
                           type: integer
                           description: if the metric is stacked with other metrics
@@ -1834,8 +2150,22 @@ paths:
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
-        - $ref: '#/components/parameters/MetricStartDate'
-        - $ref: '#/components/parameters/MetricEndDate'
+        - in: query
+          name: start
+          required: false
+          description: "Start date of metrics (default date is 24 hours in the past)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T00:00:00'
+        - in: query
+          name: end
+          required: false
+          description: "End date of metrics (default date is current date)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-19T00:00:00'
       description: 'Get status data from a service between given interval'
       responses:
         '200':
@@ -1851,52 +2181,52 @@ paths:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: '1581987121'
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: '1581987181'
                   warning:
                     type: array
                     items:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: '1581987121'
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: '1581987181'
                   ok:
                     type: array
                     items:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: '1581987121'
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: '1581987181'
                   unknown:
                     type: array
                     items:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: '1581987121'
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: '1581987181'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -1992,7 +2322,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Bulk'
+              $ref: '#/components/schemas/Acknowledgement.Bulk'
       responses:
         '204':
           description: "Command Sent"
@@ -2136,18 +2466,18 @@ components:
         type: object
         example: '{"host.name":"ASC"}'
     MetricStartDate:
-      in: query
+      in: path
       name: start
-      required: false
+      required: true
       description: "Start date of metrics (default date is 24 hours in the past)"
       schema:
         type: string
         format: date-time
         example: '2020-02-18T00:00:00'
     MetricEndDate:
-      in: query
+      in: path
       name: end
-      required: false
+      required: true
       description: "End date of metrics (default date is current date)"
       schema:
         type: string
@@ -2285,6 +2615,10 @@ components:
           schema:
             type: object
             properties:
+              code:
+                type: integer
+                format: int64
+                example: 401
               message:
                 type: string
     Forbidden:
@@ -2558,10 +2892,10 @@ components:
           type: boolean
           description: "Indicates whether notification is sent to the contacts linked to the host or service"
           example: false
-    Acknowledgment.Bulk:
+    Acknowledgement.Bulk:
         type: object
         properties:
-          acknowledgment:
+          acknowledgement:
             $ref: '#/components/schemas/Acknowledgement.Resource'
           resources:
             type: array
@@ -2569,7 +2903,7 @@ components:
               allOf:
                 - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
                 - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
-    Acknowledgment.Disacknowledge.Bulk:
+    Acknowledgement.Disacknowledge.Bulk:
         type: array
         items:
           allOf:
@@ -2956,6 +3290,21 @@ components:
           nullable: true
           description: "Resource url to get timeline information"
           example: "/centreon/monitoring/resources/hosts/12/services/12/timeline"
+        configuration_uri:
+          type: string
+          nullable: true
+          description: "Centreon internal uri to configuration page"
+          example: "/centreon/main.php?p=60201&o=c&service_id=12"
+        logs_uri:
+          type: string
+          nullable: true
+          description: "Centreon internal uri to configuration page"
+          example: "/centreon/main.php?p=20301&svc=12_12"
+        reporting_uri:
+          type: string
+          nullable: true
+          description: "Centreon internal uri to configuration page"
+          example: "/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=12&item=12"
         icon:
           type: object
           nullable: true
@@ -2996,6 +3345,21 @@ components:
               nullable: true
               description: "Parent resource url to get timeline information"
               example: "/centreon/monitoring/resources/hosts/12/timeline"
+            configuration_uri:
+              type: string
+              nullable: true
+              description: "Centreon internal uri to configuration page"
+              example: "/centreon/main.php?p=60101&o=c&host_id=12"
+            logs_uri:
+              type: string
+              nullable: true
+              description: "Centreon internal uri to configuration page"
+              example: "/centreon/main.php?p=20301&h=12"
+            reporting_uri:
+              type: string
+              nullable: true
+              description: "Centreon internal uri to configuration page"
+              example: "/centreon/main.php?p=307&host=12"
             status:
               type: object
               properties:
@@ -3052,6 +3416,7 @@ components:
           example: false
         downtime_endpoint:
           type: string
+          description: "URL of the downtimes list"
           example: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
@@ -3059,6 +3424,7 @@ components:
           example: false
         acknowledgement_endpoint:
           type: string
+          description: "URL of the acknowledgement endpoint"
           example: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
@@ -3295,7 +3661,11 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Host'
             acknowledgement:
-              $ref: '#/components/schemas/Acknowledgement.Host'
+              type: object
+              properties:
+                host:
+                  allOf:
+                    - $ref: '#/components/schemas/Acknowledgement.Host'
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
@@ -3607,7 +3977,14 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Service'
             acknowledgement:
-              $ref: '#/components/schemas/Acknowledgement.Service'
+              allOf:
+                - $ref: '#/components/schemas/Acknowledgement.Service'
+              type: object
+              nullable: true
+            flapping:
+              type: boolean
+              description: "Is the host flapping or not"
+              example: false
     Monitoring.ServiceWithHost:
       type: object
       properties:
@@ -3642,10 +4019,12 @@ components:
           example: 3128
         user:
           type: string
+          nullable: true
           description: "Login used to connect to proxy"
           example: "proxy-user"
         password:
           type: string
+          nullable: true
           description: "Password used to connect to proxy"
           example: "proxy-pass"
       required:

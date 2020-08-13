@@ -30,14 +30,14 @@ import {
   labelPerformanceData,
   labelCommandCopied,
   labelSomethingWentWrong,
-} from '../../../../translatedLabels';
+} from '../../../translatedLabels';
 import StateCard from './StateCard';
-import { getFormattedDateTime } from '../../../../dateTime';
-import DowntimeChip from '../../../../Chip/Downtime';
-import AcknowledgeChip from '../../../../Chip/Acknowledge';
+import { getFormattedDateTime } from '../../../dateTime';
+import DowntimeChip from '../../../Chip/Downtime';
+import AcknowledgeChip from '../../../Chip/Acknowledge';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
-import { ResourceDetails } from '../../../models';
+import { ResourceDetails } from '../../models';
 import { copy } from './clipboard';
 
 const useStyles = makeStyles((theme) => ({
