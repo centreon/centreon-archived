@@ -6,7 +6,7 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
 
-import { ResourceEndpoints, ResourceLinks } from '../../../models';
+import { ResourceLinks } from '../../../models';
 import {
   timePeriods,
   getTimePeriodById,

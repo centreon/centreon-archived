@@ -1,16 +1,6 @@
 import * as React from 'react';
 
-import {
-  isNil,
-  equals,
-  pick,
-  pipe,
-  values,
-  reject,
-  isEmpty,
-  path,
-  prop,
-} from 'ramda';
+import { equals, path, prop } from 'ramda';
 
 import { useTheme, fade } from '@material-ui/core';
 
