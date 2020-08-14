@@ -95,11 +95,11 @@ switch ($o) {
         require_once($path."listServiceGroup.php");
         break; #Desactivate a Servicegroup
     case "m":
-        multipleServiceGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        multipleServiceGroupInDB(isset($select) ? $select : [], $dupNbr);
         require_once($path."listServiceGroup.php");
         break; #Duplicate n Service grou
     case "d":
-        deleteServiceGroupInDB(isset($select) ? $select : array());
+        deleteServiceGroupInDB(isset($select) ? $select : []);
         require_once($path."listServiceGroup.php");
         break; #Delete n Service group
     default:
