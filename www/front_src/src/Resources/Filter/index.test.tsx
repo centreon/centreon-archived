@@ -11,9 +11,8 @@ import {
 import { Simulate } from 'react-dom/test-utils';
 
 import userEvent from '@testing-library/user-event';
-import { isNil } from 'ramda';
 import {
-  labelTypeOfResource,
+  labelResource,
   labelHost,
   labelState,
   labelAcknowledged,
@@ -21,7 +20,6 @@ import {
   labelOk,
   labelHostGroup,
   labelServiceGroup,
-  labelResourceName,
   labelSearch,
   labelResourceProblems,
   labelAll,
@@ -45,6 +43,7 @@ import {
   defaultStatuses,
   getListingEndpoint,
   mockAppStateSelector,
+  searchableFields,
 } from '../testUtils';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -58,8 +57,6 @@ jest.mock('react-redux', () => ({
 window.clearInterval = jest.fn();
 window.setInterval = jest.fn();
 
-const searchableFields = ['h.name', 'h.alias', 'h.address', 's.description'];
-
 const linuxServersHostGroup = {
   id: 0,
   name: 'Linux-servers',
@@ -70,13 +67,8 @@ const webAccessServiceGroup = {
   name: 'Web-access',
 };
 
-const filtersParams: Array<[
-  string,
-  string,
-  { [key: string]: Array<string | number> },
-  (() => void) | undefined,
-]> = [
-  [labelTypeOfResource, labelHost, { resourceTypes: ['host'] }, undefined],
+const filtersParams = [
+  [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,
     labelAcknowledged,
@@ -101,7 +93,13 @@ const filtersParams: Array<[
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
-        data: { result: [linuxServersHostGroup] },
+        data: {
+          result: [linuxServersHostGroup],
+          meta: {
+            limit: 10,
+            total: 1,
+          },
+        },
       });
     },
   ],
@@ -114,7 +112,13 @@ const filtersParams: Array<[
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
-        data: { result: [webAccessServiceGroup] },
+        data: {
+          result: [webAccessServiceGroup],
+          meta: {
+            limit: 10,
+            total: 1,
+          },
+        },
       });
     },
   ],
@@ -130,10 +134,6 @@ const FilterTest = (): JSX.Element | null => {
   const filterState = useFilter();
   const listingState = useListing();
   const actionsState = useActions();
-
-  if (isNil(filterState.customFilters)) {
-    return null;
-  }
 
   return (
     <Context.Provider
@@ -205,7 +205,7 @@ describe(Filter, () => {
       const search = 'foobar';
       const fieldSearchValue = `${searchableField}:${search}`;
 
-      fireEvent.change(getByPlaceholderText(labelResourceName), {
+      fireEvent.change(getByPlaceholderText(labelSearch), {
         target: { value: fieldSearchValue },
       });
 
@@ -237,7 +237,7 @@ describe(Filter, () => {
 
     const searchValue = 'foobar';
 
-    fireEvent.change(getByPlaceholderText(labelResourceName), {
+    fireEvent.change(getByPlaceholderText(labelSearch), {
       target: { value: searchValue },
     });
 
@@ -262,7 +262,7 @@ describe(Filter, () => {
       ),
     );
 
-    const searchInput = getByPlaceholderText(labelResourceName);
+    const searchInput = getByPlaceholderText(labelSearch);
 
     Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
 
@@ -344,7 +344,7 @@ describe(Filter, () => {
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
       const searchValue = 'foobar';
-      fireEvent.change(getByPlaceholderText(labelResourceName), {
+      fireEvent.change(getByPlaceholderText(labelSearch), {
         target: { value: searchValue },
       });
 
@@ -398,13 +398,15 @@ describe(Filter, () => {
     });
 
     it('stores filter values in localStorage when updated', async () => {
-      const { getByText, getByPlaceholderText } = renderFilter();
+      const { getByText, getByPlaceholderText, findByText } = renderFilter();
 
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
       mockedAxios.get.mockResolvedValue({ data: {} });
 
-      userEvent.click(getByText(labelUnhandledProblems));
+      const unhandledProblemsOption = await findByText(labelUnhandledProblems);
+
+      userEvent.click(unhandledProblemsOption);
 
       fireEvent.click(getByText(labelAll));
 
@@ -428,7 +430,7 @@ describe(Filter, () => {
         JSON.stringify(allFilter),
       );
 
-      fireEvent.change(getByPlaceholderText(labelResourceName), {
+      fireEvent.change(getByPlaceholderText(labelSearch), {
         target: { value: 'searching...' },
       });
 
@@ -488,7 +490,7 @@ describe(Filter, () => {
         getByText(labelSearchOnFields, { exact: false }),
       ).toBeInTheDocument();
 
-      const searchInput = getByPlaceholderText(labelResourceName);
+      const searchInput = getByPlaceholderText(labelSearch);
 
       fireEvent.change(searchInput, {
         target: { value: 'foobar' },

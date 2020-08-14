@@ -138,12 +138,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     private function addTopologyRules(Contact $contact): void
     {
-        $request =
-            'SELECT topology.topology_name, topology.topology_page,
-                    topology.topology_parent, access.access_right
-            FROM `:db`.topology
-            LEFT JOIN (
-                SELECT topology.topology_id, acltr.access_right
+        $toplogySubquery =
+            $contact->isAdmin()
+            ? 'SELECT topology.topology_id, 1 AS access_right
+                FROM topology
+                WHERE topology.is_react = \'0\''
+            : 'SELECT topology.topology_id, acltr.access_right
                 FROM `:db`.contact contact
                 LEFT JOIN `:db`.contactgroup_contact_relation cgcr
                     ON cgcr.contact_contact_id = contact.contact_id
@@ -159,8 +159,13 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 INNER JOIN `:db`.topology
                     ON topology.topology_id = acltr.topology_topology_id
                 WHERE contact.contact_id = :contact_id
-                    AND topology.is_react = \'0\'
-                ) AS access
+                    AND topology.is_react = \'0\'';
+
+        $request =
+            'SELECT topology.topology_name, topology.topology_page,
+                    topology.topology_parent, access.access_right
+            FROM `:db`.topology
+            LEFT JOIN (' . $toplogySubquery . ') AS access
             ON access.topology_id = topology.topology_id
             WHERE topology.topology_page IS NOT NULL
             ORDER BY topology.topology_page';

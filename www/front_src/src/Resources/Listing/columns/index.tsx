@@ -6,7 +6,7 @@ import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 
-import { ColumnType, StatusChip, SeverityCode } from '@centreon/ui';
+import { ColumnType, StatusChip, SeverityCode, IconButton } from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
 import {
@@ -25,7 +25,6 @@ import {
 import { Resource } from '../../models';
 import StateColumn from './State';
 import GraphColumn from './Graph';
-import ActionButton from '../../ActionButton';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   extraSmallChipContainer: {
-    height: 16,
+    height: 19,
   },
   smallChipContainer: {
     height: 18,
@@ -107,7 +106,7 @@ const StatusColumnOnHover = ({
   return (
     <Grid container spacing={1} alignItems="center">
       <Grid item>
-        <ActionButton
+        <IconButton
           title={labelAcknowledge}
           disabled={disableAcknowledge}
           color="primary"
@@ -115,27 +114,27 @@ const StatusColumnOnHover = ({
           ariaLabel={`${labelAcknowledge} ${row.name}`}
         >
           <IconAcknowledge fontSize="small" />
-        </ActionButton>
+        </IconButton>
       </Grid>
       <Grid item>
-        <ActionButton
+        <IconButton
           title={labelSetDowntime}
           disabled={disableDowntime}
           onClick={(): void => actions.onDowntime(row)}
           ariaLabel={`${labelSetDowntimeOn} ${row.name}`}
         >
           <IconDowntime fontSize="small" />
-        </ActionButton>
+        </IconButton>
       </Grid>
       <Grid item>
-        <ActionButton
+        <IconButton
           title={labelCheck}
           disabled={disableCheck}
           onClick={(): void => actions.onCheck(row)}
           ariaLabel={`${labelCheck} ${row.name}`}
         >
           <IconCheck fontSize="small" />
-        </ActionButton>
+        </IconButton>
       </Grid>
       <Grid item>
         <StatusChip
@@ -159,7 +158,7 @@ const StatusColumn = (actions) => ({
     <StatusColumnOnHover actions={actions} row={row} />
   ) : (
     <StatusChip
-      style={{ width: 100, height: 20, margin: 0 }}
+      style={{ width: 100, height: 20, margin: 2 }}
       label={row.status.name}
       severityCode={row.status.severity_code}
     />

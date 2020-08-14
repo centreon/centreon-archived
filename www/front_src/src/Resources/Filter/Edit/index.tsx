@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import MoveIcon from '@material-ui/icons/UnfoldMore';
 
-import { PagePanel, useRequest } from '@centreon/ui';
+import { SectionPanel, useRequest } from '@centreon/ui';
 
 import { move, isNil } from 'ramda';
 import { useResourceContext } from '../../Context';
@@ -53,7 +53,6 @@ const EditFiltersPanel = (): JSX.Element | null => {
   const classes = useStyles();
 
   const {
-    editPanelOpen,
     setEditPanelOpen,
     customFilters,
     setCustomFilters,
@@ -62,10 +61,6 @@ const EditFiltersPanel = (): JSX.Element | null => {
   const { sendRequest, sending } = useRequest({
     request: patchFilter,
   });
-
-  if (!editPanelOpen) {
-    return null;
-  }
 
   const closeEditPanel = (): void => {
     setEditPanelOpen(false);
@@ -89,11 +84,11 @@ const EditFiltersPanel = (): JSX.Element | null => {
     sendRequest({ id, order: destination.index });
   };
 
-  const Sections = [
+  const sections = [
     {
       expandable: false,
       id: 'edit',
-      Section: (
+      section: (
         <div className={classes.container}>
           <div className={classes.loadingIndicator}>
             {sending && <LinearProgress style={{ width: '100%' }} />}
@@ -137,19 +132,18 @@ const EditFiltersPanel = (): JSX.Element | null => {
     },
   ];
 
-  const Header = (
+  const header = (
     <div className={classes.header}>
-      <Typography variant="h5" align="center">
+      <Typography variant="h6" align="center">
         {labelEditFilters}
       </Typography>
     </div>
   );
 
   return (
-    <PagePanel
-      active
-      Sections={Sections}
-      Header={Header}
+    <SectionPanel
+      sections={sections}
+      header={header}
       onClose={closeEditPanel}
     />
   );

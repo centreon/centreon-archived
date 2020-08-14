@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { useRequest, getData } from '@centreon/ui';
+import { useRequest, getData, ListingModel } from '@centreon/ui';
 
 import {
   labelSomethingWentWrong,
@@ -21,7 +21,6 @@ import {
   labelNo,
 } from '../../../../translatedLabels';
 
-import { Listing } from '../../../../models';
 import { Column } from '../..';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
@@ -41,7 +40,7 @@ const DetailsTable = <TDetails extends unknown>({
 }: DetailsTableProps): JSX.Element => {
   const [details, setDetails] = useState<Array<TDetails> | null>();
 
-  const { sendRequest } = useRequest<Listing<TDetails>>({
+  const { sendRequest } = useRequest<ListingModel<TDetails>>({
     request: getData,
   });
 

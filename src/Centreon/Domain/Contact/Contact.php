@@ -28,18 +28,28 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class Contact implements UserInterface, ContactInterface
 {
-    const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
-    const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
-    const ROLE_HOST_CHECK = 'ROLE_HOST_CHECK';
-    const ROLE_SERVICE_CHECK = 'ROLE_SERVICE_CHECK';
-    const ROLE_HOST_ACKNOWLEDGEMENT = 'ROLE_HOST_ACKNOWLEDGEMENT';
-    const ROLE_HOST_DISACKNOWLEDGEMENT = 'ROLE_HOST_DISACKNOWLEDGEMENT';
-    const ROLE_SERVICE_ACKNOWLEDGEMENT = 'ROLE_SERVICE_ACKNOWLEDGEMENT';
-    const ROLE_SERVICE_DISACKNOWLEDGEMENT = 'ROLE_SERVICE_DISACKNOWLEDGEMENT';
-    const ROLE_CANCEL_HOST_DOWNTIME = 'ROLE_CANCEL_HOST_DOWNTIME';
-    const ROLE_CANCEL_SERVICE_DOWNTIME = 'ROLE_CANCEL_SERVICE_DOWNTIME';
-    const ROLE_ADD_HOST_DOWNTIME = 'ROLE_ADD_HOST_DOWNTIME';
-    const ROLE_ADD_SERVICE_DOWNTIME = 'ROLE_ADD_SERVICE_DOWNTIME';
+    // global api roles
+    public const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
+    public const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
+
+    // user action roles
+    public const ROLE_HOST_CHECK = 'ROLE_HOST_CHECK';
+    public const ROLE_SERVICE_CHECK = 'ROLE_SERVICE_CHECK';
+    public const ROLE_HOST_ACKNOWLEDGEMENT = 'ROLE_HOST_ACKNOWLEDGEMENT';
+    public const ROLE_HOST_DISACKNOWLEDGEMENT = 'ROLE_HOST_DISACKNOWLEDGEMENT';
+    public const ROLE_SERVICE_ACKNOWLEDGEMENT = 'ROLE_SERVICE_ACKNOWLEDGEMENT';
+    public const ROLE_SERVICE_DISACKNOWLEDGEMENT = 'ROLE_SERVICE_DISACKNOWLEDGEMENT';
+    public const ROLE_CANCEL_HOST_DOWNTIME = 'ROLE_CANCEL_HOST_DOWNTIME';
+    public const ROLE_CANCEL_SERVICE_DOWNTIME = 'ROLE_CANCEL_SERVICE_DOWNTIME';
+    public const ROLE_ADD_HOST_DOWNTIME = 'ROLE_ADD_HOST_DOWNTIME';
+    public const ROLE_ADD_SERVICE_DOWNTIME = 'ROLE_ADD_SERVICE_DOWNTIME';
+
+    // user pages access
+    public const ROLE_CONFIGURATION_HOSTS = 'ROLE_CONFIGURATION_HOSTS_HOSTS_RW';
+    public const ROLE_CONFIGURATION_SERVICES = 'ROLE_CONFIGURATION_SERVICES_SERVICES_BY_HOST_RW';
+    public const ROLE_MONITORING_EVENT_LOGS = 'ROLE_MONITORING_EVENT_LOGS_EVENT_LOGS_RW';
+    public const ROLE_REPORTING_DASHBOARD_HOSTS = 'ROLE_REPORTING_DASHBOARD_HOSTS_RW';
+    public const ROLE_REPORTING_DASHBOARD_SERVICES = 'ROLE_REPORTING_DASHBOARD_SERVICES_RW';
 
     /**
      * @var string
@@ -435,6 +445,17 @@ class Contact implements UserInterface, ContactInterface
     public function hasRole(string $role): bool
     {
         return in_array($role, $this->roles);
+    }
+
+    /**
+     * Indicates if this user has a topology access.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasTopologyRole(string $role): bool
+    {
+        return in_array($role, $this->topologyRulesNames);
     }
 
     /**

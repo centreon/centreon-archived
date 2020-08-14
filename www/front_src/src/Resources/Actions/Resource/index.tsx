@@ -18,9 +18,9 @@ import {
 } from '../../translatedLabels';
 import AcknowledgeForm from './Acknowledge';
 import DowntimeForm from './Downtime';
-import { checkResources } from '../../api';
 import { useResourceContext } from '../../Context';
 import useAclQuery from './aclQuery';
+import { checkResources } from '../api';
 
 const ActionButton = (props: ButtonProps): JSX.Element => (
   <Button variant="contained" color="primary" size="small" {...props} />

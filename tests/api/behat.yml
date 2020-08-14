@@ -16,7 +16,19 @@ default:
       paths: [ "%paths.base%/features/ResourceMonitoring.feature" ]
       contexts:
         - Centreon\Test\Api\Context\ResourceMonitoringContext
+    authentication:
+      paths: [ "%paths.base%/features/Authentication.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\AuthenticationContext
     user_filter:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
       contexts:
         - Centreon\Test\Api\Context\UserFilterContext
+    check:
+      paths: [ "%paths.base%/features/Check.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\CheckContext
+    monitoring_timeline:
+      paths: [ "%paths.base%/features/MonitoringTimeline.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\MonitoringTimelineContext

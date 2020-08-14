@@ -94,6 +94,21 @@ class Resource
     /**
      * @var string|null
      */
+    private $configurationUri;
+
+    /**
+     * @var string|null
+     */
+    private $logsUri;
+
+    /**
+     * @var string|null
+     */
+    private $reportingUri;
+
+    /**
+     * @var string|null
+     */
     private $downtimeEndpoint;
 
     /**
@@ -105,6 +120,11 @@ class Resource
      * @var string|null
      */
     private $detailsEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $timelineEndpoint;
 
     /**
      * @var string|null
@@ -363,6 +383,60 @@ class Resource
     /**
      * @return string|null
      */
+    public function getConfigurationUri(): ?string
+    {
+        return $this->configurationUri;
+    }
+
+    /**
+     * @param string|null $configurationUri
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setConfigurationUri(string $configurationUri): self
+    {
+        $this->configurationUri = $configurationUri;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLogsUri(): ?string
+    {
+        return $this->logsUri;
+    }
+
+    /**
+     * @param string|null $logsUri
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setLogsUri(string $logsUri): self
+    {
+        $this->logsUri = $logsUri;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReportingUri(): ?string
+    {
+        return $this->reportingUri;
+    }
+
+    /**
+     * @param string|null $reportingUri
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setReportingUri(string $reportingUri): self
+    {
+        $this->reportingUri = $reportingUri;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getDowntimeEndpoint(): ?string
     {
         return $this->downtimeEndpoint;
@@ -413,6 +487,25 @@ class Resource
     public function setDetailsEndpoint(?string $detailsEndpoint): self
     {
         $this->detailsEndpoint = $detailsEndpoint ?: null;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimelineEndpoint(): ?string
+    {
+        return $this->timelineEndpoint;
+    }
+
+    /**
+     * @param string|null $timelineEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setTimelineEndpoint(?string $timelineEndpoint): self
+    {
+        $this->timelineEndpoint = $timelineEndpoint ?: null;
 
         return $this;
     }

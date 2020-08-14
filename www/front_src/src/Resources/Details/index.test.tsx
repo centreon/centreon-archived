@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head } from 'ramda';
+import { last, head, equals, reject } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -11,7 +11,10 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as clipboard from './Body/tabs/Details/clipboard';
+
+import { ThemeProvider } from '@centreon/ui';
+
+import * as clipboard from './tabs/Details/clipboard';
 
 import Details from '.';
 import {
@@ -42,22 +45,35 @@ import {
   labelResourceFlapping,
   labelNo,
   labelComment,
+  labelConfigure,
+  labelViewLogs,
+  labelViewReport,
+  labelHost,
 } from '../translatedLabels';
-import { detailsTabId, graphTabId, TabId } from './Body/tabs';
+import {
+  detailsTabId,
+  graphTabId,
+  TabId,
+  timelineTabId,
+  shortcutsTabId,
+} from './tabs';
 import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
+import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
-import { ResourceListing } from '../models';
+import { ResourceListing, ResourceUris } from '../models';
+import { getTypeIds } from './tabs/Timeline/Event';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('./Body/tabs/Details/clipboard');
+jest.mock('./tabs/Details/clipboard');
 
 const detailsEndpoint = '/resource';
 const performanceGraphEndpoint = '/performance';
+const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
   display_name: 'Central',
@@ -112,24 +128,101 @@ const performanceGraphData = {
   metrics: [],
 };
 
+const retrievedTimeline = {
+  result: [
+    {
+      type: 'event',
+      id: 1,
+      date: '2020-06-22T10:40:00',
+      tries: 1,
+      content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
+      status: {
+        severity_code: 5,
+        name: 'UP',
+      },
+    },
+    {
+      type: 'event',
+      id: 2,
+      date: '2020-06-22T10:35:00',
+      tries: 3,
+      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
+      status: {
+        severity_code: 1,
+        name: 'DOWN',
+      },
+    },
+    {
+      type: 'notification',
+      id: 3,
+      date: '2020-06-21T09:40:00',
+      content: 'My little notification',
+      contact: {
+        name: 'admin',
+      },
+    },
+    {
+      type: 'acknowledgement',
+      id: 4,
+      date: '2020-06-20T09:35:00Z',
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little ack',
+    },
+    {
+      type: 'downtime',
+      id: 5,
+      date: '2020-06-20T09:30:00',
+      start_date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little dt',
+    },
+    {
+      type: 'comment',
+      id: 6,
+      date: '2020-06-20T08:55:00',
+      start_date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment',
+    },
+  ],
+  meta: {
+    page: 1,
+    limit: 10,
+    total: 5,
+  },
+};
+
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
 let context: ResourceContext;
 
 interface Props {
   defaultTabId: TabId;
+  uris: { resource: ResourceUris; parent: ResourceUris };
 }
 
-const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
+const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
   const listingState = useListing();
   const detailState = useDetails();
 
-  detailState.selectedDetailsEndpoints = {
-    details: detailsEndpoint,
-    performanceGraph: performanceGraphEndpoint,
+  detailState.selectedDetailsLinks = {
+    endpoints: {
+      details: detailsEndpoint,
+      performanceGraph: performanceGraphEndpoint,
+      timeline: timelineEndpoint,
+    },
+    uris,
   };
 
-  detailState.detailsTabIdToOpen = defaultTabId;
+  detailState.openDetailsTabId = defaultTabId;
 
   context = {
     ...listingState,
@@ -137,14 +230,39 @@ const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <Context.Provider value={context}>
-      <Details />
-    </Context.Provider>
+    <ThemeProvider>
+      <Context.Provider value={context}>
+        <Details />
+      </Context.Provider>
+    </ThemeProvider>
   );
 };
 
-const renderDetails = (defaultTabId: TabId = detailsTabId): RenderResult =>
-  render(<DetailsTest defaultTabId={defaultTabId} />);
+const defaultUris = {
+  resource: {
+    configuration: undefined,
+    logs: undefined,
+    reporting: undefined,
+  },
+  parent: {
+    configuration: undefined,
+    logs: undefined,
+    reporting: undefined,
+  },
+};
+
+interface RenderDetailsProps {
+  defaultTabId?: TabId;
+  uris?: { resource: ResourceUris; parent: ResourceUris };
+}
+
+const renderDetails = (
+  { defaultTabId = detailsTabId, uris = defaultUris }: RenderDetailsProps = {
+    defaultTabId: detailsTabId,
+    uris: defaultUris,
+  },
+): RenderResult =>
+  render(<DetailsTest defaultTabId={defaultTabId} uris={uris} />);
 
 describe(Details, () => {
   beforeEach(() => {
@@ -248,6 +366,22 @@ describe(Details, () => {
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
 
+  it('refreshes the details when the listing is updated', async () => {
+    mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
+
+    const { getByText } = renderDetails();
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+    expect(getByText(labelStatusInformation)).toBeInTheDocument();
+
+    act(() => {
+      context.setListing({} as ResourceListing);
+    });
+
+    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+  });
+
   it.each([
     [labelLast24h, '2020-06-19T20:00:00.000Z'],
     [labelLast7Days, '2020-06-13T20:00:00.000Z'],
@@ -260,7 +394,9 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData });
 
-      const { getByText, getAllByText } = renderDetails(graphTabId);
+      const { getByText, getAllByText } = renderDetails({
+        defaultTabId: graphTabId,
+      });
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
 
@@ -295,18 +431,190 @@ describe(Details, () => {
     );
   });
 
-  it('refreshes the details when the listing is updated', async () => {
-    mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
+  it('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText } = renderDetails();
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-    expect(getByText(labelStatusInformation)).toBeInTheDocument();
-
-    act(() => {
-      context.setListing({} as ResourceListing);
+    const { getByText, getAllByText, baseElement } = renderDetails({
+      defaultTabId: timelineTabId,
     });
 
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: timelineEndpoint,
+          parameters: {
+            limit: 10,
+            page: 1,
+            search: {
+              lists: [
+                {
+                  field: 'type',
+                  values: getTypeIds(),
+                },
+              ],
+            },
+          },
+        }),
+        expect.anything(),
+      ),
+    );
+
+    expect(getByText('06/22/2020')).toBeInTheDocument();
+
+    expect(getByText('10:40')).toBeInTheDocument();
+    expect(getAllByText('Event')).toHaveLength(4);
+    expect(getByText('UP')).toBeInTheDocument();
+    expect(getByText('Tries: 1')).toBeInTheDocument();
+    expect(
+      getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
+    ).toBeInTheDocument();
+
+    expect(getByText('10:35')).toBeInTheDocument();
+    expect(getByText('DOWN')).toBeInTheDocument();
+    expect(getByText('Tries: 3')).toBeInTheDocument();
+    expect(
+      getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;'),
+    ).toBeInTheDocument();
+
+    expect(getByText('06/21/2020')).toBeInTheDocument();
+
+    expect(getByText('09:40')).toBeInTheDocument();
+    expect(getByText('Notification sent to admin')).toBeInTheDocument();
+    expect(getByText('My little notification'));
+
+    expect(getByText('06/20/2020')).toBeInTheDocument();
+
+    expect(getByText('09:35')).toBeInTheDocument();
+    expect(getByText('Acknowledgement by admin')).toBeInTheDocument();
+    expect(getByText('My little ack'));
+
+    expect(getByText('09:30')).toBeInTheDocument();
+    expect(getByText('Downtime by admin')).toBeInTheDocument();
+    expect(
+      getByText('From 06/20/2020 09:30 To 06/22/2020 09:33'),
+    ).toBeInTheDocument();
+    expect(getByText('My little dt'));
+
+    expect(getByText('08:55')).toBeInTheDocument();
+    expect(getByText('Comment by admin')).toBeInTheDocument();
+    expect(getByText('My little comment'));
+
+    const dateRegExp = /\d+\/\d+\/\d+$/;
+
+    expect(
+      getAllByText(dateRegExp).map((element) => element.textContent),
+    ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
+
+    const removeEventIcon = baseElement.querySelectorAll(
+      'svg[class*="deleteIcon"]',
+    )[0];
+
+    fireEvent.click(removeEventIcon);
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: timelineEndpoint,
+          parameters: {
+            limit: 10,
+            page: 1,
+            search: {
+              lists: [
+                {
+                  field: 'type',
+                  values: reject(equals('event'))(getTypeIds()),
+                },
+              ],
+            },
+          },
+        }),
+        expect.anything(),
+      ),
+    );
+  });
+
+  it('displays the shortcut links when the shortcuts tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+
+    const uris = {
+      resource: {
+        configuration: '/configuration',
+        logs: '/logs',
+        reporting: '/reporting',
+      },
+      parent: {
+        configuration: '/host/configuration',
+        logs: '/host/logs',
+        reporting: '/host/reporting',
+      },
+    };
+
+    const { getByText, getAllByText } = renderDetails({
+      defaultTabId: shortcutsTabId,
+      uris,
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    expect(getAllByText(labelConfigure)[0]).toHaveAttribute(
+      'href',
+      '/configuration',
+    );
+    expect(getAllByText(labelViewLogs)[0]).toHaveAttribute('href', '/logs');
+    expect(getAllByText(labelViewReport)[0]).toHaveAttribute(
+      'href',
+      '/reporting',
+    );
+
+    expect(getByText(labelHost)).toBeInTheDocument();
+
+    expect(getAllByText(labelConfigure)[1]).toHaveAttribute(
+      'href',
+      '/host/configuration',
+    );
+    expect(getAllByText(labelViewLogs)[1]).toHaveAttribute(
+      'href',
+      '/host/logs',
+    );
+    expect(getAllByText(labelViewReport)[1]).toHaveAttribute(
+      'href',
+      '/host/reporting',
+    );
+  });
+
+  it('does not display host shortcut links when the shortcuts tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+
+    const uris = {
+      resource: {
+        configuration: '/configuration',
+        logs: '/logs',
+        reporting: '/reporting',
+      },
+      parent: {
+        configuration: undefined,
+        logs: undefined,
+        reporting: undefined,
+      },
+    };
+
+    const { getByText, queryByText } = renderDetails({
+      defaultTabId: shortcutsTabId,
+      uris,
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    expect(getByText(labelConfigure)).toBeInTheDocument();
+    expect(getByText(labelViewLogs)).toBeInTheDocument();
+    expect(getByText(labelViewReport)).toBeInTheDocument();
+
+    expect(queryByText(labelHost)).toBeNull();
   });
 });

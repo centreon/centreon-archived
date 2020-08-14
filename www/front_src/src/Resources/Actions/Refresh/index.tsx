@@ -5,12 +5,13 @@ import IconRefresh from '@material-ui/icons/Refresh';
 import IconPlay from '@material-ui/icons/PlayArrow';
 import IconPause from '@material-ui/icons/Pause';
 
+import { IconButton } from '@centreon/ui';
+
 import {
   labelRefresh,
   labelDisableAutorefresh,
   labelEnableAutorefresh,
 } from '../../translatedLabels';
-import ActionButton from '../../ActionButton';
 import { useResourceContext } from '../../Context';
 
 interface AutorefreshProps {
@@ -27,14 +28,14 @@ const AutorefreshButton = ({
     : labelEnableAutorefresh;
 
   return (
-    <ActionButton
+    <IconButton
       ariaLabel={label}
       title={label}
       onClick={toggleAutorefresh}
       size="small"
     >
       {enabledAutorefresh ? <IconPause /> : <IconPlay />}
-    </ActionButton>
+    </IconButton>
   );
 };
 
@@ -56,7 +57,7 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
   return (
     <Grid container spacing={1}>
       <Grid item>
-        <ActionButton
+        <IconButton
           title={labelRefresh}
           ariaLabel={labelRefresh}
           disabled={sending}
@@ -64,7 +65,7 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
           size="small"
         >
           <IconRefresh />
-        </ActionButton>
+        </IconButton>
       </Grid>
       <Grid item>
         <AutorefreshButton

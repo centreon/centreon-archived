@@ -1,65 +1,56 @@
 import * as React from 'react';
 
-import { omit } from 'ramda';
+import {
+  isNil,
+  isEmpty,
+  pipe,
+  not,
+  defaultTo,
+  indexOf,
+  propEq,
+  find,
+  findIndex,
+} from 'ramda';
 
-import { Paper, makeStyles, Divider } from '@material-ui/core';
+import { getData, useRequest, Panel } from '@centreon/ui';
 
-import { getData, useRequest } from '@centreon/ui';
+import { Tab, useTheme, fade } from '@material-ui/core';
 
 import Header from './Header';
-import Body from './Body';
 import { ResourceDetails } from './models';
-import { ResourceEndpoints } from '../models';
 import { useResourceContext } from '../Context';
-
-const useStyles = makeStyles(() => {
-  return {
-    details: {
-      height: '100%',
-      display: 'grid',
-      gridTemplate: 'auto auto 1fr / 1fr',
-    },
-    header: {
-      gridArea: '1 / 1 / 2 / 1',
-      padding: 8,
-    },
-    divider: {
-      gridArea: '2 / 1 / 3 / 1',
-    },
-    body: {
-      gridArea: '3 / 1 / 4 / 1',
-    },
-  };
-});
+import { TabById, getVisibleTabs, TabId } from './tabs';
+import { rowColorConditions } from '../colors';
+import { ResourceLinks } from '../models';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
 const Details = (): JSX.Element | null => {
-  const classes = useStyles();
-
+  const theme = useTheme();
   const [details, setDetails] = React.useState<ResourceDetails>();
 
   const {
-    detailsTabIdToOpen,
-    setDefaultDetailsTabIdToOpen,
-    selectedDetailsEndpoints,
-    setSelectedDetailsEndpoints,
+    openDetailsTabId,
+    setOpenDetailsTabId,
+    selectedDetailsLinks,
+    setSelectedDetailsLinks,
     listing,
   } = useResourceContext();
 
-  const {
-    details: detailsEndpoint,
-  } = selectedDetailsEndpoints as ResourceEndpoints;
+  const links = selectedDetailsLinks as ResourceLinks;
+  const { details: detailsEndpoint } = links.endpoints;
 
   const clearSelectedResource = (): void => {
-    setSelectedDetailsEndpoints(null);
+    setSelectedDetailsLinks(undefined);
   };
 
   const { sendRequest } = useRequest<ResourceDetails>({
     request: getData,
   });
+
+  const visibleTabs = getVisibleTabs(selectedDetailsLinks);
 
   React.useEffect(() => {
     if (details !== undefined) {
@@ -71,21 +62,51 @@ const Details = (): JSX.Element | null => {
     );
   }, [detailsEndpoint, listing]);
 
+  const getTabIndex = (tabId: TabId): number => {
+    return findIndex(propEq('id', tabId), visibleTabs);
+  };
+
+  const changeSelectedTabId = (tabId: TabId) => (): void => {
+    setOpenDetailsTabId(tabId);
+  };
+
+  const getHeaderBackgroundColor = (): string | undefined => {
+    const { downtimes, acknowledgement } = details || {};
+
+    const foundColorCondition = rowColorConditions(theme).find(
+      ({ condition }) =>
+        condition({
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
+          acknowledged: !isNil(acknowledgement),
+        }),
+    );
+
+    if (isNil(foundColorCondition)) {
+      return theme.palette.common.white;
+    }
+
+    return fade(foundColorCondition.color, 0.8);
+  };
+
   return (
-    <Paper elevation={5} className={classes.details}>
-      <div className={classes.header}>
-        <Header details={details} onClickClose={clearSelectedResource} />
-      </div>
-      <Divider className={classes.divider} />
-      <div className={classes.body}>
-        <Body
-          details={details}
-          endpoints={omit(['details'], selectedDetailsEndpoints)}
-          openTabId={detailsTabIdToOpen}
-          onSelectTab={setDefaultDetailsTabIdToOpen}
+    <Panel
+      onClose={clearSelectedResource}
+      header={<Header details={details} />}
+      headerBackgroundColor={getHeaderBackgroundColor()}
+      tabs={visibleTabs.map(({ id, title }) => (
+        <Tab
+          style={{ minWidth: 'unset' }}
+          key={id}
+          label={title}
+          disabled={isNil(details)}
+          onClick={changeSelectedTabId(id)}
         />
-      </div>
-    </Paper>
+      ))}
+      selectedTabId={getTabIndex(openDetailsTabId)}
+      selectedTab={
+        <TabById id={openDetailsTabId} details={details} links={links} />
+      }
+    />
   );
 };
 

@@ -1,3 +1,5 @@
+import { ListingModel } from '@centreon/ui';
+
 export interface Icon {
   url: string;
   name: string;
@@ -8,6 +10,9 @@ export interface Parent {
   name: string;
   icon: Icon | null;
   status: Status;
+  configuration_uri?: string;
+  logs_uri?: string;
+  reporting_uri?: string;
 }
 
 export interface Status {
@@ -39,22 +44,13 @@ export interface Resource {
   performance_graph_endpoint?: string;
   type: 'host' | 'service';
   details_endpoint: string;
+  timeline_endpoint: string;
+  configuration_uri?: string;
+  logs_uri?: string;
+  reporting_uri?: string;
 }
 
-interface ListingMeta {
-  page: number;
-  limit: number;
-  search: {};
-  sort_by: {};
-  total: number;
-}
-
-export interface Listing<TEntity> {
-  result: Array<TEntity>;
-  meta: ListingMeta;
-}
-
-export type ResourceListing = Listing<Resource>;
+export type ResourceListing = ListingModel<Resource>;
 
 export interface Downtime {
   author_name: string;
@@ -74,6 +70,17 @@ export interface Acknowledgement {
 
 export interface ResourceEndpoints {
   details: string;
-  statusGraph?: string;
   performanceGraph?: string;
+  timeline: string;
+}
+
+export interface ResourceUris {
+  configuration?: string;
+  logs?: string;
+  reporting?: string;
+}
+
+export interface ResourceLinks {
+  endpoints: ResourceEndpoints;
+  uris: { resource: ResourceUris; parent: ResourceUris };
 }

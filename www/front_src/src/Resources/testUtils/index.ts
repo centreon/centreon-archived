@@ -1,4 +1,4 @@
-import { buildResourcesEndpoint } from '../api/endpoint';
+import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
   sort?;
@@ -16,6 +16,14 @@ const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
+const searchableFields = [
+  'h.name',
+  'h.alias',
+  'h.address',
+  's.description',
+  'information',
+];
+
 const getListingEndpoint = ({
   page = 1,
   limit = 30,
@@ -25,7 +33,7 @@ const getListingEndpoint = ({
   resourceTypes = defaultResourceTypes,
   hostGroupIds = [],
   serviceGroupIds = [],
-  search = '',
+  search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
     page,
@@ -33,7 +41,20 @@ const getListingEndpoint = ({
     sort,
     statuses,
     states,
-    search,
+    search: search
+      ? {
+          regex: {
+            value: search,
+            fields: [
+              'h.name',
+              'h.alias',
+              'h.address',
+              's.description',
+              'information',
+            ],
+          },
+        }
+      : undefined,
     resourceTypes,
     hostGroupIds,
     serviceGroupIds,
@@ -58,4 +79,5 @@ export {
   defaultStatuses,
   defaultResourceTypes,
   defaultStates,
+  searchableFields,
 };
