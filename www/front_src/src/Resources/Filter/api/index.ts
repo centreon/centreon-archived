@@ -28,17 +28,17 @@ const listCustomFilters = (cancelToken) => (): Promise<
 
 type RawFilterWithoutId = Omit<RawFilter, 'id'>;
 
-const createFilter = (cancelToken) => (parameters): Promise<Filter> => {
+const createFilter = (cancelToken) => (parameters): Promise<RawFilter> => {
   return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: filterEndpoint,
     data: parameters,
   });
 };
 
-const updateFilter = (cancelToken) => (parameters): Promise<Filter> => {
-  return putData<RawFilterWithoutId, Filter>(cancelToken)({
+const updateFilter = (cancelToken) => (parameters): Promise<RawFilter> => {
+  return putData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
-    data: parameters,
+    data: parameters.rawFilter,
   });
 };
 
