@@ -363,8 +363,9 @@ class CentreonHostgroups
             //As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
             $multiValues = explode(',', $v);
             foreach ($multiValues as $item) {
-                $listValues .= ':hgId_' . $item . ', ';
-                $queryValues['hgId_' . $item] = (int)$item;
+                $ids = explode('-', $item);
+                $listValues .= ':hgId_' . $ids[0] . ', ';
+                $queryValues['hgId_' . $ids[0]] = (int)$ids[0];
             }
         }
         $listValues = rtrim($listValues, ', ');
