@@ -9,7 +9,7 @@ import {
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
-import { RawFilter } from '../models';
+import { RawFilter, Filter } from '../models';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 

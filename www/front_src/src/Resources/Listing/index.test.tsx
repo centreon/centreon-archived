@@ -18,12 +18,10 @@ import {
   head,
   split,
   pipe,
-  propEq,
   find,
   propSatisfies,
   isNil,
 } from 'ramda';
-import userEvent from '@testing-library/user-event';
 import Listing from '.';
 import { getColumns } from './columns';
 import { Resource } from '../models';
@@ -32,18 +30,9 @@ import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
 import useListing from './useListing';
 import useFilter from '../Filter/useFilter';
-import {
-  labelInDowntime,
-  labelAcknowledged,
-  labelGraph,
-} from '../translatedLabels';
+import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
-import {
-  detailsTabId,
-  graphTabId,
-  timelineTabId,
-  shortcutsTabId,
-} from '../Details/tabs';
+import { detailsTabId, graphTabId, shortcutsTabId } from '../Details/tabs';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
 
