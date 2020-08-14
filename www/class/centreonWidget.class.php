@@ -723,7 +723,7 @@ class CentreonWidget
      * @throws CentreonWidgetException
      * @throws Exception
      */
-    public function updateWidgetPositions(int $customViewId, array $position = [], bool $permission)
+    public function updateWidgetPositions(int $customViewId, array $positions = [], bool $permission)
     {
         if (!$permission) {
             throw new CentreonWidgetException('You are not allowed to change widget position');
