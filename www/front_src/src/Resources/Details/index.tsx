@@ -1,16 +1,6 @@
 import * as React from 'react';
 
-import {
-  isNil,
-  isEmpty,
-  pipe,
-  not,
-  defaultTo,
-  indexOf,
-  propEq,
-  find,
-  findIndex,
-} from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 
