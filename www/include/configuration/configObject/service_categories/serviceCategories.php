@@ -77,17 +77,17 @@ switch ($o) {
         break; # Massive Change
     case "a":
         require_once($path."formServiceCategories.php");
-        break; #Add a contact
+        break; #Add a service category
     case "w":
         require_once($path."formServiceCategories.php");
-        break; #Watch a contact
+        break; #Watch a service category
     case "c":
         require_once($path."formServiceCategories.php");
-        break; #Modify a contact
+        break; #Modify a service category
     case "s":
         enableServiceCategorieInDB($sc_id);
         require_once($path."listServiceCategories.php");
-        break; #Activate a ServiceCategories
+        break; #Activate a Service category
     case "ms":
         enableServiceCategorieInDB(null, isset($select) ? $select : array());
         require_once($path."listServiceCategories.php");
@@ -95,7 +95,7 @@ switch ($o) {
     case "u":
         disableServiceCategorieInDB($sc_id);
         require_once($path."listServiceCategories.php");
-        break; #Desactivate a contact
+        break; #Desactivate a service category
     case "mu":
         disableServiceCategorieInDB(null, isset($select) ? $select : array());
         require_once($path."listServiceCategories.php");
@@ -104,12 +104,12 @@ switch ($o) {
     case "m":
         multipleServiceCategorieInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path."listServiceCategories.php");
-        break; #Duplicate n contacts
+        break; #Duplicate n service categories
 
     case "d":
         deleteServiceCategorieInDB(isset($select) ? $select : array());
         require_once($path."listServiceCategories.php");
-        break; #Delete n contacts
+        break; #Delete n service categories
     default:
         require_once($path."listServiceCategories.php");
         break;
