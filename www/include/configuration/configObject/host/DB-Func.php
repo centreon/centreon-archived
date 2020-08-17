@@ -295,13 +295,29 @@ function disableHostInDB($host_id = null, $host_arr = array())
     }
 }
 
-
 /**
  * @param int $hostId
  */
 function removeRelationLastHostDependency(int $hostId): void
 {
     global $pearDB;
+
+    $query = 'SELECT service_service_id FROM host_service_relation WHERE host_host_id =  ' . $hostId;
+    $res = $pearDB->query($query);
+
+    while ($row = $res->fetch()) {
+        $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_serviceParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation 
+                                         WHERE service_service_id =  ' . $row['service_service_id'] . ')';
+        $dbResult = $pearDB->query($query);
+        $result = $dbResult->fetch();
+
+        //is last service parent
+        if ($result['nb_dependency'] == 1) {
+            $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
+        }
+    }
 
     $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
               FROM dependency_hostParent_relation 
@@ -315,7 +331,6 @@ function removeRelationLastHostDependency(int $hostId): void
         $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
     }
 }
-
 
 function deleteHostInDB($hosts = array())
 {
