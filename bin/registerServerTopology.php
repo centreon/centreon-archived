@@ -277,7 +277,7 @@ if ($responseCode === 201) {
     $responseMessage = "The '$serverType' Platform: '$serverHostName@$address' linked to '$host' has been added";
     exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
 } elseif (isset($result['code'], $result['message'])) {
-    exit(formatResponseMessage($result['code'], $result['message'], 'success'));
+    exit(formatResponseMessage($result['code'], $result['message'], 'error'));
 } else {
     exit(formatResponseMessage(500, 'An error occured while contacting the API', 'error'));
 }
