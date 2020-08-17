@@ -6,14 +6,14 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
 
-import { ResourceEndpoints } from '../../../../models';
+import { ResourceEndpoints } from '../../../models';
 import {
   timePeriods,
   getTimePeriodById,
   last24hPeriod,
   TimePeriod,
 } from './models';
-import PerformanceGraph from '../../../../Graph/Performance';
+import PerformanceGraph from '../../../Graph/Performance';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {

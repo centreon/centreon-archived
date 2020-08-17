@@ -1,4 +1,4 @@
-import { buildResourcesEndpoint } from '../api/endpoint';
+import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
   sort?;

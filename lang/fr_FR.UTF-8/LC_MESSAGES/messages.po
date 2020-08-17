@@ -15468,6 +15468,14 @@ msgstr "Filtre actualisé"
 msgid "Name cannot be empty"
 msgstr "Le nom ne peut pas être vide"
 
+msgid "Timeline"
+msgstr "Historique"
+
+msgid "by"
+msgstr "par"
+
+msgid "Notification sent to"
+msgstr "Notification envoyée à"
 msgid "The name of the platform is not consistent"
 msgstr "Le nom de cette plateforme n'est pas cohérent"
 
