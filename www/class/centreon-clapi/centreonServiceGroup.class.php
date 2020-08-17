@@ -42,6 +42,7 @@ require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Service.php";
 require_once "Centreon/Object/Relation/Service/Group/Service.php";
 require_once "Centreon/Object/Relation/Service/Group/Host/Group/Service.php";
+require_once "Centreon/Object/Dependency/DependencyServicegroupParent.php";
 
 /**
  * Class for managing Service groups
@@ -327,6 +328,22 @@ class CentreonServiceGroup extends CentreonObject
         } else {
             throw new CentreonClapiException(self::UNKNOWN_METHOD);
         }
+    }
+
+    /**
+     * Del Action
+     * Must delete services as well
+     *
+     * @param string $objectName
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function del($objectName)
+    {
+        $sgId = $this->getObjectId($objectName);
+        $parentDependency = new \Centreon_Object_DependencyServicegroupParent($this->dependencyInjector);
+        $parentDependency->removeRelationLastServicegroupDependency($sgId);
+        parent::del($objectName);
     }
 
     /**
