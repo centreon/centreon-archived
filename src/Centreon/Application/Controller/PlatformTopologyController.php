@@ -111,8 +111,8 @@ class PlatformTopologyController extends AbstractController
         try {
             $platformTopology = (new PlatformTopology())
                 ->setName($platformToAdd['name'])
-                ->setType($platformToAdd['type'])
-                ->setAddress($platformToAdd['address']);
+                ->setAddress($platformToAdd['address'])
+                ->setType($platformToAdd['type']);
 
             if (isset($platformToAdd['parent_address'])) {
                 $platformTopology->setParentAddress($platformToAdd['parent_address']);
