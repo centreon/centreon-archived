@@ -53,7 +53,7 @@ class PlatformTopologyControllerTest extends TestCase
             'name' => 'poller1',
             'type' => 'poller',
             'address' => '1.1.1.2',
-	        'parent_address' => '1.1.1.1',
+            'parent_address' => '1.1.1.1'
         ];
 
         $this->goodJsonPlatformTopology = json_encode($goodJsonPlatformTopology);
