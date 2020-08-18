@@ -1,7 +1,7 @@
 Feature:
     In order to platforms
     As a user
-    I want to register a platform to an other
+    I want to register a platform to the Central
 
     Background:
         Given a running instance of Centreon Web API
@@ -15,7 +15,7 @@ Feature:
     """
     {
         "name": "my poller",
-        "type": "Poller",
+        "type": "poller",
         "address": "1.1.1.2",
         "parent_address": "1.1.1.1"
     }
