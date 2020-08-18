@@ -224,13 +224,11 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
             }
             $fields["hc_name"] = $hc_name;
             if (testHostCategorieExistence($hc_name)) {
-                !empty($bindParams)
-                    ? $query = "
+                if (!empty($bindParams)) {
+                    $statement2 = $pearDB->prepare("
                         INSERT INTO hostcategories
-                        VALUES (NULL, :hc_name, :hc_alias, :level, :icon_id, :hc_comment, :hc_activate)"
-                    : $query = null;
-                if ($query) {
-                    $statement2 = $pearDB->prepare($query);
+                        VALUES (NULL, :hc_name, :hc_alias, :level, :icon_id, :hc_comment, :hc_activate)
+                    ");
                     foreach ($bindParams as $token => $bindValues) {
                         foreach ($bindValues as $paramType => $value) {
                             $statement2->bindValue($token, $value, $paramType);
