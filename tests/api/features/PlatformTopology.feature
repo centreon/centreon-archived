@@ -9,22 +9,26 @@ Feature:
 
     Scenario: register a poller
         Given I am logged in
-        When I send a POST request to '/beta/platform/topology' with body:
+        # trying to register a server
+        When I send a POST request to '/latest/platform/topology' with body:
     """
     {
         "name": "my poller",
         "type": "Poller",
-        "address": "1.1.1.1"
+        "address": "1.1.1.2",
+        "parent_address": "1.1.1.1"
     }
     """
         Then the response code should be "201"
 
-        When I send a POST request to '/beta/platform/topology' with body:
+        # trying to insert already registered server. An error should be returned
+        When I send a POST request to '/latest/platform/topology' with body:
     """
     {
         "name": "my poller",
         "type": "Poller",
-        "address": "1.1.1.1"
+        "address": "1.1.1.2"
+        "parent_address": 1.1.1.1"
     }
     """
         Then the response code should be "409"
