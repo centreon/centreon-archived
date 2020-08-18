@@ -28,9 +28,13 @@ require_once('registerServerTopology-func.php');
 /**
  * Get script params
  */
-$opt = getopt('u:t:h:n:', ["help::", "dns:", "insecure::"]);
-const SERVER_TYPES = ["poller", "remote", "map", "mbi"];
+const TYPE_POLLER = 'poller';
+const TYPE_REMOTE = 'remote';
+const TYPE_MAP = 'map';
+const TYPE_MBI = 'mbi';
+const SERVER_TYPES = [TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
+$opt = getopt('u:t:h:n:r:', ["help::", "dns:", "insecure::"]);
 /**
  * Format the --help message
  */
@@ -45,13 +49,14 @@ Global Options:
             - MBI
   -h <mandatory>              URL of the Central / Remote Server target platform
   -n <mandatory>              name of your registered server
+  -r <mandatory>              your root Centreon folder
   --help <optional>           get informations about the parameters available
-  --proxy <optional>          provide the differents asked informations
+  --proxy <optional>          provide the differents information requested
             - host <mandatory>
             - port <mandatory>
             - username <optional>
             - password <optional>
-  --dns <optional>            provide your DNS instead of automaticaly get server IP
+  --dns <optional>            provide your server DNS instead IP. The DNS must be valid and resolvable on the Central.
   --insecure <optional>       allow self-signed certificate
 
 
@@ -68,9 +73,9 @@ if (isset($opt['help'])) {
  * Assign options to variables
  */
 try {
-    if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'])) {
+    if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'], $opt['r'])) {
         throw new \InvalidArgumentException(
-            PHP_EOL . 'missing parameter: -u -t -h -n are mandatories:' . PHP_EOL . $helpMessage
+            PHP_EOL . 'missing parameter: -u -t -h -n -r are mandatories:' . PHP_EOL . $helpMessage
         );
     }
 
@@ -95,17 +100,18 @@ try {
         }
     }
 
-    $targetHost = $opt['h'];
+    $targetURL = $opt['h'];
     $serverHostName = $opt['n'];
+    $root = $opt['r'];
 } catch (\InvalidArgumentException $e) {
     exit($e->getMessage());
 }
-$password = askQuestion($targetHost . ': enter your password ', true);
+$password = askQuestion($targetURL . ': please enter your password ', true);
 $proxy =  strtolower(askQuestion("Are you using a proxy ? (y/n)"));
 /**
  * Parsing url part from params -h
  */
-$targetURL = parse_url($targetHost);
+$targetURL = parse_url($targetURL);
 $protocol = $targetURL['scheme'] ?? 'http';
 $host = $targetURL['host'] ?? $targetURL['path'];
 $port = $targetURL['port'] ?? '';
@@ -116,9 +122,9 @@ $port = $targetURL['port'] ?? '';
 if ($proxy === 'y') {
     $proxyInfo['host'] = askQuestion('proxy host: ');
     $proxyInfo['port'] = (int) askQuestion('proxy port: ');
-    $proxyInfo['username'] = askQuestion('proxy username (press enter if no username/password required): ');
+    $proxyInfo['username'] = askQuestion('proxy username (press enter if no username/password are required): ');
     if (!empty($proxyInfo['username'])) {
-        $proxyInfo['password'] = askQuestion('proxy password: ', true);
+        $proxyInfo['password'] = askQuestion('please enter the proxy password: ', true);
     }
 }
 
@@ -155,7 +161,7 @@ Summary of the informations that will be send:
 
 Api Connection:
 username: $username
-password: $password
+password: ******
 target server: $host
 
 Pending Registration Server:
@@ -188,37 +194,42 @@ if ($proceed !== "y") {
 /**
  * Connection to Api
  */
-$loginUrl = $protocol . '://' . $host;
+$loginUrl = $protocol . '://' . $host . '/' . $root;
 if (!empty($port)) {
     $loginUrl .= ':' . $port;
 }
 $loginUrl .= '/api/latest/login';
 
-$ch = curl_init($loginUrl);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+try {
+    $ch = curl_init($loginUrl);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-if (isset($opt['insecure'])) {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-}
-
-if (isset($proxyInfo)) {
-    curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
-    curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
-    if (!empty($proxyInfo['username'])) {
-        curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    if (isset($opt['insecure'])) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
+
+    if (isset($proxyInfo)) {
+        curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
+        curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
+        if (!empty($proxyInfo['username'])) {
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+        }
+    }
+
+    $result = curl_exec($ch);
+
+    if (!$result) {
+        throw new Exception(curl_error($ch));
+    }
+} catch (\Exception $e) {
+    exit($e->getMessage());
+} finally {
+    curl_close($ch);
 }
 
-$result = curl_exec($ch);
-
-if (!$result) {
-    exit(curl_error($ch));
-}
-
-curl_close($ch);
 $result = json_decode($result, true);
 
 /**
@@ -235,39 +246,44 @@ if (isset($result['security']['token'])) {
 /**
  * POST Request to server registration endpoint
  */
-$registerUrl = $protocol . '://' . $host;
+$registerUrl = $protocol . '://' . $host . '/' . $root;
 if (!empty($port)) {
     $registerUrl .= ':' . $port;
 }
 $registerUrl .= "/api/latest/platform/topology";
 
-$ch = curl_init($registerUrl);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-TOKEN: $APIToken"]);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+try {
+    $ch = curl_init($registerUrl);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-TOKEN: $APIToken"]);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-if (isset($opt['insecure'])) {
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-}
-
-if (isset($proxyInfo)) {
-    curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
-    curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
-    if (!empty($proxyInfo['username'])) {
-        curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    if (isset($opt['insecure'])) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
+
+    if (isset($proxyInfo)) {
+        curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
+        curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
+        if (!empty($proxyInfo['username'])) {
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+        }
+    }
+
+    $result = curl_exec($ch);
+
+    $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($result === false) {
+        throw new Exception(curl_error($ch));
+    }
+} catch (Exception $e) {
+    exit($e->getMessage());
+} finally {
+    curl_close($ch);
 }
 
-$result = curl_exec($ch);
-
-$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-if ($result === false) {
-    exit(curl_error($ch));
-}
-
-curl_close($ch);
 $result = json_decode($result, true);
 
 /**
@@ -277,7 +293,7 @@ if ($responseCode === 201) {
     $responseMessage = "The '$serverType' Platform: '$serverHostName@$address' linked to '$host' has been added";
     exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
 } elseif (isset($result['code'], $result['message'])) {
-    exit(formatResponseMessage($result['code'], $result['message'], 'success'));
+    exit(formatResponseMessage($result['code'], $result['message'], 'error'));
 } else {
     exit(formatResponseMessage(500, 'An error occured while contacting the API', 'error'));
 }
