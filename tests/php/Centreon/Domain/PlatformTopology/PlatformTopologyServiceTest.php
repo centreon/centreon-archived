@@ -48,6 +48,9 @@ class PlatformTopologyServiceTest extends TestCase
      */
     protected $platformTopologyRepository;
 
+    /**
+     * initiate query data
+     */
     protected function setUp()
     {
         $this->adminContact = (new Contact())
@@ -57,8 +60,8 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopology = (new PlatformTopology())
             ->setName('poller1')
-            ->setType('poller')
             ->setAddress('1.1.1.2')
+            ->setType('poller')
             ->setParentAddress('1.1.1.1');
 
         $this->platformTopologyRepository = $this->createMock(PlatformTopologyRepositoryInterface::class);
