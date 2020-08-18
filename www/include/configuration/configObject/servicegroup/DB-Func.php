@@ -135,7 +135,6 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
         $row["sg_id"] = null;
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
             $bindParams = [];
             foreach ($row as $key2 => $value2) {
                 switch ($key2) {
@@ -175,9 +174,6 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
                             : $bindParams[':sg_activate'] = [\PDO::PARAM_STR => "0"];
                         break;
                 }
-                $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "sg_id") {
                     $fields[$key2] = $value2;
                 }
@@ -186,21 +182,18 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
                 }
             }
             if (testServiceGroupExistence($sgName)) {
-                $val
-                    ? $query = "
+                if (!empty($bindParams)) {
+                    $statement = $pearDB->prepare("
                         INSERT INTO servicegroup
-                        VALUES (NULL, :sg_name, :sg_alias, :sg_comment, :geo_coords, :sg_activate)"
-                    : $query = null;
-                if ($query) {
-                    $statement = $pearDB->prepare($query);
+                        VALUES (NULL, :sg_name, :sg_alias, :sg_comment, :geo_coords, :sg_activate)
+                    ");
                     foreach ($bindParams as $token => $bindValues) {
                         foreach ($bindValues as $paramType => $value) {
                             $statement->bindValue($token, $value, $paramType);
                         }
                     }
+                    $statement->execute();
                 }
-                $statement->execute();
-
                 $dbResult = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
                 $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(sg_id)"])) {
