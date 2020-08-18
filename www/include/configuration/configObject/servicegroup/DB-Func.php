@@ -173,11 +173,10 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
                 }
             }
             if (testServiceGroupExistence($sgName)) {
-                $val
-                    ? $rq = "INSERT INTO servicegroup VALUES (" . $val . ")"
-                    : $rq = null;
-                $statement = $pearDB->prepare($rq);
-                $pearDB->execute($statement, $params);
+                if ($val) {
+                    $statement = $pearDB->prepare("INSERT INTO servicegroup VALUES (" . $val . ")");
+                    $pearDB->execute($statement, $params);
+                }
                 $DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(sg_id)"])) {
