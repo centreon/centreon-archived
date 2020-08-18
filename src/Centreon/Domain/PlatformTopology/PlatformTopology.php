@@ -109,6 +109,8 @@ class PlatformTopology
      */
     public function setType(?string $type): self
     {
+        $type = strtolower($type);
+
         // The API should not be used to add a Central to another Central
         if ('central' === $type) {
             throw new \InvalidArgumentException(
@@ -162,27 +164,21 @@ class PlatformTopology
     /**
      * Validate address consistency
      *
-     * @param string|null $address the address to be tested
+     * @param string $address the address to be tested
      *
      * @return string|null
      * @throws \InvalidArgumentException
      */
-    private function checkIpAddress(?string $address): ?string
+    private function checkIpAddress(string $address): ?string
     {
-        if ($address === null) {
-            return $address;
-        }
-
-        // Check for valid IPv4 or IPv6 IP
-        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
-            return $address;
-        }
-
-        // check for DNS to be resolved
-        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
+        // Check for valid IPv4, IPv6 or resolvable DNS
+        if (false === filter_var($address, FILTER_VALIDATE_IP)
+            && false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)
+        ) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    _("The address '%s' is not valid"),
+                    _("The address '%s' for '%s' is not valid"),
+                    $address,
                     $this->getName()
                 )
             );
