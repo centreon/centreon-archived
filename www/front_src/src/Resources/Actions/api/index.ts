@@ -1,21 +1,13 @@
-import axios, { AxiosResponse, CancelToken } from 'axios';
 import formatISO from 'date-fns/formatISO';
+import axios, { AxiosResponse, CancelToken } from 'axios';
 import { map, pick } from 'ramda';
 
-import { getData } from '@centreon/ui';
-
 import {
-  buildResourcesEndpoint,
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
 } from './endpoint';
-import { ResourceListing, Resource } from '../models';
-
-const listResources = (cancelToken) => (
-  endpointParams,
-): Promise<ResourceListing> =>
-  getData<ResourceListing>(cancelToken)(buildResourcesEndpoint(endpointParams));
+import { Resource } from '../../models';
 
 interface AcknowledgeParams {
   acknowledgeAttachedResources?: boolean;
@@ -101,10 +93,4 @@ const checkResources = ({
   );
 };
 
-export {
-  acknowledgeResources,
-  setDowntimeOnResources,
-  checkResources,
-  listResources,
-  getData,
-};
+export { acknowledgeResources, setDowntimeOnResources, checkResources };

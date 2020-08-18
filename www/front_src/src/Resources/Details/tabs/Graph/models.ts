@@ -2,16 +2,12 @@ import subHours from 'date-fns/subHours';
 import subDays from 'date-fns/subDays';
 import { find, propEq } from 'ramda';
 
-import {
-  timeFormat,
-  dateTimeFormat,
-  dateFormat,
-} from '../../../../Graph/format';
+import { timeFormat, dateTimeFormat, dateFormat } from '../../../Graph/format';
 import {
   labelLast24h,
   labelLast7Days,
   labelLast31Days,
-} from '../../../../translatedLabels';
+} from '../../../translatedLabels';
 
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
 

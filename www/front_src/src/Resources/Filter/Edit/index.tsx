@@ -53,7 +53,6 @@ const EditFiltersPanel = (): JSX.Element | null => {
   const classes = useStyles();
 
   const {
-    editPanelOpen,
     setEditPanelOpen,
     customFilters,
     setCustomFilters,
@@ -62,10 +61,6 @@ const EditFiltersPanel = (): JSX.Element | null => {
   const { sendRequest, sending } = useRequest({
     request: patchFilter,
   });
-
-  if (!editPanelOpen) {
-    return null;
-  }
 
   const closeEditPanel = (): void => {
     setEditPanelOpen(false);
@@ -139,7 +134,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
 
   const header = (
     <div className={classes.header}>
-      <Typography variant="h5" align="center">
+      <Typography variant="h6" align="center">
         {labelEditFilters}
       </Typography>
     </div>

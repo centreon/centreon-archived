@@ -6,7 +6,7 @@ import { useTheme, fade } from '@material-ui/core';
 
 import { Listing } from '@centreon/ui';
 
-import { detailsTabId, graphTabId } from '../Details/Body/tabs';
+import { detailsTabId, graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
 import {
   labelRowsPerPage,
