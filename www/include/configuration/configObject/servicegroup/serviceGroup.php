@@ -79,7 +79,7 @@ $sgString = implode(',', array_map('mywrap', array_keys($sgs)));
 switch ($o) {
     case "a":
         require_once($path . "formServiceGroup.php");
-        break; #Add a Servicegroup
+        break; //Add a Servicegroup
     case "w":
         require_once($path . "formServiceGroup.php");
         break; //Watch a Servicegroup

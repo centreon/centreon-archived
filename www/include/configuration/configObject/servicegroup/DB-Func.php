@@ -450,7 +450,7 @@ function updateServiceGroupServices($sgId, $ret = [], $increment = false)
 
     $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
 
-    if ($increment == false) {
+    if ($increment == false && $sgId !== false) {
         $statement = $pearDB->prepare("
             DELETE FROM servicegroup_relation
             WHERE servicegroup_sg_id = :sg_id
