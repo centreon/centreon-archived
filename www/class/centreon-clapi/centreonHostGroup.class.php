@@ -140,6 +140,77 @@ class CentreonHostGroup extends CentreonObject
         );
     }
 
+    /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'alias',
+            'comment',
+            'name',
+            'activate',
+            'notes',
+            'notes_url',
+            'action_url',
+            'icon_image',
+            'map_icon_image',
+            'geo_coords'
+        );
+        $unknownParam = array();
+
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $listParam = explode('|', $params[1]);
+            $exportedFields = [];
+            $resultString = "";
+            foreach ($listParam as $paramSearch) {
+                if (!$paramString) {
+                    $paramString = $paramSearch;
+                } else {
+                    $paramString = $paramString . $this->delim . $paramSearch;
+                }
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    switch ($paramSearch) {
+                        case "geo_coords":
+                            break;
+                        default:
+                            if (!preg_match("/^hg_/", $paramSearch)) {
+                                $field = "hg_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    
+                    $ret = $this->object->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+                    
+                    if (!isset($exportedFields[$paramSearch])) {
+                        $resultString .= $ret . $this->delim;
+                        $exportedFields[$paramSearch] = 1;
+                    }
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+        echo implode(';', array_unique(explode(';', $paramString))) . "\n";
+        echo substr($resultString, 0, -1) . "\n";
+    }
+
 
     /**
      * @param null $parameters
