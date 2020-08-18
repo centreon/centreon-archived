@@ -174,18 +174,18 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
             }
             if (testServiceGroupExistence($sgName)) {
                 if ($val) {
-                    $statement = $pearDB->prepare("INSERT INTO servicegroup VALUES (" . $val . ")");
-                    $pearDB->execute($statement, $params);
+                    $statement2 = $pearDB->prepare("INSERT INTO servicegroup VALUES (" . $val . ")");
+                    $pearDB->execute($statement2, $params);
                 }
                 $DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(sg_id)"])) {
                     $sgAcl[$maxId["MAX(sg_id)"]] = $key;
                     $DBRESULT->free();
-                    $statement = $pearDB->prepare("
+                    $statement3 = $pearDB->prepare("
                         SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id
                         FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = ?");
-                    $result = $pearDB->execute($statement, array($sgId));
+                    $result = $pearDB->execute($statement3, array($sgId));
                     $fields["sg_hgServices"] = "";
                     while ($service = $result->fetchRow()) {
                         $params = array();
@@ -212,12 +212,12 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
                             }
                         }
                         $params[] = $maxId["MAX(sg_id)"];
-                        $statement = $pearDB->prepare("
+                        $statement4 = $pearDB->prepare("
                             INSERT INTO servicegroup_relation
                             (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id)
                             VALUES (?, ?, ?, ?)
                         ");
-                        $pearDB->execute($statement, $params);
+                        $pearDB->execute($statement4, $params);
                         $fields["sg_hgServices"] .= $service["service_service_id"] . ",";
                     }
                     $fields["sg_hgServices"] = trim($fields["sg_hgServices"], ",");
