@@ -50,6 +50,8 @@ require_once "Centreon/Object/Host/Group.php";
 require_once "Centreon/Object/Host/Host.php";
 require_once "Centreon/Object/Host/Macro/Custom.php";
 require_once "Centreon/Object/Service/Service.php";
+require_once "Centreon/Object/Service/Group.php";
+require_once "Centreon/Object/Service/Category.php";
 require_once "Centreon/Object/Service/Macro/Custom.php";
 require_once "Centreon/Object/Service/Extended.php";
 require_once "Centreon/Object/Contact/Contact.php";
@@ -62,6 +64,7 @@ require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Service.php";
 require_once "Centreon/Object/Relation/Trap/Service.php";
 require_once "Centreon/Object/Relation/Service/Category/Service.php";
+require_once "Centreon/Object/Relation/Service/Group/Service.php";
 
 /**
  * Centreon Service objects
@@ -258,7 +261,14 @@ class CentreonService extends CentreonObject
     {
         $filters = array('service_register' => $this->register);
         if (isset($parameters)) {
-            $filters["service_description"] = "%" . $parameters . "%";
+            $params = explode($this->delim, $parameters);
+            if (count($params) == 2) {
+                $filters["host_name"] = "%" . $params[0] . "%";
+                $filters["service_description"] = "%" . $params[1] . "%";
+            }
+            else {
+                $filters["service_description"] = "%" . $parameters . "%";
+            }
         }
         $commandObject = new \Centreon_Object_Command($this->dependencyInjector);
         $paramsHost = array('host_id', 'host_name');
@@ -420,6 +430,184 @@ class CentreonService extends CentreonObject
 
         $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $extended->insert(array($extended->getUniqueLabelField() => $serviceId));
+    }
+
+    /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'activate',
+            'description',
+            'template',
+            'is_volatile',
+            'check_period',
+            'check_command',
+            'check_command_arguments',
+            'max_check_attempts',
+            'normal_check_interval',
+            'retry_check_interval',
+            'active_checks_enabled',
+            'passive_checks_enabled',
+            'notifications_enabled',
+            'contact_additive_inheritance',
+            'cg_additive_inheritance',
+            'notification_interval',
+            'notification_period',
+            'notification_options',
+            'first_notification_delay',
+            'obsess_over_service',
+            'check_freshness',
+            'freshness_threshold',
+            'event_handler_enabled',
+            'flap_detection_enabled',
+            'retain_status_information',
+            'retain_nonstatus_information',
+            'event_handler',
+            'event_handler_arguments',
+            'notes',
+            'notes_url',
+            'action_url',
+            'icon_image',
+            'icon_image_alt',
+            'comment'
+        );
+        $unknownParam = array();
+
+        $hostName = $params[0];
+        $serviceDesc = $params[1];
+        $relObject = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
+        $elements = $relObject->getMergedParameters(
+            array("host_id"),
+            array("service_id"),
+            -1,
+            0,
+            null,
+            null,
+            array(
+                "host_name" => $hostName,
+                "service_description" => $serviceDesc
+            ),
+            "AND"
+        );
+        if (!count($elements)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDesc);
+        }
+        $objectId = $elements[0]['service_id'];
+        $listParam = explode('|', $params[2]);
+        $exportedFields = [];
+        $resultString = "";
+        foreach ($listParam as $paramSearch) {
+            if (!$paramString) {
+                $paramString = $paramSearch;
+            } else {
+                $paramString = $paramString . $this->delim . $paramSearch;
+            }
+            $field = $paramSearch;
+            if (!in_array($field, $authorizeParam)) {
+                $unknownParam[] = $field;
+            } else {
+                $extended = false;
+                switch ($paramSearch) {
+                    case "check_command":
+                        $field = "command_command_id";
+                        break;
+                    case "check_command_arguments":
+                        $field = "command_command_id_arg";
+                        break;
+                    case "event_handler":
+                        $field = "command_command_id2";
+                        break;
+                    case "event_handler_arguments":
+                        $field = "command_command_id_arg2";
+                        break;
+                    case "check_period":
+                        $field = "timeperiod_tp_id";
+                        break;
+                    case "notification_period":
+                        $field = "timeperiod_tp_id2";
+                        break;
+                    case "template":
+                        $field = "service_template_model_stm_id";
+                        break;
+                    case "contact_additive_inheritance":
+                    case "cg_additive_inheritance":
+                    case "geo_coords":
+                        break;
+                    case "notes":
+                        $extended = true;
+                        break;
+                    case "notes_url":
+                        $extended = true;
+                        break;
+                    case "action_url":
+                        $extended = true;
+                        break;
+                    case "icon_image":
+                        $extended = true;
+                        break;
+                    case "icon_image_alt":
+                        $extended = true;
+                        break;
+                    default:
+                        if (!preg_match("/^service_/", $paramSearch)) {
+                            $field = "service_" . $paramSearch;
+                        }
+                        break;
+                }
+
+                if (!$extended) {
+                    $ret = $this->object->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+                } else {
+                    $field = "esi_" . $field;
+                    $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
+                    $ret = $extended->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+                }
+
+                switch ($paramSearch) {
+                    case "check_command":
+                    case "event_handler":
+                        $commandObject = new CentreonCommand($this->dependencyInjector);
+                        $field = $commandObject->object->getUniqueLabelField();
+                        $ret = $commandObject->object->getParameters($ret, $field);
+                        $ret = $ret[$field];
+                        break;
+                    case "check_period":
+                    case "notification_period":
+                        $tpObj = new CentreonTimePeriod($this->dependencyInjector);
+                        $field = $tpObj->object->getUniqueLabelField();
+                        $ret = $tpObj->object->getParameters($ret, $field);
+                        $ret = $ret[$field];
+                        break;
+                    case "template":
+                        $tplObj = new CentreonServiceTemplate($this->dependencyInjector);
+                        $field = $tplObj->object->getUniqueLabelField();
+                        $ret = $tplObj->object->getParameters($ret, $field);
+                        $ret = $ret[$field];
+                        break;
+                }
+                if (!isset($exportedFields[$paramSearch])) {
+                    $resultString .= $ret . $this->delim;
+                    $exportedFields[$paramSearch] = 1;
+                }
+            }
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+        echo implode(';', array_unique(explode(';', $paramString))) . "\n";
+        echo substr($resultString, 0, -1) . "\n";
     }
 
     /**
@@ -973,6 +1161,14 @@ class CentreonService extends CentreonObject
                     $class = "Centreon_Object_Trap";
                     $relclass = "Centreon_Object_Relation_Trap_Service";
                     break;
+                case "servicegroup":
+                    $class = "Centreon_Object_Service_Group";
+                    $relclass = "Centreon_Object_Relation_Service_Group_Service";
+                    break;
+                case "category":
+                    $class = "Centreon_Object_Service_Category";
+                    $relclass = "Centreon_Object_Relation_Service_Category_Service";
+                    break;
                 default:
                     throw new CentreonClapiException(self::UNKNOWN_METHOD);
                     break;
@@ -1001,6 +1197,7 @@ class CentreonService extends CentreonObject
                     throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0] . "/" . $args[1]);
                 }
                 $serviceId = $elements[0]['service_id'];
+                $hostId = $elements[0]['host_id'];
 
                 $relobj = new $relclass($this->dependencyInjector);
                 $obj = new $class($this->dependencyInjector);
@@ -1052,7 +1249,11 @@ class CentreonService extends CentreonObject
                             $relobj->delete($relationId, $serviceId);
                         } elseif ($matches[1] == "set" || $matches[1] == "add") {
                             if (!in_array($relationId, $existingRelationIds)) {
-                                $relobj->insert($relationId, $serviceId);
+                                if ($matches[2] == "servicegroup") {
+                                    $relobj->insert($relationId, array("hostId" => $hostId, "serviceId" => $serviceId));
+                                } else {
+                                    $relobj->insert($relationId, $serviceId);
+                                }
                             }
                         }
                     }
