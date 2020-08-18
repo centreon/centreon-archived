@@ -106,7 +106,7 @@ function enableHostCategoriesInDB(int $hcId = null, $hcArr = [])
         $statement->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement->execute();
 
-        $statement2->bindValue(':hc_id', $key, \PDO::PARAM_INT);
+        $statement2->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement2->execute();
         $row = $statement2->fetch();
         $centreon->CentreonLogAction->insertLog("hostcategories", $key, $row['hc_name'], "enable");
