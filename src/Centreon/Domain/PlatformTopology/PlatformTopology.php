@@ -172,7 +172,8 @@ class PlatformTopology
     private function checkIpAddress(string $address): ?string
     {
         // Check for valid IPv4, IPv6 or resolvable DNS
-        if (false === filter_var($address, FILTER_VALIDATE_IP)
+        if (
+            false === filter_var($address, FILTER_VALIDATE_IP)
             && false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)
         ) {
             throw new \InvalidArgumentException(
