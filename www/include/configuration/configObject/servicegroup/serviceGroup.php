@@ -82,26 +82,26 @@ switch ($o) {
         break; #Add a Servicegroup
     case "w":
         require_once($path . "formServiceGroup.php");
-        break; #Watch a Servicegroup
+        break; //Watch a Servicegroup
     case "c":
         require_once($path . "formServiceGroup.php");
-        break; #Modify a Servicegroup
+        break; //Modify a Servicegroup
     case "s":
         enableServiceGroupInDB($sg_id);
         require_once($path . "listServiceGroup.php");
-        break; #Activate a Servicegroup
+        break; //Activate a Servicegroup
     case "u":
         disableServiceGroupInDB($sg_id);
         require_once($path . "listServiceGroup.php");
-        break; #Desactivate a Servicegroup
+        break; //Desactivate a Servicegroup
     case "m":
         multipleServiceGroupInDB(isset($select) ? $select : [], $dupNbr);
         require_once($path . "listServiceGroup.php");
-        break; #Duplicate n Service grou
+        break; //Duplicate n Service grou
     case "d":
         deleteServiceGroupInDB(isset($select) ? $select : []);
         require_once($path . "listServiceGroup.php");
-        break; #Delete n Service group
+        break; //Delete n Service group
     default:
         require_once($path . "listServiceGroup.php");
         break;
