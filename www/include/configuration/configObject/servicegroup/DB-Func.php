@@ -452,6 +452,9 @@ function updateServiceGroupServices($sgId, $ret = array(), $increment = false)
     updateServicegroupRelations($statement, $statement2, $retTmp, $sgId);
 }
 
+/**
+ * Avoid code repetition in updateServiceGroupServices
+ */
 function updateServicegroupRelations($statement, $statement2, $retTmp, $sgId)
 {
     global $pearDB;
