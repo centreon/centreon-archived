@@ -166,10 +166,10 @@ class PlatformTopology
      *
      * @param string $address the address to be tested
      *
-     * @return string|null
+     * @return string
      * @throws \InvalidArgumentException
      */
-    private function checkIpAddress(string $address): ?string
+    private function checkIpAddress(string $address): string
     {
         // Check for valid IPv4, IPv6 or resolvable DNS
         if (
