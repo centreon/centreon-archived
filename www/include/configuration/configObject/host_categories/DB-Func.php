@@ -210,9 +210,10 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
             }
             $fields["hc_name"] = $hc_name;
             if (testHostCategorieExistence($hc_name)) {
-                $val ? $rq = "INSERT INTO hostcategories VALUES (" . $val . ")" : $rq = null;
-                $statement = $pearDB->prepare($rq);
-                $pearDB->execute($statement, $params);
+                if ($val) {
+                    $statement = $pearDB->prepare("INSERT INTO hostcategories VALUES (" . $val . ")");
+                    $pearDB->execute($statement, $params);
+                }
                 $DBRESULT = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(hc_id)"]) && !$level) {
