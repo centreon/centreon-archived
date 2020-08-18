@@ -81,10 +81,31 @@ function disableMetaServiceInDB($meta_id = null)
     $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '" . $meta_id . "'");
 }
 
+/**
+ * @param int $serviceId
+ */
+function removeRelationLastMetaServiceDependency(int $serviceId): void
+{
+    global $pearDB;
+
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_metaserviceParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_metaserviceParent_relation 
+                                         WHERE meta_service_meta_id =  ' . $serviceId . ')';
+    $dbResult = $pearDB->query($query);
+    $result = $dbResult->fetch();
+
+    //is last parent
+    if ($result['nb_dependency'] == 1) {
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
+    }
+}
+
 function deleteMetaServiceInDB($metas = array())
 {
     global $pearDB;
     foreach ($metas as $key => $value) {
+        removeRelationLastMetaServiceDependency((int)$key);
         $pearDB->query("DELETE FROM meta_service WHERE meta_id = '" . $pearDB->escape($key) . "'");
         $query = "DELETE FROM service WHERE service_description = 'meta_" .
             $pearDB->escape($key) . "' AND service_register = '2'";
