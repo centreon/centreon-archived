@@ -207,7 +207,6 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
                     $statement->execute();
                     $fields["sg_hgServices"] = "";
                     while ($service = $statement->fetch()) {
-                        $val = null;
                         $bindParams = [];
                         foreach ($service as $key2 => $value2) {
                             switch ($key2) {
@@ -231,9 +230,6 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
                                     break;
                             }
                             $bindParams[':servicegroup_sg_id'] = [\PDO::PARAM_INT => $maxId["MAX(sg_id)"]];
-                            $val
-                                ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                                : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                         }
                         $statement2 = $pearDB->prepare("
                             INSERT INTO servicegroup_relation
