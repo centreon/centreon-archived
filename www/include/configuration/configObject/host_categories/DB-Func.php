@@ -86,26 +86,26 @@ function shouldNotBeEqTo0($value)
     }
 }
 
-function enableHostCategoriesInDB(int $hcId = null, $hc_arr = [])
+function enableHostCategoriesInDB(int $hcId = null, $hcArr = [])
 {
     global $pearDB, $centreon;
 
-    if (!$hcId && !count($hc_arr)) {
+    if (!$hcId && !count($hcArr)) {
         return;
     }
 
     if ($hcId) {
-        $hc_arr = [$hcId => "1"];
+        $hcArr = [$hcId => "1"];
     }
 
-    foreach (array_keys($hc_arr) as $key) {
+    $statement = $pearDB->prepare("UPDATE hostcategories SET hc_activate = '1' WHERE hc_id = :hc_id");
+    $statement2 = $pearDB->prepare("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = :hc_id LIMIT 1");
+    foreach (array_keys($hcArr) as $key) {
         $hcId = filter_var($key, FILTER_VALIDATE_INT);
 
-        $statement = $pearDB->prepare("UPDATE hostcategories SET hc_activate = '1' WHERE hc_id = :hc_id");
         $statement->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement->execute();
 
-        $statement2 = $pearDB->prepare("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = :hc_id LIMIT 1");
         $statement2->bindValue(':hc_id', $key, \PDO::PARAM_INT);
         $statement2->execute();
         $row = $statement2->fetch();
@@ -113,24 +113,25 @@ function enableHostCategoriesInDB(int $hcId = null, $hc_arr = [])
     }
 }
 
-function disableHostCategoriesInDB(int $hcId = null, $hc_arr = [])
+function disableHostCategoriesInDB(int $hcId = null, $hcArr = [])
 {
     global $pearDB, $centreon;
 
-    if (!$hcId && !count($hc_arr)) {
+    if (!$hcId && !count($hcArr)) {
         return;
     }
     if ($hcId) {
-        $hc_arr = [$hcId => "1"];
+        $hcArr = [$hcId => "1"];
     }
-    foreach (array_keys($hc_arr) as $key) {
+
+    $statement = $pearDB->prepare("UPDATE hostcategories SET hc_activate = '0' WHERE hc_id = :hc_id");
+    $statement2 = $pearDB->prepare("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = :hc_id LIMIT 1");
+    foreach (array_keys($hcArr) as $key) {
         $hcId = filter_var($key, FILTER_VALIDATE_INT);
 
-        $statement = $pearDB->prepare("UPDATE hostcategories SET hc_activate = '0' WHERE hc_id = :hc_id");
         $statement->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement->execute();
 
-        $statement2 = $pearDB->prepare("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = :hc_id LIMIT 1");
         $statement2->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement2->execute();
         $row = $statement2->fetch();
@@ -142,14 +143,15 @@ function deleteHostCategoriesInDB($hostCategories = [])
 {
     global $pearDB, $centreon;
 
+    $statement = $pearDB->prepare("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = :hc_id LIMIT 1");
+    $statement2 = $pearDB->prepare("DELETE FROM hostcategories WHERE hc_id = :hc_id");
     foreach (array_keys($hostCategories) as $key) {
         $hcId = filter_var($key, FILTER_VALIDATE_INT);
-        $statement = $pearDB->prepare("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = :hc_id LIMIT 1");
+
         $statement->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetch();
 
-        $statement2 = $pearDB->prepare("DELETE FROM hostcategories WHERE hc_id = :hc_id");
         $statement2->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement2->execute();
         $centreon->CentreonLogAction->insertLog("hostcategories", $hcId, $row['hc_name'], "d");
@@ -162,15 +164,14 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
     global $pearDB, $centreon;
 
     $hcAcl = [];
+    $statement = $pearDB->prepare("SELECT * FROM hostcategories WHERE hc_id = :hc_id LIMIT 1");
     foreach (array_keys($hostCategories) as $key) {
         $hcId = filter_var($key, FILTER_VALIDATE_INT);
-        $statement = $pearDB->prepare("SELECT * FROM hostcategories WHERE hc_id = :hc_id LIMIT 1");
         $statement->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
         $statement->execute();
         $row = $statement->fetch();
         $row["hc_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
             $level = false;
             $bindParams = [];
             foreach ($row as $key2 => $value2) {
@@ -220,25 +221,22 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
                 if ($key2 != "hc_id") {
                     $fields[$key2] = $value2;
                 }
-                $val
-                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
-                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
             $fields["hc_name"] = $hc_name;
             if (testHostCategorieExistence($hc_name)) {
-                $val
+                !empty($bindParams)
                     ? $query = "
                         INSERT INTO hostcategories
                         VALUES (NULL, :hc_name, :hc_alias, :level, :icon_id, :hc_comment, :hc_activate)"
                     : $query = null;
                 if($query) {
-                    $statement = $pearDB->prepare($query);
+                    $statement2 = $pearDB->prepare($query);
                     foreach ($bindParams as $token => $bindValues) {
                         foreach ($bindValues as $paramType => $value) {
-                            $statement->bindValue($token, $value, $paramType);
+                            $statement2->bindValue($token, $value, $paramType);
                         }
                     }
-                    $statement->execute();
+                    $statement2->execute();
                 }
                 $dbResult = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
                 $maxId = $dbResult->fetch();
@@ -246,14 +244,14 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
                 if (isset($maxId["MAX(hc_id)"]) && !$level) {
                     $hcAcl[$maxId["MAX(hc_id)"]] = $hcId;
 
-                    $statement = $pearDB->prepare("
+                    $statement3 = $pearDB->prepare("
                         SELECT DISTINCT hgr.host_host_id FROM hostcategories_relation hgr
                         WHERE hgr.hostcategories_hc_id = :hc_id
                     ");
-                    $statement->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
-                    $statement->execute();
+                    $statement3->bindValue(':hc_id', $hcId, \PDO::PARAM_INT);
+                    $statement3->execute();
                     $fields["hc_hosts"] = "";
-                    while ($host = $statement->fetch()) {
+                    while ($host = $statement3->fetch()) {
                         $query = "INSERT INTO hostcategories_relation VALUES ('" . $maxId["MAX(hc_id)"] .
                             "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
