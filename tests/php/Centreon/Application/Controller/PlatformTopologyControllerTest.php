@@ -51,8 +51,8 @@ class PlatformTopologyControllerTest extends TestCase
     {
         $goodJsonPlatformTopology = [
             'name' => 'poller1',
-            'type' => 'poller',
             'address' => '1.1.1.2',
+            'type' => 'poller',
             'parent_address' => '1.1.1.1'
         ];
 
@@ -60,8 +60,8 @@ class PlatformTopologyControllerTest extends TestCase
 
         $this->platformTopology = (new PlatformTopology())
             ->setName($goodJsonPlatformTopology['name'])
-            ->setType($goodJsonPlatformTopology['type'])
             ->setAddress($goodJsonPlatformTopology['address'])
+            ->setType($goodJsonPlatformTopology['type'])
             ->setParentAddress($goodJsonPlatformTopology['parent_address']);
 
         $this->badJsonPlatformTopology = json_encode([
