@@ -231,7 +231,7 @@ function multipleHostCategoriesInDB($hostCategories = [], $nbrDup = [])
                         INSERT INTO hostcategories
                         VALUES (NULL, :hc_name, :hc_alias, :level, :icon_id, :hc_comment, :hc_activate)"
                     : $query = null;
-                if($query) {
+                if ($query) {
                     $statement = $pearDB->prepare($query);
                     foreach ($bindParams as $token => $bindValues) {
                         foreach ($bindValues as $paramType => $value) {
