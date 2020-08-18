@@ -263,9 +263,6 @@ function insertHostCategories($ret = array())
         $ret = $form->getSubmitValues();
     }
     $params = array();
-    echo '<pre>';
-    var_dump($ret);
-    echo '</pre>';
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'hc_name':
@@ -300,9 +297,6 @@ function insertHostCategories($ret = array())
                 break;
         }
     }
-    echo '<pre>';
-    var_dump($params);
-    echo '</pre>';
     $query = "
         INSERT INTO hostcategories
         (hc_name, hc_alias, level, icon_id, hc_activate, hc_comment)
@@ -411,9 +405,6 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
     $statement = $pearDB->prepare("DELETE FROM hostcategories_relation WHERE hostcategories_hc_id = ? ");
     $pearDB->execute($statement, array($hcId));
     $ret = isset($ret["hc_hosts"]) ? $ret["hc_hosts"] : CentreonUtils::mergeWithInitialValues($form, 'hc_hosts');
-    echo '<pre>';
-    var_dump($ret);
-    echo '</pre>';
     $hgNEW = array();
 
     $rq = "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id) VALUES ";
@@ -427,7 +418,6 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
 
         $hostsNEW[$ret[$i]] = $ret[$i];
     }
-    var_dump($i);
     if ($i != 0) {
         $statement2 = $pearDB->prepare($rq);
         $pearDB->execute($statement2, $params);
