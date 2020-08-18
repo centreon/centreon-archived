@@ -64,7 +64,7 @@ $path = "./include/configuration/configObject/servicegroup/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -79,37 +79,37 @@ $sgs = $acl->getServiceGroupAclConf(null, 'broker');
 
 function mywrap($el)
 {
-    return "'".$el."'";
+    return "'" . $el . "'";
 }
 $sgString = implode(',', array_map('mywrap', array_keys($sgs)));
 
 switch ($o) {
     case "a":
-        require_once($path."formServiceGroup.php");
-        break; #Add a Servicegroup
+        require_once($path . "formServiceGroup.php");
+        break; //Add a Servicegroup
     case "w":
-        require_once($path."formServiceGroup.php");
-        break; #Watch a Servicegroup
+        require_once($path . "formServiceGroup.php");
+        break; //Watch a Servicegroup
     case "c":
-        require_once($path."formServiceGroup.php");
-        break; #Modify a Servicegroup
+        require_once($path . "formServiceGroup.php");
+        break; //Modify a Servicegroup
     case "s":
         enableServiceGroupInDB($sg_id);
-        require_once($path."listServiceGroup.php");
-        break; #Activate a Servicegroup
+        require_once($path . "listServiceGroup.php");
+        break; //Activate a Servicegroup
     case "u":
         disableServiceGroupInDB($sg_id);
-        require_once($path."listServiceGroup.php");
-        break; #Desactivate a Servicegroup
+        require_once($path . "listServiceGroup.php");
+        break; //Desactivate a Servicegroup
     case "m":
         multipleServiceGroupInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listServiceGroup.php");
-        break; #Duplicate n Service grou
+        require_once($path . "listServiceGroup.php");
+        break; //Duplicate n Service grou
     case "d":
         deleteServiceGroupInDB(isset($select) ? $select : array());
-        require_once($path."listServiceGroup.php");
-        break; #Delete n Service group
+        require_once($path . "listServiceGroup.php");
+        break; //Delete n Service group
     default:
-        require_once($path."listServiceGroup.php");
+        require_once($path . "listServiceGroup.php");
         break;
 }
