@@ -146,11 +146,11 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
                             : $params[] =  null;
                         break;
                     case 'sg_activate':
-                        $value2 = filter_var($value2, FILTER_VALIDATE_REGEXP, [
-                            "options" => [
+                        $value2 = filter_var($value2, FILTER_VALIDATE_REGEXP, array(
+                            "options" => array (
                                 "regexp" => "/^0|1$/"
-                            ]
-                        ]);
+                            )
+                        ));
                         $value2
                             ? $params[] = $value2
                             : $params[] = "0";
@@ -283,11 +283,11 @@ function insertServiceGroup($ret = array())
                     : $params[] = null;
                 break;
             case 'sg_activate':
-                $value = filter_var($value['sg_activate'], FILTER_VALIDATE_REGEXP, [
-                    "options" => [
+                $value = filter_var($value['sg_activate'], FILTER_VALIDATE_REGEXP, array(
+                    "options" => array(
                         "regexp" => "/^0|1$/"
-                    ]
-                ]);
+                    )
+                ));
                 $value
                     ? $params[] = $value
                     : $params[] = "0";
@@ -352,11 +352,11 @@ function updateServiceGroup($sgId, $ret = array())
                     : $params[] = null;
                 break;
             case 'sg_activate':
-                $value = filter_var($value['sg_activate'], FILTER_VALIDATE_REGEXP, [
-                    "options" => [
+                $value = filter_var($value['sg_activate'], FILTER_VALIDATE_REGEXP, array(
+                    "options" => array(
                         "regexp" => "/^0|1$/"
-                    ]
-                ]);
+                    )
+                ));
                 $value
                     ? $params[] = $value
                     : $params[] = "0";
