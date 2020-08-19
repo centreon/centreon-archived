@@ -515,7 +515,7 @@ class CentreonUtils
      * @param $coords -90.0,180.0
      * @return bool
      */
-    public static function validateGeoCoords($coords): bool
+    public static function validateGeoCoords($coords)
     {
         if (
             preg_match(
