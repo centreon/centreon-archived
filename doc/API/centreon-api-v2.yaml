@@ -724,36 +724,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/hostgroups:
-        get:
-          tags:
-            - Host Group
-          summary: "List all host groups by host id"
-          description: |
-            List all the host groups in real-time monitoring by host id
-          parameters:
-            - $ref: '#/components/parameters/HostId'
-            - $ref: '#/components/parameters/Limit'
-            - $ref: '#/components/parameters/Page'
-            - $ref: '#/components/parameters/SortBy'
-          responses:
-            '200':
-              description: "OK"
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      result:
-                        type: array
-                        items:
-                          allOf:
-                            - $ref: '#/components/schemas/Monitoring.HostGroup'
-                      meta:
-                        $ref: '#/components/schemas/Meta'
-            '403':
-              $ref: '#/components/responses/Forbidden'
-            '500':
-              $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Host Group
+      summary: "List all host groups by host id"
+      description: |
+        List all the host groups in real-time monitoring by host id
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hostgroups:
     get:
       tags:
@@ -2354,7 +2354,7 @@ paths:
       tags:
         - Topology
       summary: "Register to platform topology"
-      description: "Add a server to the platform topology"
+      description: "Register a server to the platform topology"
       requestBody:
         required: true
         content:
@@ -2366,6 +2366,18 @@ paths:
           description: "OK"
         '409':
           description: "Conflict. More details are specified in the response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int64
+                    example: 409
+                  message:
+                    type: string
+                    example: "A platform using the name : 'myPoller' or address : '1.1.1.2' already exists"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2629,50 +2641,6 @@ components:
         type: integer
         format: int64
         example: 1
-    ServerAddress:
-      in: query
-      name: address
-      required: true
-      schema:
-        type: string
-        example: "1.1.1.2"
-      description: "Address of the server. IPv4, IPv6 or DNS"
-    ServerName:
-      in: query
-      name: name
-      required: true
-      schema:
-        type: string
-        example: "my_poller"
-      description: "Name of the server"
-    ServerType:
-      in: query
-      name: type
-      required: true
-      schema:
-        type: string
-        minimum: 1
-        default: 1
-        maximum: 4
-        example: 1
-      description: >
-        Type of the server value
-
-        Available Server types :
-          * '1' → Poller
-          * '2' → Remote
-          * '3' → MAP
-          * '4' → MBI
-    ServerParentAddress:
-      in: query
-      name: parent_address
-      description: >
-        Name of the parent of the server. Used when a poller is behind a remote
-        Default value is the Central on which the API is computed
-      required: false
-      schema:
-        type: string
-        example: "1.1.1.1"
   responses:
     Unauthorized:
       description: "Unauthorized"
@@ -2970,11 +2938,11 @@ components:
               - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
               - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Disacknowledge.Bulk:
-        type: array
-        items:
-          allOf:
-            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Host:
       type: object
       nullable: true
@@ -4156,11 +4124,17 @@ components:
         type:
           type: string
           enum: [central, poller, remote, map, mbi]
-          description: "Type of the server"
           example: "poller"
+          description: >
+            Type of the server from available Server types :
+              * 'Central'
+              * 'Poller'
+              * 'Remote'
+              * 'MAP'
+              * 'MBI'
         address:
           type: string
-          description: "Address of the server. Either IPv4, IPv6 or DNS"
+          description: "Address of the server. IPv4, IPv6 or DNS"
           example: "1.1.1.2"
         parent_address:
           type: string
