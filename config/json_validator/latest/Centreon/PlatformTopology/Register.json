@@ -15,7 +15,7 @@
       "type": "string"
     },
     "parent_address": {
-      "type": ["string", "null"]
+      "type": "string"
     }
   }
 }

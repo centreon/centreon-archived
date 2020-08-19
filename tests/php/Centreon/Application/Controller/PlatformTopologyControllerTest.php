@@ -143,7 +143,7 @@ class PlatformTopologyControllerTest extends TestCase
     }
 
     /**
-     * test addPlatformToTopology which succed
+     * test addPlatformToTopology which succeed
      */
     public function testAddPlatformToTopologySuccess()
     {
