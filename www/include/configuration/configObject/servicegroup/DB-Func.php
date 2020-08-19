@@ -154,12 +154,7 @@ function multipleServiceGroupInDB($serviceGroups = [], $nbrDup = [])
                             : $bindParams[':sg_comment'] = [\PDO::PARAM_NULL => null];
                         break;
                     case 'geo_coords':
-                        $value2 = filter_var($value2, FILTER_VALIDATE_REGEXP, [
-                            "options" => [
-                                "regexp" => "/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/"
-                            ]
-                        ]);
-                        $value2
+                        centreonUtils::validateGeoCoords($value2)
                             ? $bindParams[':geo_coords'] = [\PDO::PARAM_STR => $value2]
                             : $bindParams[':geo_coords'] = [\PDO::PARAM_NULL => null];
                         break;
@@ -306,12 +301,7 @@ function insertServiceGroup($ret = [])
                     : $bindParams[':sg_comment'] = [\PDO::PARAM_NULL => null];
                 break;
             case 'geo_coords':
-                $value = filter_var($value, FILTER_VALIDATE_REGEXP, [
-                    "options" => [
-                        "regexp" => "/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/"
-                    ]
-                ]);
-                $value
+                centreonUtils::validateGeoCoords($value)
                     ? $bindParams[':geo_coords'] = [\PDO::PARAM_STR => $value]
                     : $bindParams[':geo_coords'] = [\PDO::PARAM_NULL => null];
                 break;
@@ -388,12 +378,7 @@ function updateServiceGroup($sgId, $ret = [])
                     : $bindParams[':sg_comment'] = [\PDO::PARAM_NULL => null];
                 break;
             case 'geo_coords':
-                $value = filter_var($value, FILTER_VALIDATE_REGEXP, [
-                    "options" => [
-                        "regexp" => "/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/"
-                    ]
-                ]);
-                $value
+                centreonUtils::validateGeoCoords($value)
                     ? $bindParams[':geo_coords'] = [\PDO::PARAM_STR => $value]
                     : $bindParams[':geo_coords'] = [\PDO::PARAM_NULL => null];
                 break;
