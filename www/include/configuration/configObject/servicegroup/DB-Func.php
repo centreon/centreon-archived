@@ -141,12 +141,7 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
                             : $params[] = null;
                         break;
                     case 'geo_coords':
-                        $value2 = filter_var($value2, FILTER_VALIDATE_REGEXP, [
-                            "options" => [
-                                "regexp" => "/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/"
-                            ]
-                        ]);
-                        $value2
+                        centreonUtils::validateGeoCoords($value2)
                             ? $params[] = $value2
                             : $params[] =  null;
                         break;
@@ -283,12 +278,7 @@ function insertServiceGroup($ret = array())
                     : $params[] = null;
                 break;
             case 'geo_coords':
-                $value = filter_var($value, FILTER_VALIDATE_REGEXP, [
-                    "options" => [
-                        "regexp" => "/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/"
-                    ]
-                ]);
-                $value
+                centreonUtils::validateGeoCoords($value)
                     ? $params[] = $value
                     : $params[] = null;
                 break;
@@ -357,12 +347,7 @@ function updateServiceGroup($sgId, $ret = array())
                     : $params[] = null;
                 break;
             case 'geo_coords':
-                $value = filter_var($value, FILTER_VALIDATE_REGEXP, [
-                    "options" => [
-                        "regexp" => "/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/"
-                    ]
-                ]);
-                $value
+                centreonUtils::validateGeoCoords($value2)
                     ? $params[] = $value
                     : $params[] = null;
                 break;
@@ -427,6 +412,7 @@ function updateServiceGroupServices($sgId, $ret = array(), $increment = false)
     ");
 
     updateServicegroupRelations($statement, $statement2, $retTmp, $sgId);
+
     /* regular services */
     $retTmp = isset($ret["sg_hServices"])
         ? $ret["sg_hServices"]
