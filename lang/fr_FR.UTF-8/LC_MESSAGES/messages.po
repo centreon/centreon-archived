@@ -15500,8 +15500,8 @@ msgstr "Aucune plateforme parente n'a été trouvée pour : '%s'@'%s'"
 msgid "Error when adding in topology the platform : '%s'@'%s'"
 msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
 
-msgid "Cannot set parent address to a central server"
-msgstr "Il n'est pas possible d'assigner une adresse parente à un serveur central"
+msgid "Cannot use parent address on a Central server type"
+msgstr "Il n'est pas possible d'utiliser l'adresse d'un parent au type de serveur Central"
 
 msgid "Cannot set parent id to a central server"
 msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"

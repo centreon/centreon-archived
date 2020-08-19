@@ -228,7 +228,7 @@ class PlatformTopology
     public function setParentAddress(?string $parentAddress): self
     {
         if ($this->getType() === static::TYPE_CENTRAL && $parentAddress !== null) {
-            throw new \InvalidArgumentException(_("Cannot set parent address to a central server"));
+            throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
         }
         $this->parentAddress = $this->checkIpAddress($parentAddress);
         return $this;
