@@ -1,7 +1,7 @@
 Feature:
     In order to platforms
     As a user
-    I want to register a platform to the Central
+    I want to register a platform to the Central server
 
     Background:
         Given a running instance of Centreon Web API
@@ -9,53 +9,39 @@ Feature:
 
     Scenario: register a poller
         Given I am logged in
-        # trying to register a server
-        # Should be successful
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/beta/platform/topology' with body:
     """
     {
         "name": "my poller",
-        "type": "poller",
-        "address": "1.1.1.2",
-        "parent_address": "1.1.1.1"
+        "type": "Poller",
+        "address": "1.1.1.1"
+        "parent_address": "1.1.1.10"
     }
     """
         Then the response code should be "201"
 
-        # trying to register a server using type non formatted as expected.
+        # trying to register a server using type not formatted as expected.
         # Should be successful
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/beta/platform/topology' with body:
     """
     {
         "name": "my poller 2",
         "type": "pOlLEr",
-        "address": "1.1.1.3",
-        "parent_address": "1.1.1.1"
+        "address": "1.1.1.2",
+        "parent_address": "1.1.1.10"
     }
     """
         Then the response code should be "201"
 
         # trying to insert already registered server.
         # Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/beta/platform/topology' with body:
     """
     {
         "name": "my poller",
         "type": "Poller",
-        "address": "1.1.1.2"
-        "parent_address": 1.1.1.1"
-    }
-    """
-        Then the response code should be "409"
-
-        # trying to insert a platform which parent address is missing
-        # Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
-    """
-    {
-        "name": "my poller 3",
-        "type": "Poller3",
-        "address": "1.1.1.4"
+        "address": "1.1.1.1"
+        "parent_address": "1.1.1.10"
     }
     """
         Then the response code should be "409"
