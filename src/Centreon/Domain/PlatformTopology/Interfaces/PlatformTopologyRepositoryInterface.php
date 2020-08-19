@@ -54,4 +54,14 @@ interface PlatformTopologyRepositoryInterface
     public function findPlatformTopologyByAddress(
         string $serverAddress
     ): ?PlatformTopology;
+
+    /**
+     * Search for platform id using its type
+     *
+     * @param string $serverType
+     * @return PlatformTopology|null
+     */
+    public function findPlatformTopologyByType(
+        string $serverType
+    ): ?PlatformTopology;
 }
