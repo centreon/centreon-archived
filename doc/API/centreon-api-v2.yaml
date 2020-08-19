@@ -2365,11 +2365,9 @@ paths:
         '201':
           description: "OK"
         '409':
-          description: "Bad argument. More details are specified in the response"
+          description: "Conflict. More details are specified in the response"
         '403':
           $ref: '#/components/responses/Forbidden'
-        '409':
-          description: "Conflict, platform already exists"
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
