@@ -66,6 +66,7 @@ require_once "Centreon/Object/Relation/Trap/Service.php";
 require_once "Centreon/Object/Relation/Service/Category/Service.php";
 require_once "Centreon/Object/Relation/Service/Group/Service.php";
 
+require_once "Centreon/Object/Dependency/DependencyServiceParent.php";
 /**
  * Centreon Service objects
  *
@@ -348,6 +349,9 @@ class CentreonService extends CentreonObject
         if (!count($elements)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $hostName . "/" . $serviceDesc);
         }
+        $parentDependency = new \Centreon_Object_DependencyServiceParent($this->dependencyInjector);
+        $parentDependency->removeRelationLastServiceDependency($elements[0]['service_id']);
+
         $this->object->delete($elements[0]['service_id']);
         $this->addAuditLog('d', $elements[0]['service_id'], $hostName . " - " . $serviceDesc);
     }
