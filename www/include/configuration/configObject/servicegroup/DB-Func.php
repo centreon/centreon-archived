@@ -100,6 +100,29 @@ function disableServiceGroupInDB($sgId = null)
     $centreon->CentreonLogAction->insertLog("servicegroup", $sgId, $row['sg_name'], "disable");
 }
 
+/**
+ * @param int $servicegroupId
+ */
+function removeRelationLastServicegroupDependency(int $servicegroupId): void
+{
+    global $pearDB;
+
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_servicegroupParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_servicegroupParent_relation 
+                                         WHERE servicegroup_sg_id =  ' . $servicegroupId . ')';
+    $dbResult = $pearDB->query($query);
+    $result = $dbResult->fetch();
+
+    //is last parent
+    if ($result['nb_dependency'] == 1) {
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
+    }
+}
+
+/**
+ * @param array $serviceGroups
+ */
 function deleteServiceGroupInDB($serviceGroups = [])
 {
     global $pearDB, $centreon;
@@ -114,6 +137,7 @@ function deleteServiceGroupInDB($serviceGroups = [])
         $statement2 = $pearDB->prepare("DELETE FROM servicegroup WHERE sg_id = :sg_id");
         $statement2->bindValue(':sg_id', $sgId, \PDO::PARAM_INT);
         $statement2->execute();
+
         $centreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
     }
     $centreon->user->access->updateACL();
