@@ -14,7 +14,7 @@ Feature:
     {
         "name": "my poller",
         "type": "Poller",
-        "address": "1.1.1.1"
+        "address": "1.1.1.1",
         "parent_address": "1.1.1.10"
     }
     """
@@ -40,7 +40,7 @@ Feature:
     {
         "name": "my poller",
         "type": "Poller",
-        "address": "1.1.1.1"
+        "address": "1.1.1.1",
         "parent_address": "1.1.1.10"
     }
     """
