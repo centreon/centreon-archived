@@ -316,10 +316,12 @@ function insertHostCategories($ret = array())
 
 function updateHostCategories($hc_id)
 {
-    if (!$hc_id) {
+
+    $hcId = filter_var($hc_id, FILTER_VALIDATE_INT);
+    if ($hcId === false) {
         return;
     }
-    $hcId = filter_var($hc_id, FILTER_VALIDATE_INT);
+
     global $form, $pearDB, $centreon;
     $ret = array();
     $ret = $form->getSubmitValues();
@@ -360,14 +362,15 @@ function updateHostCategories($hc_id)
     }
     $params[] = $hcId;
 
-    $query = "UPDATE hostcategories SET
-    hc_name = ?,
-    hc_alias = ?,
-    level = ?,
-    icon_id = ?,
-    hc_activate = ?,
-    hc_comment = ?
-    WHERE hc_id = ?";
+    $query = "
+        UPDATE hostcategories SET
+        hc_name = ?,
+        hc_alias = ?,
+        level = ?,
+        icon_id = ?,
+        hc_activate = ?,
+        hc_comment = ?
+        WHERE hc_id = ?";
     $statement = $pearDB->prepare($query);
     $pearDB->execute($statement, $params);
 
@@ -381,10 +384,11 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
 {
     global $form, $pearDB;
 
-    if (!$hc_id) {
+    $hcId = filter_var($hc_id, FILTER_VALIDATE_INT);
+    if ($hcId === false) {
         return;
     }
-    $hcId = filter_var($hc_id, FILTER_VALIDATE_INT);
+
     /*
 	 * Special Case, delete relation between host/service, when service
 	 * is linked to hostcategories in escalation, dependencies, osl
