@@ -397,7 +397,7 @@ class CentreonServiceGroup extends CentreonObject
     }
 
     /**
-     * Del Action
+     * Delete Action
      * Must delete services as well
      *
      * @param string $objectName
