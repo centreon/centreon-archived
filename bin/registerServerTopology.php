@@ -56,7 +56,7 @@ Global Options:
             - port <mandatory>
             - username <optional>
             - password <optional>
-  --dns <optional>            provide your server DNS instead IP. The DNS must be valid and resolvable on the Central.
+  --dns <optional>            provide your server DNS instead of IP. The DNS must be valid and resolvable on the Central.
   --insecure <optional>       allow self-signed certificate
 
 
