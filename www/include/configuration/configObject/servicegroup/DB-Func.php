@@ -347,7 +347,7 @@ function updateServiceGroup($sgId, $ret = array())
                     : $params[] = null;
                 break;
             case 'geo_coords':
-                centreonUtils::validateGeoCoords($value2)
+                centreonUtils::validateGeoCoords($value)
                     ? $params[] = $value
                     : $params[] = null;
                 break;
