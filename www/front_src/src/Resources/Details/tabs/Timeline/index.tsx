@@ -189,7 +189,7 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
             value={selectedTypes}
             options={types}
             fullWidth
-            limitTags={4}
+            limitTags={3}
           />
         </div>
       </Paper>
@@ -212,7 +212,7 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
                       const Event = TimelineEventByType[type];
 
                       return (
-                        <Paper key={id} className={classes.event}>
+                        <Paper key={`${id}-${type}`} className={classes.event}>
                           <Event event={event} />
                         </Paper>
                       );
