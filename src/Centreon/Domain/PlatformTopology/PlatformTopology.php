@@ -76,6 +76,11 @@ class PlatformTopology
     private $parentId;
 
     /**
+     * @var int|null Server nagios ID for Central only
+     */
+    private $serverId;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -254,5 +259,21 @@ class PlatformTopology
         }
         $this->parentId = $parentId;
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getServerId(): ?int
+    {
+        return $this->serverId;
+    }
+
+    /**
+     * @param int|null $serverId nagios_server ID
+     */
+    public function setServerId(?int $serverId): void
+    {
+        $this->serverId = $serverId;
     }
 }
