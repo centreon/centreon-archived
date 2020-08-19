@@ -62,7 +62,6 @@ function formatResponseMessage(int $code, string $message, string $type = 'succe
             $responseMessage = 'error code: ' . $code . PHP_EOL .
             'error message: ' . $message . PHP_EOL;
             break;
-
     }
 
     return sprintf('%s', $responseMessage);
