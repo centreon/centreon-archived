@@ -19,7 +19,7 @@
  *
  */
 
-require_once('registerServerTopology-func.php');
+require_once('registerServerTopology-Func.php');
 
 /************************ */
 /*     DATA RESOLVING
