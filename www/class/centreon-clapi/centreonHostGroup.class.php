@@ -46,6 +46,7 @@ require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Host.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Service.php";
 require_once "Centreon/Object/Relation/Host/Group/Service/Group.php";
+require_once "Centreon/Object/Dependency/DependencyHostgroupParent.php";
 
 /**
  * Class for managing host groups
@@ -133,6 +134,9 @@ class CentreonHostGroup extends CentreonObject
      */
     public function del($objectName)
     {
+        $hostgroupId = $this->getObjectId($objectName);
+        $parentDependency = new \Centreon_Object_DependencyHostgroupParent($this->dependencyInjector);
+        $parentDependency->removeRelationLastHostgroupDependency($hostgroupId);
         parent::del($objectName);
         $this->db->query(
             "DELETE FROM service WHERE service_register = '1' "
