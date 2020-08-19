@@ -124,7 +124,6 @@ class CentreonHostGroup extends CentreonObject
         $this->checkParameters();
     }
 
-
     /**
      * Del Action
      * Must delete services as well
