@@ -52,7 +52,41 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
-        // search for already registered platforms using same name of address
+        /**
+         * search for already registered central type
+         */
+        if (PlatformTopology::TYPE_CENTRAL === $platformTopology->getType()) {
+            $foundCentralPlatformType = $this->platformTopologyRepository->findPlatformTopologyByType(
+                PlatformTopology::TYPE_CENTRAL
+            );
+            // search for its nagios_server ID
+            if (!null === $foundCentralPlatformType) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _("A Central : '%s'@'%s' is already registered"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            $isCentralExistsInNagiosTable = $this->platformTopologyRepository
+                ->findPlatformTopologyNagiosId($platformTopology->getName());
+
+            if (null === $isCentralExistsInNagiosTable) {
+                throw new PlatformTopologyConflictException(
+                    sprintf(
+                        _("The Central type server : '%s'@'%s' does not match the one configured in Centreon"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            $platformTopology->setServerId($platformTopology->getId());
+        }
+
+        /**
+         * search for already registered platforms using same name of address
+         */
         $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
             $platformTopology->getAddress(),
             $platformTopology->getName()
@@ -68,8 +102,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
 
+        /**
+         * search for parent platform ID in topology
+         */
         if ($platformTopology->getParentAddress() !== null) {
-            // search for parent platform in topology
             $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
                 $platformTopology->getParentAddress()
             );
