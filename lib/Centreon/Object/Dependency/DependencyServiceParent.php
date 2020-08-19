@@ -24,7 +24,6 @@ require_once "Centreon/Object/Object.php";
 /**
  * Used for interacting with dependencies
  *
- * @author sylvestre
  */
 class Centreon_Object_DependencyServiceParent extends Centreon_Object
 {
