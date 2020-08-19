@@ -164,22 +164,27 @@ class PlatformTopology
     /**
      * Validate address consistency
      *
-     * @param string $address the address to be tested
+     * @param string|null $address the address to be tested
      *
-     * @return string
+     * @return string|null
      * @throws \InvalidArgumentException
      */
-    private function checkIpAddress(string $address): string
+    private function checkIpAddress(?string $address): ?string
     {
-        // Check for valid IPv4, IPv6 or resolvable DNS
-        if (
-            false === filter_var($address, FILTER_VALIDATE_IP)
-            && false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)
-        ) {
+        if ($address === null) {
+            return $address;
+        }
+
+        // Check for valid IPv4 or IPv6 IP
+        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
+            return $address;
+        }
+
+        // check for DNS to be resolved
+        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    _("The address '%s' for '%s' is not valid"),
-                    $address,
+                    _("The address '%s' is not valid"),
                     $this->getName()
                 )
             );
