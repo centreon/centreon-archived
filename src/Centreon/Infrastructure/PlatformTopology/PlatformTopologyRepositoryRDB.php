@@ -57,7 +57,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         );
         $statement->bindValue(':address', $platformTopology->getAddress(), \PDO::PARAM_STR);
         $statement->bindValue(':name', $platformTopology->getName(), \PDO::PARAM_STR);
-        $statement->bindValue(':type', strtolower($platformTopology->getType()), \PDO::PARAM_STR);
+        $statement->bindValue(':type', $platformTopology->getType(), \PDO::PARAM_STR);
         $statement->bindValue(':parentId', $platformTopology->getParentId(), \PDO::PARAM_INT);
         $statement->bindValue(':serverId', $platformTopology->getServerId(), \PDO::PARAM_INT);
         $statement->execute();
