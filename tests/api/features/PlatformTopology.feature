@@ -10,8 +10,25 @@ Feature:
     Scenario: Register servers in Platform Topology
         Given I am logged in
 
-        # Register the Central on the container
-        # (this step is already executed on a real platform)
+        # Register the Central on the container with a name which doesn't exist in nagios_server table
+        # Should fail and an error should be returned
+        # (Notice : this step is automatically executed on a real platform on fresh install and update)
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "wrong_name",
+                "type": "central",
+                "address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "409"
+        And the response should be equal to:
+            """
+            {"code":409,"message":"The Central type server : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon"
+            """
+
+        # Successfully register the Central on the container
+        # (Notice : this step is automatically executed on a real platform on fresh install and update)
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
@@ -58,7 +75,7 @@ Feature:
             """
             {
                 "name": "my poller",
-                "type": "Poller",
+                "type": "poller",
                 "address": "1.1.1.1",
                 "parent_address": "1.1.1.10"
             }
@@ -107,4 +124,19 @@ Feature:
         And the response should be equal to:
             """
             {"code":500,"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
+            """
+
+        # Register a poller with no parent address / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "my poller 4",
+                "type": "poller",
+                "address": "1.1.1.4",
+            }
+            """
+        Then the response code should be "500"
+        And the response should be equal to:
+            """
+            {"code":500,"message":"Missing mandatory parent address, to link the platform : 'my poller 4'@'1.1.1.4'"}
             """

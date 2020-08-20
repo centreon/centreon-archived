@@ -15508,3 +15508,6 @@ msgstr "Un Central : '%s'@'%s' est déjà enregistré"
 
 msgid "The Central type server : '%s'@'%s' does not match the one configured in Centreon"
 msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configuré dans Centreon"
+
+msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
+msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
