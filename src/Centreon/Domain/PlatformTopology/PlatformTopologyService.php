@@ -69,8 +69,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            $isCentralExistsInNagiosTable = $this->platformTopologyRepository
-                ->findPlatformTopologyNagiosId($platformTopology->getName());
+            $isCentralExistsInNagiosTable = $this->platformTopologyRepository->findPlatformTopologyNagiosId(
+                $platformTopology->getName()
+            );
 
             if (null === $isCentralExistsInNagiosTable) {
                 throw new PlatformTopologyConflictException(
@@ -81,7 +82,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            $platformTopology->setServerId($platformTopology->getId());
+            $platformTopology->setServerId($isCentralExistsInNagiosTable->getId());
         }
 
         /**
