@@ -61,12 +61,13 @@ function testServiceGroupExistence($name = null)
 
 function enableServiceGroupInDB($sgId = null)
 {
-    if (!$sgId) {
+
+    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
+    if ($sgId === false) {
         return;
     }
     global $pearDB, $centreon;
 
-    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
     $statement = $pearDB->prepare("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = ?");
     $pearDB->execute($statement, array($sgId));
     $statement2 = $pearDB->prepare("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = ? LIMIT 1");
@@ -77,12 +78,13 @@ function enableServiceGroupInDB($sgId = null)
 
 function disableServiceGroupInDB($sgId = null)
 {
-    if (!$sgId) {
+
+    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
+    if ($sgId === false) {
         return;
     }
     global $pearDB, $centreon;
 
-    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
     $statement = $pearDB->prepare("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = ?");
     $pearDB->execute($statement, array($sgId));
     $statement2 = $pearDB->prepare("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = ? LIMIT 1");
@@ -187,17 +189,7 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
                         foreach ($service as $key2 => $value2) {
                             switch ($key2) {
                                 case 'host_host_id':
-                                    $value2 = filter_var($value2, FILTER_VALIDATE_INT);
-                                    $value2
-                                        ? $params[] = $value2
-                                        : $params[] = null;
-                                    break;
                                 case 'hostgroup_hg_id':
-                                    $value2 = filter_var($value2, FILTER_VALIDATE_INT);
-                                    $value2
-                                        ? $params[] = $value2
-                                        : $params[] = null;
-                                    break;
                                 case 'service_service_id':
                                     $value2 = filter_var($value2, FILTER_VALIDATE_INT);
                                     $value2
@@ -264,9 +256,6 @@ function insertServiceGroup($ret = array())
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'sg_name':
-                $value = filter_var($value, FILTER_SANITIZE_STRING);
-                $params[] = $value;
-                break;
             case 'sg_alias':
                 $value = filter_var($value, FILTER_SANITIZE_STRING);
                 $params[] = $value;
@@ -321,7 +310,8 @@ function updateServiceGroup($sgId, $ret = array())
 {
     global $form, $pearDB, $centreon;
 
-    if (!$sgId) {
+    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
+    if ($sgId === false) {
         return;
     }
 
@@ -329,13 +319,10 @@ function updateServiceGroup($sgId, $ret = array())
         $ret = $form->getSubmitValues();
     }
     $params = array();
-    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
+
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'sg_name':
-                $value = filter_var($value, FILTER_SANITIZE_STRING);
-                $params[] = $value;
-                break;
             case 'sg_alias':
                 $value = filter_var($value, FILTER_SANITIZE_STRING);
                 $params[] = $value;
@@ -387,13 +374,12 @@ function updateServiceGroup($sgId, $ret = array())
 
 function updateServiceGroupServices($sgId, $ret = array(), $increment = false)
 {
-    if (!$sgId) {
+    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
+    if ($sgId === false) {
         return;
     }
     global $pearDB, $form;
 
-
-    $sgId = filter_var($sgId, FILTER_VALIDATE_INT);
     if ($increment == false && $sgId !== false) {
         $statement = $pearDB->prepare("DELETE FROM servicegroup_relation WHERE servicegroup_sg_id = ?");
         $pearDB->execute($statement, $sgId);
@@ -450,10 +436,12 @@ function updateServicegroupRelations($statement, $statement2, $retTmp, $sgId)
             $t = preg_split("/\-/", $retTmp[$i]);
             $hostOrHostGroupId = filter_var($t[0], FILTER_VALIDATE_INT);
             $serviceServiceId = filter_var($t[1], FILTER_VALIDATE_INT);
-            array_push($params, $hostOrHostGroupId, $serviceServiceId, $sgId);
-            $result = $pearDB->execute($statement, $params);
-            if (!$result->numRows()) {
-                $pearDB->execute($statement2, $params);
+            if ($hostOrHostGroupId !== false && $serviceServiceId !== false) {
+                array_push($params, $hostOrHostGroupId, $serviceServiceId, $sgId);
+                $result = $pearDB->execute($statement, $params);
+                if (!$result->numRows()) {
+                    $pearDB->execute($statement2, $params);
+                }
             }
         }
     }
