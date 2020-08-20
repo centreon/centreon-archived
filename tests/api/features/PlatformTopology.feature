@@ -131,7 +131,7 @@ Feature:
             {
                 "name": "my poller 4",
                 "type": "poller",
-                "address": "1.1.1.4",
+                "address": "1.1.1.4"
             }
             """
         Then the response code should be "500"
