@@ -90,7 +90,7 @@ try {
     exit;
 }
 
-// Insert Central to 'platfrom_topology' table, as first server and parent of all others.
+// Insert Central to 'platform_topology' table, as first server and parent of all others.
 $centralServerQuery = $link->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
 if ($row = $centralServerQuery->fetch()) {
     $stmt = $link->prepare("

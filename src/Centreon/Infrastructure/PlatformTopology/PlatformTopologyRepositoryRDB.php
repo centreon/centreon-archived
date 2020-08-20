@@ -120,7 +120,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement = $this->db->prepare(
             $this->translateDbName('
                 SELECT `address`, `name`
-                FROM `:db`.platfrom_topology
+                FROM `:db`.platform_topology
                 WHERE `type` = :type
             ')
         );
