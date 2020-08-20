@@ -78,7 +78,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code": 409,"message": "A platform using the name : 'my poller' or address : '1.1.1.1' already exists"}
+            {"code":409,"message":"A platform using the name : 'my poller' or address : '1.1.1.1' already exists"}
             """
 
         # Register a poller using type not formatted as expected / Should be successful
