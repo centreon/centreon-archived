@@ -106,5 +106,5 @@ Feature:
         Then the response code should be "500"
         And the response should be equal to:
             """
-            {"code": 500,"message": "No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
+            {"code":500,"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
             """
