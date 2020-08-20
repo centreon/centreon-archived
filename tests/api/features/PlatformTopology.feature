@@ -7,9 +7,11 @@ Feature:
         Given a running instance of Centreon Web API
         And the endpoints are described in Centreon Web API documentation
 
-    Scenario: register a poller
+    Scenario: Register servers in Platform Topology
         Given I am logged in
-        # Register the Central on the container (this step is already executed on a real platform)
+
+        # Register the Central on the container
+        # (this step is already executed on a real platform)
         When I send a POST request to '/beta/platform/topology' with body:
     """
     {
@@ -54,6 +56,18 @@ Feature:
     """
         Then the response code should be "201"
 
+        # Register a second time the already registered poller / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+    """
+    {
+        "name": "my poller",
+        "type": "poller",
+        "address": "1.1.1.1",
+        "parent_address": "1.1.1.10"
+    }
+    """
+        Then the response code should be "409"
+
         # Register a poller using type not formatted as expected / Should be successful
         When I send a POST request to '/beta/platform/topology' with body:
     """
@@ -65,18 +79,6 @@ Feature:
     }
     """
         Then the response code should be "201"
-
-        # Register a poller already registered / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
-    """
-    {
-        "name": "my poller",
-        "type": "poller",
-        "address": "1.1.1.1",
-        "parent_address": "1.1.1.10"
-    }
-    """
-        Then the response code should be "409"
 
         # Register a poller with not registered parent / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
