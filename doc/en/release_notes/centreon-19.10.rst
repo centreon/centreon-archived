@@ -17,6 +17,41 @@ Bug fixes
 * [Custom views] Fix widget preferences on shared views
 
 =====================
+Centreon Web 19.10.15
+=====================
+
+Enhancements
+------------
+
+* [Backend] HTTP2 compatibility
+
+Bug fixes
+---------
+
+* [CEIP] centreon-send-stats.php script failed when one script fails
+* [Configuration/CLAPI] APPLYCFG rises errors for hosts with disabled host templates
+* [Configuration] Notifications are sent to wrong contacts when using services by host groups
+* [Configuration] improve message to use Remote Server as proxy
+* [Dashboard] Reporting is broken when a host is renamed
+* [LDAP] legacy errors in the logs
+* [Monitoring] Correct API v1 host filters
+* [Monitoring] Service limit when sending an external command
+
+Security fixes
+--------------
+
+* [Administration] SQL injection in "Administration > Parameters > Data"
+* [Configuration] RCE in Post command execution - CVE-2019-19699
+* [Configuration] SQL injection in Knowledge Base pages
+* [Configuration] SQL injection in centreonTraps.class.php
+* [Custom views] Missing access control mechanism in widget action
+* [Custom views] Missing access control mechanism in widget preferences
+* [Custom views] SQL injection in loadServiceFromHost
+* [Monitoring] Missing access control mechanism in hostSendCommand/ serviceSendCommand
+* [Monitoring] XSS in setHistory.php and commonJS.php
+* [Platform Status] Fix vulnerability for file loading
+
+=====================
 Centreon Web 19.10.14
 =====================
 
