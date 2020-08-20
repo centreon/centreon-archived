@@ -71,9 +71,21 @@ Feature:
     """
     {
         "name": "my poller",
-        "type": "Poller",
+        "type": "poller",
         "address": "1.1.1.1",
         "parent_address": "1.1.1.10"
     }
     """
         Then the response code should be "409"
+
+        # Register a poller with not registered parent / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+    """
+    {
+        "name": "my poller 3",
+        "type": "poller",
+        "address": "1.1.1.3",
+        "parent_address": "6.6.6.6"
+    }
+    """
+        Then the response code should be "500"
