@@ -64,8 +64,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 throw new PlatformTopologyConflictException(
                     sprintf(
                         _("A Central : '%s'@'%s' is already registered"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
+                        $foundCentralPlatformType->getName(),
+                        $foundCentralPlatformType->getAddress()
                     )
                 );
             }
