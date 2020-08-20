@@ -167,7 +167,7 @@ class PlatformTopology
     {
         // Check for valid IPv4 or IPv6 IP
         // or not sent address (in the case of Central's "parent_address")
-        if ($address === null || false !== filter_var($address, FILTER_VALIDATE_IP)) {
+        if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {
             return $address;
         }
 
@@ -218,7 +218,7 @@ class PlatformTopology
      */
     public function setParentAddress(?string $parentAddress): self
     {
-        if ($this->getType() === static::TYPE_CENTRAL && $parentAddress !== null) {
+        if (null !== $parentAddress && $this->getType() === static::TYPE_CENTRAL) {
             throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
         }
         $this->parentAddress = $this->checkIpAddress($parentAddress);
@@ -240,7 +240,7 @@ class PlatformTopology
      */
     public function setParentId(?int $parentId): self
     {
-        if ($this->getType() === static::TYPE_CENTRAL && $parentId !== null) {
+        if (null !== $parentId && $this->getType() === static::TYPE_CENTRAL) {
             throw new \InvalidArgumentException(_("Cannot set parent id to a central server"));
         }
         $this->parentId = $parentId;

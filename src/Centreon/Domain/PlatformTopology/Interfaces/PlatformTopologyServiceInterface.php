@@ -22,7 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
+use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 
 interface PlatformTopologyServiceInterface
 {
@@ -30,6 +33,9 @@ interface PlatformTopologyServiceInterface
      * Add new server
      *
      * @param PlatformTopology $platformTopology
+     * @throws PlatformTopologyConflictException
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
 }
