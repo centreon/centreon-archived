@@ -165,12 +165,9 @@ class PlatformTopology
      */
     private function checkIpAddress(?string $address): ?string
     {
-        if ($address === null) {
-            return $address;
-        }
-
         // Check for valid IPv4 or IPv6 IP
-        if (false !== filter_var($address, FILTER_VALIDATE_IP)) {
+        // or not sent address (in the case of Central's "parent_address")
+        if ($address === null || false !== filter_var($address, FILTER_VALIDATE_IP)) {
             return $address;
         }
 
