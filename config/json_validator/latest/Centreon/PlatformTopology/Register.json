@@ -3,7 +3,7 @@
   "title": "Add a new server to the platform topology",
   "type": "object",
   "required": ["name", "type", "address", "parent_address"],
-  "additionalProperties": true,
+  "additionalProperties": false,
   "properties": {
     "name": {
       "type": "string"
@@ -15,7 +15,7 @@
       "type": "string"
     },
     "parent_address": {
-      "type": "string"
+      "type": ["string", "null"]
     }
   }
 }
