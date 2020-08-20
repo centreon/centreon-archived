@@ -5,7 +5,7 @@ Feature:
 
     Background:
         Given a running instance of Centreon Web API
-        And the endpoints are described in Centreon Web API documentation
+        #And the endpoints are described in Centreon Web API documentation
 
     Scenario: Register servers in Platform Topology
         Given I am logged in
