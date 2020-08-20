@@ -60,7 +60,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 PlatformTopology::TYPE_CENTRAL
             );
             // search for its nagios_server ID
-            if (!null === $foundCentralPlatformType) {
+            if (null !== $foundCentralPlatformType) {
                 throw new EntityNotFoundException(
                     sprintf(
                         _("A Central : '%s'@'%s' is already registered"),
