@@ -105,7 +105,7 @@ const PerformanceGraph = ({
   });
 
   React.useEffect(() => {
-    sendRequest('http://localhost:5000/mock/graph').then((graphData) => {
+    sendRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);

@@ -1,4 +1,4 @@
-import { map, pipe, reduce, filter, pathOr, addIndex, tap } from 'ramda';
+import { map, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
 
 import { Metric, TimeValue, GraphData, Line } from './models';
 
