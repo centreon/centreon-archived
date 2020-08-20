@@ -1,5 +1,5 @@
 Feature:
-    In order to platforms
+    In order to set the platforms' topology
     As a user
     I want to register a platform to the Central server
 
