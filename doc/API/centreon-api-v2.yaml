@@ -4138,5 +4138,12 @@ components:
           example: "1.1.1.2"
         parent_address:
           type: string
-          description: "Address of the parent of the server. Used to link a poller behind a remote for example"
+          description: >
+            It should not be added to register a Central and only in this case.
+            Mandatory parameter for all other types, to be able to link a platform to its parent
+
+            Example :
+            - To link a poller to a Central
+            - To link a remote server to a Central
+            - To link a poller to a remote server
           example: "1.1.1.1"
