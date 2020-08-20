@@ -12,7 +12,6 @@ Feature:
 
         # Register the Central on the container with a name which doesn't exist in nagios_server table
         # Should fail and an error should be returned
-        # (Notice : this step is automatically executed on a real platform on fresh install and update)
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
@@ -28,7 +27,7 @@ Feature:
             """
 
         # Successfully register the Central on the container
-        # (Notice : this step is automatically executed on a real platform on fresh install and update)
+        # (Notice : this step is automatically done on a real platform on fresh install and update)
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
@@ -52,6 +51,23 @@ Feature:
         And the response should be equal to:
             """
             {"code":409,"message":"A Central : 'Central'@'1.1.1.10' is already registered"}
+            """
+
+        # Register a Central linked to another Central
+        # Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "Central 2",
+                "type": "central",
+                "address": "1.1.1.11",
+                "parent_address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "500"
+        And the response should be equal to:
+            """
+            {"code":500,"message":"Cannot use parent address on a Central server type"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
