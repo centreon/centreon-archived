@@ -1,24 +1,27 @@
-import { map, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
+import { map, pipe, reduce, filter, pathOr, addIndex, tap } from 'ramda';
 
 import { Metric, TimeValue, GraphData, Line } from './models';
 
-interface TimeWithMetrics {
-  time: number;
+interface TimeTickWithMetrics {
+  timeTick: number;
   metrics: Array<Metric>;
 }
 
-const toTimeWithMetrics = ({ metrics, times }): Array<TimeWithMetrics> => {
+const toTimeTickWithMetrics = ({
+  metrics,
+  times,
+}): Array<TimeTickWithMetrics> => {
   return map(
-    (time) => ({
-      time,
+    (timeTick) => ({
+      timeTick,
       metrics,
     }),
     times,
   );
 };
 
-const toTimeValue = (
-  { time, metrics }: TimeWithMetrics,
+const toTimeTickValue = (
+  { timeTick, metrics }: TimeTickWithMetrics,
   timeIndex: number,
 ): TimeValue => {
   const getMetricsForIndex = (): TimeValue => {
@@ -30,7 +33,7 @@ const toTimeValue = (
     return reduce(addMetricForTimeIndex, {}, metrics);
   };
 
-  return { time, ...getMetricsForIndex() };
+  return { timeTick, ...getMetricsForIndex() };
 };
 
 const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
@@ -44,11 +47,11 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
     };
   };
 
-  const indexedMap = addIndex<TimeWithMetrics, TimeValue>(map);
+  const indexedMap = addIndex<TimeTickWithMetrics, TimeValue>(map);
 
   return pipe(
-    toTimeWithMetrics,
-    indexedMap(toTimeValue),
+    toTimeTickWithMetrics,
+    indexedMap(toTimeTickValue),
     map(rejectLowerThanLimit),
   )(graphData);
 };
