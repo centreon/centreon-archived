@@ -326,9 +326,6 @@ function updateHostCategories($hc_id)
     foreach ($ret as $key => $value) {
         switch ($key) {
             case 'hc_name':
-                $value = filter_var($value, FILTER_SANITIZE_STRING);
-                $params[] = $value;
-                break;
             case 'hc_alias':
             case 'hc_comment':
                 $value = filter_var($value, FILTER_SANITIZE_STRING);
