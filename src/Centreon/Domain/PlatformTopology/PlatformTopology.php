@@ -116,17 +116,6 @@ class PlatformTopology
     {
         $type = strtolower($type);
 
-        // The API should not be used to add a Central to another Central
-        if ('central' === $type) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    _("You cannot link the Central '%s'@'%s' to another Central"),
-                    $this->getName(),
-                    $this->getAddress()
-                )
-            );
-        }
-
         // Check if the server_type is available
         if (!in_array($type, static::AVAILABLE_TYPES)) {
             throw new \InvalidArgumentException(

@@ -15482,9 +15482,6 @@ msgstr "Le nom de cette plateforme n'est pas cohérent"
 msgid "The address '%s' for '%s' is not valid"
 msgstr "L'adresse '%s' de '%s' n'est pas valide"
 
-msgid "You cannot link the Central '%s'@'%s' to another Central"
-msgstr "Vous ne pouvez pas lier le Central '%s'@'%s' sur un autre Central"
-
 msgid "The type of platform '%s'@'%s' is not consistent"
 msgstr "Le type de la plateforme '%s'@'%s' n'est pas cohérent"
 
