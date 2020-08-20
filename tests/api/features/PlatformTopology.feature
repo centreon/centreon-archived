@@ -69,7 +69,6 @@ Feature:
             {"code":409,"message":"A Central : 'Central'@'1.1.1.10' is already registered"}
             """
 
-
         # Register a poller linked to the Central.
         When I send a POST request to '/beta/platform/topology' with body:
             """
