@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
@@ -113,6 +114,19 @@ class PlatformTopologyController extends AbstractController
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type']);
+
+            if (
+                empty($platformToAdd['parent_address'])
+                && $platformTopology->getType() !== PlatformTopology::TYPE_CENTRAL
+            ) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _("Missing mandatory parent address, to link the platform : '%s'@'%s'"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
 
             if (isset($platformToAdd['parent_address'])) {
                 $platformTopology->setParentAddress($platformToAdd['parent_address']);
