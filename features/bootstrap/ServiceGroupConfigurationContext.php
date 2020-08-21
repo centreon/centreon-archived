@@ -27,7 +27,7 @@ class ServiceGroupConfigurationContext extends CentreonContext
         'hosts' => 'Centreon-Server - Memory',
         'host_groups' => 'Windows-Servers - hostGroupServiceDescription1',
         'service_templates' => 'generic-host - Ping-LAN',
-        'geo_coordinates' => '1.2.3.4',
+        'geo_coordinates' => '2.3522219,48.856614',
         'enabled' => 1,
         'comments' => 'serviceGroupComments'
     );
@@ -38,7 +38,7 @@ class ServiceGroupConfigurationContext extends CentreonContext
         'hosts' => 'Centreon-Server - Load',
         'host_groups' => 'Firewall - hostGroupServiceDescription2',
         'service_templates' => 'Servers-Linux - SNMP-Linux-Swap',
-        'geo_coordinates' => 'Paris',
+        'geo_coordinates' => '2.3522219,48.856614',
         'enabled' => 1,
         'comments' => 'serviceGroupCommentsChanged'
     );
