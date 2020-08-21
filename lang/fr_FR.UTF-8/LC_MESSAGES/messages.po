@@ -2454,7 +2454,7 @@ msgstr "Protocole de connexion utilisé par Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:224
 msgid "Use the Remote Server as a proxy"
-msgstr "Utiliser le serveur distant comme proxy"
+msgstr "Utiliser le Remote Server comme proxy"
 
 #: centreon-web/www/install/smarty_translate.php:849
 #: centreon-web/www/include/Administration/parameters/general/form.php:95
@@ -11743,6 +11743,18 @@ msgstr "Configuration du collecteur"
 msgid "Monitoring Engine Init Script"
 msgstr "Script d'initialisation du moteur de supervision"
 
+msgid "Monitoring Engine start command"
+msgstr "Commande de démarrage du moteur de supervision"
+
+msgid "Monitoring Engine stop command"
+msgstr "Commande d'arrêt du moteur de supervision"
+
+msgid "Monitoring Engine restart command"
+msgstr "Commande de redémarrage du moteur de supervision"
+
+msgid "Monitoring Engine reload command"
+msgstr "Commande de rechargement du moteur de supervision"
+
 #: centreon-web/www/include/configuration/configServers/formServers.php:114
 msgid "Init System"
 msgstr "Système d'initialisation"
@@ -11770,6 +11782,9 @@ msgstr "Hôte local ?"
 #: centreon-web/www/include/configuration/configServers/formServers.php:130
 msgid "Is default poller ?"
 msgstr "Collecteur par défaut ?"
+
+msgid "Centreon Broker reload command"
+msgstr "Commande de rechargement de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:157
 msgid "Centreon Broker configuration path"
@@ -14849,8 +14864,11 @@ msgstr "Graphiques"
 msgid "To use additional Remote Servers a Master Remote Server must be selected."
 msgstr "Un Remote Server principal doit être sélectionné, avant d'utiliser des Remote Server additionnels."
 
+msgid "Attach to Master Remote Server"
+msgstr "Lier à un Remote Server principal"
+
 msgid "Attach additional Remote Servers"
-msgstr "Ajouter des Remote Server additonnels"
+msgstr "Lier à des Remote Server additionnels"
 
 msgid "Locked elements"
 msgstr "Eléments verrouillés"
