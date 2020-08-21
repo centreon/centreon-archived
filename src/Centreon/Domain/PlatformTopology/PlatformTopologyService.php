@@ -69,11 +69,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            $isCentralExistsInNagiosTable = $this->platformTopologyRepository->findPlatformTopologyNagiosId(
+            $foundCentralInNagiosTable = $this->platformTopologyRepository->findPlatformTopologyNagiosId(
                 $platformTopology->getName()
             );
 
-            if (null === $isCentralExistsInNagiosTable) {
+            if (null === $foundCentralInNagiosTable) {
                 throw new PlatformTopologyConflictException(
                     sprintf(
                         _("The Central type server : '%s'@'%s' does not match the one configured in Centreon"),
@@ -82,7 +82,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            $platformTopology->setServerId($isCentralExistsInNagiosTable->getId());
+            $platformTopology->setServerId($foundCentralInNagiosTable->getId());
         }
 
         /**
