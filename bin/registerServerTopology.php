@@ -97,10 +97,8 @@ try {
     }
 
     $root = $opt['root'] ?? 'centreon';
-
     $targetURL = $opt['h'];
     $serverHostName = $opt['n'];
-
 } catch (\InvalidArgumentException $e) {
     exit($e->getMessage());
 }
