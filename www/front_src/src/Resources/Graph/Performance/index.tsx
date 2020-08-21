@@ -35,7 +35,7 @@ import getGraphLines from './Lines';
 
 const fontFamily = 'Roboto, sans-serif';
 
-const formatValue = ({ value, unit }): string => {
+const formatValue = ({ value, unit, base = 1000 }): string => {
   const base2Units = [
     'B',
     'bytes',
@@ -45,12 +45,12 @@ const formatValue = ({ value, unit }): string => {
     'o',
     'octets',
   ];
-  const suffixFormat = base2Units.includes(unit) ? 'b' : 'a';
 
-  return numeral(value)
-    .format(`0.[00] ${suffixFormat}`)
-    .trim()
-    .replace('B', '');
+  const base1024 = base2Units.includes(unit) || base === 1024;
+
+  const format = base1024 ? '0b' : '0.[00]a';
+
+  return numeral(value).format(format).replace('B', '');
 };
 
 interface Props {
@@ -99,6 +99,7 @@ const PerformanceGraph = ({
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
   const [title, setTitle] = React.useState<string>();
+  const [base, setBase] = React.useState<number>();
 
   const { sendRequest, sending } = useRequest<GraphData>({
     request: getData,
@@ -109,6 +110,7 @@ const PerformanceGraph = ({
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
+      setBase(graphData.global.base);
     });
   }, [endpoint]);
 
@@ -135,7 +137,7 @@ const PerformanceGraph = ({
       path(['name']),
     )(lineData) as string;
 
-    return [formatValue({ value, unit }), legendName];
+    return [formatValue({ value, unit, base }), legendName];
   };
 
   const formatXAxisTick = (tick): string =>
@@ -184,7 +186,7 @@ const PerformanceGraph = ({
             tick={{ fontSize: 13 }}
           />
 
-          {getGraphLines(displayedLines)}
+          {getGraphLines({ lines: displayedLines, base })}
 
           <Tooltip
             labelFormatter={formatTooltipTime}
