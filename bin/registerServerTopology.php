@@ -34,7 +34,7 @@ const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
-$opt = getopt('u:t:h:n:r:', ["help::", "dns:", "insecure::"]);
+$opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::"]);
 /**
  * Format the --help message
  */
@@ -49,14 +49,10 @@ Global Options:
             - MBI
   -h <mandatory>              URL of the Central / Remote Server target platform
   -n <mandatory>              name of your registered server
-  -r <mandatory>              your root Centreon folder
+
   --help <optional>           get informations about the parameters available
-  --proxy <optional>          provide the differents information requested
-            - host <mandatory>
-            - port <mandatory>
-            - username <optional>
-            - password <optional>
-  --dns <optional>            provide your server DNS instead of IP. The DNS must be valid and resolvable on the Central.
+  --root <optional>           your root Centreon folder (by default "centreon")
+  --dns <optional>            provide your server DNS instead of IP. The DNS must be resolvable on the Central.
   --insecure <optional>       allow self-signed certificate
 
 
@@ -73,9 +69,9 @@ if (isset($opt['help'])) {
  * Assign options to variables
  */
 try {
-    if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'], $opt['r'])) {
+    if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'])) {
         throw new \InvalidArgumentException(
-            PHP_EOL . 'missing parameter: -u -t -h -n -r are mandatories:' . PHP_EOL . $helpMessage
+            PHP_EOL . 'missing parameter: -u -t -h -n are mandatories:' . PHP_EOL . $helpMessage
         );
     }
 
@@ -100,9 +96,11 @@ try {
         }
     }
 
+    $root = $opt['root'] ?? 'centreon';
+
     $targetURL = $opt['h'];
     $serverHostName = $opt['n'];
-    $root = $opt['r'];
+
 } catch (\InvalidArgumentException $e) {
     exit($e->getMessage());
 }
@@ -221,8 +219,8 @@ try {
 
     $result = curl_exec($ch);
 
-    if (!$result) {
-        throw new Exception(curl_error($ch));
+    if ($result == false) {
+        throw new Exception(curl_error($ch) . PHP_EOL);
     }
 } catch (\Exception $e) {
     exit($e->getMessage());
@@ -276,7 +274,7 @@ try {
     $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if ($result === false) {
-        throw new Exception(curl_error($ch));
+        throw new Exception(curl_error($ch) . PHP_EOL);
     }
 } catch (Exception $e) {
     exit($e->getMessage());
