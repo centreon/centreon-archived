@@ -731,22 +731,20 @@ class CentreonWidget
         if (empty($customViewId)) {
             throw new CentreonWidgetException('No custom view id provided');
         }
-        if (!empty($position) && is_array($position)) {
-            foreach ($position as $rawData) {
-                if (preg_match('/([0-9]+)_([0-9]+)_([0-9]+)/', $rawData, $matches)) {
-                    $widgetOrder = "{$matches[1]}_{$matches[2]}";
-                    $widgetId = $matches[3];
+        foreach ($position as $rawData) {
+            if (preg_match('/([0-9]+)_([0-9]+)_([0-9]+)/', $rawData, $matches)) {
+                $widgetOrder = "{$matches[1]}_{$matches[2]}";
+                $widgetId = $matches[3];
 
-                    $query = 'UPDATE widget_views SET widget_order = :widgetOrder ' .
-                        'WHERE custom_view_id = :viewId ' .
-                        'AND widget_id = :widgetId';
-                    $stmt = $this->db->prepare($query);
-                    $stmt->bindParam(':widgetOrder', $widgetOrder, PDO::PARAM_STR);
-                    $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
-                    $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
-                    $dbResult = $stmt->execute();
-
-                }
+                $stmt = $this->db->prepare('
+                    UPDATE widget_views SET widget_order = :widgetOrder
+                    WHERE custom_view_id = :viewId
+                    AND widget_id = :widgetId
+                ');
+                $stmt->bindParam(':widgetOrder', $widgetOrder, PDO::PARAM_STR);
+                $stmt->bindParam(':viewId', $customViewId, PDO::PARAM_INT);
+                $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
+                $stmt->execute();
             }
         }
     }
