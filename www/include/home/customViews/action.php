@@ -210,7 +210,7 @@ try {
                         $authorized
                     );
                     if ($postInputs['widget_id']) {
-                        $widgetObj->udpateViewWidgetRelations($postInputs['custom_view_id']);
+                        $widgetObj->updateViewWidgetRelations($postInputs['custom_view_id']);
                     }
                 } elseif ($createLoad == 'load' && !empty($postInputs['viewLoad'])) {
                     $postInputs['custom_view_id'] = $viewObj->loadCustomView($postInputs['viewLoad'], $authorized);
@@ -229,7 +229,7 @@ try {
                 );
 
                 if ($postInputs['widget_id']) {
-                    $widgetObj->udpateViewWidgetRelations($postInputs['custom_view_id'], $postInputs['widget_id']);
+                    $widgetObj->updateViewWidgetRelations($postInputs['custom_view_id'], $postInputs['widget_id']);
                 }
 
                 //update share
