@@ -23,10 +23,22 @@ declare(strict_types=1);
 namespace Centreon\Domain\Filter\Interfaces;
 
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\Filter\FilterException;
 
 interface FilterServiceInterface
 {
+    /**
+     * Used to filter requests according to a contact.
+     * If the filter is defined, all requests will use the ACL of the contact
+     * to fetch data.
+     *
+     * @param mixed $contact Contact to use as a ACL filter
+     * @return FilterServiceInterface
+     * @throws \Exception
+     */
+    public function filterByContact($contact): FilterServiceInterface;
+
     /**
      * Add filter.
      *
@@ -40,21 +52,29 @@ interface FilterServiceInterface
      * Update filter.
      *
      * @param Filter $filter
-     * @return int created filter id
+     * @return void
      * @throws FilterException
      */
-    public function updateFilter(Filter $filter): int;
+    public function updateFilter(Filter $filter): void;
+
+    /**
+     * Check filter criterias
+     * Remove object if does not exist anymore
+     * Rename object if has been renamed since filter creation
+     *
+     * @param FilterCriteria[] $criterias
+     * @return void
+     */
+    public function checkCriterias(array $criterias): void;
 
     /**
      * Delete filter.
      *
-     * @param int $userId current user id
-     * @param string $pageName page name
-     * @param int $filterId Filter id to search
+     * @param Filter $filter
      * @return void
      * @throws FilterException
      */
-    public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void;
+    public function deleteFilter(Filter $filter): void;
 
     /**
      * Find filters.

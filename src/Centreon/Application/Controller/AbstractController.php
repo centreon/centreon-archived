@@ -49,4 +49,20 @@ abstract class AbstractController extends AbstractFOSRestController
             static::ROLE_API_REALTIME,
         ], static::ROLE_API_REALTIME_EXCEPTION_MESSAGE);
     }
+
+    /**
+     * Get current base uri
+     *
+     * @return string
+     */
+    protected function getBaseUri(): string
+    {
+        $baseUri = '';
+
+        if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
+            $baseUri = $matches[1];
+        }
+
+        return $baseUri;
+    }
 }

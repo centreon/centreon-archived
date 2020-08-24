@@ -1,34 +1,24 @@
-/* eslint-disable react/jsx-wrap-multilines */
 import * as React from 'react';
 
-import {
-  Grid,
-  Typography,
-  Button,
-  makeStyles,
-  Accordion,
-  AccordionSummary as MuiAccordionSummary,
-  AccordionDetails as MuiAccordionDetails,
-  withStyles,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Typography, Button, makeStyles } from '@material-ui/core';
 
 import {
   MultiAutocompleteField,
   MultiConnectedAutocompleteField,
   SelectField,
   SearchField,
-  SelectEntry,
+  Filters,
 } from '@centreon/ui';
 
-import { isEmpty, propEq, pick } from 'ramda';
+import { isEmpty, propEq, pick, find } from 'ramda';
+import { Skeleton } from '@material-ui/lab';
+import clsx from 'clsx';
 import {
   labelFilter,
   labelCriterias,
   labelStateFilter,
-  labelResourceName,
   labelSearch,
-  labelTypeOfResource,
+  labelResource,
   labelState,
   labelStatus,
   labelHostGroup,
@@ -46,73 +36,50 @@ import {
   states as availableStates,
   resourceTypes as availableResourceTypes,
   statuses as availableStatuses,
-  Filter as FilterModel,
   standardFilterById,
   isCustom,
   newFilter,
 } from './models';
 import SearchHelpTooltip from './SearchHelpTooltip';
+import { useResourceContext } from '../Context';
+import SaveFilter from './Save';
 import {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
-} from '../api/endpoint';
-import { useResourceContext } from '../Context';
-import SaveFilter from './Save';
-
-const AccordionSummary = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 3, 0, 2),
-    minHeight: 'auto',
-    '&$expanded': {
-      minHeight: 'auto',
-    },
-    '&$focused': {
-      backgroundColor: 'unset',
-    },
-    justifyContent: 'flex-start',
-  },
-  content: {
-    margin: theme.spacing(1, 0),
-    '&$expanded': {
-      margin: theme.spacing(1, 0),
-    },
-    flexGrow: 0,
-  },
-  focused: {},
-  expanded: {},
-}))(MuiAccordionSummary);
-
-const AccordionDetails = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 0.5, 1, 2),
-  },
-}))(MuiAccordionDetails);
+} from './api/endpoint';
 
 const useStyles = makeStyles((theme) => ({
-  filterBox: {
-    padding: theme.spacing(),
-    backgroundColor: theme.palette.common.white,
+  grid: {
+    display: 'grid',
+    gridGap: theme.spacing(1),
+    gridAutoFlow: 'column',
+
+    alignItems: 'center',
+    justifyItems: 'center',
+  },
+  filterRow: {
+    gridTemplateColumns:
+      'auto 30px minmax(100px, 200px) minmax(min-content, 400px) auto auto',
+  },
+  filterLoadingSkeleton: {
+    transform: 'none',
+    height: '100%',
+    width: '100%',
+  },
+  criteriaRow: {
+    gridTemplateColumns: `auto 30px repeat(5, minmax(140px, 290px)) auto`,
+  },
+  filterSelect: {
+    width: 200,
   },
   filterLineLabel: {
     width: 60,
     textAlign: 'center',
   },
-  filterGroup: {
-    minWidth: 200,
-  },
-  searchField: {
-    width: 500,
-  },
-  autocompleteField: {
-    minWidth: 200,
-    maxWidth: 400,
-  },
 }));
 
 const Filter = (): JSX.Element => {
   const classes = useStyles();
-
-  const [expanded, setExpanded] = React.useState(false);
 
   const {
     filter,
@@ -131,27 +98,24 @@ const Filter = (): JSX.Element => {
     serviceGroups,
     setServiceGroups,
     customFilters,
+    customFiltersLoading,
   } = useResourceContext();
 
-  const toggleExpanded = (): void => {
-    setExpanded(!expanded);
-  };
-
-  const getHostGroupSearchEndpoint = (searchValue): string => {
+  const getHostgroupEndpoint = ({ search, page }): string => {
     return buildHostGroupsEndpoint({
       limit: 10,
-      search: searchValue ? `name:${searchValue}` : undefined,
+      search: search ? `name:${search}` : undefined,
+      page,
     });
   };
 
-  const getServiceGroupSearchEndpoint = (searchValue): string => {
+  const getServiceGroupSearchEndpoint = ({ search, page }): string => {
     return buildServiceGroupsEndpoint({
       limit: 10,
-      search: searchValue ? `name:${searchValue}` : undefined,
+      search: search ? `name:${search}` : undefined,
+      page,
     });
   };
-
-  const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
 
   const setNewFilter = (): void => {
     if (isCustom(filter)) {
@@ -241,7 +205,7 @@ const Filter = (): JSX.Element => {
           name: labelMyFilters,
           type: 'header',
         },
-        ...(customFilters as Array<FilterModel>),
+        ...customFilters,
       ];
 
   const options = [
@@ -252,122 +216,97 @@ const Filter = (): JSX.Element => {
     ...customFilterOptions,
   ];
 
+  const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
+
   return (
-    <Accordion square expanded={expanded}>
-      <AccordionSummary
-        expandIcon={
-          <ExpandMoreIcon
-            color="primary"
-            aria-label={labelShowCriteriasFilters}
-          />
-        }
-        IconButtonProps={{ onClick: toggleExpanded }}
-        style={{ cursor: 'default' }}
-      >
-        <Grid spacing={1} container alignItems="center">
-          <Grid item>
-            <Typography className={classes.filterLineLabel} variant="h6">
-              {labelFilter}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <SaveFilter />
-          </Grid>
-          <Grid item>
+    <Filters
+      expandable
+      expandLabel={labelShowCriteriasFilters}
+      filters={
+        <div className={clsx([classes.grid, classes.filterRow])}>
+          <Typography className={classes.filterLineLabel} variant="h6">
+            {labelFilter}
+          </Typography>
+          <SaveFilter />
+          {customFiltersLoading ? (
+            <Skeleton className={classes.filterLoadingSkeleton} />
+          ) : (
             <SelectField
-              className={classes.filterGroup}
               options={options.map(pick(['id', 'name', 'type']))}
-              selectedOptionId={filter.id}
+              selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
               onChange={changeFilterGroup}
               aria-label={labelStateFilter}
+              fullWidth
             />
-          </Grid>
-          <Grid item>
-            <SearchField
-              className={classes.searchField}
-              EndAdornment={SearchHelpTooltip}
-              value={nextSearch || ''}
-              onChange={prepareSearch}
-              placeholder={labelResourceName}
-              onKeyDown={requestSearchOnEnterKey}
-            />
-          </Grid>
-          <Grid item>
-            <Button variant="contained" color="primary" onClick={requestSearch}>
-              {labelSearch}
-            </Button>
-          </Grid>
-        </Grid>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Grid spacing={1} container alignItems="center">
-          <Grid item>
-            <Typography className={classes.filterLineLabel} variant="subtitle1">
-              {labelCriterias}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <MultiAutocompleteField
-              className={classes.autocompleteField}
-              options={availableResourceTypes}
-              label={labelTypeOfResource}
-              onChange={changeResourceTypes}
-              value={resourceTypes || []}
-              openText={`${labelOpen} ${labelTypeOfResource}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiAutocompleteField
-              className={classes.autocompleteField}
-              options={availableStates}
-              label={labelState}
-              onChange={changeStates}
-              value={states || []}
-              openText={`${labelOpen} ${labelState}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiAutocompleteField
-              className={classes.autocompleteField}
-              options={availableStatuses}
-              label={labelStatus}
-              onChange={changeStatuses}
-              value={statuses || []}
-              openText={`${labelOpen} ${labelStatus}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiConnectedAutocompleteField
-              className={classes.autocompleteField}
-              baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
-              getSearchEndpoint={getHostGroupSearchEndpoint}
-              getOptionsFromResult={getOptionsFromResult}
-              label={labelHostGroup}
-              onChange={changeHostGroups}
-              value={hostGroups || []}
-              openText={`${labelOpen} ${labelHostGroup}`}
-            />
-          </Grid>
-          <Grid item>
-            <MultiConnectedAutocompleteField
-              className={classes.autocompleteField}
-              baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
-              getSearchEndpoint={getServiceGroupSearchEndpoint}
-              label={labelServiceGroup}
-              onChange={changeServiceGroups}
-              getOptionsFromResult={getOptionsFromResult}
-              value={serviceGroups || []}
-              openText={`${labelOpen} ${labelServiceGroup}`}
-            />
-          </Grid>
-          <Grid item>
-            <Button color="primary" onClick={clearAllFilters}>
-              {labelClearAll}
-            </Button>
-          </Grid>
-        </Grid>
-      </AccordionDetails>
-    </Accordion>
+          )}
+          <SearchField
+            fullWidth
+            EndAdornment={SearchHelpTooltip}
+            value={nextSearch || ''}
+            onChange={prepareSearch}
+            placeholder={labelSearch}
+            onKeyDown={requestSearchOnEnterKey}
+          />
+          <Button variant="contained" color="primary" onClick={requestSearch}>
+            {labelSearch}
+          </Button>
+        </div>
+      }
+      expandableFilters={
+        <div className={clsx([classes.grid, classes.criteriaRow])}>
+          <Typography className={classes.filterLineLabel} variant="subtitle1">
+            {labelCriterias}
+          </Typography>
+          <div />
+          <MultiAutocompleteField
+            options={availableResourceTypes}
+            label={labelResource}
+            onChange={changeResourceTypes}
+            value={resourceTypes || []}
+            openText={`${labelOpen} ${labelResource}`}
+            limitTags={2}
+            fullWidth
+          />
+          <MultiAutocompleteField
+            options={availableStates}
+            label={labelState}
+            onChange={changeStates}
+            value={states || []}
+            openText={`${labelOpen} ${labelState}`}
+            limitTags={1}
+            fullWidth
+          />
+          <MultiAutocompleteField
+            options={availableStatuses}
+            label={labelStatus}
+            onChange={changeStatuses}
+            value={statuses || []}
+            openText={`${labelOpen} ${labelStatus}`}
+            fullWidth
+            limitTags={2}
+          />
+          <MultiConnectedAutocompleteField
+            getEndpoint={getHostgroupEndpoint}
+            label={labelHostGroup}
+            onChange={changeHostGroups}
+            value={hostGroups || []}
+            openText={`${labelOpen} ${labelHostGroup}`}
+            fullWidth
+          />
+          <MultiConnectedAutocompleteField
+            getEndpoint={getServiceGroupSearchEndpoint}
+            label={labelServiceGroup}
+            onChange={changeServiceGroups}
+            value={serviceGroups || []}
+            openText={`${labelOpen} ${labelServiceGroup}`}
+            fullWidth
+          />
+          <Button color="primary" onClick={clearAllFilters}>
+            {labelClearAll}
+          </Button>
+        </div>
+      }
+    />
   );
 };
 

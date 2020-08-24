@@ -1,44 +1,24 @@
 import * as React from 'react';
 
-import { omit } from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo } from 'ramda';
 
-import { Paper, makeStyles, Divider } from '@material-ui/core';
+import { getData, useRequest, Panel } from '@centreon/ui';
 
-import { getData, useRequest } from '@centreon/ui';
+import { Tab, useTheme, fade } from '@material-ui/core';
 
 import Header from './Header';
-import Body from './Body';
 import { ResourceDetails } from './models';
 import { ResourceEndpoints } from '../models';
 import { useResourceContext } from '../Context';
-
-const useStyles = makeStyles(() => {
-  return {
-    details: {
-      height: '100%',
-      display: 'grid',
-      gridTemplate: 'auto auto 1fr / 1fr',
-    },
-    header: {
-      gridArea: '1 / 1 / 2 / 1',
-      padding: 8,
-    },
-    divider: {
-      gridArea: '2 / 1 / 3 / 1',
-    },
-    body: {
-      gridArea: '3 / 1 / 4 / 1',
-    },
-  };
-});
+import { tabs, TabById } from './tabs';
+import { rowColorConditions } from '../colors';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
 const Details = (): JSX.Element | null => {
-  const classes = useStyles();
-
+  const theme = useTheme();
   const [details, setDetails] = React.useState<ResourceDetails>();
 
   const {
@@ -46,6 +26,7 @@ const Details = (): JSX.Element | null => {
     setDefaultDetailsTabIdToOpen,
     selectedDetailsEndpoints,
     setSelectedDetailsEndpoints,
+    listing,
   } = useResourceContext();
 
   const {
@@ -68,23 +49,50 @@ const Details = (): JSX.Element | null => {
     sendRequest(detailsEndpoint).then((retrievedDetails) =>
       setDetails(retrievedDetails),
     );
-  }, [detailsEndpoint]);
+  }, [detailsEndpoint, listing]);
+
+  const changeSelectedTabId = (_, id): void => {
+    setDefaultDetailsTabIdToOpen(id);
+  };
+
+  const getHeaderBackgroundColor = (): string | undefined => {
+    const { downtimes, acknowledgement } = details || {};
+
+    const foundColorCondition = rowColorConditions(theme).find(
+      ({ condition }) =>
+        condition({
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
+          acknowledged: !isNil(acknowledgement),
+        }),
+    );
+
+    if (isNil(foundColorCondition)) {
+      return theme.palette.common.white;
+    }
+
+    return fade(foundColorCondition.color, 0.8);
+  };
 
   return (
-    <Paper elevation={5} className={classes.details}>
-      <div className={classes.header}>
-        <Header details={details} onClickClose={clearSelectedResource} />
-      </div>
-      <Divider className={classes.divider} />
-      <div className={classes.body}>
-        <Body
+    <Panel
+      onClose={clearSelectedResource}
+      header={<Header details={details} />}
+      headerBackgroundColor={getHeaderBackgroundColor()}
+      tabs={tabs
+        .filter(({ visible }) => visible(selectedDetailsEndpoints))
+        .map(({ id, title }) => (
+          <Tab key={id} label={title} disabled={isNil(details)} />
+        ))}
+      selectedTabId={detailsTabIdToOpen}
+      onTabSelect={changeSelectedTabId}
+      selectedTab={
+        <TabById
+          id={detailsTabIdToOpen}
           details={details}
-          endpoints={omit(['details'], selectedDetailsEndpoints)}
-          openTabId={detailsTabIdToOpen}
-          onSelectTab={setDefaultDetailsTabIdToOpen}
+          endpoints={selectedDetailsEndpoints as ResourceEndpoints}
         />
-      </div>
-    </Paper>
+      }
+    />
   );
 };
 

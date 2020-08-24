@@ -30,7 +30,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Psr\Container\ContainerInterface;
@@ -64,7 +63,9 @@ class FilterControllerTest extends TestCase
             'name' => 'filter1',
             'criterias' => [
                 [
-                    'field1' => 'value1',
+                    'name' => 'name1',
+                    'type' => 'type1',
+                    'value' => 'value1',
                 ],
             ],
         ];
@@ -134,7 +135,7 @@ class FilterControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(FilterException::class);
-        $this->expectExceptionMessage('Error when decoding your sent data');
+        $this->expectExceptionMessage('Error when decoding sent data');
         $filterController->addFilter($this->request, 'events-view');
     }
 
@@ -193,7 +194,7 @@ class FilterControllerTest extends TestCase
             ->method('getContent')
             ->willReturn('[}');
         $this->expectException(FilterException::class);
-        $this->expectExceptionMessage('Error when decoding your sent data');
+        $this->expectExceptionMessage('Error when decoding sent data');
         $filterController->updateFilter($this->request, 'events-view', 1);
     }
 
@@ -221,7 +222,7 @@ class FilterControllerTest extends TestCase
             ->method('updateFilter')
             ->willReturn(1);
 
-        $this->filterService->expects($this->once())
+        $this->filterService->expects($this->any())
             ->method('findFilterByUserId')
             ->willReturn($this->filterObject);
 

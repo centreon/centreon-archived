@@ -4,6 +4,8 @@ import {
   ListingModel,
   postData,
   putData,
+  deleteData,
+  patchData,
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
@@ -25,18 +27,36 @@ const listCustomFilters = (cancelToken) => (): Promise<
     buildListCustomFiltersEndpoint({ limit: 100, page: 1 }),
   );
 
+type RawFilterWithoutId = Omit<RawFilter, 'id'>;
+
 const createFilter = (cancelToken) => (params): Promise<Filter> => {
-  return postData<Omit<RawFilter, 'id'>, RawFilter>(cancelToken)({
+  return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: filterEndpoint,
     data: toRawFilter(params),
   }).then(toFilter);
 };
 
-const updateFilter = (cancelToken) => (params): Promise<void> =>
-  putData<Omit<RawFilter, 'id'>, void>(cancelToken)({
+const updateFilter = (cancelToken) => (params): Promise<Filter> => {
+  return putData<RawFilterWithoutId, Filter>(cancelToken)({
     endpoint: `${filterEndpoint}/${params.id}`,
     data: toRawFilter(params),
   });
+};
+
+interface PatchFilterProps {
+  order: number;
+}
+
+const patchFilter = (cancelToken) => (params): Promise<Filter> => {
+  return patchData<PatchFilterProps, Filter>(cancelToken)({
+    endpoint: `${filterEndpoint}/${params.id}`,
+    data: { order: params.order },
+  });
+};
+
+const deleteFilter = (cancelToken) => (params): Promise<void> => {
+  return deleteData<void>(cancelToken)(`${filterEndpoint}/${params.id}`);
+};
 
 export {
   filterEndpoint,
@@ -44,4 +64,6 @@ export {
   buildListCustomFiltersEndpoint,
   createFilter,
   updateFilter,
+  patchFilter,
+  deleteFilter,
 };

@@ -25,10 +25,12 @@ namespace Centreon\Infrastructure\Filter;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
 use Centreon\Domain\Filter\Filter;
+use Centreon\Domain\Filter\FilterCriteria;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use JMS\Serializer\SerializerInterface;
 
 /**
  * This class is designed to manage the repository of the monitoring servers
@@ -42,9 +44,15 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
      */
     private $sqlRequestTranslator;
 
-    public function __construct(DatabaseConnection $db)
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    public function __construct(DatabaseConnection $db, SerializerInterface $serializer)
     {
         $this->db = $db;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -67,16 +75,27 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
      */
     public function addFilter(Filter $filter): int
     {
+        $maxOrder = $this->findMaxOrderByUserId($filter->getUserId(), $filter->getPageName());
+
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = $this->serializer->serialize(
+            $filter->getCriterias(),
+            'json'
+        );
+
         $request = $this->translateDbName(
             'INSERT INTO `:db`.user_filter
-            (name, user_id, page_name, criterias)
-            VALUES (:name, :user_id, :page_name, :criterias)'
+            (name, user_id, page_name, criterias, `order`)
+            VALUES (:name, :user_id, :page_name, :criterias, :order)'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':name', $filter->getName(), \PDO::PARAM_STR);
         $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
         $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
-        $statement->bindValue(':criterias', json_encode($filter->getCriterias()), \PDO::PARAM_STR);
+        $statement->bindValue(':criterias', $filterCriterias, \PDO::PARAM_STR);
+        $statement->bindValue(':order', $maxOrder + 1, \PDO::PARAM_INT);
         $statement->execute();
 
         return (int) $this->db->lastInsertId();
@@ -85,31 +104,68 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
     /**
      * @inheritDoc
      */
-    public function updateFilter(Filter $filter): int
+    public function updateFilter(Filter $filter): void
     {
+        $previousFilter = $this->findFilterByUserIdAndId(
+            $filter->getUserId(),
+            $filter->getPageName(),
+            $filter->getId()
+        );
+        if ($previousFilter === null) {
+            return;
+        }
+
+        $previousOrder = $previousFilter->getOrder();
+        $order = $filter->getOrder();
+
+        if ($order > $previousOrder) {
+            $this->decrementOrderBetweenIntervalByUserId(
+                $filter->getUserId(),
+                $filter->getPageName(),
+                $previousOrder,
+                $order
+            );
+        } elseif ($order < $previousOrder) {
+            $this->incrementOrderBetweenIntervalByUserId(
+                $filter->getUserId(),
+                $filter->getPageName(),
+                $order,
+                $previousOrder
+            );
+        }
+
+        /**
+         * @var FilterCriteria[] $filterCriterias
+         */
+        $filterCriterias = $this->serializer->serialize(
+            $filter->getCriterias(),
+            'json'
+        );
+
         $request = $this->translateDbName('
             UPDATE `:db`.user_filter
-            SET name = :name, criterias = :criterias
+            SET name = :name, criterias = :criterias, `order` = :order
             WHERE user_id = :user_id
             AND page_name = :page_name
             AND id = :filter_id
         ');
+
         $statement = $this->db->prepare($request);
         $statement->bindValue(':name', $filter->getName(), \PDO::PARAM_STR);
-        $statement->bindValue(':criterias', json_encode($filter->getCriterias()), \PDO::PARAM_STR);
+        $statement->bindValue(':criterias', $filterCriterias, \PDO::PARAM_STR);
+        $statement->bindValue(':order', $filter->getOrder(), \PDO::PARAM_INT);
         $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
         $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
         $statement->bindValue(':filter_id', $filter->getId(), \PDO::PARAM_INT);
         $statement->execute();
 
-        $updatedFilter = $this->findFilterByUserIdAndId($filter->getUserId(), $filter->getPageName(), $filter->getId());
-        return $updatedFilter->getId();
+        $this->removeOrderGapByUserId($filter->getUserId(), $filter->getPageName());
     }
 
     /**
      * @inheritDoc
      */
-    public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void
+    public function deleteFilter(Filter $filter): void
     {
         $request = $this->translateDbName('
             DELETE FROM `:db`.user_filter
@@ -119,10 +175,12 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         ');
 
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':user_id', $userId, \PDO::PARAM_INT);
-        $statement->bindValue(':page_name', $pageName, \PDO::PARAM_STR);
-        $statement->bindValue(':filter_id', $filterId, \PDO::PARAM_STR);
+        $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
+        $statement->bindValue(':filter_id', $filter->getId(), \PDO::PARAM_STR);
         $statement->execute();
+
+        $this->removeOrderGapByUserId($filter->getUserId(), $filter->getPageName());
     }
 
     /**
@@ -174,7 +232,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         ?string $paginationRequest = null
     ): array {
         $request = $this->translateDbName('
-            SELECT SQL_CALC_FOUND_ROWS id, name, user_id, page_name, criterias
+            SELECT SQL_CALC_FOUND_ROWS id, name, user_id, page_name, criterias, `order`
             FROM `:db`.user_filter
         ');
 
@@ -185,7 +243,7 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $this->sqlRequestTranslator->addSearchValue(':page_name', [\PDO::PARAM_STR => $pageName]);
 
         // Sort
-        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY id ASC';
+        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY `order` ASC';
 
         // Pagination
         $request .= !is_null($paginationRequest) ? $paginationRequest : '';
@@ -206,30 +264,42 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         }
 
         $filters = [];
-        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $result['criterias'] = json_decode($result['criterias'], true);
+        while (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            /**
+             * @var FilterCriteria[] $filterCriterias
+             */
+            $filterCriterias = [];
+            foreach (json_decode($filter['criterias'], true) as $filterCriteria) {
+                $filterCriterias[] = EntityCreator::createEntityByArray(
+                    FilterCriteria::class,
+                    $filterCriteria
+                );
+            }
+
+            $filter['criterias'] = $filterCriterias;
 
             /**
-             * @var Filter $filter
+             * @var Filter $filterEntity
              */
-            $filter = EntityCreator::createEntityByArray(
+            $filterEntity = EntityCreator::createEntityByArray(
                 Filter::class,
-                $result
+                $filter
             );
 
-            $filters[] = $filter;
+            $filters[] = $filterEntity;
         }
 
         return $filters;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws \Exception
      */
     public function findFilterByUserIdAndName(int $userId, string $pageName, string $name): ?Filter
     {
         $request = $this->translateDbName('
-            SELECT id, name, user_id, page_name, criterias
+            SELECT id, name, user_id, page_name, criterias, `order`
             FROM `:db`.user_filter
             WHERE user_id = :user_id
             AND page_name = :page_name
@@ -243,23 +313,41 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->execute();
 
         if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $filter['criterias'] = json_decode($filter['criterias'], true);
-            return EntityCreator::createEntityByArray(
+            /**
+             * @var FilterCriteria[] $filterCriterias
+             */
+            $filterCriterias = [];
+            foreach (json_decode($filter['criterias'], true) as $filterCriteria) {
+                $filterCriterias[] = EntityCreator::createEntityByArray(
+                    FilterCriteria::class,
+                    $filterCriteria
+                );
+            }
+
+            $filter['criterias'] = $filterCriterias;
+
+            /**
+             * @var Filter $filterEntity
+             */
+            $filterEntity = EntityCreator::createEntityByArray(
                 Filter::class,
                 $filter
             );
-        } else {
-            return null;
+
+            return $filterEntity;
         }
+
+        return null;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws \Exception
      */
     public function findFilterByUserIdAndId(int $userId, string $pageName, int $filterId): ?Filter
     {
         $request = $this->translateDbName('
-            SELECT id, name, user_id, page_name, criterias
+            SELECT id, name, user_id, page_name, criterias, `order`
             FROM `:db`.user_filter
             WHERE user_id = :user_id
             AND id = :filter_id
@@ -273,13 +361,157 @@ class FilterRepositoryRDB extends AbstractRepositoryDRB implements FilterReposit
         $statement->execute();
 
         if (false !== ($filter = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $filter['criterias'] = json_decode($filter['criterias'], true);
-            return EntityCreator::createEntityByArray(
+            /**
+             * @var FilterCriteria[] $filterCriterias
+             */
+            $filterCriterias = [];
+            foreach (json_decode($filter['criterias'], true) as $filterCriteria) {
+                $filterCriterias[] = EntityCreator::createEntityByArray(
+                    FilterCriteria::class,
+                    $filterCriteria
+                );
+            }
+
+            $filter['criterias'] = $filterCriterias;
+
+            /**
+             * @var Filter $filterEntity
+             */
+            $filterEntity = EntityCreator::createEntityByArray(
                 Filter::class,
                 $filter
             );
-        } else {
-            return null;
+
+            return $filterEntity;
         }
+
+        return null;
+    }
+
+    /**
+     * Find max order value by user id and page name
+     *
+     * @param integer $userId The user id
+     * @param string $pageName The page name
+     * @return integer The max order value
+     */
+    private function findMaxOrderByUserId(int $userId, string $pageName): int
+    {
+        $maxOrder = 0;
+
+        $request = $this->translateDbName('
+            SELECT max(`order`) as max_order
+            FROM `:db`.user_filter
+            WHERE user_id = :user_id
+            AND page_name = :page_name
+        ');
+
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $pageName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (false !== ($order = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $maxOrder = $order['max_order'] === null ? 0 : (int)$order['max_order'];
+        }
+
+        return $maxOrder;
+    }
+
+    /**
+     * Remove order gap which happen after filter deletion
+     *
+     * @param integer $userId The user id
+     * @param string $pageName The page name
+     * @return void
+     */
+    private function removeOrderGapByUserId(int $userId, string $pageName): void
+    {
+        $filters = $this->findFiltersByUserId($userId, $pageName, null, null, null);
+
+        $currentOrder = 1;
+        foreach ($filters as $filter) {
+            if ($filter->getOrder() !== $currentOrder) {
+                $filter->setOrder($currentOrder);
+
+                $this->updateFilterOrder($filter);
+            }
+            $currentOrder++;
+        }
+    }
+
+    /**
+     * Decrement order of filters which have order between given interval
+     *
+     * @param integer $userId The user id
+     * @param string $pageName The page name
+     * @param integer $lowOrder The low order interval
+     * @param integer $highOrder The high order interval
+     * @return void
+     */
+    private function decrementOrderBetweenIntervalByUserId(
+        int $userId,
+        string $pageName,
+        int $lowOrder,
+        int $highOrder
+    ): void {
+        $filters = $this->findFiltersByUserId($userId, $pageName, null, null, null);
+
+        foreach ($filters as $filter) {
+            if ($filter->getOrder() >= $lowOrder && $filter->getOrder() <= $highOrder) {
+                $filter->setOrder($filter->getOrder() - 1);
+                $this->updateFilterOrder($filter);
+            }
+        }
+    }
+
+    /**
+     * Increment order of filters which have order between given interval
+     *
+     * @param integer $userId The user id
+     * @param string $pageName The page name
+     * @param integer $lowOrder The low order interval
+     * @param integer $highOrder The high order interval
+     * @return void
+     */
+    private function incrementOrderBetweenIntervalByUserId(
+        int $userId,
+        string $pageName,
+        int $lowOrder,
+        int $highOrder
+    ): void {
+        $filters = $this->findFiltersByUserId($userId, $pageName, null, null, null);
+
+        foreach ($filters as $filter) {
+            if ($filter->getOrder() >= $lowOrder && $filter->getOrder() <= $highOrder) {
+                $filter->setOrder($filter->getOrder() + 1);
+                $this->updateFilterOrder($filter);
+            }
+        }
+    }
+
+    /**
+     * Update filter order
+     *
+     * @param Filter $filter
+     * @return void
+     */
+    private function updateFilterOrder(Filter $filter): void
+    {
+        $request = $this->translateDbName('
+            UPDATE `:db`.user_filter
+            SET `order` = :order
+            WHERE user_id = :user_id
+            AND page_name = :page_name
+            AND id = :filter_id
+        ');
+        $statement = $this->db->prepare($request);
+
+        $statement->bindValue(':order', $filter->getOrder(), \PDO::PARAM_INT);
+        $statement->bindValue(':user_id', $filter->getUserId(), \PDO::PARAM_INT);
+        $statement->bindValue(':page_name', $filter->getPageName(), \PDO::PARAM_STR);
+        $statement->bindValue(':filter_id', $filter->getId(), \PDO::PARAM_INT);
+
+        $statement->execute();
     }
 }

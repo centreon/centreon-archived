@@ -69,7 +69,7 @@ Centreon\Domain\MonitoringServer\MonitoringServer:
         remoteId:
             type: int
             groups: [monitoringserver_main]
-        remoteServerCentcoreSshProxy:
+        remoteServerUseAsProxy:
             type: bool
             groups: [monitoringserver_main]
         isUpdated:

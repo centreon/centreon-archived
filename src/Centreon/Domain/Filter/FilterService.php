@@ -22,16 +22,31 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Filter;
 
+use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
 use Centreon\Domain\Filter\Interfaces\FilterServiceInterface;
+use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
+use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface;
 
 /**
  * This class is designed to manage monitoring servers and their associated resources.
  *
  * @package Centreon\Domain\Filter
  */
-class FilterService implements FilterServiceInterface
+class FilterService extends AbstractCentreonService implements FilterServiceInterface
 {
+    /**
+     * @var HostGroupServiceInterface
+     */
+    private $hostGroupService;
+
+    /**
+     * @var ServiceGroupServiceInterface
+     */
+    private $serviceGroupService;
+
     /**
      * @var FilterRepositoryInterface
      */
@@ -39,11 +54,32 @@ class FilterService implements FilterServiceInterface
 
     /**
      * FilterService constructor.
+     *
+     * @param HostGroupServiceInterface $hostGroupService
+     * @param ServiceGroupServiceInterface $serviceGroupService
      * @param FilterRepositoryInterface $filterRepository
      */
-    public function __construct(FilterRepositoryInterface $filterRepository)
-    {
+    public function __construct(
+        HostGroupServiceInterface $hostGroupService,
+        ServiceGroupServiceInterface $serviceGroupService,
+        FilterRepositoryInterface $filterRepository
+    ) {
+        $this->hostGroupService = $hostGroupService;
+        $this->serviceGroupService = $serviceGroupService;
         $this->filterRepository = $filterRepository;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param Contact|null $contact
+     * @return FilterServiceInterface
+     */
+    public function filterByContact($contact): FilterServiceInterface
+    {
+        parent::filterByContact($contact);
+        $this->hostGroupService->filterByContact($contact);
+
+        return $this;
     }
 
     /**
@@ -57,51 +93,94 @@ class FilterService implements FilterServiceInterface
             $filter->getName()
         );
         if ($foundFilter !== null) {
-            throw new FilterException('Filter already exists');
+            throw new FilterException(_('Filter already exists'));
         }
 
         try {
             return $this->filterRepository->addFilter($filter);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when adding filter', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when adding filter %s'), $filter->getName()),
+                0,
+                $ex
+            );
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function updateFilter(Filter $filter): int
+    public function updateFilter(Filter $filter): void
     {
-        $foundFilter = $this->filterRepository->findFilterByUserIdAndId(
-            $filter->getUserId(),
-            $filter->getPageName(),
-            $filter->getId()
-        );
-        if ($foundFilter === null) {
-            throw new FilterException('Filter not found');
-        }
-
         try {
-            return $this->filterRepository->updateFilter($filter);
+            $this->checkCriterias($filter->getCriterias());
+
+            $this->filterRepository->updateFilter($filter);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when updating filter', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when updating filter %s'), $filter->getName()),
+                0,
+                $ex
+            );
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function deleteFilterByUserId(int $userId, string $pageName, int $filterId): void
+    public function checkCriterias(array $criterias): void
     {
-        $foundFilter = $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
-        if ($foundFilter === null) {
-            throw new FilterException('Filter not found');
+        foreach ($criterias as $criteria) {
+            if ($criteria->getType() === 'multi_select' && is_array($criteria->getValue())) {
+                switch ($criteria->getObjectType()) {
+                    case 'host_group':
+                        $hostGroupIds = array_column($criteria->getValue(), 'id');
+                        $hostGroups = $this->hostGroupService
+                            ->filterByContact($this->contact)
+                            ->findHostGroupsByIds($hostGroupIds);
+                        $criteria->setValue(array_map(
+                            function ($hostGroup) {
+                                return [
+                                    'id' => $hostGroup->getId(),
+                                    'name' => $hostGroup->getName(),
+                                ];
+                            },
+                            $hostGroups
+                        ));
+                        break;
+                    case 'service_group':
+                        $serviceGroupIds = array_column($criteria->getValue(), 'id');
+                        $serviceGroups = $this->serviceGroupService
+                            ->filterByContact($this->contact)
+                            ->findServiceGroupsByIds($serviceGroupIds);
+                        $criteria->setValue(array_map(
+                            function ($serviceGroup) {
+                                return [
+                                    'id' => $serviceGroup->getId(),
+                                    'name' => $serviceGroup->getName(),
+                                ];
+                            },
+                            $serviceGroups
+                        ));
+                        break;
+                }
+            }
         }
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function deleteFilter(Filter $filter): void
+    {
         try {
-            $this->filterRepository->deleteFilterByUserId($userId, $pageName, $filterId);
+            $this->filterRepository->deleteFilter($filter);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when deleting filter', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when deleting filter %s'), $filter->getName()),
+                0,
+                $ex
+            );
         }
     }
 
@@ -113,7 +192,7 @@ class FilterService implements FilterServiceInterface
         try {
             return $this->filterRepository->findFiltersByUserIdWithRequestParameters($userId, $pageName);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when searching for filters', 0, $ex);
+            throw new FilterException(_('Error when searching filters'), 0, $ex);
         }
     }
 
@@ -125,7 +204,11 @@ class FilterService implements FilterServiceInterface
         try {
             return $this->filterRepository->findFilterByUserIdAndId($userId, $pageName, $filterId);
         } catch (\Exception $ex) {
-            throw new FilterException('Error when searching for filters', 0, $ex);
+            throw new FilterException(
+                sprintf(_('Error when searching filter id %d'), $filterId),
+                0,
+                $ex
+            );
         }
     }
 }

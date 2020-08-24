@@ -34,7 +34,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const searchFields = ['h.name', 'h.alias', 'h.address', 's.description'];
+const searchFields = [
+  'h.name',
+  'h.alias',
+  'h.address',
+  's.description',
+  'information',
+];
 
 interface ContentProps {
   onClose: (event) => void;

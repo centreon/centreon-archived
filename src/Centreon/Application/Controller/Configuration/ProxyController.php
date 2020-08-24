@@ -93,7 +93,7 @@ class ProxyController extends AbstractController
         $errors = $entityValidator->validateEntity(
             Proxy::class,
             json_decode((string) $request->getContent(), true),
-            ['Default'],
+            ['proxy_main'],
             false // We don't allow extra fields
         );
         if ($errors->count() > 0) {

@@ -59,6 +59,7 @@ const fillEntities = (): Array<Resource> => {
       index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
     type: index % 4 === 0 ? 'service' : 'host',
     details_endpoint: 'endpoint',
+    timeline_endpoint: 'endpoint',
   }));
 };
 
@@ -106,6 +107,7 @@ describe(Listing, () => {
     });
 
     mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedListing })
       .mockResolvedValueOnce({
         data: {
           result: [],
@@ -115,8 +117,7 @@ describe(Listing, () => {
             total: 0,
           },
         },
-      })
-      .mockResolvedValueOnce({ data: retrievedListing });
+      });
   });
 
   afterEach(() => {

@@ -6,7 +6,7 @@ import { useTheme, fade } from '@material-ui/core';
 
 import { Listing } from '@centreon/ui';
 
-import { detailsTabId, graphTabId } from '../Details/Body/tabs';
+import { detailsTabId, graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
 import {
   labelRowsPerPage,
@@ -60,6 +60,7 @@ const ResourceListing = (): JSX.Element => {
     details_endpoint,
     status_graph_endpoint,
     performance_graph_endpoint,
+    timeline_endpoint,
   }): void => {
     if (isNil(performance_graph_endpoint)) {
       setDefaultDetailsTabIdToOpen(detailsTabId);
@@ -68,6 +69,7 @@ const ResourceListing = (): JSX.Element => {
       details: details_endpoint,
       statusGraph: status_graph_endpoint,
       performanceGraph: performance_graph_endpoint,
+      timeline: timeline_endpoint,
     });
   };
 
@@ -95,12 +97,14 @@ const ResourceListing = (): JSX.Element => {
       details_endpoint,
       status_graph_endpoint,
       performance_graph_endpoint,
+      timeline_endpoint,
     }) => {
       setDefaultDetailsTabIdToOpen(graphTabId);
       setSelectedDetailsEndpoints({
         details: details_endpoint,
         statusGraph: status_graph_endpoint,
         performanceGraph: performance_graph_endpoint,
+        timeline: timeline_endpoint,
       });
     },
   });
