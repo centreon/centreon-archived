@@ -15425,3 +15425,39 @@ msgstr "Filtre créé"
 
 msgid "Filter saved"
 msgstr "Filtre sauvegardé"
+
+msgid "Edit filters"
+msgstr "Éditer les filtres"
+
+msgid "Rename"
+msgstr "Renommer"
+
+msgid "Delete filter?"
+msgstr "Supprimer le filtre?"
+
+msgid "Filter deleted"
+msgstr "Filtre supprimé"
+
+msgid "Filter updated"
+msgstr "Filtre actualisé"
+
+msgid "Name cannot be empty"
+msgstr "Le nom ne peut pas être vide"
+
+msgid "Error when searching for all hostgroups"
+msgstr "Erreur lors de la recherche de tous les groupes d'hôtes"
+
+msgid "Error when searching for services by host"
+msgstr "Erreur lors de la recherche de services par hôte"
+
+msgid "Error when searching for services by host groups"
+msgstr "Erreur lors de la recherche de services par groupe d'hôtes"
+
+msgid "One of the class instances is not of hostgroup type."
+msgstr "Une des instances de classe n'est pas de type groupe d'hôtes"
+
+msgid "Error when searching for engine configuration"
+msgstr "Erreur lors de la recherche de la configuration du moteur"
+
+msgid "Cannot find engine configuration"
+msgstr "Impossible de trouver la configuration du moteur"

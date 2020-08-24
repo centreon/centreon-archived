@@ -23,16 +23,22 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\ServiceConfiguration;
 
 use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Domain\ServiceConfiguration\HostTemplateService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
+use Centreon\Infrastructure\AccessControlList\AccessControlListRepositoryTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements ServiceConfigurationRepositoryInterface
 {
+    use AccessControlListRepositoryTrait;
+
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -160,5 +166,86 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
         }
 
         return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostTemplateServices(array $hostTemplateIds): array
+    {
+        if (empty($hostTemplateIds)) {
+            return [];
+        }
+        $request = $this->translateDbName(
+            'SELECT host.host_id, host.host_name, host.host_alias, host.host_register AS host_type,
+                host.host_activate AS host_is_activate,
+                service.service_id, service.service_description, service.service_alias,
+                service.service_register AS service_service_type, service.service_activate AS service_activated
+            FROM `:db`.host_service_relation hsr
+            INNER JOIN `:db`.host 
+                ON host.host_id = hsr.host_host_id
+                AND host.host_register = \'0\'
+            INNER JOIN `:db`.service
+                ON service.service_id = hsr.service_service_id
+                AND service.service_register = \'0\'
+            WHERE hsr.host_host_id IN (' . str_repeat('?,', count($hostTemplateIds) - 1). '?)'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->execute($hostTemplateIds);
+
+        $hostTemplateServices = [];
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostTemplate = EntityCreator::createEntityByArray(
+                Host::class,
+                $record,
+                'host_'
+            );
+            $serviceTemplate = EntityCreator::createEntityByArray(
+                Service::class,
+                $record,
+                'service_'
+            );
+            $hostTemplateServices[] = (new HostTemplateService())
+                ->setHostTemplate($hostTemplate)
+                ->setServiceTemplate($serviceTemplate);
+        }
+        return $hostTemplateServices;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServicesByHost(Host $host): array
+    {
+        $request = $this->translateDbName(
+            'SELECT service.service_id, service.service_description, service.service_alias,
+                service.service_register AS service_service_type, service.service_activate AS service_activated
+            FROM `:db`.service
+            INNER JOIN `:db`.host_service_relation hsr
+                ON hsr.service_service_id = service.service_id
+                AND service.service_register = \'1\'
+            WHERE hsr.host_host_id = :host_id'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        $services = [];
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $services[] = EntityCreator::createEntityByArray(
+                Service::class,
+                $record,
+                'service_'
+            );
+        }
+        return $services;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServicesByHostGroups(array $hostGroups): array
+    {
+        return [];
     }
 }

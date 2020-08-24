@@ -66,7 +66,7 @@ class Service
     private $isLocked;
 
     /**
-     * @var int
+     * @var int Service type
      * @see Service::TYPE_TEMPLATE          (0)
      * @see Service::TYPE_SERVICE           (1)
      * @see Service::TYPE_META_SERVICE      (2)

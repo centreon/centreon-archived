@@ -176,3 +176,9 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
         public: true
+
+    Centreon\Domain\HostService\Interfaces\HostServiceServiceInterface:
+        class: Centreon\Domain\HostService\HostServiceService
+
+    Centreon\Domain\HostService\Interfaces\HostServiceRepositoryInterface:
+        class: Centreon\Infrastructure\HostService\HostServiceRepositoryRDB

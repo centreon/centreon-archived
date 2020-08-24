@@ -164,7 +164,11 @@ class EntityCreator
                     call_user_func_array(array($objectToSet, $setterMethod), [$value]);
                 } else {
                     throw new \Exception(
-                        sprintf(_('The public method %s::$setterMethod is not found'), $this->className)
+                        sprintf(
+                            _('The public method %s::%s is not found'),
+                            $this->className,
+                            $setterMethod
+                        )
                     );
                 }
             }

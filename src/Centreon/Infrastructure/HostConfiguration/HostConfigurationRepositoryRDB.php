@@ -25,6 +25,7 @@ namespace Centreon\Infrastructure\HostConfiguration;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\HostConfiguration\ExtendedHost;
 use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
@@ -74,7 +75,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':ip_address', $host->getIpAddress(), \PDO::PARAM_STR);
             $statement->bindValue(':comment', $host->getComment(), \PDO::PARAM_STR);
             $statement->bindValue(':geo_coords', $host->getGeoCoords(), \PDO::PARAM_STR);
-            $statement->bindValue(':is_activate', $host->isActivate(), \PDO::PARAM_STR);
+            $statement->bindValue(':is_activate', $host->isActivated(), \PDO::PARAM_STR);
             $statement->bindValue(':host_register', $host->getType(), \PDO::PARAM_STR);
             $statement->execute();
 
@@ -287,6 +288,70 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         return null;
     }
 
+
+    /**
+     * @inheritDoc
+     */
+    public function findAndAddHostTemplates(Host $host): void
+    {
+        $request = $this->translateDbName(
+            'WITH RECURSIVE template AS (
+                SELECT htr.*, 0 AS level
+                FROM `:db`.host_template_relation htr 
+                WHERE htr.host_host_id  = :host_id
+                UNION
+                SELECT htr2.*, template.level + 1
+                FROM `:db`.host_template_relation htr2
+                INNER JOIN template 
+                    ON template.host_tpl_id = htr2.host_host_id
+                INNER JOIN `:db`.host 
+                    ON host.host_id = htr2.host_tpl_id 
+                    AND host.host_register = 1
+            )
+            SELECT host_host_id AS template_host_id, host_tpl_id AS template_id, `order` AS template_order, 
+                `level` AS template_level, host.host_id AS id, host.host_name AS name, host.host_alias AS alias,
+                host.host_register AS type
+            FROM template
+            INNER JOIN `:db`.host 
+                ON host.host_id = template.host_tpl_id
+            ORDER BY `level`, host_host_id, `order`'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        /**
+         * Adds a host template by browsing all templates recursively until you find the parent template.
+         *
+         * @param int $hostParentId Id of the host template for which we want to add the given template.
+         * @param Host $hostTemplate Host template to be added
+         * @param Host[] $templates Host templates where we will try to find the parent
+         *                          of the host template to be added
+         */
+        $addTemplateToHost =
+            function (int $hostParentId, Host $hostTemplate, array $templates) use (&$addTemplateToHost) {
+                foreach ($templates as $template) {
+                    if ($template->getId() === $hostParentId) {
+                        $template->addTemplate($hostTemplate);
+                    } else {
+                        $addTemplateToHost($hostParentId, $hostTemplate, $template->getTemplates());
+                    }
+                }
+            };
+
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostTemplate = EntityCreator::createEntityByArray(
+                Host::class,
+                $record
+            );
+            if ((int) $record['template_host_id'] === $host->getId()) {
+                $host->addTemplate($hostTemplate);
+            } else {
+                $addTemplateToHost((int) $record['template_host_id'], $hostTemplate, $host->getTemplates());
+            }
+        }
+    }
+
     /**
      * @inheritDoc
      */
@@ -314,6 +379,34 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             return ((int) $result) > 0;
         }
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostGroups(Host $host): array
+    {
+        $request = $this->translateDbName(
+            'SELECT hg.*, hg.icon_image AS hg_icon_id, hg.map_icon_image AS hg_map_icon_id,
+                hg.hg_rrd_retention AS hg_rrd_retention_delay, hg.geo_coords AS hg_geographic_coordinates
+            FROM `:db`.hostgroup hg
+            INNER JOIN `:db`.hostgroup_relation hgr
+                ON hgr.hostgroup_hg_id = hg.hg_id
+            WHERE hgr.host_host_id = :host_id'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        $hostGroups = [];
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostGroups[] = EntityCreator::createEntityByArray(
+                HostGroup::class,
+                $record,
+                'hg_'
+            );
+        }
+        return $hostGroups;
     }
 
     /**

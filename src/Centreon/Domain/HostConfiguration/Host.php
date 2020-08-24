@@ -87,7 +87,7 @@ class Host
     /**
      * @var bool
      */
-    private $isActivate = true;
+    private $isActivated = true;
 
     /**
      * @var int Host type
@@ -241,18 +241,18 @@ class Host
     /**
      * @return bool
      */
-    public function isActivate(): bool
+    public function isActivated(): bool
     {
-        return $this->isActivate;
+        return $this->isActivated;
     }
 
     /**
-     * @param bool $isActivate
+     * @param bool $isActivated
      * @return Host
      */
-    public function setIsActivate(bool $isActivate): Host
+    public function setActivated(bool $isActivated): Host
     {
-        $this->isActivate = $isActivate;
+        $this->isActivated = $isActivated;
         return $this;
     }
 
@@ -317,23 +317,17 @@ class Host
     }
 
     /**
-     * @param Host[] $templates
-     * @return Host
-     */
-    public function setTemplates(array $templates): Host
-    {
-        $this->templates = $templates;
-        return $this;
-    }
-
-    /**
      * Add a host template.
      *
      * @param Host $hostTemplate
      * @return Host
+     * @throws \InvalidArgumentException
      */
     public function addTemplate(Host $hostTemplate): Host
     {
+        if ($hostTemplate->getType() !== Host::TYPE_HOST_TEMPLATE) {
+            throw new \InvalidArgumentException('This host is not a template');
+        }
         $this->templates[] = $hostTemplate;
         return $this;
     }
