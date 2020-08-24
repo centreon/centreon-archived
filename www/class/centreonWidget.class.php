@@ -490,7 +490,7 @@ class CentreonWidget
      * @param array $widgetList
      * @throws Exception
      */
-    public function udpateViewWidgetRelations($viewId, array $widgetList = [])
+    public function updateViewWidgetRelations($viewId, array $widgetList = [])
     {
         $query = 'DELETE FROM widget_views WHERE custom_view_id = :viewId';
         $stmt = $this->db->prepare($query);
