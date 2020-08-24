@@ -179,7 +179,7 @@ const PerformanceGraph = ({
         <ComposedChart data={timeSeries} stackOffset="sign">
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
-            dataKey="time"
+            dataKey="timeTick"
             tickFormatter={formatXAxisTick}
             tick={{ fontSize: 13 }}
           />
@@ -192,6 +192,7 @@ const PerformanceGraph = ({
             contentStyle={{ fontFamily }}
             wrapperStyle={{ opacity: 0.7 }}
             isAnimationActive={false}
+            filterNull={false}
           />
         </ComposedChart>
       </ResponsiveContainer>
