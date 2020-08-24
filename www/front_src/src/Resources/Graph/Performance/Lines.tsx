@@ -5,7 +5,8 @@ import { pipe, uniq, prop, map } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
-import { fontFamily, formatValue } from '.';
+import { fontFamily } from '.';
+import formatMetricValue from './formatMetricValue';
 
 const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
@@ -25,7 +26,7 @@ const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
             key={unit}
             orientation={index === 0 ? 'left' : 'right'}
             tickFormatter={(tick): string => {
-              return formatValue({ value: tick, unit, base });
+              return formatMetricValue({ value: tick, unit, base });
             }}
             {...props}
           />
@@ -37,7 +38,7 @@ const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
       <YAxis
         key="single-y-axis"
         tickFormatter={(tick): string => {
-          return formatValue({ value: tick, unit: '', base });
+          return formatMetricValue({ value: tick, unit: '', base });
         }}
         {...props}
       />,

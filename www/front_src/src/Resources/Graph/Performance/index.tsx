@@ -7,7 +7,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import * as numeral from 'numeral';
 import {
   pipe,
   map,
@@ -32,26 +31,9 @@ import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import getGraphLines from './Lines';
+import formatMetricValue from './formatMetricValue';
 
 const fontFamily = 'Roboto, sans-serif';
-
-const formatValue = ({ value, unit, base = 1000 }): string => {
-  const base2Units = [
-    'B',
-    'bytes',
-    'bytespersecond',
-    'B/s',
-    'B/sec',
-    'o',
-    'octets',
-  ];
-
-  const base1024 = base2Units.includes(unit) || base === 1024;
-
-  const format = base1024 ? '0b' : '0.[00]a';
-
-  return numeral(value).format(format).replace('B', '');
-};
 
 interface Props {
   endpoint: string;
@@ -137,7 +119,7 @@ const PerformanceGraph = ({
       path(['name']),
     )(lineData) as string;
 
-    return [formatValue({ value, unit, base }), legendName];
+    return [formatMetricValue({ value, unit, base }), legendName];
   };
 
   const formatXAxisTick = (tick): string =>
@@ -211,4 +193,4 @@ const PerformanceGraph = ({
 };
 
 export default PerformanceGraph;
-export { fontFamily, formatValue };
+export { fontFamily };
