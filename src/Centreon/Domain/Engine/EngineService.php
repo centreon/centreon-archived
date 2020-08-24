@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Engine;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
-
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Downtime\DowntimeService;
@@ -43,8 +42,9 @@ use JMS\Serializer\Exception\ValidationFailedException;
  * @package Centreon\Domain\Engine
  * @todo Replace the ValidationFailedException with a domain exception to avoid depending on the framework
  */
-class EngineService extends AbstractCentreonService
-    implements EngineServiceInterface, EngineConfigurationServiceInterface
+class EngineService extends AbstractCentreonService implements
+    EngineServiceInterface,
+    EngineConfigurationServiceInterface
 {
     /**
      * @var EngineRepositoryInterface

@@ -22,12 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
-use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\Repository\RepositoryException;
-use Centreon\Infrastructure\HostConfiguration\HostConfigurationRepositoryRDB;
 
 interface HostConfigurationRepositoryInterface
 {
@@ -74,15 +71,6 @@ interface HostConfigurationRepositoryInterface
      * @return int Number of hosts
      */
     public function getNumberOfHosts(): int;
-
-    /**
-     * Find all host groups associated to the host.
-     *
-     * @param Host $host Host for which we want to find all host groups
-     * @return HostGroup[]
-     * @throws \Exception
-     */
-    public function findHostGroups(Host $host): array;
 
     /**
      * Find all host macros for the host.

@@ -25,7 +25,6 @@ namespace Centreon\Infrastructure\HostConfiguration;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\HostConfiguration\ExtendedHost;
 use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
@@ -310,7 +309,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             )
             SELECT host_host_id AS template_host_id, host_tpl_id AS template_id, `order` AS template_order, 
                 `level` AS template_level, host.host_id AS id, host.host_name AS name, host.host_alias AS alias,
-                host.host_register AS type
+                host.host_register AS type, host.host_activate AS is_activated
             FROM template
             INNER JOIN `:db`.host 
                 ON host.host_id = template.host_tpl_id
@@ -379,34 +378,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             return ((int) $result) > 0;
         }
         return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findHostGroups(Host $host): array
-    {
-        $request = $this->translateDbName(
-            'SELECT hg.*, hg.icon_image AS hg_icon_id, hg.map_icon_image AS hg_map_icon_id,
-                hg.hg_rrd_retention AS hg_rrd_retention_delay, hg.geo_coords AS hg_geographic_coordinates
-            FROM `:db`.hostgroup hg
-            INNER JOIN `:db`.hostgroup_relation hgr
-                ON hgr.hostgroup_hg_id = hg.hg_id
-            WHERE hgr.host_host_id = :host_id'
-        );
-        $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-        $statement->execute();
-
-        $hostGroups = [];
-        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $hostGroups[] = EntityCreator::createEntityByArray(
-                HostGroup::class,
-                $record,
-                'hg_'
-            );
-        }
-        return $hostGroups;
     }
 
     /**

@@ -22,8 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration;
 
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\HostConfiguration\HostGroup;
+use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
@@ -40,19 +42,33 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
      * @var AccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
+    /**
+     * @var EngineConfigurationServiceInterface
+     */
+    private $engineConfigurationService;
+    /**
+     * @var HostConfigurationServiceInterface
+     */
+    private $hostConfigurationService;
 
     /**
      * ServiceConfigurationService constructor.
      *
      * @param ServiceConfigurationRepositoryInterface $serviceConfigurationRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param HostConfigurationServiceInterface $hostConfigurationService
+     * @param EngineConfigurationServiceInterface $engineConfigurationService
      */
     public function __construct(
         ServiceConfigurationRepositoryInterface $serviceConfigurationRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        HostConfigurationServiceInterface $hostConfigurationService,
+        EngineConfigurationServiceInterface $engineConfigurationService
     ) {
         $this->serviceRepository = $serviceConfigurationRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->engineConfigurationService = $engineConfigurationService;
+        $this->hostConfigurationService = $hostConfigurationService;
     }
 
     /**
@@ -69,6 +85,128 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
             ->filterByAccessGroups($accessGroups);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function applyServices(Host $host): void
+    {
+        if ($host->getId() == null) {
+            throw new ServiceConfigurationException(_('The host id can not be null'));
+        }
+        $this->hostConfigurationService->findAndAddHostTemplates($host);
+        if (empty($host->getTemplates())) {
+            return;
+        }
+        /**
+         * To avoid defining a service description with illegal characters,
+         * we retrieve the engine configuration to retrieve the list of these characters.
+         */
+        $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByHost($host);
+        if ($engineConfiguration === null) {
+            throw new ServiceConfigurationException(_('Impossible to find the Engine configuration'));
+        }
+        $hostTemplateIds = [];
+
+        /**
+         * Find all host templates recursively and copy their id into the given list.
+         *
+         * **We only retrieve templates that are enabled.**
+         *
+         * @param Host $host Host for which we will find all host template.
+         * @param $hostTemplateIds
+         */
+        $extractHostTemplateIdsFromHost =
+            function (Host $host, &$hostTemplateIds) use (&$extractHostTemplateIdsFromHost): void {
+                foreach ($host->getTemplates() as $hostTemplate) {
+                    $hostTemplateIds[] = $hostTemplate->getId();
+                    if (!empty($hostTemplate->getTemplates())) {
+                        // The recursive call here allow you to keep the priority orders of the host templates
+                        $extractHostTemplateIdsFromHost($hostTemplate, $hostTemplateIds);
+                    }
+                }
+            };
+        $extractHostTemplateIdsFromHost($host, $hostTemplateIds);
+
+        /**
+         * First, we will search for services already associated with the host to avoid creating a new one with
+         * same service description.
+         */
+        $serviceAlreadyExists = $this->findServicesByHost($host);
+
+        /**
+         * Then, we memorize the alias of service.
+         * The service description is based on the alias of service template when it was created.
+         */
+        $serviceAliasAlreadyUsed = [];
+        foreach ($serviceAlreadyExists as $service) {
+            $serviceAliasAlreadyUsed[] = $service->getDescription();
+        }
+
+        /**
+         * Then, we will search for all service templates associated with the host templates
+         */
+        $hostTemplateServices = $this->findHostTemplateServices($hostTemplateIds);
+
+        /**
+         * Extract service templates associated to host template.
+         *
+         * **We retrieve service templates only from an enabled host template.**
+         *
+         * @param int $hostTemplateId Host template id for which we want to find the services templates
+         * @return Service[]
+         */
+        $extractServiceTemplatesByHostTemplate = function (int $hostTemplateId) use ($hostTemplateServices): array {
+            $serviceTemplates = [];
+            foreach ($hostTemplateServices as $hostTemplateService) {
+                if ($hostTemplateService->getHostTemplate()->getId() === $hostTemplateId) {
+                    // Only if the host template is activated
+                    if ($hostTemplateService->getHostTemplate()->isActivated()) {
+                        $serviceTemplates[] = $hostTemplateService->getServiceTemplate();
+                    }
+                }
+            }
+            return $serviceTemplates;
+        };
+
+        $servicesToBeCreated = [];
+
+        /**
+         * Then, we set aside the services to be created.
+         * We must not have two services with the same description (alias of the service template).
+         * The priority order is defined by the list of host templates.
+         * We only retrieve the service templates that are activated.
+         */
+        foreach ($hostTemplateIds as $hostTemplateId) {
+            $serviceTemplates = $extractServiceTemplatesByHostTemplate($hostTemplateId);
+
+            foreach ($serviceTemplates as $serviceTemplate) {
+                if (!$serviceTemplate->isActivated()) {
+                    continue;
+                }
+                if (!in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)) {
+                    $serviceDescription = EngineConfiguration::removeIllegalCharacters(
+                        $serviceTemplate->getAlias(),
+                        $engineConfiguration->getIllegalObjectNameCharacters()
+                    );
+
+                    if (empty($serviceDescription)) {
+                        continue;
+                    }
+
+                    $serviceAliasAlreadyUsed[] = $serviceDescription;
+                    $serviceToBeCreated = (new Service())
+                        ->setServiceType(Service::TYPE_SERVICE)
+                        ->setTemplateId($serviceTemplate->getId())
+                        ->setDescription($serviceDescription)
+                        ->setActivated(true);
+                    $servicesToBeCreated[] = $serviceToBeCreated;
+                }
+            }
+        }
+
+        $this->serviceRepository->addServicesToHost($host, $servicesToBeCreated);
     }
 
     /**
@@ -104,23 +242,6 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
             return $this->serviceRepository->findServicesByHost($host);
         } catch (\Throwable $ex) {
             throw new ServiceConfigurationException(_('Error when searching for services by host'), 0, $ex);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findServicesByHostGroups(array $hostGroups): array
-    {
-        try {
-            foreach ($hostGroups as $hostGroup) {
-                if (!($hostGroup instanceof HostGroup)) {
-                    throw new \InvalidArgumentException(_('One of the expected elements is not a host group object'));
-                }
-            }
-            return $this->serviceRepository->findServicesByHostGroups($hostGroups);
-        } catch (\Throwable $ex) {
-            throw new ServiceConfigurationException(_('Error when searching for services by host groups'), 0, $ex);
         }
     }
 
@@ -164,5 +285,13 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
             }
         }
         return $serviceMacrosPassword;
+    }
+
+    /**
+     * @return HostConfigurationServiceInterface
+     */
+    public function getHostConfigurationService(): HostConfigurationServiceInterface
+    {
+        return $this->hostConfigurationService;
     }
 }

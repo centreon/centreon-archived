@@ -24,7 +24,6 @@ namespace Centreon\Infrastructure\ServiceConfiguration;
 
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\ServiceConfiguration\HostTemplateService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
@@ -35,9 +34,16 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
+/**
+ * @todo Add ACL control
+ *
+ * @package Centreon\Infrastructure\ServiceConfiguration
+ */
 class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements ServiceConfigurationRepositoryInterface
 {
     use AccessControlListRepositoryTrait;
+
+    private const MAX_INSERT_BY_QUERY = 50;
 
     /**
      * @var SqlRequestParametersTranslator
@@ -51,6 +57,102 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
         $this->sqlRequestTranslator
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addServicesToHost(Host $host, array $servicesToBeCreated): void
+    {
+        $request = $this->translateDbName(
+            'INSERT INTO `:db`.services 
+            (service_template_model_stm_id, command_command_id, service_description, service_alias, service_locked)
+            VALUES (:template_id, :command_id, :description, :alias, :is_locked, :is_activated)'
+        );
+
+        // We avoid to start again a database transaction
+        $isAlreadyInTransaction = $this->db->inTransaction();
+        if (!$isAlreadyInTransaction) {
+            $this->db->beginTransaction();
+        }
+        $addServiceStatement = $this->db->prepare(
+            $this->translateDbName(
+                'INSERT INTO `:db`.service
+                (service_template_model_stm_id, command_command_id, service_description, service_alias, service_locked, 
+                service_activate, service_register)
+                VALUES (:template_id, :command_id, :description, :alias, :is_locked, :is_activated, :service_type)'
+            )
+        );
+
+        $addServiceExtensionStatement = $this->db->prepare(
+            $this->translateDbName(
+                'INSERT INTO `:db`.extended_service_information 
+                (service_service_id, esi_notes, esi_notes_url, esi_action_url,
+                esi_icon_image, esi_icon_image_alt, graph_id)
+                VALUES (:service_id, :notes, :notes_url, :action_url, :icon_image, :icon_image_alt, :graph_id)'
+            )
+        );
+
+        $addRelationStatement = $this->db->prepare(
+            $this->translateDbName(
+                'INSERT INTO `:db`.host_service_relation 
+                (host_host_id, service_service_id)
+                VALUES (:host_id, :service_id)'
+            )
+        );
+
+        try {
+            foreach ($servicesToBeCreated as $serviceTobeCreated) {
+                /**
+                 * Create service
+                 */
+                $addServiceStatement->bindValue(':template_id', $serviceTobeCreated->getTemplateId(), \PDO::PARAM_INT);
+                $addServiceStatement->bindValue(':command_id', $serviceTobeCreated->getCommandId(), \PDO::PARAM_INT);
+                $addServiceStatement->bindValue(':description', $serviceTobeCreated->getDescription(), \PDO::PARAM_STR);
+                $addServiceStatement->bindValue(':alias', $serviceTobeCreated->getTemplateId(), \PDO::PARAM_STR);
+                $addServiceStatement->bindValue(':is_locked', $serviceTobeCreated->isLocked(), \PDO::PARAM_BOOL);
+                $addServiceStatement->bindValue(':is_activated', $serviceTobeCreated->isActivated(), \PDO::PARAM_STR);
+                $addServiceStatement->bindValue(
+                    ':service_type',
+                    $serviceTobeCreated->getServiceType(),
+                    \PDO::PARAM_STR
+                );
+                $addServiceStatement->execute();
+                $serviceId = (int)$this->db->lastInsertId();
+
+                /**
+                 * Create service extension
+                 */
+                $eService = $serviceTobeCreated->getExtendedService();
+                $addServiceExtensionStatement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
+                $addServiceExtensionStatement->bindValue(':notes', $eService->getNotes(), \PDO::PARAM_STR);
+                $addServiceExtensionStatement->bindValue(':notes_url', $eService->getNotesUrl(), \PDO::PARAM_STR);
+                $addServiceExtensionStatement->bindValue(':action_url', $eService->getActionUrl(), \PDO::PARAM_STR);
+                $addServiceExtensionStatement->bindValue(':icon_image', $eService->getIconId(), \PDO::PARAM_INT);
+                $addServiceExtensionStatement->bindValue(
+                    ':icon_image_alt',
+                    $eService->getIconAlternativeText(),
+                    \PDO::PARAM_STR
+                );
+                $addServiceExtensionStatement->bindValue(':graph_id', $eService->getGraphId(), \PDO::PARAM_INT);
+                $addServiceExtensionStatement->execute();
+
+                /**
+                 * Add relation between service and host
+                 */
+                $addRelationStatement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+                $addRelationStatement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
+                $addRelationStatement->execute();
+            }
+        } catch (\Throwable $ex) {
+            if (!$isAlreadyInTransaction) {
+                $this->db->rollBack();
+            }
+            throw $ex;
+        }
+        if (!$isAlreadyInTransaction) {
+            $this->db->commit();
+        }
     }
 
     /**
@@ -178,9 +280,9 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
         }
         $request = $this->translateDbName(
             'SELECT host.host_id, host.host_name, host.host_alias, host.host_register AS host_type,
-                host.host_activate AS host_is_activate,
+                host.host_activate AS host_is_activated,
                 service.service_id, service.service_description, service.service_alias,
-                service.service_register AS service_service_type, service.service_activate AS service_activated
+                service.service_register AS service_service_type, service.service_activate AS service_is_activated
             FROM `:db`.host_service_relation hsr
             INNER JOIN `:db`.host 
                 ON host.host_id = hsr.host_host_id
@@ -219,7 +321,8 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
     {
         $request = $this->translateDbName(
             'SELECT service.service_id, service.service_description, service.service_alias,
-                service.service_register AS service_service_type, service.service_activate AS service_activated
+                service.service_register AS service_service_type, service.service_activate AS service_activated,
+                service.service_activate AS service_is_activated
             FROM `:db`.service
             INNER JOIN `:db`.host_service_relation hsr
                 ON hsr.service_service_id = service.service_id
@@ -239,13 +342,5 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
             );
         }
         return $services;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findServicesByHostGroups(array $hostGroups): array
-    {
-        return [];
     }
 }

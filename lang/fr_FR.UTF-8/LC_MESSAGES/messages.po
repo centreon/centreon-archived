@@ -15461,3 +15461,6 @@ msgstr "Erreur lors de la recherche de la configuration du moteur"
 
 msgid "Cannot find engine configuration"
 msgstr "Impossible de trouver la configuration du moteur"
+
+msgid "The host id can not be null"
+msgstr "L'id de l'hôte ne peut pas être nul"

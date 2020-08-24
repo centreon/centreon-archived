@@ -25,7 +25,7 @@ namespace Centreon\Domain\ServiceConfiguration;
 use Centreon\Domain\HostConfiguration\Host;
 
 /**
- * This class is design to represent a service template associated to a host template
+ * This class is designed to represent a service template associated to a host template
  *
  * @package Centreon\Domain\ServiceConfiguration
  */

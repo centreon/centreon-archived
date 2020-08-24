@@ -24,14 +24,21 @@ namespace Centreon\Domain\ServiceConfiguration\Interfaces;
 
 use Centreon\Domain\AccessControlList\Interfaces\AccessControlListRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\ServiceConfiguration\HostTemplateService;
 use Centreon\Domain\ServiceConfiguration\Service;
-use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 
 interface ServiceConfigurationRepositoryInterface extends AccessControlListRepositoryInterface
 {
+    /**
+     * Add services to host.
+     *
+     * @param Host $host Host for which we want to add services
+     * @param Service[] $servicesToBeCreated Services to be created
+     * @throws \Throwable
+     */
+    public function addServicesToHost(Host $host, array $servicesToBeCreated): void;
+
     /**
      * Find all service macros for the service.
      *
@@ -80,12 +87,4 @@ interface ServiceConfigurationRepositoryInterface extends AccessControlListRepos
      * @throws \Exception
      */
     public function findServicesByHost(Host $host): array;
-
-    /**
-     * Find all services associated to host groups.
-     *
-     * @param HostGroup[] $hostGroups Host groups for which we want to find services
-     * @return Service[]
-     */
-    public function findServicesByHostGroups(array $hostGroups): array;
 }

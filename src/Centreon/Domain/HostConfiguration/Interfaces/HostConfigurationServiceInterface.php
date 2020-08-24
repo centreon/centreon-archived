@@ -24,8 +24,6 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
-use Centreon\Domain\HostConfiguration\HostConfigurationService;
-use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\HostConfiguration\HostMacro;
 
 interface HostConfigurationServiceInterface
@@ -57,12 +55,14 @@ interface HostConfigurationServiceInterface
     public function getNumberOfHosts(): int;
 
     /**
-     * Applies the services according to the host templates associated with the given host and their priorities.
+     * Find and add all host templates in the given host.
      *
-     * @param Host $host Host for which we want to apply the services
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host Host for which we want to find and add all host templates
      * @throws \Throwable
      */
-    public function applyServices(Host $host): void;
+    public function findAndAddHostTemplates(Host $host): void;
 
     /**
      * Find all host macros for the host.
@@ -73,15 +73,6 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
-
-    /**
-     * Find all host groups associated to the host.
-     *
-     * @param Host $host Host for which we want to find all host groups
-     * @return HostGroup[]
-     * @throws \Exception
-     */
-    public function findHostGroups(Host $host): array;
 
     /**
      * Find all on-demand host macros of type password needed for this command.

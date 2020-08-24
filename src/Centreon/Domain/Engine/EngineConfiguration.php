@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
@@ -17,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
 
 namespace Centreon\Domain\Engine;
 
@@ -124,7 +126,6 @@ class EngineConfiguration
     public static function removeIllegalCharacters(string $stringToAnalyse, string $illegalCharacters): string
     {
         $illegalCharacters = html_entity_decode($illegalCharacters);
-        $illegalCharacters = explode(' ', wordwrap($illegalCharacters, 1, ' '));
-        return str_replace($illegalCharacters, '', $stringToAnalyse);
+        return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
     }
 }

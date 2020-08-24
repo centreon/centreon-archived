@@ -74,10 +74,10 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
 
         if (($records = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             return (new EngineConfiguration())
-                ->setId($records['nagios_id'])
+                ->setId((int) $records['nagios_id'])
                 ->setName($records['nagios_name'])
                 ->setIllegalObjectNameCharacters($records['illegal_object_name_chars'])
-                ->setMonitoringServerId($records['nagios_server_id']);
+                ->setMonitoringServerId((int) $records['nagios_server_id']);
         }
         return null;
     }

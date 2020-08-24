@@ -24,7 +24,6 @@ namespace Centreon\Domain\ServiceConfiguration\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\HostConfiguration\HostGroup;
 use Centreon\Domain\ServiceConfiguration\HostTemplateService;
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
@@ -32,6 +31,15 @@ use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 
 interface ServiceConfigurationServiceInterface extends ContactFilterInterface
 {
+    /**
+     * Applies the services according to the host templates associated with the given host and their priorities.
+     *
+     * @param Host $host Host for which we want to apply the services
+     * @throws ServiceConfigurationException
+     * @throws \Throwable
+     */
+    public function applyServices(Host $host): void;
+
     /**
      * Find all service templates associated with the given host templates.
      *
@@ -68,15 +76,6 @@ interface ServiceConfigurationServiceInterface extends ContactFilterInterface
      * @throws ServiceConfigurationException
      */
     public function findServicesByHost(Host $host): array;
-
-    /**
-     * Find all services associated to host groups.
-     *
-     * @param HostGroup[] $hostGroups Host groups for which we want to find services
-     * @return Service[]
-     * @throws ServiceConfigurationException
-     */
-    public function findServicesByHostGroups(array $hostGroups): array;
 
     /**
      * Find all on-demand service macros of type password needed for this command.
