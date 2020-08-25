@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Schedule checks on resources",
+    "type": "object",
+    "required": ["resources"],
+    "properties": {
+        "resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "id",
+                    "parent",
+                    "status"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "service",
+                            "host"
+                        ]
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "up",
+                            "down",
+                            "unreachable",
+                            "ok",
+                            "warning",
+                            "critical",
+                            "unknown"
+                        ]
+                    },
+                    "output": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "performance_data": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}

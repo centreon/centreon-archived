@@ -47,6 +47,16 @@ class ResourceStatus
     public const STATUS_NAME_CRITICAL = 'CRITICAL';
     public const STATUS_NAME_UNKNOWN = 'UNKNOWN';
 
+    public const STATUS_MAPPING = [
+        self::STATUS_NAME_UP => 0,
+        self::STATUS_NAME_DOWN => 1,
+        self::STATUS_NAME_UNREACHABLE => 2,
+        self::STATUS_NAME_OK => 0,
+        self::STATUS_NAME_WARNING => 1,
+        self::STATUS_NAME_CRITICAL => 2,
+        self::STATUS_NAME_UNKNOWN => 3
+    ];
+
     /**
      * @var int|null
      */
