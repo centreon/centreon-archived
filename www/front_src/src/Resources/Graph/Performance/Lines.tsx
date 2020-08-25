@@ -8,14 +8,6 @@ import { fade } from '@material-ui/core';
 import { fontFamily } from '.';
 import formatMetricValue from './formatMetricValue';
 
-const formatTick = ({ unit, base }) => (value): string => {
-  if (isNil(value)) {
-    return '';
-  }
-
-  return formatMetricValue({ value, unit, base }) as string;
-};
-
 const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
@@ -33,7 +25,9 @@ const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
             yAxisId={unit}
             key={unit}
             orientation={index === 0 ? 'left' : 'right'}
-            tickFormatter={formatTick({ unit, base })}
+            tickFormatter={(tick): string => {
+              return formatMetricValue({ value: tick, unit, base });
+            }}
             {...props}
           />
         );
@@ -43,7 +37,9 @@ const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
     return [
       <YAxis
         key="single-y-axis"
-        tickFormatter={formatTick({ unit: '', base })}
+        tickFormatter={(tick): string => {
+          return formatMetricValue({ value: tick, unit: '', base });
+        }}
         {...props}
       />,
     ];
