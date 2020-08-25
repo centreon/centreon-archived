@@ -503,13 +503,13 @@ class Broker extends AbstractObjectJSON
                 }
 
                 $proxy = (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME)
-                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '//:')
+                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '://')
                             : 'http://'
                         ) .  $proxy;
 
-                $proxy .= (filter_var($proxyInfo['proxy_url'], FILTER_VALIDATE_IP))
-                    ? $proxyInfo['proxy_url']
-                    : parse_url($proxyInfo['proxy_url'], PHP_URL_HOST);
+                $proxy .= (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME))
+                    ? parse_url($proxyInfo['proxy_url'], PHP_URL_HOST)
+                    : parse_url($proxyInfo['proxy_url'], PHP_URL_PATH);
                 if (isset($proxyInfo['proxy_port']) && !empty($proxyInfo['proxy_port'])) {
                     $proxy .= ':' . $proxyInfo['proxy_port'];
                 }
