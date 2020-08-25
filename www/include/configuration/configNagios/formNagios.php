@@ -873,7 +873,7 @@ $form->addRule('macros_filter', _("A macro is malformated."), 'validMacroName');
  */
 $ret = $form->getSubmitValues();
 
-$form->setRequiredNote("<font style='color: #ff0000;'>*</font>&nbsp;". _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
  * Smarty template Init
