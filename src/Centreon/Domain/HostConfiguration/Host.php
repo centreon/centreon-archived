@@ -304,10 +304,12 @@ class Host
 
     /**
      * @param int $type
+     * @return Host
      */
-    public function setType(int $type): void
+    public function setType(int $type): Host
     {
         $this->type = $type;
+        return $this;
     }
 
     /**
