@@ -338,6 +338,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 }
             };
 
+        $host->clearTemplates();
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $hostTemplate = EntityCreator::createEntityByArray(
                 Host::class,

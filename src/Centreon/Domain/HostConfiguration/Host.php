@@ -337,6 +337,17 @@ class Host
     }
 
     /**
+     * Clear all templates.
+     *
+     * @return Host
+     */
+    public function clearTemplates(): Host
+    {
+        $this->templates = [];
+        return $this;
+    }
+
+    /**
      * @return HostMacro[]
      */
     public function getMacros(): array
