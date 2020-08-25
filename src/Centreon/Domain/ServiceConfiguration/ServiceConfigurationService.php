@@ -120,6 +120,9 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
         $extractHostTemplateIdsFromHost =
             function (Host $host, &$hostTemplateIds) use (&$extractHostTemplateIdsFromHost): void {
                 foreach ($host->getTemplates() as $hostTemplate) {
+                    if ($hostTemplate->isActivated() === false) {
+                        continue;
+                    }
                     $hostTemplateIds[] = $hostTemplate->getId();
                     if (!empty($hostTemplate->getTemplates())) {
                         // The recursive call here allow you to keep the priority orders of the host templates
