@@ -239,7 +239,7 @@ class CentreonLogAction
     /*
      *  returns list of modifications
      */
-    public function listModification($id, $object_type)
+    public function listModification(int $id, string $objectType)
     {
         global $pearDBO;
         $list_modifications = array();
@@ -248,7 +248,7 @@ class CentreonLogAction
 
         $query = "SELECT action_log_id, action_log_date, action_type FROM log_action" .
             " WHERE object_id = '" . CentreonDB::escape($id) . "'" .
-            " AND object_type = '" . CentreonDB::escape($object_type) . "' ORDER BY action_log_date ASC";
+            " AND object_type = '" . CentreonDB::escape($objectType) . "' ORDER BY action_log_date ASC";
         $dbResult = $pearDBO->query($query);
         while ($row = $dbResult->fetchRow()) {
             $DBRESULT2 = $pearDBO->query(
@@ -263,16 +263,35 @@ class CentreonLogAction
                     AND field_name = 'refMacroPassword'");
             $result = $macroPasswordStatement->fetch();
             $macroPasswordRef = explode(',', $result['field_value']);
-
             while ($field = $DBRESULT2->fetchRow()) {
+                switch ($field['field_name']) {
+                    case 'macroValue':
+                        $macroValueArray = explode(',', $field['field_value']);
+                        foreach ($macroPasswordRef as $macroIdPassword) {
+                            $macroValueArray[$macroIdPassword] = "******";
+                        }
+                        $field['field_value'] = implode(',', $macroValueArray);
+                        if (isset($ref[$field["field_name"]])) {
+                            foreach ($macroPasswordRef as $macroIdPassword) {
+                                $macroValueArray[$macroIdPassword] = "*******";
+                            }
+                            $ref[$field["field_name"]] = implode(',', $macroValueArray);
+                        }
+                        break;
+                    case 'contact_passwd':
+                    case 'contact_passwd2':
+                        $field['field_value'] = '******';
+                        if (isset($ref[$field["field_name"]])) {
+                            $ref[$field["field_name"]] = '*******';
+                        }
+                }
                 if (!isset($ref[$field["field_name"]]) && $field["field_value"] != "") {
                     $list_modifications[$i]["action_log_id"] = $field["action_log_id"];
                     $list_modifications[$i]["field_name"] = $field["field_name"];
                     $list_modifications[$i]["field_value_before"] = "";
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
-                    foreach($macroPasswordRef as $macroPasswordId) {
+                    foreach ($macroPasswordRef as $macroPasswordId) {
                         if (strpos($field["field_name"],'macroOldValue_' . $macroPasswordId) !== false) {
-                            $list_modifications[$i]["field_value_before"] = '******';
                             $list_modifications[$i]["field_value_after"] = '******';
                         }
                     }
@@ -281,7 +300,7 @@ class CentreonLogAction
                     $list_modifications[$i]["field_name"] = $field["field_name"];
                     $list_modifications[$i]["field_value_before"] = $ref[$field["field_name"]];
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
-                    foreach($macroPasswordRef as $macroPasswordId) {
+                    foreach ($macroPasswordRef as $macroPasswordId) {
                         if (strpos($field["field_name"],'macroOldValue_' . $macroPasswordId) !== false) {
                             $list_modifications[$i]["field_value_before"] = '******';
                             $list_modifications[$i]["field_value_after"] = '******';
@@ -371,9 +390,12 @@ class CentreonLogAction
                 if (!isset($uselessKey[trim($key)])) {
                     if (is_array($value)) {
                         if($key === 'macroValue' && isset($ret['macroPassword'])) {
-                            foreach($value as $macroId => $macroValue) {
+                            foreach(array_keys($value) as $macroId) {
+                                /*
+                                 * Set a new refMacroPassword value to be able to find which macro index is a password
+                                 * in the listModification method
+                                 */
                                 if(array_key_exists($macroId, $ret['macroPassword'])) {
-                                    $value[$macroId] = '******';
                                     $info['refMacroPassword'] = implode(",", array_keys($ret['macroPassword']));
                                 }
                             }
