@@ -389,12 +389,12 @@ class CentreonLogAction
             foreach ($ret as $key => $value) {
                 if (!isset($uselessKey[trim($key)])) {
                     if (is_array($value)) {
+                        /*
+                         * Set a new refMacroPassword value to be able to find which macro index is a password
+                         * in the listModification method
+                         */
                         if ($key === 'macroValue' && isset($ret['macroPassword'])) {
                             foreach (array_keys($value) as $macroId) {
-                                /*
-                                 * Set a new refMacroPassword value to be able to find which macro index is a password
-                                 * in the listModification method
-                                 */
                                 if (array_key_exists($macroId, $ret['macroPassword'])) {
                                     $info['refMacroPassword'] = implode(",", array_keys($ret['macroPassword']));
                                 }
