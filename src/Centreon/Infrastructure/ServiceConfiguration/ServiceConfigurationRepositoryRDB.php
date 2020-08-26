@@ -290,7 +290,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
             INNER JOIN `:db`.service
                 ON service.service_id = hsr.service_service_id
                 AND service.service_register = \'0\'
-            WHERE hsr.host_host_id IN (' . str_repeat('?,', count($hostTemplateIds) - 1). '?)'
+            WHERE hsr.host_host_id IN (' . str_repeat('?,', count($hostTemplateIds) - 1) . '?)'
         );
         $statement = $this->db->prepare($request);
         $statement->execute($hostTemplateIds);

@@ -192,8 +192,9 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
                     }
 
                     $illegalObjectNameCharacters = $engineConfiguration->getIllegalObjectNameCharacters();
-                    
-                    if ($serviceTemplate->getAlias() !== null
+
+                    if (
+                        $serviceTemplate->getAlias() !== null
                         && $illegalObjectNameCharacters !== null
                         && !in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)
                     ) {
