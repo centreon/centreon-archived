@@ -15023,3 +15023,15 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Notification sent to"
 #  msgstr ""
+
+#  msgid "Shortcuts"
+#  msgstr ""
+
+#  msgid "View logs"
+#  msgstr ""
+
+#  msgid "Configure"
+#  msgid "%"
+
+#  msgid "View report"
+#  msgstr ""

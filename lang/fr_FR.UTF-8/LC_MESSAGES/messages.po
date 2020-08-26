@@ -15529,3 +15529,15 @@ msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configu
 
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
+
+msgid "Shortcuts"
+msgstr "Raccourcis"
+
+msgid "View logs"
+msgstr "Voir les logs"
+
+msgid "Configure"
+msgid "Configurer"
+
+msgid "View report"
+msgstr "Voir le rapport"
