@@ -93,7 +93,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
     public function applyServices(Host $host): void
     {
         if ($host->getId() == null) {
-            throw new ServiceConfigurationException(_('The host id can not be null'));
+            throw new ServiceConfigurationException(_('The host id cannot be null'));
         }
         $this->hostConfigurationService->findAndAddHostTemplates($host);
         if (empty($host->getTemplates())) {
