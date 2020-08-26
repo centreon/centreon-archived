@@ -14583,7 +14583,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgstr ""
 
 #  msgid "Configure"
-#  msgid "%"
+#  msgid ""
 
 #  msgid "View report"
 #  msgstr ""
