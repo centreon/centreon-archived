@@ -120,13 +120,13 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
                         $value2 = filter_var($value2, FILTER_VALIDATE_INT);
                         $value2
                             ? $bindParams[':sc_level'] = [\PDO::PARAM_INT => $value2]
-                            : $bindParams[':sc_level'] = [\PDO::PARAM_NULL => "NULL"];
+                            : $bindParams[':sc_level'] = [\PDO::PARAM_NULL => null];
                         break;
                     case 'icon_id':
                         $value2 = filter_var($value2, FILTER_VALIDATE_INT);
                         $value2
                             ? $bindParams[':sc_icon_id'] = [\PDO::PARAM_INT => $value2]
-                            : $bindParams[':sc_icon_id'] = [\PDO::PARAM_NULL => "NULL"];
+                            : $bindParams[':sc_icon_id'] = [\PDO::PARAM_NULL => null];
                         break;
                     case 'sc_activate':
                         $value2 = filter_var($value2, FILTER_VALIDATE_INT);
@@ -220,11 +220,11 @@ function insertServiceCategorieInDB()
         \PDO::PARAM_STR => $scDescription
     ];
     ($scSeverityLevel === false || $scType === false)
-        ? $bindParams[':sc_severity_level'] = [\PDO::PARAM_NULL => "NULL"]
+        ? $bindParams[':sc_severity_level'] = [\PDO::PARAM_NULL => null]
         : $bindParams[':sc_severity_level'] = [\PDO::PARAM_INT => $scSeverityLevel];
 
     ($scSeverityIconId === false || $scType === false)
-        ? $bindParams[':sc_icon_id'] = [\PDO::PARAM_NULL => "NULL"]
+        ? $bindParams[':sc_icon_id'] = [\PDO::PARAM_NULL => null]
         : $bindParams[':sc_icon_id'] = [\PDO::PARAM_INT => $scSeverityIconId];
 
     ($scActivate === false)
@@ -276,11 +276,11 @@ function updateServiceCategorieInDB()
         \PDO::PARAM_STR => $scDescription
     ];
     ($scSeverityLevel === false || $scType === false)
-        ? $bindParams[':sc_severity_level'] = [\PDO::PARAM_NULL => "NULL"]
+        ? $bindParams[':sc_severity_level'] = [\PDO::PARAM_NULL => null]
         : $bindParams[':sc_severity_level'] = [\PDO::PARAM_INT => $scSeverityLevel];
 
     ($scSeverityIconId === false || $scType === false)
-        ? $bindParams[':sc_icon_id'] = [\PDO::PARAM_NULL => "NULL"]
+        ? $bindParams[':sc_icon_id'] = [\PDO::PARAM_NULL => null]
         : $bindParams[':sc_icon_id'] = [\PDO::PARAM_INT => $scSeverityIconId];
 
     ($scActivate === false)
