@@ -2454,7 +2454,7 @@ msgstr "Protocole de connexion utilisé par Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:224
 msgid "Use the Remote Server as a proxy"
-msgstr "Utiliser le serveur distant comme proxy"
+msgstr "Utiliser le Remote Server comme proxy"
 
 #: centreon-web/www/install/smarty_translate.php:849
 #: centreon-web/www/include/Administration/parameters/general/form.php:95
@@ -11743,6 +11743,18 @@ msgstr "Configuration du collecteur"
 msgid "Monitoring Engine Init Script"
 msgstr "Script d'initialisation du moteur de supervision"
 
+msgid "Monitoring Engine start command"
+msgstr "Commande de démarrage du moteur de supervision"
+
+msgid "Monitoring Engine stop command"
+msgstr "Commande d'arrêt du moteur de supervision"
+
+msgid "Monitoring Engine restart command"
+msgstr "Commande de redémarrage du moteur de supervision"
+
+msgid "Monitoring Engine reload command"
+msgstr "Commande de rechargement du moteur de supervision"
+
 #: centreon-web/www/include/configuration/configServers/formServers.php:114
 msgid "Init System"
 msgstr "Système d'initialisation"
@@ -11770,6 +11782,9 @@ msgstr "Hôte local ?"
 #: centreon-web/www/include/configuration/configServers/formServers.php:130
 msgid "Is default poller ?"
 msgstr "Collecteur par défaut ?"
+
+msgid "Centreon Broker reload command"
+msgstr "Commande de rechargement de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:157
 msgid "Centreon Broker configuration path"
@@ -14849,8 +14864,11 @@ msgstr "Graphiques"
 msgid "To use additional Remote Servers a Master Remote Server must be selected."
 msgstr "Un Remote Server principal doit être sélectionné, avant d'utiliser des Remote Server additionnels."
 
+msgid "Attach to Master Remote Server"
+msgstr "Lier à un Remote Server principal"
+
 msgid "Attach additional Remote Servers"
-msgstr "Ajouter des Remote Server additonnels"
+msgstr "Lier à des Remote Server additionnels"
 
 msgid "Locked elements"
 msgstr "Eléments verrouillés"
@@ -15476,3 +15494,38 @@ msgstr "par"
 
 msgid "Notification sent to"
 msgstr "Notification envoyée à"
+msgid "The name of the platform is not consistent"
+msgstr "Le nom de cette plateforme n'est pas cohérent"
+
+msgid "The address '%s' for '%s' is not valid"
+msgstr "L'adresse '%s' de '%s' n'est pas valide"
+
+msgid "The type of platform '%s'@'%s' is not consistent"
+msgstr "Le type de la plateforme '%s'@'%s' n'est pas cohérent"
+
+msgid "The address of the parent platform '%s'@'%s' is not consistent"
+msgstr "L'adresse de la plateforme parente '%s'@'%s' n'est pas cohérente"
+
+msgid "A platform using the name : '%s' or address : '%s' already exists"
+msgstr "Une plateforme avec le nom : '%s' ou l'adresse : '%s' existe déjà"
+
+msgid "No parent platform was found for : '%s'@'%s'"
+msgstr "Aucune plateforme parente n'a été trouvée pour : '%s'@'%s'"
+
+msgid "Error when adding in topology the platform : '%s'@'%s'"
+msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
+
+msgid "Cannot use parent address on a Central server type"
+msgstr "Il n'est pas possible d'utiliser l'adresse d'un parent au type de serveur Central"
+
+msgid "Cannot set parent id to a central server"
+msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"
+
+msgid "The Central : '%s'@'%s' is already registered"
+msgstr "Un Central : '%s'@'%s' est déjà enregistré"
+
+msgid "The Central type server : '%s'@'%s' does not match the one configured in Centreon"
+msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configuré dans Centreon"
+
+msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
+msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"

@@ -159,7 +159,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 . "WHEN h.state = 2 THEN 'UNREACHABLE' "
                 . "WHEN h.state = 3 THEN 'PENDING' "
                 . "END AS `status_name`, "
-                . "CASE WHEN h.state = 0 THEN ". ResourceStatus::SEVERITY_OK . ' '
+                . "CASE WHEN h.state = 0 THEN " . ResourceStatus::SEVERITY_OK . ' '
                 . "WHEN h.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . ' '
                 . "WHEN h.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . ' '
                 . "WHEN h.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . ' '
@@ -218,7 +218,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 . "WHEN h.state = 2 THEN 'UNREACHABLE' "
                 . "WHEN h.state = 3 THEN 'PENDING' "
                 . "END AS `parent_status_name`, "
-                . "CASE WHEN h.state = 0 THEN ". ResourceStatus::SEVERITY_OK . ' '
+                . "CASE WHEN h.state = 0 THEN " . ResourceStatus::SEVERITY_OK . ' '
                 . "WHEN h.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . ' '
                 . "WHEN h.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . ' '
                 . "WHEN h.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . ' '

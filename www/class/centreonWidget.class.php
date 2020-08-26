@@ -487,9 +487,10 @@ class CentreonWidget
 
     /**
      * @param int $viewId
+     * @param array $widgetList
      * @throws Exception
      */
-    public function udpateViewWidgetRelations($viewId)
+    public function updateViewWidgetRelations($viewId, array $widgetList = [])
     {
         $query = 'DELETE FROM widget_views WHERE custom_view_id = :viewId';
         $stmt = $this->db->prepare($query);
@@ -723,7 +724,7 @@ class CentreonWidget
      * @throws CentreonWidgetException
      * @throws Exception
      */
-    public function updateWidgetPositions(int $customViewId, array $position = [], bool $permission)
+    public function updateWidgetPositions(int $customViewId, array $positions = [], bool $permission)
     {
         if (!$permission) {
             throw new CentreonWidgetException('You are not allowed to change widget position');
