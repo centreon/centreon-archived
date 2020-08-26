@@ -320,7 +320,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
 
         /**
-         * Adds a host template by browsing all templates recursively until you find the parent template.
+         * Add a host template by browsing all templates recursively until you find the parent template.
          *
          * @param int $hostParentId Id of the host template for which we want to add the given template.
          * @param Host $hostTemplate Host template to be added
