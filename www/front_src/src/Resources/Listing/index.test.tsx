@@ -6,6 +6,7 @@ import {
   RenderResult,
   waitFor,
   fireEvent,
+  Matcher,
 } from '@testing-library/react';
 import axios from 'axios';
 
@@ -139,7 +140,9 @@ describe(Listing, () => {
 
     resourcesWithMultipleLines.forEach(({ information }) => {
       expect(
-        getByText(pipe(split('\n'), head)(information)),
+        getByText(
+          pipe<string, Array<string>, Matcher>(split('\n'), head)(information),
+        ),
       ).toBeInTheDocument();
       expect(queryByText(information)).not.toBeInTheDocument();
     });

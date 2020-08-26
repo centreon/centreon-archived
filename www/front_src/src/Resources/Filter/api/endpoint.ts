@@ -4,23 +4,17 @@ import { monitoringEndpoint } from '../../api/endpoint';
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
 
-const buildHostGroupsEndpoint = (params): string => {
-  const searchOptions = ['name'];
-
+const buildHostGroupsEndpoint = (parameters): string => {
   return buildListingEndpoint({
     baseEndpoint: hostgroupsEndpoint,
-    searchOptions,
-    params,
+    parameters,
   });
 };
 
-const buildServiceGroupsEndpoint = (params): string => {
-  const searchOptions = ['name'];
-
+const buildServiceGroupsEndpoint = (parameters): string => {
   return buildListingEndpoint({
     baseEndpoint: serviceGroupsEndpoint,
-    params,
-    searchOptions,
+    parameters,
   });
 };
 

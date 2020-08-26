@@ -3,7 +3,8 @@ import * as React from 'react';
 import {
   useRequest,
   ListingModel,
-  useIntersectionObserver,
+  MultiAutocompleteField,
+  SearchParameter,
 } from '@centreon/ui';
 
 import {
@@ -12,26 +13,17 @@ import {
   Typography,
   CircularProgress,
 } from '@material-ui/core';
-import {
-  equals,
-  toPairs,
-  reduceBy,
-  pipe,
-  prop,
-  last,
-  isEmpty,
-  head,
-  sortWith,
-  descend,
-} from 'ramda';
-import { Skeleton } from '@material-ui/lab';
+import { prop, isEmpty, cond, always, T } from 'ramda';
 
-import { getFormattedDate } from '../../../dateTime';
 import { ResourceEndpoints } from '../../../models';
-import { TimelineEventByType } from './Event';
-import { TimelineEvent } from './models';
+import { types } from './Event';
+import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
+import { labelEvent, labelNoResultsFound } from '../../../translatedLabels';
+import { useResourceContext } from '../../../Context';
+import Events from './Events';
+import LoadingSkeleton from './LoadingSkeleton';
 
 interface Props {
   endpoints: Pick<ResourceEndpoints, 'timeline'>;
@@ -49,117 +41,139 @@ const useStyles = makeStyles((theme) => ({
     alignContent: 'flex-start',
     gridGap: theme.spacing(1),
   },
+  filterContainer: {
+    width: '100%',
+  },
+  filterAutocomplete: {
+    margin: theme.spacing(2),
+  },
+  noResultContainer: {
+    padding: theme.spacing(1),
+  },
   events: {
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
     width: '100%',
   },
-  event: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    padding: theme.spacing(1),
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
-  },
 }));
-
-const LoadingSkeleton = (): JSX.Element => {
-  return (
-    <>
-      <Skeleton width={125} height={20} style={{ transform: 'none' }} />
-      <Skeleton height={100} style={{ transform: 'none' }} />
-      <Skeleton height={100} style={{ transform: 'none' }} />
-    </>
-  );
-};
 
 const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
+  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
   const [page, setPage] = React.useState(1);
+  const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(10);
-  const [maxPage, setMaxPage] = React.useState(1);
 
   const { timeline: timelineEndpoint } = endpoints;
+  const { listing } = useResourceContext();
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
   });
 
-  React.useEffect(() => {
-    sendRequest({
-      endpoint: timelineEndpoint,
-      params: { page, limit },
-    }).then(({ result, meta }) => {
-      setTimeline(timeline.concat(result));
+  const listTimeline = (): Promise<TimelineListing> => {
+    const getSearch = (): SearchParameter | undefined => {
+      if (isEmpty(selectedTypes)) {
+        return undefined;
+      }
 
-      setMaxPage(Math.ceil(meta.total / meta.limit));
+      return {
+        lists: [
+          {
+            field: 'type',
+            values: selectedTypes.map(prop('id')),
+          },
+        ],
+      };
+    };
+
+    return sendRequest({
+      endpoint: timelineEndpoint,
+      parameters: {
+        page,
+        limit,
+        search: getSearch(),
+      },
+    }).then((retrievedListing) => {
+      const { meta } = retrievedListing;
+      setTotal(meta.total);
+
+      return retrievedListing;
+    });
+  };
+
+  React.useEffect(() => {
+    if (isEmpty(timeline)) {
+      return;
+    }
+
+    listTimeline().then(({ result }) => {
+      setTimeline(timeline.concat(result));
     });
   }, [page]);
 
-  const infiniteScrollTriggerRef = useIntersectionObserver({
-    maxPage,
-    page,
-    loading: sending,
-    action: () => {
-      setPage(page + 1);
-    },
-  });
+  React.useEffect(() => {
+    setPage(1);
+    setTimeline([]);
+    listTimeline().then(({ result }) => setTimeline(result));
+  }, [listing, endpoints, selectedTypes]);
 
-  type DateEvents = Array<[string, Array<TimelineEvent>]>;
-
-  const eventsByDate = pipe(
-    reduceBy<TimelineEvent, Array<TimelineEvent>>(
-      (acc, event) => acc.concat(event),
-      [],
-      pipe(prop('date'), getFormattedDate),
-    ),
-    toPairs,
-    sortWith([descend(head)]),
-  )(timeline) as DateEvents;
-
-  const dates = eventsByDate.map(head);
-
-  const loading = isEmpty(timeline) && sending;
+  const loading = sending;
   const loadingMore = !isEmpty(timeline) && sending;
+
+  const changeSelectedTypes = (_, typeIds): void => {
+    setSelectedTypes(typeIds);
+  };
+
+  const loadMoreEvents = (): void => {
+    setPage(page + 1);
+  };
 
   return (
     <div className={classes.container}>
+      <Paper className={classes.filterContainer}>
+        <div className={classes.filterAutocomplete}>
+          <MultiAutocompleteField
+            label={labelEvent}
+            onChange={changeSelectedTypes}
+            value={selectedTypes}
+            options={types}
+            fullWidth
+            limitTags={3}
+          />
+        </div>
+      </Paper>
       <div className={classes.events}>
-        {loading ? (
-          <LoadingSkeleton />
-        ) : (
-          eventsByDate.map(
-            ([date, events]): JSX.Element => {
-              const isLastDate = equals(last(dates), date);
-
-              return (
-                <React.Fragment key={date}>
-                  <div className={classes.events}>
-                    <Typography variant="h6">{date}</Typography>
-
-                    {events.map((event) => {
-                      const { id, type } = event;
-
-                      const Event = TimelineEventByType[type];
-
-                      return (
-                        <Paper key={id} className={classes.event}>
-                          <Event event={event} />
-                        </Paper>
-                      );
-                    })}
-                  </div>
-                  {isLastDate && <div ref={infiniteScrollTriggerRef} />}
-                </React.Fragment>
-              );
-            },
-          )
-        )}
+        {cond([
+          [always(loading), always(<LoadingSkeleton />)],
+          [
+            isEmpty,
+            always(
+              <Paper className={classes.noResultContainer}>
+                <Typography align="center" variant="body1">
+                  {labelNoResultsFound}
+                </Typography>
+              </Paper>,
+            ),
+          ],
+          [
+            T,
+            always(
+              <Events
+                timeline={timeline}
+                total={total}
+                limit={limit}
+                page={page}
+                loading={sending}
+                onLoadMore={loadMoreEvents}
+              />,
+            ),
+          ],
+        ])(timeline)}
       </div>
       {loadingMore && <CircularProgress />}
     </div>

@@ -18,3 +18,8 @@ export interface TimelineEvent {
   tries?: number;
   contact?: WithName;
 }
+
+export interface Type {
+  id: string;
+  name: string;
+}
