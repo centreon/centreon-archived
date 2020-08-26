@@ -43,6 +43,7 @@ import {
   defaultStatuses,
   getListingEndpoint,
   mockAppStateSelector,
+  searchableFields,
 } from '../testUtils';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -55,14 +56,6 @@ jest.mock('react-redux', () => ({
 
 window.clearInterval = jest.fn();
 window.setInterval = jest.fn();
-
-const searchableFields = [
-  'h.name',
-  'h.alias',
-  'h.address',
-  's.description',
-  'information',
-];
 
 const linuxServersHostGroup = {
   id: 0,

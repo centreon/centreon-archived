@@ -36,6 +36,20 @@ const useLoadResources = (): LoadResources => {
 
   const load = (): void => {
     const sort = sortf ? { [sortf]: sorto } : undefined;
+    const search = currentSearch
+      ? {
+          regex: {
+            value: currentSearch,
+            fields: [
+              'h.name',
+              'h.alias',
+              'h.address',
+              's.description',
+              'information',
+            ],
+          },
+        }
+      : undefined;
 
     sendRequest({
       states: states.map(({ id }) => id),
@@ -46,7 +60,7 @@ const useLoadResources = (): LoadResources => {
       sort,
       limit,
       page,
-      search: currentSearch,
+      search,
     }).then(setListing);
   };
 
