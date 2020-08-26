@@ -15533,7 +15533,7 @@ msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%
 msgid "Error when searching for services by host"
 msgstr "Erreur lors de la recherche de services par hôte"
 
-msgid "The host id can not be null"
+msgid "The host id cannot be null"
 msgstr "L'id de l'hôte ne peut pas être nul"
 
 msgid "Error when searching for host templates"
