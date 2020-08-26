@@ -30,6 +30,7 @@ const ResourceListing = (): JSX.Element => {
     setLimit,
     page,
     setPage,
+    detailsTabIdToOpen,
     setDefaultDetailsTabIdToOpen,
     setSelectedDetailsEndpoints,
     selectedDetailsEndpoints,
@@ -62,9 +63,13 @@ const ResourceListing = (): JSX.Element => {
     performance_graph_endpoint,
     timeline_endpoint,
   }): void => {
-    if (isNil(performance_graph_endpoint)) {
+    if (
+      isNil(performance_graph_endpoint) &&
+      detailsTabIdToOpen === graphTabId
+    ) {
       setDefaultDetailsTabIdToOpen(detailsTabId);
     }
+
     setSelectedDetailsEndpoints({
       details: details_endpoint,
       statusGraph: status_graph_endpoint,
