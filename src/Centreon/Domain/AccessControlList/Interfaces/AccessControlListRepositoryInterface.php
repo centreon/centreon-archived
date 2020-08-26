@@ -36,8 +36,8 @@ interface AccessControlListRepositoryInterface
     /**
      * Sets the access groups that will be used to filter services and the host.
      *
-     * @param AccessGroup[]|null $accessGroups
+     * @param AccessGroup[] $accessGroups
      * @return $this
      */
-    public function filterByAccessGroups(?array $accessGroups);
+    public function filterByAccessGroups(array $accessGroups);
 }

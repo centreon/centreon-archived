@@ -74,7 +74,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         try {
             $this->hostConfigurationRepository->findAndAddHostTemplates($host);
         } catch (\Throwable $ex) {
-            throw new HostConfigurationException(_(), 0, $ex);
+            throw new HostConfigurationException(_('Error when searching for host templates'), 0, $ex);
         }
     }
 

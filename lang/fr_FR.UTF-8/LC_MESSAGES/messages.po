@@ -15535,3 +15535,6 @@ msgstr "Erreur lors de la recherche de services par hôte"
 
 msgid "The host id can not be null"
 msgstr "L'id de l'hôte ne peut pas être nul"
+
+msgid "Error when searching for host templates"
+msgstr "Erreur lors de la recherche de modèles d'hôtes"

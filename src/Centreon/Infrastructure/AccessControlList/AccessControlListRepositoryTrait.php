@@ -35,7 +35,7 @@ trait AccessControlListRepositoryTrait
     /**
      * @var AccessGroup[] List of access group used to filter the requests
      */
-    protected $accessGroups;
+    protected $accessGroups = [];
 
     /**
      * @param ContactInterface $contact
@@ -50,10 +50,10 @@ trait AccessControlListRepositoryTrait
     /**
      * Sets the access groups that will be used to filter services and the host.
      *
-     * @param AccessGroup[]|null $accessGroups
+     * @param AccessGroup[] $accessGroups
      * @return $this
      */
-    public function filterByAccessGroups(?array $accessGroups): self
+    public function filterByAccessGroups(array $accessGroups): self
     {
         $this->accessGroups = $accessGroups;
         return $this;

@@ -75,7 +75,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
      * {@inheritDoc}
      * @return ServiceConfigurationServiceInterface
      */
-    public function filterByContact($contact): self
+    public function filterByContact($contact): ServiceConfigurationServiceInterface
     {
         parent::filterByContact($contact);
 
@@ -107,6 +107,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
         if ($engineConfiguration === null) {
             throw new ServiceConfigurationException(_('Impossible to find the Engine configuration'));
         }
+
         $hostTemplateIds = [];
 
         /**
@@ -115,7 +116,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
          * **We only retrieve templates that are enabled.**
          *
          * @param Host $host Host for which we will find all host template.
-         * @param $hostTemplateIds
+         * @param int[] $hostTemplateIds
          */
         $extractHostTemplateIdsFromHost =
             function (Host $host, &$hostTemplateIds) use (&$extractHostTemplateIdsFromHost): void {
@@ -181,30 +182,38 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
          * The priority order is defined by the list of host templates.
          * We only retrieve the service templates that are activated.
          */
-        foreach ($hostTemplateIds as $hostTemplateId) {
-            $serviceTemplates = $extractServiceTemplatesByHostTemplate($hostTemplateId);
+        if (!empty($hostTemplateIds)) {
+            foreach ($hostTemplateIds as $hostTemplateId) {
+                $serviceTemplates = $extractServiceTemplatesByHostTemplate($hostTemplateId);
 
-            foreach ($serviceTemplates as $serviceTemplate) {
-                if (!$serviceTemplate->isActivated()) {
-                    continue;
-                }
-                if (!in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)) {
-                    $serviceDescription = EngineConfiguration::removeIllegalCharacters(
-                        $serviceTemplate->getAlias(),
-                        $engineConfiguration->getIllegalObjectNameCharacters()
-                    );
-
-                    if (empty($serviceDescription)) {
+                foreach ($serviceTemplates as $serviceTemplate) {
+                    if (!$serviceTemplate->isActivated()) {
                         continue;
                     }
 
-                    $serviceAliasAlreadyUsed[] = $serviceDescription;
-                    $serviceToBeCreated = (new Service())
-                        ->setServiceType(Service::TYPE_SERVICE)
-                        ->setTemplateId($serviceTemplate->getId())
-                        ->setDescription($serviceDescription)
-                        ->setActivated(true);
-                    $servicesToBeCreated[] = $serviceToBeCreated;
+                    $illegalObjectNameCharacters = $engineConfiguration->getIllegalObjectNameCharacters();
+                    
+                    if ($serviceTemplate->getAlias() !== null
+                        && $illegalObjectNameCharacters !== null
+                        && !in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)
+                    ) {
+                        $serviceDescription = EngineConfiguration::removeIllegalCharacters(
+                            $serviceTemplate->getAlias(),
+                            $illegalObjectNameCharacters
+                        );
+
+                        if (empty($serviceDescription)) {
+                            continue;
+                        }
+
+                        $serviceAliasAlreadyUsed[] = $serviceDescription;
+                        $serviceToBeCreated = (new Service())
+                            ->setServiceType(Service::TYPE_SERVICE)
+                            ->setTemplateId($serviceTemplate->getId())
+                            ->setDescription($serviceDescription)
+                            ->setActivated(true);
+                        $servicesToBeCreated[] = $serviceToBeCreated;
+                    }
                 }
             }
         }

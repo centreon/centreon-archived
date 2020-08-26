@@ -43,7 +43,7 @@ interface ServiceConfigurationServiceInterface extends ContactFilterInterface
     /**
      * Find all service templates associated with the given host templates.
      *
-     * @param array $hostTemplateIds Ids of the host templates for which we want to find the service templates
+     * @param int[] $hostTemplateIds Ids of the host templates for which we want to find the service templates
      * @return HostTemplateService[]
      * @throws ServiceConfigurationException
      */
