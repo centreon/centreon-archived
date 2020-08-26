@@ -223,8 +223,8 @@ if (strcmp($serverType, 'poller') ==  0) {
     );
     $form->addElement('select2', 'remote_additional_id', _('Attach additional Remote Servers'), array(), $attrPoller2);
     $tab = [];
-    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Enabled"), '1');
-    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Disabled"), '0');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Enable"), '1');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Disable"), '0');
     $form->addGroup($tab, 'remote_server_use_as_proxy', _("Use the Remote Server as a proxy"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);

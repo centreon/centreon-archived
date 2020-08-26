@@ -2326,6 +2326,20 @@ CREATE TABLE `user_filter` (
     CONSTRAINT `filter_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create platform_topology table
+CREATE TABLE `platform_topology` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `address` varchar(255) NOT NULL,
+    `name` varchar(255) NOT NULL,
+    `type` varchar(255) NOT NULL,
+    `parent_id` int(11),
+    `server_id` int(11),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT='Registration and parent relation Table used to set the platform topology';
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

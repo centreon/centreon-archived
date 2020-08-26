@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
+import { isNil } from 'ramda';
 import {
   labelRequired,
   labelAcknowledgeCommandSent,
@@ -47,7 +48,7 @@ const AcknowledgeForm = ({
 
   const form = useFormik({
     initialValues: {
-      comment: '',
+      comment: undefined,
       notify: false,
       acknowledgeAttachedResources: false,
     },
@@ -77,7 +78,7 @@ const AcknowledgeForm = ({
       values={form.values}
       handleChange={form.handleChange}
       submitting={sendingAcknowledgeResources}
-      loading={form.values.comment === ''}
+      loading={isNil(form.values.comment)}
     />
   );
 };

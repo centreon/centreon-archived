@@ -58,6 +58,7 @@ tags:
   - name: Service Group
   - name: Acknowledgement
   - name: Downtime
+  - name: Topology
 security:
   - Token: []
   - Cookie: []
@@ -723,36 +724,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/hostgroups:
-        get:
-          tags:
-            - Host Group
-          summary: "List all host groups by host id"
-          description: |
-            List all the host groups in real-time monitoring by host id
-          parameters:
-            - $ref: '#/components/parameters/HostId'
-            - $ref: '#/components/parameters/Limit'
-            - $ref: '#/components/parameters/Page'
-            - $ref: '#/components/parameters/SortBy'
-          responses:
-            '200':
-              description: "OK"
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      result:
-                        type: array
-                        items:
-                          allOf:
-                            - $ref: '#/components/schemas/Monitoring.HostGroup'
-                      meta:
-                        $ref: '#/components/schemas/Meta'
-            '403':
-              $ref: '#/components/responses/Forbidden'
-            '500':
-              $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Host Group
+      summary: "List all host groups by host id"
+      description: |
+        List all the host groups in real-time monitoring by host id
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hostgroups:
     get:
       tags:
@@ -2348,6 +2349,39 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /platform/topology:
+    post:
+      tags:
+        - Topology
+      summary: "Register to platform topology"
+      description: "Register a server to the platform topology"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topology.Register'
+      responses:
+        '201':
+          description: "OK"
+        '409':
+          description: "Conflict. More details are specified in the response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int64
+                    example: 409
+                  message:
+                    type: string
+                    example: "A platform using the name : 'myPoller' or address : '1.1.1.2' already exists"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -2491,8 +2525,8 @@ components:
       schema:
         type: array
         items:
-            type: string
-            enum: [service, host]
+          type: string
+          enum: [service, host]
         example: '["host"]'
     ResourceFilterState:
       in: query
@@ -2502,8 +2536,8 @@ components:
       schema:
         type: array
         items:
-            type: string
-            enum: [unhandled_problems, resources_problems, in_downtime, acknowledged, all]
+          type: string
+          enum: [unhandled_problems, resources_problems, in_downtime, acknowledged, all]
         example: '["in_downtime", "acknowledged"]'
     ResourceFilterStatus:
       in: query
@@ -2513,8 +2547,8 @@ components:
       schema:
         type: array
         items:
-            type: string
-            enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
+          type: string
+          enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
         example: '["OK", "UP", "PENDING"]'
     ResourceFilterHostgroupId:
       in: query
@@ -2524,8 +2558,8 @@ components:
       schema:
         type: array
         items:
-            type: integer
-            format: int64
+          type: integer
+          format: int64
         example: '[13, 22, 31]'
     ResourceFilterServicegroupId:
       in: query
@@ -2535,8 +2569,8 @@ components:
       schema:
         type: array
         items:
-            type: integer
-            format: int64
+          type: integer
+          format: int64
         example: '[2033]'
     ShowHost:
       in: query
@@ -2893,22 +2927,22 @@ components:
           description: "Indicates whether notification is sent to the contacts linked to the host or service"
           example: false
     Acknowledgement.Bulk:
-        type: object
-        properties:
-          acknowledgement:
-            $ref: '#/components/schemas/Acknowledgement.Resource'
-          resources:
-            type: array
-            items:
-              allOf:
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      type: object
+      properties:
+        acknowledgement:
+          $ref: '#/components/schemas/Acknowledgement.Resource'
+        resources:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Disacknowledge.Bulk:
-        type: array
-        items:
-          allOf:
-            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Host:
       type: object
       nullable: true
@@ -3171,16 +3205,16 @@ components:
           format: date-time
           description: "Scheduled end date of the downtime (ISO8601)"
     Downtime.Bulk:
-        type: object
-        properties:
-          downtime:
-            $ref: '#/components/schemas/Downtime.Resource'
-          resources:
-            type: array
-            items:
-              allOf:
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      type: object
+      properties:
+        downtime:
+          $ref: '#/components/schemas/Downtime.Resource'
+        resources:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Check.Host:
       type: object
       properties:
@@ -4079,3 +4113,37 @@ components:
           type: integer
           nullable: true
           description: "The count of retry"
+    Topology.Register:
+      type: object
+      required: [name, type, address]
+      properties:
+        name:
+          type: string
+          description: "Name of the server to register in the topology"
+          example: "myPoller"
+        type:
+          type: string
+          enum: [central, poller, remote, map, mbi]
+          example: "poller"
+          description: >
+            Type of the server from available Server types :
+              * 'Central'
+              * 'Poller'
+              * 'Remote'
+              * 'MAP'
+              * 'MBI'
+        address:
+          type: string
+          description: "Address of the server. IPv4, IPv6 or DNS"
+          example: "1.1.1.2"
+        parent_address:
+          type: string
+          description: >
+            It should not be added to register a Central and only in this case.
+            Mandatory parameter for all other types, to be able to link a platform to its parent
+
+            Example :
+            - To link a poller to a Central
+            - To link a remote server to a Central
+            - To link a poller to a remote server
+          example: "1.1.1.1"

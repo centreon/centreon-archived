@@ -66,6 +66,7 @@ require_once "Centreon/Object/Relation/Contact/Group/Host.php";
 require_once "Centreon/Object/Relation/Host/Service.php";
 require_once "Centreon/Object/Timezone/Timezone.php";
 require_once "Centreon/Object/Media/Media.php";
+require_once "Centreon/Object/Dependency/DependencyHostParent.php";
 
 /**
  * Centreon Host objects
@@ -239,6 +240,34 @@ class CentreonHost extends CentreonObject
     }
 
     /**
+     * @param null $parameters
+     * @param array $filters
+     */
+    public function showbyaddress($parameters = null, $filters = array())
+    {
+        $filters = array('host_register' => $this->register);
+
+        if (isset($parameters)) {
+            $filters['host_address'] = "%" . $parameters . "%";
+        }
+        $params = array('host_id', 'host_name', 'host_alias', 'host_address', 'host_activate');
+        $paramString = str_replace("host_", "", implode($this->delim, $params));
+        echo $paramString . "\n";
+        $elements = $this->object->getList(
+            $params,
+            -1,
+            0,
+            null,
+            null,
+            $filters,
+            "AND"
+        );
+        foreach ($elements as $tab) {
+            echo implode($this->delim, $tab) . "\n";
+        }
+    }
+
+    /**
      * @param $parameters
      * @return mixed|void
      * @throws CentreonClapiException
@@ -336,6 +365,10 @@ class CentreonHost extends CentreonObject
      */
     public function del($objectName)
     {
+        $hostId = $this->getHostID($objectName);
+        $parentDependency = new \Centreon_Object_DependencyHostParent($this->dependencyInjector);
+        $parentDependency->removeRelationLastHostDependency($hostId);
+
         parent::del($objectName);
         $this->db->query(
             "DELETE FROM service WHERE service_register = '1' "
@@ -428,6 +461,7 @@ class CentreonHost extends CentreonObject
             'check_interval',
             'check_freshness',
             'check_period',
+            'comment',
             'contact_additive_inheritance',
             'cg_additive_inheritance',
             'event_handler',

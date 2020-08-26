@@ -41,7 +41,7 @@ For the RPM based systems
 
 -- Copy/Paste the result of the following command --
 ```
-$ rpm -qa | grep centreon
+$ rpm -qa | grep centreon | egrep -v "(plugin|pack)" | sort
 ```
 
 For the deb based systems
@@ -86,7 +86,7 @@ Please describe precisely the steps to reproduce the encountered issue.
 **PHP error logs**
 
 ```
-tail -f /var/opt/rh/rh-php71/log/php-fpm/centreon-error.log
+tail -f /var/opt/rh/rh-php72/log/php-fpm/centreon-error.log
 ```
 **centreon-engine logs (*if needed*)**
 
@@ -98,7 +98,12 @@ tail -f /var/log/centreon-engine/centengine.log
 ```
 tail -f /var/log/centreon-broker/central-broker-master.log
 ```
-**centcore logs (*if needed*)**
+**centreon gorgone logs for Centreon >= 20.4  (*if needed*)**
+
+```
+tail -f /var/log/centreon-gorgone/gorgoned.log
+```
+**centcore logs for Centreon <= 19.10.x (*if needed*)**
 
 ```
 tail -f /var/log/centreon/centcore.log
