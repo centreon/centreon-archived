@@ -242,25 +242,32 @@ class CentreonLogAction
     public function listModification(int $id, string $objectType)
     {
         global $pearDBO;
-        $list_modifications = array();
-        $ref = array();
+        $list_modifications = [];
+        $ref = [];
         $i = 0;
 
-        $query = "SELECT action_log_id, action_log_date, action_type FROM log_action" .
-            " WHERE object_id = '" . CentreonDB::escape($id) . "'" .
-            " AND object_type = '" . CentreonDB::escape($objectType) . "' ORDER BY action_log_date ASC";
-        $dbResult = $pearDBO->query($query);
-        while ($row = $dbResult->fetchRow()) {
+        $objectType = filter_var($objectType, FILTER_SANITIZE_STRING);
+
+        $statement1 = $pearDBO->prepare("
+            SELECT action_log_id, action_log_date, action_type FROM log_action
+            WHERE object_id = :id
+            AND object_type = :objectType ORDER BY action_log_date ASC
+        ");
+        $statement1->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement1->bindValue(':objectType', $objectType, \PDO::PARAM_STR);
+        $statement1->execute();
+        while ($row = $statement1->fetch(\PDO::FETCH_ASSOC)) {
             $DBRESULT2 = $pearDBO->query(
                 "SELECT action_log_id,field_name,field_value
                     FROM `log_action_modification`
                     WHERE action_log_id='" . CentreonDB::escape($row['action_log_id']) . "'"
             );
             $macroPasswordStatement = $pearDBO->query(
-            "SELECT field_value
+                "SELECT field_value
                     FROM `log_action_modification`
                     WHERE action_log_id='" . CentreonDB::escape($row['action_log_id']) . "'
-                    AND field_name = 'refMacroPassword'");
+                    AND field_name = 'refMacroPassword'"
+            );
             $result = $macroPasswordStatement->fetch();
             $macroPasswordRef = explode(',', $result['field_value']);
             while ($field = $DBRESULT2->fetchRow()) {
@@ -268,10 +275,12 @@ class CentreonLogAction
                     case 'macroValue':
                         $macroValueArray = explode(',', $field['field_value']);
                         foreach ($macroPasswordRef as $macroIdPassword) {
-                            $macroValueArray[$macroIdPassword] = "******";
+                            if (!empty($macroValueArray[$macroIdPassword])) {
+                                $macroValueArray[$macroIdPassword] = "******";
+                            }
                         }
                         $field['field_value'] = implode(',', $macroValueArray);
-                        if (isset($ref[$field["field_name"]])) {
+                        if (isset($ref[$field["field_name"]]) && $ref[$field["field_name"]] !== ',,,,,,,,,') {
                             foreach ($macroPasswordRef as $macroIdPassword) {
                                 $macroValueArray[$macroIdPassword] = "*******";
                             }
@@ -291,7 +300,7 @@ class CentreonLogAction
                     $list_modifications[$i]["field_value_before"] = "";
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
                     foreach ($macroPasswordRef as $macroPasswordId) {
-                        if (strpos($field["field_name"],'macroOldValue_' . $macroPasswordId) !== false) {
+                        if (strpos($field["field_name"], 'macroOldValue_' . $macroPasswordId) !== false) {
                             $list_modifications[$i]["field_value_after"] = '******';
                         }
                     }
@@ -301,7 +310,7 @@ class CentreonLogAction
                     $list_modifications[$i]["field_value_before"] = $ref[$field["field_name"]];
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
                     foreach ($macroPasswordRef as $macroPasswordId) {
-                        if (strpos($field["field_name"],'macroOldValue_' . $macroPasswordId) !== false) {
+                        if (strpos($field["field_name"], 'macroOldValue_' . $macroPasswordId) !== false) {
                             $list_modifications[$i]["field_value_before"] = '******';
                             $list_modifications[$i]["field_value_after"] = '******';
                         }
@@ -376,27 +385,34 @@ class CentreonLogAction
     {
         global $pearDB;
 
-        $uselessKey = array();
+        $uselessKey = [];
         $uselessKey['submitA'] = 1;
         $uselessKey['o'] = 1;
         $uselessKey['initialValues'] = 1;
         $uselessKey['centreon_token'] = 1;
 
         if (!isset($ret)) {
-            return array();
+            return [];
         } else {
-            $info = array();
+            $info = [];
+            $oldMacroPassword = [];
             foreach ($ret as $key => $value) {
                 if (!isset($uselessKey[trim($key)])) {
                     if (is_array($value)) {
                         /*
                          * Set a new refMacroPassword value to be able to find which macro index is a password
-                         * in the listModification method
+                         * in the listModification method and hash password in log_action_modification table
                          */
                         if ($key === 'macroValue' && isset($ret['macroPassword'])) {
-                            foreach (array_keys($value) as $macroId) {
+                            foreach ($value as $macroId => $macroValue) {
                                 if (array_key_exists($macroId, $ret['macroPassword'])) {
                                     $info['refMacroPassword'] = implode(",", array_keys($ret['macroPassword']));
+                                    $value[$macroId] = md5($macroValue);
+                                    if (!empty($ret['macroOldValue_' . $macroId])) {
+                                        $oldMacroPassword['macroOldValue_' . $macroId] = md5(
+                                            $ret['macroOldValue_' . $macroId]
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -410,6 +426,9 @@ class CentreonLogAction
                     }
                 }
             }
+        }
+        foreach ($oldMacroPassword as $oldMacroPasswordName => $oldMacroPasswordValue) {
+            $info[$oldMacroPasswordName] = $oldMacroPasswordValue;
         }
         return $info;
     }
