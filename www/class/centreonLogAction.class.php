@@ -288,7 +288,7 @@ class CentreonLogAction
                         $field['field_value'] = implode(',', $macroValueArray);
                         // same thing here but for the "Before" Value, and handle special case where no macro are set
                         if (
-                            isset($ref[$field["field_name"]]) 
+                            isset($ref[$field["field_name"]])
                             && !empty(str_replace(',','',$ref[$field["field_name"]]))
                         ) {
                             foreach ($macroPasswordRef as $macroIdPassword) {
