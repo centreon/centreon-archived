@@ -287,7 +287,10 @@ class CentreonLogAction
                         }
                         $field['field_value'] = implode(',', $macroValueArray);
                         // same thing here but for the "Before" Value, and handle special case where no macro are set
-                        if (isset($ref[$field["field_name"]]) && $ref[$field["field_name"]] !== ',,,,,,,,,') {
+                        if (
+                            isset($ref[$field["field_name"]]) 
+                            && !empty(str_replace(',','',$ref[$field["field_name"]]))
+                        ) {
                             foreach ($macroPasswordRef as $macroIdPassword) {
                                 $macroValueArray[$macroIdPassword] = self::PASSWORD_BEFORE;
                             }
