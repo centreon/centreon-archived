@@ -1044,27 +1044,28 @@ class CentreonCustomView
     }
 
     /**
-     * @param $viewId
+     * @param int $viewId
      * @return array
      * @throws Exception
      */
-    public function getUsersFromViewId($viewId)
+    public function getUsersFromViewId(int $viewId)
     {
         static $userList;
 
         if (!isset($userList)) {
             $userList = array();
-            $query = 'SELECT contact_name, user_id, locked ' .
-                'FROM contact c, custom_view_user_relation cvur ' .
-                'WHERE c.contact_id = cvur.user_id ' .
-                'AND cvur.custom_view_id = :viewId ' .
-                'AND cvur.is_share = 1 ' .
-                'ORDER BY contact_name';
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+            $stmt = $this->db->prepare(
+                'SELECT contact_name, user_id, locked
+                FROM contact c, custom_view_user_relation cvur
+                WHERE c.contact_id = cvur.user_id
+                AND cvur.custom_view_id = :viewId
+                AND cvur.is_share = 1
+                ORDER BY contact_name'
+            );
+            $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
-                throw new \Exception("An error occured");
+                throw new \Exception(_("An error occurred while retrieving users linked to ViewId on database"));
             }
             while ($row = $stmt->fetch()) {
                 $userList[$row['user_id']]['contact_name'] = $row['contact_name'];
