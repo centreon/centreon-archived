@@ -39,6 +39,11 @@ class CentreonLogAction
     protected $logUser;
     protected $uselessKey;
 
+    /**
+     * Const use to keep the chnagelog mechanism with hidden password values
+     */
+    const PASSWORD_BEFORE = '*******';
+    const PASSWORD_AFTER = '******';
     /*
      * Initializes variables
      */
@@ -259,13 +264,13 @@ class CentreonLogAction
         while ($row = $statement1->fetch(\PDO::FETCH_ASSOC)) {
             $DBRESULT2 = $pearDBO->query(
                 "SELECT action_log_id,field_name,field_value
-                    FROM `log_action_modification`
-                    WHERE action_log_id='" . CentreonDB::escape($row['action_log_id']) . "'"
+                FROM `log_action_modification`
+                WHERE action_log_id = " . (int) $row['action_log_id']
             );
             $macroPasswordStatement = $pearDBO->query(
                 "SELECT field_value
                     FROM `log_action_modification`
-                    WHERE action_log_id='" . CentreonDB::escape($row['action_log_id']) . "'
+                    WHERE action_log_id = " . (int) $row['action_log_id'] . "
                     AND field_name = 'refMacroPassword'"
             );
             $result = $macroPasswordStatement->fetch();
@@ -273,25 +278,27 @@ class CentreonLogAction
             while ($field = $DBRESULT2->fetchRow()) {
                 switch ($field['field_name']) {
                     case 'macroValue':
+                        // explode the macroValue string to easily change any password type to ******
                         $macroValueArray = explode(',', $field['field_value']);
                         foreach ($macroPasswordRef as $macroIdPassword) {
                             if (!empty($macroValueArray[$macroIdPassword])) {
-                                $macroValueArray[$macroIdPassword] = "******";
+                                $macroValueArray[$macroIdPassword] = self::PASSWORD_AFTER;
                             }
                         }
                         $field['field_value'] = implode(',', $macroValueArray);
+                        // same thing here but for the "Before" Value, and handle special case where no macro are set
                         if (isset($ref[$field["field_name"]]) && $ref[$field["field_name"]] !== ',,,,,,,,,') {
                             foreach ($macroPasswordRef as $macroIdPassword) {
-                                $macroValueArray[$macroIdPassword] = "*******";
+                                $macroValueArray[$macroIdPassword] = self::PASSWORD_BEFORE;
                             }
                             $ref[$field["field_name"]] = implode(',', $macroValueArray);
                         }
                         break;
                     case 'contact_passwd':
                     case 'contact_passwd2':
-                        $field['field_value'] = '******';
+                        $field['field_value'] = self::PASSWORD_AFTER;
                         if (isset($ref[$field["field_name"]])) {
-                            $ref[$field["field_name"]] = '*******';
+                            $ref[$field["field_name"]] = self::PASSWORD_BEFORE;
                         }
                 }
                 if (!isset($ref[$field["field_name"]]) && $field["field_value"] != "") {
@@ -300,8 +307,9 @@ class CentreonLogAction
                     $list_modifications[$i]["field_value_before"] = "";
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
                     foreach ($macroPasswordRef as $macroPasswordId) {
+                        // handle the display modification for the fields macroOldValue_n while nothing was set before
                         if (strpos($field["field_name"], 'macroOldValue_' . $macroPasswordId) !== false) {
-                            $list_modifications[$i]["field_value_after"] = '******';
+                            $list_modifications[$i]["field_value_after"] = self::PASSWORD_AFTER;
                         }
                     }
                 } elseif (isset($ref[$field["field_name"]]) && $ref[$field["field_name"]] != $field["field_value"]) {
@@ -310,9 +318,10 @@ class CentreonLogAction
                     $list_modifications[$i]["field_value_before"] = $ref[$field["field_name"]];
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
                     foreach ($macroPasswordRef as $macroPasswordId) {
+                        // handle the display modification for the fields macroOldValue_n for "Before" and "After" value
                         if (strpos($field["field_name"], 'macroOldValue_' . $macroPasswordId) !== false) {
-                            $list_modifications[$i]["field_value_before"] = '******';
-                            $list_modifications[$i]["field_value_after"] = '******';
+                            $list_modifications[$i]["field_value_before"] = self::PASSWORD_BEFORE;
+                            $list_modifications[$i]["field_value_after"] = self::PASSWORD_AFTER;
                         }
                     }
                 }
