@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,39 +182,35 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
          * The priority order is defined by the list of host templates.
          * We only retrieve the service templates that are activated.
          */
-        if (!empty($hostTemplateIds)) {
-            foreach ($hostTemplateIds as $hostTemplateId) {
-                $serviceTemplates = $extractServiceTemplatesByHostTemplate($hostTemplateId);
+        foreach ($hostTemplateIds as $hostTemplateId) {
+            $serviceTemplates = $extractServiceTemplatesByHostTemplate($hostTemplateId);
 
-                foreach ($serviceTemplates as $serviceTemplate) {
-                    if (!$serviceTemplate->isActivated()) {
+            foreach ($serviceTemplates as $serviceTemplate) {
+                if (!$serviceTemplate->isActivated()) {
+                    continue;
+                }
+
+                $illegalObjectNameCharacters = $engineConfiguration->getIllegalObjectNameCharacters();
+                if (
+                    $serviceTemplate->getAlias() !== null
+                    && !in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)
+                ) {
+                    $serviceDescription = EngineConfiguration::removeIllegalCharacters(
+                        $serviceTemplate->getAlias(),
+                        $illegalObjectNameCharacters
+                    );
+
+                    if (empty($serviceDescription)) {
                         continue;
                     }
 
-                    $illegalObjectNameCharacters = $engineConfiguration->getIllegalObjectNameCharacters();
-
-                    if (
-                        $serviceTemplate->getAlias() !== null
-                        && $illegalObjectNameCharacters !== null
-                        && !in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)
-                    ) {
-                        $serviceDescription = EngineConfiguration::removeIllegalCharacters(
-                            $serviceTemplate->getAlias(),
-                            $illegalObjectNameCharacters
-                        );
-
-                        if (empty($serviceDescription)) {
-                            continue;
-                        }
-
-                        $serviceAliasAlreadyUsed[] = $serviceDescription;
-                        $serviceToBeCreated = (new Service())
-                            ->setServiceType(Service::TYPE_SERVICE)
-                            ->setTemplateId($serviceTemplate->getId())
-                            ->setDescription($serviceDescription)
-                            ->setActivated(true);
-                        $servicesToBeCreated[] = $serviceToBeCreated;
-                    }
+                    $serviceAliasAlreadyUsed[] = $serviceDescription;
+                    $serviceToBeCreated = (new Service())
+                        ->setServiceType(Service::TYPE_SERVICE)
+                        ->setTemplateId($serviceTemplate->getId())
+                        ->setDescription($serviceDescription)
+                        ->setActivated(true);
+                    $servicesToBeCreated[] = $serviceToBeCreated;
                 }
             }
         }
@@ -230,7 +226,11 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
         try {
             return $this->serviceRepository->findHostTemplateServices($hostTemplateIds);
         } catch (\Throwable $ex) {
-            throw new ServiceConfigurationException('', 0, $ex);
+            throw new ServiceConfigurationException(
+                _('Error when searching for host and related service templates'),
+                0,
+                $ex
+            );
         }
     }
 

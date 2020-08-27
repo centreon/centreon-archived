@@ -120,11 +120,14 @@ class EngineConfiguration
      * Remove all illegal characters from the given string.
      *
      * @param string $stringToAnalyse String for which we want to remove illegal characters
-     * @param string $illegalCharacters String containing illegal characters
+     * @param string|null $illegalCharacters String containing illegal characters
      * @return string Return the string without illegal characters
      */
-    public static function removeIllegalCharacters(string $stringToAnalyse, string $illegalCharacters): string
+    public static function removeIllegalCharacters(string $stringToAnalyse, ?string $illegalCharacters): string
     {
+        if ($illegalCharacters === null) {
+            return $stringToAnalyse;
+        }
         $illegalCharacters = html_entity_decode($illegalCharacters);
         return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
     }

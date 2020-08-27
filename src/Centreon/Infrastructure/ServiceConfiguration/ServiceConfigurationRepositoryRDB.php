@@ -64,12 +64,6 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
      */
     public function addServicesToHost(Host $host, array $servicesToBeCreated): void
     {
-        $request = $this->translateDbName(
-            'INSERT INTO `:db`.services 
-            (service_template_model_stm_id, command_command_id, service_description, service_alias, service_locked)
-            VALUES (:template_id, :command_id, :description, :alias, :is_locked, :is_activated)'
-        );
-
         // We avoid to start again a database transaction
         $isAlreadyInTransaction = $this->db->inTransaction();
         if (!$isAlreadyInTransaction) {
