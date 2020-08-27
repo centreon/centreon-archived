@@ -290,8 +290,8 @@ class CentreonLogAction
                         }
                         $field['field_value'] = implode(',', $macroValueArray);
                         /**
-                         * change any password to ****** on the "Before" part of the changeLog and don't change anything
-                         *  if the 'macroValue' string only contains commas
+                         * change any password to ****** on the "Before" part of the changeLog
+                         * and don't change anything if the 'macroValue' string only contains commas
                          */
                         if (
                             isset($ref[$field["field_name"]])
