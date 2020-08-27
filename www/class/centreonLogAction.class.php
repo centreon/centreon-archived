@@ -278,7 +278,10 @@ class CentreonLogAction
             while ($field = $DBRESULT2->fetchRow()) {
                 switch ($field['field_name']) {
                     case 'macroValue':
-                        // explode the macroValue string to easily change any password type to ******
+                        /**
+                         * explode the macroValue string to easily change any password to ****** on the "After" part
+                         * of the changeLog
+                         */
                         $macroValueArray = explode(',', $field['field_value']);
                         foreach ($macroPasswordRef as $macroIdPassword) {
                             if (!empty($macroValueArray[$macroIdPassword])) {
@@ -286,7 +289,10 @@ class CentreonLogAction
                             }
                         }
                         $field['field_value'] = implode(',', $macroValueArray);
-                        // same thing here but for the "Before" Value, and handle special case where no macro are set
+                        /**
+                         * change any password to ****** on the "Before" part of the changeLog and don't change anything
+                         *  if the 'macroValue' string only contains commas
+                         */
                         if (
                             isset($ref[$field["field_name"]])
                             && !empty(str_replace(',','',$ref[$field["field_name"]]))
