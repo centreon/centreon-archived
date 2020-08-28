@@ -72,7 +72,7 @@ const toRawFilter = ({ name, criterias }: Filter): Omit<RawFilter, 'id'> => {
       },
       {
         name: 'search',
-        value: criterias.search,
+        value: criterias.search || '',
         type: 'text',
       },
     ],
