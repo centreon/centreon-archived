@@ -295,7 +295,7 @@ class CentreonLogAction
                              */
                             if (
                                 isset($ref[$field["field_name"]])
-                                && !str_replace(',','',$ref[$field["field_name"]])
+                                && !str_replace(',', '', $ref[$field["field_name"]])
                             ) {
                                 foreach ($macroPasswordRef as $macroIdPassword) {
                                     $macroValueArray[$macroIdPassword] = self::PASSWORD_BEFORE;
