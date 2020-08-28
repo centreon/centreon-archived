@@ -1048,18 +1048,45 @@ class CentreonCustomView
      * @return array
      * @throws Exception
      */
-    public function getUsersFromViewId(int $viewId)
+    public function getUsersFromViewId(int $viewId): array
     {
         static $userList;
+        global $centreon;
 
         if (!isset($userList)) {
+            /**
+             * Get user's ACL
+             */
+            $arrayOfAclListOfContactIds = $centreon->user->access->getContactAclConf(
+                [
+                    'fields' => [
+                        'contact_id'
+                    ],
+                    'keys' => ['contact_id'],
+                    'order' => ['contact_id']
+                ]
+            );
+
+            $aclListOfContacts = '';
+            foreach ($arrayOfAclListOfContactIds as $contactIdAsArray) {
+                // result concatenation
+                if ('' !== $aclListOfContacts) {
+                    $aclListOfContacts .= ', ';
+                }
+                $aclListOfContacts .= implode(',', $contactIdAsArray);
+            }
+
+            /**
+             * Find users linked to the view
+             */
             $userList = array();
             $stmt = $this->db->prepare(
-                'SELECT contact_name, user_id, locked
-                FROM contact c, custom_view_user_relation cvur
-                WHERE c.contact_id = cvur.user_id
-                AND cvur.custom_view_id = :viewId
+                'SELECT `contact_name`, `user_id`, `locked`
+                FROM contact c
+                INNER JOIN custom_view_user_relation cvur ON cvur.user_id = c.contact_id
+                WHERE cvur.custom_view_id = :viewId
                 AND cvur.is_share = 1
+                AND c.contact_id IN (' . $aclListOfContacts . ')
                 ORDER BY contact_name'
             );
             $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
