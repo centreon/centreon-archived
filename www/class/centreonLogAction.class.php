@@ -40,7 +40,7 @@ class CentreonLogAction
     protected $uselessKey;
 
     /**
-     * Const use to keep the chnagelog mechanism with hidden password values
+     * Const use to keep the changelog mechanism with hidden password values
      */
     const PASSWORD_BEFORE = '*******';
     const PASSWORD_AFTER = '******';
