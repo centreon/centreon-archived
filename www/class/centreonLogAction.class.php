@@ -40,7 +40,7 @@ class CentreonLogAction
     protected $uselessKey;
 
     /**
-     * Const use to keep the chnagelog mechanism with hidden password values
+     * Const use to keep the changelog mechanism with hidden password values
      */
     const PASSWORD_BEFORE = '*******';
     const PASSWORD_AFTER = '******';
@@ -295,7 +295,7 @@ class CentreonLogAction
                          */
                         if (
                             isset($ref[$field["field_name"]])
-                            && !empty(str_replace(',','',$ref[$field["field_name"]]))
+                            && !empty(str_replace(',', '', $ref[$field["field_name"]]))
                         ) {
                             foreach ($macroPasswordRef as $macroIdPassword) {
                                 $macroValueArray[$macroIdPassword] = self::PASSWORD_BEFORE;
