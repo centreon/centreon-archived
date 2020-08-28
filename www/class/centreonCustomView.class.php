@@ -1073,7 +1073,10 @@ class CentreonCustomView
                 if ('' !== $aclListOfContacts) {
                     $aclListOfContacts .= ', ';
                 }
-                $aclListOfContacts .= implode(',', $contactIdAsArray);
+                $contactIdAsArray .= implode(',', $contactIdAsArray);
+                if (false !== filter_var($contactIdAsArray, FILTER_VALIDATE_INT)) {
+                    $aclListOfContacts .= $contactIdAsArray;
+                }
             }
 
             /**
