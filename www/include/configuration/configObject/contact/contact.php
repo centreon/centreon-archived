@@ -138,13 +138,13 @@ $eventDispatcher->addEventHandler(
 
 switch ($o) {
     case "li":
+        // LDAP import form
         require_once($path . "ldapImportContact.php");
-        break; # LDAP import form	# Wistof
+        break;
     case "mc":
         // Massive Change
     case "a":
         // Add a contact
-        require_once($path . "formContact.php");
     case "w":
         // Watch a contact
     case "c":
@@ -157,6 +157,7 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case "ms":
+        // Massive activate on selected contacts
         enableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
@@ -166,6 +167,7 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case "mu":
+        // Massive deactivate on selected contacts
         disableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
