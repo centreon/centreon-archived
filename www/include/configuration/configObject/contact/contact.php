@@ -42,6 +42,33 @@ if (!isset($centreon)) {
     exit();
 }
 
+// LDAP import form
+const LDAP_IMPORT_FORM = 'li';
+// Massive Change
+const MASSIVE_CHANGE = 'mc';
+// Add a contact
+const ADD_CONTACT = 'a';
+// Watch a contact
+const WATCH_CONTACT = 'w';
+// Modify a contact
+const MODIFY_CONTACT = 'c';
+// Activate a contact
+const ACTIVATE_CONTACT = 's';
+// Massive activate on selected contacts
+const MASSIVE_ACTIVATE_CONTACT = 'ms';
+// Deactivate a contact
+const DEACTIVATE_CONTACT = 'u';
+// Massive deactivate on selected contacts
+const MASSIVE_DEACTIVATE_CONTACT = 'mu';
+// Duplicate n contacts and notify it
+const DUPLICATE_CONTACTS = 'm';
+// Delete n contacts and notify it
+const DELETE_CONTACTS = 'd';
+// display notification
+const DISPLAY_NOTIFICATION = 'dn';
+// Synchronize selected contacts with the LDAP
+const SYNC_LDAP_CONTACTS = 'sync';
+
 isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
 isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
 $cG ? $contactId = $cG : $contactId = $cP;
@@ -137,42 +164,32 @@ $eventDispatcher->addEventHandler(
 );
 
 switch ($o) {
-    case "li":
-        // LDAP import form
+    case LDAP_IMPORT_FORM:
         require_once($path . "ldapImportContact.php");
         break;
-    case "mc":
-        // Massive Change
-    case "a":
-        // Add a contact
-    case "w":
-        // Watch a contact
-    case "c":
-        // Modify a contact
+    case MASSIVE_CHANGE:
+    case ADD_CONTACT:
+    case WATCH_CONTACT:
+    case MODIFY_CONTACT:
         require_once($path . "formContact.php");
         break;
-    case "s":
-        // Activate a contact
+    case ACTIVATE_CONTACT:
         enableContactInDB($contactId);
         require_once($path . "listContact.php");
         break;
-    case "ms":
-        // Massive activate on selected contacts
+    case MASSIVE_ACTIVATE_CONTACT:
         enableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
-    case "u":
-        // Deactivate a contact
+    case DEACTIVATE_CONTACT:
         disableContactInDB($contactId);
         require_once($path . "listContact.php");
         break;
-    case "mu":
-        // Massive deactivate on selected contacts
+    case MASSIVE_DEACTIVATE_CONTACT:
         disableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
-    case "m":
-        // Duplicate n contacts and notify it
+    case DUPLICATE_CONTACTS:
         $eventDispatcher->notify(
             'contact.form',
             EventDispatcher::EVENT_DUPLICATE,
@@ -183,8 +200,7 @@ switch ($o) {
         );
         require_once($path . "listContact.php");
         break;
-    case "d":
-        // Delete n contacts and notify it
+    case DELETE_CONTACTS:
         $eventDispatcher->notify(
             'contact.form',
             EventDispatcher::EVENT_DELETE,
@@ -192,11 +208,10 @@ switch ($o) {
         );
         require_once($path . "listContact.php");
         break;
-    case "dn":
+    case DISPLAY_NOTIFICATION:
         require_once $path . 'displayNotification.php';
         break;
-    case "sync":
-        // Synchronize selected contacts with the LDAP
+    case SYNC_LDAP_CONTACTS:
         $eventDispatcher->notify(
             'contact.form',
             EventDispatcher::EVENT_SYNCHRONIZE,
