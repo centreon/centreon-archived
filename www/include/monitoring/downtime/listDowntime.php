@@ -181,7 +181,7 @@ $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : ""
     (isset($view_all) && $view_all == 0 ? "AND d.end_time > '" . time() . "' " : "") .
     (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ?
         " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
-    (isset($search_author) && $search_author != "" ? " AND d.author LIKE :author" : "") .
+    " AND d.author LIKE :author" .
     ") ORDER BY scheduled_start_time DESC " .
     "LIMIT " . $num * $limit . ", " . $limit;
 $downtimesStatement = $pearDBO->prepare($request);
@@ -195,10 +195,10 @@ $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 for ($i = 0; $data = $downtimesStatement->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
-    
+
     $tab_downtime_svc[$i]['comment_data'] =
         CentreonUtils::escapeAllExceptSelectedTags($data['comment_data']);
-    
+
     $tab_downtime_svc[$i]['scheduled_start_time'] = $tab_downtime_svc[$i]["scheduled_start_time"] . " ";
     $tab_downtime_svc[$i]['scheduled_end_time'] = $tab_downtime_svc[$i]["scheduled_end_time"] . " ";
 
