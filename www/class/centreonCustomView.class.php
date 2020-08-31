@@ -1057,7 +1057,7 @@ class CentreonCustomView
             /**
              * Get user's ACL
              */
-            $arrayOfAclListOfContactIds = $centreon->user->access->getContactAclConf(
+            $aclListOfContactIds = $centreon->user->access->getContactAclConf(
                 [
                     'fields' => [
                         'contact_id'
@@ -1067,15 +1067,15 @@ class CentreonCustomView
                 ]
             );
 
-            $aclListOfContacts = '';
-            foreach ($arrayOfAclListOfContactIds as $contactIdAsArray) {
+            $allowedContactIds = '';
+            foreach ($aclListOfContactIds as $contactId) {
                 // result concatenation
-                if ('' !== $aclListOfContacts) {
-                    $aclListOfContacts .= ', ';
+                if ('' !== $allowedContactIds) {
+                    $allowedContactIds .= ', ';
                 }
-                $contactIdAsArray .= implode(',', $contactIdAsArray);
-                if (false !== filter_var($contactIdAsArray, FILTER_VALIDATE_INT)) {
-                    $aclListOfContacts .= $contactIdAsArray;
+                $contactId .= implode(',', $contactId);
+                if (false !== filter_var($contactId, FILTER_VALIDATE_INT)) {
+                    $allowedContactIds .= $contactId;
                 }
             }
 
@@ -1083,13 +1083,16 @@ class CentreonCustomView
              * Find users linked to the view
              */
             $userList = array();
+            if (empty($allowedContactIds)) {
+                return $userList;
+            }
             $stmt = $this->db->prepare(
                 'SELECT `contact_name`, `user_id`, `locked`
                 FROM contact c
                 INNER JOIN custom_view_user_relation cvur ON cvur.user_id = c.contact_id
                 WHERE cvur.custom_view_id = :viewId
                 AND cvur.is_share = 1
-                AND c.contact_id IN (' . $aclListOfContacts . ')
+                AND c.contact_id IN (' . $allowedContactIds . ')
                 ORDER BY contact_name'
             );
             $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
