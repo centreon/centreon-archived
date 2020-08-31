@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head } from 'ramda';
+import { last, head, equals, reject } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -11,7 +11,10 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as clipboard from './Body/tabs/Details/clipboard';
+
+import { ThemeProvider } from '@centreon/ui';
+
+import * as clipboard from './tabs/Details/clipboard';
 
 import Details from '.';
 import {
@@ -43,19 +46,20 @@ import {
   labelNo,
   labelComment,
 } from '../translatedLabels';
-import { detailsTabId, graphTabId, TabId, timelineTabId } from './Body/tabs';
+import { detailsTabId, graphTabId, TabId, timelineTabId } from './tabs';
 import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
-import { buildListTimelineEventsEndpoint } from './Body/tabs/Timeline/api';
+import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
 import { ResourceListing } from '../models';
+import { getTypeIds } from './tabs/Timeline/Event';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('./Body/tabs/Details/clipboard');
+jest.mock('./tabs/Details/clipboard');
 
 const detailsEndpoint = '/resource';
 const performanceGraphEndpoint = '/performance';
@@ -212,9 +216,11 @@ const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <Context.Provider value={context}>
-      <Details />
-    </Context.Provider>
+    <ThemeProvider>
+      <Context.Provider value={context}>
+        <Details />
+      </Context.Provider>
+    </ThemeProvider>
   );
 };
 
@@ -329,6 +335,7 @@ describe(Details, () => {
     const { getByText } = renderDetails();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
     expect(getByText(labelStatusInformation)).toBeInTheDocument();
 
     act(() => {
@@ -385,17 +392,31 @@ describe(Details, () => {
     );
   });
 
-  it('displays retrieved timeline events, grouped by date, when the Timeline tab is selected', async () => {
+  it('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByText } = renderDetails(timelineTabId);
+    const { getByText, getAllByText, baseElement } = renderDetails(
+      timelineTabId,
+    );
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
           endpoint: timelineEndpoint,
-          params: { limit: 10, page: 1 },
+          parameters: {
+            limit: 10,
+            page: 1,
+            search: {
+              lists: [
+                {
+                  field: 'type',
+                  values: getTypeIds(),
+                },
+              ],
+            },
+          },
         }),
         expect.anything(),
       ),
@@ -404,7 +425,7 @@ describe(Details, () => {
     expect(getByText('06/22/2020')).toBeInTheDocument();
 
     expect(getByText('10:40')).toBeInTheDocument();
-    expect(getAllByText('Event')).toHaveLength(2);
+    expect(getAllByText('Event')).toHaveLength(4);
     expect(getByText('UP')).toBeInTheDocument();
     expect(getByText('Tries: 1')).toBeInTheDocument();
     expect(
@@ -446,5 +467,32 @@ describe(Details, () => {
     expect(
       getAllByText(dateRegExp).map((element) => element.textContent),
     ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
+
+    const removeEventIcon = baseElement.querySelectorAll(
+      'svg[class*="deleteIcon"]',
+    )[0];
+
+    fireEvent.click(removeEventIcon);
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: timelineEndpoint,
+          parameters: {
+            limit: 10,
+            page: 1,
+            search: {
+              lists: [
+                {
+                  field: 'type',
+                  values: reject(equals('event'))(getTypeIds()),
+                },
+              ],
+            },
+          },
+        }),
+        expect.anything(),
+      ),
+    );
   });
 });

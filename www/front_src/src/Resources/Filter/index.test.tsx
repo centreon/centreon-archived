@@ -12,7 +12,7 @@ import { Simulate } from 'react-dom/test-utils';
 
 import userEvent from '@testing-library/user-event';
 import {
-  labelTypeOfResource,
+  labelResource,
   labelHost,
   labelState,
   labelAcknowledged,
@@ -20,7 +20,6 @@ import {
   labelOk,
   labelHostGroup,
   labelServiceGroup,
-  labelResourceName,
   labelSearch,
   labelResourceProblems,
   labelAll,
@@ -44,6 +43,7 @@ import {
   defaultStatuses,
   getListingEndpoint,
   mockAppStateSelector,
+  searchableFields,
 } from '../testUtils';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -57,8 +57,6 @@ jest.mock('react-redux', () => ({
 window.clearInterval = jest.fn();
 window.setInterval = jest.fn();
 
-const searchableFields = ['h.name', 'h.alias', 'h.address', 's.description'];
-
 const linuxServersHostGroup = {
   id: 0,
   name: 'Linux-servers',
@@ -70,7 +68,7 @@ const webAccessServiceGroup = {
 };
 
 const filtersParams = [
-  [labelTypeOfResource, labelHost, { resourceTypes: ['host'] }, undefined],
+  [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,
     labelAcknowledged,
@@ -207,7 +205,7 @@ describe(Filter, () => {
       const search = 'foobar';
       const fieldSearchValue = `${searchableField}:${search}`;
 
-      fireEvent.change(getByPlaceholderText(labelResourceName), {
+      fireEvent.change(getByPlaceholderText(labelSearch), {
         target: { value: fieldSearchValue },
       });
 
@@ -239,7 +237,7 @@ describe(Filter, () => {
 
     const searchValue = 'foobar';
 
-    fireEvent.change(getByPlaceholderText(labelResourceName), {
+    fireEvent.change(getByPlaceholderText(labelSearch), {
       target: { value: searchValue },
     });
 
@@ -264,7 +262,7 @@ describe(Filter, () => {
       ),
     );
 
-    const searchInput = getByPlaceholderText(labelResourceName);
+    const searchInput = getByPlaceholderText(labelSearch);
 
     Simulate.keyDown(searchInput, { key: 'Enter', keyCode: 13, which: 13 });
 
@@ -346,7 +344,7 @@ describe(Filter, () => {
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
       const searchValue = 'foobar';
-      fireEvent.change(getByPlaceholderText(labelResourceName), {
+      fireEvent.change(getByPlaceholderText(labelSearch), {
         target: { value: searchValue },
       });
 
@@ -419,7 +417,7 @@ describe(Filter, () => {
         JSON.stringify(allFilter),
       );
 
-      fireEvent.change(getByPlaceholderText(labelResourceName), {
+      fireEvent.change(getByPlaceholderText(labelSearch), {
         target: { value: 'searching...' },
       });
 
@@ -478,7 +476,7 @@ describe(Filter, () => {
         getByText(labelSearchOnFields, { exact: false }),
       ).toBeInTheDocument();
 
-      const searchInput = getByPlaceholderText(labelResourceName);
+      const searchInput = getByPlaceholderText(labelSearch);
 
       fireEvent.change(searchInput, {
         target: { value: 'foobar' },

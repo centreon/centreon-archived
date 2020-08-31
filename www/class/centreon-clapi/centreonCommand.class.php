@@ -188,6 +188,87 @@ class CentreonCommand extends CentreonObject
     }
 
     /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'name',
+            'line',
+            'type',
+            'graph',
+            'example',
+            'comment',
+            'activate',
+            'enable_shell'
+        );
+        $unknownParam = array();
+
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $listParam = explode('|', $params[1]);
+            $exportedFields = [];
+            $resultString = "";
+            foreach ($listParam as $paramSearch) {
+                if (!$paramString) {
+                    $paramString = $paramSearch;
+                } else {
+                    $paramString = $paramString . $this->delim . $paramSearch;
+                }
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    switch ($paramSearch) {
+                        case "graph":
+                            $field = "graph_id";
+                            break;
+                        case "enable_shell":
+                            break;
+                        default:
+                            if (!preg_match("/^command_/", $paramSearch)) {
+                                $field = "command_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    
+                    $ret = $this->object->getParameters($objectId, $field);
+                    $ret = $ret[$field];
+
+                    switch ($paramSearch) {
+                        case "graph":
+                            $graphObj = new \Centreon_Object_Graph_Template($this->dependencyInjector);
+                            $field = $graphObj->getUniqueLabelField();
+                            $ret = $graphObj->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
+                    
+                    if (!isset($exportedFields[$paramSearch])) {
+                        $resultString .= $ret . $this->delim;
+                        $exportedFields[$paramSearch] = 1;
+                    }
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+        echo implode(';', array_unique(explode(';', $paramString))) . "\n";
+        echo substr($resultString, 0, -1) . "\n";
+    }
+
+    /**
      * Get command arguments descriptions
      *
      * @param string $objUniqueName
