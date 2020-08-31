@@ -1,7 +1,8 @@
 <?php
+
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -922,22 +923,54 @@ class CentreonCustomView
     /**
      * Get Users From View Id
      *
-     * @param $viewId
+     * @param int $viewId
      * @return array
+     * @throws Exception
      */
-    public function getUsersFromViewId($viewId)
+    public function getUsersFromViewId(int $viewId)
     {
         static $userList;
+        global $centreon;
 
         if (!isset($userList)) {
+            /**
+             * Get user's ACL
+             */
+            $aclListOfContactIds = $centreon->user->access->getContactAclConf(
+                [
+                    'fields' => [
+                        'contact_id'
+                    ],
+                    'keys' => ['contact_id'],
+                    'order' => ['contact_id']
+                ]
+            );
+
+            $allowedContactIds = '';
+            foreach (array_keys($aclListOfContactIds) as $contactId) {
+                // result's concatenation
+                if (false !== filter_var($contactId, FILTER_VALIDATE_INT)) {
+                    if ('' !== $allowedContactIds) {
+                        $allowedContactIds .= ', ';
+                    }
+                    $allowedContactIds .= $contactId;
+                }
+            }
+
             $userList = array();
-            $query = 'SELECT contact_name, user_id, locked ' .
-                'FROM contact c, custom_view_user_relation cvur ' .
-                'WHERE c.contact_id = cvur.user_id ' .
-                'AND cvur.custom_view_id = ? ' .
-                'AND cvur.is_share = 1 ' .
-                'ORDER BY contact_name';
-            $stmt = $this->db->prepare($query);
+            if (empty($allowedContactIds)) {
+                return $userList;
+            }
+
+            $stmt = $this->db->prepare(
+                'SELECT `contact_name`, `user_id`, `locked`
+                FROM contact c
+                INNER JOIN custom_view_user_relation cvur ON cvur.user_id = c.contact_id
+                WHERE cvur.custom_view_id = ?
+                AND cvur.is_share = 1
+                AND c.contact_id IN (' . $allowedContactIds . ')
+                ORDER BY contact_name'
+            );
             $res = $this->db->execute($stmt, array((int)$viewId));
             if (PEAR::isError($res)) {
                 throw new Exception('Bad Request');
@@ -954,23 +987,58 @@ class CentreonCustomView
     /**
      * Get Usergroups From View Id
      *
-     * @param $viewId
+     * @param int $viewId
      * @return array
+     * @throws Exception
      */
-    public function getUsergroupsFromViewId($viewId)
+    public function getUsergroupsFromViewId(int $viewId)
     {
         static $usergroupList;
 
-        if (!isset($usergroupList)) {
-            $usergroupList = array();
-            $query = 'SELECT cg_name, usergroup_id, locked ' .
-                'FROM contactgroup cg, custom_view_user_relation cvur ' .
-                'WHERE cg.cg_id = cvur.usergroup_id ' .
-                'AND cvur.custom_view_id = ? ' .
-                'AND cvur.is_share = 1 ' .
-                ' ORDER BY cg_name';
+        global $centreon;
 
-            $stmt = $this->db->prepare($query);
+        if (!isset($usergroupList)) {
+            /**
+             * Get user's ACL
+             */
+            $aclListOfGroupIds = $centreon->user->access->getContactGroupAclConf(
+                [
+                    'fields' => [
+                        'cg_id'
+                    ],
+                    'keys' => ['cg_id'],
+                    'order' => ['cg_id']
+                ]
+            );
+
+            $allowedGroupIds = '';
+            foreach (array_keys($aclListOfGroupIds) as $groupId) {
+                // result's concatenation
+                if (false !== filter_var($groupId, FILTER_VALIDATE_INT)) {
+                    if ('' !== $allowedGroupIds) {
+                        $allowedGroupIds .= ', ';
+                    }
+                    $allowedGroupIds .= $groupId;
+                }
+            }
+
+            /**
+             * Find groups linked to the view
+             */
+            $usergroupList = array();
+            if (empty($allowedGroupIds)) {
+                return $usergroupList;
+            }
+
+            $stmt = $this->db->prepare(
+                'SELECT `cg_name`, `usergroup_id`, `locked`
+                FROM contactgroup cg
+                INNER JOIN custom_view_user_relation cvur ON cvur.usergroup_id = cg.cg_id
+                WHERE cvur.custom_view_id = ?
+                AND cvur.is_share = 1
+                AND cg.cg_id IN (' . $allowedGroupIds . ')
+                ORDER BY cg_name'
+            );
             $res = $this->db->execute($stmt, array((int)$viewId));
             if (PEAR::isError($res)) {
                 throw new Exception('Bad Request');
