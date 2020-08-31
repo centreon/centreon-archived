@@ -1070,10 +1070,10 @@ class CentreonCustomView
             $allowedContactIds = '';
             foreach (array_keys($aclListOfContactIds) as $contactId) {
                 // result concatenation
-                if ('' !== $allowedContactIds) {
-                    $allowedContactIds .= ', ';
-                }
                 if (false !== filter_var($contactId, FILTER_VALIDATE_INT)) {
+                    if ('' !== $allowedContactIds) {
+                        $allowedContactIds .= ', ';
+                    }
                     $allowedContactIds .= $contactId;
                 }
             }
