@@ -41,7 +41,7 @@ esac
 command -v systemctl > /dev/null 2>&1
 if [ "x$?" '=' x0 ] ; then
   systemctl show > /dev/null 2>&1
-  if [ "x$?" '=' x0 ] ; then  
+  if [ "x$?" '=' x0 ] ; then
     has_systemd=1
   else
     has_systemd=0
@@ -114,10 +114,19 @@ print_step_end
 #
 
 print_step_begin "PHP configuration"
-timezone=`date '+%Z'`
-if [ -z "$timezone" ] ; then
-  timezone=UTC
-fi
+timezone=`php -r '
+    $timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
+
+    if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
+        $timezoneName = $matches[1];
+    }
+
+    if (date_default_timezone_set($timezoneName) === false) {
+      $timezoneName = "UTC";
+    }
+
+    echo $timezoneName;
+' 2> /dev/null`
 echo "date.timezone = $timezone" > /etc/opt/rh/rh-php72/php.d/10-centreon.ini
 print_step_end "OK, timezone set to $timezone"
 
