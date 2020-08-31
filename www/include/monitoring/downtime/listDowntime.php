@@ -49,13 +49,13 @@ $view_downtime_cycle = 0;
 
 if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service = $_POST["search_service"];
+    $search_service = filter_input(INPUT_POST, 'search_service', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_service"] = $search_service;
-    $host_name = $_POST["search_host"];
+    $host_name = filter_input(INPUT_POST, 'search_host', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_host"] = $host_name;
-    $search_output = $_POST["search_output"];
+    $search_output = filter_input(INPUT_POST, 'search_output', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_output"] = $search_output;
-    $search_author = $_POST["search_author"];
+    $search_author = filter_input(INPUT_POST, 'search_author', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_author"] = $search_author;
     isset($_POST["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;
@@ -63,13 +63,13 @@ if (isset($_POST['SearchB'])) {
     $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } elseif (isset($_GET['SearchB'])) {
     $centreon->historySearch[$url] = array();
-    $search_service = $_GET['search_service'];
+    $search_service = filter_input(INPUT_GET, 'search_service', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]['search_service'] = $search_service;
-    $host_name = $_GET["search_host"];
+    $host_name = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_host"] = $host_name;
-    $search_output = $_GET["search_output"];
+    $search_output = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_output"] = $search_output;
-    $search_author = $_GET["search_author"];
+    $search_author = filter_input(INPUT_GET, 'search_author', FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url]["search_author"] = $search_author;
     isset($_GET["view_all"]) ? $view_all = 1 : $view_all = 0;
     $centreon->historySearch[$url]["view_all"] = $view_all;
@@ -150,13 +150,16 @@ if (!$is_admin) {
     $request .= " AND s.host_id = acl.host_id AND s.service_id = acl.service_id AND group_id IN (" .
         $centreon->user->access->getAccessGroupsString() . ") ";
 }
-$request .= (isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
-    (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
-    (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
+$request .= "AND s.description LIKE :service " .
+    "AND h.name LIKE :host " .
+    "AND d.comment_data LIKE :output " .
     (isset($view_all) && $view_all == 0 ? "AND d.end_time > '" . time() . "' " : "") .
-    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ?
-        " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
-    (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "");
+    (
+        isset($view_downtime_cycle) && $view_downtime_cycle == 0
+            ? " AND d.comment_data NOT LIKE '%Downtime cycle%' "
+            : ""
+    ) .
+    " AND d.author LIKE :author";
 
 /* --------------- Hosts --------------- */
 $request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
@@ -173,19 +176,24 @@ if (!$is_admin) {
         $centreon->user->access->getAccessGroupsString() . ") ";
 }
 $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : "") .
-    (isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
-    (isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
+    "AND h.name LIKE :host " .
+    "AND d.comment_data LIKE :output " .
     (isset($view_all) && $view_all == 0 ? "AND d.end_time > '" . time() . "' " : "") .
     (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ?
         " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
-    (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
+    (isset($search_author) && $search_author != "" ? " AND d.author LIKE :author" : "") .
     ") ORDER BY scheduled_start_time DESC " .
     "LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDBO->query($request);
+$downtimesStatement = $pearDBO->prepare($request);
+$downtimesStatement->bindValue(':service', '%' . $search_service . '%', \PDO::PARAM_STR);
+$downtimesStatement->bindValue(':host', '%' . $host_name . '%', \PDO::PARAM_STR);
+$downtimesStatement->bindValue(':output', '%' . $search_output . '%', \PDO::PARAM_STR);
+$downtimesStatement->bindValue(':author', '%' . $search_author . '%', \PDO::PARAM_STR);
+$downtimesStatement->execute();
 
 $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $data = $downtimesStatement->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
     
     $tab_downtime_svc[$i]['comment_data'] =
