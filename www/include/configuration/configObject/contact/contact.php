@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,9 +42,36 @@ if (!isset($centreon)) {
     exit();
 }
 
+// LDAP import form
+const LDAP_IMPORT_FORM = 'li';
+// Massive Change
+const MASSIVE_CHANGE = 'mc';
+// Add a contact
+const ADD_CONTACT = 'a';
+// Watch a contact
+const WATCH_CONTACT = 'w';
+// Modify a contact
+const MODIFY_CONTACT = 'c';
+// Activate a contact
+const ACTIVATE_CONTACT = 's';
+// Massive activate on selected contacts
+const MASSIVE_ACTIVATE_CONTACT = 'ms';
+// Deactivate a contact
+const DEACTIVATE_CONTACT = 'u';
+// Massive deactivate on selected contacts
+const MASSIVE_DEACTIVATE_CONTACT = 'mu';
+// Duplicate n contacts and notify it
+const DUPLICATE_CONTACTS = 'm';
+// Delete n contacts and notify it
+const DELETE_CONTACTS = 'd';
+// display notification
+const DISPLAY_NOTIFICATION = 'dn';
+// Synchronize selected contacts with the LDAP
+const SYNC_LDAP_CONTACTS = 'sync';
+
 isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
 isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
-$cG ? $contact_id = $cG : $contact_id = $cP;
+$cG ? $contactId = $cG : $contactId = $cP;
 
 isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
 isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
@@ -58,9 +86,6 @@ $cG ? $dupNbr = $cG : $dupNbr = $cP;
  */
 $path = "./include/configuration/configObject/contact/";
 
-/*
- * PHP functions
- */
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
@@ -139,39 +164,32 @@ $eventDispatcher->addEventHandler(
 );
 
 switch ($o) {
-    case "li":
+    case LDAP_IMPORT_FORM:
         require_once($path . "ldapImportContact.php");
-        break; # LDAP import form	# Wistof
-    case "mc":
+        break;
+    case MASSIVE_CHANGE:
+    case ADD_CONTACT:
+    case WATCH_CONTACT:
+    case MODIFY_CONTACT:
         require_once($path . "formContact.php");
-        break; # Massive Change
-    case "a":
-        require_once($path . "formContact.php");
-        break; #Add a contact
-    case "w":
-        require_once($path . "formContact.php");
-        break; #Watch a contact
-    case "c":
-        require_once($path . "formContact.php");
-        break; #Modify a contact
-    case "s":
-        enableContactInDB($contact_id);
+        break;
+    case ACTIVATE_CONTACT:
+        enableContactInDB($contactId);
         require_once($path . "listContact.php");
-        break; #Activate a contact
-    case "ms":
+        break;
+    case MASSIVE_ACTIVATE_CONTACT:
         enableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
-    case "u":
-        disableContactInDB($contact_id);
+    case DEACTIVATE_CONTACT:
+        disableContactInDB($contactId);
         require_once($path . "listContact.php");
-        break; #Desactivate a contact
-    case "mu":
+        break;
+    case MASSIVE_DEACTIVATE_CONTACT:
         disableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
-    case "m":
-        // We notify that we have made a duplicate
+    case DUPLICATE_CONTACTS:
         $eventDispatcher->notify(
             'contact.form',
             EventDispatcher::EVENT_DUPLICATE,
@@ -180,29 +198,27 @@ switch ($o) {
                 'numbers' => $dupNbr
             ]
         );
-
         require_once($path . "listContact.php");
-        break; #Duplicate n contacts
-    case "d":
-        // We notify that we have made a delete
+        break;
+    case DELETE_CONTACTS:
         $eventDispatcher->notify(
             'contact.form',
             EventDispatcher::EVENT_DELETE,
             ['contact_ids' => $select]
         );
         require_once($path . "listContact.php");
-        break; #Delete n contacts
-    case "dn":
+        break;
+    case DISPLAY_NOTIFICATION:
         require_once $path . 'displayNotification.php';
         break;
-    case "sync":
+    case SYNC_LDAP_CONTACTS:
         $eventDispatcher->notify(
             'contact.form',
             EventDispatcher::EVENT_SYNCHRONIZE,
             ['contact_ids' => $select]
         );
         require_once($path . "listContact.php");
-        break; #Synchronize selected contacts with the LDAP
+        break;
     default:
         require_once($path . "listContact.php");
         break;
