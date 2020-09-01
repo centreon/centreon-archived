@@ -1044,27 +1044,60 @@ class CentreonCustomView
     }
 
     /**
-     * @param $viewId
+     * @param int $viewId
      * @return array
      * @throws Exception
      */
-    public function getUsersFromViewId($viewId)
+    public function getUsersFromViewId(int $viewId): array
     {
         static $userList;
+        global $centreon;
 
         if (!isset($userList)) {
+            /**
+             * Get user's ACL
+             */
+            $aclListOfContactIds = $centreon->user->access->getContactAclConf(
+                [
+                    'fields' => [
+                        'contact_id'
+                    ],
+                    'keys' => ['contact_id'],
+                    'order' => ['contact_id']
+                ]
+            );
+
+            $allowedContactIds = '';
+            foreach (array_keys($aclListOfContactIds) as $contactId) {
+                // result concatenation
+                if (false !== filter_var($contactId, FILTER_VALIDATE_INT)) {
+                    if ('' !== $allowedContactIds) {
+                        $allowedContactIds .= ', ';
+                    }
+                    $allowedContactIds .= $contactId;
+                }
+            }
+
+            /**
+             * Find users linked to the view
+             */
             $userList = array();
-            $query = 'SELECT contact_name, user_id, locked ' .
-                'FROM contact c, custom_view_user_relation cvur ' .
-                'WHERE c.contact_id = cvur.user_id ' .
-                'AND cvur.custom_view_id = :viewId ' .
-                'AND cvur.is_share = 1 ' .
-                'ORDER BY contact_name';
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+            if (empty($allowedContactIds)) {
+                return $userList;
+            }
+            $stmt = $this->db->prepare(
+                'SELECT `contact_name`, `user_id`, `locked`
+                FROM contact c
+                INNER JOIN custom_view_user_relation cvur ON cvur.user_id = c.contact_id
+                WHERE cvur.custom_view_id = :viewId
+                AND cvur.is_share = 1
+                AND c.contact_id IN (' . $allowedContactIds . ')
+                ORDER BY contact_name'
+            );
+            $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
-                throw new \Exception("An error occured");
+                throw new \Exception(_("An error occurred while retrieving users linked to ViewId on database"));
             }
             while ($row = $stmt->fetch()) {
                 $userList[$row['user_id']]['contact_name'] = $row['contact_name'];
