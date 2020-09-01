@@ -333,7 +333,7 @@ msgstr "graphique de l'hôte"
 
 #: centreon-web/www/class/centreonGraph.class.php:1190
 msgid "Graph"
-msgstr "Graph"
+msgstr "Graphique"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177
 #: centreon-web/www/install/centreon_broker_translation.php:48
@@ -2433,7 +2433,7 @@ msgstr "Acquittés"
 
 #: centreon-web/www/install/smarty_translate.php:840
 msgid "In Downtime"
-msgstr "Temps d'arrêt démarré"
+msgstr "Plage de maintenance démarrée"
 
 #: centreon-web/www/install/smarty_translate.php:843
 #: centreon-web/www/install/menu_translation.php:88
@@ -2592,7 +2592,7 @@ msgstr "Fin Actuelle"
 
 #: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:217
 msgid "Recurrent downtimes"
-msgstr "Temps d'arrêt récurrents"
+msgstr "Plages de maintenance récurrentes"
 
 #: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:156
 msgid "Plugin Packs"
@@ -2617,11 +2617,11 @@ msgstr "Statistiques du moteur"
 
 #: centreon-web/www/install/smarty_translate.php:942
 msgid "No downtime scheduled"
-msgstr "Pas de temps d'arrêt programmé"
+msgstr "Pas de plage de maintenance programmée"
 
 #: centreon-web/www/install/smarty_translate.php:945
 msgid "Add downtime"
-msgstr "Ajouter un temps d'arrêt"
+msgstr "Ajouter une plage de maintenance"
 
 #: centreon-web/www/install/smarty_translate.php:948
 msgid "General informations"
@@ -3065,7 +3065,7 @@ msgstr "Découverte"
 #: centreon-web/www/install/menu_translation.php:79
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:704
 msgid "Downtimes"
-msgstr "Temps d'arrêt"
+msgstr "Planifier des plages de maintenance"
 
 #: centreon-web/www/install/menu_translation.php:80
 msgid "Edit"
@@ -3491,7 +3491,7 @@ msgstr ""
 #: centreon-web/www/install/step_upgrade/step4.php:71
 #, php-format
 msgid "The SQL files are located in %s"
-msgstr "Les fichiers SQL sont situés dans %s"
+msgstr "Les fichiers SQL sont situés dans %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid ""
@@ -3520,6 +3520,18 @@ msgstr ""
 #: centreon-web/www/install/step_upgrade/step3.php:46
 msgid "Release notes"
 msgstr "Notes de version"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Everything is ready !"
+msgstr "Tout est prêt !"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Your Centreon Platform is about to be upgraded from version "
+msgstr "Votre plateforme Centreon va être mise à jour de la version "
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "For further details on changes, please find the complete changelog on "
+msgstr "Pour plus d'informations, consultez les notes de version sur "
 
 #: centreon-web/www/install/step_upgrade/step5.php:44
 msgid "Upgrade finished"
@@ -4295,15 +4307,13 @@ msgstr "Modifier les options de Centcore"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:61
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
-msgid "Enable Broker Statistics Collection"
-msgstr ""
-"Activer la récupération des fichiers de statistiques des composants Centreon "
-"Broker"
+msgid "Enable Broker statistics collection"
+msgstr "Activer la récupération des fichiers de statistiques Broker"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Temps maximum d'exécution des commandes centcore"
+msgid "Timeout value for Gorgone commands"
+msgstr "Temps maximum d'exécution des commandes Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:62
 msgid "Illegal characters for Centcore commands"
@@ -4942,7 +4952,7 @@ msgstr "Durée de rétention des données dans MySQL"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:121
 msgid "Retention Duration for Downtimes"
-msgstr "Durée de rétention des temps d'arrêt"
+msgstr "Durée de rétention des plages de maintenance"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:122
 msgid "Retention Duration for Comments"
@@ -5237,7 +5247,7 @@ msgstr "Port d'accès au proxy internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:166
 msgid "Display downtime and acknowledgment on chart"
-msgstr "Afficher les temps d'arrêts et acquittements sur les ghraphiques"
+msgstr "Afficher les plages de maintenances et acquittements sur les ghraphiques"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
 msgid "Display comment on chart"
@@ -5423,7 +5433,7 @@ msgstr "Acquitter les services liés à l'hôte"
 #: centreon-web/www/include/Administration/parameters/engine/form.php:108
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:126
 msgid "Set downtimes on services attached to hosts"
-msgstr "Fixer des temps d'arrêt aux services attachés aux hôtes"
+msgstr "Fixer des plages de maintenance aux services attachés aux hôtes"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:113
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:229
@@ -5467,7 +5477,7 @@ msgstr "Options d'acquittement par défaut"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:210
 msgid "Default downtime settings"
-msgstr "Options de temps d'arrêt par défaut"
+msgstr "Options de la plage de maintenance par défaut"
 
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:78
 msgid "Directory + RRDTOOL Binary"
@@ -6449,7 +6459,7 @@ msgstr "Re-planifier la prochaine vérification d'un service (Forcé)"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:107
 msgid "Schedule downtime for a service"
-msgstr "Planifier un temps d'arrêt pour un service"
+msgstr "Planifier une plage de maintenance pour un service"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:108
 msgid "Add/Delete a comment for a service"
@@ -6502,7 +6512,7 @@ msgstr "Planifier la vérification pour un hôte (Forcé)"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:122
 msgid "Schedule downtime for a host"
-msgstr "Planifier un temps d'arrêt pour un hôte"
+msgstr "Planifier une plage de maintenance pour un hôte"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:123
 msgid "Add/Delete a comment for a host"
@@ -7977,7 +7987,7 @@ msgstr "Moyenne"
 
 #: centreon-web/www/include/reporting/dashboard/initReport.php:174
 msgid "Scheduled downtime"
-msgstr "Temps d'arrêt planifié"
+msgstr "Plage de maintenance planifiée"
 
 #: centreon-web/www/include/reporting/dashboard/initReport.php:177
 msgid "Total"
@@ -9482,7 +9492,7 @@ msgstr "Historisé (recherche en base)"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:334
 msgid "Check Downtime"
-msgstr "Contrôle si le service est en temps d'arrêt"
+msgstr "Contrôle si le service est en plage de maintenance"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:343
 msgid "Preexec definition"
@@ -9951,7 +9961,7 @@ msgstr "Bagotant"
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:260
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:630
 msgid "Downtime Scheduled"
-msgstr "Temps d'arrêt programmés"
+msgstr "Plages de maintenance programmées"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:779
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:632
@@ -10556,7 +10566,7 @@ msgstr "Services utilisés"
 #: centreon-web/www/include/configuration/configObject/command/commandType.php:39
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:186
 msgid "Check"
-msgstr "Vérification"
+msgstr "Vérifier"
 
 #: centreon-web/www/include/configuration/configObject/command/listCommand.php:157
 msgid "Host links (host template links)"
@@ -10651,7 +10661,7 @@ msgstr "Effacer les arguments"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:214
 msgid "Describe macros"
-msgstr "Décrire les marcros"
+msgstr "Décrire les macros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:215
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:364
@@ -11820,7 +11830,7 @@ msgstr "PID"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:117
 msgid "Start time"
-msgstr "Heure de démarrage du programme"
+msgstr "Heure de début"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:118
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:189
@@ -11856,15 +11866,15 @@ msgstr "Exporter la configuration"
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:114
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:237
 msgid "Add a downtime"
-msgstr "Ajouter un temps d'arrêt"
+msgstr "Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:116
 msgid "Modify a downtime"
-msgstr "Modifier un temps d'arrêt"
+msgstr "Modifier une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:118
 msgid "View a downtime"
-msgstr "Visualiser un temps d'arrêt"
+msgstr "Visualiser une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:121
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:232
@@ -11885,7 +11895,7 @@ msgstr "Lié avec le groupe de services"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:230
 msgid "Downtime Configuration"
-msgstr "Configuration des temps d'arrêt"
+msgstr "Configuration des plages de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:234
 msgid "Add new period"
@@ -11898,7 +11908,7 @@ msgstr "La date de fin doit être plus grande que la date de début."
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:266
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:355
 msgid "No relation set for this downtime"
-msgstr "Aucune relation faite avec ce temps d'arrêt"
+msgstr "Aucune relation faite avec cette plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:334
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:77
@@ -11917,7 +11927,7 @@ msgstr "Secondes"
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:71
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:131
 msgid "Downtime type"
-msgstr "Type de temps d'arrêt"
+msgstr "Type de plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:339
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:73
@@ -12468,7 +12478,7 @@ msgstr "Hôtes : Désactiver la vérification"
 #: centreon-web/www/include/monitoring/status/Services/service.php:278
 #: centreon-web/www/include/monitoring/status/Services/service.php:298
 msgid "Hosts : Set Downtime"
-msgstr "Hôtes : Ajouter un temps d'arrêt"
+msgstr "Hôtes : Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/monitoring/status/HostGroups/hostGroupJS.php:71
 msgid "Hosts Status"
@@ -12728,6 +12738,9 @@ msgstr "Problèmes"
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:69
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:69
 msgid "Acknowledge"
+msgstr "Acquitter"
+
+msgid "Acknowlegment"
 msgstr "Acquittement"
 
 #: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:96
@@ -12854,7 +12867,7 @@ msgstr "Services : Planifier un contrôle immédiat (Forcé)"
 #: centreon-web/www/include/monitoring/status/Services/service.php:251
 #: centreon-web/www/include/monitoring/status/Services/service.php:289
 msgid "Services : Set Downtime"
-msgstr "Services : Ajouter un temps d'arrêt"
+msgstr "Services : Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/monitoring/status/Services/service.php:339
 msgid "Service Problems"
@@ -12971,12 +12984,12 @@ msgstr "Commentaire"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:74
 msgid "Set downtimes"
-msgstr "Configurer des temps d'arrêt"
+msgstr "Configurer des plages de maintenance"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:80
 #, php-format
 msgid "Downtime set by %s"
-msgstr "Temps d'arrêt fixé par %s"
+msgstr "Plage de maintenance fixée par %s"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:88
 msgid "*The timezone used is configured on your user settings"
@@ -12986,7 +12999,7 @@ msgstr ""
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:134
 msgid "Set downtime"
-msgstr "Configurer un temps d'arrêt"
+msgstr "Planifier une maintenance"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:96
 msgid "Acknowledge problems"
@@ -13099,7 +13112,7 @@ msgstr "Soumettre un résultat pour ce service"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:477
 msgid "Schedule downtime for this service"
-msgstr "Planifier un arrêt pour ce service"
+msgstr "Planifier une plage de maintenance pour ce service"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:478
 msgid "Add a comment for this service"
@@ -13350,7 +13363,7 @@ msgstr "Commandes disponibles"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:482
 msgid "Schedule downtime for this host"
-msgstr "Planifier un temps d'arrêt pour cet hôte"
+msgstr "Planifier une plage de maintenance pour cet hôte"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:483
 msgid "Add Comment for this host"
@@ -13506,7 +13519,7 @@ msgstr "Confirmez-vous l'annulation ?"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:248
 msgid "Services Downtimes"
-msgstr "Temps d'arrêt des services"
+msgstr "Plages de maintenance des services"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:249
 msgid "s"
@@ -13514,15 +13527,15 @@ msgstr "s"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:250
 msgid "View downtimes of hosts"
-msgstr "Visualiser les temps d'arrêt des hôtes"
+msgstr "Visualiser les plages de maintenance des hôtes"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:261
 msgid "Display Finished Downtimes"
-msgstr "Afficher les temps d'arrêt terminés"
+msgstr "Afficher les plages de maintenance terminés"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:262
 msgid "Display Recurring Downtimes"
-msgstr "Afficher les temps d'arrêt cycliques"
+msgstr "Afficher les plages de maintenance cycliques"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172
 msgid "Hostgroups"
@@ -13539,7 +13552,7 @@ msgstr ""
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:240
 msgid "Set downtime for hosts services"
-msgstr "Configurer un temps d'arrêt pour les services des hôtes"
+msgstr "Configurer une plage de maintenance pour les services des hôtes"
 
 #~ msgid " element(s) found"
 #~ msgstr "élément(s) trouvé(s)"
@@ -13588,7 +13601,7 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Statuts de services"
 
 #~ msgid "No downtime scheduled for services"
-#~ msgstr "Aucun temps d'arrêt planifié pour les services"
+#~ msgstr "Aucune plage de maintenance planifiée pour les services"
 
 #~ msgid "Host category"
 #~ msgstr "Catégorie d'hôtes"
@@ -13690,10 +13703,10 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Planifier pour un hôte"
 
 #~ msgid "Add a Host downtime"
-#~ msgstr "Ajouter un temps d'arrêt pour un hôte"
+#~ msgstr "Ajouter une plage de maintenance pour un hôte"
 
 #~ msgid "Select a downtime type"
-#~ msgstr "Sélectionner un type de temps d'arrêt"
+#~ msgstr "Sélectionner un type de plage de maintenance"
 
 #~ msgid "Connection Error to NDO DataBase ! \n"
 #~ msgstr "Erreur de connexion à la base de données NDO ! \n"
@@ -13720,10 +13733,10 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Dernière fois dans un état critique"
 
 #~ msgid "Services: Set Downtime"
-#~ msgstr "Services: Planifier un temps d'arrêt"
+#~ msgstr "Services: Planifier une plage de maintenance"
 
 #~ msgid "Hosts: Set Downtime"
-#~ msgstr "Hôtes: Planifier un temps d'arrêt"
+#~ msgstr "Hôtes: Planifier une plage de maintenance"
 
 #~ msgid "Disacknowledge"
 #~ msgstr "Désacquittement"
@@ -14272,7 +14285,7 @@ msgstr "Poubelle"
 #~ msgstr "Couleur des hôtes ou des services acquittés"
 
 #~ msgid "Downtime host or service Color"
-#~ msgstr "Couleur des hôtes ou des services en temps d'arrêt"
+#~ msgstr "Couleur des hôtes ou des services en maintenance"
 
 #~ msgid "Color for host Down (Service view)"
 #~ msgstr ""
@@ -14540,9 +14553,6 @@ msgstr "Poubelle"
 #~ msgid "On Problem Host"
 #~ msgstr "Sur Problème de l'hôte"
 
-#~ msgid "Unhandled"
-#~ msgstr "Non Traités"
-
 #~ msgid "Unhandled Service problems (last %s)"
 #~ msgstr "Problèmes de service non traités (%s derniers)"
 
@@ -14574,13 +14584,13 @@ msgstr "Poubelle"
 #~ msgstr "Confirmez-vous l'annulation?"
 
 #~ msgid "Hosts Downtimes"
-#~ msgstr "Temps d'arrêt des hôtes"
+#~ msgstr "Plages de maintenance des hôtes"
 
 #~ msgid "No downtime scheduled for hosts"
-#~ msgstr "Aucun temps d'arrêt planifié pour les hôtes"
+#~ msgstr "Aucune plage de maintenance planifiée pour les hôtes"
 
 #~ msgid "View downtimes of services"
-#~ msgstr "Visualiser les temps d'arrêt des services"
+#~ msgstr "Visualiser les plages de maintenance des services"
 
 #~ msgid "PENDING"
 #~ msgstr "EN ATTENTE"
@@ -14841,7 +14851,7 @@ msgid "Latency detected, check configuration for better optimization"
 msgstr "Latence détectée, vérifiez la configuration pour une meilleure optimisation"
 
 msgid "You can't edit this downtime because you don't have access to all of its resources"
-msgstr "Vous ne pouvez pas éditer ce temps d’arrêt car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
+msgstr "Vous ne pouvez pas éditer cette plage de maintenance car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
 
 msgid "You can't edit this hostgroup because you don't have access to all its resources"
 msgstr "Vous ne pouvez pas éditer groupe d'hote car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
@@ -14875,3 +14885,6 @@ msgstr "Eléments verrouillés"
 
 msgid "This value needs to be an integer lesser than"
 msgstr "Cette valeur doit être un entier inférieur à"
+
+msgid "An error occurred while retrieving users linked to ViewId on database"
+msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs liés à ViewId"
