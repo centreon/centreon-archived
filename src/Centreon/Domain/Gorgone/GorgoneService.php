@@ -65,14 +65,6 @@ class GorgoneService implements GorgoneServiceInterface
     {
         try {
             $responseToken = $this->commandRepository->send($command);
-            $data = sprintf(
-                "[%s %s]%s: %s\r\n",
-                $command->getMethod(),
-                $command->getName(),
-                $command->getUriRequest(),
-                json_encode($command->getBodyRequest())
-            );
-            $octets = file_put_contents('/usr/share/centreon/gorgone.cmd', $data, FILE_APPEND);
         } catch (\Throwable $ex) {
             throw new GorgoneException('Error when connecting to the Gorgone server', 0, $ex);
         }
