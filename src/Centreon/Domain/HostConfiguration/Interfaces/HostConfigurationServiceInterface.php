@@ -74,4 +74,22 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findHostMacrosPassword(int $hostId, string $command): array;
+
+    /**
+     * Change the activation status of host.
+     *
+     * @param int $hostId Host id for which we want to change the activation status
+     * @param bool $shouldBeActivated TRUE to activate a host
+     * @throws HostConfigurationException
+     */
+    public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void;
+
+    /**
+     * Checks if names are already used by hosts.
+     *
+     * @param string[] $namesToCheck List of names to check if they are already used by hosts
+     * @return array<string, bool> Returns Name-indexed list with control status
+     * @throws HostConfigurationException
+     */
+    public function checkNamesAlreadyUsed(array $namesToCheck): array;
 }

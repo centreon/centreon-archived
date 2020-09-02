@@ -384,4 +384,53 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         }
         return $hostMacros;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('UPDATE `:db`.host SET host_activate = :activation_status WHERE host_id = :host_id')
+        );
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $statement->bindValue(':activation_status', $shouldBeActivated ? '1' : '0', \PDO::PARAM_STR);
+        $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkNamesAlreadyUsed(array $namesToCheck): array
+    {
+        if (empty($namesToCheck)) {
+            return [];
+        }
+
+        $names = [];
+        foreach ($namesToCheck as $name) {
+            $names[] = (string) $name;
+        }
+
+        if (empty($names)) {
+            return [];
+        }
+
+        $statement = $this->db->prepare(
+            sprintf(
+                $this->translateDbName('SELECT host_name FROM `:db`.host WHERE host_name IN (%s?)'),
+                str_repeat('?,', count($names) - 1)
+            )
+        );
+        $statement->execute($names);
+        $namesFound = [];
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $namesFound[] = $result['host_name'];
+        }
+        $namesAndStatus = [];
+        foreach ($names as $name) {
+            $namesAndStatus[$name] = in_array($name, $namesFound);
+        }
+        return $namesAndStatus;
+    }
 }

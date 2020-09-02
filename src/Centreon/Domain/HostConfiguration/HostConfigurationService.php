@@ -115,4 +115,28 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         }
         return $hostMacrosPassword;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void
+    {
+        try {
+            $this->hostConfigurationRepository->changeActivationStatus($hostId, $shouldBeActivated);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_(''));
+        }
+    }
+
+    /**
+    * @inheritDoc
+    */
+    public function checkNamesAlreadyUsed(array $namesToCheck): array
+    {
+        try {
+            return $this->hostConfigurationRepository->checkNamesAlreadyUsed($namesToCheck);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_(''));
+        }
+    }
 }
