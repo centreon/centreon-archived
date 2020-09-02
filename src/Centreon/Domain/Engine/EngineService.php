@@ -27,6 +27,8 @@ use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Downtime\DowntimeService;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationRepositoryInterface;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
@@ -41,7 +43,9 @@ use JMS\Serializer\Exception\ValidationFailedException;
  * @package Centreon\Domain\Engine
  * @todo Replace the ValidationFailedException with a domain exception to avoid depending on the framework
  */
-class EngineService extends AbstractCentreonService implements EngineServiceInterface
+class EngineService extends AbstractCentreonService implements
+    EngineServiceInterface,
+    EngineConfigurationServiceInterface
 {
     /**
      * @var EngineRepositoryInterface
@@ -52,19 +56,26 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
      * @var EntityValidator
      */
     private $validator;
+    /**
+     * @var EngineConfigurationRepositoryInterface
+     */
+    private $engineConfigurationRepository;
 
     /**
      * CentCoreService constructor.
      *
      * @param EngineRepositoryInterface $engineRepository
+     * @param EngineConfigurationRepositoryInterface $engineConfigurationRepository
      * @param EntityValidator $validator
      */
     public function __construct(
         EngineRepositoryInterface $engineRepository,
+        EngineConfigurationRepositoryInterface $engineConfigurationRepository,
         EntityValidator $validator
     ) {
         $this->engineRepository = $engineRepository;
         $this->validator = $validator;
+        $this->engineConfigurationRepository = $engineConfigurationRepository;
     }
 
     /**
@@ -258,6 +269,18 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         $command = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
 
         $this->engineRepository->sendExternalCommand($command);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findEngineConfigurationByHost(\Centreon\Domain\HostConfiguration\Host $host): ?EngineConfiguration
+    {
+        try {
+            return $this->engineConfigurationRepository->findEngineConfigurationByHost($host);
+        } catch (\Throwable $ex) {
+            throw new EngineException(_('Error when searching for the Engine configuration'), 0, $ex);
+        }
     }
 
     /**

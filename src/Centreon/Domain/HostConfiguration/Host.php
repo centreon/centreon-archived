@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ class Host
     /**
      * @var bool
      */
-    private $isActivate = true;
+    private $isActivated = true;
 
     /**
      * @var int Host type
@@ -105,7 +105,7 @@ class Host
     /**
      * @var Host[] Host templates
      */
-    private $template = [];
+    private $templates = [];
 
     /**
      * @var HostMacro[]
@@ -241,18 +241,18 @@ class Host
     /**
      * @return bool
      */
-    public function isActivate(): bool
+    public function isActivated(): bool
     {
-        return $this->isActivate;
+        return $this->isActivated;
     }
 
     /**
-     * @param bool $isActivate
+     * @param bool $isActivated
      * @return Host
      */
-    public function setIsActivate(bool $isActivate): Host
+    public function setActivated(bool $isActivated): Host
     {
-        $this->isActivate = $isActivate;
+        $this->isActivated = $isActivated;
         return $this;
     }
 
@@ -302,28 +302,20 @@ class Host
 
     /**
      * @param int $type
+     * @return Host
      */
-    public function setType(int $type): void
+    public function setType(int $type): Host
     {
         $this->type = $type;
+        return $this;
     }
 
     /**
      * @return Host[]
      */
-    public function getTemplate(): array
+    public function getTemplates(): array
     {
-        return $this->template;
-    }
-
-    /**
-     * @param Host[] $template
-     * @return Host
-     */
-    public function setTemplate(array $template): Host
-    {
-        $this->template = $template;
-        return $this;
+        return $this->templates;
     }
 
     /**
@@ -334,7 +326,21 @@ class Host
      */
     public function addTemplate(Host $hostTemplate): Host
     {
-        $this->template[] = $hostTemplate;
+        if ($hostTemplate->getType() !== Host::TYPE_HOST_TEMPLATE) {
+            throw new \InvalidArgumentException(_('This host is not a host template'));
+        }
+        $this->templates[] = $hostTemplate;
+        return $this;
+    }
+
+    /**
+     * Clear all templates.
+     *
+     * @return Host
+     */
+    public function clearTemplates(): Host
+    {
+        $this->templates = [];
         return $this;
     }
 
