@@ -973,7 +973,7 @@ class CentreonCustomView
             );
             $res = $this->db->execute($stmt, array((int)$viewId));
             if (PEAR::isError($res)) {
-                throw new Exception('Bad Request');
+                throw new \Exception(_("An error occurred while retrieving users linked to ViewId on database"));
             }
             while ($row = $res->fetchRow()) {
                 $userList[$row['user_id']]['contact_name'] = $row['contact_name'];
@@ -1041,7 +1041,7 @@ class CentreonCustomView
             );
             $res = $this->db->execute($stmt, array((int)$viewId));
             if (PEAR::isError($res)) {
-                throw new Exception('Bad Request');
+                throw new \Exception(_("An error occurred while retrieving groups linked to ViewId on database"));
             }
 
             while ($row = $res->fetchRow()) {
