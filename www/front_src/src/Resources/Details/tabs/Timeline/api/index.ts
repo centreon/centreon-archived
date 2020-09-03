@@ -1,18 +1,18 @@
 import { buildListingEndpoint, ListingModel, getData } from '@centreon/ui';
 import { TimelineEvent } from '../models';
 
-const buildListTimelineEventsEndpoint = ({ endpoint, params }): string =>
+const buildListTimelineEventsEndpoint = ({ endpoint, parameters }): string =>
   buildListingEndpoint({
     baseEndpoint: endpoint,
-    params,
+    parameters,
   });
 
 const listTimelineEvents = (cancelToken) => ({
   endpoint,
-  params,
+  parameters,
 }): Promise<ListingModel<TimelineEvent>> => {
   return getData<ListingModel<TimelineEvent>>(cancelToken)(
-    buildListTimelineEventsEndpoint({ endpoint, params }),
+    buildListTimelineEventsEndpoint({ endpoint, parameters }),
   );
 };
 

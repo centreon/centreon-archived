@@ -34,7 +34,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonCustomView.class.php";
@@ -202,7 +202,7 @@ try {
     switch ($action) {
         case 'add':
             if (!empty($createLoad)) {
-                if ($createLoad == 'create') {
+                if ($createLoad === 'create') {
                     $postInputs['custom_view_id'] = $viewObj->addCustomView(
                         $postInputs['name'],
                         $postInputs['layout'],
@@ -212,7 +212,7 @@ try {
                     if ($postInputs['widget_id']) {
                         $widgetObj->updateViewWidgetRelations($postInputs['custom_view_id']);
                     }
-                } elseif ($createLoad == 'load' && !empty($postInputs['viewLoad'])) {
+                } elseif ($createLoad === 'load' && !empty($postInputs['viewLoad'])) {
                     $postInputs['custom_view_id'] = $viewObj->loadCustomView($postInputs['viewLoad'], $authorized);
                 }
             }
@@ -305,9 +305,10 @@ try {
             $_SESSION['customview_edit_mode'] = $_POST['editMode'];
             break;
         case 'get_share_info':
-            if (isset($_POST['viewId'])) {
-                $viewers = $viewObj->getUsersFromViewId($_POST['viewId']);
-                $viewerGroups = $viewObj->getUsergroupsFromViewId($_POST['viewId']);
+            $viewId = isset($_POST['viewId']) ? filter_var($_POST['viewId'], FILTER_VALIDATE_INT) : false;
+            if (false !== $viewId) {
+                $viewers = $viewObj->getUsersFromViewId($viewId);
+                $viewerGroups = $viewObj->getUsergroupsFromViewId($viewId);
                 $xml->startElement('contacts');
                 foreach ($viewers as $viewer) {
                     if ($viewer['user_id'] != $centreon->user->user_id) {

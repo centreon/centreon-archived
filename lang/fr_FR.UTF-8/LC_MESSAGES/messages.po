@@ -15530,6 +15530,12 @@ msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configu
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
 
+msgid "An error occurred while retrieving users linked to ViewId on database"
+msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs liés à ViewId"
+
+msgid "An error occurred while retrieving groups linked to ViewId on database"
+msgstr "Une erreur est survenue lors de la récupération en DB des groupes liés à ViewId"
+
 msgid "Error when searching for services by host"
 msgstr "Erreur lors de la recherche de services par hôte"
 

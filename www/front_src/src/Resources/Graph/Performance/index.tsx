@@ -7,7 +7,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import * as numeral from 'numeral';
 import {
   pipe,
   map,
@@ -32,26 +31,9 @@ import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import getGraphLines from './Lines';
+import formatMetricValue from './formatMetricValue';
 
 const fontFamily = 'Roboto, sans-serif';
-
-const formatValue = ({ value, unit }): string => {
-  const base2Units = [
-    'B',
-    'bytes',
-    'bytespersecond',
-    'B/s',
-    'B/sec',
-    'o',
-    'octets',
-  ];
-  const suffixFormat = base2Units.includes(unit) ? 'b' : 'a';
-
-  return numeral(value)
-    .format(`0.[00] ${suffixFormat}`)
-    .trim()
-    .replace('B', '');
-};
 
 interface Props {
   endpoint: string;
@@ -99,6 +81,7 @@ const PerformanceGraph = ({
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
   const [title, setTitle] = React.useState<string>();
+  const [base, setBase] = React.useState<number>();
 
   const { sendRequest, sending } = useRequest<GraphData>({
     request: getData,
@@ -109,6 +92,7 @@ const PerformanceGraph = ({
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
+      setBase(graphData.global.base);
     });
   }, [endpoint]);
 
@@ -135,7 +119,7 @@ const PerformanceGraph = ({
       path(['name']),
     )(lineData) as string;
 
-    return [formatValue({ value, unit }), legendName];
+    return [formatMetricValue({ value, unit, base }), legendName];
   };
 
   const formatXAxisTick = (tick): string =>
@@ -184,7 +168,7 @@ const PerformanceGraph = ({
             tick={{ fontSize: 13 }}
           />
 
-          {getGraphLines(displayedLines)}
+          {getGraphLines({ lines: displayedLines, base })}
 
           <Tooltip
             labelFormatter={formatTooltipTime}
@@ -210,4 +194,4 @@ const PerformanceGraph = ({
 };
 
 export default PerformanceGraph;
-export { fontFamily, formatValue };
+export { fontFamily };
