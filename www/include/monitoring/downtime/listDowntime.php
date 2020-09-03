@@ -188,11 +188,11 @@ $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : ""
 $downtimesStatement = $pearDBO->prepare($request);
 $dbResult = $pearDBO->execute(
     $stmt,
-    [
+    array(
         '%' . $search_service . '%', '%' . $host_name . '%', '%' . $search_output . '%', '%' . $search_author . '%',
         '%' . $host_name . '%', '%' . $search_output . '%', '%' . $search_author . '%',
         $num * $limit, $limit
-    ]
+    )
 );
 
 $rows = $dbResult->numRows();
