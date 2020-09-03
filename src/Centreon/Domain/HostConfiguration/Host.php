@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\Annotation\EntityDescriptor;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 
 /***
@@ -86,6 +87,7 @@ class Host
 
     /**
      * @var bool
+     * @EntityDescriptor(column="is_activated", modifier="setActivated")
      */
     private $isActivated = true;
 
