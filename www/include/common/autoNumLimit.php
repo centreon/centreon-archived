@@ -42,16 +42,16 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
 } elseif (isset($_GET["limit"])) {
     $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 } elseif (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
-    $limit = $centreon->historyLimit[$url];
+    $limit = (int) $centreon->historyLimit[$url];
 } else {
     if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)) {
         $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
         $gopt = $DBRESULT->fetchRow();
-        $limit = myDecode($gopt["value"]);
+        $limit = (int) myDecode($gopt["value"]);
     } else {
         $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
         $gopt = $DBRESULT->fetchRow();
-        $limit = myDecode($gopt["value"]);
+        $limit = (int) myDecode($gopt["value"]);
     }
 }
 if (!empty($centreon->historyLimit) && !empty($centreon->historyLimit[$url]) && $limit != $centreon->historyLimit[$url]) {
@@ -61,7 +61,7 @@ if (!empty($centreon->historyLimit) && !empty($centreon->historyLimit[$url]) && 
 } elseif (isset($_GET["num"]) && $_GET["num"]) {
     $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 } elseif (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
-    $num = $centreon->historyPage[$url];
+    $num = (int) $centreon->historyPage[$url];
 } else {
     $num = 0;
 }
