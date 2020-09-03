@@ -38,9 +38,9 @@ if (!isset($centreon)) {
 }
 
 if (isset($_POST["limit"]) && $_POST["limit"]) {
-    $limit = $_POST["limit"];
+    $limit = filter_input(INPUT_POST, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 } elseif (isset($_GET["limit"])) {
-    $limit = $_GET["limit"];
+    $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 } elseif (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($centreon->historyLimit[$url])) {
     $limit = $centreon->historyLimit[$url];
 } else {
@@ -57,9 +57,9 @@ if (isset($_POST["limit"]) && $_POST["limit"]) {
 if (!empty($centreon->historyLimit) && !empty($centreon->historyLimit[$url]) && $limit != $centreon->historyLimit[$url]) {
     $num = 0;
 } elseif (isset($_POST["num"]) && $_POST["num"]) {
-    $num = $_POST["num"];
+    $num = filter_input(INPUT_POST, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 } elseif (isset($_GET["num"]) && $_GET["num"]) {
-    $num = $_GET["num"];
+    $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 } elseif (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($centreon->historyPage[$url])) {
     $num = $centreon->historyPage[$url];
 } else {

@@ -57,7 +57,7 @@ if (isset($_POST["search_service"])) {
 if (isset($_POST["search_host"])) {
     $host_name = filter_input(INPUT_POST, 'search_host', FILTER_SANITIZE_STRING);
 } elseif (isset($_GET["search_host"])) {
-    $host_name = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING);;
+    $host_name = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING);
 }
 
 if (isset($_POST["search_output"])) {
@@ -184,13 +184,14 @@ $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : ""
         " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
     " AND d.author LIKE ?" .
     ") ORDER BY scheduled_start_time DESC " .
-    "LIMIT " . $num * $limit . ", " . $limit;
+    "LIMIT ?, ?";
 $downtimesStatement = $pearDBO->prepare($request);
 $dbResult = $pearDBO->execute(
     $stmt,
     [
         '%' . $search_service . '%', '%' . $host_name . '%', '%' . $search_output . '%', '%' . $search_author . '%',
-        '%' . $host_name . '%', '%' . $search_output . '%', '%' . $search_author . '%'
+        '%' . $host_name . '%', '%' . $search_output . '%', '%' . $search_author . '%',
+        $num * $limit, $limit
     ]
 );
 
