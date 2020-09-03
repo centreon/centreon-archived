@@ -195,7 +195,7 @@ $dbResult = $pearDBO->execute(
     )
 );
 
-$rows = $dbResult->numRows();
+$rows = $pearDBO->numberRows();
 for ($i = 0; $data = $dbResult->fetchRow(); $i++) {
     $tab_downtime_svc[$i] = $data;
     $tab_downtime_svc[$i]['comment_data'] = CentreonUtils::escapeSecure(
