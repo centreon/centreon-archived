@@ -183,12 +183,14 @@ $request .= (isset($search_service) && $search_service != "" ? "AND 1 = 0 " : ""
         " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
     " AND d.author LIKE :author" .
     ") ORDER BY scheduled_start_time DESC " .
-    "LIMIT " . $num * $limit . ", " . $limit;
+    "LIMIT :offset, :limit";
 $downtimesStatement = $pearDBO->prepare($request);
 $downtimesStatement->bindValue(':service', '%' . $search_service . '%', \PDO::PARAM_STR);
 $downtimesStatement->bindValue(':host', '%' . $host_name . '%', \PDO::PARAM_STR);
 $downtimesStatement->bindValue(':output', '%' . $search_output . '%', \PDO::PARAM_STR);
 $downtimesStatement->bindValue(':author', '%' . $search_author . '%', \PDO::PARAM_STR);
+$downtimesStatement->bindValue(':offset', $num * $limit, \PDO::PARAM_INT);
+$downtimesStatement->bindValue(':limit', $limit, \PDO::PARAM_INT);
 $downtimesStatement->execute();
 
 $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
