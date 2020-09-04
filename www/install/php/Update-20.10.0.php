@@ -29,6 +29,17 @@ $versionOfTheUpgrade = 'UPGRADE - 20.10.0 : ';
  * Queries which don't need rollback and won't throw an exception
  */
 try {
+    // Correct isCentral flag value
+    $errorMessage = "Unable to replace isCentral value in informations table.";
+    $result = $pearDB->query("
+        SELECT count(*) as `count` FROM informations
+        WHERE (`key` = 'isRemote' AND `value` = 'no') OR (`key` = 'isCentral' AND `value` = 'No')
+    ");
+    $row = $result->fetch();
+    if (2 === (int)$row['count']) {
+        $stmt = $pearDB->query("UPDATE `informations` SET `value` = 'yes' WHERE `key` = 'isCentral'");
+    }
+
     // Create a new table used to get the platform topology and the relation between the servers
     $errorMessage = "Unable to create the new platform_topology table.";
     $pearDB->exec("
