@@ -671,7 +671,7 @@
      */
     roundTickByte: function (value) {
       if (value < 0) {
-          return '-' + numeral(value).format('0.0[0]0ib').replace(/i?B/, '');
+          return '-' + numeral(Math.abs(value)).format('0.0[0]0ib').replace(/i?B/, '');
       }
       return numeral(value).format('0.0[0]0ib').replace(/i?B/, '');
     },
