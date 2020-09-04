@@ -671,9 +671,9 @@
      */
     roundTickByte: function (value) {
       if (value < 0) {
-          return '-' + numeral(Math.abs(value)).format('0.0[0]0ib').replace(/iB/, 'B');
+          return '-' + numeral(value).format('0.0[0]0ib').replace(/i?B/, '');
       }
-      return numeral(value).format('0.0[0]0ib').replace(/iB/, 'B');
+      return numeral(value).format('0.0[0]0ib').replace(/i?B/, '');
     },
     /**
      * Get base for 1000 or 1024 for a curve
@@ -681,7 +681,7 @@
      * @param {String} id - The curve id
      * @return {Integer} - 1000 or 1024
      */
-    getBase: function (id) {
+    getBase: function () {
       if (this.chartData.global.base) {
         return this.chartData.global.base;
       }
