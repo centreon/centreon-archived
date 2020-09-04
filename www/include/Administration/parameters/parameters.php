@@ -78,9 +78,6 @@ switch ($o) {
     case "debug":
         require_once $path . "debug/form.php" ;
         break;
-    case "general":
-        require_once $path . "general/form.php" ;
-        break;
     case "css":
         require_once $path . "css/form.php" ;
         break;
@@ -99,6 +96,10 @@ switch ($o) {
     case "backup":
         require_once $path . 'backup/formBackup.php';
         break;
+    case "remote":
+        require_once $path . 'remote/formRemote.php';
+        break;
+    case "general":
     default:
         require_once $path . "general/form.php" ;
         break;

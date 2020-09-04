@@ -49,6 +49,25 @@ function updateOption($pearDB, $key, $value)
     $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
 }
 
+/**
+ * Used to update fields in the informations table
+ *
+ * @param $pearDB : database connection
+ * @param $key : name of the row
+ * @param $value : value of the row
+ */
+function updateInformations($pearDB, string $key = null, string $value = null)
+{
+    $stmt = $pearDB->prepare("DELETE FROM `informations` WHERE `key` = :key");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->execute();
+
+    $stmt = $pearDB->prepare("INSERT INTO `informations` (`key`, `value`) VALUES (:key, :value)");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
+    $stmt->execute();
+}
+
 function is_valid_path_images($path)
 {
     if (trim($path) == '') {
@@ -975,4 +994,28 @@ function updateKnowledgeBaseData($db, $form, $centreon)
     }
 
     $centreon->initOptGen($db);
+}
+
+/**
+ * Used to update Central's credentials on a remote server
+ *
+ * @param $db : database connection
+ * @param $form : form data
+ * @param $centreon : centreon instance
+ */
+function updateRemoteAccessCredentials($db, $form, $centreon)
+{
+    $ret = $form->getSubmitValues();
+    updateInformations(
+        $db,
+        'apiUsername',
+        $ret['apiUsername'] ?? ''
+    );
+    if (CentreonAuth::PWS_OCCULTATION !== $ret['apiCredentials']) {
+        updateInformations(
+            $db,
+            'apiCredentials',
+            $ret['apiCredentials'] ?? ''
+        );
+    }
 }
