@@ -186,7 +186,7 @@ class MonitoringResourceController extends AbstractController
         $resources = $this->resource->filterByContact($contact)
             ->findResources($filter);
 
-        $resourcesGraphData = $this->resource->getListOfResourcesWithGraphData($resources);
+        $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
 
         foreach ($resources as $resource) {
             if ($resource->getIcon() instanceof Icon) {
@@ -254,24 +254,11 @@ class MonitoringResourceController extends AbstractController
             $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
             $resource->setTimelineEndpoint($this->router->generate($routeNameTimeline, $parameters));
 
-            if (
-                $resource->getParent() != null && in_array([
-                    'host_id' => $resource->getParent()->getId(),
-                    'service_id' => $resource->getId(),
-                ], $resourcesGraphData)
-            ) {
+            if ($resource->getParent() !== null) {
                 $parameters = [
                     'hostId' => $resource->getParent()->getId(),
                     'serviceId' => $resource->getId(),
                 ];
-
-                // set service performance graph endpoint from metrics controller
-                $resource->setPerformanceGraphEndpoint(
-                    $this->router->generate(
-                        'monitoring.metric.getServicePerformanceMetrics',
-                        $parameters
-                    )
-                );
 
                 // set service status graph endpoint from metrics controller
                 $resource->setStatusGraphEndpoint(
@@ -280,6 +267,21 @@ class MonitoringResourceController extends AbstractController
                         $parameters
                     )
                 );
+
+                foreach ($resourcesWithGraphData as $resourceWithGraphData) {
+                    if (
+                        $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
+                        && $resource->getId() === $resourceWithGraphData->getId()
+                    ) {
+                        // set service performance graph endpoint from metrics controller
+                        $resource->setPerformanceGraphEndpoint(
+                            $this->router->generate(
+                                'monitoring.metric.getServicePerformanceMetrics',
+                                $parameters
+                            )
+                        );
+                    }
+                }
 
                 $resource->getParent()
                     ->setDetailsEndpoint($this->router->generate(
@@ -353,7 +355,6 @@ class MonitoringResourceController extends AbstractController
             );
         }
 
-
         if ($service === null) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
@@ -366,8 +367,42 @@ class MonitoringResourceController extends AbstractController
             ], Downtime::SERIALIZER_GROUPS_SERVICE))
             ->enableMaxDepth();
 
+        $enrichedService = $this->resource->enrichServiceWithDetails($service);
+
+        $parameters = [
+            'hostId' => $enrichedService->getParent()->getId(),
+            'serviceId' => $enrichedService->getId(),
+        ];
+
+        $enrichedService->setTimelineEndpoint(
+            $this->router->generate(
+                'centreon_application_monitoring_gettimelinebyhostandservice',
+                $parameters
+            )
+        );
+
+        $enrichedService->setStatusGraphEndpoint(
+            $this->router->generate(
+                'monitoring.metric.getServiceStatusMetrics',
+                $parameters
+            )
+        );
+
+        $resource = (new Resource())
+            ->setId($enrichedService->getId())
+            ->setParent($enrichedService->getParent());
+
+        if (count($this->resource->extractResourcesWithGraphData([$resource])) === 1) {
+            $enrichedService->setPerformanceGraphEndpoint(
+                $this->router->generate(
+                    'monitoring.metric.getServicePerformanceMetrics',
+                    $parameters
+                )
+            );
+        }
+
         return $this
-            ->view($this->resource->enrichServiceWithDetails($service))
+            ->view($enrichedService)
             ->setContext($context);
     }
 

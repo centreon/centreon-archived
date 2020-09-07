@@ -271,38 +271,51 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
-    public function getListOfResourcesWithGraphData(array $resources): array
+    public function extractResourcesWithGraphData(array $resources): array
     {
+        $resourcesWithGraphData = [];
+        $serviceResources = [];
         $collector = new StatementCollector();
-        $collector->addValue(":hidden", 0);
         $where = [];
 
-        foreach ($resources as $key => $resources) {
-            if (!$resources->getParent()) {
+        foreach ($resources as $key => $resource) {
+            if (!$resource->getParent()) {
                 continue;
             }
+            $serviceResources[] = $resource;
 
             $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
-            $collector->addValue(":service_id_{$key}", $resources->getId(), PDO::PARAM_INT);
-            $collector->addValue(":host_id_{$key}", $resources->getParent()->getId(), PDO::PARAM_INT);
+            $collector->addValue(":service_id_{$key}", $resource->getId(), PDO::PARAM_INT);
+            $collector->addValue(":host_id_{$key}", $resource->getParent()->getId(), PDO::PARAM_INT);
         }
 
         if (!$where) {
-            return [];
+            return $resourcesWithGraphData;
         }
 
         $statement = $this->db->prepare(
             $this->translateDbName(
                 'SELECT host_id, service_id FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i '
-                . 'WHERE (' . implode(' OR ', $where) . ') AND i.id = m.index_id AND m.hidden = :hidden '
-                . 'GROUP BY m.metric_id '
+                . 'WHERE (' . implode(' OR ', $where) . ') AND i.id = m.index_id AND m.hidden = "0" '
+                . 'GROUP BY host_id, service_id'
             )
         );
         $collector->bind($statement);
 
         $statement->execute();
 
-        return $statement->fetchAll();
+        while ($row = $statement->fetch()) {
+            foreach ($serviceResources as $serviceResource) {
+                if (
+                    $serviceResource->getParent()->getId() === (int)$row['host_id']
+                    && $serviceResource->getId() === (int)$row['service_id']
+                ) {
+                    $resourcesWithGraphData[] = $serviceResource;
+                }
+            }
+        }
+
+        return $resourcesWithGraphData;
     }
 
     /**

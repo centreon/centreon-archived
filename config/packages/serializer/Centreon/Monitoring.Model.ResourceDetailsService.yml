@@ -26,3 +26,15 @@ Centreon\Domain\Monitoring\Model\ResourceDetailsService:
             type: string
             groups:
                 - 'resource_details_service'
+        timelineEndpoint:
+            type: string
+            groups:
+                - 'resource_details_service'
+        performanceGraphEndpoint:
+            type: string
+            groups:
+                - 'resource_details_service'
+        statusGraphEndpoint:
+            type: string
+            groups:
+                - 'resource_details_service'

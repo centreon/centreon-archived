@@ -47,6 +47,21 @@ trait ResourceDetailsTrait
     protected $tries;
 
     /**
+     * @var string|null
+     */
+    private $timelineEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $performanceGraphEndpoint;
+
+    /**
+     * @var string|null
+     */
+    private $statusGraphEndpoint;
+
+    /**
      * @return selfStatus|null
      */
     public function getStatus(): ?ResourceStatus
@@ -128,6 +143,63 @@ trait ResourceDetailsTrait
     public function setTries(?string $tries): self
     {
         $this->tries = $tries;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimelineEndpoint(): ?string
+    {
+        return $this->timelineEndpoint;
+    }
+
+    /**
+     * @param string|null $timelineEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setTimelineEndpoint(?string $timelineEndpoint): self
+    {
+        $this->timelineEndpoint = $timelineEndpoint ?: null;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPerformanceGraphEndpoint(): ?string
+    {
+        return $this->performanceGraphEndpoint;
+    }
+
+    /**
+     * @param string $performanceGraphEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setPerformanceGraphEndpoint(string $performanceGraphEndpoint): self
+    {
+        $this->performanceGraphEndpoint = $performanceGraphEndpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatusGraphEndpoint(): ?string
+    {
+        return $this->statusGraphEndpoint;
+    }
+
+    /**
+     * @param string $statusGraphEndpoint
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setStatusGraphEndpoint(string $statusGraphEndpoint): self
+    {
+        $this->statusGraphEndpoint = $statusGraphEndpoint;
 
         return $this;
     }

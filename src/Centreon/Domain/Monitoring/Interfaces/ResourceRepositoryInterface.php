@@ -26,6 +26,7 @@ use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Model\ResourceDetailsHost;
 use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 interface ResourceRepositoryInterface
 {
@@ -70,8 +71,8 @@ interface ResourceRepositoryInterface
     /**
      * Get list of resources with graph data.
      *
-     * @param Resource[] $resources
-     * @return int[]
+     * @param ResourceEntity[] $resources
+     * @return ResourceEntity[]
      */
-    public function getListOfResourcesWithGraphData(array $resources): array;
+    public function extractResourcesWithGraphData(array $resources): array;
 }

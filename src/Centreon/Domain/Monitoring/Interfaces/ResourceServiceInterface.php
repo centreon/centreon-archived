@@ -26,6 +26,7 @@ use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\Model;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 interface ResourceServiceInterface
 {
@@ -103,7 +104,7 @@ interface ResourceServiceInterface
      * Find all resources.
      *
      * @param ResourceFilter $filter
-     * @return \Centreon\Domain\Monitoring\Resource[]
+     * @return ResourceEntity[]
      * @throws \Exception
      */
     public function findResources(ResourceFilter $filter): array;
@@ -111,10 +112,10 @@ interface ResourceServiceInterface
     /**
      * Get list of resources with graph data.
      *
-     * @param Resource[] $resources
-     * @return int[]
+     * @param ResourceEntity[] $resources
+     * @return ResourceEntity[]
      */
-    public function getListOfResourcesWithGraphData(array $resources): array;
+    public function extractResourcesWithGraphData(array $resources): array;
 
     /**
      * Create a new object with details but with data from the parent

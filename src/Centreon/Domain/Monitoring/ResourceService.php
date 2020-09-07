@@ -85,9 +85,9 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     /**
      * {@inheritDoc}
      */
-    public function getListOfResourcesWithGraphData(array $resources): array
+    public function extractResourcesWithGraphData(array $resources): array
     {
-        return $this->resourceRepository->getListOfResourcesWithGraphData($resources);
+        return $this->resourceRepository->extractResourcesWithGraphData($resources);
     }
 
     /**
@@ -105,6 +105,9 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         return $list;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function enrichHostWithDetails(Host $host): Model\ResourceDetailsHost
     {
         $enrichedHost = (new Model\ResourceDetailsHost())
@@ -115,6 +118,9 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         return $enrichedHost;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function enrichServiceWithDetails(Service $service): Model\ResourceDetailsService
     {
         $enrichedService = (new Model\ResourceDetailsService())
