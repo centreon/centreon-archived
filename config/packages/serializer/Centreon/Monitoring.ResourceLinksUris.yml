@@ -1,0 +1,14 @@
+Centreon\Domain\Monitoring\ResourceLinksUris:
+    properties:
+        configuration:
+            type: [string, null]
+            groups:
+                - 'resource_status_main'
+        logs:
+            type: [string, null]
+            groups:
+                - 'resource_status_main'
+        reporting:
+            type: [string, null]
+            groups:
+                - 'resource_status_main'

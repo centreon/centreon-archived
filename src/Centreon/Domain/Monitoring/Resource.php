@@ -25,6 +25,7 @@ namespace Centreon\Domain\Monitoring;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
+use Centreon\Domain\Monitoring\ResourceLinks;
 use DateTime;
 use CentreonDuration;
 
@@ -90,6 +91,11 @@ class Resource
      * @var bool
      */
     private $acknowledged = false;
+
+    /**
+     * @var ResourceLinks|null
+     */
+    private $links;
 
     /**
      * @var string|null
@@ -175,6 +181,14 @@ class Resource
      * @var string|null
      */
     private $information;
+
+    /**
+     * Resource constructor.
+     */
+    public function __construct()
+    {
+        $this->links = new ResourceLinks();
+    }
 
     /**
      * Get prepared list of groups for the context
@@ -377,6 +391,24 @@ class Resource
     {
         $this->acknowledged = $acknowledged;
 
+        return $this;
+    }
+
+    /**
+     * @return ResourceLinks|null
+     */
+    public function getLinks(): ?string
+    {
+        return $this->links;
+    }
+
+    /**
+     * @param ResourceLinks|null $links
+     * @return self
+     */
+    public function setLinks(?ResourceLinks $links): self
+    {
+        $this->links = $links;
         return $this;
     }
 

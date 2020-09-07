@@ -58,6 +58,11 @@ Centreon\Domain\Monitoring\Resource:
             type: bool
             groups:
                 - 'resource_main'
+        links:
+            type:  Centreon\Domain\Monitoring\ResourceLinks
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
         configurationUri:
             type: string
             groups:
