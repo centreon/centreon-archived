@@ -93,7 +93,7 @@ class Resource
     private $acknowledged = false;
 
     /**
-     * @var ResourceLinks|null
+     * @var ResourceLinks
      */
     private $links;
 
@@ -395,18 +395,18 @@ class Resource
     }
 
     /**
-     * @return ResourceLinks|null
+     * @return ResourceLinks
      */
-    public function getLinks(): ?string
+    public function getLinks(): ResourceLinks
     {
         return $this->links;
     }
 
     /**
-     * @param ResourceLinks|null $links
+     * @param ResourceLinks $links
      * @return self
      */
-    public function setLinks(?ResourceLinks $links): self
+    public function setLinks(ResourceLinks $links): self
     {
         $this->links = $links;
         return $this;

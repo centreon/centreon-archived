@@ -35,6 +35,7 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Icon;
+use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceFilter;
@@ -433,19 +434,19 @@ class MonitoringResourceController extends AbstractController
     private function provideHostInternalUris(ResourceEntity $resource, Contact $contact): void
     {
         if ($contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS)) {
-            $resource->setConfigurationUri(
+            $resource->getLinks()->getUris()->setConfiguration(
                 $this->generateResourceUri($resource, static::HOST_CONFIGURATION_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
-            $resource->setLogsUri(
+            $resource->getLinks()->getUris()->setLogs(
                 $this->generateResourceUri($resource, static::HOST_LOGS_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)) {
-            $resource->setReportingUri(
+            $resource->getLinks()->getUris()->setReporting(
                 $this->generateResourceUri($resource, static::HOST_REPORTING_URI)
             );
         }
@@ -461,19 +462,19 @@ class MonitoringResourceController extends AbstractController
     private function provideServiceInternalUris(ResourceEntity $resource, Contact $contact): void
     {
         if ($contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES)) {
-            $resource->setConfigurationUri(
+            $resource->getLinks()->getUris()->setConfiguration(
                 $this->generateResourceUri($resource, static::SERVICE_CONFIGURATION_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
-            $resource->setLogsUri(
+            $resource->getLinks()->getUris()->setLogs(
                 $this->generateResourceUri($resource, static::SERVICE_LOGS_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
-            $resource->setReportingUri(
+            $resource->getLinks()->getUris()->setReporting(
                 $this->generateResourceUri($resource, static::SERVICE_REPORTING_URI)
             );
         }
