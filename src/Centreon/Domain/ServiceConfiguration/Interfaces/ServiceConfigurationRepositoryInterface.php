@@ -22,11 +22,23 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration\Interfaces;
 
+use Centreon\Domain\AccessControlList\Interfaces\AccessControlListRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\ServiceConfiguration\HostTemplateService;
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 
-interface ServiceConfigurationRepositoryInterface
+interface ServiceConfigurationRepositoryInterface extends AccessControlListRepositoryInterface
 {
+    /**
+     * Add services to host.
+     *
+     * @param Host $host Host for which we want to add services
+     * @param Service[] $servicesToBeCreated Services to be created
+     * @throws \Throwable
+     */
+    public function addServicesToHost(Host $host, array $servicesToBeCreated): void;
+
     /**
      * Find all service macros for the service.
      *
@@ -50,11 +62,29 @@ interface ServiceConfigurationRepositoryInterface
     public function findCommandLine(int $serviceId): ?string;
 
     /**
+     * Find all service templates associated with the given host templates.
+     *
+     * @param int[] $hostTemplateIds Ids of the host templates for which we want to find the service templates
+     * @return HostTemplateService[]
+     * @throws \Exception
+     */
+    public function findHostTemplateServices(array $hostTemplateIds): array;
+
+    /**
      * Find a service.
      *
      * @param int $serviceId Service id
      * @return Service|null
-     * @throws \Throwable
+     * @throws \Exception
      */
     public function findService(int $serviceId): ?Service;
+
+    /**
+     * Find all services associated to host.
+     *
+     * @param Host $host Host for which we want to find services
+     * @return Service[]
+     * @throws \Exception
+     */
+    public function findServicesByHost(Host $host): array;
 }

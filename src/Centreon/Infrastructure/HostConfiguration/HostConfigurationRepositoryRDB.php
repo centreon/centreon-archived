@@ -74,7 +74,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':ip_address', $host->getIpAddress(), \PDO::PARAM_STR);
             $statement->bindValue(':comment', $host->getComment(), \PDO::PARAM_STR);
             $statement->bindValue(':geo_coords', $host->getGeoCoords(), \PDO::PARAM_STR);
-            $statement->bindValue(':is_activate', $host->isActivate(), \PDO::PARAM_STR);
+            $statement->bindValue(':is_activate', $host->isActivated(), \PDO::PARAM_STR);
             $statement->bindValue(':host_register', $host->getType(), \PDO::PARAM_STR);
             $statement->execute();
 
@@ -285,6 +285,71 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             return $host;
         }
         return null;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function findAndAddHostTemplates(Host $host): void
+    {
+        $request = $this->translateDbName(
+            'WITH RECURSIVE template AS (
+                SELECT htr.*, 0 AS level
+                FROM `:db`.host_template_relation htr 
+                WHERE htr.host_host_id  = :host_id
+                UNION
+                SELECT htr2.*, template.level + 1
+                FROM `:db`.host_template_relation htr2
+                INNER JOIN template 
+                    ON template.host_tpl_id = htr2.host_host_id
+                INNER JOIN `:db`.host 
+                    ON host.host_id = htr2.host_tpl_id 
+                    AND host.host_register = 1
+            )
+            SELECT host_host_id AS template_host_id, host_tpl_id AS template_id, `order` AS template_order, 
+                `level` AS template_level, host.host_id AS id, host.host_name AS name, host.host_alias AS alias,
+                host.host_register AS type, host.host_activate AS is_activated
+            FROM template
+            INNER JOIN `:db`.host 
+                ON host.host_id = template.host_tpl_id
+            ORDER BY `level`, host_host_id, `order`'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        /**
+         * Add a host template by browsing all templates recursively until you find the parent template.
+         *
+         * @param int $hostParentId Id of the host template for which we want to add the given template.
+         * @param Host $hostTemplate Host template to be added
+         * @param Host[] $templates Host templates where we will try to find the parent
+         *                          of the host template to be added
+         */
+        $addTemplateToHost =
+            function (int $hostParentId, Host $hostTemplate, array $templates) use (&$addTemplateToHost) {
+                foreach ($templates as $template) {
+                    if ($template->getId() === $hostParentId) {
+                        $template->addTemplate($hostTemplate);
+                    } else {
+                        $addTemplateToHost($hostParentId, $hostTemplate, $template->getTemplates());
+                    }
+                }
+            };
+
+        $host->clearTemplates();
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostTemplate = EntityCreator::createEntityByArray(
+                Host::class,
+                $record
+            );
+            if ((int) $record['template_host_id'] === $host->getId()) {
+                $host->addTemplate($hostTemplate);
+            } else {
+                $addTemplateToHost((int) $record['template_host_id'], $hostTemplate, $host->getTemplates());
+            }
+        }
     }
 
     /**
