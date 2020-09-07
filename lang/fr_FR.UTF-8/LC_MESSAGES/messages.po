@@ -15520,4 +15520,4 @@ msgid "This host is not a host template"
 msgstr "Cet hôte n'est pas un modèle d'hôte"
 
 msgid "Error when searching for host and related service templates"
-msgstr "Erreur lors de la recherche de modèles d'hôtes et de services connexes"
+msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
