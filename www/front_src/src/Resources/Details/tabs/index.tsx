@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, find, propEq, any } from 'ramda';
+import { isNil, find, propEq, any, invertObj } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import DetailsTab from './Details';
@@ -24,11 +24,15 @@ const shortcutsTabId = 3;
 
 export type TabId = 0 | 1 | 2 | 3;
 
+export interface TabProps {
+  details?: ResourceDetails;
+}
+
 interface Tab {
   id: TabId;
-  Component: (props) => JSX.Element;
+  Component: (props: TabProps) => JSX.Element;
   title: string;
-  getIsVisible: (endpoints) => boolean;
+  getIsVisible: (details) => boolean;
 }
 
 const tabs: Array<Tab> = [
@@ -48,8 +52,12 @@ const tabs: Array<Tab> = [
     id: graphTabId,
     Component: GraphTab,
     title: labelGraph,
-    getIsVisible: ({ endpoints }: ResourceLinks): boolean => {
-      const { performanceGraph } = endpoints;
+    getIsVisible: (details: ResourceDetails): boolean => {
+      if (isNil(details)) {
+        return false;
+      }
+
+      const { performanceGraph } = details.links.endpoints;
       return !isNil(performanceGraph);
     },
   },
@@ -57,16 +65,21 @@ const tabs: Array<Tab> = [
     id: shortcutsTabId,
     Component: ShortcutsTab,
     title: labelShortcuts,
-    getIsVisible: (links: ResourceLinks): boolean => {
-      const { parent, resource } = links.uris;
+    getIsVisible: (details: ResourceDetails): boolean => {
+      if (isNil(details)) {
+        return false;
+      }
 
-      return any(hasDefinedValues, [parent, resource]);
+      const { links, parent } = details;
+      const parentUris = parent?.links.uris;
+
+      return any(hasDefinedValues, [parentUris, links.uris]);
     },
   },
 ];
 
-const getVisibleTabs = (links): Array<Tab> => {
-  return tabs.filter(({ getIsVisible }) => getIsVisible(links));
+const getVisibleTabs = (details: ResourceDetails | undefined): Array<Tab> => {
+  return tabs.filter(({ getIsVisible }) => getIsVisible(details));
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -78,19 +91,33 @@ const useStyles = makeStyles((theme) => ({
 interface TabByIdProps {
   details?: ResourceDetails;
   id: number;
-  links: ResourceLinks;
 }
 
-const TabById = ({ id, details, links }: TabByIdProps): JSX.Element | null => {
+const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
   const classes = useStyles();
 
   const { Component } = find(propEq('id', id), tabs) as Tab;
 
   return (
     <div className={classes.container}>
-      <Component details={details} links={links} />
+      <Component details={details} />
     </div>
   );
+};
+
+const tabIdByLabel = {
+  details: detailsTabId,
+  timeline: timelineTabId,
+  shortcuts: shortcutsTabId,
+  graph: graphTabId,
+};
+
+const getTabIdFromLabel = (label: string): TabId => {
+  return tabIdByLabel[label];
+};
+
+const getTabLabelFromId = (id: TabId): string => {
+  return invertObj(tabIdByLabel)[id];
 };
 
 export {
@@ -101,4 +128,6 @@ export {
   tabs,
   TabById,
   getVisibleTabs,
+  getTabIdFromLabel,
+  getTabLabelFromId,
 };

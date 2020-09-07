@@ -1,6 +1,15 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
+import {
+  isNil,
+  isEmpty,
+  pipe,
+  not,
+  defaultTo,
+  propEq,
+  findIndex,
+  prop,
+} from 'ramda';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 
@@ -9,7 +18,7 @@ import { Tab, useTheme, fade } from '@material-ui/core';
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { useResourceContext } from '../Context';
-import { TabById, getVisibleTabs, TabId } from './tabs';
+import { TabById, getVisibleTabs, TabId, detailsTabId } from './tabs';
 import { rowColorConditions } from '../colors';
 import { ResourceLinks } from '../models';
 
@@ -24,33 +33,37 @@ const Details = (): JSX.Element | null => {
   const {
     openDetailsTabId,
     setOpenDetailsTabId,
-    selectedDetailsLinks,
-    setSelectedDetailsLinks,
+    selectedResourceId,
+    getSelectedResourceDetailsEndpoint,
+    clearSelectedResource,
     listing,
   } = useResourceContext();
-
-  const links = selectedDetailsLinks as ResourceLinks;
-  const { details: detailsEndpoint } = links.endpoints;
-
-  const clearSelectedResource = (): void => {
-    setSelectedDetailsLinks(undefined);
-  };
 
   const { sendRequest } = useRequest<ResourceDetails>({
     request: getData,
   });
 
-  const visibleTabs = getVisibleTabs(selectedDetailsLinks);
+  const visibleTabs = getVisibleTabs(details);
 
   React.useEffect(() => {
     if (details !== undefined) {
       setDetails(undefined);
     }
 
-    sendRequest(detailsEndpoint).then((retrievedDetails) =>
-      setDetails(retrievedDetails),
+    sendRequest(getSelectedResourceDetailsEndpoint()).then(
+      (retrievedDetails) => {
+        setDetails(retrievedDetails);
+
+        const isOpenTabVisible = getVisibleTabs(details)
+          .map(prop('id'))
+          .includes(openDetailsTabId);
+
+        if (!isOpenTabVisible) {
+          setOpenDetailsTabId(detailsTabId);
+        }
+      },
     );
-  }, [detailsEndpoint, listing]);
+  }, [selectedResourceId, listing]);
 
   const getTabIndex = (tabId: TabId): number => {
     return findIndex(propEq('id', tabId), visibleTabs);
@@ -93,9 +106,7 @@ const Details = (): JSX.Element | null => {
         />
       ))}
       selectedTabId={getTabIndex(openDetailsTabId)}
-      selectedTab={
-        <TabById id={openDetailsTabId} details={details} links={links} />
-      }
+      selectedTab={<TabById id={openDetailsTabId} details={details} />}
     />
   );
 };

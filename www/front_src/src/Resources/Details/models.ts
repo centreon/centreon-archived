@@ -1,9 +1,16 @@
-import { Status, Acknowledgement, Downtime, Parent } from '../models';
+import {
+  Status,
+  Acknowledgement,
+  Downtime,
+  Parent,
+  ResourceLinks,
+} from '../models';
 
 export interface ResourceDetails {
   display_name: string;
   status: Status;
   parent: Parent;
+  links: ResourceLinks;
   criticality: number;
   output: string;
   downtimes: Array<Downtime>;
@@ -25,4 +32,12 @@ export interface ResourceDetails {
   notification_number: number;
   performance_data?: string;
   command_line?: string;
+}
+
+export interface DetailsUrlQueryParameters {
+  id: number;
+  parent_id?: number;
+  parent_type?: string;
+  type: string;
+  tab?: string;
 }

@@ -5,14 +5,15 @@ export interface Icon {
   name: string;
 }
 
+type ParentLinks = Pick<ResourceLinks, 'uris'>;
+
 export interface Parent {
   id: number;
   name: string;
   icon: Icon | null;
   status: Status;
-  configuration_uri?: string;
-  logs_uri?: string;
-  reporting_uri?: string;
+  links: ParentLinks;
+  type?: string;
 }
 
 export interface Status {
@@ -82,5 +83,5 @@ export interface ResourceUris {
 
 export interface ResourceLinks {
   endpoints: ResourceEndpoints;
-  uris: { resource: ResourceUris; parent: ResourceUris };
+  uris: ResourceUris;
 }

@@ -6,7 +6,6 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
 
-import { ResourceLinks } from '../../../models';
 import {
   timePeriods,
   getTimePeriodById,
@@ -14,6 +13,7 @@ import {
   TimePeriod,
 } from './models';
 import PerformanceGraph from '../../../Graph/Performance';
+import { TabProps } from '..';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -49,14 +49,10 @@ const timePeriodSelectOptions = map(pick(['id', 'name']), timePeriods);
 
 const defaultTimePeriod = last24hPeriod;
 
-interface Props {
-  links: ResourceLinks;
-}
-
-const GraphTab = ({ links }: Props): JSX.Element => {
+const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
 
-  const { endpoints } = links;
+  const { endpoints } = details.links;
   const { performanceGraph: performanceGraphEndpoint } = endpoints;
 
   const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<

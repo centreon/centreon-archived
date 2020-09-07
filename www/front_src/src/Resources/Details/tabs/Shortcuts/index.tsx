@@ -2,10 +2,12 @@ import React from 'react';
 
 import { makeStyles, Typography } from '@material-ui/core';
 
-import { ResourceLinks } from '../../../models';
+import { path, isNil } from 'ramda';
 import Shortcuts from './Shortcuts';
 import hasDefinedValues from '../../../hasDefinedValues';
 import { labelHost } from '../../../translatedLabels';
+import { TabProps } from '..';
+import { ResourceUris } from '../../../models';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -16,16 +18,16 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-interface Props {
-  links: ResourceLinks;
-}
-
-const ShortcutsTab = ({ links }: Props): JSX.Element => {
+const ShortcutsTab = ({ details }: TabProps): JSX.Element | null => {
   const classes = useStyles();
 
-  const { uris } = links;
-  const { resource: resourceUris } = uris;
-  const { parent: parentUris } = uris;
+  if (isNil(details)) {
+    // TODO Loading skeleton
+    return null;
+  }
+
+  const { uris: resourceUris } = details.links;
+  const parentUris = path(['parent', 'links', 'uris'], details) as ResourceUris;
 
   return (
     <div className={classes.container}>
