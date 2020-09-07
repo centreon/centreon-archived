@@ -139,7 +139,7 @@ class EntityCreator
                     $parameters = $this->publicMethods[$setterMethod]->getParameters();
                     if (empty($parameters)) {
                         throw new \Exception(
-                            sprintf(_('The public method %s::$setterMethod has no parameters'), $this->className)
+                            sprintf(_('The public method %s::%s has no parameters'), $this->className, $setterMethod)
                         );
                     }
                     $firstParameter = $parameters[0];
@@ -165,7 +165,11 @@ class EntityCreator
                     call_user_func_array(array($objectToSet, $setterMethod), [$value]);
                 } else {
                     throw new \Exception(
-                        sprintf(_('The public method %s::$setterMethod is not found'), $this->className)
+                        sprintf(
+                            _('The public method %s::%s was not found'),
+                            $this->className,
+                            $setterMethod
+                        )
                     );
                 }
             }

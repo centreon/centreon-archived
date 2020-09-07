@@ -15500,3 +15500,24 @@ msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs
 
 msgid "An error occurred while retrieving groups linked to ViewId on database"
 msgstr "Une erreur est survenue lors de la récupération en DB des groupes liés à ViewId"
+
+msgid "Error when searching for services by host"
+msgstr "Erreur lors de la recherche de services par hôte"
+
+msgid "The host id cannot be null"
+msgstr "L'id de l'hôte ne peut pas être nul"
+
+msgid "Error when searching for host templates"
+msgstr "Erreur lors de la recherche de modèles d'hôtes"
+
+msgid "The public method %s::%s was not found"
+msgstr "La méthode publique %s::%s n'a pas été trouvée"
+
+msgid "The public method %s::%s has no parameters"
+msgstr "La méthode publique %s::%s n'a pas de paramètres"
+
+msgid "This host is not a host template"
+msgstr "Cet hôte n'est pas un modèle d'hôte"
+
+msgid "Error when searching for host and related service templates"
+msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
