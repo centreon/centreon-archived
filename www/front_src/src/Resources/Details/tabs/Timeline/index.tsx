@@ -13,7 +13,7 @@ import {
   Typography,
   CircularProgress,
 } from '@material-ui/core';
-import { prop, isEmpty, cond, always, T } from 'ramda';
+import { prop, isEmpty, cond, always, T, isNil, path } from 'ramda';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -63,8 +63,6 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(10);
 
-  const { endpoints } = details.links;
-  const { timeline: timelineEndpoint } = endpoints;
   const { listing } = useResourceContext();
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
@@ -88,6 +86,8 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       };
     };
 
+    const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
+
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
@@ -104,7 +104,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   };
 
   React.useEffect(() => {
-    if (isEmpty(timeline)) {
+    if (isEmpty(timeline) || isNil(details)) {
       return;
     }
 
@@ -114,12 +114,15 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   }, [page]);
 
   React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
     setPage(1);
     setTimeline([]);
     listTimeline().then(({ result }) => setTimeline(result));
-  }, [listing, endpoints, selectedTypes]);
+  }, [listing, details, selectedTypes]);
 
-  const loading = sending;
+  const loading = sending || isNil(details);
   const loadingMore = !isEmpty(timeline) && sending;
 
   const changeSelectedTypes = (_, typeIds): void => {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, find, propEq, any, invertObj } from 'ramda';
+import { isNil, find, propEq, any, invertObj, path } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import DetailsTab from './Details';
@@ -57,8 +57,9 @@ const tabs: Array<Tab> = [
         return false;
       }
 
-      const { performanceGraph } = details.links.endpoints;
-      return !isNil(performanceGraph);
+      return !isNil(
+        path(['details', 'links', 'endpoints', 'perfomance_graph'], details),
+      );
     },
   },
   {

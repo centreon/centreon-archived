@@ -264,7 +264,7 @@ const renderDetails = (
   },
 ): RenderResult => render(<DetailsTest defaultTabId={defaultTabId} />);
 
-describe(Details, () => {
+describe.only(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
   });
@@ -382,7 +382,7 @@ describe(Details, () => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
   });
 
-  it.each([
+  it.only.each([
     [labelLast24h, '2020-06-19T20:00:00.000Z'],
     [labelLast7Days, '2020-06-13T20:00:00.000Z'],
     [labelLast31Days, '2020-05-20T20:00:00.000Z'],
@@ -432,8 +432,8 @@ describe(Details, () => {
   });
 
   it('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
     const { getByText, getAllByText, baseElement } = renderDetails({
@@ -443,7 +443,7 @@ describe(Details, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
-          endpoint: timelineEndpoint,
+          endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
             limit: 10,
             page: 1,
@@ -516,7 +516,7 @@ describe(Details, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
-          endpoint: timelineEndpoint,
+          endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
             limit: 10,
             page: 1,
@@ -535,7 +535,7 @@ describe(Details, () => {
     );
   });
 
-  it.only('displays the shortcut links when the shortcuts tab is selected', async () => {
+  it('displays the shortcut links when the shortcuts tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
@@ -549,8 +549,8 @@ describe(Details, () => {
         },
         parent: {
           ...retrievedDetails.parent,
-          uris: {
-            parent: {
+          links: {
+            uris: {
               configuration: '/host/configuration',
               logs: '/host/logs',
               reporting: '/host/reporting',
@@ -567,8 +567,6 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
-
-    fireEvent.click(getByText(labelShortcuts));
 
     expect(getAllByText(labelConfigure)[0]).toHaveAttribute(
       'href',
