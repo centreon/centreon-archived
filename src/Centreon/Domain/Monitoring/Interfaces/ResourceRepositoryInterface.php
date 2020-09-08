@@ -24,8 +24,6 @@ namespace Centreon\Domain\Monitoring\Interfaces;
 
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\Model\ResourceDetailsHost;
-use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 interface ResourceRepositoryInterface
@@ -51,22 +49,6 @@ interface ResourceRepositoryInterface
      * @return ResourceRepositoryInterface
      */
     public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface;
-
-    /**
-     * Find the missing information about the host
-     *
-     * @param ResourceDetailsHost $host
-     * @return void
-     */
-    public function findMissingInformationAboutHost(ResourceDetailsHost $host): void;
-
-    /**
-     * Find the missing information about the service
-     *
-     * @param ResourceDetailsService $service
-     * @return void
-     */
-    public function findMissingInformationAboutService(ResourceDetailsService $service): void;
 
     /**
      * Get list of resources with graph data.

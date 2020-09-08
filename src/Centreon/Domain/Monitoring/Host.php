@@ -307,6 +307,11 @@ class Host implements EntityDescriptorMetadataInterface
     protected $acknowledgement;
 
     /**
+     * @var string|null
+     */
+    protected $pollerName;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -1270,6 +1275,25 @@ class Host implements EntityDescriptorMetadataInterface
     public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPollerName(): ?string
+    {
+        return $this->pollerName;
+    }
+
+    /**
+     * @param string|null $pollerName
+     * @return self
+     */
+    public function setPollerName(?string $pollerName): self
+    {
+        $this->pollerName = $pollerName;
+
         return $this;
     }
 }

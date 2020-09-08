@@ -26,6 +26,8 @@ use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\ResourceLinks;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 use DateTime;
 use CentreonDuration;
 
@@ -246,6 +248,16 @@ class Resource
      * @var double|null
      */
     private $latency;
+
+    /**
+     * @var Downtime[]
+     */
+    private $downtimes = [];
+
+    /**
+     * @var Acknowledgement|null
+     */
+    private $acknowledgement;
 
     /**
      * Resource constructor.
@@ -1040,6 +1052,42 @@ class Resource
     public function setLatency(?float $latency): self
     {
         $this->latency = $latency;
+        return $this;
+    }
+
+    /**
+     * @return Downtime[]
+     */
+    public function getDowntimes(): array
+    {
+        return $this->downtimes;
+    }
+
+    /**
+     * @param Downtime[] $downtimes
+     * @return self
+     */
+    public function setDowntimes(array $downtimes): self
+    {
+        $this->downtimes = $downtimes;
+        return $this;
+    }
+
+    /**
+     * @return Acknowledgement|null
+     */
+    public function getAcknowledgement(): ?Acknowledgement
+    {
+        return $this->acknowledgement;
+    }
+
+    /**
+     * @param Acknowledgement|null $acknowledgement
+     * @return self
+     */
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
+    {
+        $this->acknowledgement = $acknowledgement;
         return $this;
     }
 }

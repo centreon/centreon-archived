@@ -40,8 +40,6 @@ use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Monitoring\Model\ResourceDetailsHost;
-use Centreon\Domain\Monitoring\Model\ResourceDetailsService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
@@ -319,33 +317,23 @@ class MonitoringResourceController extends AbstractController
             ->filterByContact($this->getUser())
             ->findResources($filter);
 
-        $host = $this->monitoring
-            ->filterByContact($this->getUser())
-            ->findOneHost($hostId);
-
-        if ($host === null) {
+        if (empty($resources)) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
 
-        $context = (new Context())
-            ->setGroups(array_merge([
-                ResourceDetailsHost::SERIALIZER_GROUP_DETAILS,
-                ResourceStatus::SERIALIZER_GROUP_MAIN,
-                Service::SERIALIZER_GROUP_MIN,
-                Acknowledgement::SERIALIZER_GROUP_FULL,
-            ], Downtime::SERIALIZER_GROUPS_SERVICE))
-            ->enableMaxDepth();
-
-        $enrichedHost = $this->resource->enrichHostWithDetails($host);
-
-        $enrichedHost = $resources[0];
+        $resource = $resources[0];
+        $this->resource->enrichHostWithDetails($resource);
 
         $context = (new Context())
-            ->setGroups(array_merge(ResourceEntity::contextGroupsForListing(),['resource_details_service']))
+            ->setGroups(array_merge(
+                ResourceEntity::contextGroupsForListing(),
+                ['resource_details_service', Acknowledgement::SERIALIZER_GROUP_FULL],
+                Downtime::SERIALIZER_GROUPS_SERVICE
+            ))
             ->enableMaxDepth();
 
         return $this
-            ->view($enrichedHost)
+            ->view($resource)
             ->setContext($context);
     }
 
@@ -367,6 +355,10 @@ class MonitoringResourceController extends AbstractController
         $resources = $this->resource
             ->filterByContact($this->getUser())
             ->findResources($filter);
+
+        if (empty($resources)) {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
 
         /**
          * @var Service $service
@@ -431,33 +423,35 @@ class MonitoringResourceController extends AbstractController
         }
         */
 
-        $enrichedService = $resources[0];
-        //$enrichedService = $this->resource->enrichServiceWithDetails($resources[0]);
-
-        $service = (new Service())
-            ->setId($enrichedService->getId())
-            ->setHost(
-                (new Host())
-                    ->setId($enrichedService->getParent()->getId())
-            )
-            ->setCommandLine($enrichedService->getCommandLine());
-
+        $resource = $resources[0];
+        $this->resource->enrichServiceWithDetails($resource);
 
         try {
+            $service = (new Service())
+                ->setId($resource->getId())
+                ->setHost(
+                    (new Host())
+                        ->setId($resource->getParent()->getId())
+                )
+                ->setCommandLine($resource->getCommandLine());
             $this->monitoring->hidePasswordInCommandLine($service);
-            $enrichedService->setCommandLine($service->getCommandLine());
+            $resource->setCommandLine($service->getCommandLine());
         } catch (\Throwable $ex) {
-            $enrichedService->setCommandLine(
+            $resource->setCommandLine(
                 sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
             );
         }
 
         $context = (new Context())
-            ->setGroups(array_merge(ResourceEntity::contextGroupsForListing(),['resource_details_service']))
+            ->setGroups(array_merge(
+                ResourceEntity::contextGroupsForListing(),
+                ['resource_details_service', Acknowledgement::SERIALIZER_GROUP_FULL],
+                Downtime::SERIALIZER_GROUPS_SERVICE
+            ))
             ->enableMaxDepth();
 
         return $this
-            ->view($enrichedService)
+            ->view($resource)
             ->setContext($context);
     }
 

@@ -23,9 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\Interfaces;
 
 use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\Model;
-use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 interface ResourceServiceInterface
@@ -118,20 +115,18 @@ interface ResourceServiceInterface
     public function extractResourcesWithGraphData(array $resources): array;
 
     /**
-     * Create a new object with details but with data from the parent
+     * Enrich resource object with specific host data
      *
-     * @param Host $host
-     * @return Model\ResourceDetailsHost
+     * @param ResourceEntity $resource
      */
-    public function enrichHostWithDetails(Host $host): Model\ResourceDetailsHost;
+    public function enrichHostWithDetails(ResourceEntity $resource): void;
 
     /**
-     * Create a new object with details but with data from the parent
+     * Enrich resource object with specific service data
      *
-     * @param Service $service
-     * @return Model\ResourceDetailsService
+     * @param ResourceEntity $resource
      */
-    public function enrichServiceWithDetails(Service $service): Model\ResourceDetailsService;
+    public function enrichServiceWithDetails(ResourceEntity $resource): void;
 
     /**
      * Used to filter requests according to a contact.

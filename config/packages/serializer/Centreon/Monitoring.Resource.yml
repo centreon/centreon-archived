@@ -184,3 +184,11 @@ Centreon\Domain\Monitoring\Resource:
             type: double
             groups:
                 - 'resource_details_service'
+        downtimes:
+            type: array<Centreon\Domain\Downtime\Downtime>
+            groups:
+                - 'resource_details_service'
+        acknowledgement:
+            type: Centreon\Domain\Acknowledgement\Acknowledgement
+            groups:
+                - 'resource_details_service'

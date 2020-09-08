@@ -292,3 +292,7 @@ Centreon\Domain\Monitoring\Host:
             groups:
                 - 'host_full'
                 - 'resource_details_host'
+        pollerName:
+            type: string
+            groups:
+                - 'host_full'

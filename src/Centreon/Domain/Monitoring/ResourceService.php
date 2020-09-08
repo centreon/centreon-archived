@@ -23,19 +23,17 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Monitoring\Exception\ResourceException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Entity\EntityValidator;
-use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Model;
 use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\Service;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -50,19 +48,27 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $resourceRepository;
 
     /**
+     * @var MonitoringRepositoryInterface
+     */
+    private $monitoringRepository;
+
+    /**
      * @var AccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
 
     /**
      * @param ResourceRepositoryInterface $resourceRepository
+     * @param MonitoringRepositoryInterface $monitoringRepository,
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      */
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
+        MonitoringRepositoryInterface $monitoringRepository,
         AccessGroupRepositoryInterface $accessGroupRepository
     ) {
         $this->resourceRepository = $resourceRepository;
+        $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
     }
 
@@ -75,9 +81,15 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     {
         parent::filterByContact($contact);
 
+        $accessGroups = $this->accessGroupRepository->findByContact($contact);
+
         $this->resourceRepository
             ->setContact($this->contact)
-            ->filterByAccessGroups($this->accessGroupRepository->findByContact($contact));
+            ->filterByAccessGroups($accessGroups);
+
+        $this->monitoringRepository
+            ->setContact($this->contact)
+            ->filterByAccessGroups($accessGroups);
 
         return $this;
     }
@@ -108,27 +120,50 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     /**
      * {@inheritDoc}
      */
-    public function enrichHostWithDetails(Host $host): Model\ResourceDetailsHost
+    public function enrichHostWithDetails(ResourceEntity $resource): void
     {
-        $enrichedHost = (new Model\ResourceDetailsHost())
-            ->import($host);
+        $host = $this->monitoringRepository->findOneHost($resource->getId());
+        if ($host !== null) {
+            $resource->setPollerName($host->getPollerName());
+        }
 
-        $this->resourceRepository->findMissingInformationAboutHost($enrichedHost);
+        $downtimes = $this->monitoringRepository->findDowntimes(
+            $resource->getId(),
+            0
+        );
+        $resource->setDowntimes($downtimes);
 
-        return $enrichedHost;
+        if ($resource->getAcknowledged()) {
+            $acknowledgements = $this->monitoringRepository->findAcknowledgements(
+                $resource->getId(),
+                0
+            );
+            if (!empty($acknowledgements)) {
+                $resource->setAcknowledgement($acknowledgements[0]);
+            }
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public function enrichServiceWithDetails(Service $service): Model\ResourceDetailsService
+    public function enrichServiceWithDetails(ResourceEntity $resource): void
     {
-        $enrichedService = (new Model\ResourceDetailsService())
-            ->import($service);
+        $downtimes = $this->monitoringRepository->findDowntimes(
+            $resource->getParent()->getId(),
+            $resource->getId()
+        );
+        $resource->setDowntimes($downtimes);
 
-        $this->resourceRepository->findMissingInformationAboutService($enrichedService);
-
-        return $enrichedService;
+        if ($resource->getAcknowledged()) {
+            $acknowledgements = $this->monitoringRepository->findAcknowledgements(
+                $resource->getParent()->getId(),
+                $resource->getId()
+            );
+            if (!empty($acknowledgements)) {
+                $resource->setAcknowledgement($acknowledgements[0]);
+            }
+        }
     }
 
     /**
