@@ -39,7 +39,6 @@ use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
@@ -73,6 +72,17 @@ class MonitoringResourceController extends AbstractController
     private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
+
+    private const HOST_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addhostacknowledgement';
+    private const SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addserviceacknowledgement';
+    private const HOST_DOWNTIME_ROUTE = 'monitoring.downtime.addHostDowntime';
+    private const SERVICE_DOWNTIME_ROUTE = 'monitoring.downtime.addServiceDowntime';
+    private const HOST_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_host';
+    private const SERVICE_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_service';
+    private const HOST_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebyhost';
+    private const SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebyhostandservice';
+    private const SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getServiceStatusMetrics';
+    private const SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getServicePerformanceMetrics';
 
     // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
@@ -186,7 +196,7 @@ class MonitoringResourceController extends AbstractController
             ->filterByContact($contact)
             ->findResources($filter);
 
-        $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
+        $this->providePerformanceGraphEndpoint($resources);
 
         foreach ($resources as $resource) {
             if ($resource->getIcon() instanceof Icon) {
@@ -198,99 +208,7 @@ class MonitoringResourceController extends AbstractController
             }
 
             // add shortcuts
-            $this->provideInternalUris($resource, $contact);
-
-            // set paths to endpoints
-            $routeNameAcknowledgement = 'centreon_application_acknowledgement_addhostacknowledgement';
-            $routeNameDowntime = 'monitoring.downtime.addHostDowntime';
-            $routeNameDetails = 'centreon_application_monitoring_resource_details_host';
-            $routeNameTimeline = 'centreon_application_monitoring_gettimelinebyhost';
-
-            $parameters = [
-                'hostId' => $resource->getId(),
-            ];
-
-            if ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
-                $parameters['hostId'] = $resource->getParent()->getId();
-
-                $resource->getParent()->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
-                $resource->getParent()->setTimelineEndpoint($this->router->generate($routeNameTimeline, $parameters));
-
-                $routeNameAcknowledgement = 'centreon_application_acknowledgement_addserviceacknowledgement';
-                $routeNameDowntime = 'monitoring.downtime.addServiceDowntime';
-                $routeNameDetails = 'centreon_application_monitoring_resource_details_service';
-                $routeNameTimeline = 'centreon_application_monitoring_gettimelinebyhostandservice';
-
-                $parameters['serviceId'] = $resource->getId();
-            }
-
-            $resource->setAcknowledgementEndpoint(
-                $this->router->generate($routeNameAcknowledgement, array_merge($parameters, ['limit' => 1]))
-            );
-            $resource->setDowntimeEndpoint($this->router->generate($routeNameDowntime, array_merge($parameters, [
-                'search' => json_encode([
-                    RequestParameters::AGGREGATE_OPERATOR_AND => [
-                        [
-                            'start_time' => [
-                                RequestParameters::OPERATOR_LESS_THAN => time(),
-                            ],
-                            'end_time' => [
-                                RequestParameters::OPERATOR_GREATER_THAN => time(),
-                            ],
-                            [
-                                RequestParameters::AGGREGATE_OPERATOR_OR => [
-                                    'is_cancelled' => [
-                                        RequestParameters::OPERATOR_NOT_EQUAL => 1,
-                                    ],
-                                    'deletion_time' => [
-                                        RequestParameters::OPERATOR_GREATER_THAN => time(),
-                                    ],
-                                ],
-                            ]
-                        ]
-                    ],
-                ]),
-            ])));
-            $resource->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
-            $resource->setTimelineEndpoint($this->router->generate($routeNameTimeline, $parameters));
-
-            if ($resource->getParent() !== null) {
-                $parameters = [
-                    'hostId' => $resource->getParent()->getId(),
-                    'serviceId' => $resource->getId(),
-                ];
-
-                // set service status graph endpoint from metrics controller
-                $resource->setStatusGraphEndpoint(
-                    $this->router->generate(
-                        'monitoring.metric.getServiceStatusMetrics',
-                        $parameters
-                    )
-                );
-
-                foreach ($resourcesWithGraphData as $resourceWithGraphData) {
-                    if (
-                        $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
-                        && $resource->getId() === $resourceWithGraphData->getId()
-                    ) {
-                        // set service performance graph endpoint from metrics controller
-                        $resource->setPerformanceGraphEndpoint(
-                            $this->router->generate(
-                                'monitoring.metric.getServicePerformanceMetrics',
-                                $parameters
-                            )
-                        );
-                    }
-                }
-
-                $resource->getParent()
-                    ->setDetailsEndpoint($this->router->generate(
-                        'centreon_application_monitoring_resource_details_host',
-                        [
-                            'hostId' => $resource->getParent()->getId(),
-                        ]
-                    ));
-            }
+            $this->provideLinks($resource, $contact);
         }
 
         return $this->view([
@@ -309,12 +227,17 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
         $filter = (new ResourceFilter())
             ->setTypes([ResourceFilter::TYPE_HOST])
             ->setHostIds([$hostId]);
 
         $resources = $this->resource
-            ->filterByContact($this->getUser())
+            ->filterByContact($contact)
             ->findResources($filter);
 
         if (empty($resources)) {
@@ -322,6 +245,10 @@ class MonitoringResourceController extends AbstractController
         }
 
         $resource = $resources[0];
+
+        $this->providePerformanceGraphEndpoint([$resource]);
+        $this->provideLinks($resource, $contact);
+
         $this->resource->enrichHostWithDetails($resource);
 
         $context = (new Context())
@@ -347,83 +274,29 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
         $filter = (new ResourceFilter())
             ->setTypes([ResourceFilter::TYPE_SERVICE])
             ->setHostIds([$hostId])
             ->setServiceIds([$serviceId]);
 
         $resources = $this->resource
-            ->filterByContact($this->getUser())
+            ->filterByContact($contact)
             ->findResources($filter);
 
         if (empty($resources)) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
 
-        /**
-         * @var Service $service
-         */
-        /*
-        $service = $this->monitoring
-            ->filterByContact($this->getUser())
-            ->findOneService($hostId, $serviceId);
-
-        try {
-            $this->monitoring->hidePasswordInCommandLine($service);
-        } catch (\Throwable $ex) {
-            $service->setCommandLine(
-                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
-            );
-        }
-
-        if ($service === null) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-
-        $context = (new Context())
-            ->setGroups(array_merge([
-                ResourceDetailsService::SERIALIZER_GROUP_DETAILS,
-                ResourceStatus::SERIALIZER_GROUP_MAIN,
-                Acknowledgement::SERIALIZER_GROUP_FULL,
-            ], Downtime::SERIALIZER_GROUPS_SERVICE))
-            ->enableMaxDepth();
-
-        $enrichedService = $this->resource->enrichServiceWithDetails($service);
-
-        $parameters = [
-            'hostId' => $enrichedService->getParent()->getId(),
-            'serviceId' => $enrichedService->getId(),
-        ];
-
-        $enrichedService->setTimelineEndpoint(
-            $this->router->generate(
-                'centreon_application_monitoring_gettimelinebyhostandservice',
-                $parameters
-            )
-        );
-
-        $enrichedService->setStatusGraphEndpoint(
-            $this->router->generate(
-                'monitoring.metric.getServiceStatusMetrics',
-                $parameters
-            )
-        );
-
-        $resource = (new ResourceEntity())
-            ->setId($enrichedService->getId())
-            ->setParent($enrichedService->getParent());
-
-        if (count($this->resource->extractResourcesWithGraphData([$resource])) === 1) {
-            $enrichedService->setPerformanceGraphEndpoint(
-                $this->router->generate(
-                    'monitoring.metric.getServicePerformanceMetrics',
-                    $parameters
-                )
-            );
-        }
-        */
-
         $resource = $resources[0];
+
+        $this->providePerformanceGraphEndpoint([$resource]);
+        $this->provideLinks($resource, $contact);
+
         $this->resource->enrichServiceWithDetails($resource);
 
         try {
@@ -453,6 +326,169 @@ class MonitoringResourceController extends AbstractController
         return $this
             ->view($resource)
             ->setContext($context);
+    }
+
+    /**
+     * Add performance graph endpoint on resources which have performance data
+     *
+     * @param ResourceEntity[] $resources
+     * @return void
+     */
+    private function providePerformanceGraphEndpoint($resources)
+    {
+        $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
+
+        foreach ($resources as $resource) {
+            if ($resource->getParent() !== null) {
+                foreach ($resourcesWithGraphData as $resourceWithGraphData) {
+                    if (
+                        $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
+                        && $resource->getId() === $resourceWithGraphData->getId()
+                    ) {
+                        // set service performance graph endpoint from metrics controller
+                        $resource->getLinks()->getEndpoints()->setPerformanceGraph(
+                            $this->router->generate(
+                                static::SERVICE_PERFORMANCE_GRAPH_ROUTE,
+                                [
+                                    'hostId' => $resource->getParent()->getId(),
+                                    'serviceId' => $resource->getId(),
+                                ]
+                            )
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Add internal uris and endpoints to the given resource
+     *
+     * @param ResourceEntity $resource
+     * @param Contact $contact
+     * @return void
+     */
+    private function provideLinks(ResourceEntity $resource, Contact $contact): void
+    {
+        $this->provideEndpoints($resource);
+        $this->provideInternalUris($resource, $contact);
+    }
+
+    /**
+     * Add endpoints to the given resource
+     *
+     * @param ResourceEntity $resource
+     * @return void
+     */
+    private function provideEndpoints(ResourceEntity $resource): void
+    {
+        $acknowledgementFilter = ['limit' => 1];
+        $downtimeFilter = [
+            'search' => json_encode([
+                RequestParameters::AGGREGATE_OPERATOR_AND => [
+                    [
+                        'start_time' => [
+                            RequestParameters::OPERATOR_LESS_THAN => time(),
+                        ],
+                        'end_time' => [
+                            RequestParameters::OPERATOR_GREATER_THAN => time(),
+                        ],
+                        [
+                            RequestParameters::AGGREGATE_OPERATOR_OR => [
+                                'is_cancelled' => [
+                                    RequestParameters::OPERATOR_NOT_EQUAL => 1,
+                                ],
+                                'deletion_time' => [
+                                    RequestParameters::OPERATOR_GREATER_THAN => time(),
+                                ],
+                            ],
+                        ]
+                    ]
+                ]
+            ])
+        ];
+
+        $hostResource = null;
+
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $hostResource = $resource;
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
+            $hostResource = $resource->getParent();
+
+            $parameters = [
+                'hostId' => $resource->getParent()->getId(),
+                'serviceId' => $resource->getId(),
+            ];
+
+            $resource->getLinks()->getEndpoints()->setDetails(
+                $this->router->generate(
+                    static::SERVICE_DETAILS_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setTimeline(
+                $this->router->generate(
+                    static::SERVICE_TIMELINE_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setAcknowledgement(
+                $this->router->generate(
+                    static::SERVICE_ACKNOWLEDGEMENT_ROUTE,
+                    array_merge($parameters, $acknowledgementFilter)
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setDowntime(
+                $this->router->generate(
+                    static::SERVICE_DOWNTIME_ROUTE,
+                    array_merge($parameters, $downtimeFilter)
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setStatusGraph(
+                $this->router->generate(
+                    static::SERVICE_STATUS_GRAPH_ROUTE,
+                    $parameters
+                )
+            );
+        }
+
+        if ($hostResource !== null) {
+            $parameters = [
+                'hostId' => $hostResource->getId(),
+            ];
+
+            $hostResource->getLinks()->getEndpoints()->setDetails(
+                $this->router->generate(
+                    static::HOST_DETAILS_ROUTE,
+                    $parameters
+                )
+            );
+
+            $hostResource->getLinks()->getEndpoints()->setTimeline(
+                $this->router->generate(
+                    static::HOST_TIMELINE_ROUTE,
+                    $parameters
+                )
+            );
+
+            $hostResource->getLinks()->getEndpoints()->setAcknowledgement(
+                $this->router->generate(
+                    static::HOST_ACKNOWLEDGEMENT_ROUTE,
+                    array_merge($parameters, $acknowledgementFilter)
+                )
+            );
+
+            $hostResource->getLinks()->getEndpoints()->setDowntime(
+                $this->router->generate(
+                    static::HOST_DOWNTIME_ROUTE,
+                    array_merge($parameters, $downtimeFilter)
+                )
+            );
+        }
     }
 
     /**

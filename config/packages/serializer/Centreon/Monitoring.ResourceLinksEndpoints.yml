@@ -8,11 +8,11 @@ Centreon\Domain\Monitoring\ResourceLinksEndpoints:
             type: string
             groups:
                 - 'resource_status_main'
-        performance_graph:
+        performanceGraph:
             type: string
             groups:
                 - 'resource_status_main'
-        status_graph:
+        statusGraph:
             type: string
             groups:
                 - 'resource_status_main'

@@ -42,6 +42,8 @@ use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MonitoringResourceControllerTest extends TestCase
 {
@@ -63,8 +65,11 @@ class MonitoringResourceControllerTest extends TestCase
     protected $serializer;
     protected $entityValidator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
+        $kernel = new \App\Kernel('prod', false);
+        $kernel->boot();
+
         $timezone = new \DateTimeZone('Europe/Paris');
 
         $this->adminContact = (new Contact())
@@ -91,7 +96,7 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
         $this->resourceService = $this->createMock(ResourceServiceInterface::class);
-        $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $this->urlGenerator = $kernel->getContainer()->get('router')->getRouter()->getGenerator();
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
@@ -141,10 +146,6 @@ class MonitoringResourceControllerTest extends TestCase
             ->method('findResources')
             ->willReturn([$this->resource]);
 
-        $this->urlGenerator->expects($this->any())
-            ->method('generate')
-            ->willReturn('/');
-
         $resourceController = new MonitoringResourceController(
             $this->monitoringService,
             $this->resourceService,
@@ -189,8 +190,19 @@ class MonitoringResourceControllerTest extends TestCase
          */
         $resource = $view->getData()['result'][0];
 
-        $this->assertEquals($resource->getConfigurationUri(), '/main.php?p=60101&o=c&host_id=1');
-        $this->assertEquals($resource->getLogsUri(), '/main.php?p=20301&h=1');
-        $this->assertEquals($resource->getReportingUri(), '/main.php?p=307&host=1');
+        $this->assertEquals($resource->getLinks()->getUris()->getConfiguration(), '/main.php?p=60101&o=c&host_id=1');
+        $this->assertEquals($resource->getLinks()->getUris()->getLogs(), '/main.php?p=20301&h=1');
+        $this->assertEquals($resource->getLinks()->getUris()->getReporting(), '/main.php?p=307&host=1');
+
+        $this->assertEquals($resource->getLinks()->getEndpoints()->getDetails(), '/centreon/api/beta/monitoring/resources/hosts/1');
+        $this->assertEquals($resource->getLinks()->getEndpoints()->getTimeline(), '/centreon/api/beta/monitoring/hosts/1/timeline');
+        $this->assertEquals($resource->getLinks()->getEndpoints()->getAcknowledgement(), '/centreon/api/beta/monitoring/hosts/1/acknowledgements?limit=1');
+        echo strcmp(urldecode($resource->getLinks()->getEndpoints()->getDowntime()), '/centreon/api/beta/monitoring/hosts/1/downtimes?search={"$and":[{"start_time":{"$lt":1599576967},"end_time":{"$gt":1599576967},"0":{"$or":{"is_cancelled":{"$neq":1},"deletion_time":{"$gt":1599576967}}}}]}');
+        $this->assertRegExp(
+            '#/centreon/api/beta/monitoring/hosts/1/downtimes\?search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
+            urldecode($resource->getLinks()->getEndpoints()->getDowntime())
+        );
+        $this->assertNull($resource->getLinks()->getEndpoints()->getStatusGraph());
+        $this->assertNull($resource->getLinks()->getEndpoints()->getPerformanceGraph());
     }
 }

@@ -95,47 +95,6 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        configurationUri:
-            type: string
-            groups:
-                - 'resource_main'
-                - 'resource_parent'
-        logsUri:
-            type: string
-            groups:
-                - 'resource_main'
-                - 'resource_parent'
-        reportingUri:
-            type: string
-            groups:
-                - 'resource_main'
-                - 'resource_parent'
-        downtimeEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-        detailsEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-                - 'resource_parent'
-        timelineEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-                - 'resource_parent'
-        acknowledgementEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-        statusGraphEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
-        performanceGraphEndpoint:
-            type: string
-            groups:
-                - 'resource_main'
         severity:
             type: Centreon\Domain\Monitoring\ResourceSeverity
             groups:
