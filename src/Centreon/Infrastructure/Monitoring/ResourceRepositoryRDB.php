@@ -83,7 +83,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'last_status_change' => 'resource.last_status_change',
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
-        'information' => 'resource.information',
         'h.group' => 'hg.name',
         'h.group.id' => 'hhg.hostgroup_id',
     ];

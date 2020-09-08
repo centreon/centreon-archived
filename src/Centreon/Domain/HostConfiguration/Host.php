@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\Annotation\EntityDescriptor;
 
 /***
  * This class is designed to represent a host configuration.
@@ -86,8 +87,9 @@ class Host
 
     /**
      * @var bool
+     * @EntityDescriptor(column="is_activated", modifier="setActivated")
      */
-    private $isActivate = true;
+    private $isActivated = true;
 
     /**
      * @var int Host type
@@ -241,18 +243,18 @@ class Host
     /**
      * @return bool
      */
-    public function isActivate(): bool
+    public function isActivated(): bool
     {
-        return $this->isActivate;
+        return $this->isActivated;
     }
 
     /**
-     * @param bool $isActivate
+     * @param bool $isActivated
      * @return Host
      */
-    public function setIsActivate(bool $isActivate): Host
+    public function setActivated(bool $isActivated): Host
     {
-        $this->isActivate = $isActivate;
+        $this->isActivated = $isActivated;
         return $this;
     }
 
@@ -302,10 +304,12 @@ class Host
 
     /**
      * @param int $type
+     * @return Host
      */
-    public function setType(int $type): void
+    public function setType(int $type): Host
     {
         $this->type = $type;
+        return $this;
     }
 
     /**
@@ -317,24 +321,29 @@ class Host
     }
 
     /**
-     * @param Host[] $templates
-     * @return Host
-     */
-    public function setTemplates(array $templates): Host
-    {
-        $this->templates = $templates;
-        return $this;
-    }
-
-    /**
      * Add a host template.
      *
      * @param Host $hostTemplate
      * @return Host
+     * @throws \InvalidArgumentException
      */
     public function addTemplate(Host $hostTemplate): Host
     {
+        if ($hostTemplate->getType() !== Host::TYPE_HOST_TEMPLATE) {
+            throw new \InvalidArgumentException(_('This host is not a host template'));
+        }
         $this->templates[] = $hostTemplate;
+        return $this;
+    }
+
+    /**
+     * Clear all templates.
+     *
+     * @return Host
+     */
+    public function clearTemplates(): Host
+    {
+        $this->templates = [];
         return $this;
     }
 

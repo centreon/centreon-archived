@@ -80,6 +80,9 @@
     "doctrine/lexer": {
         "version": "1.2.1"
     },
+    "dragonmantank/cron-expression": {
+        "version": "3.0.1"
+    },
     "fabpot/goutte": {
         "version": "v3.3.0"
     },

@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   useRequest,
   ListingModel,
@@ -15,6 +17,7 @@ import {
 } from '@material-ui/core';
 import { prop, isEmpty, cond, always, T } from 'ramda';
 
+import { ResourceLinks } from '../../../models';
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
@@ -23,7 +26,6 @@ import { labelEvent, labelNoResultsFound } from '../../../translatedLabels';
 import { useResourceContext } from '../../../Context';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
-import { ResourceLinks } from '../../../models';
 
 interface Props {
   links: ResourceLinks;
@@ -60,6 +62,8 @@ const useStyles = makeStyles((theme) => ({
 
 const TimelineTab = ({ links }: Props): JSX.Element => {
   const classes = useStyles();
+
+  const { t } = useTranslation();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
   const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
@@ -139,7 +143,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
       <Paper className={classes.filterContainer}>
         <div className={classes.filterAutocomplete}>
           <MultiAutocompleteField
-            label={labelEvent}
+            label={t(labelEvent)}
             onChange={changeSelectedTypes}
             value={selectedTypes}
             options={types}
@@ -156,7 +160,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
             always(
               <Paper className={classes.noResultContainer}>
                 <Typography align="center" variant="body1">
-                  {labelNoResultsFound}
+                  {t(labelNoResultsFound)}
                 </Typography>
               </Paper>,
             ),
