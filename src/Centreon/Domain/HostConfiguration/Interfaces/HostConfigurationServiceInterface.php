@@ -24,7 +24,6 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
-use Centreon\Domain\HostConfiguration\HostConfigurationService;
 use Centreon\Domain\HostConfiguration\HostMacro;
 
 interface HostConfigurationServiceInterface
@@ -54,6 +53,16 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function getNumberOfHosts(): int;
+
+    /**
+     * Find and add all host templates in the given host.
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host Host for which we want to find and add all host templates
+     * @throws \Throwable
+     */
+    public function findAndAddHostTemplates(Host $host): void;
 
     /**
      * Find all host macros for the host.

@@ -27,15 +27,19 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterfa
 
 class HostConfigurationService implements HostConfigurationServiceInterface
 {
-
     /**
      * @var HostConfigurationRepositoryInterface
      */
     private $hostConfigurationRepository;
 
-    public function __construct(HostConfigurationRepositoryInterface $configurationRepository)
+    /**
+     * HostConfigurationService constructor.
+     *
+     * @param HostConfigurationRepositoryInterface $hostConfigurationRepository
+     */
+    public function __construct(HostConfigurationRepositoryInterface $hostConfigurationRepository)
     {
-        $this->hostConfigurationRepository = $configurationRepository;
+        $this->hostConfigurationRepository = $hostConfigurationRepository;
     }
 
     /**
@@ -59,6 +63,18 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             throw $ex;
         } catch (\Exception $ex) {
             throw new HostConfigurationException(_('Error while creation of host'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAndAddHostTemplates(Host $host): void
+    {
+        try {
+            $this->hostConfigurationRepository->findAndAddHostTemplates($host);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error when searching for host templates'), 0, $ex);
         }
     }
 

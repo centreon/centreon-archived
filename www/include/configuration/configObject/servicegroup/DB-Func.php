@@ -129,6 +129,7 @@ function deleteServiceGroupInDB($serviceGroups = [])
 
     foreach (array_keys($serviceGroups) as $key) {
         $sgId = filter_var($key, FILTER_VALIDATE_INT);
+        removeRelationLastServicegroupDependency((int)$sgId);
         $statement = $pearDB->prepare("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = :sg_id LIMIT 1");
         $statement->bindValue(':sg_id', $sgId, \PDO::PARAM_INT);
         $statement->execute();

@@ -48,6 +48,16 @@ interface HostConfigurationRepositoryInterface
     public function findHost(int $hostId): ?Host;
 
     /**
+     * Find and add all host templates in the given host.
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host Host for which we want to find and add all host templates
+     * @throws \Throwable
+     */
+    public function findAndAddHostTemplates(Host $host): void;
+
+    /**
      * Indicates if a hostname is already in use.
      *
      * @param string $hostName Hostname to be found
