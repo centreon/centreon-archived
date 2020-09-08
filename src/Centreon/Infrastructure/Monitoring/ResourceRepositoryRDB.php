@@ -334,14 +334,19 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.id, resource.type, resource.name, resource.action_url, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
+            . 'resource.command_line, resource.timezone, '
             . 'resource.parent_id, resource.parent_name, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
+            . 'resource.flapping, resource.percent_state_change, '
             . 'resource.severity_level, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
+            . 'resource.active_checks, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
-            . 'resource.tries, resource.last_check, resource.information '
+            . 'resource.last_notification, resource.notification_number, '
+            . 'resource.tries, resource.last_check, resource.next_check, resource.information, '
+            . 'resource.execution_time, resource.latency '
             . 'FROM (';
 
         $subRequests = [];
@@ -529,12 +534,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql = "SELECT
             s.service_id AS `id`,
             'service' AS `type`,
-            s.service_id AS `origin_id`,
             sh.host_id AS `host_id`,
             s.description AS `name`,
             s.action_url AS `action_url`,
             s.icon_image_alt AS `icon_name`,
             s.icon_image AS `icon_url`,
+            s.command_line AS `command_line`,
+            NULL AS `timezone`,
             sh.host_id AS `parent_id`,
             sh.name AS `parent_name`,
             sh.icon_image_alt AS `parent_icon_name`,
@@ -567,18 +573,26 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHEN s.state = 3 THEN " . ResourceStatus::SEVERITY_LOW . "
                 WHEN s.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
             END AS `status_severity_code`,
+            s.flapping AS `flapping`,
+            s.percent_state_change AS `percent_state_change`,
             s.scheduled_downtime_depth AS `in_downtime`,
             s.acknowledged AS `acknowledged`,
+            s.active_checks AS `active_checks`,
             service_cvl.value AS `severity_level`,
             sc.sc_name AS `severity_name`,
             0 AS `impacted_resources_count`,
             s.last_state_change AS `last_status_change`,
+            s.last_notification AS `last_notification`,
+            s.notification_number AS `notification_number`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
                 WHEN s.state_type = 1 THEN 'S'
             END, ')') AS `tries`,
             s.last_check AS `last_check`,
-            s.output AS `information`
+            s.next_check AS `next_check`,
+            s.output AS `information`,
+            s.execution_time AS `execution_time`,
+            s.latency AS `latency`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
@@ -672,6 +686,32 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $sql .= ' AND sg.servicegroup_id IN (' . implode(', ', $groupList) . ')';
         }
 
+        if (!empty($filter->getHostIds())) {
+            $hostIds = [];
+
+            foreach ($filter->getHostIds() as $index => $hostId) {
+                $key = ":hostId_{$index}";
+
+                $hostIds[] = $key;
+                $collector->addValue($key, $hostId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND sh.host_id IN (' . implode(', ', $hostIds) . ')';
+        }
+
+        if (!empty($filter->getServiceIds())) {
+            $serviceIds = [];
+
+            foreach ($filter->getServiceIds() as $index => $serviceId) {
+                $key = ":serviceId_{$index}";
+
+                $serviceIds[] = $key;
+                $collector->addValue($key, $serviceId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.service_id IN (' . implode(', ', $serviceIds) . ')';
+        }
+
         // group by the service ID to preventing the duplication
         $sql .= ' GROUP BY s.service_id';
 
@@ -690,12 +730,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql = "SELECT
             h.host_id AS `id`,
             'host' AS `type`,
-            h.host_id AS `origin_id`,
             h.host_id AS `host_id`,
             h.name AS `name`,
             h.action_url AS `action_url`,
             h.icon_image_alt AS `icon_name`,
             h.icon_image AS `icon_url`,
+            h.command_line AS `command_line`,
+            h.timezone AS `timezone`,
             NULL AS `parent_id`,
             NULL AS `parent_name`,
             NULL AS `parent_icon_name`,
@@ -716,8 +757,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHEN h.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . "
                 WHEN h.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
             END AS `status_severity_code`,
+            h.flapping AS `flapping`,
+            h.percent_state_change AS `percent_state_change`,
             h.scheduled_downtime_depth AS `in_downtime`,
             h.acknowledged AS `acknowledged`,
+            h.active_checks AS `active_checks`,
             host_cvl.value AS `severity_level`,
             hc.hc_comment AS `severity_name`,
             (SELECT COUNT(DISTINCT host_s.service_id)
@@ -725,12 +769,17 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
             ) AS `impacted_resources_count`,
             h.last_state_change AS `last_status_change`,
+            h.last_notification AS `last_notification`,
+            h.notification_number AS `notification_number`,
             CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', CASE
                 WHEN h.state_type = 1 THEN 'H'
                 WHEN h.state_type = 1 THEN 'S'
             END, ')') AS `tries`,
             h.last_check AS `last_check`,
-            h.output AS `information`
+            h.next_check AS `next_check`,
+            h.output AS `information`,
+            h.execution_time AS `execution_time`,
+            h.latency AS `latency`
             FROM `:dbstg`.`hosts` AS h";
 
         // set ACL limitations
@@ -799,6 +848,19 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             }
 
             $sql .= ' AND h.state IN (' . implode(', ', $statusList) . ')';
+        }
+
+        if (!empty($filter->getHostIds())) {
+            $hostIds = [];
+
+            foreach ($filter->getHostIds() as $index => $hostId) {
+                $key = ":hostId_{$index}";
+
+                $hostIds[] = $key;
+                $collector->addValue($key, $hostId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND h.host_id IN (' . implode(', ', $hostIds) . ')';
         }
 
         // prevent duplication

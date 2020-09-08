@@ -40,6 +40,18 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
+        commandLine:
+            type: string
+            groups:
+                - 'resource_details_service'
+        timezone:
+            type: string
+            access_type: public_method
+            accessor:
+              getter: getSanitizedTimezone
+              setter: setTimezone
+            groups:
+                - 'resource_details_service'
         parent:
             type: Centreon\Domain\Monitoring\Resource
             groups:
@@ -50,11 +62,31 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
                 - 'resource_parent'
                 - 'resource_details_service'
+        flapping:
+            type: bool
+            groups:
+                - 'resource_main'
+        percentStateChange:
+            type: double
+            groups:
+                - 'resource_details_service'
+        lastCheck:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'resource_details_service'
+        nextCheck:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'resource_details_service'
         inDowntime:
             type: bool
             groups:
                 - 'resource_main'
         acknowledged:
+            type: bool
+            groups:
+                - 'resource_main'
+        activeChecks:
             type: bool
             groups:
                 - 'resource_main'
@@ -124,6 +156,14 @@ Centreon\Domain\Monitoring\Resource:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'resource_main'
+        lastNotification:
+            type: DateTime
+            groups:
+                - 'resource_details_service'
+        notificationNumber:
+            type: int
+            groups:
+                - 'resource_details_service'
         tries:
             type: string
             groups:
@@ -132,3 +172,11 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_main'
+        executionTime:
+            type: double
+            groups:
+                - 'resource_details_service'
+        latency:
+            type: double
+            groups:
+                - 'resource_details_service'

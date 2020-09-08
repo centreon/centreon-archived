@@ -73,6 +73,21 @@ class Resource
     private $icon;
 
     /**
+     * @var string|null
+     */
+    protected $commandLine;
+
+    /**
+     * @var string|null
+     */
+    private $pollerName;
+
+    /**
+     * @var string|null
+     */
+    private $timezone;
+
+    /**
      * @var \Centreon\Domain\Monitoring\Resource|null
      */
     private $parent;
@@ -83,6 +98,21 @@ class Resource
     private $status;
 
     /**
+     * @var bool|null
+     */
+    private $flapping;
+
+    /**
+     * @var double|null
+     */
+    private $percentStateChange;
+
+    /**
+     * @var int|null
+     */
+    protected $criticality;
+
+    /**
      * @var bool
      */
     private $inDowntime = false;
@@ -91,6 +121,11 @@ class Resource
      * @var bool
      */
     private $acknowledged = false;
+
+    /**
+     * @var bool|null
+     */
+    private $activeChecks;
 
     /**
      * @var ResourceLinks
@@ -168,6 +203,16 @@ class Resource
     private $lastStatusChange;
 
     /**
+     * @var \DateTime|null
+     */
+    private $lastNotification;
+
+    /**
+     * @var int|null
+     */
+    private $notificationNumber;
+
+    /**
      * @var string|null
      */
     private $tries;
@@ -178,9 +223,24 @@ class Resource
     private $lastCheck;
 
     /**
+     * @var \DateTime|null
+     */
+    private $nextCheck;
+
+    /**
      * @var string|null
      */
     private $information;
+
+    /**
+     * @var double|null
+     */
+    private $executionTime;
+
+    /**
+     * @var double|null
+     */
+    private $latency;
 
     /**
      * Resource constructor.
@@ -319,6 +379,71 @@ class Resource
     }
 
     /**
+     * @return string|null
+     */
+    public function getCommandLine(): ?string
+    {
+        return $this->commandLine;
+    }
+
+    /**
+     * @param string|null $commandLine
+     * @return self
+     */
+    public function setCommandLine(?string $commandLine): self
+    {
+        $this->commandLine = $commandLine;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPollerName(): ?string
+    {
+        return $this->pollerName;
+    }
+
+    /**
+     * @param string|null $pollerName
+     * @return self
+     */
+    public function setPollerName(?string $pollerName): self
+    {
+        $this->pollerName = $pollerName;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSanitizedTimezone(): ?string
+    {
+        return (null !== $this->timezone) ?
+            preg_replace('/^:/', '', $this->timezone) :
+            $this->timezone;
+    }
+
+    /**
+     * @param string|null $timezone
+     * @return self
+     */
+    public function setTimezone(?string $timezone): self
+    {
+        $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
      * @return \Centreon\Domain\Monitoring\Resource|null
      */
     public function getParent(): ?Resource
@@ -357,6 +482,60 @@ class Resource
     }
 
     /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return self
+     */
+    public function setFlapping(?bool $flapping): self
+    {
+        $this->flapping = $flapping;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPercentStateChange(): ?float
+    {
+        return $this->percentStateChange;
+    }
+
+    /**
+     * @param float|null $percentStateChange
+     * @return self
+     */
+    public function setPercentStateChange(?float $percentStateChange): self
+    {
+        $this->percentStateChange = $percentStateChange;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int|null $criticality
+     * @return self
+     */
+    public function setCriticality(?int $criticality): self
+    {
+        $this->criticality = $criticality;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getInDowntime(): bool
@@ -391,6 +570,24 @@ class Resource
     {
         $this->acknowledged = $acknowledged;
 
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getActiveChecks(): ?bool
+    {
+        return $this->activeChecks;
+    }
+
+    /**
+     * @param bool|null $activeChecks
+     * @return self
+     */
+    public function setActiveChecks(?bool $activeChecks): self
+    {
+        $this->activeChecks = $activeChecks;
         return $this;
     }
 
@@ -676,6 +873,42 @@ class Resource
     }
 
     /**
+     * @return \DateTime|null
+     */
+    public function getLastNotification(): ?\DateTime
+    {
+        return $this->lastNotification;
+    }
+
+    /**
+     * @param \DateTime|null $lastNotification
+     * @return self
+     */
+    public function setLastNotification(?\DateTime $lastNotification): self
+    {
+        $this->lastNotification = $lastNotification;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNotificationNumber(): ?int
+    {
+        return $this->notificationNumber;
+    }
+
+    /**
+     * @param int|null $notificationNumber
+     * @return self
+     */
+    public function setNotificationNumber(?int $notificationNumber): self
+    {
+        $this->notificationNumber = $notificationNumber;
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getTries(): ?string
@@ -714,6 +947,25 @@ class Resource
     }
 
     /**
+     * @return \DateTime|null
+     */
+    public function getNextCheck(): ?DateTime
+    {
+        return $this->nextCheck;
+    }
+
+    /**
+     * @param \DateTime|null $nextCheck
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setNextCheck(?DateTime $nextCheck): self
+    {
+        $this->nextCheck = $nextCheck;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getInformation(): ?string
@@ -729,6 +981,42 @@ class Resource
     {
         $this->information = trim($information);
 
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getExecutionTime(): ?float
+    {
+        return $this->executionTime;
+    }
+
+    /**
+     * @param float|null $executionTime
+     * @return self
+     */
+    public function setExecutionTime(?float $executionTime): self
+    {
+        $this->executionTime = $executionTime;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLatency(): ?float
+    {
+        return $this->latency;
+    }
+
+    /**
+     * @param float|null $latency
+     * @return self
+     */
+    public function setLatency(?float $latency): self
+    {
+        $this->latency = $latency;
         return $this;
     }
 }

@@ -184,7 +184,8 @@ class MonitoringResourceController extends AbstractController
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
-        $resources = $this->resource->filterByContact($contact)
+        $resources = $this->resource
+            ->filterByContact($contact)
             ->findResources($filter);
 
         $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
@@ -310,6 +311,14 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        $filter = (new ResourceFilter())
+            ->setTypes([ResourceFilter::TYPE_HOST])
+            ->setHostIds([$hostId]);
+
+        $resources = $this->resource
+            ->filterByContact($this->getUser())
+            ->findResources($filter);
+
         $host = $this->monitoring
             ->filterByContact($this->getUser())
             ->findOneHost($hostId);
@@ -327,8 +336,16 @@ class MonitoringResourceController extends AbstractController
             ], Downtime::SERIALIZER_GROUPS_SERVICE))
             ->enableMaxDepth();
 
+        $enrichedHost = $this->resource->enrichHostWithDetails($host);
+
+        $enrichedHost = $resources[0];
+
+        $context = (new Context())
+            ->setGroups(array_merge(ResourceEntity::contextGroupsForListing(),['resource_details_service']))
+            ->enableMaxDepth();
+
         return $this
-            ->view($this->resource->enrichHostWithDetails($host))
+            ->view($enrichedHost)
             ->setContext($context);
     }
 
@@ -342,12 +359,22 @@ class MonitoringResourceController extends AbstractController
         // ACL check
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        $filter = (new ResourceFilter())
+            ->setTypes([ResourceFilter::TYPE_SERVICE])
+            ->setHostIds([$hostId])
+            ->setServiceIds([$serviceId]);
+
+        $resources = $this->resource
+            ->filterByContact($this->getUser())
+            ->findResources($filter);
+
         /**
          * @var Service $service
          */
         $service = $this->monitoring
             ->filterByContact($this->getUser())
             ->findOneService($hostId, $serviceId);
+
         try {
             $this->monitoring->hidePasswordInCommandLine($service);
         } catch (\Throwable $ex) {
@@ -401,6 +428,20 @@ class MonitoringResourceController extends AbstractController
                 )
             );
         }
+
+        $enrichedService = $resources[0];
+
+        try {
+            //$this->monitoring->hidePasswordInCommandLine($enrichedService);
+        } catch (\Throwable $ex) {
+            $service->setCommandLine(
+                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+            );
+        }
+
+        $context = (new Context())
+            ->setGroups(array_merge(ResourceEntity::contextGroupsForListing(),['resource_details_service']))
+            ->enableMaxDepth();
 
         return $this
             ->view($enrichedService)

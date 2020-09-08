@@ -31,10 +31,10 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
   return (
     <>
       <Grid item>
-        {details.criticality && (
+        {details.severity && (
           <StatusChip
             severityCode={SeverityCode.None}
-            label={details.criticality.toString()}
+            label={details.severity.level?.toString()}
           />
         )}
       </Grid>
