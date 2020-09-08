@@ -48,40 +48,45 @@ const useAdapters = (): Adapters => {
 
   const toRawFilter = ({
     name,
-    criterias: [
-      {
-        name: 'resource_types',
-        value: criterias.resourceTypes,
-        type: 'multi_select',
-      },
-      {
-        name: 'states',
-        value: criterias.states,
-        type: 'multi_select',
-      },
-      {
-        name: 'statuses',
-        value: criterias.statuses,
-        type: 'multi_select',
-      },
-      {
-        name: 'service_groups',
-        value: criterias.serviceGroups,
-        type: 'multi_select',
-        object_type: 'service_groups',
-      },
-      {
-        name: 'host_groups',
-        value: criterias.hostGroups,
-        type: 'multi_select',
-        object_type: 'host_groups',
-      },
-      {
-        name: 'search',
-        value: criterias.search || '',
-        type: 'text',
-      },
-    ],
+    criterias,
+  }: Omit<Filter, 'id'>): Omit<RawFilter, 'id'> => {
+    return {
+      name,
+      criterias: [
+        {
+          name: 'resource_types',
+          value: criterias.resourceTypes,
+          type: 'multi_select',
+        },
+        {
+          name: 'states',
+          value: criterias.states,
+          type: 'multi_select',
+        },
+        {
+          name: 'statuses',
+          value: criterias.statuses,
+          type: 'multi_select',
+        },
+        {
+          name: 'host_groups',
+          value: criterias.hostGroups,
+          type: 'multi_select',
+          object_type: 'host_groups',
+        },
+        {
+          name: 'service_groups',
+          value: criterias.serviceGroups,
+          type: 'multi_select',
+          object_type: 'service_groups',
+        },
+        {
+          name: 'search',
+          value: criterias.search || '',
+          type: 'text',
+        },
+      ],
+    };
   };
 
   return { toFilter, toRawFilter };
