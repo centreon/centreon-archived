@@ -15495,6 +15495,17 @@ msgstr "par"
 msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
+msgid "Shortcuts"
+msgstr "Raccourcis"
+
+msgid "View logs"
+msgstr "Voir les logs"
+
+msgid "Configure"
+msgstr "Configurer"
+
+msgid "View report"
+msgstr "Voir le rapport"
 msgid "An error occurred while retrieving users linked to ViewId on database"
 msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs liés à ViewId"
 

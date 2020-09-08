@@ -10,6 +10,9 @@ export interface Parent {
   name: string;
   icon: Icon | null;
   status: Status;
+  configuration_uri?: string;
+  logs_uri?: string;
+  reporting_uri?: string;
 }
 
 export interface Status {
@@ -42,6 +45,9 @@ export interface Resource {
   type: 'host' | 'service';
   details_endpoint: string;
   timeline_endpoint: string;
+  configuration_uri?: string;
+  logs_uri?: string;
+  reporting_uri?: string;
 }
 
 export type ResourceListing = ListingModel<Resource>;
@@ -64,7 +70,17 @@ export interface Acknowledgement {
 
 export interface ResourceEndpoints {
   details: string;
-  statusGraph?: string;
   performanceGraph?: string;
   timeline: string;
+}
+
+export interface ResourceUris {
+  configuration?: string;
+  logs?: string;
+  reporting?: string;
+}
+
+export interface ResourceLinks {
+  endpoints: ResourceEndpoints;
+  uris: { resource: ResourceUris; parent: ResourceUris };
 }

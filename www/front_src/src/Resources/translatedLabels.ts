@@ -181,3 +181,7 @@ export const labelAcknowledgement = I18n.t('Acknowledgement');
 export const labelBy = I18n.t('by');
 export const labelNotificationSentTo = I18n.t('Notification sent to');
 export const labelNotification = I18n.t('Notification');
+export const labelShortcuts = I18n.t('Shortcuts');
+export const labelConfigure = I18n.t('Configure');
+export const labelViewLogs = I18n.t('View logs');
+export const labelViewReport = I18n.t('View report');

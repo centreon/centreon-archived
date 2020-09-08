@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { prop, isEmpty, cond, always, T } from 'ramda';
 
-import { ResourceEndpoints } from '../../../models';
+import { ResourceLinks } from '../../../models';
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
@@ -26,7 +26,7 @@ import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
 
 interface Props {
-  endpoints: Pick<ResourceEndpoints, 'timeline'>;
+  links: ResourceLinks;
 }
 
 type TimelineListing = ListingModel<TimelineEvent>;
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TimelineTab = ({ endpoints }: Props): JSX.Element => {
+const TimelineTab = ({ links }: Props): JSX.Element => {
   const classes = useStyles();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
@@ -67,6 +67,7 @@ const TimelineTab = ({ endpoints }: Props): JSX.Element => {
   const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(10);
 
+  const { endpoints } = links;
   const { timeline: timelineEndpoint } = endpoints;
   const { listing } = useResourceContext();
 
