@@ -49,6 +49,7 @@ import {
   labelViewLogs,
   labelViewReport,
   labelHost,
+  labelShortcuts,
 } from '../translatedLabels';
 import {
   detailsTabId,
@@ -63,7 +64,7 @@ import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
-import { ResourceListing, ResourceUris } from '../models';
+import { ResourceListing } from '../models';
 import { getTypeIds } from './tabs/Timeline/Event';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -534,9 +535,7 @@ describe(Details, () => {
     );
   });
 
-  it('displays the shortcut links when the shortcuts tab is selected', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-
+  it.only('displays the shortcut links when the shortcuts tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
@@ -568,6 +567,8 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
+
+    fireEvent.click(getByText(labelShortcuts));
 
     expect(getAllByText(labelConfigure)[0]).toHaveAttribute(
       'href',
