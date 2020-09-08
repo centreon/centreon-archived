@@ -233,6 +233,11 @@ class Resource
     private $information;
 
     /**
+     * @var string
+     */
+    private $performanceData;
+
+    /**
      * @var double|null
      */
     private $executionTime;
@@ -981,6 +986,24 @@ class Resource
     {
         $this->information = trim($information);
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPerformanceData(): string
+    {
+        return $this->performanceData;
+    }
+
+    /**
+     * @param string $performanceData
+     * @return self
+     */
+    public function setPerformanceData(string $performanceData): self
+    {
+        $this->performanceData = $performanceData;
         return $this;
     }
 

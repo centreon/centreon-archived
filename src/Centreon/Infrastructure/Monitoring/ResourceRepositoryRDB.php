@@ -345,7 +345,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.active_checks, '
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.last_notification, resource.notification_number, '
-            . 'resource.tries, resource.last_check, resource.next_check, resource.information, '
+            . 'resource.tries, resource.last_check, resource.next_check, '
+            . 'resource.information, resource.performance_data, '
             . 'resource.execution_time, resource.latency '
             . 'FROM (';
 
@@ -591,6 +592,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.last_check AS `last_check`,
             s.next_check AS `next_check`,
             s.output AS `information`,
+            s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
             s.latency AS `latency`
             FROM `:dbstg`.`services` AS s
@@ -778,6 +780,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.last_check AS `last_check`,
             h.next_check AS `next_check`,
             h.output AS `information`,
+            h.perfdata AS `performance_data`,
             h.execution_time AS `execution_time`,
             h.latency AS `latency`
             FROM `:dbstg`.`hosts` AS h";

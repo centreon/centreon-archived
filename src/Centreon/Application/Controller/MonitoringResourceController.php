@@ -371,6 +371,7 @@ class MonitoringResourceController extends AbstractController
         /**
          * @var Service $service
          */
+        /*
         $service = $this->monitoring
             ->filterByContact($this->getUser())
             ->findOneService($hostId, $serviceId);
@@ -428,13 +429,25 @@ class MonitoringResourceController extends AbstractController
                 )
             );
         }
+        */
 
         $enrichedService = $resources[0];
+        //$enrichedService = $this->resource->enrichServiceWithDetails($resources[0]);
+
+        $service = (new Service())
+            ->setId($enrichedService->getId())
+            ->setHost(
+                (new Host())
+                    ->setId($enrichedService->getParent()->getId())
+            )
+            ->setCommandLine($enrichedService->getCommandLine());
+
 
         try {
-            //$this->monitoring->hidePasswordInCommandLine($enrichedService);
+            $this->monitoring->hidePasswordInCommandLine($service);
+            $enrichedService->setCommandLine($service->getCommandLine());
         } catch (\Throwable $ex) {
-            $service->setCommandLine(
+            $enrichedService->setCommandLine(
                 sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
             );
         }

@@ -66,7 +66,7 @@ const performanceGraphEndpoint = '/performance';
 const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
-  display_name: 'Central',
+  name: 'Central',
   severity: { name: 'severity_1', level: 50 },
   status: { name: 'Critical', severity_code: 1 },
   parent: { name: 'Centreon', status: { severity_code: 1 } },

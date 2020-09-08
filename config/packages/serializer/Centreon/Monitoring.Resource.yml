@@ -172,6 +172,10 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_main'
+        performanceData:
+            type: string
+            groups:
+                - 'resource_main'
         executionTime:
             type: double
             groups:

@@ -47,7 +47,7 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       <Grid item style={{ flexGrow: 1 }}>
         <Grid container direction="column">
           <Grid item>
-            <Typography>{details.display_name}</Typography>
+            <Typography>{details.name}</Typography>
           </Grid>
           {details.parent && (
             <Grid item container spacing={1}>

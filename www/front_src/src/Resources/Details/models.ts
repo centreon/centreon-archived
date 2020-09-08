@@ -1,14 +1,14 @@
 import { Status, Acknowledgement, Downtime, Parent, Severity } from '../models';
 
 export interface ResourceDetails {
-  display_name: string;
+  name: string;
   status: Status;
   parent: Parent;
   severity: Severity;
   information: string;
   downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;
-  is_acknowledged: boolean;
+  acknowledged: boolean;
   duration: string;
   tries: string;
   poller_name?: string;
