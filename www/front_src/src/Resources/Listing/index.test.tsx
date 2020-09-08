@@ -7,20 +7,32 @@ import {
   waitFor,
   fireEvent,
   Matcher,
+  act,
 } from '@testing-library/react';
 import axios from 'axios';
 
-import { partition, where, contains, head, split, pipe } from 'ramda';
+import {
+  partition,
+  where,
+  contains,
+  head,
+  split,
+  pipe,
+  find,
+  propSatisfies,
+  isNil,
+} from 'ramda';
 import Listing from '.';
 import { getColumns } from './columns';
 import { Resource } from '../models';
-import Context from '../Context';
+import Context, { ResourceContext } from '../Context';
 import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
 import useListing from './useListing';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import { detailsTabId, graphTabId, shortcutsTabId } from '../Details/tabs';
 
 const columns = getColumns({ onAcknowledge: jest.fn() });
 
@@ -59,8 +71,10 @@ const fillEntities = (): Array<Resource> => {
     information:
       index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
     type: index % 4 === 0 ? 'service' : 'host',
+    performance_graph_endpoint: index % 6 === 0 ? 'endpoint' : undefined,
     details_endpoint: 'endpoint',
     timeline_endpoint: 'endpoint',
+    configuration_uri: index % 7 === 0 ? 'uri' : undefined,
   }));
 };
 
@@ -76,21 +90,23 @@ const retrievedListing = {
   },
 };
 
+let context: ResourceContext;
+
 const ListingTest = (): JSX.Element => {
   const listingState = useListing();
   const actionsState = useActions();
   const detailsState = useDetails();
   const filterState = useFilter();
 
+  context = {
+    ...listingState,
+    ...actionsState,
+    ...detailsState,
+    ...filterState,
+  };
+
   return (
-    <Context.Provider
-      value={{
-        ...listingState,
-        ...actionsState,
-        ...detailsState,
-        ...filterState,
-      }}
-    >
+    <Context.Provider value={context}>
       <Listing />
     </Context.Provider>
   );
@@ -350,5 +366,49 @@ describe(Listing, () => {
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
+  });
+
+  it('selects the details tab id when a row is selected and does not have the current tab id visible', async () => {
+    const { findByText } = renderListing();
+
+    const resourceWithoutGraph = find<Resource>(
+      propSatisfies(isNil, 'performance_graph_endpoint'),
+    )(entities);
+
+    act(() => {
+      context.setOpenDetailsTabId(graphTabId);
+    });
+
+    const resourceWithoutGraphNameColumn = await findByText(
+      resourceWithoutGraph?.name as string,
+    );
+
+    act(() => {
+      fireEvent.click(resourceWithoutGraphNameColumn);
+    });
+
+    await waitFor(() => {
+      expect(context.openDetailsTabId).toBe(detailsTabId);
+    });
+
+    const resourceWithoutShortcut = find<Resource>(
+      propSatisfies(isNil, 'configuration_uri'),
+    )(entities);
+
+    act(() => {
+      context.setOpenDetailsTabId(shortcutsTabId);
+    });
+
+    const resourceWithoutShortcutNameColumn = await findByText(
+      resourceWithoutShortcut?.name as string,
+    );
+
+    act(() => {
+      fireEvent.click(resourceWithoutShortcutNameColumn);
+    });
+
+    await waitFor(() => {
+      expect(context.openDetailsTabId).toBe(detailsTabId);
+    });
   });
 });
