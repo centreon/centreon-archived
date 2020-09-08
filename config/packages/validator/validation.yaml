@@ -130,7 +130,7 @@ Centreon\Domain\Monitoring\SubmitResult\SubmitResult:
             - Type:
                 type: int
                 groups: [Default, submit_result_host, submit_result_service]
-                NotNull: ~
+            - NotNull: ~
         resourceId:
             - Type:
                 type: int
