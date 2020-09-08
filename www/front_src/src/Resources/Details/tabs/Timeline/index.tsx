@@ -13,7 +13,20 @@ import {
   Typography,
   CircularProgress,
 } from '@material-ui/core';
-import { prop, isEmpty, cond, always, T } from 'ramda';
+import {
+  prop,
+  isEmpty,
+  cond,
+  always,
+  T,
+  isNil,
+  pipe,
+  equals,
+  sortWith,
+  descend,
+  concat,
+  uniqWith,
+} from 'ramda';
 
 import { ResourceLinks } from '../../../models';
 import { types } from './Event';
@@ -61,11 +74,12 @@ const useStyles = makeStyles((theme) => ({
 const TimelineTab = ({ links }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
+  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(10);
+  const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
 
   const { endpoints } = links;
   const { timeline: timelineEndpoint } = endpoints;
@@ -76,7 +90,9 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
     decoder: listTimelineEventsDecoder,
   });
 
-  const listTimeline = (): Promise<TimelineListing> => {
+  const listTimeline = (
+    { toPage } = { toPage: page },
+  ): Promise<TimelineListing> => {
     const getSearch = (): SearchParameter | undefined => {
       if (isEmpty(selectedTypes)) {
         return undefined;
@@ -95,42 +111,49 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page,
+        page: toPage,
         limit,
         search: getSearch(),
       },
     }).then((retrievedListing) => {
       const { meta } = retrievedListing;
       setTotal(meta.total);
+      setLoadingMoreEvents(false);
 
       return retrievedListing;
     });
   };
 
   React.useEffect(() => {
-    if (isEmpty(timeline)) {
+    if (isNil(timeline)) {
       return;
     }
 
     listTimeline().then(({ result }) => {
-      setTimeline(timeline.concat(result));
+      const updatedTimeline = pipe(
+        concat(result),
+        sortWith([descend(prop('date'))]),
+        uniqWith(equals),
+      )(timeline || []);
+
+      setTimeline(updatedTimeline as Array<TimelineEvent>);
     });
-  }, [page]);
+  }, [listing, page]);
 
   React.useEffect(() => {
     setPage(1);
-    setTimeline([]);
-    listTimeline().then(({ result }) => setTimeline(result));
-  }, [listing, endpoints, selectedTypes]);
-
-  const loading = sending;
-  const loadingMore = !isEmpty(timeline) && sending;
+    setTimeline(undefined);
+    listTimeline({ toPage: 1 }).then(({ result }) => {
+      setTimeline(result);
+    });
+  }, [endpoints, selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
     setSelectedTypes(typeIds);
   };
 
   const loadMoreEvents = (): void => {
+    setLoadingMoreEvents(true);
     setPage(page + 1);
   };
 
@@ -150,7 +173,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
       </Paper>
       <div className={classes.events}>
         {cond([
-          [always(loading), always(<LoadingSkeleton />)],
+          [always(isNil(timeline)), always(<LoadingSkeleton />)],
           [
             isEmpty,
             always(
@@ -165,7 +188,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
             T,
             always(
               <Events
-                timeline={timeline}
+                timeline={timeline as Array<TimelineEvent>}
                 total={total}
                 limit={limit}
                 page={page}
@@ -176,7 +199,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
           ],
         ])(timeline)}
       </div>
-      {loadingMore && <CircularProgress />}
+      {loadingMoreEvents && <CircularProgress />}
     </div>
   );
 };
