@@ -37,9 +37,9 @@
 class CentreonAuth
 {
     /**
-     * The default page has to be Events view
+     * The default page has to be Resources status
      */
-    public const DEFAULT_PAGE = 104;
+    public const DEFAULT_PAGE = 200;
     public const PWS_OCCULTATION = '******';
 
     // Declare Values

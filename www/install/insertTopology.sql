@@ -185,7 +185,7 @@ INSERT INTO `topology` (topology_name, topology_url, topology_parent, topology_p
 INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`) VALUES ('Manager', '/administration/extensions/manager', '1', '1', 507, 50709, 1);
 
 -- Add unified view page entry
-INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Events view (beta)', '/monitoring/events', '1', '1', 1, 104, 1, 2);
+INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`, `topology_order`) VALUES ('Resources Status', '/monitoring/resources', '1', '1', 2, 200, 1, 2);
 
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
