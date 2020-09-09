@@ -22,12 +22,33 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration\Interfaces;
 
+use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\ServiceConfiguration\HostTemplateService;
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 
-interface ServiceConfigurationServiceInterface
+interface ServiceConfigurationServiceInterface extends ContactFilterInterface
 {
+    /**
+     * Applies the services according to the host templates associated with the given host and their priorities.
+     *
+     * @param Host $host Host for which we want to apply the services
+     * @throws ServiceConfigurationException
+     * @throws \Throwable
+     */
+    public function applyServices(Host $host): void;
+
+    /**
+     * Find all service templates associated with the given host templates.
+     *
+     * @param int[] $hostTemplateIds Ids of the host templates for which we want to find the service templates
+     * @return HostTemplateService[]
+     * @throws ServiceConfigurationException
+     */
+    public function findHostTemplateServices(array $hostTemplateIds): array;
+
     /**
      * Find all service macros for the service.
      *
@@ -46,6 +67,15 @@ interface ServiceConfigurationServiceInterface
      * @throws ServiceConfigurationException
      */
     public function findService(int $serviceId): ?Service;
+
+    /**
+     * Find all services associated to host.
+     *
+     * @param Host $host Host for which we want to find services
+     * @return Service[]
+     * @throws ServiceConfigurationException
+     */
+    public function findServicesByHost(Host $host): array;
 
     /**
      * Find all on-demand service macros of type password needed for this command.
