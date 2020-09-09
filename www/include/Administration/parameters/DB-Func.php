@@ -39,7 +39,7 @@ function updateOption($pearDB, $key, $value)
      * Purge
      */
     $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
-    
+
     /*
      * Add
      */
@@ -295,7 +295,7 @@ function updateNagiosConfigData($gopt_id = null)
         'monitoring_svc_notification_3',
         isset($ret["monitoring_svc_notification_3"]) && $ret['monitoring_svc_notification_3'] ? 1 : 0
     );
-        
+
     $centreon->initOptGen($pearDB);
 }
 
@@ -402,7 +402,7 @@ function updateDebugConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "debug_path",
-        isset($ret["debug_path"]) && $ret["debug_path"] != null ? $ret["debug_path"]: "NULL"
+        isset($ret["debug_path"]) && $ret["debug_path"] != null ? $ret["debug_path"] : "NULL"
     );
     updateOption($pearDB, "debug_auth", isset($ret["debug_auth"]) && $ret['debug_auth'] ? 1 : 0);
     updateOption(
@@ -435,73 +435,73 @@ function updateLdapConfigData($gopt_id = null)
         $pearDB,
         "ldap_host",
         isset($ret["ldap_host"]) && $ret["ldap_host"] != null
-            ? htmlentities($ret["ldap_host"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_host"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_port",
         isset($ret["ldap_port"]) && $ret["ldap_port"] != null
-            ? htmlentities($ret["ldap_port"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_port"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_base_dn",
         isset($ret["ldap_base_dn"]) && $ret["ldap_base_dn"] != null
-            ? htmlentities($ret["ldap_base_dn"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_base_dn"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_login_attrib",
         isset($ret["ldap_login_attrib"]) && $ret["ldap_login_attrib"] != null
-            ? htmlentities($ret["ldap_login_attrib"], ENT_QUOTES, "UTF-8"): ""
+            ? htmlentities($ret["ldap_login_attrib"], ENT_QUOTES, "UTF-8") : ""
     );
     updateOption(
         $pearDB,
         "ldap_ssl",
         isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != null
-            ? htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_auth_enable",
         isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != null
-            ? htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_search_user",
         isset($ret["ldap_search_user"]) && $ret["ldap_search_user"] != null
-            ? htmlentities($ret["ldap_search_user"], ENT_QUOTES, "UTF-8"): ""
+            ? htmlentities($ret["ldap_search_user"], ENT_QUOTES, "UTF-8") : ""
     );
     updateOption(
         $pearDB,
         "ldap_search_user_pwd",
         isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != null
-            ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES, "UTF-8"): ""
+            ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES, "UTF-8") : ""
     );
     updateOption(
         $pearDB,
         "ldap_search_filter",
         isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != null
-            ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_search_timeout",
         isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != null
-            ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_search_limit",
         isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != null
-            ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_protocol_version",
         isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != null
-            ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES, "UTF-8") : "NULL"
     );
 
     $centreon->initOptGen($pearDB);
@@ -820,13 +820,13 @@ function updateRRDToolConfigData($gopt_id = null)
 function updatePartitioningConfigData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    
+
     foreach ($ret as $key => $value) {
         if (preg_match('/^partitioning_/', $key)) {
             updateOption($db, $key, $value);
         }
     }
-    
+
     $centreon->initOptGen($db);
 }
 
@@ -860,7 +860,7 @@ function updateODSConfigData()
     if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/") {
         $ret["RRDdatabase_path"] .= "/";
     }
-    
+
     if (!isset($ret["len_storage_downtimes"])) {
         $ret["len_storage_downtimes"] = 0;
     }
@@ -893,7 +893,7 @@ function updateODSConfigData()
         $pearDB,
         "centstorage",
         isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != null
-            ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8") : "0"
     );
     updateOption($pearDB, "centstorage_auto_drop", isset($ret['centstorage_auto_drop']) ? '1' : '0');
     updateOption(
@@ -989,7 +989,7 @@ function updateKnowledgeBaseData($db, $form, $centreon)
 
     foreach ($ret as $key => $value) {
         if (preg_match('/^kb_/', $key)) {
-                updateOption($db, $key, $value);
+            updateOption($db, $key, $value);
         }
     }
 
