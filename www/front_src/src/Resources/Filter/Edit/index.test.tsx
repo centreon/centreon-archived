@@ -73,7 +73,7 @@ const retrievedCustomFilters = {
       {
         name: 'search',
         type: 'text',
-        value: undefined,
+        value: '',
       },
     ],
   })),

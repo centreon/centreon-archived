@@ -20,40 +20,24 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Model;
+namespace Centreon\Domain\AccessControlList\Interfaces;
 
-use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Security\AccessGroup;
 
-/**
- * The model enrich the Host model
- */
-class ResourceDetailsHost extends Host
+interface AccessControlListRepositoryInterface
 {
-    use ResourceDetailsTrait;
-
-    public const SERIALIZER_GROUP_DETAILS = 'resource_details_host';
+    /**
+     * @param ContactInterface $contact
+     * @return $this
+     */
+    public function setContact(ContactInterface $contact);
 
     /**
-     * @var string|null
+     * Sets the access groups that will be used to filter services and the host.
+     *
+     * @param AccessGroup[] $accessGroups
+     * @return $this
      */
-    private $pollerName;
-
-    /**
-     * @return string|null
-     */
-    public function getPollerName(): ?string
-    {
-        return $this->pollerName;
-    }
-
-    /**
-     * @param string|null $pollerName
-     * @return self
-     */
-    public function setPollerName(?string $pollerName): self
-    {
-        $this->pollerName = $pollerName;
-
-        return $this;
-    }
+    public function filterByAccessGroups(array $accessGroups);
 }

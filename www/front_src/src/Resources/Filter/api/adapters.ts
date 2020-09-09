@@ -82,7 +82,7 @@ const useAdapters = (): Adapters => {
         },
         {
           name: 'search',
-          value: criterias.search,
+          value: criterias.search || '',
           type: 'text',
         },
       ],

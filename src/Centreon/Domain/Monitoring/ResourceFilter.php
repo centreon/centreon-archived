@@ -107,6 +107,16 @@ class ResourceFilter
     private $servicegroupIds = [];
 
     /**
+     * @var int[]
+     */
+    private $hostIds = [];
+
+    /**
+     * @var int[]
+     */
+    private $serviceIds = [];
+
+    /**
      * Transform result by map
      *
      * @param array $list
@@ -246,6 +256,44 @@ class ResourceFilter
     public function setServicegroupIds(array $servicegroupIds): self
     {
         $this->servicegroupIds = $servicegroupIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getHostIds(): array
+    {
+        return $this->hostIds;
+    }
+
+    /**
+     * @param int[] $hostIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setHostIds(array $hostIds): self
+    {
+        $this->hostIds = $hostIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getServiceIds(): array
+    {
+        return $this->serviceIds;
+    }
+
+    /**
+     * @param int[] $serviceIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setServiceIds(array $serviceIds): self
+    {
+        $this->serviceIds = $serviceIds;
 
         return $this;
     }

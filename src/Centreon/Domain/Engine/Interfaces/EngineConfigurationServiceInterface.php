@@ -20,16 +20,18 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Model;
+namespace Centreon\Domain\Engine\Interfaces;
 
-use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\HostConfiguration\Host;
 
-/**
- * The model enrich the Service model
- */
-class ResourceDetailsService extends Service
+interface EngineConfigurationServiceInterface
 {
-    use ResourceDetailsTrait;
-
-    public const SERIALIZER_GROUP_DETAILS = 'resource_details_service';
+    /**
+     * Find the Engine configuration associated to a host.
+     *
+     * @param Host $host Host for which we want to find the Engine configuration
+     * @return EngineConfiguration|null
+     */
+    public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration;
 }

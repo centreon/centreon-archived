@@ -13,7 +13,6 @@ import {
 import GraphTab from './Graph';
 import { ResourceDetails } from '../models';
 import TimelineTab from './Timeline';
-import { ResourceLinks } from '../../models';
 import ShortcutsTab from './Shortcuts';
 import hasDefinedValues from '../../hasDefinedValues';
 

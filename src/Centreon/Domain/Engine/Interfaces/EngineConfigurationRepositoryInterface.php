@@ -20,26 +20,18 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Model;
+namespace Centreon\Domain\Engine\Interfaces;
 
-/**
- * Trait with import method for loading of source object properties
- */
-trait ImportTrait
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\HostConfiguration\Host;
+
+interface EngineConfigurationRepositoryInterface
 {
-
     /**
-     * Import the source object to load the model with data
+     * Find the Engine configuration associated to a host.
      *
-     * @param self $model
-     * @return self
+     * @param Host $host Host for which we want to find the Engine configuration
+     * @return EngineConfiguration|null
      */
-    public function import(self $model): self
-    {
-        foreach (get_object_vars($model) as $key => $value) {
-            $this->$key = $value;
-        }
-
-        return $this;
-    }
+    public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration;
 }

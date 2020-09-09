@@ -50,6 +50,7 @@ import {
   labelViewReport,
   labelHost,
   labelShortcuts,
+  labelService,
 } from '../translatedLabels';
 import {
   detailsTabId,
@@ -64,7 +65,7 @@ import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
-import { ResourceListing } from '../models';
+import { ResourceListing, ResourceUris } from '../models';
 import { getTypeIds } from './tabs/Timeline/Event';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -76,8 +77,8 @@ const performanceGraphEndpoint = '/performance';
 const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
-  display_name: 'Central',
-  severity: { level: 1 },
+  name: 'Central',
+  severity: { name: 'severity_1', level: 10 },
   status: { name: 'Critical', severity_code: 1 },
   parent: {
     name: 'Centreon',
@@ -95,12 +96,11 @@ const retrievedDetails = {
   checked: true,
   execution_time: 0.070906,
   last_check: '2020-05-18T18:00',
-  last_state_change: '2020-04-18T17:00',
+  last_status_change: '2020-04-18T17:00',
   last_update: '2020-03-18T19:30',
-  output:
+  information:
     'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
   timezone: 'Europe/Paris',
-  criticality: 10,
   active_checks: true,
   command_line: 'base_host_alive',
   last_notification: '2020-07-18T19:30',
@@ -230,9 +230,10 @@ let context: ResourceContext;
 
 interface Props {
   defaultTabId: TabId;
+  uris: { resource: ResourceUris; parent: ResourceUris };
 }
 
-const DetailsTest = ({ defaultTabId }: Props): JSX.Element => {
+const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
   const listingState = useListing();
   const detailState = useDetails();
 

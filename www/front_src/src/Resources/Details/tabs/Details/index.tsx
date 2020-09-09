@@ -101,7 +101,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
     <div className={classes.details}>
       <ExpandableCard
         title={labelStatusInformation}
-        content={details.output}
+        content={details.information}
         severityCode={details.status.severity_code}
       />
       {details.downtimes?.map(({ start_time, end_time, comment }) => (

@@ -1,6 +1,6 @@
 <h1> Centreon - IT and Application monitoring software </h1>
 
-[![stable version](https://img.shields.io/github/release/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/releases/latest) &nbsp;[![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)](https://raw.githubusercontent.com/centreon/centreon/master/LICENSE) &nbsp;[![Centreon bug tracker](https://img.shields.io/github/issues/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/issues) &nbsp;[![Official documentation](https://img.shields.io/badge/official-documentation-orange.svg)](https://documentation.centreon.com/docs/centreon/en/latest/) &nbsp;[![Official Slack](https://img.shields.io/badge/official-slack-orange.svg)](https://centreon.github.io/register-slack) &nbsp;[![Official website](https://img.shields.io/badge/official-website-orange.svg)](https://www.centreon.com/en/) &nbsp;[![Official Download](https://img.shields.io/badge/official-download-orange.svg)](https://download.centreon.com/) &nbsp;
+[![stable version](https://img.shields.io/github/release/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/releases/latest) &nbsp;[![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)](https://raw.githubusercontent.com/centreon/centreon/master/LICENSE) &nbsp;[![Centreon bug tracker](https://img.shields.io/github/issues/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/issues) &nbsp;[![Official documentation](https://img.shields.io/badge/official-documentation-orange.svg)](https://docs.centreon.com/) &nbsp;[![Official Slack](https://img.shields.io/badge/official-slack-orange.svg)](https://centreon.github.io/register-slack) &nbsp;[![Official website](https://img.shields.io/badge/official-website-orange.svg)](https://www.centreon.com/en/) &nbsp;[![Official Download](https://img.shields.io/badge/official-download-orange.svg)](https://download.centreon.com/) &nbsp;
 
 [![Centreon Twitter](https://img.shields.io/twitter/follow/centreon.svg?style=social)](https://twitter.com/centreon) &nbsp;[![Centreon Labs Twitter](https://img.shields.io/twitter/follow/centreonlabs.svg?style=social)](https://twitter.com/centreonlabs) &nbsp;
 
@@ -15,10 +15,10 @@ on the market; it is absolutely free and Open Souce.
 
 *Centreon software* can be set up
 
-* Using the [**sources**](https://documentation.centreon.com/docs/centreon/en/latest/installation/from_sources.html#using-sources)
-* Using the [**packages**](https://documentation.centreon.com/docs/centreon/en/latest/installation/from_packages.html#using-packages)
-* Using the [**ISO**](https://documentation.centreon.com/docs/centreon/en/latest/installation/from_iso.html)
-* Using the [**VM**](https://documentation.centreon.com/docs/centreon/en/latest/installation/from_VM.html) (tutorial available on [Youtube](https://www.youtube.com/watch?v=rnq9QnljaQE))
+* Using the [**sources**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-sources.html)
+* Using the [**packages**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-packages.html)
+* Using the [**ISO**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html)
+* Using the [**VM**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-virtual-machines.html) (tutorial available on [Youtube](https://www.youtube.com/watch?v=rnq9QnljaQE))
 
 <h3> Authors </h3>
 

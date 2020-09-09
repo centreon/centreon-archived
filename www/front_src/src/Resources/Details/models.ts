@@ -4,23 +4,26 @@ import {
   Downtime,
   Parent,
   ResourceLinks,
+  Severity,
 } from '../models';
 
 export interface ResourceDetails {
-  display_name: string;
+  name: string;
   status: Status;
   parent: Parent;
   links: ResourceLinks;
   criticality: number;
   output: string;
+  severity: Severity;
+  information: string;
   downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;
-  is_acknowledged: boolean;
+  acknowledged: boolean;
   duration: string;
   tries: string;
   poller_name?: string;
   timezone?: string;
-  last_state_change: string;
+  last_status_change: string;
   last_check: string;
   next_check: string;
   active_checks: boolean;

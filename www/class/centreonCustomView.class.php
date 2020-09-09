@@ -1044,27 +1044,60 @@ class CentreonCustomView
     }
 
     /**
-     * @param $viewId
+     * @param int $viewId
      * @return array
      * @throws Exception
      */
-    public function getUsersFromViewId($viewId)
+    public function getUsersFromViewId(int $viewId): array
     {
         static $userList;
+        global $centreon;
 
         if (!isset($userList)) {
-            $userList = array();
-            $query = 'SELECT contact_name, user_id, locked ' .
-                'FROM contact c, custom_view_user_relation cvur ' .
-                'WHERE c.contact_id = cvur.user_id ' .
-                'AND cvur.custom_view_id = :viewId ' .
-                'AND cvur.is_share = 1 ' .
-                'ORDER BY contact_name';
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+            /**
+             * Get user's ACL
+             */
+            $aclListOfContactIds = $centreon->user->access->getContactAclConf(
+                [
+                    'fields' => [
+                        'contact_id'
+                    ],
+                    'keys' => ['contact_id'],
+                    'order' => ['contact_id']
+                ]
+            );
+
+            $allowedContactIds = '';
+            foreach (array_keys($aclListOfContactIds) as $contactId) {
+                // result concatenation
+                if (false !== filter_var($contactId, FILTER_VALIDATE_INT)) {
+                    if ('' !== $allowedContactIds) {
+                        $allowedContactIds .= ', ';
+                    }
+                    $allowedContactIds .= $contactId;
+                }
+            }
+
+            /**
+             * Find users linked to the view
+             */
+            $userList = [];
+            if (empty($allowedContactIds)) {
+                return $userList;
+            }
+            $stmt = $this->db->prepare(
+                'SELECT `contact_name`, `user_id`, `locked`
+                FROM contact c
+                INNER JOIN custom_view_user_relation cvur ON cvur.user_id = c.contact_id
+                WHERE cvur.custom_view_id = :viewId
+                AND cvur.is_share = 1
+                AND c.contact_id IN (' . $allowedContactIds . ')
+                ORDER BY contact_name'
+            );
+            $stmt->bindValue(':viewId', $viewId, \PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
-                throw new \Exception("An error occured");
+                throw new \Exception(_("An error occurred while retrieving users linked to ViewId on database"));
             }
             while ($row = $stmt->fetch()) {
                 $userList[$row['user_id']]['contact_name'] = $row['contact_name'];
@@ -1076,30 +1109,62 @@ class CentreonCustomView
     }
 
     /**
-     * @param $viewId
+     * @param int $viewId
      * @return array
      * @throws Exception
      */
-    public function getUsergroupsFromViewId($viewId)
+    public function getUsergroupsFromViewId(int $viewId): array
     {
         static $usergroupList;
+        global $centreon;
 
         if (!isset($usergroupList)) {
-            $usergroupList = array();
-            $query = 'SELECT cg_name, usergroup_id, locked ' .
-                'FROM contactgroup cg, custom_view_user_relation cvur ' .
-                'WHERE cg.cg_id = cvur.usergroup_id ' .
-                'AND cvur.custom_view_id = :viewId ' .
-                'AND cvur.is_share = 1 ' .
-                ' ORDER BY cg_name';
+            /**
+             * Get user's ACL
+             */
+            $aclListOfGroupIds = $centreon->user->access->getContactGroupAclConf(
+                [
+                    'fields' => [
+                        'cg_id'
+                    ],
+                    'keys' => ['cg_id'],
+                    'order' => ['cg_id']
+                ]
+            );
 
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
-            $dbResult = $stmt->execute();
-            if (!$dbResult) {
-                throw new \Exception("An error occured");
+            $allowedGroupIds = '';
+            foreach (array_keys($aclListOfGroupIds) as $groupId) {
+                // result's concatenation
+                if (false !== filter_var($groupId, FILTER_VALIDATE_INT)) {
+                    if ('' !== $allowedGroupIds) {
+                        $allowedGroupIds .= ', ';
+                    }
+                    $allowedGroupIds .= $groupId;
+                }
             }
 
+            /**
+             * Find groups linked to the view
+             */
+            $usergroupList = [];
+            if (empty($allowedGroupIds)) {
+                return $usergroupList;
+            }
+
+            $stmt = $this->db->prepare(
+                'SELECT `cg_name`, `usergroup_id`, `locked`
+                FROM contactgroup cg
+                INNER JOIN custom_view_user_relation cvur ON cvur.usergroup_id = cg.cg_id
+                WHERE cvur.custom_view_id = :viewId
+                AND cvur.is_share = 1
+                AND cg.cg_id IN (' . $allowedGroupIds . ')
+                ORDER BY cg_name'
+            );
+            $stmt->bindValue(':viewId', $viewId, \PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception(_("An error occurred while retrieving groups linked to ViewId on database"));
+            }
             while ($row = $stmt->fetch()) {
                 $usergroupList[$row['usergroup_id']]['cg_name'] = $row['cg_name'];
                 $usergroupList[$row['usergroup_id']]['usergroup_id'] = $row['usergroup_id'];
