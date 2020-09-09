@@ -15530,6 +15530,9 @@ msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configu
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
 
+msgid "You are not authorized to access this resource"
+msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
+
 msgid "Shortcuts"
 msgstr "Raccourcis"
 
