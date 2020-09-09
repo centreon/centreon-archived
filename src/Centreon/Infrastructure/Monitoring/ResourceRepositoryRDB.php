@@ -207,7 +207,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.command_line, resource.timezone, '
-            . 'resource.parent_id, resource.parent_name, ' // parent
+            . 'resource.parent_id, resource.parent_name, resource.parent_type, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
@@ -416,6 +416,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             NULL AS `timezone`,
             sh.host_id AS `parent_id`,
             sh.name AS `parent_name`,
+            'host' AS `parent_type`,
             sh.icon_image_alt AS `parent_icon_name`,
             sh.icon_image AS `parent_icon_url`,
             sh.state AS `parent_status_code`,
@@ -613,6 +614,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.timezone AS `timezone`,
             NULL AS `parent_id`,
             NULL AS `parent_name`,
+            NULL AS `parent_type`,
             NULL AS `parent_icon_name`,
             NULL AS `parent_icon_url`,
             NULL AS `parent_status_code`,

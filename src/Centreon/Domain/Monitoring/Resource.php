@@ -38,9 +38,10 @@ use CentreonDuration;
  */
 class Resource
 {
-    // Groups for serializing
+    // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
+    public const SERIALIZER_GROUP_DETAILS = 'resource_details';
 
     // Groups for validation
     public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];
@@ -220,22 +221,6 @@ class Resource
     public function __construct()
     {
         $this->links = new ResourceLinks();
-    }
-
-    /**
-     * Get prepared list of groups for the context
-     *
-     * @return array
-     */
-    public static function contextGroupsForListing(): array
-    {
-        return [
-            static::SERIALIZER_GROUP_MAIN,
-            static::SERIALIZER_GROUP_PARENT,
-            Icon::SERIALIZER_GROUP_MAIN,
-            ResourceStatus::SERIALIZER_GROUP_MAIN,
-            ResourceSeverity::SERIALIZER_GROUP_MAIN,
-        ];
     }
 
     /**

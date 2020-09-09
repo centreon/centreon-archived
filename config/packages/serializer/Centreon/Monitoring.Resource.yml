@@ -24,17 +24,18 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details_service'
+                - 'resource_details'
         type:
             type: string
             groups:
                 - 'resource_main'
+                - 'resource_parent'
         name:
             type: string
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details_service'
+                - 'resource_details'
         icon:
             type: Centreon\Domain\Monitoring\Icon
             groups:
@@ -43,7 +44,7 @@ Centreon\Domain\Monitoring\Resource:
         commandLine:
             type: string
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         timezone:
             type: string
             access_type: public_method
@@ -51,7 +52,7 @@ Centreon\Domain\Monitoring\Resource:
               getter: getSanitizedTimezone
               setter: setTimezone
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         parent:
             type: Centreon\Domain\Monitoring\Resource
             groups:
@@ -61,7 +62,7 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-                - 'resource_details_service'
+                - 'resource_details'
         flapping:
             type: bool
             groups:
@@ -69,15 +70,15 @@ Centreon\Domain\Monitoring\Resource:
         percentStateChange:
             type: double
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         lastCheck:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         nextCheck:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         inDowntime:
             type: bool
             groups:
@@ -118,11 +119,11 @@ Centreon\Domain\Monitoring\Resource:
         lastNotification:
             type: DateTime
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         notificationNumber:
             type: int
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         tries:
             type: string
             groups:
@@ -138,16 +139,16 @@ Centreon\Domain\Monitoring\Resource:
         executionTime:
             type: double
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         latency:
             type: double
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         downtimes:
             type: array<Centreon\Domain\Downtime\Downtime>
             groups:
-                - 'resource_details_service'
+                - 'resource_details'
         acknowledgement:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
             groups:
-                - 'resource_details_service'
+                - 'resource_details'

@@ -39,6 +39,8 @@ use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Domain\Monitoring\ResourceSeverity;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
@@ -84,8 +86,13 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getServiceStatusMetrics';
     private const SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getServicePerformanceMetrics';
 
-    // Groups for serialization
-    public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
+    public const SERIALIZER_GROUPS_LISTING = [
+        ResourceEntity::SERIALIZER_GROUP_MAIN,
+        ResourceEntity::SERIALIZER_GROUP_PARENT,
+        Icon::SERIALIZER_GROUP_MAIN,
+        ResourceStatus::SERIALIZER_GROUP_MAIN,
+        ResourceSeverity::SERIALIZER_GROUP_MAIN,
+    ];
 
     // Groups for validation
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
@@ -187,7 +194,7 @@ class MonitoringResourceController extends AbstractController
         );
 
         $context = (new Context())
-            ->setGroups(ResourceEntity::contextGroupsForListing())
+            ->setGroups(static::SERIALIZER_GROUPS_LISTING)
             ->enableMaxDepth();
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
@@ -253,11 +260,13 @@ class MonitoringResourceController extends AbstractController
 
         $context = (new Context())
             ->setGroups(array_merge(
-                ResourceEntity::contextGroupsForListing(),
-                ['resource_details_service', Acknowledgement::SERIALIZER_GROUP_FULL],
+                static::SERIALIZER_GROUPS_LISTING,
+                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
                 Downtime::SERIALIZER_GROUPS_SERVICE
             ))
             ->enableMaxDepth();
+
+        $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
         return $this
             ->view($resource)
@@ -317,11 +326,13 @@ class MonitoringResourceController extends AbstractController
 
         $context = (new Context())
             ->setGroups(array_merge(
-                ResourceEntity::contextGroupsForListing(),
-                ['resource_details_service', Acknowledgement::SERIALIZER_GROUP_FULL],
+                static::SERIALIZER_GROUPS_LISTING,
+                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
                 Downtime::SERIALIZER_GROUPS_SERVICE
             ))
             ->enableMaxDepth();
+
+        $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
         return $this
             ->view($resource)
