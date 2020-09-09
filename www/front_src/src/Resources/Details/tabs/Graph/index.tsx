@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { pick, map } from 'ramda';
+import { pick, map, path, isNil } from 'ramda';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
@@ -52,8 +52,7 @@ const defaultTimePeriod = last24hPeriod;
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
 
-  const { endpoints } = details.links;
-  const { performanceGraph: performanceGraphEndpoint } = endpoints;
+  const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
 
   const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<
     TimePeriod
@@ -80,6 +79,14 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     setPeriodQueryParams(queryParamsForSelectedPeriodId);
   };
 
+  const getEndpoint = (): string | undefined => {
+    if (isNil(endpoint)) {
+      return undefined;
+    }
+
+    return `${endpoint}${periodQueryParams}`;
+  };
+
   return (
     <div className={classes.container}>
       <Paper className={classes.header}>
@@ -93,7 +100,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
       <Paper className={classes.graphContainer}>
         <div className={`${classes.graph} ${classes.performance}`}>
           <PerformanceGraph
-            endpoint={`${performanceGraphEndpoint}${periodQueryParams}`}
+            endpoint={getEndpoint()}
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.timeFormat}
             toggableLegend

@@ -17,6 +17,7 @@ import {
   reject,
   sortBy,
   isEmpty,
+  isNil,
 } from 'ramda';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
@@ -36,7 +37,7 @@ import formatMetricValue from './formatMetricValue';
 const fontFamily = 'Roboto, sans-serif';
 
 interface Props {
-  endpoint: string;
+  endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
@@ -96,7 +97,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  if (sending) {
+  if (sending || isNil(endpoint)) {
     return <LoadingSkeleton />;
   }
 
