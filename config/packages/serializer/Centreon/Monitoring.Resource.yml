@@ -18,6 +18,7 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_main'
+                - 'resource_parent'
     properties:
         id:
             type: int
