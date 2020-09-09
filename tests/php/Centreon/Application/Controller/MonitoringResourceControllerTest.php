@@ -29,7 +29,6 @@ use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Application\Controller\MonitoringResourceController;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -173,7 +172,7 @@ class MonitoringResourceControllerTest extends TestCase
         );
 
         $context = (new Context())
-            ->setGroups(ResourceEntity::contextGroupsForListing())
+            ->setGroups(MonitoringResourceController::SERIALIZER_GROUPS_LISTING)
             ->enableMaxDepth();
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
 
