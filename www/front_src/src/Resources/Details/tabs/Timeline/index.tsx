@@ -1,18 +1,21 @@
 import * as React from 'react';
 
 import {
+  makeStyles,
+  Paper,
+  Typography,
+  CircularProgress,
+  Button,
+} from '@material-ui/core';
+import IconRefresh from '@material-ui/icons/Refresh';
+
+import {
   useRequest,
   ListingModel,
   MultiAutocompleteField,
   SearchParameter,
 } from '@centreon/ui';
 
-import {
-  makeStyles,
-  Paper,
-  Typography,
-  CircularProgress,
-} from '@material-ui/core';
 import { prop, isEmpty, cond, always, T, isNil, concat } from 'ramda';
 
 import { ResourceLinks } from '../../../models';
@@ -20,7 +23,11 @@ import { types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
-import { labelEvent, labelNoResultsFound } from '../../../translatedLabels';
+import {
+  labelEvent,
+  labelNoResultsFound,
+  labelRefresh,
+} from '../../../translatedLabels';
 import { useResourceContext } from '../../../Context';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
@@ -92,11 +99,15 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
     };
   };
 
-  const listTimeline = (): Promise<TimelineListing> => {
+  const listTimeline = (
+    { atPage } = {
+      atPage: page,
+    },
+  ): Promise<TimelineListing> => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page,
+        page: atPage,
         limit,
         search: getSearch(),
       },
@@ -132,12 +143,16 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
     });
   }, [page]);
 
-  React.useEffect(() => {
+  const reload = (): void => {
     setPage(1);
     setTimeline(undefined);
-    listTimeline().then(({ result }) => {
+    listTimeline({ atPage: 1 }).then(({ result }) => {
       setTimeline(result);
     });
+  };
+
+  React.useEffect(() => {
+    reload();
   }, [endpoints, selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
@@ -179,14 +194,27 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
           [
             T,
             always(
-              <Events
-                timeline={timeline as Array<TimelineEvent>}
-                total={total}
-                limit={limit}
-                page={page}
-                loading={sending}
-                onLoadMore={loadMoreEvents}
-              />,
+              <>
+                {page > 1 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    startIcon={<IconRefresh />}
+                    onClick={reload}
+                  >
+                    {labelRefresh}
+                  </Button>
+                )}
+                <Events
+                  timeline={timeline as Array<TimelineEvent>}
+                  total={total}
+                  limit={limit}
+                  page={page}
+                  loading={sending}
+                  onLoadMore={loadMoreEvents}
+                />
+              </>,
             ),
           ],
         ])(timeline)}
