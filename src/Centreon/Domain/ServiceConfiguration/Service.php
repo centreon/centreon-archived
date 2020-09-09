@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration;
 
+use Centreon\Domain\Annotation\EntityDescriptor;
+
 /**
  * This class is designed to represent a service configuration.
  *
@@ -46,9 +48,9 @@ class Service
     private $templateId;
 
     /**
-     * @var string|null Service Name
+     * @var int|null
      */
-    private $name;
+    private $commandId;
 
     /**
      * @var string|null Service alias
@@ -66,7 +68,7 @@ class Service
     private $isLocked;
 
     /**
-     * @var int
+     * @var int Service type
      * @see Service::TYPE_TEMPLATE          (0)
      * @see Service::TYPE_SERVICE           (1)
      * @see Service::TYPE_META_SERVICE      (2)
@@ -77,14 +79,21 @@ class Service
 
     /**
      * @var bool Indicates whether or not this service is activated
+     * @EntityDescriptor(column="is_activated", modifier="setActivated")
      */
     private $isActivated;
+
+    /**
+     * @var ExtendedService
+     */
+    private $extendedService;
 
     public function __construct()
     {
         $this->isLocked = false;
         $this->serviceType = self::TYPE_SERVICE;
         $this->isActivated = true;
+        $this->extendedService = new ExtendedService();
     }
 
     /**
@@ -124,20 +133,20 @@ class Service
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getName(): ?string
+    public function getCommandId(): ?int
     {
-        return $this->name;
+        return $this->commandId;
     }
 
     /**
-     * @param string|null $name
+     * @param int|null $commandId
      * @return Service
      */
-    public function setName(?string $name): Service
+    public function setCommandId(?int $commandId): Service
     {
-        $this->name = $name;
+        $this->commandId = $commandId;
         return $this;
     }
 
@@ -240,6 +249,24 @@ class Service
             throw new \InvalidArgumentException('This service type is not recognized');
         }
         $this->serviceType = $serviceType;
+        return $this;
+    }
+
+    /**
+     * @return ExtendedService
+     */
+    public function getExtendedService(): ExtendedService
+    {
+        return $this->extendedService;
+    }
+
+    /**
+     * @param ExtendedService $extendedService
+     * @return Service
+     */
+    public function setExtendedService(ExtendedService $extendedService): Service
+    {
+        $this->extendedService = $extendedService;
         return $this;
     }
 }
