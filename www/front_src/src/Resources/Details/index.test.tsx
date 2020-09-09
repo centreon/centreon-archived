@@ -67,7 +67,7 @@ const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
   name: 'Central',
-  severity: { name: 'severity_1', level: 50 },
+  severity: { name: 'severity_1', level: 10 },
   status: { name: 'Critical', severity_code: 1 },
   parent: { name: 'Centreon', status: { severity_code: 1 } },
   poller_name: 'Poller',
