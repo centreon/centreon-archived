@@ -115,13 +115,16 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
         limit,
         search: getSearch(),
       },
-    }).then((retrievedListing) => {
-      const { meta } = retrievedListing;
-      setTotal(meta.total);
-      setLoadingMoreEvents(false);
+    })
+      .then((retrievedListing) => {
+        const { meta } = retrievedListing;
+        setTotal(meta.total);
 
-      return retrievedListing;
-    });
+        return retrievedListing;
+      })
+      .finally(() => {
+        setLoadingMoreEvents(false);
+      });
   };
 
   React.useEffect(() => {
