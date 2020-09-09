@@ -8861,6 +8861,14 @@ msgstr "Optimisation"
 msgid "Admin"
 msgstr "Administrateur"
 
+#: centreon-web/www/include/configuration/configObject/contact/formContact.php:320
+msgid "Reach API Configuration"
+msgstr "Accès à l'API de configuration"
+
+#: centreon-web/www/include/configuration/configObject/contact/formContact.php:325
+msgid "Reach API Realtime"
+msgstr "Accès à l'API de temps réel"
+
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:870
 msgid "Folders"
 msgstr "Répertoires"
