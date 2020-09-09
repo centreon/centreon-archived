@@ -52,9 +52,9 @@ $elementId = filter_input(
     INPUT_POST,
     'elementId',
     FILTER_VALIDATE_REGEXP,
-    [
-        'options' => ['regexp' => '/^title_\d+$/']
-    ]
+    array(
+        'options' => array('regexp' => '/^title_\d+$/')
+    )
 );
 
 if ($elementId === null) {
