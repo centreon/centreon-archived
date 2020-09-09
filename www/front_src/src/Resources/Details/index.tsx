@@ -1,15 +1,6 @@
 import * as React from 'react';
 
-import {
-  isNil,
-  isEmpty,
-  pipe,
-  not,
-  defaultTo,
-  propEq,
-  findIndex,
-  prop,
-} from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 
@@ -18,9 +9,8 @@ import { Tab, useTheme, fade } from '@material-ui/core';
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { useResourceContext } from '../Context';
-import { TabById, getVisibleTabs, TabId, detailsTabId } from './tabs';
+import { TabById, TabId, detailsTabId, tabs } from './tabs';
 import { rowColorConditions } from '../colors';
-import { ResourceLinks } from '../models';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
@@ -43,8 +33,6 @@ const Details = (): JSX.Element | null => {
     request: getData,
   });
 
-  const visibleTabs = getVisibleTabs(details);
-
   React.useEffect(() => {
     if (details !== undefined) {
       setDetails(undefined);
@@ -54,11 +42,11 @@ const Details = (): JSX.Element | null => {
       (retrievedDetails) => {
         setDetails(retrievedDetails);
 
-        const isOpenTabVisible = getVisibleTabs(details)
-          .map(prop('id'))
-          .includes(openDetailsTabId);
+        const isOpenTabActive = tabs
+          .find(propEq('id', openDetailsTabId))
+          ?.getIsActive(retrievedDetails);
 
-        if (!isOpenTabVisible) {
+        if (!isOpenTabActive) {
           setOpenDetailsTabId(detailsTabId);
         }
       },
@@ -66,7 +54,7 @@ const Details = (): JSX.Element | null => {
   }, [selectedResourceId, listing]);
 
   const getTabIndex = (tabId: TabId): number => {
-    return findIndex(propEq('id', tabId), visibleTabs);
+    return findIndex(propEq('id', tabId), tabs);
   };
 
   const changeSelectedTabId = (tabId: TabId) => (): void => {
@@ -96,12 +84,12 @@ const Details = (): JSX.Element | null => {
       onClose={clearSelectedResource}
       header={<Header details={details} />}
       headerBackgroundColor={getHeaderBackgroundColor()}
-      tabs={visibleTabs.map(({ id, title }) => (
+      tabs={tabs.map(({ id, title, getIsActive }) => (
         <Tab
           style={{ minWidth: 'unset' }}
           key={id}
           label={title}
-          disabled={isNil(details)}
+          disabled={isNil(details) || !getIsActive(details)}
           onClick={changeSelectedTabId(id)}
         />
       ))}

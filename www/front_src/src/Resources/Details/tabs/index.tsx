@@ -32,7 +32,7 @@ interface Tab {
   id: TabId;
   Component: (props: TabProps) => JSX.Element;
   title: string;
-  getIsVisible: (details) => boolean;
+  getIsActive: (details) => boolean;
 }
 
 const tabs: Array<Tab> = [
@@ -40,19 +40,19 @@ const tabs: Array<Tab> = [
     id: detailsTabId,
     Component: DetailsTab,
     title: labelDetails,
-    getIsVisible: (): boolean => true,
+    getIsActive: (): boolean => true,
   },
   {
     id: timelineTabId,
     Component: TimelineTab,
     title: labelTimeline,
-    getIsVisible: (): boolean => true,
+    getIsActive: (): boolean => true,
   },
   {
     id: graphTabId,
     Component: GraphTab,
     title: labelGraph,
-    getIsVisible: (details: ResourceDetails): boolean => {
+    getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
       }
@@ -66,7 +66,7 @@ const tabs: Array<Tab> = [
     id: shortcutsTabId,
     Component: ShortcutsTab,
     title: labelShortcuts,
-    getIsVisible: (details: ResourceDetails): boolean => {
+    getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
       }
@@ -78,10 +78,6 @@ const tabs: Array<Tab> = [
     },
   },
 ];
-
-const getVisibleTabs = (details: ResourceDetails | undefined): Array<Tab> => {
-  return tabs.filter(({ getIsVisible }) => getIsVisible(details));
-};
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -128,7 +124,6 @@ export {
   shortcutsTabId,
   tabs,
   TabById,
-  getVisibleTabs,
   getTabIdFromLabel,
   getTabLabelFromId,
 };
