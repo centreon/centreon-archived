@@ -54,7 +54,7 @@ try {
     $errorMessage = "Unable to read the 'informations' table.";
     $result = $pearDB->query("
         SELECT count(*) as `count` FROM `informations`
-        WHERE (`key` = 'isRemote' AND `value` = 'no') OR (`key` = 'isCentral' AND `value` = 'No')
+        WHERE (`key` = 'isRemote' AND `value` = 'no') OR (`key` = 'isCentral' AND `value` = 'no')
     ");
     $row = $result->fetch();
     if (2 === (int)$row['count']) {
