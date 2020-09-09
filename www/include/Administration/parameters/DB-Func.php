@@ -1001,21 +1001,20 @@ function updateKnowledgeBaseData($db, $form, $centreon)
  *
  * @param $db : database connection
  * @param $form : form data
- * @param $centreon : centreon instance
  */
-function updateRemoteAccessCredentials($db, $form, $centreon)
+function updateRemoteAccessCredentials($db, $form)
 {
     $ret = $form->getSubmitValues();
     updateInformations(
         $db,
         'apiUsername',
-        $ret['apiUsername'] ?? ''
+        $ret['apiUsername']
     );
     if (CentreonAuth::PWS_OCCULTATION !== $ret['apiCredentials']) {
         updateInformations(
             $db,
             'apiCredentials',
-            $ret['apiCredentials'] ?? ''
+            $ret['apiCredentials']
         );
     }
 }
