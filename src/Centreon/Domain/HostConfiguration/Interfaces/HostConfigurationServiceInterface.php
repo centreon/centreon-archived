@@ -60,7 +60,7 @@ interface HostConfigurationServiceInterface
      * **The priority order of host templates is maintained!**
      *
      * @param Host $host Host for which we want to find and add all host templates
-     * @throws \Throwable
+     * @throws HostConfigurationException
      */
     public function findAndAddHostTemplates(Host $host): void;
 

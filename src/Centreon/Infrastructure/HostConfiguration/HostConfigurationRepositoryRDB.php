@@ -246,7 +246,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $request = $this->translateDbName(
             'SELECT host.host_id, host.host_name, host.host_alias, host.display_name AS host_display_name,
             host.host_address AS host_ip_address, host.host_comment, host.geo_coords AS host_geo_coords,
-            host.host_activate AS host_is_activate, nagios.id AS monitoring_server_id,
+            host.host_activate AS host_is_activated, nagios.id AS monitoring_server_id,
             nagios.name AS monitoring_server_name, ext.*
             FROM `:db`.host host
             LEFT JOIN `:db`.extended_host_information ext

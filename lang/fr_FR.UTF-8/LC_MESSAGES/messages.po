@@ -15567,3 +15567,6 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
+
+msgid "Error when adding services to the host %d"
+msgstr "Erreur lors de l'ajout de services à l'hôte %d"
