@@ -14,19 +14,6 @@ CREATE TABLE IF NOT EXISTS `user_filter` (
 UPDATE `topology` SET `topology_name` = 'Resources Status', `topology_url` = '/monitoring/resources', `topology_parent` = 2, `topology_page` = 200 WHERE `topology_page` = 104;
 UPDATE `contact` SET `default_page` = 200 WHERE `default_page` = 104;
 
--- Create a new menu page related to remote. Hidden by default on a Central
-INSERT INTO `topology`(
-    `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`,
-    `topology_url`, `topology_url_opt`,
-    `topology_popup`, `topology_modules`, `topology_show`,
-    `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`
-) VALUES (
-    'Remote access', 501, 50120, 25, 1,
-    './include/Administration/parameters/parameters.php', '&o=remote',
-    '0', '0', '0',
-    NULL, NULL, NULL, '1'
-);
-
 -- Create platform_topology table
 CREATE TABLE `platform_topology` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
