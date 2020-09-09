@@ -519,7 +519,7 @@ describe(Details, () => {
         buildListTimelineEventsEndpoint({
           endpoint: timelineEndpoint,
           parameters: {
-            limit: 10,
+            limit: 30,
             page: 1,
             search: {
               lists: [

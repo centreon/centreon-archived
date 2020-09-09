@@ -13,20 +13,7 @@ import {
   Typography,
   CircularProgress,
 } from '@material-ui/core';
-import {
-  prop,
-  isEmpty,
-  cond,
-  always,
-  T,
-  isNil,
-  pipe,
-  equals,
-  sortWith,
-  descend,
-  concat,
-  uniqWith,
-} from 'ramda';
+import { prop, isEmpty, cond, always, T, isNil, concat } from 'ramda';
 
 import { ResourceLinks } from '../../../models';
 import { types } from './Event';
@@ -78,7 +65,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
   const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
-  const [limit] = React.useState(10);
+  const [limit] = React.useState(30);
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
 
   const { endpoints } = links;
