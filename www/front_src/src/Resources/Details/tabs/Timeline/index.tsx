@@ -90,28 +90,26 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
     decoder: listTimelineEventsDecoder,
   });
 
-  const listTimeline = (
-    { toPage } = { toPage: page },
-  ): Promise<TimelineListing> => {
-    const getSearch = (): SearchParameter | undefined => {
-      if (isEmpty(selectedTypes)) {
-        return undefined;
-      }
+  const getSearch = (): SearchParameter | undefined => {
+    if (isEmpty(selectedTypes)) {
+      return undefined;
+    }
 
-      return {
-        lists: [
-          {
-            field: 'type',
-            values: selectedTypes.map(prop('id')),
-          },
-        ],
-      };
+    return {
+      lists: [
+        {
+          field: 'type',
+          values: selectedTypes.map(prop('id')),
+        },
+      ],
     };
+  };
 
+  const listTimeline = (): Promise<TimelineListing> => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page: toPage,
+        page,
         limit,
         search: getSearch(),
       },
@@ -128,25 +126,29 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
   };
 
   React.useEffect(() => {
+    if (isNil(timeline) || page !== 1) {
+      return;
+    }
+
+    listTimeline().then(({ result }) => {
+      setTimeline(result);
+    });
+  }, [listing]);
+
+  React.useEffect(() => {
     if (isNil(timeline)) {
       return;
     }
 
     listTimeline().then(({ result }) => {
-      const updatedTimeline = pipe(
-        concat(result),
-        sortWith([descend(prop('date'))]),
-        uniqWith(equals),
-      )(timeline || []);
-
-      setTimeline(updatedTimeline as Array<TimelineEvent>);
+      setTimeline(concat(timeline, result));
     });
-  }, [listing, page]);
+  }, [page]);
 
   React.useEffect(() => {
     setPage(1);
     setTimeline(undefined);
-    listTimeline({ toPage: 1 }).then(({ result }) => {
+    listTimeline().then(({ result }) => {
       setTimeline(result);
     });
   }, [endpoints, selectedTypes]);
