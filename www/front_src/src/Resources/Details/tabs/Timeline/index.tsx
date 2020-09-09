@@ -65,8 +65,15 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
+  const translatedTypes = types.map((type) => ({
+    ...type,
+    name: t(type.name),
+  }));
+
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
+  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
+    translatedTypes,
+  );
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(10);
@@ -146,7 +153,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
             label={t(labelEvent)}
             onChange={changeSelectedTypes}
             value={selectedTypes}
-            options={types}
+            options={translatedTypes}
             fullWidth
             limitTags={3}
           />

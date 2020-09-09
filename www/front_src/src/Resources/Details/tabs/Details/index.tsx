@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import {
   Grid,
@@ -73,6 +74,7 @@ interface Props {
 }
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   const { showMessage } = useSnackbar();
@@ -86,12 +88,12 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       copy(details.command_line);
 
       showMessage({
-        message: labelCommandCopied,
+        message: t(labelCommandCopied),
         severity: Severity.success,
       });
     } catch (_) {
       showMessage({
-        message: labelSomethingWentWrong,
+        message: t(labelSomethingWentWrong),
         severity: Severity.error,
       });
     }
@@ -100,14 +102,14 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   return (
     <div className={classes.details}>
       <ExpandableCard
-        title={labelStatusInformation}
+        title={t(labelStatusInformation)}
         content={details.output}
         severityCode={details.status.severity_code}
       />
       {details.downtimes?.map(({ start_time, end_time, comment }) => (
         <StateCard
           key={`downtime-${start_time}-${end_time}`}
-          title={labelDowntimeDuration}
+          title={t(labelDowntimeDuration)}
           contentLines={[
             ...[
               { prefix: labelFrom, time: start_time },
@@ -122,13 +124,11 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       ))}
       {details.acknowledgement && (
         <StateCard
-          title={labelAcknowledgedBy}
+          title={t(labelAcknowledgedBy)}
           contentLines={[
-            `${
-              details.acknowledgement.author_name
-            } ${labelAt} ${getFormattedDateTime(
-              details.acknowledgement.entry_time,
-            )}`,
+            `${details.acknowledgement.author_name} ${t(
+              labelAt,
+            )} ${getFormattedDateTime(details.acknowledgement.entry_time)}`,
           ]}
           commentLine={details.acknowledgement.comment}
           chip={<AcknowledgeChip />}
@@ -139,14 +139,14 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           ({ title, field, getLines }) =>
             !isNil(field) && (
               <Grid key={title} item xs={6}>
-                <DetailsCard title={title} lines={getLines()} />
+                <DetailsCard title={t(title)} lines={getLines()} />
               </Grid>
             ),
         )}
       </Grid>
       {details.performance_data && (
         <ExpandableCard
-          title={labelPerformanceData}
+          title={t(labelPerformanceData)}
           content={details.performance_data}
         />
       )}
@@ -155,7 +155,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           <CardContent>
             <Typography variant="subtitle2" color="textSecondary" gutterBottom>
               <Grid container alignItems="center" spacing={1}>
-                <Grid item>{labelCommand}</Grid>
+                <Grid item>{t(labelCommand)}</Grid>
                 <Grid item>
                   <Tooltip onClick={copyCommandLine} title={labelCopy}>
                     <IconButton size="small">

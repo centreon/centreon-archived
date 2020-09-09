@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Link } from '@material-ui/core';
 
 import {
@@ -9,11 +11,15 @@ import {
 } from '../translatedLabels';
 
 const ApiNotFoundMessage = (): JSX.Element => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <p style={{ margin: 0 }}>{`${labelApiNotFoundNotUpToDate}.`}</p>
+      <p style={{ margin: 0 }}>{`${t(labelApiNotFoundNotUpToDate)}.`}</p>
       <p style={{ margin: 0 }}>
-        {`${labelApiNotFoundContactAdmin} : /opt/rh/httpd24/root/etc/httpd/conf.d/10-centreon.conf`}
+        {`${t(
+          labelApiNotFoundContactAdmin,
+        )} : /opt/rh/httpd24/root/etc/httpd/conf.d/10-centreon.conf`}
       </p>
       <p style={{ margin: 0 }}>
         <Link
@@ -21,7 +27,7 @@ const ApiNotFoundMessage = (): JSX.Element => {
           target="_blank"
           color="inherit"
         >
-          {`( ${labelApiNotFoundDocumentation} )`}
+          {`( ${t(labelApiNotFoundDocumentation)} )`}
         </Link>
       </p>
     </>

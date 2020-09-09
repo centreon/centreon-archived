@@ -206,7 +206,7 @@ const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
   );
 };
 
-export const getColumns = (actions): Array<Column> => [
+export const getColumns = ({ actions, t }): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
@@ -217,7 +217,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'status',
-    label: labelStatus,
+    label: t(labelStatus),
     type: ColumnType.component,
     Component: StatusColumn(actions),
     sortField: 'status_severity_code',
@@ -226,7 +226,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'resource',
-    label: labelResource,
+    label: t(labelResource),
     type: ColumnType.component,
     Component: ResourceColumn,
     sortField: 'name',
@@ -250,7 +250,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'duration',
-    label: labelDuration,
+    label: t(labelDuration),
     type: ColumnType.string,
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
@@ -258,21 +258,21 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'tries',
-    label: labelTries,
+    label: t(labelTries),
     type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
     width: 125,
   },
   {
     id: 'last_check',
-    label: labelLastCheck,
+    label: t(labelLastCheck),
     type: ColumnType.string,
     getFormattedString: ({ last_check }): string => last_check,
     width: 125,
   },
   {
     id: 'information',
-    label: labelInformation,
+    label: t(labelInformation),
     type: ColumnType.string,
     getFormattedString: pipe(propOr('', 'information'), split('\n'), head) as (
       row,
@@ -280,7 +280,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'state',
-    label: labelState,
+    label: t(labelState),
     type: ColumnType.component,
     Component: StateColumn,
     sortable: false,
