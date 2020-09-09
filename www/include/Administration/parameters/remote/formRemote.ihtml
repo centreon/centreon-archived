@@ -12,8 +12,14 @@
                 <h4>{$form.header.information}</h4>
             </td>
         </tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="username"> {$form.apiUsername.label}</td><td class="FormRowValue">{$form.apiUsername.html}</td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="password"> {$form.apiCredentials.label}</td><td class="FormRowValue">{$form.apiCredentials.html}</td></tr>
+        <tr class="list_two">
+            <td class="FormRowField"><img class="helpTooltip" name="username"> {$form.apiUsername.label}</td>
+            <td class="FormRowValue">{$form.apiUsername.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="password"> {$form.apiCredentials.label}</td>
+            <td class="FormRowValue">{$form.apiCredentials.html}</td>
+        </tr>
     </table>
     {if !$valid}
         <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
