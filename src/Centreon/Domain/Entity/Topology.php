@@ -158,7 +158,7 @@ class Topology
         $topologyName = _($this->topology_name);
 
         if ($this->getIsDeprecated() === '1') {
-            $topologyName.= ' (' . _('deprecated') . ')';
+            $topologyName .= ' (' . _('deprecated') . ')';
         }
 
         return $topologyName;
