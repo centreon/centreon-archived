@@ -101,8 +101,8 @@ class SubmitResultController extends AbstractController
         */
         $validator = new Validator();
         $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . $this->getParameter('centreon_path') .
-            'config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json';
+        $file = 'file://' . __DIR__ .
+            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json';
         $validator->validate(
             $bodyContent,
             (object) ['$ref' => $file],
@@ -174,8 +174,8 @@ class SubmitResultController extends AbstractController
         */
         $validator = new Validator();
         $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . $this->getParameter('centreon_path') .
-            'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
+        $file = 'file://' . __DIR__ .
+            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
         $validator->validate(
             $bodyContent,
             (object) ['$ref' => $file],
@@ -241,8 +241,8 @@ class SubmitResultController extends AbstractController
         */
         $validator = new Validator();
         $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . $this->getParameter('centreon_path') .
-            'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
+        $file = 'file://' . __DIR__ .
+            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
         $validator->validate(
             $bodyContent,
             (object) ['$ref' => $file],
