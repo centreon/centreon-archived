@@ -29,7 +29,7 @@
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
  *
  */
