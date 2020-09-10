@@ -15578,3 +15578,19 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
+
+# www/include/Administration/parameters/DB-Func.php
+msgid "The password cannot be crypted. Please re-submit the form"
+msgstr "Le mot de passe ne peut pas être chiffré. Merci de soumettre à nouveau le formulaire"
+
+# www/include/Adrministration/parameters/remote/formRemote.php
+msgid "The password cannot be decrypted. Please re-enter the account password and submit the form"
+msgstr "Le mot de passe ne peut pas être déchiffré. Merci de vérifier ce champs et de soumettre le formuaire"
+
+# www/include/Adrministration/parameters/remote/formRemote.php
+msgid "Central's API credentials"
+msgstr "Identifiants de l'API du Central"
+
+# www/include/Adrministration/parameters/remote/formRemote.php
+msgid "Remote access"
+msgstr "Accès du Remote"
