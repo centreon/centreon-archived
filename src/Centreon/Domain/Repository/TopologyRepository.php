@@ -41,7 +41,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use CentreonUser;
 use PDO;
-use Respect\Validation\Exceptions\TrueValException;
 
 class TopologyRepository extends ServiceEntityRepository
 {
