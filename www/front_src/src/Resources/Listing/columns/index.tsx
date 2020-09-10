@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { pipe, split, head, propOr } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
@@ -97,6 +98,8 @@ const StatusColumnOnHover = ({
   row,
 }: StatusColumnProps): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
   const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
 
   const disableAcknowledge = !canAcknowledge([row]);
@@ -107,31 +110,31 @@ const StatusColumnOnHover = ({
     <Grid container spacing={1} alignItems="center">
       <Grid item>
         <IconButton
-          title={labelAcknowledge}
+          title={t(labelAcknowledge)}
           disabled={disableAcknowledge}
           color="primary"
           onClick={(): void => actions.onAcknowledge(row)}
-          ariaLabel={`${labelAcknowledge} ${row.name}`}
+          ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
         >
           <IconAcknowledge fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton
-          title={labelSetDowntime}
+          title={t(labelSetDowntime)}
           disabled={disableDowntime}
           onClick={(): void => actions.onDowntime(row)}
-          ariaLabel={`${labelSetDowntimeOn} ${row.name}`}
+          ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
         >
           <IconDowntime fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton
-          title={labelCheck}
+          title={t(labelCheck)}
           disabled={disableCheck}
           onClick={(): void => actions.onCheck(row)}
-          ariaLabel={`${labelCheck} ${row.name}`}
+          ariaLabel={`${t(labelCheck)} ${row.name}`}
         >
           <IconCheck fontSize="small" />
         </IconButton>
