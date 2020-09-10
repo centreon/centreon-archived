@@ -50,6 +50,7 @@ $transcoKey = array(
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
     "openid_connect_enable" => "yes",
+    "openid_connect_verify_peer" => "yes",
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
     'display_downtime_chart' => 'yes',
@@ -289,6 +290,18 @@ $form->addElement('text', 'openid_connect_introspection_endpoint', _('Introspect
 $form->addElement('text', 'openid_connect_redirect_url', _('Redirect Url'), array('size' => 50));
 $form->addElement('text', 'openid_connect_client_id', _('Client ID'), array('size' => 50));
 $form->addElement('text', 'openid_connect_client_secret', _('Client Secret'), array('size' => 50));
+
+$openIdConnectVerifyPeer[] = $form->createElement(
+    'checkbox',
+    'yes',
+    '&nbsp;',
+    '',
+    array(
+        "onchange" => "javascript:confirm("
+            . "'Are you sure you want to change this parameter ? Should not be activated in production.')"
+    )
+);
+$form->addGroup($openIdConnectVerifyPeer, 'openid_connect_verify_peer', _("Disable SSL verify peer"), '&nbsp;&nbsp;');
 
 /*
  * Support Email

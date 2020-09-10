@@ -118,6 +118,7 @@
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_redirect_url">{$form.openid_connect_redirect_url.label}</td><td class="FormRowValue">{$form.openid_connect_redirect_url.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_client_id">{$form.openid_connect_client_id.label}</td><td class="FormRowValue">{$form.openid_connect_client_id.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_client_secret">{$form.openid_connect_client_secret.label}</td><td class="FormRowValue">{$form.openid_connect_client_secret.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_verify_peer">{$form.openid_connect_verify_peer.label}</td><td class="FormRowValue">{$form.openid_connect_verify_peer.html}</td></tr>
 
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">

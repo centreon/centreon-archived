@@ -86,6 +86,7 @@ class CentreonAuthSSO extends CentreonAuth
             $authEndpoint = rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             $tokenEndpoint = rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
             $introspectionEndpoint = rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+            $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
@@ -110,14 +111,16 @@ class CentreonAuthSSO extends CentreonAuth
                     $redirectNoEncode,
                     $clientId,
                     $clientSecret,
-                    $inputCode
+                    $inputCode,
+                    $verifyPeer
                 );
 
-                $user = $this->OpenIdgetOpenIdConnectIntrospectionToken(
+                $user = $this->getOpenIdConnectIntrospectionToken(
                     $introspectionEndpoint,
                     $clientId,
                     $clientSecret,
-                    $keyToken
+                    $keyToken,
+                    $verifyPeer
                 );
 
                 if (!isset($user['error'])) {
@@ -179,7 +182,6 @@ class CentreonAuthSSO extends CentreonAuth
             && $this->options_sso['openid_connect_mode'] == 1
         ) {
             # Mixed
-
             $blacklist = explode(',', $this->options_sso['openid_connect_blacklist_clients']);
             foreach ($blacklist as $value) {
                 $value = trim($value);
@@ -231,10 +233,11 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientId OpenId Connect Client ID
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $code OpenId Connect Authorization Code
+     * @param bool   $verifyPeer disable SSL verify peer
      *
      * @return string
     */
-    public function getOpenIdConnectToken($url, $redirectUri, $clientId, $clientSecret, $code)
+    public function getOpenIdConnectToken($url, $redirectUri, $clientId, $clientSecret, $code, $verifyPeer)
     {
         $data = array(
             "client_id" => $clientId,
@@ -248,9 +251,12 @@ class CentreonAuthSSO extends CentreonAuth
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 
+        if ($verifyPeer) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
         $result = curl_exec($ch);
         curl_close($ch);
-        error_log("result: " . $result);
 
         $resp = json_decode($result, true);
 
@@ -264,10 +270,11 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientId OpenId Connect Client ID
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $token OpenId Connect Token Access
+     * @param bool   $verifyPeer disable SSL verify peer
      *
      * @return string
      */
-    public function OpenIdgetOpenIdConnectIntrospectionToken($url, $clientId, $clientSecret, $token)
+    public function getOpenIdConnectIntrospectionToken($url, $clientId, $clientSecret, $token, $verifyPeer)
     {
         $data = array(
             "token" => $token,
@@ -280,6 +287,10 @@ class CentreonAuthSSO extends CentreonAuth
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        if ($verifyPeer) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
 
         $result = curl_exec($ch);
         curl_close($ch);
