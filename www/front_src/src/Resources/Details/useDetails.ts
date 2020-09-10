@@ -58,16 +58,16 @@ const useDetails = (): DetailsState => {
       return;
     }
 
-    const { id, parent_id, type, parent_type, tab } = detailsUrlQueryParameters;
+    const { id, parentId, type, parentType, tab } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
       setOpenDetailsTabId(getTabIdFromLabel(tab));
     }
 
     setSelectedResourceId(id);
-    setSelectedResourceParentId(parent_id);
+    setSelectedResourceParentId(parentId);
     setSelectedResourceType(type);
-    setSelectedResourceParentType(parent_type);
+    setSelectedResourceParentType(parentType);
   }, []);
 
   React.useEffect(() => {
@@ -76,9 +76,9 @@ const useDetails = (): DetailsState => {
         name: 'details',
         value: {
           id: selectedResourceId,
-          parent_id: selectedResourceParentId,
+          parentId: selectedResourceParentId,
           type: selectedResourceType,
-          parent_type: selectedResourceParentType,
+          parentType: selectedResourceParentType,
           tab: getTabLabelFromId(openDetailsTabId),
         },
       },

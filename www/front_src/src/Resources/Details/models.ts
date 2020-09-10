@@ -39,8 +39,8 @@ export interface ResourceDetails {
 
 export interface DetailsUrlQueryParameters {
   id: number;
-  parent_id?: number;
-  parent_type?: string;
+  parentId?: number;
+  parentType?: string;
   type: string;
   tab?: string;
 }

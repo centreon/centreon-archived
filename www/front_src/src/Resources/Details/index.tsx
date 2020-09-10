@@ -35,11 +35,7 @@ const Details = (): JSX.Element | null => {
     request: getData,
   });
 
-  React.useEffect(() => {
-    if (isNil(listing)) {
-      return;
-    }
-
+  const loadDetails = (): void => {
     sendRequest(getSelectedResourceDetailsEndpoint()).then(
       (retrievedDetails) => {
         setDetails(retrievedDetails);
@@ -53,7 +49,20 @@ const Details = (): JSX.Element | null => {
         }
       },
     );
-  }, [selectedResourceId, listing]);
+  };
+
+  React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
+
+    loadDetails();
+  }, [listing]);
+
+  React.useEffect(() => {
+    setDetails(undefined);
+    loadDetails();
+  }, [selectedResourceId]);
 
   const getTabIndex = (tabId: TabId): number => {
     return findIndex(propEq('id', tabId), tabs);

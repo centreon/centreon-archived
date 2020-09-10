@@ -6,7 +6,7 @@ import { path, isNil } from 'ramda';
 import { makeStyles, Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import ShortcutsSection from './Shortcuts';
+import ShortcutsSection from './ShortcutsSection';
 import hasDefinedValues from '../../../hasDefinedValues';
 import { labelHost, labelService } from '../../../translatedLabels';
 import { TabProps } from '..';
@@ -47,7 +47,7 @@ const ShortcutsTab = ({ details }: TabProps): JSX.Element | null => {
   const resourceUris = path(['links', 'uris'], details);
   const parentUris = path(['parent', 'links', 'uris'], details) as ResourceUris;
 
-  const isService = hasDefinedValues(parentUris);
+  const isService = parentUris && hasDefinedValues(parentUris);
 
   if (isNil(details)) {
     return <LoadingSkeleton />;

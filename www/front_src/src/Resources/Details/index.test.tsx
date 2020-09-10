@@ -12,7 +12,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ThemeProvider } from '@centreon/ui';
+import { ThemeProvider, setUrlQueryParameters } from '@centreon/ui';
 
 import * as clipboard from './tabs/Details/clipboard';
 
@@ -64,16 +64,13 @@ import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
-import { ResourceListing, ResourceUris } from '../models';
+import { ResourceListing } from '../models';
 import { getTypeIds } from './tabs/Timeline/Event';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
 jest.mock('./tabs/Details/clipboard');
-
-const performanceGraphEndpoint = '/performance';
-const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
   name: 'Central',
@@ -228,21 +225,24 @@ const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 let context: ResourceContext;
 
 interface Props {
-  defaultTabId: TabId;
-  uris: { resource: ResourceUris; parent: ResourceUris };
+  openTabId?: TabId;
 }
 
-const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
+const DetailsTest = ({ openTabId }: Props): JSX.Element => {
   const listingState = useListing();
   const detailState = useDetails();
 
   detailState.selectedResourceId = resourceId;
   detailState.selectedResourceType = resourceType;
-  detailState.openDetailsTabId = defaultTabId;
+
+  if (openTabId) {
+    detailState.openDetailsTabId = openTabId;
+  }
 
   context = {
     ...listingState,
     ...detailState,
+    listing: {},
   } as ResourceContext;
 
   return (
@@ -255,14 +255,12 @@ const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
 };
 
 interface RenderDetailsProps {
-  defaultTabId?: TabId;
+  openTabId?: TabId;
 }
 
 const renderDetails = (
-  { defaultTabId = detailsTabId }: RenderDetailsProps = {
-    defaultTabId: detailsTabId,
-  },
-): RenderResult => render(<DetailsTest defaultTabId={defaultTabId} />);
+  { openTabId }: RenderDetailsProps = { openTabId: undefined },
+): RenderResult => render(<DetailsTest openTabId={openTabId} />);
 
 describe.only(Details, () => {
   beforeEach(() => {
@@ -382,7 +380,7 @@ describe.only(Details, () => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
   });
 
-  it.only.each([
+  it.each([
     [labelLast24h, '2020-06-19T20:00:00.000Z'],
     [labelLast7Days, '2020-06-13T20:00:00.000Z'],
     [labelLast31Days, '2020-05-20T20:00:00.000Z'],
@@ -390,12 +388,12 @@ describe.only(Details, () => {
     `queries performance graphs with %p period when the Graph tab is selected`,
     async (period, startIsoString) => {
       mockedAxios.get
-        .mockResolvedValueOnce({ data: performanceGraphData })
         .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: performanceGraphData })
         .mockResolvedValueOnce({ data: performanceGraphData });
 
       const { getByText, getAllByText } = renderDetails({
-        defaultTabId: graphTabId,
+        openTabId: graphTabId,
       });
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
@@ -406,7 +404,7 @@ describe.only(Details, () => {
 
       await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
-          `${performanceGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
+          `${retrievedDetails.links.endpoints.performance_graph}?start=${startIsoString}&end=${currentDateIsoString}`,
           cancelTokenRequestParam,
         ),
       );
@@ -437,7 +435,7 @@ describe.only(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
     const { getByText, getAllByText, baseElement } = renderDetails({
-      defaultTabId: timelineTabId,
+      openTabId: timelineTabId,
     });
 
     await waitFor(() =>
@@ -561,7 +559,7 @@ describe.only(Details, () => {
     });
 
     const { getByText, getAllByText } = renderDetails({
-      defaultTabId: shortcutsTabId,
+      openTabId: shortcutsTabId,
     });
 
     await waitFor(() => {
@@ -611,7 +609,7 @@ describe.only(Details, () => {
     });
 
     const { getByText, getAllByText, queryByText } = renderDetails({
-      defaultTabId: shortcutsTabId,
+      openTabId: shortcutsTabId,
     });
 
     await waitFor(() => {
@@ -624,5 +622,24 @@ describe.only(Details, () => {
 
     expect(queryByText(labelService)).not.toBeInTheDocument();
     expect(getByText(labelHost)).toBeInTheDocument();
+  });
+
+  it('sets the details according to the details URL query parameter when given', async () => {
+    const details = {
+      id: 2,
+      parentId: 3,
+      parentType: 'host',
+      type: 'service',
+      tab: 'shortcuts',
+    };
+
+    setUrlQueryParameters([
+      {
+        name: 'details',
+        value: details,
+      },
+    ]);
+
+    const { getByText, getAllByText, queryByText } = renderDetails();
   });
 });

@@ -159,6 +159,10 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   };
 
   React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
+
     reload();
   }, [details, selectedTypes]);
 
