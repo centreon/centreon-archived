@@ -41,6 +41,7 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use CentreonUser;
 use PDO;
+use Respect\Validation\Exceptions\TrueValException;
 
 class TopologyRepository extends ServiceEntityRepository
 {
@@ -159,11 +160,19 @@ class TopologyRepository extends ServiceEntityRepository
 
         //base query
         $query = 'SELECT topology_id, topology_name, topology_page, topology_url, topology_url_opt, '
-            . 'topology_group, topology_order, topology_parent, is_react, readonly, topology_show '
+            . 'topology_group, topology_order, topology_parent, is_react, readonly, topology_show, is_deprecated '
             . 'FROM ' . Topology::TABLE;
 
+        $whereClause = false;
         if (!$user->access->admin) {
             $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')';
+            $whereClause = true;
+        }
+
+        //var_dump($user->doesShowDeprecatedPages());
+        if ($user->doesShowDeprecatedPages() === false) {
+            $query .= ($whereClause === true ? ' AND ' : ' WHERE ')
+                . 'is_deprecated = "0"';
         }
 
         $query .= ' ORDER BY topology_parent, topology_group, topology_order, topology_page';

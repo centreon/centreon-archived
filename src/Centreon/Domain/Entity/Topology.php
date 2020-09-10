@@ -101,6 +101,12 @@ class Topology
 
     /**
      * @var string
+     * enum('0','1')
+     */
+    protected $is_deprecated;
+
+    /**
+     * @var string
      */
     protected $topology_style_class;
 
@@ -149,7 +155,13 @@ class Topology
     public function getTopologyName(): ?string
     {
         // get translated menu entry
-        return _($this->topology_name);
+        $topologyName = _($this->topology_name);
+
+        if ($this->getIsDeprecated() === '1') {
+            $topologyName.= ' (' . _('deprecated') . ')';
+        }
+
+        return $topologyName;
     }
 
     /**
@@ -302,6 +314,22 @@ class Topology
     public function setTopologyShow(string $topology_show): void
     {
         $this->topology_show = $topology_show;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIsDeprecated(): ?string
+    {
+        return $this->is_deprecated;
+    }
+
+    /**
+     * @param string $isDeprecated
+     */
+    public function setIsDeprecated(string $isDeprecated): void
+    {
+        $this->is_deprecated = $isDeprecated;
     }
 
     /**

@@ -15573,3 +15573,9 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
+
+msgid "deprecated"
+msgstr "déprécié"
+
+msgid "Show deprecated pages"
+msgstr "Afficher les pages dépréciées"
