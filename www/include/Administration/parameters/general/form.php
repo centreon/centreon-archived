@@ -49,7 +49,7 @@ $transcoKey = array(
     "enable_autologin" => "yes",
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
-    "keycloak_enable" => "yes",
+    "openid_connect_enable" => "yes",
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
     'display_downtime_chart' => 'yes',
@@ -261,9 +261,9 @@ $options3[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 
 /*
- * Keycloak
+ * OpenId Connect
  */
-$keycloakEnable[] = $form->createElement(
+$openIdConnectEnable[] = $form->createElement(
     'checkbox',
     'yes',
     '&nbsp;',
@@ -273,21 +273,22 @@ $keycloakEnable[] = $form->createElement(
             . "'Are you sure you want to change this parameter ? Please read the help before.')"
     )
 );
-$form->addGroup($keycloakEnable, 'keycloak_enable', _("Enable Keycloak authentication"), '&nbsp;&nbsp;');
+$form->addGroup($openIdConnectEnable, 'openid_connect_enable', _("Enable OpenId Connect authentication"), '&nbsp;&nbsp;');
 
-$keycloakMode = array();
-$keycloakMode[] = $form->createElement('radio', 'keycloak_mode', null, _("Keycloak only"), '0');
-$keycloakMode[] = $form->createElement('radio', 'keycloak_mode', null, _("Mixed"), '1');
-$form->addGroup($keycloakMode, 'keycloak_mode', _("Keycloak mode"), '&nbsp;');
-$form->setDefaults(array('keycloak_mode' => '1'));
+$openIdConnectMode = array();
+$openIdConnectMode[] = $form->createElement('radio', 'openid_connect_mode', null, _("OpenId Connect only"), '0');
+$openIdConnectMode[] = $form->createElement('radio', 'openid_connect_mode', null, _("Mixed"), '1');
+$form->addGroup($openIdConnectMode, 'openid_connect_mode', _("Authentication mode"), '&nbsp;');
+$form->setDefaults(array('openid_connect_mode' => '1'));
 
-$form->addElement('text', 'keycloak_trusted_clients', _('Keycloak trusted client addresses'), array('size' => 50));
-$form->addElement('text', 'keycloak_blacklist_clients', _('Keycloak blacklist client addresses'), array('size' => 50));
-$form->addElement('text', 'keycloak_url', _('Keycloak Server Url'), array('size' => 50));
-$form->addElement('text', 'keycloak_redirect_url', _('Keycloak Redirect Url'), array('size' => 50));
-$form->addElement('text', 'keycloak_realm', _('Keycloak Client Realm'), array('size' => 50));
-$form->addElement('text', 'keycloak_client_id', _('Keycloak Client ID'), array('size' => 50));
-$form->addElement('text', 'keycloak_client_secret', _('Keycloak Client Secret'), array('size' => 50));
+$form->addElement('text', 'openid_connect_trusted_clients', _('Trusted client addresses'), array('size' => 100));
+$form->addElement('text', 'openid_connect_blacklist_clients', _('Blacklist client addresses'), array('size' => 100));
+$form->addElement('text', 'openid_connect_authorization_endpoint', _('Authorization Endpoint'), array('size' => 100));
+$form->addElement('text', 'openid_connect_token_endpoint', _('Token Endpoint'), array('size' => 100));
+$form->addElement('text', 'openid_connect_introspection_endpoint', _('Introspection Token Endpoint'), array('size' => 100));
+$form->addElement('text', 'openid_connect_redirect_url', _('Redirect Url'), array('size' => 50));
+$form->addElement('text', 'openid_connect_client_id', _('Client ID'), array('size' => 50));
+$form->addElement('text', 'openid_connect_client_secret', _('Client Secret'), array('size' => 50));
 
 /*
  * Support Email
@@ -363,7 +364,7 @@ $tpl->assign("genOpt_global_display", _("Display properties"));
 $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentication properties"));
-$tpl->assign("genOpt_keycloak", _("Authentication by Keycloak"));
+$tpl->assign("genOpt_openid_connect", _("Authentication by OpenId Connect"));
 $tpl->assign("support", _("Support Information"));
 $tpl->assign('valid', $valid);
 

@@ -47,13 +47,13 @@ $result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'vers
 $release = $result->fetch();
 
 /**
- * Getting Keycloak login state
+ * Getting OpenId Connect login state
  */
-$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_enable' LIMIT 1");
-$keycloakEnabled = $result->fetch()["value"];
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_enable' LIMIT 1");
+$openIdConnectEnabled = $result->fetch()["value"];
 
-$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_mode' LIMIT 1");
-$keycloakMode = $result->fetch()["value"];
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
+$openIdConnectMode = $result->fetch()["value"];
 
 /**
  * Defining Login Form
@@ -123,8 +123,8 @@ $tpl = initSmartyTpl($path . '/include/core/login/template/', $tpl);
 $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. ' . $release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
-$tpl->assign('keycloakEnabled', $keycloakEnabled);
-$tpl->assign('keycloakMode', $keycloakMode);
+$tpl->assign('openIdConnectEnabled', $openIdConnectEnabled);
+$tpl->assign('openIdConnectMode', $openIdConnectMode);
 
 // Redirect User
 $redirect = filter_input(

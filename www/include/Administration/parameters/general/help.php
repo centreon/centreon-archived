@@ -126,43 +126,47 @@ $help['sso_username_replace'] = dgettext(
 );
 
 /**
- * Keycloak
+ * OpenId Connect
  */
-$help['keycloak_enable'] = dgettext(
+$help['openid_connect_enable'] = dgettext(
     'help',
-    'Enable login with Keycloak.'
+    'Enable login with OpenId Connect.'
 );
-$help['keycloak_mode'] = dgettext(
+$help['openid_connect_mode'] = dgettext(
     'help',
-    'Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems.'
+    'Authentication can be solely based on OpenId Connect or it can work with both OpenId Connect and local authentication systems.'
 );
-$help['keycloak_trusted_clients'] = dgettext(
+$help['openid_connect_trusted_clients'] = dgettext(
     'help',
     'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
 );
-$help['keycloak_blacklist_clients'] = dgettext(
+$help['openid_connect_blacklist_clients'] = dgettext(
     'help',
     'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
 );
-$help['keycloak_url'] = dgettext(
+$help['openid_connect_authorization_endpoint'] = dgettext(
     'help',
-    'Your Keycloak server url (with "/auth").'
+    'Your OpenId Connect Authorization endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth).'
 );
-$help['keycloak_redirect_url'] = dgettext(
+$help['openid_connect_token_endpoint'] = dgettext(
     'help',
-    'Your Keycloak redirect url (this server).'
+    'Your OpenId Connect Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token).'
 );
-$help['keycloak_realm'] = dgettext(
+$help['openid_connect_introspection_endpoint'] = dgettext(
     'help',
-    'Your Keycloak Realm name.'
+    'Your OpenId Connect Introspection Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect).'
 );
-$help['keycloak_client_id'] = dgettext(
+$help['openid_connect_redirect_url'] = dgettext(
     'help',
-    'Your Keycloak client ID.'
+    'Your OpenId Connect redirect url (this server).'
 );
-$help['keycloak_client_secret'] = dgettext(
+$help['openid_connect_client_id'] = dgettext(
     'help',
-    'Your Keycloak client secret.'
+    'Your OpenId Connect client ID.'
+);
+$help['openid_connect_client_secret'] = dgettext(
+    'help',
+    'Your OpenId Connect client secret.'
 );
 
 /**

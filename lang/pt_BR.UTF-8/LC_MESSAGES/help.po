@@ -1164,11 +1164,11 @@ msgstr ""
 "Essa opção deve ser ativada em um ambiente seguro dedicado à autenticação de SSO. \n"
 "O acesso direto à interface da Web do Centreon para os usuários deve estar desativado."
 
-msgid "Enable login with Keycloak."
-msgstr "Ativa autenticação com Keycloak"
+msgid "Enable login with OpenId Connect."
+msgstr "Ativa autenticação com OpenId Connect"
 
-msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
-msgstr "A autenticação pode ser baseada exclusivamente no Keycloak ou pode funcionar com os sistemas de autenticação Keycloak e local."
+msgid "Authentication can be solely based on OpenId Connect or it can work with both OpenId Connect and local authentication systems."
+msgstr "A autenticação pode ser baseada exclusivamente no OpenId Connect ou pode funcionar com os sistemas de autenticação OpenId Connect e local."
 
 msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes de confiança. Use virgula para delimitar em caso de multiplos clientes."
@@ -1176,20 +1176,23 @@ msgstr "IP/DNS de clientes de confiança. Use virgula para delimitar em caso de 
 msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes bloqueados. Use virgula para delimitar em caso de multiplos clientes."
 
-msgid "Your Keycloak server url (with \"/auth\")."
-msgstr "Seu endereço do servidor Keycloak (com \"/auth\")."
+msgid "Your OpenId Connect Authorization endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
+msgstr "Seu endereço do servidor OpenId Connect Authorization endpoint (por exemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
 
-msgid "Your Keycloak redirect url (this server)."
-msgstr "Seu endereço de redirecionamento Keycloak (este servidor)."
+msgid "Your OpenId Connect Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token)."
+msgstr "Seu endereço do servidor OpenId Connect Token endpoint (por exemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
 
-msgid "Your Keycloak Realm name."
-msgstr "Seu nome de Dominio Keycloak"
+msgid "Your OpenId Connect Introspection Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
+msgstr "Seu endereço do servidor OpenId Connect Introspection Token endpoint (por exemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
 
-msgid "Your Keycloak client ID."
+msgid "Your OpenId Connect redirect url (this server)."
+msgstr "Seu endereço de redirecionamento OpenId Connect (este servidor)."
+
+msgid "Your OpenId Connect client ID."
 msgstr "Sua identificação de cliente kaycloak"
 
-msgid "Your Keycloak client secret."
-msgstr "Seu segredo de cliente Keycloak"
+msgid "Your OpenId Connect client secret."
+msgstr "Seu segredo de cliente OpenId Connect"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:91
 msgid ""

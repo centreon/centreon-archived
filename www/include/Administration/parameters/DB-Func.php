@@ -713,56 +713,63 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "keycloak_enable",
-        isset($ret["keycloak_enable"]["yes"]) && $ret["keycloak_enable"]["yes"] != null ? 1 : 0
+        "openid_connect_enable",
+        isset($ret["openid_connect_enable"]["yes"]) && $ret["openid_connect_enable"]["yes"] != null ? 1 : 0
     );
     updateOption(
         $pearDB,
-        "keycloak_mode",
-        isset($ret["keycloak_mode"]["keycloak_mode"]) && $ret["keycloak_mode"]["keycloak_mode"] != null
-            ? $pearDB->escape($ret["keycloak_mode"]["keycloak_mode"]) : 1
+        "openid_connect_mode",
+        isset($ret["openid_connect_mode"]["openid_connect_mode"]) && $ret["openid_connect_mode"]["openid_connect_mode"] != null
+            ? $pearDB->escape($ret["openid_connect_mode"]["openid_connect_mode"]) : 1
     );
     updateOption(
         $pearDB,
-        "keycloak_trusted_clients",
-        isset($ret["keycloak_trusted_clients"]) && $ret["keycloak_trusted_clients"] != null
-            ? $pearDB->escape($ret["keycloak_trusted_clients"]) : ""
+        "openid_connect_trusted_clients",
+        isset($ret["openid_connect_trusted_clients"]) && $ret["openid_connect_trusted_clients"] != null
+            ? $pearDB->escape($ret["openid_connect_trusted_clients"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_blacklist_clients",
-        isset($ret["keycloak_blacklist_clients"]) && $ret["keycloak_blacklist_clients"] != null
-            ? $pearDB->escape($ret["keycloak_blacklist_clients"]) : ""
+        "openid_connect_blacklist_clients",
+        isset($ret["openid_connect_blacklist_clients"]) && $ret["openid_connect_blacklist_clients"] != null
+            ? $pearDB->escape($ret["openid_connect_blacklist_clients"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_url",
-        isset($ret["keycloak_url"]) && $ret["keycloak_url"] != null
-            ? $pearDB->escape($ret["keycloak_url"]) : ""
+        "openid_connect_authorization_endpoint",
+        isset($ret["openid_connect_authorization_endpoint"]) && $ret["openid_connect_authorization_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_authorization_endpoint"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_redirect_url",
-        isset($ret["keycloak_redirect_url"]) && $ret["keycloak_redirect_url"] != null
-            ? $pearDB->escape($ret["keycloak_redirect_url"]) : ""
+        "openid_connect_token_endpoint",
+        isset($ret["openid_connect_token_endpoint"]) && $ret["openid_connect_token_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_token_endpoint"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_realm",
-        isset($ret["keycloak_realm"]) && $ret["keycloak_realm"] != null
-            ? $pearDB->escape($ret["keycloak_realm"]) : ""
+        "openid_connect_introspection_endpoint",
+        isset($ret["openid_connect_introspection_endpoint"]) && $ret["openid_connect_introspection_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_introspection_endpoint"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_client_id",
-        isset($ret["keycloak_client_id"]) && $ret["keycloak_client_id"] != null
-            ? $pearDB->escape($ret["keycloak_client_id"]) : ""
+        "openid_connect_redirect_url",
+        isset($ret["openid_connect_redirect_url"]) && $ret["openid_connect_redirect_url"] != null
+            ? $pearDB->escape($ret["openid_connect_redirect_url"]) : ""
+    );
+
+    updateOption(
+        $pearDB,
+        "openid_connect_client_id",
+        isset($ret["openid_connect_client_id"]) && $ret["openid_connect_client_id"] != null
+            ? $pearDB->escape($ret["openid_connect_client_id"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_client_secret",
-        isset($ret["keycloak_client_secret"]) && $ret["keycloak_client_secret"] != null
-            ? $pearDB->escape($ret["keycloak_client_secret"]) : ""
+        "openid_connect_client_secret",
+        isset($ret["openid_connect_client_secret"]) && $ret["openid_connect_client_secret"] != null
+            ? $pearDB->escape($ret["openid_connect_client_secret"]) : ""
     );
     updateOption(
         $pearDB,

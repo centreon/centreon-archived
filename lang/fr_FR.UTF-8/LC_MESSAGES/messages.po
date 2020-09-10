@@ -5283,26 +5283,26 @@ msgstr "Afficher les commentaires sur le graphique"
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
 
-msgid "Keycloak trusted client addresses"
-msgstr "Adresses des clients de confiance SSO Keycloak"
+msgid "OpenId Connect trusted client addresses"
+msgstr "Adresses des clients de confiance SSO OpenId Connect"
 
-msgid "Keycloak blacklist client addresses"
-msgstr "Adresses des clients de bloqués Keycloak"
+msgid "OpenId Connect blacklist client addresses"
+msgstr "Adresses des clients de bloqués OpenId Connect"
 
-msgid "Keycloak Server Url"
-msgstr "URL du serveur Keycloak"
+msgid "OpenId Connect Server Url"
+msgstr "URL du serveur OpenId Connect"
 
-msgid "Keycloak Redirect Url"
-msgstr "Adresse de redirection vers Centreon depuis Keycloak"
+msgid "OpenId Connect Redirect Url"
+msgstr "Adresse de redirection vers Centreon depuis OpenId Connect"
 
-msgid "Keycloak Client Realm"
-msgstr "Royaume client Keycloak"
+msgid "OpenId Connect Client Realm"
+msgstr "Royaume client OpenId Connect"
 
-msgid "Keycloak Client ID"
-msgstr "Identifiant client Keycloak"
+msgid "OpenId Connect Client ID"
+msgstr "Identifiant client OpenId Connect"
 
-msgid "Keycloak Client Secret"
-msgstr "Secret client Keycloak"
+msgid "OpenId Connect Client Secret"
+msgstr "Secret client OpenId Connect"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
