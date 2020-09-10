@@ -936,15 +936,14 @@ class CentreonCustomView
             /**
              * Get user's ACL
              */
-            $aclListOfContactIds = $centreon->user->access->getContactAclConf(
-                array(
-                    'fields' => array(
-                        'contact_id'
-                    ),
-                    'keys' => array('contact_id'),
-                    'order' => array('contact_id')
-                )
+            $data = array(
+                'fields' => array(
+                    'contact_id'
+                ),
+                'keys' => array('contact_id'),
+                'order' => array('contact_id')
             );
+            $aclListOfContactIds = $centreon->user->access->getContactAclConf($data);
 
             $allowedContactIds = '';
             foreach (array_keys($aclListOfContactIds) as $contactId) {
@@ -1001,15 +1000,14 @@ class CentreonCustomView
             /**
              * Get user's ACL
              */
-            $aclListOfGroupIds = $centreon->user->access->getContactGroupAclConf(
-                array(
-                    'fields' => array(
-                        'cg_id'
-                    ),
-                    'keys' => array('cg_id'),
-                    'order' => array('cg_id')
-                )
+            $data =array(
+                'fields' => array(
+                    'cg_id'
+                ),
+                'keys' => array('cg_id'),
+                'order' => array('cg_id')
             );
+            $aclListOfGroupIds = $centreon->user->access->getContactGroupAclConf($data);
 
             $allowedGroupIds = '';
             foreach (array_keys($aclListOfGroupIds) as $groupId) {
