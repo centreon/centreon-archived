@@ -67,7 +67,7 @@ class EngineServiceTest extends TestCase
             ->setDescription('service-test')
             ->setHost($this->host);
 
-        $this->hostResult = (new SubmitResult($this->host->getId(),2))
+        $this->hostResult = (new SubmitResult($this->host->getId(), 2))
             ->setOutput('Host went down')
             ->setPerformanceData('ping: 0');
 
@@ -78,14 +78,14 @@ class EngineServiceTest extends TestCase
         /**
          * commandHeader should look like 'EXTERNALCMD:<pollerid>:[timestamp] '
          */
-        $this->commandHeader = 'EXTERNALCMD:' . $this->host->getPollerId() . ':[' . (new DateTime())->getTimestamp() . '] ';
+        $this->commandHeader = 'EXTERNALCMD:' .
+            $this->host->getPollerId() . ':[' . (new DateTime())->getTimestamp() . '] ';
 
         $this->engineRepository = $this->createMock(EngineRepositoryInterface::class);
         $this->engineConfigurationService = $this->createMock(EngineConfigurationRepositoryInterface::class);
         $this->engineService = $this->createMock(EngineServiceInterface::class);
         $this->entityValidator = $this->createMock(EntityValidator::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
-
     }
 
     /**
@@ -123,7 +123,6 @@ class EngineServiceTest extends TestCase
 
         $engineService->filterByContact($this->adminContact);
         $this->assertNull($engineService->submitHostResult($this->hostResult, $this->host));
-
     }
 
     /**
