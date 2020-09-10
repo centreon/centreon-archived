@@ -139,18 +139,17 @@ $loginCredentials = [
 /**
  * Prepare Server Register payload
  */
-$serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
+$address = $dns ?? trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $registerPayload = [
     "name" => $serverHostName,
     "type" => $serverType,
-    "address" => $dns ?? $serverIp,
+    "address" => $address,
     "parent_address" => $host
 ];
 
 /**
  * Display Summary of action
  */
-$address = $registerPayload["address"];
 $summary = <<<EOD
 
 Summary of the informations that will be send:
@@ -183,8 +182,15 @@ if ($proceed !== "y") {
     exit();
 }
 
+/**
+ * Master-to-Remote transition
+ */
+if (isRemote($serverType)) {
+    registerRemote($host, $loginCredentials);
+}
+
 /************************ */
-/*     API REQUEST
+/*     API REQUEST        */
 /************************ */
 
 /**

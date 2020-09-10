@@ -19,6 +19,11 @@
  *
  */
 
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+
+use Centreon\Domain\Repository\InformationsRepository;
+use Centreon\Domain\Repository\TopologyRepository;
+
 /**
  * Ask question. The echo of keyboard can be disabled
 *
@@ -40,6 +45,64 @@ function askQuestion(string $question, $hidden = false): string
     }
     printf("\n");
     return $response;
+}
+
+/**
+ * @param string $type
+ * @return bool
+ */
+function isRemote(string $type): bool
+{
+    if ($type === TYPE_REMOTE) {
+        return true;
+    }
+    return false;
+}
+
+
+/**
+ * @param string $ip
+ * @param array $loginCredentials
+ */
+function registerRemote(string $ip, array $loginCredentials)
+{
+    $db = new CentreonDB();
+    $topologyRepository = new TopologyRepository($db);
+    $informationRepository = new InformationsRepository($db);
+
+    //hide menu
+    $topologyRepository->disableMenus();
+
+    //register remote in db
+    $informationRepository->toggleRemote('yes');
+
+    //register master in db
+    $informationRepository->authorizeMaster($ip);
+
+    //register credentials
+    registerCentralCredentials($db, $loginCredentials);
+
+    //Apply Remote Server mode in configuration file
+    system(
+        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+    );
+
+    //apache configuration
+
+
+}
+
+/**
+ * @param CentreonDB $db
+ * @param array $loginCredentials
+ */
+function registerCentralCredentials(CentreonDB $db, array $loginCredentials): void
+{
+    $query = "INSERT INTO `informations` (`key`, `value`) VALUES ('apiUsername', :username), ('apiCredentials', :pwd)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $loginCredentials['security']['credentials']['login'], \PDO::PARAM_STR);
+    $statement->bindValue(':pwd', $loginCredentials['security']['credentials']['password'], \PDO::PARAM_STR);
+    $statement->execute();
 }
 
 /**
