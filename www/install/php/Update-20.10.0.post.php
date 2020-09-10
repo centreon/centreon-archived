@@ -71,7 +71,7 @@ try {
     if ($row = $result->fetch()) {
         $errorMessage = "Unable to insert remote credential page in 'topology' table.";
         // This page is displayed only on remote platforms.
-        $showPage = ($row['value'] = 'yes' ? '1' : '0');
+        $showPage = ($row['value'] === 'yes') ? '1' : '0';
         $stmt = $pearDB->query("
             INSERT INTO `topology`(
                 `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`,
