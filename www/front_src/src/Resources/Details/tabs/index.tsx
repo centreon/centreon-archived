@@ -56,9 +56,7 @@ const tabs: Array<Tab> = [
         return false;
       }
 
-      return !isNil(
-        path(['details', 'links', 'endpoints', 'perfomance_graph'], details),
-      );
+      return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
     },
   },
   {

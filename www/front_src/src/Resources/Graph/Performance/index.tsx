@@ -89,6 +89,10 @@ const PerformanceGraph = ({
   });
 
   React.useEffect(() => {
+    if (isNil(endpoint)) {
+      return;
+    }
+
     sendRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));

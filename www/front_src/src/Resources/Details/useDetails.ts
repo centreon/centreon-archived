@@ -97,7 +97,7 @@ const useDetails = (): DetailsState => {
     }
 
     if (!isNil(selectedResourceParentId)) {
-      return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentType}/${selectedResourceType}s/${selectedResourceId}`;
+      return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
     }
 
     return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;

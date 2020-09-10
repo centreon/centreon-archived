@@ -11,7 +11,6 @@ import { ResourceDetails } from './models';
 import { useResourceContext } from '../Context';
 import { TabById, TabId, detailsTabId, tabs } from './tabs';
 import { rowColorConditions } from '../colors';
-import { ResourceLinks } from '../models';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
@@ -34,11 +33,9 @@ const Details = (): JSX.Element | null => {
     request: getData,
   });
 
-  const visibleTabs = getVisibleTabs(selectedDetailsLinks);
-
   React.useEffect(() => {
-    if (details !== undefined) {
-      setDetails(undefined);
+    if (isNil(listing)) {
+      return;
     }
 
     sendRequest(getSelectedResourceDetailsEndpoint()).then(
