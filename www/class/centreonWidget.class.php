@@ -1359,7 +1359,7 @@ class CentreonWidget
         }
 
         //if user has no preferences take parent preferences
-        if ($this->db->numberRows() === 0) {
+        if ($this->db->numberRows() == 0) {
             try {
                 $query = 'SELECT pref.preference_value, param.parameter_code_name ' .
                     'FROM widget_preferences pref, widget_parameters param, widget_views wv ' .
