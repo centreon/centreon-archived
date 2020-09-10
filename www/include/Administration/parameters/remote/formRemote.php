@@ -19,9 +19,21 @@
  *
  */
 
+use Security\Encryption;
+
 if (!isset($centreon)) {
     exit();
 }
+
+/*
+ * Set encryption parameters
+ */
+require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
+$firstKey = @include _CENTREON_PATH_ . "/.env.local.php";
+if (empty($firstKey)) {
+    exit();
+}
+const SECOND_KEY = 'api_remote_credentials';
 
 /*
  * Check ACL
@@ -35,10 +47,7 @@ if (!$centreon->user->admin && $contactId) {
     );
     $contacts = $acl->getContactAclConf($aclOptions);
     if (!count($contacts)) {
-        $msg = new CentreonMsg();
-        $msg->setImage("./img/icons/warning.png");
-        $msg->setTextStyle("bold");
-        $msg->setText(_('You are not allowed to reach this page'));
+        include_once _CENTREON_PATH_ . "/www/include/core/errors/alt_error.php";
         return null;
     }
 }
@@ -53,13 +62,26 @@ while ($row = $dbResult->fetch(\PDO::FETCH_ASSOC)) {
 }
 
 if ('yes' !== $result['isRemote']) {
-    $msg = new CentreonMsg();
-    $msg->setImage("./img/icons/warning.png");
-    $msg->setTextStyle("bold");
-    $msg->setText(_('You are not allowed to reach this page'));
+    include_once _CENTREON_PATH_ . "/www/include/core/errors/alt_error.php";
     return null;
 }
 $dbResult->closeCursor();
+
+/**
+ * Decrypt credentials
+ */
+$centreonEncryption = new Encryption();
+$decrypted = '';
+try {
+    $centreonEncryption->setFirstKey($firstKey['APP_SECRET'])->setSecondKey(SECOND_KEY);
+    if (!empty($result['apiUsername'])) {
+        $decryptResult = $centreonEncryption->decrypt($result['apiCredentials'] ?? '');
+    }
+} catch (Exception $e) {
+    unset($result['apiCredentials']);
+    $errorMsg = _('The password cannot be decrypted. Please re-enter the account password and submit the form');
+    echo "<div class='msg' align='center'>" . $errorMsg . "</div>";
+}
 
 /**
  * form
@@ -89,7 +111,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 $form->setDefaults(
     [
         'apiUsername' => $result['apiUsername'],
-        'apiCredentials' => CentreonAuth::PWS_OCCULTATION
+        'apiCredentials' => (!empty($decryptResult) ? CentreonAuth::PWS_OCCULTATION : '')
     ]
 );
 
@@ -101,7 +123,7 @@ $tpl = initSmartyTpl($path . "remote", $tpl);
 $subC = $form->addElement('submit', 'submitC', _("Save"), ["class" => "btc bt_success"]);
 $form->addElement('reset', 'reset', _("Reset"), ["class" => "btc bt_default"]);
 
-// prepare help texts
+// Prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
@@ -111,14 +133,13 @@ $tpl->assign("helptext", $helptext);
 
 $valid = false;
 if ($form->validate()) {
-    //Update in DB
-    updateRemoteAccessCredentials($pearDB, $form, $centreon);
+    //Update or insert data in DB
+    updateRemoteAccessCredentials($pearDB, $form, $centreonEncryption);
 
     $o = 'remote';
     $valid = true;
     $form->freeze();
 }
-
 $form->addElement(
     "button",
     "change",

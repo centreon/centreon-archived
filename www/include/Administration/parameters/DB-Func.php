@@ -50,13 +50,13 @@ function updateOption($pearDB, $key, $value)
 }
 
 /**
- * Used to update fields in the informations table
+ * Used to update fields in the 'centreon.informations' table
  *
- * @param $pearDB : database connection
- * @param $key : name of the row
- * @param $value : value of the row
+ * @param object $pearDB : database connection
+ * @param string $key : name of the row
+ * @param string $value : value of the row
  */
-function updateInformations($pearDB, string $key = null, string $value = null)
+function updateInformations($pearDB, string $key, string $value): void
 {
     $stmt = $pearDB->prepare("DELETE FROM `informations` WHERE `key` = :key");
     $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
@@ -999,10 +999,11 @@ function updateKnowledgeBaseData($db, $form, $centreon)
 /**
  * Used to update Central's credentials on a remote server
  *
- * @param $db : database connection
- * @param $form : form data
+ * @param object $db : database connection
+ * @param object $form : form data
+ * @param \Security\Encryption $centreonEncryption : Encryption object
  */
-function updateRemoteAccessCredentials($db, $form)
+function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
 {
     $ret = $form->getSubmitValues();
     updateInformations(
@@ -1010,11 +1011,17 @@ function updateRemoteAccessCredentials($db, $form)
         'apiUsername',
         $ret['apiUsername']
     );
+
     if (CentreonAuth::PWS_OCCULTATION !== $ret['apiCredentials']) {
-        updateInformations(
-            $db,
-            'apiCredentials',
-            $ret['apiCredentials']
-        );
+        try {
+            updateInformations(
+                $db,
+                'apiCredentials',
+                $centreonEncryption->crypt($ret['apiCredentials'])
+            );
+        } catch (Exception $e) {
+            $errorMsg = _('The password cannot be crypted. Please re-submit the form');
+            echo "<div class='msg' align='center'>" . $errorMsg . "</div>";
+        }
     }
 }
