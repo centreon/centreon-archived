@@ -26,4 +26,7 @@ CREATE TABLE `platform_topology` (
     CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
-COMMENT='Registration and parent relation Table used to set the platform topology'
+COMMENT='Registration and parent relation Table used to set the platform topology';
+
+-- Modify informations.value column length from 255 to 1024 chars
+ALTER TABLE `informations` MODIFY `value` varchar(1024);
