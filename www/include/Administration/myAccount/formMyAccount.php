@@ -405,7 +405,14 @@ if ($form->validate()) {
         $form->getSubmitValue("contact_lang") !== $cct['contact_lang']
         || $showDeprecatedPages !== $cct['show_deprecated_pages']
     ) {
-        $_SESSION['centreon'] = new \Centreon($cct);
+        $contactStatement = $pearDB->prepare(
+            'SELECT * FROM contact WHERE contact_id = :contact_id'
+        );
+        $contactStatement->bindValue(':contact_id', $centreon->user->get_id(), \PDO::PARAM_INT);
+        $contactStatement->execute();
+        if ($contact = $contactStatement->fetch()) {
+            $_SESSION['centreon'] = new \Centreon($contact);
+        }
         $_SESSION[$sessionKeyFreeze] = true;
         echo '<script>parent.location.href = "main.php?p=' . $p . '&o=c";</script>';
         exit;
