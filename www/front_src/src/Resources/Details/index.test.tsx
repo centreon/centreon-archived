@@ -49,7 +49,6 @@ import {
   labelViewLogs,
   labelViewReport,
   labelHost,
-  labelShortcuts,
   labelService,
 } from '../translatedLabels';
 import {
@@ -446,7 +445,7 @@ describe.only(Details, () => {
         buildListTimelineEventsEndpoint({
           endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
-            limit: 10,
+            limit: 30,
             page: 1,
             search: {
               lists: [
@@ -519,7 +518,7 @@ describe.only(Details, () => {
         buildListTimelineEventsEndpoint({
           endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
-            limit: 10,
+            limit: 30,
             page: 1,
             search: {
               lists: [
@@ -579,6 +578,7 @@ describe.only(Details, () => {
       '/reporting',
     );
 
+    expect(getByText(labelService)).toBeInTheDocument();
     expect(getByText(labelHost)).toBeInTheDocument();
 
     expect(getAllByText(labelConfigure)[1]).toHaveAttribute(
@@ -595,7 +595,7 @@ describe.only(Details, () => {
     );
   });
 
-  it('does not display host shortcut links when the shortcuts tab is selected', async () => {
+  it('does not display parent shortcut links when the selected resource is a host and the shortcuts tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
@@ -610,7 +610,7 @@ describe.only(Details, () => {
       },
     });
 
-    const { getByText, queryByText } = renderDetails({
+    const { getByText, getAllByText, queryByText } = renderDetails({
       defaultTabId: shortcutsTabId,
     });
 
@@ -618,10 +618,11 @@ describe.only(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
-    expect(getByText(labelConfigure)).toBeInTheDocument();
-    expect(getByText(labelViewLogs)).toBeInTheDocument();
-    expect(getByText(labelViewReport)).toBeInTheDocument();
+    expect(getAllByText(labelConfigure)).toHaveLength(1);
+    expect(getAllByText(labelViewLogs)).toHaveLength(1);
+    expect(getAllByText(labelViewReport)).toHaveLength(1);
 
-    expect(queryByText(labelHost)).toBeNull();
+    expect(queryByText(labelService)).not.toBeInTheDocument();
+    expect(getByText(labelHost)).toBeInTheDocument();
   });
 });

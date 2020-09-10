@@ -19,6 +19,7 @@ import {
   isEmpty,
   isNil,
 } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
@@ -78,6 +79,7 @@ const PerformanceGraph = ({
   toggableLegend = false,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
+  const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
@@ -109,7 +111,7 @@ const PerformanceGraph = ({
     return (
       <div className={classes.noDataContainer}>
         <Typography align="center" variant="body1">
-          {labelNoDataForThisPeriod}
+          {t(labelNoDataForThisPeriod)}
         </Typography>
       </div>
     );

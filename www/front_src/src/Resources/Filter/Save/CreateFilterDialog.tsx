@@ -93,7 +93,7 @@ const CreateFilterDialog = ({
         error={form.errors.name}
         onChange={form.handleChange('name') as InputChangeEvent}
         onKeyDown={submitFormOnEnterKey}
-        ariaLabel={labelName}
+        ariaLabel={t(labelName)}
         autoFocus
       />
     </Dialog>

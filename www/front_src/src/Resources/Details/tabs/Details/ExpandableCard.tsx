@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   Typography,
   Card,
@@ -48,6 +50,7 @@ const ExpandableCard = ({
   content,
   severityCode,
 }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles({ severityCode });
 
   const [outputExpanded, setOutputExpanded] = React.useState(false);
@@ -85,7 +88,7 @@ const ExpandableCard = ({
           <Divider />
           <CardActions>
             <Button color="primary" size="small" onClick={toggleOutputExpanded}>
-              {outputExpanded ? labelLess : labelMore}
+              {outputExpanded ? t(labelLess) : t(labelMore)}
             </Button>
           </CardActions>
         </>

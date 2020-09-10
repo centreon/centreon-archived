@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { pick, map, path, isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
@@ -51,6 +52,14 @@ const defaultTimePeriod = last24hPeriod;
 
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
+  const translatedTimePeriodSelectOptions = timePeriodSelectOptions.map(
+    (timePeriod) => ({
+      ...timePeriod,
+      name: t(timePeriod.name),
+    }),
+  );
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
 
@@ -92,7 +101,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
       <Paper className={classes.header}>
         <SelectField
           className={classes.periodSelect}
-          options={timePeriodSelectOptions}
+          options={translatedTimePeriodSelectOptions}
           selectedOptionId={selectedTimePeriod.id}
           onChange={changeSelectedPeriod}
         />

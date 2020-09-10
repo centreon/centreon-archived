@@ -3903,7 +3903,7 @@ msgstr "Période"
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:57
 #: centreon-web/www/include/reporting/dashboard/initReport.php:176
 msgid "State"
-msgstr "Statut"
+msgstr "État"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:66
 msgid "Last event at"
@@ -15529,6 +15529,9 @@ msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configu
 
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
+
+msgid "You are not authorized to access this resource"
+msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
 msgid "Shortcuts"
 msgstr "Raccourcis"

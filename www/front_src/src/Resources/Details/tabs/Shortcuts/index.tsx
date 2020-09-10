@@ -1,11 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { path, isNil } from 'ramda';
 
 import { makeStyles, Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { path, isNil } from 'ramda';
 import ShortcutsSection from './Shortcuts';
 import hasDefinedValues from '../../../hasDefinedValues';
 import { labelHost, labelService } from '../../../translatedLabels';
@@ -42,7 +42,6 @@ const LoadingSkeleton = (): JSX.Element => {
 
 const ShortcutsTab = ({ details }: TabProps): JSX.Element | null => {
   const classes = useStyles();
-
   const { t } = useTranslation();
 
   const resourceUris = path(['links', 'uris'], details);

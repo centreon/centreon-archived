@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { getData, useRequest, Panel } from '@centreon/ui';
 
@@ -17,6 +18,7 @@ export interface DetailsSectionProps {
 }
 
 const Details = (): JSX.Element | null => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const [details, setDetails] = React.useState<ResourceDetails>();
 
@@ -88,7 +90,7 @@ const Details = (): JSX.Element | null => {
         <Tab
           style={{ minWidth: 'unset' }}
           key={id}
-          label={title}
+          label={t(title)}
           disabled={isNil(details) || !getIsActive(details)}
           onClick={changeSelectedTabId(id)}
         />
