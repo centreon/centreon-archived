@@ -1000,7 +1000,7 @@ class CentreonCustomView
             /**
              * Get user's ACL
              */
-            $data =array(
+            $data = array(
                 'fields' => array(
                     'cg_id'
                 ),
