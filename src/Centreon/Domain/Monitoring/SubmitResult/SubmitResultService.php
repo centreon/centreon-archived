@@ -127,7 +127,10 @@ class SubmitResultService extends AbstractCentreonService implements SubmitResul
             );
         }
 
-        $service = $this->monitoringRepository->findOneService($result->getParentResourceId(), $result->getResourceId());
+        $service = $this->monitoringRepository->findOneService(
+            $result->getParentResourceId(),
+            $result->getResourceId()
+        );
         if (is_null($service)) {
             throw new EntityNotFoundException(
                 sprintf(
