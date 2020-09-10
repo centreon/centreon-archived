@@ -937,13 +937,13 @@ class CentreonCustomView
              * Get user's ACL
              */
             $aclListOfContactIds = $centreon->user->access->getContactAclConf(
-                [
-                    'fields' => [
+                array(
+                    'fields' => array(
                         'contact_id'
-                    ],
-                    'keys' => ['contact_id'],
-                    'order' => ['contact_id']
-                ]
+                    ),
+                    'keys' => array('contact_id'),
+                    'order' => array('contact_id')
+                )
             );
 
             $allowedContactIds = '';
@@ -1002,13 +1002,13 @@ class CentreonCustomView
              * Get user's ACL
              */
             $aclListOfGroupIds = $centreon->user->access->getContactGroupAclConf(
-                [
-                    'fields' => [
+                array(
+                    'fields' => array(
                         'cg_id'
-                    ],
-                    'keys' => ['cg_id'],
-                    'order' => ['cg_id']
-                ]
+                    ),
+                    'keys' => array('cg_id'),
+                    'order' => array('cg_id')
+                )
             );
 
             $allowedGroupIds = '';
