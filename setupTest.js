@@ -35,6 +35,8 @@ Object.defineProperty(global, 'IntersectionObserver', {
 });
 
 i18n.use(initReactI18next).init({
+  nsSeparator: false,
+  keySeparator: false,
   fallbackLng: 'en',
   lng: 'en',
   resources: {},
