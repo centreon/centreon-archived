@@ -39,12 +39,12 @@ const SECOND_KEY = 'api_remote_credentials';
  * Check ACL
  */
 if (!$centreon->user->admin && $contactId) {
-    $aclOptions = array(
-        'fields' => array('contact_id', 'contact_name'),
-        'keys' => array('contact_id'),
+    $aclOptions = [
+        'fields' => ['contact_id', 'contact_name'],
+        'keys' => ['contact_id'],
         'get_row' => 'contact_name',
-        'conditions' => array('contact_id' => $contactId)
-    );
+        'conditions' => ['contact_id' => $contactId]
+    ];
     $contacts = $acl->getContactAclConf($aclOptions);
     if (!count($contacts)) {
         include_once _CENTREON_PATH_ . "/www/include/core/errors/alt_error.php";
