@@ -51,6 +51,46 @@ class SubmitResultController extends AbstractController
     }
 
     /**
+     * This function will ensure that the POST data is correct
+     * regarding validation constraints defined
+     *
+     * @param Request $request
+     * @return array $results
+     * @throws InvalidArgumentException
+     * @throws SubmitResultException
+     */
+    private function isValidJson(Request $request): array
+    {
+        $results = json_decode((string) $request->getContent(), true);
+        if (!is_array($results)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
+        }
+
+        /*
+        * Validate the content of the POST request against the JSON schema validator
+        */
+        $validator = new Validator();
+        $bodyContent = json_decode((string) $request->getContent());
+        $file = 'file://' . __DIR__ .
+            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
+        $validator->validate(
+            $bodyContent,
+            (object) ['$ref' => $file],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new SubmitResultException($message);
+        }
+
+        return $results;
+    }
+
+    /**
      * Check if the resource can be submitted a result by the current user
      *
      * @param Contact $contact
@@ -164,45 +204,23 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = json_decode((string) $request->getContent(), true);
-        if (!is_array($results)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
+        $results = $this->isValidJson($request);
+
+        if (!empty($results)) {
+            /**
+             * At this point we made sure that the mapping will work since we validate
+             * the JSON sent with the JSON validator.
+             */
+            $status = ResourceStatus::STATUS_MAPPING[strtoupper($results['status'])];
+
+            $result = (new SubmitResult($hostId, $status))
+                ->setOutput($results['output'])
+                ->setPerformanceData($results['performance_data']);
+
+            $this->submitResultService
+                ->filterByContact($contact)
+                ->submitHostResult($result);
         }
-
-        /*
-        * Validate the content of the POST request against the JSON schema validator
-        */
-        $validator = new Validator();
-        $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . __DIR__ .
-            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
-        $validator->validate(
-            $bodyContent,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new SubmitResultException($message);
-        }
-
-        /**
-         * At this point we made sure that the mapping will work since we validate
-         * the JSON sent with the JSON validator.
-         */
-        $status = ResourceStatus::STATUS_MAPPING[strtoupper($results['status'])];
-
-        $result = (new SubmitResult($hostId, $status))
-            ->setOutput($results['output'])
-            ->setPerformanceData($results['performance_data']);
-
-        $this->submitResultService
-            ->filterByContact($contact)
-            ->submitHostResult($result);
 
         return $this->view();
     }
@@ -231,42 +249,20 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = json_decode((string) $request->getContent(), true);
-        if (!is_array($results)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
+        $results = $this->isValidJson($request);
+
+        if (!empty($results)) {
+            $status = ResourceStatus::STATUS_MAPPING[strtoupper($results['status'])];
+
+            $result = (new SubmitResult($serviceId, $status))
+                ->setOutput($results['output'])
+                ->setPerformanceData($results['performance_data'])
+                ->setParentResourceId($hostId);
+
+            $this->submitResultService
+                ->filterByContact($contact)
+                ->submitServiceResult($result);
         }
-
-        /*
-        * Validate the content of the POST request against the JSON schema validator
-        */
-        $validator = new Validator();
-        $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . __DIR__ .
-            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
-        $validator->validate(
-            $bodyContent,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new SubmitResultException($message);
-        }
-
-        $status = ResourceStatus::STATUS_MAPPING[strtoupper($results['status'])];
-
-        $result = (new SubmitResult($serviceId, $status))
-            ->setOutput($results['output'])
-            ->setPerformanceData($results['performance_data'])
-            ->setParentResourceId($hostId);
-
-        $this->submitResultService
-            ->filterByContact($contact)
-            ->submitServiceResult($result);
 
         return $this->view();
     }
