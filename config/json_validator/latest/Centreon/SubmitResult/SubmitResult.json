@@ -23,7 +23,8 @@
             ]
         },
         "output": {
-            "type": ["string",
+            "type": [
+                "string",
                 "null"
             ]
         }
