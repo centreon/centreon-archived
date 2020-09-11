@@ -64,6 +64,7 @@ class CentreonCustomView
     public const TOPOLOGY_PAGE_SET_ROTATE = 10305;
     public const TOPOLOGY_PAGE_DELETE_VIEW = 10306;
     public const TOPOLOGY_PAGE_ADD_VIEW = 10307;
+    public const TOPOLOGY_PAGE_UNLOAD_VIEW = 10307;
     public const TOPOLOGY_PAGE_SET_DEFAULT_VIEW = 10308;
 
     /**
@@ -208,6 +209,7 @@ class CentreonCustomView
         /* associate the called action with the toplogy page.
          * Special behaviour for the deleteWidget action which does not have any possible configuration in ACL Menus.
          * We do consider through that if user can create a widget then he also can delete it.
+         * Same concept for adding and unloading a custom view
          * Also "defaultEditMode" action has no link with ACL this action is authorized for all.
          */
         if ($action == 'defaultEditMode') {
@@ -222,7 +224,7 @@ class CentreonCustomView
             'setRotate' => self::TOPOLOGY_PAGE_SET_ROTATE,
             'deleteView' => self::TOPOLOGY_PAGE_DELETE_VIEW,
             'add' => self::TOPOLOGY_PAGE_ADD_VIEW,
-            'unload' => self::TOPOLOGY_PAGE_ADD_VIEW,
+            'unload' => self::TOPOLOGY_PAGE_UNLOAD_VIEW,
             'setDefault' => self::TOPOLOGY_PAGE_SET_DEFAULT_VIEW
         ];
 
