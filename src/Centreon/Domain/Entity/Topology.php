@@ -100,10 +100,9 @@ class Topology
     protected $topology_show;
 
     /**
-     * @var string
-     * enum('0','1')
+     * @var bool
      */
-    protected $is_deprecated;
+    protected $is_deprecated = false;
 
     /**
      * @var string
@@ -319,7 +318,7 @@ class Topology
     /**
      * @return string
      */
-    public function getIsDeprecated(): ?string
+    public function getIsDeprecated(): bool
     {
         return $this->is_deprecated;
     }
@@ -329,7 +328,10 @@ class Topology
      */
     public function setIsDeprecated(string $isDeprecated): void
     {
-        $this->is_deprecated = $isDeprecated;
+        if (in_array($this->is_deprecated, ['0', '1'])) {
+            throw new \InvalidArgumentException('deprecated parameter must be "0" or "1"');
+        }
+        $this->is_deprecated = (bool) $isDeprecated;
     }
 
     /**
