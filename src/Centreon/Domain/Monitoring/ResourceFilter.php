@@ -276,7 +276,7 @@ class ResourceFilter
     {
         foreach ($hostIds as $hostId) {
             if (!is_int($hostId)) {
-                throw new \InvalidArgumentException('$serviceId must be an integer');
+                throw new \InvalidArgumentException('$hostId must be an integer');
             }
         }
 
