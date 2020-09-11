@@ -274,6 +274,12 @@ class ResourceFilter
      */
     public function setHostIds(array $hostIds): self
     {
+        foreach ($hostIds as $hostId) {
+            if (!is_int($hostId)) {
+                throw new \InvalidArgumentException('$serviceId must be an integer');
+            }
+        }
+
         $this->hostIds = $hostIds;
 
         return $this;
@@ -293,6 +299,12 @@ class ResourceFilter
      */
     public function setServiceIds(array $serviceIds): self
     {
+        foreach ($serviceIds as $serviceId) {
+            if (!is_int($serviceId)) {
+                throw new \InvalidArgumentException('$serviceId must be an integer');
+            }
+        }
+
         $this->serviceIds = $serviceIds;
 
         return $this;
