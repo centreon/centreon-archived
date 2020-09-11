@@ -472,7 +472,8 @@ class MonitoringResourceController extends AbstractController
      * @param integer $hostId
      * @return void
      */
-    public function buildHostDetailsUri(int $hostId) {
+    public function buildHostDetailsUri(int $hostId)
+    {
         return $this->buildDetailsUri([
             'type' => Resource::TYPE_HOST,
             'id' => $hostId,
@@ -487,7 +488,8 @@ class MonitoringResourceController extends AbstractController
      * @param integer $serviceId
      * @return void
      */
-    public function buildServiceDetailsUri(int $hostId, int $serviceId) {
+    public function buildServiceDetailsUri(int $hostId, int $serviceId)
+    {
         return $this->buildDetailsUri([
             'parentType' => Resource::TYPE_HOST,
             'parentId' => $hostId,
@@ -503,7 +505,8 @@ class MonitoringResourceController extends AbstractController
      * @param array $parameters
      * @return void
      */
-    private function buildDetailsUri(array $parameters) {
+    private function buildDetailsUri(array $parameters)
+    {
         return $this->getBaseUri() . static::RESOURCE_LISTING_URI
             . '?details=' . json_encode($parameters);
     }
