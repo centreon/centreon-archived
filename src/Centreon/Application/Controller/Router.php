@@ -54,6 +54,16 @@ class Router implements RouterInterface, RequestMatcherInterface
     }
 
     /**
+     * Get router
+     *
+     * @return RouterInterface
+     */
+    public function getRouter(): RouterInterface
+    {
+        return $this->router;
+    }
+
+    /**
      * @inheritdoc
      */
     public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)

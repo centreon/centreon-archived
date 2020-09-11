@@ -22,6 +22,7 @@ export interface Status {
 }
 
 export interface Severity {
+  name: string;
   level: number;
 }
 

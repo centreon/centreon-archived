@@ -21,7 +21,5 @@ Feature:
     When I send a GET request to '/beta/monitoring/resources?search={"s.description":{"$rg":"^service_ping$"}}'
     Then the response code should be "200"
     And the response should be formatted like JSON format "standard/listing.json"
-    And the response should be formatted like JSON format "monitoring/resource/listing.json"
-    # ping (from defaults container data) and service_ping should be returned
     And the json node "result" should have 1 elements
     And the JSON node "result[0].name" should be equal to the string "service_ping"
