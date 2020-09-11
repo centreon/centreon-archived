@@ -140,7 +140,13 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         try {
             $this->hostConfigurationRepository->changeActivationStatus($hostId, $shouldBeActivated);
         } catch (\Throwable $ex) {
-            throw new HostConfigurationException(_(''));
+            throw new HostConfigurationException(
+                sprintf(
+                    _('Error when changing host status (%d to %s)'),
+                    $hostId,
+                    $shouldBeActivated ? 'true' : 'false'
+                )
+            );
         }
     }
 
@@ -152,7 +158,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         try {
             return $this->hostConfigurationRepository->checkNamesAlreadyUsed($namesToCheck);
         } catch (\Throwable $ex) {
-            throw new HostConfigurationException(_(''));
+            throw new HostConfigurationException(_('Error when searching for already used host names'));
         }
     }
 }
