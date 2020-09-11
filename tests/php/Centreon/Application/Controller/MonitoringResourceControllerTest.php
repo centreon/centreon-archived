@@ -94,16 +94,16 @@ class MonitoringResourceControllerTest extends TestCase
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
-        $this->authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $this->authorizationChecker->expects($this->any())
+        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $authorizationChecker->expects($this->any())
             ->method('isGranted')
             ->willReturn(true);
-        $this->token = $this->createMock(TokenInterface::class);
-        $this->token->expects($this->any())
+        $token = $this->createMock(TokenInterface::class);
+        $token->expects($this->any())
             ->method('getUser')
             ->willReturn($this->adminContact);
-        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $this->tokenStorage->expects($this->any())
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $tokenStorage->expects($this->any())
             ->method('getToken')
             ->willReturn($this->token);
 
@@ -118,8 +118,8 @@ class MonitoringResourceControllerTest extends TestCase
                 [$this->equalTo('security.token_storage')]
             )
             ->willReturnOnConsecutiveCalls(
-                $this->authorizationChecker,
-                $this->tokenStorage
+                $authorizationChecker,
+                $tokenStorage
             );
 
         $this->requestParameters = $this->createMock(RequestParametersInterface::class);
