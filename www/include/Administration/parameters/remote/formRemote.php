@@ -29,8 +29,11 @@ if (!isset($centreon)) {
  * Set encryption parameters
  */
 require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
-$firstKey = @include _CENTREON_PATH_ . "/.env.local.php";
-if (empty($firstKey)) {
+if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
+    $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
+}
+
+if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
     exit();
 }
 const SECOND_KEY = 'api_remote_credentials';
