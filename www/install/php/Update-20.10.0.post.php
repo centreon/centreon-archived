@@ -23,12 +23,71 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 20.10.0 : ';
+$versionOfTheUpgrade = 'UPGRADE - 20.10.0.post : ';
 
 /**
- * Queries which don't need rollback and won't throw an exception
+ * Queries needing exception management and rollback if failing
  */
 try {
+    $pearDB->beginTransaction();
+    /**
+     * 'platform_status' feature
+     */
+    // Insert the central as first platform and parent of all others
+    $errorMessage = "Unable to insert the central in the platform_topology table.";
+    $centralServerQuery = $pearDB->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
+    if ($row = $centralServerQuery->fetch()) {
+        $stmt = $pearDB->prepare("
+            INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
+            VALUES (:centralAddress, :name, 'central', NULL, :id)
+        ");
+        $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
+        $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
+        $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * remote access menu topology
+     */
+    // Correct 'isCentral' flag value
+    $errorMessage = "Unable to read the 'informations' table.";
+    $result = $pearDB->query("
+        SELECT count(*) as `count` FROM `informations`
+        WHERE (`key` = 'isRemote' AND `value` = 'no') OR (`key` = 'isCentral' AND `value` = 'no')
+    ");
+    $row = $result->fetch();
+    if (2 === (int)$row['count']) {
+        $errorMessage = "Unable to replace isCentral flag value in 'informations' table.";
+        $stmt = $pearDB->query("UPDATE `informations` SET `value` = 'yes' WHERE `key` = 'isCentral'");
+    }
+
+    // Create a new menu page related to remote. Hidden by default on a Central
+    $errorMessage = "Unable to read the 'informations' table.";
+    $result = $pearDB->query("
+        SELECT `value` from `informations` WHERE `key` = 'isRemote'
+    ");
+
+    if ($row = $result->fetch()) {
+        $errorMessage = "Unable to insert remote credential page in 'topology' table.";
+        // This page is displayed only on remote platforms.
+        $showPage = ($row['value'] === 'yes') ? '1' : '0';
+        $stmt = $pearDB->query("
+            INSERT INTO `topology`(
+                `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`,
+                `topology_url`, `topology_url_opt`,
+                `topology_popup`, `topology_modules`, `topology_show`,
+                `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`
+            ) VALUES (
+                'Remote access', 501, 50120, 25, 1,
+                './include/Administration/parameters/parameters.php', '&o=remote',
+                '0', '0', " . $showPage . ",
+                NULL, NULL, NULL, '1'
+            )            
+        ");
+    }
+  
+    // migrate resource status menu acl
     $errorMessage = "Unable to update acl of resource status page.";
 
     $topologyAclQuery = $pearDB->query(
@@ -70,7 +129,11 @@ try {
             $stmt->execute();
         }
     }
-} catch (Exception $e) {
+
+    $pearDB->commit();
+    $errorMessage = "";
+} catch (\Exception $e) {
+    $pearDB->rollBack();
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
@@ -78,4 +141,5 @@ try {
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
     );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
