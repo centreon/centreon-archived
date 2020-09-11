@@ -8861,6 +8861,14 @@ msgstr "Optimisation"
 msgid "Admin"
 msgstr "Administrateur"
 
+#: centreon-web/www/include/configuration/configObject/contact/formContact.php:320
+msgid "Reach API Configuration"
+msgstr "Accès à l'API de configuration"
+
+#: centreon-web/www/include/configuration/configObject/contact/formContact.php:325
+msgid "Reach API Realtime"
+msgstr "Accès à l'API de temps réel"
+
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:870
 msgid "Folders"
 msgstr "Répertoires"
@@ -15494,39 +15502,52 @@ msgstr "par"
 
 msgid "Notification sent to"
 msgstr "Notification envoyée à"
+
+#: api/topology/register
 msgid "The name of the platform is not consistent"
 msgstr "Le nom de cette plateforme n'est pas cohérent"
 
+#: api/topology/register
 msgid "The address '%s' for '%s' is not valid"
 msgstr "L'adresse '%s' de '%s' n'est pas valide"
 
+#: api/topology/register
 msgid "The type of platform '%s'@'%s' is not consistent"
 msgstr "Le type de la plateforme '%s'@'%s' n'est pas cohérent"
 
+#: api/topology/register
 msgid "The address of the parent platform '%s'@'%s' is not consistent"
 msgstr "L'adresse de la plateforme parente '%s'@'%s' n'est pas cohérente"
 
+#: api/topology/register
 msgid "A platform using the name : '%s' or address : '%s' already exists"
 msgstr "Une plateforme avec le nom : '%s' ou l'adresse : '%s' existe déjà"
 
+#: api/topology/register
 msgid "No parent platform was found for : '%s'@'%s'"
 msgstr "Aucune plateforme parente n'a été trouvée pour : '%s'@'%s'"
 
+#: api/topology/register
 msgid "Error when adding in topology the platform : '%s'@'%s'"
 msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
 
+#: api/topology/register
 msgid "Cannot use parent address on a Central server type"
 msgstr "Il n'est pas possible d'utiliser l'adresse d'un parent au type de serveur Central"
 
+#: api/topology/register
 msgid "Cannot set parent id to a central server"
 msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"
 
+#: api/topology/register
 msgid "The Central : '%s'@'%s' is already registered"
 msgstr "Un Central : '%s'@'%s' est déjà enregistré"
 
+#: api/topology/register
 msgid "The Central type server : '%s'@'%s' does not match the one configured in Centreon"
 msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configuré dans Centreon"
 
+#: api/topology/register
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
 
@@ -15544,6 +15565,7 @@ msgstr "Configurer"
 
 msgid "View report"
 msgstr "Voir le rapport"
+
 msgid "An error occurred while retrieving users linked to ViewId on database"
 msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs liés à ViewId"
 
@@ -15573,3 +15595,19 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "The password cannot be crypted. Please re-submit the form"
+msgstr "Le mot de passe ne peut pas être chiffré. Merci de soumettre à nouveau le formulaire"
+
+#: www/include/Adrministration/parameters/remote/formRemote.php
+msgid "The password cannot be decrypted. Please re-enter the account password and submit the form"
+msgstr "Le mot de passe ne peut pas être déchiffré. Merci de vérifier ce champs et de soumettre le formuaire"
+
+#: www/include/Adrministration/parameters/remote/formRemote.php
+msgid "Central's API credentials"
+msgstr "Identifiants de l'API du Central"
+
+#: www/include/Adrministration/parameters/remote/formRemote.php
+msgid "Remote access"
+msgstr "Accès du Remote"
