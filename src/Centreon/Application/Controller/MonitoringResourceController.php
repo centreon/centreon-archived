@@ -75,6 +75,10 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
 
+    private const RESOURCE_LISTING_URI = '/monitoring/resources';
+
+    private const TAB_DETAILS_NAME = 'details';
+
     // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_id_main';
 
@@ -460,5 +464,47 @@ class MonitoringResourceController extends AbstractController
         }
 
         return $this->getBaseUri() . $uri;
+    }
+
+    /**
+     * Build uri to access host details page
+     *
+     * @param integer $hostId
+     * @return void
+     */
+    public function buildHostDetailsUri(int $hostId) {
+        return $this->buildDetailsUri([
+            'type' => Resource::TYPE_HOST,
+            'id' => $hostId,
+            'tab' => static::TAB_DETAILS_NAME,
+        ]);
+    }
+
+    /**
+     * Build uri to access service details page
+     *
+     * @param integer $hostId
+     * @param integer $serviceId
+     * @return void
+     */
+    public function buildServiceDetailsUri(int $hostId, int $serviceId) {
+        return $this->buildDetailsUri([
+            'parentType' => Resource::TYPE_HOST,
+            'parentId' => $hostId,
+            'type' => Resource::TYPE_SERVICE,
+            'id' => $serviceId,
+            'tab' => static::TAB_DETAILS_NAME,
+        ]);
+    }
+
+    /**
+     * Build uri to access details page of a resource
+     *
+     * @param array $parameters
+     * @return void
+     */
+    private function buildDetailsUri(array $parameters) {
+        return $this->getBaseUri() . static::RESOURCE_LISTING_URI
+            . '?details=' . json_encode($parameters);
     }
 }

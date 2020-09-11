@@ -94,18 +94,18 @@ class MonitoringResourceControllerTest extends TestCase
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
-        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authorizationChecker->expects($this->once())
+        $this->authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $this->authorizationChecker->expects($this->any())
             ->method('isGranted')
             ->willReturn(true);
-        $token = $this->createMock(TokenInterface::class);
-        $token->expects($this->any())
+        $this->token = $this->createMock(TokenInterface::class);
+        $this->token->expects($this->any())
             ->method('getUser')
             ->willReturn($this->adminContact);
-        $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        $tokenStorage->expects($this->any())
+        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $this->tokenStorage->expects($this->any())
             ->method('getToken')
-            ->willReturn($token);
+            ->willReturn($this->token);
 
         $this->container = $this->createMock(ContainerInterface::class);
         $this->container->expects($this->any())
@@ -118,8 +118,8 @@ class MonitoringResourceControllerTest extends TestCase
                 [$this->equalTo('security.token_storage')]
             )
             ->willReturnOnConsecutiveCalls(
-                $authorizationChecker,
-                $tokenStorage
+                $this->authorizationChecker,
+                $this->tokenStorage
             );
 
         $this->requestParameters = $this->createMock(RequestParametersInterface::class);
@@ -192,5 +192,41 @@ class MonitoringResourceControllerTest extends TestCase
         $this->assertEquals($resource->getConfigurationUri(), '/main.php?p=60101&o=c&host_id=1');
         $this->assertEquals($resource->getLogsUri(), '/main.php?p=20301&h=1');
         $this->assertEquals($resource->getReportingUri(), '/main.php?p=307&host=1');
+    }
+
+    /**
+     * test buildHostDetailsUri
+     */
+    public function testBuildHostDetailsUri()
+    {
+        $resourceController = new MonitoringResourceController(
+            $this->monitoringService,
+            $this->resourceService,
+            $this->urlGenerator,
+            $this->iconUrlNormalizer
+        );
+
+        $this->assertEquals(
+            $resourceController->buildHostDetailsUri(1),
+            '/monitoring/resources?details={"type":"host","id":1,"tab":"details"}'
+        );
+    }
+
+    /**
+     * test buildServiceDetailsUri
+     */
+    public function testBuildServiceDetailsUri()
+    {
+        $resourceController = new MonitoringResourceController(
+            $this->monitoringService,
+            $this->resourceService,
+            $this->urlGenerator,
+            $this->iconUrlNormalizer
+        );
+
+        $this->assertEquals(
+            $resourceController->buildServiceDetailsUri(1,2),
+            '/monitoring/resources?details={"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details"}'
+        );
     }
 }
