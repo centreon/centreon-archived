@@ -76,7 +76,7 @@ $dbResult->closeCursor();
 $centreonEncryption = new Encryption();
 $decrypted = '';
 try {
-    $centreonEncryption->setFirstKey($firstKey['APP_SECRET'])->setSecondKey(SECOND_KEY);
+    $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
     if (!empty($result['apiUsername'])) {
         $decryptResult = $centreonEncryption->decrypt($result['apiCredentials'] ?? '');
     }
