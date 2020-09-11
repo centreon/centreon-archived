@@ -1,6 +1,11 @@
 import * as React from 'react';
 
-import { getUrlQueryParameters, setUrlQueryParameters } from '@centreon/ui';
+import {
+  getUrlQueryParameters,
+  setUrlQueryParameters,
+  useRequest,
+  getData,
+} from '@centreon/ui';
 
 import { isNil } from 'ramda';
 import {
@@ -9,7 +14,7 @@ import {
   getTabIdFromLabel,
   getTabLabelFromId,
 } from './tabs';
-import { DetailsUrlQueryParameters } from './models';
+import { DetailsUrlQueryParameters, ResourceDetails } from './models';
 import { resourcesEndpoint } from '../api/endpoint';
 
 export interface DetailsState {
@@ -30,6 +35,8 @@ export interface DetailsState {
   >;
   openDetailsTabId: TabId;
   setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
+  details?: ResourceDetails;
+  loadDetails: () => void;
 }
 
 const useDetails = (): DetailsState => {
@@ -48,6 +55,11 @@ const useDetails = (): DetailsState => {
     selectedResourceParentType,
     setSelectedResourceParentType,
   ] = React.useState<string>();
+  const [details, setDetails] = React.useState<ResourceDetails>();
+
+  const { sendRequest } = useRequest<ResourceDetails>({
+    request: getData,
+  });
 
   React.useEffect(() => {
     const urlQueryParameters = getUrlQueryParameters();
@@ -92,16 +104,25 @@ const useDetails = (): DetailsState => {
   ]);
 
   const getSelectedResourceDetailsEndpoint = (): string | undefined => {
-    if (isNil(selectedResourceId)) {
-      return undefined;
-    }
-
     if (!isNil(selectedResourceParentId)) {
       return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
     }
 
     return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
   };
+
+  const loadDetails = (): void => {
+    if (isNil(selectedResourceId)) {
+      return;
+    }
+
+    sendRequest(getSelectedResourceDetailsEndpoint()).then(setDetails);
+  };
+
+  React.useEffect(() => {
+    setDetails(undefined);
+    loadDetails();
+  }, [selectedResourceId]);
 
   const clearSelectedResource = (): void => {
     setSelectedResourceId(undefined);
@@ -120,6 +141,8 @@ const useDetails = (): DetailsState => {
     openDetailsTabId,
     setOpenDetailsTabId,
     getSelectedResourceDetailsEndpoint,
+    details,
+    loadDetails,
   };
 };
 

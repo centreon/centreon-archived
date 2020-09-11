@@ -49,6 +49,7 @@ import {
   mockAppStateSelector,
   searchableFields,
 } from '../testUtils';
+import useDetails from '../Details/useDetails';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -136,6 +137,7 @@ const FilterWithLoading = (): JSX.Element => {
 
 const FilterTest = (): JSX.Element | null => {
   const filterState = useFilter();
+  const detailsState = useDetails();
   const listingState = useListing();
   const actionsState = useActions();
 
@@ -146,6 +148,7 @@ const FilterTest = (): JSX.Element | null => {
           ...listingState,
           ...actionsState,
           ...filterState,
+          ...detailsState,
         } as ResourceContext
       }
     >

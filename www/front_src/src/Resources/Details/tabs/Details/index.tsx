@@ -17,6 +17,7 @@ import { Skeleton } from '@material-ui/lab';
 import IconCopyFile from '@material-ui/icons/FileCopy';
 
 import { useSnackbar, Severity } from '@centreon/ui';
+import copyToClipBoard from '@centreon/ui/src/utils/copy';
 
 import ExpandableCard from './ExpandableCard';
 import {
@@ -39,7 +40,6 @@ import AcknowledgeChip from '../../../Chip/Acknowledge';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 import { ResourceDetails } from '../../models';
-import { copy } from './clipboard';
 
 const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {
@@ -79,13 +79,13 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
   const { showMessage } = useSnackbar();
 
-  if (details === undefined) {
+  if (isNil(details)) {
     return <LoadingSkeleton />;
   }
 
   const copyCommandLine = (): void => {
     try {
-      copy(details.command_line);
+      copyToClipBoard(details.command_line as string);
 
       showMessage({
         message: t(labelCommandCopied),

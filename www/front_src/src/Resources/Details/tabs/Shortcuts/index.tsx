@@ -40,12 +40,15 @@ const LoadingSkeleton = (): JSX.Element => {
   );
 };
 
-const ShortcutsTab = ({ details }: TabProps): JSX.Element | null => {
+const ShortcutsTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const resourceUris = path(['links', 'uris'], details);
-  const parentUris = path(['parent', 'links', 'uris'], details) as ResourceUris;
+  const resourceUris = path<ResourceUris>(
+    ['links', 'uris'],
+    details,
+  ) as ResourceUris;
+  const parentUris = path<ResourceUris>(['parent', 'links', 'uris'], details);
 
   const isService = parentUris && hasDefinedValues(parentUris);
 
@@ -59,7 +62,12 @@ const ShortcutsTab = ({ details }: TabProps): JSX.Element | null => {
         title={t(isService ? labelService : labelHost)}
         uris={resourceUris}
       />
-      {isService && <ShortcutsSection title={t(labelHost)} uris={parentUris} />}
+      {isService && (
+        <ShortcutsSection
+          title={t(labelHost)}
+          uris={parentUris as ResourceUris}
+        />
+      )}
     </div>
   );
 };

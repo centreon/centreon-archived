@@ -3,7 +3,7 @@ import * as React from 'react';
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { getData, useRequest, Panel } from '@centreon/ui';
+import { Panel } from '@centreon/ui';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
 
@@ -20,49 +20,27 @@ export interface DetailsSectionProps {
 const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const [details, setDetails] = React.useState<ResourceDetails>();
 
   const {
     openDetailsTabId,
     setOpenDetailsTabId,
-    selectedResourceId,
-    getSelectedResourceDetailsEndpoint,
     clearSelectedResource,
-    listing,
+    details,
   } = useResourceContext();
-
-  const { sendRequest } = useRequest<ResourceDetails>({
-    request: getData,
-  });
-
-  const loadDetails = (): void => {
-    sendRequest(getSelectedResourceDetailsEndpoint()).then(
-      (retrievedDetails) => {
-        setDetails(retrievedDetails);
-
-        const isOpenTabActive = tabs
-          .find(propEq('id', openDetailsTabId))
-          ?.getIsActive(retrievedDetails);
-
-        if (!isOpenTabActive) {
-          setOpenDetailsTabId(detailsTabId);
-        }
-      },
-    );
-  };
 
   React.useEffect(() => {
     if (isNil(details)) {
       return;
     }
 
-    loadDetails();
-  }, [listing]);
+    const isOpenTabActive = tabs
+      .find(propEq('id', openDetailsTabId))
+      ?.getIsActive(details);
 
-  React.useEffect(() => {
-    setDetails(undefined);
-    loadDetails();
-  }, [selectedResourceId]);
+    if (!isOpenTabActive) {
+      setOpenDetailsTabId(detailsTabId);
+    }
+  }, [details]);
 
   const getTabIndex = (tabId: TabId): number => {
     return findIndex(propEq('id', tabId), tabs);

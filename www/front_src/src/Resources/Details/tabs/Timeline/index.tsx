@@ -29,7 +29,6 @@ import {
   labelNoResultsFound,
   labelRefresh,
 } from '../../../translatedLabels';
-import { useResourceContext } from '../../../Context';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
 import { TabProps } from '..';
@@ -82,8 +81,6 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const [limit] = React.useState(30);
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
 
-  const { listing } = useResourceContext();
-
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
@@ -130,15 +127,24 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       });
   };
 
+  const reload = (): void => {
+    setPage(1);
+    listTimeline({ atPage: 1 }).then(({ result }) => {
+      setTimeline(result);
+    });
+  };
+
   React.useEffect(() => {
-    if (isNil(timeline) || page !== 1) {
+    if (isNil(details)) {
+      setTimeline(undefined);
+    }
+
+    if (page !== 1 || isNil(details)) {
       return;
     }
 
-    listTimeline().then(({ result }) => {
-      setTimeline(result);
-    });
-  }, [listing]);
+    reload();
+  }, [details]);
 
   React.useEffect(() => {
     if (isNil(timeline)) {
@@ -150,21 +156,15 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     });
   }, [page]);
 
-  const reload = (): void => {
-    setPage(1);
-    setTimeline(undefined);
-    listTimeline({ atPage: 1 }).then(({ result }) => {
-      setTimeline(result);
-    });
-  };
-
   React.useEffect(() => {
     if (isNil(details)) {
       return;
     }
 
+    setTimeline(undefined);
+
     reload();
-  }, [details, selectedTypes]);
+  }, [selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
     setSelectedTypes(typeIds);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head, equals, reject } from 'ramda';
+import { last, head, equals, reject, path } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -11,10 +11,13 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import copyToClipboard from '@centreon/ui/src/utils/copy';
 
-import { ThemeProvider, setUrlQueryParameters } from '@centreon/ui';
-
-import * as clipboard from './tabs/Details/clipboard';
+import {
+  ThemeProvider,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
 
 import Details from '.';
 import {
@@ -50,27 +53,24 @@ import {
   labelViewReport,
   labelHost,
   labelService,
+  labelDetails,
+  labelCopyLink,
 } from '../translatedLabels';
-import {
-  detailsTabId,
-  graphTabId,
-  TabId,
-  timelineTabId,
-  shortcutsTabId,
-} from './tabs';
+import { graphTabId, TabId, timelineTabId, shortcutsTabId } from './tabs';
 import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
-import { ResourceListing } from '../models';
 import { getTypeIds } from './tabs/Timeline/Event';
+import { resourcesEndpoint } from '../api/endpoint';
+import { DetailsUrlQueryParameters } from './models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('./tabs/Details/clipboard');
+jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 
 const retrievedDetails = {
   name: 'Central',
@@ -218,7 +218,6 @@ const retrievedTimeline = {
 };
 
 const resourceId = 1;
-const resourceType = 'host';
 
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
@@ -232,9 +231,6 @@ const DetailsTest = ({ openTabId }: Props): JSX.Element => {
   const listingState = useListing();
   const detailState = useDetails();
 
-  detailState.selectedResourceId = resourceId;
-  detailState.selectedResourceType = resourceType;
-
   if (openTabId) {
     detailState.openDetailsTabId = openTabId;
   }
@@ -242,7 +238,6 @@ const DetailsTest = ({ openTabId }: Props): JSX.Element => {
   context = {
     ...listingState,
     ...detailState,
-    listing: {},
   } as ResourceContext;
 
   return (
@@ -276,6 +271,10 @@ describe.only(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = renderDetails();
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -364,22 +363,6 @@ describe.only(Details, () => {
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
 
-  it('refreshes the details when the listing is updated', async () => {
-    mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
-
-    const { getByText } = renderDetails();
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    expect(getByText(labelStatusInformation)).toBeInTheDocument();
-
-    act(() => {
-      context.setListing({} as ResourceListing);
-    });
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
-  });
-
   it.each([
     [labelLast24h, '2020-06-19T20:00:00.000Z'],
     [labelLast7Days, '2020-06-13T20:00:00.000Z'],
@@ -394,6 +377,10 @@ describe.only(Details, () => {
 
       const { getByText, getAllByText } = renderDetails({
         openTabId: graphTabId,
+      });
+
+      act(() => {
+        context.setSelectedResourceId(resourceId);
       });
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
@@ -414,16 +401,18 @@ describe.only(Details, () => {
   it('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const mockedClipboard = clipboard as jest.Mocked<typeof clipboard>;
-
     const { getByTitle } = renderDetails();
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     fireEvent.click(getByTitle(labelCopy));
 
     await waitFor(() =>
-      expect(mockedClipboard.copy).toHaveBeenCalledWith(
+      expect(copyToClipboard).toHaveBeenCalledWith(
         retrievedDetails.command_line,
       ),
     );
@@ -436,6 +425,10 @@ describe.only(Details, () => {
 
     const { getByText, getAllByText, baseElement } = renderDetails({
       openTabId: timelineTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
     });
 
     await waitFor(() =>
@@ -562,6 +555,10 @@ describe.only(Details, () => {
       openTabId: shortcutsTabId,
     });
 
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
@@ -612,6 +609,10 @@ describe.only(Details, () => {
       openTabId: shortcutsTabId,
     });
 
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
@@ -625,7 +626,15 @@ describe.only(Details, () => {
   });
 
   it('sets the details according to the details URL query parameter when given', async () => {
-    const details = {
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedDetails,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedDetails,
+      });
+
+    const retrievedServiceDetails = {
       id: 2,
       parentId: 3,
       parentType: 'host',
@@ -636,10 +645,79 @@ describe.only(Details, () => {
     setUrlQueryParameters([
       {
         name: 'details',
-        value: details,
+        value: retrievedServiceDetails,
       },
     ]);
 
-    const { getByText, getAllByText, queryByText } = renderDetails();
+    const { getByText } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${resourcesEndpoint}/${retrievedServiceDetails.parentType}s/${retrievedServiceDetails.parentId}/${retrievedServiceDetails.type}s/${retrievedServiceDetails.id}`,
+        cancelTokenRequestParam,
+      );
+
+      expect(context.openDetailsTabId).toEqual(shortcutsTabId);
+    });
+
+    fireEvent.click(getByText(labelDetails));
+
+    const tabFromUrlQueryParameters = path(
+      ['details', 'tab'],
+      getUrlQueryParameters(),
+    );
+
+    await waitFor(() => {
+      expect(tabFromUrlQueryParameters).toEqual('details');
+    });
+
+    act(() => {
+      context.setSelectedResourceId(1);
+      context.setSelectedResourceParentId(undefined);
+      context.setSelectedResourceParentType(undefined);
+      context.setSelectedResourceType('host');
+    });
+
+    const updatedDetailsFromQueryParameters = getUrlQueryParameters()
+      .details as DetailsUrlQueryParameters;
+
+    await waitFor(() => {
+      expect(updatedDetailsFromQueryParameters).toEqual({
+        id: 1,
+        type: 'host',
+        tab: 'details',
+      });
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${resourcesEndpoint}/${updatedDetailsFromQueryParameters.type}s/${updatedDetailsFromQueryParameters.id}`,
+        cancelTokenRequestParam,
+      );
+    });
+  });
+
+  it('copies the current URL when the copy resource link button is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedDetails,
+    });
+
+    const { getByLabelText } = renderDetails();
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    act(() => {
+      fireEvent.click(
+        getByLabelText(labelCopyLink).firstElementChild as HTMLElement,
+      );
+    });
+
+    await waitFor(() => {
+      expect(copyToClipboard).toHaveBeenCalledWith(window.location.href);
+    });
   });
 });
