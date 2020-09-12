@@ -156,7 +156,7 @@ class Topology
         // get translated menu entry
         $topologyName = _($this->topology_name);
 
-        if ($this->getIsDeprecated() === '1') {
+        if ($this->getIsDeprecated() === true) {
             $topologyName .= ' (' . _('deprecated') . ')';
         }
 
