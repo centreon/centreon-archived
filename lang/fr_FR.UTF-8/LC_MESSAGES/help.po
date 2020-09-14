@@ -7193,3 +7193,13 @@ msgstr "Remote Server principal auquel ce collecteur sera lié"
 
 msgid "Additional Remote Server to which this server will be attached"
 msgstr "Remote Server additionnel auquel ce collecteur sera lié"
+
+msgid ""
+"Enter the name of an active contact who have the right to 'reach API configuration' on the Central."
+"This user will be used to call the API from the Remote to the Central."
+msgstr ""
+"Entrez le nom d'un contact actif qui a le droit d'accéder à l'API de configuration sur le Central."
+"Ce compte sera utilisé pour appeler l'API depuis le Remote vers le Central."
+
+msgid "Enter the current password of this account."
+msgstr "Entrez le mot de passe actuel de ce compte."
