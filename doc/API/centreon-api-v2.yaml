@@ -3335,6 +3335,7 @@ components:
       properties:
         status:
           type: string
+          required: true
           enum: [up, down, unreachable]
           description: "Status result of the check sent"
           example: "down"
@@ -3353,6 +3354,7 @@ components:
       properties:
         status:
           type: string
+          required: true
           enum: [ok, warning, critical, unknown]
           description: "Status result of the check sent"
           example: "critical"
@@ -3376,11 +3378,13 @@ components:
             properties:
               type:
                 type: string
+                required: true
                 enum: [host, service]
                 description: "Type of resource"
                 example: "service"
               id:
                 type: integer
+                required: true
                 description: "Resource ID"
                 example: 10
               parent:
@@ -3393,6 +3397,7 @@ components:
                     example: 17
               status:
                 type: string
+                required: true
                 enum: [ok, warning, critical, unknown, down, unreachable, up]
                 description: "Status result of the check sent"
                 example: "critical"
