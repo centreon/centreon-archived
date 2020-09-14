@@ -105,7 +105,7 @@ class MonitoringResourceControllerTest extends TestCase
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
         $tokenStorage->expects($this->any())
             ->method('getToken')
-            ->willReturn($this->token);
+            ->willReturn($token);
 
         $this->container = $this->createMock(ContainerInterface::class);
         $this->container->expects($this->any())
