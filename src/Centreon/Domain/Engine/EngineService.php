@@ -35,8 +35,9 @@ use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationRepositoryInterface;
+use Centreon\Domain\Monitoring\SubmitResult\SubmitResultService;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationRepositoryInterface;
 
 /**
  * This class is designed to send external command for Engine
@@ -411,7 +412,7 @@ class EngineService extends AbstractCentreonService implements
         $errors = $this->validator->validate(
             $result,
             null,
-            SubmitResult::VALIDATION_GROUPS_HOST_SUBMIT_RESULT
+            SubmitResultService::VALIDATION_GROUPS_HOST_SUBMIT_RESULT
         );
 
         if ($errors->count() > 0) {
@@ -446,7 +447,7 @@ class EngineService extends AbstractCentreonService implements
         $errors = $this->validator->validate(
             $result,
             null,
-            SubmitResult::VALIDATION_GROUPS_SERVICE_SUBMIT_RESULT
+            SubmitResultService::VALIDATION_GROUPS_SERVICE_SUBMIT_RESULT
         );
 
         if ($errors->count() > 0) {

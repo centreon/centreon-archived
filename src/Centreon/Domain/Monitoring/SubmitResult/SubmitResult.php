@@ -24,8 +24,6 @@ namespace Centreon\Domain\Monitoring\SubmitResult;
 
 class SubmitResult
 {
-    public const VALIDATION_GROUPS_HOST_SUBMIT_RESULT = ['submit_result_host'];
-    public const VALIDATION_GROUPS_SERVICE_SUBMIT_RESULT = ['submit_result_service'];
     /**
      * @var int Resource ID
      */
