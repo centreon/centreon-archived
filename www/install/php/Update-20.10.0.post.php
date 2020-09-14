@@ -73,7 +73,7 @@ try {
         // This page is displayed only on remote platforms.
         $showPage = ($row['value'] === 'yes') ? '1' : '0';
         $stmt = $pearDB->query("
-            INSERT INTO `topology`(
+            INSERT INTO `topology` (
                 `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`,
                 `topology_url`, `topology_url_opt`,
                 `topology_popup`, `topology_modules`, `topology_show`,
@@ -81,9 +81,9 @@ try {
             ) VALUES (
                 'Remote access', 501, 50120, 25, 1,
                 './include/Administration/parameters/parameters.php', '&o=remote',
-                '0', '0', " . $showPage . ",
+                '0', '0', '" . $showPage . "',
                 NULL, NULL, NULL, '1'
-            )            
+            )
         ");
     }
 
