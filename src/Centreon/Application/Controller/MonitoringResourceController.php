@@ -514,8 +514,7 @@ class MonitoringResourceController extends AbstractController
         $baseListingUri = $this->getBaseUri() . static::RESOURCE_LISTING_URI;
 
         if (!empty($parameters)) {
-            $baseListingUri .= '?';
-            http_build_query($parameters);
+            $baseListingUri .= '?' . http_build_query($parameters);
         }
 
         return $baseListingUri;
