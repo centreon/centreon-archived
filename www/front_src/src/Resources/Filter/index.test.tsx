@@ -29,8 +29,8 @@ import {
   labelClearAll,
   labelSearchHelp,
   labelSearchOnFields,
+  labelNewFilter,
 } from '../translatedLabels';
-import { allFilter, newFilter } from './models';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
 import useFilter from './useFilter';
@@ -412,6 +412,19 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
+      const allFilter = {
+        id: 'all',
+        name: labelAll,
+        criterias: {
+          resourceTypes: [],
+          states: [],
+          statuses: [],
+          hostGroups: [],
+          serviceGroups: [],
+          search: undefined,
+        },
+      };
+
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
         filterStorageKey,
         JSON.stringify(allFilter),
@@ -425,7 +438,8 @@ describe(Filter, () => {
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
           filterStorageKey,
           JSON.stringify({
-            ...newFilter,
+            id: '',
+            name: labelNewFilter,
             criterias: { ...allFilter.criterias, search: 'searching...' },
           }),
         ),

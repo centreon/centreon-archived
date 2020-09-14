@@ -59,16 +59,16 @@ const retrievedCustomFilters = {
         value: [],
       },
       {
-        name: 'service_groups',
-        type: 'multi_select',
-        value: [],
-        object_type: 'service_groups',
-      },
-      {
         name: 'host_groups',
         type: 'multi_select',
         value: [],
         object_type: 'host_groups',
+      },
+      {
+        name: 'service_groups',
+        type: 'multi_select',
+        value: [],
+        object_type: 'service_groups',
       },
       {
         name: 'search',
@@ -98,6 +98,7 @@ describe(EditFilterPanel, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
     mockedAxios.put.mockReset();
+    mockedAxios.patch.mockReset();
     mockedAxios.delete.mockReset();
   });
 

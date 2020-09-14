@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { isEmpty } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Button, ButtonProps, Grid } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
@@ -27,6 +28,7 @@ const ActionButton = (props: ButtonProps): JSX.Element => (
 );
 
 const ResourceActions = (): JSX.Element => {
+  const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
 
@@ -68,9 +70,9 @@ const ResourceActions = (): JSX.Element => {
     })
       .then(() => {
         confirmAction();
-        showSuccess(labelCheckCommandSent);
+        showSuccess(t(labelCheckCommandSent));
       })
-      .catch(() => showError(labelSomethingWentWrong));
+      .catch(() => showError(t(labelSomethingWentWrong)));
   }, [resourcesToCheck]);
 
   React.useEffect(() => (): void => cancel(), []);
@@ -110,7 +112,7 @@ const ResourceActions = (): JSX.Element => {
           startIcon={<IconAcknowledge />}
           onClick={prepareToAcknowledge}
         >
-          {labelAcknowledge}
+          {t(labelAcknowledge)}
         </ActionButton>
       </Grid>
       <Grid item>
@@ -119,7 +121,7 @@ const ResourceActions = (): JSX.Element => {
           startIcon={<IconDowntime />}
           onClick={prepareToSetDowntime}
         >
-          {labelSetDowntime}
+          {t(labelSetDowntime)}
         </ActionButton>
       </Grid>
       <Grid item>
@@ -128,7 +130,7 @@ const ResourceActions = (): JSX.Element => {
           startIcon={<IconCheck />}
           onClick={prepareToCheck}
         >
-          {labelCheck}
+          {t(labelCheck)}
         </ActionButton>
       </Grid>
       {resourcesToAcknowledge.length > 0 && (

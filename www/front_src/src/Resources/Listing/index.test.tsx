@@ -21,6 +21,7 @@ import {
   find,
   propSatisfies,
   isNil,
+  identity,
 } from 'ramda';
 import Listing from '.';
 import { getColumns } from './columns';
@@ -34,7 +35,10 @@ import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
 import { detailsTabId, graphTabId, shortcutsTabId } from '../Details/tabs';
 
-const columns = getColumns({ onAcknowledge: jest.fn() });
+const columns = getColumns({
+  actions: { onAcknowledge: jest.fn() },
+  t: identity,
+});
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

@@ -45,7 +45,7 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
   'CustomFilter',
 );
 
-const listCustomFiltersDecoder = buildListingDecoder({
+const listCustomFiltersDecoder = buildListingDecoder<RawFilter>({
   entityDecoder,
   entityDecoderName: 'CustomFilter',
   listingDecoderName: 'CustomFilters',

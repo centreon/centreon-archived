@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
 
 import {
   Typography,
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EditFiltersPanel = (): JSX.Element | null => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const {
     setEditPanelOpen,
@@ -135,7 +137,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
   const header = (
     <div className={classes.header}>
       <Typography variant="h6" align="center">
-        {labelEditFilters}
+        {t(labelEditFilters)}
       </Typography>
     </div>
   );

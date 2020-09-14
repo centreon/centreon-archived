@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Card, CardContent, Typography, makeStyles } from '@material-ui/core';
 import { labelComment } from '../../../translatedLabels';
 
@@ -49,6 +51,7 @@ const StateCard = ({
   commentLine,
   chip,
 }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -69,7 +72,7 @@ const StateCard = ({
             variant="subtitle2"
             color="textSecondary"
           >
-            {labelComment}
+            {t(labelComment)}
           </Typography>
           <div className={classes.comment}>{Line(commentLine)}</div>
           <div className={classes.chip}>{chip}</div>

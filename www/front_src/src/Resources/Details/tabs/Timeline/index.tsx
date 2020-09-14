@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   makeStyles,
   Paper,
@@ -68,8 +70,17 @@ const useStyles = makeStyles((theme) => ({
 const TimelineTab = ({ links }: Props): JSX.Element => {
   const classes = useStyles();
 
+  const { t } = useTranslation();
+
+  const translatedTypes = types.map((type) => ({
+    ...type,
+    name: t(type.name),
+  }));
+
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
+  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
+    translatedTypes,
+  );
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(30);
@@ -169,10 +180,10 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
       <Paper className={classes.filterContainer}>
         <div className={classes.filterAutocomplete}>
           <MultiAutocompleteField
-            label={labelEvent}
+            label={t(labelEvent)}
             onChange={changeSelectedTypes}
             value={selectedTypes}
-            options={types}
+            options={translatedTypes}
             fullWidth
             limitTags={3}
           />
@@ -186,7 +197,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
             always(
               <Paper className={classes.noResultContainer}>
                 <Typography align="center" variant="body1">
-                  {labelNoResultsFound}
+                  {t(labelNoResultsFound)}
                 </Typography>
               </Paper>,
             ),
