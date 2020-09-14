@@ -160,7 +160,7 @@ class SubmitResultController extends AbstractController
             }
         }
 
-        return $this->view();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -203,7 +203,7 @@ class SubmitResultController extends AbstractController
                 ->submitHostResult($result);
         }
 
-        return $this->view();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -245,6 +245,6 @@ class SubmitResultController extends AbstractController
                 ->submitServiceResult($result);
         }
 
-        return $this->view();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 }
