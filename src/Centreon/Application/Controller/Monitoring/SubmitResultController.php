@@ -35,6 +35,7 @@ use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResultException;
 use Centreon\Domain\Monitoring\SubmitResult\Interfaces\SubmitResultServiceInterface;
+use Exception;
 
 class SubmitResultController extends AbstractController
 {
@@ -91,27 +92,34 @@ class SubmitResultController extends AbstractController
     }
 
     /**
-     * Check if the resource can be submitted a result by the current user
+     * Check if all resources provided can be submitted a result
+     * by the current user.
      *
      * @param Contact $contact
-     * @param string $resourceType
+     * @param array $resources
      * @return bool
      */
-    private function hasSubmitResultForResource(Contact $contact, string $resourceType): bool
+    private function hasSubmitResultRightsForResources(Contact $contact, array $resources): bool
     {
         if ($contact->isAdmin()) {
             return true;
         }
 
-        $hasRights = false;
+        /**
+         * Retrieving the current submit result rights of the user.
+         */
+        $hasHostRights = $contact->hasRole(Contact::ROLE_HOST_SUBMIT_RESULT);
+        $hasServiceRights = $contact->hasRole(Contact::ROLE_SERVICE_SUBMIT_RESULT);
 
-        if ($resourceType === ResourceEntity::TYPE_HOST) {
-            $hasRights = $contact->hasRole(Contact::ROLE_HOST_SUBMIT_RESULT);
-        } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
-            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_SUBMIT_RESULT);
+        foreach ($resources as $resource) {
+            if (($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
+                || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)) {
+                continue;
+            }
+            return false;
         }
 
-        return $hasRights;
+        return true;
     }
 
     /**
@@ -120,6 +128,7 @@ class SubmitResultController extends AbstractController
      * @param Request $request
      * @return View
      * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function submitResultResources(
         Request $request
@@ -139,24 +148,30 @@ class SubmitResultController extends AbstractController
             'config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json'
         );
 
+        /**
+         * If user has no rights to submit result for host and/or service
+         * return view with unauthorized HTTP header response
+         */
+        if (!$this->hasSubmitResultRightsForResources($contact, $results)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $message = '';
         foreach ($results['resources'] as $submitResource) {
-            $status = ResourceStatus::STATUS_MAPPING[strtoupper($submitResource['status'])];
-            $result = (new SubmitResult($submitResource['id'], $status))
+            $result = (new SubmitResult($submitResource['id'], $submitResource['status']))
                 ->setOutput($submitResource['output'])
                 ->setPerformanceData($submitResource['performance_data'])
                 ->setParentResourceId($submitResource['parent']['id']);
             try {
-                if ($this->hasSubmitResultForResource($contact, $submitResource['type'])) {
-                    if ($submitResource['type'] === ResourceEntity::TYPE_SERVICE) {
-                        $this->submitResultService
-                            ->submitServiceResult($result);
-                    } elseif ($submitResource['type'] === ResourceEntity::TYPE_HOST) {
-                        $this->submitResultService
-                            ->submitHostResult($result);
-                    }
+                if ($submitResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                    $this->submitResultService
+                        ->submitServiceResult($result);
+                } elseif ($submitResource['type'] === ResourceEntity::TYPE_HOST) {
+                    $this->submitResultService
+                        ->submitHostResult($result);
                 }
             } catch (EntityNotFoundException $e) {
-                continue;
+                throw $e;
             }
         }
 
@@ -170,6 +185,7 @@ class SubmitResultController extends AbstractController
      * @param int $hostId ID of the host
      * @return View
      * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function submitResultHost(
         Request $request,
@@ -185,16 +201,17 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->validateAndRetrievePostData($request, 'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json');
+        $results = $this->validateAndRetrievePostData(
+            $request,
+            'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json'
+        );
 
         if (!empty($results)) {
             /**
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $status = ResourceStatus::STATUS_MAPPING[strtoupper($results['status'])];
-
-            $result = (new SubmitResult($hostId, $status))
+            $result = (new SubmitResult($hostId, $results['status']))
                 ->setOutput($results['output'])
                 ->setPerformanceData($results['performance_data']);
 
@@ -214,6 +231,7 @@ class SubmitResultController extends AbstractController
      * @param int $serviceId ID of the service
      * @return View
      * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function submitResultService(
         Request $request,
@@ -233,9 +251,7 @@ class SubmitResultController extends AbstractController
         $results = $this->validateAndRetrievePostData($request, 'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json');
 
         if (!empty($results)) {
-            $status = ResourceStatus::STATUS_MAPPING[strtoupper($results['status'])];
-
-            $result = (new SubmitResult($serviceId, $status))
+            $result = (new SubmitResult($serviceId, $results['status']))
                 ->setOutput($results['output'])
                 ->setPerformanceData($results['performance_data'])
                 ->setParentResourceId($hostId);

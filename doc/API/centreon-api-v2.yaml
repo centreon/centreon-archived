@@ -3334,11 +3334,15 @@ components:
       type: object
       properties:
         status:
-          type: string
+          type: integer
           required: true
-          enum: [up, down, unreachable]
-          description: "Status result of the check sent"
-          example: "down"
+          enum: [0, 1, 2]
+          description: |
+            Host status code that can be submitted
+            * `0` - UP
+            * `1` - DOWN
+            * `2` - UNREACHABLE
+          example: 0
         output:
           type: string
           nullable: true
@@ -3355,9 +3359,14 @@ components:
         status:
           type: string
           required: true
-          enum: [ok, warning, critical, unknown]
-          description: "Status result of the check sent"
-          example: "critical"
+          enum: [0, 1, 2, 3]
+          description: |
+            Service status code that can be submitted
+            * `0` - OK
+            * `1` - WARNING
+            * `2` - CRITICAL
+            * `3` - UNKNOWN
+          example: 2
         output:
           type: string
           nullable: true
@@ -3396,11 +3405,16 @@ components:
                     description: "Parent resource ID"
                     example: 17
               status:
-                type: string
+                type: integer
                 required: true
-                enum: [ok, warning, critical, unknown, down, unreachable, up]
-                description: "Status result of the check sent"
-                example: "critical"
+                enum: [0, 1, 2, 3]
+                description: |
+                  Resource status code that can be submitted
+                  * `0` - OK or UP
+                  * `1` - WARNING or DOWN
+                  * `2` - CRITICAL or UNREACHABLE
+                  * `3` - UNKNOWN
+                example: 2
               output:
                 type: string
                 nullable: true

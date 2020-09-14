@@ -3,18 +3,11 @@
     "title": "Submit result to a host or service",
     "type": "object",
     "required": ["status"],
+    "additionalProperties": false,
     "properties": {
         "status": {
-            "type": "string",
-            "enum": [
-                "up",
-                "down",
-                "unreachable",
-                "ok",
-                "warning",
-                "critical",
-                "unknown"
-            ]
+            "type": "integer",
+            "enum": [0, 1, 2, 3]
         },
         "performance_data": {
             "type": [

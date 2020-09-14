@@ -30,7 +30,7 @@ Feature:
           "type": "host",
           "id": <hostId>,
           "parent": null,
-          "status": "down",
+          "status": 2,
           "output": "Host DOWN",
           "performance_data": "nbproc: 0"
         },
@@ -40,7 +40,7 @@ Feature:
           "parent": {
             "id": <hostId>
           },
-          "status": "critical",
+          "status": 2,
           "output": "Service CRITICAL",
           "performance_data": "nbproc: 0"
         }

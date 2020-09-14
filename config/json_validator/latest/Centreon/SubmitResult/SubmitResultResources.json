@@ -3,6 +3,7 @@
     "title": "Schedule checks on resources",
     "type": "object",
     "required": ["resources"],
+    "additionalProperties": false,
     "properties": {
         "resources": {
             "type": "array",
@@ -14,6 +15,7 @@
                     "parent",
                     "status"
                 ],
+                "additionalProperties": false,
                 "properties": {
                     "type": {
                         "type": "string",
@@ -37,16 +39,8 @@
                         }
                     },
                     "status": {
-                        "type": "string",
-                        "enum": [
-                            "up",
-                            "down",
-                            "unreachable",
-                            "ok",
-                            "warning",
-                            "critical",
-                            "unknown"
-                        ]
+                        "type": "integer",
+                        "enum": [0, 1, 2, 3]
                     },
                     "output": {
                         "type": [

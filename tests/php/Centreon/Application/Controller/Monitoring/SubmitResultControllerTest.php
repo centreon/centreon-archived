@@ -19,18 +19,19 @@
  *
  */
 
-namespace Tests\Centreon\Application\Controller;
+namespace Tests\Centreon\Application\Controller\Monitoring;
 
-use Centreon\Application\Controller\Monitoring\SubmitResultController;
 use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
 use Centreon\Domain\Monitoring\Resource;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
-use Centreon\Domain\Monitoring\SubmitResult\SubmitResultException;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResultService;
+use Centreon\Domain\Monitoring\SubmitResult\SubmitResultException;
+use Centreon\Application\Controller\Monitoring\SubmitResultController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -67,7 +68,7 @@ class SubmitResultControllerTest extends TestCase
                     'type' => 'host',
                     'id' => 1,
                     'parent' => null,
-                    'status' => 'down',
+                    'status' => 2,
                     'output' => 'Host went down',
                     'performance_data' => 'ping: 0'
                 ],
@@ -77,7 +78,7 @@ class SubmitResultControllerTest extends TestCase
                     'parent' => [
                         'id' => 1,
                     ],
-                    'status' => 'critical',
+                    'status' => 2,
                     'output' => 'Service went critical',
                     'performance_data' => 'proc: 0'
                 ],
@@ -85,13 +86,13 @@ class SubmitResultControllerTest extends TestCase
         ];
 
         $hostSubmitResultJson = [
-            'status' => 'down',
+            'status' => 2,
             'output' => 'Host went down',
             'performance_data' => 'ping: 0'
         ];
 
         $serviceSubmitResultJson = [
-            'status' => 'critical',
+            'status' => 2,
             'output' => 'Service went critical',
             'performance_data' => 'proc: 0'
         ];
@@ -179,8 +180,7 @@ class SubmitResultControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->wrongJsonSubmitResult);
-        $this->expectException(SubmitResultException::class);
-        $this->expectExceptionMessage('[resources] The property resources is required');
+        $this->expectException(\InvalidArgumentException::class);
         $submitResultController->submitResultResources($this->request);
     }
 
@@ -201,7 +201,7 @@ class SubmitResultControllerTest extends TestCase
             ->willReturn($this->correctJsonSubmitResult);
         $view = $submitResultController->submitResultResources($this->request);
 
-        $this->assertEquals($view, View::create());
+        $this->assertEquals($view, View::create(null, Response::HTTP_NO_CONTENT));
     }
 
     /**
@@ -230,8 +230,8 @@ class SubmitResultControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->wrongJsonSubmitResult);
-        $this->expectException(SubmitResultException::class);
-        $this->expectExceptionMessage('[status] The property status is required');
+        $this->expectException(\InvalidArgumentException::class);
+        //$this->expectExceptionMessage('[status] The property status is required');
         $submitResultController->submitResultHost($this->request, $this->hostResource->getId());
     }
     /**
@@ -251,7 +251,7 @@ class SubmitResultControllerTest extends TestCase
             ->willReturn($this->hostSubmitResultJson);
         $view = $submitResultController->submitResultHost($this->request, $this->hostResource->getId());
 
-        $this->assertEquals($view, View::create());
+        $this->assertEquals($view, View::create(null, Response::HTTP_NO_CONTENT));
     }
 
     /**
@@ -284,8 +284,8 @@ class SubmitResultControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->wrongJsonSubmitResult);
-        $this->expectException(SubmitResultException::class);
-        $this->expectExceptionMessage('[status] The property status is required');
+        $this->expectException(\InvalidArgumentException::class);
+        // $this->expectExceptionMessage('[status] The property status is required');
         $submitResultController->submitResultService(
             $this->request,
             $this->serviceResource->getParent()->getId(),
@@ -314,6 +314,6 @@ class SubmitResultControllerTest extends TestCase
             $this->serviceResource->getId()
         );
 
-        $this->assertEquals($view, View::create());
+        $this->assertEquals($view, View::create(null, Response::HTTP_NO_CONTENT));
     }
 }

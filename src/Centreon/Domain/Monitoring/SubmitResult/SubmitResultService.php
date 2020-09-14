@@ -113,7 +113,7 @@ class SubmitResultService extends AbstractCentreonService implements SubmitResul
         $errors = $this->validator->validate(
             $result,
             null,
-            SubmitResult::VALIDATION_GROUPS_SERVICE_SUBMIT_RESULT
+            self::VALIDATION_GROUPS_SERVICE_SUBMIT_RESULT
         );
 
         if ($errors->count() > 0) {
@@ -156,7 +156,7 @@ class SubmitResultService extends AbstractCentreonService implements SubmitResul
         $errors = $this->validator->validate(
             $result,
             null,
-            SubmitResult::VALIDATION_GROUPS_HOST_SUBMIT_RESULT
+            self::VALIDATION_GROUPS_HOST_SUBMIT_RESULT
         );
 
         if ($errors->count() > 0) {

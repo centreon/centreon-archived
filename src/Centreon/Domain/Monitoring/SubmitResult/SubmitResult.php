@@ -25,6 +25,10 @@ namespace Centreon\Domain\Monitoring\SubmitResult;
 class SubmitResult
 {
     /**
+     * @var array Allowed statuses code to submit
+     */
+    public const ALLOWED_STATUSES = [0, 1, 2, 3];
+    /**
      * @var int Resource ID
      */
     public $resourceId;
@@ -52,7 +56,7 @@ class SubmitResult
     public function __construct(int $resourceId, int $status)
     {
         $this->resourceId = $resourceId;
-        $this->status = $status;
+        $this->setStatus($status);
     }
 
     /**
@@ -109,6 +113,14 @@ class SubmitResult
      */
     public function setStatus(int $status): SubmitResult
     {
+        if (!in_array($status, self::ALLOWED_STATUSES)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    _('Status provided %d is invalid'),
+                    $status
+                )
+            );
+        }
         $this->status = $status;
         return $this;
     }
