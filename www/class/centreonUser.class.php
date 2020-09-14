@@ -96,7 +96,7 @@ class CentreonUser
         $this->default_page = $user["default_page"];
         $this->gmt = $user["contact_location"];
         $this->js_effects = $user["contact_js_effects"];
-        $this->showDeprecatedPages = boolval($user["show_deprecated_pages"]);
+        $this->showDeprecatedPages = (bool) $user["show_deprecated_pages"];
         $this->is_admin = null;
         /*
          * Initiate ACL
