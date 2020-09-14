@@ -139,8 +139,6 @@ class SubmitResultController extends AbstractController
             'config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json'
         );
 
-
-        $status = 0;
         foreach ($results['resources'] as $submitResource) {
             $status = ResourceStatus::STATUS_MAPPING[strtoupper($submitResource['status'])];
             $result = (new SubmitResult($submitResource['id'], $status))
