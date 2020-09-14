@@ -505,7 +505,7 @@ class MonitoringResourceController extends AbstractController
      * @param array $parameters
      * @return void
      */
-    private function buildDetailsUri(array $parameters)
+    public function buildDetailsUri(array $parameters)
     {
         return $this->getBaseUri() . static::RESOURCE_LISTING_URI
             . '?details=' . json_encode($parameters);
