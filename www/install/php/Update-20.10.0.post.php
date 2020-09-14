@@ -35,7 +35,10 @@ try {
      */
     // Insert the central as first platform and parent of all others
     $errorMessage = "Unable to insert the central in the platform_topology table.";
-    $centralServerQuery = $pearDB->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
+    $centralServerQuery = $pearDB->query("
+        SELECT `id`, `name` FROM nagios_server
+        WHERE localhost = '1' AND is_default = '1' AND ns_activate = '1'
+    ");
     if ($row = $centralServerQuery->fetch()) {
         $stmt = $pearDB->prepare("
             INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
