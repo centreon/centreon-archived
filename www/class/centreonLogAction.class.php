@@ -43,7 +43,7 @@ class CentreonLogAction
      * Const use to keep the chnagelog mechanism with hidden password values
      */
     const PASSWORD_BEFORE = '*******';
-    const PASSWORD_AFTER = '******';
+    const PASSWORD_AFTER = CentreonAuth::PWS_OCCULTATION;
     /*
      * Initializes variables
      */
