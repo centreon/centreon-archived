@@ -20,7 +20,7 @@ import {
   labelSaveAsNew,
   labelName,
 } from '../../translatedLabels';
-import { toRawFilter } from '../api/adapters';
+import { toRawFilter, toFilter } from '../api/adapters';
 import { newFilter } from '../models';
 import { filterEndpoint } from '../api';
 
@@ -192,9 +192,21 @@ describe(SaveMenu, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
+    const newSearch = 'new search';
+
+    const updatedFilter = toRawFilter({
+      ...toFilter(createdFilter),
+      criterias: {
+        ...toFilter(createdFilter).criterias,
+        search: newSearch,
+      },
+    });
+
+    mockedAxios.put.mockResolvedValue({ data: updatedFilter });
+
     act(() => {
       filterState.setFilter(newFilter);
-      filterState.setNextSearch('toto');
+      filterState.setNextSearch(newSearch);
     });
 
     expect(
