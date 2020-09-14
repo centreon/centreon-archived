@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+require_once(__DIR__ . '/centreonAuth.class.php');
 
 class CentreonLogAction
 {
