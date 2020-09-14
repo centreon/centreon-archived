@@ -51,15 +51,16 @@ class SubmitResultController extends AbstractController
     }
 
     /**
-     * This function will ensure that the POST data is correct
-     * regarding validation constraints defined
+     * This function will ensure that the POST data is valid
+     * regarding validation constraints defined and will return
+     * the decoded JSON content
      *
      * @param Request $request
+     * @param string $jsonValidatorFile
      * @return array $results
      * @throws InvalidArgumentException
-     * @throws SubmitResultException
      */
-    private function isValidJson(Request $request): array
+    private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {
         $results = json_decode((string) $request->getContent(), true);
         if (!is_array($results)) {
@@ -71,8 +72,7 @@ class SubmitResultController extends AbstractController
         */
         $validator = new Validator();
         $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . __DIR__ .
-            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json';
+        $file = 'file://' . __DIR__ . '/../../../../../' . $jsonValidatorFile;
         $validator->validate(
             $bodyContent,
             (object) ['$ref' => $file],
@@ -84,7 +84,7 @@ class SubmitResultController extends AbstractController
             foreach ($validator->getErrors() as $error) {
                 $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
-            throw new SubmitResultException($message);
+            throw new \InvalidArgumentException($message);
         }
 
         return $results;
@@ -131,31 +131,14 @@ class SubmitResultController extends AbstractController
         $contact = $this->getUser();
         $this->submitResultService->filterByContact($contact);
 
-        $results = json_decode((string) $request->getContent(), true);
-        if (!is_array($results)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
-        }
-
        /*
         * Validate the content of the POST request against the JSON schema validator
         */
-        $validator = new Validator();
-        $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . __DIR__ .
-            '/../../../../../config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json';
-        $validator->validate(
-            $bodyContent,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        $results = $this->validateAndRetrievePostData(
+            $request,
+            'config/json_validator/latest/Centreon/SubmitResult/SubmitResultResources.json'
         );
 
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new SubmitResultException($message);
-        }
 
         $status = 0;
         foreach ($results['resources'] as $submitResource) {
@@ -204,7 +187,7 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->isValidJson($request);
+        $results = $this->validateAndRetrievePostData($request, 'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json');
 
         if (!empty($results)) {
             /**
@@ -249,7 +232,7 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->isValidJson($request);
+        $results = $this->validateAndRetrievePostData($request, 'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json');
 
         if (!empty($results)) {
             $status = ResourceStatus::STATUS_MAPPING[strtoupper($results['status'])];
