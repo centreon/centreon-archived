@@ -114,7 +114,7 @@ print_step_end
 #
 
 print_step_begin "PHP configuration"
-timezone=`php -r '
+timezone=`/opt/rh/rh-php72/root/bin/php -r '
     $timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
 
     if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
