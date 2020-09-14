@@ -515,9 +515,7 @@ class MonitoringResourceController extends AbstractController
 
         if (!empty($parameters)) {
             $baseListingUri .= '?';
-            foreach ($parameters as $parameterName => $parameterValue) {
-                $baseListingUri .= $parameterName . '=' . $parameterValue;
-            }
+            http_build_query($parameters);
         }
 
         return $baseListingUri;
