@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   Checkbox,
   FormControlLabel,
@@ -44,6 +46,8 @@ const DialogAcknowledge = ({
   handleChange,
   loading,
 }: Props): JSX.Element => {
+  const { t } = useTranslation();
+
   const {
     getAcknowledgementDeniedTypeAlert,
     canAcknowledgeServices,
@@ -57,9 +61,9 @@ const DialogAcknowledge = ({
 
   return (
     <Dialog
-      labelCancel={labelCancel}
-      labelConfirm={labelAcknowledge}
-      labelTitle={labelAcknowledge}
+      labelCancel={t(labelCancel)}
+      labelConfirm={t(labelAcknowledge)}
+      labelTitle={t(labelAcknowledge)}
       open={open}
       onClose={onCancel}
       onCancel={onCancel}
@@ -79,7 +83,7 @@ const DialogAcknowledge = ({
             value={values.comment}
             onChange={handleChange('comment')}
             multiline
-            label={labelComment}
+            label={t(labelComment)}
             fullWidth
             rows={3}
             error={errors?.comment}
@@ -90,7 +94,7 @@ const DialogAcknowledge = ({
             control={
               <Checkbox
                 checked={values.notify}
-                inputProps={{ 'aria-label': labelNotify }}
+                inputProps={{ 'aria-label': t(labelNotify) }}
                 color="primary"
                 onChange={handleChange('notify')}
                 size="small"
@@ -110,13 +114,13 @@ const DialogAcknowledge = ({
                     values.acknowledgeAttachedResources
                   }
                   disabled={!canAcknowledgeServices()}
-                  inputProps={{ 'aria-label': labelAcknowledgeServices }}
+                  inputProps={{ 'aria-label': t(labelAcknowledgeServices) }}
                   color="primary"
                   onChange={handleChange('acknowledgeAttachedResources')}
                   size="small"
                 />
               }
-              label={labelAcknowledgeServices}
+              label={t(labelAcknowledgeServices)}
             />
           </Grid>
         )}

@@ -269,7 +269,7 @@ const Filter = (): JSX.Element => {
           />
           <MultiAutocompleteField
             options={availableStates}
-            label={labelState}
+            label={t(labelState)}
             onChange={changeStates}
             value={states || []}
             openText={`${t(labelOpen)} ${t(labelState)}`}
@@ -278,7 +278,7 @@ const Filter = (): JSX.Element => {
           />
           <MultiAutocompleteField
             options={availableStatuses}
-            label={labelStatus}
+            label={t(labelStatus)}
             onChange={changeStatuses}
             value={statuses || []}
             openText={`${t(labelOpen)} ${t(labelStatus)}`}
@@ -289,7 +289,7 @@ const Filter = (): JSX.Element => {
             getEndpoint={getConnectedAutocompleteEndpoint(
               buildHostGroupsEndpoint,
             )}
-            label={labelHostGroup}
+            label={t(labelHostGroup)}
             onChange={changeHostGroups}
             value={hostGroups || []}
             openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
@@ -300,7 +300,7 @@ const Filter = (): JSX.Element => {
             getEndpoint={getConnectedAutocompleteEndpoint(
               buildServiceGroupsEndpoint,
             )}
-            label={labelServiceGroup}
+            label={t(labelServiceGroup)}
             onChange={changeServiceGroups}
             value={serviceGroups || []}
             openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}

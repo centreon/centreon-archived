@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
@@ -39,24 +40,25 @@ const formatDateInterval = (values: DateParams): [Date, Date] => {
   return [dateTimeStart, dateTimeEnd];
 };
 
-const validationSchema = Yup.object().shape({
-  dateStart: Yup.string().required(labelRequired).nullable(),
-  timeStart: Yup.string().required(labelRequired).nullable(),
-  dateEnd: Yup.string().required(labelRequired).nullable(),
-  timeEnd: Yup.string().required(labelRequired).nullable(),
-  fixed: Yup.boolean(),
-  duration: Yup.object().when('fixed', (fixed, schema) => {
-    return !fixed
-      ? schema.shape({
-          value: Yup.string().required(labelRequired),
-          unit: Yup.string().required(labelRequired),
-        })
-      : schema;
-  }),
-  comment: Yup.string().required(labelRequired),
-});
+const getValidationSchema = (t): unknown =>
+  Yup.object().shape({
+    dateStart: Yup.string().required(t(labelRequired)).nullable(),
+    timeStart: Yup.string().required(t(labelRequired)).nullable(),
+    dateEnd: Yup.string().required(t(labelRequired)).nullable(),
+    timeEnd: Yup.string().required(t(labelRequired)).nullable(),
+    fixed: Yup.boolean(),
+    duration: Yup.object().when('fixed', (fixed, schema) => {
+      return !fixed
+        ? schema.shape({
+            value: Yup.string().required(t(labelRequired)),
+            unit: Yup.string().required(t(labelRequired)),
+          })
+        : schema;
+    }),
+    comment: Yup.string().required(t(labelRequired)),
+  });
 
-const validate = (values: DateParams): FormikErrors<DateParams> => {
+const validate = (values: DateParams, t): FormikErrors<DateParams> => {
   const errors: FormikErrors<DateParams> = {};
 
   if (
@@ -68,7 +70,7 @@ const validate = (values: DateParams): FormikErrors<DateParams> => {
     const [start, end] = formatDateInterval(values);
 
     if (start >= end) {
-      errors.dateEnd = labelEndDateMustBeGreater;
+      errors.dateEnd = t(labelEndDateMustBeGreater);
     }
   }
 
@@ -86,6 +88,7 @@ const DowntimeForm = ({
   onClose,
   onSuccess,
 }: Props): JSX.Element | null => {
+  const { t } = useTranslation();
   const { showMessage } = useSnackbar();
 
   const showSuccess = (message): void =>
@@ -139,12 +142,12 @@ const DowntimeForm = ({
         onSuccess();
       });
     },
-    validationSchema,
-    validate,
+    validationSchema: getValidationSchema(t),
+    validate: (values) => validate(values, t),
   });
 
   React.useEffect(() => {
-    form.setFieldValue('comment', `${labelDowntimeBy} ${username}`);
+    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${username}`);
   }, []);
 
   return (

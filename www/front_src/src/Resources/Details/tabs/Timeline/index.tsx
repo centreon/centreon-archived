@@ -3,26 +3,33 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  makeStyles,
+  Paper,
+  Typography,
+  CircularProgress,
+  Button,
+} from '@material-ui/core';
+import IconRefresh from '@material-ui/icons/Refresh';
+
+import {
   useRequest,
   ListingModel,
   MultiAutocompleteField,
   SearchParameter,
 } from '@centreon/ui';
 
-import {
-  makeStyles,
-  Paper,
-  Typography,
-  CircularProgress,
-} from '@material-ui/core';
-import { prop, isEmpty, cond, always, T } from 'ramda';
+import { prop, isEmpty, cond, always, T, isNil, concat } from 'ramda';
 
 import { ResourceLinks } from '../../../models';
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
-import { labelEvent, labelNoResultsFound } from '../../../translatedLabels';
+import {
+  labelEvent,
+  labelNoResultsFound,
+  labelRefresh,
+} from '../../../translatedLabels';
 import { useResourceContext } from '../../../Context';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
@@ -65,11 +72,19 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>([]);
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(types);
+  const translatedTypes = types.map((type) => ({
+    ...type,
+    name: t(type.name),
+  }));
+
+  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
+  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
+    translatedTypes,
+  );
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
-  const [limit] = React.useState(10);
+  const [limit] = React.useState(30);
+  const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
 
   const { endpoints } = links;
   const { timeline: timelineEndpoint } = endpoints;
@@ -80,61 +95,83 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
     decoder: listTimelineEventsDecoder,
   });
 
-  const listTimeline = (): Promise<TimelineListing> => {
-    const getSearch = (): SearchParameter | undefined => {
-      if (isEmpty(selectedTypes)) {
-        return undefined;
-      }
+  const getSearch = (): SearchParameter | undefined => {
+    if (isEmpty(selectedTypes)) {
+      return undefined;
+    }
 
-      return {
-        lists: [
-          {
-            field: 'type',
-            values: selectedTypes.map(prop('id')),
-          },
-        ],
-      };
+    return {
+      lists: [
+        {
+          field: 'type',
+          values: selectedTypes.map(prop('id')),
+        },
+      ],
     };
+  };
 
+  const listTimeline = (
+    { atPage } = {
+      atPage: page,
+    },
+  ): Promise<TimelineListing> => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page,
+        page: atPage,
         limit,
         search: getSearch(),
       },
-    }).then((retrievedListing) => {
-      const { meta } = retrievedListing;
-      setTotal(meta.total);
+    })
+      .then((retrievedListing) => {
+        const { meta } = retrievedListing;
+        setTotal(meta.total);
 
-      return retrievedListing;
-    });
+        return retrievedListing;
+      })
+      .finally(() => {
+        setLoadingMoreEvents(false);
+      });
   };
 
   React.useEffect(() => {
-    if (isEmpty(timeline)) {
+    if (isNil(timeline) || page !== 1) {
       return;
     }
 
     listTimeline().then(({ result }) => {
-      setTimeline(timeline.concat(result));
+      setTimeline(result);
+    });
+  }, [listing]);
+
+  React.useEffect(() => {
+    if (isNil(timeline)) {
+      return;
+    }
+
+    listTimeline().then(({ result }) => {
+      setTimeline(concat(timeline, result));
     });
   }, [page]);
 
-  React.useEffect(() => {
+  const reload = (): void => {
     setPage(1);
-    setTimeline([]);
-    listTimeline().then(({ result }) => setTimeline(result));
-  }, [listing, endpoints, selectedTypes]);
+    setTimeline(undefined);
+    listTimeline({ atPage: 1 }).then(({ result }) => {
+      setTimeline(result);
+    });
+  };
 
-  const loading = sending;
-  const loadingMore = !isEmpty(timeline) && sending;
+  React.useEffect(() => {
+    reload();
+  }, [endpoints, selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
     setSelectedTypes(typeIds);
   };
 
   const loadMoreEvents = (): void => {
+    setLoadingMoreEvents(true);
     setPage(page + 1);
   };
 
@@ -146,7 +183,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
             label={t(labelEvent)}
             onChange={changeSelectedTypes}
             value={selectedTypes}
-            options={types}
+            options={translatedTypes}
             fullWidth
             limitTags={3}
           />
@@ -154,7 +191,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
       </Paper>
       <div className={classes.events}>
         {cond([
-          [always(loading), always(<LoadingSkeleton />)],
+          [always(isNil(timeline)), always(<LoadingSkeleton />)],
           [
             isEmpty,
             always(
@@ -168,19 +205,32 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
           [
             T,
             always(
-              <Events
-                timeline={timeline}
-                total={total}
-                limit={limit}
-                page={page}
-                loading={sending}
-                onLoadMore={loadMoreEvents}
-              />,
+              <>
+                {page > 1 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    startIcon={<IconRefresh />}
+                    onClick={reload}
+                  >
+                    {labelRefresh}
+                  </Button>
+                )}
+                <Events
+                  timeline={timeline as Array<TimelineEvent>}
+                  total={total}
+                  limit={limit}
+                  page={page}
+                  loading={sending}
+                  onLoadMore={loadMoreEvents}
+                />
+              </>,
             ),
           ],
         ])(timeline)}
       </div>
-      {loadingMore && <CircularProgress />}
+      {loadingMoreEvents && <CircularProgress />}
     </div>
   );
 };

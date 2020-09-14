@@ -35,6 +35,8 @@ const AppProvider = (): JSX.Element | null => {
     const locale = retrievedUser.locale?.slice(0, 2);
 
     i18n.use(initReactI18next).init({
+      nsSeparator: false,
+      keySeparator: false,
       fallbackLng: 'en',
       lng: locale,
       resources: pipe(

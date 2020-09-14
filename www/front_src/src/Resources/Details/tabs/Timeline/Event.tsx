@@ -8,6 +8,7 @@ import NotificationIcon from '@material-ui/icons/Notifications';
 import { StatusChip } from '@centreon/ui';
 import { gt, prop } from 'ramda';
 
+import { useTranslation } from 'react-i18next';
 import { TimelineEvent, Type } from './models';
 import {
   labelEvent,
@@ -103,6 +104,7 @@ const Author = ({ event, label }: Props & { label: string }): JSX.Element => {
 };
 
 const EventTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -111,7 +113,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{labelEvent}</Typography>
+          <Typography variant="h6">{t(labelEvent)}</Typography>
           <StatusChip
             severityCode={event.status?.severityCode as number}
             label={event.status?.name}
@@ -119,12 +121,13 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-      <Typography>{`${labelTries}: ${event.tries}`}</Typography>
+      <Typography>{`${t(labelTries)}: ${event.tries}`}</Typography>
     </>
   );
 };
 
 const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -133,7 +136,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Author event={event} label={labelComment} />
+          <Author event={event} label={t(labelComment)} />
         </div>
         <Content event={event} />
       </div>
@@ -142,6 +145,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -150,7 +154,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Author event={event} label={labelAcknowledgement} />
+          <Author event={event} label={t(labelAcknowledgement)} />
         </div>
         <Content event={event} />
       </div>
@@ -159,6 +163,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -167,12 +172,12 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Author event={event} label={labelDowntime} />
+          <Author event={event} label={t(labelDowntime)} />
         </div>
         <Typography variant="caption">
-          {`${labelFrom} ${getFormattedDateTime(
-            event.startDate,
-          )} ${labelTo} ${getFormattedDateTime(event.endDate)}`}
+          {`${t(labelFrom)} ${getFormattedDateTime(event.startDate)} ${t(
+            labelTo,
+          )} ${getFormattedDateTime(event.endDate)}`}
         </Typography>
         <Content event={event} />
       </div>
@@ -181,6 +186,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -189,7 +195,9 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Typography variant="h6">{`${labelNotificationSentTo} ${event.contact?.name}`}</Typography>
+          <Typography variant="h6">
+            {`${t(labelNotificationSentTo)} ${event.contact?.name}`}
+          </Typography>
         </div>
         <Content event={event} />
       </div>
