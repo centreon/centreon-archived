@@ -86,10 +86,6 @@ function registerRemote(string $ip, array $loginCredentials)
     system(
         "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
     );
-
-    //apache configuration
-
-
 }
 
 /**
@@ -100,8 +96,8 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
 {
     $query = "INSERT INTO `informations` (`key`, `value`) VALUES ('apiUsername', :username), ('apiCredentials', :pwd)";
     $statement = $db->prepare($query);
-    $statement->bindValue(':username', $loginCredentials['security']['credentials']['login'], \PDO::PARAM_STR);
-    $statement->bindValue(':pwd', $loginCredentials['security']['credentials']['password'], \PDO::PARAM_STR);
+    $statement->bindValue(':username', $loginCredentials['login'], \PDO::PARAM_STR);
+    $statement->bindValue(':pwd', $loginCredentials['password'], \PDO::PARAM_STR);
     $statement->execute();
 }
 

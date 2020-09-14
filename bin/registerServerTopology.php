@@ -19,7 +19,11 @@
  *
  */
 
+use Security\Encryption;
+
 require_once('registerServerTopology-Func.php');
+require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
+
 
 /************************ */
 /*     DATA RESOLVING
@@ -33,6 +37,16 @@ const TYPE_REMOTE = 'remote';
 const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
+
+define("SECOND_KEY", base64_encode('api_remote_credentials'));
+
+/*
+ * Set encryption parameters
+ */
+$localEnv = '';
+if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
+    $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
+}
 
 $opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::"]);
 /**
@@ -186,7 +200,24 @@ if ($proceed !== "y") {
  * Master-to-Remote transition
  */
 if (isRemote($serverType)) {
-    registerRemote($host, $loginCredentials);
+    /**
+     * prepare db credential
+     */
+    $loginCredentialsDb = [
+        "login" => $username
+    ];
+
+
+    $centreonEncryption = new Encryption();
+    $decrypted = '';
+    try {
+        $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
+        $loginCredentialsDb['password'] = $centreonEncryption->crypt($password);
+    } catch (\InvalidArgumentException $e) {
+        exit($e->getMessage());
+    }
+
+    registerRemote($host, $loginCredentialsDb);
 }
 
 /************************ */
