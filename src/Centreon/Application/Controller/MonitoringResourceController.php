@@ -474,10 +474,12 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildHostDetailsUri(int $hostId)
     {
-        return $this->buildDetailsUri([
-            'type' => Resource::TYPE_HOST,
-            'id' => $hostId,
-            'tab' => static::TAB_DETAILS_NAME,
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'type' => Resource::TYPE_HOST,
+                'id' => $hostId,
+                'tab' => static::TAB_DETAILS_NAME,
+            ]),
         ]);
     }
 
@@ -490,24 +492,34 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildServiceDetailsUri(int $hostId, int $serviceId)
     {
-        return $this->buildDetailsUri([
-            'parentType' => Resource::TYPE_HOST,
-            'parentId' => $hostId,
-            'type' => Resource::TYPE_SERVICE,
-            'id' => $serviceId,
-            'tab' => static::TAB_DETAILS_NAME,
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'parentType' => Resource::TYPE_HOST,
+                'parentId' => $hostId,
+                'type' => Resource::TYPE_SERVICE,
+                'id' => $serviceId,
+                'tab' => static::TAB_DETAILS_NAME,
+            ]),
         ]);
     }
 
     /**
-     * Build uri to access details page of a resource
+     * Build uri to access listing page of resources with specific parameters
      *
      * @param array $parameters
      * @return void
      */
-    public function buildDetailsUri(array $parameters)
+    public function buildListingUri(array $parameters)
     {
-        return $this->getBaseUri() . static::RESOURCE_LISTING_URI
-            . '?details=' . json_encode($parameters);
+        $baseListingUri = $this->getBaseUri() . static::RESOURCE_LISTING_URI;
+
+        if (!empty($parameters)) {
+            $baseListingUri .= '?';
+            foreach ($parameters as $parameterName => $parameterValue) {
+                $baseListingUri .= $parameterName . '=' . $parameterValue;
+            }
+        }
+
+        return $baseListingUri;
     }
 }
