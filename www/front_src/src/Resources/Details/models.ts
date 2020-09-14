@@ -12,8 +12,6 @@ export interface ResourceDetails {
   status: Status;
   parent: Parent;
   links: ResourceLinks;
-  criticality: number;
-  output: string;
   severity: Severity;
   information: string;
   downtimes: Array<Downtime>;

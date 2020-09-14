@@ -193,12 +193,22 @@ class MonitoringResourceControllerTest extends TestCase
         $this->assertEquals($resource->getLinks()->getUris()->getLogs(), '/main.php?p=20301&h=1');
         $this->assertEquals($resource->getLinks()->getUris()->getReporting(), '/main.php?p=307&host=1');
 
-        $this->assertEquals($resource->getLinks()->getEndpoints()->getDetails(), '/centreon/api/beta/monitoring/resources/hosts/1');
-        $this->assertEquals($resource->getLinks()->getEndpoints()->getTimeline(), '/centreon/api/beta/monitoring/hosts/1/timeline');
-        $this->assertEquals($resource->getLinks()->getEndpoints()->getAcknowledgement(), '/centreon/api/beta/monitoring/hosts/1/acknowledgements?limit=1');
-        echo strcmp(urldecode($resource->getLinks()->getEndpoints()->getDowntime()), '/centreon/api/beta/monitoring/hosts/1/downtimes?search={"$and":[{"start_time":{"$lt":1599576967},"end_time":{"$gt":1599576967},"0":{"$or":{"is_cancelled":{"$neq":1},"deletion_time":{"$gt":1599576967}}}}]}');
+        $this->assertEquals(
+            $resource->getLinks()->getEndpoints()->getDetails(),
+            '/centreon/api/beta/monitoring/resources/hosts/1'
+        );
+        $this->assertEquals(
+            $resource->getLinks()->getEndpoints()->getTimeline(),
+            '/centreon/api/beta/monitoring/hosts/1/timeline'
+        );
+        $this->assertEquals(
+            $resource->getLinks()->getEndpoints()->getAcknowledgement(),
+            '/centreon/api/beta/monitoring/hosts/1/acknowledgements?limit=1'
+        );
         $this->assertRegExp(
-            '#/centreon/api/beta/monitoring/hosts/1/downtimes\?search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
+            '#/centreon/api/beta/monitoring/hosts/1/downtimes\?'
+                . 'search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},'
+                . '"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
             urldecode($resource->getLinks()->getEndpoints()->getDowntime())
         );
         $this->assertNull($resource->getLinks()->getEndpoints()->getStatusGraph());

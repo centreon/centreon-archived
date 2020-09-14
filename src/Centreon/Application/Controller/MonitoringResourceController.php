@@ -345,7 +345,7 @@ class MonitoringResourceController extends AbstractController
      * @param ResourceEntity[] $resources
      * @return void
      */
-    private function providePerformanceGraphEndpoint($resources)
+    private function providePerformanceGraphEndpoint(array $resources)
     {
         $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
 
