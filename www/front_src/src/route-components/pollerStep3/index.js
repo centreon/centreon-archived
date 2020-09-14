@@ -2,8 +2,9 @@
 /* eslint-disable react/prop-types */
 
 import React, { Component } from 'react';
-import { I18n } from 'react-redux-i18n';
+import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
+
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
 import BaseWizard from '../../components/forms/baseWizard';
@@ -27,7 +28,7 @@ class PollerStepThreeRoute extends Component {
 
   render() {
     const { links } = this;
-    const { pollerData } = this.props;
+    const { pollerData, t } = this.props;
     const { generateStatus, processingStatus } = this.state;
     return (
       <BaseWizard>
@@ -36,7 +37,7 @@ class PollerStepThreeRoute extends Component {
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
           statusProcessing={processingStatus}
-          formTitle={`${I18n.t('Finalizing Setup')}:`}
+          formTitle={`${t('Finalizing Setup')}:`}
         />
       </BaseWizard>
     );
@@ -49,7 +50,6 @@ const mapStateToProps = ({ pollerForm }) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerStepThreeRoute);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(PollerStepThreeRoute),
+);

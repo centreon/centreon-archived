@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { equals, or, and, not, isEmpty } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import {
   Menu,
@@ -20,10 +21,12 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
-import { isCustom, Filter } from '../models';
+import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
 import CreateFilterDialog from './CreateFilterDialog';
 import { updateFilter as updateFilterRequest } from '../api';
+import useFilterModels from '../useFilterModels';
+import useAdapters from '../api/adapters';
 
 const useStyles = makeStyles((theme) => ({
   save: {
@@ -36,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
 
 const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
+  const { isCustom } = useFilterModels();
+  const { toRawFilter } = useAdapters();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [createFilterDialogOpen, setCreateFilterDialogOpen] = React.useState(
@@ -87,7 +93,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const confirmCreateFilter = (newFilter: Filter): void => {
     showMessage({
-      message: labelFilterCreated,
+      message: t(labelFilterCreated),
       severity: Severity.success,
     });
 
@@ -95,10 +101,13 @@ const SaveFilterMenu = (): JSX.Element => {
   };
 
   const updateFilter = (): void => {
-    sendUpdateFilterRequest(updatedFilter).then(() => {
+    sendUpdateFilterRequest({
+      id: updatedFilter.id,
+      rawFilter: toRawFilter(updatedFilter),
+    }).then(() => {
       closeSaveFilterMenu();
       showMessage({
-        message: labelFilterSaved,
+        message: t(labelFilterSaved),
         severity: Severity.success,
       });
 
@@ -125,7 +134,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
   return (
     <>
-      <IconButton title={labelSaveFilter} onClick={openSaveFilterMenu}>
+      <IconButton title={t(labelSaveFilter)} onClick={openSaveFilterMenu}>
         <SettingsIcon />
       </IconButton>
       <Menu
@@ -138,16 +147,16 @@ const SaveFilterMenu = (): JSX.Element => {
           onClick={openCreateFilterDialog}
           disabled={!canSaveFilterAsNew}
         >
-          {labelSaveAsNew}
+          {t(labelSaveAsNew)}
         </MenuItem>
         <MenuItem disabled={!canSaveFilter} onClick={updateFilter}>
           <div className={classes.save}>
-            <span>{labelSave}</span>
+            <span>{t(labelSave)}</span>
             {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
         </MenuItem>
         <MenuItem onClick={openEditPanel} disabled={isEmpty(customFilters)}>
-          {labelEditFilters}
+          {t(labelEditFilters)}
         </MenuItem>
       </Menu>
       {createFilterDialogOpen && (

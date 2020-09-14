@@ -16,7 +16,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Translate, I18n } from 'react-redux-i18n';
+import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
@@ -38,7 +38,7 @@ const getIssueClass = (issues, key) => {
     : 'green';
 };
 
-const getPollerStatusIcon = (issues) => {
+const getPollerStatusIcon = (t) => (issues) => {
   const databaseClass = getIssueClass(issues, 'database');
 
   const latencyClass = getIssueClass(issues, 'latency');
@@ -56,8 +56,8 @@ const getPollerStatusIcon = (issues) => {
           className={classnames(styles.iconmoon, styles['icon-database'])}
           title={
             databaseClass === 'green'
-              ? I18n.t('OK: all database poller updates are active')
-              : I18n.t(
+              ? t('OK: all database poller updates are active')
+              : t(
                   'Some database poller updates are not active; check your configuration',
                 )
           }
@@ -74,8 +74,8 @@ const getPollerStatusIcon = (issues) => {
           className={classnames(styles.iconmoon, styles['icon-clock'])}
           title={
             latencyClass === 'green'
-              ? I18n.t('OK: no latency detected on your platform')
-              : I18n.t(
+              ? t('OK: no latency detected on your platform')
+              : t(
                   'Latency detected, check configuration for better optimization',
                 )
           }
@@ -165,12 +165,12 @@ class PollerMenu extends Component {
     }
 
     // check if poller configuration page is allowed
-    const { allowedPages } = this.props;
+    const { allowedPages, t } = this.props;
     const allowPollerConfiguration = allowedPages.includes(
       POLLER_CONFIGURATION_TOPOLOGY_PAGE,
     );
 
-    const statusIcon = getPollerStatusIcon(data.issues);
+    const statusIcon = getPollerStatusIcon(t)(data.issues);
 
     return (
       <div
@@ -188,7 +188,7 @@ class PollerMenu extends Component {
               className={classnames(styles.iconmoon, styles['icon-poller'])}
             />
             <span className={styles['wrap-left-icon__name']}>
-              <Translate value="Pollers" />
+              {t('Pollers')}
             </span>
           </span>
           <span
@@ -207,7 +207,7 @@ class PollerMenu extends Component {
               >
                 <li className={styles['submenu-item']}>
                   <span className={styles['submenu-item-link']}>
-                    <Translate value="All pollers" />
+                    {t('All pollers')}
                     <span className={styles['submenu-count']}>
                       {data.total ? data.total : '...'}
                     </span>
@@ -218,11 +218,11 @@ class PollerMenu extends Component {
                       let message = '';
 
                       if (key === 'database') {
-                        message = I18n.t('Database updates not active');
+                        message = t('Database updates not active');
                       } else if (key === 'stability') {
-                        message = I18n.t('Pollers not running');
+                        message = t('Pollers not running');
                       } else if (key === 'latency') {
-                        message = I18n.t('Latency detected');
+                        message = t('Latency detected');
                       }
 
                       return (
@@ -278,7 +278,7 @@ class PollerMenu extends Component {
                         styles['submenu-top-button'],
                       )}
                     >
-                      <Translate value="Configure pollers" />
+                      {t('Configure pollers')}
                     </button>
                   </Link>
                 )}
@@ -300,7 +300,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(PollerMenu),
+);
 
 PollerMenu.propTypes = {
   allowedPages: PropTypes.arrayOf(PropTypes.string).isRequired,

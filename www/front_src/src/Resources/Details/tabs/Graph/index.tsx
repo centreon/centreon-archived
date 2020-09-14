@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { pick, map } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
@@ -54,7 +55,15 @@ interface Props {
 }
 
 const GraphTab = ({ links }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
+
+  const translatedTimePeriodSelectOptions = timePeriodSelectOptions.map(
+    (timePeriod) => ({
+      ...timePeriod,
+      name: t(timePeriod.name),
+    }),
+  );
 
   const { endpoints } = links;
   const { performanceGraph: performanceGraphEndpoint } = endpoints;
@@ -89,7 +98,7 @@ const GraphTab = ({ links }: Props): JSX.Element => {
       <Paper className={classes.header}>
         <SelectField
           className={classes.periodSelect}
-          options={timePeriodSelectOptions}
+          options={translatedTimePeriodSelectOptions}
           selectedOptionId={selectedTimePeriod.id}
           onChange={changeSelectedPeriod}
         />
