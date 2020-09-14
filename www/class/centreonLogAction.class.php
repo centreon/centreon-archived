@@ -40,7 +40,7 @@ class CentreonLogAction
     protected $uselessKey;
 
     /**
-     * Const use to keep the chnagelog mechanism with hidden password values
+     * Const use to keep the changelog mechanism with hidden password values
      */
     const PASSWORD_BEFORE = '*******';
     const PASSWORD_AFTER = CentreonAuth::PWS_OCCULTATION;
@@ -290,12 +290,12 @@ class CentreonLogAction
                         }
                         $field['field_value'] = implode(',', $macroValueArray);
                         /**
-                         * change any password to ****** on the "Before" part of the changeLog and don't change anything
-                         *  if the 'macroValue' string only contains commas
+                         * change any password to ****** on the "Before" part of the changeLog
+                         * and don't change anything if the 'macroValue' string only contains commas
                          */
                         if (
                             isset($ref[$field["field_name"]])
-                            && !empty(str_replace(',','',$ref[$field["field_name"]]))
+                            && !empty(str_replace(',', '', $ref[$field["field_name"]]))
                         ) {
                             foreach ($macroPasswordRef as $macroIdPassword) {
                                 $macroValueArray[$macroIdPassword] = self::PASSWORD_BEFORE;
