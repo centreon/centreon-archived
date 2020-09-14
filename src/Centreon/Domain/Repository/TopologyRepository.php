@@ -168,7 +168,6 @@ class TopologyRepository extends ServiceEntityRepository
             $whereClause = true;
         }
 
-        //var_dump($user->doesShowDeprecatedPages());
         if ($user->doesShowDeprecatedPages() === false) {
             $query .= ($whereClause === true ? ' AND ' : ' WHERE ')
                 . 'is_deprecated = "0"';
