@@ -15537,7 +15537,7 @@ msgid "The address '%s' for '%s' is not valid"
 msgstr "L'adresse '%s' de '%s' n'est pas valide"
 
 #: api/topology/register
-msgid "The type of platform '%s'@'%s' is not consistent"
+msgid "The platform type of '%s'@'%s' is not consistent"
 msgstr "Le type de la plateforme '%s'@'%s' n'est pas cohérent"
 
 #: api/topology/register
@@ -15565,12 +15565,12 @@ msgid "Cannot set parent id to a central server"
 msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"
 
 #: api/topology/register
-msgid "The Central : '%s'@'%s' is already registered"
-msgstr "Un Central : '%s'@'%s' est déjà enregistré"
+msgid "The %s : '%s'@'%s' is already registered"
+msgstr "Le %s : '%s'@'%s' est déjà enregistré"
 
 #: api/topology/register
-msgid "The Central type server : '%s'@'%s' does not match the one configured in Centreon"
-msgstr "Le server du type Central : '%s'@'%s' ne correspond pas à celui configuré dans Centreon"
+msgid "The %s type server : '%s'@'%s' does not match the one configured in Centreon"
+msgstr "Le server du type %s : '%s'@'%s' ne correspond pas à celui configuré dans Centreon"
 
 #: api/topology/register
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"

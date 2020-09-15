@@ -63,7 +63,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if (null !== $foundCentralPlatformType) {
                 throw new PlatformTopologyConflictException(
                     sprintf(
-                        _("A Central : '%s'@'%s' is already registered"),
+                        _("A %s : '%s'@'%s' is already registered"),
+                        $platformTopology->getType(),
                         $foundCentralPlatformType->getName(),
                         $foundCentralPlatformType->getAddress()
                     )
@@ -76,7 +77,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if (null === $foundCentralInNagiosTable) {
                 throw new PlatformTopologyConflictException(
                     sprintf(
-                        _("The Central type server : '%s'@'%s' does not match the one configured in Centreon"),
+                        _("The %s type server : '%s'@'%s' does not match the one configured in Centreon"),
+                        $platformTopology->getType(),
                         $platformTopology->getName(),
                         $platformTopology->getAddress()
                     )
@@ -86,7 +88,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         /**
-         * search for already registered platforms using same name of address
+         * search for already registered platforms using same name or address
          */
         $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
             $platformTopology->getAddress(),

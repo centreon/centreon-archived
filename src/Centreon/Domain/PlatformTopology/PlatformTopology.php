@@ -120,7 +120,7 @@ class PlatformTopology
         if (!in_array($type, static::AVAILABLE_TYPES)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    _("The type of platform '%s'@'%s' is not consistent"),
+                    _("The platform type of '%s'@'%s' is not consistent"),
                     $this->getName(),
                     $this->getAddress()
                 )

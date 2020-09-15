@@ -132,7 +132,9 @@ class PlatformTopologyController extends AbstractController
 
             // Check for same address and parent_address
             if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
-                throw new \InvalidArgumentException("The address and parent_address of the platform are the same");
+                throw new PlatformTopologyConflictException(
+                    _('The address and parent_address of the platform are the same')
+                );
             }
 
             if (isset($platformToAdd['parent_address'])) {
