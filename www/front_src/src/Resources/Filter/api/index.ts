@@ -37,10 +37,10 @@ const createFilter = (cancelToken) => (parameters): Promise<Filter> => {
 };
 
 const updateFilter = (cancelToken) => (parameters): Promise<Filter> => {
-  return putData<RawFilterWithoutId, Filter>(cancelToken)({
+  return putData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
     data: toRawFilter(parameters),
-  });
+  }).then(toFilter);
 };
 
 interface PatchFilterProps {

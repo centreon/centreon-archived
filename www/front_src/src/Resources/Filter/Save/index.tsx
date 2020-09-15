@@ -55,6 +55,8 @@ const SaveFilterMenu = (): JSX.Element => {
     filter,
     updatedFilter,
     setFilter,
+    setHostGroups,
+    setServiceGroups,
     loadCustomFilters,
     customFilters,
     setEditPanelOpen,
@@ -82,6 +84,10 @@ const SaveFilterMenu = (): JSX.Element => {
 
     loadCustomFilters().then(() => {
       setFilter(newFilter);
+
+      // update criterias with deletable objects
+      setHostGroups(newFilter.criterias.hostGroups);
+      setServiceGroups(newFilter.criterias.serviceGroups);
     });
   };
 
@@ -95,14 +101,14 @@ const SaveFilterMenu = (): JSX.Element => {
   };
 
   const updateFilter = (): void => {
-    sendUpdateFilterRequest(updatedFilter).then(() => {
+    sendUpdateFilterRequest(updatedFilter).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
         message: labelFilterSaved,
         severity: Severity.success,
       });
 
-      loadFiltersAndUpdateCurrent(updatedFilter);
+      loadFiltersAndUpdateCurrent(savedFilter);
     });
   };
 
