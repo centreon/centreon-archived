@@ -34,7 +34,7 @@ const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
-$opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::"]);
+$opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::", "template:"]);
 /**
  * Format the --help message
  */
@@ -54,7 +54,20 @@ Global Options:
   --root <optional>           your root Centreon folder (by default "centreon")
   --dns <optional>            provide your server DNS instead of IP. The DNS must be resolvable on the Central.
   --insecure <optional>       allow self-signed certificate
-
+  --template <optional>       give the path of a register topology configuration to automate the script
+             - API_USERNAME             <mandatory> string
+             - API_PASSWORD             <mandatory> string
+             - SERVER_TYPE              <mandatory> string
+             - HOST_ADDRESS             <mandatory> string
+             - SERVER_NAME              <mandatory> string
+             - ROOT_CENTREON_FOLDER     <optional> string
+             - DNS                      <optional> string
+             - INSECURE                 <optional> boolean
+             - PROXY_USAGE              <optional> boolean
+             - PROXY_HOST               <optional> string
+             - PROXY_PORT               <optional> integer
+             - PROXY_USERNAME           <optional> string
+             - PROXY_PASSWORD           <optional> string
 
 EOD;
 
@@ -68,61 +81,83 @@ if (isset($opt['help'])) {
 /**
  * Assign options to variables
  */
-try {
-    if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'])) {
-        throw new \InvalidArgumentException(
-            PHP_EOL . 'missing parameter: -u -t -h -n are mandatories:' . PHP_EOL . $helpMessage
-        );
+$configOptions = [];
+if (isset($opt['template'])) {
+    $configTemplate = parseTemplateFile($opt['template']);
+    try {
+        $configOptions = setConfigOptionsFromTemplate($configTemplate, $helpMessage);
+    } catch (\InvalidArgumentException $e) {
+        exit($e->getMessage());
     }
-
-    $username = $opt['u'];
-    $serverType = in_array(strtolower($opt['t']), SERVER_TYPES)
-        ? strtolower($opt['t'])
-        : false;
-
-    if (!$serverType) {
-        throw new \InvalidArgumentException(
-            "-t must be one of those value"
-            . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
-        );
-    }
-
-    if (isset($opt['dns'])) {
-        $dns = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN);
-        if (!$dns) {
+} else {
+    try {
+        if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'])) {
             throw new \InvalidArgumentException(
-                PHP_EOL . "Bad DNS Format" . PHP_EOL
+                PHP_EOL . 'missing parameter: -u -t -h -n are mandatories:' . PHP_EOL . $helpMessage
             );
         }
+
+        $configOptions['API_USERNAME'] = $opt['u'];
+        $configOptions['SERVER_TYPE'] = in_array(strtolower($opt['t']), SERVER_TYPES)
+            ? strtolower($opt['t'])
+            : false;
+
+        if (!$configOptions['SERVER_TYPE']) {
+            throw new \InvalidArgumentException(
+                "-t must be one of those value"
+                    . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
+            );
+        }
+
+        $configOptions['ROOT_CENTREON_FOLDER'] = $opt['root'] ?? 'centreon';
+        $configOptions['HOST_ADDRESS'] = $opt['h'];
+        $configOptions['SERVER_NAME'] = $opt['n'];
+
+        if (isset($opt['dns'])) {
+            $configOptions['DNS'] = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN);
+            if (!$configOptions['DNS']) {
+                throw new \InvalidArgumentException(
+                    PHP_EOL . "Bad DNS Format" . PHP_EOL
+                );
+            }
+        }
+    } catch (\InvalidArgumentException $e) {
+        exit($e->getMessage());
+    }
+    $configOptions['API_PASSWORD'] = askQuestion(
+        $configOptions['HOST_ADDRESS'] . ': please enter your password ',
+        true
+    );
+    $configOptions['PROXY_USAGE'] =  strtolower(askQuestion("Are you using a proxy ? (y/n)"));
+
+    if (isset($opt['insecure'])) {
+        $configOptions['INSECURE'] = true;
     }
 
-    $root = $opt['root'] ?? 'centreon';
-    $targetURL = $opt['h'];
-    $serverHostName = $opt['n'];
-} catch (\InvalidArgumentException $e) {
-    exit($e->getMessage());
+    /**
+     * Proxy informations
+     */
+    if ($configOptions['PROXY_USAGE'] === 'y') {
+        $configOptions['PROXY_USAGE'] = true;
+        $configOptions["PROXY_HOST"] = askQuestion('proxy host: ');
+        $configOptions["PROXY_PORT"] = (int) askQuestion('proxy port: ');
+        $configOptions["PROXY_USERNAME"] = askQuestion(
+            'proxy username (press enter if no username/password are required): '
+        );
+        if (!empty($configOptions["PROXY_USERNAME"])) {
+            $configOptions['PROXY_PASSWORD'] = askQuestion('please enter the proxy password: ', true);
+        }
+    }
 }
-$password = askQuestion($targetURL . ': please enter your password ', true);
-$proxy =  strtolower(askQuestion("Are you using a proxy ? (y/n)"));
+
 /**
  * Parsing url part from params -h
  */
-$targetURL = parse_url($targetURL);
+$targetURL = parse_url($configOptions['HOST_ADDRESS']);
 $protocol = $targetURL['scheme'] ?? 'http';
 $host = $targetURL['host'] ?? $targetURL['path'];
 $port = $targetURL['port'] ?? '';
 
-/**
- * Proxy informations
- */
-if ($proxy === 'y') {
-    $proxyInfo['host'] = askQuestion('proxy host: ');
-    $proxyInfo['port'] = (int) askQuestion('proxy port: ');
-    $proxyInfo['username'] = askQuestion('proxy username (press enter if no username/password are required): ');
-    if (!empty($proxyInfo['username'])) {
-        $proxyInfo['password'] = askQuestion('please enter the proxy password: ', true);
-    }
-}
 
 /**
  * prepare Login payload
@@ -130,8 +165,8 @@ if ($proxy === 'y') {
 $loginCredentials = [
     "security" => [
         "credentials" => [
-            "login" => $username,
-            "password" => $password
+            "login" => $configOptions['API_USERNAME'],
+            "password" => $configOptions['API_PASSWORD']
         ]
     ]
 ];
@@ -141,9 +176,9 @@ $loginCredentials = [
  */
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $registerPayload = [
-    "name" => $serverHostName,
-    "type" => $serverType,
-    "address" => $dns ?? $serverIp,
+    "name" => $configOptions['SERVER_NAME'],
+    "type" => $configOptions['SERVER_TYPE'],
+    "address" => $configOptions['DNS'] ?? $serverIp,
     "parent_address" => $host
 ];
 
@@ -151,6 +186,9 @@ $registerPayload = [
  * Display Summary of action
  */
 $address = $registerPayload["address"];
+$username = $configOptions['API_USERNAME'];
+$serverHostName = $registerPayload['name'];
+$serverType = $registerPayload["type"];
 $summary = <<<EOD
 
 Summary of the informations that will be send:
@@ -203,15 +241,19 @@ try {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    if (isset($opt['insecure'])) {
+    if (isset($configOptions["INSECURE"])) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    if (isset($proxyInfo)) {
-        curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
-        curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
-        if (!empty($proxyInfo['username'])) {
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    if ($configOptions['PROXY_USAGE']) {
+        curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
+        curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
+        if (!empty($configOptions["PROXY_USERNAME"])) {
+            curl_setopt(
+                $ch,
+                CURLOPT_PROXYUSERPWD,
+                $configOptions["PROXY_USERNAME"] . ':' . $configOptions['PROXY_PASSWORD']
+            );
         }
     }
 
@@ -255,15 +297,19 @@ try {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    if (isset($opt['insecure'])) {
+    if (isset($configOptions["INSECURE"])) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    if (isset($proxyInfo)) {
-        curl_setopt($ch, CURLOPT_PROXY, $proxyInfo['host']);
-        curl_setopt($ch, CURLOPT_PROXYPORT, $proxyInfo['port']);
-        if (!empty($proxyInfo['username'])) {
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyInfo['username'] . ':' . $proxyInfo['password']);
+    if (isset($configOptions['PROXY_USAGE'])) {
+        curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
+        curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
+        if (!empty($configOptions["PROXY_USERNAME"])) {
+            curl_setopt(
+                $ch,
+                CURLOPT_PROXYUSERPWD,
+                $configOptions["PROXY_USERNAME"] . ':' . $configOptions['PROXY_PASSWORD']
+            );
         }
     }
 
