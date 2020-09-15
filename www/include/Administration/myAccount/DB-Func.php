@@ -166,6 +166,8 @@ function updateContact($contact_id = null)
     isset($ret["default_page"]) && $ret["default_page"] != null
         ? $rq .= "'" . htmlentities($ret["default_page"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
+    $rq .= "show_deprecated_pages = "
+        . (isset($ret["show_deprecated_pages"]) ? "'1', " : "'0', ");
     $rq .= "contact_js_effects = ";
     isset($ret["contact_js_effects"]) ? $rq .= "'1', " : $rq .= "'0', ";
     $rq .= "contact_autologin_key = ";
