@@ -3,7 +3,7 @@ import * as React from 'react';
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Panel } from '@centreon/ui';
+import { Panel, Tab as TabModel } from '@centreon/ui';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
 
@@ -42,8 +42,18 @@ const Details = (): JSX.Element | null => {
     }
   }, [details]);
 
+  const getVisibleTabs = (): Array<TabModel> => {
+    if (isNil(details)) {
+      return tabs;
+    }
+
+    return tabs.filter(({ getIsActive }) => getIsActive(details));
+  };
+
   const getTabIndex = (tabId: TabId): number => {
-    return findIndex(propEq('id', tabId), tabs);
+    const index = findIndex(propEq('id', tabId), getVisibleTabs());
+
+    return index > 0 ? index : 0;
   };
 
   const changeSelectedTabId = (tabId: TabId) => (): void => {
@@ -73,12 +83,12 @@ const Details = (): JSX.Element | null => {
       onClose={clearSelectedResource}
       header={<Header details={details} />}
       headerBackgroundColor={getHeaderBackgroundColor()}
-      tabs={tabs.map(({ id, title, getIsActive }) => (
+      tabs={getVisibleTabs().map(({ id, title }) => (
         <Tab
           style={{ minWidth: 'unset' }}
           key={id}
           label={t(title)}
-          disabled={isNil(details) || !getIsActive(details)}
+          disabled={isNil(details)}
           onClick={changeSelectedTabId(id)}
         />
       ))}
