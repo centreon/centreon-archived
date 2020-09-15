@@ -22,6 +22,7 @@
 namespace Tests\Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
@@ -39,14 +40,16 @@ class ResourceServiceTest extends TestCase
             ->setId(1)
             ->setName('test');
 
-        $repository = $this->createMock(ResourceRepositoryInterface::class);
-        $repository->expects(self::any())
+        $resourceRepository = $this->createMock(ResourceRepositoryInterface::class);
+        $resourceRepository->expects(self::any())
             ->method('findResources')
             ->willReturn([$resource]); // values returned for the all next tests
 
+        $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
+
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
 
-        $resourceService = new ResourceService($repository, $accessGroup);
+        $resourceService = new ResourceService($resourceRepository, $monitoringRepository, $accessGroup);
 
         $resourcesFound = $resourceService->findResources(new ResourceFilter());
         $this->assertCount(

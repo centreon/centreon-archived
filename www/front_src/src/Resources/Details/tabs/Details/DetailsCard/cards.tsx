@@ -128,7 +128,7 @@ const getDetailCardLines = (
     },
     getDateTimeLines({
       label: labelLastStateChange,
-      field: details.last_state_change,
+      field: details.last_status_change,
     }),
     getCheckLines({ label: labelLastCheck, field: details.last_check }),
     getCheckLines({ label: labelNextCheck, field: details.next_check }),

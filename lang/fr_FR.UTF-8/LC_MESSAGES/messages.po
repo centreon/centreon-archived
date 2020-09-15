@@ -15605,6 +15605,12 @@ msgstr "Erreur lors du changement de statut de l'hôte (%d à %s)"
 msgid "Error when searching for already used host names"
 msgstr "Erreur lors de la recherche de noms d'hôtes déjà utilisés"
 
+msgid "Copy the link to this resource"
+msgstr "Copier le lien vers cette ressource"
+
+msgid "Resource link copied to the clipboard"
+msgstr "Lien vers la ressource copiée dans le presse-papier"
+
 #: www/include/Administration/parameters/DB-Func.php
 msgid "The password cannot be crypted. Please re-submit the form"
 msgstr "Le mot de passe ne peut pas être chiffré. Merci de soumettre à nouveau le formulaire"

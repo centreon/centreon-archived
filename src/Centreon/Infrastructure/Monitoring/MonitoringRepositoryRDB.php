@@ -142,10 +142,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               h.*,
               cv.value AS criticality,
-              i.name AS instance_name,
+              i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`instances` i
@@ -227,8 +227,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
-              hg.hostgroup_id, h.*, i.name AS instance_name,
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+              hg.hostgroup_id, h.*, i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`instances` i
@@ -283,8 +283,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
-              ssg.servicegroup_id, h.*, i.name AS instance_name,
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+              ssg.servicegroup_id, h.*, i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`instances` i
@@ -491,13 +491,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $request =
             'SELECT h.*,
+            i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
-            FROM `:dbstg`.`hosts` h'
+            FROM `:dbstg`.`instances` i
+            INNER JOIN `:dbstg`.`hosts` h
+              ON h.instance_id = i.instance_id
+              AND h.enabled = \'1\'
+              AND h.name NOT LIKE \'_Module_BAM%\''
             . $accessGroupFilter .
-            ' WHERE h.host_id = :host_id
-              AND h.name NOT LIKE \'_Module_BAM%\'
-              AND h.enabled = \'1\'';
+            ' WHERE h.host_id = :host_id';
 
         $request = $this->translateDbName($request);
 
@@ -558,7 +561,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`
             FROM `:dbstg`.services srv
-            LEFT JOIN `:dbstg`.hosts h 
+            LEFT JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id'
             . $accessGroupFilter
             . ' WHERE srv.enabled = \'1\'
@@ -1281,10 +1284,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     }
 
     /**
-     * Find downtimes for host or service
-     * @param int $hostId
-     * @param int $serviceId
-     * @return array
+     * @inheritDoc
      */
     public function findDowntimes(int $hostId, int $serviceId): array
     {
@@ -1319,10 +1319,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     }
 
     /**
-     * Find acknowledgements for host or service
-     * @param int $hostId
-     * @param int $serviceId
-     * @return array
+     * @inheritDoc
      */
     public function findAcknowledgements(int $hostId, int $serviceId): array
     {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, find, propEq, any } from 'ramda';
+import { isNil, find, propEq, any, invertObj, path } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import DetailsTab from './Details';
@@ -13,7 +13,6 @@ import {
 import GraphTab from './Graph';
 import { ResourceDetails } from '../models';
 import TimelineTab from './Timeline';
-import { ResourceLinks } from '../../models';
 import ShortcutsTab from './Shortcuts';
 import hasDefinedValues from '../../hasDefinedValues';
 
@@ -24,11 +23,15 @@ const shortcutsTabId = 3;
 
 export type TabId = 0 | 1 | 2 | 3;
 
+export interface TabProps {
+  details?: ResourceDetails;
+}
+
 interface Tab {
   id: TabId;
-  Component: (props) => JSX.Element;
+  Component: (props: TabProps) => JSX.Element;
   title: string;
-  getIsVisible: (endpoints) => boolean;
+  getIsActive: (details) => boolean;
 }
 
 const tabs: Array<Tab> = [
@@ -36,38 +39,42 @@ const tabs: Array<Tab> = [
     id: detailsTabId,
     Component: DetailsTab,
     title: labelDetails,
-    getIsVisible: (): boolean => true,
+    getIsActive: (): boolean => true,
   },
   {
     id: timelineTabId,
     Component: TimelineTab,
     title: labelTimeline,
-    getIsVisible: (): boolean => true,
+    getIsActive: (): boolean => true,
   },
   {
     id: graphTabId,
     Component: GraphTab,
     title: labelGraph,
-    getIsVisible: ({ endpoints }: ResourceLinks): boolean => {
-      const { performanceGraph } = endpoints;
-      return !isNil(performanceGraph);
+    getIsActive: (details: ResourceDetails): boolean => {
+      if (isNil(details)) {
+        return false;
+      }
+
+      return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
     },
   },
   {
     id: shortcutsTabId,
     Component: ShortcutsTab,
     title: labelShortcuts,
-    getIsVisible: (links: ResourceLinks): boolean => {
-      const { parent, resource } = links.uris;
+    getIsActive: (details: ResourceDetails): boolean => {
+      if (isNil(details)) {
+        return false;
+      }
 
-      return any(hasDefinedValues, [parent, resource]);
+      const { links, parent } = details;
+      const parentUris = parent?.links.uris;
+
+      return any(hasDefinedValues, [parentUris, links.uris]);
     },
   },
 ];
-
-const getVisibleTabs = (links): Array<Tab> => {
-  return tabs.filter(({ getIsVisible }) => getIsVisible(links));
-};
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -78,19 +85,33 @@ const useStyles = makeStyles((theme) => ({
 interface TabByIdProps {
   details?: ResourceDetails;
   id: number;
-  links: ResourceLinks;
 }
 
-const TabById = ({ id, details, links }: TabByIdProps): JSX.Element | null => {
+const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
   const classes = useStyles();
 
   const { Component } = find(propEq('id', id), tabs) as Tab;
 
   return (
     <div className={classes.container}>
-      <Component details={details} links={links} />
+      <Component details={details} />
     </div>
   );
+};
+
+const tabIdByLabel = {
+  details: detailsTabId,
+  timeline: timelineTabId,
+  shortcuts: shortcutsTabId,
+  graph: graphTabId,
+};
+
+const getTabIdFromLabel = (label: string): TabId => {
+  return tabIdByLabel[label];
+};
+
+const getTabLabelFromId = (id: TabId): string => {
+  return invertObj(tabIdByLabel)[id];
 };
 
 export {
@@ -100,5 +121,6 @@ export {
   shortcutsTabId,
   tabs,
   TabById,
-  getVisibleTabs,
+  getTabIdFromLabel,
+  getTabLabelFromId,
 };

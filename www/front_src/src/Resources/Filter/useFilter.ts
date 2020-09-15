@@ -1,6 +1,10 @@
 import * as React from 'react';
 
-import { useRequest } from '@centreon/ui';
+import {
+  useRequest,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
 
 import {
   getStoredOrDefaultFilter,
@@ -61,8 +65,17 @@ const useFilter = (): FilterState => {
   const { unhandledProblemsFilter } = useFilterModels();
   const { toFilter } = useAdapters();
 
-  const getDefaultFilter = (): Filter =>
-    getStoredOrDefaultFilter(unhandledProblemsFilter);
+  const getDefaultFilter = (): Filter => {
+    const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
+
+    const urlQueryParameters = getUrlQueryParameters();
+
+    return {
+      ...defaultFilter,
+      ...(urlQueryParameters.filter as Filter),
+    };
+  };
+
   const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
   const getDefaultSearch = (): string | undefined =>
     getDefaultCriterias().search;
@@ -145,6 +158,15 @@ const useFilter = (): FilterState => {
         search: nextSearch,
       },
     });
+
+    const queryParameters = [
+      {
+        name: 'filter',
+        value: updatedFilter,
+      },
+    ];
+
+    setUrlQueryParameters(queryParameters);
   }, [
     filter,
     nextSearch,
