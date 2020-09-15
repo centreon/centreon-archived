@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
@@ -32,6 +33,7 @@ const AcknowledgeForm = ({
   onClose,
   onSuccess,
 }: Props): JSX.Element | null => {
+  const { t } = useTranslation();
   const { showMessage } = useSnackbar();
 
   const { username } = useUserContext();
@@ -57,7 +59,7 @@ const AcknowledgeForm = ({
         resources,
         params: values,
       }).then(() => {
-        showSuccess(labelAcknowledgeCommandSent);
+        showSuccess(t(labelAcknowledgeCommandSent));
         onSuccess();
       });
     },
@@ -65,7 +67,7 @@ const AcknowledgeForm = ({
   });
 
   React.useEffect(() => {
-    form.setFieldValue('comment', `${labelAcknowledgedBy} ${username}`);
+    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${username}`);
   }, []);
 
   return (

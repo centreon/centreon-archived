@@ -17,7 +17,7 @@ import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { I18n } from 'react-redux-i18n';
+import { withTranslation } from 'react-i18next';
 
 import {
   IconHeader,
@@ -122,6 +122,7 @@ class HostMenu extends Component {
 
   render() {
     const { data, toggled } = this.state;
+    const { t } = this.props;
 
     // do not display host information until having data
     if (!data) {
@@ -136,7 +137,7 @@ class HostMenu extends Component {
         <SubmenuHeader submenuType="top" active={toggled}>
           <IconHeader
             iconType="hosts"
-            iconName={I18n.t('Hosts')}
+            iconName={t('Hosts')}
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}
@@ -201,7 +202,7 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={I18n.t('All')}
+                  submenuTitle={t('All')}
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
@@ -212,7 +213,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Down')}
+                  submenuTitle={t('Down')}
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
@@ -225,7 +226,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={I18n.t('Unreachable')}
+                  submenuTitle={t('Unreachable')}
                   submenuCount={`${numeral(data.unreachable.unhandled).format(
                     '0a',
                   )}/${numeral(data.unreachable.total).format('0a')}`}
@@ -238,7 +239,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={I18n.t('Up')}
+                  submenuTitle={t('Up')}
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
@@ -249,7 +250,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={I18n.t('Pending')}
+                  submenuTitle={t('Pending')}
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>
@@ -269,7 +270,9 @@ const mapStateToProps = ({ intervals }) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(HostMenu);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(HostMenu),
+);
 
 HostMenu.propTypes = {
   refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])

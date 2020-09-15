@@ -17,7 +17,9 @@ import {
   reject,
   sortBy,
   isEmpty,
+  isNil,
 } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
@@ -36,7 +38,7 @@ import formatMetricValue from './formatMetricValue';
 const fontFamily = 'Roboto, sans-serif';
 
 interface Props {
-  endpoint: string;
+  endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
@@ -77,6 +79,7 @@ const PerformanceGraph = ({
   toggableLegend = false,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
+  const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
@@ -88,6 +91,10 @@ const PerformanceGraph = ({
   });
 
   React.useEffect(() => {
+    if (isNil(endpoint)) {
+      return;
+    }
+
     sendRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
@@ -96,7 +103,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  if (sending) {
+  if (sending || isNil(endpoint)) {
     return <LoadingSkeleton />;
   }
 
@@ -104,7 +111,7 @@ const PerformanceGraph = ({
     return (
       <div className={classes.noDataContainer}>
         <Typography align="center" variant="body1">
-          {labelNoDataForThisPeriod}
+          {t(labelNoDataForThisPeriod)}
         </Typography>
       </div>
     );

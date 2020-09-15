@@ -45,6 +45,7 @@ import {
   downtimeEndpoint,
   checkEndpoint,
 } from './api/endpoint';
+import useDetails from '../Details/useDetails';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -90,11 +91,13 @@ const ActionsWithLoading = (): JSX.Element => {
 let context: ResourceContext;
 
 const ActionsWithContext = (): JSX.Element => {
+  const detailsState = useDetails();
   const listingState = useListing();
   const actionsState = useActions();
   const filterState = useFilter();
 
   context = {
+    ...detailsState,
     ...listingState,
     ...actionsState,
     ...filterState,
@@ -142,7 +145,7 @@ describe(Actions, () => {
     mockedUserContext.useUserContext.mockReset();
   });
 
-  it('executes a listing request when refresh button is clicked', async () => {
+  it('executes a listing request when the refresh button is clicked', async () => {
     const { getByLabelText } = renderActions();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());

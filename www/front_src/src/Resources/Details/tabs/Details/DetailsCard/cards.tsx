@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Typography, Grid, makeStyles, Box } from '@material-ui/core';
 import IconCheck from '@material-ui/icons/Check';
 
@@ -48,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ActiveLine = (): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -56,7 +59,7 @@ const ActiveLine = (): JSX.Element => {
         <IconCheck className={classes.activeIcon} />
       </Grid>
       <Grid item>
-        <DetailsLine key="tries" line={labelActive} />
+        <DetailsLine key="tries" line={t(labelActive)} />
       </Grid>
     </Grid>
   );
@@ -125,7 +128,7 @@ const getDetailCardLines = (
     },
     getDateTimeLines({
       label: labelLastStateChange,
-      field: details.last_state_change,
+      field: details.last_status_change,
     }),
     getCheckLines({ label: labelLastCheck, field: details.last_check }),
     getCheckLines({ label: labelNextCheck, field: details.next_check }),

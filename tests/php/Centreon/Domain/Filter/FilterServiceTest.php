@@ -81,7 +81,7 @@ class FilterServiceTest extends TestCase
                       "name" => "linux"
                     ]
                 ])
-                ->setObjectType("host_group"),
+                ->setObjectType("host_groups"),
             (new FilterCriteria())
                 ->setName("service_groups")
                 ->setType("multi_select")
@@ -91,7 +91,7 @@ class FilterServiceTest extends TestCase
                       "name" => "sg_ping"
                     ]
                 ])
-                ->setObjectType("service_group"),
+                ->setObjectType("service_groups"),
             (new FilterCriteria())
                 ->setName("search")
                 ->setType("text")
