@@ -24,7 +24,9 @@ namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
+use CentreonDuration;
 
 /**
  * Class representing a record of a service in the repository.
@@ -223,6 +225,11 @@ class Service implements EntityDescriptorMetadataInterface
      * @var bool|null
      */
     protected $flapping;
+
+    /**
+     * @var \Centreon\Domain\Monitoring\ResourceStatus|null
+     */
+    private $status;
 
     /**
      * {@inheritdoc}
@@ -909,5 +916,38 @@ class Service implements EntityDescriptorMetadataInterface
     {
         $this->flapping = $flapping;
         return $this;
+    }
+
+    /**
+     * @return \Centreon\Domain\Monitoring\ResourceStatus|null
+     */
+    public function getStatus(): ?ResourceStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setStatus(?ResourceStatus $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDuration(): ?string
+    {
+        $duration = null;
+
+        if ($this->getLastStateChange()) {
+            $duration = CentreonDuration::toString(time() - $this->getLastStateChange()->getTimestamp());
+        }
+
+        return $duration;
     }
 }
