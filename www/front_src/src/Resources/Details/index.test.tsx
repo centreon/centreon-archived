@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head, equals, reject } from 'ramda';
+import { last, head, equals, reject, path } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -11,10 +11,13 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import copyToClipboard from '@centreon/ui/src/utils/copy';
 
-import { ThemeProvider } from '@centreon/ui';
-
-import * as clipboard from './tabs/Details/clipboard';
+import {
+  ThemeProvider,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
 
 import Details from '.';
 import {
@@ -50,48 +53,50 @@ import {
   labelViewReport,
   labelHost,
   labelService,
+  labelDetails,
+  labelCopyLink,
 } from '../translatedLabels';
-import {
-  detailsTabId,
-  graphTabId,
-  TabId,
-  timelineTabId,
-  shortcutsTabId,
-} from './tabs';
+import { graphTabId, TabId, timelineTabId, shortcutsTabId } from './tabs';
 import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
-import { ResourceListing, ResourceUris } from '../models';
 import { getTypeIds } from './tabs/Timeline/Event';
+import { resourcesEndpoint } from '../api/endpoint';
+import { DetailsUrlQueryParameters } from './models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('./tabs/Details/clipboard');
-
-const detailsEndpoint = '/resource';
-const performanceGraphEndpoint = '/performance';
-const timelineEndpoint = '/timeline';
+jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 
 const retrievedDetails = {
-  display_name: 'Central',
-  severity: { level: 1 },
+  name: 'Central',
+  severity: { name: 'severity_1', level: 10 },
   status: { name: 'Critical', severity_code: 1 },
-  parent: { name: 'Centreon', status: { severity_code: 1 } },
+  parent: {
+    name: 'Centreon',
+    status: { severity_code: 1 },
+    links: {
+      uris: {
+        configuration: undefined,
+        logs: undefined,
+        reporting: undefined,
+      },
+    },
+  },
   poller_name: 'Poller',
   acknowledged: false,
   checked: true,
   execution_time: 0.070906,
   last_check: '2020-05-18T18:00',
-  last_state_change: '2020-04-18T17:00',
+  last_status_change: '2020-04-18T17:00',
   last_update: '2020-03-18T19:30',
-  output:
+  information:
     'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
   timezone: 'Europe/Paris',
-  criticality: 10,
   active_checks: true,
   command_line: 'base_host_alive',
   last_notification: '2020-07-18T19:30',
@@ -121,6 +126,17 @@ const retrievedDetails = {
     'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
   duration: '22m',
   tries: '3/3 (Hard)',
+  links: {
+    endpoints: {
+      performance_graph: 'performance_graph',
+      timeline: 'timeline',
+    },
+    uris: {
+      configuration: undefined,
+      logs: undefined,
+      reporting: undefined,
+    },
+  },
 };
 
 const performanceGraphData = {
@@ -201,29 +217,23 @@ const retrievedTimeline = {
   },
 };
 
+const resourceId = 1;
+
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
 let context: ResourceContext;
 
 interface Props {
-  defaultTabId: TabId;
-  uris: { resource: ResourceUris; parent: ResourceUris };
+  openTabId?: TabId;
 }
 
-const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
+const DetailsTest = ({ openTabId }: Props): JSX.Element => {
   const listingState = useListing();
   const detailState = useDetails();
 
-  detailState.selectedDetailsLinks = {
-    endpoints: {
-      details: detailsEndpoint,
-      performanceGraph: performanceGraphEndpoint,
-      timeline: timelineEndpoint,
-    },
-    uris,
-  };
-
-  detailState.openDetailsTabId = defaultTabId;
+  if (openTabId) {
+    detailState.openDetailsTabId = openTabId;
+  }
 
   context = {
     ...listingState,
@@ -239,33 +249,15 @@ const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
   );
 };
 
-const defaultUris = {
-  resource: {
-    configuration: undefined,
-    logs: undefined,
-    reporting: undefined,
-  },
-  parent: {
-    configuration: undefined,
-    logs: undefined,
-    reporting: undefined,
-  },
-};
-
 interface RenderDetailsProps {
-  defaultTabId?: TabId;
-  uris?: { resource: ResourceUris; parent: ResourceUris };
+  openTabId?: TabId;
 }
 
 const renderDetails = (
-  { defaultTabId = detailsTabId, uris = defaultUris }: RenderDetailsProps = {
-    defaultTabId: detailsTabId,
-    uris: defaultUris,
-  },
-): RenderResult =>
-  render(<DetailsTest defaultTabId={defaultTabId} uris={uris} />);
+  { openTabId }: RenderDetailsProps = { openTabId: undefined },
+): RenderResult => render(<DetailsTest openTabId={openTabId} />);
 
-describe(Details, () => {
+describe.only(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
   });
@@ -280,9 +272,13 @@ describe(Details, () => {
 
     const { getByText, queryByText, getAllByText } = renderDetails();
 
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        detailsEndpoint,
+        context.getSelectedResourceDetailsEndpoint(),
         cancelTokenRequestParam,
       );
     });
@@ -367,22 +363,6 @@ describe(Details, () => {
     expect(getByText('base_host_alive')).toBeInTheDocument();
   });
 
-  it('refreshes the details when the listing is updated', async () => {
-    mockedAxios.get.mockResolvedValue({ data: retrievedDetails });
-
-    const { getByText } = renderDetails();
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-    expect(getByText(labelStatusInformation)).toBeInTheDocument();
-
-    act(() => {
-      context.setListing({} as ResourceListing);
-    });
-
-    await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
-  });
-
   it.each([
     [labelLast24h, '2020-06-19T20:00:00.000Z'],
     [labelLast7Days, '2020-06-13T20:00:00.000Z'],
@@ -391,12 +371,16 @@ describe(Details, () => {
     `queries performance graphs with %p period when the Graph tab is selected`,
     async (period, startIsoString) => {
       mockedAxios.get
-        .mockResolvedValueOnce({ data: performanceGraphData })
         .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: performanceGraphData })
         .mockResolvedValueOnce({ data: performanceGraphData });
 
       const { getByText, getAllByText } = renderDetails({
-        defaultTabId: graphTabId,
+        openTabId: graphTabId,
+      });
+
+      act(() => {
+        context.setSelectedResourceId(resourceId);
       });
 
       await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
@@ -407,7 +391,7 @@ describe(Details, () => {
 
       await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
-          `${performanceGraphEndpoint}?start=${startIsoString}&end=${currentDateIsoString}`,
+          `${retrievedDetails.links.endpoints.performance_graph}?start=${startIsoString}&end=${currentDateIsoString}`,
           cancelTokenRequestParam,
         ),
       );
@@ -417,34 +401,40 @@ describe(Details, () => {
   it('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const mockedClipboard = clipboard as jest.Mocked<typeof clipboard>;
-
     const { getByTitle } = renderDetails();
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     fireEvent.click(getByTitle(labelCopy));
 
     await waitFor(() =>
-      expect(mockedClipboard.copy).toHaveBeenCalledWith(
+      expect(copyToClipboard).toHaveBeenCalledWith(
         retrievedDetails.command_line,
       ),
     );
   });
 
   it('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
+    mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
     const { getByText, getAllByText, baseElement } = renderDetails({
-      defaultTabId: timelineTabId,
+      openTabId: timelineTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
     });
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
-          endpoint: timelineEndpoint,
+          endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
             limit: 30,
             page: 1,
@@ -517,7 +507,7 @@ describe(Details, () => {
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
-          endpoint: timelineEndpoint,
+          endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
             limit: 30,
             page: 1,
@@ -537,24 +527,36 @@ describe(Details, () => {
   });
 
   it('displays the shortcut links when the shortcuts tab is selected', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-
-    const uris = {
-      resource: {
-        configuration: '/configuration',
-        logs: '/logs',
-        reporting: '/reporting',
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedDetails,
+        links: {
+          ...retrievedDetails.links,
+          uris: {
+            configuration: '/configuration',
+            logs: '/logs',
+            reporting: '/reporting',
+          },
+        },
+        parent: {
+          ...retrievedDetails.parent,
+          links: {
+            uris: {
+              configuration: '/host/configuration',
+              logs: '/host/logs',
+              reporting: '/host/reporting',
+            },
+          },
+        },
       },
-      parent: {
-        configuration: '/host/configuration',
-        logs: '/host/logs',
-        reporting: '/host/reporting',
-      },
-    };
+    });
 
     const { getByText, getAllByText } = renderDetails({
-      defaultTabId: shortcutsTabId,
-      uris,
+      openTabId: shortcutsTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
     });
 
     await waitFor(() => {
@@ -589,24 +591,26 @@ describe(Details, () => {
   });
 
   it('does not display parent shortcut links when the selected resource is a host and the shortcuts tab is selected', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-
-    const uris = {
-      resource: {
-        configuration: '/configuration',
-        logs: '/logs',
-        reporting: '/reporting',
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedDetails,
+        links: {
+          ...retrievedDetails.links,
+          uris: {
+            configuration: '/configuration',
+            logs: '/logs',
+            reporting: '/reporting',
+          },
+        },
       },
-      parent: {
-        configuration: undefined,
-        logs: undefined,
-        reporting: undefined,
-      },
-    };
+    });
 
     const { getByText, getAllByText, queryByText } = renderDetails({
-      defaultTabId: shortcutsTabId,
-      uris,
+      openTabId: shortcutsTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
     });
 
     await waitFor(() => {
@@ -619,5 +623,101 @@ describe(Details, () => {
 
     expect(queryByText(labelService)).not.toBeInTheDocument();
     expect(getByText(labelHost)).toBeInTheDocument();
+  });
+
+  it('sets the details according to the details URL query parameter when given', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedDetails,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedDetails,
+      });
+
+    const retrievedServiceDetails = {
+      id: 2,
+      parentId: 3,
+      parentType: 'host',
+      type: 'service',
+      tab: 'shortcuts',
+    };
+
+    setUrlQueryParameters([
+      {
+        name: 'details',
+        value: retrievedServiceDetails,
+      },
+    ]);
+
+    const { getByText } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${resourcesEndpoint}/${retrievedServiceDetails.parentType}s/${retrievedServiceDetails.parentId}/${retrievedServiceDetails.type}s/${retrievedServiceDetails.id}`,
+        cancelTokenRequestParam,
+      );
+
+      expect(context.openDetailsTabId).toEqual(shortcutsTabId);
+    });
+
+    fireEvent.click(getByText(labelDetails));
+
+    const tabFromUrlQueryParameters = path(
+      ['details', 'tab'],
+      getUrlQueryParameters(),
+    );
+
+    await waitFor(() => {
+      expect(tabFromUrlQueryParameters).toEqual('details');
+    });
+
+    act(() => {
+      context.setSelectedResourceId(1);
+      context.setSelectedResourceParentId(undefined);
+      context.setSelectedResourceParentType(undefined);
+      context.setSelectedResourceType('host');
+    });
+
+    const updatedDetailsFromQueryParameters = getUrlQueryParameters()
+      .details as DetailsUrlQueryParameters;
+
+    await waitFor(() => {
+      expect(updatedDetailsFromQueryParameters).toEqual({
+        id: 1,
+        type: 'host',
+        tab: 'details',
+      });
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${resourcesEndpoint}/${updatedDetailsFromQueryParameters.type}s/${updatedDetailsFromQueryParameters.id}`,
+        cancelTokenRequestParam,
+      );
+    });
+  });
+
+  it('copies the current URL when the copy resource link button is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedDetails,
+    });
+
+    const { getByLabelText } = renderDetails();
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    act(() => {
+      fireEvent.click(
+        getByLabelText(labelCopyLink).firstElementChild as HTMLElement,
+      );
+    });
+
+    await waitFor(() => {
+      expect(copyToClipboard).toHaveBeenCalledWith(window.location.href);
+    });
   });
 });

@@ -14,6 +14,7 @@ import {
   isEmpty,
   reject,
 } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Resource } from '../../models';
 import { useUserContext } from '../../../Provider/UserContext';
@@ -30,6 +31,7 @@ interface AclQuery {
 }
 
 const useAclQuery = (): AclQuery => {
+  const { t } = useTranslation();
   const { acl } = useUserContext();
 
   const toType = ({ type }): string => type;
@@ -65,8 +67,8 @@ const useAclQuery = (): AclQuery => {
           toType,
           ifElse(
             equals('host'),
-            always(labelHostsDenied),
-            always(labelServicesDenied),
+            always(t(labelHostsDenied)),
+            always(t(labelServicesDenied)),
           ),
         ),
       ),

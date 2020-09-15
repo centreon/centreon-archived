@@ -1,14 +1,12 @@
 import { isNil } from 'ramda';
 
-import { unhandledProblemsFilter, Filter } from './models';
+import { Filter } from './models';
 
 const key = 'centreon-events-filter';
 
-const defaultFilter = unhandledProblemsFilter;
-
 let cachedFilter;
 
-const getStoredOrDefaultFilter = (): Filter => {
+const getStoredOrDefaultFilter = (defaultFilter): Filter => {
   if (!isNil(cachedFilter)) {
     return cachedFilter;
   }

@@ -25,8 +25,8 @@ import AppProvider from './Provider';
   window.ReduxForm = await import(
     /* webpackChunkName: "external" */ 'redux-form'
   );
-  window.ReactReduxI18n = await import(
-    /* webpackChunkName: "external" */ 'react-redux-i18n'
+  window.ReactI18Next = await import(
+    /* webpackChunkName: "external" */ 'react-i18next'
   );
 
   window.ReactDOM.render(<AppProvider />, document.getElementById('root'));

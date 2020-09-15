@@ -7,21 +7,10 @@ import {
   waitFor,
   fireEvent,
   Matcher,
-  act,
 } from '@testing-library/react';
 import axios from 'axios';
 
-import {
-  partition,
-  where,
-  contains,
-  head,
-  split,
-  pipe,
-  find,
-  propSatisfies,
-  isNil,
-} from 'ramda';
+import { partition, where, contains, head, split, pipe, identity } from 'ramda';
 import Listing from '.';
 import { getColumns } from './columns';
 import { Resource } from '../models';
@@ -32,9 +21,11 @@ import useListing from './useListing';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
-import { detailsTabId, graphTabId, shortcutsTabId } from '../Details/tabs';
 
-const columns = getColumns({ onAcknowledge: jest.fn() });
+const columns = getColumns({
+  actions: { onAcknowledge: jest.fn() },
+  t: identity,
+});
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -366,49 +357,5 @@ describe(Listing, () => {
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
-  });
-
-  it('selects the details tab id when a row is selected and does not have the current tab id visible', async () => {
-    const { findByText } = renderListing();
-
-    const resourceWithoutGraph = find<Resource>(
-      propSatisfies(isNil, 'performance_graph_endpoint'),
-    )(entities);
-
-    act(() => {
-      context.setOpenDetailsTabId(graphTabId);
-    });
-
-    const resourceWithoutGraphNameColumn = await findByText(
-      resourceWithoutGraph?.name as string,
-    );
-
-    act(() => {
-      fireEvent.click(resourceWithoutGraphNameColumn);
-    });
-
-    await waitFor(() => {
-      expect(context.openDetailsTabId).toBe(detailsTabId);
-    });
-
-    const resourceWithoutShortcut = find<Resource>(
-      propSatisfies(isNil, 'configuration_uri'),
-    )(entities);
-
-    act(() => {
-      context.setOpenDetailsTabId(shortcutsTabId);
-    });
-
-    const resourceWithoutShortcutNameColumn = await findByText(
-      resourceWithoutShortcut?.name as string,
-    );
-
-    act(() => {
-      fireEvent.click(resourceWithoutShortcutNameColumn);
-    });
-
-    await waitFor(() => {
-      expect(context.openDetailsTabId).toBe(detailsTabId);
-    });
   });
 });

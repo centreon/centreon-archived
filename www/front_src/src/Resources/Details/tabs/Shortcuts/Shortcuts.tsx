@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Paper, Link } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -36,6 +37,7 @@ interface Props {
 }
 
 const Shortcuts = ({ uris }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   const shortcuts = [
@@ -68,7 +70,7 @@ const Shortcuts = ({ uris }: Props): JSX.Element => {
           >
             <Icon color="primary" />
             <Link variant="body1" href={uri} color="inherit">
-              {name}
+              {t(name)}
             </Link>
           </div>
         );

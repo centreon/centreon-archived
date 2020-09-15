@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { pipe, split, head, propOr } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
@@ -97,6 +98,8 @@ const StatusColumnOnHover = ({
   row,
 }: StatusColumnProps): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
   const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
 
   const disableAcknowledge = !canAcknowledge([row]);
@@ -107,31 +110,31 @@ const StatusColumnOnHover = ({
     <Grid container spacing={1} alignItems="center">
       <Grid item>
         <IconButton
-          title={labelAcknowledge}
+          title={t(labelAcknowledge)}
           disabled={disableAcknowledge}
           color="primary"
           onClick={(): void => actions.onAcknowledge(row)}
-          ariaLabel={`${labelAcknowledge} ${row.name}`}
+          ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
         >
           <IconAcknowledge fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton
-          title={labelSetDowntime}
+          title={t(labelSetDowntime)}
           disabled={disableDowntime}
           onClick={(): void => actions.onDowntime(row)}
-          ariaLabel={`${labelSetDowntimeOn} ${row.name}`}
+          ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
         >
           <IconDowntime fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton
-          title={labelCheck}
+          title={t(labelCheck)}
           disabled={disableCheck}
           onClick={(): void => actions.onCheck(row)}
-          ariaLabel={`${labelCheck} ${row.name}`}
+          ariaLabel={`${t(labelCheck)} ${row.name}`}
         >
           <IconCheck fontSize="small" />
         </IconButton>
@@ -206,7 +209,7 @@ const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
   );
 };
 
-export const getColumns = (actions): Array<Column> => [
+export const getColumns = ({ actions, t }): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
@@ -217,7 +220,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'status',
-    label: labelStatus,
+    label: t(labelStatus),
     type: ColumnType.component,
     Component: StatusColumn(actions),
     sortField: 'status_severity_code',
@@ -226,7 +229,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'resource',
-    label: labelResource,
+    label: t(labelResource),
     type: ColumnType.component,
     Component: ResourceColumn,
     sortField: 'name',
@@ -250,7 +253,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'duration',
-    label: labelDuration,
+    label: t(labelDuration),
     type: ColumnType.string,
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
@@ -258,21 +261,21 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'tries',
-    label: labelTries,
+    label: t(labelTries),
     type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
     width: 125,
   },
   {
     id: 'last_check',
-    label: labelLastCheck,
+    label: t(labelLastCheck),
     type: ColumnType.string,
     getFormattedString: ({ last_check }): string => last_check,
     width: 125,
   },
   {
     id: 'information',
-    label: labelInformation,
+    label: t(labelInformation),
     type: ColumnType.string,
     getFormattedString: pipe(propOr('', 'information'), split('\n'), head) as (
       row,
@@ -280,7 +283,7 @@ export const getColumns = (actions): Array<Column> => [
   },
   {
     id: 'state',
-    label: labelState,
+    label: t(labelState),
     type: ColumnType.component,
     Component: StateColumn,
     sortable: false,

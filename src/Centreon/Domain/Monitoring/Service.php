@@ -33,8 +33,6 @@ use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
  */
 class Service implements EntityDescriptorMetadataInterface
 {
-    use Model\ImportTrait;
-
     // Groups for serilizing
     public const SERIALIZER_GROUP_MIN = 'service_min';
     public const SERIALIZER_GROUP_MAIN = 'service_main';

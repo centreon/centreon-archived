@@ -1,3 +1,5 @@
+import { KeyValuePair } from 'ramda';
+
 export interface User {
   locale: string;
   timezone: string;
@@ -23,8 +25,5 @@ interface Acl {
   actions: Actions;
 }
 
-export interface Translations {
-  [language: string]: {
-    [key: string]: string;
-  };
-}
+type Translation = KeyValuePair<string, string>;
+export type Translations = KeyValuePair<string, Translation>;

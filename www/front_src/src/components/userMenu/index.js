@@ -8,9 +8,10 @@
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Translate } from 'react-redux-i18n';
+import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header/header.scss';
 import Clock from '../clock';
@@ -102,7 +103,7 @@ class UserMenu extends Component {
     }
 
     // check if edit profile page (My Account) is allowed
-    const { allowedPages } = this.props;
+    const { allowedPages, t } = this.props;
     const allowEditProfile = allowedPages.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
     const { fullname, username, autologinkey } = data;
@@ -138,7 +139,7 @@ class UserMenu extends Component {
                       {fullname}
                     </span>
                     <span className={styles['submenu-user-type']}>
-                      <Translate value="as" />
+                      {t('as')}
                       {` ${username}`}
                     </span>
                     {allowEditProfile && (
@@ -147,7 +148,7 @@ class UserMenu extends Component {
                         className={styles['submenu-user-edit']}
                         onClick={this.toggle}
                       >
-                        <Translate value="Edit profile" />
+                        {t('Edit profile')}
                       </Link>
                     )}
                   </span>
@@ -158,7 +159,7 @@ class UserMenu extends Component {
                       className={styles['submenu-user-button']}
                       onClick={this.onCopy}
                     >
-                      <Translate value="Copy autologin link" />
+                      {t('Copy autologin link')}
                       <span
                         className={classnames(
                           styles['btn-logout-icon'],
@@ -184,7 +185,7 @@ class UserMenu extends Component {
                       styles.logout,
                     )}
                   >
-                    <Translate value="Logout" />
+                    {t('Logout')}
                   </button>
                 </a>
               </div>
@@ -202,4 +203,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(UserMenu),
+);

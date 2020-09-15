@@ -1,20 +1,16 @@
 import * as React from 'react';
 
 import { Provider } from 'react-redux';
-import { pick, pathEq } from 'ramda';
+import { pick, pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 
 import { useRequest, getData, Loader } from '@centreon/ui';
-import {
-  loadTranslations,
-  setLocale,
-  syncTranslationWithStore,
-} from 'react-redux-i18n';
-
+import i18n, { Resource, ResourceLanguage } from 'i18next';
+import { initReactI18next } from 'react-i18next';
 import App from '../App';
 import createStore from '../store';
 import Context from './UserContext';
 import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
-import { User, Translations, Actions } from './models';
+import { User, Actions } from './models';
 import useUser from './useUser';
 import useAcl from './useAcl';
 
@@ -28,12 +24,31 @@ const AppProvider = (): JSX.Element | null => {
   const { sendRequest: getUser } = useRequest<User>({
     request: getData,
   });
-  const { sendRequest: getTranslations } = useRequest<Translations>({
+  const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
     request: getData,
   });
   const { sendRequest: getAcl } = useRequest<Actions>({
     request: getData,
   });
+
+  const initializeI18n = ({ retrievedUser, retrievedTranslations }): void => {
+    const locale = retrievedUser.locale?.slice(0, 2);
+
+    i18n.use(initReactI18next).init({
+      nsSeparator: false,
+      keySeparator: false,
+      fallbackLng: 'en',
+      lng: locale,
+      resources: pipe(
+        toPairs as (t) => Array<[string, ResourceLanguage]>,
+        reduce(
+          (acc, [language, values]) =>
+            mergeAll([acc, { [language]: { translation: values } }]),
+          {},
+        ),
+      )(retrievedTranslations) as Resource,
+    });
+  };
 
   React.useEffect(() => {
     Promise.all([
@@ -45,9 +60,7 @@ const AppProvider = (): JSX.Element | null => {
         setUser(pick(['username', 'locale', 'timezone'], retrievedUser));
         setActionAcl(retrievedAcl);
 
-        syncTranslationWithStore(store);
-        store.dispatch(loadTranslations(retrievedTranslations));
-        store.dispatch(setLocale(retrievedUser.locale?.slice(0, 2)));
+        initializeI18n({ retrievedUser, retrievedTranslations });
 
         setDataLoaded(true);
       })
