@@ -115,9 +115,11 @@ class PlatformTopologyController extends AbstractController
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type']);
 
+            // Check for empty parent_address consistency
             if (
                 empty($platformToAdd['parent_address'])
                 && $platformTopology->getType() !== PlatformTopology::TYPE_CENTRAL
+                && $platformTopology->getType() !== PlatformTopology::TYPE_REMOTE
             ) {
                 throw new EntityNotFoundException(
                     sprintf(
@@ -126,6 +128,11 @@ class PlatformTopologyController extends AbstractController
                         $platformTopology->getAddress()
                     )
                 );
+            }
+
+            // Check for same address and parent_address
+            if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
+                throw new \InvalidArgumentException("The address and parent_address of the platform are the same");
             }
 
             if (isset($platformToAdd['parent_address'])) {
