@@ -3909,6 +3909,13 @@ components:
               nullable: true
               description: "Service criticality level (for display purposes)"
               example: 10
+            status:
+              $ref: '#/components/schemas/Monitoring.ResourceStatus'
+            duration:
+              type: string
+              nullable: true
+              description: "Duration since last status change"
+              example: "2h 3m"
     Monitoring.ServiceFull:
       allOf:
         - $ref: '#/components/schemas/Monitoring.ServiceMain'
