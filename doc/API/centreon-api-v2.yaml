@@ -3332,10 +3332,10 @@ components:
                     example: 17
     SubmitResult.Host:
       type: object
+      required: [status]
       properties:
         status:
           type: integer
-          required: true
           enum: [0, 1, 2]
           description: |
             Host status code that can be submitted
@@ -3355,10 +3355,10 @@ components:
           example: "'nbproc'=0;;1:1;0;"
     SubmitResult.Service:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-          required: true
           enum: [0, 1, 2, 3]
           description: |
             Service status code that can be submitted
@@ -3379,21 +3379,21 @@ components:
           example: "'used'=453849088B;;;0;1927262208"
     SubmitResult.Resources:
       type: object
+      required: [resources]
       properties:
         resources:
           type: array
           items:
             type: object
+            required: [status,id]
             properties:
               type:
                 type: string
-                required: true
                 enum: [host, service]
                 description: "Type of resource"
                 example: "service"
               id:
                 type: integer
-                required: true
                 description: "Resource ID"
                 example: 10
               parent:
@@ -3406,7 +3406,6 @@ components:
                     example: 17
               status:
                 type: integer
-                required: true
                 enum: [0, 1, 2, 3]
                 description: |
                   Resource status code that can be submitted
