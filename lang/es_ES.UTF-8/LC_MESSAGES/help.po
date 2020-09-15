@@ -685,14 +685,17 @@ msgstr "IP/DNS de clientes de confianza. Use una coma como delimitador en el cas
 msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes cerrados. Use una coma como delimitador en el caso de varios clientes."
 
-msgid "Your OpenId Connect Authorization endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
-msgstr "Su url del servicio de OpenId Connect Authorization (por ejemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
+msgid "Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect)."
+msgstr "Su url básico del servicio de OpenId Connect (por ejemplo http://IP:8080/auth/realms/master/protocol/openid-connect)."
 
-msgid "Your OpenId Connect Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token)."
-msgstr "Su url del servicio de OpenId Connect Token (por ejemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
+msgid "Your OpenId Connect Authorization endpoint (for example /auth)."
+msgstr "Su url del servicio de OpenId Connect Authorization (por ejemplo /auth)."
 
-msgid "Your OpenId Connect Introspection Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
-msgstr "Su url del servicio de OpenId Connect Introspection Token (por ejemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
+msgid "Your OpenId Connect Token endpoint (for example /token)."
+msgstr "Su url del servicio de OpenId Connect Token (por ejemplo /token)."
+
+msgid "Your OpenId Connect Introspection Token endpoint (for example /token/introspect)."
+msgstr "Su url del servicio de OpenId Connect Introspection Token (por ejemplo /token/introspect)."
 
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "Su URL de redirección de OpenId Connect (este servidor)."

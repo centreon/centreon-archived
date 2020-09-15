@@ -905,14 +905,17 @@ msgid "Authentication can be solely based on OpenId Connect or it can work with 
 msgstr "L'authentification peut être basée sur OpenId Connect uniquement ou peut fonctionner avec OpenId Connect et les systèmes."
 "d'authentification locaux."
 
-msgid "Your OpenId Connect Authorization endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
-msgstr "L'url du service OpenId Connect Authorization (par exemple http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
+msgid "Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect)."
+msgstr "L'url de base du service OpenId Connect (par xemple http://IP:8080/auth/realms/master/protocol/openid-connect)."
 
-msgid "Your OpenId Connect Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token)."
-msgstr "L'url du service OpenId Connect Token (par exemple http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
+msgid "Your OpenId Connect Authorization endpoint (for example /auth)."
+msgstr "L'url du service OpenId Connect Authorization (par exemple /auth)."
 
-msgid "Your OpenId Connect Introspection Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
-msgstr "L'url du service OpenId Connect Introspection Token (par exemple http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
+msgid "Your OpenId Connect Token endpoint (for example /token)."
+msgstr "L'url du service OpenId Connect Token (par exemple /token)."
+
+msgid "Your OpenId Connect Introspection Token endpoint (for example /token/introspect)."
+msgstr "L'url du service OpenId Connect Introspection Token (par exemple /token/introspect)."
 
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "L'URL OpenId Connect de redirection vers Centreon (ce serveur)."

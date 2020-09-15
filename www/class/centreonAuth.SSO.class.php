@@ -73,6 +73,7 @@ class CentreonAuthSSO extends CentreonAuth
             }
         } elseif (isset($this->ssoOptions['openid_connect_enable'])
             && $this->ssoOptions['openid_connect_enable'] == 1
+            && !empty($this->ssoOptions['openid_connect_base_url'])
             && !empty($this->ssoOptions['openid_connect_authorization_endpoint'])
             && !empty($this->ssoOptions['openid_connect_token_endpoint'])
             && !empty($this->ssoOptions['openid_connect_introspection_endpoint'])
@@ -83,9 +84,10 @@ class CentreonAuthSSO extends CentreonAuth
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
-            $authEndpoint = rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
-            $tokenEndpoint = rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
-            $introspectionEndpoint = rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+            $baseUrl = rtrim($this->ssoOptions['openid_connect_base_url'], "/");
+            $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
+            $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
+            $introspectionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             $redirect = urlencode($redirectNoEncode);

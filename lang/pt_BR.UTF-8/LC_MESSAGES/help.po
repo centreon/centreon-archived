@@ -1176,14 +1176,17 @@ msgstr "IP/DNS de clientes de confiança. Use virgula para delimitar em caso de 
 msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes bloqueados. Use virgula para delimitar em caso de multiplos clientes."
 
-msgid "Your OpenId Connect Authorization endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
-msgstr "Seu endereço do servidor OpenId Connect Authorization endpoint (por exemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
+msgid "Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect)."
+msgstr "Seu endereço básico do servidor OpenId Connect (par xemple http://IP:8080/auth/realms/master/protocol/openid-connect)."
 
-msgid "Your OpenId Connect Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token)."
-msgstr "Seu endereço do servidor OpenId Connect Token endpoint (por exemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth)."
+msgid "Your OpenId Connect Authorization endpoint (for example /auth)."
+msgstr "Seu endereço do servidor OpenId Connect Authorization endpoint (por exemplo /auth)."
 
-msgid "Your OpenId Connect Introspection Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
-msgstr "Seu endereço do servidor OpenId Connect Introspection Token endpoint (por exemplo http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect)."
+msgid "Your OpenId Connect Token endpoint (for example /token)."
+msgstr "Seu endereço do servidor OpenId Connect Token endpoint (por exemplo /token)."
+
+msgid "Your OpenId Connect Introspection Token endpoint (for example /token/introspect)."
+msgstr "Seu endereço do servidor OpenId Connect Introspection Token endpoint (por exemplo /token/introspect)."
 
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "Seu endereço de redirecionamento OpenId Connect (este servidor)."

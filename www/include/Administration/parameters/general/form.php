@@ -282,11 +282,12 @@ $openIdConnectMode[] = $form->createElement('radio', 'openid_connect_mode', null
 $form->addGroup($openIdConnectMode, 'openid_connect_mode', _("Authentication mode"), '&nbsp;');
 $form->setDefaults(array('openid_connect_mode' => '1'));
 
-$form->addElement('text', 'openid_connect_trusted_clients', _('Trusted client addresses'), array('size' => 100));
-$form->addElement('text', 'openid_connect_blacklist_clients', _('Blacklist client addresses'), array('size' => 100));
-$form->addElement('text', 'openid_connect_authorization_endpoint', _('Authorization Endpoint'), array('size' => 100));
-$form->addElement('text', 'openid_connect_token_endpoint', _('Token Endpoint'), array('size' => 100));
-$form->addElement('text', 'openid_connect_introspection_endpoint', _('Introspection Token Endpoint'), array('size' => 100));
+$form->addElement('text', 'openid_connect_trusted_clients', _('Trusted client addresses'), array('size' => 50));
+$form->addElement('text', 'openid_connect_blacklist_clients', _('Blacklist client addresses'), array('size' => 50));
+$form->addElement('text', 'openid_connect_base_url', _('Base Url'), array('size' => 80));
+$form->addElement('text', 'openid_connect_authorization_endpoint', _('Authorization Endpoint'), array('size' => 50));
+$form->addElement('text', 'openid_connect_token_endpoint', _('Token Endpoint'), array('size' => 50));
+$form->addElement('text', 'openid_connect_introspection_endpoint', _('Introspection Token Endpoint'), array('size' => 50));
 $form->addElement('text', 'openid_connect_redirect_url', _('Redirect Url'), array('size' => 50));
 $form->addElement('text', 'openid_connect_client_id', _('Client ID'), array('size' => 50));
 $form->addElement('text', 'openid_connect_client_secret', _('Client Secret'), array('size' => 50));

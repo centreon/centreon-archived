@@ -144,17 +144,21 @@ $help['openid_connect_blacklist_clients'] = dgettext(
     'help',
     'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
 );
+$help['openid_connect_base_url'] = dgettext(
+    'help',
+    'Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect).'
+);
 $help['openid_connect_authorization_endpoint'] = dgettext(
     'help',
-    'Your OpenId Connect Authorization endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/auth).'
+    'Your OpenId Connect Authorization endpoint (for example /auth).'
 );
 $help['openid_connect_token_endpoint'] = dgettext(
     'help',
-    'Your OpenId Connect Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token).'
+    'Your OpenId Connect Token endpoint (for example /token).'
 );
 $help['openid_connect_introspection_endpoint'] = dgettext(
     'help',
-    'Your OpenId Connect Introspection Token endpoint (for example http://<IP>:8080/auth/realms/master/protocol/openid-connect/token/introspect).'
+    'Your OpenId Connect Introspection Token endpoint (for example /token/introspect).'
 );
 $help['openid_connect_redirect_url'] = dgettext(
     'help',
