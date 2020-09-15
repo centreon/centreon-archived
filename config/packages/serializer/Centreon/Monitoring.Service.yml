@@ -1,4 +1,12 @@
 Centreon\Domain\Monitoring\Service:
+    virtual_properties:
+        getDuration:
+            name: getDuration
+            serialized_name: duration
+            type: string
+            groups:
+                - 'service_main'
+                - 'service_full'
     properties:
         id:
             type: int
@@ -165,4 +173,9 @@ Centreon\Domain\Monitoring\Service:
         flapping:
             type: bool
             groups:
+                - 'service_full'
+        status:
+            type: Centreon\Domain\Monitoring\ResourceStatus
+            groups:
+                - 'service_main'
                 - 'service_full'
