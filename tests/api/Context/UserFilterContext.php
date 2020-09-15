@@ -53,7 +53,7 @@ class UserFilterContext extends ApiContext
                   "name": "' . $hostgroupName . '"
                 }
               ],
-              "object_type": "host_group"
+              "object_type": "host_groups"
             }]
         }';
 
