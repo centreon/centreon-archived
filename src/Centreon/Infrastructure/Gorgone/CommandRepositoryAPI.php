@@ -103,9 +103,11 @@ class CommandRepositoryAPI implements CommandRepositoryInterface
                         $exceptionMessage = $jsonResponse['message'];
                     }
                 }
-                throw new \Exception($exceptionMessage);
+                throw new CommandRepositoryException($exceptionMessage);
             }
             return (string) $jsonResponse['token'];
+        } catch (CommandRepositoryException $ex) {
+            throw $ex;
         } catch (\Throwable $e) {
             throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);
         }

@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Engine\Interfaces;
 
 use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\HostConfiguration\Host;
 
 interface EngineConfigurationServiceInterface
@@ -31,6 +32,7 @@ interface EngineConfigurationServiceInterface
      * Find the Engine configuration associated to a host.
      *
      * @param Host $host Host for which we want to find the Engine configuration
+     * @throws EngineException
      * @return EngineConfiguration|null
      */
     public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration;
