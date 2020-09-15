@@ -112,8 +112,10 @@ class SubmitResultController extends AbstractController
         $hasServiceRights = $contact->hasRole(Contact::ROLE_SERVICE_SUBMIT_RESULT);
 
         foreach ($resources as $resource) {
-            if (($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
-                || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)) {
+            if (
+                ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
+                || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)
+            ) {
                 continue;
             }
             return false;
@@ -248,7 +250,10 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->validateAndRetrievePostData($request, 'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json');
+        $results = $this->validateAndRetrievePostData(
+            $request,
+            'config/json_validator/latest/Centreon/SubmitResult/SubmitResult.json'
+        );
 
         if (!empty($results)) {
             $result = (new SubmitResult($serviceId, $results['status']))
