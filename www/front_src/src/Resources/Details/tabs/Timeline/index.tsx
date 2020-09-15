@@ -18,9 +18,8 @@ import {
   SearchParameter,
 } from '@centreon/ui';
 
-import { prop, isEmpty, cond, always, T, isNil, concat } from 'ramda';
+import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
 
-import { ResourceLinks } from '../../../models';
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
@@ -30,13 +29,9 @@ import {
   labelNoResultsFound,
   labelRefresh,
 } from '../../../translatedLabels';
-import { useResourceContext } from '../../../Context';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
-
-interface Props {
-  links: ResourceLinks;
-}
+import { TabProps } from '..';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 
@@ -67,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TimelineTab = ({ links }: Props): JSX.Element => {
+const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -75,7 +70,7 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
   const translatedTypes = types.map((type) => ({
     ...type,
     name: t(type.name),
-  }));
+  })) as Array<Type>;
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
@@ -85,10 +80,6 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
   const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(30);
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
-
-  const { endpoints } = links;
-  const { timeline: timelineEndpoint } = endpoints;
-  const { listing } = useResourceContext();
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,
@@ -109,6 +100,8 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
       ],
     };
   };
+
+  const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
 
   const listTimeline = (
     { atPage } = {
@@ -134,15 +127,24 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
       });
   };
 
+  const reload = (): void => {
+    setPage(1);
+    listTimeline({ atPage: 1 }).then(({ result }) => {
+      setTimeline(result);
+    });
+  };
+
   React.useEffect(() => {
-    if (isNil(timeline) || page !== 1) {
+    if (isNil(details)) {
+      setTimeline(undefined);
+    }
+
+    if (page !== 1 || isNil(details)) {
       return;
     }
 
-    listTimeline().then(({ result }) => {
-      setTimeline(result);
-    });
-  }, [listing]);
+    reload();
+  }, [details]);
 
   React.useEffect(() => {
     if (isNil(timeline)) {
@@ -154,17 +156,15 @@ const TimelineTab = ({ links }: Props): JSX.Element => {
     });
   }, [page]);
 
-  const reload = (): void => {
-    setPage(1);
-    setTimeline(undefined);
-    listTimeline({ atPage: 1 }).then(({ result }) => {
-      setTimeline(result);
-    });
-  };
-
   React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
+
+    setTimeline(undefined);
+
     reload();
-  }, [endpoints, selectedTypes]);
+  }, [selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
     setSelectedTypes(typeIds);

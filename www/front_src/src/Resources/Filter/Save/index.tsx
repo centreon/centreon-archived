@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
+
   const { t } = useTranslation();
   const { isCustom } = useFilterModels();
   const { toRawFilter } = useAdapters();

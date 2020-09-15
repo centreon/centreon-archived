@@ -26,6 +26,7 @@ const useLoadResources = (): LoadResources => {
     sendRequest,
     enabledAutorefresh,
     customFilters,
+    loadDetails,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
@@ -62,6 +63,8 @@ const useLoadResources = (): LoadResources => {
       page,
       search,
     }).then(setListing);
+
+    loadDetails();
   };
 
   const initAutorefresh = (): void => {

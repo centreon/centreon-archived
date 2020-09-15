@@ -17,6 +17,7 @@ import {
   reject,
   sortBy,
   isEmpty,
+  isNil,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +38,7 @@ import formatMetricValue from './formatMetricValue';
 const fontFamily = 'Roboto, sans-serif';
 
 interface Props {
-  endpoint: string;
+  endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
@@ -90,6 +91,10 @@ const PerformanceGraph = ({
   });
 
   React.useEffect(() => {
+    if (isNil(endpoint)) {
+      return;
+    }
+
     sendRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
@@ -98,7 +103,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  if (sending) {
+  if (sending || isNil(endpoint)) {
     return <LoadingSkeleton />;
   }
 
