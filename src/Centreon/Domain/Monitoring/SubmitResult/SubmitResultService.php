@@ -170,7 +170,7 @@ class SubmitResultService extends AbstractCentreonService implements SubmitResul
             throw new EntityNotFoundException(
                 sprintf(
                     _('Host %d not found'),
-                    $result->getParentResourceId()
+                    $result->getResourceId()
                 )
             );
         }

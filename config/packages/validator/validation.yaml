@@ -129,9 +129,9 @@ Centreon\Domain\Monitoring\SubmitResult\SubmitResult:
         status:
             - Type:
                 type: int
-            - PositiveOrZero: ~
-            - LessThanOrEqual: 3
                 groups: [Default, submit_result_host, submit_result_service]
+            - GreaterThan: 0
+            - LessThanOrEqual: 3
             - NotNull: ~
         resourceId:
             - Type:
