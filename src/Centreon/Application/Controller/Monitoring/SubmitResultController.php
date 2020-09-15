@@ -158,7 +158,6 @@ class SubmitResultController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $message = '';
         foreach ($results['resources'] as $submitResource) {
             $result = (new SubmitResult($submitResource['id'], $submitResource['status']))
                 ->setOutput($submitResource['output'])
