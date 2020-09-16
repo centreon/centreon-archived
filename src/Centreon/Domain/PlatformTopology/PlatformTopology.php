@@ -81,6 +81,29 @@ class PlatformTopology
     private $serverId;
 
     /**
+     * @var bool Indicate if the API need to be called on the parent of the parent server (n-1)
+     */
+    private $isLinkedToAnotherServer = false;
+
+    /**
+     * @return bool
+     */
+    public function isLinkedToAnotherServer()
+    {
+        return $this->isLinkedToAnotherServer;
+    }
+
+    /**
+     * @param bool $isLinked
+     * @return $this
+     */
+    public function setLinkedToAnotherServer(bool $isLinked): PlatformTopology
+    {
+        $this->isLinkedToAnotherServer = $isLinked;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ?int

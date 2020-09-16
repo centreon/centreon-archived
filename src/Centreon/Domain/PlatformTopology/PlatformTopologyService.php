@@ -53,56 +53,44 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         /**
-         * search for already registered central or remote top level server on this platform
+         * Search for already registered central or remote top level server on this platform
+         * As only top level platform do not need parent_address and only one should be registered
          */
         if (PlatformTopology::TYPE_CENTRAL === $platformTopology->getType()) {
+            // Adding a top level platform as a Central
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->setServerNagiosId($platformTopology);
         } elseif (
             null === $platformTopology->getParentAddress()
             && PlatformTopology::TYPE_REMOTE === $platformTopology->getType()
         ) {
+            // Adding a top level platform as a Remote
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
             $this->setServerNagiosId($platformTopology);
         }
 
-        /**
-         * search for already registered platforms using same name or address
-         */
-        $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
-            $platformTopology->getAddress(),
-            $platformTopology->getName()
-        );
+        $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
+        $this->setParentId($platformTopology);
 
-        if (true === $isAlreadyRegistered) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("A platform using the name : '%s' or address : '%s' already exists"),
-                    $platformTopology->getName(),
-                    $platformTopology->getAddress()
-                )
-            );
+
+
+
+        if (true === $platformTopology->isLinkedToAnotherServer()) {
+            // WIP
+            // call the API on the n-1 server to register it too
+
+            // DEBUG
+            throw new PlatformTopologyException("need to call the API now");
         }
 
-        /**
-         * search for parent platform ID in topology
-         */
-        if (null !== $platformTopology->getParentAddress()) {
-            $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
-                $platformTopology->getParentAddress()
-            );
-            if (null === $foundPlatformTopology) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _("No parent platform was found for : '%s'@'%s'"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
-                    )
-                );
-            }
-            $platformTopology->setParentId($foundPlatformTopology->getId());
-        }
+
+        // TODO
+        // need to check the previous status code to be sure that the n-1 registered properly the platform
+        // then continue the current process
+
+
+
 
         try {
             // add the new platform
@@ -123,16 +111,16 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function checkForAlreadyRegisteredPlatformType(string $type): void
     {
-        $foundCentralPlatformType = $this->platformTopologyRepository->findPlatformTopologyByType(
+        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findPlatformTopologyByType(
             $type
         );
-        if (null !== $foundCentralPlatformType) {
+        if (null !== $foundAlreadyRegisteredPlatformByType) {
             throw new PlatformTopologyConflictException(
                 sprintf(
                     _("A %s : '%s'@'%s' is already registered"),
                     $type,
-                    $foundCentralPlatformType->getName(),
-                    $foundCentralPlatformType->getAddress()
+                    $foundAlreadyRegisteredPlatformByType->getName(),
+                    $foundAlreadyRegisteredPlatformByType->getAddress()
                 )
             );
         }
@@ -158,5 +146,55 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
         $platformTopology->setServerId($foundServerInNagiosTable->getId());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkForAlreadyRegisteredSameNameOrAddress(PlatformTopology $platformTopology): void
+    {
+        $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
+            $platformTopology->getAddress(),
+            $platformTopology->getName()
+        );
+
+        if (true === $isAlreadyRegistered) {
+            throw new PlatformTopologyConflictException(
+                sprintf(
+                    _("A platform using the name : '%s' or address : '%s' already exists"),
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setParentId(PlatformTopology $platformTopology): void
+    {
+        if (null !== $platformTopology->getParentAddress()) {
+            $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
+                $platformTopology->getParentAddress()
+            );
+            if (null === $foundPlatformTopology) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _("No parent platform was found for : '%s'@'%s'"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            $platformTopology->setParentId($foundPlatformTopology->getId());
+
+            if (
+                null !== $foundPlatformTopology->getServerId()
+                && $foundPlatformTopology->getType() === PlatformTopology::TYPE_REMOTE
+            ) {
+                $platformTopology->setLinkedToAnotherServer(true);
+            }
+        }
     }
 }

@@ -54,4 +54,20 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformTopologyConflictException
      */
     public function setServerNagiosId(PlatformTopology $platformTopology): void;
+
+    /**
+     * Search for already registered platforms using same name or address
+     *
+     * @param PlatformTopology $platformTopology
+     * @throws PlatformTopologyConflictException
+     */
+    public function checkForAlreadyRegisteredSameNameOrAddress(PlatformTopology $platformTopology): void;
+
+    /**
+     * Search for parent platform ID in topology
+     *
+     * @param PlatformTopology $platformTopology
+     * @throws EntityNotFoundException
+     */
+    public function setParentId(PlatformTopology $platformTopology): void;
 }
