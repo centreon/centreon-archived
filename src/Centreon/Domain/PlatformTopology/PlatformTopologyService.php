@@ -59,7 +59,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->setServerNagiosId($platformTopology);
         } elseif (
-            $platformTopology->getParentAddress() === null
+            null === $platformTopology->getParentAddress()
             && PlatformTopology::TYPE_REMOTE === $platformTopology->getType()
         ) {
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
@@ -75,7 +75,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             $platformTopology->getName()
         );
 
-        if ($isAlreadyRegistered === true) {
+        if (true === $isAlreadyRegistered) {
             throw new PlatformTopologyConflictException(
                 sprintf(
                     _("A platform using the name : '%s' or address : '%s' already exists"),
@@ -88,7 +88,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         /**
          * search for parent platform ID in topology
          */
-        if ($platformTopology->getParentAddress() !== null) {
+        if (null !== $platformTopology->getParentAddress()) {
             $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
                 $platformTopology->getParentAddress()
             );
