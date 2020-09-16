@@ -36,7 +36,7 @@ if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
 if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
     exit();
 }
-const SECOND_KEY = base64_encode('api_remote_credentials');
+define("SECOND_KEY", base64_encode('api_remote_credentials'));
 
 /*
  * Check ACL
