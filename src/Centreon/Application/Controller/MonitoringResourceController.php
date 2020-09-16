@@ -75,6 +75,10 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
 
+    private const RESOURCE_LISTING_URI = '/monitoring/resources';
+
+    private const TAB_DETAILS_NAME = 'details';
+
     private const HOST_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addhostacknowledgement';
     private const SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addserviceacknowledgement';
     private const HOST_DOWNTIME_ROUTE = 'monitoring.downtime.addHostDowntime';
@@ -86,6 +90,7 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getServiceStatusMetrics';
     private const SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getServicePerformanceMetrics';
 
+    // Groups for serialization
     public const SERIALIZER_GROUPS_LISTING = [
         ResourceEntity::SERIALIZER_GROUP_MAIN,
         ResourceEntity::SERIALIZER_GROUP_PARENT,
@@ -591,5 +596,59 @@ class MonitoringResourceController extends AbstractController
         }
 
         return $this->getBaseUri() . $uri;
+    }
+
+    /**
+     * Build uri to access host details page
+     *
+     * @param integer $hostId
+     * @return void
+     */
+    public function buildHostDetailsUri(int $hostId)
+    {
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'type' => ResourceEntity::TYPE_HOST,
+                'id' => $hostId,
+                'tab' => static::TAB_DETAILS_NAME,
+            ]),
+        ]);
+    }
+
+    /**
+     * Build uri to access service details page
+     *
+     * @param integer $hostId
+     * @param integer $serviceId
+     * @return void
+     */
+    public function buildServiceDetailsUri(int $hostId, int $serviceId)
+    {
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'parentType' => ResourceEntity::TYPE_HOST,
+                'parentId' => $hostId,
+                'type' => ResourceEntity::TYPE_SERVICE,
+                'id' => $serviceId,
+                'tab' => static::TAB_DETAILS_NAME,
+            ]),
+        ]);
+    }
+
+    /**
+     * Build uri to access listing page of resources with specific parameters
+     *
+     * @param array $parameters
+     * @return void
+     */
+    public function buildListingUri(array $parameters)
+    {
+        $baseListingUri = $this->getBaseUri() . static::RESOURCE_LISTING_URI;
+
+        if (!empty($parameters)) {
+            $baseListingUri .= '?' . http_build_query($parameters);
+        }
+
+        return $baseListingUri;
     }
 }
