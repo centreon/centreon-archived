@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { hasPath, mergeDeepLeft, mergeDeepRight, pipe } from 'ramda';
+
 import {
   useRequest,
   setUrlQueryParameters,
@@ -62,7 +64,7 @@ const useFilter = (): FilterState => {
     decoder: listCustomFiltersDecoder,
   });
 
-  const { unhandledProblemsFilter } = useFilterModels();
+  const { unhandledProblemsFilter, allFilter, newFilter } = useFilterModels();
   const { toFilter } = useAdapters();
 
   const getDefaultFilter = (): Filter => {
@@ -70,10 +72,14 @@ const useFilter = (): FilterState => {
 
     const urlQueryParameters = getUrlQueryParameters();
 
-    return {
-      ...defaultFilter,
-      ...(urlQueryParameters.filter as Filter),
-    };
+    if (hasPath(['filter'], urlQueryParameters)) {
+      return pipe(
+        mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
+        mergeDeepRight(allFilter) as (t) => Filter,
+      )(newFilter) as Filter;
+    }
+
+    return defaultFilter;
   };
 
   const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
