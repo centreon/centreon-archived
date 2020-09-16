@@ -15596,6 +15596,21 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
 
+msgid "deprecated"
+msgstr "déprécié"
+
+msgid "Show deprecated pages"
+msgstr "Afficher les pages dépréciées"
+
+msgid "Error when adding services to the host %d"
+msgstr "Erreur lors de l'ajout de services à l'hôte %d"
+
+msgid "Error when changing host status (%d to %s)"
+msgstr "Erreur lors du changement de statut de l'hôte (%d à %s)"
+
+msgid "Error when searching for already used host names"
+msgstr "Erreur lors de la recherche de noms d'hôtes déjà utilisés"
+
 msgid "Copy the link to this resource"
 msgstr "Copier le lien vers cette ressource"
 

@@ -86,7 +86,7 @@ interface EngineServiceInterface extends ContactFilterInterface
      * Add a downtime on multiple hosts.
      *
      * @param Downtime $downtime Downtime to add on the host
-     * @param Host $hosts Host for which we want to add the downtime
+     * @param Host $host Host for which we want to add the downtime
      * @throws \Exception
      */
     public function addHostDowntime(Downtime $downtime, Host $host): void;
@@ -95,7 +95,7 @@ interface EngineServiceInterface extends ContactFilterInterface
      * Add a downtime on multiple services.
      *
      * @param Downtime $downtime Downtime to add
-     * @param Service[] $services Service for which we want to add a downtime
+     * @param Service $service Service for which we want to add a downtime
      * @throws \Exception
      */
     public function addServiceDowntime(Downtime $downtime, Service $service): void;

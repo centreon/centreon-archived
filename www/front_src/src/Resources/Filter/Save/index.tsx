@@ -42,7 +42,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const { t } = useTranslation();
   const { isCustom } = useFilterModels();
-  const { toRawFilter } = useAdapters();
+  const { toRawFilter, toFilter } = useAdapters();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [createFilterDialogOpen, setCreateFilterDialogOpen] = React.useState(
@@ -62,6 +62,8 @@ const SaveFilterMenu = (): JSX.Element => {
     filter,
     updatedFilter,
     setFilter,
+    setHostGroups,
+    setServiceGroups,
     loadCustomFilters,
     customFilters,
     setEditPanelOpen,
@@ -89,6 +91,10 @@ const SaveFilterMenu = (): JSX.Element => {
 
     loadCustomFilters().then(() => {
       setFilter(newFilter);
+
+      // update criterias with deletable objects
+      setHostGroups(newFilter.criterias.hostGroups);
+      setServiceGroups(newFilter.criterias.serviceGroups);
     });
   };
 
@@ -105,14 +111,14 @@ const SaveFilterMenu = (): JSX.Element => {
     sendUpdateFilterRequest({
       id: updatedFilter.id,
       rawFilter: toRawFilter(updatedFilter),
-    }).then(() => {
+    }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
         message: t(labelFilterSaved),
         severity: Severity.success,
       });
 
-      loadFiltersAndUpdateCurrent(updatedFilter);
+      loadFiltersAndUpdateCurrent(toFilter(savedFilter));
     });
   };
 

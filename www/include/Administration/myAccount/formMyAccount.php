@@ -38,6 +38,7 @@ if (!isset($centreon)) {
     exit();
 }
 
+require_once __DIR__ . '/../../../class/centreon.class.php';
 require_once "./include/common/common-Func.php";
 
 require_once './class/centreonFeature.class.php';
@@ -62,7 +63,7 @@ if (!isset($centreonFeature)) {
 $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
-        contact_js_effects, contact_autologin_key, default_page, contact_auth_type
+        contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -134,6 +135,7 @@ $form->addElement(
     array('onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info')
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
+$form->addElement('checkbox', 'show_deprecated_pages', _("Show deprecated pages"), null, $attrsText);
 $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 
 
@@ -398,7 +400,19 @@ if ($form->validate()) {
     );
     $form->freeze();
 
-    if ($form->getSubmitValue("contact_lang") !== $cct['contact_lang']) {
+    $showDeprecatedPages = $form->getSubmitValue("show_deprecated_pages") ? '1' : '0';
+    if (
+        $form->getSubmitValue("contact_lang") !== $cct['contact_lang']
+        || $showDeprecatedPages !== $cct['show_deprecated_pages']
+    ) {
+        $contactStatement = $pearDB->prepare(
+            'SELECT * FROM contact WHERE contact_id = :contact_id'
+        );
+        $contactStatement->bindValue(':contact_id', $centreon->user->get_id(), \PDO::PARAM_INT);
+        $contactStatement->execute();
+        if ($contact = $contactStatement->fetch()) {
+            $_SESSION['centreon'] = new \Centreon($contact);
+        }
         $_SESSION[$sessionKeyFreeze] = true;
         echo '<script>parent.location.href = "main.php?p=' . $p . '&o=c";</script>';
         exit;

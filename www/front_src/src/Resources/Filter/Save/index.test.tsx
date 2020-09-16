@@ -20,6 +20,7 @@ import {
   labelSaveAsNew,
   labelName,
 } from '../../translatedLabels';
+
 import { filterEndpoint } from '../api';
 import { RawFilter, Filter } from '../models';
 
@@ -208,6 +209,12 @@ describe(SaveMenu, () => {
     const filter = getCustomFilter();
     const { criterias } = filter;
 
+    const newSearch = 'new search';
+
+    const updatedFilterRaw = getRawFilter({ search: newSearch });
+
+    mockedAxios.put.mockResolvedValue({ data: updatedFilterRaw });
+
     act(() => {
       filterState.setFilter(filter);
       filterState.setResourceTypes(criterias.resourceTypes);
@@ -216,7 +223,7 @@ describe(SaveMenu, () => {
       filterState.setStates(criterias.states);
       filterState.setStatuses(criterias.statuses);
 
-      filterState.setNextSearch('toto');
+      filterState.setNextSearch(newSearch);
     });
 
     expect(
@@ -228,7 +235,7 @@ describe(SaveMenu, () => {
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         `${filterEndpoint}/${filterState.updatedFilter.id}`,
-        omit(['id'], getRawFilter({ search: 'toto' })),
+        omit(['id'], getRawFilter({ search: newSearch })),
         expect.anything(),
       );
     });

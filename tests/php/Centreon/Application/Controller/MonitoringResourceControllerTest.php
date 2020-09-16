@@ -99,7 +99,7 @@ class MonitoringResourceControllerTest extends TestCase
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authorizationChecker->expects($this->once())
+        $authorizationChecker->expects($this->any())
             ->method('isGranted')
             ->willReturn(true);
         $token = $this->createMock(TokenInterface::class);
@@ -213,5 +213,41 @@ class MonitoringResourceControllerTest extends TestCase
         );
         $this->assertNull($resource->getLinks()->getEndpoints()->getStatusGraph());
         $this->assertNull($resource->getLinks()->getEndpoints()->getPerformanceGraph());
+    }
+
+    /**
+     * test buildHostDetailsUri
+     */
+    public function testBuildHostDetailsUri()
+    {
+        $resourceController = new MonitoringResourceController(
+            $this->monitoringService,
+            $this->resourceService,
+            $this->urlGenerator,
+            $this->iconUrlNormalizer
+        );
+
+        $this->assertEquals(
+            urldecode($resourceController->buildHostDetailsUri(1)),
+            '/monitoring/resources?details={"type":"host","id":1,"tab":"details"}'
+        );
+    }
+
+    /**
+     * test buildServiceDetailsUri
+     */
+    public function testBuildServiceDetailsUri()
+    {
+        $resourceController = new MonitoringResourceController(
+            $this->monitoringService,
+            $this->resourceService,
+            $this->urlGenerator,
+            $this->iconUrlNormalizer
+        );
+
+        $this->assertEquals(
+            urldecode($resourceController->buildServiceDetailsUri(1, 2)),
+            '/monitoring/resources?details={"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details"}'
+        );
     }
 }

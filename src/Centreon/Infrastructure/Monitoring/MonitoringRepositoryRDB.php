@@ -33,6 +33,7 @@ use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
@@ -559,7 +560,22 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`
+            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
             FROM `:dbstg`.services srv
             LEFT JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id'
@@ -576,21 +592,25 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
         $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
 
-        if ($statement->execute()) {
-            if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $service = EntityCreator::createEntityByArray(
-                    Service::class,
-                    $row
-                );
+        $statement->execute();
 
-                $service->setHost(
-                    EntityCreator::createEntityByArray(Host::class, $row, 'host_')
-                );
-            } else {
-                return null;
-            }
+        if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $row,
+                'status_'
+            ));
+
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
         } else {
-            throw new \Exception(_('Bad SQL request'));
+            return null;
         }
 
         //get downtimes for service
@@ -651,15 +671,30 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               srv.*,
               h.host_id, h.alias AS host_alias, h.name AS host_name,
               cv.value as criticality,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS host_display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS host_state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS host_state,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
             FROM `:dbstg`.services srv'
             . $accessGroupFilter
-            . ' INNER JOIN `:dbstg`.hosts h 
+            . ' INNER JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id
               AND h.name NOT LIKE \'_Module_BAM%\'
               AND h.enabled = \'1\'
@@ -715,6 +750,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 Service::class,
                 $result
             );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $result,
+                'status_'
+            ));
 
             $host = (new Host())
                 ->setId((int) $result['host_id'])
@@ -797,7 +838,22 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
             FROM `:dbstg`.services srv'
             . $accessGroupFilter
             . ' INNER JOIN `:dbstg`.hosts h
@@ -844,10 +900,18 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         );
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $services[] = EntityCreator::createEntityByArray(
+            $service = EntityCreator::createEntityByArray(
                 Service::class,
                 $result
             );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $result,
+                'status_'
+            ));
+
+            $services[] = $service;
         }
 
         return $services;

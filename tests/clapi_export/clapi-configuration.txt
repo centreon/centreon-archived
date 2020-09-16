@@ -618,6 +618,7 @@ CONTACTTPL;setparam;contact_template;reach_api_rt;0
 CONTACTTPL;setparam;contact_template;contact_enable_notifications;2
 CONTACTTPL;setparam;contact_template;contact_type_msg;txt
 CONTACTTPL;setparam;contact_template;contact_activate;1
+CONTACTTPL;setparam;contact_template;show_deprecated_pages;0
 CONTACTTPL;setparam;contact_template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;contact_template;contact_ldap_required_sync;0
 CONTACTTPL;ADD;test_name;test_contact-template;;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;1;;local
@@ -630,6 +631,7 @@ CONTACTTPL;setparam;test_contact-template;reach_api_rt;0
 CONTACTTPL;setparam;test_contact-template;contact_enable_notifications;0
 CONTACTTPL;setparam;test_contact-template;contact_type_msg;txt
 CONTACTTPL;setparam;test_contact-template;contact_activate;1
+CONTACTTPL;setparam;test_contact-template;show_deprecated_pages;0
 CONTACTTPL;setparam;test_contact-template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;test_contact-template;contact_ldap_required_sync;0
 LDAP;ADD;openldap;openldap;
@@ -696,6 +698,7 @@ CONTACT;setparam;admin;reach_api_rt;0
 CONTACT;setparam;admin;contact_enable_notifications;1
 CONTACT;setparam;admin;contact_type_msg;txt
 CONTACT;setparam;admin;contact_activate;1
+CONTACT;setparam;admin;show_deprecated_pages;0
 CONTACT;setparam;admin;contact_ldap_last_sync;0
 CONTACT;setparam;admin;contact_ldap_required_sync;0
 CONTACT;setparam;admin;hostnotifcmd;host-notify-by-email
@@ -712,6 +715,7 @@ CONTACT;setparam;guest;reach_api_rt;0
 CONTACT;setparam;guest;contact_enable_notifications;2
 CONTACT;setparam;guest;contact_type_msg;txt
 CONTACT;setparam;guest;contact_activate;0
+CONTACT;setparam;guest;show_deprecated_pages;0
 CONTACT;setparam;guest;contact_ldap_last_sync;0
 CONTACT;setparam;guest;contact_ldap_required_sync;0
 CONTACT;setparam;guest;hostnotifcmd;host-notify-by-email
@@ -726,6 +730,7 @@ CONTACT;setparam;jeanpierre;reach_api_rt;0
 CONTACT;setparam;jeanpierre;contact_enable_notifications;2
 CONTACT;setparam;jeanpierre;contact_type_msg;txt
 CONTACT;setparam;jeanpierre;contact_activate;1
+CONTACT;setparam;jeanpierre;show_deprecated_pages;0
 CONTACT;setparam;jeanpierre;contact_ldap_last_sync;0
 CONTACT;setparam;jeanpierre;contact_ldap_required_sync;0
 CONTACT;ADD;test_contact;test_contact;test@localhost;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;0;en_US;local
@@ -738,6 +743,7 @@ CONTACT;setparam;test_contact;reach_api_rt;0
 CONTACT;setparam;test_contact;contact_enable_notifications;0
 CONTACT;setparam;test_contact;contact_type_msg;txt
 CONTACT;setparam;test_contact;contact_activate;1
+CONTACT;setparam;test_contact;show_deprecated_pages;0
 CONTACT;setparam;test_contact;contact_ldap_last_sync;0
 CONTACT;setparam;test_contact;contact_ldap_required_sync;0
 CONTACT;ADD;User;user;user@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US;local
@@ -752,6 +758,7 @@ CONTACT;setparam;user;reach_api_rt;0
 CONTACT;setparam;user;contact_enable_notifications;2
 CONTACT;setparam;user;contact_type_msg;txt
 CONTACT;setparam;user;contact_activate;0
+CONTACT;setparam;user;show_deprecated_pages;0
 CONTACT;setparam;user;contact_ldap_last_sync;0
 CONTACT;setparam;user;contact_ldap_required_sync;0
 CONTACT;setparam;user;hostnotifcmd;host-notify-by-email

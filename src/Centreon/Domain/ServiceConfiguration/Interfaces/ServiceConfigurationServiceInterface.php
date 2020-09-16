@@ -23,7 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Domain\ServiceConfiguration\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
+use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\ServiceConfiguration\HostTemplateService;
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
@@ -36,7 +38,8 @@ interface ServiceConfigurationServiceInterface extends ContactFilterInterface
      *
      * @param Host $host Host for which we want to apply the services
      * @throws ServiceConfigurationException
-     * @throws \Throwable
+     * @throws HostConfigurationException
+     * @throws EngineException
      */
     public function applyServices(Host $host): void;
 
