@@ -186,10 +186,8 @@ while ($row = $childStmt->fetch()) {
     }
 
     $stmt = $pearDB->prepare(
-        "
-            INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
-            VALUES (:centralAddress, :name, :serverType, :parent, :id)
-        "
+        "INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
+         VALUES (:centralAddress, :name, :serverType, :parent, :id)"
     );
     $stmt->bindValue(':centralAddress', $row['ns_ip_address'], \PDO::PARAM_STR);
     $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
