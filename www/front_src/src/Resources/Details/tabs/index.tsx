@@ -12,7 +12,8 @@ import {
   labelServices,
 } from '../../translatedLabels';
 import GraphTab from './Graph';
-import { ResourceDetails, Tab, TabId } from '../models';
+import { ResourceDetails } from '../models';
+import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import hasDefinedValues from '../../hasDefinedValues';
