@@ -15,6 +15,8 @@ export interface ActionsState {
   setResourcesToSetDowntime: SetResourcesDispatch;
   resourcesToCheck: Array<Resource>;
   setResourcesToCheck: SetResourcesDispatch;
+  resourcesToDisacknowledge: Array<Resource>;
+  setResourcesToDisacknowledge: SetResourcesDispatch;
 }
 
 const useActions = (): ActionsState => {
@@ -30,6 +32,10 @@ const useActions = (): ActionsState => {
   const [resourcesToCheck, setResourcesToCheck] = React.useState<
     Array<Resource>
   >([]);
+  const [
+    resourcesToDisacknowledge,
+    setResourcesToDisacknowledge,
+  ] = React.useState<Array<Resource>>([]);
 
   return {
     selectedResources,
@@ -40,6 +46,8 @@ const useActions = (): ActionsState => {
     setResourcesToSetDowntime,
     resourcesToCheck,
     setResourcesToCheck,
+    resourcesToDisacknowledge,
+    setResourcesToDisacknowledge,
   };
 };
 

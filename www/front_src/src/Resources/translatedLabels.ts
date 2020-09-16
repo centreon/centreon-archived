@@ -164,3 +164,5 @@ export const labelViewLogs = 'View logs';
 export const labelViewReport = 'View report';
 export const labelCopyLink = 'Copy the link to this resource';
 export const labelLinkCopied = 'Resource link copied to the clipboard';
+export const labelDisacknowledge = 'Disacknowledge';
+export const labelMoreActions = 'More actions';

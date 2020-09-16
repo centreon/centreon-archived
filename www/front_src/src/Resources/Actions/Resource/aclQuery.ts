@@ -28,6 +28,8 @@ interface AclQuery {
   getAcknowledgementDeniedTypeAlert: (resources) => string | undefined;
   canAcknowledgeServices: () => boolean;
   canCheck: (resources) => boolean;
+  canDisacknowledge: (resources) => boolean;
+  canDisacknowledgeServices: (resources) => boolean;
 }
 
 const useAclQuery = (): AclQuery => {
@@ -105,6 +107,13 @@ const useAclQuery = (): AclQuery => {
     return can({ resources, action: 'check' });
   };
 
+  const canDisacknowledge = (resources: Array<Resource>): boolean => {
+    return can({ resources, action: 'disacknowledgement' });
+  };
+
+  const canDisacknowledgeServices = (): boolean =>
+    pathEq(['actions', 'service', 'disacknowledgement'], true)(acl);
+
   return {
     canDowntime,
     getDowntimeDeniedTypeAlert,
@@ -113,6 +122,8 @@ const useAclQuery = (): AclQuery => {
     getAcknowledgementDeniedTypeAlert,
     canAcknowledgeServices,
     canCheck,
+    canDisacknowledge,
+    canDisacknowledgeServices,
   };
 };
 
