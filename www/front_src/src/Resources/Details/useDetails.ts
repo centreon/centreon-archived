@@ -8,12 +8,8 @@ import {
 } from '@centreon/ui';
 
 import { isNil } from 'ramda';
-import {
-  TabId,
-  detailsTabId,
-  getTabIdFromLabel,
-  getTabLabelFromId,
-} from './tabs';
+import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
+import { TabId } from './tabs/models';
 import { DetailsUrlQueryParameters, ResourceDetails } from './models';
 import { resourcesEndpoint } from '../api/endpoint';
 
