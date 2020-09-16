@@ -143,3 +143,58 @@ try {
     );
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
+
+// get local server id
+$localStmt = $pearDB->query("SELECT `id` FROM nagios_server WHERE localhost = '1'");
+$parentId = $localStmt->fetchColumn();
+
+// map
+$mapServerQuery = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'map_light_server_address'");
+$map = $mapServerQuery->fetchColumn();
+
+if (!empty($map)) {
+    $mapIp = parse_url(gethostbyname($map))["host"];
+    $stmt = $pearDB->prepare(
+        "INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
+            VALUES (:mapAddress, :name, 'map', :id, NULL)"
+    );
+    $name = 'map_' . $mapIp;
+    $stmt->bindValue(':mapAddress', $mapIp, \PDO::PARAM_STR);
+    $stmt->bindValue(':name', $name, \PDOap::PARAM_STR);
+    $stmt->bindValue(':id', $parentId, \PDO::PARAM_INT);
+    $stmt->execute();
+}
+
+// get nagios_server children
+$childStmt = $pearDB->query(
+    "SELECT `id`, `name`, `ns_ip_address`, `ns_ip_address`, `remote_id` FROM nagios_server WHERE localhost != '1'"
+);
+
+while ($row = $childStmt->fetch()) {
+    //check remote/poller
+    $parent = $parentId;
+    $serverType = 'poller';
+    if ($row['remote_id']) {
+        $parent = $row['remote_id'];
+    }
+
+    $remoteServerQuery = $pearDB->query("SELECT `id` FROM remote_servers WHERE ip = " . $row['ns_ip_address']);
+    $remoteId = $remoteServerQuery->fetchColumn();
+    if ($remoteId) {
+        //is remote
+        $serverType = 'remote';
+    }
+
+    $stmt = $pearDB->prepare(
+        "
+            INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
+            VALUES (:centralAddress, :name, :serverType, :parent, :id)
+        "
+    );
+    $stmt->bindValue(':centralAddress', $row['ns_ip_address'], \PDO::PARAM_STR);
+    $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
+    $stmt->bindValue(':serverType', $serverType, \PDO::PARAM_STR);
+    $stmt->bindValue(':parent', $parent, \PDO::PARAM_INT);
+    $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
+    $stmt->execute();
+}
