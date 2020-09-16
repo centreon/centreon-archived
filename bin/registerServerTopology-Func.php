@@ -78,7 +78,7 @@ function parseTemplateFile(string $path): array
     if (!file_exists(getcwd() . '/' . $path)) {
         throw new \InvalidArgumentException('File ' . $path . ' not found' . PHP_EOL);
     }
-    $data = file_get_contents(getcwd().  '/' . $path);
+    $data = file_get_contents(getcwd() . '/' . $path);
     //Remove the blank line
     $data = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $data);
     $lines = preg_split("/(\n)/", $data);
