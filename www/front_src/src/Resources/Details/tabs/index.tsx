@@ -131,6 +131,7 @@ export {
   timelineTabId,
   graphTabId,
   shortcutsTabId,
+  servicesTabId,
   tabs,
   TabById,
   getTabIdFromLabel,

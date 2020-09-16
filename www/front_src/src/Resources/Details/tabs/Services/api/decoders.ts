@@ -9,8 +9,9 @@ const entityDecoder = JsonDecoder.object<Service>(
   {
     id: JsonDecoder.number,
     name: JsonDecoder.string,
-    status: JsonDecoder.optional(statusDecoder),
+    status: statusDecoder,
     output: JsonDecoder.string,
+    duration: JsonDecoder.string,
   },
   'Service',
   {

@@ -1,14 +1,12 @@
 import { JsonDecoder } from 'ts.data.json';
+import { Status } from './models';
 
 const statusDecoder = JsonDecoder.object<Status>(
   {
-    severityCode: JsonDecoder.number,
+    severity_code: JsonDecoder.number,
     name: JsonDecoder.string,
   },
   'Status',
-  {
-    severityCode: 'severity_code',
-  },
 );
 
 export { statusDecoder };

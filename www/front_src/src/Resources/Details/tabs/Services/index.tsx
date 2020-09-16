@@ -78,7 +78,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     sendRequest(details.id).then(({ result }) => setServices(result));
   }, [details]);
 
-  const click = (serviceId) => (): void => {
+  const selectService = (serviceId) => (): void => {
     setSelectedResourceParentType('host');
     setSelectedResourceParentId(details?.id);
     setSelectedResourceId(serviceId);
@@ -92,21 +92,24 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
 
     return (
       <>
-        {services.map(({ id, status, name, output }) => {
+        {services.map(({ id, status, name, output, duration }) => {
           return (
             <Paper key={id} className={classes.service}>
-              <StatusChip label="OK" severityCode={4} />
+              <StatusChip
+                label={status.name}
+                severityCode={status.severity_code}
+              />
               <div className={classes.description}>
                 <Typography
                   variant="body1"
-                  onClick={click(id)}
+                  onClick={selectService(id)}
                   style={{ cursor: 'pointer' }}
                 >
                   {name}
                 </Typography>
                 <Typography variant="body2">{output}</Typography>
               </div>
-              <Typography variant="body2">22m51</Typography>
+              <Typography variant="body2">{duration}</Typography>
             </Paper>
           );
         })}

@@ -11,13 +11,15 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import copyToClipboard from '@centreon/ui/src/utils/copy';
 
 import {
   ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
+  buildListingEndpoint,
 } from '@centreon/ui';
+
+import copyToClipboard from '@centreon/ui/src/utils/copy';
 
 import Details from '.';
 import {
@@ -55,8 +57,16 @@ import {
   labelService,
   labelDetails,
   labelCopyLink,
+  labelServices,
 } from '../translatedLabels';
-import { graphTabId, TabId, timelineTabId, shortcutsTabId } from './tabs';
+import {
+  graphTabId,
+  TabId,
+  timelineTabId,
+  shortcutsTabId,
+  servicesTabId,
+  detailsTabId,
+} from './tabs';
 import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
@@ -64,7 +74,7 @@ import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
 import { getTypeIds } from './tabs/Timeline/Event';
-import { resourcesEndpoint } from '../api/endpoint';
+import { resourcesEndpoint, monitoringEndpoint } from '../api/endpoint';
 import { DetailsUrlQueryParameters } from './models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -72,7 +82,10 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../icons/Downtime');
 jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 
+const resourceId = 1;
+
 const retrievedDetails = {
+  id: resourceId,
   name: 'Central',
   severity: { name: 'severity_1', level: 10 },
   status: { name: 'Critical', severity_code: 1 },
@@ -217,7 +230,35 @@ const retrievedTimeline = {
   },
 };
 
-const resourceId = 1;
+const retrievedServices = {
+  result: [
+    {
+      id: 3,
+      display_name: 'Ping',
+      status: {
+        severity_code: 5,
+        name: 'Ok',
+      },
+      output: 'OK - 127.0.0.1 rta 0ms lost 0%',
+      duration: '22m',
+    },
+    {
+      id: 4,
+      display_name: 'Disk',
+      status: {
+        severity_code: 6,
+        name: 'Unknown',
+      },
+      output: 'No output',
+      duration: '21m',
+    },
+  ],
+  meta: {
+    page: 1,
+    limit: 10,
+    total: 2,
+  },
+};
 
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
 
@@ -718,6 +759,68 @@ describe.only(Details, () => {
 
     await waitFor(() => {
       expect(copyToClipboard).toHaveBeenCalledWith(window.location.href);
+    });
+  });
+
+  it.only('displays the linked services when the services tab of a host is clicked', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          ...retrievedDetails,
+          type: 'host',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedServices,
+      })
+      .mockResolvedValueOnce({
+        data: { ...retrievedDetails, type: 'service' },
+      });
+
+    const { getByText, queryByText } = renderDetails({
+      openTabId: servicesTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      buildListingEndpoint({
+        baseEndpoint: `${monitoringEndpoint}/hosts/${resourceId}/services`,
+        parameters: {
+          limit: 100,
+        },
+      }),
+      cancelTokenRequestParam,
+    );
+
+    expect(getByText('OK')).toBeInTheDocument();
+    expect(getByText('Ping')).toBeInTheDocument();
+    expect(getByText('OK - 127.0.0.1 rta 0ms lost 0%'));
+    expect(getByText('22m')).toBeInTheDocument();
+
+    expect(getByText('Disk')).toBeInTheDocument();
+    expect(getByText('UNKNOWN')).toBeInTheDocument();
+    expect(getByText('No output'));
+    expect(getByText('21m')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Ping'));
+
+    const [pingService] = retrievedServices.result;
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    expect(context.selectedResourceId).toBe(pingService.id);
+
+    await waitFor(() => {
+      expect(queryByText(labelServices)).toBeNull();
     });
   });
 });

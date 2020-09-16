@@ -115,7 +115,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
         <div className={classes.title}>
           <Typography variant="h6">{t(labelEvent)}</Typography>
           <StatusChip
-            severityCode={event.status?.severityCode as number}
+            severityCode={event.status?.severity_code as number}
             label={event.status?.name}
           />
         </div>
