@@ -53,38 +53,18 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     public function addPlatformToTopology(PlatformTopology $platformTopology): void
     {
         /**
-         * search for already registered central type
+         * search for already registered central or remote top level server on this platform
          */
         if (PlatformTopology::TYPE_CENTRAL === $platformTopology->getType()) {
-            $foundCentralPlatformType = $this->platformTopologyRepository->findPlatformTopologyByType(
-                PlatformTopology::TYPE_CENTRAL
-            );
-            // search for its nagios_server ID
-            if (null !== $foundCentralPlatformType) {
-                throw new PlatformTopologyConflictException(
-                    sprintf(
-                        _("A %s : '%s'@'%s' is already registered"),
-                        $platformTopology->getType(),
-                        $foundCentralPlatformType->getName(),
-                        $foundCentralPlatformType->getAddress()
-                    )
-                );
-            }
-            $foundCentralInNagiosTable = $this->platformTopologyRepository->findPlatformTopologyNagiosId(
-                $platformTopology->getName()
-            );
-
-            if (null === $foundCentralInNagiosTable) {
-                throw new PlatformTopologyConflictException(
-                    sprintf(
-                        _("The %s type server : '%s'@'%s' does not match the one configured in Centreon"),
-                        $platformTopology->getType(),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
-                    )
-                );
-            }
-            $platformTopology->setServerId($foundCentralInNagiosTable->getId());
+            $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
+            $this->setServerNagiosId($platformTopology);
+        } elseif (
+            $platformTopology->getParentAddress() === null
+            && PlatformTopology::TYPE_REMOTE === $platformTopology->getType()
+        ) {
+            $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
+            $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
+            $this->setServerNagiosId($platformTopology);
         }
 
         /**
@@ -136,5 +116,47 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 )
             );
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkForAlreadyRegisteredPlatformType(string $type): void
+    {
+        $foundCentralPlatformType = $this->platformTopologyRepository->findPlatformTopologyByType(
+            $type
+        );
+        if (null !== $foundCentralPlatformType) {
+            throw new PlatformTopologyConflictException(
+                sprintf(
+                    _("A %s : '%s'@'%s' is already registered"),
+                    $type,
+                    $foundCentralPlatformType->getName(),
+                    $foundCentralPlatformType->getAddress()
+                )
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setServerNagiosId(PlatformTopology $platformTopology): void
+    {
+        $foundServerInNagiosTable = $this->platformTopologyRepository->findPlatformTopologyNagiosId(
+            $platformTopology->getName()
+        );
+
+        if (null === $foundServerInNagiosTable) {
+            throw new PlatformTopologyConflictException(
+                sprintf(
+                    _("The %s type server : '%s'@'%s' does not match the one configured in Centreon"),
+                    $platformTopology->getType(),
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
+            );
+        }
+        $platformTopology->setServerId($foundServerInNagiosTable->getId());
     }
 }
