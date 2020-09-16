@@ -178,7 +178,7 @@ while ($row = $childStmt->fetch()) {
         $parent = $row['remote_id'];
     }
 
-    $remoteServerQuery = $pearDB->query("SELECT `id` FROM remote_servers WHERE ip = " . $row['ns_ip_address']);
+    $remoteServerQuery = $pearDB->query("SELECT `id` FROM remote_servers WHERE ip = '" . $row['ns_ip_address'] . "'");
     $remoteId = $remoteServerQuery->fetchColumn();
     if ($remoteId) {
         //is remote
