@@ -61,12 +61,11 @@ import {
 } from '../translatedLabels';
 import {
   graphTabId,
-  TabId,
   timelineTabId,
   shortcutsTabId,
   servicesTabId,
-  detailsTabId,
 } from './tabs';
+import { TabId } from './tabs/models';
 import Context, { ResourceContext } from '../Context';
 import { cancelTokenRequestParam } from '../testUtils';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
