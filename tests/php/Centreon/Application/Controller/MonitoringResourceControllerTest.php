@@ -228,7 +228,7 @@ class MonitoringResourceControllerTest extends TestCase
         );
 
         $this->assertEquals(
-            $resourceController->buildHostDetailsUri(1),
+            urldecode($resourceController->buildHostDetailsUri(1)),
             '/monitoring/resources?details={"type":"host","id":1,"tab":"details"}'
         );
     }
@@ -246,7 +246,7 @@ class MonitoringResourceControllerTest extends TestCase
         );
 
         $this->assertEquals(
-            $resourceController->buildServiceDetailsUri(1, 2),
+            urldecode($resourceController->buildServiceDetailsUri(1, 2)),
             '/monitoring/resources?details={"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details"}'
         );
     }
