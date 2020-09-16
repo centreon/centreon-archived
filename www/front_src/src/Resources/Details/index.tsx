@@ -3,14 +3,15 @@ import * as React from 'react';
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Panel, Tab as TabModel } from '@centreon/ui';
+import { Panel } from '@centreon/ui';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
 
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { useResourceContext } from '../Context';
-import { TabById, TabId, detailsTabId, tabs } from './tabs';
+import { TabById, detailsTabId, tabs } from './tabs';
+import { Tab as TabModel, TabId } from './tabs/models';
 import { rowColorConditions } from '../colors';
 
 export interface DetailsSectionProps {

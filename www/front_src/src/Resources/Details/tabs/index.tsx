@@ -12,7 +12,7 @@ import {
   labelServices,
 } from '../../translatedLabels';
 import GraphTab from './Graph';
-import { ResourceDetails } from '../models';
+import { ResourceDetails, Tab, TabId } from '../models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import hasDefinedValues from '../../hasDefinedValues';
@@ -24,17 +24,8 @@ const timelineTabId = 2;
 const graphTabId = 3;
 const shortcutsTabId = 4;
 
-export type TabId = 0 | 1 | 2 | 3 | 4;
-
 export interface TabProps {
   details?: ResourceDetails;
-}
-
-interface Tab {
-  id: TabId;
-  Component: (props: TabProps) => JSX.Element;
-  title: string;
-  getIsActive: (details) => boolean;
 }
 
 const tabs: Array<Tab> = [
