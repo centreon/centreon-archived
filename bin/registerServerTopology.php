@@ -209,7 +209,6 @@ if (isRemote($serverType)) {
 
 
     $centreonEncryption = new Encryption();
-    $decrypted = '';
     try {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
         $loginCredentialsDb['password'] = $centreonEncryption->crypt($password);
