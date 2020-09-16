@@ -59,12 +59,11 @@ function isRemote(string $type): bool
     return false;
 }
 
-
 /**
  * @param string $ip
  * @param array $loginCredentials
  */
-function registerRemote(string $ip, array $loginCredentials)
+function registerRemote(string $ip, array $loginCredentials): void
 {
     $db = new CentreonDB();
     $topologyRepository = new TopologyRepository($db);
@@ -87,6 +86,42 @@ function registerRemote(string $ip, array $loginCredentials)
         "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
     );
 }
+
+/**
+ * @return bool
+ */
+function haveRemoteChild(): bool
+{
+    $db = new CentreonDB();
+    $remoteQuery = $db->query("SELECT COUNT(*) AS total FROM `remote_servers`");
+    $remote = $remoteQuery->fetch();
+    if(empty($remote)){
+       return false;
+    }
+    return true;
+}
+
+
+/**
+ * @param CentreonDB $db
+ * @return array
+ */
+function getChildren(CentreonDB $db): array
+{
+    // get local server id
+    $localStmt = $db->query("SELECT `id` FROM nagios_server WHERE localhost = '1'");
+    $parentId = $localStmt->fetchColumn();
+
+
+
+
+    $query = "INSERT INTO `informations` (`key`, `value`) VALUES ('apiUsername', :username), ('apiCredentials', :pwd)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $loginCredentials['login'], \PDO::PARAM_STR);
+    $statement->bindValue(':pwd', $loginCredentials['password'], \PDO::PARAM_STR);
+    $statement->execute();
+}
+
 
 /**
  * @param CentreonDB $db

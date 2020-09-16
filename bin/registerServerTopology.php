@@ -200,14 +200,15 @@ if ($proceed !== "y") {
  * Master-to-Remote transition
  */
 if (isRemote($serverType)) {
-    /**
-     * prepare db credential
-     */
+    //check if e remote is register on server
+    if (haveRemoteChild()) {
+        exit(formatResponseMessage(401, 'Central can not be convert to Remote', 'Unauthorized'));
+    }
+
+    //prepare db credential
     $loginCredentialsDb = [
         "login" => $username
     ];
-
-
     $centreonEncryption = new Encryption();
     try {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
@@ -215,7 +216,6 @@ if (isRemote($serverType)) {
     } catch (\InvalidArgumentException $e) {
         exit($e->getMessage());
     }
-
     registerRemote($host, $loginCredentialsDb);
 }
 
