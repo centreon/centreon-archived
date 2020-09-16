@@ -4,11 +4,17 @@ Centreon\Domain\Monitoring\ResourceStatus:
             type: int
             groups:
                 - 'resource_status_main'
+                - 'service_main'
+                - 'service_full'
         name:
             type: string
             groups:
                 - 'resource_status_main'
+                - 'service_main'
+                - 'service_full'
         severityCode:
             type: int
             groups:
                 - 'resource_status_main'
+                - 'service_main'
+                - 'service_full'
