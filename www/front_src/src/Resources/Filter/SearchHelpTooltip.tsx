@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Tooltip, IconButton, Box, Link, makeStyles } from '@material-ui/core';
 import IconHelp from '@material-ui/icons/HelpOutline';
 import IconClose from '@material-ui/icons/HighlightOff';
@@ -48,6 +50,7 @@ interface ContentProps {
 
 const Content = ({ onClose }: ContentProps): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -59,34 +62,36 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
         <IconClose fontSize="small" />
       </IconButton>
       <Box padding={1}>
-        <p>{`${labelSearchOnFields}. ${labelSearchByRegexp}.`}</p>
-        <p>{`${labelSearchSyntax} ${searchFields.join(':, ')}:.`}</p>
-        <p>{labelSearchSomeExamples}</p>
+        <p>{`${t(labelSearchOnFields)}. ${t(labelSearchByRegexp)}.`}</p>
+        <p>{`${t(labelSearchSyntax)} ${searchFields.join(':, ')}:.`}</p>
+        <p>{t(labelSearchSomeExamples)}</p>
         <ul>
           <li>
             <b>h.name:^FR20</b>
-            {` ${labelSearchByHostNameStartingWith} "FR20"`}
+            {` ${t(labelSearchByHostNameStartingWith)} "FR20"`}
           </li>
           <li>
             <b>s.description:ens192$</b>
-            {` ${labelSearchByServiceDescEndingWith} "ens192"`}
+            {` ${t(labelSearchByServiceDescEndingWith)} "ens192"`}
           </li>
           <li>
             <b>h.alias:prod</b>
-            {` ${labelSearchByHostAliasContaining} "prod"`}
+            {` ${t(labelSearchByHostAliasContaining)} "prod"`}
           </li>
           <li>
             <b>h.address:^((?!production).)*$</b>
-            {` ${labelSearchByHostAddressNotContaining} "production"`}
+            {` ${t(labelSearchByHostAddressNotContaining)} "production"`}
           </li>
           <li>
             <b>h.name:^FR20 h.alias:prod</b>
-            {` ${labelSearchByHostNameStartingWith} "FR20" ${labelSearchAndHostAliasContaining} "prod"`}
+            {` ${t(labelSearchByHostNameStartingWith)} "FR20" ${t(
+              labelSearchAndHostAliasContaining,
+            )} "prod"`}
           </li>
         </ul>
         <i>
-          <b>{`${labelTips}: `}</b>
-          {`${labelGetRegexHelp} `}
+          <b>{`${t(labelTips)}: `}</b>
+          {`${t(labelGetRegexHelp)} `}
           <Link
             href="https://regex101.com"
             target="_blank"
@@ -102,6 +107,8 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
 
 const SearchHelpTooltip = (): JSX.Element => {
   const classes = useStyles();
+
+  const { t } = useTranslation();
 
   const [open, setOpen] = React.useState(false);
 
@@ -121,7 +128,7 @@ const SearchHelpTooltip = (): JSX.Element => {
       interactive
     >
       <IconButton
-        aria-label={labelSearchHelp}
+        aria-label={t(labelSearchHelp)}
         size="small"
         onClick={toggleTooltip}
       >

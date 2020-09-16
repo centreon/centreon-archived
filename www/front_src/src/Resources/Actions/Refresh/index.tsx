@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Grid } from '@material-ui/core';
 import IconRefresh from '@material-ui/icons/Refresh';
 import IconPlay from '@material-ui/icons/PlayArrow';
@@ -23,14 +25,16 @@ const AutorefreshButton = ({
   enabledAutorefresh,
   toggleAutorefresh,
 }: AutorefreshProps): JSX.Element => {
+  const { t } = useTranslation();
+
   const label = enabledAutorefresh
     ? labelDisableAutorefresh
     : labelEnableAutorefresh;
 
   return (
     <IconButton
-      ariaLabel={label}
-      title={label}
+      ariaLabel={t(label)}
+      title={t(label)}
       onClick={toggleAutorefresh}
       size="small"
     >
@@ -44,6 +48,8 @@ interface Props {
 }
 
 const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
+  const { t } = useTranslation();
+
   const {
     enabledAutorefresh,
     setEnabledAutorefresh,
@@ -58,8 +64,8 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
     <Grid container spacing={1}>
       <Grid item>
         <IconButton
-          title={labelRefresh}
-          ariaLabel={labelRefresh}
+          title={t(labelRefresh)}
+          ariaLabel={t(labelRefresh)}
           disabled={sending}
           onClick={onRefresh}
           size="small"

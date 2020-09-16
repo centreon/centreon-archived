@@ -1,12 +1,13 @@
 import * as React from 'react';
 
-import { equals, path, prop } from 'ramda';
+import { equals } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
 
 import { Listing } from '@centreon/ui';
 
-import { detailsTabId, graphTabId, getVisibleTabs } from '../Details/tabs';
+import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
 import {
   labelRowsPerPage,
@@ -21,6 +22,7 @@ import { Resource } from '../models';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const {
     listing,
@@ -32,9 +34,11 @@ const ResourceListing = (): JSX.Element => {
     page,
     setPage,
     setOpenDetailsTabId,
-    setSelectedDetailsLinks,
-    openDetailsTabId,
-    selectedDetailsLinks,
+    setSelectedResourceId,
+    setSelectedResourceParentId,
+    setSelectedResourceType,
+    setSelectedResourceParentType,
+    selectedResourceId,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,
@@ -58,76 +62,40 @@ const ResourceListing = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({
-    details_endpoint,
-    performance_graph_endpoint,
-    timeline_endpoint,
-    parent,
-    configuration_uri,
-    logs_uri,
-    reporting_uri,
-  }: Resource): void => {
-    const uris = {
-      resource: {
-        configuration: configuration_uri,
-        logs: logs_uri,
-        reporting: reporting_uri,
-      },
-      parent: {
-        configuration: parent?.configuration_uri,
-        logs: parent?.logs_uri,
-        reporting: parent?.reporting_uri,
-      },
-    };
-
-    const links = {
-      endpoints: {
-        details: details_endpoint,
-        performanceGraph: performance_graph_endpoint,
-        timeline: timeline_endpoint,
-      },
-      uris,
-    };
-
-    const isOpenTabVisible = getVisibleTabs(links)
-      .map(prop('id'))
-      .includes(openDetailsTabId);
-
-    if (!isOpenTabVisible) {
-      setOpenDetailsTabId(detailsTabId);
-    }
-
-    setSelectedDetailsLinks(links);
+  const selectResource = ({ id, type, parent }: Resource): void => {
+    setSelectedResourceId(id);
+    setSelectedResourceParentId(parent?.id);
+    setSelectedResourceType(type);
+    setSelectedResourceParentType(parent?.type);
   };
 
   const resourceDetailsOpenCondition = {
     name: 'detailsOpen',
-    condition: ({ details_endpoint }): boolean =>
-      equals(
-        details_endpoint,
-        path(['endpoints', 'details'], selectedDetailsLinks),
-      ),
+    condition: ({ id }): boolean => equals(id, selectedResourceId),
     color: fade(theme.palette.primary.main, 0.08),
   };
 
   const labelDisplayedRows = ({ from, to, count }): string =>
-    `${from}-${to} ${labelOf} ${count}`;
+    `${from}-${to} ${t(labelOf)} ${count}`;
 
   const columns = getColumns({
-    onAcknowledge: (resource) => {
-      setResourcesToAcknowledge([resource]);
-    },
-    onDowntime: (resource) => {
-      setResourcesToSetDowntime([resource]);
-    },
-    onCheck: (resource) => {
-      setResourcesToCheck([resource]);
-    },
-    onDisplayGraph: (resource) => {
-      setOpenDetailsTabId(graphTabId);
+    actions: {
+      onAcknowledge: (resource): void => {
+        setResourcesToAcknowledge([resource]);
+      },
+      onDowntime: (resource): void => {
+        setResourcesToSetDowntime([resource]);
+      },
+      onCheck: (resource): void => {
+        setResourcesToCheck([resource]);
+      },
+      onDisplayGraph: (resource): void => {
+        setOpenDetailsTabId(graphTabId);
 
-      selectResource(resource);
+        selectResource(resource);
+      },
     },
+    t,
   });
 
   const loading = sending;
@@ -150,14 +118,14 @@ const ResourceListing = (): JSX.Element => {
       onPaginate={changePage}
       sortf={sortf}
       sorto={sorto}
-      labelRowsPerPage={labelRowsPerPage}
+      labelRowsPerPage={t(labelRowsPerPage)}
       labelDisplayedRows={labelDisplayedRows}
       totalRows={listing?.meta.total}
       onSelectRows={setSelectedResources}
       selectedRows={selectedResources}
       onRowClick={selectResource}
       innerScrollDisabled={false}
-      emptyDataMessage={labelNoResultsFound}
+      emptyDataMessage={t(labelNoResultsFound)}
     />
   );
 };

@@ -3314,31 +3314,8 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
-        details_endpoint:
-          type: string
-          nullable: true
-          description: "Resource url to details page"
-          example: "/centreon/monitoring/resources/hosts/12/services/12"
-        timeline_endpoint:
-          type: string
-          nullable: true
-          description: "Resource url to get timeline information"
-          example: "/centreon/monitoring/resources/hosts/12/services/12/timeline"
-        configuration_uri:
-          type: string
-          nullable: true
-          description: "Centreon internal uri to configuration page"
-          example: "/centreon/main.php?p=60201&o=c&service_id=12"
-        logs_uri:
-          type: string
-          nullable: true
-          description: "Centreon internal uri to configuration page"
-          example: "/centreon/main.php?p=20301&svc=12_12"
-        reporting_uri:
-          type: string
-          nullable: true
-          description: "Centreon internal uri to configuration page"
-          example: "/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=12&item=12"
+        links:
+          $ref: '#/components/schemas/Monitoring.ResourceLinks'
         icon:
           type: object
           nullable: true
@@ -3360,6 +3337,14 @@ components:
           type: object
           nullable: true
           properties:
+            type:
+              type: string
+              description: "Type of the resource"
+              example: "service|host"
+            short_type:
+              type: string
+              description: "Short name of the resource type"
+              example: "s|h"
             id:
               type: integer
               format: int64
@@ -3369,31 +3354,8 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
-            details_endpoint:
-              type: string
-              nullable: true
-              description: "Parent resource url to details page"
-              example: "/centreon/monitoring/resources/hosts/12"
-            timeline_endpoint:
-              type: string
-              nullable: true
-              description: "Parent resource url to get timeline information"
-              example: "/centreon/monitoring/resources/hosts/12/timeline"
-            configuration_uri:
-              type: string
-              nullable: true
-              description: "Centreon internal uri to configuration page"
-              example: "/centreon/main.php?p=60101&o=c&host_id=12"
-            logs_uri:
-              type: string
-              nullable: true
-              description: "Centreon internal uri to configuration page"
-              example: "/centreon/main.php?p=20301&h=12"
-            reporting_uri:
-              type: string
-              nullable: true
-              description: "Centreon internal uri to configuration page"
-              example: "/centreon/main.php?p=307&host=12"
+            links:
+              $ref: '#/components/schemas/Monitoring.ResourceLinks'
             status:
               type: object
               properties:
@@ -3448,18 +3410,10 @@ components:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
-        downtime_endpoint:
-          type: string
-          description: "URL of the downtimes list"
-          example: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        acknowledgement_endpoint:
-          type: string
-          description: "URL of the acknowledgement endpoint"
-          example: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
           nullable: true
@@ -3481,16 +3435,6 @@ components:
           nullable: true
           description: "action URL of the resource"
           example: http://mediawiki/host/central
-        status_graph_endpoint:
-          type: string
-          nullable: true
-          description: "URL of the status chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/metrics/status"
-        performance_graph_endpoint:
-          type: string
-          nullable: true
-          description: "URL of the performance chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/metrics/performance"
         duration:
           type: string
           nullable: true
@@ -3515,6 +3459,65 @@ components:
           type: string
           description: "Output of the resource"
           example: "OK - Ping is ok"
+        active_checks:
+          type: boolean
+          nullable: true
+          description: "Indicates whether active checks are enabled"
+          example: true
+    Monitoring.ResourceLinks:
+      type: object
+      properties:
+        uris:
+          type: object
+          properties:
+            configuration:
+              type: string
+              nullable: true
+              description: "configuration uri"
+              example: "/centreon/main.php?p=60101&o=c&host_id=11"
+            logs:
+              type: string
+              nullable: true
+              description: "logs uri"
+              example: "/centreon/main.php?p=20301&h=11"
+            reporting:
+              type: string
+              nullable: true
+              description: "reporting uri"
+              example: "/centreon/main.php?p=307&host=11"
+        endpoints:
+          type: object
+          properties:
+            details:
+              type: string
+              nullable: true
+              description: "resource details endpoint"
+              example: "/centreon/api/beta/monitoring/resources/hosts/11"
+            timeline:
+              type: string
+              nullable: true
+              description: "resource timeline endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/timeline"
+            status_graph:
+              type: string
+              nullable: true
+              description: "resource status graph endpoint"
+              example: null
+            performance_graph:
+              type: string
+              nullable: true
+              description: "resource performance graph endpoint"
+              example: null
+            acknowledgement:
+              type: string
+              nullable: true
+              description: "current resource acknowledgement endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/acknowledgements?limit=1"
+            downtime:
+              type: string
+              nullable: true
+              description: "current resource downtimes endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
     Monitoring.ResourceStatus:
       type: object
       properties:
@@ -3906,6 +3909,13 @@ components:
               nullable: true
               description: "Service criticality level (for display purposes)"
               example: 10
+            status:
+              $ref: '#/components/schemas/Monitoring.ResourceStatus'
+            duration:
+              type: string
+              nullable: true
+              description: "Duration since last status change"
+              example: "2h 3m"
     Monitoring.ServiceFull:
       allOf:
         - $ref: '#/components/schemas/Monitoring.ServiceMain'

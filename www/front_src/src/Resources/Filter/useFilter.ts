@@ -1,6 +1,10 @@
 import * as React from 'react';
 
-import { useRequest } from '@centreon/ui';
+import {
+  useRequest,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
 
 import {
   getStoredOrDefaultFilter,
@@ -8,23 +12,10 @@ import {
   storeFilter,
 } from './storedFilter';
 import { Filter, Criterias, CriteriaValue } from './models';
-import { toFilter } from './api/adapters';
+import useAdapters from './api/adapters';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
-
-const getDefaultFilter = (): Filter => getStoredOrDefaultFilter();
-const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
-const getDefaultSearch = (): string | undefined => getDefaultCriterias().search;
-const getDefaultResourceTypes = (): Array<CriteriaValue> =>
-  getDefaultCriterias().resourceTypes;
-const getDefaultStates = (): Array<CriteriaValue> =>
-  getDefaultCriterias().states;
-const getDefaultStatuses = (): Array<CriteriaValue> =>
-  getDefaultCriterias().statuses;
-const getDefaultHostGroups = (): Array<CriteriaValue> =>
-  getDefaultCriterias().hostGroups;
-const getDefaultServiceGroups = (): Array<CriteriaValue> =>
-  getDefaultCriterias().serviceGroups;
+import useFilterModels from './useFilterModels';
 
 type FilterDispatch = React.Dispatch<React.SetStateAction<Filter>>;
 type CriteriaValuesDispatch = React.Dispatch<
@@ -71,8 +62,36 @@ const useFilter = (): FilterState => {
     decoder: listCustomFiltersDecoder,
   });
 
+  const { unhandledProblemsFilter } = useFilterModels();
+  const { toFilter } = useAdapters();
+
+  const getDefaultFilter = (): Filter => {
+    const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
+
+    const urlQueryParameters = getUrlQueryParameters();
+
+    return {
+      ...defaultFilter,
+      ...(urlQueryParameters.filter as Filter),
+    };
+  };
+
+  const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
+  const getDefaultSearch = (): string | undefined =>
+    getDefaultCriterias().search;
+  const getDefaultResourceTypes = (): Array<CriteriaValue> =>
+    getDefaultCriterias().resourceTypes;
+  const getDefaultStates = (): Array<CriteriaValue> =>
+    getDefaultCriterias().states;
+  const getDefaultStatuses = (): Array<CriteriaValue> =>
+    getDefaultCriterias().statuses;
+  const getDefaultHostGroups = (): Array<CriteriaValue> =>
+    getDefaultCriterias().hostGroups;
+  const getDefaultServiceGroups = (): Array<CriteriaValue> =>
+    getDefaultCriterias().serviceGroups;
+
   const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
-  const [filter, setFilter] = React.useState(getStoredOrDefaultFilter());
+  const [filter, setFilter] = React.useState(getDefaultFilter());
   const [currentSearch, setCurrentSearch] = React.useState<string | undefined>(
     getDefaultSearch(),
   );
@@ -139,6 +158,15 @@ const useFilter = (): FilterState => {
         search: nextSearch,
       },
     });
+
+    const queryParameters = [
+      {
+        name: 'filter',
+        value: updatedFilter,
+      },
+    ];
+
+    setUrlQueryParameters(queryParameters);
   }, [
     filter,
     nextSearch,

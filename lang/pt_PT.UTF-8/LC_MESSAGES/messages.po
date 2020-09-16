@@ -15048,3 +15048,9 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "View report"
 #  msgstr ""
+
+#  msgid "Copy the link to this resource"
+#  msgstr ""
+
+#  msgid "Resource link copied to the clipboard"
+#  msgstr ""

@@ -9,8 +9,10 @@ import {
   RenderResult,
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
-
 import userEvent from '@testing-library/user-event';
+
+import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
+
 import {
   labelResource,
   labelHost,
@@ -29,14 +31,16 @@ import {
   labelClearAll,
   labelSearchHelp,
   labelSearchOnFields,
+  labelNewFilter,
+  labelService,
 } from '../translatedLabels';
-import { allFilter, newFilter } from './models';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
 import useFilter from './useFilter';
 import Context, { ResourceContext } from '../Context';
 
 import Filter from '.';
+import { Filter as FilterModel } from './models';
 import useLoadResources from '../Listing/useLoadResources';
 import {
   defaultStates,
@@ -45,6 +49,7 @@ import {
   mockAppStateSelector,
   searchableFields,
 } from '../testUtils';
+import useDetails from '../Details/useDetails';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -132,6 +137,7 @@ const FilterWithLoading = (): JSX.Element => {
 
 const FilterTest = (): JSX.Element | null => {
   const filterState = useFilter();
+  const detailsState = useDetails();
   const listingState = useListing();
   const actionsState = useActions();
 
@@ -142,6 +148,7 @@ const FilterTest = (): JSX.Element | null => {
           ...listingState,
           ...actionsState,
           ...filterState,
+          ...detailsState,
         } as ResourceContext
       }
     >
@@ -180,6 +187,8 @@ describe(Filter, () => {
     mockedAxios.get.mockReset();
     mockedLocalStorageSetItem.mockReset();
     mockedLocalStorageGetItem.mockReset();
+
+    window.history.pushState({}, '', window.location.pathname);
   });
 
   it('executes a listing request with "Unhandled problems" filter group by default', async () => {
@@ -412,6 +421,19 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
+      const allFilter = {
+        id: 'all',
+        name: labelAll,
+        criterias: {
+          resourceTypes: [],
+          states: [],
+          statuses: [],
+          hostGroups: [],
+          serviceGroups: [],
+          search: undefined,
+        },
+      };
+
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
         filterStorageKey,
         JSON.stringify(allFilter),
@@ -425,7 +447,8 @@ describe(Filter, () => {
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
           filterStorageKey,
           JSON.stringify({
-            ...newFilter,
+            id: '',
+            name: labelNewFilter,
             criterias: { ...allFilter.criterias, search: 'searching...' },
           }),
         ),
@@ -485,6 +508,59 @@ describe(Filter, () => {
       expect(
         getByText(labelSearchOnFields, { exact: false }),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('Filter URL query parameters', () => {
+    it('sets the filter according to the filter URL query parameter when given', async () => {
+      const filter = {
+        name: labelAll,
+        id: 'all',
+        criterias: {
+          resourceTypes: [{ id: 'service', name: labelService }],
+          states: [{ id: 'acknowledged', name: labelAcknowledged }],
+          statuses: [{ id: 'OK', name: labelOk }],
+          hostGroups: [linuxServersHostGroup],
+          serviceGroups: [webAccessServiceGroup],
+          search: 'Search me',
+        },
+      };
+
+      setUrlQueryParameters([
+        {
+          name: 'filter',
+          value: filter,
+        },
+      ]);
+
+      const {
+        getByText,
+        getByDisplayValue,
+        getByPlaceholderText,
+      } = renderFilter();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      });
+
+      expect(getByText(labelAll)).toBeInTheDocument();
+      expect(getByDisplayValue('Search me')).toBeInTheDocument();
+      expect(getByText(labelAcknowledged)).toBeInTheDocument();
+      expect(getByText(labelOk)).toBeInTheDocument();
+      expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+      expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
+      expect(getByText(labelService)).toBeInTheDocument();
+
+      fireEvent.change(getByPlaceholderText(labelSearch), {
+        target: { value: 'Search me two' },
+      });
+
+      const filterFromUrlQueryParameters = getUrlQueryParameters()
+        .filter as FilterModel;
+
+      expect(filterFromUrlQueryParameters.criterias.search).toEqual(
+        'Search me two',
+      );
     });
   });
 });

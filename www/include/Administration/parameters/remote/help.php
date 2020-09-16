@@ -18,18 +18,15 @@
  * For more information : contact@centreon.com
  *
  */
-declare(strict_types=1);
 
-namespace Centreon\Domain\Monitoring\Model;
+$help = [];
 
-use Centreon\Domain\Monitoring\Service;
-
-/**
- * The model enrich the Service model
- */
-class ResourceDetailsService extends Service
-{
-    use ResourceDetailsTrait;
-
-    public const SERIALIZER_GROUP_DETAILS = 'resource_details_service';
-}
+$help["username"] = dgettext(
+    "help",
+    "Enter the name of an active contact who have the right to 'reach API configuration' on the Central." .
+    "This user will be used to call the API from the Remote to the Central."
+);
+$help["password"] = dgettext(
+    "help",
+    "Enter the current password of this account."
+);

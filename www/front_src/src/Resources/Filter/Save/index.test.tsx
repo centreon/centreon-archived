@@ -8,7 +8,7 @@ import {
   act,
 } from '@testing-library/react';
 import axios from 'axios';
-import { last, omit } from 'ramda';
+import { last, omit, propEq } from 'ramda';
 
 import userEvent from '@testing-library/user-event';
 import SaveMenu from '.';
@@ -20,9 +20,9 @@ import {
   labelSaveAsNew,
   labelName,
 } from '../../translatedLabels';
-import { toRawFilter } from '../api/adapters';
-import { newFilter } from '../models';
+
 import { filterEndpoint } from '../api';
+import { RawFilter, Filter } from '../models';
 
 let filterState;
 
@@ -46,72 +46,77 @@ const renderSaveMenu = (): RenderResult => render(<SaveMenuTest />);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const retrievedCustomFilters = {
-  result: [
+const rawFilterId = 0;
+
+const getRawFilter = ({
+  search = 'my search',
+  name = 'MyFilter',
+}): RawFilter => ({
+  id: rawFilterId,
+  name,
+  criterias: [
     {
-      id: 0,
-      name: 'MyFilter',
-      criterias: [
+      name: 'resource_types',
+      type: 'multi_select',
+      value: [
         {
-          name: 'resource_types',
-          type: 'multi_select',
-          value: [
-            {
-              id: 'host',
-              name: 'Host',
-            },
-          ],
-        },
-        {
-          name: 'states',
-          type: 'multi_select',
-          value: [
-            {
-              id: 'unhandled_problems',
-              name: 'Unhandled problems',
-            },
-          ],
-        },
-        {
-          name: 'statuses',
-          type: 'multi_select',
-          value: [
-            {
-              id: 'OK',
-              name: 'OK',
-            },
-          ],
-        },
-        {
-          name: 'host_groups',
-          type: 'multi_select',
-          value: [
-            {
-              id: 0,
-              name: 'Linux-servers',
-            },
-          ],
-          object_type: 'host_group',
-        },
-        {
-          name: 'service_groups',
-          type: 'multi_select',
-          value: [
-            {
-              id: 0,
-              name: 'Web-services',
-            },
-          ],
-          object_type: 'service_group',
-        },
-        {
-          name: 'search',
-          type: 'text',
-          value: 'my search',
+          id: 'host',
+          name: 'Host',
         },
       ],
     },
+    {
+      name: 'states',
+      type: 'multi_select',
+      value: [
+        {
+          id: 'unhandled_problems',
+          name: 'Unhandled',
+        },
+      ],
+    },
+    {
+      name: 'statuses',
+      type: 'multi_select',
+      value: [
+        {
+          id: 'OK',
+          name: 'Ok',
+        },
+      ],
+    },
+    {
+      name: 'host_groups',
+      type: 'multi_select',
+      value: [
+        {
+          id: 0,
+          name: 'Linux-servers',
+        },
+      ],
+      object_type: 'host_groups',
+    },
+    {
+      name: 'service_groups',
+      type: 'multi_select',
+      value: [
+        {
+          id: 0,
+          name: 'Web-services',
+        },
+      ],
+      object_type: 'service_groups',
+    },
+    {
+      name: 'search',
+      type: 'text',
+      value: search,
+    },
   ],
+});
+
+const retrievedCustomFilters = {
+  result: [getRawFilter({})],
   meta: {
     page: 1,
     limit: 30,
@@ -119,17 +124,20 @@ const retrievedCustomFilters = {
   },
 };
 
-const [createdFilter] = retrievedCustomFilters.result;
+const getCustomFilter = (): Filter =>
+  filterState.customFilters.find(propEq('id', rawFilterId));
 
 describe(SaveMenu, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValue({ data: retrievedCustomFilters });
     mockedAxios.put.mockResolvedValue({ data: {} });
-    mockedAxios.post.mockResolvedValue({ data: createdFilter });
+    mockedAxios.post.mockResolvedValue({ data: getRawFilter({}) });
   });
 
   afterEach(() => {
     mockedAxios.get.mockReset();
+    mockedAxios.put.mockReset();
+    mockedAxios.post.mockReset();
   });
 
   it('disables save menus when the current filter has no changes', async () => {
@@ -154,14 +162,23 @@ describe(SaveMenu, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
+    const filter = getCustomFilter();
+    const { criterias } = filter;
+
     act(() => {
-      filterState.setFilter(newFilter);
+      filterState.setFilter(filter);
+      filterState.setResourceTypes(criterias.resourceTypes);
+      filterState.setHostGroups(criterias.hostGroups);
+      filterState.setServiceGroups(criterias.serviceGroups);
+      filterState.setStates(criterias.states);
+      filterState.setStatuses(criterias.statuses);
+
       filterState.setNextSearch('toto');
     });
 
     expect(
       last(getAllByText(labelSave))?.parentElement?.parentElement,
-    ).toHaveAttribute('aria-disabled', 'true');
+    ).toHaveAttribute('aria-disabled', 'false');
 
     fireEvent.click(last(getAllByText(labelSaveAsNew)) as HTMLElement);
 
@@ -178,10 +195,7 @@ describe(SaveMenu, () => {
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         filterEndpoint,
-        omit(
-          ['id'],
-          toRawFilter({ ...filterState.updatedFilter, name: 'My new filter' }),
-        ),
+        omit(['id'], getRawFilter({ name: 'My new filter', search: 'toto' })),
         expect.anything(),
       );
     });
@@ -192,21 +206,36 @@ describe(SaveMenu, () => {
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
+    const filter = getCustomFilter();
+    const { criterias } = filter;
+
+    const newSearch = 'new search';
+
+    const updatedFilterRaw = getRawFilter({ search: newSearch });
+
+    mockedAxios.put.mockResolvedValue({ data: updatedFilterRaw });
+
     act(() => {
-      filterState.setFilter(newFilter);
-      filterState.setNextSearch('toto');
+      filterState.setFilter(filter);
+      filterState.setResourceTypes(criterias.resourceTypes);
+      filterState.setHostGroups(criterias.hostGroups);
+      filterState.setServiceGroups(criterias.serviceGroups);
+      filterState.setStates(criterias.states);
+      filterState.setStatuses(criterias.statuses);
+
+      filterState.setNextSearch(newSearch);
     });
 
     expect(
       last(getAllByText(labelSave))?.parentElement?.parentElement,
-    ).toHaveAttribute('aria-disabled', 'true');
+    ).toHaveAttribute('aria-disabled', 'false');
 
     fireEvent.click(last(getAllByText(labelSave)) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         `${filterEndpoint}/${filterState.updatedFilter.id}`,
-        omit(['id'], toRawFilter(filterState.updatedFilter)),
+        omit(['id'], getRawFilter({ search: newSearch })),
         expect.anything(),
       );
     });

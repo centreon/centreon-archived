@@ -8,21 +8,15 @@
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import classnames from 'classnames';
-import { Translate, I18n } from 'react-redux-i18n';
+import { withTranslation } from 'react-i18next';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
 import SelectField from '../../form-fields/SelectField';
 import RadioField from '../../form-fields/PreselectedRadioField';
 import CheckboxField from '../../form-fields/CheckboxField';
 
-import {
-  serverNameValidator,
-  serverIpAddressValidator,
-  centralIpAddressValidator,
-  databaseUserValidator,
-  databasePasswordValidator,
-  centreonPathValidator,
-} from '../../../helpers/validators';
+import { validateFieldRequired } from '../../../helpers/validators';
 
 class RemoteServerFormStepOne extends Component {
   state = {
@@ -58,14 +52,14 @@ class RemoteServerFormStepOne extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, waitList } = this.props;
+    const { error, handleSubmit, onSubmit, waitList, t } = this.props;
     const { inputTypeManual } = this.state;
     return (
       <div className={styles['form-wrapper']}>
         <div className={styles['form-inner']}>
           <div className={styles['form-heading']}>
             <h2 className={classnames(styles['form-title'], styles['mb-2'])}>
-              <Translate value="Remote Server Configuration" />
+              {t('Remote Server Configuration')}
             </h2>
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
@@ -76,7 +70,7 @@ class RemoteServerFormStepOne extends Component {
               }}
               checked={inputTypeManual}
               component={RadioField}
-              label={I18n.t('Create new Remote Server')}
+              label={t('Create new Remote Server')}
             />
             {inputTypeManual ? (
               <div>
@@ -85,54 +79,60 @@ class RemoteServerFormStepOne extends Component {
                   component={InputField}
                   type="text"
                   placeholder=""
-                  label={`${I18n.t('Server Name')}:`}
+                  label={`${t('Server Name')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="server_ip"
                   component={InputField}
                   type="text"
                   placeholder=""
-                  label={`${I18n.t('Server IP address')}:`}
+                  label={`${t('Server IP address')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="db_user"
                   component={InputField}
                   type="text"
                   placeholder=""
-                  label={`${I18n.t('Database username')}:`}
+                  label={`${t('Database username')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="db_password"
                   component={InputField}
                   type="password"
                   placeholder=""
-                  label={`${I18n.t('Database password')}:`}
+                  label={`${t('Database password')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="centreon_central_ip"
                   component={InputField}
                   type="text"
                   placeholder=""
-                  label={`${I18n.t(
+                  label={`${t(
                     'Centreon Central IP address, as seen by this server',
                   )}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="centreon_folder"
                   component={InputField}
                   type="text"
                   placeholder="/centreon/"
-                  label={`${I18n.t('Centreon Web Folder on Remote')}:`}
+                  label={`${t('Centreon Web Folder on Remote')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="no_check_certificate"
                   component={CheckboxField}
-                  label={I18n.t('Do not check SSL certificate validation')}
+                  label={t('Do not check SSL certificate validation')}
                 />
                 <Field
                   name="no_proxy"
                   component={CheckboxField}
-                  label={I18n.t(
+                  label={t(
                     'Do not use configured proxy to connect to this server',
                   )}
                 />
@@ -146,7 +146,7 @@ class RemoteServerFormStepOne extends Component {
               }}
               checked={!inputTypeManual}
               component={RadioField}
-              label={`${I18n.t('Select a Remote Server')}:`}
+              label={`${t('Select a Remote Server')}:`}
             />
             {!inputTypeManual ? (
               <div>
@@ -154,13 +154,13 @@ class RemoteServerFormStepOne extends Component {
                   <Field
                     name="server_ip"
                     component={SelectField}
-                    label={`${I18n.t('Select Pending Remote Links')}:`}
+                    label={`${t('Select Pending Remote Links')}:`}
                     required
                     options={[
                       {
                         disabled: true,
                         selected: true,
-                        text: I18n.t('Select IP'),
+                        text: t('Select IP'),
                         value: '',
                       },
                     ].concat(
@@ -173,47 +173,52 @@ class RemoteServerFormStepOne extends Component {
                   component={InputField}
                   type="text"
                   placeholder=""
-                  label={`${I18n.t('Server Name')}:`}
+                  label={`${t('Server Name')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="db_user"
                   component={InputField}
                   type="text"
                   placeholder=""
-                  label={`${I18n.t('Database username')}:`}
+                  label={`${t('Database username')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="db_password"
                   component={InputField}
                   type="password"
                   placeholder=""
-                  label={`${I18n.t('Database password')}:`}
+                  label={`${t('Database password')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="centreon_central_ip"
                   component={InputField}
                   type="text"
                   placeholder=""
-                  label={`${I18n.t(
+                  label={`${t(
                     'Centreon Central IP address, as seen by this server',
                   )}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="centreon_folder"
                   component={InputField}
                   type="text"
                   placeholder="/centreon/"
-                  label={`${I18n.t('Centreon Web Folder on Remote')}:`}
+                  label={`${t('Centreon Web Folder on Remote')}:`}
+                  validate={validateFieldRequired(t)}
                 />
                 <Field
                   name="no_check_certificate"
                   component={CheckboxField}
-                  label={I18n.t('Do not check SSL certificate validation')}
+                  label={t('Do not check SSL certificate validation')}
                 />
                 <Field
                   name="no_proxy"
                   component={CheckboxField}
-                  label={I18n.t(
+                  label={t(
                     'Do not use configured proxy to connect to this server',
                   )}
                 />
@@ -222,7 +227,7 @@ class RemoteServerFormStepOne extends Component {
 
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
-                <Translate value="Next" />
+                {t('Next')}
               </button>
             </div>
             {error ? (
@@ -235,27 +240,11 @@ class RemoteServerFormStepOne extends Component {
   }
 }
 
-const validate = ({
-  server_name,
-  server_ip,
-  centreon_central_ip,
-  db_user,
-  db_password,
-  centreon_folder,
-}) => ({
-  server_name: I18n.t(serverNameValidator(server_name)),
-  server_ip: I18n.t(serverIpAddressValidator(server_ip)),
-  centreon_central_ip: I18n.t(centralIpAddressValidator(centreon_central_ip)),
-  db_user: I18n.t(databaseUserValidator(db_user)),
-  db_password: I18n.t(databasePasswordValidator(db_password)),
-  centreon_folder: I18n.t(centreonPathValidator(centreon_folder)),
-});
-
-export default connectForm({
-  form: 'RemoteServerFormStepOne',
-  validate,
-  warn: () => {},
-  enableReinitialize: true,
-  destroyOnUnmount: false,
-  keepDirtyOnReinitialize: true,
-})(RemoteServerFormStepOne);
+export default withTranslation()(
+  connectForm({
+    form: 'RemoteServerFormStepOne',
+    enableReinitialize: true,
+    destroyOnUnmount: false,
+    keepDirtyOnReinitialize: true,
+  })(RemoteServerFormStepOne),
+);
