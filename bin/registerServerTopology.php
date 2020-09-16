@@ -28,11 +28,12 @@ require_once('registerServerTopology-Func.php');
 /**
  * Get script params
  */
+const TYPE_CENTRAL = 'central';
 const TYPE_POLLER = 'poller';
 const TYPE_REMOTE = 'remote';
 const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
-const SERVER_TYPES = [TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
+const SERVER_TYPES = [TYPE_CENTRAL, TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
 $opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::", "template:"]);
 /**
@@ -83,8 +84,8 @@ if (isset($opt['help'])) {
  */
 $configOptions = [];
 if (isset($opt['template'])) {
-    $configTemplate = parseTemplateFile($opt['template']);
     try {
+        $configTemplate = parseTemplateFile($opt['template']);
         $configOptions = setConfigOptionsFromTemplate($configTemplate, $helpMessage);
     } catch (\InvalidArgumentException $e) {
         exit($e->getMessage());
@@ -100,7 +101,7 @@ if (isset($opt['template'])) {
         $configOptions['API_USERNAME'] = $opt['u'];
         $configOptions['SERVER_TYPE'] = in_array(strtolower($opt['t']), SERVER_TYPES)
             ? strtolower($opt['t'])
-            : false;
+            : null;
 
         if (!$configOptions['SERVER_TYPE']) {
             throw new \InvalidArgumentException(
@@ -122,7 +123,8 @@ if (isset($opt['template'])) {
             }
         }
     } catch (\InvalidArgumentException $e) {
-        exit($e->getMessage());
+        echo $e->getMessage();
+        exit(1);
     }
     $configOptions['API_PASSWORD'] = askQuestion(
         $configOptions['HOST_ADDRESS'] . ': please enter your password ',
@@ -179,8 +181,11 @@ $registerPayload = [
     "name" => $configOptions['SERVER_NAME'],
     "type" => $configOptions['SERVER_TYPE'],
     "address" => $configOptions['DNS'] ?? $serverIp,
-    "parent_address" => $host
 ];
+
+if ($configOptions['SERVER_TYPE'] !== TYPE_CENTRAL) {
+    $registerPayload["parent_address"] = $host;
+}
 
 /**
  * Display Summary of action
@@ -228,7 +233,7 @@ if ($proceed !== "y") {
 /**
  * Connection to Api
  */
-$loginUrl = $protocol . '://' . $host . '/' . $root;
+$loginUrl = $protocol . '://' . $host . '/' . $configOptions['ROOT_CENTREON_FOLDER'];
 if (!empty($port)) {
     $loginUrl .= ':' . $port;
 }
@@ -245,7 +250,7 @@ try {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    if ($configOptions['PROXY_USAGE']) {
+    if (isset($configOptions['PROXY_USAGE'])) {
         curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
         curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
         if (!empty($configOptions["PROXY_USERNAME"])) {
@@ -284,7 +289,7 @@ if (isset($result['security']['token'])) {
 /**
  * POST Request to server registration endpoint
  */
-$registerUrl = $protocol . '://' . $host . '/' . $root;
+$registerUrl = $protocol . '://' . $host . '/' . $configOptions['ROOT_CENTREON_FOLDER'];
 if (!empty($port)) {
     $registerUrl .= ':' . $port;
 }

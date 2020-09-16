@@ -75,7 +75,10 @@ function formatResponseMessage(int $code, string $message, string $type = 'succe
  */
 function parseTemplateFile(string $path): array
 {
-    $data = file_get_contents($path);
+    if (!file_exists(getcwd() . '/' . $path)) {
+        throw new \InvalidArgumentException('File ' . $path . ' not found' . PHP_EOL);
+    }
+    $data = file_get_contents(getcwd().  '/' . $path);
     //Remove the blank line
     $data = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $data);
     $lines = preg_split("/(\n)/", $data);
@@ -139,7 +142,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     $configOptions['API_USERNAME'] = $options['API_USERNAME'];
     $configOptions['SERVER_TYPE'] = in_array(strtolower($options['SERVER_TYPE']), SERVER_TYPES)
         ? strtolower($options['SERVER_TYPE'])
-        : false;
+        : null;
 
     if (!$configOptions['SERVER_TYPE']) {
         throw new \InvalidArgumentException(
