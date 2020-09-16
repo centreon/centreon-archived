@@ -15553,6 +15553,10 @@ msgid "No parent platform was found for : '%s'@'%s'"
 msgstr "Aucune plateforme parente n'a été trouvée pour : '%s'@'%s'"
 
 #: api/topology/register
+msgid "Cannot register a '%s' platform behind a '%s' platform"
+msgstr "On ne peut enregistrer un '%s' derrière un '%s'"
+
+#: api/topology/register
 msgid "Error when adding in topology the platform : '%s'@'%s'"
 msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
 
@@ -15569,12 +15573,16 @@ msgid "The %s : '%s'@'%s' is already registered"
 msgstr "Le %s : '%s'@'%s' est déjà enregistré"
 
 #: api/topology/register
-msgid "The %s type server : '%s'@'%s' does not match the one configured in Centreon"
-msgstr "Le server du type %s : '%s'@'%s' ne correspond pas à celui configuré dans Centreon"
+msgid "The %s type server : '%s'@'%s' does not match the one configured in Centreon or is disabled"
+msgstr "Le server du type %s : '%s'@'%s' ne correspond pas à celui configuré dans Centreon ou est désactivé"
 
 #: api/topology/register
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
+
+#: api/topology/register
+msgid "The address and parent_address of the platform are the same"
+msgstr "Les adresses de la platforme et de son parent sont les mêmes"
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"

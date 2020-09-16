@@ -57,21 +57,23 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          * As only top level platform do not need parent_address and only one should be registered
          */
         if (PlatformTopology::TYPE_CENTRAL === $platformTopology->getType()) {
-            // Adding a top level platform as a Central
+            // New unique Central top level platform case
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->setServerNagiosId($platformTopology);
-        } elseif (
-            null === $platformTopology->getParentAddress()
-            && PlatformTopology::TYPE_REMOTE === $platformTopology->getType()
-        ) {
-            // Adding a top level platform as a Remote
-            $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
+        } elseif (PlatformTopology::TYPE_REMOTE === $platformTopology->getType()) {
+            // Cannot add a Remote behind another Remote
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
-            $this->setServerNagiosId($platformTopology);
+
+            if (null === $platformTopology->getParentAddress()) {
+                // New unique Remote top level platform case
+                $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
+                $this->setServerNagiosId($platformTopology);
+            }
         }
 
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
-        $this->setParentId($platformTopology);
+        $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
+
 
 
 
@@ -81,7 +83,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             // call the API on the n-1 server to register it too
 
             // DEBUG
+
+
             throw new PlatformTopologyException("need to call the API now");
+            json_encode($registeredParentInTopology);
         }
 
 
@@ -111,13 +116,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function checkForAlreadyRegisteredPlatformType(string $type): void
     {
-        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findPlatformTopologyByType(
-            $type
-        );
+        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findPlatformTopologyByType($type);
         if (null !== $foundAlreadyRegisteredPlatformByType) {
             throw new PlatformTopologyConflictException(
                 sprintf(
-                    _("A %s : '%s'@'%s' is already registered"),
+                    _("The %s : '%s'@'%s' is already registered"),
                     $type,
                     $foundAlreadyRegisteredPlatformByType->getName(),
                     $foundAlreadyRegisteredPlatformByType->getAddress()
@@ -138,7 +141,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (null === $foundServerInNagiosTable) {
             throw new PlatformTopologyConflictException(
                 sprintf(
-                    _("The %s type server : '%s'@'%s' does not match the one configured in Centreon"),
+                    _("The %s type server : '%s'@'%s' does not match the one configured in Centreon or is disabled"),
                     $platformTopology->getType(),
                     $platformTopology->getName(),
                     $platformTopology->getAddress()
@@ -172,29 +175,49 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * @inheritDoc
      */
-    public function setParentId(PlatformTopology $platformTopology): void
+    public function searchForParentPlatformAndSetId(PlatformTopology $platformTopology): ?PlatformTopology
     {
-        if (null !== $platformTopology->getParentAddress()) {
-            $foundPlatformTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
-                $platformTopology->getParentAddress()
-            );
-            if (null === $foundPlatformTopology) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _("No parent platform was found for : '%s'@'%s'"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
-                    )
-                );
-            }
-            $platformTopology->setParentId($foundPlatformTopology->getId());
-
-            if (
-                null !== $foundPlatformTopology->getServerId()
-                && $foundPlatformTopology->getType() === PlatformTopology::TYPE_REMOTE
-            ) {
-                $platformTopology->setLinkedToAnotherServer(true);
-            }
+        if (null === $platformTopology->getParentAddress()) {
+            return null;
         }
+
+        $registeredParentInTopology = $this->platformTopologyRepository->findPlatformTopologyByAddress(
+            $platformTopology->getParentAddress()
+        );
+        if (null === $registeredParentInTopology) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _("No parent platform was found for : '%s'@'%s'"),
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
+            );
+        }
+
+        // Check parent consistency
+        if (
+            PlatformTopology::TYPE_REMOTE !== $registeredParentInTopology->getType()
+            && PlatformTopology::TYPE_CENTRAL !== $registeredParentInTopology->getType()
+        ) {
+            throw new PlatformTopologyConflictException(
+                sprintf(
+                    _("Cannot register a '%s' platform behind a '%s' platform"),
+                    $platformTopology->getType(),
+                    $registeredParentInTopology->getType()
+                )
+            );
+        }
+
+        $platformTopology->setParentId($registeredParentInTopology->getId());
+
+        // A remote needs to send the data to the Central too
+        if (
+            null !== $registeredParentInTopology->getServerId()
+            && $registeredParentInTopology->getType() === PlatformTopology::TYPE_REMOTE
+        ) {
+            $platformTopology->setLinkedToAnotherServer(true);
+            return $registeredParentInTopology;
+        }
+        return null;
     }
 }

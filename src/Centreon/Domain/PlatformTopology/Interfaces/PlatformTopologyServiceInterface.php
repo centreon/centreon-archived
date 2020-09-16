@@ -67,7 +67,9 @@ interface PlatformTopologyServiceInterface
      * Search for parent platform ID in topology
      *
      * @param PlatformTopology $platformTopology
+     * @return PlatformTopology|null
      * @throws EntityNotFoundException
+     * @throws PlatformTopologyConflictException
      */
-    public function setParentId(PlatformTopology $platformTopology): void;
+    public function searchForParentPlatformAndSetId(PlatformTopology $platformTopology): ?PlatformTopology;
 }

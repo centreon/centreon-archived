@@ -150,7 +150,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $this->translateDbName('
                 SELECT `id`
                 FROM `:db`.nagios_server
-                WHERE `localhost` = \'1\' AND `name` = :name
+                WHERE `localhost` = \'1\' AND ns_activate = \'1\' AND `name` = :name
             ')
         );
         $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
