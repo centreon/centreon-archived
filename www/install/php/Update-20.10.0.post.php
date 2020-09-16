@@ -160,7 +160,7 @@ if (!empty($map)) {
     );
     $name = 'map_' . $mapIp;
     $stmt->bindValue(':mapAddress', $mapIp, \PDO::PARAM_STR);
-    $stmt->bindValue(':name', $name, \PDOap::PARAM_STR);
+    $stmt->bindValue(':name', $name, \PDO::PARAM_STR);
     $stmt->bindValue(':id', $parentId, \PDO::PARAM_INT);
     $stmt->execute();
 }
