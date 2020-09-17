@@ -917,6 +917,9 @@ msgstr "L'url du service OpenId Connect Token (par exemple /token)."
 msgid "Your OpenId Connect Introspection Token endpoint (for example /token/introspect)."
 msgstr "L'url du service OpenId Connect Introspection Token (par exemple /token/introspect)."
 
+msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
+msgstr "L'url du service OpenId Connect User Information (par exemple /userinfo)."
+
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "L'URL OpenId Connect de redirection vers Centreon (ce serveur)."
 

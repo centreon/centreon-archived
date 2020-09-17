@@ -160,6 +160,10 @@ $help['openid_connect_introspection_endpoint'] = dgettext(
     'help',
     'Your OpenId Connect Introspection Token endpoint (for example /token/introspect).'
 );
+$help['openid_connect_userinfo_endpoint'] = dgettext(
+    'help',
+    'Your OpenId Connect User Information endpoint (for example /userinfo).'
+);
 $help['openid_connect_redirect_url'] = dgettext(
     'help',
     'Your OpenId Connect redirect url (this server).'

@@ -88,6 +88,11 @@ class CentreonAuthSSO extends CentreonAuth
             $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
             $introspectionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+            if (isset($this->ssoOptions['openid_connect_userinfo_endpoint'])
+                && $this->ssoOptions['openid_connect_userinfo_endpoint'] != ""
+            ) {
+                $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
+            }
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             $redirect = urlencode($redirectNoEncode);
@@ -107,7 +112,8 @@ class CentreonAuthSSO extends CentreonAuth
                 $_POST['code'] ?? $_GET['code'] ?? null,
                 FILTER_SANITIZE_STRING
             );
-            if (isset($inputCode)) {
+
+            if (isset($inputCode) && !is_null($inputCode) && $inputCode != '') {
                 $keyToken = $this->getOpenIdConnectToken(
                     $tokenEndpoint,
                     $redirectNoEncode,
@@ -124,6 +130,14 @@ class CentreonAuthSSO extends CentreonAuth
                     $keyToken,
                     $verifyPeer
                 );
+
+                if (!isset($user["preferred_username"]) && $userInfoEndpoint) {
+                    $user = $this->getOpenIdConnectUserInfo(
+                        $userInfoEndpoint,
+                        $keyToken,
+                        $verifyPeer
+                    );
+                }
 
                 if (!isset($user['error'])) {
                     $this->ssoUsername = $user["preferred_username"];
@@ -241,13 +255,14 @@ class CentreonAuthSSO extends CentreonAuth
     */
     public function getOpenIdConnectToken($url, $redirectUri, $clientId, $clientSecret, $code, $verifyPeer)
     {
-        $data = array(
+        $data = [
             "client_id" => $clientId,
             "client_secret" => $clientSecret,
             "grant_type" => "authorization_code",
             "code" => $code,
             "redirect_uri" => $redirectUri
-        );
+        ];
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -274,21 +289,49 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $token OpenId Connect Token Access
      * @param bool   $verifyPeer disable SSL verify peer
      *
-     * @return string
+     * @return array
      */
     public function getOpenIdConnectIntrospectionToken($url, $clientId, $clientSecret, $token, $verifyPeer)
     {
-        $data = array(
+        $data = [
             "token" => $token,
             "client_id" => $clientId,
             "client_secret" => $clientSecret
-        );
+        ];
 
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization" => "Bearer " . $token));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization" => "Bearer " . $token]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        if ($verifyPeer) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $resp = json_decode($result, true);
+        return $resp;
+    }
+
+    /**
+     * Get User Inofmration on OpenId Connect
+     *
+     * @param string $url OpenId Connect Introspection Token Endpoint
+     * @param string $token OpenId Connect Token Access
+     * @param bool   $verifyPeer disable SSL verify peer
+     *
+     * @return array
+     */
+    public function getOpenIdConnectUserInfo($url, $token, $verifyPeer)
+    {
+        $ch = curl_init($url);
+        $authentication = "Authorization: Bearer " . trim($token);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [$authentication]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
         if ($verifyPeer) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
