@@ -14601,7 +14601,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgstr ""
 
 #  msgid "Disacknowledge services attached to hosts"
-#  msgid ""
+#  msgstr ""
 
 #  msgid "Disacknowledgement command sent"
-#  msgid ""
+#  msgstr ""

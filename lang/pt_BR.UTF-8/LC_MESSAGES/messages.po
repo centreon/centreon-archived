@@ -15049,7 +15049,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "Disacknowledge services attached to hosts"
-#  msgid ""
+#  msgstr ""
 
 #  msgid "Disacknowledgement command sent"
-#  msgid ""
+#  msgstr ""
