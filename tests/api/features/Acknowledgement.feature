@@ -27,7 +27,7 @@ Feature:
     """
     And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline" (tries: 30)
 
-    When I send a POST request to '/beta/monitoring/resources/acknowledgements' with body:
+    When I send a POST request to '/beta/monitoring/resources/acknowledge' with body:
     """
     {
       "acknowledgement": {
