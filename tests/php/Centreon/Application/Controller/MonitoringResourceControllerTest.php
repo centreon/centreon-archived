@@ -234,6 +234,24 @@ class MonitoringResourceControllerTest extends TestCase
     }
 
     /**
+     * test buildHostUri
+     */
+    public function testBuildHostUri()
+    {
+        $resourceController = new MonitoringResourceController(
+            $this->monitoringService,
+            $this->resourceService,
+            $this->urlGenerator,
+            $this->iconUrlNormalizer
+        );
+
+        $this->assertEquals(
+            urldecode($resourceController->buildHostUri(1, 'graph')),
+            '/monitoring/resources?details={"type":"host","id":1,"tab":"graph"}'
+        );
+    }
+
+    /**
      * test buildServiceDetailsUri
      */
     public function testBuildServiceDetailsUri()
@@ -248,6 +266,24 @@ class MonitoringResourceControllerTest extends TestCase
         $this->assertEquals(
             urldecode($resourceController->buildServiceDetailsUri(1, 2)),
             '/monitoring/resources?details={"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details"}'
+        );
+    }
+
+    /**
+     * test buildServiceUri
+     */
+    public function testBuildServiceUri()
+    {
+        $resourceController = new MonitoringResourceController(
+            $this->monitoringService,
+            $this->resourceService,
+            $this->urlGenerator,
+            $this->iconUrlNormalizer
+        );
+
+        $this->assertEquals(
+            urldecode($resourceController->buildServiceUri(1, 2, 'timeline')),
+            '/monitoring/resources?details={"parentType":"host","parentId":1,"type":"service","id":2,"tab":"timeline"}'
         );
     }
 }
