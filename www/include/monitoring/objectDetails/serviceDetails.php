@@ -835,7 +835,7 @@ if (!is_null($host_id)) {
             \Centreon\Application\Controller\MonitoringResourceController::class
         );
 
-        $redirection_url = $resourceController->buildServiceDetailsUri($host_id, $service_id);
+        $redirectionUrl = $resourceController->buildServiceDetailsUri($host_id, $service_id);
 
         $tpl->display("serviceDetails.ihtml");
     }
