@@ -207,6 +207,13 @@ include_once("./include/monitoring/status/Common/default_hostgroups.php");
 include_once("./include/monitoring/status/Common/default_servicegroups.php");
 include_once($svc_path . "/serviceJS.php");
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
+$redirection_url = $resourceController->buildListingUri([]);
+
 /*
  * Smarty template Init
  */
@@ -485,6 +492,16 @@ $tpl->display("service.ihtml");
     var critical = '<?php echo _("Critical");?>';
     var unknown = '<?php echo _("Unknown");?>';
     var pending = '<?php echo _("Pending");?>';
+
+    display_deprecated_banner();
+
+    function display_deprecated_banner() {
+            var url = "<?php echo $redirection_url; ?>";
+            jQuery('.pathway').append(
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
+                '[Deprecated page. Please use the new <a href="' + url + '">Resource Status</a> page]</span>'
+            );
+    }
 
     jQuery('#statusService').change(function () {
         updateSelect();

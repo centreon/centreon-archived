@@ -177,6 +177,14 @@ include_once("./include/monitoring/status/Common/default_hostgroups.php");
 
 include_once("hostJS.php");
 
+
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
+$redirection_url = $resourceController->buildListingUri([]);
+
 //Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl, "/templates/");
@@ -391,6 +399,16 @@ $tpl->display("host.ihtml");
     var unreachable = '<?php echo _("Unreachable");?>';
     var pending = '<?php echo _("Pending");?>';
     var _keyPrefix;
+
+    display_deprecated_banner();
+
+    function display_deprecated_banner() {
+        var url = "<?php echo $redirection_url; ?>";
+        jQuery('.pathway').append(
+            '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
+            '[Deprecated page. Please use the new <a href="' + url + '">Resource Status</a> page]</span>'
+        );
+    }
 
     jQuery('#statusHost').change(function () {
         updateSelect();
