@@ -529,7 +529,8 @@ class AcknowledgementController extends AbstractController
      * @param Request $request
      * @return View
      */
-    public function massDisacknowledgeResources(Request $request): View {
+    public function massDisacknowledgeResources(Request $request): View
+    {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
