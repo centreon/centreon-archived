@@ -873,11 +873,11 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/resources/disacknowledge:
-    post:
+  /monitoring/resources/acknowledgements:
+    delete:
       tags:
         - Acknowledgement
-      summary: "Mass disacknowledge resources"
+      summary: "Massively disacknowledge resources"
       requestBody:
         required: true
         content:
@@ -2920,12 +2920,19 @@ components:
           example: "Acknowledged by admin"
         with_services:
           type: boolean
-          description: "Indicates whether we should add the downtime on the host-related services"
+          description: "Indicates whether we should acknowledge the host-related services"
           example: true
         is_notify_contacts:
           type: boolean
           description: "Indicates whether notification is sent to the contacts linked to the host or service"
           example: false
+    Disacknowledgement.Resource:
+      type: object
+      properties:
+        with_services:
+          type: boolean
+          description: "Indicates whether we should disacknowledge the host-related services"
+          example: true
     Acknowledgement.Bulk:
       type: object
       properties:
@@ -2938,11 +2945,16 @@ components:
               - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
               - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Disacknowledge.Bulk:
-      type: array
-      items:
-        allOf:
-          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      type: object
+      properties:
+        disacknowledgement:
+          $ref: '#/components/schemas/Disacknowledgement.Resource'
+        resources:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Host:
       type: object
       nullable: true

@@ -39,6 +39,8 @@ use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationList;
+use JsonSchema\Validator;
+use JsonSchema\Constraints\Constraint;
 
 /**
  * Used to manage all requests of hosts acknowledgements
@@ -60,6 +62,46 @@ class AcknowledgementController extends AbstractController
     public function __construct(AcknowledgementServiceInterface $acknowledgementService)
     {
         $this->acknowledgementService = $acknowledgementService;
+    }
+
+    /**
+     * This function will ensure that the POST data is valid
+     * regarding validation constraints defined and will return
+     * the decoded JSON content
+     *
+     * @param Request $request
+     * @param string $jsonValidatorFile
+     * @return array $results
+     * @throws InvalidArgumentException
+     */
+    private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
+    {
+        $results = json_decode((string) $request->getContent(), true);
+        if (!is_array($results)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
+        }
+
+        /*
+        * Validate the content of the POST request against the JSON schema validator
+        */
+        $validator = new Validator();
+        $bodyContent = json_decode((string) $request->getContent());
+        $file = 'file://' . __DIR__ . '/../../../../config/json_validator/latest/Centreon/' . $jsonValidatorFile;
+        $validator->validate(
+            $bodyContent,
+            (object) ['$ref' => $file],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new \InvalidArgumentException($message);
+        }
+
+        return $results;
     }
 
     /**
@@ -485,77 +527,59 @@ class AcknowledgementController extends AbstractController
     /**
      * Entry point to bulk disacknowledge resources (hosts and services)
      * @param Request $request
-     * @param EntityValidator $entityValidator
-     * @param SerializerInterface $serializer
      * @return View
-     * @throws \Exception
      */
-    public function massDisacknowledgeResources(
-        Request $request,
-        EntityValidator $entityValidator,
-        SerializerInterface $serializer
-    ): View {
+    public function massDisacknowledgeResources(Request $request): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
          * @var Contact $contact
          */
         $contact = $this->getUser();
-
-        /**
-         * @var ResourceEntity[] $resources
-         */
-        $resources = $serializer->deserialize(
-            (string)$request->getContent(),
-            'array<' . ResourceEntity::class . '>',
-            'json'
-        );
-
         $this->acknowledgementService->filterByContact($contact);
 
-        //validate input
-        $errorList = new ConstraintViolationList();
-        foreach ($resources as $resource) {
-            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                $errorList->addAll(ResourceService::validateResource(
-                    $entityValidator,
-                    $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_SERVICE
-                ));
-            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
-                $errorList->addAll(ResourceService::validateResource(
-                    $entityValidator,
-                    $resource,
-                    ResourceEntity::VALIDATION_GROUP_DISACK_HOST
-                ));
-            } else {
-                throw new \RestBadRequestException(_('Incorrect resource type for disacknowledgement'));
+        // Validate the content of the DELETE request against the JSON schema validator
+        $results = $this->validateAndRetrievePostData(
+            $request,
+            'Acknowledgement/DisacknowledgeResources.json'
+        );
+
+        $disacknowledgement = new Acknowledgement();
+        if (isset($results['disacknowledgement']['with_services'])) {
+            $disacknowledgement->setWithServices($results['disacknowledgement']['with_services']);
+        }
+
+        foreach ($results['resources'] as $resultingResource) {
+            $resource = (new ResourceEntity())
+                ->setType($resultingResource['type'])
+                ->setId($resultingResource['id']);
+            if (isset($resultingResource['parent']) && $resultingResource['parent'] !== null) {
+                $resource->setParent(
+                    (new ResourceEntity())
+                        ->setId($resultingResource['parent']['id'])
+                        ->setType(ResourceEntity::TYPE_HOST)
+                );
             }
-        }
 
-        if ($errorList->count() > 0) {
-            throw new ValidationFailedException($errorList);
-        }
-
-        foreach ($resources as $resource) {
-            //start disacknowledgement process
+            // start disacknowledgement process
             try {
                 if ($this->hasDisackRightsForResource($contact, $resource)) {
-                    if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                        $this->acknowledgementService->disacknowledgeService(
-                            (int)$resource->getParent()->getId(),
-                            (int)$resource->getId()
-                        );
-                    } else {
-                        $this->acknowledgementService->disacknowledgeHost((int)$resource->getId());
+                    if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
+                        $disacknowledgement->setWithServices(false);
                     }
+
+                    $this->acknowledgementService->disacknowledgeResource(
+                        $resource,
+                        $disacknowledgement
+                    );
                 }
-            } catch (\Exception $e) {
+            } catch (EntityNotFoundException $e) {
+                // don't stop process if a resource is not found
                 continue;
             }
         }
 
-        return $this->view();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -648,7 +672,7 @@ class AcknowledgementController extends AbstractController
             }
         }
 
-        return $this->view();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
