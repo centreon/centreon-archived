@@ -62,8 +62,9 @@ function isRemote(string $type): bool
 /**
  * @param string $ip
  * @param array $loginCredentials
+ * @return array
  */
-function registerRemote(string $ip, array $loginCredentials): void
+function registerRemote(string $ip, array $loginCredentials): array
 {
     $db = new CentreonDB();
     $topologyRepository = new TopologyRepository($db);
@@ -85,6 +86,12 @@ function registerRemote(string $ip, array $loginCredentials): void
     system(
         "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
     );
+
+    //update platform_topology type
+    $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
+
+    // return children
+    return getChildren($db);
 }
 
 /**
@@ -95,10 +102,10 @@ function haveRemoteChild(): bool
     $db = new CentreonDB();
     $remoteQuery = $db->query("SELECT COUNT(*) AS total FROM `remote_servers`");
     $remote = $remoteQuery->fetch();
-    if(empty($remote)){
-       return false;
+    if ($remote['total'] > 0) {
+        return true;
     }
-    return true;
+    return false;
 }
 
 
@@ -108,18 +115,16 @@ function haveRemoteChild(): bool
  */
 function getChildren(CentreonDB $db): array
 {
-    // get local server id
-    $localStmt = $db->query("SELECT `id` FROM nagios_server WHERE localhost = '1'");
-    $parentId = $localStmt->fetchColumn();
-
-
-
-
-    $query = "INSERT INTO `informations` (`key`, `value`) VALUES ('apiUsername', :username), ('apiCredentials', :pwd)";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':username', $loginCredentials['login'], \PDO::PARAM_STR);
-    $statement->bindValue(':pwd', $loginCredentials['password'], \PDO::PARAM_STR);
-    $statement->execute();
+    $registerChildren = [];
+    // get local server address
+    $localStmt = $db->query("SELECT `address` FROM platform_topology WHERE `type` = 'remote'");
+    $parentAddress = $localStmt->fetchColumn();
+    $localStmt = $db->query("SELECT `name`,`type`,`address`, FROM platform_topology WHERE `type` != 'remote'");
+    while ($row = $localStmt->fetch()) {
+        $row['parent_address'] = $parentAddress;
+        $registerChildren[] = $row;
+    }
+    return $registerChildren;
 }
 
 
@@ -218,18 +223,18 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
 {
     $configOptions = [];
     if (
-        !isset(
-            $options['API_USERNAME'],
-            $options['API_PASSWORD'],
-            $options['SERVER_TYPE'],
-            $options['HOST_ADDRESS'],
-            $options['SERVER_NAME']
-        )
+    !isset(
+        $options['API_USERNAME'],
+        $options['API_PASSWORD'],
+        $options['SERVER_TYPE'],
+        $options['HOST_ADDRESS'],
+        $options['SERVER_NAME']
+    )
     ) {
         throw new \InvalidArgumentException(
             PHP_EOL .
-                'missing value: API_USERNAME, API_PASSWORD, SERVER_TYPE, HOST_ADDRESS and SERVER_NAME are mandatories'
-                . PHP_EOL . $helpMessage
+            'missing value: API_USERNAME, API_PASSWORD, SERVER_TYPE, HOST_ADDRESS and SERVER_NAME are mandatories'
+            . PHP_EOL . $helpMessage
         );
     }
 
@@ -241,7 +246,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     if (!$configOptions['SERVER_TYPE']) {
         throw new \InvalidArgumentException(
             "SERVER_TYPE must be one of those value"
-                . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
+            . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
         );
     }
 
@@ -264,7 +269,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     if (isset($options['PROXY_USAGE']) && $options['PROXY_USAGE'] === true) {
         $configOptions['PROXY_USAGE'] = $options['PROXY_USAGE'];
         $configOptions["PROXY_HOST"] = $options["PROXY_HOST"] ?? '';
-        $configOptions["PROXY_PORT"] = (int) $options["PROXY_PORT"] ?? '';
+        $configOptions["PROXY_PORT"] = (int)$options["PROXY_PORT"] ?? '';
         $configOptions["PROXY_USERNAME"] = $options["PROXY_USERNAME"] ?? '';
         if (!empty($configOptions['PROXY_USERNAME'])) {
             $configOptions['PROXY_PASSWORD'] = $options["PROXY_PASSWORD"] ?? '';
