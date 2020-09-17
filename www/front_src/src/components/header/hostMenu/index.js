@@ -28,8 +28,8 @@ import {
   SubmenuItems,
 } from '@centreon/ui';
 
-import styles from '../header/header.scss';
-import axios from '../../axios';
+import styles from '../header.scss';
+import axios from '../../../axios';
 
 const numberFormat = yup.number().required().integer();
 
@@ -47,6 +47,29 @@ const statusSchema = yup.object().shape({
   total: numberFormat,
   refreshTime: numberFormat,
 });
+
+const hostCriterias = { resourceTypes: [{ id: 'host', name: 'Host' }] };
+const getStatusCriterias = (status) => {
+  return { statuses: [status] };
+};
+
+const downCriterias = getStatusCriterias({ id: 'DOWN', name: 'Down' });
+const unreachableCriterias = getStatusCriterias({
+  id: 'UNREACHABLE',
+  name: 'Unreachable',
+});
+const upCriterias = getStatusCriterias({ id: 'UP', name: 'Up' });
+const pendingCriterias = getStatusCriterias({ id: 'PENDING' });
+
+const getResourcesUrl = (statusCraterias = {}) => {
+  const filterQueryParameter = {
+    criterias: { ...hostCriterias, ...statusCraterias },
+  };
+
+  return `/monitoring/resources?filter=${JSON.stringify(
+    filterQueryParameter,
+  )}&fromTopCounter=true`;
+};
 
 class HostMenu extends Component {
   hostsService = axios(
@@ -144,7 +167,7 @@ class HostMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_down&search="
+            to={getResourcesUrl(downCriterias)}
           >
             <IconNumber
               iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
@@ -158,7 +181,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_unreachable&search="
+            to={getResourcesUrl(unreachableCriterias)}
           >
             <IconNumber
               iconType={`${
@@ -174,7 +197,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_up&search="
+            to={getResourcesUrl(upCriterias)}
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -197,7 +220,7 @@ class HostMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to="/main.php?p=20202&o=h&search="
+                to={getResourcesUrl()}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -207,7 +230,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_down&search="
+                to={getResourcesUrl(downCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -220,7 +243,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_unreachable&search="
+                to={getResourcesUrl(unreachableCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -233,7 +256,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_up&search="
+                to={getResourcesUrl(upCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -244,7 +267,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_pending&search="
+                to={getResourcesUrl(pendingCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >

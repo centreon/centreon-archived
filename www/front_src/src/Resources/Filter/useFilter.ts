@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { hasPath, mergeDeepLeft, mergeDeepRight, pipe } from 'ramda';
+import { hasPath, mergeDeepLeft, mergeDeepRight, pipe, isNil } from 'ramda';
 
 import {
   useRequest,
@@ -183,6 +183,25 @@ const useFilter = (): FilterState => {
     hostGroups,
     serviceGroups,
   ]);
+
+  React.useEffect(() => {
+    if (!getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
+    const { criterias } = getDefaultFilter();
+
+    setUrlQueryParameters([
+      {
+        name: 'fromTopCounter',
+        value: false,
+      },
+    ]);
+
+    setFilter(getDefaultFilter());
+    setResourceTypes(criterias.resourceTypes);
+    setStatuses(criterias.statuses);
+  }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {
     clearCachedFilter();

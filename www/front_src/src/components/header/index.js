@@ -13,9 +13,9 @@ import Hook from '../Hook';
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
 
 import PollerMenu from '../pollerMenu';
-import UserMenu from '../userMenu';
-import HostMenu from '../hostMenu';
-import ServiceStatusMenu from '../serviceStatusMenu';
+import UserMenu from './userMenu';
+import HostMenu from './hostMenu';
+import ServiceStatusMenu from './serviceStatusMenu';
 
 import axios from '../../axios';
 
