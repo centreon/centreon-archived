@@ -35,7 +35,7 @@ default:
     acknowledgement:
       paths: [ "%paths.base%/features/Acknowledgement.feature" ]
       contexts:
-        - Centreon\Test\Api\Context\ApiContext
+        - Centreon\Test\Behat\Api\Context\ApiContext
     monitoring_timeline:
       paths: [ "%paths.base%/features/MonitoringTimeline.feature" ]
       contexts:
