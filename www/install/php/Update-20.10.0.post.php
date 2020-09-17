@@ -190,8 +190,8 @@ try {
         $stmt->bindValue(':centralAddress', $row['ns_ip_address'], \PDO::PARAM_STR);
         $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
         $stmt->bindValue(':serverType', $serverType, \PDO::PARAM_STR);
-        $stmt->bindValue(':parent', (int)$parent, \PDO::PARAM_INT);
-        $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
+        $stmt->bindValue(':parent', (int) $parent, \PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int) $row['id'], \PDO::PARAM_INT);
         $stmt->execute();
     }
 
