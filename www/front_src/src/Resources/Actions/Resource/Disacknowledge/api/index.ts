@@ -6,29 +6,25 @@ import { Resource } from '../../../../models';
 
 const disacknowledgeEndpoint = `${resourcesEndpoint}/disacknowledge`;
 
-interface DisacknowledgeParams {
-  disacknowledgeAttachedResources?: boolean;
-}
-
 interface ResourcesWithDisacknowledgeParams {
   resources: Array<Resource>;
-  params: DisacknowledgeParams;
+  disacknowledgeAttachedResources: boolean;
 }
 
 const disacknowledgeResources = (cancelToken: CancelToken) => ({
   resources,
-  params,
+  disacknowledgeAttachedResources,
 }: ResourcesWithDisacknowledgeParams): Promise<Array<AxiosResponse>> => {
   return axios.post(
     disacknowledgeEndpoint,
     {
       resources: map(pick(['type', 'id', 'parent']), resources),
       disacknowledgement: {
-        with_services: params.disacknowledgeAttachedResources,
+        with_services: disacknowledgeAttachedResources,
       },
     },
     { cancelToken },
   );
 };
 
-export { disacknowledgeResources };
+export { disacknowledgeResources, disacknowledgeEndpoint };

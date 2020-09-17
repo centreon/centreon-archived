@@ -30,6 +30,9 @@ import {
   labelCheck,
   labelServicesDenied,
   labelHostsDenied,
+  labelMoreActions,
+  labelDisacknowledge,
+  labelDisacknowledgeServices,
 } from '../translatedLabels';
 import Actions from '.';
 import useLoadResources from '../Listing/useLoadResources';
@@ -46,6 +49,7 @@ import {
   checkEndpoint,
 } from './api/endpoint';
 import useDetails from '../Details/useDetails';
+import { disacknowledgeEndpoint } from './Resource/Disacknowledge/api';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -67,11 +71,13 @@ const mockUserContext = {
       service: {
         downtime: true,
         acknowledgement: true,
+        disacknowledgement: true,
         check: true,
       },
       host: {
         downtime: true,
         acknowledgement: true,
+        disacknowledgement: true,
         check: true,
       },
     },
@@ -261,6 +267,41 @@ describe(Actions, () => {
     );
   });
 
+  it('sends aa discknowledgement request when Resources are selected and the Disackowledgement action is clicked and confirmed', async () => {
+    const { getByText, getAllByText } = renderActions();
+
+    const selectedResources = [
+      {
+        type: 'host',
+        id: 0,
+      } as Resource,
+    ];
+
+    act(() => {
+      context.setSelectedResources(selectedResources);
+    });
+
+    fireEvent.click(getByText(labelDisacknowledge));
+
+    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+    fireEvent.click(last(getAllByText(labelDisacknowledge)) as HTMLElement);
+
+    await waitFor(() =>
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        disacknowledgeEndpoint,
+        {
+          resources: selectedResources,
+
+          disacknowledgement: {
+            with_services: true,
+          },
+        },
+        cancelTokenRequestParam,
+      ),
+    );
+  });
+
   it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
     const { getByText, findByText, queryByText } = renderActions();
 
@@ -280,6 +321,27 @@ describe(Actions, () => {
     await findByText(labelAcknowledgedByAdmin);
 
     expect(queryByText(labelAcknowledgeServices)).toBeNull();
+  });
+
+  it('does not display the "Discknowledge services attached to host" checkbox when only services are selected and the Disacknowledge action is clicked', async () => {
+    const { getByText, queryByText } = renderActions();
+
+    const selectedResources = [
+      {
+        type: 'service',
+        id: 0,
+      } as Resource,
+    ];
+
+    act(() => {
+      context.setSelectedResources(selectedResources);
+    });
+
+    fireEvent.click(getByText(labelDisacknowledge));
+
+    await waitFor(() => {
+      expect(queryByText(labelDisacknowledgeServices)).toBeNull();
+    });
   });
 
   it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
@@ -440,11 +502,13 @@ describe(Actions, () => {
             downtime: false,
             check: false,
             acknowledgement: false,
+            disacknowledgement: false,
           },
           host: {
             downtime: false,
             check: false,
             acknowledgement: false,
+            disacknowledgement: false,
           },
         },
       },
@@ -473,6 +537,13 @@ describe(Actions, () => {
       expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
       expect(getByText(labelSetDowntime).parentElement).toBeDisabled();
     });
+
+    fireEvent.click(getByText(labelMoreActions));
+
+    expect(getByText(labelDisacknowledge)).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
   });
 
   const cannotDowntimeServicesAcl = {
@@ -495,6 +566,16 @@ describe(Actions, () => {
     },
   };
 
+  const cannotDisacknowledgeServicesAcl = {
+    actions: {
+      ...mockUserContext.acl.actions,
+      service: {
+        ...mockUserContext.acl.actions.service,
+        disacknowledgement: false,
+      },
+    },
+  };
+
   const cannotDowntimeHostsAcl = {
     actions: {
       ...mockUserContext.acl.actions,
@@ -511,6 +592,16 @@ describe(Actions, () => {
       host: {
         ...mockUserContext.acl.actions.host,
         acknowledgement: false,
+      },
+    },
+  };
+
+  const cannotDisacknowledgeHostsAcl = {
+    actions: {
+      ...mockUserContext.acl.actions,
+      host: {
+        ...mockUserContext.acl.actions.host,
+        disacknowledgement: false,
       },
     },
   };
@@ -539,6 +630,12 @@ describe(Actions, () => {
       labelAcknowledge,
       labelHostsDenied,
       cannotAcknowledgeHostsAcl,
+    ],
+    [
+      labelDisacknowledge,
+      labelDisacknowledge,
+      labelHostsDenied,
+      cannotDisacknowledgeHostsAcl,
     ],
   ])(
     'displays a warning message when trying to %p with limited ACL',
@@ -586,6 +683,12 @@ describe(Actions, () => {
       labelAcknowledge,
       labelAcknowledgeServices,
       cannotAcknowledgeServicesAcl,
+    ],
+    [
+      labelDisacknowledge,
+      labelDisacknowledge,
+      labelDisacknowledgeServices,
+      cannotDisacknowledgeServicesAcl,
     ],
   ])(
     'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',

@@ -12,11 +12,13 @@ const defaultAcl = {
     host: {
       check: false,
       acknowledgement: false,
+      disacknowledgement: false,
       downtime: false,
     },
     service: {
       check: false,
       acknowledgement: false,
+      disacknowledgement: false,
       downtime: false,
     },
   },

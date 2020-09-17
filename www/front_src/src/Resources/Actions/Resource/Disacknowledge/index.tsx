@@ -1,22 +1,21 @@
 import * as React from 'react';
 
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { Severity, useSnackbar, useRequest } from '@centreon/ui';
+import { Severity, useSnackbar, useRequest, Dialog } from '@centreon/ui';
 
-import { isNil } from 'ramda';
+import { propEq } from 'ramda';
+import { Alert } from '@material-ui/lab';
+import { FormControlLabel, Checkbox, Grid } from '@material-ui/core';
 import {
-  labelRequired,
-  labelAcknowledgeCommandSent,
-  labelAcknowledgedBy,
+  labelCancel,
+  labelDisacknowledgeServices,
+  labelDisacknowledge,
+  labelDisacknowledgementCommandSent,
 } from '../../../translatedLabels';
-import DialogAcknowledge from './Dialog';
 import { Resource } from '../../../models';
-import { useUserContext } from '../../../../Provider/UserContext';
-import { acknowledgeResources } from '../../api';
 import { disacknowledgeResources } from './api';
+import useAclQuery from '../aclQuery';
 
 interface Props {
   resources: Array<Resource>;
@@ -32,16 +31,31 @@ const DisacknowledgeForm = ({
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
   const [
-    disacknowledgeAssociatedResources,
-    setDisacknowledgeAssociatedResources,
+    disacknowledgeAttachedResources,
+    setDisacknowledgeAttachedResources,
   ] = React.useState(true);
 
   const {
     sendRequest: sendDisacknowledgeResources,
-    sending: sendingAcknowledgeResources,
+    sending: sendingDisacknowledgeResources,
   } = useRequest({
     request: disacknowledgeResources,
   });
+
+  const {
+    getDisacknowledgementDeniedTypeAlert,
+    canDisacknowledgeServices,
+  } = useAclQuery();
+
+  const deniedTypeAlert = getDisacknowledgementDeniedTypeAlert(resources);
+
+  React.useEffect(() => {
+    if (canDisacknowledgeServices()) {
+      return;
+    }
+
+    setDisacknowledgeAttachedResources(false);
+  }, []);
 
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
@@ -49,25 +63,59 @@ const DisacknowledgeForm = ({
   const submitDisacknowledge = (): void => {
     sendDisacknowledgeResources({
       resources,
-      params: resources,
+      disacknowledgeAttachedResources,
     }).then(() => {
-      showSuccess(t(labelAcknowledgeCommandSent));
+      showSuccess(t(labelDisacknowledgementCommandSent));
       onSuccess();
     });
   };
 
+  const changeDisacknowledgeAttachedRessources = (event): void => {
+    setDisacknowledgeAttachedResources(Boolean(event.target.checked));
+  };
+
+  const hasHosts = resources.find(propEq('type', 'host'));
+
   return (
-    <DialogAcknowledge
-      resources={resources}
-      onConfirm={submitDisacknowledge}
+    <Dialog
+      labelCancel={t(labelCancel)}
+      labelConfirm={t(labelDisacknowledge)}
+      labelTitle={t(labelDisacknowledge)}
+      open
+      onClose={onClose}
       onCancel={onClose}
-      canConfirm={form.isValid}
-      errors={form.errors}
-      values={form.values}
-      handleChange={form.handleChange}
-      submitting={sendingAcknowledgeResources}
-      loading={isNil(form.values.comment)}
-    />
+      onConfirm={submitDisacknowledge}
+      confirmDisabled={sendingDisacknowledgeResources}
+      submitting={sendingDisacknowledgeResources}
+    >
+      <Grid direction="column" container spacing={1}>
+        {deniedTypeAlert && (
+          <Grid item>
+            <Alert severity="warning">{deniedTypeAlert}</Alert>
+          </Grid>
+        )}
+        {hasHosts && (
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={
+                    canDisacknowledgeServices() &&
+                    disacknowledgeAttachedResources
+                  }
+                  disabled={!canDisacknowledgeServices()}
+                  inputProps={{ 'aria-label': t(labelDisacknowledgeServices) }}
+                  color="primary"
+                  onChange={changeDisacknowledgeAttachedRessources}
+                  size="small"
+                />
+              }
+              label={t(labelDisacknowledgeServices)}
+            />
+          </Grid>
+        )}
+      </Grid>
+    </Dialog>
   );
 };
 

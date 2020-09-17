@@ -3,7 +3,7 @@ import * as React from 'react';
 import { isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
+import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 import IconMore from '@material-ui/icons/MoreHoriz';
@@ -26,6 +26,7 @@ import { useResourceContext } from '../../Context';
 import useAclQuery from './aclQuery';
 import { checkResources } from '../api';
 import ActionButton from '../ActionButton';
+import DisacknowledgeForm from './Disacknowledge';
 
 const ContainedActionButton = (props: ButtonProps): JSX.Element => (
   <ActionButton variant="contained" {...props} />
@@ -130,13 +131,15 @@ const ResourceActions = (): JSX.Element => {
   };
 
   const noResourcesSelected = isEmpty(selectedResources);
-  const disableAcknowledge =
-    noResourcesSelected || !canAcknowledge(selectedResources);
-  const disableDowntime =
-    noResourcesSelected || !canDowntime(selectedResources);
-  const disableCheck = noResourcesSelected || !canCheck(selectedResources);
-  const disableDisacknowledge =
-    noResourcesSelected || !canDisacknowledge(selectedResources);
+
+  const getDisableAction = (canAction): boolean => {
+    return noResourcesSelected || !canAction(selectedResources);
+  };
+
+  const disableAcknowledge = getDisableAction(canAcknowledge);
+  const disableDowntime = getDisableAction(canDowntime);
+  const disableCheck = getDisableAction(canCheck);
+  const disableDisacknowledge = getDisableAction(canDisacknowledge);
 
   return (
     <Grid container spacing={1}>
@@ -199,7 +202,13 @@ const ResourceActions = (): JSX.Element => {
           onSuccess={confirmAction}
         />
       )}
-      {resourcesToDisacknowledge.length > 0 && <></>}
+      {resourcesToDisacknowledge.length > 0 && (
+        <DisacknowledgeForm
+          resources={resourcesToDisacknowledge}
+          onClose={cancelDisacknowledge}
+          onSuccess={confirmAction}
+        />
+      )}
     </Grid>
   );
 };
