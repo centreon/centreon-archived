@@ -780,7 +780,7 @@ if (!$is_admin && !$haveAccess) {
         );
 
         function display_deprecated_banner() {
-            var url = "<?php echo $redirection_url; ?>";
+            const url = "<?php echo $redirectionUrl; ?>";
             jQuery('.pathway').append(
                 '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
                 '[Deprecated page. Please use the new <a href="' + url + '" isreact="isreact">Resource Status</a> page]</span>'
@@ -859,4 +859,3 @@ if (!$is_admin && !$haveAccess) {
     </script>
     <?php
 }
-
