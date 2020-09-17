@@ -65,7 +65,7 @@ const useFilter = (): FilterState => {
   });
 
   const { unhandledProblemsFilter, allFilter, newFilter } = useFilterModels();
-  const { toFilter } = useAdapters();
+  const { toFilter, toFilterWithTranslatedCriterias } = useAdapters();
 
   const getDefaultFilter = (): Filter => {
     const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
@@ -76,6 +76,7 @@ const useFilter = (): FilterState => {
       return pipe(
         mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
         mergeDeepRight(allFilter) as (t) => Filter,
+        toFilterWithTranslatedCriterias,
       )(newFilter) as Filter;
     }
 
