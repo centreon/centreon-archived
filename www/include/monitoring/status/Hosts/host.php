@@ -186,6 +186,7 @@ $resourceController = $kernel->getContainer()->get(
     \Centreon\Application\Controller\MonitoringResourceController::class
 );
 
+$deprecationMessage = _('[Page deprecated] Please use the new page: ');
 $redirectionUrl = $resourceController->buildListingUri([]);
 
 //Smarty template Init
@@ -406,11 +407,12 @@ $tpl->display("host.ihtml");
     display_deprecated_banner();
 
     function display_deprecated_banner() {
-        const url = "<?php echo $redirectionUrl; ?>";
-        jQuery('.pathway').append(
-            '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
-            '[Deprecated page. Please use the new <a href="' + url + '" isreact="isreact">Resource Status</a> page]</span>'
-        );
+            const url = "<?php echo $redirectionUrl; ?>";
+            const message = "<?php echo $deprecationMessage; ?>";
+            jQuery('.pathway').append(
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message
+                '<a style="position:relative" href="' + url + '" isreact="isreact">Resource Status</a>'
+            );
     }
 
     jQuery('#statusHost').change(function () {

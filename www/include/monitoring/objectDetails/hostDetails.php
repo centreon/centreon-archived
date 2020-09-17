@@ -716,6 +716,7 @@ if (!$is_admin && !$haveAccess) {
             \Centreon\Application\Controller\MonitoringResourceController::class
         );
 
+        $deprecationMessage = _('[Page deprecated] Please use the new page: ');
         $redirectionUrl = $resourceController->buildHostDetailsUri($host_id);
 
         $tpl->display("hostDetails.ihtml");
@@ -781,11 +782,12 @@ if (!$is_admin && !$haveAccess) {
 
         function display_deprecated_banner() {
             const url = "<?php echo $redirectionUrl; ?>";
+            const message = "<?php echo $deprecationMessage; ?>";
             jQuery('.pathway').append(
-                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
-                '[Deprecated page. Please use the new <a href="' + url + '" isreact="isreact">Resource Status</a> page]</span>'
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message +
+                '<a style="position:relative" href="' + url + '" isreact="isreact">Resource Status</a></span>'
             );
-        }
+    }
 
         function send_command(cmd, actiontype) {
             if (!confirm(glb_confirm)) {
