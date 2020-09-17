@@ -216,7 +216,7 @@ $resourceController = $kernel->getContainer()->get(
     \Centreon\Application\Controller\MonitoringResourceController::class
 );
 
-$redirection_url = $resourceController->buildListingUri([]);
+$redirectionUrl = $resourceController->buildListingUri([]);
 
 /*
  * Smarty template Init
