@@ -15633,9 +15633,6 @@ msgstr "Identifiants de l'API du Central"
 msgid "Remote access"
 msgstr "Accès du Remote"
 
-msgid "More actions"
-msgstr "Plus d'actions"
-
 msgid "Disacknowledge"
 msgstr "Désacquitter"
 
