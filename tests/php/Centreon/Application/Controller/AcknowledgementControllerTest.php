@@ -35,7 +35,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class SubmitResultControllerTest extends TestCase
+class AcknowledgementControllerTest extends TestCase
 {
     protected $adminContact;
 
