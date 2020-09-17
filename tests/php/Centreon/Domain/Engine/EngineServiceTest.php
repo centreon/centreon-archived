@@ -21,14 +21,12 @@
 
 namespace Tests\Centreon\Domain\Engine;
 
-use DateTime;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Engine\EngineService;
 use Centreon\Domain\Entity\EntityValidator;
-use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
@@ -46,7 +44,7 @@ class EngineServiceTest extends TestCase
     protected $serviceResult;
     protected $adminContact;
     protected $engineService;
-    protected $commandHeader;
+    protected $commandHeaderRegex;
     protected $monitoringRepository;
     protected $engineConfigurationService;
 
@@ -78,8 +76,8 @@ class EngineServiceTest extends TestCase
         /**
          * commandHeader should look like 'EXTERNALCMD:<pollerid>:[timestamp] '
          */
-        $this->commandHeader = 'EXTERNALCMD:' .
-            $this->host->getPollerId() . ':[' . (new DateTime())->getTimestamp() . '] ';
+        $this->commandHeaderRegex = 'EXTERNALCMD\:' .
+            $this->host->getPollerId() . '\:\[\d+\] ';
 
         $this->engineRepository = $this->createMock(EngineRepositoryInterface::class);
         $this->engineConfigurationService = $this->createMock(EngineConfigurationRepositoryInterface::class);
@@ -113,7 +111,11 @@ class EngineServiceTest extends TestCase
 
         $this->engineRepository->expects($this->once())
             ->method('sendExternalCommand')
-            ->with($this->equalTo($this->commandHeader . $command));
+            ->with(
+                $this->matchesRegularExpression(
+                    '/^' . $this->commandHeaderRegex . str_replace('|', '\|', $command) . '$/'
+                )
+            );
 
         $engineService = new EngineService(
             $this->engineRepository,
@@ -151,7 +153,11 @@ class EngineServiceTest extends TestCase
 
         $this->engineRepository->expects($this->once())
             ->method('sendExternalCommand')
-            ->with($this->equalTo($this->commandHeader . $command));
+            ->with(
+                $this->matchesRegularExpression(
+                    '/^' . $this->commandHeaderRegex . str_replace('|', '\|', $command). '$/'
+                )
+            );
 
         $engineService = new EngineService(
             $this->engineRepository,
@@ -161,5 +167,66 @@ class EngineServiceTest extends TestCase
 
         $engineService->filterByContact($this->adminContact);
         $this->assertNull($engineService->submitServiceResult($this->serviceResult, $this->service));
+    }
+
+    /**
+     * Testing the disacknowledgeHost EngineService method in a nominal case.
+     */
+    public function testDisacknowledgeHost()
+    {
+        /**
+         * Creating the command to check that the code
+         * will send the same to the sendExternalCommand
+         * repository function
+         */
+        $command = sprintf(
+            '%s;%s',
+            'REMOVE_HOST_ACKNOWLEDGEMENT',
+            $this->host->getName()
+        );
+
+        $this->engineRepository->expects($this->once())
+            ->method('sendExternalCommand')
+            ->with($this->matchesRegularExpression('/^' . $this->commandHeaderRegex . $command . '$/'));
+
+        $engineService = new EngineService(
+            $this->engineRepository,
+            $this->engineConfigurationService,
+            $this->entityValidator
+        );
+
+        $engineService->filterByContact($this->adminContact);
+        $this->assertNull($engineService->disacknowledgeHost($this->host));
+    }
+
+    /**
+     * Testing the disacknowledgeService EngineService method in a nominal case.
+     */
+    public function testDisacknowledgeService()
+    {
+        /**
+         * Creating the command to check that the code
+         * will send the same to the sendExternalCommand
+         * repository function
+         */
+        $command = sprintf(
+            '%s;%s;%s',
+            'REMOVE_SVC_ACKNOWLEDGEMENT',
+            $this->service->getHost()->getName(),
+            $this->service->getDescription()
+        );
+
+        $this->engineRepository->expects($this->once())
+            ->method('sendExternalCommand')
+            ->with($this->matchesRegularExpression('/^' . $this->commandHeaderRegex . $command . '$/'));
+
+        $engineService = new EngineService(
+            $this->engineRepository,
+            $this->engineConfigurationService,
+            $this->entityValidator
+        );
+
+        $engineService->filterByContact($this->adminContact);
+        $this->assertNull($engineService->disacknowledgeService($this->service));
     }
 }
