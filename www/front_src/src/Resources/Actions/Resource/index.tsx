@@ -114,16 +114,17 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToSetDowntime([]);
   };
 
+  const closeMoreActionsMenu = (): void => {
+    setMoreActionsMenuAnchor(null);
+  };
+
   const prepareToDisacknowledge = (): void => {
+    closeMoreActionsMenu();
     setResourcesToDisacknowledge(selectedResources);
   };
 
   const cancelDisacknowledge = (): void => {
     setResourcesToDisacknowledge([]);
-  };
-
-  const closeMoreActionsMenu = (): void => {
-    setMoreActionsMenuAnchor(null);
   };
 
   const openMoreActionsMenu = (event: React.MouseEvent): void => {
