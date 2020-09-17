@@ -15611,6 +15611,9 @@ msgstr "Erreur lors du changement de statut de l'hôte (%d à %s)"
 msgid "Error when searching for already used host names"
 msgstr "Erreur lors de la recherche de noms d'hôtes déjà utilisés"
 
+msgid "Cannot build uri to unknown tab : %s"
+msgstr "Impossible de construire une uri vers un onglet inconnu : %s"
+
 msgid "Copy the link to this resource"
 msgstr "Copier le lien vers cette ressource"
 

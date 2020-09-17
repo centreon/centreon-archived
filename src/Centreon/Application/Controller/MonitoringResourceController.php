@@ -38,6 +38,7 @@ use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
@@ -82,6 +83,14 @@ class MonitoringResourceController extends AbstractController
     public const TAB_SERVICES_NAME = 'services';
     public const TAB_TIMELINE_NAME = 'timeline';
     public const TAB_SHORTCUTS_NAME = 'shortcuts';
+
+    private const ALLOWED_TABS = [
+        self::TAB_DETAILS_NAME,
+        self::TAB_GRAPH_NAME,
+        self::TAB_SERVICES_NAME,
+        self::TAB_TIMELINE_NAME,
+        self::TAB_SHORTCUTS_NAME,
+    ];
 
     private const HOST_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addhostacknowledgement';
     private const SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addserviceacknowledgement';
@@ -622,6 +631,10 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildHostUri(int $hostId, string $tab = self::TAB_DETAILS_NAME): string
     {
+        if (!in_array($tab, static::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
         return $this->buildListingUri([
             'details' => json_encode([
                 'type' => ResourceEntity::TYPE_HOST,
@@ -653,6 +666,10 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildServiceUri(int $hostId, int $serviceId, string $tab = self::TAB_DETAILS_NAME): string
     {
+        if (!in_array($tab, static::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
         return $this->buildListingUri([
             'details' => json_encode([
                 'parentType' => ResourceEntity::TYPE_HOST,
