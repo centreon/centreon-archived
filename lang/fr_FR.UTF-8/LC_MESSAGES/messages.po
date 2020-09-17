@@ -15640,7 +15640,7 @@ msgid "Disacknowledge"
 msgstr "Désacquitter"
 
 msgid "Disacknowledge services attached to hosts"
-msgid "Désacquitter les services attaché aux hôtes"
+msgid "Désacquitter les services attachés aux hôtes"
 
 msgid "Disacknowledgement command sent"
 msgid "Commande de désacquittement envoyée"
