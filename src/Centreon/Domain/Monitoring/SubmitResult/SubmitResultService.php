@@ -163,8 +163,6 @@ class SubmitResultService extends AbstractCentreonService implements SubmitResul
             throw new ValidationFailedException($errors);
         }
 
-        $resourceId = $result->getResourceId();
-
         $host = $this->monitoringRepository->findOneHost($result->getResourceId());
         if (is_null($host)) {
             throw new EntityNotFoundException(
