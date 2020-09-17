@@ -109,7 +109,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
                 </Typography>
                 <Typography variant="body2">{output}</Typography>
               </div>
-              <Typography variant="body2">{duration}</Typography>
+              {duration && <Typography variant="body2">{duration}</Typography>}
             </Paper>
           );
         })}
