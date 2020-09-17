@@ -28,8 +28,16 @@ import {
   SubmenuItems,
 } from '@centreon/ui';
 
-import styles from '../header/header.scss';
-import axios from '../../axios';
+import styles from '../header.scss';
+import axios from '../../../axios';
+import {
+  getServiceResourcesUrl,
+  criticalCriterias,
+  warningCriterias,
+  unknownCriterias,
+  okCriterias,
+  pendingCriterias,
+} from '../getResourcesUrl';
 
 const numberFormat = yup.number().required().integer();
 
@@ -148,7 +156,7 @@ class ServiceStatusMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
+            to={getServiceResourcesUrl(criticalCriterias)}
           >
             <IconNumber
               iconType={`${
@@ -164,7 +172,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
+            to={getServiceResourcesUrl(warningCriterias)}
           >
             <IconNumber
               iconType={`${
@@ -180,7 +188,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
+            to={getServiceResourcesUrl(unknownCriterias)}
           >
             <IconNumber
               iconType={`${
@@ -196,7 +204,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc&statusFilter=ok&search="
+            to={getServiceResourcesUrl(okCriterias)}
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -219,7 +227,7 @@ class ServiceStatusMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=&search="
+                to={getServiceResourcesUrl()}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -229,7 +237,7 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
+                to={getServiceResourcesUrl(criticalCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -242,7 +250,7 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
+                to={getServiceResourcesUrl(warningCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -255,7 +263,7 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
+                to={getServiceResourcesUrl(unknownCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -268,7 +276,7 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=ok&search="
+                to={getServiceResourcesUrl(okCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -279,7 +287,7 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=pending&search="
+                to={getServiceResourcesUrl(pendingCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >

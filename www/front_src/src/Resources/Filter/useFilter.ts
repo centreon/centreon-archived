@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { hasPath, mergeDeepLeft, mergeDeepRight, pipe, isNil } from 'ramda';
+import { hasPath, mergeDeepLeft, mergeDeepRight, pipe } from 'ramda';
 
 import {
   useRequest,

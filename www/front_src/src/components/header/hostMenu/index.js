@@ -30,6 +30,13 @@ import {
 
 import styles from '../header.scss';
 import axios from '../../../axios';
+import {
+  getHostResourcesUrl,
+  downCriterias,
+  unreachableCriterias,
+  upCriterias,
+  pendingCriterias,
+} from '../getResourcesUrl';
 
 const numberFormat = yup.number().required().integer();
 
@@ -47,29 +54,6 @@ const statusSchema = yup.object().shape({
   total: numberFormat,
   refreshTime: numberFormat,
 });
-
-const hostCriterias = { resourceTypes: [{ id: 'host', name: 'Host' }] };
-const getStatusCriterias = (status) => {
-  return { statuses: [status] };
-};
-
-const downCriterias = getStatusCriterias({ id: 'DOWN', name: 'Down' });
-const unreachableCriterias = getStatusCriterias({
-  id: 'UNREACHABLE',
-  name: 'Unreachable',
-});
-const upCriterias = getStatusCriterias({ id: 'UP', name: 'Up' });
-const pendingCriterias = getStatusCriterias({ id: 'PENDING' });
-
-const getResourcesUrl = (statusCraterias = {}) => {
-  const filterQueryParameter = {
-    criterias: { ...hostCriterias, ...statusCraterias },
-  };
-
-  return `/monitoring/resources?filter=${JSON.stringify(
-    filterQueryParameter,
-  )}&fromTopCounter=true`;
-};
 
 class HostMenu extends Component {
   hostsService = axios(
@@ -167,7 +151,7 @@ class HostMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getResourcesUrl(downCriterias)}
+            to={getHostResourcesUrl(downCriterias)}
           >
             <IconNumber
               iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
@@ -181,7 +165,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getResourcesUrl(unreachableCriterias)}
+            to={getHostResourcesUrl(unreachableCriterias)}
           >
             <IconNumber
               iconType={`${
@@ -197,7 +181,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getResourcesUrl(upCriterias)}
+            to={getHostResourcesUrl(upCriterias)}
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -220,7 +204,7 @@ class HostMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to={getResourcesUrl()}
+                to={getHostResourcesUrl()}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -230,7 +214,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getResourcesUrl(downCriterias)}
+                to={getHostResourcesUrl(downCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -243,7 +227,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getResourcesUrl(unreachableCriterias)}
+                to={getHostResourcesUrl(unreachableCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -256,7 +240,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getResourcesUrl(upCriterias)}
+                to={getHostResourcesUrl(upCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -267,7 +251,7 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getResourcesUrl(pendingCriterias)}
+                to={getHostResourcesUrl(pendingCriterias)}
                 className={styles.link}
                 onClick={this.toggle}
               >
