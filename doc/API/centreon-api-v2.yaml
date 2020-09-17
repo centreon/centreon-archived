@@ -3048,6 +3048,7 @@ components:
         deletion_time:
           type: string
           format: date-time
+          nullable: true
           description: "Date of the request for cancellation of the acknowledgement (ISO8601)"
         entry_time:
           type: string
@@ -3225,6 +3226,7 @@ components:
         deletion_time:
           type: string
           format: date-time
+          nullable: true
           description: "Date of cancellation of downtime (ISO8601)"
           example: null
         actual_start_time:

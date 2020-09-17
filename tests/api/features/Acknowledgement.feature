@@ -38,8 +38,7 @@ Feature:
       "resources": [
         {
           "type": "host",
-          "id": <hostId>,
-          "parent": null
+          "id": <hostId>
         }
       ]
     }
@@ -55,8 +54,7 @@ Feature:
       "resources": [
         {
           "type": "host",
-          "id": <hostId>,
-          "parent": null
+          "id": <hostId>
         }
       ]
     }
