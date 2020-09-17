@@ -766,6 +766,12 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "openid_connect_scope",
+        isset($ret["openid_connect_scope"]) && $ret["openid_connect_scope"] != null
+            ? $pearDB->escape($ret["openid_connect_scope"]) : ""
+    );
+    updateOption(
+        $pearDB,
         "openid_connect_redirect_url",
         isset($ret["openid_connect_redirect_url"]) && $ret["openid_connect_redirect_url"] != null
             ? $pearDB->escape($ret["openid_connect_redirect_url"]) : ""

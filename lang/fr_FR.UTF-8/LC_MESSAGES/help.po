@@ -906,7 +906,7 @@ msgstr "L'authentification peut être basée sur OpenId Connect uniquement ou pe
 "d'authentification locaux."
 
 msgid "Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect)."
-msgstr "L'url de base du service OpenId Connect (par xemple http://IP:8080/auth/realms/master/protocol/openid-connect)."
+msgstr "L'url de base du service OpenId Connect (par exemple http://IP:8080/auth/realms/master/protocol/openid-connect)."
 
 msgid "Your OpenId Connect Authorization endpoint (for example /auth)."
 msgstr "L'url du service OpenId Connect Authorization (par exemple /auth)."
@@ -919,6 +919,9 @@ msgstr "L'url du service OpenId Connect Introspection Token (par exemple /token/
 
 msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
 msgstr "L'url du service OpenId Connect User Information (par exemple /userinfo)."
+
+msgid "Your OpenId Connect Scope (for example openid)."
+msgstr "Le champ d'application "scope" (par exemple openid)."
 
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "L'URL OpenId Connect de redirection vers Centreon (ce serveur)."

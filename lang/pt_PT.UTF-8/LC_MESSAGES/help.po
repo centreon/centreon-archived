@@ -708,6 +708,9 @@ msgstr "Seu endereço do servidor OpenId Connect Introspection Token endpoint (p
 msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
 msgstr "Seu endereço do servidor OpenId Connect User Information endpoint (por exemplo /userinfo)."
 
+msgid "Your OpenId Connect Scope (for example openid)."
+msgstr "O escopo (par exemple openid)."
+
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "Seu endereço de redirecionamento OpenId Connect (este servidor)."
 

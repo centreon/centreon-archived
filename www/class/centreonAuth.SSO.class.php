@@ -93,10 +93,16 @@ class CentreonAuthSSO extends CentreonAuth
             ) {
                 $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
             }
+            
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
+            if (isset($this->ssoOptions['openid_connect_scope'])
+                && $this->ssoOptions['openid_connect_scope'] != ""
+            ) {
+                $authUrl .= "&scope=" . $this->ssoOptions['openid_connect_scope'];
+            }
 
             $inputForce = filter_var(
                 $_POST['force'] ?? $_GET['force'] ?? null,

@@ -164,6 +164,10 @@ $help['openid_connect_userinfo_endpoint'] = dgettext(
     'help',
     'Your OpenId Connect User Information endpoint (for example /userinfo).'
 );
+$help['openid_connect_scope'] = dgettext(
+    'help',
+    'Your OpenId Connect Scope (for example openid).'
+);
 $help['openid_connect_redirect_url'] = dgettext(
     'help',
     'Your OpenId Connect redirect url (this server).'
