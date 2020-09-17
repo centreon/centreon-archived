@@ -707,6 +707,12 @@ if (!$is_admin && !$haveAccess) {
         $DBRESULT->closeCursor();
         $tpl->assign("isRemote", $isRemote);
 
+        $kernel = \App\Kernel::createForWeb();
+        $resourceController = $kernel->getContainer()->get(
+            \Centreon\Application\Controller\MonitoringResourceController::class
+        );
+
+        $redirection_url = $resourceController->buildHostDetailsUri($host_id);
 
         $tpl->display("hostDetails.ihtml");
     } else {
@@ -731,6 +737,8 @@ if (!$is_admin && !$haveAccess) {
         var command_failure = "<?php echo _("Failed to execute command");?>";
         var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
         var labels = new Array();
+
+        display_deprecated_banner();
 
         labels['host_checks'] = new Array(
             "<?php echo $str_check_host_enable;?>",
@@ -766,6 +774,14 @@ if (!$is_admin && !$haveAccess) {
             "<?php echo $img_en[0];?>",
             "<?php echo $img_en[1];?>"
         );
+
+        function display_deprecated_banner() {
+            var url = "<?php echo $redirection_url; ?>";
+            jQuery('.pathway').append(
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
+                '[Deprecated page. Please use the new <a href="' + url + '">Resource Status</a> page]</span>'
+            );
+        }
 
         function send_command(cmd, actiontype) {
             if (!confirm(glb_confirm)) {

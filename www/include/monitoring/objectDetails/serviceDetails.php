@@ -826,6 +826,13 @@ if (!is_null($host_id)) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
+        $kernel = \App\Kernel::createForWeb();
+        $resourceController = $kernel->getContainer()->get(
+            \Centreon\Application\Controller\MonitoringResourceController::class
+        );
+
+        $redirection_url = $resourceController->buildServiceDetailsUri($host_id, $service_id);
+
         $tpl->display("serviceDetails.ihtml");
     }
 } else {
@@ -842,6 +849,8 @@ if (!is_null($host_id)) {
         var host_id = '<?php echo $host_id;?>';
         var svc_id = '<?php echo $service_id;?>';
         var labels = new Array();
+
+        display_deprecated_banner();
 
         labels['service_checks'] = new Array(
             "<?php echo $str_check_svc_enable;?>",
@@ -884,6 +893,14 @@ if (!is_null($host_id)) {
             "<?php echo $img_en[0];?>",
             "<?php echo $img_en[1];?>"
         );
+
+        function display_deprecated_banner() {
+            var url = "<?php echo $redirection_url; ?>";
+            jQuery('.pathway').append(
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
+                '[Deprecated page. Please use the new <a href="' + url + '">Resource Status</a> page]</span>'
+            );
+        }
 
         function send_command(cmd, actiontype) {
             if (!confirm(glb_confirm)) {
