@@ -155,7 +155,7 @@ class EngineServiceTest extends TestCase
             ->method('sendExternalCommand')
             ->with(
                 $this->matchesRegularExpression(
-                    '/^' . $this->commandHeaderRegex . str_replace('|', '\|', $command). '$/'
+                    '/^' . $this->commandHeaderRegex . str_replace('|', '\|', $command) . '$/'
                 )
             );
 
