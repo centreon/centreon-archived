@@ -14593,3 +14593,15 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Resource link copied to the clipboard"
 #  msgstr ""
+
+#  msgid "More actions"
+#  msgstr ""
+
+#  msgid "Disacknowledge"
+#  msgstr ""
+
+#  msgid "Disacknowledge services attached to hosts"
+#  msgid ""
+
+#  msgid "Disacknowledgement command sent"
+#  msgid ""

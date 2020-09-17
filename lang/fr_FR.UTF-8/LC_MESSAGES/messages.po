@@ -15632,3 +15632,15 @@ msgstr "Identifiants de l'API du Central"
 #: www/include/Adrministration/parameters/remote/formRemote.php
 msgid "Remote access"
 msgstr "Accès du Remote"
+
+msgid "More actions"
+msgstr "Plus d'actions"
+
+msgid "Disacknowledge"
+msgstr "Désacquitter"
+
+msgid "Disacknowledge services attached to hosts"
+msgid "Désacquitter les services attaché aux hôtes"
+
+msgid "Disacknowledgement command sent"
+msgid "Commande de désacquittement envoyée"
