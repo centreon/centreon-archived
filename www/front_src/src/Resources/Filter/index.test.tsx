@@ -562,5 +562,55 @@ describe(Filter, () => {
         'Search me two',
       );
     });
+
+    it('resets the filter criterias which are not set in the filter URL query parameter when given', async () => {
+      const savedFilter = {
+        id: '',
+        name: '',
+        criterias: {
+          resourceTypes: [{ id: 'host', name: labelHost }],
+          states: [{ id: 'acknowledged', name: labelAcknowledged }],
+          statuses: [{ id: 'OK', name: labelOk }],
+          hostGroups: [linuxServersHostGroup],
+          serviceGroups: [webAccessServiceGroup],
+          search: 'searching...',
+        },
+      };
+
+      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
+
+      const filter = {
+        criterias: {
+          search: 'Search me',
+        },
+      };
+
+      setUrlQueryParameters([
+        {
+          name: 'filter',
+          value: filter,
+        },
+      ]);
+
+      const { getByDisplayValue, queryByText } = renderFilter();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      });
+
+      expect(getByDisplayValue('Search me')).toBeInTheDocument();
+      expect(queryByText(labelHost)).toBeNull();
+      expect(queryByText(labelAcknowledged)).toBeNull();
+      expect(queryByText(labelOk)).toBeNull();
+      expect(queryByText(linuxServersHostGroup.name)).toBeNull();
+      expect(queryByText(webAccessServiceGroup.name)).toBeNull();
+
+      const filterFromUrlQueryParameters = getUrlQueryParameters()
+        .filter as FilterModel;
+
+      expect(filterFromUrlQueryParameters.criterias.search).toEqual(
+        'Search me',
+      );
+    });
   });
 });
