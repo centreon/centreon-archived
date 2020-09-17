@@ -24,10 +24,14 @@ namespace Centreon\Domain\Monitoring\SubmitResult;
 
 class SubmitResult
 {
-    /**
-     * @var array Allowed statuses code to submit
-     */
-    public const ALLOWED_STATUSES = [0, 1, 2, 3];
+    public const STATUS_OK = 0;
+    public const STATUS_UP = 0;
+    public const STATUS_WARNING = 1;
+    public const STATUS_CRITICAL = 2;
+    public const STATUS_UNKNOWN = 3;
+    public const STATUS_DOWN = 1;
+    public const STATUS_UNREACHABLE = 2;
+
     /**
      * @var int Resource ID
      */
@@ -113,7 +117,16 @@ class SubmitResult
      */
     public function setStatus(int $status): SubmitResult
     {
-        if (!in_array($status, self::ALLOWED_STATUSES)) {
+        $allowedStatuses = [
+            self::STATUS_OK,
+            self::STATUS_WARNING,
+            self::STATUS_CRITICAL,
+            self::STATUS_UNKNOWN,
+            self::STATUS_UP,
+            self::STATUS_DOWN,
+            self::STATUS_UNREACHABLE
+        ];
+        if (!in_array($status, $allowedStatuses)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     _('Status provided %d is invalid'),

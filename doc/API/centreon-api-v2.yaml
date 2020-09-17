@@ -3342,7 +3342,7 @@ components:
             * `0` - UP
             * `1` - DOWN
             * `2` - UNREACHABLE
-          example: 0
+          example: 1
         output:
           type: string
           nullable: true
