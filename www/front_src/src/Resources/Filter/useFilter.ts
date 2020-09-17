@@ -65,7 +65,7 @@ const useFilter = (): FilterState => {
   });
 
   const { unhandledProblemsFilter, allFilter, newFilter } = useFilterModels();
-  const { toFilter } = useAdapters();
+  const { toFilter, toRawFilter } = useAdapters();
 
   const getDefaultFilter = (): Filter => {
     const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);

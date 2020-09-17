@@ -48,6 +48,8 @@ const statusSchema = yup.object().shape({
   refreshTime: numberFormat,
 });
 
+const hostFilter = { criterias: { resourceTypes: [{ id: 'host' }] } };
+
 class HostMenu extends Component {
   hostsService = axios(
     'internal.php?object=centreon_topcounter&action=hosts_status',
