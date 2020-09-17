@@ -96,7 +96,7 @@ class AcknowledgementController extends AbstractController
         if (!$validator->isValid()) {
             $message = '';
             foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+                $message .= sprintf("[%s] %s" . PHP_EOL, $error['property'], $error['message']);
             }
             throw new \InvalidArgumentException($message);
         }
