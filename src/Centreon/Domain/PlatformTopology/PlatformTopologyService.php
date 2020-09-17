@@ -78,16 +78,27 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
 
 
-        if (true === $platformTopology->isLinkedToAnotherServer()) {
+        if ($registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
             // WIP
             // call the API on the n-1 server to register it too
 
             // DEBUG
 
+            // Find the Central's data
+            // $dataOfTheCentral = $this->platformTopologyRepository->
 
-            throw new PlatformTopologyException("need to call the API now");
-            json_encode($registeredParentInTopology);
+            $payload = json_encode([
+                "name" => $registeredParentInTopology->getName(),
+                "type" => $registeredParentInTopology->getType(),
+                "address" => $registeredParentInTopology->getAddress(),
+                "parent_address" => $registeredParentInTopology->getParentAddress()
+            ]);
+            throw new PlatformTopologyException(
+                "payload : " . $payload
+            );
+
         }
+
 
 
         // TODO
@@ -120,7 +131,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (null !== $foundAlreadyRegisteredPlatformByType) {
             throw new PlatformTopologyConflictException(
                 sprintf(
-                    _("The %s : '%s'@'%s' is already registered"),
+                    _("A '%s' : '%s'@'%s' is already registered"),
                     $type,
                     $foundAlreadyRegisteredPlatformByType->getName(),
                     $foundAlreadyRegisteredPlatformByType->getAddress()
