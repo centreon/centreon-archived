@@ -716,7 +716,7 @@ if (!$is_admin && !$haveAccess) {
             \Centreon\Application\Controller\MonitoringResourceController::class
         );
 
-        $redirection_url = $resourceController->buildHostDetailsUri($host_id);
+        $redirectionUrl = $resourceController->buildHostDetailsUri($host_id);
 
         $tpl->display("hostDetails.ihtml");
     } else {
