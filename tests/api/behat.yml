@@ -28,6 +28,10 @@ default:
       paths: [ "%paths.base%/features/Check.feature" ]
       contexts:
         - Centreon\Test\Api\Context\CheckContext
+    submit:
+      paths: [ "%paths.base%/features/SubmitResult.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\SubmitResultContext
     monitoring_timeline:
       paths: [ "%paths.base%/features/MonitoringTimeline.feature" ]
       contexts:

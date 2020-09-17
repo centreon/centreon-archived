@@ -1597,6 +1597,74 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single host"
+      description: "Submit a result (check status, output and perfdata) to a single host"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Host'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single service"
+      description: "Submit a result (check status, output and perfdata) to a single service"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit result to resources"
+      description: "Submit a result (check status, output and perfdata) to resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
     get:
       tags:
@@ -3274,6 +3342,100 @@ components:
                     type: integer
                     description: "Parent resource ID"
                     example: 17
+    SubmitResult.Host:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: integer
+          enum: [0, 1, 2]
+          description: |
+            Host status code that can be submitted
+            * `0` - UP
+            * `1` - DOWN
+            * `2` - UNREACHABLE
+          example: 1
+        output:
+          type: string
+          nullable: true
+          description: "Output result of the check sent"
+          example: "CRITICAL: Connection lost"
+        performance_data:
+          type: string
+          nullable: true
+          description: "Performance data result of the check sent"
+          example: "'nbproc'=0;;1:1;0;"
+    SubmitResult.Service:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [0, 1, 2, 3]
+          description: |
+            Service status code that can be submitted
+            * `0` - OK
+            * `1` - WARNING
+            * `2` - CRITICAL
+            * `3` - UNKNOWN
+          example: 2
+        output:
+          type: string
+          nullable: true
+          description: "Output result of the check sent"
+          example: "CRITICAL: Memory exceeded "
+        performance_data:
+          type: string
+          nullable: true
+          description: "Performance data result of the check sent"
+          example: "'used'=453849088B;;;0;1927262208"
+    SubmitResult.Resources:
+      type: object
+      required: [resources]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [status,id]
+            properties:
+              type:
+                type: string
+                enum: [host, service]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              status:
+                type: integer
+                enum: [0, 1, 2, 3]
+                description: |
+                  Resource status code that can be submitted
+                  * `0` - OK or UP
+                  * `1` - WARNING or DOWN
+                  * `2` - CRITICAL or UNREACHABLE
+                  * `3` - UNKNOWN
+                example: 2
+              output:
+                type: string
+                nullable: true
+                description: "Output result of the check sent"
+                example: "CRITICAL: Memory exceeded "
+              performance_data:
+                type: string
+                nullable: true
+                description: "Performance data result of the check sent"
+                example: "'used'=453849088B;;;0;1927262208"
     Monitoring.Resource.Disacknowledge.Host:
       type: object
       properties:
