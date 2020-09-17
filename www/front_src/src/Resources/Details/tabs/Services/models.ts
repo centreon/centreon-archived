@@ -6,7 +6,7 @@ export interface Service {
   status: Status;
   output: string;
   name: string;
-  duration: string;
+  duration?: string;
 }
 
 export type ServiceListing = ListingModel<Service>;

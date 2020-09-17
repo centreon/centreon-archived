@@ -11,7 +11,7 @@ const entityDecoder = JsonDecoder.object<Service>(
     name: JsonDecoder.string,
     status: statusDecoder,
     output: JsonDecoder.string,
-    duration: JsonDecoder.string,
+    duration: JsonDecoder.optional(JsonDecoder.string),
   },
   'Service',
   {
