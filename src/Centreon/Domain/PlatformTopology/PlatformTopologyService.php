@@ -74,11 +74,36 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
         $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
 
-
-
-
-
+        /**
+         * The top level platform is defined as a Remote
+         * Checking consistency in 'informations' table and calling the register request on the Central
+         */
         if ($registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
+            $platformInformation = $this->platformTopologyRepository->findPlatformInformation();
+            if (empty($platformInformation->getIsRemote())) {
+                throw new PlatformTopologyConflictException(
+                    _("The platform : '%s'@'%s' is not declared as a 'remote'")
+                );
+            }
+
+            if ($platformInformation->getIsCentral() === $platformInformation->getIsRemote()) {
+                throw new PlatformTopologyConflictException(
+                    _("The platform : '%s'@'%s' is declared as a 'Central' and as a 'Remote.'")
+                );
+            }
+
+            if (null === $platformInformation->getAuthorizedMaster()) {
+                throw new PlatformTopologyException(
+                    _("The platform : '%s'@'%s' is not linked to any Central. Please use the wizard first")
+                );
+            }
+/*
+            if (null === $platformInformation->getApiiusername()) {
+                trow new PlatformTopologyException(
+                )
+            }
+*/
+            
             // WIP
             // call the API on the n-1 server to register it too
 
