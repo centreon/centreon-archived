@@ -826,6 +826,10 @@ if (!is_null($host_id)) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
+        /**
+         * Build the service detail URI that will be used in the
+         * deprecated banner
+         */
         $kernel = \App\Kernel::createForWeb();
         $resourceController = $kernel->getContainer()->get(
             \Centreon\Application\Controller\MonitoringResourceController::class
@@ -898,7 +902,7 @@ if (!is_null($host_id)) {
             var url = "<?php echo $redirection_url; ?>";
             jQuery('.pathway').append(
                 '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
-                '[Deprecated page. Please use the new <a href="' + url + '">Resource Status</a> page]</span>'
+                '[Deprecated page. Please use the new <a href="' + url + '" isreact="isreact">Resource Status</a> page]</span>'
             );
         }
 

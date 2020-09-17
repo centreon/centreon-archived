@@ -177,7 +177,10 @@ include_once("./include/monitoring/status/Common/default_hostgroups.php");
 
 include_once("hostJS.php");
 
-
+    /**
+     * Build the resource status listing URI that will be used in the
+     * deprecated banner
+     */
 $kernel = \App\Kernel::createForWeb();
 $resourceController = $kernel->getContainer()->get(
     \Centreon\Application\Controller\MonitoringResourceController::class
@@ -406,7 +409,7 @@ $tpl->display("host.ihtml");
         var url = "<?php echo $redirection_url; ?>";
         jQuery('.pathway').append(
             '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' +
-            '[Deprecated page. Please use the new <a href="' + url + '">Resource Status</a> page]</span>'
+            '[Deprecated page. Please use the new <a href="' + url + '" isreact="isreact">Resource Status</a> page]</span>'
         );
     }
 
