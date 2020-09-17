@@ -176,7 +176,7 @@ class PlatformTopology
     /**
      * @return string|null
      */
-    public function getApiiusername(): ?string
+    public function getApiUsername(): ?string
     {
         return $this->apiUsername;
     }
@@ -206,6 +206,18 @@ class PlatformTopology
      */
     public function setApiCredentials(string $encryptedKey): self
     {
+        $this->apiCredentials = $this->decryptApiCredentials($encryptedKey);
+        return $this;
+    }
+
+    /**
+     * @param string $encryptedKey
+     * @return string
+     * @throws PlatformTopologyException
+     * @throws InvalidArgumentException
+     */
+    public function decryptApiCredentials(string $encryptedKey): string
+    {
         // first key
         require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
         if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
@@ -223,19 +235,18 @@ class PlatformTopology
         try {
             $centreonEncryption = new Encryption();
             $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey($secondKey);
-            $this->apiCredentials = $centreonEncryption->decrypt($encryptedKey);
+            return $centreonEncryption->decrypt($encryptedKey);
         } catch (\throwable $e) {
             throw new InvalidArgumentException(
                 _("Unable to decipher central's credentials. Please check the credentials in the remote access form")
             );
         }
-        return $this;
     }
 
     /**
      * @return bool
      */
-    public function isLinkedToAnotherServer()
+    public function isLinkedToAnotherServer(): bool
     {
         return $this->isLinkedToAnotherServer;
     }

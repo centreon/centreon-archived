@@ -176,28 +176,28 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
      */
     public function findPlatformInformation(): ?PlatformTopology
     {
-        $statement = $this->db->query(
+        $statement = $this->db->prepare(
             $this->translateDbName('
                 SELECT * FROM `:db`.informations
             ')
         );
         $result = [];
-        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $result[$result['key']] = $result['value'];
-        }
-
         $platformTopology = null;
+        if ($statement->execute()) {
+            while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $result[$row['key']] = $row['value'];
+            }
 
-        if (!empty($result)) {
-            /**
-             * @var PlatformTopology $platformTopology
-             */
-            $platformTopology = EntityCreator::createEntityByArray(
-                PlatformTopology::class,
-                $result
-            );
+            if (!empty($result)) {
+                /**
+                 * @var PlatformTopology $platformTopology
+                 */
+                $platformTopology = EntityCreator::createEntityByArray(
+                    PlatformTopology::class,
+                    $result
+                );
+            }
         }
-
         return $platformTopology;
     }
 }

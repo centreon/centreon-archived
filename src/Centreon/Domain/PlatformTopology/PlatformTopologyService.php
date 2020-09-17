@@ -74,36 +74,65 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
         $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
 
+throw new PlatformTopologyException(
+    "debug : " . $registeredParentInTopology
+);
+
         /**
          * The top level platform is defined as a Remote
          * Checking consistency in 'informations' table and calling the register request on the Central
          */
         if ($registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
+            /**
+             * @var PlatformTopology $platformInformation
+             */
             $platformInformation = $this->platformTopologyRepository->findPlatformInformation();
+
+            if (!$platformInformation) {
+                throw new PlatformTopologyException(
+                    _("Platform's mandatory data are missing. Please reinstall your platform")
+                );
+            }
             if (empty($platformInformation->getIsRemote())) {
                 throw new PlatformTopologyConflictException(
-                    _("The platform : '%s'@'%s' is not declared as a 'remote'")
+                    sprintf(
+                        _("The platform : '%s'@'%s' is not declared as a 'remote'"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
                 );
             }
-
             if ($platformInformation->getIsCentral() === $platformInformation->getIsRemote()) {
                 throw new PlatformTopologyConflictException(
-                    _("The platform : '%s'@'%s' is declared as a 'Central' and as a 'Remote.'")
+                    sprintf(
+                        _("The platform : '%s'@'%s' is declared as a 'Central' and as a 'Remote, or none.'"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            if (null === $platformInformation->getAuthorizedMaster()) {
+                throw new PlatformTopologyException(
+                    sprintf(
+                        _("The platform : '%s'@'%s' is not linked to any Central. Please use the wizard first"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            if (
+                null === $platformInformation->getApiUsername()
+                || null === $platformInformation->getApiCredentials()
+            ) {
+                throw new PlatformTopologyException(
+                    sprintf(
+                        _("Central's credentials are missing on : '%s'@'%s'. Please check the Remote Access form"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
                 );
             }
 
-            if (null === $platformInformation->getAuthorizedMaster()) {
-                throw new PlatformTopologyException(
-                    _("The platform : '%s'@'%s' is not linked to any Central. Please use the wizard first")
-                );
-            }
-/*
-            if (null === $platformInformation->getApiiusername()) {
-                trow new PlatformTopologyException(
-                )
-            }
-*/
-            
             // WIP
             // call the API on the n-1 server to register it too
 
@@ -116,7 +145,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 "name" => $registeredParentInTopology->getName(),
                 "type" => $registeredParentInTopology->getType(),
                 "address" => $registeredParentInTopology->getAddress(),
-                "parent_address" => $registeredParentInTopology->getParentAddress()
+                "parent_address" => $platformInformation->getAuthorizedMaster()
             ]);
             throw new PlatformTopologyException(
                 "payload : " . $payload
