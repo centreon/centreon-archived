@@ -446,7 +446,6 @@ class Contact implements UserInterface, ContactInterface
      */
     public function hasRole(string $role): bool
     {
-        $roles = $this->$roles;
         return in_array($role, $this->roles);
     }
 
