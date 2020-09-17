@@ -115,6 +115,36 @@ Centreon\Domain\Check\Check:
             - Type:
                 type: boolean
 
+# Used to validate the SubmitResult entity
+Centreon\Domain\Monitoring\SubmitResult\SubmitResult:
+    properties:
+        performanceData:
+            - Type:
+                type: string
+                groups: [Default, submit_result_host, submit_result_service]
+        output:
+            - Type:
+                type: string
+                groups: [Default, submit_result_host, submit_result_service]
+        status:
+            - Type:
+                type: int
+                groups: [Default, submit_result_host, submit_result_service]
+            - GreaterThan: 0
+            - LessThanOrEqual: 3
+            - NotNull: ~
+        resourceId:
+            - Type:
+                type: int
+                groups: [Default, submit_result_host, submit_result_service]
+            - GreaterThan: 0
+            - NotNull: ~
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [Default, submit_result_service]
+            - GreaterThan: 0
+
 # Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:
     properties:
