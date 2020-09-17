@@ -13754,9 +13754,6 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "Hosts: Set Downtime"
 #~ msgstr "Hôtes: Planifier une plage de maintenance"
 
-#~ msgid "Disacknowledge"
-#~ msgstr "Désacquittement"
-
 #~ msgid "Enable Notification"
 #~ msgstr "Activer la Notification"
 
