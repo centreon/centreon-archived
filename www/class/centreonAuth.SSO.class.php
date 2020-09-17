@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -137,7 +137,7 @@ class CentreonAuthSSO extends CentreonAuth
                     $verifyPeer
                 );
 
-                if (!isset($user["preferred_username"]) && $userInfoEndpoint) {
+                if (!isset($user["preferred_username"]) && isset($userInfoEndpoint)) {
                     $user = $this->getOpenIdConnectUserInfo(
                         $userInfoEndpoint,
                         $keyToken,
@@ -179,7 +179,7 @@ class CentreonAuthSSO extends CentreonAuth
             && isset($this->ssoOptions['sso_mode'])
             && $this->ssoOptions['sso_mode'] == 1
         ) {
-            # Mixed
+            // Mixed
             $blacklist = explode(',', $this->ssoOptions['sso_blacklist_clients']);
             foreach ($blacklist as $value) {
                 $value = trim($value);
@@ -203,7 +203,7 @@ class CentreonAuthSSO extends CentreonAuth
             && isset($this->options_sso['openid_connect_mode'])
             && $this->options_sso['openid_connect_mode'] == 1
         ) {
-            # Mixed
+            // Mixed
             $blacklist = explode(',', $this->options_sso['openid_connect_blacklist_clients']);
             foreach ($blacklist as $value) {
                 $value = trim($value);
@@ -213,7 +213,7 @@ class CentreonAuthSSO extends CentreonAuth
             }
 
             $whitelist = explode(',', $this->options_sso['openid_connect_trusted_clients']);
-            if(empty($whitelist[0])) {
+            if (empty($whitelist[0])) {
                 return 1;
             }
             foreach ($whitelist as $value) {
@@ -223,7 +223,7 @@ class CentreonAuthSSO extends CentreonAuth
                 }
             }
         } else {
-            # Only SSO (no login from local users)
+            // Only SSO (no login from local users)
             return 1;
         }
     }
@@ -231,17 +231,17 @@ class CentreonAuthSSO extends CentreonAuth
     protected function checkPassword($password, $token = "", $autoimport = false)
     {
         if ($this->ssoMandatory == 1) {
-            # Mode LDAP autoimport. Need to call it
+            // Mode LDAP autoimport. Need to call it
             if ($autoimport) {
-                # Password is only because it needs one...
+                // Password is only because it needs one...
                 parent::checkPassword('test', $token, $autoimport);
             }
-            # We delete old sessions with same SID
+            // We delete old sessions with same SID
             global $pearDB;
             $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
             $this->passwdOk = 1;
         } else {
-            # local connect (when sso not enabled and 'sso_mode' == 1
+            // local connect (when sso not enabled and 'sso_mode' == 1
             return parent::checkPassword($password, $token);
         }
     }
@@ -250,12 +250,12 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Connect to OpenId Connect and get token access
      *
-     * @param string $url OpenId Connect Client Token endpoint
-     * @param string $redirectUri OpenId Connect Redirect Url
-     * @param string $clientId OpenId Connect Client ID
+     * @param string $url          OpenId Connect Client Token endpoint
+     * @param string $redirectUri  OpenId Connect Redirect Url
+     * @param string $clientId     OpenId Connect Client ID
      * @param string $clientSecret OpenId Connect Client Secret
-     * @param string $code OpenId Connect Authorization Code
-     * @param bool   $verifyPeer disable SSL verify peer
+     * @param string $code         OpenId Connect Authorization Code
+     * @param bool   $verifyPeer   disable SSL verify peer
      *
      * @return string
     */
@@ -289,11 +289,11 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Validate Token on OpenId Connect
      *
-     * @param string $url OpenId Connect Introspection Token Endpoint
-     * @param string $clientId OpenId Connect Client ID
+     * @param string $url          OpenId Connect Introspection Token Endpoint
+     * @param string $clientId     OpenId Connect Client ID
      * @param string $clientSecret OpenId Connect Client Secret
-     * @param string $token OpenId Connect Token Access
-     * @param bool   $verifyPeer disable SSL verify peer
+     * @param string $token        OpenId Connect Token Access
+     * @param bool   $verifyPeer   disable SSL verify peer
      *
      * @return array
      */
@@ -325,8 +325,8 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Get User Inofmration on OpenId Connect
      *
-     * @param string $url OpenId Connect Introspection Token Endpoint
-     * @param string $token OpenId Connect Token Access
+     * @param string $url        OpenId Connect Introspection Token Endpoint
+     * @param string $token      OpenId Connect Token Access
      * @param bool   $verifyPeer disable SSL verify peer
      *
      * @return array
