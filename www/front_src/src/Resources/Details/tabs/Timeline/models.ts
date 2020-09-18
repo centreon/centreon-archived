@@ -1,8 +1,3 @@
-export interface Status {
-  severityCode: number;
-  name: string;
-}
-
 export interface WithName {
   name: string;
 }

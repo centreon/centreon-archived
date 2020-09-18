@@ -13,6 +13,7 @@ export type UserContext = {
 export interface ActionAcl {
   check: boolean;
   acknowledgement: boolean;
+  disacknowledgement: boolean;
   downtime: boolean;
 }
 

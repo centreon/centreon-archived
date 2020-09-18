@@ -13761,9 +13761,6 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "Hosts: Set Downtime"
 #~ msgstr "Hôtes: Planifier une plage de maintenance"
 
-#~ msgid "Disacknowledge"
-#~ msgstr "Désacquittement"
-
 #~ msgid "Enable Notification"
 #~ msgstr "Activer la Notification"
 
@@ -15618,6 +15615,9 @@ msgstr "Erreur lors du changement de statut de l'hôte (%d à %s)"
 msgid "Error when searching for already used host names"
 msgstr "Erreur lors de la recherche de noms d'hôtes déjà utilisés"
 
+msgid "Cannot build uri to unknown tab : %s"
+msgstr "Impossible de construire une uri vers un onglet inconnu : %s"
+
 msgid "Copy the link to this resource"
 msgstr "Copier le lien vers cette ressource"
 
@@ -15639,3 +15639,12 @@ msgstr "Identifiants de l'API du Central"
 #: www/include/Adrministration/parameters/remote/formRemote.php
 msgid "Remote access"
 msgstr "Accès du Remote"
+
+msgid "Disacknowledge"
+msgstr "Désacquitter"
+
+msgid "Disacknowledge services attached to hosts"
+msgstr "Désacquitter les services attachés aux hôtes"
+
+msgid "Disacknowledgement command sent"
+msgstr "Commande de désacquittement envoyée"

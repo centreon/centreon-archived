@@ -22,19 +22,22 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Engine;
 
-use Centreon\Domain\Acknowledgement\Acknowledgement;
-use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Check\Check;
-use Centreon\Domain\Downtime\DowntimeService;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationRepositoryInterface;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
-use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
-use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
-use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Downtime\DowntimeService;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
+use Centreon\Domain\Acknowledgement\AcknowledgementService;
+use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
+use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
+use Centreon\Domain\Monitoring\SubmitResult\SubmitResultService;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationRepositoryInterface;
 
 /**
  * This class is designed to send external command for Engine
@@ -394,6 +397,81 @@ class EngineService extends AbstractCentreonService implements
             $service->getHost()->getName(),
             $service->getDescription(),
             $check->getCheckTime()->getTimestamp()
+        );
+
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
+        $this->engineRepository->sendExternalCommand($commandFull);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function submitHostResult(SubmitResult $result, Host $host): void
+    {
+        // We validate the SubmitResult instance (replace by the Validation of CHECK RESULT)
+        $errors = $this->validator->validate(
+            $result,
+            null,
+            SubmitResultService::VALIDATION_GROUPS_HOST_SUBMIT_RESULT
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        if (empty($host->getName())) {
+            throw new EngineException(_('Host name can not be empty'));
+        }
+
+        $commandName = 'PROCESS_HOST_CHECK_RESULT';
+
+        $command = sprintf(
+            '%s;%s;%d;%s|%s',
+            $commandName,
+            $host->getName(),
+            $result->getStatus(),
+            $result->getOutput(),
+            $result->getPerformanceData()
+        );
+
+        $commandFull = $this->createCommandHeader($host->getPollerId()) . $command;
+        $this->engineRepository->sendExternalCommand($commandFull);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function submitServiceResult(SubmitResult $result, Service $service): void
+    {
+        // We validate the check instance (replace by the Validation of CHECK RESULT)
+        $errors = $this->validator->validate(
+            $result,
+            null,
+            SubmitResultService::VALIDATION_GROUPS_SERVICE_SUBMIT_RESULT
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        if (empty($service->getHost()->getName())) {
+            throw new EngineException(_('Host name cannot be empty'));
+        }
+
+        if (empty($service->getDescription())) {
+            throw new EngineException(_('Service description cannot be empty'));
+        }
+
+        $commandName = 'PROCESS_SERVICE_CHECK_RESULT';
+
+        $command = sprintf(
+            '%s;%s;%s;%d;%s|%s',
+            $commandName,
+            $service->getHost()->getName(),
+            $service->getDescription(),
+            $result->getStatus(),
+            $result->getOutput(),
+            $result->getPerformanceData()
         );
 
         $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;

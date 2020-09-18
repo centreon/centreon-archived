@@ -9,29 +9,24 @@ import {
   labelGraph,
   labelTimeline,
   labelShortcuts,
+  labelServices,
 } from '../../translatedLabels';
 import GraphTab from './Graph';
 import { ResourceDetails } from '../models';
+import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import hasDefinedValues from '../../hasDefinedValues';
+import ServicesTab from './Services';
 
 const detailsTabId = 0;
-const timelineTabId = 1;
-const graphTabId = 2;
-const shortcutsTabId = 3;
-
-export type TabId = 0 | 1 | 2 | 3;
+const servicesTabId = 1;
+const timelineTabId = 2;
+const graphTabId = 3;
+const shortcutsTabId = 4;
 
 export interface TabProps {
   details?: ResourceDetails;
-}
-
-interface Tab {
-  id: TabId;
-  Component: (props: TabProps) => JSX.Element;
-  title: string;
-  getIsActive: (details) => boolean;
 }
 
 const tabs: Array<Tab> = [
@@ -40,6 +35,14 @@ const tabs: Array<Tab> = [
     Component: DetailsTab,
     title: labelDetails,
     getIsActive: (): boolean => true,
+  },
+  {
+    id: servicesTabId,
+    Component: ServicesTab,
+    title: labelServices,
+    getIsActive: (details: ResourceDetails): boolean => {
+      return details.type === 'host';
+    },
   },
   {
     id: timelineTabId,
@@ -101,6 +104,7 @@ const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
 
 const tabIdByLabel = {
   details: detailsTabId,
+  services: servicesTabId,
   timeline: timelineTabId,
   shortcuts: shortcutsTabId,
   graph: graphTabId,
@@ -119,6 +123,7 @@ export {
   timelineTabId,
   graphTabId,
   shortcutsTabId,
+  servicesTabId,
   tabs,
   TabById,
   getTabIdFromLabel,

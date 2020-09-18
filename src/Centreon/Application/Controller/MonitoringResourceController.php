@@ -38,6 +38,7 @@ use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
@@ -77,7 +78,19 @@ class MonitoringResourceController extends AbstractController
 
     private const RESOURCE_LISTING_URI = '/monitoring/resources';
 
-    private const TAB_DETAILS_NAME = 'details';
+    public const TAB_DETAILS_NAME = 'details';
+    public const TAB_GRAPH_NAME = 'graph';
+    public const TAB_SERVICES_NAME = 'services';
+    public const TAB_TIMELINE_NAME = 'timeline';
+    public const TAB_SHORTCUTS_NAME = 'shortcuts';
+
+    private const ALLOWED_TABS = [
+        self::TAB_DETAILS_NAME,
+        self::TAB_GRAPH_NAME,
+        self::TAB_SERVICES_NAME,
+        self::TAB_TIMELINE_NAME,
+        self::TAB_SHORTCUTS_NAME,
+    ];
 
     private const HOST_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addhostacknowledgement';
     private const SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addserviceacknowledgement';
@@ -599,24 +612,40 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
-     * Build uri to access host details page
+     * Build uri to access host panel with details tab
      *
      * @param integer $hostId
-     * @return void
+     * @return string
      */
-    public function buildHostDetailsUri(int $hostId)
+    public function buildHostDetailsUri(int $hostId): string
     {
+        return $this->buildHostUri($hostId, self::TAB_DETAILS_NAME);
+    }
+
+    /**
+     * Build uri to access host panel
+     *
+     * @param integer $hostId
+     * @param string $tab tab name
+     * @return string
+     */
+    public function buildHostUri(int $hostId, string $tab = self::TAB_DETAILS_NAME): string
+    {
+        if (!in_array($tab, static::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
         return $this->buildListingUri([
             'details' => json_encode([
                 'type' => ResourceEntity::TYPE_HOST,
                 'id' => $hostId,
-                'tab' => static::TAB_DETAILS_NAME,
+                'tab' => $tab,
             ]),
         ]);
     }
 
     /**
-     * Build uri to access service details page
+     * Build uri to access service service panel with details tab
      *
      * @param integer $hostId
      * @param integer $serviceId
@@ -624,13 +653,30 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildServiceDetailsUri(int $hostId, int $serviceId)
     {
+        return $this->buildServiceUri($hostId, $serviceId, self::TAB_DETAILS_NAME);
+    }
+
+    /**
+     * Build uri to access service panel
+     *
+     * @param integer $hostId
+     * @param integer $serviceId
+     * @param string $tab tab name
+     * @return string
+     */
+    public function buildServiceUri(int $hostId, int $serviceId, string $tab = self::TAB_DETAILS_NAME): string
+    {
+        if (!in_array($tab, static::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
         return $this->buildListingUri([
             'details' => json_encode([
                 'parentType' => ResourceEntity::TYPE_HOST,
                 'parentId' => $hostId,
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
-                'tab' => static::TAB_DETAILS_NAME,
+                'tab' => $tab,
             ]),
         ]);
     }
@@ -639,11 +685,11 @@ class MonitoringResourceController extends AbstractController
      * Build uri to access listing page of resources with specific parameters
      *
      * @param array $parameters
-     * @return void
+     * @return string
      */
-    public function buildListingUri(array $parameters)
+    public function buildListingUri(array $parameters): string
     {
-        $baseListingUri = $this->getBaseUri() . static::RESOURCE_LISTING_URI;
+        $baseListingUri = $this->getBaseUri() . self::RESOURCE_LISTING_URI;
 
         if (!empty($parameters)) {
             $baseListingUri .= '?' . http_build_query($parameters);
