@@ -4017,6 +4017,13 @@ msgstr "Effets d'animation"
 msgid "Default page"
 msgstr "Page par défaut"
 
+#: centreon-web/www/include/monitoring/status/Services/service.php:219
+#: centreon-web/www/include/monitoring/status/Hosts/host.php:189
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:838
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:719
+msgid "[Page deprecated] Please use the new page: "
+msgstr "[Page dépréciée] Utilisez la nouvelle page: "
+
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:138
 msgid "Show Up status"
 msgstr "Visualiser les statuts Up"
