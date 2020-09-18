@@ -52,43 +52,43 @@ describe(HostMenu, () => {
     });
 
     fireEvent.click(getByText('3'));
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}],%22statuses%22:[{%22id%22:%22DOWN%22}],%22states%22:[{%22id%22:%22unhanlded_problems%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"DOWN"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('2'));
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}],%22statuses%22:[{%22id%22:%22UNREACHABLE%22}],%22states%22:[{%22id%22:%22unhanlded_problems%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UNREACHABLE"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getAllByText('1')[0]);
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}],%22statuses%22:[{%22id%22:%22UP%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UP"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('All'));
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Down'));
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}],%22statuses%22:[{%22id%22:%22DOWN%22}],%22states%22:[{%22id%22:%22unhanlded_problems%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"DOWN"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Unreachable'));
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}],%22statuses%22:[{%22id%22:%22UNREACHABLE%22}],%22states%22:[{%22id%22:%22unhanlded_problems%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UNREACHABLE"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
     );
     fireEvent.click(getByText('Up'));
 
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}],%22statuses%22:[{%22id%22:%22UP%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UP"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Pending'));
-    expect(window.location.href).toBe(
-      'http://localhost/monitoring/resources?filter={%22criterias%22:{%22resourceTypes%22:[{%22id%22:%22host%22}],%22statuses%22:[{%22id%22:%22PENDING%22}]}}&fromTopCounter=true',
+    expect(decodeURI(window.location.href)).toBe(
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"PENDING"}]}}&fromTopCounter=true',
     );
   });
 });
