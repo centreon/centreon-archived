@@ -222,13 +222,15 @@ function castTemplateValue(array $configVariables): array
 function setConfigOptionsFromTemplate(array $options, string $helpMessage): array
 {
     $configOptions = [];
-    if (!isset(
-        $options['API_USERNAME'],
-        $options['API_PASSWORD'],
-        $options['SERVER_TYPE'],
-        $options['HOST_ADDRESS'],
-        $options['SERVER_NAME']
-    )) {
+    if (
+        !isset(
+            $options['API_USERNAME'],
+            $options['API_PASSWORD'],
+            $options['SERVER_TYPE'],
+            $options['HOST_ADDRESS'],
+            $options['SERVER_NAME']
+        )
+    ) {
         throw new \InvalidArgumentException(
             PHP_EOL .
             'missing value: API_USERNAME, API_PASSWORD, SERVER_TYPE, HOST_ADDRESS and SERVER_NAME are mandatories'
