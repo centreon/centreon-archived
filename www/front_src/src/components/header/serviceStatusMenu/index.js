@@ -37,6 +37,7 @@ import {
   unknownCriterias,
   okCriterias,
   pendingCriterias,
+  unhandledStateCriterias,
 } from '../getResourcesUrl';
 
 const numberFormat = yup.number().required().integer();
@@ -156,7 +157,10 @@ class ServiceStatusMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl(criticalCriterias)}
+            to={getServiceResourcesUrl({
+              statusCriterias: criticalCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -172,7 +176,10 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl(warningCriterias)}
+            to={getServiceResourcesUrl({
+              statusCriterias: warningCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -188,7 +195,10 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl(unknownCriterias)}
+            to={getServiceResourcesUrl({
+              statusCriterias: unknownCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -204,7 +214,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl(okCriterias)}
+            to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -237,7 +247,10 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl(criticalCriterias)}
+                to={getServiceResourcesUrl({
+                  statusCriterias: criticalCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -250,7 +263,10 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl(warningCriterias)}
+                to={getServiceResourcesUrl({
+                  statusCriterias: warningCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -263,7 +279,10 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl(unknownCriterias)}
+                to={getServiceResourcesUrl({
+                  statusCriterias: unknownCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -276,7 +295,7 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl(okCriterias)}
+                to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -287,7 +306,9 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl(pendingCriterias)}
+                to={getServiceResourcesUrl({
+                  statusCriterias: pendingCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >

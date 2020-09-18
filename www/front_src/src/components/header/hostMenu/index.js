@@ -36,6 +36,7 @@ import {
   unreachableCriterias,
   upCriterias,
   pendingCriterias,
+  unhandledStateCriterias,
 } from '../getResourcesUrl';
 
 const numberFormat = yup.number().required().integer();
@@ -151,7 +152,10 @@ class HostMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getHostResourcesUrl(downCriterias)}
+            to={getHostResourcesUrl({
+              statusCriterias: downCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
@@ -165,7 +169,10 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getHostResourcesUrl(unreachableCriterias)}
+            to={getHostResourcesUrl({
+              statusCriterias: unreachableCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -181,7 +188,9 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getHostResourcesUrl(upCriterias)}
+            to={getHostResourcesUrl({
+              statusCriterias: upCriterias,
+            })}
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -214,7 +223,10 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getHostResourcesUrl(downCriterias)}
+                to={getHostResourcesUrl({
+                  statusCriterias: downCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -227,7 +239,10 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getHostResourcesUrl(unreachableCriterias)}
+                to={getHostResourcesUrl({
+                  statusCriterias: unreachableCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -240,7 +255,9 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getHostResourcesUrl(upCriterias)}
+                to={getHostResourcesUrl({
+                  statusCriterias: upCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -251,7 +268,9 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to={getHostResourcesUrl(pendingCriterias)}
+                to={getHostResourcesUrl({
+                  statusCriterias: pendingCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
