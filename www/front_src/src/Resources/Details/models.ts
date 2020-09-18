@@ -8,6 +8,7 @@ import {
 } from '../models';
 
 export interface ResourceDetails {
+  id: number;
   name: string;
   status: Status;
   parent: Parent;
@@ -33,6 +34,7 @@ export interface ResourceDetails {
   notification_number: number;
   performance_data?: string;
   command_line?: string;
+  type: 'service' | 'host';
 }
 
 export interface DetailsUrlQueryParameters {

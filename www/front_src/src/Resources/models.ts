@@ -18,7 +18,6 @@ export interface Parent {
 
 export interface Status {
   severity_code: number;
-  code: number;
   name: string;
 }
 
