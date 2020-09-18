@@ -108,6 +108,7 @@ export const labelTips = 'Tips';
 export const labelGetRegexHelp =
   'get some help while creating your regular expression query at';
 export const labelService = 'Service';
+export const labelServices = 'Services';
 export const labelServiceGroup = 'Service group';
 export const labelStartTime = 'Start time';
 export const labelState = 'State';
