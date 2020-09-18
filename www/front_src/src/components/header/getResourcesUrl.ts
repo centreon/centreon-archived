@@ -23,7 +23,7 @@ const unknownCriterias = getStatusCriterias({ id: 'UNKNOWN' });
 const okCriterias = getStatusCriterias({ id: 'OK' });
 
 const unhandledStateCriterias = {
-  states: [{ id: 'unhanlded_problems' }],
+  states: [{ id: 'unhandled_problems' }],
 };
 
 const getResourcesUrl = ({

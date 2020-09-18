@@ -53,12 +53,12 @@ describe(HostMenu, () => {
 
     fireEvent.click(getByText('3'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"DOWN"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"DOWN"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('2'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UNREACHABLE"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UNREACHABLE"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getAllByText('1')[0]);
@@ -73,12 +73,12 @@ describe(HostMenu, () => {
 
     fireEvent.click(getByText('Down'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"DOWN"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"DOWN"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Unreachable'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UNREACHABLE"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"host"}],"statuses":[{"id":"UNREACHABLE"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
     fireEvent.click(getByText('Up'));
 

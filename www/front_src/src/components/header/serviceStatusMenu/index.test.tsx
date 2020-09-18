@@ -57,17 +57,17 @@ describe(ServiceMenu, () => {
 
     fireEvent.click(getByText('4'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"CRITICAL"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"CRITICAL"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('3'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"WARNING"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"WARNING"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('2'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"UNKNOWN"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"UNKNOWN"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getAllByText('1')[0]);
@@ -82,17 +82,17 @@ describe(ServiceMenu, () => {
 
     fireEvent.click(getByText('Critical'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"CRITICAL"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"CRITICAL"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Warning'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"WARNING"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"WARNING"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Unknown'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"UNKNOWN"}],"states":[{"id":"unhanlded_problems"}]}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"UNKNOWN"}],"states":[{"id":"unhandled_problems"}]}}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Ok'));
