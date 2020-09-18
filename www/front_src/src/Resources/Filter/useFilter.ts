@@ -201,6 +201,7 @@ const useFilter = (): FilterState => {
     setFilter(getDefaultFilter());
     setResourceTypes(criterias.resourceTypes);
     setStatuses(criterias.statuses);
+    setStates(criterias.states || []);
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {
