@@ -49,7 +49,7 @@ class PlatformTopology
     ];
 
     /**
-     * @var int Id of server
+     * @var int|null Id of server
      */
     private $id;
 
@@ -96,12 +96,6 @@ class PlatformTopology
 
     /**
      * data recovered from 'informations' table
-     * @var string|null platform type
-     */
-    private $isCentral;
-
-    /**
-     * data recovered from 'informations' table
      * @var string|null central's address
      */
     private $authorizedMaster;
@@ -118,7 +112,6 @@ class PlatformTopology
      */
     private $apiCredentials;
 
-
     /**
      * @return string|null
      */
@@ -134,24 +127,6 @@ class PlatformTopology
     public function setIsRemote(string $type): self
     {
         $this->isRemote = $type;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getIsCentral(): ?string
-    {
-        return $this->isCentral;
-    }
-
-    /**
-     * @param string $type
-     * @return $this
-     */
-    public function setIsCentral(string $type): self
-    {
-        $this->isCentral = $type;
         return $this;
     }
 
@@ -203,6 +178,7 @@ class PlatformTopology
      * @param string $encryptedKey
      * @return $this
      * @throws PlatformTopologyException
+     * @throws InvalidArgumentException
      */
     public function setApiCredentials(string $encryptedKey): self
     {
@@ -219,9 +195,10 @@ class PlatformTopology
     public function decryptApiCredentials(string $encryptedKey): string
     {
         // first key
-        require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
-        if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
-            $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
+        $path = __DIR__ . "/../../../../";
+        require_once $path . "/src/Security/Encryption.php";
+        if (file_exists($path . '/.env.local.php')) {
+            $localEnv = @include $path . '/.env.local.php';
         }
 
         // second key
@@ -311,12 +288,12 @@ class PlatformTopology
     }
 
     /**
-     * @param string|null $type server type: central, poller, remote, map or mbi
+     * @param string $type server type: central, poller, remote, map or mbi
      *
      * @return $this
      * @throws InvalidArgumentException
      */
-    public function setType(?string $type): self
+    public function setType(string $type): self
     {
         $type = strtolower($type);
 

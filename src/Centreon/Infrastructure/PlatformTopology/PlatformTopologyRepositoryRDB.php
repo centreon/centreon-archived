@@ -189,15 +189,15 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             }
 
             if (!empty($result)) {
-                /**
-                 * @var PlatformTopology $platformTopology
-                 */
-                $platformTopology = EntityCreator::createEntityByArray(
-                    PlatformTopology::class,
-                    $result
-                );
+                $platformTopology = new PlatformTopology();
+                $platformTopology
+                    ->setIsRemote($result['isRemote'])
+                    ->setApiCredentials($result['apiCredentials'])
+                    ->setApiUsername($result['apiUsername'])
+                    ->setAuthorizedMaster($result['authorizedMaster']);
             }
         }
+
         return $platformTopology;
     }
 }

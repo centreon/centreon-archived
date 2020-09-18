@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 
 interface PlatformTopologyRepositoryInterface
 {
@@ -73,6 +74,7 @@ interface PlatformTopologyRepositoryInterface
      * Retrieve all data from 'information' table
      *
      * @return PlatformTopology|null
+     * @throws PlatformTopologyException
      */
     public function findPlatformInformation(): ?PlatformTopology;
 }
