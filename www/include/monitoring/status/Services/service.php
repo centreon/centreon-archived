@@ -504,7 +504,7 @@ $tpl->display("service.ihtml");
             const url = "<?php echo $redirectionUrl; ?>";
             const message = "<?php echo $deprecationMessage; ?>";
             jQuery('.pathway').append(
-                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message +
                 '<a style="position:relative" href="' + url + '" isreact="isreact">Resource Status</a></span>'
             );
     }
