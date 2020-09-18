@@ -4,7 +4,7 @@ import { map, pick } from 'ramda';
 import { resourcesEndpoint } from '../../../../api/endpoint';
 import { Resource } from '../../../../models';
 
-const disacknowledgeEndpoint = `${resourcesEndpoint}/disacknowledge`;
+const disacknowledgeEndpoint = `${resourcesEndpoint}/acknowledgements`;
 
 interface ResourcesWithDisacknowledgeParams {
   resources: Array<Resource>;
@@ -15,16 +15,15 @@ const disacknowledgeResources = (cancelToken: CancelToken) => ({
   resources,
   disacknowledgeAttachedResources,
 }: ResourcesWithDisacknowledgeParams): Promise<Array<AxiosResponse>> => {
-  return axios.post(
-    disacknowledgeEndpoint,
-    {
+  return axios.delete(disacknowledgeEndpoint, {
+    cancelToken,
+    data: {
       resources: map(pick(['type', 'id', 'parent']), resources),
       disacknowledgement: {
         with_services: disacknowledgeAttachedResources,
       },
     },
-    { cancelToken },
-  );
+  });
 };
 
 export { disacknowledgeResources, disacknowledgeEndpoint };

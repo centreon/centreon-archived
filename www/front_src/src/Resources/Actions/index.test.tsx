@@ -283,22 +283,21 @@ describe(Actions, () => {
 
     fireEvent.click(getByText(labelDisacknowledge));
 
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.delete.mockResolvedValueOnce({});
 
     fireEvent.click(last(getAllByText(labelDisacknowledge)) as HTMLElement);
 
     await waitFor(() =>
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        disacknowledgeEndpoint,
-        {
+      expect(mockedAxios.delete).toHaveBeenCalledWith(disacknowledgeEndpoint, {
+        cancelToken: expect.anything(),
+        data: {
           resources: selectedResources,
 
           disacknowledgement: {
             with_services: true,
           },
         },
-        cancelTokenRequestParam,
-      ),
+      }),
     );
   });
 
