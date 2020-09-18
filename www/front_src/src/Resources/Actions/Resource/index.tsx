@@ -29,6 +29,7 @@ import { checkResources } from '../api';
 import { Resource } from '../../models';
 import ActionButton from '../ActionButton';
 import DisacknowledgeForm from './Disacknowledge';
+import SubmitStatusForm from './SubmitStatus';
 
 const ContainedActionButton = (props: ButtonProps): JSX.Element => (
   <ActionButton variant="contained" {...props} />
@@ -142,6 +143,10 @@ const ResourceActions = (): JSX.Element => {
     setresourceToSubmitStatus(selectedResource);
   };
 
+  const cancelSubmitStatus = (): void => {
+    setresourceToSubmitStatus(null);
+  };
+
   const openMoreActionsMenu = (event: React.MouseEvent): void => {
     setMoreActionsMenuAnchor(event.currentTarget);
   };
@@ -228,6 +233,13 @@ const ResourceActions = (): JSX.Element => {
         <DisacknowledgeForm
           resources={resourcesToDisacknowledge}
           onClose={cancelDisacknowledge}
+          onSuccess={confirmAction}
+        />
+      )}
+      {resourceToSubmitStatus && (
+        <SubmitStatusForm
+          resource={resourceToSubmitStatus}
+          onClose={cancelSubmitStatus}
           onSuccess={confirmAction}
         />
       )}
