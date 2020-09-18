@@ -19,6 +19,7 @@ import {
   labelCheckCommandSent,
   labelMoreActions,
   labelDisacknowledge,
+  labelSubmitStatus,
 } from '../../translatedLabels';
 import AcknowledgeForm from './Acknowledge';
 import DowntimeForm from './Downtime';
@@ -43,8 +44,8 @@ const ResourceActions = (): JSX.Element => {
   ] = React.useState<Element | null>(null);
 
   const [
-    resourceToSubmitResult,
-    setResourceToSubmitResult,
+    resourceToSubmitStatus,
+    setresourceToSubmitStatus,
   ] = React.useState<Resource | null>();
 
   const {
@@ -79,7 +80,7 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToAcknowledge([]);
     setResourcesToSetDowntime([]);
     setResourcesToCheck([]);
-    setResourceToSubmitResult(null);
+    setresourceToSubmitStatus(null);
     setResourcesToDisacknowledge([]);
   };
 
@@ -132,6 +133,13 @@ const ResourceActions = (): JSX.Element => {
 
   const cancelDisacknowledge = (): void => {
     setResourcesToDisacknowledge([]);
+  };
+
+  const prepareToSubmitStatus = (): void => {
+    closeMoreActionsMenu();
+    const [selectedResource] = selectedResources;
+
+    setresourceToSubmitStatus(selectedResource);
   };
 
   const openMoreActionsMenu = (event: React.MouseEvent): void => {
@@ -193,6 +201,12 @@ const ResourceActions = (): JSX.Element => {
             onClick={prepareToDisacknowledge}
           >
             {t(labelDisacknowledge)}
+          </MenuItem>
+          <MenuItem
+            disabled={selectedResources.length !== 1}
+            onClick={prepareToSubmitStatus}
+          >
+            {t(labelSubmitStatus)}
           </MenuItem>
         </Menu>
       </Grid>
