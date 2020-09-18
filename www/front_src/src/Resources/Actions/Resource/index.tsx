@@ -22,6 +22,7 @@ import DowntimeForm from './Downtime';
 import { useResourceContext } from '../../Context';
 import useAclQuery from './aclQuery';
 import { checkResources } from '../api';
+import { Resource } from '../../models';
 
 const ActionButton = (props: ButtonProps): JSX.Element => (
   <Button variant="contained" color="primary" size="small" {...props} />
@@ -31,6 +32,11 @@ const ResourceActions = (): JSX.Element => {
   const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
+
+  const [
+    resourceToSubmitResult,
+    setResourceToSubmitResult,
+  ] = React.useState<Resource | null>();
 
   const {
     resourcesToCheck,
@@ -57,6 +63,7 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToAcknowledge([]);
     setResourcesToSetDowntime([]);
     setResourcesToCheck([]);
+    setResourceToSubmitResult(null);
   };
 
   React.useEffect(() => {
