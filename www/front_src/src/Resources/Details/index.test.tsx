@@ -297,7 +297,7 @@ const renderDetails = (
   { openTabId }: RenderDetailsProps = { openTabId: undefined },
 ): RenderResult => render(<DetailsTest openTabId={openTabId} />);
 
-describe.only(Details, () => {
+describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
   });
@@ -761,7 +761,7 @@ describe.only(Details, () => {
     });
   });
 
-  it.only('displays the linked services when the services tab of a host is clicked', async () => {
+  it('displays the linked services when the services tab of a host is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
