@@ -49,6 +49,7 @@ export interface Resource {
   configuration_uri?: string;
   logs_uri?: string;
   reporting_uri?: string;
+  passive_checks: boolean;
 }
 
 export type ResourceListing = ListingModel<Resource>;

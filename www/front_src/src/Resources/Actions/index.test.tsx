@@ -4,7 +4,7 @@ import formatISO from 'date-fns/formatISO';
 import mockDate from 'mockdate';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { last } from 'ramda';
+import { last, pick } from 'ramda';
 
 import {
   render,
@@ -14,6 +14,7 @@ import {
   act,
 } from '@testing-library/react';
 
+import userEvent from '@testing-library/user-event';
 import {
   labelAcknowledgedBy,
   labelDowntimeBy,
@@ -33,6 +34,17 @@ import {
   labelMoreActions,
   labelDisacknowledge,
   labelDisacknowledgeServices,
+  labelSubmitStatus,
+  labelUp,
+  labelUnreachable,
+  labelDown,
+  labelOutput,
+  labelPerformanceData,
+  labelSubmit,
+  labelOk,
+  labelWarning,
+  labelCritical,
+  labelUnknown,
 } from '../translatedLabels';
 import Actions from '.';
 import useLoadResources from '../Listing/useLoadResources';
@@ -50,6 +62,7 @@ import {
 } from './api/endpoint';
 import useDetails from '../Details/useDetails';
 import { disacknowledgeEndpoint } from './Resource/Disacknowledge/api';
+import { submitStatusEndpoint } from './Resource/SubmitStatus/api';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -73,12 +86,14 @@ const mockUserContext = {
         acknowledgement: true,
         disacknowledgement: true,
         check: true,
+        submit_status: true,
       },
       host: {
         downtime: true,
         acknowledgement: true,
         disacknowledgement: true,
         check: true,
+        submit_status: true,
       },
     },
   },
@@ -95,6 +110,19 @@ const ActionsWithLoading = (): JSX.Element => {
 };
 
 let context: ResourceContext;
+
+const host = {
+  type: 'host',
+  id: 0,
+} as Resource;
+
+const service = {
+  id: 1,
+  type: 'service',
+  parent: {
+    id: 1,
+  },
+} as Resource;
 
 const ActionsWithContext = (): JSX.Element => {
   const detailsState = useDetails();
@@ -193,7 +221,7 @@ describe(Actions, () => {
     async (labelAction, labelComment, labelConfirmAction) => {
       const { getByText, getAllByText, findByText } = renderActions();
 
-      const selectedResources = [{ type: 'host' } as Resource];
+      const selectedResources = [host];
 
       act(() => {
         context.setSelectedResources(selectedResources);
@@ -227,12 +255,7 @@ describe(Actions, () => {
       getAllByText,
     } = renderActions();
 
-    const selectedResources = [
-      {
-        type: 'host',
-        id: 0,
-      } as Resource,
-    ];
+    const selectedResources = [host, service];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -270,12 +293,7 @@ describe(Actions, () => {
   it('sends aa discknowledgement request when Resources are selected and the Disackowledgement action is clicked and confirmed', async () => {
     const { getByText, getAllByText } = renderActions();
 
-    const selectedResources = [
-      {
-        type: 'host',
-        id: 0,
-      } as Resource,
-    ];
+    const selectedResources = [host];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -304,12 +322,7 @@ describe(Actions, () => {
   it('does not display the "Acknowledge services attached to host" checkbox when only services are selected and the Acknowledge action is clicked', async () => {
     const { getByText, findByText, queryByText } = renderActions();
 
-    const selectedResources = [
-      {
-        type: 'service',
-        id: 0,
-      } as Resource,
-    ];
+    const selectedResources = [service];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -325,12 +338,7 @@ describe(Actions, () => {
   it('does not display the "Discknowledge services attached to host" checkbox when only services are selected and the Disacknowledge action is clicked', async () => {
     const { getByText, queryByText } = renderActions();
 
-    const selectedResources = [
-      {
-        type: 'service',
-        id: 0,
-      } as Resource,
-    ];
+    const selectedResources = [service];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -351,7 +359,7 @@ describe(Actions, () => {
       getByDisplayValue,
     } = renderActions();
 
-    const selectedResources = [{ type: 'host' } as Resource];
+    const selectedResources = [host];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -381,7 +389,7 @@ describe(Actions, () => {
       findByText,
     } = renderActions();
 
-    const selectedResources = [{ type: 'host' } as Resource];
+    const selectedResources = [host];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -410,12 +418,7 @@ describe(Actions, () => {
   it('sends a downtime request when Resources are selected and the Downtime action is clicked and confirmed', async () => {
     const { findAllByText, getAllByText } = renderActions();
 
-    const selectedResources = [
-      {
-        id: 0,
-        type: 'host',
-      } as Resource,
-    ];
+    const selectedResources = [host];
 
     act(() => {
       context.setSelectedResources(selectedResources);
@@ -456,19 +459,6 @@ describe(Actions, () => {
   it('sends a check request when Resources are selected and the Check action is clicked', async () => {
     const { getByText } = renderActions();
 
-    const host = {
-      id: 0,
-      type: 'host',
-    } as Resource;
-
-    const service = {
-      id: 1,
-      type: 'service',
-      parent: {
-        id: 1,
-      },
-    } as Resource;
-
     const selectedResources = [host, service];
 
     act(() => {
@@ -492,6 +482,75 @@ describe(Actions, () => {
     });
   });
 
+  it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
+    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+
+    const { getByText, getByLabelText } = renderActions();
+
+    act(() => {
+      context.setSelectedResources([service]);
+    });
+
+    fireEvent.click(getByText(labelSubmitStatus));
+
+    userEvent.click(getByText(labelOk));
+
+    await waitFor(() => {
+      expect(getByText(labelWarning)).toBeInTheDocument();
+      expect(getByText(labelCritical)).toBeInTheDocument();
+      expect(getByText(labelUnknown)).toBeInTheDocument();
+    });
+
+    userEvent.click(getByText(labelWarning));
+
+    const output = 'output';
+    const performanceData = 'performance data';
+
+    fireEvent.change(getByLabelText(labelOutput), {
+      target: {
+        value: output,
+      },
+    });
+
+    fireEvent.change(getByLabelText(labelPerformanceData), {
+      target: {
+        value: performanceData,
+      },
+    });
+
+    fireEvent.click(getByText(labelSubmit));
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        submitStatusEndpoint,
+        {
+          resources: [
+            {
+              ...pick(['type', 'id', 'parent'], service),
+              status: 1,
+              output,
+              performance_data: performanceData,
+            },
+          ],
+        },
+        cancelTokenRequestParam,
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([host]);
+    });
+
+    fireEvent.click(getByText(labelSubmitStatus));
+
+    userEvent.click(getByText(labelUp));
+
+    await waitFor(() => {
+      expect(getByText(labelDown)).toBeInTheDocument();
+      expect(getByText(labelUnreachable)).toBeInTheDocument();
+    });
+  });
+
   it('cannot execute an action when associated ACL are not sufficient', async () => {
     mockedUserContext.useUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
@@ -502,28 +561,20 @@ describe(Actions, () => {
             check: false,
             acknowledgement: false,
             disacknowledgement: false,
+            submit_status: false,
           },
           host: {
             downtime: false,
             check: false,
             acknowledgement: false,
             disacknowledgement: false,
+            submit_status: false,
           },
         },
       },
     });
 
     const { getByText } = renderActions();
-
-    const host = {
-      id: 0,
-      type: 'host',
-    } as Resource;
-
-    const service = {
-      id: 1,
-      type: 'service',
-    } as Resource;
 
     const selectedResources = [host, service];
 
@@ -638,23 +689,13 @@ describe(Actions, () => {
     ],
   ])(
     'displays a warning message when trying to %p with limited ACL',
-    async (_, labelAction, labelWarning, acl) => {
+    async (_, labelAction, labelAclWarning, acl) => {
       mockedUserContext.useUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,
       });
 
       const { getByText } = renderActions();
-
-      const host = {
-        id: 0,
-        type: 'host',
-      } as Resource;
-
-      const service = {
-        id: 1,
-        type: 'service',
-      } as Resource;
 
       const selectedResources = [host, service];
 
@@ -665,7 +706,7 @@ describe(Actions, () => {
       fireEvent.click(getByText(labelAction));
 
       await waitFor(() => {
-        expect(getByText(labelWarning)).toBeInTheDocument();
+        expect(getByText(labelAclWarning)).toBeInTheDocument();
       });
     },
   );
@@ -699,13 +740,8 @@ describe(Actions, () => {
 
       const { getByText } = renderActions();
 
-      const selectedHost = {
-        id: 0,
-        type: 'host',
-      } as Resource;
-
       act(() => {
-        context.setSelectedResources([selectedHost]);
+        context.setSelectedResources([host]);
       });
 
       fireEvent.click(getByText(labelAction));
@@ -719,4 +755,54 @@ describe(Actions, () => {
       });
     },
   );
+
+  it('disables the submit status action when ACL are not sufficient or when more than one resource is selected', async () => {
+    const { getByText } = renderActions();
+
+    mockedUserContext.useUserContext.mockReset().mockReturnValue({
+      ...mockUserContext,
+      acl: {
+        actions: {
+          ...mockUserContext.acl.actions,
+          host: {
+            ...mockUserContext.acl.actions.host,
+            submit_status: false,
+          },
+        },
+      },
+    });
+
+    act(() => {
+      context.setSelectedResources([host, service]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelSubmitStatus)).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([host]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelSubmitStatus)).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([service]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelSubmitStatus)).toHaveAttribute(
+        'aria-disabled',
+        'false',
+      );
+    });
+  });
 });

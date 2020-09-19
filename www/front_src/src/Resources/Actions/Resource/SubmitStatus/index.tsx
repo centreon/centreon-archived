@@ -134,6 +134,7 @@ const SubmitStatusForm = ({
             onChange={changeOutput}
             multiline
             label={t(labelOutput)}
+            ariaLabel={t(labelOutput)}
             fullWidth
             rows={3}
           />
@@ -144,6 +145,7 @@ const SubmitStatusForm = ({
             onChange={changePerformanceData}
             multiline
             label={t(labelPerformanceData)}
+            ariaLabel={t(labelPerformanceData)}
             fullWidth
             rows={3}
           />

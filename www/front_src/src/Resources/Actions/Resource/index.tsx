@@ -72,6 +72,7 @@ const ResourceActions = (): JSX.Element => {
     canDowntime,
     canCheck,
     canDisacknowledge,
+    canSubmitStatus,
   } = useAclQuery();
 
   const hasResourcesToCheck = resourcesToCheck.length > 0;
@@ -161,6 +162,8 @@ const ResourceActions = (): JSX.Element => {
   const disableDowntime = getDisableAction(canDowntime);
   const disableCheck = getDisableAction(canCheck);
   const disableDisacknowledge = getDisableAction(canDisacknowledge);
+  const disableSubmitStatus =
+    selectedResources.length !== 1 || getDisableAction(canSubmitStatus);
 
   return (
     <Grid container spacing={1}>
@@ -208,7 +211,7 @@ const ResourceActions = (): JSX.Element => {
             {t(labelDisacknowledge)}
           </MenuItem>
           <MenuItem
-            disabled={selectedResources.length !== 1}
+            disabled={disableSubmitStatus}
             onClick={prepareToSubmitStatus}
           >
             {t(labelSubmitStatus)}
