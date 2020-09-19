@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty } from 'ramda';
+import { isEmpty, head } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
@@ -163,7 +163,9 @@ const ResourceActions = (): JSX.Element => {
   const disableCheck = getDisableAction(canCheck);
   const disableDisacknowledge = getDisableAction(canDisacknowledge);
   const disableSubmitStatus =
-    selectedResources.length !== 1 || getDisableAction(canSubmitStatus);
+    selectedResources.length !== 1 ||
+    getDisableAction(canSubmitStatus) ||
+    !head(selectedResources)?.passive_checks;
 
   return (
     <Grid container spacing={1}>
