@@ -15054,3 +15054,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Resource link copied to the clipboard"
 #  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""
