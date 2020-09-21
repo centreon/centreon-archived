@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty, head } from 'ramda';
+import { head, isEmpty, anyPass, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
@@ -152,17 +152,14 @@ const ResourceActions = (): JSX.Element => {
     setMoreActionsMenuAnchor(event.currentTarget);
   };
 
-  const getDisableAction = (canAction): boolean => {
-    return !canAction(selectedResources);
-  };
+  const disableAcknowledge = !canAcknowledge(selectedResources);
+  const disableDowntime = !canDowntime(selectedResources);
+  const disableCheck = !canCheck(selectedResources);
+  const disableDisacknowledge = !canDisacknowledge(selectedResources);
 
-  const disableAcknowledge = getDisableAction(canAcknowledge);
-  const disableDowntime = getDisableAction(canDowntime);
-  const disableCheck = getDisableAction(canCheck);
-  const disableDisacknowledge = getDisableAction(canDisacknowledge);
   const disableSubmitStatus =
     selectedResources.length !== 1 ||
-    getDisableAction(canSubmitStatus) ||
+    !canSubmitStatus(selectedResources) ||
     !head(selectedResources)?.passive_checks;
 
   return (

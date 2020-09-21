@@ -4,7 +4,7 @@ import formatISO from 'date-fns/formatISO';
 import mockDate from 'mockdate';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { last, pick } from 'ramda';
+import { last, pick, map } from 'ramda';
 
 import {
   render,
@@ -114,6 +114,7 @@ let context: ResourceContext;
 const host = {
   type: 'host',
   id: 0,
+  passive_checks: true,
 } as Resource;
 
 const service = {
@@ -122,6 +123,7 @@ const service = {
   parent: {
     id: 1,
   },
+  passive_checks: true,
 } as Resource;
 
 const ActionsWithContext = (): JSX.Element => {
@@ -277,7 +279,7 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         acknowledgeEndpoint,
         {
-          resources: selectedResources,
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
 
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
@@ -290,7 +292,7 @@ describe(Actions, () => {
     );
   });
 
-  it('sends aa discknowledgement request when Resources are selected and the Disackowledgement action is clicked and confirmed', async () => {
+  it('sends a discknowledgement request when Resources are selected and the Disackowledgement action is clicked and confirmed', async () => {
     const { getByText, getAllByText } = renderActions();
 
     const selectedResources = [host];
@@ -309,7 +311,7 @@ describe(Actions, () => {
       expect(mockedAxios.delete).toHaveBeenCalledWith(disacknowledgeEndpoint, {
         cancelToken: expect.anything(),
         data: {
-          resources: selectedResources,
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
 
           disacknowledgement: {
             with_services: true,
@@ -441,7 +443,7 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         downtimeEndpoint,
         {
-          resources: selectedResources,
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
           downtime: {
             comment: labelDowntimeByAdmin,
             duration: 3600,
@@ -475,7 +477,7 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         checkEndpoint,
         {
-          resources: selectedResources,
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
         cancelTokenRequestParam,
       );
@@ -756,7 +758,7 @@ describe(Actions, () => {
     },
   );
 
-  it('disables the submit status action when ACL are not sufficient or when more than one resource is selected', async () => {
+  it('disables the submit status action when one of the following condition is met: ACL are not sufficient, more than one resource is selected, selected resource is not passive', async () => {
     const { getByText } = renderActions();
 
     mockedUserContext.useUserContext.mockReset().mockReturnValue({
@@ -802,6 +804,17 @@ describe(Actions, () => {
       expect(getByText(labelSubmitStatus)).toHaveAttribute(
         'aria-disabled',
         'false',
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([{ ...service, passive_checks: false }]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelSubmitStatus)).toHaveAttribute(
+        'aria-disabled',
+        'true',
       );
     });
   });
