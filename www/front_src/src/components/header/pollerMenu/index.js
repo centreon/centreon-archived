@@ -20,9 +20,9 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
-import axios from '../../axios';
-import styles from '../header/header.scss';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import axios from '../../../axios';
+import styles from '../header.scss';
+import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 

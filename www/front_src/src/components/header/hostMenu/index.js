@@ -28,8 +28,16 @@ import {
   SubmenuItems,
 } from '@centreon/ui';
 
-import styles from '../header/header.scss';
-import axios from '../../axios';
+import styles from '../header.scss';
+import axios from '../../../axios';
+import {
+  getHostResourcesUrl,
+  downCriterias,
+  unreachableCriterias,
+  upCriterias,
+  pendingCriterias,
+  unhandledStateCriterias,
+} from '../getResourcesUrl';
 
 const numberFormat = yup.number().required().integer();
 
@@ -144,7 +152,10 @@ class HostMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_down&search="
+            to={getHostResourcesUrl({
+              statusCriterias: downCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
@@ -158,7 +169,10 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_unreachable&search="
+            to={getHostResourcesUrl({
+              statusCriterias: unreachableCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -174,7 +188,9 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_up&search="
+            to={getHostResourcesUrl({
+              statusCriterias: upCriterias,
+            })}
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -197,7 +213,7 @@ class HostMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to="/main.php?p=20202&o=h&search="
+                to={getHostResourcesUrl()}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -207,7 +223,10 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_down&search="
+                to={getHostResourcesUrl({
+                  statusCriterias: downCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -220,7 +239,10 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_unreachable&search="
+                to={getHostResourcesUrl({
+                  statusCriterias: unreachableCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -233,7 +255,9 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_up&search="
+                to={getHostResourcesUrl({
+                  statusCriterias: upCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -244,7 +268,9 @@ class HostMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_pending&search="
+                to={getHostResourcesUrl({
+                  statusCriterias: pendingCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >

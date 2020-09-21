@@ -65,7 +65,7 @@ const useFilter = (): FilterState => {
   });
 
   const { unhandledProblemsFilter, allFilter, newFilter } = useFilterModels();
-  const { toFilter } = useAdapters();
+  const { toFilter, toFilterWithTranslatedCriterias } = useAdapters();
 
   const getDefaultFilter = (): Filter => {
     const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
@@ -76,6 +76,7 @@ const useFilter = (): FilterState => {
       return pipe(
         mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
         mergeDeepRight(allFilter) as (t) => Filter,
+        toFilterWithTranslatedCriterias,
       )(newFilter) as Filter;
     }
 
@@ -182,6 +183,26 @@ const useFilter = (): FilterState => {
     hostGroups,
     serviceGroups,
   ]);
+
+  React.useEffect(() => {
+    if (!getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
+    const { criterias } = getDefaultFilter();
+
+    setUrlQueryParameters([
+      {
+        name: 'fromTopCounter',
+        value: false,
+      },
+    ]);
+
+    setFilter(getDefaultFilter());
+    setResourceTypes(criterias.resourceTypes);
+    setStatuses(criterias.statuses);
+    setStates(criterias.states || []);
+  }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {
     clearCachedFilter();

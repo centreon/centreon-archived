@@ -4,9 +4,9 @@
 
 import React, { Component } from 'react';
 import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range'; // minimize bundle size (905KB -> 33KB)
-import axios from '../../axios';
+import axios from '../../../axios';
 
-import styles from '../header/header.scss';
+import styles from '../header.scss';
 
 const instantiateDate = (tz, locale, timestamp) => {
   const currentTime =
