@@ -50,7 +50,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A Central : 'Central'@'1.1.1.10' is already registered"}
+            {"code":409,"message":"A 'central' : 'Central'@'1.1.1.10' is already registered"}
             """
 
         # Register a Central linked to another Central
@@ -71,22 +71,6 @@ Feature:
             """
 
         # Check data consistency
-        # Register a platform using harmful name / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
-            """
-            {
-                "name": "harmful name",
-                "type": "<img src='jav	ascript:alert(666);'>",
-                "address": "1.1.1.666",
-                "parent_address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "409"
-        And the response should be equal to:
-            """
-            {"code":409,"message":"The name of the platform is not consistent"}
-            """
-
         # Register a platform using not allowed type / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
             """
