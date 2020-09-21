@@ -28,8 +28,17 @@ import {
   SubmenuItems,
 } from '@centreon/ui';
 
-import styles from '../header/header.scss';
-import axios from '../../axios';
+import styles from '../header.scss';
+import axios from '../../../axios';
+import {
+  getServiceResourcesUrl,
+  criticalCriterias,
+  warningCriterias,
+  unknownCriterias,
+  okCriterias,
+  pendingCriterias,
+  unhandledStateCriterias,
+} from '../getResourcesUrl';
 
 const numberFormat = yup.number().required().integer();
 
@@ -148,7 +157,10 @@ class ServiceStatusMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
+            to={getServiceResourcesUrl({
+              statusCriterias: criticalCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -164,7 +176,10 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
+            to={getServiceResourcesUrl({
+              statusCriterias: warningCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -180,7 +195,10 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
+            to={getServiceResourcesUrl({
+              statusCriterias: unknownCriterias,
+              stateCriterias: unhandledStateCriterias,
+            })}
           >
             <IconNumber
               iconType={`${
@@ -196,7 +214,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20201&o=svc&statusFilter=ok&search="
+            to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -219,7 +237,7 @@ class ServiceStatusMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=&search="
+                to={getServiceResourcesUrl()}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -229,7 +247,10 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
+                to={getServiceResourcesUrl({
+                  statusCriterias: criticalCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -242,7 +263,10 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
+                to={getServiceResourcesUrl({
+                  statusCriterias: warningCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -255,7 +279,10 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
+                to={getServiceResourcesUrl({
+                  statusCriterias: unknownCriterias,
+                  stateCriterias: unhandledStateCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -268,7 +295,7 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=ok&search="
+                to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
                 className={styles.link}
                 onClick={this.toggle}
               >
@@ -279,7 +306,9 @@ class ServiceStatusMenu extends Component {
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=pending&search="
+                to={getServiceResourcesUrl({
+                  statusCriterias: pendingCriterias,
+                })}
                 className={styles.link}
                 onClick={this.toggle}
               >

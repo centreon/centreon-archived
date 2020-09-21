@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, or, and, not, isEmpty } from 'ramda';
+import { equals, or, and, not, isEmpty, omit } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -110,7 +110,7 @@ const SaveFilterMenu = (): JSX.Element => {
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
       id: updatedFilter.id,
-      rawFilter: toRawFilter(updatedFilter),
+      rawFilter: omit(['id'], toRawFilter(updatedFilter)),
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
