@@ -143,6 +143,28 @@ class PlatformTopologyControllerTest extends TestCase
     }
 
     /**
+     * test addPlatformToTopology with bad request
+     */
+    public function testAddPlatformToTopologyBadRequest()
+    {
+        $this->request->expects($this->any())
+            ->method('getContent')
+            ->willReturn($this->goodJsonPlatformTopology);
+
+        $this->platformTopologyService->expects($this->any())
+            ->method('addPlatformToTopology')
+            ->will($this->throwException(new PlatformTopologyException('bad request')));
+
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
+        $platformTopologyController->setContainer($this->container);
+
+        $this->expectException(PlatformTopologyException::class);
+        $this->expectExceptionMessage('bad request');
+        $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
+        $platformTopologyController->addPlatformToTopology($this->request);
+    }
+
+    /**
      * test addPlatformToTopology which succeed
      */
     public function testAddPlatformToTopologySuccess()
