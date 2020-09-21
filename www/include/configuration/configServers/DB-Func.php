@@ -953,7 +953,6 @@ function updateServer(int $id, array $data): void
         $stmt->bindValue($key, $value);
     }
     $stmt->execute();
-    var_dump($retValue);
     try {
         updateServerIntoPlatformTopology($retValue, $id);
     } catch (\Exception $e) {
