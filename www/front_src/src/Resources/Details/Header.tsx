@@ -76,7 +76,7 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       <Grid item>
         <StatusChip
           severityCode={details.status.severity_code}
-          label={details.status.name}
+          label={t(details.status.name)}
         />
       </Grid>
       <Grid item style={{ flexGrow: 1 }}>

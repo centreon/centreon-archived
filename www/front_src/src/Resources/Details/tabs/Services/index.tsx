@@ -1,10 +1,13 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+import { Skeleton } from '@material-ui/lab';
+import { useTranslation } from 'react-i18next';
+
 import { makeStyles, Paper, Typography } from '@material-ui/core';
 
 import { useRequest, StatusChip } from '@centreon/ui';
-import { isNil } from 'ramda';
-import { Skeleton } from '@material-ui/lab';
+
 import { TabProps } from '..';
 import { listServices } from './api';
 import { listServicesDecoder } from './api/decoders';
@@ -55,6 +58,7 @@ const LoadingSkeleton = (): JSX.Element => {
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const {
     setSelectedResourceId,
@@ -96,7 +100,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
           return (
             <Paper key={id} className={classes.service}>
               <StatusChip
-                label={status.name}
+                label={t(status.name)}
                 severityCode={status.severity_code}
               />
               <div className={classes.description}>
