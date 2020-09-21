@@ -119,7 +119,7 @@ function getChildren(CentreonDB $db): array
     // get local server address
     $localStmt = $db->query("SELECT `address` FROM platform_topology WHERE `type` = 'remote'");
     $parentAddress = $localStmt->fetchColumn();
-    $localStmt = $db->query("SELECT `name`,`type`,`address`, FROM platform_topology WHERE `type` != 'remote'");
+    $localStmt = $db->query("SELECT `name`,`type`,`address` FROM platform_topology WHERE `type` != 'remote'");
     while ($row = $localStmt->fetch()) {
         $row['parent_address'] = $parentAddress;
         $registerChildren[] = $row;
