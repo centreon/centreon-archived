@@ -335,7 +335,6 @@ if (!empty($port)) {
     $registerUrl .= ':' . $port;
 }
 $registerUrl .= "/api/latest/platform/topology";
-$result = [];
 foreach ($registerPayloads as $postData) {
     $registerPayload = json_encode($postData);
     try {
