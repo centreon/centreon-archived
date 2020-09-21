@@ -225,53 +225,64 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 /**
                  * DEBUG
                  */
+                /*
                 throw new PlatformTopologyException(
                     "DEBUG -> statusCode = " . $statusCode .
                     " # content = " . json_decode($statusContent, true)
                 );
+                */
 
 
             } catch (TransportExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Request to the Central's API failed : ") . $e->getMessage(), 0 , $e
+                    _("Request to the Central's API failed : ") . $e->getMessage(),
+                    0,
+                    $e
                 );
             } catch (ClientExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API getcontent thrown a client exception : ") . $e->getMessage(), 0 , $e
+                    _("Central's API getcontent thrown a client exception : ") . $e->getMessage(),
+                    0,
+                    $e
                 );
             } catch (RedirectionExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API getcontent thrown a redirection exception : ") . $e->getMessage(), 0 , $e
+                    _("Central's API getcontent thrown a redirection exception : ") . $e->getMessage(),
+                    0,
+                    $e
                 );
             } catch (ServerExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API getcontent thrown a server exception : ") . $e->getMessage(), 0 , $e
+                    _("Central's API getcontent thrown a server exception : ") . $e->getMessage(),
+                    0,
+                    $e
                 );
             } catch (DecodingExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Unable to convert Central's API response as array : ") . $e->getMessage(), 0 , $e
+                    _("Unable to convert Central's API response as array : ") . $e->getMessage(),
+                    0,
+                    $e
                 );
             } catch (\Exception $e) {
                 throw new PlatformTopologyException(
-                    _("Error from Central's register API : ") . $e->getMessage(), 0 , $e
+                    _("Error from Central's register API : ") . $e->getMessage(),
+                    0,
+                    $e
                 );
             }
-
-
-            //$request = $this->httpClient->
-
-            // WIP
-
-
         }
 
-        // TODO
-        // need to check the previous status code to be sure that the n-1 registered properly the platform
-        // then continue the current process
+        if (201 !== $statusCode && true === $platformTopology->isLinkedToAnotherServer()) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The platform : '%s'@'%s' cannot be added to the Central linked to this Remote"),
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
+            );
+        }
 
-
-
-
+        // Insert the platform into 'platform_topology' table
         try {
             // add the new platform
             $this->platformTopologyRepository->addPlatformToTopology($platformTopology);
