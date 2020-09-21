@@ -153,7 +153,7 @@ const StatusColumnOnHover = ({
   );
 };
 
-const StatusColumn = (actions) => ({
+const StatusColumn = ({ actions, t }) => ({
   row,
   isHovered,
 }: ColumnProps): JSX.Element => {
@@ -162,7 +162,7 @@ const StatusColumn = (actions) => ({
   ) : (
     <StatusChip
       style={{ width: 100, height: 20, margin: 2 }}
-      label={row.status.name}
+      label={t(row.status.name)}
       severityCode={row.status.severity_code}
     />
   );
@@ -222,7 +222,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     id: 'status',
     label: t(labelStatus),
     type: ColumnType.component,
-    Component: StatusColumn(actions),
+    Component: StatusColumn({ actions, t }),
     sortField: 'status_severity_code',
     clickable: true,
     width: 145,
