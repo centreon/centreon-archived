@@ -15054,3 +15054,12 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Resource link copied to the clipboard"
 #  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Submit"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""

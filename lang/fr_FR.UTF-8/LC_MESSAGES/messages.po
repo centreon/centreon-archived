@@ -15641,3 +15641,12 @@ msgstr "Désacquitter les services attachés aux hôtes"
 
 msgid "Disacknowledgement command sent"
 msgstr "Commande de désacquittement envoyée"
+
+msgid "Submit a status"
+msgstr "Soumettre un statut"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Status submitted"
+msgstr "Statut soumis"

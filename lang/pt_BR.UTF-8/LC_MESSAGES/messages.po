@@ -15053,3 +15053,12 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Disacknowledgement command sent"
 #  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Submit"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""

@@ -152,10 +152,8 @@ const ResourceActions = (): JSX.Element => {
     setMoreActionsMenuAnchor(event.currentTarget);
   };
 
-  const noResourcesSelected = isEmpty(selectedResources);
-
   const getDisableAction = (canAction): boolean => {
-    return noResourcesSelected || !canAction(selectedResources);
+    return !canAction(selectedResources);
   };
 
   const disableAcknowledge = getDisableAction(canAcknowledge);
