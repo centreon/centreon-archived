@@ -1135,10 +1135,13 @@ function insertServerIntoPlatformTopology(array $pollerInformations, int $poller
     /**
      * If no Parent, Poller isn't attached to any remote server or Central
      */
-    if ($parent) {
+    if (!empty($parent['id'])) {
         $parentId = (int) $parent['id'];
     } else {
-        throw new \Exception('Missing parent platform, check if your Remote or Central are working well');
+        throw new \Exception(
+            'Missing parent platform topology. Please register the parent first using the endpoint
+            or the available script. For more details check the documentation'
+        );
     }
 
     $statement = $pearDB->prepare("INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
@@ -1199,10 +1202,13 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
         /**
          * If no Parent, Poller isn't attached to any remote server or Central
          */
-        if ($parent) {
+        if (!empty($parent['id'])) {
             $parentId = (int) $parent['id'];
         } else {
-            throw new \Exception('Missing parent platform, check if your Remote or Central are working well');
+            throw new \Exception(
+                'Missing parent platform topology. Please register the parent first using the endpoint
+                or the available script. For more details check the documentation'
+            );
         }
     }
 
@@ -1217,8 +1223,8 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
      */
     if ($platform) {
         $statement = $pearDB->prepare("
-            UPDATE platform_topology
-            SET address = :address,
+            UPDATE platform_topology SET
+            address = :address,
             name = :name,
             type = :type,
             parent_id = :parent
@@ -1241,7 +1247,7 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
 
 /**
  * Check if a poller IP can be registered and display an error in form if it can't
- * This ruleset avoid IP duplication in Poller formulary
+ * This ruleset avoid IP duplication in Poller form
  *
  * @param array $formParameters
  * @return boolean
@@ -1264,7 +1270,7 @@ function ipCanBeRegistered(string $serverIp): bool
 
 /**
  * Check if a poller IP can be updated and display an error in form if it can't
- * This ruleset avoid IP duplication in Poller formulary
+ * This ruleset avoid IP duplication in Poller form
  */
 function ipCanBeUpdated(array $options): bool
 {
@@ -1285,7 +1291,7 @@ function ipCanBeUpdated(array $options): bool
     $platform = $statement->fetch(\PDO::FETCH_ASSOC);
 
     /**
-     * check if the previously found platform is the platform we're editing
+     * check if previously found platform is the platform we're editing
      */
     if ($platform) {
         if ((int) $platform['id'] === $serverId) {
@@ -1294,8 +1300,8 @@ function ipCanBeUpdated(array $options): bool
         return false;
     } else {
         /**
-         * If nothing was found in nagios server check if it existing in platform topology
-         * e.g: a Central is 127.0.0.1 in NS but is display with his true IP in platform_topology
+         * If nothing was found in nagios server check if it exists in platform topology
+         * e.g: a Central is 127.0.0.1 in NS but is displayed with its true IP in platform_topology
          */
         $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `address` = :address");
         $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
