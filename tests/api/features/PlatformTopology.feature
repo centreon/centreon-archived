@@ -76,7 +76,7 @@ Feature:
             """
             {
                 "name": "harmful name",
-                "type": "<IMG SRC='jav	ascript:alert(1);'>",
+                "type": "<img src='jav	ascript:alert(666);'>",
                 "address": "1.1.1.666",
                 "parent_address": "1.1.1.10"
             }
