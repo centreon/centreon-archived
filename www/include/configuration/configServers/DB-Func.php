@@ -1182,7 +1182,7 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
 
     if ($type === 'central') {
         $parentId = null;
-    }else {
+    } else {
         /**
          * Prepare statement to get the Parent depending on Remote attachment or not.
          */
