@@ -109,7 +109,7 @@ Feature:
             {
                 "name": "inconsistent address",
                 "type": "poller",
-                "address": "1.1.1.666",
+                "address": "6.6.6.1",
                 "parent_address": "666."
             }
             """
