@@ -148,6 +148,8 @@ class PlatformTopologyController extends AbstractController
             throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_BAD_REQUEST, $ex);
         } catch (InvalidArgumentException $ex) {
             throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_BAD_REQUEST, $ex);
+        } catch (EntityNotFoundException $ex) {
+            throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_CONFLICT, $ex);
         } catch (PlatformTopologyConflictException $ex) {
             throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_CONFLICT, $ex);
         } catch (\Throwable $ex) {

@@ -15533,8 +15533,8 @@ msgid "The name of the platform is not consistent"
 msgstr "Le nom de cette plateforme n'est pas cohérent"
 
 #: api/topology/register
-msgid "The address '%s' for '%s' is not valid"
-msgstr "L'adresse '%s' de '%s' n'est pas valide"
+msgid "The address of '%s' is not valid"
+msgstr "L'adresse '%s' n'est pas valide"
 
 #: api/topology/register
 msgid "The platform type of '%s'@'%s' is not consistent"
@@ -15553,8 +15553,8 @@ msgid "No parent platform was found for : '%s'@'%s'"
 msgstr "Aucune plateforme parente n'a été trouvée pour : '%s'@'%s'"
 
 #: api/topology/register
-msgid "Cannot register a '%s' platform behind a '%s' platform"
-msgstr "On ne peut enregistrer un '%s' derrière un '%s'"
+msgid "Cannot register the '%s' platform : '%s'@'%s' behind a '%s' platform"
+msgstr "Impossible d'enregistrer la plateforme '%s' : '%s'@'%s' derrière un '%s'"
 
 #: api/topology/register
 msgid "Error when adding in topology the platform : '%s'@'%s'"

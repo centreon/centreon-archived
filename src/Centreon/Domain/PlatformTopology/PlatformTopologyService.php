@@ -74,6 +74,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (PlatformTopology::TYPE_CENTRAL === $platformTopology->getType()) {
             // New unique Central top level platform case
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
+            $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
             $this->setServerNagiosId($platformTopology);
         } elseif (PlatformTopology::TYPE_REMOTE === $platformTopology->getType()) {
             // Cannot add a Remote behind another Remote
@@ -340,8 +341,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         ) {
             throw new PlatformTopologyConflictException(
                 sprintf(
-                    _("Cannot register a '%s' platform behind a '%s' platform"),
+                    _("Cannot register the '%s' platform : '%s'@'%s' behind a '%s' platform"),
                     $platformTopology->getType(),
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress(),
                     $registeredParentInTopology->getType()
                 )
             );
