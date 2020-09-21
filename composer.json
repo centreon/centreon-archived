@@ -65,7 +65,8 @@
         "justinrainbow/json-schema": "^5.2",
         "ext-openssl": "*",
         "symfony/http-client": "4.4.*",
-        "dragonmantank/cron-expression": "3.0.1"
+        "dragonmantank/cron-expression": "3.0.1",
+      "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {

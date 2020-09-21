@@ -22,8 +22,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\ActionLog\ActionLog;
+use Centreon\Domain\ActionLog\Interfaces\ActionLogServiceInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
+use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
+use Symfony\Component\Security\Core\Security;
 
 class HostConfigurationService implements HostConfigurationServiceInterface
 {
@@ -33,13 +40,38 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     private $hostConfigurationRepository;
 
     /**
+     * @var ActionLogServiceInterface
+     */
+    private $actionLogService;
+
+    /**
+     * @var Contact
+     */
+    private $contact;
+
+    /**
+     * @var EngineConfigurationServiceInterface
+     */
+    private $engineConfigurationService;
+
+    /**
      * HostConfigurationService constructor.
      *
      * @param HostConfigurationRepositoryInterface $hostConfigurationRepository
+     * @param ActionLogServiceInterface $actionLogService
+     * @param EngineConfigurationServiceInterface $engineConfigurationService
+     * @param Security $security
      */
-    public function __construct(HostConfigurationRepositoryInterface $hostConfigurationRepository)
-    {
+    public function __construct(
+        HostConfigurationRepositoryInterface $hostConfigurationRepository,
+        ActionLogServiceInterface $actionLogService,
+        EngineConfigurationServiceInterface $engineConfigurationService,
+        Security $security
+    ) {
         $this->hostConfigurationRepository = $hostConfigurationRepository;
+        $this->actionLogService = $actionLogService;
+        $this->contact = $security->getUser();
+        $this->engineConfigurationService = $engineConfigurationService;
     }
 
     /**
@@ -47,10 +79,30 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      */
     public function addHost(Host $host): int
     {
-        if (empty($host->getName())) {
-            throw new HostConfigurationException(_('Host name can not be empty'));
+        if (empty($host->getIpAddress())) {
+            throw new HostConfigurationException(_('Host ip can not be empty'));
+        }
+        if (empty($host->get())) {
+            throw new HostConfigurationException(_('Host ip can not be empty'));
         }
         try {
+            /**
+             * To avoid recording a host name with illegal characters,
+             * we retrieve the engine configuration to retrieve the list of these characters.
+             */
+            $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByHost($host);
+            if ($engineConfiguration === null) {
+                throw new ServiceConfigurationException(_('Impossible to find the Engine configuration'));
+            }
+            $safedHostName = EngineConfiguration::removeIllegalCharacters(
+                $host->getName(),
+                $engineConfiguration->getIllegalObjectNameCharacters()
+            );
+            if (empty($safedHostName)) {
+                throw new HostConfigurationException(_('Host name can not be empty'));
+            }
+            $host->setName($safedHostName);
+
             $hasHostWithSameName = $this->hostConfigurationRepository->hasHostWithSameName($host->getName());
             if ($hasHostWithSameName) {
                 throw new HostConfigurationException(_('Host name already exists'));
@@ -58,7 +110,11 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             if ($host->getExtendedHost() === null) {
                 $host->setExtendedHost(new ExtendedHost());
             }
-            return $this->hostConfigurationRepository->addHost($host);
+            $hostId = $this->hostConfigurationRepository->addHost($host);
+            $this->actionLogService->addLog(
+                new ActionLog('host', $hostId, $host->getName(), ActionLog::ACTION_TYPE_ADD, $this->contact->getId())
+            );
+            return $hostId;
         } catch (HostConfigurationException $ex) {
             throw $ex;
         } catch (\Exception $ex) {

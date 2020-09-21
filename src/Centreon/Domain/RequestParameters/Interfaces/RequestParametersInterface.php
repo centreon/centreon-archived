@@ -99,14 +99,6 @@ interface RequestParametersInterface
     public function getTotal(): int;
 
     /**
-     * Indicate is the parameter has been defined.
-     *
-     * @param string $parameter Parameter to find
-     * @return bool
-     */
-    public function isSearchParameterDefined(string $parameter): bool;
-
-    /**
      * @param int $limit Number of records per page
      */
     public function setLimit(int $limit): void;

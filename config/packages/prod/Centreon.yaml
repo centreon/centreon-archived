@@ -98,10 +98,10 @@ services:
               arguments: ['@sqlRequestTranslator']
 
     # Platform topology register server
-    Centreon\Domain\PlatformTopology\PlatformTopologyServiceInterface:
+    Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface:
         class: Centreon\Domain\PlatformTopology\PlatformTopologyService
 
-    Centreon\Domain\PlatformTopology\PlatformTopologyRepositoryInterface:
+    Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface:
         class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRepositoryRDB
 
     # Real time monitoring
@@ -204,3 +204,10 @@ services:
 
     Centreon\Domain\HostService\Interfaces\HostServiceRepositoryInterface:
         class: Centreon\Infrastructure\HostService\HostServiceRepositoryRDB
+
+    # Action log
+    Centreon\Domain\ActionLog\Interfaces\ActionLogRepositoryInterface:
+        class: Centreon\Infrastructure\ActionLog\ActionLogRepositoryRDB
+
+    Centreon\Domain\ActionLog\Interfaces\ActionLogServiceInterface:
+        class: Centreon\Domain\ActionLog\ActionLogService
