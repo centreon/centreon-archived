@@ -1123,11 +1123,11 @@ function insertServerIntoPlatformTopology(array $pollerInformations, int $poller
      * Prepare statement to get the Parent depending on Remote attachment or not.
      */
     if (isset($pollerInformations[':remote_id'])) {
-        $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `server_id` = :remoteId");
+        $statement = $pearDB->prepare("SELECT id FROM `platform_topology` WHERE `server_id` = :remoteId");
         $statement->bindValue(':remoteId', (int) $pollerInformations[':remote_id'], \PDO::PARAM_INT);
         $statement->execute();
     } else {
-        $statement = $pearDB->query("SELECT * FROM `platform_topology` WHERE `type` = 'central'");
+        $statement = $pearDB->query("SELECT id FROM `platform_topology` WHERE `type` = 'central'");
     }
     $parent = $statement->fetch(\PDO::FETCH_ASSOC);
     $statement->closeCursor();
@@ -1190,11 +1190,11 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
          * Prepare statement to get the Parent depending on Remote attachment or not.
          */
         if (!empty($pollerInformations[':remote_id'])) {
-            $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `server_id` = :remoteId");
+            $statement = $pearDB->prepare("SELECT id FROM `platform_topology` WHERE `server_id` = :remoteId");
             $statement->bindValue(':remoteId', (int) $pollerInformations[':remote_id'], \PDO::PARAM_INT);
             $statement->execute();
         } else {
-            $statement = $pearDB->query("SELECT * FROM `platform_topology` WHERE `type` = 'central'");
+            $statement = $pearDB->query("SELECT id FROM `platform_topology` WHERE `type` = 'central'");
         }
         $parent = $statement->fetch(\PDO::FETCH_ASSOC);
         $statement->closeCursor();
