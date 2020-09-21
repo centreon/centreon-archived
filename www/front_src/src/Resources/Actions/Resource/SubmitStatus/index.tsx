@@ -118,7 +118,7 @@ const SubmitStatusForm = ({
       confirmDisabled={sending}
       submitting={sending}
     >
-      <Grid direction="column" container spacing={1} style={{ minWidth: 300 }}>
+      <Grid direction="column" container spacing={1} style={{ minWidth: 500 }}>
         <Grid item>
           <SelectField
             options={statuses[resource.type]}
@@ -132,22 +132,18 @@ const SubmitStatusForm = ({
           <TextField
             value={output}
             onChange={changeOutput}
-            multiline
             label={t(labelOutput)}
             ariaLabel={t(labelOutput)}
             fullWidth
-            rows={3}
           />
         </Grid>
         <Grid item>
           <TextField
             value={performanceData}
             onChange={changePerformanceData}
-            multiline
             label={t(labelPerformanceData)}
             ariaLabel={t(labelPerformanceData)}
             fullWidth
-            rows={3}
           />
         </Grid>
       </Grid>
