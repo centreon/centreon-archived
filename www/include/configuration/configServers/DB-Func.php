@@ -953,12 +953,13 @@ function updateServer(int $id, array $data): void
         $stmt->bindValue($key, $value);
     }
     $stmt->execute();
-
+    var_dump($retValue);
     try {
         updateServerIntoPlatformTopology($retValue, $id);
     } catch (\Exception $e) {
         // catch exception but don't return anything to avoid blank pages on form
     }
+
     updateRemoteServerInformation($data);
     additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
 
@@ -1163,10 +1164,15 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
 
     $pollerIp = $pollerInformations[':ns_ip_address'];
     $name = $pollerInformations[':name'];
+
     /**
-     * On update if the field remote_id is not set means we are editing a Remote server
+     * Check if we are updating a Remote Server
      */
-    if (!isset($pollerInformations[':remote_id']) && (int) $pollerInformations[':localhost'] === 0) {
+    $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE ip = :address");
+    $statement->bindValue(':address', $pollerIp, \PDO::PARAM_STR);
+    $statement->execute();
+    $isRemote = $statement->fetch(\PDO::FETCH_ASSOC);
+    if ($isRemote) {
         $type = 'remote';
     } else {
         /**
