@@ -14,12 +14,14 @@ const defaultAcl = {
       acknowledgement: false,
       disacknowledgement: false,
       downtime: false,
+      submit_status: false,
     },
     service: {
       check: false,
       acknowledgement: false,
       disacknowledgement: false,
       downtime: false,
+      submit_status: false,
     },
   },
 };

@@ -207,10 +207,7 @@ const ResourceActions = (): JSX.Element => {
           >
             {t(labelDisacknowledge)}
           </MenuItem>
-          <MenuItem
-            disabled={disableSubmitStatus}
-            onClick={prepareToSubmitStatus}
-          >
+          <MenuItem disabled={false} onClick={prepareToSubmitStatus}>
             {t(labelSubmitStatus)}
           </MenuItem>
         </Menu>
