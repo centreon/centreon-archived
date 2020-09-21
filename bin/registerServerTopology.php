@@ -373,6 +373,8 @@ foreach ($registerPayloads as $postData) {
         curl_close($ch);
     }
 
+    $result = json_decode($result, true);
+
     /**
      * Display response of API
      */
