@@ -135,26 +135,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
             }
 
-            // debug
-            /*
-             $registerPayload = json_encode([
-                "name" => $registeredParentInTopology->getName(),
-                "type" => $platformTopology->getType(),
-                "address" => $platformTopology->getAddress(),
-                "parent_address" => $platformTopology->getAddress()
-            ]);
-            $target = json_encode([
-                "central_address" => $platformInformation->getAuthorizedMaster(),
-                "is remote" => $platformInformation->getIsRemote(),
-                "user name" => $platformInformation->getApiUsername(),
-                "password" => $platformInformation->getApiCredentials()
-            ]);
-            throw new PlatformTopologyException(
-                $registerPayload
-            );
-            */
-
-
             /**
              * Call the API on the n-1 server to register it too
              */
@@ -218,19 +198,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
 
                 $statusCode = $registerResponse->getStatusCode();
-
-                /**
-                 * DEBUG
-                 */
-                /*
-                $statusContent = $registerResponse->getContent();
-                throw new PlatformTopologyException(
-                    "DEBUG -> statusCode = " . $statusCode .
-                    " # content = " . json_decode($statusContent, true)
-                );
-                */
-
-
             } catch (TransportExceptionInterface $e) {
                 throw new PlatformTopologyException(
                     _("Request to the Central's API failed : ") . $e->getMessage(),
