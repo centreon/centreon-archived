@@ -25,6 +25,7 @@ namespace Centreon\Application\Controller;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
+use InvalidArgumentException;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
@@ -144,6 +145,8 @@ class PlatformTopologyController extends AbstractController
 
             return $this->view(null, Response::HTTP_CREATED);
         } catch (PlatformTopologyException $ex) {
+            throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_BAD_REQUEST, $ex);
+        } catch (InvalidArgumentException $ex) {
             throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_BAD_REQUEST, $ex);
         } catch (PlatformTopologyConflictException $ex) {
             throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_CONFLICT, $ex);

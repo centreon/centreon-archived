@@ -200,39 +200,27 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $statusCode = $registerResponse->getStatusCode();
             } catch (TransportExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Request to the Central's API failed : ") . $e->getMessage(),
-                    0,
-                    $e
+                    _("Request to the Central's API failed : ") . $e->getMessage()
                 );
             } catch (ClientExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a client exception : ") . $e->getMessage(),
-                    0,
-                    $e
+                    _("Central's API content thrown a client exception : ") . $e->getMessage()
                 );
             } catch (RedirectionExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a redirection exception : ") . $e->getMessage(),
-                    0,
-                    $e
+                    _("Central's API content thrown a redirection exception : ") . $e->getMessage()
                 );
             } catch (ServerExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a server exception : ") . $e->getMessage(),
-                    0,
-                    $e
+                    _("Central's API content thrown a server exception : ") . $e->getMessage()
                 );
             } catch (DecodingExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Unable to convert Central's API response : ") . $e->getMessage(),
-                    0,
-                    $e
+                    _("Unable to convert Central's API response : ") . $e->getMessage()
                 );
             } catch (\Exception $e) {
                 throw new PlatformTopologyException(
-                    _("Error from Central's register API : ") . $e->getMessage(),
-                    0,
-                    $e
+                    _("Error from Central's register API : ") . $e->getMessage()
                 );
             }
         }
