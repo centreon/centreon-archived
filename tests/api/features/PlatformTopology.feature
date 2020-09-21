@@ -84,7 +84,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"code":400,"message":"The platform type of 'wrong type server'@'1.1.1.666' is not consistent"}
+            {"code":400,"message":"The platform type of 'wrong type server'@'6.6.6.1' is not consistent"}
             """
 
         # Register a platform using inconsistent address / Should fail and an error should be returned
