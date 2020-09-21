@@ -217,14 +217,14 @@ $obj->XML->writeElement("limit", $limit);
 $obj->XML->writeElement("p", $p);
 $obj->XML->endElement();
 
-$buildParameter = function($id, string $name) {
+$buildParameter = function ($id, string $name) {
     return [
         'id' => $id,
         'name' => $name,
     ];
 };
 
-$buildHostgroupUri = function(array $hostgroups, array $types, array $statuses) use ($resourceController) {
+$buildHostgroupUri = function (array $hostgroups, array $types, array $statuses) use ($resourceController) {
     return $resourceController->buildListingUri([
         'filter' => json_encode([
             'criterias' => [

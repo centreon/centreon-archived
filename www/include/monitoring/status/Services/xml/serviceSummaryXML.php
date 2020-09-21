@@ -164,14 +164,14 @@ $obj->XML->writeElement("limit", $limit);
 $obj->XML->writeElement("p", $p);
 $obj->XML->endElement();
 
-$buildParameter = function(string $id, string $name) {
+$buildParameter = function (string $id, string $name) {
     return [
         'id' => $id,
         'name' => $name,
     ];
 };
 
-$buildServicesUri = function(string $hostname, array $statuses) use ($resourceController, $buildParameter) {
+$buildServicesUri = function (string $hostname, array $statuses) use ($resourceController, $buildParameter) {
     return $resourceController->buildListingUri([
         'filter' => json_encode([
             'criterias' => [

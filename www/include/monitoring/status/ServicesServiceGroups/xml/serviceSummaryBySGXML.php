@@ -183,14 +183,14 @@ $obj->XML->writeElement("sp", $obj->colorService[4]);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
-$buildParameter = function(string $id, string $name) {
+$buildParameter = function (string $id, string $name) {
     return [
         'id' => $id,
         'name' => $name,
     ];
 };
 
-$buildServicesUri = function(string $hostname, array $statuses) use ($resourceController, $buildParameter) {
+$buildServicesUri = function (string $hostname, array $statuses) use ($resourceController, $buildParameter) {
     return $resourceController->buildListingUri([
         'filter' => json_encode([
             'criterias' => [
