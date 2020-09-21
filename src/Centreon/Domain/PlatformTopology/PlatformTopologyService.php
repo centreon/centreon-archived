@@ -270,7 +270,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
         }
 
-        if (201 !== $statusCode && true === $platformTopology->isLinkedToAnotherServer()) {
+        if (isset($statusCode) && 201 !== $statusCode && true === $platformTopology->isLinkedToAnotherServer()) {
             throw new PlatformTopologyException(
                 sprintf(
                     _("The platform : '%s'@'%s' cannot be added to the Central linked to this Remote"),
