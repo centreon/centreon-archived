@@ -15058,8 +15058,5 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Submit a status"
 #  msgstr ""
 
-#  msgid "Submit"
-#  msgstr ""
-
 #  msgid "Status submitted"
 #  msgstr ""
