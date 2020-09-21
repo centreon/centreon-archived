@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 
 const LoadingSkeleton = (): JSX.Element => {
   const classes = useStyles();
-  const { t } = useTranslation();
 
   const serviceLoadingSkeleton = (
     <div className={classes.service}>
@@ -59,6 +58,7 @@ const LoadingSkeleton = (): JSX.Element => {
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const {
     setSelectedResourceId,
