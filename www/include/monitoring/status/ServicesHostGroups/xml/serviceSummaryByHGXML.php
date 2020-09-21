@@ -67,6 +67,11 @@ $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 $grouplistStr = $obj->access->getAccessGroupsString();
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 //saving bound values
 $queryValues = [];
 
@@ -187,6 +192,31 @@ while ($ndo = $dbResult->fetch()) {
 }
 $dbResult->closeCursor();
 
+$buildParameter = function(string $id, string $name) {
+    return [
+        'id' => $id,
+        'name' => $name,
+    ];
+};
+
+$buildServicesUri = function(string $hostname, array $statuses) use ($resourceController, $buildParameter) {
+    return $resourceController->buildListingUri([
+        'filter' => json_encode([
+            'criterias' => [
+                'search' => 'h.name:^' . $hostname . '$',
+                'resourceTypes' => [$buildParameter('service', 'Service')],
+                'statuses' => $statuses,
+            ],
+        ]),
+    ]);
+};
+
+$okStatus = $buildParameter('OK', 'Ok');
+$warningStatus = $buildParameter('WARNING', 'Warning');
+$criticalStatus = $buildParameter('CRITICAL', 'Critical');
+$unknownStatus = $buildParameter('UNKNOWN', 'Unknown');
+$pendingStatus = $buildParameter('PENDING', 'Pending');
+
 $hg = "";
 $count = 0;
 if (isset($tab_final)) {
@@ -224,6 +254,22 @@ if (isset($tab_final)) {
             $obj->XML->writeElement("hcount", $count);
             $obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
             $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+            $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($tab["hid"]));
+            $obj->XML->writeElement(
+                "s_listing_uri",
+                $resourceController->buildListingUri([
+                    'filter' => json_encode([
+                        'criterias' => [
+                            'search' => 'h.name:^' . $host_name . '$',
+                        ],
+                    ]),
+                ])
+            );
+            $obj->XML->writeElement("s_listing_ok", $buildServicesUri($host_name, [$okStatus]));
+            $obj->XML->writeElement("s_listing_warning", $buildServicesUri($host_name, [$warningStatus]));
+            $obj->XML->writeElement("s_listing_critical", $buildServicesUri($host_name, [$criticalStatus]));
+            $obj->XML->writeElement("s_listing_unknown", $buildServicesUri($host_name, [$unknownStatus]));
+            $obj->XML->writeElement("s_listing_pending", $buildServicesUri($host_name, [$pendingStatus]));
             $obj->XML->endElement();
             $count++;
         }

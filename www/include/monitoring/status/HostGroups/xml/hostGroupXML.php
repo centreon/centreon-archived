@@ -53,6 +53,11 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 // Alias / Name conversion table
 $convertTable = [];
 $convertID = [];
@@ -212,6 +217,36 @@ $obj->XML->writeElement("limit", $limit);
 $obj->XML->writeElement("p", $p);
 $obj->XML->endElement();
 
+$buildParameter = function($id, string $name) {
+    return [
+        'id' => $id,
+        'name' => $name,
+    ];
+};
+
+$buildHostgroupUri = function(array $hostgroups, array $types, array $statuses) use ($resourceController) {
+    return $resourceController->buildListingUri([
+        'filter' => json_encode([
+            'criterias' => [
+                'hostGroups' => $hostgroups,
+                'resourceTypes' => $types,
+                'statuses' => $statuses,
+            ],
+        ]),
+    ]);
+};
+
+$hostType = $buildParameter('host', 'Host');
+$serviceType = $buildParameter('service', 'Service');
+$okStatus = $buildParameter('OK', 'Ok');
+$warningStatus = $buildParameter('WARNING', 'Warning');
+$criticalStatus = $buildParameter('CRITICAL', 'Critical');
+$unknownStatus = $buildParameter('UNKNOWN', 'Unknown');
+$pendingStatus = $buildParameter('PENDING', 'Pending');
+$upStatus = $buildParameter('UP', 'Up');
+$downStatus = $buildParameter('DOWN', 'Down');
+$unreachableStatus = $buildParameter('UNREACHABLE', 'Unreachable');
+
 $i = 0;
 $ct = 0;
 
@@ -223,6 +258,10 @@ if (isset($stats)) {
         ) {
             $class = $obj->getNextLineClass();
             if (isset($stat["h"]) && count($stat["h"])) {
+                $hostgroup = $buildParameter(
+                    (int) $convertID[$convertTable[$name]],
+                    $convertTable[$name]
+                );
                 $obj->XML->startElement("l");
                 $obj->XML->writeAttribute("class", $class);
                 $obj->XML->writeElement("o", $ct++);
@@ -248,12 +287,44 @@ if (isset($stats)) {
                 $obj->XML->writeElement("sp", $stat["s"][4]);
                 $obj->XML->writeElement("spc", $obj->colorService[4]);
                 $obj->XML->writeElement(
-                    "hgurl",
-                    CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]])
+                    'hg_listing_uri',
+                    $buildHostgroupUri([$hostgroup], [], [])
                 );
                 $obj->XML->writeElement(
-                    "hgurlhost",
-                    "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]
+                    "hg_listing_h_up",
+                    $buildHostgroupUri([$hostgroup], [$hostType], [$upStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_h_down",
+                    $buildHostgroupUri([$hostgroup], [$hostType], [$upStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_h_unreachable",
+                    $buildHostgroupUri([$hostgroup], [$hostType], [$unreachableStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_h_pending",
+                    $buildHostgroupUri([$hostgroup], [$hostType], [$pendingStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_ok",
+                    $buildHostgroupUri([$hostgroup], [$serviceType], [$okStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_warning",
+                    $buildHostgroupUri([$hostgroup], [$serviceType], [$warningStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_critical",
+                    $buildHostgroupUri([$hostgroup], [$serviceType], [$criticalStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_unknown",
+                    $buildHostgroupUri([$hostgroup], [$serviceType], [$unknownStatus])
+                );
+                $obj->XML->writeElement(
+                    "hg_listing_s_pending",
+                    $buildHostgroupUri([$hostgroup], [$serviceType], [$pendingStatus])
                 );
                 $obj->XML->endElement();
             }

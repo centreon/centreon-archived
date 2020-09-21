@@ -70,6 +70,11 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     $searchOutput = $centreon->historySearch[$url]["searchOutput"] ?? '';
 }
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 /*
  * Init GMT class
  */
@@ -151,7 +156,12 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $tab_comments_svc[$i]['data'],
         ['a', 'br', 'hr']
     );
+    $tab_comments_svc[$i]['h_details_uri'] = $resourceController->buildHostDetailsUri($data['host_id']);
     if ($data['service_description'] != '') {
+        $tab_comments_svc[$i]['s_details_uri'] = $resourceController->buildServiceDetailsUri(
+            $data['host_id'],
+            $data['service_id']
+        );
         $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description'], ENT_QUOTES, 'UTF-8');
         $tab_comments_svc[$i]['comment_type'] = 'SVC';
     } else {

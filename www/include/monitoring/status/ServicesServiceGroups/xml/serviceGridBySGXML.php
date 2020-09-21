@@ -67,6 +67,11 @@ $sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, ['optio
 $sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 //saving bound values
 $queryValues = [];
 $queryValues2 = [];
@@ -297,12 +302,27 @@ foreach ($aTab as $key => $element) {
         $obj->XML->writeElement("hcount", $host['hcount']);
         $obj->XML->writeElement("hs", $host['hs']);
         $obj->XML->writeElement("hc", $host['hc']);
+        $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($host['hid']));
+        $obj->XML->writeElement(
+            "s_listing_uri",
+            $resourceController->buildListingUri([
+                'filter' => json_encode([
+                    'criterias' => [
+                        'search' => 'h.name:^' . $host['hn'] . '$',
+                    ],
+                ]),
+            ])
+        );
         foreach ($host['service'] as $service) {
             $obj->XML->startElement("svc");
             $obj->XML->writeElement("sn", $service['sn']);
             $obj->XML->writeElement("snl", $service['snl']);
             $obj->XML->writeElement("sc", $service['sc']);
             $obj->XML->writeElement("svc_id", $service['svc_id']);
+            $obj->XML->writeElement(
+                "s_details_uri",
+                $resourceController->buildServiceDetailsUri($host['hid'], $service['svc_id'])
+            );
             $obj->XML->endElement();
         }
         $obj->XML->endElement();
