@@ -1163,11 +1163,10 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
 
     $pollerIp = $pollerInformations[':ns_ip_address'];
     $name = $pollerInformations[':name'];
-
     /**
      * On update if the field remote_id is not set means we are editing a Remote server
      */
-    if (!isset($pollerInformations[':remote_id'])) {
+    if (!isset($pollerInformations[':remote_id']) && (int) $pollerInformations[':localhost'] === 0) {
         $type = 'remote';
     } else {
         /**
@@ -1176,26 +1175,30 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
         $type = (int) $pollerInformations[':localhost'] == true ? 'central' : 'poller';
     }
 
-    /**
-     * Prepare statement to get the Parent depending on Remote attachment or not.
-     */
-    if (!empty($pollerInformations[':remote_id'])) {
-        $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `server_id` = :remoteId");
-        $statement->bindValue(':remoteId', (int) $pollerInformations[':remote_id'], \PDO::PARAM_INT);
-        $statement->execute();
-    } else {
-        $statement = $pearDB->query("SELECT * FROM `platform_topology` WHERE `type` = 'central'");
-    }
-    $parent = $statement->fetch(\PDO::FETCH_ASSOC);
-    $statement->closeCursor();
+    if ($type === 'central') {
+        $parentId = null;
+    }else {
+        /**
+         * Prepare statement to get the Parent depending on Remote attachment or not.
+         */
+        if (!empty($pollerInformations[':remote_id'])) {
+            $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `server_id` = :remoteId");
+            $statement->bindValue(':remoteId', (int) $pollerInformations[':remote_id'], \PDO::PARAM_INT);
+            $statement->execute();
+        } else {
+            $statement = $pearDB->query("SELECT * FROM `platform_topology` WHERE `type` = 'central'");
+        }
+        $parent = $statement->fetch(\PDO::FETCH_ASSOC);
+        $statement->closeCursor();
 
-    /**
-     * If no Parent, Poller isn't attached to any remote server or Central
-     */
-    if ($parent) {
-        $parentId = (int) $parent['id'];
-    } else {
-        throw new \Exception('Missing parent platform, check if your Remote or Central are working well');
+        /**
+         * If no Parent, Poller isn't attached to any remote server or Central
+         */
+        if ($parent) {
+            $parentId = (int) $parent['id'];
+        } else {
+            throw new \Exception('Missing parent platform, check if your Remote or Central are working well');
+        }
     }
 
     $statement = $pearDB->prepare("SELECT * FROM platform_topology WHERE server_id = :serverId");
