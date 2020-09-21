@@ -135,11 +135,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
             }
 
-
-            /**
-             * call the API on the n-1 server to register it too
-             */
-
             // debug
             /*
              $registerPayload = json_encode([
@@ -160,17 +155,19 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             */
 
 
-            // Central's API payloads and URL
-
-            /*
-             *  TODO check url consistency, protocol and root platform name
+            /**
+             * Call the API on the n-1 server to register it too
              */
-            $baseApiEndpoint = 'http://' .
-                $platformInformation->getAuthorizedMaster() .
-                '/centreon/api/latest/';
-
             try {
-                // Login on the Central
+                // Central's API payloads and URL
+
+                /*
+                 *  TODO check url consistency, protocol and root platform name
+                 */
+                $baseApiEndpoint = 'http://' .
+                    $platformInformation->getAuthorizedMaster() .
+                    '/centreon/api/latest/';
+
                 $loginPayload = [
                     'json' => [
                         "security" => [
@@ -182,6 +179,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     ]
                 ];
 
+                // Login on the Central to get a valid token
                 $loginResponse = $this->httpClient->request(
                     'POST',
                     $baseApiEndpoint . 'login',
@@ -193,7 +191,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 if (false === $token) {
                     throw new PlatformTopologyException(
                         sprintf(
-                            _("No auth token returned from the Central. Cannot register the platform : '%s'@'%s'"),
+                            _("Failed to get the auth token. Cannot register the platform : '%s'@'%s' on the Central"),
                             $platformTopology->getName(),
                             $platformTopology->getAddress()
                         )
@@ -220,12 +218,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
 
                 $statusCode = $registerResponse->getStatusCode();
-                $statusContent = $registerResponse->getContent();
 
                 /**
                  * DEBUG
                  */
                 /*
+                $statusContent = $registerResponse->getContent();
                 throw new PlatformTopologyException(
                     "DEBUG -> statusCode = " . $statusCode .
                     " # content = " . json_decode($statusContent, true)
@@ -241,25 +239,25 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
             } catch (ClientExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API getcontent thrown a client exception : ") . $e->getMessage(),
+                    _("Central's API content thrown a client exception : ") . $e->getMessage(),
                     0,
                     $e
                 );
             } catch (RedirectionExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API getcontent thrown a redirection exception : ") . $e->getMessage(),
+                    _("Central's API content thrown a redirection exception : ") . $e->getMessage(),
                     0,
                     $e
                 );
             } catch (ServerExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API getcontent thrown a server exception : ") . $e->getMessage(),
+                    _("Central's API content thrown a server exception : ") . $e->getMessage(),
                     0,
                     $e
                 );
             } catch (DecodingExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Unable to convert Central's API response as array : ") . $e->getMessage(),
+                    _("Unable to convert Central's API response : ") . $e->getMessage(),
                     0,
                     $e
                 );
