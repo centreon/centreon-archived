@@ -292,7 +292,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (null === $foundServerInNagiosTable) {
             throw new PlatformTopologyConflictException(
                 sprintf(
-                    _("The %s type server : '%s'@'%s' does not match the one configured in Centreon or is disabled"),
+                    _("The server type '%s' : '%s'@'%s' does not match the one configured in Centreon or is disabled"),
                     $platformTopology->getType(),
                     $platformTopology->getName(),
                     $platformTopology->getAddress()

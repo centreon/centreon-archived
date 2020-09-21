@@ -23,7 +23,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"The Central type server : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
+            {"code":409,"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
             """
 
         # Successfully register the Central on the container

@@ -15573,8 +15573,8 @@ msgid "A '%s' : '%s'@'%s' is already registered"
 msgstr "Un '%s' : '%s'@'%s' est déjà enregistré"
 
 #: api/topology/register
-msgid "The %s type server : '%s'@'%s' does not match the one configured in Centreon or is disabled"
-msgstr "Le server du type %s : '%s'@'%s' ne correspond pas à celui configuré dans Centreon ou est désactivé"
+msgid "The server type '%s' : '%s'@'%s' does not match the one configured in Centreon or is disabled"
+msgstr "Le server du type '%s' : '%s'@'%s' ne correspond pas à celui configuré dans Centreon ou est désactivé"
 
 #: api/topology/register
 msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
