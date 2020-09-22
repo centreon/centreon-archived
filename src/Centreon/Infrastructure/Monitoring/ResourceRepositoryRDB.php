@@ -785,7 +785,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'severity_'
         );
 
-        if ($severity->getLevel() && $severity->getName()) {
+        if ($severity->getLevel() !== null) {
             $resource->setSeverity($severity);
         }
 
