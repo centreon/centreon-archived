@@ -97,7 +97,7 @@ function registerRemote(string $ip, array $loginCredentials): array
 /**
  * @return bool
  */
-function haveRemoteChild(): bool
+function hasRemoteChild(): bool
 {
     $db = new CentreonDB();
     $remoteQuery = $db->query("SELECT COUNT(*) AS total FROM `remote_servers`");
