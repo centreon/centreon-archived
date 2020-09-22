@@ -157,7 +157,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   }, [page]);
 
   React.useEffect(() => {
-    if (isNil(details)) {
+    if (isNil(details) || isNil(timeline)) {
       return;
     }
 
