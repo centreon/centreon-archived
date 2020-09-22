@@ -52,7 +52,7 @@
                 {foreach item=tcs from=$tab_comments_svc}
                 <tr class={cycle values="list_two, list_one" }>
                     <td class="ListColPicker"><input type="checkbox"
-                                                     name='select[{$tcs.comment_type};{$tcs.host_id};{$tcs.internal_id}]'>
+                                                     name='select[{$tcs.comment_type};{$tcs.host_name};{$tcs.internal_id}]'>
                     </td>
                     <td class="ListColLeft"><a href='{$tcs.h_details_uri}'>{$tcs.host_name}</a>
                     </td>
