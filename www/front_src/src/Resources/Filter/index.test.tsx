@@ -33,8 +33,6 @@ import {
   labelSearchOnFields,
   labelNewFilter,
   labelService,
-  labelUnhandled,
-  labelWarning,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
