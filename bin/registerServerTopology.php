@@ -240,7 +240,7 @@ if ($proceed !== "y") {
  */
 if (isRemote($serverType)) {
     //check if e remote is register on server
-    if (haveRemoteChild()) {
+    if (hasRemoteChild()) {
         exit(formatResponseMessage(401, 'Central can not be convert to Remote', 'Unauthorized'));
     }
 
