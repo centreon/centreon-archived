@@ -526,7 +526,8 @@ class CentreonACL
             // We fix topologies according to filter
             foreach ($parentsLvl as $parentLvl1 => $childrenLvl2) {
                 foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
-                    if (!empty($childrenLvl3)
+                    if (
+                        !empty($childrenLvl3)
                         && isset($this->topology[$childrenLvl3])
                         && isset($this->topology[$parentLvl2])
                         && $this->topology[$childrenLvl3] > $this->topology[$parentLvl2]
@@ -538,7 +539,8 @@ class CentreonACL
                          */
                         $this->topology[$parentLvl2] = $this->topology[$childrenLvl3];
                     }
-                    if (isset($this->topology[$parentLvl2])
+                    if (
+                        isset($this->topology[$parentLvl2])
                         && isset($this->topology[$parentLvl1])
                         && $this->topology[$parentLvl2] > $this->topology[$parentLvl1]
                     ) {
