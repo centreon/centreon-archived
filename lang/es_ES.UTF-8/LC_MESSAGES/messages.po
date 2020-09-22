@@ -14611,3 +14611,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Status submitted"
 #  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""

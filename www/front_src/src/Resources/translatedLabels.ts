@@ -175,3 +175,4 @@ export const labelSubmitStatus = 'Submit a status';
 export const labelSubmit = 'Submit';
 export const labelStatusSubmitted = 'Status submitted';
 export const labelOutput = 'Output';
+export const labelNoResourceFound = 'No resource found';
