@@ -235,7 +235,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $platformTopology->getAddress()
             );
             $returnedMessage = implode(', ', $returnedMessage);
-            throw new PlatformTopologyException(
+            throw new PlatformTopologyConflictException(
                 $errorMessage . "  /  " . _("Central's response => Code : ") . $returnedMessage
             );
         }
