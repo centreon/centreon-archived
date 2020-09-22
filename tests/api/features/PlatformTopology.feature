@@ -53,6 +53,21 @@ Feature:
             {"code":409,"message":"A 'central' : 'Central'@'1.1.1.10' is already registered"}
             """
 
+        # Register a second Central while the first is still registered / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "Central2",
+                "type": "central",
+                "address": "1.1.1.11"
+            }
+            """
+        Then the response code should be "409"
+        And the response should be equal to:
+            """
+            {"code":409,"message":"A 'central' : 'Central'@'1.1.1.10' is already registered"}
+            """
+
         # Register a Central linked to another Central
         # Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
@@ -117,21 +132,6 @@ Feature:
         And the response should be equal to:
             """
             {"code":400,"message":"The address of 'inconsistent address' is not valid"}
-            """
-
-        # Register a second Central while the first is still registered / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
-            """
-            {
-                "name": "Central2",
-                "type": "central",
-                "address": "1.1.1.11"
-            }
-            """
-        Then the response code should be "409"
-        And the response should be equal to:
-            """
-            {"code":409,"message":"A 'central' : 'Central'@'1.1.1.10' is already registered"}
             """
 
         # Register a poller linked to the Central.
