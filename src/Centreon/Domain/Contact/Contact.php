@@ -64,7 +64,7 @@ class Contact implements UserInterface, ContactInterface
     public const DEFAULT_CHARSET = 'UTF-8';
 
     /**
-     * @var int|null Id of contact
+     * @var int Id of contact
      */
     private $id;
 
@@ -144,18 +144,18 @@ class Contact implements UserInterface, ContactInterface
     private $locale;
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @param int|null $id
+     * @param int $id
      * @return self
      */
-    public function setId(?int $id): self
+    public function setId(int $id): self
     {
         $this->id = $id;
         return $this;

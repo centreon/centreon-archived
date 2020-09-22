@@ -24,9 +24,9 @@ namespace Centreon\Domain\Contact\Interfaces;
 interface ContactInterface
 {
     /**
-     * @return int|null Returns the contact id
+     * @return int Returns the contact id
      */
-    public function getId(): ?int;
+    public function getId(): int;
 
     /**
      * Indicates whether the contact is an administrator.
