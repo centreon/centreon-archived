@@ -50,7 +50,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A 'central' : 'Central'@'1.1.1.10' is already registered"}
+            {"code":409,"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
@@ -65,7 +65,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A 'central' : 'Central'@'1.1.1.10' is already registered"}
+            {"code":409,"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
             """
 
         # Register a Central linked to another Central

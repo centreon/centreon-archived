@@ -182,10 +182,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 // Register platform
                 $registerPayload = [
                     'json' => [
-                        "name" => $registeredParentInTopology->getName(),
+                        "name" => $platformTopology->getName(),
                         "type" => $platformTopology->getType(),
                         "address" => $platformTopology->getAddress(),
-                        "parent_address" => $platformTopology->getAddress()
+                        "parent_address" => $platformTopology->getParentAddress()
                     ],
                     'headers' => [
                         "X-AUTH-TOKEN" => $token
@@ -260,7 +260,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (null !== $foundAlreadyRegisteredPlatformByType) {
             throw new PlatformTopologyConflictException(
                 sprintf(
-                    _("A '%s' : '%s'@'%s' is already registered"),
+                    _("A '%s': '%s'@'%s' is already registered"),
                     $type,
                     $foundAlreadyRegisteredPlatformByType->getName(),
                     $foundAlreadyRegisteredPlatformByType->getAddress()

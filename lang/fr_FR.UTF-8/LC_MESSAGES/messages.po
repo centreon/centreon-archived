@@ -15569,8 +15569,8 @@ msgid "Cannot set parent id to a central server"
 msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"
 
 #: api/topology/register
-msgid "A '%s' : '%s'@'%s' is already registered"
-msgstr "Un '%s' : '%s'@'%s' est déjà enregistré"
+msgid "A '%s': '%s'@'%s' is already registered"
+msgstr "Un '%s': '%s'@'%s' est déjà enregistré"
 
 #: api/topology/register
 msgid "The server type '%s' : '%s'@'%s' does not match the one configured in Centreon or is disabled"
