@@ -73,6 +73,11 @@ $sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, ['optio
 $sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 //saving bound values
 $queryValues = [];
 $queryValues2 = [];
@@ -178,6 +183,31 @@ $obj->XML->writeElement("sp", $obj->colorService[4]);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
+$buildParameter = function (string $id, string $name) {
+    return [
+        'id' => $id,
+        'name' => $name,
+    ];
+};
+
+$buildServicesUri = function (string $hostname, array $statuses) use ($resourceController, $buildParameter) {
+    return $resourceController->buildListingUri([
+        'filter' => json_encode([
+            'criterias' => [
+                'search' => 'h.name:^' . $hostname . '$',
+                'resourceTypes' => [$buildParameter('service', 'Service')],
+                'statuses' => $statuses,
+            ],
+        ]),
+    ]);
+};
+
+$okStatus = $buildParameter('OK', 'Ok');
+$warningStatus = $buildParameter('WARNING', 'Warning');
+$criticalStatus = $buildParameter('CRITICAL', 'Critical');
+$unknownStatus = $buildParameter('UNKNOWN', 'Unknown');
+$pendingStatus = $buildParameter('PENDING', 'Pending');
+
 // Construct query for servicegroups search
 $sg_search = "";
 if ($numRows > 0) {
@@ -267,6 +297,22 @@ if ($numRows > 0) {
             $obj->XML->writeElement("hid", $hostInfos['host_id']);
             $obj->XML->writeElement("hs", _($obj->statusHost[$hostInfos['host_state']]));
             $obj->XML->writeElement("hc", $obj->colorHost[$hostInfos['host_state']]);
+            $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($hostInfos['host_id']));
+            $obj->XML->writeElement(
+                "s_listing_uri",
+                $resourceController->buildListingUri([
+                    'filter' => json_encode([
+                        'criterias' => [
+                            'search' => 'h.name:^' . $hostName . '$',
+                        ],
+                    ]),
+                ])
+            );
+            $obj->XML->writeElement("s_listing_ok", $buildServicesUri($hostName, [$okStatus]));
+            $obj->XML->writeElement("s_listing_warning", $buildServicesUri($hostName, [$warningStatus]));
+            $obj->XML->writeElement("s_listing_critical", $buildServicesUri($hostName, [$criticalStatus]));
+            $obj->XML->writeElement("s_listing_unknown", $buildServicesUri($hostName, [$unknownStatus]));
+            $obj->XML->writeElement("s_listing_pending", $buildServicesUri($hostName, [$pendingStatus]));
 
             foreach ($hostInfos['states'] as $state => $count) {
                 $obj->XML->writeElement($state, $count);
