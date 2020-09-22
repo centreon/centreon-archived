@@ -151,7 +151,6 @@ $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_comments_svc[$i] = $data;
     $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
-    $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
     $tab_comments_svc[$i]['data'] = CentreonUtils::escapeAllExceptSelectedTags(
         $tab_comments_svc[$i]['data'],
         ['a', 'br', 'hr']
