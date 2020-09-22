@@ -20,6 +20,7 @@ const useLoadResources = (): LoadResources => {
     serviceGroups,
     limit,
     page,
+    setPage,
     currentSearch,
     nextSearch,
     setListing,
@@ -114,6 +115,10 @@ const useLoadResources = (): LoadResources => {
     hostGroups,
     serviceGroups,
   ]);
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [currentSearch]);
 
   return { initAutorefreshAndLoad };
 };
