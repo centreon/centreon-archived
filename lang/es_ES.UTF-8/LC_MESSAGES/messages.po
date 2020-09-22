@@ -14605,3 +14605,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Disacknowledgement command sent"
 #  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""

@@ -15654,3 +15654,6 @@ msgstr "Désacquitter les services attachés aux hôtes"
 
 msgid "Disacknowledgement command sent"
 msgstr "Commande de désacquittement envoyée"
+
+msgid "No resource found"
+msgstr "Pas de ressource trouvée"

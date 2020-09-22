@@ -111,7 +111,13 @@ const tabIdByLabel = {
 };
 
 const getTabIdFromLabel = (label: string): TabId => {
-  return tabIdByLabel[label];
+  const tabId = tabIdByLabel[label];
+
+  if (isNil(tabId)) {
+    return detailsTabId;
+  }
+
+  return tabId;
 };
 
 const getTabLabelFromId = (id: TabId): string => {

@@ -171,3 +171,4 @@ export const labelDisacknowledgeServices =
   'Disacknowledge services attached to hosts';
 export const labelDisacknowledgementCommandSent =
   'Disacknowledgement command sent';
+export const labelNoResourceFound = 'No resource found';

@@ -15059,3 +15059,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Disacknowledgement command sent"
 #  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""
