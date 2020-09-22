@@ -102,13 +102,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
             if (null === $platformInformation) {
                 throw new PlatformTopologyException(
-                    _("Platform's mandatory data are missing. Please reinstall your platform")
+                    _("Platform's mandatory data are missing. Please reinstall your platform.")
                 );
             }
             if ('no' === $platformInformation->getIsRemote()) {
                 throw new PlatformTopologyConflictException(
                     sprintf(
-                        _("The platform : '%s'@'%s' is not declared as a 'remote'"),
+                        _("The platform: '%s'@'%s' is not declared as a 'remote'."),
                         $platformTopology->getName(),
                         $platformTopology->getAddress()
                     )
@@ -117,7 +117,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if (null === $platformInformation->getAuthorizedMaster()) {
                 throw new PlatformTopologyException(
                     sprintf(
-                        _("The platform : '%s'@'%s' is not linked to any Central. Please use the wizard first"),
+                        _("The platform: '%s'@'%s' is not linked to any Central. Please use the wizard first."),
                         $platformTopology->getName(),
                         $platformTopology->getAddress()
                     )
@@ -129,7 +129,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             ) {
                 throw new PlatformTopologyException(
                     sprintf(
-                        _("Central's credentials are missing on : '%s'@'%s'. Please check the Remote Access form"),
+                        _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."),
                         $platformTopology->getName(),
                         $platformTopology->getAddress()
                     )
@@ -198,22 +198,24 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $registerPayload
                 );
 
+                // Get request status code and error message
                 $statusCode = $registerResponse->getStatusCode();
+                $returnedMessage = json_decode($registerResponse->getContent(false), true);
             } catch (TransportExceptionInterface $e) {
                 throw new PlatformTopologyException(
                     _("Request to the Central's API failed : ") . $e->getMessage()
                 );
             } catch (ClientExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a client exception : ") . $e->getMessage()
+                    _("Central's API content thrown a Client exception : ") . $e->getMessage()
                 );
             } catch (RedirectionExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a redirection exception : ") . $e->getMessage()
+                    _("Central's API content thrown a Redirection exception : ") . $e->getMessage()
                 );
             } catch (ServerExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a server exception : ") . $e->getMessage()
+                    _("Central's API content thrown a Server exception : ") . $e->getMessage()
                 );
             } catch (DecodingExceptionInterface $e) {
                 throw new PlatformTopologyException(
@@ -227,12 +229,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         if (isset($statusCode) && 201 !== $statusCode && true === $platformTopology->isLinkedToAnotherServer()) {
+            $errorMessage = sprintf(
+                _("The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"),
+                $platformTopology->getName(),
+                $platformTopology->getAddress()
+            );
+            $returnedMessage = implode(', ', $returnedMessage);
             throw new PlatformTopologyException(
-                sprintf(
-                    _("The platform : '%s'@'%s' cannot be added to the Central linked to this Remote"),
-                    $platformTopology->getName(),
-                    $platformTopology->getAddress()
-                )
+                $errorMessage . "  /  " . _("Central's response => Code : ") . $returnedMessage
             );
         }
 

@@ -15584,6 +15584,58 @@ msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%
 msgid "The address and parent_address of the platform are the same"
 msgstr "Les adresses de la platforme et de son parent sont les mêmes"
 
+#: api/topology/register
+msgid "Platform's mandatory data are missing. Please reinstall your platform."
+msgstr "Données indispensable de la plateforme manquantes. Veuillez reinstaller votre plateforme."
+
+#: api/topology/register
+msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
+msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'."
+
+#: api/topology/register
+msgid "The platform: '%s'@'%s' is not linked to any Central. Please use the wizard first."
+msgstr "La plateforme: '%s'@'%s n'est liée à aucun Central. Veuillez d'abord utiliser le wizard."
+
+#: api/topology/register
+msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."
+msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez compléter le formulaire Accès du Remote."
+
+#: api/topology/register
+msgid "Failed to get the auth token. Cannot register the platform : '%s'@'%s' on the Central"
+msgstr "Echec d'obtention du token d'auth. Impossible d'enregistrer sur le Central: '%s'@'%s'"
+
+#: api/topology/register
+msgid "Request to the Central's API failed : "
+msgstr "Echec de la requète de l'API du Central"
+
+#: api/topology/register
+msgid "Central's API content thrown a Client exception : "
+msgstr "L'API du Central a renvoyé l'exception Client : "
+
+#: api/topology/register
+msgid "Central's API content thrown a Redirection exception : "
+msgstr "L'API du Central a renvoyé l'exception de Redirection : "
+
+#: api/topology/register
+msgid "Central's API content thrown a Server exception :"
+msgstr "L'API du Central a renvoyé l'exception Server : "
+
+#: api/topology/register
+msgid "Unable to convert Central's API response : "
+msgstr "Impossible de convertir la réponse de L'API du Central : "
+
+#: api/topology/register
+msgid "Error from Central's register API : "
+msgstr "Erreur de l'API d'enregistrement du Central : "
+
+#: api/topology/register
+msgid "The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à ce Remote"
+
+#: api/topology/register
+msgid "Central's response => Code : "
+msgstr "Response du Central => Code : "
+
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
