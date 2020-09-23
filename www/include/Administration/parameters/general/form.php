@@ -274,7 +274,12 @@ $openIdConnectEnable[] = $form->createElement(
             . "'Are you sure you want to change this parameter ? Please read the help before.')"
     )
 );
-$form->addGroup($openIdConnectEnable, 'openid_connect_enable', _("Enable OpenId Connect authentication"), '&nbsp;&nbsp;');
+$form->addGroup(
+    $openIdConnectEnable,
+    'openid_connect_enable',
+    _("Enable OpenId Connect authentication"),
+    '&nbsp;&nbsp;'
+);
 
 $openIdConnectMode = array();
 $openIdConnectMode[] = $form->createElement('radio', 'openid_connect_mode', null, _("OpenId Connect only"), '0');
@@ -287,7 +292,12 @@ $form->addElement('text', 'openid_connect_blacklist_clients', _('Blacklist clien
 $form->addElement('text', 'openid_connect_base_url', _('Base Url'), array('size' => 80));
 $form->addElement('text', 'openid_connect_authorization_endpoint', _('Authorization Endpoint'), array('size' => 50));
 $form->addElement('text', 'openid_connect_token_endpoint', _('Token Endpoint'), array('size' => 50));
-$form->addElement('text', 'openid_connect_introspection_endpoint', _('Introspection Token Endpoint'), array('size' => 50));
+$form->addElement(
+    'text',
+    'openid_connect_introspection_endpoint',
+    _('Introspection Token Endpoint'),
+    array('size' => 50)
+);
 $form->addElement('text', 'openid_connect_userinfo_endpoint', _('User Information Endpoint'), array('size' => 50));
 $form->addElement('text', 'openid_connect_scope', _('Scope'), array('size' => 50));
 $form->addElement('text', 'openid_connect_redirect_url', _('Redirect Url'), array('size' => 50));
