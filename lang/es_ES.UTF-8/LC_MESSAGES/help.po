@@ -701,7 +701,7 @@ msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
 msgstr "Su url del servicio de OpenId Connect User Info (por ejemplo /userinfo)."
 
 msgid "Your OpenId Connect Scope (for example openid)."
-msgstr "El campo de aplicación "scope" (por ejemplo openid)."
+msgstr "El campo de aplicación 'scope' (por ejemplo openid)."
 
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "Su URL de redirección de OpenId Connect (este servidor)."
