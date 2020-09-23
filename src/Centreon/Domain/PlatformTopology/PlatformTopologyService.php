@@ -88,8 +88,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             $this->setServerNagiosId($platformTopology, $isLocalhost);
         }
 
-
-
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
         $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
 
