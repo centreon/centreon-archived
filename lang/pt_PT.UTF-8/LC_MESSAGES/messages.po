@@ -6684,26 +6684,38 @@ msgstr "Ativa autenticação SSO"
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Você tem certeza que quer alterar este parâmetro? Por favor, leia a ajuda antes."
 
-msgid "OpenId Connect trusted client addresses"
-msgstr "Endereços de confiança do SSO OpenId Connect"
+msgid "Trusted client addresses"
+msgstr "Endereços de confiança"
 
-msgid "OpenId Connect blacklist client addresses"
-msgstr "Endereços de clientes de bloqueios OpenId Connect"
+msgid "Blacklist client addresses"
+msgstr "Endereços de clientes de bloqueios"
 
-msgid "OpenId Connect Server Url"
-msgstr "URL do servidor OpenId Connect"
+msgid "Base Url"
+msgstr "Url base"
 
-msgid "OpenId Connect Redirect Url"
-msgstr "Endereço de redirecionamento do Centreon para o OpenId Connect"
+msgid "Authorization Endpoint"
+msgstr "Endpoint de autorização"
 
-msgid "OpenId Connect Client Realm"
-msgstr "Dominio cliente OpenId Connect"
+msgid "Token Endpoint"
+msgstr "Endpoint de token"
 
-msgid "OpenId Connect Client ID"
-msgstr "Identificação de cliente OpenId Connect"
+msgid "Introspection Token Endpoint"
+msgstr "Endpoint de introspecção do token"
 
-msgid "OpenId Connect Client Secret"
-msgstr "Segredo de cliente OpenId Connect"
+msgid "User Information Endpoint"
+msgstr "Endpoint de informações do usuário"
+
+msgid "Scope"
+msgstr "Escopo"
+
+msgid "Redirect Url"
+msgstr "URL de redirecionamento"
+
+msgid "Client ID"
+msgstr "Identificação de cliente"
+
+msgid "Client Secret"
+msgstr "Segredo de cliente"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:202
 msgid "SSO only"
