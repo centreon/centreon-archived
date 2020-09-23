@@ -11835,6 +11835,12 @@ msgstr ""
 msgid "The name of the poller is mandatory"
 msgstr "Le nom du collecteur est obligatoire"
 
+msgid "The IP address is already registered on another poller"
+msgstr "L'adresse IP est déjà enregistrée sur un autre collecteur"
+
+msgid "The IP address is already registered"
+msgstr "L'adresse IP est déjà enregistrée"
+
 #: centreon-web/www/include/configuration/configServers/listServers.php:112
 msgid "Localhost"
 msgstr "Hôte local"
@@ -15657,3 +15663,12 @@ msgstr "L'adresse IP ne peut pas être vide"
 
 msgid "Monitoring server is not correctly defined"
 msgstr "Le serveur de supervision n'est pas correctement défini"
+
+msgid "Submit a status"
+msgstr "Soumettre un statut"
+
+msgid "Status submitted"
+msgstr "Statut soumis"
+
+msgid "No resource found"
+msgstr "Pas de ressource trouvée"

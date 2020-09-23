@@ -70,6 +70,11 @@ $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 // Backup poller selection
 $obj->setInstanceHistory($instance);
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 //saving bound values
 $queryValues = [];
 
@@ -181,11 +186,16 @@ if (isset($tab_svc)) {
         $obj->XML->writeAttribute("class", $obj->getNextLineClass());
         if (isset($tab["tab_svc"])) {
             foreach ($tab["tab_svc"] as $svc => $state) {
+                $serviceId = $svcObj->getServiceId($svc, $host_name);
                 $obj->XML->startElement("svc");
                 $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc), false);
                 $obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
                 $obj->XML->writeElement("sc", $obj->colorService[$state]);
-                $obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
+                $obj->XML->writeElement("svc_id", $serviceId);
+                $obj->XML->writeElement(
+                    "s_details_uri",
+                    $resourceController->buildServiceDetailsUri($tab["hid"], $serviceId)
+                );
                 $obj->XML->endElement();
             }
         }
@@ -196,6 +206,17 @@ if (isset($tab_svc)) {
         $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
         $obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
         $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+        $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($tab["hid"]));
+        $obj->XML->writeElement(
+            "s_listing_uri",
+            $resourceController->buildListingUri([
+                'filter' => json_encode([
+                    'criterias' => [
+                        'search' => 'h.name:^' . $host_name . '$',
+                    ],
+                ]),
+            ])
+        );
         $obj->XML->endElement();
     }
 }

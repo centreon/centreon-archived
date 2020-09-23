@@ -7916,6 +7916,12 @@ msgstr "Diretorio de banco de dados leve para traps SNMP"
 msgid "The name of the poller is mandatory"
 msgstr "O nome do coletor é obrigatorio"
 
+#: msgid "The IP address is already registered on another poller"
+#: msgstr ""
+
+#: msgid "The IP address is already registered"
+#: msgstr ""
+
 #: centreon-web/www/include/configuration/configServers/listServers.php:133
 msgid "Server type"
 msgstr "Tipo de servidor"
@@ -15052,4 +15058,13 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "Disacknowledgement command sent"
+#  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""
+
+#  msgid "No resource found"
 #  msgstr ""

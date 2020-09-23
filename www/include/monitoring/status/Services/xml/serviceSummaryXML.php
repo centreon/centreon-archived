@@ -69,6 +69,11 @@ $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 // Backup poller selection
 $obj->setInstanceHistory($instance);
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 $service = [];
 $host_status = [];
 $service_status = [];
@@ -159,6 +164,31 @@ $obj->XML->writeElement("limit", $limit);
 $obj->XML->writeElement("p", $p);
 $obj->XML->endElement();
 
+$buildParameter = function (string $id, string $name) {
+    return [
+        'id' => $id,
+        'name' => $name,
+    ];
+};
+
+$buildServicesUri = function (string $hostname, array $statuses) use ($resourceController, $buildParameter) {
+    return $resourceController->buildListingUri([
+        'filter' => json_encode([
+            'criterias' => [
+                'search' => 'h.name:^' . $hostname . '$',
+                'resourceTypes' => [$buildParameter('service', 'Service')],
+                'statuses' => $statuses,
+            ],
+        ]),
+    ]);
+};
+
+$okStatus = $buildParameter('OK', 'Ok');
+$warningStatus = $buildParameter('WARNING', 'Warning');
+$criticalStatus = $buildParameter('CRITICAL', 'Critical');
+$unknownStatus = $buildParameter('UNKNOWN', 'Unknown');
+$pendingStatus = $buildParameter('PENDING', 'Pending');
+
 $ct = 0;
 $tabFinal = [];
 while ($ndo = $dbResult->fetch()) {
@@ -187,6 +217,17 @@ foreach ($tabFinal as $host_name => $tab) {
     $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
     $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
     $obj->XML->writeElement("hid", $tab["host_id"], false);
+    $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($tab["host_id"]));
+    $obj->XML->writeElement(
+        "s_listing_uri",
+        $resourceController->buildListingUri([
+            'filter' => json_encode([
+                'criterias' => [
+                    'search' => 'h.name:^' . $host_name . '$',
+                ],
+            ]),
+        ])
+    );
     $obj->XML->writeElement("ico", $tabIcone[$host_name]);
     $obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
     $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
@@ -200,6 +241,11 @@ foreach ($tabFinal as $host_name => $tab) {
     $obj->XML->writeElement("skc", $obj->colorService[0]);
     $obj->XML->writeElement("sp", $tab["nb_service_p"]);
     $obj->XML->writeElement("spc", $obj->colorService[4]);
+    $obj->XML->writeElement("s_listing_ok", $buildServicesUri($host_name, [$okStatus]));
+    $obj->XML->writeElement("s_listing_warning", $buildServicesUri($host_name, [$warningStatus]));
+    $obj->XML->writeElement("s_listing_critical", $buildServicesUri($host_name, [$criticalStatus]));
+    $obj->XML->writeElement("s_listing_unknown", $buildServicesUri($host_name, [$unknownStatus]));
+    $obj->XML->writeElement("s_listing_pending", $buildServicesUri($host_name, [$pendingStatus]));
     $obj->XML->endElement();
 }
 

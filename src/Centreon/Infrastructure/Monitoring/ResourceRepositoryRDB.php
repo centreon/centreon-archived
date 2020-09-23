@@ -214,7 +214,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.flapping, resource.percent_state_change, '
             . 'resource.severity_level, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
-            . 'resource.active_checks, '
+            . 'resource.active_checks, resource.passive_checks,'
             . 'resource.impacted_resources_count, resource.last_status_change, '
             . 'resource.last_notification, resource.notification_number, '
             . 'resource.tries, resource.last_check, resource.next_check, '
@@ -452,6 +452,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.scheduled_downtime_depth AS `in_downtime`,
             s.acknowledged AS `acknowledged`,
             s.active_checks AS `active_checks`,
+            s.passive_checks AS `passive_checks`,
             service_cvl.value AS `severity_level`,
             sc.sc_name AS `severity_name`,
             0 AS `impacted_resources_count`,
@@ -638,6 +639,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.scheduled_downtime_depth AS `in_downtime`,
             h.acknowledged AS `acknowledged`,
             h.active_checks AS `active_checks`,
+            h.passive_checks AS `passive_checks`,
             host_cvl.value AS `severity_level`,
             hc.hc_comment AS `severity_name`,
             (SELECT COUNT(DISTINCT host_s.service_id)
@@ -785,7 +787,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'severity_'
         );
 
-        if ($severity->getLevel() && $severity->getName()) {
+        if ($severity->getLevel() !== null) {
             $resource->setSeverity($severity);
         }
 

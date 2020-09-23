@@ -15,6 +15,7 @@ export interface ActionAcl {
   acknowledgement: boolean;
   disacknowledgement: boolean;
   downtime: boolean;
+  submit_status: boolean;
 }
 
 export interface Actions {
