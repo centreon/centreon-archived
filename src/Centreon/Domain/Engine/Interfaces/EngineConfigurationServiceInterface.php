@@ -36,4 +36,13 @@ interface EngineConfigurationServiceInterface
      * @return EngineConfiguration|null
      */
     public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration;
+
+    /**
+     * Find the Engine configuration by its name.
+     *
+     * @param string $engineName Name of Engine configuration
+     * @throws EngineException
+     * @return EngineConfiguration|null
+     */
+    public function findEngineConfigurationByName(string $engineName): ?EngineConfiguration;
 }

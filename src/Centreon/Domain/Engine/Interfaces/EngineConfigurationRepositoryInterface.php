@@ -34,4 +34,12 @@ interface EngineConfigurationRepositoryInterface
      * @return EngineConfiguration|null
      */
     public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration;
+
+    /**
+     * Find the Engine configuration by its name.
+     *
+     * @param string $engineName Name of Engine configuration
+     * @return EngineConfiguration|null
+     */
+    public function findEngineConfigurationByName(string $engineName): ?EngineConfiguration;
 }
