@@ -43,7 +43,9 @@ const useStyles = makeStyles((theme) => ({
     height: 19,
   },
   smallChipContainer: {
-    height: 18,
+    height: theme.spacing(2.5),
+    width: theme.spacing(2.5),
+    fontSize: 10,
   },
   smallChipLabel: {
     padding: theme.spacing(0.5),
