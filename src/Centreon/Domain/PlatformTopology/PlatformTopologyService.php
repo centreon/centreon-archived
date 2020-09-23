@@ -360,7 +360,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         // A platform behind a remote needs to send the data to the Central too
         if (
-            null !== $registeredParentInTopology->getServerId()
+            null === $registeredParentInTopology->getParentId()
             && $registeredParentInTopology->getType() === PlatformTopology::TYPE_REMOTE
         ) {
             $platformTopology->setLinkedToAnotherServer(true);
