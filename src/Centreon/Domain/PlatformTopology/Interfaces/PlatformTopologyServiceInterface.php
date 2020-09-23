@@ -51,9 +51,10 @@ interface PlatformTopologyServiceInterface
      * Search for platforms nagios_server ID and set it as serverId
      *
      * @param PlatformTopology $platformTopology
+     * @param bool $isLocalhost
      * @throws PlatformTopologyConflictException
      */
-    public function setServerNagiosId(PlatformTopology $platformTopology): void;
+    public function setServerNagiosId(PlatformTopology $platformTopology, bool $isLocalhost): void;
 
     /**
      * Search for already registered platforms using same name or address

@@ -71,21 +71,23 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          * Search for already registered central or remote top level server on this platform
          * As only top level platform do not need parent_address and only one should be registered
          */
+        $isLocalhost = true;
         if (PlatformTopology::TYPE_CENTRAL === $platformTopology->getType()) {
             // New unique Central top level platform case
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
-            $this->setServerNagiosId($platformTopology);
         } elseif (PlatformTopology::TYPE_REMOTE === $platformTopology->getType()) {
             // Cannot add a Remote behind another Remote
+            $isLocalhost = false;
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
-
             if (null === $platformTopology->getParentAddress()) {
                 // New unique Remote top level platform case
                 $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
-                $this->setServerNagiosId($platformTopology);
+                $isLocalhost = true;
             }
         }
+
+        $this->setServerNagiosId($platformTopology, $isLocalhost);
 
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
         $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
@@ -276,10 +278,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * @inheritDoc
      */
-    public function setServerNagiosId(PlatformTopology $platformTopology): void
+    public function setServerNagiosId(PlatformTopology $platformTopology, bool $isLocalhost): void
     {
-        $foundServerInNagiosTable = $this->platformTopologyRepository->findPlatformTopologyNagiosId(
-            $platformTopology->getName()
+        $foundServerInNagiosTable = $this->platformTopologyRepository->findNagiosIdFromName(
+            $platformTopology->getName(),
+            $isLocalhost
         );
 
         if (null === $foundServerInNagiosTable) {

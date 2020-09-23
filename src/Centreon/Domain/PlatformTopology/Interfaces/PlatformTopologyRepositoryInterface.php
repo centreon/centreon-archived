@@ -66,9 +66,10 @@ interface PlatformTopologyRepositoryInterface
      * Search for platform's nagiosID using its name
      *
      * @param string $serverName
+     * @param bool $isLocalhost
      * @return PlatformTopology|null
      */
-    public function findPlatformTopologyNagiosId(string $serverName): ?PlatformTopology;
+    public function findNagiosIdFromName(string $serverName, bool $isLocalhost): ?PlatformTopology;
 
     /**
      * Retrieve all data from 'information' table
