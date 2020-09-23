@@ -24,7 +24,7 @@ const GraphColumn = ({
   onClick,
 }: {
   onClick: (row) => void;
-}): ((props) => JSX.Element | null) => {
+}): ((props: ComponentColumnProps) => JSX.Element | null) => {
   const GraphHoverChip = ({
     row,
   }: ComponentColumnProps): JSX.Element | null => {
