@@ -213,7 +213,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     label: t(labelStatus),
     type: ColumnType.component,
     Component: StatusColumn({ actions, t }),
-    getDisplayedComponentId: (isHovered): number => (isHovered ? 1 : 0),
+    hasHoverableComponent: true,
     sortField: 'status_severity_code',
     clickable: true,
     width: 145,
@@ -279,6 +279,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     Component: StateColumn,
     sortable: false,
     width: 80,
+    renderComponentOnRowUpdate: true,
   },
 ];
 
