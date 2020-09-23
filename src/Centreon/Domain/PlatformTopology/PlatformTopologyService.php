@@ -71,11 +71,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          * Search for already registered central or remote top level server on this platform
          * As only top level platform do not need parent_address and only one should be registered
          */
-        $isLocalhost = true;
         if (PlatformTopology::TYPE_CENTRAL === $platformTopology->getType()) {
             // New unique Central top level platform case
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
+            $this->setServerNagiosId($platformTopology, true);
         } elseif (PlatformTopology::TYPE_REMOTE === $platformTopology->getType()) {
             // Cannot add a Remote behind another Remote
             $isLocalhost = false;
@@ -85,9 +85,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
                 $isLocalhost = true;
             }
+            $this->setServerNagiosId($platformTopology, $isLocalhost);
         }
 
-        $this->setServerNagiosId($platformTopology, $isLocalhost);
+
 
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
         $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
