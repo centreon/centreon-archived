@@ -11,7 +11,7 @@ import {
 import { baseEndpoint } from '../../api/endpoint';
 import { RawFilter, Filter } from '../models';
 
-const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
+const filterEndpoint = `${baseEndpoint}/users/filters/resources-status`;
 
 const buildListCustomFiltersEndpoint = (parameters): string =>
   buildListingEndpoint({
