@@ -71,7 +71,8 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
             }
-        } elseif (isset($this->ssoOptions['openid_connect_enable'])
+        } elseif (
+            isset($this->ssoOptions['openid_connect_enable'])
             && $this->ssoOptions['openid_connect_enable'] == 1
             && !empty($this->ssoOptions['openid_connect_base_url'])
             && !empty($this->ssoOptions['openid_connect_authorization_endpoint'])
