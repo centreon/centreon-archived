@@ -39,6 +39,7 @@ class PlatformTopology extends AbstractObject
         server_id
     ';
     protected $attributesWrite = [
+        'id',
         'address',
         'name',
         'type',
