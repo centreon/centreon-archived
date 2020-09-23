@@ -33,7 +33,7 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Timeline\TimelineContact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 
@@ -223,7 +223,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             if ($result['contact_name'] !== null) {
                 $timelineEvent->setContact(
                     EntityCreator::createEntityByArray(
-                        Contact::class,
+                        TimelineContact::class,
                         $result,
                         'contact_'
                     )
