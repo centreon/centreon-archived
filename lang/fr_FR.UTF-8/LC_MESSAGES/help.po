@@ -921,7 +921,7 @@ msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
 msgstr "L'url du service OpenId Connect User Information (par exemple /userinfo)."
 
 msgid "Your OpenId Connect Scope (for example openid)."
-msgstr "Le champ d'application "scope" (par exemple openid)."
+msgstr "Le champ d'application 'scope' (par exemple openid)."
 
 msgid "Your OpenId Connect redirect url (this server)."
 msgstr "L'URL OpenId Connect de redirection vers Centreon (ce serveur)."
