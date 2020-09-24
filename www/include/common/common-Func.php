@@ -2235,10 +2235,10 @@ function getFirstAllowedMenu($lcaTStr, $defaultPage)
         "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
         . "FROM topology "
         . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
-        . "topology_page IS NOT NULL AND topology_show = '1' "
+        . "topology_page IS NOT NULL AND topology_show = '1' AND topology_url IS NOT NULL "
         . "ORDER BY FIELD(topology_page, :default_page) DESC, "
         . "FIELD(topology_url_opt, :default_page_options) DESC, "
-        . "topology_id ASC "
+        . "topology_page ASC, topology_id ASC "
         . "LIMIT 1"
     );
 
