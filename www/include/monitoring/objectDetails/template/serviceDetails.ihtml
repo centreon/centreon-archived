@@ -220,7 +220,7 @@
                                 <td></td>
                             </tr>
                             {/if}
-                            {if $lcaTopo.6 || $lcaTopo.602 || $admin == 1}
+                            {if ($lcaTopo.6 || $lcaTopo.602 || $admin == 1) && !$isRemote}
                             <tr>
                                 <td class="ColPopup">
                                     {if $lcaTopo.6 || $admin == 1}
