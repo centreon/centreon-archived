@@ -89,28 +89,147 @@ class PlatformTopology
     private $isLinkedToAnotherServer = false;
 
     /**
-     * data recovered from 'informations' table
+     * data retrieved from 'informations' table
      * @var string|null platform type
      */
     private $isRemote;
 
     /**
-     * data recovered from 'informations' table
+     * data retrieved from 'informations' table
      * @var string|null central's address
      */
     private $authorizedMaster;
 
     /**
-     * data recovered from 'informations' table
+     * data retrieved from 'informations' table
      * @var string|null
      */
     private $apiUsername;
 
     /**
-     * data recovered from 'informations' table
+     * data retrieved from 'informations' table
      * @var string|null
      */
     private $apiCredentials;
+
+    /**
+     * data retrieved from 'informations' table
+     * @var string|null
+     */
+    private $apiScheme;
+
+    /**
+     * data retrieved from 'informations' table
+     * @var integer|null
+     */
+    private $apiPort;
+
+    /**
+     * data retrieved from 'informations' table
+     * @var string|null
+     */
+    private $apiPath;
+
+    /**
+     * data retrieved from 'informations' table
+     * @var string|null
+     */
+    private$apiSelfSignedCertificate;
+
+    /**
+     * data retrieved from 'informations' table
+     * @return string|null
+     */
+    public function getApiScheme(): ?string
+    {
+        return $this->apiScheme;
+    }
+
+    /**
+     * @param string $schema
+     * @return $this
+     */
+    public function setApiScheme(string $schema): self
+    {
+        $this->apiScheme = ($schema === 'https' ? 'https' : 'http');
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getApiPort(): ?string
+    {
+        return $this->apiPort;
+    }
+
+    /**
+     * @param int|null $port
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setApiPort(?int $port): self
+    {
+        // auto resolving default scheme port
+        if (null === $port && null !== $this->apiScheme) {
+            if ('https' === $this->apiScheme) {
+                $this->apiPort = 443;
+                return $this;
+            }
+            if ('http' === $this->apiScheme) {
+                $this->apiPort = 80;
+                return $this;
+            }
+        }
+
+        // checking
+        $port = filter_var($port, FILTER_VALIDATE_INT);
+        if (false === $port
+            || (1 > $port && $port > 65536)
+        ) {
+            throw new PlatformTopologyException(
+                _("Central's platform API port is not consistent. Please check the 'Remote Access' form")
+            );
+        }
+        $this->apiPort = $port;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getApiPath(): ?string
+    {
+        return $this->apiPath;
+    }
+
+    /**
+     * @param string $path
+     * @return $this
+     * @throws PlatformTopologyException
+     */
+    public function setApiPath(string $path): self
+    {
+        $path = filter_var($path, FILTER_SANITIZE_STRING);
+        if (empty($path)) {
+            throw new PlatformTopologyException(
+                _("Central's platform API root path is empty. Please check the 'Remote Access' form")
+            );
+        }
+        $this->apiPath = $path;
+        return $this;
+    }
+
+    public function getApiSelfSignedCertificate(): ?string
+    {
+        return $this->apiSelfSignedCertificate;
+    }
+
+    public function setApiSelfSignedCertificate(string $status): self
+    {
+        $this->apiSelfSignedCertificate = ('yes' === $status ? 'yes' : 'no');
+        return $this;
+    }
 
     /**
      * @return string|null

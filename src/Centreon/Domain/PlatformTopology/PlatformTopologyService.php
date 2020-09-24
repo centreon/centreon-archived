@@ -146,6 +146,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 /*
                  *  TODO check url consistency, protocol and root platform name
                  */
+
+
                 $baseApiEndpoint = 'http://' .
                     $platformInformation->getAuthorizedMaster() .
                     '/centreon/api/latest/';
