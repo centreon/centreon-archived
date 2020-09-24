@@ -63,17 +63,18 @@ function isRemote(string $type): bool
 function registerRemote(string $ip, array $loginCredentials): array
 {
     $db = new CentreonDB();
+    $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
+    $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
 
     //verifier que ce n'est pas un remote
     $db->query(" SELECT * FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'");
     $isRemote = $db->numberRows();
-    if ($isRemote) {
+    if (!$isRemote) {
         require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
         require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
         require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
         $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
         $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
-        die();
         //hide menu
         $topologyRepository->disableMenus();
 
@@ -91,6 +92,12 @@ function registerRemote(string $ip, array $loginCredentials): array
 
     //register credentials
     registerCentralCredentials($db, $loginCredentials);
+
+    //Apply Remote Server mode in configuration file
+    system(
+        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+    );
+
 
     //update platform_topology type
     $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
