@@ -23,6 +23,7 @@ use Security\Encryption;
 
 require_once(realpath(__DIR__ . '/../config/centreon.config.php'));
 require_once('registerServerTopology-Func.php');
+require_once _CENTREON_PATH_ . "/src/Security/Interfaces/EncryptionInterface.php";
 require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
 
 
@@ -257,10 +258,25 @@ if (isRemote($serverType)) {
         exit($e->getMessage());
     }
     $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
-    $loginCredentialsDb['apiSelfSignedCertificate'] = isset($configOptions['INSECURE']) ? '1' : '0';
+    $loginCredentialsDb['apiSelfSignedCertificate'] = isset($configOptions['INSECURE']) ? 'yes' : 'no';
     $loginCredentialsDb['apiScheme'] = $protocol;
-    if (isset($configOptions["PROXY_PORT"])) {
-        $loginCredentials['apiPort'] = $configOptions["PROXY_PORT"];
+    if (isset($port)) {
+        $loginCredentials['apiPort'] = $port;
+    }
+    if ($configOptions['PROXY_USAGE'] === true) {
+        $loginCredentialsDb['apiProxyHost'] = $configOptions["PROXY_HOST"];
+        $loginCredentialsDb['apiProxyPort'] = $configOptions["PROXY_PORT"];
+        $loginCredentialsDb['apiProxyUsername'] = $configOptions["PROXY_USERNAME"];
+        if (isset($configOptions["PROXY_PASSWORD"])){
+            try {
+                $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
+                $loginCredentialsDb['apiProxyCredentials'] = $centreonEncryption->crypt(
+                    $configOptions['PROXY_PASSWORD']
+                );
+            } catch (\InvalidArgumentException $e) {
+                exit($e->getMessage());
+            }
+        }
     }
     $registerPayloads = registerRemote($host, $loginCredentialsDb);
 } else {

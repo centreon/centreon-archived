@@ -145,9 +145,10 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $bindValues = [];
     foreach ($loginCredentials as $key => $value) {
         if($count === count($loginCredentials)) {
-            $queryValue .= " ($key, :$key)";
+            $queryValue .= " ('$key', :$key)";
+        }else {
+            $queryValue .= " ('$key', :$key), ";
         }
-        $queryValue .= " ($key, :$key), ";
         $count++;
         switch ($key) {
             case 'apiPort':
@@ -162,7 +163,9 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
                 break;
         }
     }
+    $db->query("DELETE FROM informations WHERE `key` LIKE '%api%'");
     $query = "INSERT INTO `informations` (`key`, `value`) VALUES $queryValue";
+    var_dump($query);
     $statement = $db->prepare($query);
     foreach($bindValues as $token => $bindParams) {
         foreach($bindParams as $paramType => $paramValue) {
