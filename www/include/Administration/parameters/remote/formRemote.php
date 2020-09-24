@@ -80,8 +80,12 @@ try {
     if (!empty($result['apiUsername'])) {
         $decryptResult = $centreonEncryption->decrypt($result['apiCredentials'] ?? '');
     }
+    if (!empty($result['apiProxyUsername'])) {
+        $decryptProxyResult = $centreonEncryption->decrypt($result['apiProxyCredentials'] ?? '');
+    }
 } catch (Exception $e) {
     unset($result['apiCredentials']);
+    unset($result['apiProxyCredentials']);
     $errorMsg = _('The password cannot be decrypted. Please re-enter the account password and submit the form');
     echo "<div class='msg' align='center'>" . $errorMsg . "</div>";
 }
@@ -142,15 +146,58 @@ $form->setDefaults(1);
 
 $form->addElement(
     'checkbox',
-    'apiSelfSigned',
+    'apiSelfSignedCertificate',
     _("Allow self signed certificate"),
     null
 );
 $form->setDefaults(1);
 
+$form->setDefaults(
+    [
+        'apiPath' => $result['apiPath'],
+        'apiPort' => $result['apiPort'],
+        'apiScheme' => ($result['apiScheme'] == 'https' ? 1 : 0),
+        'apiSelfSignedCertificate' => ($result['apiSelfSignedCertificate'] == 'yes' ? 1 : 0)
+    ]
+);
+
+//Proxy
+$form->addElement('header', 'informationProxy', _("Central's Proxy"));
+$form->addElement(
+    'text',
+    'apiProxyHost',
+    _("apiProxyHost"),
+    $attrsText
+);
+
+$form->addElement('text', 'apiProxyPort', _("Port"), $attrsText2);
+$form->addRule('apiProxyPort', _('Must be a number'), 'numeric');
+
+$form->addElement(
+    'text',
+    'apiProxyUsername',
+    _("Username"),
+    $attrsText
+);
+
+$form->addElement(
+    'password',
+    'apiProxyCredentials',
+    _("Password"),
+    ["size" => "40", "autocomplete" => "new-password", "id" => "passwd2", "onFocus" => "resetPwdType(this);"]
+);
+
+$form->setDefaults(
+    [
+        'apiProxyHost' => $result['apiProxyHost'],
+        'apiProxyPort' => $result['apiProxyPort'],
+        'apiProxyUsername' => $result['apiProxyUsername'],
+        'apiProxyCredentials' => (!empty($decryptProxyResult) ? CentreonAuth::PWS_OCCULTATION : '')
+    ]
+);
+
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
-
 
 $subC = $form->addElement('submit', 'submitC', _("Save"), ["class" => "btc bt_success"]);
 $form->addElement('reset', 'reset', _("Reset"), ["class" => "btc bt_default"]);

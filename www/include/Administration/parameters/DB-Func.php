@@ -1007,31 +1007,44 @@ function updateKnowledgeBaseData($db, $form, $centreon)
 function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
 {
     $ret = $form->getSubmitValues();
+    $passApi = $ret['apiCredentials'];
+    $passProxy = $ret['apiProxyCredentials'];
 
-    //clean useless value
+    //clean useless values
+    unset($ret['submitC']);
+    unset($ret['o']);
+    unset($ret['centreon_token']);
+    unset($ret['apiCredentials']);
+    unset($ret['apiProxyCredentials']);
 
+    //convert values
+    $ret['apiScheme'] = $ret['apiScheme'] == 1 ? 'https' : 'http';
+    $ret['apiSelfSignedCertificate'] = $ret['apiSelfSignedCertificate'] == 1 ? 'yes' : 'no';
 
-    ["submitC"]=> string(4) "Save" ["o"]=> string(6) "remote" ["centreon_token"]
+    //update information
+    foreach ($ret as $key => $value) {
+        updateInformations($db, $key, $value);
+    }
 
-
-
-
-
-
-    updateInformations(
-        $db,
-        'apiUsername',
-        $ret['apiUsername']
-    );
-
-    var_dump($ret);
-
-    if (CentreonAuth::PWS_OCCULTATION !== $ret['apiCredentials']) {
+    if (CentreonAuth::PWS_OCCULTATION !== $passApi) {
         try {
             updateInformations(
                 $db,
                 'apiCredentials',
-                $centreonEncryption->crypt($ret['apiCredentials'])
+                $centreonEncryption->crypt($passApi)
+            );
+        } catch (Exception $e) {
+            $errorMsg = _('The password cannot be crypted. Please re-submit the form');
+            echo "<div class='msg' align='center'>" . $errorMsg . "</div>";
+        }
+    }
+
+    if (CentreonAuth::PWS_OCCULTATION !== $passProxy) {
+        try {
+            updateInformations(
+                $db,
+                'apiProxyCredentials',
+                $centreonEncryption->crypt($passProxy)
             );
         } catch (Exception $e) {
             $errorMsg = _('The password cannot be crypted. Please re-submit the form');
