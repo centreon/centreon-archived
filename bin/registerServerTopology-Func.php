@@ -67,25 +67,31 @@ function isRemote(string $type): bool
 function registerRemote(string $ip, array $loginCredentials): array
 {
     $db = new CentreonDB();
-    $topologyRepository = new TopologyRepository($db);
-    $informationRepository = new InformationsRepository($db);
 
-    //hide menu
-    $topologyRepository->disableMenus();
+    //verifier que ce n'est pas un remote
+    $db->query(" SELECT * FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'");
+    $isRemote = $db->numberRows();
+    if(!$isRemote) {
+        $topologyRepository = new TopologyRepository($db);
+        $informationRepository = new InformationsRepository($db);
 
-    //register remote in db
-    $informationRepository->toggleRemote('yes');
+        //hide menu
+        $topologyRepository->disableMenus();
 
-    //register master in db
-    $informationRepository->authorizeMaster($ip);
+        //register remote in db
+        $informationRepository->toggleRemote('yes');
+
+        //register master in db
+        $informationRepository->authorizeMaster($ip);
+
+        //Apply Remote Server mode in configuration file
+        system(
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+        );
+    }
 
     //register credentials
     registerCentralCredentials($db, $loginCredentials);
-
-    //Apply Remote Server mode in configuration file
-    system(
-        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
-    );
 
     //update platform_topology type
     $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
@@ -134,10 +140,35 @@ function getChildren(CentreonDB $db): array
  */
 function registerCentralCredentials(CentreonDB $db, array $loginCredentials): void
 {
-    $query = "INSERT INTO `informations` (`key`, `value`) VALUES ('apiUsername', :username), ('apiCredentials', :pwd)";
+    $queryValue = '';
+    $count = 1;
+    $bindValues = [];
+    foreach ($loginCredentials as $key => $value) {
+        if($count === count($loginCredentials)) {
+            $queryValue .= " ($key, :$key)";
+        }
+        $queryValue .= " ($key, :$key), ";
+        $count++;
+        switch ($key) {
+            case 'apiPort':
+                $bindValues[':' . $key] = [
+                    \PDO::PARAM_INT => $value
+                ];
+                break;
+            default:
+                $bindValues[':' . $key] = [
+                    \PDO::PARAM_STR => $value
+                ];
+                break;
+        }
+    }
+    $query = "INSERT INTO `informations` (`key`, `value`) VALUES $queryValue";
     $statement = $db->prepare($query);
-    $statement->bindValue(':username', $loginCredentials['login'], \PDO::PARAM_STR);
-    $statement->bindValue(':pwd', $loginCredentials['password'], \PDO::PARAM_STR);
+    foreach($bindValues as $token => $bindParams) {
+        foreach($bindParams as $paramType => $paramValue) {
+            $statement->bindValue($token, $paramValue, $paramType);
+        }
+    }
     $statement->execute();
 }
 

@@ -21,6 +21,7 @@
 
 use Security\Encryption;
 
+require_once(realpath(__DIR__ . '/../config/centreon.config.php'));
 require_once('registerServerTopology-Func.php');
 require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
 
@@ -246,14 +247,20 @@ if (isRemote($serverType)) {
 
     //prepare db credential
     $loginCredentialsDb = [
-        "login" => $configOptions['API_USERNAME']
+        "apiUsername" => $configOptions['API_USERNAME']
     ];
     $centreonEncryption = new Encryption();
     try {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
-        $loginCredentialsDb['password'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
+        $loginCredentialsDb['apiCredentials'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
     } catch (\InvalidArgumentException $e) {
         exit($e->getMessage());
+    }
+    $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
+    $loginCredentialsDb['apiSelfSignedCertificate'] = isset($configOptions['INSECURE']) ? '1' : '0';
+    $loginCredentialsDb['apiScheme'] = $protocol;
+    if (isset($configOptions["PROXY_PORT"])) {
+        $loginCredentials['apiPort'] = $configOptions["PROXY_PORT"];
     }
     $registerPayloads = registerRemote($host, $loginCredentialsDb);
 } else {
