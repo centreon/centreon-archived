@@ -22,6 +22,7 @@ class RemoteServerFormStepOne extends Component {
   state = {
     inputTypeManual: true,
     initialized: false,
+    name: ''
   };
 
   onManualInputChanged(inputTypeManual) {
@@ -50,6 +51,11 @@ class RemoteServerFormStepOne extends Component {
       centreon_folder: '/centreon/',
     });
   };
+
+  handleChange = (e, value) => {
+    const {change} = this.props
+    change('server_name', value)
+  }
 
   render() {
     const { error, handleSubmit, onSubmit, waitList, t } = this.props;
@@ -152,6 +158,7 @@ class RemoteServerFormStepOne extends Component {
               <div>
                 {waitList ? (
                   <Field
+                    onChange={handleChange}
                     name="server_ip"
                     component={SelectField}
                     label={`${t('Select Pending Remote Links')}:`}

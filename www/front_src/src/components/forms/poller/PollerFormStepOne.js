@@ -13,9 +13,13 @@ import InputField from '../../form-fields/InputField';
 import { validateFieldRequired } from '../../../helpers/validators';
 
 class PollerFormStepOne extends Component {
+  state = {
+    inputTypeManual: true,
+  }
+
   render() {
     const { error, handleSubmit, onSubmit, t } = this.props;
-
+    const { inputTypeManual } = this.state;
     return (
       <div className={styles['form-wrapper']}>
         <div className={styles['form-inner']}>
@@ -50,6 +54,15 @@ class PollerFormStepOne extends Component {
                 'Centreon Central IP address, as seen by this server',
               )}:`}
               validate={validateFieldRequired(t)}
+            />
+            <Field
+              name="inputTypeManual"
+              onClick={() => {
+                this.onManualInputChanged(false);
+              }}
+              checked={!inputTypeManual}
+              component={RadioField}
+              label={`${t('Select a Pending Poller')}:`}
             />
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
