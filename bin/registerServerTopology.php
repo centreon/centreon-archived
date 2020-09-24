@@ -21,7 +21,9 @@
 
 use Security\Encryption;
 
+require_once(realpath(__DIR__ . '/../config/centreon.config.php'));
 require_once('registerServerTopology-Func.php');
+require_once _CENTREON_PATH_ . "/src/Security/Interfaces/EncryptionInterface.php";
 require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
 
 
