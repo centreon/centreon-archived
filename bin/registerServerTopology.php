@@ -297,7 +297,7 @@ try {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    if (isset($configOptions['PROXY_USAGE'])) {
+    if ($configOptions['PROXY_USAGE'] === true) {
         curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
         curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
         if (!empty($configOptions["PROXY_USERNAME"])) {
@@ -354,7 +354,7 @@ foreach ($registerPayloads as $postData) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
-        if (isset($configOptions['PROXY_USAGE'])) {
+        if ($configOptions['PROXY_USAGE'] === true) {
             curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
             curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
             if (!empty($configOptions["PROXY_USERNAME"])) {
