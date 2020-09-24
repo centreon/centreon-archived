@@ -82,25 +82,6 @@
             </td>
             <td class="FormRowValue">{$form.apiProxyCredentials.html}</td>
         </tr>
-
-
-
-
-
-
-
-
-
-
-        | apiProxyHost             | Toto                                                                                                                             |
-        | apiProxyPort             | 541                                                                                                                              |
-        | apiProxyUsername         | toto                                                                                                                             |
-        | apiProxyCredentials
-
-
-
-
-
     </table>
     {if !$valid}
         <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
