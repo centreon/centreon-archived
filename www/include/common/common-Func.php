@@ -2219,7 +2219,7 @@ function cleanString($str)
  * @param int $defaultPage User default page
  * @return array The topology information (url, options, name...)
  */
-function getFirstAllowedMenu($lcaTStr, $defaultPage = 104)
+function getFirstAllowedMenu($lcaTStr, $defaultPage)
 {
     global $pearDB;
 
