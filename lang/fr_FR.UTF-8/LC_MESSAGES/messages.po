@@ -15585,12 +15585,8 @@ msgid "The address and parent_address of the platform are the same"
 msgstr "Les adresses de la platforme et de son parent sont les mêmes"
 
 #: api/topology/register
-msgid "Central's platform API port is not consistent. Please check the 'Remote Access' form"
-msgstr "Le port de l'API de la plateforme Central n'est pas cohérent. Veuiller vérifier le formulaire 'Accès du Remote'"
-
-#: api/topology/register
-msgid "Central's platform API root path is empty. Please check the 'Remote Access' form"
-msgstr "Le chemin de l'API de la plateforme Central n'est pas renseigné. Veuiller vérifier le formulaire 'Accès du Remote'"
+msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"
+msgstr "Les données de la plateforme Central ne sont pas cohérentes. Veuiller vérifier le formulaire 'Accès du Remote'"
 
 #: api/topology/register
 msgid "Platform's mandatory data are missing. Please reinstall your platform."
@@ -15607,6 +15603,10 @@ msgstr "La plateforme: '%s'@'%s n'est liée à aucun Central. Veuillez d'abord u
 #: api/topology/register
 msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."
 msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez compléter le formulaire 'Accès du Remote'."
+
+#: api/topology/register
+msgid "Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form"
+msgstr "Impossible de déchiffrer les identifiants du Central. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/topology/register
 msgid "Failed to get the auth token. Cannot register the platform : '%s'@'%s' on the Central"

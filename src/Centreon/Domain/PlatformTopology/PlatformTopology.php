@@ -24,6 +24,7 @@ namespace Centreon\Domain\PlatformTopology;
 
 use InvalidArgumentException;
 use Security\Encryption;
+use throwable;
 
 /**
  * Class designed to retrieve servers to be added using the wizard
@@ -134,10 +135,114 @@ class PlatformTopology
      * data retrieved from 'informations' table
      * @var string|null
      */
-    private$apiSelfSignedCertificate;
+    private $apiSelfSignedCertificate;
 
     /**
      * data retrieved from 'informations' table
+     * @var string|null
+     */
+    private $apiProxyHost;
+
+    /**
+     * data retrieved from 'informations' table
+     * @var int|null
+     */
+    private $apiProxyPort;
+
+    /**
+     * data retrieved from 'informations' table
+     * @var string|null
+     */
+    private $apiProxyUsername;
+
+    /**
+     * data retrieved from 'informations' table
+     * @var string|null
+     */
+    private $apiProxyCredentials;
+
+    public function getApiProxyHost(): ?string
+    {
+        return $this->apiProxyHost;
+    }
+
+    /**
+     * @param string $path
+     * @return $this
+     */
+    public function setApiProxyHost(string $path): self
+    {
+        $path = filter_var($path, FILTER_SANITIZE_STRING);
+        if (empty($path)) {
+            throw new InvalidArgumentException(
+                _("Central's platform path is not consistent. Please check the 'Remote Access' form")
+            );
+        }
+        $this->apiProxyHost = $path;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getApiProxyPort(): ?int
+    {
+        return $this->apiProxyPort;
+    }
+
+    /**
+     * @param int $port
+     * @return $this
+     */
+    public function setApiProxyPort(int $port): self
+    {
+        $this->apiProxyPort = $this->checkPortConsistency($port);
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getApiProxyUsername(): ?string
+    {
+        return $this->apiProxyUsername;
+    }
+
+    /**
+     * @param string $username
+     * @return $this
+     */
+    public function setApiProxyUsername(string $username): self
+    {
+        $username = filter_var($username, FILTER_SANITIZE_STRING);
+        if (empty($username)) {
+            throw new InvalidArgumentException(
+                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
+            );
+        }
+        $this->apiProxyUsername = $username;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getApiProxyCredentials(): ?string
+    {
+        return $this->apiProxyCredentials;
+    }
+
+    /**
+     * @param string $encrypted
+     * @return $this
+     */
+    public function setApiProxyCredentials(string $encrypted): self
+    {
+        $this->apiCredentials = $this->decryptApiCredentials($encrypted);
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getApiScheme(): ?string
@@ -158,7 +263,7 @@ class PlatformTopology
     /**
      * @return int|null
      */
-    public function getApiPort(): ?string
+    public function getApiPort(): ?int
     {
         return $this->apiPort;
     }
@@ -166,7 +271,6 @@ class PlatformTopology
     /**
      * @param int|null $port
      * @return $this
-     * @throws PlatformTopologyException
      */
     public function setApiPort(?int $port): self
     {
@@ -181,17 +285,7 @@ class PlatformTopology
                 return $this;
             }
         }
-
-        // checking
-        $port = filter_var($port, FILTER_VALIDATE_INT);
-        if (false === $port
-            || (1 > $port && $port > 65536)
-        ) {
-            throw new PlatformTopologyException(
-                _("Central's platform API port is not consistent. Please check the 'Remote Access' form")
-            );
-        }
-        $this->apiPort = $port;
+        $this->apiPort = $this->checkPortConsistency($port);
         return $this;
     }
 
@@ -206,29 +300,51 @@ class PlatformTopology
     /**
      * @param string $path
      * @return $this
-     * @throws PlatformTopologyException
      */
     public function setApiPath(string $path): self
     {
         $path = filter_var($path, FILTER_SANITIZE_STRING);
         if (empty($path)) {
-            throw new PlatformTopologyException(
-                _("Central's platform API root path is empty. Please check the 'Remote Access' form")
+            throw new InvalidArgumentException(
+                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
             );
         }
         $this->apiPath = $path;
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getApiSelfSignedCertificate(): ?string
     {
         return $this->apiSelfSignedCertificate;
     }
 
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setApiSelfSignedCertificate(string $status): self
     {
         $this->apiSelfSignedCertificate = ('yes' === $status ? 'yes' : 'no');
         return $this;
+    }
+
+    /**
+     * @param int|null $port
+     * @return int
+     */
+    public function checkPortConsistency(?int $port): int
+    {
+        // checking
+        $port = filter_var($port, FILTER_VALIDATE_INT);
+        if (false === $port || 1 > $port || $port > 65536) {
+            throw new InvalidArgumentException(
+                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
+            );
+        }
+        return $port;
     }
 
     /**
@@ -296,8 +412,6 @@ class PlatformTopology
     /**
      * @param string $encryptedKey
      * @return $this
-     * @throws PlatformTopologyException
-     * @throws InvalidArgumentException
      */
     public function setApiCredentials(string $encryptedKey): self
     {
@@ -308,8 +422,6 @@ class PlatformTopology
     /**
      * @param string $encryptedKey
      * @return string
-     * @throws PlatformTopologyException
-     * @throws InvalidArgumentException
      */
     public function decryptApiCredentials(string $encryptedKey): string
     {
@@ -322,7 +434,7 @@ class PlatformTopology
 
         // second key
         if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
-            throw new PlatformTopologyException(
+            throw new InvalidArgumentException(
                 _("Unable to find the encryption key. Please check the '.env.local.php' file")
             );
         }
@@ -332,9 +444,9 @@ class PlatformTopology
             $centreonEncryption = new Encryption();
             $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey($secondKey);
             return $centreonEncryption->decrypt($encryptedKey);
-        } catch (\throwable $e) {
+        } catch (throwable $e) {
             throw new InvalidArgumentException(
-                _("Unable to decipher central's credentials. Please check the credentials in the remote access form")
+                _("Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form")
             );
         }
     }
@@ -387,7 +499,6 @@ class PlatformTopology
      * @param string|null $parentAddress
      *
      * @return $this
-     * @throws InvalidArgumentException
      */
     public function setParentAddress(?string $parentAddress): self
     {
@@ -410,7 +521,6 @@ class PlatformTopology
      * @param string $type server type: central, poller, remote, map or mbi
      *
      * @return $this
-     * @throws InvalidArgumentException
      */
     public function setType(string $type): self
     {
@@ -431,6 +541,34 @@ class PlatformTopology
     }
 
     /**
+     * Validate address consistency
+     *
+     * @param string|null $address the address to be tested
+     *
+     * @return string|null
+     */
+    private function checkIpAddress(?string $address): ?string
+    {
+        // Check for valid IPv4 or IPv6 IP
+        // or not sent address (in the case of Central's "parent_address")
+        if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {
+            return $address;
+        }
+
+        // check for DNS to be resolved
+        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    _("The address of '%s' is not valid"),
+                    $this->getName()
+                )
+            );
+        }
+
+        return $address;
+    }
+
+    /**
      * @return string|null
      */
     public function getName(): ?string
@@ -441,7 +579,6 @@ class PlatformTopology
     /**
      * @param string|null $name
      * @return $this
-     * @throws InvalidArgumentException
      */
     public function setName(?string $name): self
     {
@@ -472,35 +609,6 @@ class PlatformTopology
     {
         $this->address = $this->checkIpAddress($address);
         return $this;
-    }
-
-    /**
-     * Validate address consistency
-     *
-     * @param string|null $address the address to be tested
-     *
-     * @return string|null
-     * @throws InvalidArgumentException
-     */
-    private function checkIpAddress(?string $address): ?string
-    {
-        // Check for valid IPv4 or IPv6 IP
-        // or not sent address (in the case of Central's "parent_address")
-        if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {
-            return $address;
-        }
-
-        // check for DNS to be resolved
-        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    _("The address of '%s' is not valid"),
-                    $this->getName()
-                )
-            );
-        }
-
-        return $address;
     }
 
     /**

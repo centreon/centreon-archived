@@ -237,9 +237,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $platformTopology->getName(),
                 $platformTopology->getAddress()
             );
-            $returnedMessage = implode(', ', $returnedMessage);
+            if (!empty($returnedMessage)) {
+                $errorMessage .= "  /  " . _("Central's response => Code : ") . implode(', ', $returnedMessage);
+            }
             throw new PlatformTopologyConflictException(
-                $errorMessage . "  /  " . _("Central's response => Code : ") . $returnedMessage
+                $errorMessage
             );
         }
 
