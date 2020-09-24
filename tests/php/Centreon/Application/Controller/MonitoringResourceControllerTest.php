@@ -72,7 +72,7 @@ class MonitoringResourceControllerTest extends TestCase
             ->setName('admin')
             ->setAdmin(true)
             ->setTimezone($timezone);
-        $this->adminContact->addTopologyRule(Contact::ROLE_CONFIGURATION_HOSTS);
+        $this->adminContact->addTopologyRule(Contact::ROLE_CONFIGURATION_HOSTS_WRITE);
         $this->adminContact->addTopologyRule(Contact::ROLE_MONITORING_EVENT_LOGS);
         $this->adminContact->addTopologyRule(Contact::ROLE_REPORTING_DASHBOARD_HOSTS);
 
