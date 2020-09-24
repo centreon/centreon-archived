@@ -14605,3 +14605,12 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Disacknowledgement command sent"
 #  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""
