@@ -20,6 +20,41 @@
             <td class="FormRowField"><img class="helpTooltip" name="password"> {$form.apiCredentials.label}</td>
             <td class="FormRowValue">{$form.apiCredentials.html}</td>
         </tr>
+
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.informationUri} : {$form.header.apiIp}</h4>
+            </td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_api_path">&nbsp;{$form.apiPath.label}
+            </td>
+            <td class="FormRowValue">{$form.apiPath.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_api_port">&nbsp;{$form.apiPort.label}
+            </td>
+            <td class="FormRowValue">{$form.apiPort.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_api_ssl">&nbsp;{$form.apiScheme.label}
+            </td>
+            <td class="FormRowValue">{$form.apiScheme.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_api_allow_self_signed">
+                {$form.apiSelfSigned.label}
+            </td>
+            <td class="FormRowValue">{$form.apiSelfSigned.html}</td>
+        </tr>
+
+
+
+
     </table>
     {if !$valid}
         <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>

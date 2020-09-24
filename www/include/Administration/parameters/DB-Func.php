@@ -1007,11 +1007,24 @@ function updateKnowledgeBaseData($db, $form, $centreon)
 function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
 {
     $ret = $form->getSubmitValues();
+
+    //clean useless value
+
+
+    ["submitC"]=> string(4) "Save" ["o"]=> string(6) "remote" ["centreon_token"]
+
+
+
+
+
+
     updateInformations(
         $db,
         'apiUsername',
         $ret['apiUsername']
     );
+
+    var_dump($ret);
 
     if (CentreonAuth::PWS_OCCULTATION !== $ret['apiCredentials']) {
         try {
