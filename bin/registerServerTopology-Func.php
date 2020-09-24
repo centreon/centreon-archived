@@ -19,10 +19,7 @@
  *
  */
 
-require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 
-use Centreon\Domain\Repository\InformationsRepository;
-use Centreon\Domain\Repository\TopologyRepository;
 
 /**
  * Ask question. The echo of keyboard can be disabled
@@ -67,8 +64,8 @@ function isRemote(string $type): bool
 function registerRemote(string $ip, array $loginCredentials): array
 {
     $db = new CentreonDB();
-    $topologyRepository = new TopologyRepository($db);
-    $informationRepository = new InformationsRepository($db);
+    $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
+    $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
 
     //hide menu
     $topologyRepository->disableMenus();
@@ -86,6 +83,7 @@ function registerRemote(string $ip, array $loginCredentials): array
     system(
         "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
     );
+
 
     //update platform_topology type
     $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");

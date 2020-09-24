@@ -19,11 +19,7 @@
  *
  */
 
-use Security\Encryption;
-
 require_once('registerServerTopology-Func.php');
-require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
-
 
 /************************ */
 /*     DATA RESOLVING
@@ -38,16 +34,6 @@ const TYPE_REMOTE = 'remote';
 const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_CENTRAL, TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
-
-define("SECOND_KEY", base64_encode('api_remote_credentials'));
-
-/*
- * Set encryption parameters
- */
-$localEnv = '';
-if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
-    $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
-}
 
 $opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::", "template:"]);
 /**
@@ -239,16 +225,36 @@ if ($proceed !== "y") {
  * Master-to-Remote transition
  */
 if (isRemote($serverType)) {
+    require_once(realpath(__DIR__ . '/../config/centreon.config.php'));
+    require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+
+    require_once _CENTREON_PATH_ . "/src/Security/Interfaces/EncryptionInterface.php";
+    require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
+
+    require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/Mapping/ClassMetadata.php";
+    require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
+    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
+    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
+
+    define("SECOND_KEY", base64_encode('api_remote_credentials'));
+    /*
+     * Set encryption parameters
+     */
+    $localEnv = '';
+    if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
+        $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
+    }
+
     //check if e remote is register on server
     if (hasRemoteChild()) {
-        exit(formatResponseMessage(401, 'Central cannot be convert to Remote', 'Unauthorized'));
+        exit(formatResponseMessage(401, 'Central cannot be converted to Remote', 'Unauthorized'));
     }
 
     //prepare db credential
     $loginCredentialsDb = [
         "login" => $configOptions['API_USERNAME']
     ];
-    $centreonEncryption = new Encryption();
+    $centreonEncryption = new \Security\Encryption();
     try {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
         $loginCredentialsDb['password'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
@@ -291,7 +297,7 @@ try {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    if (isset($configOptions['PROXY_USAGE'])) {
+    if ($configOptions['PROXY_USAGE'] === true) {
         curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
         curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
         if (!empty($configOptions["PROXY_USERNAME"])) {
@@ -348,7 +354,7 @@ foreach ($registerPayloads as $postData) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
-        if (isset($configOptions['PROXY_USAGE'])) {
+        if ($configOptions['PROXY_USAGE'] === true) {
             curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
             curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
             if (!empty($configOptions["PROXY_USERNAME"])) {
