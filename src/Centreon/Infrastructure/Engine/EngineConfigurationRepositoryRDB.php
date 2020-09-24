@@ -106,6 +106,4 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
         }
         return null;
     }
-
-
 }

@@ -27,7 +27,6 @@ use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
 use Centreon\Domain\Repository\RepositoryException;
-use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
 class HostConfigurationService implements HostConfigurationServiceInterface
 {
@@ -200,10 +199,10 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
     * @inheritDoc
     */
-    public function checkNamesAlreadyUsed(array $namesToCheck): array
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array
     {
         try {
-            return $this->hostConfigurationRepository->checkNamesAlreadyUsed($namesToCheck);
+            return $this->hostConfigurationRepository->findHostNamesAlreadyUsed($namesToCheck);
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(_('Error when searching for already used host names'));
         }

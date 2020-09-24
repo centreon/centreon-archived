@@ -470,7 +470,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     /**
      * @inheritDoc
      */
-    public function checkNamesAlreadyUsed(array $namesToCheck): array
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array
     {
         if (empty($namesToCheck)) {
             return [];
@@ -486,9 +486,11 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         }
 
         $statement = $this->db->prepare(
-            sprintf(
-                $this->translateDbName('SELECT host_name FROM `:db`.host WHERE host_name IN (%s?)'),
-                str_repeat('?,', count($names) - 1)
+            $this->translateDbName(
+                sprintf(
+                    'SELECT host_name FROM `:db`.host WHERE host_name IN (%s?)',
+                    str_repeat('?,', count($names) - 1)
+                )
             )
         );
         $statement->execute($names);
@@ -496,10 +498,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $namesFound[] = $result['host_name'];
         }
-        $namesAndStatus = [];
-        foreach ($names as $name) {
-            $namesAndStatus[$name] = in_array($name, $namesFound);
-        }
-        return $namesAndStatus;
+        return $namesFound;
     }
 }
