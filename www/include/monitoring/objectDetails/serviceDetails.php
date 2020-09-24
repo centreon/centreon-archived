@@ -844,8 +844,8 @@ if (!is_null($host_id)) {
         if ($result === false) {
             $isRemote = false;
         } else {
-            $isRemote = array_map("myDecode", $result);
-            $isRemote = ($isRemote['value'] === 'yes') ? true : false;
+            $result = array_map("myDecode", $result);
+            $isRemote = ($result['value'] === 'yes');
         }
         $DBRESULT->closeCursor();
         $tpl->assign("isRemote", $isRemote);
