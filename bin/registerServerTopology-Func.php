@@ -19,10 +19,6 @@
  *
  */
 
-require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
-
-use Centreon\Domain\Repository\InformationsRepository;
-use Centreon\Domain\Repository\TopologyRepository;
 
 /**
  * Ask question. The echo of keyboard can be disabled
@@ -71,10 +67,13 @@ function registerRemote(string $ip, array $loginCredentials): array
     //verifier que ce n'est pas un remote
     $db->query(" SELECT * FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'");
     $isRemote = $db->numberRows();
-    if(!$isRemote) {
-        $topologyRepository = new TopologyRepository($db);
-        $informationRepository = new InformationsRepository($db);
-
+    if ($isRemote) {
+        require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
+        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
+        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
+        $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
+        $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
+        die();
         //hide menu
         $topologyRepository->disableMenus();
 
@@ -105,6 +104,7 @@ function registerRemote(string $ip, array $loginCredentials): array
  */
 function hasRemoteChild(): bool
 {
+
     $db = new CentreonDB();
     $remoteQuery = $db->query("SELECT COUNT(*) AS total FROM `remote_servers`");
     $remote = $remoteQuery->fetch();

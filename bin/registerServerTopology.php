@@ -19,13 +19,7 @@
  *
  */
 
-use Security\Encryption;
-
-require_once(realpath(__DIR__ . '/../config/centreon.config.php'));
 require_once('registerServerTopology-Func.php');
-require_once _CENTREON_PATH_ . "/src/Security/Interfaces/EncryptionInterface.php";
-require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
-
 
 /************************ */
 /*     DATA RESOLVING
@@ -41,15 +35,7 @@ const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_CENTRAL, TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
-define("SECOND_KEY", base64_encode('api_remote_credentials'));
 
-/*
- * Set encryption parameters
- */
-$localEnv = '';
-if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
-    $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
-}
 
 $opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::", "template:"]);
 /**
@@ -241,6 +227,23 @@ if ($proceed !== "y") {
  * Master-to-Remote transition
  */
 if (isRemote($serverType)) {
+
+    require_once(realpath(__DIR__ . '/../config/centreon.config.php'));
+    require _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+    require_once _CENTREON_PATH_ . "/src/Security/Interfaces/EncryptionInterface.php";
+    require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
+    
+
+    define("SECOND_KEY", base64_encode('api_remote_credentials'));
+
+    /*
+    * Set encryption parameters
+    */
+    $localEnv = '';
+    if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
+        $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
+    }
+
     //check if e remote is register on server
     if (hasRemoteChild()) {
         exit(formatResponseMessage(401, 'Central cannot be convert to Remote', 'Unauthorized'));
@@ -250,7 +253,7 @@ if (isRemote($serverType)) {
     $loginCredentialsDb = [
         "apiUsername" => $configOptions['API_USERNAME']
     ];
-    $centreonEncryption = new Encryption();
+    $centreonEncryption = new \Security\Encryption();
     try {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
         $loginCredentialsDb['apiCredentials'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
