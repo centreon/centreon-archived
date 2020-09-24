@@ -19,7 +19,11 @@
  *
  */
 
+use Security\Encryption;
+
 require_once('registerServerTopology-Func.php');
+require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
+
 
 /************************ */
 /*     DATA RESOLVING
@@ -34,6 +38,16 @@ const TYPE_REMOTE = 'remote';
 const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_CENTRAL, TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
+
+define("SECOND_KEY", base64_encode('api_remote_credentials'));
+
+/*
+ * Set encryption parameters
+ */
+$localEnv = '';
+if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
+    $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
+}
 
 $opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::", "template:"]);
 /**
@@ -177,23 +191,23 @@ $loginCredentials = [
  * Prepare Server Register payload
  */
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
-$registerPayload = [
+$payload = [
     "name" => $configOptions['SERVER_NAME'],
     "type" => $configOptions['SERVER_TYPE'],
     "address" => $configOptions['DNS'] ?? $serverIp,
 ];
 
 if ($configOptions['SERVER_TYPE'] !== TYPE_CENTRAL) {
-    $registerPayload["parent_address"] = $host;
+    $payload["parent_address"] = $host;
 }
 
 /**
  * Display Summary of action
  */
-$address = $registerPayload["address"];
+$address = $payload["address"];
 $username = $configOptions['API_USERNAME'];
-$serverHostName = $registerPayload['name'];
-$serverType = $registerPayload["type"];
+$serverHostName = $payload['name'];
+$serverType = $payload["type"];
 $summary = <<<EOD
 
 Summary of the informations that will be send:
@@ -212,11 +226,6 @@ parent server address: $host
 
 EOD;
 
-/**
- * Convert payloads to JSON
- */
-$loginCredentials = json_encode($loginCredentials);
-$registerPayload = json_encode($registerPayload);
 
 echo $summary;
 
@@ -226,8 +235,40 @@ if ($proceed !== "y") {
     exit();
 }
 
+/**
+ * Master-to-Remote transition
+ */
+if (isRemote($serverType)) {
+    //check if e remote is register on server
+    if (hasRemoteChild()) {
+        exit(formatResponseMessage(401, 'Central cannot be convert to Remote', 'Unauthorized'));
+    }
+
+    //prepare db credential
+    $loginCredentialsDb = [
+        "login" => $configOptions['API_USERNAME']
+    ];
+    $centreonEncryption = new Encryption();
+    try {
+        $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
+        $loginCredentialsDb['password'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
+    } catch (\InvalidArgumentException $e) {
+        exit($e->getMessage());
+    }
+    $registerPayloads = registerRemote($host, $loginCredentialsDb);
+} else {
+    $registerPayloads = [];
+}
+
+$registerPayloads[] = $payload;
+
+/**
+* Convert payloads to JSON
+*/
+$loginCredentials = json_encode($loginCredentials);
+
 /************************ */
-/*     API REQUEST
+/*     API REQUEST        */
 /************************ */
 
 /**
@@ -294,53 +335,56 @@ if (!empty($port)) {
     $registerUrl .= ':' . $port;
 }
 $registerUrl .= "/api/latest/platform/topology";
+foreach ($registerPayloads as $postData) {
+    $registerPayload = json_encode($postData);
+    try {
+        $ch = curl_init($registerUrl);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-TOKEN: $APIToken"]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-try {
-    $ch = curl_init($registerUrl);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "X-AUTH-TOKEN: $APIToken"]);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    if (isset($configOptions["INSECURE"])) {
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    }
-
-    if (isset($configOptions['PROXY_USAGE'])) {
-        curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
-        curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
-        if (!empty($configOptions["PROXY_USERNAME"])) {
-            curl_setopt(
-                $ch,
-                CURLOPT_PROXYUSERPWD,
-                $configOptions["PROXY_USERNAME"] . ':' . $configOptions['PROXY_PASSWORD']
-            );
+        if (isset($configOptions["INSECURE"])) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
+
+        if (isset($configOptions['PROXY_USAGE'])) {
+            curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
+            curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
+            if (!empty($configOptions["PROXY_USERNAME"])) {
+                curl_setopt(
+                    $ch,
+                    CURLOPT_PROXYUSERPWD,
+                    $configOptions["PROXY_USERNAME"] . ':' . $configOptions['PROXY_PASSWORD']
+                );
+            }
+        }
+
+        $result = curl_exec($ch);
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($result === false) {
+            throw new Exception(curl_error($ch) . PHP_EOL);
+        }
+    } catch (Exception $e) {
+        exit($e->getMessage());
+    } finally {
+        curl_close($ch);
     }
 
-    $result = curl_exec($ch);
+    $result = json_decode($result, true);
 
-    $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    if ($result === false) {
-        throw new Exception(curl_error($ch) . PHP_EOL);
+    /**
+     * Display response of API
+     */
+    if ($responseCode === 201) {
+        $responseMessage = "The '" . $postData['type'] . "' Platform: '" . $postData['name'] . "@" .
+            $postData['address'] . "' linked to '" . $postData['parent_address'] . "' has been added";
+        echo formatResponseMessage($responseCode, $responseMessage, 'success');
+    } elseif (isset($result['code'], $result['message'])) {
+        exit(formatResponseMessage($result['code'], $result['message'], 'error'));
+    } else {
+        exit(formatResponseMessage(500, 'An error occurred while contacting the API', 'error'));
     }
-} catch (Exception $e) {
-    exit($e->getMessage());
-} finally {
-    curl_close($ch);
 }
-
-$result = json_decode($result, true);
-
-/**
- * Display response of API
- */
-if ($responseCode === 201) {
-    $responseMessage = "The '$serverType' Platform: '$serverHostName@$address' linked to '$host' has been added";
-    exit(formatResponseMessage($responseCode, $responseMessage, 'success'));
-} elseif (isset($result['code'], $result['message'])) {
-    exit(formatResponseMessage($result['code'], $result['message'], 'error'));
-} else {
-    exit(formatResponseMessage(500, 'An error occurred while contacting the API', 'error'));
-}
+exit();

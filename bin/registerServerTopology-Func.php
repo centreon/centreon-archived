@@ -19,6 +19,11 @@
  *
  */
 
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+
+use Centreon\Domain\Repository\InformationsRepository;
+use Centreon\Domain\Repository\TopologyRepository;
+
 /**
  * Ask question. The echo of keyboard can be disabled
  *
@@ -40,6 +45,100 @@ function askQuestion(string $question, $hidden = false): string
     }
     printf("\n");
     return $response;
+}
+
+/**
+ * @param string $type
+ * @return bool
+ */
+function isRemote(string $type): bool
+{
+    if ($type === TYPE_REMOTE) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @param string $ip
+ * @param array $loginCredentials
+ * @return array
+ */
+function registerRemote(string $ip, array $loginCredentials): array
+{
+    $db = new CentreonDB();
+    $topologyRepository = new TopologyRepository($db);
+    $informationRepository = new InformationsRepository($db);
+
+    //hide menu
+    $topologyRepository->disableMenus();
+
+    //register remote in db
+    $informationRepository->toggleRemote('yes');
+
+    //register master in db
+    $informationRepository->authorizeMaster($ip);
+
+    //register credentials
+    registerCentralCredentials($db, $loginCredentials);
+
+    //Apply Remote Server mode in configuration file
+    system(
+        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+    );
+
+    //update platform_topology type
+    $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
+
+    // return children
+    return getChildren($db);
+}
+
+/**
+ * @return bool
+ */
+function hasRemoteChild(): bool
+{
+    $db = new CentreonDB();
+    $remoteQuery = $db->query("SELECT COUNT(*) AS total FROM `remote_servers`");
+    $remote = $remoteQuery->fetch();
+    if ($remote['total'] > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+/**
+ * @param CentreonDB $db
+ * @return array
+ */
+function getChildren(CentreonDB $db): array
+{
+    $registerChildren = [];
+    // get local server address
+    $localStmt = $db->query("SELECT `address` FROM platform_topology WHERE `type` = 'remote'");
+    $parentAddress = $localStmt->fetchColumn();
+    $localStmt = $db->query("SELECT `name`,`type`,`address` FROM platform_topology WHERE `type` != 'remote'");
+    while ($row = $localStmt->fetch()) {
+        $row['parent_address'] = $parentAddress;
+        $registerChildren[] = $row;
+    }
+    return $registerChildren;
+}
+
+
+/**
+ * @param CentreonDB $db
+ * @param array $loginCredentials
+ */
+function registerCentralCredentials(CentreonDB $db, array $loginCredentials): void
+{
+    $query = "INSERT INTO `informations` (`key`, `value`) VALUES ('apiUsername', :username), ('apiCredentials', :pwd)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':username', $loginCredentials['login'], \PDO::PARAM_STR);
+    $statement->bindValue(':pwd', $loginCredentials['password'], \PDO::PARAM_STR);
+    $statement->execute();
 }
 
 /**
@@ -134,8 +233,8 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     ) {
         throw new \InvalidArgumentException(
             PHP_EOL .
-                'missing value: API_USERNAME, API_PASSWORD, SERVER_TYPE, HOST_ADDRESS and SERVER_NAME are mandatories'
-                . PHP_EOL . $helpMessage
+            'missing value: API_USERNAME, API_PASSWORD, SERVER_TYPE, HOST_ADDRESS and SERVER_NAME are mandatories'
+            . PHP_EOL . $helpMessage
         );
     }
 
@@ -147,7 +246,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     if (!$configOptions['SERVER_TYPE']) {
         throw new \InvalidArgumentException(
             "SERVER_TYPE must be one of those value"
-                . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
+            . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
         );
     }
 
@@ -170,7 +269,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     if (isset($options['PROXY_USAGE']) && $options['PROXY_USAGE'] === true) {
         $configOptions['PROXY_USAGE'] = $options['PROXY_USAGE'];
         $configOptions["PROXY_HOST"] = $options["PROXY_HOST"] ?? '';
-        $configOptions["PROXY_PORT"] = (int) $options["PROXY_PORT"] ?? '';
+        $configOptions["PROXY_PORT"] = (int)$options["PROXY_PORT"] ?? '';
         $configOptions["PROXY_USERNAME"] = $options["PROXY_USERNAME"] ?? '';
         if (!empty($configOptions['PROXY_USERNAME'])) {
             $configOptions['PROXY_PASSWORD'] = $options["PROXY_PASSWORD"] ?? '';
