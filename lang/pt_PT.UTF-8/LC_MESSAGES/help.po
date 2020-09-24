@@ -4768,3 +4768,15 @@ msgstr ""
 
 #~ msgid "Additional Remote Server to which this server will be attached"
 #~ msgstr ""
+
+#  msgid "More actions"
+#  msgstr ""
+
+#  msgid "Disacknowledge"
+#  msgstr ""
+
+#  msgid "Disacknowledge services attached to hosts"
+#  msgid ""
+
+#  msgid "Disacknowledgement command sent"
+#  msgid ""

@@ -92,6 +92,11 @@ $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
 include_once "./class/centreonDB.class.php";
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 /*
  * Smarty template Init
  */
@@ -136,7 +141,7 @@ if ($DBRESULT->rowCount()) {
 /* --------------- Services ---------------*/
 $request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
         d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
-        d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
+        d.end_time as scheduled_end_time, d.started as was_started, d.host_id, d.service_id, h.name as host_name,
         s.description as service_description " . $extrafields . " " .
     "FROM downtimes d, services s, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") .
     "WHERE d.host_id = s.host_id " .
@@ -164,7 +169,7 @@ $request .= "AND s.description LIKE :service " .
 /* --------------- Hosts --------------- */
 $request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.entry_time, duration,
   d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time as scheduled_start_time,
-  d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
+  d.end_time as scheduled_end_time, d.started as was_started, d.host_id, d.service_id, h.name as host_name,
    '' as service_description " . $extrafields .
     "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") . " " .
     "WHERE d.host_id = h.host_id AND d.type = 2 ";
@@ -206,9 +211,9 @@ for ($i = 0; $data = $downtimesStatement->fetchRow(); $i++) {
 
     if (preg_match('/_Module_BAM_\d+/', $data['host_name'])) {
         $tab_downtime_svc[$i]['host_name'] = 'Module BAM';
-        $tab_downtime_svc[$i]['host_name_link'] = "p=207&o=d&ba_id="
+        $tab_downtime_svc[$i]['h_details_uri'] = "./main.php?p=207&o=d&ba_id="
             . $tab_service_bam[$data['service_description']]['id'];
-        $tab_downtime_svc[$i]['service_name_link'] = "p=207&o=d&ba_id="
+        $tab_downtime_svc[$i]['s_details_uri'] = "./main.php?p=207&o=d&ba_id="
             . $tab_service_bam[$data['service_description']]['id'];
         $tab_downtime_svc[$i]['service_description'] = $tab_service_bam[$data['service_description']]['name'];
         if ($tab_downtime_svc[$i]['author_name'] == 'Centreon Broker BAM Module') {
@@ -217,11 +222,12 @@ for ($i = 0; $data = $downtimesStatement->fetchRow(); $i++) {
         }
     } else {
         $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
-        $tab_downtime_svc[$i]['host_name_link'] = urlencode($tab_downtime_svc[$i]["host_name"]);
-        $tab_downtime_svc[$i]['service_description'] =
-            ($data['service_description'] != '' ? $data['service_description'] : '-');
-
-        if ($data['service_description'] != '') {
+        $tab_downtime_svc[$i]['h_details_uri'] = $resourceController->buildHostDetailsUri($data['host_id']);
+        if ($data['service_description'] !== '') {
+            $tab_downtime_svc[$i]['s_details_uri'] = $resourceController->buildServiceDetailsUri(
+                $data['host_id'],
+                $data['service_id']
+            );
             $tab_downtime_svc[$i]['service_description'] = $data['service_description'];
             $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
         } else {

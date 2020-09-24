@@ -45,12 +45,16 @@ class UserController extends AbstractController
             'host' => [
                 'check' => $this->getAuthorizationForRole(Contact::ROLE_HOST_CHECK),
                 'acknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT),
+                'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_HOST_DOWNTIME),
+                'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_HOST_SUBMIT_RESULT),
             ],
             'service' => [
                 'check' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_CHECK),
                 'acknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT),
+                'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_SERVICE_DOWNTIME),
+                'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_SUBMIT_RESULT),
             ],
         ];
 

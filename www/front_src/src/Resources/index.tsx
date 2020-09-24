@@ -21,7 +21,7 @@ const Resources = (): JSX.Element => {
   const detailsContext = useDetails();
   const actionsContext = useActions();
 
-  const { selectedDetailsLinks } = detailsContext;
+  const { selectedResourceId } = detailsContext;
 
   return (
     <Context.Provider
@@ -37,7 +37,7 @@ const Resources = (): JSX.Element => {
         open={filterContext.editPanelOpen}
       >
         <ListingPage
-          panelOpen={!isNil(selectedDetailsLinks)}
+          panelOpen={!isNil(selectedResourceId)}
           filters={<Filter />}
           listing={<Listing />}
           panel={<Details />}

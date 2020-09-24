@@ -1408,7 +1408,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($cgelements as $cgelement) {
-                CentreonContactGroup::getInstance()->export($element['cg_name']);
+                CentreonContactGroup::getInstance()->export($cgelement['cg_name']);
                 echo $this->action . $this->delim . "addcontactgroup" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $cgelement['service_description'] . $this->delim
@@ -1429,7 +1429,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                CentreonContact::getInstance()->export($element['contact_name']);
+                CentreonContact::getInstance()->export($celement['contact_name']);
                 echo $this->action . $this->delim . "addcontact" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $celement['service_description'] . $this->delim

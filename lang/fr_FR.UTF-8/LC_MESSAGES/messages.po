@@ -4017,6 +4017,13 @@ msgstr "Effets d'animation"
 msgid "Default page"
 msgstr "Page par défaut"
 
+#: centreon-web/www/include/monitoring/status/Services/service.php:219
+#: centreon-web/www/include/monitoring/status/Hosts/host.php:189
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:838
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:719
+msgid "[Page deprecated] Please use the new page: "
+msgstr "[Page dépréciée] Utilisez la nouvelle page: "
+
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:138
 msgid "Show Up status"
 msgstr "Visualiser les statuts Up"
@@ -11828,6 +11835,12 @@ msgstr ""
 msgid "The name of the poller is mandatory"
 msgstr "Le nom du collecteur est obligatoire"
 
+msgid "The IP address is already registered on another poller"
+msgstr "L'adresse IP est déjà enregistrée sur un autre collecteur"
+
+msgid "The IP address is already registered"
+msgstr "L'adresse IP est déjà enregistrée"
+
 #: centreon-web/www/include/configuration/configServers/listServers.php:112
 msgid "Localhost"
 msgstr "Hôte local"
@@ -13754,9 +13767,6 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "Hosts: Set Downtime"
 #~ msgstr "Hôtes: Planifier une plage de maintenance"
 
-#~ msgid "Disacknowledge"
-#~ msgstr "Désacquittement"
-
 #~ msgid "Enable Notification"
 #~ msgstr "Activer la Notification"
 
@@ -15596,6 +15606,30 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
 
+msgid "deprecated"
+msgstr "déprécié"
+
+msgid "Show deprecated pages"
+msgstr "Afficher les pages dépréciées"
+
+msgid "Error when adding services to the host %d"
+msgstr "Erreur lors de l'ajout de services à l'hôte %d"
+
+msgid "Error when changing host status (%d to %s)"
+msgstr "Erreur lors du changement de statut de l'hôte (%d à %s)"
+
+msgid "Error when searching for already used host names"
+msgstr "Erreur lors de la recherche de noms d'hôtes déjà utilisés"
+
+msgid "Cannot build uri to unknown tab : %s"
+msgstr "Impossible de construire une uri vers un onglet inconnu : %s"
+
+msgid "Copy the link to this resource"
+msgstr "Copier le lien vers cette ressource"
+
+msgid "Resource link copied to the clipboard"
+msgstr "Lien vers la ressource copiée dans le presse-papier"
+
 #: www/include/Administration/parameters/DB-Func.php
 msgid "The password cannot be crypted. Please re-submit the form"
 msgstr "Le mot de passe ne peut pas être chiffré. Merci de soumettre à nouveau le formulaire"
@@ -15611,3 +15645,21 @@ msgstr "Identifiants de l'API du Central"
 #: www/include/Adrministration/parameters/remote/formRemote.php
 msgid "Remote access"
 msgstr "Accès du Remote"
+
+msgid "Disacknowledge"
+msgstr "Désacquitter"
+
+msgid "Disacknowledge services attached to hosts"
+msgstr "Désacquitter les services attachés aux hôtes"
+
+msgid "Disacknowledgement command sent"
+msgstr "Commande de désacquittement envoyée"
+
+msgid "Submit a status"
+msgstr "Soumettre un statut"
+
+msgid "Status submitted"
+msgstr "Statut soumis"
+
+msgid "No resource found"
+msgstr "Pas de ressource trouvée"

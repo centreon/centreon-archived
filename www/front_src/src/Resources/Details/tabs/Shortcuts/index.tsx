@@ -1,13 +1,16 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { path, isNil } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
-import { ResourceLinks } from '../../../models';
 import ShortcutsSection from './ShortcutsSection';
 import hasDefinedValues from '../../../hasDefinedValues';
 import { labelHost, labelService } from '../../../translatedLabels';
+import { TabProps } from '..';
+import { ResourceUris } from '../../../models';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -15,22 +18,43 @@ const useStyles = makeStyles((theme) => {
       display: 'grid',
       gridGap: theme.spacing(1),
     },
+    loadingSkeleton: {
+      padding: theme.spacing(2),
+      height: 120,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
   };
 });
 
-interface Props {
-  links: ResourceLinks;
-}
+const LoadingSkeleton = (): JSX.Element => {
+  const classes = useStyles();
 
-const ShortcutsTab = ({ links }: Props): JSX.Element => {
+  return (
+    <Paper className={classes.loadingSkeleton}>
+      <Skeleton width={175} />
+      <Skeleton width={175} />
+      <Skeleton width={170} />
+    </Paper>
+  );
+};
+
+const ShortcutsTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const { uris } = links;
-  const { resource: resourceUris } = uris;
-  const { parent: parentUris } = uris;
+  const resourceUris = path<ResourceUris>(
+    ['links', 'uris'],
+    details,
+  ) as ResourceUris;
+  const parentUris = path<ResourceUris>(['parent', 'links', 'uris'], details);
 
-  const isService = hasDefinedValues(parentUris);
+  const isService = parentUris && hasDefinedValues(parentUris);
+
+  if (isNil(details)) {
+    return <LoadingSkeleton />;
+  }
 
   return (
     <div className={classes.container}>
@@ -38,7 +62,12 @@ const ShortcutsTab = ({ links }: Props): JSX.Element => {
         title={t(isService ? labelService : labelHost)}
         uris={resourceUris}
       />
-      {isService && <ShortcutsSection title={t(labelHost)} uris={parentUris} />}
+      {isService && (
+        <ShortcutsSection
+          title={t(labelHost)}
+          uris={parentUris as ResourceUris}
+        />
+      )}
     </div>
   );
 };

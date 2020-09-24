@@ -5,6 +5,7 @@ import IconGraph from '@material-ui/icons/BarChart';
 
 import { IconButton } from '@centreon/ui';
 
+import { path, isNil } from 'ramda';
 import { labelGraph } from '../../../translatedLabels';
 import HoverChip from '../HoverChip';
 import { ColumnProps } from '..';
@@ -27,7 +28,13 @@ const GraphColumn = ({
 }): ((props) => JSX.Element | null) => {
   const GraphHoverChip = ({ row }: ColumnProps): JSX.Element | null => {
     const classes = useStyles();
-    if (!row.performance_graph_endpoint) {
+
+    const endpoint = path<string | undefined>(
+      ['links', 'endpoints', 'performance_graph'],
+      row,
+    );
+
+    if (isNil(endpoint)) {
       return null;
     }
 
@@ -45,10 +52,7 @@ const GraphColumn = ({
         label={labelGraph}
       >
         <Paper className={classes.graph}>
-          <PerformanceGraph
-            endpoint={row.performance_graph_endpoint}
-            graphHeight={150}
-          />
+          <PerformanceGraph endpoint={endpoint} graphHeight={150} />
         </Paper>
       </HoverChip>
     );

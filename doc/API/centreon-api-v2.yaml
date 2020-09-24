@@ -873,11 +873,11 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/resources/disacknowledge:
-    post:
+  /monitoring/resources/acknowledgements:
+    delete:
       tags:
         - Acknowledgement
-      summary: "Mass disacknowledge resources"
+      summary: "Massively disacknowledge resources"
       requestBody:
         required: true
         content:
@@ -1593,6 +1593,74 @@ paths:
           description: 'Command Sent'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single host"
+      description: "Submit a result (check status, output and perfdata) to a single host"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Host'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single service"
+      description: "Submit a result (check status, output and perfdata) to a single service"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit result to resources"
+      description: "Submit a result (check status, output and perfdata) to resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: 'Host or service not found'
         '500':
@@ -2920,12 +2988,19 @@ components:
           example: "Acknowledged by admin"
         with_services:
           type: boolean
-          description: "Indicates whether we should add the downtime on the host-related services"
+          description: "Indicates whether we should acknowledge the host-related services"
           example: true
         is_notify_contacts:
           type: boolean
           description: "Indicates whether notification is sent to the contacts linked to the host or service"
           example: false
+    Disacknowledgement.Resource:
+      type: object
+      properties:
+        with_services:
+          type: boolean
+          description: "Indicates whether we should disacknowledge the host-related services"
+          example: true
     Acknowledgement.Bulk:
       type: object
       properties:
@@ -2938,11 +3013,16 @@ components:
               - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
               - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Disacknowledge.Bulk:
-      type: array
-      items:
-        allOf:
-          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-          - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      type: object
+      properties:
+        disacknowledgement:
+          $ref: '#/components/schemas/Disacknowledgement.Resource'
+        resources:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Host:
       type: object
       nullable: true
@@ -2968,6 +3048,7 @@ components:
         deletion_time:
           type: string
           format: date-time
+          nullable: true
           description: "Date of the request for cancellation of the acknowledgement (ISO8601)"
         entry_time:
           type: string
@@ -3145,6 +3226,7 @@ components:
         deletion_time:
           type: string
           format: date-time
+          nullable: true
           description: "Date of cancellation of downtime (ISO8601)"
           example: null
         actual_start_time:
@@ -3262,6 +3344,100 @@ components:
                     type: integer
                     description: "Parent resource ID"
                     example: 17
+    SubmitResult.Host:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: integer
+          enum: [0, 1, 2]
+          description: |
+            Host status code that can be submitted
+            * `0` - UP
+            * `1` - DOWN
+            * `2` - UNREACHABLE
+          example: 1
+        output:
+          type: string
+          nullable: true
+          description: "Output result of the check sent"
+          example: "CRITICAL: Connection lost"
+        performance_data:
+          type: string
+          nullable: true
+          description: "Performance data result of the check sent"
+          example: "'nbproc'=0;;1:1;0;"
+    SubmitResult.Service:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [0, 1, 2, 3]
+          description: |
+            Service status code that can be submitted
+            * `0` - OK
+            * `1` - WARNING
+            * `2` - CRITICAL
+            * `3` - UNKNOWN
+          example: 2
+        output:
+          type: string
+          nullable: true
+          description: "Output result of the check sent"
+          example: "CRITICAL: Memory exceeded "
+        performance_data:
+          type: string
+          nullable: true
+          description: "Performance data result of the check sent"
+          example: "'used'=453849088B;;;0;1927262208"
+    SubmitResult.Resources:
+      type: object
+      required: [resources]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [status,id]
+            properties:
+              type:
+                type: string
+                enum: [host, service]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              status:
+                type: integer
+                enum: [0, 1, 2, 3]
+                description: |
+                  Resource status code that can be submitted
+                  * `0` - OK or UP
+                  * `1` - WARNING or DOWN
+                  * `2` - CRITICAL or UNREACHABLE
+                  * `3` - UNKNOWN
+                example: 2
+              output:
+                type: string
+                nullable: true
+                description: "Output result of the check sent"
+                example: "CRITICAL: Memory exceeded "
+              performance_data:
+                type: string
+                nullable: true
+                description: "Performance data result of the check sent"
+                example: "'used'=453849088B;;;0;1927262208"
     Monitoring.Resource.Disacknowledge.Host:
       type: object
       properties:
@@ -3314,31 +3490,8 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
-        details_endpoint:
-          type: string
-          nullable: true
-          description: "Resource url to details page"
-          example: "/centreon/monitoring/resources/hosts/12/services/12"
-        timeline_endpoint:
-          type: string
-          nullable: true
-          description: "Resource url to get timeline information"
-          example: "/centreon/monitoring/resources/hosts/12/services/12/timeline"
-        configuration_uri:
-          type: string
-          nullable: true
-          description: "Centreon internal uri to configuration page"
-          example: "/centreon/main.php?p=60201&o=c&service_id=12"
-        logs_uri:
-          type: string
-          nullable: true
-          description: "Centreon internal uri to configuration page"
-          example: "/centreon/main.php?p=20301&svc=12_12"
-        reporting_uri:
-          type: string
-          nullable: true
-          description: "Centreon internal uri to configuration page"
-          example: "/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=12&item=12"
+        links:
+          $ref: '#/components/schemas/Monitoring.ResourceLinks'
         icon:
           type: object
           nullable: true
@@ -3360,6 +3513,14 @@ components:
           type: object
           nullable: true
           properties:
+            type:
+              type: string
+              description: "Type of the resource"
+              example: "service|host"
+            short_type:
+              type: string
+              description: "Short name of the resource type"
+              example: "s|h"
             id:
               type: integer
               format: int64
@@ -3369,31 +3530,8 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
-            details_endpoint:
-              type: string
-              nullable: true
-              description: "Parent resource url to details page"
-              example: "/centreon/monitoring/resources/hosts/12"
-            timeline_endpoint:
-              type: string
-              nullable: true
-              description: "Parent resource url to get timeline information"
-              example: "/centreon/monitoring/resources/hosts/12/timeline"
-            configuration_uri:
-              type: string
-              nullable: true
-              description: "Centreon internal uri to configuration page"
-              example: "/centreon/main.php?p=60101&o=c&host_id=12"
-            logs_uri:
-              type: string
-              nullable: true
-              description: "Centreon internal uri to configuration page"
-              example: "/centreon/main.php?p=20301&h=12"
-            reporting_uri:
-              type: string
-              nullable: true
-              description: "Centreon internal uri to configuration page"
-              example: "/centreon/main.php?p=307&host=12"
+            links:
+              $ref: '#/components/schemas/Monitoring.ResourceLinks'
             status:
               type: object
               properties:
@@ -3448,18 +3586,10 @@ components:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
-        downtime_endpoint:
-          type: string
-          description: "URL of the downtimes list"
-          example: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        acknowledgement_endpoint:
-          type: string
-          description: "URL of the acknowledgement endpoint"
-          example: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
           nullable: true
@@ -3481,16 +3611,6 @@ components:
           nullable: true
           description: "action URL of the resource"
           example: http://mediawiki/host/central
-        status_graph_endpoint:
-          type: string
-          nullable: true
-          description: "URL of the status chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/metrics/status"
-        performance_graph_endpoint:
-          type: string
-          nullable: true
-          description: "URL of the performance chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/metrics/performance"
         duration:
           type: string
           nullable: true
@@ -3515,6 +3635,70 @@ components:
           type: string
           description: "Output of the resource"
           example: "OK - Ping is ok"
+        active_checks:
+          type: boolean
+          nullable: true
+          description: "Indicates whether active checks are enabled"
+          example: true
+        passive_checks:
+          type: boolean
+          nullable: true
+          description: "Indicates whether passive checks are enabled"
+          example: true
+    Monitoring.ResourceLinks:
+      type: object
+      properties:
+        uris:
+          type: object
+          properties:
+            configuration:
+              type: string
+              nullable: true
+              description: "configuration uri"
+              example: "/centreon/main.php?p=60101&o=c&host_id=11"
+            logs:
+              type: string
+              nullable: true
+              description: "logs uri"
+              example: "/centreon/main.php?p=20301&h=11"
+            reporting:
+              type: string
+              nullable: true
+              description: "reporting uri"
+              example: "/centreon/main.php?p=307&host=11"
+        endpoints:
+          type: object
+          properties:
+            details:
+              type: string
+              nullable: true
+              description: "resource details endpoint"
+              example: "/centreon/api/beta/monitoring/resources/hosts/11"
+            timeline:
+              type: string
+              nullable: true
+              description: "resource timeline endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/timeline"
+            status_graph:
+              type: string
+              nullable: true
+              description: "resource status graph endpoint"
+              example: null
+            performance_graph:
+              type: string
+              nullable: true
+              description: "resource performance graph endpoint"
+              example: null
+            acknowledgement:
+              type: string
+              nullable: true
+              description: "current resource acknowledgement endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/acknowledgements?limit=1"
+            downtime:
+              type: string
+              nullable: true
+              description: "current resource downtimes endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
     Monitoring.ResourceStatus:
       type: object
       properties:
@@ -3906,6 +4090,13 @@ components:
               nullable: true
               description: "Service criticality level (for display purposes)"
               example: 10
+            status:
+              $ref: '#/components/schemas/Monitoring.ResourceStatus'
+            duration:
+              type: string
+              nullable: true
+              description: "Duration since last status change"
+              example: "2h 3m"
     Monitoring.ServiceFull:
       allOf:
         - $ref: '#/components/schemas/Monitoring.ServiceMain'

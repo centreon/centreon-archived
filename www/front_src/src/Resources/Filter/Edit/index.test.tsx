@@ -117,6 +117,9 @@ describe(EditFilterPanel, () => {
     });
 
     const newName = 'New name';
+    const updatedFilter = { ...firstFilter, name: newName };
+
+    mockedAxios.put.mockResolvedValue({ data: updatedFilter });
 
     const renameFilterInput = getByLabelText(
       `${labelFilter}-${firstFilter.id}-${labelName}`,

@@ -1,6 +1,12 @@
 import * as React from 'react';
 
-import { useRequest } from '@centreon/ui';
+import { hasPath, mergeDeepLeft, mergeDeepRight, pipe } from 'ramda';
+
+import {
+  useRequest,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
 
 import {
   getStoredOrDefaultFilter,
@@ -58,11 +64,25 @@ const useFilter = (): FilterState => {
     decoder: listCustomFiltersDecoder,
   });
 
-  const { unhandledProblemsFilter } = useFilterModels();
-  const { toFilter } = useAdapters();
+  const { unhandledProblemsFilter, allFilter, newFilter } = useFilterModels();
+  const { toFilter, toFilterWithTranslatedCriterias } = useAdapters();
 
-  const getDefaultFilter = (): Filter =>
-    getStoredOrDefaultFilter(unhandledProblemsFilter);
+  const getDefaultFilter = (): Filter => {
+    const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
+
+    const urlQueryParameters = getUrlQueryParameters();
+
+    if (hasPath(['filter'], urlQueryParameters)) {
+      return pipe(
+        mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
+        mergeDeepRight(allFilter) as (t) => Filter,
+        toFilterWithTranslatedCriterias,
+      )(newFilter) as Filter;
+    }
+
+    return defaultFilter;
+  };
+
   const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
   const getDefaultSearch = (): string | undefined =>
     getDefaultCriterias().search;
@@ -145,6 +165,15 @@ const useFilter = (): FilterState => {
         search: nextSearch,
       },
     });
+
+    const queryParameters = [
+      {
+        name: 'filter',
+        value: updatedFilter,
+      },
+    ];
+
+    setUrlQueryParameters(queryParameters);
   }, [
     filter,
     nextSearch,
@@ -154,6 +183,26 @@ const useFilter = (): FilterState => {
     hostGroups,
     serviceGroups,
   ]);
+
+  React.useEffect(() => {
+    if (!getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
+    const { criterias } = getDefaultFilter();
+
+    setUrlQueryParameters([
+      {
+        name: 'fromTopCounter',
+        value: false,
+      },
+    ]);
+
+    setFilter(getDefaultFilter());
+    setResourceTypes(criterias.resourceTypes);
+    setStatuses(criterias.statuses);
+    setStates(criterias.states || []);
+  }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {
     clearCachedFilter();

@@ -25,6 +25,9 @@ namespace Centreon\Domain\Monitoring;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
+use Centreon\Domain\Monitoring\ResourceLinks;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 use DateTime;
 use CentreonDuration;
 
@@ -35,9 +38,10 @@ use CentreonDuration;
  */
 class Resource
 {
-    // Groups for serializing
+    // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
+    public const SERIALIZER_GROUP_DETAILS = 'resource_details';
 
     // Groups for validation
     public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];
@@ -72,6 +76,21 @@ class Resource
     private $icon;
 
     /**
+     * @var string|null
+     */
+    protected $commandLine;
+
+    /**
+     * @var string|null
+     */
+    private $pollerName;
+
+    /**
+     * @var string|null
+     */
+    private $timezone;
+
+    /**
      * @var \Centreon\Domain\Monitoring\Resource|null
      */
     private $parent;
@@ -80,6 +99,21 @@ class Resource
      * @var \Centreon\Domain\Monitoring\ResourceStatus|null
      */
     private $status;
+
+    /**
+     * @var bool|null
+     */
+    private $flapping;
+
+    /**
+     * @var double|null
+     */
+    private $percentStateChange;
+
+    /**
+     * @var int|null
+     */
+    protected $criticality;
 
     /**
      * @var bool
@@ -92,49 +126,19 @@ class Resource
     private $acknowledged = false;
 
     /**
-     * @var string|null
+     * @var bool|null
      */
-    private $configurationUri;
+    private $activeChecks;
 
     /**
-     * @var string|null
+     * @var bool|null
      */
-    private $logsUri;
+    private $passiveChecks;
 
     /**
-     * @var string|null
+     * @var ResourceLinks
      */
-    private $reportingUri;
-
-    /**
-     * @var string|null
-     */
-    private $downtimeEndpoint;
-
-    /**
-     * @var string|null
-     */
-    private $acknowledgementEndpoint;
-
-    /**
-     * @var string|null
-     */
-    private $detailsEndpoint;
-
-    /**
-     * @var string|null
-     */
-    private $timelineEndpoint;
-
-    /**
-     * @var string|null
-     */
-    private $statusGraphEndpoint;
-
-    /**
-     * @var string|null
-     */
-    private $performanceGraphEndpoint;
+    private $links;
 
     /**
      * @var \Centreon\Domain\Monitoring\ResourceSeverity|null
@@ -162,6 +166,16 @@ class Resource
     private $lastStatusChange;
 
     /**
+     * @var \DateTime|null
+     */
+    private $lastNotification;
+
+    /**
+     * @var int|null
+     */
+    private $notificationNumber;
+
+    /**
      * @var string|null
      */
     private $tries;
@@ -172,24 +186,46 @@ class Resource
     private $lastCheck;
 
     /**
+     * @var \DateTime|null
+     */
+    private $nextCheck;
+
+    /**
      * @var string|null
      */
     private $information;
 
     /**
-     * Get prepared list of groups for the context
-     *
-     * @return array
+     * @var string
      */
-    public static function contextGroupsForListing(): array
+    private $performanceData;
+
+    /**
+     * @var double|null
+     */
+    private $executionTime;
+
+    /**
+     * @var double|null
+     */
+    private $latency;
+
+    /**
+     * @var Downtime[]
+     */
+    private $downtimes = [];
+
+    /**
+     * @var Acknowledgement|null
+     */
+    private $acknowledgement;
+
+    /**
+     * Resource constructor.
+     */
+    public function __construct()
     {
-        return [
-            static::SERIALIZER_GROUP_MAIN,
-            static::SERIALIZER_GROUP_PARENT,
-            Icon::SERIALIZER_GROUP_MAIN,
-            ResourceStatus::SERIALIZER_GROUP_MAIN,
-            ResourceSeverity::SERIALIZER_GROUP_MAIN,
-        ];
+        $this->links = new ResourceLinks();
     }
 
     /**
@@ -305,6 +341,71 @@ class Resource
     }
 
     /**
+     * @return string|null
+     */
+    public function getCommandLine(): ?string
+    {
+        return $this->commandLine;
+    }
+
+    /**
+     * @param string|null $commandLine
+     * @return self
+     */
+    public function setCommandLine(?string $commandLine): self
+    {
+        $this->commandLine = $commandLine;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPollerName(): ?string
+    {
+        return $this->pollerName;
+    }
+
+    /**
+     * @param string|null $pollerName
+     * @return self
+     */
+    public function setPollerName(?string $pollerName): self
+    {
+        $this->pollerName = $pollerName;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSanitizedTimezone(): ?string
+    {
+        return (null !== $this->timezone) ?
+            preg_replace('/^:/', '', $this->timezone) :
+            $this->timezone;
+    }
+
+    /**
+     * @param string|null $timezone
+     * @return self
+     */
+    public function setTimezone(?string $timezone): self
+    {
+        $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
      * @return \Centreon\Domain\Monitoring\Resource|null
      */
     public function getParent(): ?Resource
@@ -339,6 +440,60 @@ class Resource
     {
         $this->status = $status;
 
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return self
+     */
+    public function setFlapping(?bool $flapping): self
+    {
+        $this->flapping = $flapping;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPercentStateChange(): ?float
+    {
+        return $this->percentStateChange;
+    }
+
+    /**
+     * @param float|null $percentStateChange
+     * @return self
+     */
+    public function setPercentStateChange(?float $percentStateChange): self
+    {
+        $this->percentStateChange = $percentStateChange;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int|null $criticality
+     * @return self
+     */
+    public function setCriticality(?int $criticality): self
+    {
+        $this->criticality = $criticality;
         return $this;
     }
 
@@ -381,170 +536,56 @@ class Resource
     }
 
     /**
-     * @return string|null
+     * @return bool|null
      */
-    public function getConfigurationUri(): ?string
+    public function getActiveChecks(): ?bool
     {
-        return $this->configurationUri;
+        return $this->activeChecks;
     }
 
     /**
-     * @param string|null $configurationUri
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param bool|null $activeChecks
+     * @return self
      */
-    public function setConfigurationUri(string $configurationUri): self
+    public function setActiveChecks(?bool $activeChecks): self
     {
-        $this->configurationUri = $configurationUri;
+        $this->activeChecks = $activeChecks;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return bool|null
      */
-    public function getLogsUri(): ?string
+    public function getPassiveChecks(): ?bool
     {
-        return $this->logsUri;
+        return $this->passiveChecks;
     }
 
     /**
-     * @param string|null $logsUri
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param bool|null $passiveChecks
+     * @return self
      */
-    public function setLogsUri(string $logsUri): self
+    public function setPassiveChecks(?bool $passiveChecks): self
     {
-        $this->logsUri = $logsUri;
+        $this->passiveChecks = $passiveChecks;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return ResourceLinks
      */
-    public function getReportingUri(): ?string
+    public function getLinks(): ResourceLinks
     {
-        return $this->reportingUri;
+        return $this->links;
     }
 
     /**
-     * @param string|null $reportingUri
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param ResourceLinks $links
+     * @return self
      */
-    public function setReportingUri(string $reportingUri): self
+    public function setLinks(ResourceLinks $links): self
     {
-        $this->reportingUri = $reportingUri;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDowntimeEndpoint(): ?string
-    {
-        return $this->downtimeEndpoint;
-    }
-
-    /**
-     * @param string $downtimeEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setDowntimeEndpoint(string $downtimeEndpoint): self
-    {
-        $this->downtimeEndpoint = $downtimeEndpoint;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAcknowledgementEndpoint(): ?string
-    {
-        return $this->acknowledgementEndpoint;
-    }
-
-    /**
-     * @param string $acknowledgementEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setAcknowledgementEndpoint(string $acknowledgementEndpoint): self
-    {
-        $this->acknowledgementEndpoint = $acknowledgementEndpoint;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDetailsEndpoint(): ?string
-    {
-        return $this->detailsEndpoint;
-    }
-
-    /**
-     * @param string|null $detailsEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setDetailsEndpoint(?string $detailsEndpoint): self
-    {
-        $this->detailsEndpoint = $detailsEndpoint ?: null;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTimelineEndpoint(): ?string
-    {
-        return $this->timelineEndpoint;
-    }
-
-    /**
-     * @param string|null $timelineEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setTimelineEndpoint(?string $timelineEndpoint): self
-    {
-        $this->timelineEndpoint = $timelineEndpoint ?: null;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatusGraphEndpoint(): ?string
-    {
-        return $this->statusGraphEndpoint;
-    }
-
-    /**
-     * @param string $statusGraphEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setStatusGraphEndpoint(string $statusGraphEndpoint): self
-    {
-        $this->statusGraphEndpoint = $statusGraphEndpoint;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPerformanceGraphEndpoint(): ?string
-    {
-        return $this->performanceGraphEndpoint;
-    }
-
-    /**
-     * @param string $performanceGraphEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setPerformanceGraphEndpoint(string $performanceGraphEndpoint): self
-    {
-        $this->performanceGraphEndpoint = $performanceGraphEndpoint;
-
+        $this->links = $links;
         return $this;
     }
 
@@ -644,6 +685,42 @@ class Resource
     }
 
     /**
+     * @return \DateTime|null
+     */
+    public function getLastNotification(): ?\DateTime
+    {
+        return $this->lastNotification;
+    }
+
+    /**
+     * @param \DateTime|null $lastNotification
+     * @return self
+     */
+    public function setLastNotification(?\DateTime $lastNotification): self
+    {
+        $this->lastNotification = $lastNotification;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNotificationNumber(): ?int
+    {
+        return $this->notificationNumber;
+    }
+
+    /**
+     * @param int|null $notificationNumber
+     * @return self
+     */
+    public function setNotificationNumber(?int $notificationNumber): self
+    {
+        $this->notificationNumber = $notificationNumber;
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getTries(): ?string
@@ -682,6 +759,25 @@ class Resource
     }
 
     /**
+     * @return \DateTime|null
+     */
+    public function getNextCheck(): ?DateTime
+    {
+        return $this->nextCheck;
+    }
+
+    /**
+     * @param \DateTime|null $nextCheck
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setNextCheck(?DateTime $nextCheck): self
+    {
+        $this->nextCheck = $nextCheck;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getInformation(): ?string
@@ -697,6 +793,96 @@ class Resource
     {
         $this->information = trim($information);
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPerformanceData(): string
+    {
+        return $this->performanceData;
+    }
+
+    /**
+     * @param string $performanceData
+     * @return self
+     */
+    public function setPerformanceData(string $performanceData): self
+    {
+        $this->performanceData = $performanceData;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getExecutionTime(): ?float
+    {
+        return $this->executionTime;
+    }
+
+    /**
+     * @param float|null $executionTime
+     * @return self
+     */
+    public function setExecutionTime(?float $executionTime): self
+    {
+        $this->executionTime = $executionTime;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLatency(): ?float
+    {
+        return $this->latency;
+    }
+
+    /**
+     * @param float|null $latency
+     * @return self
+     */
+    public function setLatency(?float $latency): self
+    {
+        $this->latency = $latency;
+        return $this;
+    }
+
+    /**
+     * @return Downtime[]
+     */
+    public function getDowntimes(): array
+    {
+        return $this->downtimes;
+    }
+
+    /**
+     * @param Downtime[] $downtimes
+     * @return self
+     */
+    public function setDowntimes(array $downtimes): self
+    {
+        $this->downtimes = $downtimes;
+        return $this;
+    }
+
+    /**
+     * @return Acknowledgement|null
+     */
+    public function getAcknowledgement(): ?Acknowledgement
+    {
+        return $this->acknowledgement;
+    }
+
+    /**
+     * @param Acknowledgement|null $acknowledgement
+     * @return self
+     */
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
+    {
+        $this->acknowledgement = $acknowledgement;
         return $this;
     }
 }

@@ -3,16 +3,16 @@ import * as React from 'react';
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { getData, useRequest, Panel } from '@centreon/ui';
+import { Panel } from '@centreon/ui';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
 
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { useResourceContext } from '../Context';
-import { TabById, getVisibleTabs, TabId } from './tabs';
+import { TabById, detailsTabId, tabs } from './tabs';
+import { Tab as TabModel, TabId } from './tabs/models';
 import { rowColorConditions } from '../colors';
-import { ResourceLinks } from '../models';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
@@ -21,41 +21,40 @@ export interface DetailsSectionProps {
 const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const [details, setDetails] = React.useState<ResourceDetails>();
 
   const {
     openDetailsTabId,
     setOpenDetailsTabId,
-    selectedDetailsLinks,
-    setSelectedDetailsLinks,
-    listing,
+    clearSelectedResource,
+    details,
   } = useResourceContext();
 
-  const links = selectedDetailsLinks as ResourceLinks;
-  const { details: detailsEndpoint } = links.endpoints;
-
-  const clearSelectedResource = (): void => {
-    setSelectedDetailsLinks(undefined);
-  };
-
-  const { sendRequest } = useRequest<ResourceDetails>({
-    request: getData,
-  });
-
-  const visibleTabs = getVisibleTabs(selectedDetailsLinks);
-
   React.useEffect(() => {
-    if (details !== undefined) {
-      setDetails(undefined);
+    if (isNil(details)) {
+      return;
     }
 
-    sendRequest(detailsEndpoint).then((retrievedDetails) =>
-      setDetails(retrievedDetails),
-    );
-  }, [detailsEndpoint, listing]);
+    const isOpenTabActive = tabs
+      .find(propEq('id', openDetailsTabId))
+      ?.getIsActive(details);
+
+    if (!isOpenTabActive) {
+      setOpenDetailsTabId(detailsTabId);
+    }
+  }, [details]);
+
+  const getVisibleTabs = (): Array<TabModel> => {
+    if (isNil(details)) {
+      return tabs;
+    }
+
+    return tabs.filter(({ getIsActive }) => getIsActive(details));
+  };
 
   const getTabIndex = (tabId: TabId): number => {
-    return findIndex(propEq('id', tabId), visibleTabs);
+    const index = findIndex(propEq('id', tabId), getVisibleTabs());
+
+    return index > 0 ? index : 0;
   };
 
   const changeSelectedTabId = (tabId: TabId) => (): void => {
@@ -85,7 +84,7 @@ const Details = (): JSX.Element | null => {
       onClose={clearSelectedResource}
       header={<Header details={details} />}
       headerBackgroundColor={getHeaderBackgroundColor()}
-      tabs={visibleTabs.map(({ id, title }) => (
+      tabs={getVisibleTabs().map(({ id, title }) => (
         <Tab
           style={{ minWidth: 'unset' }}
           key={id}
@@ -95,9 +94,7 @@ const Details = (): JSX.Element | null => {
         />
       ))}
       selectedTabId={getTabIndex(openDetailsTabId)}
-      selectedTab={
-        <TabById id={openDetailsTabId} details={details} links={links} />
-      }
+      selectedTab={<TabById id={openDetailsTabId} details={details} />}
     />
   );
 };

@@ -215,7 +215,16 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
             }
         }
 
-        $this->serviceRepository->addServicesToHost($host, $servicesToBeCreated);
+        try {
+            $this->serviceRepository->addServicesToHost($host, $servicesToBeCreated);
+        } catch (\Throwable $ex) {
+            throw new ServiceConfigurationException(
+                sprintf(
+                    _('Error when adding services to the host %d'),
+                    $host->getId()
+                )
+            );
+        }
     }
 
     /**

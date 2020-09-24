@@ -1,19 +1,28 @@
-import { Status, Acknowledgement, Downtime, Parent } from '../models';
+import {
+  Status,
+  Acknowledgement,
+  Downtime,
+  Parent,
+  ResourceLinks,
+  Severity,
+} from '../models';
 
 export interface ResourceDetails {
-  display_name: string;
+  id: number;
+  name: string;
   status: Status;
   parent: Parent;
-  criticality: number;
-  output: string;
+  links: ResourceLinks;
+  severity: Severity;
+  information: string;
   downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;
-  is_acknowledged: boolean;
+  acknowledged: boolean;
   duration: string;
   tries: string;
   poller_name?: string;
   timezone?: string;
-  last_state_change: string;
+  last_status_change: string;
   last_check: string;
   next_check: string;
   active_checks: boolean;
@@ -25,4 +34,13 @@ export interface ResourceDetails {
   notification_number: number;
   performance_data?: string;
   command_line?: string;
+  type: 'service' | 'host';
+}
+
+export interface DetailsUrlQueryParameters {
+  id: number;
+  parentId?: number;
+  parentType?: string;
+  type: string;
+  tab?: string;
 }

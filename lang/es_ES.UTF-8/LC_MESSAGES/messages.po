@@ -14587,3 +14587,30 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "View report"
 #  msgstr ""
+
+#  msgid "Copy the link to this resource"
+#  msgstr ""
+
+#  msgid "Resource link copied to the clipboard"
+#  msgstr ""
+
+#  msgid "More actions"
+#  msgstr ""
+
+#  msgid "Disacknowledge"
+#  msgstr ""
+
+#  msgid "Disacknowledge services attached to hosts"
+#  msgstr ""
+
+#  msgid "Disacknowledgement command sent"
+#  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""

@@ -108,6 +108,7 @@ export const labelTips = 'Tips';
 export const labelGetRegexHelp =
   'get some help while creating your regular expression query at';
 export const labelService = 'Service';
+export const labelServices = 'Services';
 export const labelServiceGroup = 'Service group';
 export const labelStartTime = 'Start time';
 export const labelState = 'State';
@@ -162,3 +163,16 @@ export const labelShortcuts = 'Shortcuts';
 export const labelConfigure = 'Configure';
 export const labelViewLogs = 'View logs';
 export const labelViewReport = 'View report';
+export const labelCopyLink = 'Copy the link to this resource';
+export const labelLinkCopied = 'Resource link copied to the clipboard';
+export const labelDisacknowledge = 'Disacknowledge';
+export const labelMoreActions = 'More actions';
+export const labelDisacknowledgeServices =
+  'Disacknowledge services attached to hosts';
+export const labelDisacknowledgementCommandSent =
+  'Disacknowledgement command sent';
+export const labelSubmitStatus = 'Submit a status';
+export const labelSubmit = 'Submit';
+export const labelStatusSubmitted = 'Status submitted';
+export const labelOutput = 'Output';
+export const labelNoResourceFound = 'No resource found';

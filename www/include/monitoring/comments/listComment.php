@@ -70,6 +70,11 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     $searchOutput = $centreon->historySearch[$url]["searchOutput"] ?? '';
 }
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 /*
  * Init GMT class
  */
@@ -146,12 +151,16 @@ $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
     $tab_comments_svc[$i] = $data;
     $tab_comments_svc[$i]["persistent"] = $en[$tab_comments_svc[$i]["persistent"]];
-    $tab_comments_svc[$i]['host_name_link'] = urlencode($tab_comments_svc[$i]['host_name']);
     $tab_comments_svc[$i]['data'] = CentreonUtils::escapeAllExceptSelectedTags(
         $tab_comments_svc[$i]['data'],
         ['a', 'br', 'hr']
     );
+    $tab_comments_svc[$i]['h_details_uri'] = $resourceController->buildHostDetailsUri($data['host_id']);
     if ($data['service_description'] != '') {
+        $tab_comments_svc[$i]['s_details_uri'] = $resourceController->buildServiceDetailsUri(
+            $data['host_id'],
+            $data['service_id']
+        );
         $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description'], ENT_QUOTES, 'UTF-8');
         $tab_comments_svc[$i]['comment_type'] = 'SVC';
     } else {

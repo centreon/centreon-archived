@@ -26,7 +26,7 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Context;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 /**
  * Exclusion strategy for resource list to skip applying of SERIALIZER_GROUP_MAIN on the parent object
@@ -49,9 +49,15 @@ class ResourceExclusionStrategy implements ExclusionStrategyInterface
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
         if (
-            $property->class === Resource::class
+            $property->class === ResourceEntity::class
             && $navigatorContext->getDepth() > 1
-            && !in_array(Resource::SERIALIZER_GROUP_PARENT, $property->groups)
+            && (
+                !is_array($property->groups)
+                || (
+                    is_array($property->groups)
+                    && !in_array(ResourceEntity::SERIALIZER_GROUP_PARENT, $property->groups)
+                )
+            )
         ) {
             return true;
         }

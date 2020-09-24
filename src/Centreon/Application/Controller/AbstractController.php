@@ -59,7 +59,14 @@ abstract class AbstractController extends AbstractFOSRestController
     {
         $baseUri = '';
 
-        if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
+        if (
+            isset($_SERVER['REQUEST_URI'])
+            && preg_match(
+                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
+                $_SERVER['REQUEST_URI'],
+                $matches
+            )
+        ) {
             $baseUri = $matches[1];
         }
 

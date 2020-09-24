@@ -148,14 +148,14 @@ $rq1 .= " `hosts` h
     LEFT JOIN hosts_hosts_parents hph
     ON hph.parent_id = h.host_id
     LEFT JOIN `customvariables` cv
-    ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL')
+    ON (cv.host_id = h.host_id AND cv.service_id = 0 AND cv.name = 'CRITICALITY_LEVEL')
     WHERE h.name NOT LIKE '_Module_%'
     AND h.instance_id = i.instance_id ";
 
 if ($criticalityId) {
     $rq1 .= " AND h.host_id = cvs.host_id
         AND cvs.name = 'CRITICALITY_ID'
-        AND cvs.service_id IS NULL
+        AND cvs.service_id = 0
         AND cvs.value = :criticalityId ";
     $queryValues['criticalityId'] = [
         \PDO::PARAM_STR => $criticalityId
@@ -268,7 +268,7 @@ $critRes = $obj->DBC->query(
     "SELECT value, host_id
     FROM customvariables
     WHERE name = 'CRITICALITY_ID'
-    AND service_id IS NULL"
+    AND service_id = 0"
 );
 $criticalityUsed = 0;
 $critCache = [];

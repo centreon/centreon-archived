@@ -1,11 +1,12 @@
 import * as React from 'react';
 
-import { isEmpty } from 'ramda';
+import { head } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ButtonProps, Grid } from '@material-ui/core';
+import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
+import IconMore from '@material-ui/icons/MoreHoriz';
 
 import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
 
@@ -16,21 +17,37 @@ import {
   labelCheck,
   labelSomethingWentWrong,
   labelCheckCommandSent,
+  labelMoreActions,
+  labelDisacknowledge,
+  labelSubmitStatus,
 } from '../../translatedLabels';
 import AcknowledgeForm from './Acknowledge';
 import DowntimeForm from './Downtime';
 import { useResourceContext } from '../../Context';
 import useAclQuery from './aclQuery';
 import { checkResources } from '../api';
+import { Resource } from '../../models';
+import ActionButton from '../ActionButton';
+import DisacknowledgeForm from './Disacknowledge';
+import SubmitStatusForm from './SubmitStatus';
 
-const ActionButton = (props: ButtonProps): JSX.Element => (
-  <Button variant="contained" color="primary" size="small" {...props} />
+const ContainedActionButton = (props: ButtonProps): JSX.Element => (
+  <ActionButton variant="contained" {...props} />
 );
 
 const ResourceActions = (): JSX.Element => {
   const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
+  const [
+    moreActionsMenuAnchor,
+    setMoreActionsMenuAnchor,
+  ] = React.useState<Element | null>(null);
+
+  const [
+    resourceToSubmitStatus,
+    setresourceToSubmitStatus,
+  ] = React.useState<Resource | null>();
 
   const {
     resourcesToCheck,
@@ -41,6 +58,8 @@ const ResourceActions = (): JSX.Element => {
     resourcesToSetDowntime,
     setResourcesToSetDowntime,
     setResourcesToCheck,
+    resourcesToDisacknowledge,
+    setResourcesToDisacknowledge,
   } = useResourceContext();
 
   const showError = (message): void =>
@@ -48,7 +67,13 @@ const ResourceActions = (): JSX.Element => {
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
+  const {
+    canAcknowledge,
+    canDowntime,
+    canCheck,
+    canDisacknowledge,
+    canSubmitStatus,
+  } = useAclQuery();
 
   const hasResourcesToCheck = resourcesToCheck.length > 0;
 
@@ -57,6 +82,8 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToAcknowledge([]);
     setResourcesToSetDowntime([]);
     setResourcesToCheck([]);
+    setresourceToSubmitStatus(null);
+    setResourcesToDisacknowledge([]);
   };
 
   React.useEffect(() => {
@@ -97,41 +124,96 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToSetDowntime([]);
   };
 
-  const noResourcesSelected = isEmpty(selectedResources);
-  const disableAcknowledge =
-    noResourcesSelected || !canAcknowledge(selectedResources);
-  const disableDowntime =
-    noResourcesSelected || !canDowntime(selectedResources);
-  const disableCheck = noResourcesSelected || !canCheck(selectedResources);
+  const closeMoreActionsMenu = (): void => {
+    setMoreActionsMenuAnchor(null);
+  };
+
+  const prepareToDisacknowledge = (): void => {
+    closeMoreActionsMenu();
+    setResourcesToDisacknowledge(selectedResources);
+  };
+
+  const cancelDisacknowledge = (): void => {
+    setResourcesToDisacknowledge([]);
+  };
+
+  const prepareToSubmitStatus = (): void => {
+    closeMoreActionsMenu();
+    const [selectedResource] = selectedResources;
+
+    setresourceToSubmitStatus(selectedResource);
+  };
+
+  const cancelSubmitStatus = (): void => {
+    setresourceToSubmitStatus(null);
+  };
+
+  const openMoreActionsMenu = (event: React.MouseEvent): void => {
+    setMoreActionsMenuAnchor(event.currentTarget);
+  };
+
+  const disableAcknowledge = !canAcknowledge(selectedResources);
+  const disableDowntime = !canDowntime(selectedResources);
+  const disableCheck = !canCheck(selectedResources);
+  const disableDisacknowledge = !canDisacknowledge(selectedResources);
+
+  const disableSubmitStatus =
+    selectedResources.length !== 1 ||
+    !canSubmitStatus(selectedResources) ||
+    !head(selectedResources)?.passive_checks;
 
   return (
     <Grid container spacing={1}>
       <Grid item>
-        <ActionButton
+        <ContainedActionButton
           disabled={disableAcknowledge}
           startIcon={<IconAcknowledge />}
           onClick={prepareToAcknowledge}
         >
           {t(labelAcknowledge)}
-        </ActionButton>
+        </ContainedActionButton>
       </Grid>
       <Grid item>
-        <ActionButton
+        <ContainedActionButton
           disabled={disableDowntime}
           startIcon={<IconDowntime />}
           onClick={prepareToSetDowntime}
         >
           {t(labelSetDowntime)}
-        </ActionButton>
+        </ContainedActionButton>
       </Grid>
       <Grid item>
-        <ActionButton
+        <ContainedActionButton
           disabled={disableCheck}
           startIcon={<IconCheck />}
           onClick={prepareToCheck}
         >
           {t(labelCheck)}
+        </ContainedActionButton>
+      </Grid>
+      <Grid item>
+        <ActionButton startIcon={<IconMore />} onClick={openMoreActionsMenu}>
+          {t(labelMoreActions)}
         </ActionButton>
+        <Menu
+          anchorEl={moreActionsMenuAnchor}
+          keepMounted
+          open={Boolean(moreActionsMenuAnchor)}
+          onClose={closeMoreActionsMenu}
+        >
+          <MenuItem
+            disabled={disableDisacknowledge}
+            onClick={prepareToDisacknowledge}
+          >
+            {t(labelDisacknowledge)}
+          </MenuItem>
+          <MenuItem
+            disabled={disableSubmitStatus}
+            onClick={prepareToSubmitStatus}
+          >
+            {t(labelSubmitStatus)}
+          </MenuItem>
+        </Menu>
       </Grid>
       {resourcesToAcknowledge.length > 0 && (
         <AcknowledgeForm
@@ -144,6 +226,20 @@ const ResourceActions = (): JSX.Element => {
         <DowntimeForm
           resources={resourcesToSetDowntime}
           onClose={cancelSetDowntime}
+          onSuccess={confirmAction}
+        />
+      )}
+      {resourcesToDisacknowledge.length > 0 && (
+        <DisacknowledgeForm
+          resources={resourcesToDisacknowledge}
+          onClose={cancelDisacknowledge}
+          onSuccess={confirmAction}
+        />
+      )}
+      {resourceToSubmitStatus && (
+        <SubmitStatusForm
+          resource={resourceToSubmitStatus}
+          onClose={cancelSubmitStatus}
           onSuccess={confirmAction}
         />
       )}
