@@ -62,6 +62,9 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
      */
     public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration
     {
+        if ($host->getId() === null) {
+            return null;
+        }
         $request = $this->translateDbName(
             'SELECT * FROM `:db`.cfg_nagios cfg
             INNER JOIN `:db`.ns_host_relation nsr

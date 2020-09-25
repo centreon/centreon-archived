@@ -279,10 +279,17 @@ class EngineService extends AbstractCentreonService implements
      */
     public function findEngineConfigurationByHost(\Centreon\Domain\HostConfiguration\Host $host): ?EngineConfiguration
     {
+        if ($host->getId() === null) {
+            throw new EngineException(_('The host id cannot be null'));
+        }
         try {
             return $this->engineConfigurationRepository->findEngineConfigurationByHost($host);
         } catch (\Throwable $ex) {
-            throw new EngineException(_('Error when searching for the Engine configuration'), 0, $ex);
+            throw new EngineException(
+                sprintf(_('Error when searching for the Engine configuration (%s)'), $host->getId()),
+                0,
+                $ex
+            );
         }
     }
 
@@ -294,7 +301,11 @@ class EngineService extends AbstractCentreonService implements
         try {
             return $this->engineConfigurationRepository->findEngineConfigurationByName($engineName);
         } catch (\Throwable $ex) {
-            throw new EngineException(_('Error when searching for the Engine configuration'), 0, $ex);
+            throw new EngineException(
+                sprintf(_('Error when searching for the Engine configuration (%s)'), $engineName),
+                0,
+                $ex
+            );
         }
     }
 

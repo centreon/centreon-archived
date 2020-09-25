@@ -15672,3 +15672,6 @@ msgstr "Statut soumis"
 
 msgid "No resource found"
 msgstr "Pas de ressource trouvée"
+
+msgid "Error when searching for the Engine configuration (%s)"
+msgstr "Erreur lors de la recherche de la configuration du moteur (%s)"
