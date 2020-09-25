@@ -72,4 +72,13 @@ interface MonitoringServerServiceInterface
      * @throws MonitoringServerException
      */
     public function findServer(int $monitoringServerId): ?MonitoringServer;
+
+    /**
+     * Find a monitoring server by its name.
+     *
+     * @param string $monitoringServerName Name to find
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findServerByName(string $monitoringServerName): ?MonitoringServer;
 }

@@ -65,10 +65,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             if (empty($host->getIpAddress())) {
                 throw new HostConfigurationException(_('Ip address can not be empty'));
             }
-            /*
-             * At this stage the host monitoring server has no id yet, just a name provided by one of the mappers.
-             * We will used this provider name to retrieve the engine configuration
-             */
+
             if ($host->getMonitoringServer() === null || $host->getMonitoringServer()->getName() === null) {
                 throw new HostConfigurationException(_('Monitoring server is not correctly defined'));
             }
@@ -83,9 +80,6 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             if ($engineConfiguration === null) {
                 throw new HostConfigurationException(_('Impossible to find the Engine configuration'));
             }
-
-            // Otherwise, the monitoring server will not be associated with the host and will generate an exception.
-            $host->getMonitoringServer()->setId($engineConfiguration->getId());
 
             $safedHostName = EngineConfiguration::removeIllegalCharacters(
                 $host->getName(),
@@ -102,6 +96,9 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             }
             if ($host->getExtendedHost() === null) {
                 $host->setExtendedHost(new ExtendedHost());
+            }
+            if ($host->getMonitoringServer()->getId() === null) {
+                $host->getMonitoringServer()->setId($engineConfiguration->getMonitoringServerId());
             }
             return $this->hostConfigurationRepository->addHost($host);
         } catch (HostConfigurationException $ex) {
