@@ -83,4 +83,13 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findHostMacrosPassword(int $hostId, string $command): array;
+
+    /**
+     * Find host names already used by hosts.
+     *
+     * @param string[] $namesToCheck List of names to find
+     * @return string[] Return the host names found
+     * @throws HostConfigurationException
+     */
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array;
 }

@@ -28,6 +28,7 @@ use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -50,12 +51,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
     }
 
+
     /**
-     * Add a host
-     *
-     * @param Host $host Host to add
-     * @return int Returns the host id
-     * @throws \Exception
+     * @inheritDoc
      */
     public function addHost(Host $host): int
     {
@@ -91,7 +89,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->db->commit();
 
             return $hostId;
-        } catch (\Exception $ex) {
+        } catch (RepositoryException | \Exception $ex) {
             $this->db->rollBack();
             throw $ex;
         }
@@ -102,6 +100,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      *
      * @param int $hostId Host id for which this monitoring server host will be associated
      * @param MonitoringServer $monitoringServer Monitoring server to be added
+     * @throws RepositoryException
      * @throws \Exception
      */
     private function addMonitoringServer(int $hostId, MonitoringServer $monitoringServer): void
@@ -117,7 +116,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
             $statement->execute();
             if ($statement->rowCount() === 0) {
-                throw new \Exception(sprintf(_('Monitoring server with id %d not found'), $monitoringServer->getId()));
+                throw new RepositoryException(
+                    sprintf(_('Monitoring server with id %d not found'), $monitoringServer->getId())
+                );
             }
         } elseif (!empty($monitoringServer->getName())) {
             $request = $this->translateDbName(
@@ -132,7 +133,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
             $statement->execute();
             if ($statement->rowCount() === 0) {
-                throw new \Exception(sprintf(_('Monitoring server %s not found'), $monitoringServer->getName()));
+                throw new RepositoryException(
+                    sprintf(_('Monitoring server %s not found'), $monitoringServer->getName())
+                );
             }
         }
     }
@@ -164,6 +167,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      *
      * @param int $hostId Host id for which this templates will be associated
      * @param Host[] $hostTemplates Host template to be added
+     * @throws RepositoryException
      * @throws \Exception
      */
     private function addHostTemplate(int $hostId, array $hostTemplates): void
@@ -186,7 +190,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 $statement->bindValue(':order', ((int) $order) + 1, \PDO::PARAM_INT);
                 $statement->execute();
                 if ($statement->rowCount() === 0) {
-                    throw new \Exception(sprintf(_('Template with id %d not found'), $template->getId()));
+                    throw new RepositoryException(sprintf(_('Template with id %d not found'), $template->getId()));
                 }
             } elseif (!empty($template->getName())) {
                 // Associate the host and host template using template name
@@ -203,7 +207,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 $statement->bindValue(':order', ((int) $order), \PDO::PARAM_INT);
                 $statement->execute();
                 if ($statement->rowCount() === 0) {
-                    throw new \Exception(sprintf(_('Template %s not found'), $template->getName()));
+                    throw new RepositoryException(sprintf(_('Template %s not found'), $template->getName()));
                 }
             }
         }
@@ -447,5 +451,39 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             );
         }
         return $hostMacros;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array
+    {
+        if (empty($namesToCheck)) {
+            return [];
+        }
+
+        $names = [];
+        foreach ($namesToCheck as $name) {
+            $names[] = (string) $name;
+        }
+
+        if (empty($names)) {
+            return [];
+        }
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                sprintf(
+                    'SELECT host_name FROM `:db`.host WHERE host_name IN (%s?)',
+                    str_repeat('?,', count($names) - 1)
+                )
+            )
+        );
+        $statement->execute($names);
+        $namesFound = [];
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $namesFound[] = $result['host_name'];
+        }
+        return $namesFound;
     }
 }

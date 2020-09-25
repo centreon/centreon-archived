@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Repository;
 
-use Throwable;
-
 class RepositoryException extends \Exception
 {
 }

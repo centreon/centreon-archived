@@ -81,4 +81,12 @@ interface HostConfigurationRepositoryInterface
      * @throws \Throwable
      */
     public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
+
+    /**
+     * Find host names already used by hosts.
+     *
+     * @param string[] $namesToCheck List of names to find
+     * @return string[] Return the host names found
+     */
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array;
 }
