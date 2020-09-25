@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 
 import { isNil, equals, not } from 'ramda';
-import { useResourceContext } from '../Context';
+import { useResourceContext } from '../../Context';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -20,6 +20,7 @@ const useLoadResources = (): LoadResources => {
     serviceGroups,
     limit,
     page,
+    setPage,
     currentSearch,
     nextSearch,
     setListing,
@@ -75,7 +76,7 @@ const useLoadResources = (): LoadResources => {
   };
 
   const initAutorefreshAndLoad = (): void => {
-    if (isNil(customFilters)) {
+    if (isNil(customFilters) || not(equals(currentSearch, nextSearch))) {
       return;
     }
 
@@ -94,15 +95,22 @@ const useLoadResources = (): LoadResources => {
   }, []);
 
   React.useEffect(() => {
-    if (not(equals(currentSearch, nextSearch))) {
+    if (isNil(page)) {
       return;
     }
 
     initAutorefreshAndLoad();
+  }, [page]);
+
+  React.useEffect(() => {
+    if (page === 1) {
+      initAutorefreshAndLoad();
+    }
+
+    setPage(1);
   }, [
     sortf,
     sorto,
-    page,
     limit,
     currentSearch,
     states,
