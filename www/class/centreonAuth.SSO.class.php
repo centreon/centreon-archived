@@ -324,7 +324,7 @@ class CentreonAuthSSO extends CentreonAuth
     }
 
     /**
-     * Get User Inofmration on OpenId Connect
+     * Get User Information on OpenId Connect
      *
      * @param string $url        OpenId Connect Introspection Token Endpoint
      * @param string $token      OpenId Connect Token Access
