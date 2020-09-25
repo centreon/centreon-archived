@@ -124,7 +124,14 @@ $form->setDefaults(
 );
 
 //URI
-$form->addElement('header', 'informationUri', _("Central's API uri") . ' - ' .$result['authorizedMaster']);
+$form->addElement('header', 'informationUri', _("Central's API uri"));
+
+$form->addElement('select', 'apiScheme', _("build complet URI (SCHEME://IP:PORT/PATH)"), ['http', 'https']);
+$apiScheme = $result['apiScheme'] ?? 'http';
+$form->setDefaults($apiScheme);
+
+$form->addElement('header', 'informationIp', $result['authorizedMaster']);
+
 $form->addElement(
     'text',
     'apiPath',
@@ -133,16 +140,8 @@ $form->addElement(
 );
 $form->addRule('apiPath', _("Required Field"), 'required');
 
-$form->addElement('text', 'apiPort', _("Port"), $attrsText2);
+$form->addElement('text', 'apiPort', _("Port"),  ["size" => "8"]);
 $form->addRule('apiPort', _('Must be a number'), 'numeric');
-
-$form->addElement(
-    'checkbox',
-    'apiScheme',
-    _("Use SSL/TLS"),
-    null
-);
-$form->setDefaults(1);
 
 $form->addElement(
     'checkbox',
@@ -156,43 +155,8 @@ $form->setDefaults(
     [
         'apiPath' => $result['apiPath'],
         'apiPort' => $result['apiPort'],
-        'apiScheme' => ($result['apiScheme'] == 'https' ? 1 : 0),
+        'apiScheme' => $result['apiScheme'],
         'apiSelfSignedCertificate' => ($result['apiSelfSignedCertificate'] == 'yes' ? 1 : 0)
-    ]
-);
-
-//Proxy
-$form->addElement('header', 'informationProxy', _("Central's Proxy"));
-$form->addElement(
-    'text',
-    'apiProxyHost',
-    _("apiProxyHost"),
-    $attrsText
-);
-
-$form->addElement('text', 'apiProxyPort', _("Port"), $attrsText2);
-$form->addRule('apiProxyPort', _('Must be a number'), 'numeric');
-
-$form->addElement(
-    'text',
-    'apiProxyUsername',
-    _("Username"),
-    $attrsText
-);
-
-$form->addElement(
-    'password',
-    'apiProxyCredentials',
-    _("Password"),
-    ["size" => "40", "autocomplete" => "new-password", "id" => "passwd2", "onFocus" => "resetPwdType(this);"]
-);
-
-$form->setDefaults(
-    [
-        'apiProxyHost' => $result['apiProxyHost'],
-        'apiProxyPort' => $result['apiProxyPort'],
-        'apiProxyUsername' => $result['apiProxyUsername'],
-        'apiProxyCredentials' => (!empty($decryptProxyResult) ? CentreonAuth::PWS_OCCULTATION : '')
     ]
 );
 

@@ -28,21 +28,11 @@
         </tr>
         <tr class="list_one">
             <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_path">&nbsp;{$form.apiPath.label}
-            </td>
-            <td class="FormRowValue">{$form.apiPath.html}</td>
-        </tr>
-        <tr class="list_two">
-            <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_port">&nbsp;{$form.apiPort.label}
-            </td>
-            <td class="FormRowValue">{$form.apiPort.html}</td>
-        </tr>
-        <tr class="list_one">
-            <td class="FormRowField">
                 <img class="helpTooltip" name="tip_api_ssl">&nbsp;{$form.apiScheme.label}
             </td>
-            <td class="FormRowValue">{$form.apiScheme.html}</td>
+            <td class="FormRowValue">
+                {$form.apiScheme.html} :// {$form.header.informationIp}:{$form.apiPort.html}/{$form.apiPath.html}
+            </td>
         </tr>
         <tr class="list_two">
             <td class="FormRowField">
@@ -50,37 +40,6 @@
                 {$form.apiSelfSignedCertificate.label}
             </td>
             <td class="FormRowValue">{$form.apiSelfSignedCertificate.html}</td>
-        </tr>
-
-        <tr class="list_lvl_1">
-            <td class="ListColLvl1_name" colspan="2">
-                <h4>{$form.header.informationProxy}</h4>
-            </td>
-        </tr>
-        <tr class="list_one">
-            <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_proxy_path">&nbsp;{$form.apiProxyHost.label}
-            </td>
-            <td class="FormRowValue">{$form.apiProxyHost.html}</td>
-        </tr>
-        <tr class="list_two">
-            <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_proxy_port">&nbsp;{$form.apiProxyPort.label}
-            </td>
-            <td class="FormRowValue">{$form.apiProxyPort.html}</td>
-        </tr>
-        <tr class="list_one">
-            <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_proxy_user">&nbsp;{$form.apiProxyUsername.label}
-            </td>
-            <td class="FormRowValue">{$form.apiProxyUsername.html}</td>
-        </tr>
-        <tr class="list_two">
-            <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_proxy_credentials">
-                {$form.apiProxyCredentials.label}
-            </td>
-            <td class="FormRowValue">{$form.apiProxyCredentials.html}</td>
         </tr>
     </table>
     {if !$valid}

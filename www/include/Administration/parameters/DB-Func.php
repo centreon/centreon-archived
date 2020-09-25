@@ -1008,17 +1008,14 @@ function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
 {
     $ret = $form->getSubmitValues();
     $passApi = $ret['apiCredentials'];
-    $passProxy = $ret['apiProxyCredentials'];
 
     //clean useless values
     unset($ret['submitC']);
     unset($ret['o']);
     unset($ret['centreon_token']);
     unset($ret['apiCredentials']);
-    unset($ret['apiProxyCredentials']);
 
     //convert values
-    $ret['apiScheme'] = $ret['apiScheme'] == 1 ? 'https' : 'http';
     $ret['apiSelfSignedCertificate'] = $ret['apiSelfSignedCertificate'] == 1 ? 'yes' : 'no';
 
     //update information
@@ -1032,19 +1029,6 @@ function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
                 $db,
                 'apiCredentials',
                 $centreonEncryption->crypt($passApi)
-            );
-        } catch (Exception $e) {
-            $errorMsg = _('The password cannot be crypted. Please re-submit the form');
-            echo "<div class='msg' align='center'>" . $errorMsg . "</div>";
-        }
-    }
-
-    if (CentreonAuth::PWS_OCCULTATION !== $passProxy) {
-        try {
-            updateInformations(
-                $db,
-                'apiProxyCredentials',
-                $centreonEncryption->crypt($passProxy)
             );
         } catch (Exception $e) {
             $errorMsg = _('The password cannot be crypted. Please re-submit the form');
