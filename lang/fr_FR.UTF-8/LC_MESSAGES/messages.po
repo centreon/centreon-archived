@@ -5268,6 +5268,10 @@ msgstr "Protocole du proxy Internet"
 msgid "Proxy URL"
 msgstr "URL du proxy web"
 
+#: centreon-web/www/include/Administration/parameters/general/form.php:155
+msgid "Test Internet Connection"
+msgstr "Tester la connexion Internet"
+
 #: centreon-web/www/include/Administration/parameters/general/form.php:156
 msgid "Proxy port"
 msgstr "Port d'accès au proxy internet"
@@ -15654,6 +15658,12 @@ msgstr "Désacquitter les services attachés aux hôtes"
 
 msgid "Disacknowledgement command sent"
 msgstr "Commande de désacquittement envoyée"
+
+msgid "Submit a status"
+msgstr "Soumettre un statut"
+
+msgid "Status submitted"
+msgstr "Statut soumis"
 
 msgid "No resource found"
 msgstr "Pas de ressource trouvée"

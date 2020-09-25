@@ -92,6 +92,10 @@ Centreon\Domain\Monitoring\Resource:
             type: bool
             groups:
                 - 'resource_main'
+        passiveChecks:
+            type: bool
+            groups:
+                - 'resource_main'
         links:
             type:  Centreon\Domain\Monitoring\ResourceLinks
             groups:

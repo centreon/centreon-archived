@@ -6653,8 +6653,8 @@ msgid "Proxy URL"
 msgstr "URL de Proxy"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:162
-msgid "Test Proxy Configuration"
-msgstr "Configuração do Proxy de Teste"
+msgid "Test Internet Connection"
+msgstr "Teste a conexão com a Internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:165
 msgid "Proxy port"
@@ -15058,6 +15058,12 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "Disacknowledgement command sent"
+#  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Status submitted"
 #  msgstr ""
 
 #  msgid "No resource found"
