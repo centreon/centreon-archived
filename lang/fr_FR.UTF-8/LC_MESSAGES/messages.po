@@ -5268,6 +5268,10 @@ msgstr "Protocole du proxy Internet"
 msgid "Proxy URL"
 msgstr "URL du proxy web"
 
+#: centreon-web/www/include/Administration/parameters/general/form.php:155
+msgid "Test Internet Connection"
+msgstr "Tester la connexion Internet"
+
 #: centreon-web/www/include/Administration/parameters/general/form.php:156
 msgid "Proxy port"
 msgstr "Port d'accès au proxy internet"
