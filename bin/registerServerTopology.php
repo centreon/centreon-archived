@@ -268,19 +268,10 @@ if (isRemote($serverType)) {
         $loginCredentials['apiPort'] = $port;
     }
     if ($configOptions['PROXY_USAGE'] === true) {
-        $loginCredentialsDb['apiProxyHost'] = $configOptions["PROXY_HOST"];
-        $loginCredentialsDb['apiProxyPort'] = $configOptions["PROXY_PORT"];
-        $loginCredentialsDb['apiProxyUsername'] = $configOptions["PROXY_USERNAME"];
-        if (isset($configOptions["PROXY_PASSWORD"])){
-            try {
-                $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
-                $loginCredentialsDb['apiProxyCredentials'] = $centreonEncryption->crypt(
-                    $configOptions['PROXY_PASSWORD']
-                );
-            } catch (\InvalidArgumentException $e) {
-                exit($e->getMessage());
-            }
-        }
+        $loginCredentialsDb['proxy_informations']['proxy_url'] = $configOptions["PROXY_HOST"];
+        $loginCredentialsDb['proxy_informations']['proxy_port'] = $configOptions["PROXY_PORT"];
+        $loginCredentialsDb['proxy_informations']['proxy_user'] = !empty($configOptions["PROXY_USERNAME"]) ? $configOptions["PROXY_USERNAME"] : null;
+        $loginCredentialsDb['proxy_informations']['proxy_password'] = $configOptions['PROXY_PASSWORD'] ?? null;
     }
     $registerPayloads = registerRemote($host, $loginCredentialsDb);
 } else {

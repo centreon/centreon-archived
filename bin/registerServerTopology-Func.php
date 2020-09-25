@@ -139,7 +139,6 @@ function getChildren(CentreonDB $db): array
     return $registerChildren;
 }
 
-
 /**
  * @param CentreonDB $db
  * @param array $loginCredentials
@@ -149,6 +148,10 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $queryValue = '';
     $count = 1;
     $bindValues = [];
+    $proxyCredentials = $loginCredentials['proxy_informations'] ?? [];
+    $loginCredentials = array_filter($loginCredentials, function($key) {
+        return $key !== 'proxy_informations';
+    }, ARRAY_FILTER_USE_KEY);
     foreach ($loginCredentials as $key => $value) {
         if ($count === count($loginCredentials)) {
             $queryValue .= " ('$key', :$key)";
@@ -178,6 +181,43 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
         }
     }
     $statement->execute();
+
+    if (!empty($proxyCredentials)) {
+        $queryValue = '';
+        $count = 1;
+        $bindProxyValues = [];
+        foreach ($proxyCredentials as $key => $value) {
+            if ($count === count($proxyCredentials)) {
+                $queryValue .= " ('$key', :$key)";
+            } else {
+                $queryValue .= " ('$key', :$key), ";
+            }
+            $count++;
+            switch ($key) {
+                case 'proxy_port':
+                    $bindProxyValues[':' . $key] = [
+                        \PDO::PARAM_INT => $value
+                    ];
+                    break;
+                default:
+                    $bindProxyValues[':' . $key] = [
+                        \PDO::PARAM_STR => $value
+                    ];
+                    break;
+            }
+        }
+
+        $db->query("DELETE FROM options WHERE `key` LIKE '%proxy_%'");
+        $query = "INSERT INTO `options` (`key`, `value`) VALUES $queryValue";
+
+        $statement = $db->prepare($query);
+        foreach ($bindProxyValues as $token => $bindParams) {
+            foreach ($bindParams as $paramType => $paramValue) {
+                $statement->bindValue($token, $paramValue, $paramType);
+            }
+        }
+        $statement->execute();
+    }
 }
 
 /**
