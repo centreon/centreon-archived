@@ -13,9 +13,11 @@ const formatMetricValue = ({ value, unit, base = 1000 }): string => {
 
   const base1024 = base2Units.includes(unit) || base === 1024;
 
-  const format = base1024 ? '0b' : '0.[00]a';
+  const formatSuffx = base1024 ? ' ib' : 'a';
 
-  return numeral(value).format(format).replace('B', '');
+  return numeral(value)
+    .format(`[0.00]${formatSuffx}`)
+    .replace(/\s|i|B/g, '');
 };
 
 export default formatMetricValue;
