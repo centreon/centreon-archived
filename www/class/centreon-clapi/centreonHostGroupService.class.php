@@ -1067,7 +1067,7 @@ class CentreonHostGroupService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                CentreonContact::getInstance()->export($element['contact_name']);
+                CentreonContact::getInstance()->export($element['contact_alias']);
                 echo $this->action . $this->delim
                     . "addcontact" . $this->delim
                     . $element['hg_name'] . $this->delim

@@ -240,7 +240,7 @@ class CentreonContactGroup extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            CentreonContact::getInstance()->export($element['contact_alias']);
+            CentreonContact::getInstance()->export($element[$cFieldName]);
             echo $this->action . $this->delim . "addcontact" .
                 $this->delim . $element[$cgFieldName] . $this->delim . $element[$cFieldName] .
                 $this->delim . $element['contact_alias'] . "\n";

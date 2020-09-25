@@ -1181,8 +1181,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $exportContactName = isset($element['contact_name']) ? $element['contact_name'] : null;
-            CentreonContact::getInstance()->export($exportContactName);
+            CentreonContact::getInstance()->export($element['contact_alias']);
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element['service_description'] . $this->delim

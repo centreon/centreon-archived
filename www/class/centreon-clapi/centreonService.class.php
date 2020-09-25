@@ -1429,7 +1429,7 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($celements as $celement) {
-                CentreonContact::getInstance()->export($celement['contact_name']);
+                CentreonContact::getInstance()->export($celement['contact_alias']);
                 echo $this->action . $this->delim . "addcontact" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $celement['service_description'] . $this->delim
