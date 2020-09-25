@@ -82,7 +82,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         if (empty($host->getIpAddress())) {
             throw new HostConfigurationException(_('Host ip can not be empty'));
         }
-        if (empty($host->get())) {
+        if (empty($host->getIpAddress())) {
             throw new HostConfigurationException(_('Host ip can not be empty'));
         }
         try {
