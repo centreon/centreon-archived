@@ -204,7 +204,7 @@ $form->addElement('text', 'proxy_url', _("Proxy URL"), $attrsText);
 $form->addElement(
     'button',
     'test_proxy',
-    _("Test Proxy Configuration"),
+    _("Test Internet Connection"),
     array("class" => "btc bt_success", "onClick" => "javascript:checkProxyConf()")
 );
 $form->addElement('text', 'proxy_port', _("Proxy port"), $attrsText2);
