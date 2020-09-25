@@ -41,6 +41,7 @@ class Engine extends AbstractObject
         cfg_dir,
         cfg_file as cfg_filename,
         log_file,
+        log_archive_path,
         status_file,
         check_result_path,
         use_check_result_path,
@@ -150,6 +151,7 @@ class Engine extends AbstractObject
         'nagios_name',
         'use_timezone',
         'log_file',
+        'log_archive_path',
         'status_file',
         'check_result_path',
         'use_check_result_path', //centengine
