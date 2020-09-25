@@ -15590,7 +15590,7 @@ msgstr "Les données de la plateforme Central ne sont pas cohérentes. Veuiller 
 
 #: api/topology/register
 msgid "Platform's mandatory data are missing. Please check the Remote Access form."
-msgstr "Données indispensable de la plateforme manquantes. Veuillez compléter le formulaire 'Accès du Remote'."
+msgstr "Données indispensable de la plateforme manquantes. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
@@ -15602,7 +15602,7 @@ msgstr "La plateforme: '%s'@'%s n'est liée à aucun Central. Veuillez d'abord u
 
 #: api/topology/register
 msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez compléter le formulaire 'Accès du Remote'."
+msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form"
