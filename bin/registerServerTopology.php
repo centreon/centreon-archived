@@ -262,7 +262,7 @@ if (isRemote($serverType)) {
         exit($e->getMessage());
     }
     $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
-    $loginCredentialsDb['apiSelfSignedCertificate'] = isset($configOptions['INSECURE']) ? 'yes' : 'no';
+    $loginCredentialsDb['apiPeerValidationActivated'] = isset($configOptions['INSECURE']) ? 'yes' : 'no';
     $loginCredentialsDb['apiScheme'] = $protocol;
     if (isset($port)) {
         $loginCredentials['apiPort'] = $port;
