@@ -108,20 +108,90 @@
         <h4>{$genOpt_openid_connect}</h4>
       </td>
     </tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_enable">{$form.openid_connect_enable.label}</td><td class="FormRowValue">{$form.openid_connect_enable.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_mode">{$form.openid_connect_mode.label}</td><td class="FormRowValue">{$form.openid_connect_mode.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_trusted_clients">{$form.openid_connect_trusted_clients.label}</td><td class="FormRowValue">{$form.openid_connect_trusted_clients.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_blacklist_clients">{$form.openid_connect_blacklist_clients.label}</td><td class="FormRowValue">{$form.openid_connect_blacklist_clients.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_base_url">{$form.openid_connect_base_url.label}</td><td class="FormRowValue">{$form.openid_connect_base_url.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_authorization_endpoint">{$form.openid_connect_authorization_endpoint.label}</td><td class="FormRowValue">{$form.openid_connect_authorization_endpoint.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_token_endpoint">{$form.openid_connect_token_endpoint.label}</td><td class="FormRowValue">{$form.openid_connect_token_endpoint.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_introspection_endpoint">{$form.openid_connect_introspection_endpoint.label}</td><td class="FormRowValue">{$form.openid_connect_introspection_endpoint.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_userinfo_endpoint">{$form.openid_connect_userinfo_endpoint.label}</td><td class="FormRowValue">{$form.openid_connect_userinfo_endpoint.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_scope">{$form.openid_connect_scope.label}</td><td class="FormRowValue">{$form.openid_connect_scope.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_redirect_url">{$form.openid_connect_redirect_url.label}</td><td class="FormRowValue">{$form.openid_connect_redirect_url.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_client_id">{$form.openid_connect_client_id.label}</td><td class="FormRowValue">{$form.openid_connect_client_id.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_client_secret">{$form.openid_connect_client_secret.label}</td><td class="FormRowValue">{$form.openid_connect_client_secret.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="openid_connect_verify_peer">{$form.openid_connect_verify_peer.label}</td><td class="FormRowValue">{$form.openid_connect_verify_peer.html}</td></tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_enable">{$form.openid_connect_enable.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_enable.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_mode">{$form.openid_connect_mode.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_mode.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_trusted_clients">{$form.openid_connect_trusted_clients.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_trusted_clients.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_blacklist_clients">{$form.openid_connect_blacklist_clients.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_blacklist_clients.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_base_url">{$form.openid_connect_base_url.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_base_url.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_authorization_endpoint">{$form.openid_connect_authorization_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_authorization_endpoint.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_token_endpoint">{$form.openid_connect_token_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_token_endpoint.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_introspection_endpoint">{$form.openid_connect_introspection_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_introspection_endpoint.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_userinfo_endpoint">{$form.openid_connect_userinfo_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_userinfo_endpoint.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_scope">{$form.openid_connect_scope.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_scope.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_redirect_url">{$form.openid_connect_redirect_url.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_redirect_url.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_client_id">{$form.openid_connect_client_id.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_client_id.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_client_secret">{$form.openid_connect_client_secret.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_client_secret.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_verify_peer">{$form.openid_connect_verify_peer.label
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_verify_peer.html}</td>
+    </tr>
 
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
