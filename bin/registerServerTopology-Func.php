@@ -66,7 +66,6 @@ function registerRemote(string $ip, array $loginCredentials): array
     $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
     $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
 
-    //verifier que ce n'est pas un remote
     $db->query(" SELECT * FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'");
     $isRemote = $db->numberRows();
     if (!$isRemote) {
@@ -151,9 +150,9 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $count = 1;
     $bindValues = [];
     foreach ($loginCredentials as $key => $value) {
-        if($count === count($loginCredentials)) {
+        if ($count === count($loginCredentials)) {
             $queryValue .= " ('$key', :$key)";
-        }else {
+        } else {
             $queryValue .= " ('$key', :$key), ";
         }
         $count++;
@@ -173,8 +172,8 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $db->query("DELETE FROM informations WHERE `key` LIKE '%api%'");
     $query = "INSERT INTO `informations` (`key`, `value`) VALUES $queryValue";
     $statement = $db->prepare($query);
-    foreach($bindValues as $token => $bindParams) {
-        foreach($bindParams as $paramType => $paramValue) {
+    foreach ($bindValues as $token => $bindParams) {
+        foreach ($bindParams as $paramType => $paramValue) {
             $statement->bindValue($token, $paramValue, $paramType);
         }
     }
