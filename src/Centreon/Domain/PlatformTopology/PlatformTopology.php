@@ -91,9 +91,9 @@ class PlatformTopology
 
     /**
      * data retrieved from 'informations' table
-     * @var string|null platform type
+     * @var bool platform type
      */
-    private $isRemote;
+    private $isRemote = false;
 
     /**
      * data retrieved from 'informations' table
@@ -410,15 +410,15 @@ class PlatformTopology
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
     public function getIsRemote(): bool
     {
-        return ('yes' === $this->isRemote);
+        return $this->isRemote;
     }
 
     /**
-     * @param bool|null $type
+     * @param bool $type
      * @return $this
      */
     public function setIsRemote(bool $type): self
