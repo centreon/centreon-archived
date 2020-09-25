@@ -546,7 +546,10 @@ class MonitoringResourceController extends AbstractController
      */
     private function provideHostInternalUris(ResourceEntity $resource, Contact $contact): void
     {
-        if ($contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS)) {
+        if (
+            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_WRITE)
+            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
+        ) {
             $resource->getLinks()->getUris()->setConfiguration(
                 $this->generateResourceUri($resource, static::HOST_CONFIGURATION_URI)
             );
@@ -574,7 +577,10 @@ class MonitoringResourceController extends AbstractController
      */
     private function provideServiceInternalUris(ResourceEntity $resource, Contact $contact): void
     {
-        if ($contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES)) {
+        if (
+            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
+            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
+        ) {
             $resource->getLinks()->getUris()->setConfiguration(
                 $this->generateResourceUri($resource, static::SERVICE_CONFIGURATION_URI)
             );
