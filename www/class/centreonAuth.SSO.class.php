@@ -71,9 +71,8 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
             }
-        } elseif (
-            isset($this->ssoOptions['openid_connect_enable'])
-            && $this->ssoOptions['openid_connect_enable'] == 1
+        } elseif (isset($this->ssoOptions['openid_connect_enable'])
+            && (int) $this->ssoOptions['openid_connect_enable'] === 1
             && !empty($this->ssoOptions['openid_connect_base_url'])
             && !empty($this->ssoOptions['openid_connect_authorization_endpoint'])
             && !empty($this->ssoOptions['openid_connect_token_endpoint'])
@@ -110,7 +109,8 @@ class CentreonAuthSSO extends CentreonAuth
                 FILTER_SANITIZE_NUMBER_INT
             );
             if ((isset($inputForce) && $inputForce == 1)
-                || (isset($this->options_sso['openid_connect_mode']) && $this->options_sso['openid_connect_mode'] == 0)
+                || (isset($this->ssoOptions['openid_connect_mode'])
+                && (int) $this->ssoOptions['openid_connect_mode'] === 0)
             ) {
                 header('Location: ' . $authUrl);
             }
@@ -199,13 +199,13 @@ class CentreonAuthSSO extends CentreonAuth
                     return 1;
                 }
             }
-        } elseif (isset($this->options_sso['openid_connect_enable'])
-            && $this->options_sso['openid_connect_enable'] == 1
-            && isset($this->options_sso['openid_connect_mode'])
-            && $this->options_sso['openid_connect_mode'] == 1
+        } elseif (isset($this->ssoOptions['openid_connect_enable'])
+            && $this->ssoOptions['openid_connect_enable'] == 1
+            && isset($this->ssoOptions['openid_connect_mode'])
+            && $this->ssoOptions['openid_connect_mode'] == 1
         ) {
             // Mixed
-            $blacklist = explode(',', $this->options_sso['openid_connect_blacklist_clients']);
+            $blacklist = explode(',', $this->ssoOptions['openid_connect_blacklist_clients']);
             foreach ($blacklist as $value) {
                 $value = trim($value);
                 if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
@@ -213,7 +213,7 @@ class CentreonAuthSSO extends CentreonAuth
                 }
             }
 
-            $whitelist = explode(',', $this->options_sso['openid_connect_trusted_clients']);
+            $whitelist = explode(',', $this->ssoOptions['openid_connect_trusted_clients']);
             if (empty($whitelist[0])) {
                 return 1;
             }
