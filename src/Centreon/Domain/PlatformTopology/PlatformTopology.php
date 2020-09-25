@@ -121,7 +121,7 @@ class PlatformTopology
 
     /**
      * data retrieved from 'informations' table
-     * @var integer|null
+     * @var int|null
      */
     private $apiPort;
 
@@ -352,7 +352,7 @@ class PlatformTopology
     }
 
     /**
-     * @return integer|null
+     * @return int|null
      */
     public function getParentId(): ?int
     {
@@ -410,7 +410,7 @@ class PlatformTopology
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getIsRemote(): bool
     {
@@ -418,10 +418,10 @@ class PlatformTopology
     }
 
     /**
-     * @param string $type
+     * @param bool|null $type
      * @return $this
      */
-    public function setIsRemote(string $type): self
+    public function setIsRemote(bool $type): self
     {
         $this->isRemote = $type;
         return $this;

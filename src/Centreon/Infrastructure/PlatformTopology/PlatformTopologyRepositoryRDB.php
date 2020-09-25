@@ -192,7 +192,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             if (!empty($result)) {
                 $platformTopology = new PlatformTopology();
                 $platformTopology
-                    ->setIsRemote($result['isRemote'])
+                    ->setIsRemote('yes' === $result['isRemote'])
                     ->setApiCredentials($result['apiCredentials'])
                     ->setApiUsername($result['apiUsername'])
                     ->setAuthorizedMaster($result['authorizedMaster']);
