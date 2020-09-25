@@ -410,11 +410,11 @@ class PlatformTopology
     }
 
     /**
-     * @return string|null
+     * @return bool
      */
-    public function getIsRemote(): ?string
+    public function getIsRemote(): bool
     {
-        return $this->isRemote;
+        return ('yes' === $this->isRemote);
     }
 
     /**

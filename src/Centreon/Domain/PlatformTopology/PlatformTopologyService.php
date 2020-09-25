@@ -106,7 +106,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     _("Platform's mandatory data are missing. Please reinstall your platform.")
                 );
             }
-            if ('no' === $platformInformation->getIsRemote()) {
+            if (false === $platformInformation->getIsRemote()) {
                 throw new PlatformTopologyConflictException(
                     sprintf(
                         _("The platform: '%s'@'%s' is not declared as a 'remote'."),
