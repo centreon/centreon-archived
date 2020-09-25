@@ -345,10 +345,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         // Check parent consistency
-        if (
-            PlatformTopology::TYPE_REMOTE !== $registeredParentInTopology->getType()
-            && PlatformTopology::TYPE_CENTRAL !== $registeredParentInTopology->getType()
-        ) {
+        if (!in_array($registeredParentInTopology->getType(), [PlatformTopology::TYPE_REMOTE, PlatformTopology::TYPE_CENTRAL])) {
             throw new PlatformTopologyConflictException(
                 sprintf(
                     _("Cannot register the '%s' platform : '%s'@'%s' behind a '%s' platform"),
