@@ -23,8 +23,8 @@ export interface ListingState {
   setSorto: ListingDispatch<SortOrder>;
   limit: number;
   setLimit: ListingDispatch<number>;
-  page: number;
-  setPage: ListingDispatch<number>;
+  page?: number;
+  setPage: ListingDispatch<number | undefined>;
   enabledAutorefresh: boolean;
   setEnabledAutorefresh: ListingDispatch<boolean>;
   sendRequest: (params) => Promise<ResourceListing>;
@@ -36,7 +36,7 @@ const useListing = (): ListingState => {
   const [sorto, setSorto] = React.useState<SortOrder>(defaultSortOrder);
   const [sortf, setSortf] = React.useState<string>(defaultSortField);
   const [limit, setLimit] = React.useState<number>(30);
-  const [page, setPage] = React.useState<number>(1);
+  const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
