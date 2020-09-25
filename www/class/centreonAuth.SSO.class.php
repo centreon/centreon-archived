@@ -54,7 +54,8 @@ class CentreonAuthSSO extends CentreonAuth
     ) {
         $this->ssoOptions = $generalOptions;
 
-        if (isset($this->ssoOptions['sso_enable'])
+        if (
+            isset($this->ssoOptions['sso_enable'])
             && $this->ssoOptions['sso_enable'] == 1
             && !empty($this->ssoOptions['sso_header_username'])
             && isset($_SERVER[$this->ssoOptions['sso_header_username']])
@@ -71,7 +72,8 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
             }
-        } elseif (isset($this->ssoOptions['openid_connect_enable'])
+        } elseif (
+            isset($this->ssoOptions['openid_connect_enable'])
             && (int) $this->ssoOptions['openid_connect_enable'] === 1
             && !empty($this->ssoOptions['openid_connect_base_url'])
             && !empty($this->ssoOptions['openid_connect_authorization_endpoint'])
@@ -88,7 +90,8 @@ class CentreonAuthSSO extends CentreonAuth
             $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
             $introspectionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
-            if (isset($this->ssoOptions['openid_connect_userinfo_endpoint'])
+            if (
+                isset($this->ssoOptions['openid_connect_userinfo_endpoint'])
                 && $this->ssoOptions['openid_connect_userinfo_endpoint'] != ""
             ) {
                 $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
@@ -98,7 +101,8 @@ class CentreonAuthSSO extends CentreonAuth
 
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
-            if (isset($this->ssoOptions['openid_connect_scope'])
+            if (
+                isset($this->ssoOptions['openid_connect_scope'])
                 && $this->ssoOptions['openid_connect_scope'] != ""
             ) {
                 $authUrl .= "&scope=" . $this->ssoOptions['openid_connect_scope'];
@@ -108,7 +112,8 @@ class CentreonAuthSSO extends CentreonAuth
                 $_POST['force'] ?? $_GET['force'] ?? null,
                 FILTER_SANITIZE_NUMBER_INT
             );
-            if ((isset($inputForce) && $inputForce == 1)
+            if (
+                (isset($inputForce) && $inputForce == 1)
                 || (isset($this->ssoOptions['openid_connect_mode'])
                 && (int) $this->ssoOptions['openid_connect_mode'] === 0)
             ) {
@@ -175,7 +180,8 @@ class CentreonAuthSSO extends CentreonAuth
 
     protected function checkSsoClient()
     {
-        if (isset($this->ssoOptions['sso_enable'])
+        if (
+            isset($this->ssoOptions['sso_enable'])
             && $this->ssoOptions['sso_enable'] == 1
             && isset($this->ssoOptions['sso_mode'])
             && $this->ssoOptions['sso_mode'] == 1
@@ -199,7 +205,8 @@ class CentreonAuthSSO extends CentreonAuth
                     return 1;
                 }
             }
-        } elseif (isset($this->ssoOptions['openid_connect_enable'])
+        } elseif (
+            isset($this->ssoOptions['openid_connect_enable'])
             && $this->ssoOptions['openid_connect_enable'] == 1
             && isset($this->ssoOptions['openid_connect_mode'])
             && $this->ssoOptions['openid_connect_mode'] == 1
