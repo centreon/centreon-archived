@@ -270,7 +270,9 @@ if (isRemote($serverType)) {
     if ($configOptions['PROXY_USAGE'] === true) {
         $loginCredentialsDb['proxy_informations']['proxy_url'] = $configOptions["PROXY_HOST"];
         $loginCredentialsDb['proxy_informations']['proxy_port'] = $configOptions["PROXY_PORT"];
-        $loginCredentialsDb['proxy_informations']['proxy_user'] = !empty($configOptions["PROXY_USERNAME"]) ? $configOptions["PROXY_USERNAME"] : null;
+        $loginCredentialsDb['proxy_informations']['proxy_user'] = !empty($configOptions["PROXY_USERNAME"])
+            ? $configOptions["PROXY_USERNAME"]
+            : null;
         $loginCredentialsDb['proxy_informations']['proxy_password'] = $configOptions['PROXY_PASSWORD'] ?? null;
     }
     $registerPayloads = registerRemote($host, $loginCredentialsDb);

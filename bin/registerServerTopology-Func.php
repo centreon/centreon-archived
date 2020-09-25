@@ -149,7 +149,7 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $count = 1;
     $bindValues = [];
     $proxyCredentials = $loginCredentials['proxy_informations'] ?? [];
-    $loginCredentials = array_filter($loginCredentials, function($key) {
+    $loginCredentials = array_filter($loginCredentials, function ($key) {
         return $key !== 'proxy_informations';
     }, ARRAY_FILTER_USE_KEY);
     foreach ($loginCredentials as $key => $value) {
