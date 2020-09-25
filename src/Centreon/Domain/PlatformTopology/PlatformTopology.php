@@ -141,7 +141,7 @@ class PlatformTopology
      * data retrieved from 'options' table
      * @var string|null
      */
-    private $apiProxyHost;
+    private $apiProxyUrl;
 
     /**
      * data retrieved from 'options' table
@@ -206,11 +206,14 @@ class PlatformTopology
     }
 
     /**
-     * @param string $encryptedKey
-     * @return string
+     * @param string|null $encryptedKey
+     * @return string|null
      */
-    public function decryptApiCredentials(string $encryptedKey): string
+    public function decryptApiCredentials(?string $encryptedKey): ?string
     {
+        if (empty($encryptedKey)) {
+            return null;
+        }
         // first key
         $path = __DIR__ . "/../../../../";
         require_once $path . "/src/Security/Encryption.php";
@@ -472,10 +475,10 @@ class PlatformTopology
     }
 
     /**
-     * @param string $encryptedKey
+     * @param string|null $encryptedKey
      * @return $this
      */
-    public function setApiCredentials(string $encryptedKey): self
+    public function setApiCredentials(?string $encryptedKey): self
     {
         $this->apiCredentials = $this->decryptApiCredentials($encryptedKey);
         return $this;
@@ -490,10 +493,10 @@ class PlatformTopology
     }
 
     /**
-     * @param string $schema
+     * @param string|null $schema
      * @return $this
      */
-    public function setApiScheme(string $schema): self
+    public function setApiScheme(?string $schema): self
     {
         $this->apiScheme = ($schema === 'https' ? 'https' : 'http');
         return $this;
@@ -537,10 +540,10 @@ class PlatformTopology
     }
 
     /**
-     * @param string $path
+     * @param string|null $path
      * @return $this
      */
-    public function setApiPath(string $path): self
+    public function setApiPath(?string $path): self
     {
         $path = filter_var($path, FILTER_SANITIZE_STRING);
         if (empty($path)) {
@@ -570,24 +573,24 @@ class PlatformTopology
         return $this;
     }
 
-    public function getApiProxyHost(): ?string
+    public function getApiProxyUrl(): ?string
     {
-        return $this->apiProxyHost;
+        return $this->apiProxyUrl;
     }
 
     /**
-     * @param string $path
+     * @param string|null $url
      * @return $this
      */
-    public function setApiProxyHost(string $path): self
+    public function setApiProxyUrl(?string $url): self
     {
-        $path = filter_var($path, FILTER_SANITIZE_STRING);
-        if (empty($path)) {
+        $path = filter_var($url, FILTER_SANITIZE_STRING);
+        if (empty($url)) {
             throw new InvalidArgumentException(
                 _("Central's platform path is not consistent. Please check the 'Remote Access' form")
             );
         }
-        $this->apiProxyHost = $path;
+        $this->apiProxyUrl = $url;
         return $this;
     }
 
@@ -618,10 +621,10 @@ class PlatformTopology
     }
 
     /**
-     * @param string $username
+     * @param string|null $username
      * @return $this
      */
-    public function setApiProxyUsername(string $username): self
+    public function setApiProxyUsername(?string $username): self
     {
         $username = filter_var($username, FILTER_SANITIZE_STRING);
         if (empty($username)) {
@@ -642,12 +645,12 @@ class PlatformTopology
     }
 
     /**
-     * @param string $encrypted
+     * @param string|null $credential
      * @return $this
      */
-    public function setApiProxyCredentials(string $encrypted): self
+    public function setApiProxyCredentials(?string $credential): self
     {
-        $this->apiCredentials = $this->decryptApiCredentials($encrypted);
+        $this->apiCredentials = $credential;
         return $this;
     }
 }

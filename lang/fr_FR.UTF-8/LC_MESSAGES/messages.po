@@ -15597,8 +15597,12 @@ msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
 msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'."
 
 #: api/topology/register
-msgid "The platform: '%s'@'%s' is not linked to any Central. Please use the wizard first."
-msgstr "La plateforme: '%s'@'%s n'est liée à aucun Central. Veuillez d'abord utiliser le wizard."
+msgid "The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."
+msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser le wizard."
+
+#: api/topology/register
+msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."
+msgstr "Le port du Central de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."

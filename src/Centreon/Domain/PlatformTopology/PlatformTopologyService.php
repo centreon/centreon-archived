@@ -89,21 +89,25 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
+        /**
+         * @var PlatformTopology|null $registeredParentInTopology
+         */
         $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
 
         /**
          * The top level platform is defined as a Remote
-         * Checking data consistency from 'informations' table and calling the register request on the Central
+         * Getting data and calling the register request on the Central
          */
-        if ($registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
+        if (null !== $registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
             /**
+             * Getting data from 'informations' table and checking consistency
              * @var PlatformTopology|null $platformInformation
              */
             $platformInformation = $this->platformTopologyRepository->findPlatformInformation();
 
             if (null === $platformInformation) {
                 throw new PlatformTopologyException(
-                    _("Platform's mandatory data are missing. Please reinstall your platform.")
+                    _("Platform's mandatory data are missing. Please check the Remote Access form.")
                 );
             }
             if (false === $platformInformation->getIsRemote()) {
@@ -118,7 +122,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if (null === $platformInformation->getAuthorizedMaster()) {
                 throw new PlatformTopologyException(
                     sprintf(
-                        _("The platform: '%s'@'%s' is not linked to any Central. Please use the wizard first."),
+                        _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
                         $platformTopology->getName(),
                         $platformTopology->getAddress()
                     )
@@ -137,10 +141,54 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
             }
 
+            if (
+                null === $platformInformation->getApiPort()
+            ) {
+                throw new PlatformTopologyException(
+                    sprintf(
+                        _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+
+            /**
+             * Getting data from 'options' table and checking consistency
+             * @var PlatformTopology|null $platformOptions
+             */
+            $platformOptions = $this->platformTopologyRepository->findPlatformOptions();
+
+            /* TODO : TO CHECK
+                $platformOptions
+                    and
+                 ->getApiProxyUrl($result['proxy_url'] ?? null)
+                ->getApiProxyPort($result['proxy_port'] ?? null)
+                ->getApiProxyUsername($result['proxy_user'] ?? null)
+                ->getApiProxyCredentials($result['proxy_password'] ?? null);
+             */
+
+
+
             /**
              * Call the API on the n-1 server to register it too
              */
             try {
+
+
+                /*
+
+                TODO : Concatenate results in the payloads
+
+                ->getApiScheme($result['apiScheme'] ?? null)
+                ->getApiPort($result['apiPort'] ?? null)
+                ->getApiPath($result['apiPath'] ?? null)
+                ->getApiPeerValidationActivated('yes' === $result['apiPeerValidation']);
+            */
+
+                */
+
+
                 // Central's API payloads and URL
                 $baseApiEndpoint = 'http://' .
                     $platformInformation->getAuthorizedMaster() .
@@ -342,7 +390,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (
             !in_array(
                 $registeredParentInTopology->getType(),
-                [PlatformTopology::TYPE_REMOTE, PlatformTopology::TYPE_CENTRAL]
+                [PlatformTopology::TYPE_REMOTE, PlatformTopology::TYPE_CENTRAL],
+                false
             )
         ) {
             throw new PlatformTopologyConflictException(

@@ -78,4 +78,12 @@ interface PlatformTopologyRepositoryInterface
      * @throws PlatformTopologyException
      */
     public function findPlatformInformation(): ?PlatformTopology;
+
+    /**
+     * Retrieve all data from 'options' table
+     *
+     * @return PlatformTopology|null
+     * @throws PlatformTopologyException
+     */
+    public function findPlatformOptions(): ?PlatformTopology;
 }

@@ -193,9 +193,43 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
                 $platformTopology = new PlatformTopology();
                 $platformTopology
                     ->setIsRemote('yes' === $result['isRemote'])
-                    ->setApiCredentials($result['apiCredentials'] ?? null)
+                    ->setAuthorizedMaster($result['authorizedMaster'] ?? null)
                     ->setApiUsername($result['apiUsername'] ?? null)
-                    ->setAuthorizedMaster($result['authorizedMaster'] ?? null);
+                    ->setApiCredentials($result['apiCredentials'] ?? null)
+                    ->setApiScheme($result['apiScheme'] ?? null)
+                    ->setApiPort($result['apiPort'] ?? null)
+                    ->setApiPath($result['apiPath'] ?? null)
+                    ->setApiPeerValidationActivated('yes' === $result['apiPeerValidation']);
+            }
+        }
+
+        return $platformTopology;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findPlatformProxy(): ?PlatformTopology
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('
+                SELECT * FROM `:db`.options WHERE `key` LIKE "%proxy%"
+            ')
+        );
+        $result = [];
+        $platformTopology = null;
+        if ($statement->execute()) {
+            while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $result[$row['key']] = $row['value'];
+            }
+
+            if (!empty($result)) {
+                $platformTopology = new PlatformTopology();
+                $platformTopology
+                    ->setApiProxyUrl($result['proxy_url'] ?? null)
+                    ->setApiProxyPort($result['proxy_port'] ?? null)
+                    ->setApiProxyUsername($result['proxy_user'] ?? null)
+                    ->setApiProxyCredentials($result['proxy_password'] ?? null);
             }
         }
 
