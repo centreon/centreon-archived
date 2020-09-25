@@ -142,12 +142,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              */
             try {
                 // Central's API payloads and URL
-
-                /*
-                 *  TODO check url consistency, protocol and root platform name
-                 */
-
-
                 $baseApiEndpoint = 'http://' .
                     $platformInformation->getAuthorizedMaster() .
                     '/centreon/api/latest/';

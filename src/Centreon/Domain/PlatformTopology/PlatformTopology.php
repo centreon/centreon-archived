@@ -133,9 +133,9 @@ class PlatformTopology
 
     /**
      * data retrieved from 'informations' table
-     * @var string|null
+     * @var bool SSL peer validation activated
      */
-    private $apiSelfSignedCertificate;
+    private $apiPeerValidationActivated = false;
 
     /**
      * data retrieved from 'options' table
@@ -553,20 +553,20 @@ class PlatformTopology
     }
 
     /**
-     * @return string|null
+     * @return bool
      */
-    public function getApiSelfSignedCertificate(): ?string
+    public function getApiPeerValidationActivated(): bool
     {
-        return $this->apiSelfSignedCertificate;
+        return $this->apiPeerValidationActivated;
     }
 
     /**
-     * @param string $status
+     * @param bool $status
      * @return $this
      */
-    public function setApiSelfSignedCertificate(string $status): self
+    public function setApiPeerValidationActivated(bool $status): self
     {
-        $this->apiSelfSignedCertificate = ('yes' === $status ? 'yes' : 'no');
+        $this->apiPeerValidationActivated = $status;
         return $this;
     }
 
