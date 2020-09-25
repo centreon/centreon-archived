@@ -97,7 +97,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          */
         if ($registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
             /**
-             * @var PlatformTopology $platformInformation
+             * @var PlatformTopology|null $platformInformation
              */
             $platformInformation = $this->platformTopologyRepository->findPlatformInformation();
 
