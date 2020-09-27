@@ -85,7 +85,7 @@ const Events = ({
           const isLastDate = equals(last(dates), date);
 
           return (
-            <React.Fragment key={date}>
+            <div key={date}>
               <div className={classes.events}>
                 <Typography variant="h6">{date}</Typography>
 
@@ -102,7 +102,7 @@ const Events = ({
                 })}
               </div>
               {isLastDate && <div ref={infiniteScrollTriggerRef} />}
-            </React.Fragment>
+            </div>
           );
         },
       )}
