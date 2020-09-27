@@ -3,11 +3,10 @@ import * as React from 'react';
 import { makeStyles, Paper } from '@material-ui/core';
 import IconGraph from '@material-ui/icons/BarChart';
 
-import { IconButton } from '@centreon/ui';
+import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
 import { labelGraph } from '../../../translatedLabels';
 import HoverChip from '../HoverChip';
-import { ColumnProps } from '..';
 import PerformanceGraph from '../../../Graph/Performance';
 
 const useStyles = makeStyles((theme) => ({
@@ -24,8 +23,10 @@ const GraphColumn = ({
   onClick,
 }: {
   onClick: (row) => void;
-}): ((props) => JSX.Element | null) => {
-  const GraphHoverChip = ({ row }: ColumnProps): JSX.Element | null => {
+}): ((props: ComponentColumnProps) => JSX.Element | null) => {
+  const GraphHoverChip = ({
+    row,
+  }: ComponentColumnProps): JSX.Element | null => {
     const classes = useStyles();
     if (!row.performance_graph_endpoint) {
       return null;
