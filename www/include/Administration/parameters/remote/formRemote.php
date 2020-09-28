@@ -124,9 +124,9 @@ $form->setDefaults(
 );
 
 //URI
-$form->addElement('header', 'informationUri', _("Central's API uri"));
+$form->addElement('header', 'informationUri', _("Central's API URI"));
 
-$form->addElement('select', 'apiScheme', _("build complet URI (SCHEME://IP:PORT/PATH)"), ['http', 'https']);
+$form->addElement('select', 'apiScheme', _("Build complete URI (SCHEME://IP:PORT/PATH)."), ['http', 'https']);
 $apiScheme = $result['apiScheme'] ?? 'http';
 $form->setDefaults($apiScheme);
 
@@ -145,7 +145,7 @@ $form->addRule('apiPort', _('Must be a number'), 'numeric');
 
 $form->addElement(
     'checkbox',
-    'apiSelfSignedCertificate',
+    'apiPeerValidation',
     _("Allow self signed certificate"),
     null
 );
@@ -156,7 +156,7 @@ $form->setDefaults(
         'apiPath' => $result['apiPath'],
         'apiPort' => $result['apiPort'],
         'apiScheme' => $result['apiScheme'],
-        'apiSelfSignedCertificate' => ($result['apiSelfSignedCertificate'] == 'yes' ? 1 : 0)
+        'apiPeerValidation' => ($result['apiPeerValidation'] == 'yes' ? 1 : 0)
     ]
 );
 

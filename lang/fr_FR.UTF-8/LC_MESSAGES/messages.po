@@ -15642,6 +15642,15 @@ msgstr "Le mot de passe ne peut pas être déchiffré. Merci de vérifier ce cha
 msgid "Central's API credentials"
 msgstr "Identifiants de l'API du Central"
 
+msgid "Build complete URI (SCHEME://IP:PORT/PATH)."
+msgstr "construction de l'URI complete (SCHEME://IP:PORT/PATH)."
+
+msgid "Central's API URI."
+msgstr "URI de l'API du central"
+
+msgid "Allow self signed certificate."
+msgstr "Autoriser le certificat auto-signé."
+
 #: www/include/Adrministration/parameters/remote/formRemote.php
 msgid "Remote access"
 msgstr "Accès du Remote"

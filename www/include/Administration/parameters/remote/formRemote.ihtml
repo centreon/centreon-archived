@@ -28,7 +28,7 @@
         </tr>
         <tr class="list_one">
             <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_ssl">&nbsp;{$form.apiScheme.label}
+                <img class="helpTooltip" name="tip_api_uri">&nbsp;{$form.apiScheme.label}
             </td>
             <td class="FormRowValue">
                 {$form.apiScheme.html} :// {$form.header.informationIp}:{$form.apiPort.html}/{$form.apiPath.html}
@@ -36,10 +36,10 @@
         </tr>
         <tr class="list_two">
             <td class="FormRowField">
-                <img class="helpTooltip" name="tip_api_allow_self_signed">
-                {$form.apiSelfSignedCertificate.label}
+                <img class="helpTooltip" name="tip_api_peer_validation">
+                {$form.apiPeerValidation.label}
             </td>
-            <td class="FormRowValue">{$form.apiSelfSignedCertificate.html}</td>
+            <td class="FormRowValue">{$form.apiPeerValidation.html}</td>
         </tr>
     </table>
     {if !$valid}
