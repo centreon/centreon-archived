@@ -110,7 +110,6 @@ function registerRemote(string $ip, array $loginCredentials): array
  */
 function hasRemoteChild(): bool
 {
-
     $db = new CentreonDB();
     $remoteQuery = $db->query("SELECT COUNT(*) AS total FROM `remote_servers`");
     $remote = $remoteQuery->fetch();
@@ -172,7 +171,7 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
                 break;
         }
     }
-    $db->query("DELETE FROM informations WHERE `key` LIKE '%api%'");
+    $db->query("DELETE FROM informations WHERE `key` LIKE 'api%'");
     $query = "INSERT INTO `informations` (`key`, `value`) VALUES $queryValue";
     $statement = $db->prepare($query);
     foreach ($bindValues as $token => $bindParams) {
@@ -207,7 +206,7 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
             }
         }
 
-        $db->query("DELETE FROM options WHERE `key` LIKE '%proxy_%'");
+        $db->query("DELETE FROM options WHERE `key` LIKE 'proxy_%'");
         $query = "INSERT INTO `options` (`key`, `value`) VALUES $queryValue";
 
         $statement = $db->prepare($query);
