@@ -13,15 +13,13 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { useRequest, getData, ListingModel } from '@centreon/ui';
+import { useRequest, getData, ListingModel, Column } from '@centreon/ui';
 
 import {
   labelSomethingWentWrong,
   labelYes,
   labelNo,
 } from '../../../../translatedLabels';
-
-import { Column } from '../..';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 
