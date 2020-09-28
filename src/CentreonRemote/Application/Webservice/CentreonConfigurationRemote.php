@@ -2,7 +2,6 @@
 
 namespace CentreonRemote\Application\Webservice;
 
-use Exception;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
@@ -361,7 +360,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $dbAdapter->query('SELECT * FROM `nagios_server` WHERE `ns_ip_address` = ?', [$serverIP]);
         $isInNagios = $dbAdapter->count();
         if ($isInNagios) {
-            throw new Exception('This IP Address already exist');
+            throw new \Exception('This IP Address already exist');
         }
 
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
