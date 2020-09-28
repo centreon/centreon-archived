@@ -98,14 +98,18 @@ try {
     // migrate resource status menu acl
     $errorMessage = "Unable to update acl of resource status page.";
 
-    $topologyAclQuery = $pearDB->query(
+    $resourceStatusQuery = $pearDB->query(
+        "SELECT topology_id, topology_page FROM topology WHERE topology_page IN (2, 200)"
+    );
+
+    $topologyAclStatement = $pearDB->prepare(
         "SELECT DISTINCT(tr1.acl_topo_id)
         FROM acl_topology_relations tr1
         WHERE tr1.acl_topo_id NOT IN (
             SELECT tr2.acl_topo_id
             FROM acl_topology_relations tr2, topology t2
             WHERE tr2.topology_topology_id = t2.topology_id
-            AND t2.topology_page = 200
+            AND t2.topology_page = :topology_page
         )
         AND tr1.acl_topo_id IN (
             SELECT tr3.acl_topo_id
@@ -115,26 +119,26 @@ try {
         )"
     );
 
-    $resourceStatusQuery = $pearDB->query(
-        "SELECT topology_id FROM topology WHERE topology_page = 200"
-    );
-    if ($resourceStatusPage = $resourceStatusQuery->fetch()) {
-        $stmt = $pearDB->prepare("
-            INSERT INTO `acl_topology_relations` (
-                `topology_topology_id`,
-                `acl_topo_id`,
-                `access_right`
-            ) VALUES (
-                :topology_id,
-                :acl_topology_id,
-                1
-            )
-        ");
+    $topologyInsertStatement = $pearDB->prepare("
+        INSERT INTO `acl_topology_relations` (
+            `topology_topology_id`,
+            `acl_topo_id`,
+            `access_right`
+        ) VALUES (
+            :topology_id,
+            :acl_topology_id,
+            1
+        )
+    ");
 
-        while ($row = $topologyAclQuery->fetch()) {
-            $stmt->bindValue(':topology_id', $resourceStatusPage['topology_id'], \PDO::PARAM_INT);
-            $stmt->bindValue(':acl_topology_id', $row['acl_topo_id'], \PDO::PARAM_INT);
-            $stmt->execute();
+    while ($resourceStatusPage = $resourceStatusQuery->fetch()) {
+        $topologyAclStatement->bindValue(':topology_page', (int) $resourceStatusPage['topology_page'], \PDO::PARAM_INT);
+        $topologyAclStatement->execute();
+
+        while ($row = $topologyAclStatement->fetch()) {
+            $topologyInsertStatement->bindValue(':topology_id', $resourceStatusPage['topology_id'], \PDO::PARAM_INT);
+            $topologyInsertStatement->bindValue(':acl_topology_id', $row['acl_topo_id'], \PDO::PARAM_INT);
+            $topologyInsertStatement->execute();
         }
     }
 
