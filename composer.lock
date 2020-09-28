@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "de908aed86cca5ae2a626ecec3beb4c8",
+    "content-hash": "9df79d8c96c0a2c82cf85458ed5e086e",
     "packages": [
         {
             "name": "curl/curl",
@@ -6044,16 +6044,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-MON-increase-spin-timeout",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "9158a0c3ec87d10543ad5f4808c1433d6fcde8c2"
+                "reference": "842d139c6340b9e5d993de5ba3b1b16643130b06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/9158a0c3ec87d10543ad5f4808c1433d6fcde8c2",
-                "reference": "9158a0c3ec87d10543ad5f4808c1433d6fcde8c2",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/842d139c6340b9e5d993de5ba3b1b16643130b06",
+                "reference": "842d139c6340b9e5d993de5ba3b1b16643130b06",
                 "shasum": ""
             },
             "require": {
@@ -6098,7 +6098,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2020-09-28T13:02:32+00:00"
+            "time": "2020-09-28T13:55:42+00:00"
         },
         {
             "name": "dflydev/fig-cookies",
