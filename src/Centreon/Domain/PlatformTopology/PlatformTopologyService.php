@@ -186,7 +186,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 ->getApiPeerValidationActivated('yes' === $result['apiPeerValidation']);
             */
 
-                */
 
 
                 // Central's API payloads and URL
