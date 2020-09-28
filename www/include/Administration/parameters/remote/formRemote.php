@@ -136,7 +136,7 @@ $form->addElement(
 );
 $form->addRule('apiPath', _("Required Field"), 'required');
 
-$form->addElement('text', 'apiPort', _("Port"),  ["size" => "8"]);
+$form->addElement('text', 'apiPort', _("Port"), ["size" => "8"]);
 $form->addRule('apiPort', _('Must be a number'), 'numeric');
 
 $form->addElement(
