@@ -85,5 +85,5 @@ interface PlatformTopologyRepositoryInterface
      * @return PlatformTopology|null
      * @throws PlatformTopologyException
      */
-    public function findPlatformOptions(): ?PlatformTopology;
+    public function findPlatformProxy(): ?PlatformTopology;
 }

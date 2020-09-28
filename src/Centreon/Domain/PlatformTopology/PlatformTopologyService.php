@@ -157,7 +157,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * Getting data from 'options' table and checking consistency
              * @var PlatformTopology|null $platformOptions
              */
-            $platformOptions = $this->platformTopologyRepository->findPlatformOptions();
+            $platformOptions = $this->platformTopologyRepository->findPlatformProxy();
 
             /* TODO : TO CHECK
                 $platformOptions
