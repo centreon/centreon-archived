@@ -76,6 +76,21 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
+     * Get Pollers servers waitlist
+     *
+     * @return array
+     */
+    public function postGetPollerWaitList(): array
+    {
+        $statement = $this->pearDB->query('
+            SELECT id, address as ip, name as server_name FROM `platform_topology`
+            WHERE `type` = "poller" AND server_id IS NULL
+        ');
+
+        return $statement->fetchAll();
+    }
+
+    /**
      * @OA\Get(
      *   path="/internal.php?object=centreon_configuration_remote&action=list",
      *   description="Get list with connected remotes",

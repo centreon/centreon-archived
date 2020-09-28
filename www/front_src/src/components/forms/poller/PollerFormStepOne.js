@@ -9,16 +9,50 @@ import { withTranslation } from 'react-i18next';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
-
+import RadioField from '../../form-fields/PreselectedRadioField';
+import SelectField from '../../form-fields/SelectField';
 import { validateFieldRequired } from '../../../helpers/validators';
 
 class PollerFormStepOne extends Component {
   state = {
     inputTypeManual: true,
+    initialized: false,
+  };
+
+  onManualInputChanged(inputTypeManual) {
+    this.setState({
+      inputTypeManual,
+    });
+  }
+
+  initializeFromRest = (value) => {
+    this.props.change('inputTypeManual', !value);
+    this.setState({
+      initialized: true,
+      inputTypeManual: !value,
+    });
+  };
+
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
+    const { waitList } = nextProps;
+    const { initialized } = this.state;
+    if (waitList && !initialized) {
+      this.initializeFromRest(waitList.length > 0);
+      // this.initializeFromRest(true);//set to true of false if abandon the upper case condition
+    }
+    this.setState({
+      initialized: true,
+      centreon_folder: '/centreon/',
+    });
+  };
+
+  handleChange = (e, value) => {
+    const server = this.props.waitList.find((server) => server.ip === value)
+    this.props.change('server_name', server.server_name)
   }
 
   render() {
-    const { error, handleSubmit, onSubmit, t } = this.props;
+    const { error, handleSubmit, onSubmit, waitList, t } = this.props;
     const { inputTypeManual } = this.state;
     return (
       <div className={styles['form-wrapper']}>
@@ -29,32 +63,45 @@ class PollerFormStepOne extends Component {
             </h2>
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <Field
-              name="server_name"
-              component={InputField}
-              type="text"
-              placeholder=""
-              label={`${t('Server Name')}:`}
-              validate={validateFieldRequired(t)}
+          <Field
+              name="inputTypeManual"
+              onChange={() => {
+                this.onManualInputChanged(true);
+              }}
+              checked={inputTypeManual}
+              component={RadioField}
+              label={t('Create new Poller')}
             />
-            <Field
-              name="server_ip"
-              component={InputField}
-              type="text"
-              placeholder=""
-              label={`${t('Server IP address')}:`}
-              validate={validateFieldRequired(t)}
-            />
-            <Field
-              name="centreon_central_ip"
-              component={InputField}
-              type="text"
-              placeholder=""
-              label={`${t(
-                'Centreon Central IP address, as seen by this server',
-              )}:`}
-              validate={validateFieldRequired(t)}
-            />
+            {inputTypeManual ? (
+            <div>
+              <Field
+                name="server_name"
+                component={InputField}
+                type="text"
+                placeholder=""
+                label={`${t('Server Name')}:`}
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                name="server_ip"
+                component={InputField}
+                type="text"
+                placeholder=""
+                label={`${t('Server IP address')}:`}
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                name="centreon_central_ip"
+                component={InputField}
+                type="text"
+                placeholder=""
+                label={`${t(
+                  'Centreon Central IP address, as seen by this server',
+                )}:`}
+                validate={validateFieldRequired(t)}
+              />
+            </div>
+            ) : null}
             <Field
               name="inputTypeManual"
               onClick={() => {
@@ -62,8 +109,57 @@ class PollerFormStepOne extends Component {
               }}
               checked={!inputTypeManual}
               component={RadioField}
-              label={`${t('Select a Pending Poller')}:`}
+              label={`${t('Select a Poller')}:`}
             />
+            {!inputTypeManual ? (
+              <div>
+                {waitList ? (
+                  <Field
+                    name="server_ip"
+                    onChange={this.handleChange}
+                    component={SelectField}
+                    label={`${t('Select Pending Poller IP')}:`}
+                    required
+                    options={[
+                      {
+                        disabled: true,
+                        selected: true,
+                        text: t('Select IP'),
+                        value: '',
+                      },
+                    ].concat(
+                      waitList.map((c) => ({ value: c.ip, text: c.ip })),
+                    )}
+                  />
+                ) : null}
+                <Field
+                  name="server_name"
+                  component={InputField}
+                  type="text"
+                  placeholder=""
+                  label={`${t('Server Name')}:`}
+                  validate={validateFieldRequired(t)}
+                />
+                <Field
+                  name="server_ip"
+                  component={InputField}
+                  type="text"
+                  placeholder=""
+                  label={`${t('Server IP address')}:`}
+                  validate={validateFieldRequired(t)}
+                />
+                <Field
+                  name="centreon_central_ip"
+                  component={InputField}
+                  type="text"
+                  placeholder=""
+                  label={`${t(
+                    'Centreon Central IP address, as seen by this server',
+                  )}:`}
+                  validate={validateFieldRequired(t)}
+                />
+              </div>
+            ): null }
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
                 {t('Next')}
