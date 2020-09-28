@@ -151,7 +151,7 @@ function getChildren(CentreonDB $db): array
  */
 function registerCentralCredentials(CentreonDB $db, array $loginCredentials): void
 {
-    $queryValue = '';
+    $queryValues = [];
     $count = 1;
     $bindValues = [];
     $proxyCredentials = $loginCredentials['proxy_informations'] ?? [];
@@ -159,11 +159,7 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
         return $key !== 'proxy_informations';
     }, ARRAY_FILTER_USE_KEY);
     foreach ($loginCredentials as $key => $value) {
-        if ($count === count($loginCredentials)) {
-            $queryValue .= " ('$key', :$key)";
-        } else {
-            $queryValue .= " ('$key', :$key), ";
-        }
+        $queryValues[] = " ('$key', :$key)";
         $count++;
         switch ($key) {
             case 'apiPort':
@@ -179,7 +175,7 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
         }
     }
     $db->query("DELETE FROM informations WHERE `key` LIKE 'api%'");
-    $query = "INSERT INTO `informations` (`key`, `value`) VALUES $queryValue";
+    $query = "INSERT INTO `informations` (`key`, `value`) VALUES " . implode(',', $queryValues);
     $statement = $db->prepare($query);
     foreach ($bindValues as $token => $bindParams) {
         foreach ($bindParams as $paramType => $paramValue) {
@@ -189,15 +185,11 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $statement->execute();
 
     if (!empty($proxyCredentials)) {
-        $queryValue = '';
+        $queryValues = [];
         $count = 1;
         $bindProxyValues = [];
         foreach ($proxyCredentials as $key => $value) {
-            if ($count === count($proxyCredentials)) {
-                $queryValue .= " ('$key', :$key)";
-            } else {
-                $queryValue .= " ('$key', :$key), ";
-            }
+            $queryValues[] = " ('$key', :$key)";
             $count++;
             switch ($key) {
                 case 'proxy_port':
@@ -214,7 +206,7 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
         }
 
         $db->query("DELETE FROM options WHERE `key` LIKE 'proxy_%'");
-        $query = "INSERT INTO `options` (`key`, `value`) VALUES $queryValue";
+        $query = "INSERT INTO `options` (`key`, `value`) VALUES " . implode(',', $queryValues);
 
         $statement = $db->prepare($query);
         foreach ($bindProxyValues as $token => $bindParams) {
