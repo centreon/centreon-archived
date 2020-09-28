@@ -38,7 +38,6 @@ class PollerFormStepOne extends Component {
     const { initialized } = this.state;
     if (waitList && !initialized) {
       this.initializeFromRest(waitList.length > 0);
-      // this.initializeFromRest(true);//set to true of false if abandon the upper case condition
     }
     this.setState({
       initialized: true,
