@@ -357,7 +357,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /**
          * Avoid Ip duplication
          */
-        $statement = $this->pearDB->prepare('SELECT COUNT(*) as `total` FROM `nagios_server` WHERE `ns_ip_address` = :serverIp');
+        $statement = $this->pearDB->prepare(
+            'SELECT COUNT(*) as `total` FROM `nagios_server` WHERE `ns_ip_address` = :serverIp'
+        );
         $statement->bindValue(':serverIp', $serverIP, \PDO::PARAM_STR);
         $statement->execute();
         $isInNagios = $statement->fetch(\PDO::FETCH_ASSOC);
