@@ -357,9 +357,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /**
          * Avoid Ip duplication
          */
-        $dbAdapter->query('SELECT * FROM `nagios_server` WHERE `ns_ip_address` = ?', [$serverIP]);
-        $isInNagios = $dbAdapter->count();
-        if ($isInNagios) {
+        $statement = $this->pearDB->prepare('SELECT COUNT(*) as `total` FROM `nagios_server` WHERE `ns_ip_address` = :serverIp');
+        $statement->bindValue(':serverIp', $serverIP, \PDO::PARAM_STR);
+        $statement->execute();
+        $isInNagios = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ((int) $isInNagios['total'] > 0) {
             throw new \Exception('This IP Address already exist');
         }
 

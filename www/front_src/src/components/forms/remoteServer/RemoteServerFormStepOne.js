@@ -51,8 +51,9 @@ class RemoteServerFormStepOne extends Component {
   };
 
   handleChange = (e, value) => {
-    const platform = this.props.waitList.find((server) => server.ip === value);
-    this.props.change('server_name', platform.server_name);
+    const { waitList, change } = this.props;
+    const platform = waitList.find((server) => server.ip === value);
+    change('server_name', platform.server_name);
   };
 
   render() {
