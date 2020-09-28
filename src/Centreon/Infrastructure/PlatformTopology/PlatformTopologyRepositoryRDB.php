@@ -197,7 +197,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
                     ->setApiUsername($result['apiUsername'] ?? null)
                     ->setApiCredentials($result['apiCredentials'] ?? null)
                     ->setApiScheme($result['apiScheme'] ?? null)
-                    ->setApiPort($result['apiPort'] ?? null)
+                    ->setApiPort(isset($result['apiPort']) ? (int) $result['apiPort'] : null)
                     ->setApiPath($result['apiPath'] ?? null)
                     ->setApiPeerValidationActivated('yes' === $result['apiPeerValidation']);
             }
@@ -226,10 +226,10 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             if (!empty($result)) {
                 $platformTopology = new PlatformTopology();
                 $platformTopology
-                    ->setApiProxyUrl($result['proxy_url'] ?? null)
-                    ->setApiProxyPort($result['proxy_port'] ?? null)
-                    ->setApiProxyUsername($result['proxy_user'] ?? null)
-                    ->setApiProxyCredentials($result['proxy_password'] ?? null);
+                    ->setProxyUrl($result['proxy_url'] ?? null)
+                    ->setProxyPort(isset($result['proxy_port']) ? (int) $result['proxy_port'] : null)
+                    ->setProxyUsername($result['proxy_user'] ?? null)
+                    ->setProxyCredentials($result['proxy_password'] ?? null);
             }
         }
 

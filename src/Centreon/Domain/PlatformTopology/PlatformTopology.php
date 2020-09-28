@@ -34,7 +34,7 @@ class PlatformTopology
     public const TYPE_POLLER = 'poller';
     public const TYPE_REMOTE = 'remote';
     private const TYPE_MAP = 'map';
-    private const TYPE_MBI = 'mbi';
+    public const TYPE_MBI = 'mbi';
 
     /**
      * Available server types
@@ -139,25 +139,25 @@ class PlatformTopology
      * data retrieved from 'options' table
      * @var string|null
      */
-    private $apiProxyUrl;
+    private $proxyUrl;
 
     /**
      * data retrieved from 'options' table
      * @var int|null
      */
-    private $apiProxyPort;
+    private $proxyPort;
 
     /**
      * data retrieved from 'options' table
      * @var string|null
      */
-    private $apiProxyUsername;
+    private $proxyUsername;
 
     /**
      * data retrieved from 'options' table
      * @var string|null
      */
-    private $apiProxyCredentials;
+    private $proxyCredentials;
 
     /**
      * Validate address consistency
@@ -571,16 +571,16 @@ class PlatformTopology
         return $this;
     }
 
-    public function getApiProxyUrl(): ?string
+    public function getProxyUrl(): ?string
     {
-        return $this->apiProxyUrl;
+        return $this->proxyUrl;
     }
 
     /**
      * @param string|null $url
      * @return $this
      */
-    public function setApiProxyUrl(?string $url): self
+    public function setProxyUrl(?string $url): self
     {
         $path = filter_var($url, FILTER_SANITIZE_STRING);
         if (empty($url)) {
@@ -588,41 +588,41 @@ class PlatformTopology
                 _("Central's platform path is not consistent. Please check the 'Remote Access' form")
             );
         }
-        $this->apiProxyUrl = $url;
+        $this->proxyUrl = $url;
         return $this;
     }
 
     /**
      * @return int|null
      */
-    public function getApiProxyPort(): ?int
+    public function getProxyPort(): ?int
     {
-        return $this->apiProxyPort;
+        return $this->proxyPort;
     }
 
     /**
      * @param int $port
      * @return $this
      */
-    public function setApiProxyPort(int $port): self
+    public function setProxyPort(int $port): self
     {
-        $this->apiProxyPort = $this->checkPortConsistency($port);
+        $this->proxyPort = $this->checkPortConsistency($port);
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getApiProxyUsername(): ?string
+    public function getProxyUsername(): ?string
     {
-        return $this->apiProxyUsername;
+        return $this->proxyUsername;
     }
 
     /**
      * @param string|null $username
      * @return $this
      */
-    public function setApiProxyUsername(?string $username): self
+    public function setProxyUsername(?string $username): self
     {
         $username = filter_var($username, FILTER_SANITIZE_STRING);
         if (empty($username)) {
@@ -630,23 +630,23 @@ class PlatformTopology
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
             );
         }
-        $this->apiProxyUsername = $username;
+        $this->proxyUsername = $username;
         return $this;
     }
 
     /**
      * @return string|null
      */
-    public function getApiProxyCredentials(): ?string
+    public function getProxyCredentials(): ?string
     {
-        return $this->apiProxyCredentials;
+        return $this->proxyCredentials;
     }
 
     /**
      * @param string|null $credential
      * @return $this
      */
-    public function setApiProxyCredentials(?string $credential): self
+    public function setProxyCredentials(?string $credential): self
     {
         $this->apiCredentials = $credential;
         return $this;
