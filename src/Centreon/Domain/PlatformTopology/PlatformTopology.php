@@ -33,7 +33,7 @@ class PlatformTopology
     public const TYPE_CENTRAL = 'central';
     public const TYPE_POLLER = 'poller';
     public const TYPE_REMOTE = 'remote';
-    private const TYPE_MAP = 'map';
+    public const TYPE_MAP = 'map';
     public const TYPE_MBI = 'mbi';
 
     /**
@@ -496,6 +496,7 @@ class PlatformTopology
      */
     public function setApiScheme(?string $schema): self
     {
+        $schema = trim($schema, '/');
         $this->apiScheme = ($schema === 'https' ? 'https' : 'http');
         return $this;
     }
@@ -543,7 +544,7 @@ class PlatformTopology
      */
     public function setApiPath(?string $path): self
     {
-        $path = filter_var($path, FILTER_SANITIZE_STRING);
+        $path = trim(filter_var($path, FILTER_SANITIZE_STRING), '/');
         if (empty($path)) {
             throw new \InvalidArgumentException(
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
@@ -648,7 +649,7 @@ class PlatformTopology
      */
     public function setProxyCredentials(?string $credential): self
     {
-        $this->apiCredentials = $credential;
+        $this->proxyCredentials = $credential;
         return $this;
     }
 }

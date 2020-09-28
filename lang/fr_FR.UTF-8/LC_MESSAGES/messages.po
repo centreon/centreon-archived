@@ -15605,6 +15605,10 @@ msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote
 msgstr "Le port du Central de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
+msgid "Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."
+msgstr "Le chemin vers le Central de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+
+#: api/topology/register
 msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."
 msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
 

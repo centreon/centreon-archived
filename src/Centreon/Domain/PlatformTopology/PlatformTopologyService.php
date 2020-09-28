@@ -140,13 +140,28 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-
-            if (
-                null === $platformInformation->getApiPort()
-            ) {
+            if (null === $platformInformation->getApiScheme()) {
+                throw new PlatformTopologyException(
+                    sprintf(
+                        _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            if (null === $platformInformation->getApiPort()) {
                 throw new PlatformTopologyException(
                     sprintf(
                         _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
+                );
+            }
+            if (null === $platformInformation->getApiPath()) {
+                throw new PlatformTopologyException(
+                    sprintf(
+                        _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
                         $platformTopology->getName(),
                         $platformTopology->getAddress()
                     )
@@ -159,40 +174,46 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              */
             $platformOptions = $this->platformTopologyRepository->findPlatformProxy();
 
-            /* TODO : TO CHECK
-                $platformOptions
-                    and
-                 ->getApiProxyUrl($result['proxy_url'] ?? null)
-                ->getApiProxyPort($result['proxy_port'] ?? null)
-                ->getApiProxyUsername($result['proxy_user'] ?? null)
-                ->getApiProxyCredentials($result['proxy_password'] ?? null);
-             */
+            $proxy = '';
+            if (null !== $platformOptions) {
+                if (null === $platformOptions->getProxyUrl()) {
+                    throw new \InvalidArgumentException(
+                        _("Invalid proxy URL. Please check the parameters set in 'Centreon UI' form")
+                    );
+                }
+                if (null === $platformOptions->getProxyPort()) {
+                    throw new \InvalidArgumentException(
+                        _("Invalid proxy port. Please check the parameters set in 'Centreon UI' form")
+                    );
+                }
 
-
+                $proxy .= 'socks5://' . ($platformOptions->getProxyUsername() ?? '') .
+                    ':' . ($platformOptions->getProxyCredentials() ?? '') .
+                    '@' . $platformOptions->getProxyUrl() .
+                    ":" . $platformOptions->getProxyPort();
+            }
 
             /**
              * Call the API on the n-1 server to register it too
              */
             try {
+                // Central's API endpoints base path
+                $baseApiEndpoint = $platformInformation->getApiScheme() . '://' .
+                    $platformInformation->getAuthorizedMaster() . ':' . $platformInformation->getApiPort() . '/' .
+                    $platformInformation->getApiPath() . '/api/latest/';
 
+                // Enable specific options
+                $optionPayload = [];
+                // Enable proxy
+                if (!empty($proxy)) {
+                    $optionPayload['proxy'] = $proxy;
+                }
+                // SSL verify_peer
+                if ($platformInformation->getApiPeerValidationActivated()) {
+                    $optionPayload['verify_peer'] = true;
+                }
 
-                /*
-
-                TODO : Concatenate results in the payloads
-
-                ->getApiScheme($result['apiScheme'] ?? null)
-                ->getApiPort($result['apiPort'] ?? null)
-                ->getApiPath($result['apiPath'] ?? null)
-                ->getApiPeerValidationActivated('yes' === $result['apiPeerValidation']);
-            */
-
-
-
-                // Central's API payloads and URL
-                $baseApiEndpoint = 'http://' .
-                    $platformInformation->getAuthorizedMaster() .
-                    '/centreon/api/latest/';
-
+                // Central's API login payload
                 $loginPayload = [
                     'json' => [
                         "security" => [
@@ -203,6 +224,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         ]
                     ]
                 ];
+
+                // Add specific options
+                if (!empty($optionPayload)) {
+                    $loginPayload = array_merge($loginPayload, $optionPayload);
+                }
 
                 // Login on the Central to get a valid token
                 $loginResponse = $this->httpClient->request(
@@ -223,7 +249,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     );
                 }
 
-                // Register platform
+                // Central's API register platform payload
                 $registerPayload = [
                     'json' => [
                         "name" => $platformTopology->getName(),
@@ -235,6 +261,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         "X-AUTH-TOKEN" => $token
                     ]
                 ];
+
+                // Add specific options
+                if (!empty($optionPayload)) {
+                    $registerPayload = array_merge($registerPayload, $optionPayload);
+                }
 
                 $registerResponse = $this->httpClient->request(
                     'POST',

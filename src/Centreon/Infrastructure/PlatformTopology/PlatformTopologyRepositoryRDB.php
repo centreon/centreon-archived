@@ -25,6 +25,7 @@ namespace Centreon\Infrastructure\PlatformTopology;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
