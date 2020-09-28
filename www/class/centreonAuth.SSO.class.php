@@ -90,10 +90,7 @@ class CentreonAuthSSO extends CentreonAuth
             $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
             $introspectionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
-            if (
-                isset($this->ssoOptions['openid_connect_userinfo_endpoint'])
-                && $this->ssoOptions['openid_connect_userinfo_endpoint'] != ""
-            ) {
+            if (!empty($this->ssoOptions['openid_connect_userinfo_endpoint'])) {
                 $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
             }
             
