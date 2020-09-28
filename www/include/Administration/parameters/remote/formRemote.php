@@ -80,12 +80,8 @@ try {
     if (!empty($result['apiUsername'])) {
         $decryptResult = $centreonEncryption->decrypt($result['apiCredentials'] ?? '');
     }
-    if (!empty($result['apiProxyUsername'])) {
-        $decryptProxyResult = $centreonEncryption->decrypt($result['apiProxyCredentials'] ?? '');
-    }
 } catch (Exception $e) {
     unset($result['apiCredentials']);
-    unset($result['apiProxyCredentials']);
     $errorMsg = _('The password cannot be decrypted. Please re-enter the account password and submit the form');
     echo "<div class='msg' align='center'>" . $errorMsg . "</div>";
 }
