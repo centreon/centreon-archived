@@ -15028,10 +15028,6 @@ msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
 msgid "Downtime internal id can not be null"
 msgstr "L'ID interne de la plage de maintenance ne peut pas être null"
 
-#:Centreon/Domain/Engine/EngineService.php:355
-msgid "Host name cannot be empty"
-msgstr "Le nom d'hôte ne peut pas être vide"
-
 #:Centreon/Domain/Engine/EngineService.php:359
 msgid "Service description cannot be empty"
 msgstr "La description du service ne peut pas être vide"
@@ -15506,6 +15502,7 @@ msgstr "Configurer"
 
 msgid "View report"
 msgstr "Voir le rapport"
+
 msgid "An error occurred while retrieving users linked to ViewId on database"
 msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs liés à ViewId"
 
