@@ -138,27 +138,12 @@ try {
         }
     }
 
-    // get local server id
-    $localStmt = $pearDB->query("SELECT `id` FROM nagios_server WHERE localhost = '1'");
+    // get topology local server id
+    $localStmt = $pearDB->query(
+        "SELECT `id` FROM `platform_topology` 
+        WHERE `server_id` = (SELECT `id` FROM nagios_server WHERE localhost = '1')"
+    );
     $parentId = $localStmt->fetchColumn();
-
-    // map
-    $mapServerQuery = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'map_light_server_address'");
-    $map = $mapServerQuery->fetchColumn();
-
-    if (!empty($map)) {
-        $errorMessage = "Unable to insert map server in 'topology' table.";
-        $mapIp = parse_url(gethostbyname($map))["host"];
-        $stmt = $pearDB->prepare(
-            "INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
-            VALUES (:mapAddress, :name, 'map', :id, NULL)"
-        );
-        $name = 'map_' . $mapIp;
-        $stmt->bindValue(':mapAddress', $mapIp, \PDO::PARAM_STR);
-        $stmt->bindValue(':name', $name, \PDO::PARAM_STR);
-        $stmt->bindValue(':id', $parentId, \PDO::PARAM_INT);
-        $stmt->execute();
-    }
 
     // get nagios_server children
     $childStmt = $pearDB->query(
