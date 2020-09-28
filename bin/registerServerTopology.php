@@ -277,7 +277,7 @@ if (isRemote($serverType)) {
     }
     try {
         $registerPayloads = registerRemote($host, $loginCredentialsDb);
-    } catch(\PDOException $e) {
+    } catch (\PDOException $e) {
         echo $e->getMessage();
         exit(1);
     }
