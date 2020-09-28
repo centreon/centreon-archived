@@ -2,7 +2,8 @@ import React from 'react';
 
 import { Grid } from '@material-ui/core';
 
-import { ColumnProps } from '..';
+import { ComponentColumnProps } from '@centreon/ui';
+
 import DowntimeDetailsTable from './DetailsTable/Downtime';
 import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import { labelInDowntime, labelAcknowledged } from '../../../translatedLabels';
@@ -61,7 +62,7 @@ const AcknowledgeHoverChip = ({
   );
 };
 
-const StateColumn = ({ row }: ColumnProps): JSX.Element => {
+const StateColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
     <Grid container spacing={1}>
       {row.in_downtime && (
