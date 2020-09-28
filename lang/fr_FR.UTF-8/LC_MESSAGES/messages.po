@@ -14995,7 +14995,7 @@ msgstr "L'alias du contact est vide"
 #:Centreon/Domain/Engine/EngineService.php:266
 #:Centreon/Domain/Engine/EngineService.php:316
 #:Centreon/Domain/HostConfiguration/HostConfigurationService.php:47
-msgid "Host name can not be empty"
+msgid "Host name cannot be empty"
 msgstr "Le nom d'hôte ne peut être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:105
@@ -15533,5 +15533,11 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
 
-msgid "Error when searching for a monitoring server %s"
+msgid "Error while searching for the monitoring server %s"
 msgstr "Erreur lors de la recherche du serveur de supervision %s"
+
+msgid "Error while searching for the monitoring engine configuration"
+msgstr "Erreur lors de la recherche de la configuration du moteur de supervision"
+
+msgid "Ip address cannot be empty"
+msgstr "L'adresse Ip ne peut pas être vide"

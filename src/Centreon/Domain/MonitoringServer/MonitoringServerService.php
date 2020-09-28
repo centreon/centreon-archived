@@ -83,7 +83,7 @@ class MonitoringServerService implements MonitoringServerServiceInterface
             return $this->monitoringServerRepository->findServerByName($monitoringServerName);
         } catch (\Exception $ex) {
             throw new MonitoringServerException(
-                sprintf(_('Error when searching for a monitoring server %s'), $monitoringServerName),
+                sprintf(_('Error while searching for the monitoring server %s'), $monitoringServerName),
                 0,
                 $ex
             );

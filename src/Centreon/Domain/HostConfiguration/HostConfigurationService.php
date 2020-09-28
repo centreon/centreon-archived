@@ -59,11 +59,11 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     public function addHost(Host $host): int
     {
         if (empty($host->getName())) {
-            throw new HostConfigurationException(_('Host name can not be empty'));
+            throw new HostConfigurationException(_('Host name cannot be empty'));
         }
         try {
             if (empty($host->getIpAddress())) {
-                throw new HostConfigurationException(_('Ip address can not be empty'));
+                throw new HostConfigurationException(_('Ip address cannot be empty'));
             }
 
             if ($host->getMonitoringServer() === null || $host->getMonitoringServer()->getName() === null) {
