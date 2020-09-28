@@ -275,7 +275,12 @@ if (isRemote($serverType)) {
             : null;
         $loginCredentialsDb['proxy_informations']['proxy_password'] = $configOptions['PROXY_PASSWORD'] ?? null;
     }
-    $registerPayloads = registerRemote($host, $loginCredentialsDb);
+    try {
+        $registerPayloads = registerRemote($host, $loginCredentialsDb);
+    } catch(\PDOException $e) {
+        echo $e->getMessage();
+        exit(1);
+    }
 } else {
     $registerPayloads = [];
 }

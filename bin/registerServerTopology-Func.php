@@ -66,9 +66,12 @@ function registerRemote(string $ip, array $loginCredentials): array
     $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
     $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
 
-    $db->query(" SELECT * FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'");
-    $isRemote = $db->numberRows();
-    if (!$isRemote) {
+    $statement = $db->query("
+        SELECT COUNT(*) as `total` FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'
+    ");
+    $result = $statement->fetch(\PDO::FETCH_ASSOC);
+    $isRemote = (int) $result['total'];
+    if ($isRemote === 0) {
         require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
         require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
         require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
@@ -89,17 +92,21 @@ function registerRemote(string $ip, array $loginCredentials): array
         );
     }
 
-    //register credentials
-    registerCentralCredentials($db, $loginCredentials);
-
-    //Apply Remote Server mode in configuration file
-    system(
-        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
-    );
-
-
-    //update platform_topology type
-    $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
+    try {
+        $db->beginTransaction();
+        //register credentials
+        registerCentralCredentials($db, $loginCredentials);
+        //update platform_topology type
+        $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
+        $db->commit();
+        //Apply Remote Server mode in configuration file
+        system(
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+        );
+    } catch (\PDOException $e) {
+        $db->rollBack();
+        throw $e;
+    }
 
     // return children
     return getChildren($db);
