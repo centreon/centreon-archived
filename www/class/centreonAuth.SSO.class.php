@@ -98,10 +98,7 @@ class CentreonAuthSSO extends CentreonAuth
 
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
-            if (
-                isset($this->ssoOptions['openid_connect_scope'])
-                && $this->ssoOptions['openid_connect_scope'] != ""
-            ) {
+            if (!empty($this->ssoOptions['openid_connect_scope'])) {
                 $authUrl .= "&scope=" . $this->ssoOptions['openid_connect_scope'];
             }
 
