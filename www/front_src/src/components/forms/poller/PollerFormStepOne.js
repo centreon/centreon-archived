@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
@@ -26,7 +27,8 @@ class PollerFormStepOne extends Component {
   }
 
   initializeFromRest = (value) => {
-    this.props.change('inputTypeManual', !value);
+    const { change } = this.props;
+    change('inputTypeManual', !value);
     this.setState({
       initialized: true,
       inputTypeManual: !value,
@@ -41,14 +43,14 @@ class PollerFormStepOne extends Component {
     }
     this.setState({
       initialized: true,
-      centreon_folder: '/centreon/',
     });
   };
 
   handleChange = (e, value) => {
-    const server = this.props.waitList.find((server) => server.ip === value)
-    this.props.change('server_name', server.server_name)
-  }
+    const { waitList, change } = this.props;
+    const platform = waitList.find((server) => server.ip === value);
+    change('server_name', platform.server_name);
+  };
 
   render() {
     const { error, handleSubmit, onSubmit, waitList, t } = this.props;
@@ -62,7 +64,7 @@ class PollerFormStepOne extends Component {
             </h2>
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <Field
+            <Field
               name="inputTypeManual"
               onChange={() => {
                 this.onManualInputChanged(true);
@@ -72,34 +74,34 @@ class PollerFormStepOne extends Component {
               label={t('Create new Poller')}
             />
             {inputTypeManual ? (
-            <div>
-              <Field
-                name="server_name"
-                component={InputField}
-                type="text"
-                placeholder=""
-                label={`${t('Server Name')}:`}
-                validate={validateFieldRequired(t)}
-              />
-              <Field
-                name="server_ip"
-                component={InputField}
-                type="text"
-                placeholder=""
-                label={`${t('Server IP address')}:`}
-                validate={validateFieldRequired(t)}
-              />
-              <Field
-                name="centreon_central_ip"
-                component={InputField}
-                type="text"
-                placeholder=""
-                label={`${t(
-                  'Centreon Central IP address, as seen by this server',
-                )}:`}
-                validate={validateFieldRequired(t)}
-              />
-            </div>
+              <div>
+                <Field
+                  name="server_name"
+                  component={InputField}
+                  type="text"
+                  placeholder=""
+                  label={`${t('Server Name')}:`}
+                  validate={validateFieldRequired(t)}
+                />
+                <Field
+                  name="server_ip"
+                  component={InputField}
+                  type="text"
+                  placeholder=""
+                  label={`${t('Server IP address')}:`}
+                  validate={validateFieldRequired(t)}
+                />
+                <Field
+                  name="centreon_central_ip"
+                  component={InputField}
+                  type="text"
+                  placeholder=""
+                  label={`${t(
+                    'Centreon Central IP address, as seen by this server',
+                  )}:`}
+                  validate={validateFieldRequired(t)}
+                />
+              </div>
             ) : null}
             <Field
               name="inputTypeManual"
@@ -158,7 +160,7 @@ class PollerFormStepOne extends Component {
                   validate={validateFieldRequired(t)}
                 />
               </div>
-            ): null }
+            ) : null}
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
                 {t('Next')}

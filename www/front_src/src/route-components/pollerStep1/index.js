@@ -28,6 +28,7 @@ class PollerStepOneRoute extends Component {
   ];
 
   state = {
+    error: null,
     waitList: null,
   };
 
@@ -50,10 +51,6 @@ class PollerStepOneRoute extends Component {
     this.getWaitList();
   };
 
-  state = {
-    error: null,
-  };
-
   handleSubmit = (data) => {
     const { history, setPollerWizard } = this.props;
     setPollerWizard(data);
@@ -66,7 +63,11 @@ class PollerStepOneRoute extends Component {
     return (
       <BaseWizard>
         <ProgressBar links={links} />
-        <Form onSubmit={this.handleSubmit.bind(this)} initialValues={{}} waitList={waitList}/>
+        <Form
+          onSubmit={this.handleSubmit.bind(this)}
+          initialValues={{}}
+          waitList={waitList}
+        />
       </BaseWizard>
     );
   }
