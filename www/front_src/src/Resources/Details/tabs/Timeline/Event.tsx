@@ -6,7 +6,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
 import { StatusChip } from '@centreon/ui';
-import { gt, prop } from 'ramda';
+import { prop } from 'ramda';
 
 import { useTranslation } from 'react-i18next';
 import { TimelineEvent, Type } from './models';
