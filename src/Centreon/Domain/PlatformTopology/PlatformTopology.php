@@ -22,9 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use InvalidArgumentException;
 use Security\Encryption;
-use throwable;
 
 /**
  * Class designed to retrieve servers to be added using the wizard
@@ -178,7 +176,7 @@ class PlatformTopology
 
         // check for DNS to be resolved
         if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     _("The address of '%s' is not valid"),
                     $this->getName()
@@ -198,7 +196,7 @@ class PlatformTopology
         // checking
         $port = filter_var($port, FILTER_VALIDATE_INT);
         if (false === $port || 1 > $port || $port > 65536) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
             );
         }
@@ -223,7 +221,7 @@ class PlatformTopology
 
         // second key
         if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 _("Unable to find the encryption key. Please check the '.env.local.php' file")
             );
         }
@@ -233,8 +231,8 @@ class PlatformTopology
             $centreonEncryption = new Encryption();
             $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey($secondKey);
             return $centreonEncryption->decrypt($encryptedKey);
-        } catch (throwable $e) {
-            throw new InvalidArgumentException(
+        } catch (\throwable $e) {
+            throw new \InvalidArgumentException(
                 _("Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form")
             );
         }
@@ -274,7 +272,7 @@ class PlatformTopology
     public function setParentAddress(?string $parentAddress): self
     {
         if (null !== $parentAddress && $this->getType() === static::TYPE_CENTRAL) {
-            throw new InvalidArgumentException(_("Cannot use parent address on a Central server type"));
+            throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
         }
         $this->parentAddress = $this->checkIpAddress($parentAddress);
         return $this;
@@ -299,7 +297,7 @@ class PlatformTopology
 
         // Check if the server_type is available
         if (!in_array($type, static::AVAILABLE_TYPES)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf(
                     _("The platform type of '%s'@'%s' is not consistent"),
                     $this->getName(),
@@ -327,7 +325,7 @@ class PlatformTopology
     {
         $name = filter_var($name, FILTER_SANITIZE_STRING);
         if (empty($name)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 _('The name of the platform is not consistent')
             );
         }
@@ -370,7 +368,7 @@ class PlatformTopology
     public function setParentId(?int $parentId): self
     {
         if (null !== $parentId && $this->getType() === static::TYPE_CENTRAL) {
-            throw new InvalidArgumentException(_("Cannot set parent id to a central server"));
+            throw new \InvalidArgumentException(_("Cannot set parent id to a central server"));
         }
         $this->parentId = $parentId;
         return $this;
@@ -547,7 +545,7 @@ class PlatformTopology
     {
         $path = filter_var($path, FILTER_SANITIZE_STRING);
         if (empty($path)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
             );
         }
@@ -586,7 +584,7 @@ class PlatformTopology
     {
         $path = filter_var($url, FILTER_SANITIZE_STRING);
         if (empty($url)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 _("Central's platform path is not consistent. Please check the 'Remote Access' form")
             );
         }
@@ -628,7 +626,7 @@ class PlatformTopology
     {
         $username = filter_var($username, FILTER_SANITIZE_STRING);
         if (empty($username)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
             );
         }
