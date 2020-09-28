@@ -142,6 +142,15 @@ if ($acl_page == 1 || $acl_page == 2) {
                 }
             } elseif ($ret['topology_url']) {
                 $url = $ret['topology_url'];
+                if ($ret['is_react'] === '1') {
+                    // workaround to update react page without refreshing whole page
+                    echo '<script>'
+                        . 'window.top.history.pushState("", "", ".' . $ret['topology_url'] . '");'
+                        . 'window.top.history.pushState("", "", ".' . $ret['topology_url'] . '");'
+                        . 'window.top.history.go(-1);'
+                        . '</script>';
+                    exit();
+                }
             } else {
                 $url = "./include/core/errors/alt_error.php";
             }
