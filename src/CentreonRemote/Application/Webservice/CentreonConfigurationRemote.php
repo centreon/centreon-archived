@@ -362,7 +362,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $statement->execute();
         $isInNagios = $statement->fetch(\PDO::FETCH_ASSOC);
         if ((int) $isInNagios['total'] > 0) {
-            throw new \Exception('This IP Address already exist');
+            throw new \Exception(_('This IP Address already exist'));
         }
 
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
@@ -605,7 +605,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $server = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if (isset($server['nagios_id'])) {
-            throw new \Exception('This server is already registered');
+            throw new \Exception(_('This server is already registered'));
         }
         if (!empty($topologyInformations['parent'])) {
             $statement = $this->pearDB->prepare('SELECT id FROM platform_topology WHERE server_id = :serverId');
@@ -619,7 +619,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $statement = $this->pearDB->query("SELECT id FROM `platform_topology` WHERE type = 'central'");
             $parent = $statement->fetch(\PDO::FETCH_ASSOC);
             if (empty($parent['id'])) {
-                throw new \Exception('No Central in topology,please edit it from Poller menu');
+                throw new \Exception(_('No Central in topology,please edit it from Configuration > Pollers menu'));
             }
         }
         /**

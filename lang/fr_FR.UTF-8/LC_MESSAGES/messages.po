@@ -2622,6 +2622,17 @@ msgstr "Statut de la plateforme"
 msgid "Engine Statistics"
 msgstr "Statistiques du moteur"
 
+#: centreon-web/src/CentreonRemote/Application/WebService/CentreonConfigurationRemote.php:365
+msgid "This IP Address already exist"
+msgstr "Cette adresse IP existe déjà"
+
+#: centreon-web/src/CentreonRemote/Application/WebService/CentreonConfigurationRemote.php:608
+msgid "This server is already registered"
+msgstr "Ce serveur est déjà enregistré"
+
+#: centreon-web/src/CentreonRemote/Application/WebService/CentreonConfigurationRemote.php:622
+msgid "No Central in topology,please edit it from Configuration > Pollers menu"
+msgstr "Pas de Central dans la topologie,Editez le depuis le menu Configurations > Collecteurs"
 
 #: centreon-web/www/install/smarty_translate.php:942
 msgid "No downtime scheduled"
