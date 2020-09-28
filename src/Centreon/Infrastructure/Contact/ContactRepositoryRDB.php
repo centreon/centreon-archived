@@ -368,6 +368,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 $contact->addRole(Contact::ROLE_ADD_HOST_DOWNTIME);
                 $contact->addRole(Contact::ROLE_CANCEL_HOST_DOWNTIME);
                 break;
+            case 'service_submit_result':
+                $contact->addRole(Contact::ROLE_SERVICE_SUBMIT_RESULT);
+                break;
+            case 'host_submit_result':
+                $contact->addRole(Contact::ROLE_HOST_SUBMIT_RESULT);
+                break;
         }
     }
 

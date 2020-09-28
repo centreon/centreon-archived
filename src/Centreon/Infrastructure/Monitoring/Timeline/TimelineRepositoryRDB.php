@@ -33,7 +33,7 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Timeline\TimelineContact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
 
@@ -172,18 +172,27 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
 
         $request .= ') AS `log` ';
 
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $request .= " INNER JOIN `:dbstg`.`centreon_acl` ON centreon_acl.host_id = log.host_id";
-            if ($serviceId) {
-                $request .= " AND centreon_acl.service_id = log.service_id";
-            }
-            $request .= " AND centreon_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ") ";
-        }
-
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $request .= !is_null($searchRequest) ? $searchRequest : '';
+        $whereCondition = false;
+        if ($searchRequest !== null) {
+            $whereCondition = true;
+            $request .= $searchRequest;
+        }
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $request .= ($whereCondition === true) ? ' AND ' : ' WHERE ';
+            $request .= $this->translateDbName(
+                "EXISTS (SELECT host_id FROM `:dbstg`.`centreon_acl` acl WHERE acl.host_id = :host_id"
+            );
+            $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
+            if ($serviceId !== null) {
+                $request .= " AND acl.service_id = :service_id";
+                $collector->addValue(':service_id', $serviceId, \PDO::PARAM_INT);
+            }
+            $request .= " AND acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")) ";
+        }
 
         // Sort
         $request .= $this->sqlRequestTranslator->translateSortParameterToSql() ?: ' ORDER BY log.date DESC';
@@ -214,7 +223,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             if ($result['contact_name'] !== null) {
                 $timelineEvent->setContact(
                     EntityCreator::createEntityByArray(
-                        Contact::class,
+                        TimelineContact::class,
                         $result,
                         'contact_'
                     )

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import LinkIcon from '@material-ui/icons/Link';
+import CopyIcon from '@material-ui/icons/FileCopy';
 
 import {
   StatusChip,
@@ -76,7 +76,7 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       <Grid item>
         <StatusChip
           severityCode={details.status.severity_code}
-          label={details.status.name}
+          label={t(details.status.name)}
         />
       </Grid>
       <Grid item style={{ flexGrow: 1 }}>
@@ -105,7 +105,7 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
           ariaLabel={t(labelCopyLink)}
           onClick={copyResourceLink}
         >
-          <LinkIcon />
+          <CopyIcon fontSize="small" />
         </IconButton>
       </Grid>
     </>

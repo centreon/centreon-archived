@@ -26,7 +26,7 @@ export interface RawCriteria {
 }
 
 export interface RawFilter {
-  id: number;
+  id: number | string;
   name: string;
   criterias: Array<RawCriteria>;
 }

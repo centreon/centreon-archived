@@ -76,6 +76,11 @@ $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 $grouplistStr = $obj->access->getAccessGroupsString();
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 //saving bound values
 $queryValues = [];
 $filterRq2 = '';
@@ -257,11 +262,16 @@ if (isset($tab_finalH)) {
                 $obj->XML->writeAttribute("class", $obj->getNextLineClass());
                 if (isset($tabService[$host_name]["tab_svc"])) {
                     foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {
+                        $serviceId = $svcObj->getServiceId($svc, $host_name);
                         $obj->XML->startElement("svc");
                         $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc));
                         $obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
                         $obj->XML->writeElement("sc", $obj->colorService[$state]);
-                        $obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
+                        $obj->XML->writeElement("svc_id", $serviceId);
+                        $obj->XML->writeElement(
+                            "s_details_uri",
+                            $resourceController->buildServiceDetailsUri($tabH[$host_name], $serviceId)
+                        );
                         $obj->XML->endElement();
                     }
                 }
@@ -277,6 +287,17 @@ if (isset($tab_finalH)) {
                 $obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
                 $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
                 $obj->XML->writeElement("hcount", $count);
+                $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($tabH[$host_name]));
+                $obj->XML->writeElement(
+                    "s_listing_uri",
+                    $resourceController->buildListingUri([
+                        'filter' => json_encode([
+                            'criterias' => [
+                                'search' => 'h.name:^' . $host_name . '$',
+                            ],
+                        ]),
+                    ])
+                );
                 $obj->XML->endElement();
                 $count++;
             }

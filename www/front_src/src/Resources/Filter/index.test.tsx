@@ -171,16 +171,18 @@ mockAppStateSelector(useSelector);
 
 describe(Filter, () => {
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValueOnce({ data: {} }).mockResolvedValueOnce({
-      data: {
-        result: [],
-        meta: {
-          page: 1,
-          limit: 30,
-          total: 0,
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          result: [],
+          meta: {
+            page: 1,
+            limit: 30,
+            total: 0,
+          },
         },
-      },
-    });
+      })
+      .mockResolvedValueOnce({ data: {} });
   });
 
   afterEach(() => {

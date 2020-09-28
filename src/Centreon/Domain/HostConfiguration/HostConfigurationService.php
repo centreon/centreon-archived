@@ -29,8 +29,8 @@ use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
-use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 use Symfony\Component\Security\Core\Security;
+use Centreon\Domain\Repository\RepositoryException;
 
 class HostConfigurationService implements HostConfigurationServiceInterface
 {
@@ -38,6 +38,10 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      * @var HostConfigurationRepositoryInterface
      */
     private $hostConfigurationRepository;
+    /**
+     * @var EngineConfigurationServiceInterface
+     */
+    private $engineConfigurationService;
 
     /**
      * @var ActionLogServiceInterface
@@ -48,11 +52,6 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      * @var Contact
      */
     private $contact;
-
-    /**
-     * @var EngineConfigurationServiceInterface
-     */
-    private $engineConfigurationService;
 
     /**
      * HostConfigurationService constructor.
@@ -79,21 +78,29 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      */
     public function addHost(Host $host): int
     {
-        if (empty($host->getIpAddress())) {
-            throw new HostConfigurationException(_('Host ip can not be empty'));
-        }
-        if (empty($host->getIpAddress())) {
-            throw new HostConfigurationException(_('Host ip can not be empty'));
+        if (empty($host->getName())) {
+            throw new HostConfigurationException(_('Host name can not be empty'));
         }
         try {
-            /**
-             * To avoid recording a host name with illegal characters,
+            if (empty($host->getIpAddress())) {
+                throw new HostConfigurationException(_('Ip address can not be empty'));
+            }
+
+            if ($host->getMonitoringServer() === null || $host->getMonitoringServer()->getName() === null) {
+                throw new HostConfigurationException(_('Monitoring server is not correctly defined'));
+            }
+
+            /*
+             * To avoid defining a host name with illegal characters,
              * we retrieve the engine configuration to retrieve the list of these characters.
              */
-            $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByHost($host);
+            $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
+                $host->getMonitoringServer()->getName()
+            );
             if ($engineConfiguration === null) {
-                throw new ServiceConfigurationException(_('Impossible to find the Engine configuration'));
+                throw new HostConfigurationException(_('Impossible to find the Engine configuration'));
             }
+
             $safedHostName = EngineConfiguration::removeIllegalCharacters(
                 $host->getName(),
                 $engineConfiguration->getIllegalObjectNameCharacters()
@@ -103,12 +110,15 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             }
             $host->setName($safedHostName);
 
-            $hasHostWithSameName = $this->hostConfigurationRepository->hasHostWithSameName($host->getName());
-            if ($hasHostWithSameName) {
+            if ($this->hostConfigurationRepository->hasHostWithSameName($host->getName())) {
                 throw new HostConfigurationException(_('Host name already exists'));
             }
             if ($host->getExtendedHost() === null) {
                 $host->setExtendedHost(new ExtendedHost());
+            }
+
+            if ($host->getMonitoringServer()->getId() === null) {
+                $host->getMonitoringServer()->setId($engineConfiguration->getMonitoringServerId());
             }
             $hostId = $this->hostConfigurationRepository->addHost($host);
             $this->actionLogService->addLog(
@@ -117,6 +127,8 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             return $hostId;
         } catch (HostConfigurationException $ex) {
             throw $ex;
+        } catch (RepositoryException $ex) {
+            throw new HostConfigurationException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
             throw new HostConfigurationException(_('Error while creation of host'), 0, $ex);
         }
@@ -209,10 +221,10 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
     * @inheritDoc
     */
-    public function checkNamesAlreadyUsed(array $namesToCheck): array
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array
     {
         try {
-            return $this->hostConfigurationRepository->checkNamesAlreadyUsed($namesToCheck);
+            return $this->hostConfigurationRepository->findHostNamesAlreadyUsed($namesToCheck);
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(_('Error when searching for already used host names'));
         }

@@ -15,7 +15,16 @@ import {
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { all, equals, any, reject, update, findIndex, propEq } from 'ramda';
+import {
+  all,
+  equals,
+  any,
+  reject,
+  update,
+  findIndex,
+  propEq,
+  omit,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -96,7 +105,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
       const updatedFilter = { ...filter, name: values.name };
 
       sendUpdateFilterRequest({
-        rawFilter: toRawFilter(updatedFilter),
+        rawFilter: omit(['id'], toRawFilter(updatedFilter)),
         id: updatedFilter.id,
       }).then(() => {
         showMessage({

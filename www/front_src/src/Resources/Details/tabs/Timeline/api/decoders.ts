@@ -2,7 +2,8 @@ import { JsonDecoder } from 'ts.data.json';
 
 import { buildListingDecoder } from '@centreon/ui';
 
-import { TimelineEvent, Status, WithName } from '../models';
+import { statusDecoder } from '../../../../decoders';
+import { TimelineEvent, WithName } from '../models';
 
 const getWithNameDecoder = (
   decoderName: string,
@@ -26,18 +27,7 @@ const entityDecoder = JsonDecoder.object<TimelineEvent>(
     endDate: JsonDecoder.optional(JsonDecoder.string),
     tries: JsonDecoder.optional(JsonDecoder.number),
     contact: getWithNameDecoder('Contact'),
-    status: JsonDecoder.optional(
-      JsonDecoder.object<Status>(
-        {
-          severityCode: JsonDecoder.number,
-          name: JsonDecoder.string,
-        },
-        'Status',
-        {
-          severityCode: 'severity_code',
-        },
-      ),
-    ),
+    status: JsonDecoder.optional(statusDecoder),
   },
   'TimelineEvent',
   {

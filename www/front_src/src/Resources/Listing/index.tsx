@@ -107,7 +107,7 @@ const ResourceListing = (): JSX.Element => {
       loading={loading}
       columnConfiguration={columns}
       tableData={listing?.result}
-      currentPage={page - 1}
+      currentPage={(page || 1) - 1}
       rowColorConditions={[
         ...rowColorConditions(theme),
         resourceDetailsOpenCondition,

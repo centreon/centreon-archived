@@ -826,6 +826,30 @@ if (!is_null($host_id)) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
+        /**
+         * Build the service detail URI that will be used in the
+         * deprecated banner
+         */
+        $kernel = \App\Kernel::createForWeb();
+        $resourceController = $kernel->getContainer()->get(
+            \Centreon\Application\Controller\MonitoringResourceController::class
+        );
+
+        $deprecationMessage = _('[Page deprecated] Please use the new page: ');
+        $redirectionUrl = $resourceController->buildServiceDetailsUri($host_id, $service_id);
+
+        // Check if central or remote server
+        $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+        $result = $DBRESULT->fetchRow();
+        if ($result === false) {
+            $isRemote = false;
+        } else {
+            $result = array_map("myDecode", $result);
+            $isRemote = ($result['value'] === 'yes');
+        }
+        $DBRESULT->closeCursor();
+        $tpl->assign("isRemote", $isRemote);
+
         $tpl->display("serviceDetails.ihtml");
     }
 } else {
@@ -842,6 +866,8 @@ if (!is_null($host_id)) {
         var host_id = '<?php echo $host_id;?>';
         var svc_id = '<?php echo $service_id;?>';
         var labels = new Array();
+
+        display_deprecated_banner();
 
         labels['service_checks'] = new Array(
             "<?php echo $str_check_svc_enable;?>",
@@ -884,6 +910,15 @@ if (!is_null($host_id)) {
             "<?php echo $img_en[0];?>",
             "<?php echo $img_en[1];?>"
         );
+
+        function display_deprecated_banner() {
+            const url = "<?php echo $redirectionUrl; ?>";
+            const message = "<?php echo $deprecationMessage; ?>";
+            jQuery('.pathway').append(
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message +
+                '<a style="position:relative" href="' + url + '" isreact="isreact">Resource Status</a></span>'
+            );
+    }
 
         function send_command(cmd, actiontype) {
             if (!confirm(glb_confirm)) {

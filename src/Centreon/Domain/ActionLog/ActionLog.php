@@ -91,8 +91,11 @@ class ActionLog
         $this->objectId = $objectId;
         $this->objectName = $objectName;
         $this->actionType = $actionType;
-        $this->creationDate = $creationDate;
         $this->contactId = $contactId;
+
+        if ($creationDate === null) {
+            $this->creationDate = new \DateTime();
+        }
     }
 
     /**

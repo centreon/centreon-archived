@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { Dialog, TextField, useRequest } from '@centreon/ui';
 
-import { path, not, or } from 'ramda';
+import { path, not, or, omit } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import {
   labelSave,
@@ -50,10 +50,14 @@ const CreateFilterDialog = ({
     }),
     onSubmit: (values) => {
       sendRequest(
-        toRawFilter({
-          name: values.name,
-          criterias: filter.criterias,
-        }),
+        omit(
+          ['id'],
+          toRawFilter({
+            id: '',
+            name: values.name,
+            criterias: filter.criterias,
+          }),
+        ),
       )
         .then(toFilter)
         .then(onCreate)

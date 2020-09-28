@@ -131,6 +131,11 @@ class Resource
     private $activeChecks;
 
     /**
+     * @var bool|null
+     */
+    private $passiveChecks;
+
+    /**
      * @var ResourceLinks
      */
     private $links;
@@ -545,6 +550,24 @@ class Resource
     public function setActiveChecks(?bool $activeChecks): self
     {
         $this->activeChecks = $activeChecks;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getPassiveChecks(): ?bool
+    {
+        return $this->passiveChecks;
+    }
+
+    /**
+     * @param bool|null $passiveChecks
+     * @return self
+     */
+    public function setPassiveChecks(?bool $passiveChecks): self
+    {
+        $this->passiveChecks = $passiveChecks;
         return $this;
     }
 

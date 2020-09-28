@@ -6654,8 +6654,8 @@ msgid "Proxy URL"
 msgstr "URL de Proxy"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:162
-msgid "Test Proxy Configuration"
-msgstr "Configuração do Proxy de Teste"
+msgid "Test Internet Connection"
+msgstr "Teste a conexão com a Internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:165
 msgid "Proxy port"
@@ -7916,6 +7916,12 @@ msgstr "Diretorio de banco de dados leve para traps SNMP"
 #: centreon-web/www/include/configuration/configServers/formServers.php:254
 msgid "The name of the poller is mandatory"
 msgstr "O nome do coletor é obrigatorio"
+
+#: msgid "The IP address is already registered on another poller"
+#: msgstr ""
+
+#: msgid "The IP address is already registered"
+#: msgstr ""
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:133
 msgid "Server type"
@@ -15053,4 +15059,13 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "Resource link copied to the clipboard"
+#  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""
+
+#  msgid "No resource found"
 #  msgstr ""

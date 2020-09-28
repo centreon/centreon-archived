@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Timeline;
 
-use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Timeline\TimelineContact;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use DateTime;
 
@@ -63,7 +63,7 @@ class TimelineEvent
     private $content;
 
     /**
-     * @var Contact|null
+     * @var TimelineContact|null
      */
     private $contact;
 
@@ -186,18 +186,18 @@ class TimelineEvent
     }
 
     /**
-     * @return Contact|null
+     * @return TimelineContact|null
      */
-    public function getContact(): ?Contact
+    public function getContact(): ?TimelineContact
     {
         return $this->contact;
     }
 
     /**
-     * @param Contact|null $contact
+     * @param TimelineContact|null $contact
      * @return TimelineEvent
      */
-    public function setContact(?Contact $contact): TimelineEvent
+    public function setContact(?TimelineContact $contact): TimelineEvent
     {
         $this->contact = $contact;
         return $this;

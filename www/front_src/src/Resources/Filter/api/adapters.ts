@@ -5,7 +5,8 @@ import useFilterModels from '../useFilterModels';
 
 interface Adapters {
   toFilter: (rawFilter: RawFilter) => Filter;
-  toRawFilter: (filter: Omit<Filter, 'id'>) => Omit<RawFilter, 'id'>;
+  toRawFilter: (filter: Filter) => RawFilter;
+  toFilterWithTranslatedCriterias: (filter: Filter) => Filter;
 }
 
 const useAdapters = (): Adapters => {
@@ -46,11 +47,9 @@ const useAdapters = (): Adapters => {
     };
   };
 
-  const toRawFilter = ({
-    name,
-    criterias,
-  }: Omit<Filter, 'id'>): Omit<RawFilter, 'id'> => {
+  const toRawFilter = ({ id, name, criterias }: Filter): RawFilter => {
     return {
+      id,
       name,
       criterias: [
         {
@@ -89,7 +88,11 @@ const useAdapters = (): Adapters => {
     };
   };
 
-  return { toFilter, toRawFilter };
+  const toFilterWithTranslatedCriterias = (filter): Filter => {
+    return pipe(toRawFilter, toFilter)(filter);
+  };
+
+  return { toFilter, toRawFilter, toFilterWithTranslatedCriterias };
 };
 
 export default useAdapters;

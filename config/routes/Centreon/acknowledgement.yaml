@@ -78,8 +78,8 @@ centreon_application_acknowledgement_findoneacknowledgement:
     controller: 'Centreon\Application\Controller\AcknowledgementController::findOneAcknowledgement'
 
 centreon_application_monitoring_disacknowledge_resources:
-    methods: POST
-    path: /monitoring/resources/disacknowledge
+    methods: DELETE
+    path: /monitoring/resources/acknowledgements
     controller: 'Centreon\Application\Controller\AcknowledgementController::massDisacknowledgeResources'
     condition: "request.attributes.get('version') >= 2.0"
 

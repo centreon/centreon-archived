@@ -18,7 +18,6 @@ export interface Parent {
 
 export interface Status {
   severity_code: number;
-  code: number;
   name: string;
 }
 
@@ -50,6 +49,7 @@ export interface Resource {
   configuration_uri?: string;
   logs_uri?: string;
   reporting_uri?: string;
+  passive_checks: boolean;
 }
 
 export type ResourceListing = ListingModel<Resource>;

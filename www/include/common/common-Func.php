@@ -2219,7 +2219,7 @@ function cleanString($str)
  * @param int $defaultPage User default page
  * @return array The topology information (url, options, name...)
  */
-function getFirstAllowedMenu($lcaTStr, $defaultPage = 104)
+function getFirstAllowedMenu($lcaTStr, $defaultPage)
 {
     global $pearDB;
 
@@ -2235,10 +2235,10 @@ function getFirstAllowedMenu($lcaTStr, $defaultPage = 104)
         "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react "
         . "FROM topology "
         . "WHERE " . (trim($lcaTStr) != "" ? "topology_page IN ({$lcaTStr}) AND " : "")
-        . "topology_page IS NOT NULL AND topology_show = '1' "
+        . "topology_page IS NOT NULL AND topology_show = '1' AND topology_url IS NOT NULL "
         . "ORDER BY FIELD(topology_page, :default_page) DESC, "
         . "FIELD(topology_url_opt, :default_page_options) DESC, "
-        . "topology_id ASC "
+        . "topology_page ASC, topology_id ASC "
         . "LIMIT 1"
     );
 
@@ -2285,15 +2285,15 @@ function get_child($id_page, $lcaTStr)
     global $pearDB;
 
     if ($lcaTStr != "") {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE  topology_page IN ($lcaTStr) 
-                AND topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1' 
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react
+                FROM topology
+                WHERE topology_page IN ($lcaTStr)
+                AND topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1'
                 ORDER BY topology_order, topology_group ";
     } else {
-        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-                FROM topology 
-                WHERE  topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1' 
+        $rq = " SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt, is_react
+                FROM topology
+                WHERE topology_parent = '" . $id_page . "' AND topology_page IS NOT NULL AND topology_show = '1'
                 ORDER BY topology_order, topology_group ";
     }
 

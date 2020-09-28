@@ -28,13 +28,13 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 
 class AcknowledgementService extends AbstractCentreonService implements AcknowledgementServiceInterface
 {
@@ -283,6 +283,48 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
+    public function disacknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
+    {
+        $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+        if (is_null($host)) {
+            throw new EntityNotFoundException(_('Host not found'));
+        }
+
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $this->engineService->disacknowledgeHost($host);
+            if ($ack->isWithServices()) {
+                $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
+                foreach ($services as $service) {
+                    $service->setHost($host);
+                    $this->engineService->disacknowledgeService($service);
+                }
+            }
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $service = $this->monitoringRepository->findOneService(
+                (int)$resource->getParent()->getId(),
+                (int)$resource->getId()
+            );
+            if (is_null($service)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Service %d (parent: %d) not found'),
+                        $resource->getId(),
+                        $resource->getParent()->getId()
+                    )
+                );
+            }
+            $service->setHost($host);
+            $this->engineService->disacknowledgeService($service);
+        } else {
+            throw new ResourceException(
+                sprintf(_('Incorrect Resource type: %s'), $resource->getType())
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
     {
         $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
@@ -315,7 +357,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             $service->setHost($host);
             $this->engineService->addServiceAcknowledgement($ack, $service);
         } else {
-            throw new \Exception(
+            throw new ResourceException(
                 sprintf(_('Incorrect Resource type: %s'), $resource->getType())
             );
         }
