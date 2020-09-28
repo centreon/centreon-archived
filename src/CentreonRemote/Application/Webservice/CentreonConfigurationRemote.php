@@ -346,17 +346,20 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
         // Check IPv6, IPv4 and FQDN format
-        if (!filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) && !filter_var($serverIP, FILTER_VALIDATE_IP)) {
+        if (
+            !filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
+            && !filter_var($serverIP, FILTER_VALIDATE_IP)
+        ) {
             return ['error' => true, 'message' => "Invalid IP address"];
         }
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
 
         /**
-         * Avoid Ip duplication 
+         * Avoid Ip duplication
          */
         $dbAdapter->query('SELECT * FROM `nagios_server` WHERE `ns_ip_address` = ?', [$serverIP]);
         $isInNagios = $dbAdapter->count();
-        if($isInNagios) {
+        if ($isInNagios) {
             throw new Exception('This IP Address already exist');
         }
 
