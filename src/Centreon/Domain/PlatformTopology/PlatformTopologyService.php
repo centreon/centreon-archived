@@ -92,7 +92,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         /**
          * @var PlatformTopology|null $registeredParentInTopology
          */
-        $registeredParentInTopology = $this->searchForParentPlatformAndSetId($platformTopology);
+        $registeredParentInTopology = $this->findParentPlatformAndSetId($platformTopology);
 
         /**
          * The top level platform is defined as a Remote
@@ -396,9 +396,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     }
 
     /**
-     * @inheritDoc
+     * Search for parent platform ID in topology
+     *
+     * @param PlatformTopology $platformTopology
+     * @return PlatformTopology|null
+     * @throws EntityNotFoundException
+     * @throws PlatformTopologyConflictException
      */
-    public function searchForParentPlatformAndSetId(PlatformTopology $platformTopology): ?PlatformTopology
+    private function findParentPlatformAndSetId(PlatformTopology $platformTopology): ?PlatformTopology
     {
         if (null === $platformTopology->getParentAddress()) {
             return null;

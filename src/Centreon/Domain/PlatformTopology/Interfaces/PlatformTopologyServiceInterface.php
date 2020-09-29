@@ -63,14 +63,4 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformTopologyConflictException
      */
     public function checkForAlreadyRegisteredSameNameOrAddress(PlatformTopology $platformTopology): void;
-
-    /**
-     * Search for parent platform ID in topology
-     *
-     * @param PlatformTopology $platformTopology
-     * @return PlatformTopology|null
-     * @throws EntityNotFoundException
-     * @throws PlatformTopologyConflictException
-     */
-    public function searchForParentPlatformAndSetId(PlatformTopology $platformTopology): ?PlatformTopology;
 }
