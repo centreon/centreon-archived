@@ -15533,7 +15533,7 @@ msgid "The name of the platform is not consistent"
 msgstr "Le nom de cette plateforme n'est pas cohérent"
 
 #: api/topology/register
-msgid "The address of '%s' is not valid"
+msgid "The address %s' is not valid"
 msgstr "L'adresse '%s' n'est pas valide"
 
 #: api/topology/register
