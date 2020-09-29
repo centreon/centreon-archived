@@ -195,10 +195,29 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
      * @inheritDoc
      */
-    public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void
+    public function changeActivationStatus(Host $host, bool $shouldBeActivated): void
     {
         try {
-            $this->hostConfigurationRepository->changeActivationStatus($hostId, $shouldBeActivated);
+            if ($host->getId() === null) {
+                throw new HostConfigurationException(_('Host id can not be null'));
+            }
+            $loadedHost = $this->findHost($host->getId());
+            if ($loadedHost === null) {
+                throw new HostConfigurationException(sprintf(_('Host %d not found'), $host->getId()));
+            }
+
+            $this->hostConfigurationRepository->changeActivationStatus($loadedHost->getId(), $shouldBeActivated);
+            $this->actionLogService->addLog(
+            // The userId is set to 0 because it is not yet possible to determine who initiated the action.
+            // We will see later how to get it back.
+                new ActionLog(
+                    'host',
+                    $host->getId(),
+                    $host->getName(),
+                    $shouldBeActivated ? ActionLog::ACTION_TYPE_ENABLE : ActionLog::ACTION_TYPE_DISABLE,
+                    0
+                )
+            );
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(
                 sprintf(
