@@ -279,7 +279,19 @@ class EngineService extends AbstractCentreonService implements
         try {
             return $this->engineConfigurationRepository->findEngineConfigurationByHost($host);
         } catch (\Throwable $ex) {
-            throw new EngineException(_('Error when searching for the Engine configuration'), 0, $ex);
+            throw new EngineException(_('Error while searching for the monitoring engine configuration'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findEngineConfigurationByName(string $engineName): ?EngineConfiguration
+    {
+        try {
+            return $this->engineConfigurationRepository->findEngineConfigurationByName($engineName);
+        } catch (\Throwable $ex) {
+            throw new EngineException(_('Error while searching for the monitoring engine configuration'), 0, $ex);
         }
     }
 

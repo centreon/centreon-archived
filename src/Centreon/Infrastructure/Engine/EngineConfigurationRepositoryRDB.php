@@ -81,4 +81,29 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
         }
         return null;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findEngineConfigurationByName(string $engineName): ?EngineConfiguration
+    {
+        $request = $this->translateDbName(
+            'SELECT cfg.* FROM `:db`.cfg_nagios cfg
+            INNER JOIN `:db`.nagios_server server
+                ON server.id = cfg.nagios_server_id
+            WHERE server.name = :engine_name'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':engine_name', $engineName, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if (($records = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return (new EngineConfiguration())
+                ->setId((int) $records['nagios_id'])
+                ->setName($records['nagios_name'])
+                ->setIllegalObjectNameCharacters($records['illegal_object_name_chars'])
+                ->setMonitoringServerId((int) $records['nagios_server_id']);
+        }
+        return null;
+    }
 }

@@ -14999,7 +14999,7 @@ msgstr "L'alias du contact est vide"
 #:Centreon/Domain/Engine/EngineService.php:266
 #:Centreon/Domain/Engine/EngineService.php:316
 #:Centreon/Domain/HostConfiguration/HostConfigurationService.php:47
-msgid "Host name can not be empty"
+msgid "Host name cannot be empty"
 msgstr "Le nom d'hôte ne peut être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:105
@@ -15031,10 +15031,6 @@ msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
 #:Centreon/Domain/Engine/EngineService.php:289
 msgid "Downtime internal id can not be null"
 msgstr "L'ID interne de la plage de maintenance ne peut pas être null"
-
-#:Centreon/Domain/Engine/EngineService.php:355
-msgid "Host name cannot be empty"
-msgstr "Le nom d'hôte ne peut pas être vide"
 
 #:Centreon/Domain/Engine/EngineService.php:359
 msgid "Service description cannot be empty"
@@ -15510,6 +15506,7 @@ msgstr "Configurer"
 
 msgid "View report"
 msgstr "Voir le rapport"
+
 msgid "An error occurred while retrieving users linked to ViewId on database"
 msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs liés à ViewId"
 
@@ -15536,3 +15533,12 @@ msgstr "Cet hôte n'est pas un modèle d'hôte"
 
 msgid "Error when searching for host and related service templates"
 msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
+
+msgid "Error while searching for the monitoring server %s"
+msgstr "Erreur lors de la recherche du serveur de supervision %s"
+
+msgid "Error while searching for the monitoring engine configuration"
+msgstr "Erreur lors de la recherche de la configuration du moteur de supervision"
+
+msgid "Ip address cannot be empty"
+msgstr "L'adresse Ip ne peut pas être vide"
