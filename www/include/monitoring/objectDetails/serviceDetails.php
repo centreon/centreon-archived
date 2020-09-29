@@ -838,6 +838,18 @@ if (!is_null($host_id)) {
         $deprecationMessage = _('[Page deprecated] Please use the new page: ');
         $redirectionUrl = $resourceController->buildServiceDetailsUri($host_id, $service_id);
 
+        // Check if central or remote server
+        $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+        $result = $DBRESULT->fetchRow();
+        if ($result === false) {
+            $isRemote = false;
+        } else {
+            $result = array_map("myDecode", $result);
+            $isRemote = ($result['value'] === 'yes');
+        }
+        $DBRESULT->closeCursor();
+        $tpl->assign("isRemote", $isRemote);
+
         $tpl->display("serviceDetails.ihtml");
     }
 } else {

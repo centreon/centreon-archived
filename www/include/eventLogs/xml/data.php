@@ -159,6 +159,11 @@ foreach ($inputArguments as $argumentName => $argumentValue) {
     }
 }
 
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
+
 // Start XML document root
 $buffer = new CentreonXML();
 $buffer->startElement("root");
@@ -877,8 +882,20 @@ if (isset($req) && $req) {
             }
             $buffer->writeElement("service_description", $log["service_description"], false);
             $buffer->writeElement("real_service_name", $log["service_description"], false);
+            $buffer->writeElement(
+                "s_timeline_uri",
+                $resourceController->buildServiceUri(
+                    $log['host_id'],
+                    $log['service_id'],
+                    $resourceController::TAB_TIMELINE_NAME
+                )
+            );
         }
         $buffer->writeElement("real_name", $log["host_name"], false);
+        $buffer->writeElement(
+            "h_timeline_uri",
+            $resourceController->buildHostUri($log['host_id'], $resourceController::TAB_TIMELINE_NAME)
+        );
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
         $buffer->writeElement("poller", $log["instance_name"]);
         $buffer->writeElement("date", $log["ctime"]);

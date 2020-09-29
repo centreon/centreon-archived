@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `user_filter` (
 
 -- Rename and move events view menu
 UPDATE `topology` SET `topology_name` = 'Resources Status', `topology_url` = '/monitoring/resources', `topology_parent` = 2, `topology_page` = 200 WHERE `topology_page` = 104;
-UPDATE `contact` SET `default_page` = 200 WHERE `default_page` = 104;
+UPDATE `contact` SET `default_page` = 200 WHERE `default_page` = 104 OR `default_page` IS NULL;
 
 -- Add deprecation column in topology
 ALTER TABLE `topology` ADD COLUMN `is_deprecated` enum('0','1') NOT NULL DEFAULT '0' AFTER `topology_show`;

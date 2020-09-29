@@ -7,11 +7,16 @@ import {
   getData,
 } from '@centreon/ui';
 
-import { isNil } from 'ramda';
+import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
+import { useTranslation } from 'react-i18next';
 import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
 import { TabId } from './tabs/models';
 import { DetailsUrlQueryParameters, ResourceDetails } from './models';
 import { resourcesEndpoint } from '../api/endpoint';
+import {
+  labelNoResourceFound,
+  labelSomethingWentWrong,
+} from '../translatedLabels';
 
 export interface DetailsState {
   clearSelectedResource: () => void;
@@ -53,8 +58,15 @@ const useDetails = (): DetailsState => {
   ] = React.useState<string>();
   const [details, setDetails] = React.useState<ResourceDetails>();
 
+  const { t } = useTranslation();
+
   const { sendRequest } = useRequest<ResourceDetails>({
     request: getData,
+    getErrorMessage: ifElse(
+      pathEq(['response', 'status'], 404),
+      always(t(labelNoResourceFound)),
+      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+    ),
   });
 
   React.useEffect(() => {
@@ -107,25 +119,29 @@ const useDetails = (): DetailsState => {
     return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
   };
 
-  const loadDetails = (): void => {
-    if (isNil(selectedResourceId)) {
-      return;
-    }
-
-    sendRequest(getSelectedResourceDetailsEndpoint()).then(setDetails);
-  };
-
-  React.useEffect(() => {
-    setDetails(undefined);
-    loadDetails();
-  }, [selectedResourceId]);
-
   const clearSelectedResource = (): void => {
     setSelectedResourceId(undefined);
     setSelectedResourceParentId(undefined);
     setSelectedResourceParentType(undefined);
     setSelectedResourceType(undefined);
   };
+
+  const loadDetails = (): void => {
+    if (isNil(selectedResourceId)) {
+      return;
+    }
+
+    sendRequest(getSelectedResourceDetailsEndpoint())
+      .then(setDetails)
+      .catch(() => {
+        clearSelectedResource();
+      });
+  };
+
+  React.useEffect(() => {
+    setDetails(undefined);
+    loadDetails();
+  }, [selectedResourceId]);
 
   return {
     clearSelectedResource,

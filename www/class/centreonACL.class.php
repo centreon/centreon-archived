@@ -443,7 +443,7 @@ class CentreonACL
         }
         $this->checkTopology();
     }
-    
+
     /**
      * Use to check and fix if in the topology, a parent has access rights that
      * can be higher than children when they have the same endpoint.
@@ -457,7 +457,7 @@ class CentreonACL
             $getFirstChildPerLvl = function (array $topologies): array {
                 ksort($topologies, \SORT_ASC);
                 $parentsLvl = [];
-                
+
                 // Classify topologies by parents
                 foreach (array_keys($topologies) as $page) {
                     if (strlen($page) == 1) {
@@ -489,7 +489,7 @@ class CentreonACL
                         }
                     }
                 }
-                
+
                 /**
                  * We keep the first lvl3 child by lvl1.
                  * In this way, we keep the first child available for each parent
@@ -503,12 +503,14 @@ class CentreonACL
                             unset($parentsLvl[$parentLvl1][$parentLvl2]);
                             continue;
                         }
+                        if (empty($childrenLvl3)) {
+                            continue;
+                        }
                         // First reading
                         ksort($childrenLvl3);
                         // We keep the tree of the first child
-                        $parentsLvl[$parentLvl1][$parentLvl2] = is_array($childrenLvl3)
-                            ? array_slice($childrenLvl3, 0, 1, true)[0]
-                            : $childrenLvl3;
+
+                        $parentsLvl[$parentLvl1][$parentLvl2] = array_slice($childrenLvl3, 0, 1, true)[0];
                         /**
                          * The first child has been processed so we set TRUE
                          * to delete all the following children
@@ -518,13 +520,15 @@ class CentreonACL
                 }
                 return $parentsLvl;
             };
-            
+
             $parentsLvl = $getFirstChildPerLvl($this->topology);
-            
+
             // We fix topologies according to filter
             foreach ($parentsLvl as $parentLvl1 => $childrenLvl2) {
                 foreach ($childrenLvl2 as $parentLvl2 => $childrenLvl3) {
-                    if (isset($this->topology[$childrenLvl3])
+                    if (
+                        !empty($childrenLvl3)
+                        && isset($this->topology[$childrenLvl3])
                         && isset($this->topology[$parentLvl2])
                         && $this->topology[$childrenLvl3] > $this->topology[$parentLvl2]
                     ) {
@@ -535,7 +539,8 @@ class CentreonACL
                          */
                         $this->topology[$parentLvl2] = $this->topology[$childrenLvl3];
                     }
-                    if (isset($this->topology[$parentLvl2])
+                    if (
+                        isset($this->topology[$parentLvl2])
                         && isset($this->topology[$parentLvl1])
                         && $this->topology[$parentLvl2] > $this->topology[$parentLvl1]
                     ) {

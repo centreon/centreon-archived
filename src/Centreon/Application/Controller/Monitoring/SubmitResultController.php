@@ -154,7 +154,7 @@ class SubmitResultController extends AbstractController
          * If user has no rights to submit result for host and/or service
          * return view with unauthorized HTTP header response
          */
-        if (!$this->hasSubmitResultRightsForResources($contact, $results)) {
+        if (!$this->hasSubmitResultRightsForResources($contact, $results['resources'])) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 

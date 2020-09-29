@@ -115,7 +115,6 @@ describe(Listing, () => {
     });
 
     mockedAxios.get
-      .mockResolvedValueOnce({ data: retrievedListing })
       .mockResolvedValueOnce({
         data: {
           result: [],
@@ -125,7 +124,8 @@ describe(Listing, () => {
             total: 0,
           },
         },
-      });
+      })
+      .mockResolvedValueOnce({ data: retrievedListing });
   });
 
   afterEach(() => {

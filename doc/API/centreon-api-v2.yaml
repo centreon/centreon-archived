@@ -3640,6 +3640,11 @@ components:
           nullable: true
           description: "Indicates whether active checks are enabled"
           example: true
+        passive_checks:
+          type: boolean
+          nullable: true
+          description: "Indicates whether passive checks are enabled"
+          example: true
     Monitoring.ResourceLinks:
       type: object
       properties:

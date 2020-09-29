@@ -203,20 +203,27 @@
         var selectedValues = [];
 
         if (e.params.args.hasOwnProperty('originalEvent') &&
-            e.params.args.originalEvent !== undefined &&
-            e.params.args.originalEvent.shiftKey) {
-          e.preventDefault();
+            e.params.args.originalEvent !== undefined) {
+          if (e.params.args.originalEvent.shiftKey) {
+            e.preventDefault();
 
-          /* The not element already selected */
-          if (self.events.shiftFirstEl === null) {
-            self.events.shiftFirstEl = e.params.args.data.id;
+            /* The not element already selected */
+            if (self.events.shiftFirstEl === null) {
+              self.events.shiftFirstEl = e.params.args.data.id;
+            } else {
+              endSelection = e.params.args.data.id;
+              selectedValues = self.getShiftSelected(endSelection);
+
+              self.unselectElements(selectedValues);
+              self.$elem.select2('close');
+              self.events.shiftFirstEl = null;
+            }
           } else {
-            endSelection = e.params.args.data.id;
-            selectedValues = self.getShiftSelected(endSelection);
-
+            selectedValues.push({
+              id: e.params.args.data.id,
+              text: e.params.args.data.text
+            });
             self.unselectElements(selectedValues);
-            self.$elem.select2('close');
-            self.events.shiftFirstEl = null;
           }
         }
       });
@@ -358,6 +365,14 @@
      */
     confirmSelectAll: function () {
       var self = this;
+
+      if (self.confirmBox !== null) {
+        self.confirmBox.centreonPopin('open');
+        return;
+      }
+
+      self.extendedAction = true;
+
       var $validButton = $('<button>')
           .addClass('btc bt_success')
           .attr('type', 'button')
@@ -370,12 +385,6 @@
           .addClass('close')
           .css('cursor', 'pointer')
           .append('<img src="./img/icons/circle-cross.png" class="ico-18">');
-
-      if (self.confirmBox !== null) {
-        return;
-      }
-
-      self.extendedAction = true;
 
       /* Open popin */
       self.confirmBox = $('<div>')
@@ -430,11 +439,7 @@
       /* Open the popin */
       self.confirmBox.centreonPopin(
           {
-            open: true,
-            onClose: function () {
-              self.confirmBox.remove();
-              self.confirmBox = null;
-            }
+            open: true
           }
       );
     },
@@ -688,22 +693,6 @@
 
   CentreonSelect2.prototype = {
     /**
-     * Action add nice scroll
-     */
-    addNiceScroll: function () {
-      this.internal.niceScroll = this.internal.$elem.next('.select2-container')
-          .find('ul.select2-selection__rendered')
-          .niceScroll(
-              {
-                cursorcolor: '#818285',
-                cursoropacitymax: 0.6,
-                cursorwidth: 3,
-                horizrailenabled: true,
-                autohidemode: true
-              }
-          );
-    },
-    /**
      * Action remove nice scroll
      */
     removeNiceScroll: function () {
@@ -713,6 +702,7 @@
      * Destroy the element
      */
     destroy: function () {
+      this.removeNiceScroll();
       this.internal.$elem.select2('destroy');
       this.internal.$elem.removeData('centreonSelect2');
     },
@@ -743,7 +733,6 @@
 
       if (!data) {
         $this.data("centreonSelect2", ( data = new CentreonSelect2(settings, $this)));
-        data.addNiceScroll();
       }
 
       if (typeof options === "string") {

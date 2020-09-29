@@ -20,26 +20,53 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Engine\Interfaces;
+namespace Centreon\Domain\Monitoring\Timeline;
 
-use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\HostConfiguration\Host;
-
-interface EngineConfigurationRepositoryInterface
+class TimelineContact
 {
     /**
-     * Find the Engine configuration associated to a host.
-     *
-     * @param Host $host Host for which we want to find the Engine configuration
-     * @return EngineConfiguration|null
+     * @var int|null Id of contact
      */
-    public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration;
+    private $id;
 
     /**
-     * Find the Engine configuration by its name.
-     *
-     * @param string $engineName Name of Engine configuration
-     * @return EngineConfiguration|null
+     * @var string Name of contact
      */
-    public function findEngineConfigurationByName(string $engineName): ?EngineConfiguration;
+    private $name;
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return self
+     */
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
 }
