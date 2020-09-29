@@ -137,7 +137,7 @@ class PlatformTopologyController extends AbstractController
                     throw new PlatformTopologyConflictException(
                         sprintf(
                             _("Same address and parent_address for platform : '%s'@'%s'."),
-                        $platformTopology->getName(),
+                            $platformTopology->getName(),
                             $platformTopology->getAddress()
                         )
                     );
