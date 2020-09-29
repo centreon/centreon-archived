@@ -101,7 +101,7 @@ class PlatformTopology
         if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    _("The address of '%s' is not valid"),
+                    _("The address '%s' is not valid"),
                     $this->getName()
                 )
             );
