@@ -133,7 +133,7 @@ class PlatformTopology
      * data retrieved from 'informations' table
      * @var bool SSL peer validation activated
      */
-    private $apiPeerValidationActivated = false;
+    private $sslPeerValidationRequired = false;
 
     /**
      * data retrieved from 'options' table
@@ -557,18 +557,18 @@ class PlatformTopology
     /**
      * @return bool
      */
-    public function getApiPeerValidationActivated(): bool
+    public function isSslPeerValidationRequired(): bool
     {
-        return $this->apiPeerValidationActivated;
+        return $this->sslPeerValidationRequired;
     }
 
     /**
      * @param bool $status
      * @return $this
      */
-    public function setApiPeerValidationActivated(bool $status): self
+    public function setSslPeerValidationRequired(bool $status): self
     {
-        $this->apiPeerValidationActivated = $status;
+        $this->sslPeerValidationRequired = $status;
         return $this;
     }
 

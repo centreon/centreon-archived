@@ -200,7 +200,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
                     ->setApiScheme($result['apiScheme'] ?? null)
                     ->setApiPort(isset($result['apiPort']) ? (int) $result['apiPort'] : null)
                     ->setApiPath($result['apiPath'] ?? null)
-                    ->setApiPeerValidationActivated('yes' === $result['apiPeerValidation']);
+                    ->setSslPeerValidationRequired('yes' === $result['apiPeerValidation']);
             }
         }
 
