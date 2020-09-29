@@ -20,7 +20,6 @@
  */
 
 
-
 /**
  * Ask question. The echo of keyboard can be disabled
  *
@@ -67,26 +66,47 @@ function registerRemote(string $ip, array $loginCredentials): array
     $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
     $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
 
-    //hide menu
-    $topologyRepository->disableMenus();
+    $statement = $db->query("
+        SELECT COUNT(*) as `total` FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'
+    ");
+    $result = $statement->fetch(\PDO::FETCH_ASSOC);
+    $isRemote = (int) $result['total'];
+    if ($isRemote === 0) {
+        require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
+        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
+        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
+        $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
+        $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
+        //hide menu
+        $topologyRepository->disableMenus();
 
-    //register remote in db
-    $informationRepository->toggleRemote('yes');
+        //register remote in db
+        $informationRepository->toggleRemote('yes');
 
-    //register master in db
-    $informationRepository->authorizeMaster($ip);
+        //register master in db
+        $informationRepository->authorizeMaster($ip);
 
-    //register credentials
-    registerCentralCredentials($db, $loginCredentials);
+        //Apply Remote Server mode in configuration file
+        system(
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+        );
+    }
 
-    //Apply Remote Server mode in configuration file
-    system(
-        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
-    );
-
-
-    //update platform_topology type
-    $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
+    try {
+        $db->beginTransaction();
+        //register credentials
+        registerCentralCredentials($db, $loginCredentials);
+        //update platform_topology type
+        $db->query("UPDATE `platform_topology` SET `type` = 'remote' WHERE `type` = 'central'");
+        $db->commit();
+        //Apply Remote Server mode in configuration file
+        system(
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+        );
+    } catch (\PDOException $e) {
+        $db->rollBack();
+        throw $e;
+    }
 
     // return children
     return getChildren($db);
@@ -125,18 +145,77 @@ function getChildren(CentreonDB $db): array
     return $registerChildren;
 }
 
-
 /**
  * @param CentreonDB $db
  * @param array $loginCredentials
  */
 function registerCentralCredentials(CentreonDB $db, array $loginCredentials): void
 {
-    $query = "INSERT INTO `informations` (`key`, `value`) VALUES ('apiUsername', :username), ('apiCredentials', :pwd)";
+    $queryValues = [];
+    $count = 1;
+    $bindValues = [];
+    $proxyCredentials = $loginCredentials['proxy_informations'] ?? [];
+    $loginCredentials = array_filter($loginCredentials, function ($key) {
+        return $key !== 'proxy_informations';
+    }, ARRAY_FILTER_USE_KEY);
+    foreach ($loginCredentials as $key => $value) {
+        $queryValues[] = " ('$key', :$key)";
+        $count++;
+        switch ($key) {
+            case 'apiPort':
+                $bindValues[':' . $key] = [
+                    \PDO::PARAM_INT => $value
+                ];
+                break;
+            default:
+                $bindValues[':' . $key] = [
+                    \PDO::PARAM_STR => $value
+                ];
+                break;
+        }
+    }
+    $db->query("DELETE FROM informations WHERE `key` LIKE 'api%'");
+    $query = "INSERT INTO `informations` (`key`, `value`) VALUES " . implode(',', $queryValues);
     $statement = $db->prepare($query);
-    $statement->bindValue(':username', $loginCredentials['login'], \PDO::PARAM_STR);
-    $statement->bindValue(':pwd', $loginCredentials['password'], \PDO::PARAM_STR);
+    foreach ($bindValues as $token => $bindParams) {
+        foreach ($bindParams as $paramType => $paramValue) {
+            $statement->bindValue($token, $paramValue, $paramType);
+        }
+    }
     $statement->execute();
+
+    if (!empty($proxyCredentials)) {
+        $queryValues = [];
+        $count = 1;
+        $bindProxyValues = [];
+        foreach ($proxyCredentials as $key => $value) {
+            $queryValues[] = " ('$key', :$key)";
+            $count++;
+            switch ($key) {
+                case 'proxy_port':
+                    $bindProxyValues[':' . $key] = [
+                        \PDO::PARAM_INT => $value
+                    ];
+                    break;
+                default:
+                    $bindProxyValues[':' . $key] = [
+                        \PDO::PARAM_STR => $value
+                    ];
+                    break;
+            }
+        }
+
+        $db->query("DELETE FROM options WHERE `key` LIKE 'proxy_%'");
+        $query = "INSERT INTO `options` (`key`, `value`) VALUES " . implode(',', $queryValues);
+
+        $statement = $db->prepare($query);
+        foreach ($bindProxyValues as $token => $bindParams) {
+            foreach ($bindParams as $paramType => $paramValue) {
+                $statement->bindValue($token, $paramValue, $paramType);
+            }
+        }
+        $statement->execute();
+    }
 }
 
 /**
