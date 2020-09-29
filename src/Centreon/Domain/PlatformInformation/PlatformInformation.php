@@ -36,49 +36,41 @@ class PlatformInformation
     private $isLinkedToAnotherServer = false;
 
     /**
-     * data retrieved from 'informations' table
      * @var bool platform type
      */
     private $isRemote = false;
 
     /**
-     * data retrieved from 'informations' table
      * @var string|null central's address
      */
     private $authorizedMaster;
 
     /**
-     * data retrieved from 'informations' table
      * @var string|null
      */
     private $apiUsername;
 
     /**
-     * data retrieved from 'informations' table
      * @var string|null
      */
     private $apiCredentials;
 
     /**
-     * data retrieved from 'informations' table
      * @var string|null
      */
     private $apiScheme;
 
     /**
-     * data retrieved from 'informations' table
      * @var int|null
      */
     private $apiPort;
 
     /**
-     * data retrieved from 'informations' table
      * @var string|null
      */
     private $apiPath;
 
     /**
-     * data retrieved from 'informations' table
      * @var bool SSL peer validation activated
      */
     private $sslPeerValidationRequired = false;

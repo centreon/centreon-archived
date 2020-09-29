@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
@@ -177,7 +178,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findPlatformInformation(): ?PlatformTopology
+    public function findPlatformInformation(): ?PlatformInformation
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -185,15 +186,15 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             ')
         );
         $result = [];
-        $platformTopology = null;
+        $platformInformation = null;
         if ($statement->execute()) {
             while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
                 $result[$row['key']] = $row['value'];
             }
 
             if (!empty($result)) {
-                $platformTopology = new PlatformTopology();
-                $platformTopology
+                $platformInformation = new PlatformInformation();
+                $platformInformation
                     ->setIsRemote('yes' === $result['isRemote'])
                     ->setAuthorizedMaster($result['authorizedMaster'] ?? null)
                     ->setApiUsername($result['apiUsername'] ?? null)
@@ -205,7 +206,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             }
         }
 
-        return $platformTopology;
+        return $platformInformation;
     }
 
     /**

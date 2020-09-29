@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
+use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\Proxy\Proxy;
@@ -75,10 +76,10 @@ interface PlatformTopologyRepositoryInterface
     /**
      * Retrieve all data from 'information' table
      *
-     * @return PlatformTopology|null
-     * @throws PlatformTopologyException
+     * @return PlatformInformation|null
+     * @throws PlatformInformation Exception
      */
-    public function findPlatformInformation(): ?PlatformTopology;
+    public function findPlatformInformation(): ?PlatformInformation;
 
     /**
      * Retrieve all data from 'options' table
