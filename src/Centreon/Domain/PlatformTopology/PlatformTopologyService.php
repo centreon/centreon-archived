@@ -200,7 +200,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 // Central's API endpoints base path
                 $baseApiEndpoint = $platformInformation->getApiScheme() . '://' .
                     $platformInformation->getAuthorizedMaster() . ':' . $platformInformation->getApiPort() . '/' .
-                    $platformInformation->getApiPath() . '/api/latest/';
+                    $platformInformation->getApiPath() . '/api/v2.0/';
 
                 // Enable specific options
                 $optionPayload = [];
@@ -275,8 +275,20 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
 
                 // Get request status code and error message
-                $statusCode = $registerResponse->getStatusCode();
                 $returnedMessage = json_decode($registerResponse->getContent(false), true);
+                if (201 !== $registerResponse->getStatusCode()) {
+                    $errorMessage = sprintf(
+                        _("The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    );
+                    if (!empty($returnedMessage)) {
+                        $errorMessage .= "  /  " . _("Central's response => Code : ") . implode(', ', $returnedMessage);
+                    }
+                    throw new PlatformTopologyConflictException(
+                        $errorMessage
+                    );
+                }
             } catch (TransportExceptionInterface $e) {
                 throw new PlatformTopologyException(
                     _("Request to the Central's API failed : ") . $e->getMessage()
@@ -304,21 +316,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
         }
 
-        if (isset($statusCode) && 201 !== $statusCode && true === $platformTopology->isLinkedToAnotherServer()) {
-            $errorMessage = sprintf(
-                _("The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"),
-                $platformTopology->getName(),
-                $platformTopology->getAddress()
-            );
-            if (!empty($returnedMessage)) {
-                $errorMessage .= "  /  " . _("Central's response => Code : ") . implode(', ', $returnedMessage);
-            }
-            throw new PlatformTopologyConflictException(
-                $errorMessage
-            );
-        }
-
-        // Insert the platform into 'platform_topology' table
+        /*
+         * Insert the platform into 'platform_topology' table
+         */
         try {
             // add the new platform
             $this->platformTopologyRepository->addPlatformToTopology($platformTopology);
