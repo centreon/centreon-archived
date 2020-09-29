@@ -24,6 +24,7 @@ namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\Proxy\Proxy;
 
 interface PlatformTopologyRepositoryInterface
 {
@@ -82,8 +83,8 @@ interface PlatformTopologyRepositoryInterface
     /**
      * Retrieve all data from 'options' table
      *
-     * @return PlatformTopology|null
-     * @throws PlatformTopologyException
+     * @return Proxy|null
+     * @throws \Exception
      */
-    public function findPlatformProxy(): ?PlatformTopology;
+    public function findPlatformProxy(): ?Proxy;
 }

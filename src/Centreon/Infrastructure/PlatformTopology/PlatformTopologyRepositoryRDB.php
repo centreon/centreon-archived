@@ -26,6 +26,7 @@ use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\Proxy\Proxy;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
@@ -210,7 +211,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findPlatformProxy(): ?PlatformTopology
+    public function findPlatformProxy(): ?Proxy
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -218,22 +219,24 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             ')
         );
         $result = [];
-        $platformTopology = null;
+        $platformProxy = null;
         if ($statement->execute()) {
             while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                $result[$row['key']] = $row['value'];
+                $key = str_replace('proxy_', '', $row['key']);
+                $result[$key] = $row['value'];
             }
 
             if (!empty($result)) {
-                $platformTopology = new PlatformTopology();
-                $platformTopology
-                    ->setProxyUrl($result['proxy_url'] ?? null)
-                    ->setProxyPort(isset($result['proxy_port']) ? (int) $result['proxy_port'] : null)
-                    ->setProxyUsername($result['proxy_user'] ?? null)
-                    ->setProxyCredentials($result['proxy_password'] ?? null);
+                /**
+                 * @var Proxy $platformProxy
+                 */
+                $platformProxy = EntityCreator::createEntityByArray(
+                    Proxy::class,
+                    $result
+                );
             }
         }
 
-        return $platformTopology;
+        return $platformProxy;
     }
 }

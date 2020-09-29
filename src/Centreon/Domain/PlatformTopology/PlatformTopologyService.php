@@ -25,6 +25,7 @@ namespace Centreon\Domain\PlatformTopology;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Proxy\Proxy;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -169,28 +170,15 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
 
             /**
-             * Getting data from 'options' table and checking consistency
-             * @var PlatformTopology|null $platformOptions
+             * Getting platform proxy data
+             * @var Proxy|null $proxy
              */
-            $platformOptions = $this->platformTopologyRepository->findPlatformProxy();
+            $proxy = $this->platformTopologyRepository->findPlatformProxy();
 
-            $proxy = '';
-            if (null !== $platformOptions) {
-                if (null === $platformOptions->getProxyUrl()) {
-                    throw new \InvalidArgumentException(
-                        _("Invalid proxy URL. Please check the parameters set in 'Centreon UI' form")
-                    );
-                }
-                if (null === $platformOptions->getProxyPort()) {
-                    throw new \InvalidArgumentException(
-                        _("Invalid proxy port. Please check the parameters set in 'Centreon UI' form")
-                    );
-                }
-
-                $proxy .= 'socks5://' . ($platformOptions->getProxyUsername() ?? '') .
-                    ':' . ($platformOptions->getProxyCredentials() ?? '') .
-                    '@' . $platformOptions->getProxyUrl() .
-                    ":" . $platformOptions->getProxyPort();
+            if (null !== $proxy && null === $proxy->getUrl()) {
+                throw new \InvalidArgumentException(
+                    _("Invalid proxy URL. Please check the parameters set in 'Centreon UI' form")
+                );
             }
 
             /**
@@ -205,8 +193,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 // Enable specific options
                 $optionPayload = [];
                 // Enable proxy
-                if (!empty($proxy)) {
-                    $optionPayload['proxy'] = $proxy;
+                if (null !== $proxy && !empty($proxy->__toString())) {
+                    $optionPayload['proxy'] = $proxy->__toString();
                 }
                 // SSL verify_peer
                 if ($platformInformation->isSslPeerValidationRequired()) {

@@ -15652,6 +15652,10 @@ msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à c
 msgid "Central's response => Code : "
 msgstr "Response du Central => Code : "
 
+#: api/topology/register
+msgid "Invalid proxy URL. Please check the parameters set in 'Centreon UI' form"
+msgstr "L'URL du proxy n'est pas valide. Veuillez vérifier le formulaire 'Centreon web'"
+
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
