@@ -139,7 +139,7 @@ class PlatformTopologyControllerTest extends TestCase
         $this->expectException(PlatformTopologyException::class);
         $this->expectExceptionMessage('conflict');
         $this->expectExceptionCode(Response::HTTP_CONFLICT);
-        $platformTopologyController->addPlatformToTopology($this->request);
+        $view = $platformTopologyController->addPlatformToTopology($this->request);
         $this->assertEquals(
             $view,
             View::create(['message' => 'conflict'], Response::HTTP_CONFLICT)
