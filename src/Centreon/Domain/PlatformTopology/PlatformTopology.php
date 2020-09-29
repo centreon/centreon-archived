@@ -29,7 +29,7 @@ namespace Centreon\Domain\PlatformTopology;
 class PlatformTopology
 {
     public const TYPE_CENTRAL = 'central';
-    private const TYPE_POLLER = 'poller';
+    public const TYPE_POLLER = 'poller';
     public const TYPE_REMOTE = 'remote';
     private const TYPE_MAP = 'map';
     private const TYPE_MBI = 'mbi';

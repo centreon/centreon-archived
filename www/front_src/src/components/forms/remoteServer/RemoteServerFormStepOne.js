@@ -43,12 +43,17 @@ class RemoteServerFormStepOne extends Component {
     const { initialized } = this.state;
     if (waitList && !initialized) {
       this.initializeFromRest(waitList.length > 0);
-      // this.initializeFromRest(true);//set to true of false if abandon the upper case condition
     }
     this.setState({
       initialized: true,
       centreon_folder: '/centreon/',
     });
+  };
+
+  handleChange = (e, value) => {
+    const { waitList, change } = this.props;
+    const platform = waitList.find((server) => server.ip === value);
+    change('server_name', platform.server_name);
   };
 
   render() {
@@ -153,6 +158,7 @@ class RemoteServerFormStepOne extends Component {
                 {waitList ? (
                   <Field
                     name="server_ip"
+                    onChange={this.handleChange}
                     component={SelectField}
                     label={`${t('Select Pending Remote Links')}:`}
                     required
@@ -164,7 +170,7 @@ class RemoteServerFormStepOne extends Component {
                         value: '',
                       },
                     ].concat(
-                      waitList.map((c) => ({ value: c.id, text: c.ip })),
+                      waitList.map((c) => ({ value: c.ip, text: c.ip })),
                     )}
                   />
                 ) : null}

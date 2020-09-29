@@ -2,9 +2,10 @@
 
 namespace CentreonRemote\Application\Webservice;
 
-use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
+use Centreon\Domain\PlatformTopology\PlatformTopology;
+use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
 
 /**
  * @OA\Tag(name="centreon_configuration_remote", description="")
@@ -66,7 +67,25 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetWaitList(): array
     {
-        $statement = $this->pearDB->query('SELECT ip, version FROM `remote_servers` WHERE `is_connected` = 0');
+        $statement = $this->pearDB->query('
+            SELECT id, address as ip, name as server_name FROM `platform_topology`
+            WHERE `type` = "remote" AND server_id IS NULL
+        ');
+
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Get Pollers servers waitlist
+     *
+     * @return array
+     */
+    public function postGetPollerWaitList(): array
+    {
+        $statement = $this->pearDB->query('
+            SELECT id, address as ip, name as server_name FROM `platform_topology`
+            WHERE `type` = "poller" AND server_id IS NULL
+        ');
 
         return $statement->fetchAll();
     }
@@ -327,11 +346,27 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
         // Check IPv6, IPv4 and FQDN format
-        if (!filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) && !filter_var($serverIP, FILTER_VALIDATE_IP)) {
+        if (
+            !filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
+            && !filter_var($serverIP, FILTER_VALIDATE_IP)
+        ) {
             return ['error' => true, 'message' => "Invalid IP address"];
         }
-
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+
+        /**
+         * Avoid Ip duplication
+         */
+        $statement = $this->pearDB->prepare(
+            'SELECT COUNT(*) as `total` FROM `nagios_server` WHERE `ns_ip_address` = :serverIp'
+        );
+        $statement->bindValue(':serverIp', $serverIP, \PDO::PARAM_STR);
+        $statement->execute();
+        $isInNagios = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ((int) $isInNagios['total'] > 0) {
+            throw new \Exception(_('This IP Address already exist'));
+        }
+
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
         $dbAdapter->query($sql, [$serverIP]);
         $hasIpInTable = (bool) $dbAdapter->count();
@@ -422,8 +457,15 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 $noProxy
             );
             $this->setCentreonInstanceAsCentral();
+            $this->updateServerInPlatformTopology([
+                'type' => PlatformTopology::TYPE_REMOTE,
+                'server_name' => $serverName,
+                'nagios_id' => $serverId,
+                'address' => $serverIP,
+                'children_pollers' => $pollers ?? null
+            ]);
 
-        // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
+            // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
         } elseif ($pollerConfigurationBridge->hasPollersForUpdating()) {
             $pollers = [$pollerConfigurationBridge->getPollerFromId($serverId)];
             $parentPoller = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate()[0];
@@ -431,6 +473,20 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             // add broker output to forward data to additionnal remote server and link in db
             $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
             $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
+            $this->updateServerInPlatformTopology([
+                'type' => PlatformTopology::TYPE_POLLER,
+                'server_name' => $serverName,
+                'nagios_id' => $serverId,
+                'address' => $serverIP,
+                'parent' => $parentPoller->getId()
+            ]);
+        } else {
+            $this->updateServerInPlatformTopology([
+                'type' => PlatformTopology::TYPE_POLLER,
+                'server_name' => $serverName,
+                'nagios_id' => $serverId,
+                'address' => $serverIP,
+            ]);
         }
 
         return ['success' => true, 'task_id' => $taskId];
@@ -534,7 +590,90 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     private function createExportTask($params)
     {
-        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params'=>$params));
+        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params' => $params));
         return $result;
+    }
+
+    private function updateServerInPlatformTopology(array $topologyInformations)
+    {
+        /**
+         * Get platform_topology id
+         */
+        $statement = $this->pearDB->prepare("
+            SELECT id, server_id as nagios_id FROM `platform_topology` WHERE address = :address
+        ");
+        $statement->bindValue(':address', $topologyInformations['address'], \PDO::PARAM_STR);
+        $statement->execute();
+        $server = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        if (isset($server['nagios_id'])) {
+            throw new \Exception(_('This server is already registered'));
+        }
+        if (!empty($topologyInformations['parent'])) {
+            $statement = $this->pearDB->prepare('SELECT id FROM platform_topology WHERE server_id = :serverId');
+            $statement->bindValue(':serverId', (int) $topologyInformations['parent'], \PDO::PARAM_INT);
+            $statement->execute();
+            $parent = $statement->fetch(\PDO::FETCH_ASSOC);
+        } else {
+            /**
+             * Get Central ID
+             */
+            $statement = $this->pearDB->query("SELECT id FROM `platform_topology` WHERE type = 'central'");
+            $parent = $statement->fetch(\PDO::FETCH_ASSOC);
+            if (empty($parent['id'])) {
+                throw new \Exception(_('No Central in topology,please edit it from Configuration > Pollers menu'));
+            }
+        }
+        /**
+         * If the server is already register in platform_topology Update else insert
+         */
+        if (!empty($server['id'])) {
+            $statement = $this->pearDB->prepare("
+                UPDATE `platform_topology` SET
+                name = :name,
+                parent_id = :parentId,
+                server_id = :nagiosId
+                WHERE id = :topologyId
+            ");
+            $statement->bindValue(':name', $topologyInformations['server_name'], \PDO::PARAM_STR);
+            $statement->bindValue(':parentId', (int) $parent['id'], \PDO::PARAM_INT);
+            $statement->bindValue(':nagiosId', $topologyInformations['nagios_id'], \PDO::PARAM_INT);
+            $statement->bindValue(':topologyId', (int) $server['id'], \PDO::PARAM_INT);
+            $statement->execute();
+        } else {
+            $statement = $this->pearDB->prepare("
+                INSERT INTO `platform_topology` (`address`,`name`,`type`,`parent_id`,`server_id`)
+                VALUES (:address, :name, :type, :parentId, :serverId)
+                ");
+            $statement->bindValue(':address', $topologyInformations['address'], \PDO::PARAM_STR);
+            $statement->bindValue(':name', $topologyInformations['server_name'], \PDO::PARAM_STR);
+            $statement->bindValue(':type', $topologyInformations['type'], \PDO::PARAM_STR);
+            $statement->bindValue(':parentId', (int) $parent['id'], \PDO::PARAM_INT);
+            $statement->bindValue(':serverId', $topologyInformations['nagios_id'], \PDO::PARAM_INT);
+            $statement->execute();
+            /**
+             * Get the new registered platform IP
+             */
+            $statement = $this->pearDB->prepare('SELECT MAX(id) as last_id FROM `platform_topology`');
+            $statement->execute();
+            $insertedPlatform = $statement->fetch(\PDO::FETCH_ASSOC);
+        }
+        /**
+         * If its a remote has attached poller update the parent
+         */
+        if (!empty($topologyInformations['children_pollers'])) {
+            $statement = $this->pearDB->prepare("
+                UPDATE `platform_topology` SET parent_id = :parentId WHERE server_id = :pollerId
+            ");
+            foreach ($topologyInformations['children_pollers'] as $poller) {
+                $statement->bindValue(
+                    ':parentId',
+                    (int) $insertedPlatform['last_id'] ?? (int) $server['id'],
+                    \PDO::PARAM_INT
+                );
+                $statement->bindValue(':pollerId', (int) $poller->getId(), \PDO::PARAM_INT);
+                $statement->execute();
+            }
+        }
     }
 }
