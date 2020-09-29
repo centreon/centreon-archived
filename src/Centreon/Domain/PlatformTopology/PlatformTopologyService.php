@@ -356,7 +356,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function setServerNagiosId(PlatformTopology $platformTopology, bool $isLocalhost): void
     {
-        $foundServerInNagiosTable = $this->platformTopologyRepository->findNagiosIdFromName(
+        $foundServerInNagiosTable = $this->platformTopologyRepository->findMonitoringIdFromName(
             $platformTopology->getName(),
             $isLocalhost
         );

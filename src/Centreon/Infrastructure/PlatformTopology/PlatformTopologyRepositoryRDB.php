@@ -145,7 +145,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findNagiosIdFromName(string $serverName, bool $localhost): ?PlatformTopology
+    public function findMonitoringIdFromName(string $serverName, bool $localhost): ?PlatformTopology
     {
         $statement = $this->db->prepare(
             $this->translateDbName('

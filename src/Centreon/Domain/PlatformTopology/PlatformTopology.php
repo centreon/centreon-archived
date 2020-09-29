@@ -83,7 +83,7 @@ class PlatformTopology
     private $serverId;
 
     /**
-     * @var bool Indicate if the API need to be called on the parent of the parent server (n-1)
+     * @var bool Indicate if the server is behind another server (n-1)
      */
     private $isLinkedToAnotherServer = false;
 
