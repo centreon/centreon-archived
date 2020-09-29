@@ -24,12 +24,10 @@ namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\ActionLog\ActionLog;
 use Centreon\Domain\ActionLog\Interfaces\ActionLogServiceInterface;
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
-use Symfony\Component\Security\Core\Security;
 use Centreon\Domain\Repository\RepositoryException;
 
 class HostConfigurationService implements HostConfigurationServiceInterface
@@ -49,27 +47,19 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     private $actionLogService;
 
     /**
-     * @var Contact
-     */
-    private $contact;
-
-    /**
      * HostConfigurationService constructor.
      *
      * @param HostConfigurationRepositoryInterface $hostConfigurationRepository
      * @param ActionLogServiceInterface $actionLogService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
-     * @param Security $security
      */
     public function __construct(
         HostConfigurationRepositoryInterface $hostConfigurationRepository,
         ActionLogServiceInterface $actionLogService,
-        EngineConfigurationServiceInterface $engineConfigurationService,
-        Security $security
+        EngineConfigurationServiceInterface $engineConfigurationService
     ) {
         $this->hostConfigurationRepository = $hostConfigurationRepository;
         $this->actionLogService = $actionLogService;
-        $this->contact = $security->getUser();
         $this->engineConfigurationService = $engineConfigurationService;
     }
 
@@ -122,7 +112,9 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             }
             $hostId = $this->hostConfigurationRepository->addHost($host);
             $this->actionLogService->addLog(
-                new ActionLog('host', $hostId, $host->getName(), ActionLog::ACTION_TYPE_ADD, $this->contact->getId())
+                // The userId is set to 0 because it is not yet possible to determine who initiated the action.
+                // We will see later how to get it back.
+                new ActionLog('host', $hostId, $host->getName(), ActionLog::ACTION_TYPE_ADD, 0)
             );
             return $hostId;
         } catch (HostConfigurationException $ex) {
