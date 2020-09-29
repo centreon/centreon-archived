@@ -211,6 +211,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 // SSL verify_peer
                 if ($platformInformation->getApiPeerValidationActivated()) {
                     $optionPayload['verify_peer'] = true;
+                    $optionPayload['verify_host'] = true;
                 }
 
                 // Central's API login payload
