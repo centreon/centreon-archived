@@ -38,29 +38,4 @@ interface PlatformTopologyServiceInterface
      * @throws EntityNotFoundException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
-
-    /**
-     * Used when parent_address is null, to check if this type of platform is already registered
-     *
-     * @param string $type platform type to find
-     * @throws PlatformTopologyConflictException
-     */
-    public function checkForAlreadyRegisteredPlatformType(string $type): void;
-
-    /**
-     * Search for platforms nagios_server ID and set it as serverId
-     *
-     * @param PlatformTopology $platformTopology
-     * @param bool $isLocalhost
-     * @throws PlatformTopologyConflictException
-     */
-    public function setServerNagiosId(PlatformTopology $platformTopology, bool $isLocalhost): void;
-
-    /**
-     * Search for already registered platforms using same name or address
-     *
-     * @param PlatformTopology $platformTopology
-     * @throws PlatformTopologyConflictException
-     */
-    public function checkForAlreadyRegisteredSameNameOrAddress(PlatformTopology $platformTopology): void;
 }

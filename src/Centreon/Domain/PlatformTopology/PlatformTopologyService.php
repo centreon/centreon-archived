@@ -76,7 +76,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             // New unique Central top level platform case
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
-            $this->setServerNagiosId($platformTopology, true);
+            $this->setMonitoringServerId($platformTopology, true);
         } elseif (PlatformTopology::TYPE_REMOTE === $platformTopology->getType()) {
             // Cannot add a Remote behind another Remote
             $isLocalhost = false;
@@ -86,7 +86,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
                 $isLocalhost = true;
             }
-            $this->setServerNagiosId($platformTopology, $isLocalhost);
+            $this->setMonitoringServerId($platformTopology, $isLocalhost);
         }
 
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
@@ -322,9 +322,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     }
 
     /**
-     * @inheritDoc
+     * Used when parent_address is null, to check if this type of platform is already registered
+     *
+     * @param string $type platform type to find
+     * @throws PlatformTopologyConflictException
      */
-    public function checkForAlreadyRegisteredPlatformType(string $type): void
+    private function checkForAlreadyRegisteredPlatformType(string $type): void
     {
         $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findPlatformTopologyByType($type);
         if (null !== $foundAlreadyRegisteredPlatformByType) {
@@ -340,9 +343,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     }
 
     /**
-     * @inheritDoc
+     * Search for platforms nagios_server ID and set it as serverId
+     *
+     * @param PlatformTopology $platformTopology
+     * @param bool $isLocalhost
+     * @throws PlatformTopologyConflictException
      */
-    public function setServerNagiosId(PlatformTopology $platformTopology, bool $isLocalhost): void
+    private function setMonitoringServerId(PlatformTopology $platformTopology, bool $isLocalhost): void
     {
         $foundServerInNagiosTable = $this->platformTopologyRepository->findMonitoringIdFromName(
             $platformTopology->getName(),
@@ -363,9 +370,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     }
 
     /**
-     * @inheritDoc
+     * Search for already registered platforms using same name or address
+     *
+     * @param PlatformTopology $platformTopology
+     * @throws PlatformTopologyConflictException
      */
-    public function checkForAlreadyRegisteredSameNameOrAddress(PlatformTopology $platformTopology): void
+    private function checkForAlreadyRegisteredSameNameOrAddress(PlatformTopology $platformTopology): void
     {
         $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
             $platformTopology->getAddress(),
