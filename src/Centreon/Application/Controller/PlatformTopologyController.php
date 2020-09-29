@@ -138,7 +138,7 @@ class PlatformTopologyController extends AbstractController
                         sprintf(
                             _("Same address and parent_address for platform : '%s'@'%s'."),
                         $platformTopology->getName(),
-                        $platformTopology->getAddress()
+                            $platformTopology->getAddress()
                         )
                     );
                 }
