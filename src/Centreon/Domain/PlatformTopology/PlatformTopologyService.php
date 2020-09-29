@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
+use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
@@ -102,7 +103,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (null !== $registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
             /**
              * Getting data from 'informations' table and checking consistency
-             * @var PlatformTopology|null $platformInformation
+             * @var PlatformInformation|null $platformInformation
              */
             $platformInformation = $this->platformTopologyRepository->findPlatformInformation();
 

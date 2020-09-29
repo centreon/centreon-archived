@@ -218,7 +218,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"The address and parent_address of the platform are the same"}
+            {"code":409,"message":"Same address and parent_address for platform : 'my poller 4'@'1.1.1.4'."}
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned

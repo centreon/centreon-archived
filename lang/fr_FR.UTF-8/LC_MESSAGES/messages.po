@@ -15581,8 +15581,8 @@ msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
 
 #: api/topology/register
-msgid "The address and parent_address of the platform are the same"
-msgstr "Les adresses de la platforme et de son parent sont les mêmes"
+msgid "Same address and parent_address for platform : '%s'@'%s'."
+msgstr "Les adresses de la plateforme : '%s'@'%s' et de son parent sont les mêmes"
 
 #: api/topology/register
 msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"

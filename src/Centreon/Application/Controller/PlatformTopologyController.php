@@ -135,9 +135,11 @@ class PlatformTopologyController extends AbstractController
                 // Check for same address and parent_address
                 if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
                     throw new PlatformTopologyConflictException(
-                        _('The address and parent_address of the platform are the same')
-
-                        //TODO add name and Address"
+                        sprintf(
+                            _("Same address and parent_address for platform : '%s'@'%s'."),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                        )
                     );
                 }
                 $platformTopology->setParentAddress($platformToAdd['parent_address']);
@@ -150,11 +152,6 @@ class PlatformTopologyController extends AbstractController
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (PlatformTopologyConflictException  $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
-        /*} catch (EntityNotFoundException  $ex) {
-            return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
-
-        TODO test entitynotFound and check the returned status code : 404
-        */
         } catch (\Throwable $ex) {
             throw new PlatformTopologyException($ex->getMessage(), 0, $ex);
         }
