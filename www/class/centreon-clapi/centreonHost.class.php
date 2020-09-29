@@ -1435,8 +1435,7 @@ class CentreonHost extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $exportContactName = isset($element['contact_name']) ? $element['contact_name'] : null;
-            CentreonContact::getInstance()->export('CONTACT', $exportContactName);
+            CentreonContact::getInstance()->export($element['contact_alias']);
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element[$this->object->getUniqueLabelField()] . $this->delim

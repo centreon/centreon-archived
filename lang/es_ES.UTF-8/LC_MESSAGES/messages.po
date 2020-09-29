@@ -4967,6 +4967,10 @@ msgstr "Protocolo proxy de internet"
 msgid "Proxy URL"
 msgstr "URL du proxy web"
 
+#: centreon-web/www/include/Administration/parameters/general/form.php:153
+msgid "Test Internet Connection"
+msgstr "Prueba de conexión a Internet"
+
 #: centreon-web/www/include/Administration/parameters/general/form.php:156
 msgid "Proxy port"
 msgstr "Puerto de acceso al proxy de internet."

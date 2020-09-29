@@ -808,6 +808,18 @@ if (!is_null($host_id)) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
+        // Check if central or remote server
+        $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+        $result = $DBRESULT->fetchRow();
+        if ($result === false) {
+            $isRemote = false;
+        } else {
+            $result = array_map("myDecode", $result);
+            $isRemote = ($result['value'] === 'yes');
+        }
+        $DBRESULT->closeCursor();
+        $tpl->assign("isRemote", $isRemote);
+
         $tpl->display("serviceDetails.ihtml");
     }
 } else {
