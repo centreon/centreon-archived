@@ -81,6 +81,11 @@ class PlatformTopology
     private $serverId;
 
     /**
+     * @var bool
+     */
+    private $isLinkedToAnotherServer = false;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -259,6 +264,24 @@ class PlatformTopology
     public function setServerId(?int $serverId): self
     {
         $this->serverId = $serverId;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLinkedToAnotherServer(): bool
+    {
+        return $this->isLinkedToAnotherServer;
+    }
+
+    /**
+     * @param bool $isLinked
+     * @return $this
+     */
+    public function setLinkedToAnotherServer(bool $isLinked): self
+    {
+        $this->isLinkedToAnotherServer = $isLinked;
         return $this;
     }
 }

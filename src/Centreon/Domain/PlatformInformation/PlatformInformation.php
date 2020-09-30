@@ -78,24 +78,6 @@ class PlatformInformation
     /**
      * @return bool
      */
-    public function isLinkedToAnotherServer(): bool
-    {
-        return $this->isLinkedToAnotherServer;
-    }
-
-    /**
-     * @param bool $isLinked
-     * @return $this
-     */
-    public function setLinkedToAnotherServer(bool $isLinked): self
-    {
-        $this->isLinkedToAnotherServer = $isLinked;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
     public function getIsRemote(): bool
     {
         return $this->isRemote;
