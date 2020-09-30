@@ -76,41 +76,6 @@ class PlatformInformation
     private $sslPeerValidationRequired = false;
 
     /**
-     * @param string|null $encryptedKey
-     * @return string|null
-     */
-    public function decryptApiCredentials(?string $encryptedKey): ?string
-    {
-        if (empty($encryptedKey)) {
-            return null;
-        }
-        // first key
-        $path = __DIR__ . "/../../../../";
-        require_once $path . "/src/Security/Encryption.php";
-        if (file_exists($path . '/.env.local.php')) {
-            $localEnv = @include $path . '/.env.local.php';
-        }
-
-        // second key
-        if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
-            throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file")
-            );
-        }
-        $secondKey = base64_encode('api_remote_credentials');
-
-        try {
-            $centreonEncryption = new Encryption();
-            $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey($secondKey);
-            return $centreonEncryption->decrypt($encryptedKey);
-        } catch (\throwable $e) {
-            throw new \InvalidArgumentException(
-                _("Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form")
-            );
-        }
-    }
-
-    /**
      * @return bool
      */
     public function isLinkedToAnotherServer(): bool
@@ -183,6 +148,41 @@ class PlatformInformation
     }
 
     /**
+     * @param string|null $encryptedKey
+     * @return string|null
+     */
+    private function decryptApiCredentials(?string $encryptedKey): ?string
+    {
+        if (empty($encryptedKey)) {
+            return null;
+        }
+        // first key
+        $path = __DIR__ . "/../../../../";
+        require_once $path . "/src/Security/Encryption.php";
+        if (file_exists($path . '/.env.local.php')) {
+            $localEnv = @include $path . '/.env.local.php';
+        }
+
+        // second key
+        if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
+            throw new \InvalidArgumentException(
+                _("Unable to find the encryption key. Please check the '.env.local.php' file")
+            );
+        }
+        $secondKey = base64_encode('api_remote_credentials');
+
+        try {
+            $centreonEncryption = new Encryption();
+            $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey($secondKey);
+            return $centreonEncryption->decrypt($encryptedKey);
+        } catch (\throwable $e) {
+            throw new \InvalidArgumentException(
+                _("Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form")
+            );
+        }
+    }
+
+    /**
      * @return string|null
      */
     public function getApiCredentials(): ?string
@@ -223,7 +223,7 @@ class PlatformInformation
      * @param int|null $port
      * @return int
      */
-    public function checkPortConsistency(?int $port): int
+    private function checkPortConsistency(?int $port): int
     {
         // checking
         $port = filter_var($port, FILTER_VALIDATE_INT);

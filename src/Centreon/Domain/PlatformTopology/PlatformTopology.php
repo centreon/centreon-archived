@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use Security\Encryption;
-
 /**
  * Class designed to retrieve servers to be added using the wizard
  *
@@ -83,34 +81,6 @@ class PlatformTopology
     private $serverId;
 
     /**
-     * Validate address consistency
-     *
-     * @param string|null $address the address to be tested
-     *
-     * @return string|null
-     */
-    private function checkIpAddress(?string $address): ?string
-    {
-        // Check for valid IPv4 or IPv6 IP
-        // or not sent address (in the case of Central's "parent_address")
-        if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {
-            return $address;
-        }
-
-        // check for DNS to be resolved
-        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    _("The address '%s' is not valid"),
-                    $this->getName()
-                )
-            );
-        }
-
-        return $address;
-    }
-
-    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -125,28 +95,6 @@ class PlatformTopology
     public function setId(?int $id): self
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getParentAddress(): ?string
-    {
-        return $this->parentAddress;
-    }
-
-    /**
-     * @param string|null $parentAddress
-     *
-     * @return $this
-     */
-    public function setParentAddress(?string $parentAddress): self
-    {
-        if (null !== $parentAddress && $this->getType() === static::TYPE_CENTRAL) {
-            throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
-        }
-        $this->parentAddress = $this->checkIpAddress($parentAddress);
         return $this;
     }
 
@@ -206,6 +154,34 @@ class PlatformTopology
     }
 
     /**
+     * Validate address consistency
+     *
+     * @param string|null $address the address to be tested
+     *
+     * @return string|null
+     */
+    private function checkIpAddress(?string $address): ?string
+    {
+        // Check for valid IPv4 or IPv6 IP
+        // or not sent address (in the case of Central's "parent_address")
+        if (null === $address || false !== filter_var($address, FILTER_VALIDATE_IP)) {
+            return $address;
+        }
+
+        // check for DNS to be resolved
+        if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    _("The address '%s' is not valid"),
+                    $this->getName()
+                )
+            );
+        }
+
+        return $address;
+    }
+
+    /**
      * @return string|null
      */
     public function getAddress(): ?string
@@ -221,6 +197,28 @@ class PlatformTopology
     public function setAddress(?string $address): self
     {
         $this->address = $this->checkIpAddress($address);
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getParentAddress(): ?string
+    {
+        return $this->parentAddress;
+    }
+
+    /**
+     * @param string|null $parentAddress
+     *
+     * @return $this
+     */
+    public function setParentAddress(?string $parentAddress): self
+    {
+        if (null !== $parentAddress && $this->getType() === static::TYPE_CENTRAL) {
+            throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
+        }
+        $this->parentAddress = $this->checkIpAddress($parentAddress);
         return $this;
     }
 
