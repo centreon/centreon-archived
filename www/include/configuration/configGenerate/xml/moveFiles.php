@@ -81,27 +81,31 @@ $pollerParams = [];
 foreach ($pollers as $pollerId) {
     $pollerParams[':poller_' . $pollerId] = $pollerId;
 }
-$statementRemotes = $pearDB->prepare('
-    SELECT ns.id, ns.ns_ip_address AS ip,
-    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+
+// SELECT Remote Servers from selected pollers
+// Then add all simple pollers linked directly to those Remote Servers
+// Then add all pollers which have an additional link to those Remote Servers
+$statementRemotes = $pearDB->prepare(
+    'SELECT ns.id
     FROM nagios_server AS ns
-    JOIN remote_servers AS rs ON rs.ip = ns.ns_ip_address
+    JOIN platform_topology AS pt ON (ns.id = pt.server_id)
     WHERE ns.id IN (' . implode(',', array_keys($pollerParams)) . ')
+    AND pt.type = "remote"
     UNION
-    SELECT ns1.id, ns1.ns_ip_address AS ip,
-    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+    SELECT ns1.id
     FROM nagios_server AS ns1
-    JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address
+    JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
     JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
-    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ')
+    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ') 
+    AND pt.type = "remote"
     UNION
-    SELECT ns1.id, ns1.ns_ip_address AS ip,
-    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+    SELECT ns1.id
     FROM nagios_server AS ns1
-    JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address
+    JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
     JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns1.id
     WHERE rspr.poller_server_id IN (' . implode(',', array_keys($pollerParams)) . ')
-');
+    AND pt.type = "remote"'
+);
 foreach ($pollerParams as $key => $value) {
     $statementRemotes->bindValue($key, $value, \PDO::PARAM_INT);
 }
@@ -110,27 +114,21 @@ $remotesResults = $statementRemotes->fetchAll(PDO::FETCH_ASSOC);
 
 if (!empty($remotesResults)) {
     foreach ($remotesResults as $remote) {
-        $linkedStatement = $pearDB->prepare('
-            SELECT id
+        $linkedStatement = $pearDB->prepare(
+            'SELECT id
             FROM nagios_server
             WHERE remote_id = :remote_id
             UNION
             SELECT poller_server_id AS id
             FROM rs_poller_relation
-            WHERE remote_server_id = :remote_id
-        ');
+            WHERE remote_server_id = :remote_id'
+        );
         $linkedStatement->bindValue(':remote_id', $remote['id'], \PDO::PARAM_INT);
         $linkedStatement->execute();
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 
         $exportParams = [
             'server' => $remote['id'],
-            'remote_ip' => $remote['ip'],
-            'centreon_path' => $remote['centreon_path'],
-            'http_method' => $remote['http_method'],
-            'http_port' => $remote['http_port'] ?: null,
-            'no_check_certificate' => $remote['no_check_certificate'],
-            'no_proxy' => $remote['no_proxy'],
             'pollers' => []
         ];
 
