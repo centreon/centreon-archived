@@ -122,7 +122,7 @@ $form->setDefaults(
 //URI
 $form->addElement('header', 'informationUri', _("Central's API URI"));
 
-$form->addElement('select', 'apiScheme', _("Build complete URI (SCHEME://IP:PORT/PATH)."), ['http', 'https']);
+$form->addElement('select', 'apiScheme', _("Build full URI (SCHEME://IP:PORT/PATH)."), ['http', 'https']);
 $apiScheme = $result['apiScheme'] ?? 'http';
 $form->setDefaults($apiScheme);
 
