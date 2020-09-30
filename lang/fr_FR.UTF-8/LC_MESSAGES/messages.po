@@ -15642,7 +15642,7 @@ msgstr "Le mot de passe ne peut pas être déchiffré. Merci de vérifier ce cha
 msgid "Central's API credentials"
 msgstr "Identifiants de l'API du Central"
 
-msgid "Build complete URI (SCHEME://IP:PORT/PATH)."
+msgid "Build full URI (SCHEME://IP:PORT/PATH)."
 msgstr "construction de l'URI complete (SCHEME://IP:PORT/PATH)."
 
 msgid "Central's API URI."
