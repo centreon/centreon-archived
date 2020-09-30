@@ -16,13 +16,13 @@ Centreon\Domain\PlatformInformation\PlatformInformation:
       type: string
       groups: [platform_information_main]
     apiPort:
-      type: string
+      type: int
       groups: [platform_information_main]
     apiPath:
       type: string
       groups: [platform_information_main]
     apiPeerValidation:
-      type: string
+      type: bool
       groups: [platform_information_main]
     apiUsername:
       type: string
