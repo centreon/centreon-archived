@@ -126,7 +126,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * Getting platform information's data
              * @var PlatformInformation|null $foundPlatformInformation
              */
-            $foundPlatformInformation = $this->platformInformation->findPlatformInformation();
+            $foundPlatformInformation = $this->platformInformation->getInformation();
 
             if (null === $foundPlatformInformation) {
                 throw new PlatformTopologyException(
