@@ -31,7 +31,9 @@ interface ActionLogServiceInterface
      * Add action log.
      *
      * @param ActionLog $actionLog Action log to be added
+     * @param array<string, string|int|bool> $details Details of action
+     * @return int Return the id of the last added action
      * @throws ActionLogException
      */
-    public function addLog(ActionLog $actionLog): void;
+    public function addAction(ActionLog $actionLog, array $details = []): int;
 }

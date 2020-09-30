@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\ActionLog\Interfaces;
 
 use Centreon\Domain\ActionLog\ActionLog;
+use Centreon\Domain\Repository\RepositoryException;
 
 interface ActionLogRepositoryInterface
 {
@@ -30,6 +31,18 @@ interface ActionLogRepositoryInterface
      * Add action log.
      *
      * @param ActionLog $actionLog Action log to be added
+     * @return int Return id of the last added action
+     * @throws \Exception
      */
-    public function addLog(ActionLog $actionLog): void;
+    public function addAction(ActionLog $actionLog): int;
+
+    /**
+     * Add details for the given action log.
+     *
+     * @param ActionLog $actionLog Action log for which you want to add details
+     * @param array<string, string|int|bool> $details Details of action
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function addDetailsOfAction(ActionLog $actionLog, array $details): void;
 }

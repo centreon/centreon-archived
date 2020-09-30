@@ -47,8 +47,6 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     private $actionLogService;
 
     /**
-     * HostConfigurationService constructor.
-     *
      * @param HostConfigurationRepositoryInterface $hostConfigurationRepository
      * @param ActionLogServiceInterface $actionLogService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
@@ -111,10 +109,57 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 $host->getMonitoringServer()->setId($engineConfiguration->getMonitoringServerId());
             }
             $hostId = $this->hostConfigurationRepository->addHost($host);
-            $this->actionLogService->addLog(
+            $defaultStatus = 'Default';
+
+            // We create the list of changes concerning the creation of the host
+            $actionsDetails = [
+                'Host name' => $host->getName() ?? '',
+                'Host alias' => $host->getAlias() ?? '',
+                'Host IP address' => $host->getIpAddress() ?? '',
+                'Monitoring server name' => $host->getMonitoringServer()->getName() ?? '',
+                'Create services linked to templates' => 'true',
+                'Is activated' => $host->isActivated() ? 'true' : 'false',
+
+                // We don't have these properties in the host object yet, so we display these default values
+                'Active checks enabled' => $defaultStatus,
+                'Passive checks enabled' => $defaultStatus,
+                'Notifications enabled' => $defaultStatus,
+                'Obsess over host' => $defaultStatus,
+                'Check freshness' => $defaultStatus,
+                'Flap detection enabled' => $defaultStatus,
+                'Retain status information' => $defaultStatus,
+                'Retain nonstatus information' => $defaultStatus,
+                'Event handler enabled' => $defaultStatus,
+            ];
+            if (!empty($host->getTemplates())) {
+                $templateNames = [];
+                foreach ($host->getTemplates() as $template) {
+                    if (!empty($template->getName())) {
+                        $templateNames[] = $template->getName();
+                    }
+                }
+                $actionsDetails = array_merge($actionsDetails, ['Templates selected' => implode(', ', $templateNames)]);
+            }
+
+            if (!empty($host->getMacros())) {
+                $macroDetails = [];
+                foreach ($host->getMacros() as $macro) {
+                    if (!empty($macro->getName())) {
+                        // We remove the symbol characters in the macro name
+                        $macroDetails[substr($macro->getName(), 2, strlen($macro->getName()) - 3)] =
+                            $macro->isPassword() ? '*****' : $macro->getValue() ?? '';
+                    }
+                }
+                $actionsDetails = array_merge($actionsDetails, [
+                    'Macro names' => implode(', ', array_keys($macroDetails)),
+                    'Macro values' => implode(', ', array_values($macroDetails))
+                ]);
+            }
+            $this->actionLogService->addAction(
                 // The userId is set to 0 because it is not yet possible to determine who initiated the action.
                 // We will see later how to get it back.
-                new ActionLog('host', $hostId, $host->getName(), ActionLog::ACTION_TYPE_ADD, 0)
+                new ActionLog('host', $hostId, $host->getName(), ActionLog::ACTION_TYPE_ADD, 0),
+                $actionsDetails
             );
             return $hostId;
         } catch (HostConfigurationException $ex) {
@@ -201,13 +246,18 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             if ($host->getId() === null) {
                 throw new HostConfigurationException(_('Host id cannot be null'));
             }
+            if ($host->getName() === null) {
+                throw new HostConfigurationException(_('Host name cannot be null'));
+            }
             $loadedHost = $this->findHost($host->getId());
             if ($loadedHost === null) {
                 throw new HostConfigurationException(sprintf(_('Host %d not found'), $host->getId()));
             }
-
+            if ($loadedHost->getId() ===  null) {
+                throw new HostConfigurationException(_('Host id cannot be null'));
+            }
             $this->hostConfigurationRepository->changeActivationStatus($loadedHost->getId(), $shouldBeActivated);
-            $this->actionLogService->addLog(
+            $this->actionLogService->addAction(
             // The userId is set to 0 because it is not yet possible to determine who initiated the action.
             // We will see later how to get it back.
                 new ActionLog(
@@ -218,13 +268,17 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                     0
                 )
             );
+        } catch (HostConfigurationException $ex) {
+            throw $ex;
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(
                 sprintf(
                     _('Error when changing host status (%d to %s)'),
-                    $hostId,
+                    $host->getId(),
                     $shouldBeActivated ? 'true' : 'false'
-                )
+                ),
+                0,
+                $ex
             );
         }
     }

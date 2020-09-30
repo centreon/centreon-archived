@@ -50,12 +50,40 @@ class ActionLogService implements ActionLogServiceInterface
     /**
      * @inheritDoc
      */
-    public function addLog(ActionLog $actionLog): void
+    public function addAction(ActionLog $actionLog, array $details = []): int
     {
         try {
-            $this->actionLogRepository->addLog($actionLog);
+            $actionId = $this->actionLogRepository->addAction($actionLog);
+            if (!empty($details)) {
+                $actionLog->setId($actionId);
+                $this->addDetailsOfAction($actionLog, $details);
+            }
+            return $actionId;
         } catch (\Throwable $ex) {
             throw new ActionLogException(_('Error when adding an entry in the action log'), 0, $ex);
+        }
+    }
+
+    /**
+     * Add details for the given action log.
+     *
+     * @param ActionLog $actionLog Action log for which you want to add details
+     * @param array<string, string|int|bool> $details Details of action
+     * @throws ActionLogException
+     */
+    private function addDetailsOfAction(ActionLog $actionLog, array $details): void
+    {
+        try {
+            if ($actionLog->getId() === null) {
+                throw new ActionLogException(_('Action log id can not be null'));
+            }
+            $this->actionLogRepository->addDetailsOfAction($actionLog, $details);
+        } catch (\Throwable $ex) {
+            throw new ActionLogException(
+                sprintf(_('Error when adding details for the action log %d'), $actionLog->getId()),
+                0,
+                $ex
+            );
         }
     }
 }

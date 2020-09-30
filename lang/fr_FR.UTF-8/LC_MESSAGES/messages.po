@@ -15702,3 +15702,6 @@ msgstr "Erreur lors de la recherche de la configuration du moteur (%s)"
 
 msgid "Host id cannot be null"
 msgstr "L'id de l'hôte ne peut être nul"
+
+msgid "Host name cannot be null"
+msgstr "Le nom de l'hôte ne peut être nul"
