@@ -199,7 +199,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     {
         try {
             if ($host->getId() === null) {
-                throw new HostConfigurationException(_('Host id can not be null'));
+                throw new HostConfigurationException(_('Host id cannot be null'));
             }
             $loadedHost = $this->findHost($host->getId());
             if ($loadedHost === null) {

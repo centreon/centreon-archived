@@ -15700,5 +15700,5 @@ msgstr "Pas de ressource trouvée"
 msgid "Error when searching for the Engine configuration (%s)"
 msgstr "Erreur lors de la recherche de la configuration du moteur (%s)"
 
-msgid "Host id can not be null"
+msgid "Host id cannot be null"
 msgstr "L'id de l'hôte ne peut être nul"
