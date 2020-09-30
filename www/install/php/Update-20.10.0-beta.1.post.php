@@ -136,8 +136,38 @@ try {
         $topologyAclStatement->execute();
 
         while ($row = $topologyAclStatement->fetch()) {
-            $topologyInsertStatement->bindValue(':topology_id', $resourceStatusPage['topology_id'], \PDO::PARAM_INT);
-            $topologyInsertStatement->bindValue(':acl_topology_id', $row['acl_topo_id'], \PDO::PARAM_INT);
+            $topologyInsertStatement->bindValue(':topology_id', (int) $resourceStatusPage['topology_id'], \PDO::PARAM_INT);
+            $topologyInsertStatement->bindValue(':acl_topology_id', (int) $row['acl_topo_id'], \PDO::PARAM_INT);
+            $topologyInsertStatement->execute();
+        }
+    }
+
+    $monitoringTopologyStatement = $pearDB->query(
+        "SELECT DISTINCT(tr1.acl_topo_id)
+        FROM acl_topology_relations tr1
+        WHERE tr1.acl_topo_id NOT IN (
+            SELECT tr2.acl_topo_id
+            FROM acl_topology_relations tr2, topology t2
+            WHERE tr2.topology_topology_id = t2.topology_id
+            AND t2.topology_page = 2
+        )
+        AND tr1.acl_topo_id IN (
+            SELECT tr3.acl_topo_id
+            FROM acl_topology_relations tr3, topology t3
+            WHERE tr3.topology_topology_id = t3.topology_id
+            AND t3.topology_page = 200
+        )"
+    );
+
+    $monitoringPageQuery = $pearDB->query(
+        "SELECT topology_id FROM topology WHERE topology_page = 2"
+    );
+    $monitoringPage = $monitoringPageQuery->fetch();
+
+    while ($topology = $monitoringTopologyStatement->fetch()) {
+        if ($monitoringPage !== false) {
+            $topologyInsertStatement->bindValue(':topology_id', (int) $monitoringPage['topology_id'], \PDO::PARAM_INT);
+            $topologyInsertStatement->bindValue(':acl_topology_id', (int) $topology['acl_topo_id'], \PDO::PARAM_INT);
             $topologyInsertStatement->execute();
         }
     }
