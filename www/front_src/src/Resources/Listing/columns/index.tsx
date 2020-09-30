@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pipe, split, head, propOr } from 'ramda';
+import { pipe, split, head, propOr, T } from 'ramda';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
@@ -32,6 +32,7 @@ import {
 import StateColumn from './State';
 import GraphColumn from './Graph';
 import useAclQuery from '../../Actions/Resource/aclQuery';
+import truncate from '../../truncate';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -265,9 +266,12 @@ export const getColumns = (actions): Array<Column> => [
     id: 'information',
     label: labelInformation,
     type: ColumnType.string,
-    getFormattedString: pipe(propOr('', 'information'), split('\n'), head) as (
-      row,
-    ) => string,
+    getFormattedString: pipe(
+      propOr('', 'information'),
+      split('\n'),
+      head,
+      truncate,
+    ) as (row) => string,
   },
   {
     id: 'state',
@@ -276,7 +280,7 @@ export const getColumns = (actions): Array<Column> => [
     Component: StateColumn,
     sortable: false,
     width: 80,
-    getRenderComponentOnRowUpdate: true,
+    getRenderComponentOnRowUpdateCondition: T,
   },
 ];
 
