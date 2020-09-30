@@ -33,7 +33,7 @@ $help["password"] = dgettext(
 
 $help["tip_api_uri"] = dgettext(
     "help",
-    "Complete URL allowing access to the API of the Centreon central server."
+    "Full URL allowing access to the API of the Centreon's central server."
 );
 
 $help["tip_api_peer_validation"] = dgettext(
