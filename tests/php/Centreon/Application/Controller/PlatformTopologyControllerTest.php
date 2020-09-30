@@ -136,9 +136,6 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
-        $this->expectException(PlatformTopologyException::class);
-        $this->expectExceptionMessage('conflict');
-        $this->expectExceptionCode(Response::HTTP_CONFLICT);
         $view = $platformTopologyController->addPlatformToTopology($this->request);
         $this->assertEquals(
             $view,
@@ -162,9 +159,6 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
-        $this->expectException(PlatformTopologyException::class);
-        $this->expectExceptionMessage('bad request');
-        $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
         $view = $platformTopologyController->addPlatformToTopology($this->request);
         $this->assertEquals(
             $view,
