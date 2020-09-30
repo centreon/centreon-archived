@@ -6,7 +6,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
 import { StatusChip } from '@centreon/ui';
-import { gt, prop } from 'ramda';
+import { prop } from 'ramda';
 
 import { TimelineEvent, Type } from './models';
 import {
@@ -24,6 +24,7 @@ import {
 import { getFormattedTime, getFormattedDateTime } from '../../../dateTime';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
+import truncate from '../../../truncate';
 
 const types: Array<Type> = [
   {
@@ -79,16 +80,6 @@ interface Props {
 const Date = ({ event }: Props): JSX.Element => (
   <Typography variant="caption">{getFormattedTime(event.date)}</Typography>
 );
-
-const truncate = (content: string): string => {
-  const maxLength = 180;
-
-  if (gt(content.length, maxLength)) {
-    return `${content.substring(0, maxLength)}...`;
-  }
-
-  return content;
-};
 
 const Content = ({ event }: Props): JSX.Element => {
   const { content } = event;
