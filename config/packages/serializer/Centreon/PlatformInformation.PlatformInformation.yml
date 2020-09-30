@@ -1,0 +1,29 @@
+Centreon\Domain\PlatformInformation\PlatformInformation:
+  properties:
+    version:
+      type: string
+      groups: [platform_information_main]
+    isRemote:
+      type: string
+      groups: [platform_information_main]
+    isCentral:
+      type: string
+      groups: [platform_information_main]
+    authorizedMaster:
+      type: string
+      groups: [platform_information_main]
+    apiScheme:
+      type: string
+      groups: [platform_information_main]
+    apiPort:
+      type: string
+      groups: [platform_information_main]
+    apiPath:
+      type: string
+      groups: [platform_information_main]
+    apiPeerValidation:
+      type: string
+      groups: [platform_information_main]
+    apiUsername:
+      type: string
+      groups: [platform_information_main]

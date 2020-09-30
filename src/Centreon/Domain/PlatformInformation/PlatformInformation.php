@@ -31,11 +31,6 @@ use Security\Encryption;
 class PlatformInformation
 {
     /**
-     * @var bool Indicate if the server is behind another server (n-1)
-     */
-    private $isLinkedToAnotherServer = false;
-
-    /**
      * @var bool platform type
      */
     private $isRemote = false;

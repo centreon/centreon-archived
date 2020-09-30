@@ -20,11 +20,12 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Controller\Configuration;
+namespace Centreon\Application\Controller;
 
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,8 +34,10 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @package Centreon\Application\Controller\Configuration
  */
-class InformationController extends AbstractController
+class PlatformInformationController extends AbstractController
 {
+    public const SERIALIZER_GROUPS_MAIN = ['platform_information_main'];
+
     /**
      * @var PlatformInformation
      */
@@ -53,9 +56,14 @@ class InformationController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+
         if (!$this->getUser()->isAdmin()) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
-        return $this->view($this->informationService->getInformation());
+
+        $context = (new Context())
+            ->setGroups(static::SERIALIZER_GROUPS_MAIN)
+            ->enableMaxDepth();
+        return $this->view($this->informationService->getInformation())->setContext($context);
     }
 }
