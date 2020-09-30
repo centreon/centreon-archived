@@ -15592,7 +15592,6 @@ msgstr "Les données de la plateforme Central ne sont pas cohérentes. Veuiller 
 msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."
 msgstr "Données indispensable manquant pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
 
-
 #: api/topology/register
 msgid "Unable to retrieve platform information's data."
 msgstr "impossible de récupérer les données d'information de la plateforme."

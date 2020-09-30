@@ -32,5 +32,5 @@ interface PlatformInformationServiceInterface
      * @return PlatformInformation|null
      * @throws PlatformInformationException
      */
-    public function findPlatformInformation(): ?PlatformInformation;
+    public function getInformation(): ?PlatformInformation;
 }
