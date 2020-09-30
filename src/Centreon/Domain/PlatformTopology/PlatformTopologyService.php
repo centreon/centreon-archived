@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
@@ -135,4 +136,45 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPlatformCompleteTopology(): array
+    {
+        $completePlatformTopology = $this->platformTopologyRepository->getPlatformCompleteTopology();
+        if ($completePlatformTopology === null) {
+            throw new EntityNotFoundException('Platform Topology not found');
+        }
+
+        foreach ($completePlatformTopology as $topology) {
+            if ($topology->getType() !== PlatformTopology::TYPE_CENTRAL) {
+                $topologyParentId = $topology->getParentId();
+                if ($topologyParentId === null) {
+                    throw new PlatformTopologyException(
+                        sprintf(
+                            _("the '%s': '%s'@'%s' isn't registered on any Central or Remote"),
+                            $topology->getType(),
+                            $topology->getName(),
+                            $topology->getAddress()
+                        )
+                    );
+                }
+                $topologyParentAddress = $this->platformTopologyRepository->findAddressById($topologyParentId);
+                if ($topologyParentAddress === null) {
+                    throw new PlatformTopologyException(
+                        sprintf(_("Topology address for platform ID: '%d' not found"), $topologyParentId)
+                    );
+                }
+                $topology->setParentAddress($topologyParentAddress);
+            }
+        }
+        return $completePlatformTopology;
+    }
+
+    public function findPlatformNodeRelation(int $serverId): array
+    {
+        
+    }
+
 }

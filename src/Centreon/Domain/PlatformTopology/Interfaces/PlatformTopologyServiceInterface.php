@@ -38,4 +38,15 @@ interface PlatformTopologyServiceInterface
      * @throws EntityNotFoundException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+
+    /**
+     * Get a topology with detailed nodes
+     *
+     * @return array
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     */
+    public function getPlatformCompleteTopology(): array;
+
+    public function findPlatformNodeRelation(int $serverId): array;
 }

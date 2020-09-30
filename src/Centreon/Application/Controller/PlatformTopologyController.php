@@ -24,6 +24,7 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
@@ -31,6 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -44,6 +46,9 @@ class PlatformTopologyController extends AbstractController
      * @var PlatformTopologyServiceInterface
      */
     private $platformTopologyService;
+
+    public const SERIALIZER_GROUPS_MAIN = ['platform_topology_main'];
+    public const SERIALIZER_GROUPS_GET = ['get_platform_topology'];
 
     /**
      * PlatformTopologyController constructor
@@ -147,5 +152,44 @@ class PlatformTopologyController extends AbstractController
         } catch (\Throwable $ex) {
             throw new PlatformTopologyException($ex->getMessage(), 0, $ex);
         }
+    }
+
+    public function getPlatformCompleteTopology(): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $platformCompleteTopology = $this->platformTopologyService->getPlatformCompleteTopology();
+        if ($platformCompleteTopology === null) {
+            throw new EntityNotFoundException('Platform Topologies not found');
+        }
+        $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
+        $edges = $this->generateEdgeJsonGraphArray($platformCompleteTopology);
+        
+        return $this->view([
+            'graph' => [
+                'label' => 'centreon-topology',
+                'metadata' => [
+                    'version' => '1.0.0'
+                ]
+            ],
+            'nodes' => $platformCompleteTopology,
+            'edges' => $edges
+        ])->setContext($context);
+    }
+
+    private function generateEdgeJsonGraphArray(array $completePlatformTopology): array
+    {
+        $edges = [];
+        foreach ($completePlatformTopology as $topology) {
+            $edgeSource = $topology->getId();
+            $edgeTarget = $topology->getParentId();
+            $edgeRelation = $this->platformTopologyService->findPlatformNodesRelation($topology->getServerId());
+            $edges[] = [
+                'source' => $edgeSource,
+                'relation' => $edgeRelation,
+                'target' => $edgeTarget
+            ];
+        }
+        return $edges;
     }
 }

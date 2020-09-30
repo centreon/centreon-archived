@@ -171,4 +171,32 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         return $platformTopology;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPlatformCompleteTopology(): ?array
+    {
+        $statement = $this->db->query('SELECT * FROM `platform_topology`');
+        $platformCompleteTopology = [];
+        foreach($statement as $topology) {
+            $platformCompleteTopology[] = EntityCreator::createEntityByArray(PlatformTopology::class, $topology);
+        }
+        if(!empty($platformCompleteTopology)) {
+            return $platformCompleteTopology;
+        }
+        return null;
+    }
+
+    public function findAddressById(int $serverId): ?string
+    {
+        $statement = $this->db->prepare('SELECT `address` FROM `platform_topology` WHERE id = :serverId');
+        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
+        $statement->execute();
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        if($result) {
+            return $result['address'];
+        }
+        return null;
+    }
 }

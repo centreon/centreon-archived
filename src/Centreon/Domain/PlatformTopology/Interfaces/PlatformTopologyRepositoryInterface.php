@@ -68,4 +68,13 @@ interface PlatformTopologyRepositoryInterface
      * @return PlatformTopology|null
      */
     public function findPlatformTopologyNagiosId(string $serverName): ?PlatformTopology;
+
+    /**
+     * Search for the global topology of the platform
+     *
+     * @return PlatformTopology[]|null
+     */
+    public function getPlatformCompleteTopology(): ?array;
+
+    public function findAddressById(int $id): ?string;
 }

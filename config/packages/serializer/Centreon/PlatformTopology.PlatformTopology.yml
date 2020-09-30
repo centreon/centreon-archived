@@ -2,13 +2,16 @@ Centreon\Domain\PlatformTopology\PlatformTopology:
   properties:
     address:
       type: string
-      groups: [platform_topology_main]
+      groups: [platform_topology_main, get_platform_topology]
     name:
       type: string
-      groups: [platform_topology_main]
+      groups: [platform_topology_main, get_platform_topology]
     type:
       type: string
-      groups: [platform_topology_main]
+      groups: [platform_topology_main, get_platform_topology]
     parentAddress:
       type: string
-      groups: [platform_topology_main]
+      groups: [platform_topology_main, get_platform_topology]
+    serverId:
+      type: int
+      groups: [get_platform_topology]
