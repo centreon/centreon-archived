@@ -25,6 +25,7 @@ namespace Centreon\Application\Controller;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformInformation\PlatformInformationService;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,13 +40,14 @@ class PlatformInformationController extends AbstractController
     public const SERIALIZER_GROUPS_MAIN = ['platform_information_main'];
 
     /**
-     * @var PlatformInformation
+     * PlatformInformationController constructor
+     * @var PlatformInformationServiceInterface $platformInformationService
      */
-    private $informationService;
+    private $platformInformationService;
 
-    public function __construct(PlatformInformationServiceInterface $informationService)
+    public function __construct(PlatformInformationService $platformInformationService)
     {
-        $this->informationService = $informationService;
+        $this->platformInformationService = $platformInformationService;
     }
 
     /**
@@ -56,14 +58,9 @@ class PlatformInformationController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-
-        if (!$this->getUser()->isAdmin()) {
-            return $this->view(null, Response::HTTP_FORBIDDEN);
-        }
-
         $context = (new Context())
             ->setGroups(static::SERIALIZER_GROUPS_MAIN)
             ->enableMaxDepth();
-        return $this->view($this->informationService->getInformation())->setContext($context);
+        return $this->view($this->platformInformationService->getInformation())->setContext($context);
     }
 }

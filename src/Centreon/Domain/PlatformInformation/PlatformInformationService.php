@@ -34,7 +34,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
     private $platformInformationRepository;
 
     /**
-     * @var
+     * @var PlatformInformation $foundPlatformInformation
      */
     private $foundPlatformInformation;
 

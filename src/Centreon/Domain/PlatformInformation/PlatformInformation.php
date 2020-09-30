@@ -255,7 +255,7 @@ class PlatformInformation
      */
     public function setApiPath(?string $path): self
     {
-        $path = trim(filter_var($path, FILTER_SANITIZE_STRING), '/');
+        $path = trim(filter_var($path, FILTER_SANITIZE_STRING, ['options' => ['default' => '']]), '/');
         if (empty($path)) {
             throw new \InvalidArgumentException(
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
