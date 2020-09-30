@@ -15705,3 +15705,12 @@ msgstr "L'id de l'hôte ne peut être nul"
 
 msgid "Host name cannot be null"
 msgstr "Le nom de l'hôte ne peut être nul"
+
+msgid "Action log id cannot be null"
+msgstr "L'id du journal des actions ne peut être nul"
+
+msgid "Error when adding details for the action log %d"
+msgstr "Erreur lors de l'ajout de détails pour le journal des actions %d"
+
+msgid "Error when adding an entry in the action log"
+msgstr "Erreur lors de l'ajout d'une entrée dans le journal des actions"

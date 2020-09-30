@@ -75,7 +75,7 @@ class ActionLogService implements ActionLogServiceInterface
     {
         try {
             if ($actionLog->getId() === null) {
-                throw new ActionLogException(_('Action log id can not be null'));
+                throw new ActionLogException(_('Action log id cannot be null'));
             }
             $this->actionLogRepository->addDetailsOfAction($actionLog, $details);
         } catch (\Throwable $ex) {
