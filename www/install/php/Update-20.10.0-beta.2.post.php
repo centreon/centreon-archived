@@ -37,7 +37,13 @@ try {
      */
     // Check if the server is a Remote or a Central
     $type = 'central';
-
+    $serverType = $pearDB->query("
+        SELECT `value` FROM `informations`
+        WHERE `key` = 'isRemote'
+    ");
+    if ('yes' === $serverType->fetch()['value']) {
+        $type = 'remote';
+    }
     // Check if the server is enabled
     $errorMessage = "Unable to find the server in 'nagios_server' table.";
     $serverQuery = $pearDB->query("
