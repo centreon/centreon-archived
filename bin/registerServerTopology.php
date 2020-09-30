@@ -184,8 +184,6 @@ $payload = [
     "address" => $configOptions['DNS'] ?? $serverIp,
 ];
 
-var_dump($payload);
-
 if ($configOptions['SERVER_TYPE'] !== TYPE_CENTRAL) {
     $payload["parent_address"] = $host;
 }
