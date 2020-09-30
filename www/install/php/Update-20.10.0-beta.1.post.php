@@ -162,9 +162,10 @@ try {
     $monitoringPageQuery = $pearDB->query(
         "SELECT topology_id FROM topology WHERE topology_page = 2"
     );
+    $monitoringPage = $monitoringPageQuery->fetch();
 
     while ($topology = $monitoringTopologyStatement->fetch()) {
-        if ($monitoringPage = $monitoringPageQuery->fetch()) {
+        if ($monitoringPage !== false) {
             $topologyInsertStatement->bindValue(':topology_id', (int) $monitoringPage['topology_id'], \PDO::PARAM_INT);
             $topologyInsertStatement->bindValue(':acl_topology_id', (int) $topology['acl_topo_id'], \PDO::PARAM_INT);
             $topologyInsertStatement->execute();
