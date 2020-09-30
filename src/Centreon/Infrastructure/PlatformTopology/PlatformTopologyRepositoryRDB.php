@@ -23,11 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Domain\Proxy\Proxy;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
@@ -173,71 +170,5 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         }
 
         return $platformTopology;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findPlatformInformation(): ?PlatformInformation
-    {
-        $statement = $this->db->prepare(
-            $this->translateDbName('
-                SELECT * FROM `:db`.informations
-            ')
-        );
-        $result = [];
-        $platformInformation = null;
-        if ($statement->execute()) {
-            while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                $result[$row['key']] = $row['value'];
-            }
-
-            if (!empty($result)) {
-                $platformInformation = new PlatformInformation();
-                $platformInformation
-                    ->setIsRemote('yes' === $result['isRemote'])
-                    ->setAuthorizedMaster($result['authorizedMaster'] ?? null)
-                    ->setApiUsername($result['apiUsername'] ?? null)
-                    ->setApiCredentials($result['apiCredentials'] ?? null)
-                    ->setApiScheme($result['apiScheme'] ?? null)
-                    ->setApiPort(isset($result['apiPort']) ? (int) $result['apiPort'] : null)
-                    ->setApiPath($result['apiPath'] ?? null)
-                    ->setSslPeerValidationRequired('yes' === $result['apiPeerValidation']);
-            }
-        }
-
-        return $platformInformation;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findPlatformProxy(): ?Proxy
-    {
-        $statement = $this->db->prepare(
-            $this->translateDbName('
-                SELECT * FROM `:db`.options WHERE `key` LIKE "%proxy%"
-            ')
-        );
-        $result = [];
-        $platformProxy = null;
-        if ($statement->execute()) {
-            while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                $key = str_replace('proxy_', '', $row['key']);
-                $result[$key] = $row['value'];
-            }
-
-            if (!empty($result)) {
-                /**
-                 * @var Proxy $platformProxy
-                 */
-                $platformProxy = EntityCreator::createEntityByArray(
-                    Proxy::class,
-                    $result
-                );
-            }
-        }
-
-        return $platformProxy;
     }
 }

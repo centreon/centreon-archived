@@ -72,20 +72,4 @@ interface PlatformTopologyRepositoryInterface
      * @return PlatformTopology|null
      */
     public function findMonitoringIdFromName(string $serverName, bool $isLocalhost): ?PlatformTopology;
-
-    /**
-     * Retrieve all data from 'information' table
-     *
-     * @return PlatformInformation|null
-     * @throws PlatformInformation Exception
-     */
-    public function findPlatformInformation(): ?PlatformInformation;
-
-    /**
-     * Retrieve all data from 'options' table
-     *
-     * @return Proxy|null
-     * @throws \Exception
-     */
-    public function findPlatformProxy(): ?Proxy;
 }
