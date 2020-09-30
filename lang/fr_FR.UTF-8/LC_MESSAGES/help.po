@@ -7203,3 +7203,9 @@ msgstr ""
 
 msgid "Enter the current password of this account."
 msgstr "Entrez le mot de passe actuel de ce compte."
+
+msgid "Full URL allowing access to the API of the Centreon's central server."
+msgstr "URL complète permettant d'accéder à l'API du serveur central Centreon."
+
+msgid "Allows to skip the SSL certificate check on the Centreon's central server."
+msgstr "Permet de ne pas vérifier le certificat SSL du serveur central Centreon."

@@ -1007,18 +1007,28 @@ function updateKnowledgeBaseData($db, $form, $centreon)
 function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
 {
     $ret = $form->getSubmitValues();
-    updateInformations(
-        $db,
-        'apiUsername',
-        $ret['apiUsername']
-    );
+    $passApi = $ret['apiCredentials'];
 
-    if (CentreonAuth::PWS_OCCULTATION !== $ret['apiCredentials']) {
+    //clean useless values
+    unset($ret['submitC']);
+    unset($ret['o']);
+    unset($ret['centreon_token']);
+    unset($ret['apiCredentials']);
+
+    //convert values
+    $ret['apiSelfSignedCertificate'] = $ret['apiSelfSignedCertificate'] == 1 ? 'yes' : 'no';
+
+    //update information
+    foreach ($ret as $key => $value) {
+        updateInformations($db, $key, $value);
+    }
+
+    if (CentreonAuth::PWS_OCCULTATION !== $passApi) {
         try {
             updateInformations(
                 $db,
                 'apiCredentials',
-                $centreonEncryption->crypt($ret['apiCredentials'])
+                $centreonEncryption->crypt($passApi)
             );
         } catch (Exception $e) {
             $errorMsg = _('The password cannot be crypted. Please re-submit the form');
