@@ -22,17 +22,19 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Centreon\Domain\Exception\EntityNotFoundException;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\Proxy\Proxy;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -52,16 +54,32 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     private $httpClient;
 
     /**
+     * @var PlatformInformationServiceInterface
+     */
+    private $platformInformation;
+
+    /**
+     * @var ProxyServiceInterface
+     */
+    private $proxy;
+
+    /**
      * PlatformTopologyService constructor.
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
      * @param HttpClientInterface $httpClient
+     * @param PlatformInformationServiceInterface $platformInformationService
+     * @param ProxyServiceInterface $proxy
      */
     public function __construct(
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
-        HttpClientInterface $httpClient
+        HttpClientInterface $httpClient,
+        PlatformInformationServiceInterface $platformInformationService,
+        ProxyServiceInterface $proxy
     ) {
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->httpClient = $httpClient;
+        $this->platformInformation = $platformInformationService;
+        $this->proxy = $proxy;
     }
 
     /**
@@ -100,19 +118,26 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          * The top level platform is defined as a Remote
          * Getting data and calling the register request on the Central
          */
-        if (null !== $registeredParentInTopology && true === $platformTopology->isLinkedToAnotherServer()) {
+        if (
+            null !== $registeredParentInTopology
+            && true === $registeredParentInTopology->isLinkedToAnotherServer()
+        ) {
             /**
-             * Getting data from 'informations' table and checking consistency
-             * @var PlatformInformation|null $platformInformation
+             * Getting platform information's data
+             * @var PlatformInformation|null $foundPlatformInformation
              */
-            $platformInformation = $this->platformTopologyRepository->findPlatformInformation();
+            $foundPlatformInformation = $this->platformInformation->findPlatformInformation();
 
-            if (null === $platformInformation) {
+            if (null === $foundPlatformInformation) {
                 throw new PlatformTopologyException(
-                    _("Platform's mandatory data are missing. Please check the Remote Access form.")
+                    sprintf(
+                        _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."),
+                        $platformTopology->getName(),
+                        $platformTopology->getAddress()
+                    )
                 );
             }
-            if (false === $platformInformation->getIsRemote()) {
+            if (false === $foundPlatformInformation->getIsRemote()) {
                 throw new PlatformTopologyConflictException(
                     sprintf(
                         _("The platform: '%s'@'%s' is not declared as a 'remote'."),
@@ -121,7 +146,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if (null === $platformInformation->getAuthorizedMaster()) {
+            if (null === $foundPlatformInformation->getAuthorizedMaster()) {
                 throw new PlatformTopologyException(
                     sprintf(
                         _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
@@ -131,8 +156,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
             }
             if (
-                null === $platformInformation->getApiUsername()
-                || null === $platformInformation->getApiCredentials()
+                null === $foundPlatformInformation->getApiUsername()
+                || null === $foundPlatformInformation->getApiCredentials()
             ) {
                 throw new PlatformTopologyException(
                     sprintf(
@@ -142,7 +167,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if (null === $platformInformation->getApiScheme()) {
+            if (null === $foundPlatformInformation->getApiScheme()) {
                 throw new PlatformTopologyException(
                     sprintf(
                         _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
@@ -151,7 +176,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if (null === $platformInformation->getApiPort()) {
+            if (null === $foundPlatformInformation->getApiPort()) {
                 throw new PlatformTopologyException(
                     sprintf(
                         _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
@@ -160,7 +185,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if (null === $platformInformation->getApiPath()) {
+            if (null === $foundPlatformInformation->getApiPath()) {
                 throw new PlatformTopologyException(
                     sprintf(
                         _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
@@ -171,25 +196,20 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
 
             /**
-             * Getting platform proxy data
+             * Getting platform's proxy data
              * @var Proxy|null $proxy
              */
-            $proxy = $this->platformTopologyRepository->findPlatformProxy();
-
-            if (null !== $proxy && null === $proxy->getUrl()) {
-                throw new \InvalidArgumentException(
-                    _("Invalid proxy URL. Please check the parameters set in 'Centreon UI' form")
-                );
-            }
+            $proxy = $this->proxy->getProxy();
 
             /**
              * Call the API on the n-1 server to register it too
              */
             try {
                 // Central's API endpoints base path
-                $baseApiEndpoint = $platformInformation->getApiScheme() . '://' .
-                    $platformInformation->getAuthorizedMaster() . ':' . $platformInformation->getApiPort() . '/' .
-                    $platformInformation->getApiPath() . '/api/v2.0/';
+                $baseApiEndpoint = $foundPlatformInformation->getApiScheme() . '://' .
+                    $foundPlatformInformation->getAuthorizedMaster() . ':' .
+                    $foundPlatformInformation->getApiPort() . '/' .
+                    $foundPlatformInformation->getApiPath() . '/api/v2.0/';
 
                 // Enable specific options
                 $optionPayload = [];
@@ -198,7 +218,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $optionPayload['proxy'] = $proxy->__toString();
                 }
                 // SSL verify_peer
-                if ($platformInformation->isSslPeerValidationRequired()) {
+                if ($foundPlatformInformation->isSslPeerValidationRequired()) {
                     $optionPayload['verify_peer'] = true;
                     $optionPayload['verify_host'] = true;
                 }
@@ -208,8 +228,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     'json' => [
                         "security" => [
                             "credentials" => [
-                                "login" => $platformInformation->getApiUsername(),
-                                "password" => $platformInformation->getApiCredentials()
+                                "login" => $foundPlatformInformation->getApiUsername(),
+                                "password" => $foundPlatformInformation->getApiCredentials()
                             ]
                         ]
                     ]

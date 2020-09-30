@@ -23,12 +23,14 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformInformation\Interfaces;
 
 use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformInformation\PlatformInformationException;
 
 interface PlatformInformationServiceInterface
 {
     /**
      * Get monitoring server data
-     *
+     * @return PlatformInformation|null
+     * @throws PlatformInformationException
      */
     public function findPlatformInformation(): ?PlatformInformation;
 }

@@ -15589,8 +15589,13 @@ msgid "Central platform's data are not consistent. Please check the 'Remote Acce
 msgstr "Les données de la plateforme Central ne sont pas cohérentes. Veuiller vérifier le formulaire 'Accès du Remote'"
 
 #: api/topology/register
-msgid "Platform's mandatory data are missing. Please check the Remote Access form."
-msgstr "Données indispensable de la plateforme manquantes. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."
+msgstr "Données indispensable manquant pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
+
+
+#: api/topology/register
+msgid "Unable to retrieve platform information's data."
+msgstr "impossible de récupérer les données d'information de la plateforme."
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
@@ -15651,10 +15656,6 @@ msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à c
 #: api/topology/register
 msgid "Central's response => Code : "
 msgstr "Response du Central => Code : "
-
-#: api/topology/register
-msgid "Invalid proxy URL. Please check the parameters set in 'Centreon UI' form"
-msgstr "L'URL du proxy n'est pas valide. Veuillez vérifier le formulaire 'Centreon web'"
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
