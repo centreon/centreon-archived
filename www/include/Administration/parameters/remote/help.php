@@ -38,5 +38,5 @@ $help["tip_api_uri"] = dgettext(
 
 $help["tip_api_peer_validation"] = dgettext(
     "help",
-    "Allows to skip the SSL certificate check of the central Centreon server."
+    "Allows to skip the SSL certificate check on the Centreon's central server."
 );
