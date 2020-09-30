@@ -252,16 +252,35 @@ if (isRemote($serverType)) {
 
     //prepare db credential
     $loginCredentialsDb = [
-        "login" => $configOptions['API_USERNAME']
+        "apiUsername" => $configOptions['API_USERNAME']
     ];
     $centreonEncryption = new \Security\Encryption();
     try {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
-        $loginCredentialsDb['password'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
+        $loginCredentialsDb['apiCredentials'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
     } catch (\InvalidArgumentException $e) {
         exit($e->getMessage());
     }
-    $registerPayloads = registerRemote($host, $loginCredentialsDb);
+    $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
+    $loginCredentialsDb['apiPeerValidation'] = isset($configOptions['INSECURE']) ? 'yes' : 'no';
+    $loginCredentialsDb['apiScheme'] = $protocol;
+    if (isset($port)) {
+        $loginCredentials['apiPort'] = $port;
+    }
+    if ($configOptions['PROXY_USAGE'] === true) {
+        $loginCredentialsDb['proxy_informations']['proxy_url'] = $configOptions["PROXY_HOST"];
+        $loginCredentialsDb['proxy_informations']['proxy_port'] = $configOptions["PROXY_PORT"];
+        $loginCredentialsDb['proxy_informations']['proxy_user'] = !empty($configOptions["PROXY_USERNAME"])
+            ? $configOptions["PROXY_USERNAME"]
+            : null;
+        $loginCredentialsDb['proxy_informations']['proxy_password'] = $configOptions['PROXY_PASSWORD'] ?? null;
+    }
+    try {
+        $registerPayloads = registerRemote($host, $loginCredentialsDb);
+    } catch (\PDOException $e) {
+        echo $e->getMessage();
+        exit(1);
+    }
 } else {
     $registerPayloads = [];
 }

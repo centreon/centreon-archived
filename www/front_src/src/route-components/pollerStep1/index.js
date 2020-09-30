@@ -12,6 +12,7 @@ import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import BaseWizard from '../../components/forms/baseWizard';
+import axios from '../../axios';
 
 class PollerStepOneRoute extends Component {
   links = [
@@ -28,6 +29,26 @@ class PollerStepOneRoute extends Component {
 
   state = {
     error: null,
+    waitList: null,
+  };
+
+  wizardFormWaitListApi = axios(
+    'internal.php?object=centreon_configuration_remote&action=getPollerWaitList',
+  );
+
+  getWaitList = () => {
+    this.wizardFormWaitListApi
+      .post()
+      .then((response) => {
+        this.setState({ waitList: response.data });
+      })
+      .catch(() => {
+        this.setState({ waitList: [] });
+      });
+  };
+
+  componentDidMount = () => {
+    this.getWaitList();
   };
 
   handleSubmit = (data) => {
@@ -38,10 +59,15 @@ class PollerStepOneRoute extends Component {
 
   render() {
     const { links } = this;
+    const { waitList } = this.state;
     return (
       <BaseWizard>
         <ProgressBar links={links} />
-        <Form onSubmit={this.handleSubmit.bind(this)} initialValues={{}} />
+        <Form
+          onSubmit={this.handleSubmit.bind(this)}
+          initialValues={{}}
+          waitList={waitList}
+        />
       </BaseWizard>
     );
   }
