@@ -276,7 +276,7 @@ export const getColumns = (actions): Array<Column> => [
     Component: StateColumn,
     sortable: false,
     width: 80,
-    renderComponentOnRowUpdate: true,
+    getRenderComponentOnRowUpdate: true,
   },
 ];
 
