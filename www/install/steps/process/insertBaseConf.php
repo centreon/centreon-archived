@@ -117,11 +117,9 @@ if ($row = $centralServerQuery->fetch()) {
         )
     ");
     $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
-    foreach ($bindValues as $token => $bindParams) {
-        foreach ($bindParams as $paramType => $paramValue) {
-            $stmt->bindValue($token, $paramValue, $paramType);
-        }
-    }
+    $hostName
+        ? $stmt->bindValue(':hostname', $hostName, \PDO::PARAM_STR)
+        : $stmt->bindValue(':hostname', null, \PDO::PARAM_NULL);
     $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
     $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
     $stmt->execute();
