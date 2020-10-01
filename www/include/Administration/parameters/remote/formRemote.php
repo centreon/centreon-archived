@@ -123,11 +123,11 @@ $form->setDefaults(
 $form->addElement('header', 'informationUri', _("Central's API URI"));
 
 $form->addElement(
-        'select',
-        'apiScheme',
-        _("Build full URI (SCHEME://IP:PORT/PATH)."),
-        ['http' => 'http', 'https' => 'https'],
-        ['id' => 'apiScheme', 'onChange' => 'checkSsl(this.value)']
+    'select',
+    'apiScheme',
+    _("Build full URI (SCHEME://IP:PORT/PATH)."),
+    ['http' => 'http', 'https' => 'https'],
+    ['id' => 'apiScheme', 'onChange' => 'checkSsl(this.value)']
 );
 $apiScheme = $result['apiScheme'] ?: 'http';
 $sslVisibility = $apiScheme === 'http' ? 'hidden' : 'visible';
