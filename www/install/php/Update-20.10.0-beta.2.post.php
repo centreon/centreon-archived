@@ -30,7 +30,7 @@ $versionOfTheUpgrade = 'UPGRADE - 20.10.0-beta.2.post : ';
  */
 try {
     $pearDB->beginTransaction();
-    $pearDB->query("TRUNCATE TABLE `platform_topology`");
+    $pearDB->query("DELETE FROM `platform_topology`");
 
     /**
      * register server to 'platform_status' table
