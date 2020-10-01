@@ -266,7 +266,7 @@ if (isRemote($serverType)) {
     $loginCredentialsDb['apiPeerValidation'] = isset($configOptions['INSECURE']) ? 'no' : 'yes';
     $loginCredentialsDb['apiScheme'] = $protocol;
     if (isset($port)) {
-        $loginCredentials['apiPort'] = $port;
+        $loginCredentialsDb['apiPort'] = $port;
     }
     if ($configOptions['PROXY_USAGE'] === true) {
         $loginCredentialsDb['proxy_informations']['proxy_url'] = $configOptions["PROXY_HOST"];
