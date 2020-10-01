@@ -15634,7 +15634,7 @@ msgstr "L'API du Central a renvoyé une exception Client"
 
 #: api/topology/register
 msgid "API calling the Central returned a Redirection exception"
-msgstr "L'API du Central a renvoyé l'exception de Redirection"
+msgstr "L'API du Central a renvoyé une exception de Redirection"
 
 #: api/topology/register
 msgid "API calling the Central returned a Server exception"
