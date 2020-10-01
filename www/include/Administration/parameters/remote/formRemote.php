@@ -130,7 +130,7 @@ $form->addElement(
         ['id' => 'apiScheme', 'onChange' => 'checkSsl(this.value)']
 );
 $apiScheme = $result['apiScheme'] ?: 'http';
-$sslVisibility = $apiScheme == 'http' ? 'hidden' : 'visible';
+$sslVisibility = $apiScheme === 'http' ? 'hidden' : 'visible';
 $form->setDefaults($apiScheme);
 
 $form->addElement('header', 'informationIp', $result['authorizedMaster']);
