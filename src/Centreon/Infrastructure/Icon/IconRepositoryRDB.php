@@ -134,7 +134,7 @@ class IconRepositoryRDB extends AbstractRepositoryDRB implements IconRepositoryI
                 ->setId((int) $row['img_id'])
                 ->setDirectory($row['img_dir'])
                 ->setName($row['img_name'])
-                ->setUrl($row['img_dir'] . '/' . $row['img_name']);
+                ->setUrl($row['img_dir'] . '/' . $row['img_path']);
             $icons[] = $icon;
         }
 

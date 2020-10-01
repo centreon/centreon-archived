@@ -2332,6 +2332,7 @@ CREATE TABLE `user_filter` (
 CREATE TABLE `platform_topology` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `address` varchar(255) NOT NULL,
+    `hostname` varchar(255) NULL,
     `name` varchar(255) NOT NULL,
     `type` varchar(255) NOT NULL,
     `parent_id` int(11),

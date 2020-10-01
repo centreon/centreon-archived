@@ -1,13 +1,20 @@
 import React from 'react';
 
-import { pipe, split, head, propOr } from 'ramda';
+import { pipe, split, head, propOr, T } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 
-import { ColumnType, StatusChip, SeverityCode, IconButton } from '@centreon/ui';
+import {
+  ColumnType,
+  StatusChip,
+  SeverityCode,
+  IconButton,
+  Column,
+  ComponentColumnProps,
+} from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
 import {
@@ -23,10 +30,10 @@ import {
   labelCheck,
   labelSetDowntime,
 } from '../../translatedLabels';
-import { Resource } from '../../models';
 import StateColumn from './State';
 import GraphColumn from './Graph';
 import useAclQuery from '../../Actions/Resource/aclQuery';
+import truncate from '../../truncate';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -43,34 +50,16 @@ const useStyles = makeStyles((theme) => ({
     height: 19,
   },
   smallChipContainer: {
-    height: 18,
+    height: theme.spacing(2.5),
+    width: theme.spacing(2.5),
+    fontSize: 10,
   },
   smallChipLabel: {
     padding: theme.spacing(0.5),
   },
 }));
 
-export interface Column {
-  id: string;
-  getFormattedString?: (details) => string;
-  label: string;
-  type: number;
-  Component?: (props) => JSX.Element | null;
-  sortable?: boolean;
-  sortField?: string;
-  clickable?: boolean;
-  width?: number;
-}
-
-export interface ColumnProps {
-  row: Resource;
-  isRowSelected: boolean;
-  isHovered: boolean;
-  style;
-  onClick;
-}
-
-const SeverityColumn = ({ row }: ColumnProps): JSX.Element | null => {
+const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
   const classes = useStyles();
 
   if (!row.severity) {
@@ -91,7 +80,7 @@ const SeverityColumn = ({ row }: ColumnProps): JSX.Element | null => {
 
 type StatusColumnProps = {
   actions;
-} & Pick<ColumnProps, 'row'>;
+} & Pick<ComponentColumnProps, 'row'>;
 
 const StatusColumnOnHover = ({
   actions,
@@ -156,7 +145,7 @@ const StatusColumnOnHover = ({
 const StatusColumn = ({ actions, t }) => ({
   row,
   isHovered,
-}: ColumnProps): JSX.Element => {
+}: ComponentColumnProps): JSX.Element => {
   return isHovered ? (
     <StatusColumnOnHover actions={actions} row={row} />
   ) : (
@@ -168,7 +157,7 @@ const StatusColumn = ({ actions, t }) => ({
   );
 };
 
-const ResourceColumn = ({ row }: ColumnProps): JSX.Element => {
+const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -192,7 +181,9 @@ const ResourceColumn = ({ row }: ColumnProps): JSX.Element => {
   );
 };
 
-const ParentResourceColumn = ({ row }: ColumnProps): JSX.Element | null => {
+const ParentResourceColumn = ({
+  row,
+}: ComponentColumnProps): JSX.Element | null => {
   const classes = useStyles();
 
   if (!row.parent) {
@@ -223,6 +214,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     label: t(labelStatus),
     type: ColumnType.component,
     Component: StatusColumn({ actions, t }),
+    hasHoverableComponent: true,
     sortField: 'status_severity_code',
     clickable: true,
     width: 145,
@@ -277,9 +269,12 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     id: 'information',
     label: t(labelInformation),
     type: ColumnType.string,
-    getFormattedString: pipe(propOr('', 'information'), split('\n'), head) as (
-      row,
-    ) => string,
+    getFormattedString: pipe(
+      propOr('', 'information'),
+      split('\n'),
+      head,
+      truncate,
+    ) as (row) => string,
   },
   {
     id: 'state',
@@ -288,6 +283,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     Component: StateColumn,
     sortable: false,
     width: 80,
+    getRenderComponentOnRowUpdateCondition: T,
   },
 ];
 

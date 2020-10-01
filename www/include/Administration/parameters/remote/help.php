@@ -30,3 +30,13 @@ $help["password"] = dgettext(
     "help",
     "Enter the current password of this account."
 );
+
+$help["tip_api_uri"] = dgettext(
+    "help",
+    "Full URL allowing access to the API of the Centreon's central server."
+);
+
+$help["tip_api_peer_validation"] = dgettext(
+    "help",
+    "Allows to skip the SSL certificate check on the Centreon's central server."
+);

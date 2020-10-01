@@ -22,8 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
+use Centreon\Domain\Repository\RepositoryException;
 
 class HostConfigurationService implements HostConfigurationServiceInterface
 {
@@ -31,15 +34,23 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      * @var HostConfigurationRepositoryInterface
      */
     private $hostConfigurationRepository;
+    /**
+     * @var EngineConfigurationServiceInterface
+     */
+    private $engineConfigurationService;
 
     /**
      * HostConfigurationService constructor.
      *
      * @param HostConfigurationRepositoryInterface $hostConfigurationRepository
+     * @param EngineConfigurationServiceInterface $engineConfigurationService
      */
-    public function __construct(HostConfigurationRepositoryInterface $hostConfigurationRepository)
-    {
+    public function __construct(
+        HostConfigurationRepositoryInterface $hostConfigurationRepository,
+        EngineConfigurationServiceInterface $engineConfigurationService
+    ) {
         $this->hostConfigurationRepository = $hostConfigurationRepository;
+        $this->engineConfigurationService = $engineConfigurationService;
     }
 
     /**
@@ -51,16 +62,49 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             throw new HostConfigurationException(_('Host name can not be empty'));
         }
         try {
-            $hasHostWithSameName = $this->hostConfigurationRepository->hasHostWithSameName($host->getName());
-            if ($hasHostWithSameName) {
+            if (empty($host->getIpAddress())) {
+                throw new HostConfigurationException(_('Ip address can not be empty'));
+            }
+
+            if ($host->getMonitoringServer() === null || $host->getMonitoringServer()->getName() === null) {
+                throw new HostConfigurationException(_('Monitoring server is not correctly defined'));
+            }
+
+            /*
+             * To avoid defining a host name with illegal characters,
+             * we retrieve the engine configuration to retrieve the list of these characters.
+             */
+            $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
+                $host->getMonitoringServer()->getName()
+            );
+            if ($engineConfiguration === null) {
+                throw new HostConfigurationException(_('Impossible to find the Engine configuration'));
+            }
+
+            $safedHostName = EngineConfiguration::removeIllegalCharacters(
+                $host->getName(),
+                $engineConfiguration->getIllegalObjectNameCharacters()
+            );
+            if (empty($safedHostName)) {
+                throw new HostConfigurationException(_('Host name can not be empty'));
+            }
+            $host->setName($safedHostName);
+
+            if ($this->hostConfigurationRepository->hasHostWithSameName($host->getName())) {
                 throw new HostConfigurationException(_('Host name already exists'));
             }
             if ($host->getExtendedHost() === null) {
                 $host->setExtendedHost(new ExtendedHost());
             }
+
+            if ($host->getMonitoringServer()->getId() === null) {
+                $host->getMonitoringServer()->setId($engineConfiguration->getMonitoringServerId());
+            }
             return $this->hostConfigurationRepository->addHost($host);
         } catch (HostConfigurationException $ex) {
             throw $ex;
+        } catch (RepositoryException $ex) {
+            throw new HostConfigurationException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
             throw new HostConfigurationException(_('Error while creation of host'), 0, $ex);
         }
@@ -153,10 +197,10 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
     * @inheritDoc
     */
-    public function checkNamesAlreadyUsed(array $namesToCheck): array
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array
     {
         try {
-            return $this->hostConfigurationRepository->checkNamesAlreadyUsed($namesToCheck);
+            return $this->hostConfigurationRepository->findHostNamesAlreadyUsed($namesToCheck);
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(_('Error when searching for already used host names'));
         }

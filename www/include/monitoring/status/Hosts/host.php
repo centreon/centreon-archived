@@ -187,7 +187,25 @@ $resourceController = $kernel->getContainer()->get(
 );
 
 $deprecationMessage = _('[Page deprecated] Please use the new page: ');
-$redirectionUrl = $resourceController->buildListingUri([]);
+
+$filter = [
+    'criterias' => [
+        'resourceTypes' => [
+            [
+                'id' => 'host',
+                'name' => 'Host'
+            ]
+        ],
+        'states' => [
+            [
+                'id' => 'unhandled_problems',
+                'name' => 'Unhandled'
+            ]
+        ],
+    ]
+];
+
+$redirectionUrl = $resourceController->buildListingUri(['filter' => json_encode($filter)]);
 
 //Smarty template Init
 $tpl = new Smarty();

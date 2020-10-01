@@ -375,9 +375,3 @@ default:
         - "%paths.base%/features/APIv1/TimeperiodsApi.feature"
       contexts:
         - \Centreon\Test\Behat\CentreonAPIContext
-
-    api_v2_monitoring:
-      paths:
-        - "%paths.base%/features/APIv2/Monitoring/HostApi.feature"
-        - "%paths.base%/features/APIv2/Monitoring/ServiceApi.feature"
-      contexts: [ APIv2Context ]

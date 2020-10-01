@@ -94,11 +94,11 @@ interface HostConfigurationServiceInterface
     public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void;
 
     /**
-     * Checks if names are already used by hosts.
+     * Find host names already used by hosts.
      *
-     * @param string[] $namesToCheck List of names to check if they are already used by hosts
-     * @return array<string, bool> Returns Name-indexed list with control status
+     * @param string[] $namesToCheck List of names to find
+     * @return string[] Return the host names found
      * @throws HostConfigurationException
      */
-    public function checkNamesAlreadyUsed(array $namesToCheck): array;
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array;
 }

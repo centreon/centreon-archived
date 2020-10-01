@@ -52,6 +52,7 @@ require_once __DIR__ . '/Manifest.php';
 require_once __DIR__ . '/HostCategory.php';
 require_once __DIR__ . '/Curves.php';
 require_once __DIR__ . '/Trap.php';
+require_once __DIR__ . '/PlatformTopology.php';
 require_once __DIR__ . '/Relations/ViewImgDirRelation.php';
 require_once __DIR__ . '/Relations/ViewImageDir.php';
 require_once __DIR__ . '/Relations/ExtendedServiceInformation.php';
@@ -218,6 +219,7 @@ class Generate
             $this->currentPoller['remote_server_use_as_proxy'] = 0;
             $this->configPoller($username);
             Relations\NagiosServer::getInstance($this->dependencyInjector)->add($this->currentPoller, $remoteServerId);
+            PlatformTopology::getInstance($this->dependencyInjector)->generateFromRemoteServerId($remoteServerId);
 
             $pollers = $this->getPollersFromRemote($remoteServerId);
             foreach ($pollers as $poller) {
@@ -348,6 +350,7 @@ class Generate
         ServiceTemplate::getInstance($this->dependencyInjector)->reset();
         TimePeriod::getInstance($this->dependencyInjector)->reset();
         Trap::getInstance($this->dependencyInjector)->reset();
+        PlatformTopology::getInstance($this->dependencyInjector)->reset();
         Relations\CfgResourceInstanceRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupHostRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupServiceRelation::getInstance($this->dependencyInjector)->reset();
