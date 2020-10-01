@@ -15699,3 +15699,18 @@ msgstr "Pas de ressource trouvée"
 
 msgid "Error when searching for the Engine configuration (%s)"
 msgstr "Erreur lors de la recherche de la configuration du moteur (%s)"
+
+msgid "Host id cannot be null"
+msgstr "L'id de l'hôte ne peut être nul"
+
+msgid "Host name cannot be null"
+msgstr "Le nom de l'hôte ne peut être nul"
+
+msgid "Action log id cannot be null"
+msgstr "L'id du journal des actions ne peut être nul"
+
+msgid "Error when adding details for the action log %d"
+msgstr "Erreur lors de l'ajout de détails pour le journal des actions %d"
+
+msgid "Error when adding an entry in the action log"
+msgstr "Erreur lors de l'ajout d'une entrée dans le journal des actions"

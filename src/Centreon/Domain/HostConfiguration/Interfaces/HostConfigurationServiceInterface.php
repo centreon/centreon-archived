@@ -87,11 +87,11 @@ interface HostConfigurationServiceInterface
     /**
      * Change the activation status of host.
      *
-     * @param int $hostId Host id for which we want to change the activation status
+     * @param Host $host Host for which we want to change the activation status
      * @param bool $shouldBeActivated TRUE to activate a host
      * @throws HostConfigurationException
      */
-    public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void;
+    public function changeActivationStatus(Host $host, bool $shouldBeActivated): void;
 
     /**
      * Find host names already used by hosts.
