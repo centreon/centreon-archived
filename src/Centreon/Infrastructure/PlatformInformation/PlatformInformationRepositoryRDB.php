@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformInformation;
 
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -61,16 +62,13 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
             }
 
             if (!empty($result)) {
-                $platformInformation = new PlatformInformation();
-                $platformInformation
-                    ->setIsRemote('yes' === $result['isRemote'])
-                    ->setAuthorizedMaster($result['authorizedMaster'] ?? null)
-                    ->setApiUsername($result['apiUsername'] ?? null)
-                    ->setApiCredentials($result['apiCredentials'] ?? null)
-                    ->setApiScheme($result['apiScheme'] ?? null)
-                    ->setApiPort(isset($result['apiPort']) ? (int) $result['apiPort'] : null)
-                    ->setApiPath($result['apiPath'] ?? null)
-                    ->setSslPeerValidationRequired('yes' === $result['apiPeerValidation']);
+                /**
+                 * @var PlatformInformation $platformInformation
+                 */
+                $platformInformation = EntityCreator::createEntityByArray(
+                    PlatformInformation::class,
+                    $result
+                );
             }
         }
 

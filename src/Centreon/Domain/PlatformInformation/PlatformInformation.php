@@ -36,6 +36,11 @@ class PlatformInformation
     private $isRemote = false;
 
     /**
+     * @var bool platform type
+     */
+    private $isCentral = false;
+
+    /**
      * @var string|null central's address
      */
     private $authorizedMaster;
@@ -84,7 +89,26 @@ class PlatformInformation
      */
     public function setIsRemote(bool $type): self
     {
-        $this->isRemote = $type;
+        $this->isRemote = ('yes' === $type);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsCentral(): bool
+    {
+        return $this->isCentral;
+    }
+
+    /**
+     * @param bool $type
+     * @return $this
+     */
+    public function setIsCentral(bool $type): self
+    {
+
+        $this->isCentral = ('yes' === $type);
         return $this;
     }
 
@@ -204,7 +228,7 @@ class PlatformInformation
     {
         // checking
         $port = filter_var($port, FILTER_VALIDATE_INT);
-        if (false === $port || 1 > $port || $port > 65536) {
+        if (false === $port || 0 > $port || $port > 65536) {
             throw new \InvalidArgumentException(
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
             );
@@ -279,7 +303,7 @@ class PlatformInformation
      */
     public function setSslPeerValidationRequired(bool $status): self
     {
-        $this->sslPeerValidationRequired = $status;
+        $this->sslPeerValidationRequired = ('yes' === $status);
         return $this;
     }
 }

@@ -30,6 +30,7 @@ interface PlatformInformationRepositoryInterface
      * Retrieve all data from 'information' table
      *
      * @return PlatformInformation|null
+     * @throws \Exception
      */
     public function findPlatformInformation(): ?PlatformInformation;
 }

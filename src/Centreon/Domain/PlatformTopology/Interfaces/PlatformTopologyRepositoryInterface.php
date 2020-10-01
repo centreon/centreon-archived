@@ -70,6 +70,7 @@ interface PlatformTopologyRepositoryInterface
      * @param string $serverName
      * @param bool $isLocalhost
      * @return PlatformTopology|null
+     * @throws \Exception
      */
     public function findMonitoringIdFromName(string $serverName, bool $isLocalhost): ?PlatformTopology;
 }

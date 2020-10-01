@@ -467,7 +467,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             null === $registeredParentInTopology->getParentId()
             && $registeredParentInTopology->getType() === PlatformTopology::TYPE_REMOTE
         ) {
-            $platformTopology->setLinkedToAnotherServer(true);
+            $registeredParentInTopology->setLinkedToAnotherServer(true);
             return $registeredParentInTopology;
         }
         return null;
