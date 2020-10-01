@@ -25,6 +25,11 @@ namespace Centreon\Domain\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 
+/**
+ * Service intended to use rest API on 'information' specific configuration data
+ *
+ * @package Centreon\Domain\PlatformInformation
+ */
 class PlatformInformationService implements PlatformInformationServiceInterface
 {
 
@@ -32,11 +37,6 @@ class PlatformInformationService implements PlatformInformationServiceInterface
      * @var PlatformInformationRepositoryInterface
      */
     private $platformInformationRepository;
-
-    /**
-     * @var PlatformInformation $foundPlatformInformation
-     */
-    private $foundPlatformInformation;
 
     public function __construct(PlatformInformationRepositoryInterface $platformInformationRepository)
     {
