@@ -23,7 +23,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
+            {"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
             """
 
         # Successfully register the Central on the container
@@ -50,7 +50,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
+            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
@@ -65,7 +65,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
+            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
             """
 
         # Register a Central linked to another Central
@@ -82,7 +82,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"code":400,"message":"Cannot use parent address on a Central server type"}
+            {"message":"Cannot use parent address on a Central server type"}
             """
 
         # Check data consistency
@@ -99,7 +99,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"code":400,"message":"The platform type of 'wrong type server'@'6.6.6.1' is not consistent"}
+            {"message":"The platform type of 'wrong type server'@'6.6.6.1' is not consistent"}
             """
 
         # Register a platform using inconsistent address / Should fail and an error should be returned
@@ -115,14 +115,14 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"code":400,"message":"The address of 'inconsistent address' is not valid"}
+            {"message":"The address '666' of 'inconsistent address' is not valid"}
             """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "inconsistent address",
+                "name": "inconsistent parent address",
                 "type": "poller",
                 "address": "6.6.6.1",
                 "parent_address": "666."
@@ -131,7 +131,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"code":400,"message":"The address of 'inconsistent address' is not valid"}
+            {"message":"The address '666' of 'inconsistent parent address' is not valid"}
             """
 
         # Register a poller linked to the Central.
@@ -159,7 +159,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A platform using the name : 'my poller' or address : '1.1.1.1' already exists"}
+            {"message":"A platform using the name : 'my poller' or address : '1.1.1.1' already exists"}
             """
 
         # Register a poller using type not formatted as expected / Should be successful
@@ -187,7 +187,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
+            {"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
             """
 
         # Register a poller with no parent address / Should fail and an error should be returned
@@ -202,7 +202,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"Missing mandatory parent address, to link the platform : 'my poller 4'@'1.1.1.4'"}
+            {"message":"Missing mandatory parent address, to link the platform : 'my poller 4'@'1.1.1.4'"}
             """
 
         # Register a poller using same address and parent address / Should fail and an error should be returned
@@ -218,7 +218,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"Same address and parent_address for platform : 'my poller 4'@'1.1.1.4'."}
+            {"message":"Same address and parent_address for platform : 'my poller 4'@'1.1.1.4'."}
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned
@@ -234,5 +234,5 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"Cannot register the 'poller' platform : 'inconsistent parent type'@'6.6.6.1' behind a 'poller' platform"}
+            {"message":"Cannot register the 'poller' platform : 'inconsistent parent type'@'6.6.6.1' behind a 'poller' platform"}
             """
