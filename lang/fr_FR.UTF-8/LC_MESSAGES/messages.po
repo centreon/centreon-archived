@@ -15626,7 +15626,7 @@ msgstr "Echec d'obtention du token d'auth. Impossible d'enregistrer sur le Centr
 
 #: api/topology/register
 msgid "Request to the Central's API failed"
-msgstr "Echec de la requète de l'API du Central"
+msgstr "Echec de la requète vers l'API du Central"
 
 #: api/topology/register
 msgid "API calling the Central returned a Client exception"
