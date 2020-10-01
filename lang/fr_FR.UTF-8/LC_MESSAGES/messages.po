@@ -15658,7 +15658,7 @@ msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à c
 
 #: api/topology/register
 msgid "Central's response => Code : "
-msgstr "Response du Central => Code : "
+msgstr "Réponse du Central => Code : "
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
