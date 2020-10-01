@@ -52,9 +52,7 @@ const fillEntities = (): Array<Resource> => {
       severity_code: 5,
     },
     acknowledged: index % 2 === 0,
-    acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,
     in_downtime: index % 3 === 0,
-    downtime_endpoint: `/monitoring/downtime/${index}`,
     duration: '1m',
     last_check: '1m',
     tries: '1',
@@ -62,10 +60,22 @@ const fillEntities = (): Array<Resource> => {
     information:
       index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
     type: index % 4 === 0 ? 'service' : 'host',
-    performance_graph_endpoint: index % 6 === 0 ? 'endpoint' : undefined,
-    details_endpoint: 'endpoint',
-    timeline_endpoint: 'endpoint',
-    configuration_uri: index % 7 === 0 ? 'uri' : undefined,
+    links: {
+      endpoints: {
+        acknowledgement: `/monitoring/acknowledgement/${index}`,
+        details: 'endpoint',
+        downtime: `/monitoring/downtime/${index}`,
+        performance_graph: index % 6 === 0 ? 'endpoint' : null,
+        status_graph: index % 3 === 0 ? 'endpoint' : null,
+        timeline: 'endpoint',
+      },
+      uris: {
+        configuration: index % 7 === 0 ? 'uri' : null,
+        logs: index % 4 === 0 ? 'uri' : null,
+        reporting: index % 3 === 0 ? 'uri' : null,
+      },
+    },
+    passive_checks: index % 8 === 0,
   }));
 };
 
@@ -305,7 +315,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        entityInDowntime?.downtime_endpoint,
+        entityInDowntime?.links.endpoints.downtime,
         cancelTokenRequestParam,
       ),
     );
@@ -347,7 +357,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        acknowledgedEntity?.acknowledgement_endpoint,
+        acknowledgedEntity?.links.endpoints.acknowledgement,
         cancelTokenRequestParam,
       ),
     );

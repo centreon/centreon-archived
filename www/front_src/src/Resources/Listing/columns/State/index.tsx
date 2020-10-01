@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { path } from 'ramda';
+
 import { Grid } from '@material-ui/core';
 
 import { ComponentColumnProps } from '@centreon/ui';
@@ -37,9 +39,11 @@ const DowntimeHoverChip = ({
 }: {
   resource: Resource;
 }): JSX.Element => {
+  const downtimeEndpoint = path(['links', 'endpoints', 'downtime'], resource);
+
   return (
     <StateHoverChip
-      endpoint={resource.downtime_endpoint as string}
+      endpoint={downtimeEndpoint as string}
       label={`${resource.name} ${labelInDowntime}`}
       DetailsTable={DowntimeDetailsTable}
       Chip={DowntimeChip}
@@ -52,9 +56,14 @@ const AcknowledgeHoverChip = ({
 }: {
   resource: Resource;
 }): JSX.Element => {
+  const acknowledgementEndpoint = path(
+    ['links', 'endpoints', 'acknowledgement'],
+    resource,
+  );
+
   return (
     <StateHoverChip
-      endpoint={resource.acknowledgement_endpoint as string}
+      endpoint={acknowledgementEndpoint as string}
       label={`${resource.name} ${labelAcknowledged}`}
       DetailsTable={AcknowledgementDetailsTable}
       Chip={AcknowledgeChip}
