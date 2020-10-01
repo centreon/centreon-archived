@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation;
 
+use Centreon\Domain\Annotation\EntityDescriptor;
 use Security\Encryption;
 
 /**
@@ -32,11 +33,13 @@ class PlatformInformation
 {
     /**
      * @var string|null platform version
+     * @EntityDescriptor(column="version", modifier="setVersion")
      */
     private $version;
 
     /**
      * @var string|null
+     * @EntityDescriptor(column="appKey", modifier="setAppKey")
      */
     private $appKey;
 
@@ -54,31 +57,37 @@ class PlatformInformation
 
     /**
      * @var string|null central's address
+     * @EntityDescriptor(column="authorizedMaster", modifier="setAuthorizedMaster")
      */
     private $authorizedMaster;
 
     /**
      * @var string|null
+     * @EntityDescriptor(column="apiUsername", modifier="setApiUsername")
      */
     private $apiUsername;
 
     /**
      * @var string|null
+     * @EntityDescriptor(column="apiCredentials", modifier="setApiCredentials")
      */
     private $apiCredentials;
 
     /**
      * @var string|null
+     * @EntityDescriptor(column="apiScheme", modifier="setApiScheme")
      */
     private $apiScheme;
 
     /**
      * @var int|null
+     * @EntityDescriptor(column="apiPort", modifier="setApiPort")
      */
     private $apiPort;
 
     /**
      * @var string|null
+     * @EntityDescriptor(column="apiPath", modifier="setApiPath")
      */
     private $apiPath;
 
