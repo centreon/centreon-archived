@@ -91,18 +91,25 @@ try {
     exit;
 }
 
+$bindValues = [];
+$hostName = gethostname();
+$hostName
+    ? $bindValues[':hostname'] = [\PDO::PARAM_STR => $hostName]
+    : $bindValues[':hostname'] = [\PDO::PARAM_NULL => null];
 // Insert Central to 'platform_topology' table, as first server and parent of all others.
 $centralServerQuery = $link->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
 if ($row = $centralServerQuery->fetch()) {
     $stmt = $link->prepare("
         INSERT INTO `platform_topology` (
             `address`,
+            `hostname`,
             `name`,
             `type`,
             `parent_id`,
             `server_id`
         ) VALUES (
             :centralAddress,
+            :hostname,
             :name,
             'central',
             NULL,
@@ -110,6 +117,11 @@ if ($row = $centralServerQuery->fetch()) {
         )
     ");
     $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
+    foreach ($bindValues as $token => $bindParams) {
+        foreach ($bindParams as $paramType => $paramValue) {
+            $stmt->bindValue($token, $paramValue, $paramType);
+        }
+    }
     $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
     $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
     $stmt->execute();

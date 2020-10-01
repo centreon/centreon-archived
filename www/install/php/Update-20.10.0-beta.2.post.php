@@ -79,7 +79,7 @@ try {
 
     // get topology local server id
     $localStmt = $pearDB->query(
-        "SELECT `id` FROM `platform_topology` 
+        "SELECT `id` FROM `platform_topology`
         WHERE `server_id` = (SELECT `id` FROM nagios_server WHERE localhost = '1')"
     );
     $parentId = $localStmt->fetchColumn();
