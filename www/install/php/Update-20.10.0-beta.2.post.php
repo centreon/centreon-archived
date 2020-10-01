@@ -19,9 +19,6 @@
  *
  */
 
-include_once __DIR__ . "/../../class/centreonLog.class.php";
-$centreonLog = new CentreonLog();
-
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.10.0-beta.2.post : ';
 
@@ -52,11 +49,7 @@ try {
         WHERE localhost = '1' AND ns_activate = '1'
     ");
 
-    $bindValues = [];
-    $hostName = gethostname();
-    $hostName
-        ? $bindValues[':hostname'] = [\PDO::PARAM_STR => $hostName]
-        : $bindValues[':hostname'] = [\PDO::PARAM_NULL => null];
+    $hostName = gethostname() ?: null;
 
     // Insert the server in 'platform_topology' table
     if ($row = $serverQuery->fetch()) {
@@ -67,21 +60,19 @@ try {
         ");
         $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
         $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
-        foreach ($bindValues as $token => $bindParams) {
-            foreach ($bindParams as $paramType => $paramValue) {
-                $stmt->bindValue($token, $paramValue, $paramType);
-            }
-        }
+        $stmt->bindValue(':hostname', $hostName, \PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, \PDO::PARAM_STR);
         $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
         $stmt->execute();
     }
 
     // get topology local server id
-    $localStmt = $pearDB->query(
-        "SELECT `id` FROM `platform_topology`
-        WHERE `server_id` = (SELECT `id` FROM nagios_server WHERE localhost = '1')"
-    );
+    $localStmt = $pearDB->query("
+        SELECT `platform_topology`.`id` FROM `platform_topology`
+        INNER JOIN nagios_server
+        ON `platform_topology`.`server_id` = `nagios_server`.`id`
+        WHERE `nagios_server`.`localhost` = '1'
+    ");
     $parentId = $localStmt->fetchColumn();
 
     // get nagios_server children
@@ -97,9 +88,11 @@ try {
             $parent = $row['remote_id'];
         }
 
-        $remoteServerQuery = $pearDB->query(
-            "SELECT `id` FROM remote_servers WHERE ip = '" . $row['ns_ip_address'] . "'"
+        $remoteServerQuery = $pearDB->prepare(
+            "SELECT `id` FROM remote_servers WHERE ip = :ipAddress"
         );
+        $remoteServerQuery->bindValue(':ipAddress', $row['ns_ip_address'], \PDO::PARAM_STR);
+        $remoteServerQuery->execute();
         $remoteId = $remoteServerQuery->fetchColumn();
         if ($remoteId) {
             //is remote
@@ -122,6 +115,8 @@ try {
     $pearDB->commit();
     $errorMessage = "";
 } catch (\Exception $e) {
+    include_once __DIR__ . "/../../class/centreonLog.class.php";
+    $centreonLog = new CentreonLog();
     $pearDB->rollBack();
     $centreonLog->insertLog(
         4,

@@ -91,7 +91,7 @@ try {
     exit;
 }
 
-$hostName = gethostname();
+$hostName = gethostname() ?: null;
 // Insert Central to 'platform_topology' table, as first server and parent of all others.
 $centralServerQuery = $link->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
 if ($row = $centralServerQuery->fetch()) {
@@ -113,9 +113,7 @@ if ($row = $centralServerQuery->fetch()) {
         )
     ");
     $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
-    $hostName
-        ? $stmt->bindValue(':hostname', $hostName, \PDO::PARAM_STR)
-        : $stmt->bindValue(':hostname', null, \PDO::PARAM_NULL);
+    $stmt->bindValue(':hostname', $hostName, \PDO::PARAM_STR);
     $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
     $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
     $stmt->execute();
