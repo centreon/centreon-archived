@@ -30,6 +30,7 @@ $versionOfTheUpgrade = 'UPGRADE - 20.10.0-beta.2.post : ';
  */
 try {
     $pearDB->beginTransaction();
+    // Remove data inserted in 20.10.0-beta1
     $pearDB->query("DELETE FROM `platform_topology`");
 
     /**
