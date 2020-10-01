@@ -215,8 +215,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 // Enable specific options
                 $optionPayload = [];
                 // Enable proxy
-                if (null !== $proxy && !empty($proxy->__toString())) {
-                    $optionPayload['proxy'] = $proxy->__toString();
+                if (null !== $proxy && !empty((string) $proxy)) {
+                    $optionPayload['proxy'] = (string) $proxy;
                 }
                 // SSL verify_peer
                 if ($foundPlatformInformation->hasApiPeerValidation()) {
