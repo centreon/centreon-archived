@@ -148,12 +148,12 @@ class PlatformTopologyController extends AbstractController
             $this->platformTopologyService->addPlatformToTopology($platformTopology);
 
             return $this->view(null, Response::HTTP_CREATED);
-        } catch (PlatformTopologyException | InvalidArgumentException  $ex) {
-            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+        } catch (EntityNotFoundException $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (PlatformTopologyConflictException  $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
-        } catch (\Throwable $ex) {
-            throw new PlatformTopologyException($ex->getMessage(), 0, $ex);
+        } catch (PlatformTopologyException | InvalidArgumentException | \Throwable $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }
