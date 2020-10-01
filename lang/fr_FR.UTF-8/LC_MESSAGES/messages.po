@@ -15602,7 +15602,7 @@ msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'."
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."
-msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser le wizard."
+msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser l'assistant."
 
 #: api/topology/register
 msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."
