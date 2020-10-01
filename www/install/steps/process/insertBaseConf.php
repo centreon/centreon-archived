@@ -93,9 +93,6 @@ try {
 
 $bindValues = [];
 $hostName = gethostname();
-$hostName
-    ? $bindValues[':hostname'] = [\PDO::PARAM_STR => $hostName]
-    : $bindValues[':hostname'] = [\PDO::PARAM_NULL => null];
 // Insert Central to 'platform_topology' table, as first server and parent of all others.
 $centralServerQuery = $link->query("SELECT `id`, `name` FROM nagios_server WHERE localhost = '1'");
 if ($row = $centralServerQuery->fetch()) {
