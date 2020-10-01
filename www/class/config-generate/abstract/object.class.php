@@ -130,6 +130,7 @@ abstract class AbstractObject
         if (!($this->fp = @fopen($full_file, 'w+'))) {
             throw new Exception("Cannot open file (writing permission) '" . $full_file . "'");
         }
+        chmod($full_file, 0660);
         $this->setHeader();
     }
 

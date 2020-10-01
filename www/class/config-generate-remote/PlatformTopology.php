@@ -33,6 +33,7 @@ class PlatformTopology extends AbstractObject
     protected $attributesSelect = '
         id,
         address,
+        hostname,
         name,
         type,
         parent_id,
@@ -41,6 +42,7 @@ class PlatformTopology extends AbstractObject
     protected $attributesWrite = [
         'id',
         'address',
+        'hostname',
         'name',
         'type',
         'parent_id',

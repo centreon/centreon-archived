@@ -179,6 +179,7 @@ $loginCredentials = [
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $payload = [
     "name" => $configOptions['SERVER_NAME'],
+    "hostname" => gethostname(),
     "type" => $configOptions['SERVER_TYPE'],
     "address" => $configOptions['DNS'] ?? $serverIp,
 ];
@@ -262,10 +263,10 @@ if (isRemote($serverType)) {
         exit($e->getMessage());
     }
     $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
-    $loginCredentialsDb['apiPeerValidation'] = isset($configOptions['INSECURE']) ? 'yes' : 'no';
+    $loginCredentialsDb['apiPeerValidation'] = isset($configOptions['INSECURE']) ? 'no' : 'yes';
     $loginCredentialsDb['apiScheme'] = $protocol;
     if (isset($port)) {
-        $loginCredentials['apiPort'] = $port;
+        $loginCredentialsDb['apiPort'] = $port;
     }
     if ($configOptions['PROXY_USAGE'] === true) {
         $loginCredentialsDb['proxy_informations']['proxy_url'] = $configOptions["PROXY_HOST"];
