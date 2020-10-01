@@ -138,7 +138,7 @@ const DowntimeForm = ({
         resources,
         params: { ...values, startTime, endTime, duration },
       }).then(() => {
-        showSuccess(labelDowntimeCommandSent);
+        showSuccess(t(labelDowntimeCommandSent));
         onSuccess();
       });
     },
