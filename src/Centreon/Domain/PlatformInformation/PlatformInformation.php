@@ -228,7 +228,7 @@ class PlatformInformation
     {
         // checking
         $port = filter_var($port, FILTER_VALIDATE_INT);
-        if (false === $port || 0 > $port || $port > 65536) {
+        if (false === $port || 1 > $port || $port > 65535) {
             throw new \InvalidArgumentException(
                 _("Central platform's data are not consistent. Please check the 'Remote Access' form")
             );
