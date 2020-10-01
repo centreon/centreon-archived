@@ -2,28 +2,28 @@ Centreon\Domain\PlatformInformation\PlatformInformation:
   properties:
     version:
       type: string
-      groups: [platform_information_main]
-    is_remote:
+      groups: [platform_information_main, platform_information_limited]
+    isRemote:
+      type: string
+      groups: [platform_information_main, platform_information_limited]
+    isCentral:
+      type: string
+      groups: [platform_information_main, platform_information_limited]
+    authorizedMaster:
       type: string
       groups: [platform_information_main]
-    is_central:
+    apiScheme:
       type: string
       groups: [platform_information_main]
-    authorized_master:
-      type: string
-      groups: [platform_information_main]
-    api_scheme:
-      type: string
-      groups: [platform_information_main]
-    api_port:
+    apiPort:
       type: int
       groups: [platform_information_main]
-    api_path:
+    apiPath:
       type: string
       groups: [platform_information_main]
-    api_peer_validation:
+    apiPeerValidation:
       type: string
       groups: [platform_information_main]
-    api_username:
+    apiUsername:
       type: string
       groups: [platform_information_main]

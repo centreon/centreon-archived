@@ -219,7 +219,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $optionPayload['proxy'] = $proxy->__toString();
                 }
                 // SSL verify_peer
-                if ($foundPlatformInformation->isSslPeerValidationRequired()) {
+                if ($foundPlatformInformation->hasApiPeerValidation()) {
                     $optionPayload['verify_peer'] = true;
                     $optionPayload['verify_host'] = true;
                 }

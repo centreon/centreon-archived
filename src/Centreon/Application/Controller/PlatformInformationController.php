@@ -37,7 +37,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PlatformInformationController extends AbstractController
 {
-    public const SERIALIZER_GROUPS_MAIN = ['platform_information_main'];
+    public const SERIALIZER_GROUP_MAIN = ['platform_information_main'];
+    public const SERIALIZER_GROUP_LIMITED = ['platform_information_limited'];
 
     /**
      * PlatformInformationController constructor
@@ -58,8 +59,15 @@ class PlatformInformationController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
+            $context = (new Context())
+                ->setGroups(static::SERIALIZER_GROUP_LIMITED)
+                ->enableMaxDepth();
+            return $this->view($this->platformInformationService->getInformation())->setContext($context);
+        }
+
         $context = (new Context())
-            ->setGroups(static::SERIALIZER_GROUPS_MAIN)
+            ->setGroups(static::SERIALIZER_GROUP_MAIN)
             ->enableMaxDepth();
         return $this->view($this->platformInformationService->getInformation())->setContext($context);
     }

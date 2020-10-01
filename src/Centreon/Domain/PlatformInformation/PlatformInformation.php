@@ -93,9 +93,9 @@ class PlatformInformation
 
     /**
      * @var bool SSL peer validation
-     * @EntityDescriptor(column="apiPeerValidation", modifier="setSslPeerValidation")
+     * @EntityDescriptor(column="apiPeerValidation", modifier="setApiPeerValidation")
      */
-    private $sslPeerValidation = false;
+    private $apiPeerValidation = false;
 
     /**
      * @return string|null
@@ -348,18 +348,18 @@ class PlatformInformation
     /**
      * @return bool
      */
-    public function isSslPeerValidationRequired(): bool
+    public function hasApiPeerValidation(): bool
     {
-        return $this->sslPeerValidation;
+        return $this->apiPeerValidation;
     }
 
     /**
      * @param string|null $status
      * @return $this
      */
-    public function setSslPeerValidation(?string $status): self
+    public function setApiPeerValidation(?string $status): self
     {
-        $this->sslPeerValidation = ('yes' === ($status ?? null));
+        $this->apiPeerValidation = ('yes' === ($status ?? null));
         return $this;
     }
 }
