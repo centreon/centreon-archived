@@ -69,7 +69,7 @@ const Shortcuts = ({ uris }: Props): JSX.Element => {
             className={clsx([classes.gridWithSpacing, classes.shortcutRow])}
           >
             <Icon color="primary" />
-            <Link variant="body1" href={uri} color="inherit">
+            <Link variant="body1" href={uri as string} color="inherit">
               {t(name)}
             </Link>
           </div>
