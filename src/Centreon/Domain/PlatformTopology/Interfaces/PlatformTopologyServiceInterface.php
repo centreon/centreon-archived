@@ -26,6 +26,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\PlatformInformation\PlatformInformationException;
 
 interface PlatformTopologyServiceInterface
 {
@@ -36,6 +37,7 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformTopologyConflictException
      * @throws PlatformTopologyException
      * @throws EntityNotFoundException
+     * @throws PlatformInformationException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
 }

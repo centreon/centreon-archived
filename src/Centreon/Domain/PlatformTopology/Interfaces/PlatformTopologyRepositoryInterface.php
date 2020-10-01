@@ -53,6 +53,7 @@ interface PlatformTopologyRepositoryInterface
      *
      * @param string $serverAddress
      * @return PlatformTopology|null
+     * @throws \Exception
      */
     public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology;
 
@@ -61,6 +62,7 @@ interface PlatformTopologyRepositoryInterface
      *
      * @param string $serverType
      * @return PlatformTopology|null
+     * * @throws \Exception
      */
     public function findPlatformTopologyByType(string $serverType): ?PlatformTopology;
 

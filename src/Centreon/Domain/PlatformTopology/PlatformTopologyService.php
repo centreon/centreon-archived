@@ -24,6 +24,7 @@ namespace Centreon\Domain\PlatformTopology;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
@@ -137,7 +138,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if (false === $foundPlatformInformation->getIsRemote()) {
+            if (false === $foundPlatformInformation->isRemote()) {
                 throw new PlatformTopologyConflictException(
                     sprintf(
                         _("The platform: '%s'@'%s' is not declared as a 'remote'."),
@@ -283,14 +284,15 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $registerPayload
                 );
 
-                // Get request status code and error message
-                $returnedMessage = json_decode($registerResponse->getContent(false), true);
-                if (201 !== $registerResponse->getStatusCode()) {
+                // Get request status code and return the error message
+                if (Response::HTTP_CREATED !== $registerResponse->getStatusCode()) {
                     $errorMessage = sprintf(
                         _("The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"),
                         $platformTopology->getName(),
                         $platformTopology->getAddress()
                     );
+                    $returnedMessage = json_decode($registerResponse->getContent(false), true);
+
                     if (!empty($returnedMessage)) {
                         $errorMessage .= "  /  " . _("Central's response => Code : ") . implode(', ', $returnedMessage);
                     }
@@ -300,27 +302,31 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
             } catch (TransportExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Request to the Central's API failed : ") . $e->getMessage()
+                    _("Request to the Central's API failed") . (' : ') . $e->getMessage()
                 );
             } catch (ClientExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a Client exception : ") . $e->getMessage()
+                    _("API calling the Central returned a Client exception") . (' : ') . $e->getMessage()
                 );
             } catch (RedirectionExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a Redirection exception : ") . $e->getMessage()
+                    _("API calling the Central returned a Redirection exception") . (' : ') . $e->getMessage()
                 );
             } catch (ServerExceptionInterface $e) {
+                $message = _("API calling the Central returned a Server exception");
+                if (!empty($optionPayload['proxy'])) {
+                    $message .= '. ' . _("Please check the 'Centreon UI' form and your proxy configuration");
+                }
                 throw new PlatformTopologyException(
-                    _("Central's API content thrown a Server exception : ") . $e->getMessage()
+                    $message . (' : ') . $e->getMessage()
                 );
             } catch (DecodingExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Unable to convert Central's API response : ") . $e->getMessage()
+                    _("Unable to convert Central's API response") . (' : ') . $e->getMessage()
                 );
             } catch (\Exception $e) {
                 throw new PlatformTopologyException(
-                    _("Error from Central's register API : ") . $e->getMessage()
+                    _("Error from Central's register API") . (' : ') . $e->getMessage()
                 );
             }
         }
@@ -369,6 +375,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @param PlatformTopology $platformTopology
      * @param bool $isLocalhost
      * @throws PlatformTopologyConflictException
+     * @throws \Exception
      */
     private function setMonitoringServerId(PlatformTopology $platformTopology, bool $isLocalhost): void
     {

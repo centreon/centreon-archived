@@ -22,7 +22,7 @@ Centreon\Domain\PlatformInformation\PlatformInformation:
       type: string
       groups: [platform_information_main]
     apiPeerValidation:
-      type: bool
+      type: string
       groups: [platform_information_main]
     apiUsername:
       type: string

@@ -62,13 +62,18 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
             }
 
             if (!empty($result)) {
-                /**
-                 * @var PlatformInformation $platformInformation
-                 */
-                $platformInformation = EntityCreator::createEntityByArray(
-                    PlatformInformation::class,
-                    $result
-                );
+                $platformInformation = new PlatformInformation();
+                $platformInformation->setIsRemote($result['isRemote'] ?? null)
+                    ->setIsCentral($result['isCentral'] ?? null)
+                    ->setVersion($result['version'] ?? null)
+                    ->setAppkey($result['appKey'] ?? null)
+                    ->setAuthorizedMaster($result['authorizedMaster'] ?? null)
+                    ->setApiUsername($result['apiUsername'] ?? null)
+                    ->setApiCredentials($result['apiCredentials'] ?? null)
+                    ->setApiScheme($result['apiScheme'] ?? null)
+                    ->setApiPort(isset($result['apiPort']) ? (int) $result['apiPort'] : null)
+                    ->setApiPath($result['apiPath'] ?? null)
+                    ->setSslPeerValidation($result['apiPeerValidation'] ?? null);
             }
         }
 

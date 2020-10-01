@@ -56,6 +56,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
                 _("Unable to retrieve platform information's data.")
             );
         }
+
         return $foundPlatformInformation;
     }
 }

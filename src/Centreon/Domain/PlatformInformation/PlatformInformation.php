@@ -31,12 +31,24 @@ use Security\Encryption;
 class PlatformInformation
 {
     /**
+     * @var string|null platform version
+     */
+    private $version;
+
+    /**
+     * @var string|null
+     */
+    private $appKey;
+
+    /**
      * @var bool platform type
+     * @EntityDescriptor(column="isRemote", modifier="setIsRemote")
      */
     private $isRemote = false;
 
     /**
      * @var bool platform type
+     * @EntityDescriptor(column="isCentral", modifier="setIsCentral")
      */
     private $isCentral = false;
 
@@ -71,44 +83,81 @@ class PlatformInformation
     private $apiPath;
 
     /**
-     * @var bool SSL peer validation activated
+     * @var bool SSL peer validation
+     * @EntityDescriptor(column="apiPeerValidation", modifier="setSslPeerValidation")
      */
-    private $sslPeerValidationRequired = false;
+    private $sslPeerValidation = false;
 
     /**
+     * @return string|null
+     */
+    public function getVersion(): ?string
+    {
+        return $this->version;
+    }
+
+    /**
+     * @param string|null $version
+     * @return $this
+     */
+    public function setVersion(?string $version): self
+    {
+        $this->version = $version;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAppKey(): ?string
+    {
+        return $this->appKey;
+    }
+
+    /**
+     * @param string|null $value
+     * @return $this
+     */
+    public function setAppKey(?string $value): self
+    {
+        $this->appKey = $value;
+        return $this;
+    }
+
+    /**
+     *
      * @return bool
      */
-    public function getIsRemote(): bool
+    public function isRemote(): bool
     {
         return $this->isRemote;
     }
 
     /**
-     * @param bool $type
+     * @param string|null $isRemote
      * @return $this
      */
-    public function setIsRemote(bool $type): self
+    public function setIsRemote(?string $isRemote): self
     {
-        $this->isRemote = ('yes' === $type);
+        $this->isRemote = ('yes' === ($isRemote ?? null));
         return $this;
     }
 
     /**
      * @return bool
      */
-    public function getIsCentral(): bool
+    public function isCentral(): bool
     {
         return $this->isCentral;
     }
 
     /**
-     * @param bool $type
+     * @param string|null $isCentral
      * @return $this
      */
-    public function setIsCentral(bool $type): self
+    public function setIsCentral(?string $isCentral): self
     {
-
-        $this->isCentral = ('yes' === $type);
+        $this->isCentral = ('yes' === ($isCentral ?? null));
         return $this;
     }
 
@@ -121,10 +170,10 @@ class PlatformInformation
     }
 
     /**
-     * @param string $address
+     * @param string|null $address
      * @return $this
      */
-    public function setAuthorizedMaster(string $address): self
+    public function setAuthorizedMaster(?string $address): self
     {
         $this->authorizedMaster = $address;
         return $this;
@@ -139,10 +188,10 @@ class PlatformInformation
     }
 
     /**
-     * @param string $username
+     * @param string|null $username
      * @return $this
      */
-    public function setApiUsername(string $username): self
+    public function setApiUsername(?string $username): self
     {
         $this->apiUsername = $username;
         return $this;
@@ -226,11 +275,9 @@ class PlatformInformation
      */
     private function checkPortConsistency(?int $port): int
     {
-        // checking
-        $port = filter_var($port, FILTER_VALIDATE_INT);
         if (false === $port || 1 > $port || $port > 65535) {
             throw new \InvalidArgumentException(
-                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
+                _("Central platform's API port are not consistent. Please check the 'Remote Access' form.")
             );
         }
         return $port;
@@ -294,16 +341,16 @@ class PlatformInformation
      */
     public function isSslPeerValidationRequired(): bool
     {
-        return $this->sslPeerValidationRequired;
+        return $this->sslPeerValidation;
     }
 
     /**
-     * @param bool $status
+     * @param string|null $status
      * @return $this
      */
-    public function setSslPeerValidationRequired(bool $status): self
+    public function setSslPeerValidation(?string $status): self
     {
-        $this->sslPeerValidationRequired = ('yes' === $status);
+        $this->sslPeerValidation = ('yes' === ($status ?? null));
         return $this;
     }
 }

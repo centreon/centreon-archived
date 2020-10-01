@@ -15585,8 +15585,8 @@ msgid "Same address and parent_address for platform : '%s'@'%s'."
 msgstr "Les adresses de la plateforme : '%s'@'%s' et de son parent sont les mêmes"
 
 #: api/topology/register
-msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"
-msgstr "Les données de la plateforme Central ne sont pas cohérentes. Veuiller vérifier le formulaire 'Accès du Remote'"
+msgid "Central platform's API port are not consistent. Please check the 'Remote Access' form."
+msgstr "Le port de l'API vers le Central n'est pas cohérent. Veuiller vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."
@@ -15625,24 +15625,28 @@ msgid "Failed to get the auth token. Cannot register the platform : '%s'@'%s' on
 msgstr "Echec d'obtention du token d'auth. Impossible d'enregistrer sur le Central: '%s'@'%s'"
 
 #: api/topology/register
-msgid "Request to the Central's API failed : "
+msgid "Request to the Central's API failed"
 msgstr "Echec de la requète de l'API du Central"
 
 #: api/topology/register
-msgid "Central's API content thrown a Client exception : "
-msgstr "L'API du Central a renvoyé l'exception Client : "
+msgid "API calling the Central returned a Client exception"
+msgstr "L'API du Central a renvoyé l'exception Client"
 
 #: api/topology/register
-msgid "Central's API content thrown a Redirection exception : "
-msgstr "L'API du Central a renvoyé l'exception de Redirection : "
+msgid "API calling the Central returned a Redirection exception"
+msgstr "L'API du Central a renvoyé l'exception de Redirection"
 
 #: api/topology/register
-msgid "Central's API content thrown a Server exception :"
-msgstr "L'API du Central a renvoyé l'exception Server : "
+msgid "API calling the Central returned a Server exception"
+msgstr "L'API du Central a renvoyé l'exception Server"
 
 #: api/topology/register
-msgid "Unable to convert Central's API response : "
-msgstr "Impossible de convertir la réponse de L'API du Central : "
+msgid "Please check the 'Centreon UI' form and your proxy configuration"
+msgstr "Veuillez vérifier le formulaire 'Centreon Web' et les paramètres de votre proxy"
+
+#: api/topology/register
+msgid "Unable to convert Central's API response"
+msgstr "Impossible de convertir la réponse de L'API du Central"
 
 #: api/topology/register
 msgid "Error from Central's register API : "
