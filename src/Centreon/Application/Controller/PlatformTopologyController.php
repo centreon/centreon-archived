@@ -164,7 +164,7 @@ class PlatformTopologyController extends AbstractController
         }
         $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
         $edges = $this->generateEdgeJsonGraphArray($platformCompleteTopology);
-        
+
         return $this->view([
             'graph' => [
                 'label' => 'centreon-topology',

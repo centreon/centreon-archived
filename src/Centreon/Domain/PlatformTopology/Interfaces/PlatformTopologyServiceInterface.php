@@ -48,5 +48,5 @@ interface PlatformTopologyServiceInterface
      */
     public function getPlatformCompleteTopology(): array;
 
-    public function findPlatformNodeRelation(int $serverId): array;
+    public function findPlatformNodesRelation(int $serverId): string;
 }

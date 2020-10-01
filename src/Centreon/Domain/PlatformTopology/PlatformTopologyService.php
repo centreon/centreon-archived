@@ -172,9 +172,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         return $completePlatformTopology;
     }
 
-    public function findPlatformNodeRelation(int $serverId): array
+    public function findPlatformNodesRelation(int $serverId): string
     {
-        
+        $relation = $this->platformTopologyRepository->findPlatformNodesRelation($serverId);
+        return '';
     }
-
 }

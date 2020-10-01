@@ -199,4 +199,28 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         }
         return null;
     }
+
+    public function findPlatformNodesRelation(int $id): ?string
+    {
+        $statement = $this->db->prepare("
+            SELECT *
+            FROM cfg_centreonbroker_info cfgbi
+            WHERE cfgbi.config_id IN (
+                SELECT config_id
+                FROM cfg_centreonbroker AS cfgb
+                INNER JOIN nagios_server AS ns ON (cfgb.ns_nagios_server = ns.id)
+                AND ns.id = :serverId
+            )
+            AND cfgbi.config_group IN ('output', 'input')
+            AND config_key IN ('one_peer_retention_mode', 'host', 'name', 'port', 'protocol')
+            ORDER BY config_id, config_group, config_group_id, config_key ASC
+        ");
+        $statement->bindValue(':serverId', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        while(($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false){
+            var_dump($result);
+        }
+        die();
+        return $result['one_peer_retention_mode'];
+    }
 }
