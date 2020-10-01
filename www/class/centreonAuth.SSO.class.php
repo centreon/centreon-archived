@@ -119,7 +119,7 @@ class CentreonAuthSSO extends CentreonAuth
                 FILTER_SANITIZE_STRING
             );
 
-            if (isset($inputCode) && !is_null($inputCode) && $inputCode != '') {
+            if (!empty($inputCode)) {
                 $keyToken = $this->getOpenIdConnectToken(
                     $tokenEndpoint,
                     $redirectNoEncode,
