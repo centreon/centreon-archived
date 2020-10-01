@@ -15594,7 +15594,7 @@ msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuil
 
 #: api/topology/register
 msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"
-msgstr "Des données de la plateforme ne sont pas cohérente. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgstr "Des données de la plateforme ne sont pas cohérentes. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "Unable to retrieve platform information's data."
@@ -15654,11 +15654,11 @@ msgstr "Veuillez vérifier le formulaire 'Centreon Web' et les paramètres de vo
 
 #: api/topology/register
 msgid "Unable to convert Central's API response"
-msgstr "Impossible de convertir la réponse de L'API du Central"
+msgstr "Impossible de convertir la réponse de L'API provenant du Central"
 
 #: api/topology/register
 msgid "Error from Central's register API : "
-msgstr "Erreur de l'API d'enregistrement du Central : "
+msgstr "Erreur de l'API d'enregistrement sur le Central : "
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"
@@ -15670,7 +15670,7 @@ msgstr "Réponse du Central => Code : "
 
 #: api/topology/register
 msgid "Unable to find the encryption key. Please check the '.env.local.php' file."
-msgstr "Impossible de trouver la clef de dechiffrement. Veuillez vérifer le fichier '.env.local.php'."
+msgstr "Impossible de trouver la clef de déchiffrement. Veuillez vérifer le fichier '.env.local.php'."
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
