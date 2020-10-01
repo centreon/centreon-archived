@@ -15533,8 +15533,8 @@ msgid "The name of the platform is not consistent"
 msgstr "Le nom de cette plateforme n'est pas cohérent"
 
 #: api/topology/register
-msgid "The address %s' is not valid"
-msgstr "L'adresse '%s' n'est pas valide"
+msgid "The address '%s' of '%s' is not valid"
+msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide"
 
 #: api/topology/register
 msgid "The platform type of '%s'@'%s' is not consistent"
@@ -15593,8 +15593,12 @@ msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote 
 msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
+msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"
+msgstr "Des données de la plateforme ne sont pas cohérente. Veuillez vérifier le formulaire 'Accès du Remote'."
+
+#: api/topology/register
 msgid "Unable to retrieve platform information's data."
-msgstr "impossible de récupérer les données d'information de la plateforme."
+msgstr "Impossible de récupérer les données d'information sur la plateforme."
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
@@ -15606,11 +15610,15 @@ msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord 
 
 #: api/topology/register
 msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Le port du Central de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgstr "Le port du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+
+#: api/topology/register
+msgid "Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."
+msgstr "Le schéma du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Le chemin vers le Central de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgstr "Le chemin vers le Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."
@@ -15659,6 +15667,10 @@ msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à c
 #: api/topology/register
 msgid "Central's response => Code : "
 msgstr "Réponse du Central => Code : "
+
+#: api/topology/register
+msgid "Unable to find the encryption key. Please check the '.env.local.php' file."
+msgstr "Impossible de trouver la clef de dechiffrement. Veuillez vérifer le fichier '.env.local.php'."
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"

@@ -225,7 +225,7 @@ class PlatformInformation
         // second key
         if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
             throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file")
+                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
             );
         }
         $secondKey = base64_encode('api_remote_credentials');
