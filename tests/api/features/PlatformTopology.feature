@@ -115,7 +115,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"The address '666' of 'inconsistent address' is not valid"}
+            {"message":"The address '666.' of 'inconsistent address' is not valid"}
             """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
@@ -131,7 +131,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"The address '666' of 'inconsistent parent address' is not valid"}
+            {"message":"The address '666.' of 'inconsistent parent address' is not valid"}
             """
 
         # Register a poller linked to the Central.
@@ -184,7 +184,7 @@ Feature:
                 "parent_address": "6.6.6.6"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "404"
         And the response should be equal to:
             """
             {"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
@@ -199,7 +199,7 @@ Feature:
                 "address": "1.1.1.4"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "404"
         And the response should be equal to:
             """
             {"message":"Missing mandatory parent address, to link the platform : 'my poller 4'@'1.1.1.4'"}
