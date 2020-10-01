@@ -179,6 +179,7 @@ $loginCredentials = [
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $payload = [
     "name" => $configOptions['SERVER_NAME'],
+    "hostname" => gethostname(),
     "type" => $configOptions['SERVER_TYPE'],
     "address" => $configOptions['DNS'] ?? $serverIp,
 ];
