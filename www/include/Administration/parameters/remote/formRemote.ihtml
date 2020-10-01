@@ -54,8 +54,8 @@
 <script>
 {literal}
 
-function checkSsl(scheme){
-    if (scheme ==='http') {
+function checkSsl(scheme) {
+    if (scheme === 'http') {
         jQuery('#apiPeerValidation').css("visibility","hidden");
     } else {
         jQuery('#apiPeerValidation').css("visibility","visible");
