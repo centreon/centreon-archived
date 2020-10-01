@@ -15590,7 +15590,7 @@ msgstr "Le port de l'API vers le Central n'est pas cohérent. Veuiller vérifier
 
 #: api/topology/register
 msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."
-msgstr "Données indispensable manquant pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
 msgid "Unable to retrieve platform information's data."
