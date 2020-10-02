@@ -156,7 +156,7 @@ class PlatformTopologyServiceTest extends TestCase
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
             $this->httpClient,
-            $this->platformInformation,
+            $this->platformInformationService,
             $this->proxy
         );
 
