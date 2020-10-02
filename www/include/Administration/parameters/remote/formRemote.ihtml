@@ -34,7 +34,7 @@
                 {$form.apiScheme.html} :// {$form.header.informationIp}:{$form.apiPort.html}/{$form.apiPath.html}
             </td>
         </tr>
-        <tr class="list_two">
+        <tr class="list_two" id="apiPeerValidation" style="visibility: {$sslVisibility};" >
             <td class="FormRowField">
                 <img class="helpTooltip" name="tip_api_peer_validation">
                 {$form.apiPeerValidation.label}
@@ -50,3 +50,17 @@
     {$form.hidden}
 </form>
 {$helptext}
+
+<script>
+{literal}
+
+function checkSsl(scheme) {
+    if (scheme === 'http') {
+        jQuery('#apiPeerValidation').css("visibility","hidden");
+    } else {
+        jQuery('#apiPeerValidation').css("visibility","visible");
+    }
+}
+
+{/literal}
+</script>

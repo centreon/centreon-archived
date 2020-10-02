@@ -122,8 +122,15 @@ $form->setDefaults(
 //URI
 $form->addElement('header', 'informationUri', _("Central's API URI"));
 
-$form->addElement('select', 'apiScheme', _("Build full URI (SCHEME://IP:PORT/PATH)."), ['http', 'https']);
-$apiScheme = $result['apiScheme'] ?? 'http';
+$form->addElement(
+    'select',
+    'apiScheme',
+    _("Build full URI (SCHEME://IP:PORT/PATH)."),
+    ['http' => 'http', 'https' => 'https'],
+    ['id' => 'apiScheme', 'onChange' => 'checkSsl(this.value)']
+);
+$apiScheme = $result['apiScheme'] ?: 'http';
+$sslVisibility = $apiScheme === 'http' ? 'hidden' : 'visible';
 $form->setDefaults($apiScheme);
 
 $form->addElement('header', 'informationIp', $result['authorizedMaster']);
@@ -195,6 +202,7 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
+$tpl->assign('sslVisibility', $sslVisibility);
 $tpl->assign('valid', $valid);
 $tpl->display("formRemote.ihtml");
 ?>
