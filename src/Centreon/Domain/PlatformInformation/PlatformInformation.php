@@ -138,7 +138,7 @@ class PlatformInformation
      */
     public function setIsRemote(?string $isRemote): self
     {
-        $this->isRemote = ('yes' === ($isRemote ?? null));
+        $this->isRemote = ('yes' === $isRemote);
         return $this;
     }
 
