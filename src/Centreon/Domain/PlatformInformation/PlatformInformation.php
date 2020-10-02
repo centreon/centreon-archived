@@ -156,7 +156,7 @@ class PlatformInformation
      */
     public function setIsCentral(?string $isCentral): self
     {
-        $this->isCentral = ('yes' === ($isCentral ?? null));
+        $this->isCentral = ('yes' === $isCentral);
         return $this;
     }
 
