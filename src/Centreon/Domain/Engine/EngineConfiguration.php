@@ -131,4 +131,25 @@ class EngineConfiguration
         $illegalCharacters = html_entity_decode($illegalCharacters);
         return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
     }
+
+    /**
+     * Find all illegal characters from the given string.
+     *
+     * @param string $stringToAnalyse String for which we want to remove illegal characters
+     * @param string|null $illegalCharacters String containing illegal characters
+     * @return bool Return true if illegal characters have been found
+     */
+    public static function hasIllegalCharacters(string $stringToAnalyse, ?string $illegalCharacters): bool
+    {
+        if ($illegalCharacters === null) {
+            return false;
+        }
+        $illegalCharactersList = str_split(html_entity_decode($illegalCharacters),1);
+        foreach ($illegalCharactersList as $illegalCharacter) {
+            if (false !== strpos($stringToAnalyse, $illegalCharacter)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

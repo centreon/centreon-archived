@@ -51,9 +51,14 @@ class PlatformTopology
     private $id;
 
     /**
-     * @var string|null name
+     * @var string|null chosen name : "virtual name"
      */
     private $name;
+
+    /**
+     * @var $hostname platform's real name : "physical name"
+     */
+    private $hostname;
 
     /**
      * @var string|null Server type
@@ -156,6 +161,24 @@ class PlatformTopology
                 _('The name of the platform is not consistent')
             );
         }
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getHostname(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name
+     * @return $this
+     */
+    public function setHostname(?string $name): self
+    {
         $this->name = $name;
         return $this;
     }

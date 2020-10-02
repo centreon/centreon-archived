@@ -22,10 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Engine\EngineException;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
-use InvalidArgumentException;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,12 +49,21 @@ class PlatformTopologyController extends AbstractController
     private $platformTopologyService;
 
     /**
+     * @var EngineConfigurationServiceInterface
+     */
+    private $engineConfigurationService;
+
+    /**
      * PlatformTopologyController constructor
      * @param PlatformTopologyServiceInterface $platformTopologyService
+     * @param EngineConfigurationServiceInterface $engineConfigurationService
      */
-    public function __construct(PlatformTopologyServiceInterface $platformTopologyService)
-    {
+    public function __construct(
+        PlatformTopologyServiceInterface $platformTopologyService,
+        EngineConfigurationServiceInterface $engineConfigurationService
+    ) {
         $this->platformTopologyService = $platformTopologyService;
+        $this->engineConfigurationService = $engineConfigurationService;
     }
 
     /**
@@ -116,7 +127,11 @@ class PlatformTopologyController extends AbstractController
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type']);
 
-            // Check for empty parent_address consistency
+            // check for illegal characters in hostname and set it
+            $this->checkHostname($platformTopology);
+            $platformTopology->setHostname($platformToAdd['hostname']);
+
+            // Check for empty parent_address consistency and set it
             if (
                 empty($platformToAdd['parent_address'])
                 && $platformTopology->getType() !== PlatformTopology::TYPE_CENTRAL
@@ -154,6 +169,40 @@ class PlatformTopologyController extends AbstractController
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
         } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Get engine configuration's illegal characters and check for illegal characters in hostname
+     * @param PlatformTopology $platformTopology
+     * @throws PlatformTopologyException
+     * @throws EngineException
+     */
+    private function checkHostname(PlatformTopology $platformTopology): void
+    {
+        $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
+
+
+            $platformTopology->getName() // warning this may not be the right monitoring server
+
+
+        );
+        if (null === $engineConfiguration) {
+            throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
+        }
+        $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
+            $platformTopology->getHostname(),
+            $engineConfiguration->getIllegalObjectNameCharacters()
+        );
+        if (true === $foundIllegalCharacters) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("At least one illegal character in '%s', was found on platform's Hostname: '%s'@'%s'"),
+                    $engineConfiguration->getIllegalObjectNameCharacters(),
+                    $platformTopology->getName(),
+                    $platformTopology->getAddress()
+                )
+            );
         }
     }
 }

@@ -51,8 +51,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
-                INSERT INTO `:db`.platform_topology (`address`, `name`, `type`, `parent_id`, `server_id`)
-                VALUES (:address, :name, :type, :parentId, :serverId)
+                INSERT INTO `:db`.platform_topology (`address`, `name`, `type`, `parent_id`, `server_id`, `hostname`)
+                VALUES (:address, :name, :type, :parentId, :serverId, :hostname)
             ')
         );
         $statement->bindValue(':address', $platformTopology->getAddress(), \PDO::PARAM_STR);
@@ -60,6 +60,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':type', $platformTopology->getType(), \PDO::PARAM_STR);
         $statement->bindValue(':parentId', $platformTopology->getParentId(), \PDO::PARAM_INT);
         $statement->bindValue(':serverId', $platformTopology->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':hostname', $platformTopology->getHostname(), \PDO::PARAM_INT);
         $statement->execute();
     }
 

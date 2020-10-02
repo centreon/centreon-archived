@@ -264,6 +264,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $registerPayload = [
                     'json' => [
                         "name" => $platformTopology->getName(),
+                        "hostname" => $platformTopology->getHostname(),
                         "type" => $platformTopology->getType(),
                         "address" => $platformTopology->getAddress(),
                         "parent_address" => $platformTopology->getParentAddress()

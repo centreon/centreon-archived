@@ -15787,7 +15787,7 @@ msgstr "Désacquitter les services attachés aux hôtes"
 msgid "Disacknowledgement command sent"
 msgstr "Commande de désacquittement envoyée"
 
-msgid "Impossible to find the Engine configuration"
+msgid "Unable to find the Engine configuration"
 msgstr "Impossible de trouver la configuration du moteur de supervision"
 
 msgid "Ip address can not be empty"
