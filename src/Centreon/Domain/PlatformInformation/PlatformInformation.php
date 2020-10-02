@@ -255,7 +255,10 @@ class PlatformInformation
      */
     public function setApiCredentials(?string $encryptedKey): self
     {
-        $this->apiCredentials = $this->decryptApiCredentials($encryptedKey);
+        if (null !== $encryptedKey) {
+            $encryptedKey = $this->decryptApiCredentials($encryptedKey);
+        }
+        $this->apiCredentials = $encryptedKey;
         return $this;
     }
 
@@ -273,8 +276,10 @@ class PlatformInformation
      */
     public function setApiScheme(?string $schema): self
     {
-        $schema = trim($schema, '/');
-        $this->apiScheme = ($schema === 'https' ? 'https' : 'http');
+        if (null !== $schema) {
+            $schema = ('https' === trim($schema, '/') ? 'https' : 'http');
+        }
+        $this->apiScheme = $schema;
         return $this;
     }
 
@@ -284,7 +289,7 @@ class PlatformInformation
      */
     private function checkPortConsistency(?int $port): int
     {
-        if (false === $port || 1 > $port || $port > 65535) {
+        if (null === $port || 1 > $port || $port > 65535) {
             throw new \InvalidArgumentException(
                 _("Central platform's API port are not consistent. Please check the 'Remote Access' form.")
             );

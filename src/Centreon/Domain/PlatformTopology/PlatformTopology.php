@@ -112,23 +112,25 @@ class PlatformTopology
     }
 
     /**
-     * @param string $type server type: central, poller, remote, map or mbi
+     * @param string|null $type server type: central, poller, remote, map or mbi
      *
      * @return $this
      */
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
-        $type = strtolower($type);
+        if (null !== $type) {
+            $type = strtolower($type);
 
-        // Check if the server_type is available
-        if (!in_array($type, static::AVAILABLE_TYPES)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    _("The platform type of '%s'@'%s' is not consistent"),
-                    $this->getName(),
-                    $this->getAddress()
-                )
-            );
+            // Check if the server_type is available
+            if (!in_array($type, static::AVAILABLE_TYPES)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        _("The platform type of '%s'@'%s' is not consistent"),
+                        $this->getName(),
+                        $this->getAddress()
+                    )
+                );
+            }
         }
         $this->type = $type;
         return $this;
