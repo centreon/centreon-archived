@@ -11,7 +11,7 @@ const formatMetricValue = ({ value, unit, base = 1000 }): string => {
     'octets',
   ];
 
-  const base1024 = base2Units.includes(unit) || base === 1024;
+  const base1024 = base2Units.includes(unit) || Number(base) === 1024;
 
   const formatSuffix = base1024 ? ' ib' : 'a';
 
