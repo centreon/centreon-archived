@@ -51,7 +51,7 @@ Global Options:
   -h <mandatory>              URL of the Central / Remote Server target platform
   -n <mandatory>              name of your registered server
 
-  --help <optional>           get informations about the parameters available
+  --help <optional>           get information about the parameters available
   --root <optional>           your root Centreon folder (by default "centreon")
   --dns <optional>            provide your server DNS instead of IP. The DNS must be resolvable on the Central.
   --insecure <optional>       allow self-signed certificate
@@ -197,7 +197,7 @@ $serverHostName = $payload['name'];
 $serverType = $payload["type"];
 $summary = <<<EOD
 
-Summary of the informations that will be send:
+Summary of the information that will be send:
 
 Api Connection:
 username: $username
