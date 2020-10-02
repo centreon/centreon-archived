@@ -120,7 +120,11 @@ const PerformanceGraph = ({
   const sortedLines = sortBy(prop('name'), lineData);
   const displayedLines = reject(propEq('display', false), sortedLines);
 
-  const formatTooltipValue = (value, metric, { unit }): Array<string> => {
+  const formatTooltipValue = (
+    value,
+    metric,
+    { unit },
+  ): Array<string | null> => {
     const legendName = pipe(
       find(propEq('metric', metric)),
       path(['name']),
@@ -183,7 +187,7 @@ const PerformanceGraph = ({
             contentStyle={{ fontFamily }}
             wrapperStyle={{ opacity: 0.7 }}
             isAnimationActive={false}
-            filterNull={false}
+            filterNull
           />
         </ComposedChart>
       </ResponsiveContainer>
