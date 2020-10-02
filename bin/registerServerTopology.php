@@ -35,7 +35,7 @@ const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_CENTRAL, TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
-$opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::", "template:"]);
+$opt = getopt('u:t:h:n:', ["help::", "root:", "fqdn:", "insecure::", "template:"]);
 /**
  * Format the --help message
  */
@@ -114,11 +114,11 @@ if (isset($opt['template'])) {
         $configOptions['HOST_ADDRESS'] = $opt['h'];
         $configOptions['SERVER_NAME'] = $opt['n'];
 
-        if (isset($opt['dns'])) {
-            $configOptions['DNS'] = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN);
-            if (!$configOptions['DNS']) {
+        if (isset($opt['fqdn'])) {
+            $configOptions['FQDN'] = filter_var($opt['fqdn'], FILTER_VALIDATE_DOMAIN);
+            if (!$configOptions['FQDN']) {
                 throw new \InvalidArgumentException(
-                    PHP_EOL . "Bad DNS Format" . PHP_EOL
+                    PHP_EOL . "Bad FQDN Format" . PHP_EOL
                 );
             }
         }
@@ -181,7 +181,7 @@ $payload = [
     "name" => $configOptions['SERVER_NAME'],
     "hostname" => gethostname(),
     "type" => $configOptions['SERVER_TYPE'],
-    "address" => $configOptions['DNS'] ?? $serverIp,
+    "address" => $configOptions['FQDN'] ?? $serverIp,
 ];
 
 if ($configOptions['SERVER_TYPE'] !== TYPE_CENTRAL) {
