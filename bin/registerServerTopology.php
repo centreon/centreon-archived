@@ -35,7 +35,7 @@ const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_CENTRAL, TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
-$opt = getopt('u:t:h:n:', ["help::", "root:", "dns:", "insecure::", "template:"]);
+$opt = getopt('u:t:h:n:', ["help::", "root:", "fqdn:", "insecure::", "template:"]);
 /**
  * Format the --help message
  */
@@ -51,9 +51,9 @@ Global Options:
   -h <mandatory>              URL of the Central / Remote Server target platform
   -n <mandatory>              name of your registered server
 
-  --help <optional>           get informations about the parameters available
-  --root <optional>           your root Centreon folder (by default "centreon")
-  --dns <optional>            provide your server DNS instead of IP. The DNS must be resolvable on the Central.
+  --help <optional>           get information about the parameters available
+  --root <optional>           your Centreon root path (by default "centreon")
+  --fqdn <optional>           provide your server FQDN instead of IP. The FQDN must be resolvable on the Central/Remote.
   --insecure <optional>       allow self-signed certificate
   --template <optional>       give the path of a register topology configuration to automate the script
              - API_USERNAME             <mandatory> string
@@ -61,10 +61,10 @@ Global Options:
              - SERVER_TYPE              <mandatory> string
              - HOST_ADDRESS             <mandatory> string
              - SERVER_NAME              <mandatory> string
+             - PROXY_USAGE              <mandatory> boolean
              - ROOT_CENTREON_FOLDER     <optional> string
-             - DNS                      <optional> string
+             - FQDN                     <optional> string
              - INSECURE                 <optional> boolean
-             - PROXY_USAGE              <optional> boolean
              - PROXY_HOST               <optional> string
              - PROXY_PORT               <optional> integer
              - PROXY_USERNAME           <optional> string
@@ -114,11 +114,11 @@ if (isset($opt['template'])) {
         $configOptions['HOST_ADDRESS'] = $opt['h'];
         $configOptions['SERVER_NAME'] = $opt['n'];
 
-        if (isset($opt['dns'])) {
-            $configOptions['DNS'] = filter_var($opt['dns'], FILTER_VALIDATE_DOMAIN);
-            if (!$configOptions['DNS']) {
+        if (isset($opt['fqdn'])) {
+            $configOptions['FQDN'] = filter_var($opt['fqdn'], FILTER_VALIDATE_DOMAIN);
+            if (!$configOptions['FQDN']) {
                 throw new \InvalidArgumentException(
-                    PHP_EOL . "Bad DNS Format" . PHP_EOL
+                    PHP_EOL . "Bad FQDN Format" . PHP_EOL
                 );
             }
         }
@@ -137,7 +137,7 @@ if (isset($opt['template'])) {
     }
 
     /**
-     * Proxy informations
+     * Proxy information
      */
     if ($configOptions['PROXY_USAGE'] === 'y') {
         $configOptions['PROXY_USAGE'] = true;
@@ -181,7 +181,7 @@ $payload = [
     "name" => $configOptions['SERVER_NAME'],
     "hostname" => gethostname(),
     "type" => $configOptions['SERVER_TYPE'],
-    "address" => $configOptions['DNS'] ?? $serverIp,
+    "address" => $configOptions['FQDN'] ?? $serverIp,
 ];
 
 if ($configOptions['SERVER_TYPE'] !== TYPE_CENTRAL) {
@@ -197,7 +197,7 @@ $serverHostName = $payload['name'];
 $serverType = $payload["type"];
 $summary = <<<EOD
 
-Summary of the informations that will be send:
+Summary of the information that will be send:
 
 Api Connection:
 username: $username
@@ -216,7 +216,7 @@ EOD;
 
 echo $summary;
 
-$proceed = askQuestion('Do you want to register this server with those informations ? (y/n)');
+$proceed = askQuestion('Do you want to register this server with those information ? (y/n)');
 $proceed = strtolower($proceed);
 if ($proceed !== "y") {
     exit();
@@ -317,7 +317,7 @@ try {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    if ($configOptions['PROXY_USAGE'] === true) {
+    if (isset($configOptions['PROXY_USAGE']) && $configOptions['PROXY_USAGE'] === true) {
         curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
         curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
         if (!empty($configOptions["PROXY_USERNAME"])) {
@@ -374,7 +374,7 @@ foreach ($registerPayloads as $postData) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
-        if ($configOptions['PROXY_USAGE'] === true) {
+        if (isset($configOptions['PROXY_USAGE']) && $configOptions['PROXY_USAGE'] === true) {
             curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
             curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
             if (!empty($configOptions["PROXY_USERNAME"])) {
