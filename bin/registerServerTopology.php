@@ -51,7 +51,7 @@ Global Options:
   -h <mandatory>              URL of the Central / Remote Server target platform
   -n <mandatory>              name of your registered server
 
-  --help <optional>           get informations about the parameters available
+  --help <optional>           get information about the parameters available
   --root <optional>           your root Centreon folder (by default "centreon")
   --dns <optional>            provide your server DNS instead of IP. The DNS must be resolvable on the Central.
   --insecure <optional>       allow self-signed certificate
@@ -137,7 +137,7 @@ if (isset($opt['template'])) {
     }
 
     /**
-     * Proxy informations
+     * Proxy information
      */
     if ($configOptions['PROXY_USAGE'] === 'y') {
         $configOptions['PROXY_USAGE'] = true;
@@ -197,7 +197,7 @@ $serverHostName = $payload['name'];
 $serverType = $payload["type"];
 $summary = <<<EOD
 
-Summary of the informations that will be send:
+Summary of the information that will be send:
 
 Api Connection:
 username: $username
@@ -216,7 +216,7 @@ EOD;
 
 echo $summary;
 
-$proceed = askQuestion('Do you want to register this server with those informations ? (y/n)');
+$proceed = askQuestion('Do you want to register this server with those information ? (y/n)');
 $proceed = strtolower($proceed);
 if ($proceed !== "y") {
     exit();
@@ -317,7 +317,7 @@ try {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    if ($configOptions['PROXY_USAGE'] === true) {
+    if (isset($configOptions['PROXY_USAGE']) && $configOptions['PROXY_USAGE'] === true) {
         curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
         curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
         if (!empty($configOptions["PROXY_USERNAME"])) {
@@ -374,7 +374,7 @@ foreach ($registerPayloads as $postData) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
-        if ($configOptions['PROXY_USAGE'] === true) {
+        if (isset($configOptions['PROXY_USAGE']) && $configOptions['PROXY_USAGE'] === true) {
             curl_setopt($ch, CURLOPT_PROXY, $configOptions["PROXY_HOST"]);
             curl_setopt($ch, CURLOPT_PROXYPORT, $configOptions["PROXY_PORT"]);
             if (!empty($configOptions["PROXY_USERNAME"])) {
