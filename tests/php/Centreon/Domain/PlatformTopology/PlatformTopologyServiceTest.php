@@ -56,14 +56,14 @@ class PlatformTopologyServiceTest extends TestCase
     protected $httpClient;
 
     /**
-     * @var PlatformInformationServiceInterface
+     * @var PlatformInformationServiceInterface&MockObject $platformInformationService
      */
     private $platformInformationService;
 
     /**
-     * @var ProxyServiceInterface
+     * @var ProxyServiceInterface&MockObject $proxyService
      */
-    private $proxy;
+    private $proxyService;
 
     /**
      * initiate query data
@@ -83,7 +83,7 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository = $this->createMock(PlatformTopologyRepositoryInterface::class);
         $this->platformInformationService = $this->createMock(PlatformInformationServiceInterface::class);
-        $this->proxy = $this->createMock(ProxyServiceInterface::class);
+        $this->proxyService = $this->createMock(ProxyServiceInterface::class);
         $this->httpClient = $this->createMock(HttpClientInterface::class);
     }
 
@@ -101,7 +101,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRepository,
             $this->httpClient,
             $this->platformInformationService,
-            $this->proxy
+            $this->proxyService
         );
 
         $this->expectException(PlatformTopologyConflictException::class);
@@ -128,7 +128,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRepository,
             $this->httpClient,
             $this->platformInformationService,
-            $this->proxy
+            $this->proxyService
         );
 
         $this->expectException(EntityNotFoundException::class);
@@ -157,7 +157,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRepository,
             $this->httpClient,
             $this->platformInformationService,
-            $this->proxy
+            $this->proxyService
         );
 
         $this->assertNull($platformTopologyService->addPlatformToTopology($this->platformTopology, $this->httpClient));
