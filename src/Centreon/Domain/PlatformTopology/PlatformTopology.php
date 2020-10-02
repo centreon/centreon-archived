@@ -33,7 +33,8 @@ class PlatformTopology
     public const TYPE_REMOTE = 'remote';
     private const TYPE_MAP = 'map';
     private const TYPE_MBI = 'mbi';
-
+    public const NORMAL_RELATION = 'normal';
+    public const ONE_PEER_RELATION = 'one_peer';
     /**
      * Available server types
      */
@@ -43,6 +44,11 @@ class PlatformTopology
         self::TYPE_REMOTE,
         self::TYPE_MAP,
         self::TYPE_MBI
+    ];
+
+    private const AVAILABLE_RELATIONS = [
+        self::NORMAL_RELATION,
+        self::ONE_PEER_RELATION
     ];
 
     /**
@@ -79,6 +85,16 @@ class PlatformTopology
      * @var int|null Server nagios ID for Central only
      */
     private $serverId;
+
+    /**
+     * @var string|null Server physical name
+     */
+    private $hostname;
+
+    /**
+     * @var array|null Communication type between topology and parent
+     */
+    private $relation;
 
     /**
      * @return int|null
@@ -261,5 +277,36 @@ class PlatformTopology
     public function setServerId(?int $serverId): void
     {
         $this->serverId = $serverId;
+    }
+
+    public function getHostname(): ?self
+    {
+        return $this->hostname;
+    }
+
+    public function setHostname(?int $hostname): self
+    {
+        $this->hostname = $hostname;
+        return $this;
+    }
+
+    public function getRelation(): ?array
+    {
+        return $this->relation;
+    }
+
+    public function setRelation(string $relationType): self
+    {
+        if(!in_array($relationType, self::AVAILABLE_RELATIONS)) {
+            throw new \InvalidArgumentException(sprintf(_("The type of relation '%s' is not allowed"), $relationType));
+        }
+
+        $this->relation = [
+            'source' => $this->getId(),
+            'relation' => $relationType,
+            'target' => $this->getParentId()
+        ];
+
+        return $this;
     }
 }

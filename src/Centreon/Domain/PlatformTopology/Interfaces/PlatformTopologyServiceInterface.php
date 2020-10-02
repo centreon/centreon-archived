@@ -47,6 +47,4 @@ interface PlatformTopologyServiceInterface
      * @throws EntityNotFoundException
      */
     public function getPlatformCompleteTopology(): array;
-
-    public function findPlatformNodesRelation(int $serverId): string;
 }

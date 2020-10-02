@@ -18,10 +18,12 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\Context\Context;
@@ -32,7 +34,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -47,8 +48,7 @@ class PlatformTopologyController extends AbstractController
      */
     private $platformTopologyService;
 
-    public const SERIALIZER_GROUPS_MAIN = ['platform_topology_main'];
-    public const SERIALIZER_GROUPS_GET = ['get_platform_topology'];
+    public const SERIALIZER_GROUP_HELIOS = ['platform_topology_helios'];
 
     /**
      * PlatformTopologyController constructor
@@ -111,7 +111,7 @@ class PlatformTopologyController extends AbstractController
         $this->validatePlatformTopologySchema(
             $platformToAdd,
             $this->getParameter('centreon_path')
-            . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
+                . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
         );
 
         try {
@@ -154,7 +154,7 @@ class PlatformTopologyController extends AbstractController
         }
     }
 
-    public function getPlatformCompleteTopology(): View
+    public function getPlatformTopologyHelios(): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
@@ -162,9 +162,14 @@ class PlatformTopologyController extends AbstractController
         if ($platformCompleteTopology === null) {
             throw new EntityNotFoundException('Platform Topologies not found');
         }
-        $context = (new Context())->setGroups(self::SERIALIZER_GROUPS_MAIN);
-        $edges = $this->generateEdgeJsonGraphArray($platformCompleteTopology);
-
+        $context = (new Context())->setGroups(self::SERIALIZER_GROUP_HELIOS);
+        $edges =  [];
+        $topologiesHelios = [];
+        foreach ($platformCompleteTopology as $topology) {
+            $topologyHelios = new PlatformTopologyHeliosFormat($topology);
+            $topologiesHelios[] = $topologyHelios;
+            $edges[] = $topologyHelios->getRelation();
+        }
         return $this->view([
             'graph' => [
                 'label' => 'centreon-topology',
@@ -172,24 +177,8 @@ class PlatformTopologyController extends AbstractController
                     'version' => '1.0.0'
                 ]
             ],
-            'nodes' => $platformCompleteTopology,
+            'nodes' => $topologiesHelios,
             'edges' => $edges
         ])->setContext($context);
-    }
-
-    private function generateEdgeJsonGraphArray(array $completePlatformTopology): array
-    {
-        $edges = [];
-        foreach ($completePlatformTopology as $topology) {
-            $edgeSource = $topology->getId();
-            $edgeTarget = $topology->getParentId();
-            $edgeRelation = $this->platformTopologyService->findPlatformNodesRelation($topology->getServerId());
-            $edges[] = [
-                'source' => $edgeSource,
-                'relation' => $edgeRelation,
-                'target' => $edgeTarget
-            ];
-        }
-        return $edges;
     }
 }

@@ -160,7 +160,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         )
                     );
                 }
-                $topologyParentAddress = $this->platformTopologyRepository->findAddressById($topologyParentId);
+                $topologyParentAddress = $this->platformTopologyRepository->findPlatformAddressById($topologyParentId);
                 if ($topologyParentAddress === null) {
                     throw new PlatformTopologyException(
                         sprintf(_("Topology address for platform ID: '%d' not found"), $topologyParentId)
@@ -170,11 +170,5 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
         }
         return $completePlatformTopology;
-    }
-
-    public function findPlatformNodesRelation(int $serverId): string
-    {
-        $relation = $this->platformTopologyRepository->findPlatformNodesRelation($serverId);
-        return '';
     }
 }

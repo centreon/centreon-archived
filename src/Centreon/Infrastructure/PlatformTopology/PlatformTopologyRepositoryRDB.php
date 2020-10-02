@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology;
@@ -179,28 +180,31 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     {
         $statement = $this->db->query('SELECT * FROM `platform_topology`');
         $platformCompleteTopology = [];
-        foreach($statement as $topology) {
-            $platformCompleteTopology[] = EntityCreator::createEntityByArray(PlatformTopology::class, $topology);
+        foreach ($statement as $topology) {
+            $platformTopology = EntityCreator::createEntityByArray(PlatformTopology::class, $topology);
+            $platformRelation = $this->findNodeRelationType($platformTopology->getServerId());
+            $platformTopology->setRelation($platformRelation);
+            $platformCompleteTopology[] = $platformTopology;
         }
-        if(!empty($platformCompleteTopology)) {
+        if (!empty($platformCompleteTopology)) {
             return $platformCompleteTopology;
         }
         return null;
     }
 
-    public function findAddressById(int $serverId): ?string
+    public function findPlatformAddressById(int $serverId): ?string
     {
         $statement = $this->db->prepare('SELECT `address` FROM `platform_topology` WHERE id = :serverId');
         $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
         $statement->execute();
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
-        if($result) {
+        if ($result) {
             return $result['address'];
         }
         return null;
     }
 
-    public function findPlatformNodesRelation(int $id): ?string
+    private function findNodeRelationType(int $serverId): ?string
     {
         $statement = $this->db->prepare("
             SELECT *
@@ -215,12 +219,16 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             AND config_key IN ('one_peer_retention_mode', 'host', 'name', 'port', 'protocol')
             ORDER BY config_id, config_group, config_group_id, config_key ASC
         ");
-        $statement->bindValue(':serverId', $id, \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
         $statement->execute();
-        while(($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false){
-            var_dump($result);
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            if ($result['config_group'] === 'output' && $result['config_key'] === 'host') {
+                empty($result['config_value'])
+                    ? $nodeRelation = 'peer_retention'
+                    : $nodeRelation = 'normal';
+                return $nodeRelation;
+            }
         }
-        die();
-        return $result['one_peer_retention_mode'];
+        return null;
     }
 }

@@ -76,7 +76,5 @@ interface PlatformTopologyRepositoryInterface
      */
     public function getPlatformCompleteTopology(): ?array;
 
-    public function findAddressById(int $id): ?string;
-
-    public function findPlatformNodesRelation(int $id): ?string;
+    public function findPlatformAddressById(int $id): ?string;
 }
