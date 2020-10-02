@@ -23,7 +23,7 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 20.10.0-beta.1 : ';
+$versionOfTheUpgrade = 'UPGRADE - 20.10.0-beta.2 : ';
 
 /**
  * Queries needing exception management and rollback if failing
@@ -41,7 +41,7 @@ try {
         'keycloak_trusted_clients', 'keycloak_blacklist_clients')"
     );
 
-    $keycloak[];
+    $keycloak = [];
     while ($row = $result->fetch()) {
         $keycloak[$row['key']] = $row['value'];
     }
