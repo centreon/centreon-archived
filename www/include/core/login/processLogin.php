@@ -47,7 +47,7 @@ if (
         && isset($generalOptions["enable_autologin"])
         && $generalOptions["enable_autologin"])
     || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)
-    || (!isset($generalOptions['keycloak_enable']) || $generalOptions['keycloak_enable'] == 1)
+    || (!isset($generalOptions['openid_connect_enable']) || $generalOptions['openid_connect_enable'] == 1)
 ) {
     /*
      * Init log class

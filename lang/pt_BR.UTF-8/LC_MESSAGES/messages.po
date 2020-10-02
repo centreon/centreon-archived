@@ -6683,26 +6683,38 @@ msgstr "Ativa autenticação SSO"
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Você tem certeza que quer alterar este parâmetro? Por favor, leia a ajuda antes."
 
-msgid "Keycloak trusted client addresses"
-msgstr "Endereços de confiança do SSO Keycloak"
+msgid "Trusted client addresses"
+msgstr "Endereços de confiança"
 
-msgid "Keycloak blacklist client addresses"
-msgstr "Endereços de clientes de bloqueios Keycloak"
+msgid "Blacklist client addresses"
+msgstr "Endereços de clientes de bloqueios"
 
-msgid "Keycloak Server Url"
-msgstr "URL do servidor Keycloak"
+msgid "Base Url"
+msgstr "Url base"
 
-msgid "Keycloak Redirect Url"
-msgstr "Endereço de redirecionamento do Centreon para o Keycloak"
+msgid "Authorization Endpoint"
+msgstr "Endpoint de autorização"
 
-msgid "Keycloak Client Realm"
-msgstr "Dominio cliente Keycloak"
+msgid "Token Endpoint"
+msgstr "Endpoint de token"
 
-msgid "Keycloak Client ID"
-msgstr "Identificação de cliente Keycloak"
+msgid "Introspection Token Endpoint"
+msgstr "Endpoint de introspecção do token"
 
-msgid "Keycloak Client Secret"
-msgstr "Segredo de cliente Keycloak"
+msgid "User Information Endpoint"
+msgstr "Endpoint de informações do usuário"
+
+msgid "Scope"
+msgstr "Escopo"
+
+msgid "Redirect Url"
+msgstr "URL de redirecionamento"
+
+msgid "Client ID"
+msgstr "Identificação de cliente"
+
+msgid "Client Secret"
+msgstr "Segredo de cliente"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:202
 msgid "SSO only"
