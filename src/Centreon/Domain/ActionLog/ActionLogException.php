@@ -18,25 +18,10 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
 
-$help = [];
+namespace Centreon\Domain\ActionLog;
 
-$help["username"] = dgettext(
-    "help",
-    "Enter the name of an active contact who have the right to 'reach API configuration' on the Central." .
-    "This user will be used to call the API from the Remote to the Central."
-);
-$help["password"] = dgettext(
-    "help",
-    "Enter the current password of this account."
-);
-
-$help["tip_api_uri"] = dgettext(
-    "help",
-    "Full URL allowing access to the API of the Centreon's central server."
-);
-
-$help["tip_api_peer_validation"] = dgettext(
-    "help",
-    "Allows to skip the SSL certificate check on the Centreon's central server."
-);
+class ActionLogException extends \Exception
+{
+}

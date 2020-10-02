@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pipe, split, head, propOr } from 'ramda';
+import { pipe, split, head, propOr, T } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
@@ -33,6 +33,7 @@ import {
 import StateColumn from './State';
 import GraphColumn from './Graph';
 import useAclQuery from '../../Actions/Resource/aclQuery';
+import truncate from '../../truncate';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -204,6 +205,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     id: 'severity',
     label: 'S',
     type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
     Component: SeverityColumn,
     sortField: 'severity_level',
     width: 50,
@@ -214,6 +216,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     type: ColumnType.component,
     Component: StatusColumn({ actions, t }),
     hasHoverableComponent: true,
+    getRenderComponentOnRowUpdateCondition: T,
     sortField: 'status_severity_code',
     clickable: true,
     width: 145,
@@ -222,6 +225,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     id: 'resource',
     label: t(labelResource),
     type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
     Component: ResourceColumn,
     sortField: 'name',
     width: 200,
@@ -230,6 +234,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     id: 'parent_resource',
     label: '',
     type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
     Component: ParentResourceColumn,
     sortable: false,
     width: 200,
@@ -238,6 +243,7 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     id: 'graph',
     label: '',
     type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
     width: 50,
@@ -268,18 +274,21 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     id: 'information',
     label: t(labelInformation),
     type: ColumnType.string,
-    getFormattedString: pipe(propOr('', 'information'), split('\n'), head) as (
-      row,
-    ) => string,
+    getFormattedString: pipe(
+      propOr('', 'information'),
+      split('\n'),
+      head,
+      truncate,
+    ) as (row) => string,
   },
   {
     id: 'state',
     label: t(labelState),
     type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
     Component: StateColumn,
     sortable: false,
     width: 80,
-    renderComponentOnRowUpdate: true,
   },
 ];
 

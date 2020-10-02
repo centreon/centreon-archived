@@ -209,3 +209,10 @@ services:
 
     Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\ServiceConfiguration\ServiceConfigurationRepositoryRDB
+
+    # Action log
+    Centreon\Domain\ActionLog\Interfaces\ActionLogRepositoryInterface:
+        class: Centreon\Infrastructure\ActionLog\ActionLogRepositoryRDB
+
+    Centreon\Domain\ActionLog\Interfaces\ActionLogServiceInterface:
+        class: Centreon\Domain\ActionLog\ActionLogService

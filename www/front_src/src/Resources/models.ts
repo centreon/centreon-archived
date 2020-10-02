@@ -32,9 +32,8 @@ export interface Resource {
   icon?: Icon;
   parent?: Parent;
   status: Status;
-  downtime_endpoint?: string;
+  links: ResourceLinks;
   acknowledged: boolean;
-  acknowledgement_endpoint?: string;
   in_downtime: boolean;
   duration: string;
   tries: string;
@@ -42,13 +41,7 @@ export interface Resource {
   information: string;
   severity?: Severity;
   short_type: 'h' | 's';
-  performance_graph_endpoint?: string;
   type: 'host' | 'service';
-  details_endpoint: string;
-  timeline_endpoint: string;
-  configuration_uri?: string;
-  logs_uri?: string;
-  reporting_uri?: string;
   passive_checks: boolean;
 }
 
@@ -71,15 +64,18 @@ export interface Acknowledgement {
 }
 
 export interface ResourceEndpoints {
-  details: string;
-  performanceGraph?: string;
-  timeline: string;
+  details: string | null;
+  performance_graph: string | null;
+  status_graph: string | null;
+  timeline: string | null;
+  acknowledgement: string | null;
+  downtime: string | null;
 }
 
 export interface ResourceUris {
-  configuration?: string;
-  logs?: string;
-  reporting?: string;
+  configuration: string | null;
+  logs: string | null;
+  reporting: string | null;
 }
 
 export interface ResourceLinks {

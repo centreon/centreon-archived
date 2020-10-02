@@ -18,25 +18,22 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
 
-$help = [];
+namespace Centreon\Domain\ActionLog\Interfaces;
 
-$help["username"] = dgettext(
-    "help",
-    "Enter the name of an active contact who have the right to 'reach API configuration' on the Central." .
-    "This user will be used to call the API from the Remote to the Central."
-);
-$help["password"] = dgettext(
-    "help",
-    "Enter the current password of this account."
-);
+use Centreon\Domain\ActionLog\ActionLog;
+use Centreon\Domain\ActionLog\ActionLogException;
 
-$help["tip_api_uri"] = dgettext(
-    "help",
-    "Full URL allowing access to the API of the Centreon's central server."
-);
-
-$help["tip_api_peer_validation"] = dgettext(
-    "help",
-    "Allows to skip the SSL certificate check on the Centreon's central server."
-);
+interface ActionLogServiceInterface
+{
+    /**
+     * Add action log.
+     *
+     * @param ActionLog $actionLog Action log to be added
+     * @param array<string, string|int|bool> $details Details of action
+     * @return int Return the id of the last added action
+     * @throws ActionLogException
+     */
+    public function addAction(ActionLog $actionLog, array $details = []): int;
+}

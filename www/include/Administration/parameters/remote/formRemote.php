@@ -91,13 +91,15 @@ try {
  */
 $attrsText = array("size" => "40");
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path . "remote", $tpl);
 $form->addElement('header', 'title', _("Remote access"));
 $form->addElement('header', 'information', _("Central's API credentials"));
 $form->addElement(
     'text',
     'apiUsername',
     _("Username"),
-    ["size" => "40"]
+    $attrsText
 );
 $form->addRule('apiUsername', _("Required Field"), 'required');
 
@@ -109,7 +111,6 @@ $form->addElement(
 );
 $form->addRule('apiCredentials', _("Required Field"), 'required');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
-
 // default values
 $form->setDefaults(
     [
@@ -118,11 +119,53 @@ $form->setDefaults(
     ]
 );
 
+//URI
+$form->addElement('header', 'informationUri', _("Central's API URI"));
+
+$form->addElement(
+    'select',
+    'apiScheme',
+    _("Build full URI (SCHEME://IP:PORT/PATH)."),
+    ['http' => 'http', 'https' => 'https'],
+    ['id' => 'apiScheme', 'onChange' => 'checkSsl(this.value)']
+);
+$apiScheme = $result['apiScheme'] ?: 'http';
+$sslVisibility = $apiScheme === 'http' ? 'hidden' : 'visible';
+$form->setDefaults($apiScheme);
+
+$form->addElement('header', 'informationIp', $result['authorizedMaster']);
+
+$form->addElement(
+    'text',
+    'apiPath',
+    _("apiPath"),
+    $attrsText
+);
+$form->addRule('apiPath', _("Required Field"), 'required');
+
+$form->addElement('text', 'apiPort', _("Port"), ["size" => "8"]);
+$form->addRule('apiPort', _('Must be a number'), 'numeric');
+
+$form->addElement(
+    'checkbox',
+    'apiPeerValidation',
+    _("Allow self signed certificate"),
+    null
+);
+$form->setDefaults(1);
+
+$form->setDefaults(
+    [
+        'apiPath' => $result['apiPath'],
+        'apiPort' => $result['apiPort'],
+        'apiScheme' => $result['apiScheme'],
+        'apiPeerValidation' => ($result['apiPeerValidation'] == 'yes' ? 1 : 0)
+    ]
+);
+
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path . "remote", $tpl);
 $subC = $form->addElement('submit', 'submitC', _("Save"), ["class" => "btc bt_success"]);
 $form->addElement('reset', 'reset', _("Reset"), ["class" => "btc bt_default"]);
 
@@ -159,6 +202,7 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
+$tpl->assign('sslVisibility', $sslVisibility);
 $tpl->assign('valid', $valid);
 $tpl->display("formRemote.ihtml");
 ?>

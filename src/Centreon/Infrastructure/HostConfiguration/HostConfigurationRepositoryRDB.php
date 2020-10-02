@@ -61,8 +61,14 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $request = $this->translateDbName(
                 'INSERT INTO `:db`.host 
                 (host_name, host_alias, display_name, host_address, host_comment, geo_coords, host_activate, 
-                host_register)
-                VALUES (:name, :alias, :display_name, :ip_address, :comment, :geo_coords, :is_activate, :host_register)'
+                host_register, host_active_checks_enabled, host_passive_checks_enabled, host_checks_enabled,
+                host_obsess_over_host, host_check_freshness, host_event_handler_enabled, host_flap_detection_enabled,
+                host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information,
+                host_notifications_enabled)
+                VALUES (:name, :alias, :display_name, :ip_address, :comment, :geo_coords, :is_activate, :host_register,
+                        :active_check_status, :passive_check_status, :check_status, :obsess_over_status,
+                        :freshness_check_status, :event_handler_status, :flap_detection_status, :process_perf_status,
+                        :retain_status_information, :retain_nonstatus_information, :notifications_status)'
             );
             $statement = $this->db->prepare($request);
             $statement->bindValue(':name', $host->getName(), \PDO::PARAM_STR);
@@ -73,6 +79,19 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':geo_coords', $host->getGeoCoords(), \PDO::PARAM_STR);
             $statement->bindValue(':is_activate', $host->isActivated(), \PDO::PARAM_STR);
             $statement->bindValue(':host_register', $host->getType(), \PDO::PARAM_STR);
+
+            // We don't have these properties in the host object yet, so we set these default values
+            $statement->bindValue(':active_check_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':passive_check_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':check_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':obsess_over_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':freshness_check_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':event_handler_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':flap_detection_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':process_perf_status', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':retain_status_information', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':retain_nonstatus_information', '2', \PDO::PARAM_STR);
+            $statement->bindValue(':notifications_status', '2', \PDO::PARAM_STR);
             $statement->execute();
 
             $hostId = (int)$this->db->lastInsertId();

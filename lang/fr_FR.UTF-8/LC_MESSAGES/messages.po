@@ -5298,26 +5298,38 @@ msgstr "Afficher les commentaires sur le graphique"
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
 
-msgid "Keycloak trusted client addresses"
-msgstr "Adresses des clients de confiance SSO Keycloak"
+msgid "Trusted client addresses"
+msgstr "Adresses des clients de confiance"
 
-msgid "Keycloak blacklist client addresses"
-msgstr "Adresses des clients de bloqués Keycloak"
+msgid "Blacklist client addresses"
+msgstr "Adresses des clients bloqués"
 
-msgid "Keycloak Server Url"
-msgstr "URL du serveur Keycloak"
+msgid "Base Url"
+msgstr "URL de base"
 
-msgid "Keycloak Redirect Url"
-msgstr "Adresse de redirection vers Centreon depuis Keycloak"
+msgid "Authorization Endpoint"
+msgstr "Point de terminaison d'autorisation"
 
-msgid "Keycloak Client Realm"
-msgstr "Royaume client Keycloak"
+msgid "Token Endpoint"
+msgstr "Point de terminaison de jeton"
 
-msgid "Keycloak Client ID"
-msgstr "Identifiant client Keycloak"
+msgid "Introspection Token Endpoint"
+msgstr "Point de terminaison d'introspection du jeton"
 
-msgid "Keycloak Client Secret"
-msgstr "Secret client Keycloak"
+msgid "User Information Endpoint"
+msgstr "Point de terminaison des informations utilisateur"
+
+msgid "Scope"
+msgstr "Portée"
+
+msgid "Redirect Url"
+msgstr "Adresse de redirection vers Centreon"
+
+msgid "Client ID"
+msgstr "Identifiant client"
+
+msgid "Client Secret"
+msgstr "Secret client"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
@@ -15657,6 +15669,15 @@ msgstr "Le mot de passe ne peut pas être déchiffré. Merci de vérifier ce cha
 msgid "Central's API credentials"
 msgstr "Identifiants de l'API du Central"
 
+msgid "Build full URI (SCHEME://IP:PORT/PATH)."
+msgstr "construction de l'URI complete (SCHEME://IP:PORT/PATH)."
+
+msgid "Central's API URI."
+msgstr "URI de l'API du central"
+
+msgid "Allow self signed certificate."
+msgstr "Autoriser le certificat auto-signé."
+
 #: www/include/Adrministration/parameters/remote/formRemote.php
 msgid "Remote access"
 msgstr "Accès du Remote"
@@ -15690,3 +15711,18 @@ msgstr "Pas de ressource trouvée"
 
 msgid "Error when searching for the Engine configuration (%s)"
 msgstr "Erreur lors de la recherche de la configuration du moteur (%s)"
+
+msgid "Host id cannot be null"
+msgstr "L'id de l'hôte ne peut être nul"
+
+msgid "Host name cannot be null"
+msgstr "Le nom de l'hôte ne peut être nul"
+
+msgid "Action log id cannot be null"
+msgstr "L'id du journal des actions ne peut être nul"
+
+msgid "Error when adding details for the action log %d"
+msgstr "Erreur lors de l'ajout de détails pour le journal des actions %d"
+
+msgid "Error when adding an entry in the action log"
+msgstr "Erreur lors de l'ajout d'une entrée dans le journal des actions"
