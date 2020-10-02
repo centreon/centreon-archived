@@ -353,7 +353,7 @@ class PlatformInformation
      */
     public function setApiPeerValidation(?string $status): self
     {
-        $this->apiPeerValidation = ('yes' === ($status ?? null));
+        $this->apiPeerValidation = ('yes' === ($status));
         return $this;
     }
 }
