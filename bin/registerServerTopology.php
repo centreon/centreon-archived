@@ -52,8 +52,8 @@ Global Options:
   -n <mandatory>              name of your registered server
 
   --help <optional>           get information about the parameters available
-  --root <optional>           your root Centreon folder (by default "centreon")
-  --dns <optional>            provide your server DNS instead of IP. The DNS must be resolvable on the Central.
+  --root <optional>           your Centreon root path (by default "centreon")
+  --fqdn <optional>           provide your server FQDN instead of IP. The FQDN must be resolvable on the Central/Remote.
   --insecure <optional>       allow self-signed certificate
   --template <optional>       give the path of a register topology configuration to automate the script
              - API_USERNAME             <mandatory> string
@@ -61,10 +61,10 @@ Global Options:
              - SERVER_TYPE              <mandatory> string
              - HOST_ADDRESS             <mandatory> string
              - SERVER_NAME              <mandatory> string
+             - PROXY_USAGE              <mandatory> boolean
              - ROOT_CENTREON_FOLDER     <optional> string
-             - DNS                      <optional> string
+             - FQDN                     <optional> string
              - INSECURE                 <optional> boolean
-             - PROXY_USAGE              <optional> boolean
              - PROXY_HOST               <optional> string
              - PROXY_PORT               <optional> integer
              - PROXY_USERNAME           <optional> string
