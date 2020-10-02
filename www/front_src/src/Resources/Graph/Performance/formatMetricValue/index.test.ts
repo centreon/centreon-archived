@@ -1,6 +1,6 @@
 import formatMetricValue from '.';
 
-type TestCase = [number, string, 1000 | 1024, string];
+type TestCase = [number | null, string, 1000 | 1024, string | null];
 
 describe(formatMetricValue, () => {
   const cases: Array<TestCase> = [
@@ -9,6 +9,7 @@ describe(formatMetricValue, () => {
     [0.12232323445, '', 1000, '0.12'],
     [1024, 'B', 1000, '1K'],
     [1024, 'B', 1024, '1K'],
+    [null, 'B', 1024, null],
   ];
 
   it.each(cases)(

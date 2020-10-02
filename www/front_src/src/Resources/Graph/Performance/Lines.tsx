@@ -1,12 +1,20 @@
 import * as React from 'react';
 
 import { Area, Line, YAxis } from 'recharts';
-import { pipe, uniq, prop, map } from 'ramda';
+import { pipe, uniq, prop, map, isNil } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
 import { fontFamily } from '.';
 import formatMetricValue from './formatMetricValue';
+
+const formatTick = ({ unit, base }) => (value): string => {
+  if (isNil(value)) {
+    return '';
+  }
+
+  return formatMetricValue({ value, unit, base }) as string;
+};
 
 const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
@@ -25,9 +33,7 @@ const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
             yAxisId={unit}
             key={unit}
             orientation={index === 0 ? 'left' : 'right'}
-            tickFormatter={(tick): string => {
-              return formatMetricValue({ value: tick, unit, base });
-            }}
+            tickFormatter={formatTick({ unit, base })}
             {...props}
           />
         );
@@ -37,9 +43,7 @@ const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
     return [
       <YAxis
         key="single-y-axis"
-        tickFormatter={(tick): string => {
-          return formatMetricValue({ value: tick, unit: '', base });
-        }}
+        tickFormatter={formatTick({ unit: '', base })}
         {...props}
       />,
     ];
