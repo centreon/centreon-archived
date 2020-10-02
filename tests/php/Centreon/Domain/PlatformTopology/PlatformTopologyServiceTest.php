@@ -82,7 +82,7 @@ class PlatformTopologyServiceTest extends TestCase
             ->setParentAddress('1.1.1.1');
 
         $this->platformTopologyRepository = $this->createMock(PlatformTopologyRepositoryInterface::class);
-        $this->platformInformation = $this->createMock(PlatformInformationServiceInterface::class);
+        $this->platformInformationService = $this->createMock(PlatformInformationServiceInterface::class);
         $this->proxy = $this->createMock(ProxyServiceInterface::class);
         $this->httpClient = $this->createMock(HttpClientInterface::class);
     }
