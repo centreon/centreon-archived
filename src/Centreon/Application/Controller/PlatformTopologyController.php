@@ -25,6 +25,7 @@ namespace Centreon\Application\Controller;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
+use InvalidArgumentException;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
@@ -130,22 +131,29 @@ class PlatformTopologyController extends AbstractController
                 );
             }
 
-            // Check for same address and parent_address
-            if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
-                throw new \InvalidArgumentException("The address and parent_address of the platform are the same");
-            }
-
             if (isset($platformToAdd['parent_address'])) {
+                // Check for same address and parent_address
+                if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
+                    throw new PlatformTopologyConflictException(
+                        sprintf(
+                            _("Same address and parent_address for platform : '%s'@'%s'."),
+                            $platformTopology->getName(),
+                            $platformTopology->getAddress()
+                        )
+                    );
+                }
                 $platformTopology->setParentAddress($platformToAdd['parent_address']);
             }
 
             $this->platformTopologyService->addPlatformToTopology($platformTopology);
 
             return $this->view(null, Response::HTTP_CREATED);
-        } catch (PlatformTopologyConflictException $ex) {
-            throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_CONFLICT, $ex);
+        } catch (EntityNotFoundException $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (PlatformTopologyConflictException  $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
         } catch (\Throwable $ex) {
-            throw new PlatformTopologyException($ex->getMessage(), 0, $ex);
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }

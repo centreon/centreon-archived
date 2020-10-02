@@ -179,6 +179,9 @@ try {
     );
     $parentId = $localStmt->fetchColumn();
 
+    /**
+     * migrate server's child to 'platform_status' table
+     */
     // get nagios_server children
     $childStmt = $pearDB->query(
         "SELECT `id`, `name`, `ns_ip_address`, `ns_ip_address`, `remote_id` FROM nagios_server WHERE localhost != '1'"

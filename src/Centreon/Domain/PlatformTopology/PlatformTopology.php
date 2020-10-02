@@ -31,8 +31,8 @@ class PlatformTopology
     public const TYPE_CENTRAL = 'central';
     public const TYPE_POLLER = 'poller';
     public const TYPE_REMOTE = 'remote';
-    private const TYPE_MAP = 'map';
-    private const TYPE_MBI = 'mbi';
+    public const TYPE_MAP = 'map';
+    public const TYPE_MBI = 'mbi';
 
     /**
      * Available server types
@@ -46,7 +46,7 @@ class PlatformTopology
     ];
 
     /**
-     * @var int Id of server
+     * @var int|null Id of server
      */
     private $id;
 
@@ -81,6 +81,11 @@ class PlatformTopology
     private $serverId;
 
     /**
+     * @var bool
+     */
+    private $isLinkedToAnotherServer = false;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -110,21 +115,22 @@ class PlatformTopology
      * @param string|null $type server type: central, poller, remote, map or mbi
      *
      * @return $this
-     * @throws \InvalidArgumentException
      */
     public function setType(?string $type): self
     {
-        $type = strtolower($type);
+        if (null !== $type) {
+            $type = strtolower($type);
 
-        // Check if the server_type is available
-        if (!in_array($type, static::AVAILABLE_TYPES)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    _("The type of platform '%s'@'%s' is not consistent"),
-                    $this->getName(),
-                    $this->getAddress()
-                )
-            );
+            // Check if the server_type is available
+            if (!in_array($type, static::AVAILABLE_TYPES)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        _("The platform type of '%s'@'%s' is not consistent"),
+                        $this->getName(),
+                        $this->getAddress()
+                    )
+                );
+            }
         }
         $this->type = $type;
         return $this;
@@ -141,7 +147,6 @@ class PlatformTopology
     /**
      * @param string|null $name
      * @return $this
-     * @throws \InvalidArgumentException
      */
     public function setName(?string $name): self
     {
@@ -161,7 +166,6 @@ class PlatformTopology
      * @param string|null $address the address to be tested
      *
      * @return string|null
-     * @throws \InvalidArgumentException
      */
     private function checkIpAddress(?string $address): ?string
     {
@@ -175,7 +179,8 @@ class PlatformTopology
         if (false === filter_var(gethostbyname($address), FILTER_VALIDATE_IP)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    _("The address '%s' is not valid"),
+                    _("The address '%s' of '%s' is not valid or not resolvable"),
+                    $address,
                     $this->getName()
                 )
             );
@@ -226,7 +231,7 @@ class PlatformTopology
     }
 
     /**
-     * @return integer|null
+     * @return int|null
      */
     public function getParentId(): ?int
     {
@@ -257,9 +262,29 @@ class PlatformTopology
 
     /**
      * @param int|null $serverId nagios_server ID
+     * @return PlatformTopology
      */
-    public function setServerId(?int $serverId): void
+    public function setServerId(?int $serverId): self
     {
         $this->serverId = $serverId;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLinkedToAnotherServer(): bool
+    {
+        return $this->isLinkedToAnotherServer;
+    }
+
+    /**
+     * @param bool $isLinked
+     * @return $this
+     */
+    public function setLinkedToAnotherServer(bool $isLinked): self
+    {
+        $this->isLinkedToAnotherServer = $isLinked;
+        return $this;
     }
 }

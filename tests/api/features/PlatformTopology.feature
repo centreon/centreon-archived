@@ -23,7 +23,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"The Central type server : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon"}
+            {"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
             """
 
         # Successfully register the Central on the container
@@ -50,24 +50,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A Central : 'Central'@'1.1.1.10' is already registered"}
-            """
-
-        # Register a Central linked to another Central
-        # Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
-            """
-            {
-                "name": "Central 2",
-                "type": "central",
-                "address": "1.1.1.11",
-                "parent_address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "500"
-        And the response should be equal to:
-            """
-            {"code":500,"message":"Cannot use parent address on a Central server type"}
+            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
@@ -82,7 +65,73 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A Central : 'Central'@'1.1.1.10' is already registered"}
+            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
+            """
+
+        # Register a Central linked to another Central
+        # Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "Central 2",
+                "type": "central",
+                "address": "1.1.1.11",
+                "parent_address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"Cannot use parent address on a Central server type"}
+            """
+
+        # Check data consistency
+        # Register a platform using not allowed type / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "wrong type server",
+                "type": "server",
+                "address": "6.6.6.1",
+                "parent_address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"The platform type of 'wrong type server'@'6.6.6.1' is not consistent"}
+            """
+
+        # Register a platform using inconsistent address / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "inconsistent address",
+                "type": "poller",
+                "address": "666.",
+                "parent_address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"The address '666.' of 'inconsistent address' is not valid or not resolvable"}
+            """
+
+        # Register a platform using inconsistent parent_address / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "inconsistent parent address",
+                "type": "poller",
+                "address": "6.6.6.1",
+                "parent_address": "666."
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"The address '666.' of 'inconsistent parent address' is not valid or not resolvable"}
             """
 
         # Register a poller linked to the Central.
@@ -110,7 +159,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"code":409,"message":"A platform using the name : 'my poller' or address : '1.1.1.1' already exists"}
+            {"message":"A platform using the name : 'my poller' or address : '1.1.1.1' already exists"}
             """
 
         # Register a poller using type not formatted as expected / Should be successful
@@ -135,10 +184,10 @@ Feature:
                 "parent_address": "6.6.6.6"
             }
             """
-        Then the response code should be "500"
+        Then the response code should be "404"
         And the response should be equal to:
             """
-            {"code":500,"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
+            {"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
             """
 
         # Register a poller with no parent address / Should fail and an error should be returned
@@ -150,8 +199,40 @@ Feature:
                 "address": "1.1.1.4"
             }
             """
-        Then the response code should be "500"
+        Then the response code should be "404"
         And the response should be equal to:
             """
-            {"code":500,"message":"Missing mandatory parent address, to link the platform : 'my poller 4'@'1.1.1.4'"}
+            {"message":"Missing mandatory parent address, to link the platform : 'my poller 4'@'1.1.1.4'"}
+            """
+
+        # Register a poller using same address and parent address / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "my poller 4",
+                "type": "poller",
+                "address": "1.1.1.4",
+                "parent_address": "1.1.1.4"
+            }
+            """
+        Then the response code should be "409"
+        And the response should be equal to:
+            """
+            {"message":"Same address and parent_address for platform : 'my poller 4'@'1.1.1.4'."}
+            """
+
+        # Register a platform behind wrong parent type / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "inconsistent parent type",
+                "type": "poller",
+                "address": "6.6.6.1",
+                "parent_address": "1.1.1.2"
+            }
+            """
+        Then the response code should be "409"
+        And the response should be equal to:
+            """
+            {"message":"Cannot register the 'poller' platform : 'inconsistent parent type'@'6.6.6.1' behind a 'poller' platform"}
             """

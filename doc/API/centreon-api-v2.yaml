@@ -59,6 +59,7 @@ tags:
   - name: Acknowledgement
   - name: Downtime
   - name: Topology
+  - name: Information data
 security:
   - Token: []
   - Cookie: []
@@ -217,6 +218,26 @@ paths:
                       $ref: '#/components/schemas/Configuration.MonitoringServerMain'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/information:
+    get:
+      tags:
+        - Information data
+      summary: "Display specific Centreon configuration saved as 'information'"
+      description: >
+        Display specific Centreon configuration saved as 'information'.
+        Depending on the platform type, some fields are hidden or nothing is returned.
+        Following example, show data retrieved on a Remote
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.information'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -4257,6 +4278,45 @@ components:
         - port
         - user
         - password
+    Configuration.information:
+      type: object
+      properties:
+        version:
+          type: string
+          description: "Current platform version"
+          example: "20.04.5"
+        isRemote:
+          type: boolean
+          description: "Is the platform a Remote"
+          example: "true"
+        isCentral:
+          type: boolean
+          description: "Is the platform a Central"
+          example: "false"
+        authorizedMaster:
+          type: string
+          description: "In the case of a remote, address of the Central"
+          example: "1.1.1.1"
+        apiScheme:
+          type: string
+          description: "Scheme used by the API to communicate with the Central."
+          example: "http"
+        apiPort:
+          type: integer
+          description: "Scheme used by the API to communicate with the Central."
+          example: 80
+        apiPath:
+          type: string
+          description: "Root path used by the API to communicate with the Central."
+          example: "centreon"
+        apiPeerValidation:
+          type: boolean
+          description: "Is the peer validation enabled"
+          example: "false"
+        apiUsername:
+          type: string
+          description: "User used by the API to communicate with the Central."
+          example: "admin"
     Monitoring.TimelineEvent:
       type: object
       properties:
@@ -4330,9 +4390,10 @@ components:
         parent_address:
           type: string
           description: >
-            It should not be added to register a Central and only in this case.
-            Mandatory parameter for all other types, to be able to link a platform to its parent
+            It should not be added to register a Central or other platforms in specific cases:
+            Eg : To register a remote server as top level platform on its own platform.
 
+            Mandatory parameter for all other types, to be able to link a platform to its parent
             Example :
             - To link a poller to a Central
             - To link a remote server to a Central

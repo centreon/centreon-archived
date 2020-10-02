@@ -136,10 +136,34 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
-        $this->expectException(PlatformTopologyException::class);
-        $this->expectExceptionMessage('conflict');
-        $this->expectExceptionCode(Response::HTTP_CONFLICT);
-        $platformTopologyController->addPlatformToTopology($this->request);
+        $view = $platformTopologyController->addPlatformToTopology($this->request);
+        $this->assertEquals(
+            $view,
+            View::create(['message' => 'conflict'], Response::HTTP_CONFLICT)
+        );
+    }
+
+    /**
+     * test addPlatformToTopology with bad request
+     */
+    public function testAddPlatformToTopologyBadRequest()
+    {
+        $this->request->expects($this->any())
+            ->method('getContent')
+            ->willReturn($this->goodJsonPlatformTopology);
+
+        $this->platformTopologyService->expects($this->any())
+            ->method('addPlatformToTopology')
+            ->will($this->throwException(new PlatformTopologyException('bad request')));
+
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
+        $platformTopologyController->setContainer($this->container);
+
+        $view = $platformTopologyController->addPlatformToTopology($this->request);
+        $this->assertEquals(
+            $view,
+            View::create(['message' => 'bad request'], Response::HTTP_BAD_REQUEST)
+        );
     }
 
     /**

@@ -187,7 +187,7 @@ class Proxy
     }
 
     /**
-     * **Formats available:**
+     * **Available formats:**
      *
      * <<procotol>>://<<user>>:<<password>>@<<url>>:<<port>>
      *
@@ -196,8 +196,10 @@ class Proxy
      * <<procotol>>://<<url>>:<<port>>
      *
      * <<procotol>>://<<url>>
+     *
+     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $uri = '';
         if (!empty($this->url)) {
@@ -205,7 +207,7 @@ class Proxy
             if (!empty($this->user)) {
                 $uri .= $this->user . ':' . $this->password . '@';
             }
-            if (!empty($this->port) && $this->port >= 0) {
+            if (!empty($this->port) && $this->port > 0 && $this->port < 65536) {
                 $uri .= $this->url . ':' . $this->port;
             } else {
                 $uri .= $this->url;

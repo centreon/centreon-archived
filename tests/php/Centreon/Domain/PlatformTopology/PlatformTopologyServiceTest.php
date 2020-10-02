@@ -21,15 +21,17 @@
 
 namespace Tests\Centreon\Domain\PlatformTopology;
 
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PlatformTopologyServiceTest extends TestCase
 {
@@ -49,6 +51,21 @@ class PlatformTopologyServiceTest extends TestCase
     protected $platformTopologyRepository;
 
     /**
+     * @var HttpClientInterface|null $httpClient
+     */
+    protected $httpClient;
+
+    /**
+     * @var PlatformInformationServiceInterface&MockObject $platformInformationService
+     */
+    private $platformInformationService;
+
+    /**
+     * @var ProxyServiceInterface&MockObject $proxyService
+     */
+    private $proxyService;
+
+    /**
      * initiate query data
      */
     protected function setUp()
@@ -65,6 +82,9 @@ class PlatformTopologyServiceTest extends TestCase
             ->setParentAddress('1.1.1.1');
 
         $this->platformTopologyRepository = $this->createMock(PlatformTopologyRepositoryInterface::class);
+        $this->platformInformationService = $this->createMock(PlatformInformationServiceInterface::class);
+        $this->proxyService = $this->createMock(ProxyServiceInterface::class);
+        $this->httpClient = $this->createMock(HttpClientInterface::class);
     }
 
     /**
@@ -77,7 +97,12 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('isPlatformAlreadyRegisteredInTopology')
             ->willReturn(true);
 
-        $platformTopologyService = new PlatformTopologyService($this->platformTopologyRepository);
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService
+        );
 
         $this->expectException(PlatformTopologyConflictException::class);
         $this->expectExceptionMessage("A platform using the name : 'poller1' or address : '1.1.1.2' already exists");
@@ -99,7 +124,12 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('findPlatformTopologyByAddress')
             ->willReturn(null);
 
-        $platformTopologyService = new PlatformTopologyService($this->platformTopologyRepository);
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService
+        );
 
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage("No parent platform was found for : 'poller1'@'1.1.1.2'");
@@ -123,8 +153,13 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('addPlatformToTopology')
             ->willReturn(null);
 
-        $platformTopologyService = new PlatformTopologyService($this->platformTopologyRepository);
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService
+        );
 
-        $this->assertNull($platformTopologyService->addPlatformToTopology($this->platformTopology));
+        $this->assertNull($platformTopologyService->addPlatformToTopology($this->platformTopology, $this->httpClient));
     }
 }

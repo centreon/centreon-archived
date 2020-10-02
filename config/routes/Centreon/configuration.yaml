@@ -15,3 +15,9 @@ configuration.proxy.updateProxy:
     path: /configuration/proxy
     controller: 'Centreon\Application\Controller\Configuration\ProxyController::updateProxy'
     condition: "request.attributes.get('version.is_beta') == true"
+
+configuration.information.getInformation:
+    methods: GET
+    path: /configuration/information
+    controller: 'Centreon\Application\Controller\PlatformInformationController::getInformation'
+    condition: "request.attributes.get('version') >= 2.0"

@@ -20,24 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology\Interfaces;
+namespace Centreon\Domain\PlatformInformation\Interfaces;
 
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
 
-interface PlatformTopologyServiceInterface
+interface PlatformInformationServiceInterface
 {
     /**
-     * Add new server
-     *
-     * @param PlatformTopology $platformTopology
-     * @throws PlatformTopologyConflictException
-     * @throws PlatformTopologyException
-     * @throws EntityNotFoundException
+     * Get monitoring server data
+     * @return PlatformInformation|null
      * @throws PlatformInformationException
      */
-    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+    public function getInformation(): ?PlatformInformation;
 }
