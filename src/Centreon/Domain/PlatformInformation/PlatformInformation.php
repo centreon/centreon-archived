@@ -207,7 +207,6 @@ class PlatformInformation
         }
         // first key
         $path = __DIR__ . "/../../../../";
-        require_once $path . "/src/Security/Encryption.php";
         if (file_exists($path . '/.env.local.php')) {
             $localEnv = @include $path . '/.env.local.php';
         }
