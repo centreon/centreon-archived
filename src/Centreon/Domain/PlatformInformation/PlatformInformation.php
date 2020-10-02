@@ -33,61 +33,51 @@ class PlatformInformation
 {
     /**
      * @var string|null platform version
-     * @EntityDescriptor(column="version", modifier="setVersion")
      */
     private $version;
 
     /**
      * @var string|null
-     * @EntityDescriptor(column="appKey", modifier="setAppKey")
      */
     private $appKey;
 
     /**
      * @var bool platform type
-     * @EntityDescriptor(column="isRemote", modifier="setIsRemote")
      */
     private $isRemote = false;
 
     /**
      * @var bool platform type
-     * @EntityDescriptor(column="isCentral", modifier="setIsCentral")
      */
     private $isCentral = false;
 
     /**
      * @var string|null central's address
-     * @EntityDescriptor(column="authorizedMaster", modifier="setAuthorizedMaster")
      */
     private $authorizedMaster;
 
     /**
      * @var string|null
-     * @EntityDescriptor(column="apiUsername", modifier="setApiUsername")
      */
     private $apiUsername;
 
     /**
      * @var string|null
-     * @EntityDescriptor(column="apiCredentials", modifier="setApiCredentials")
      */
     private $apiCredentials;
 
     /**
      * @var string|null
-     * @EntityDescriptor(column="apiScheme", modifier="setApiScheme")
      */
     private $apiScheme;
 
     /**
      * @var int|null
-     * @EntityDescriptor(column="apiPort", modifier="setApiPort")
      */
     private $apiPort;
 
     /**
      * @var string|null
-     * @EntityDescriptor(column="apiPath", modifier="setApiPath")
      */
     private $apiPath;
 

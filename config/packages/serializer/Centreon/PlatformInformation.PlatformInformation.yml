@@ -4,10 +4,10 @@ Centreon\Domain\PlatformInformation\PlatformInformation:
       type: string
       groups: [platform_information_main, platform_information_limited]
     isRemote:
-      type: string
+      type: bool
       groups: [platform_information_main, platform_information_limited]
     isCentral:
-      type: string
+      type: bool
       groups: [platform_information_main, platform_information_limited]
     authorizedMaster:
       type: string
@@ -22,7 +22,7 @@ Centreon\Domain\PlatformInformation\PlatformInformation:
       type: string
       groups: [platform_information_main]
     apiPeerValidation:
-      type: string
+      type: bool
       groups: [platform_information_main]
     apiUsername:
       type: string

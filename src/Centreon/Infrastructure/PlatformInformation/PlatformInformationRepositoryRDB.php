@@ -58,7 +58,9 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
         $platformInformation = null;
         if ($statement->execute()) {
             while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                $result[$row['key']] = $row['value'];
+                // convert each camelCase key as snake_case
+                $key = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $row['key']));
+                $result[$key] = $row['value'];
             }
 
             if (!empty($result)) {

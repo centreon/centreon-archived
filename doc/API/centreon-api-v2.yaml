@@ -4286,13 +4286,13 @@ components:
           description: "Current platform version"
           example: "20.04.5"
         isRemote:
-          type: string
+          type: boolean
           description: "Is the platform a Remote"
-          example: "yes"
+          example: "true"
         isCentral:
-          type: string
+          type: boolean
           description: "Is the platform a Central"
-          example: "no"
+          example: "false"
         authorizedMaster:
           type: string
           description: "In the case of a remote, address of the Central"
@@ -4310,9 +4310,9 @@ components:
           description: "Root path used by the API to communicate with the Central."
           example: "centreon"
         apiPeerValidation:
-          type: string
+          type: boolean
           description: "Is the peer validation enabled"
-          example: "no"
+          example: "false"
         apiUsername:
           type: string
           description: "User used by the API to communicate with the Central."
