@@ -58,7 +58,7 @@ class PlatformTopologyServiceTest extends TestCase
     /**
      * @var PlatformInformationServiceInterface
      */
-    private $platformInformation;
+    private $platformInformationService;
 
     /**
      * @var ProxyServiceInterface
