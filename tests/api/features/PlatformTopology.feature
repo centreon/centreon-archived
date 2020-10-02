@@ -115,7 +115,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"The address '666.' of 'inconsistent address' is not valid"}
+            {"message":"The address '666.' of 'inconsistent address' is not valid or not resolvable"}
             """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
@@ -131,7 +131,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"The address '666.' of 'inconsistent parent address' is not valid"}
+            {"message":"The address '666.' of 'inconsistent parent address' is not valid or not resolvable"}
             """
 
         # Register a poller linked to the Central.
