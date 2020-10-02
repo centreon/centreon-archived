@@ -1,6 +1,11 @@
 import numeral from 'numeral';
+import { isNil } from 'ramda';
 
-const formatMetricValue = ({ value, unit, base = 1000 }): string => {
+const formatMetricValue = ({ value, unit, base = 1000 }): string | null => {
+  if (isNil(value)) {
+    return null;
+  }
+
   const base2Units = [
     'B',
     'bytes',
