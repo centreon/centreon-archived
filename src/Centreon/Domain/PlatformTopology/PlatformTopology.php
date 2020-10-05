@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
@@ -33,6 +34,8 @@ class PlatformTopology
     public const TYPE_REMOTE = 'remote';
     public const TYPE_MAP = 'map';
     public const TYPE_MBI = 'mbi';
+    public const NORMAL_RELATION = 'normal';
+    public const PEER_RETENTION_RELATION = 'peer_retention';
 
     /**
      * Available server types
@@ -43,6 +46,11 @@ class PlatformTopology
         self::TYPE_REMOTE,
         self::TYPE_MAP,
         self::TYPE_MBI
+    ];
+
+    private const AVAILABLE_RELATIONS = [
+        self::NORMAL_RELATION,
+        self::PEER_RETENTION_RELATION
     ];
 
     /**
@@ -84,6 +92,17 @@ class PlatformTopology
      * @var bool
      */
     private $isLinkedToAnotherServer = false;
+
+    /**
+     * @var array|null Communication type between topology and parent
+     */
+    private $relation;
+
+    /**
+     * @var string|null Server physical name
+     */
+    private $hostname;
+
 
     /**
      * @return int|null
@@ -285,6 +304,53 @@ class PlatformTopology
     public function setLinkedToAnotherServer(bool $isLinked): self
     {
         $this->isLinkedToAnotherServer = $isLinked;
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getRelation(): ?array
+    {
+        return $this->relation;
+    }
+
+    /**
+     * @param string|null $relationType
+     * @return self
+     */
+    public function setRelation(?string $relationType): self
+    {
+        if (!in_array($relationType, self::AVAILABLE_RELATIONS)) {
+            throw new \InvalidArgumentException(sprintf(_("The type of relation '%s' is not allowed"), $relationType));
+        }
+
+        if ($this->getParentId() !== null) {
+            $this->relation = [
+                'source' => $this->getId(),
+                'relation' => $relationType,
+                'target' => $this->getParentId()
+            ];
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return self|null
+     */
+    public function getHostname(): ?self
+    {
+        return $this->hostname;
+    }
+
+    /**
+     * @param integer|null $hostname
+     * @return self
+     */
+    public function setHostname(?int $hostname): self
+    {
+        $this->hostname = $hostname;
         return $this;
     }
 }

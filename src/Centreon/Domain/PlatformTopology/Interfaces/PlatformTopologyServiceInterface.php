@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
@@ -40,4 +41,13 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformInformationException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+
+    /**
+     * Get a topology with detailed nodes
+     *
+     * @return array
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     */
+    public function getPlatformCompleteTopology(): array;
 }

@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology;
@@ -170,5 +171,55 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         }
 
         return $platformTopology;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPlatformCompleteTopology(): ?array
+    {
+        $statement = $this->db->query('SELECT * FROM `platform_topology`');
+        $platformCompleteTopology = [];
+        foreach ($statement as $topology) {
+            $platformTopology = EntityCreator::createEntityByArray(PlatformTopology::class, $topology);
+            $platformCompleteTopology[] = $platformTopology;
+        }
+        if (!empty($platformCompleteTopology)) {
+            return $platformCompleteTopology;
+        }
+        return null;
+    }
+
+    public function findPlatformAddressById(int $serverId): ?string
+    {
+        $statement = $this->db->prepare('SELECT `address` FROM `platform_topology` WHERE id = :serverId');
+        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
+        $statement->execute();
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ($result) {
+            return $result['address'];
+        }
+        return null;
+    }
+
+    public function findPlatformOnePeerRetentionMode(int $serverId): ?string
+    {
+        $statement = $this->db->prepare("
+            SELECT config_value
+            FROM cfg_centreonbroker_info cfgbi
+            INNER JOIN cfg_centreonbroker AS cfgb
+                ON cfgbi.config_id = cfgb.config_id
+            INNER JOIN nagios_server AS ns
+                ON cfgb.ns_nagios_server = ns.id
+                AND ns.id = :serverId
+            WHERE cfgbi.config_group = 'output'
+            AND config_key = 'one_peer_retention_mode'
+        ");
+        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
+        $statement->execute();
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return $result['config_value'];
+        }
+        return null;
     }
 }

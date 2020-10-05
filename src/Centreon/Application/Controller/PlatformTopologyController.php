@@ -18,21 +18,23 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use JsonSchema\Validator;
+use FOS\RestBundle\Context\Context;
+use FOS\RestBundle\View\View;
+use JsonSchema\Constraints\Constraint;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
-use FOS\RestBundle\View\View;
-use InvalidArgumentException;
-use JsonSchema\Constraints\Constraint;
-use JsonSchema\Validator;
-use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * This controller is designed to manage platform topology API requests and register new servers.
@@ -45,6 +47,8 @@ class PlatformTopologyController extends AbstractController
      * @var PlatformTopologyServiceInterface
      */
     private $platformTopologyService;
+
+    public const SERIALIZER_GROUP_HELIOS = ['platform_topology_helios'];
 
     /**
      * PlatformTopologyController constructor
@@ -107,7 +111,7 @@ class PlatformTopologyController extends AbstractController
         $this->validatePlatformTopologySchema(
             $platformToAdd,
             $this->getParameter('centreon_path')
-            . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
+                . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
         );
 
         try {
@@ -155,5 +159,43 @@ class PlatformTopologyController extends AbstractController
         } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     * Get the Topology of a platform with an adapted Helios Format.
+     *
+     * @return View
+     */
+    public function getPlatformTopologyHelios(): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        // Get the entire topology of the platform as an array of PlatformTopology instances
+        $platformCompleteTopology = $this->platformTopologyService->getPlatformCompleteTopology();
+        if ($platformCompleteTopology === null) {
+            throw new EntityNotFoundException('Platform Topologies not found');
+        }
+        $edges =  [];
+        $topologiesHelios = [];
+
+        //Format the PlatformTopology into a Json Graph Format, usable by Helios
+        foreach ($platformCompleteTopology as $topology) {
+            $topologyHelios = new PlatformTopologyHeliosFormat($topology);
+            $topologiesHelios[] = $topologyHelios;
+            if (!empty($topologyHelios->getRelation())) {
+                $edges[] = $topologyHelios->getRelation();
+            }
+        }
+        $context = (new Context())->setGroups(self::SERIALIZER_GROUP_HELIOS);
+        return $this->view([
+            'graph' => [
+                'label' => 'centreon-topology',
+                'metadata' => [
+                    'version' => '1.0.0'
+                ]
+            ],
+            'nodes' => $topologiesHelios,
+            'edges' => $edges
+        ])->setContext($context);
     }
 }

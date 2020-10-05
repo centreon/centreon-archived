@@ -236,3 +236,82 @@ Feature:
             """
             {"message":"Cannot register the 'poller' platform : 'inconsistent parent type'@'6.6.6.1' behind a 'poller' platform"}
             """
+
+        # Register a remote platform
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "RS1",
+                "type": "remote",
+                "address": "1.10.10.1",
+                "parent_address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "201"
+        Then I wait for "3600" seconds
+
+        # Need data to provide a full response on GET endpoint
+        When I send a GET request to "/beta/platform/topology/helios"
+        Then the response code should be "200"
+        And the response should be equal to:
+            """
+            {
+                "graph": {
+                    "label": "centreon-topology",
+                    "metadata": {
+                        "version": "1.0.0"
+                    }
+                },
+                "nodes": [
+                    {
+                        "id": "1",
+                        "type": "central",
+                        "label": "Central",
+                        "metadata": {
+                            "centreon-id": "1"
+                        }
+                    },
+                    {
+                        "id": "2",
+                        "type": "poller",
+                        "label": "my poller",
+                        "metadata": {
+                            "centreon-id": "2"
+                        }
+                    },
+                    {
+                        "id": "3",
+                        "type": "poller",
+                        "label": "my poller 2",
+                        "metadata": {
+                            "centreon-id": "3"
+                        }
+                    },
+                    {
+                        "id": "4",
+                        "type": "remote",
+                        "label": "RS1",
+                        "metadata": {
+                            "centreon-id": "4"
+                        }
+                    }
+                ],
+                "edges": [
+                    {
+                        "source": "2",
+                        "relation": "normal",
+                        "target": "1"
+                    },
+                    {
+                        "source": "3",
+                        "relation": "normal",
+                        "target": "1"
+                    },
+                    {
+                        "source": "4",
+                        "relation": "normal",
+                        "target": "1"
+                    },
+                ]
+            }
+            """

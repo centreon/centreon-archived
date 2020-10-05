@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
@@ -478,5 +479,59 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             return $registeredParentInTopology;
         }
         return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPlatformCompleteTopology(): array
+    {
+        $completePlatformTopology = $this->platformTopologyRepository->getPlatformCompleteTopology();
+        if ($completePlatformTopology === null) {
+            throw new EntityNotFoundException('Platform Topology not found');
+        }
+        foreach ($completePlatformTopology as $topology) {
+            /**
+             * Check if the parent are correctly set
+             */
+            if ($topology->getType() !== PlatformTopology::TYPE_CENTRAL) {
+                if ($topology->getParentId() === null) {
+                    throw new PlatformTopologyException(
+                        sprintf(
+                            _("the '%s': '%s'@'%s' isn't registered on any Central or Remote"),
+                            $topology->getType(),
+                            $topology->getName(),
+                            $topology->getAddress()
+                        )
+                    );
+                }
+                $topologyParentAddress = $this->platformTopologyRepository->findPlatformAddressById(
+                    $topology->getParentId()
+                );
+                if ($topologyParentAddress === null) {
+                    throw new PlatformTopologyException(
+                        sprintf(_("Topology address for parent platform ID: '%d' not found"), $topology->getParentId())
+                    );
+                }
+                $topology->setParentAddress($topologyParentAddress);
+            }
+            $onePeer = $this->platformTopologyRepository->findPlatformOnePeerRetentionMode($topology->getServerId());
+            if ($onePeer === null) {
+                throw new PlatformTopologyException(
+                    sprintf(
+                        _("The 'one peer retention mode' is missing in your '%s' '%s'@'%s' broker configuration"),
+                        $topology->getType(),
+                        $topology->getName(),
+                        $topology->getAddress()
+                    )
+                );
+            }
+            if ($onePeer === 'yes') {
+                $topology->setRelation(PlatformTopology::PEER_RETENTION_RELATION);
+            } else {
+                $topology->setRelation(PlatformTopology::NORMAL_RELATION);
+            }
+        }
+        return $completePlatformTopology;
     }
 }
