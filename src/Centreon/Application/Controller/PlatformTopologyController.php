@@ -27,6 +27,7 @@ use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
@@ -122,14 +123,19 @@ class PlatformTopologyController extends AbstractController
         );
 
         try {
+            // check for illegal characters in name
+            $this->checkName($platformToAdd['name']);
+
             $platformTopology = (new PlatformTopology())
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type']);
 
-            // check for illegal characters in hostname and set it
-            $this->checkHostname($platformTopology);
-            $platformTopology->setHostname($platformToAdd['hostname']);
+            // check for illegal characters in hostname
+            if (null !== $platformToAdd['hostname']) {
+                $this->checkName($platformToAdd['hostname']);
+                $platformTopology->setHostname($platformToAdd['hostname']);
+            }
 
             // Check for empty parent_address consistency and set it
             if (
@@ -174,33 +180,30 @@ class PlatformTopologyController extends AbstractController
 
     /**
      * Get engine configuration's illegal characters and check for illegal characters in hostname
-     * @param PlatformTopology $platformTopology
-     * @throws PlatformTopologyException
+     * @param string $stringToCheck
      * @throws EngineException
+     * @throws PlatformTopologyException
      */
-    private function checkHostname(PlatformTopology $platformTopology): void
+    private function checkName(string $stringToCheck): void
     {
+        $monitoringServerName = $this->platformTopologyService->findLocalhostMonitoringName();
         $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
-
-
-            $platformTopology->getName() // warning this may not be the right monitoring server
-
-
+            $monitoringServerName
         );
         if (null === $engineConfiguration) {
             throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
         }
+
         $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
-            $platformTopology->getHostname(),
+            $stringToCheck,
             $engineConfiguration->getIllegalObjectNameCharacters()
         );
         if (true === $foundIllegalCharacters) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("At least one illegal character in '%s', was found on platform's Hostname: '%s'@'%s'"),
+                    _("At least one illegal character in '%s', was found on platform's name: '%s'"),
                     $engineConfiguration->getIllegalObjectNameCharacters(),
-                    $platformTopology->getName(),
-                    $platformTopology->getAddress()
+                    $stringToCheck
                 )
             );
         }

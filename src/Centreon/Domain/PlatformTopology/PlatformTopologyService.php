@@ -358,6 +358,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      *
      * @param string $type platform type to find
      * @throws PlatformTopologyConflictException
+     * @throws \Exception
      */
     private function checkForAlreadyRegisteredPlatformType(string $type): void
     {
@@ -433,6 +434,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @return PlatformTopology|null
      * @throws EntityNotFoundException
      * @throws PlatformTopologyConflictException
+     * @throws \Exception
      */
     private function findParentPlatformAndSetId(PlatformTopology $platformTopology): ?PlatformTopology
     {
@@ -483,5 +485,19 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             return $registeredParentInTopology;
         }
         return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findLocalhostMonitoringName(): ?string
+    {
+        $monitoringServerName = null;
+        try {
+            $monitoringServerName = $this->platformTopologyRepository->findLocalhostMonitoringName();
+        } catch (\Exception $ex) {
+            throw new PlatformTopologyException(_("Error when searching monitoring server name of the platform"));
+        }
+        return $monitoringServerName;
     }
 }

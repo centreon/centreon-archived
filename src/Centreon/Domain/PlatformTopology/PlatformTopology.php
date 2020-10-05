@@ -155,12 +155,6 @@ class PlatformTopology
      */
     public function setName(?string $name): self
     {
-        $name = filter_var($name, FILTER_SANITIZE_STRING);
-        if (empty($name)) {
-            throw new \InvalidArgumentException(
-                _('The name of the platform is not consistent')
-            );
-        }
         $this->name = $name;
         return $this;
     }

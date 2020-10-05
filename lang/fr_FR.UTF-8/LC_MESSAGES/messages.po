@@ -15541,10 +15541,6 @@ msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
 #: api/topology/register
-msgid "The name of the platform is not consistent"
-msgstr "Le nom de cette plateforme n'est pas cohérent"
-
-#: api/topology/register
 msgid "The address '%s' of '%s' is not valid or not resolvable"
 msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide ou ne peut être résolue"
 

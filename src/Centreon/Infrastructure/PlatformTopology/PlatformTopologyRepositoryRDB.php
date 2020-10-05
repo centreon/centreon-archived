@@ -172,4 +172,21 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         return $platformTopology;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findLocalhostMonitoringName(): ?string
+    {
+        $statement = $this->db->query(
+            $this->translateDbName('
+                SELECT `name`
+                FROM `:db`.nagios_server
+                WHERE `localhost` = \'1\' AND ns_activate = \'1\'
+            ')
+        );
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        return (!empty($result['name']) ? $result['name'] : null);
+    }
 }
