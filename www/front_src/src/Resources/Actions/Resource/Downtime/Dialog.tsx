@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/explicit-member-accessibility */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-useless-constructor */
 import * as React from 'react';
 
-import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range';
-import MomentUtils from '@date-io/moment';
+import { format as formatTimezone, toDate, utcToZonedTime } from 'date-fns-tz';
 import { useTranslation } from 'react-i18next';
+import DateFnsAdapter from '@date-io/date-fns';
 
 import {
   Checkbox,
@@ -47,7 +50,8 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 
 interface Props {
-  locale: string | null;
+  // locale: string | null;
+  locale: unknown;
   timezone: string | null;
   resources: Array<Resource>;
   canConfirm: boolean;
@@ -74,13 +78,13 @@ const pickerCommonProps = {
 
 const datePickerProps = {
   ...pickerCommonProps,
-  format: 'LL',
+  // format: 'LL',
 } as Omit<DatePickerProps, 'onChange'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
   ampm: false,
-  format: 'LT',
+  // format: 'LT',
 } as Omit<TimePickerProps, 'onChange'>;
 
 const DialogDowntime = ({
@@ -108,13 +112,34 @@ const DialogDowntime = ({
     setFieldValue(field, value);
   };
 
-  React.useEffect(() => {
-    moment.locale(locale);
-  }, [locale]);
+  const getUtils = () => {
+    return class DateFnsTzUtils extends DateFnsAdapter {
+      constructor() {
+        super();
 
-  React.useEffect(() => {
-    moment.tz.setDefault(timezone);
-  }, [timezone]);
+        // this.locale = locale;
+        // this.timeZone = timezone;
+      }
+
+      public format(date, formatString): string {
+        const utcDate = toDate(date, { timeZone: 'UTC ' });
+        const zonedDate = utcToZonedTime(utcDate, timezone as string);
+
+        return formatTimezone(zonedDate, formatString, {
+          timeZone: timezone as string | undefined,
+          locale: locale as Locale,
+        });
+      }
+    };
+  };
+
+  // React.useEffect(() => {
+  //   moment.locale(locale);
+  // }, [locale]);
+
+  // React.useEffect(() => {
+  //   moment.tz.setDefault(timezone);
+  // }, [timezone]);
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
@@ -133,9 +158,8 @@ const DialogDowntime = ({
       {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
       <MuiPickersUtilsProvider
-        libInstance={moment}
-        utils={MomentUtils}
-        locale={locale}
+        // libInstance={moment}
+        utils={getUtils()}
       >
         <Grid direction="column" container spacing={1}>
           <Grid item>

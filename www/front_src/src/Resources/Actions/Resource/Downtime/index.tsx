@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { fr, enUS, pt, ptBR } from 'date-fns/locale';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
@@ -23,6 +24,13 @@ interface DateParams {
   dateEnd: Date;
   timeEnd: Date;
 }
+
+const locales = {
+  fr_FR: fr,
+  en_US: enUS,
+  pt_PT: pt,
+  pt_BR: ptBR,
+};
 
 const formatDateInterval = (values: DateParams): [Date, Date] => {
   const timeStart = new Date(values.timeStart);
@@ -152,7 +160,7 @@ const DowntimeForm = ({
 
   return (
     <DialogDowntime
-      locale={locale}
+      locale={locales[locale]}
       timezone={timezone}
       resources={resources}
       onConfirm={form.submitForm}
