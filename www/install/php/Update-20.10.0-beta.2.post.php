@@ -84,9 +84,6 @@ try {
         //check remote/poller
         $parent = $parentId;
         $serverType = 'poller';
-        if ($row['remote_id']) {
-            $parent = $row['remote_id'];
-        }
 
         $remoteServerQuery = $pearDB->prepare(
             "SELECT `id` FROM remote_servers WHERE ip = :ipAddress"
