@@ -109,7 +109,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             $this->setMonitoringServerId($platformTopology, $isLocalhost);
         }
 
-        $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
+
+        if (PlatformTopology::TYPE_MBI !== $platformTopology->getType()) {
+            $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
+        }
+
         /**
          * @var PlatformTopology|null $registeredParentInTopology
          */
