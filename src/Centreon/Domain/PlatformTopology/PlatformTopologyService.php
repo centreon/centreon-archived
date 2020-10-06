@@ -515,6 +515,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
                 $topology->setParentAddress($topologyParentAddress);
             }
+            if ($topology->getServerId() === null) {
+                throw new platformTopologyException(
+                    sprintf(
+                        _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard")
+                    )
+                );
+            }
             $onePeer = $this->platformTopologyRepository->findPlatformOnePeerRetentionMode($topology->getServerId());
             if ($onePeer === null) {
                 throw new PlatformTopologyException(

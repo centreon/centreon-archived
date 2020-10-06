@@ -251,7 +251,11 @@ Feature:
 
         # Need data to provide a full response on GET endpoint
         When I send a GET request to "/beta/platform/topology/helios"
-        Then the response code should be "200"
+        Then the response code should be "500"
+        And the response should be equal to:
+        """
+        {"toto"}
+        """
         And the response should be equal to:
             """
             {

@@ -196,6 +196,6 @@ class PlatformTopologyController extends AbstractController
             ],
             'nodes' => $topologiesHelios,
             'edges' => $edges
-        ])->setContext($context);
+        ], Response::HTTP_OK)->setContext($context);
     }
 }
