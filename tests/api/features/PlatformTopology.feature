@@ -134,7 +134,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'illegal space found'"}
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found in platform's name: 'illegal space found'"}
             """
 
         # Register a platform using name with illegal characters / Should fail and an error should be returned
@@ -150,7 +150,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'ill*ga|_character$_found'"}
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found in platform's name: 'ill*ga|_character$_found'"}
             """
 
         # Register a platform using hostname with at least one space / Should fail and an error should be returned
@@ -167,7 +167,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'found.space_in.host name.wrong'"}
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found in platform's name: 'found.space_in.host name.wrong'"}
             """
 
         # Register a platform using hostname with illegal characters / Should fail and an error should be returned
@@ -184,7 +184,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'found.i|legal.char*cter_!n.hostname'"}
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found in platform's name: 'found.i|legal.char*cter_!n.hostname'"}
             """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned

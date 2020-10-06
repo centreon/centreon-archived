@@ -15597,7 +15597,7 @@ msgid "Central platform's API port are not consistent. Please check the 'Remote 
 msgstr "Le port de l'API vers le Central n'est pas cohérent. Veuiller vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
-msgid "At least one space or illegal character in '%s', was found on platform's name: '%s'"
+msgid "At least one space or illegal character in '%s', was found in platform's name: '%s'"
 msgstr "Au moins un espace ou un caractère illegal parmi '%s', a été trouvé dans le nom de la plateforme: '%s'"
 
 #: api/topology/register
