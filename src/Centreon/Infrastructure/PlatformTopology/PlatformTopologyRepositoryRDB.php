@@ -218,7 +218,11 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
         $statement->execute();
         while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            return $result['config_value'];
+            if ($result['config_value'] === "yes"){
+                return true;
+            }else {
+                return false;
+            }
         }
         return null;
     }

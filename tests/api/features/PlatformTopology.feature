@@ -5,7 +5,7 @@ Feature:
 
     Background:
         Given a running instance of Centreon Web API
-    #   And the endpoints are described in Centreon Web API documentation
+        And the endpoints are described in Centreon Web API documentation
 
     Scenario: Register servers in Platform Topology
         Given I am logged in
@@ -249,14 +249,11 @@ Feature:
             """
         Then the response code should be "201"
 
-        # Need data to provide a full response on GET endpoint
+    Scenario: 
+        Need data to provide a full response on GET endpoint
         When I send a GET request to "/beta/platform/topology/helios"
-        Then the response code should be "500"
-        And the response should be equal to:
-        """
-        {"toto"}
-        """
-        And the response should be equal to:
+        Then the response code should be "200"
+        And the JSON should be equal to:
             """
             {
                 "graph": {
@@ -273,48 +270,8 @@ Feature:
                         "metadata": {
                             "centreon-id": "1"
                         }
-                    },
-                    {
-                        "id": "2",
-                        "type": "poller",
-                        "label": "my poller",
-                        "metadata": {
-                            "centreon-id": "2"
-                        }
-                    },
-                    {
-                        "id": "3",
-                        "type": "poller",
-                        "label": "my poller 2",
-                        "metadata": {
-                            "centreon-id": "3"
-                        }
-                    },
-                    {
-                        "id": "4",
-                        "type": "poller",
-                        "label": "my poller 3",
-                        "metadata": {
-                            "centreon-id": "4"
-                        }
                     }
                 ],
-                "edges": [
-                    {
-                        "source": "2",
-                        "relation": "normal",
-                        "target": "1"
-                    },
-                    {
-                        "source": "3",
-                        "relation": "normal",
-                        "target": "1"
-                    },
-                    {
-                        "source": "4",
-                        "relation": "normal",
-                        "target": "1"
-                    },
-                ]
+                "edges": []
             }
             """

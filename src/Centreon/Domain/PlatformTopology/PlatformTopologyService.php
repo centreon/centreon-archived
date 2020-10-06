@@ -518,7 +518,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if ($topology->getServerId() === null) {
                 throw new PlatformTopologyException(
                     sprintf(
-                        _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard")
+                        _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard"),
+                        $topology->getType(),
+                        $topology->getName(),
+                        $topology->getAddress()
                     )
                 );
             }
@@ -533,7 +536,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if ($onePeer === 'yes') {
+            if ($onePeer === true) {
                 $topology->setRelation(PlatformTopology::PEER_RETENTION_RELATION);
             } else {
                 $topology->setRelation(PlatformTopology::NORMAL_RELATION);
