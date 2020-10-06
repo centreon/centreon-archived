@@ -15613,6 +15613,10 @@ msgid "Unable to retrieve platform information's data."
 msgstr "Impossible de récupérer les données d'information sur la plateforme."
 
 #: api/topology/register
+msgid "Unable to find local monitoring server name"
+msgstr "Impossible de trouver le nom du server de monitoring local"
+
+#: api/topology/register
 msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
 msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'."
 
