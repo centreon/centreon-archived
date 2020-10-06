@@ -132,8 +132,8 @@ Feature:
             }
             """
         Then the response code should be "400"
-        # Using the string '~!$&*"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the string are always different.
+        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
+        # as it contains unescaped characters and behat interpret them, so the strings are always different.
 
         # Register a platform using name with illegal characters / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
@@ -146,8 +146,8 @@ Feature:
             }
             """
         Then the response code should be "400"
-        # Using the string '~!$&*"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the string are always different.
+        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
+        # as it contains unescaped characters and behat interpret them, so the strings are always different.
 
         # Register a platform using hostname with at least one space / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
@@ -161,8 +161,8 @@ Feature:
             }
             """
         Then the response code should be "400"
-        # Using the string '~!$&*"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the string are always different.
+        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
+        # as it contains unescaped characters and behat interpret them, so the strings are always different.
 
         # Register a platform using hostname with illegal characters / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
@@ -176,8 +176,8 @@ Feature:
             }
             """
         Then the response code should be "400"
-        # Using the string '~!$&*"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the string are always different.
+        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
+        # as it contains unescaped characters and behat interpret them, so the strings are always different.
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
