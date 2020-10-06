@@ -719,9 +719,7 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "openid_connect_mode",
-        !empty($ret["openid_connect_mode"]["openid_connect_mode"])
-          ? $pearDB->escape($ret["openid_connect_mode"]["openid_connect_mode"])
-          : 1
+        $pearDB->escape($ret["openid_connect_mode"]["openid_connect_mode"])
     );
     updateOption(
         $pearDB,
