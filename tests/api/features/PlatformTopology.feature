@@ -241,14 +241,13 @@ Feature:
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "RS1",
-                "type": "remote",
+                "name": "my poller 3",
+                "type": "poller",
                 "address": "1.10.10.1",
                 "parent_address": "1.1.1.10"
             }
             """
         Then the response code should be "201"
-        Then I wait for "3600" seconds
 
         # Need data to provide a full response on GET endpoint
         When I send a GET request to "/beta/platform/topology/helios"
@@ -289,8 +288,8 @@ Feature:
                     },
                     {
                         "id": "4",
-                        "type": "remote",
-                        "label": "RS1",
+                        "type": "poller",
+                        "label": "my poller 3",
                         "metadata": {
                             "centreon-id": "4"
                         }
