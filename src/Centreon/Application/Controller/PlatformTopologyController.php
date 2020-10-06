@@ -210,7 +210,7 @@ class PlatformTopologyController extends AbstractController
             throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
         }
 
-        $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
+        $foundIllegalCharacters = EngineConfiguration::hasNonRfcCompliantCharacters(
             $stringToCheck,
             $engineConfiguration->getIllegalObjectNameCharacters()
         );

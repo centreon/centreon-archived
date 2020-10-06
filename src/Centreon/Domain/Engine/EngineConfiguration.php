@@ -135,24 +135,15 @@ class EngineConfiguration
     /**
      * Find all illegal characters from the given string.
      *
-     * @param string $stringToAnalyse String for which we want to remove illegal characters
+     * @param string $stringToCheck String to analyse for non RFC compliant characters
      * @param string|null $illegalCharacters String containing illegal characters
      * @return bool Return true if illegal characters have been found
      */
-    public static function hasIllegalCharacters(string $stringToAnalyse, ?string $illegalCharacters): bool
+    public static function hasNonRfcCompliantCharacters(string $stringToCheck, ?string $illegalCharacters): bool
     {
-        if (null === $illegalCharacters) {
-            return false;
-        }
-        $illegalCharactersList = str_split(html_entity_decode($illegalCharacters), 1);
-        // Add space to the list as, space is not compliant with the RFC
-        $illegalCharactersList[] = ' ';
+        // Spaces are not RFC compliant
+        $illegalCharacters .= ' ';
 
-        foreach ($illegalCharactersList as $illegalCharacter) {
-            if (false !== strpos($stringToAnalyse, $illegalCharacter)) {
-                return true;
-            }
-        }
-        return false;
+        return (strlen($stringToCheck) !== strlen(self::removeIllegalCharacters($stringToCheck, $illegalCharacters)));
     }
 }
