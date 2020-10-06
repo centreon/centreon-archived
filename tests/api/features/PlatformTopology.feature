@@ -249,8 +249,22 @@ Feature:
             """
         Then the response code should be "201"
 
-    Scenario: 
-        Need data to provide a full response on GET endpoint
+    Scenario: Get a Platform Topology for Helios
+        Given I am logged in
+
+        # Create the Central into platform topology table
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "Central",
+                "type": "central",
+                "address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "201"
+
+        # Actually we can't have server_id because the register is not fully complete (wizard not executed)
+        # So we can't add pollers or remote to test edges.
         When I send a GET request to "/beta/platform/topology/helios"
         Then the response code should be "200"
         And the JSON should be equal to:
