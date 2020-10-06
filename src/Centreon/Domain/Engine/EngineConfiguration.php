@@ -144,6 +144,6 @@ class EngineConfiguration
         // Spaces are not RFC compliant
         $illegalCharacters .= ' ';
 
-        return (strlen($stringToCheck) !== strlen(self::removeIllegalCharacters($stringToCheck, $illegalCharacters)));
+        return $stringToCheck !== self::removeIllegalCharacters($stringToCheck, $illegalCharacters);
     }
 }
