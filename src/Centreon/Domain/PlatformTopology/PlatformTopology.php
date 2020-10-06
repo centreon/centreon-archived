@@ -56,7 +56,7 @@ class PlatformTopology
     private $name;
 
     /**
-     * @var $hostname platform's real name : "physical name"
+     * @var string|null  platform's real name : "physical name"
      */
     private $hostname;
 
