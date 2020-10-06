@@ -339,7 +339,7 @@ class PlatformTopology
     /**
      * @return self|null
      */
-    public function getHostname(): ?self
+    public function getHostname(): ?string
     {
         return $this->hostname;
     }
@@ -348,7 +348,7 @@ class PlatformTopology
      * @param integer|null $hostname
      * @return self
      */
-    public function setHostname(?int $hostname): self
+    public function setHostname(?string $hostname): self
     {
         $this->hostname = $hostname;
         return $this;

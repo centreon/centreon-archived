@@ -67,7 +67,7 @@ class PlatformTopologyHeliosFormat
         if ($platformTopology->getServerId() !== null) {
             $metadata['centreon-id'] = (string) $platformTopology->getServerId();
         }
-        if ($platformTopology->getHostname !== null) {
+        if ($platformTopology->getHostname() !== null) {
             $metadata['hostname'] = $platformTopology->getHostname();
         }
         $this->setMetadata($metadata);
