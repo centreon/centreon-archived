@@ -187,6 +187,11 @@ class PlatformTopologyController extends AbstractController
     private function checkName(string $stringToCheck): void
     {
         $monitoringServerName = $this->platformTopologyService->findLocalhostMonitoringName();
+        if (null === $monitoringServerName) {
+            throw new PlatformTopologyException(
+                _('Unable to find local monitoring server name')
+            );
+        }
         $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
             $monitoringServerName
         );

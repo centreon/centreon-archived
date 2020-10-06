@@ -166,6 +166,14 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
 
+        $this->platformTopologyService->expects($this->exactly(2))
+            ->method('findLocalhostMonitoringName')
+            ->willReturn('Central');
+
+        $this->engineConfigurationService->expects($this->exactly(2))
+            ->method('findEngineConfigurationByName')
+            ->willReturn($this->engineConfiguration);
+
         $platformTopologyController = new PlatformTopologyController(
             $this->platformTopologyService,
             $this->engineConfigurationService
@@ -192,6 +200,14 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyException('bad request')));
 
+        $this->platformTopologyService->expects($this->exactly(2))
+            ->method('findLocalhostMonitoringName')
+            ->willReturn('Central');
+
+        $this->engineConfigurationService->expects($this->exactly(2))
+            ->method('findEngineConfigurationByName')
+            ->willReturn($this->engineConfiguration);
+
         $platformTopologyController = new PlatformTopologyController(
             $this->platformTopologyService,
             $this->engineConfigurationService
@@ -217,6 +233,14 @@ class PlatformTopologyControllerTest extends TestCase
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
             ->willReturn(null);
+
+        $this->platformTopologyService->expects($this->exactly(2))
+            ->method('findLocalhostMonitoringName')
+            ->willReturn('Central');
+
+        $this->engineConfigurationService->expects($this->exactly(2))
+            ->method('findEngineConfigurationByName')
+            ->willReturn($this->engineConfiguration);
 
         $platformTopologyController = new PlatformTopologyController(
             $this->platformTopologyService,
