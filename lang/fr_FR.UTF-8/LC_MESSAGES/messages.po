@@ -15614,7 +15614,11 @@ msgstr "Impossible de récupérer les données d'information sur la plateforme."
 
 #: api/topology/register
 msgid "Unable to find local monitoring server name"
-msgstr "Impossible de trouver le nom du server de monitoring local"
+msgstr "Impossible de trouver le nom du server local de supervision"
+
+#: api/topology/register
+msgid "Error when searching monitoring server name"
+msgstr "Erreur lors de la recherche du nom du server de supervision"
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' is not declared as a 'remote'."

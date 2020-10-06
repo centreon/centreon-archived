@@ -496,7 +496,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         try {
             $monitoringServerName = $this->platformTopologyRepository->findLocalhostMonitoringName();
         } catch (\Exception $ex) {
-            throw new PlatformTopologyException(_("Error when searching monitoring server name of the platform"));
+            throw new PlatformTopologyException(_("Error when searching monitoring server name"));
         }
         return $monitoringServerName;
     }
