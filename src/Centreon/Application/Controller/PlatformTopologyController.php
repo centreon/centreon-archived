@@ -206,7 +206,7 @@ class PlatformTopologyController extends AbstractController
         if (true === $foundIllegalCharacters) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("At least one space or illegal character in '%s', was found in platform's name: '%s'"),
+                    _("At least one space or illegal character in '%s' was found in platform's name: '%s'"),
                     $engineConfiguration->getIllegalObjectNameCharacters(),
                     $stringToCheck
                 )
