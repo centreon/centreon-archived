@@ -26,8 +26,10 @@ use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
+use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
@@ -55,16 +57,24 @@ class PlatformTopologyController extends AbstractController
     private $engineConfigurationService;
 
     /**
+     * @var MonitoringServerService
+     */
+    private $monitoringServerService;
+
+    /**
      * PlatformTopologyController constructor
      * @param PlatformTopologyServiceInterface $platformTopologyService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
+     * @param MonitoringServerServiceInterface $monitoringServerService
      */
     public function __construct(
         PlatformTopologyServiceInterface $platformTopologyService,
-        EngineConfigurationServiceInterface $engineConfigurationService
+        EngineConfigurationServiceInterface $engineConfigurationService,
+        MonitoringServerServiceInterface $monitoringServerService
     ) {
         $this->platformTopologyService = $platformTopologyService;
         $this->engineConfigurationService = $engineConfigurationService;
+        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
@@ -183,17 +193,18 @@ class PlatformTopologyController extends AbstractController
      * @param string $stringToCheck
      * @throws EngineException
      * @throws PlatformTopologyException
+     * @throws MonitoringServerException
      */
     private function checkName(string $stringToCheck): void
     {
-        $monitoringServerName = $this->platformTopologyService->findLocalhostMonitoringName();
+        $monitoringServerName = $this->monitoringServerService->findLocalServer();
         if (null === $monitoringServerName) {
             throw new PlatformTopologyException(
                 _('Unable to find local monitoring server name')
             );
         }
         $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
-            $monitoringServerName
+            $monitoringServerName->getName()
         );
         if (null === $engineConfiguration) {
             throw new PlatformTopologyException(_('Unable to find the Engine configuration'));

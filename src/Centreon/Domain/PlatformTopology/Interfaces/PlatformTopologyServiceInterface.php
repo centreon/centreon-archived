@@ -40,10 +40,4 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformInformationException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
-
-    /**
-     * @return string|null
-     * @throws PlatformTopologyException
-     */
-    public function findLocalhostMonitoringName(): ?string;
 }

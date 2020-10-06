@@ -24,6 +24,9 @@ namespace Tests\Centreon\Application\Controller;
 use Centreon\Application\Controller\PlatformTopologyController;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
@@ -64,6 +67,16 @@ class PlatformTopologyControllerTest extends TestCase
      */
     protected $engineConfigurationService;
 
+    /**
+     * @var MonitoringServerServiceInterface&MockObject $monitoringServerService
+     */
+    protected $monitoringServerService;
+
+    /**
+     * @var MonitoringServer;
+     */
+    protected  $monitoringServer;
+
     protected $container;
 
     protected $request;
@@ -93,12 +106,17 @@ class PlatformTopologyControllerTest extends TestCase
             ->setMonitoringServerId(1)
             ->setName('Central');
 
+        $this->monitoringServer = (new MonitoringServer())
+            ->setId(1)
+            ->setName('Central');
+
         $this->badJsonPlatformTopology = json_encode([
             'unknown_property' => 'unknown',
         ]);
 
         $this->platformTopologyService = $this->createMock(PlatformTopologyServiceInterface::class);
         $this->engineConfigurationService = $this->createMock(EngineConfigurationServiceInterface::class);
+        $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -140,7 +158,8 @@ class PlatformTopologyControllerTest extends TestCase
     {
         $platformTopologyController = new PlatformTopologyController(
             $this->platformTopologyService,
-            $this->engineConfigurationService
+            $this->engineConfigurationService,
+            $this->monitoringServerService
         );
         $platformTopologyController->setContainer($this->container);
 
@@ -166,9 +185,9 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
 
-        $this->platformTopologyService->expects($this->exactly(2))
-            ->method('findLocalhostMonitoringName')
-            ->willReturn('Central');
+        $this->monitoringServerService->expects($this->exactly(2))
+            ->method('findLocalServer')
+            ->willReturn($this->monitoringServer);
 
         $this->engineConfigurationService->expects($this->exactly(2))
             ->method('findEngineConfigurationByName')
@@ -176,7 +195,8 @@ class PlatformTopologyControllerTest extends TestCase
 
         $platformTopologyController = new PlatformTopologyController(
             $this->platformTopologyService,
-            $this->engineConfigurationService
+            $this->engineConfigurationService,
+            $this->monitoringServerService
         );
         $platformTopologyController->setContainer($this->container);
 
@@ -200,9 +220,9 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyException('bad request')));
 
-        $this->platformTopologyService->expects($this->exactly(2))
-            ->method('findLocalhostMonitoringName')
-            ->willReturn('Central');
+        $this->monitoringServerService->expects($this->exactly(2))
+            ->method('findLocalServer')
+            ->willReturn($this->monitoringServer);
 
         $this->engineConfigurationService->expects($this->exactly(2))
             ->method('findEngineConfigurationByName')
@@ -210,7 +230,8 @@ class PlatformTopologyControllerTest extends TestCase
 
         $platformTopologyController = new PlatformTopologyController(
             $this->platformTopologyService,
-            $this->engineConfigurationService
+            $this->engineConfigurationService,
+            $this->monitoringServerService
         );
         $platformTopologyController->setContainer($this->container);
 
@@ -234,9 +255,9 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->willReturn(null);
 
-        $this->platformTopologyService->expects($this->exactly(2))
-            ->method('findLocalhostMonitoringName')
-            ->willReturn('Central');
+        $this->monitoringServerService->expects($this->exactly(2))
+            ->method('findLocalServer')
+            ->willReturn($this->monitoringServer);
 
         $this->engineConfigurationService->expects($this->exactly(2))
             ->method('findEngineConfigurationByName')
@@ -244,7 +265,8 @@ class PlatformTopologyControllerTest extends TestCase
 
         $platformTopologyController = new PlatformTopologyController(
             $this->platformTopologyService,
-            $this->engineConfigurationService
+            $this->engineConfigurationService,
+            $this->monitoringServerService
         );
         $platformTopologyController->setContainer($this->container);
 

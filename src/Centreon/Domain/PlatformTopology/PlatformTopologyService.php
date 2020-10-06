@@ -486,18 +486,4 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
         return null;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function findLocalhostMonitoringName(): ?string
-    {
-        $monitoringServerName = null;
-        try {
-            $monitoringServerName = $this->platformTopologyRepository->findLocalhostMonitoringName();
-        } catch (\Exception $ex) {
-            throw new PlatformTopologyException(_("Error when searching monitoring server name"));
-        }
-        return $monitoringServerName;
-    }
 }
