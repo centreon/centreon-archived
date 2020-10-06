@@ -3,10 +3,10 @@ import * as React from 'react';
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { fr, enUS, pt, ptBR } from 'date-fns/locale';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
+import useLocaleDateTimeFormat from '../../../../Provider/useLocaleDateTimeFormat';
 import { useUserContext } from '../../../../Provider/UserContext';
 import {
   labelRequired,
@@ -24,13 +24,6 @@ interface DateParams {
   dateEnd: Date;
   timeEnd: Date;
 }
-
-const locales = {
-  fr_FR: fr,
-  en_US: enUS,
-  pt_PT: pt,
-  pt_BR: ptBR,
-};
 
 const formatDateInterval = (values: DateParams): [Date, Date] => {
   const timeStart = new Date(values.timeStart);
@@ -102,7 +95,8 @@ const DowntimeForm = ({
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const { locale, timezone, username } = useUserContext();
+  const { username } = useUserContext();
+  const localeDateTimeFormat = useLocaleDateTimeFormat();
 
   const {
     sendRequest: sendSetDowntimeOnResources,
@@ -111,7 +105,8 @@ const DowntimeForm = ({
     request: setDowntimeOnResources,
   });
 
-  const currentDate = new Date();
+  const currentDate = new Date(localeDateTimeFormat({ date: new Date() }));
+
   const twoHoursMs = 2 * 60 * 60 * 1000;
   const twoHoursLaterDate = new Date(currentDate.getTime() + twoHoursMs);
 
@@ -160,8 +155,6 @@ const DowntimeForm = ({
 
   return (
     <DialogDowntime
-      locale={locales[locale]}
-      timezone={timezone}
       resources={resources}
       onConfirm={form.submitForm}
       onCancel={onClose}

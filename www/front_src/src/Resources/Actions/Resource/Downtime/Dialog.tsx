@@ -1,11 +1,7 @@
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-useless-constructor */
 import * as React from 'react';
 
-import { format as formatTimezone, toDate, utcToZonedTime } from 'date-fns-tz';
+import dayJsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
-import DateFnsAdapter from '@date-io/date-fns';
 
 import {
   Checkbox,
@@ -50,9 +46,6 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 
 interface Props {
-  // locale: string | null;
-  locale: unknown;
-  timezone: string | null;
   resources: Array<Resource>;
   canConfirm: boolean;
   onCancel;
@@ -88,8 +81,6 @@ const timePickerProps = {
 } as Omit<TimePickerProps, 'onChange'>;
 
 const DialogDowntime = ({
-  locale,
-  timezone,
   resources,
   canConfirm,
   onCancel,
@@ -112,35 +103,6 @@ const DialogDowntime = ({
     setFieldValue(field, value);
   };
 
-  const getUtils = () => {
-    return class DateFnsTzUtils extends DateFnsAdapter {
-      constructor() {
-        super();
-
-        // this.locale = locale;
-        // this.timeZone = timezone;
-      }
-
-      public format(date, formatString): string {
-        const utcDate = toDate(date, { timeZone: 'UTC ' });
-        const zonedDate = utcToZonedTime(utcDate, timezone as string);
-
-        return formatTimezone(zonedDate, formatString, {
-          timeZone: timezone as string | undefined,
-          locale: locale as Locale,
-        });
-      }
-    };
-  };
-
-  // React.useEffect(() => {
-  //   moment.locale(locale);
-  // }, [locale]);
-
-  // React.useEffect(() => {
-  //   moment.tz.setDefault(timezone);
-  // }, [timezone]);
-
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
   return (
@@ -157,10 +119,7 @@ const DialogDowntime = ({
     >
       {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
-      <MuiPickersUtilsProvider
-        // libInstance={moment}
-        utils={getUtils()}
-      >
+      <MuiPickersUtilsProvider utils={dayJsAdapter} locale="en-US">
         <Grid direction="column" container spacing={1}>
           <Grid item>
             <FormHelperText>{t(labelFrom)}</FormHelperText>
