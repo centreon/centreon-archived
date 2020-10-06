@@ -172,9 +172,6 @@ class PlatformTopologyController extends AbstractController
 
         // Get the entire topology of the platform as an array of PlatformTopology instances
         $platformCompleteTopology = $this->platformTopologyService->getPlatformCompleteTopology();
-        if ($platformCompleteTopology === null) {
-            throw new EntityNotFoundException('Platform Topologies not found');
-        }
         $edges =  [];
         $topologiesHelios = [];
 
