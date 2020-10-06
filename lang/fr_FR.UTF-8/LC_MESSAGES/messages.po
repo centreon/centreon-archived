@@ -15618,7 +15618,7 @@ msgstr "Impossible de trouver le nom du server local de supervision"
 
 #: api/topology/register
 msgid "Error when searching monitoring server name"
-msgstr "Erreur lors de la recherche du nom du server de supervision"
+msgstr "Erreur lors de la recherche du nom du serveur de supervision"
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
