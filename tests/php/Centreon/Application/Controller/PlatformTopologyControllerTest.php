@@ -75,7 +75,7 @@ class PlatformTopologyControllerTest extends TestCase
     /**
      * @var MonitoringServer;
      */
-    protected  $monitoringServer;
+    protected $monitoringServer;
 
     protected $container;
 
