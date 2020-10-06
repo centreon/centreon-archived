@@ -164,16 +164,16 @@ class PlatformTopology
      */
     public function getHostname(): ?string
     {
-        return $this->name;
+        return $this->hostname;
     }
 
     /**
-     * @param string|null $name
+     * @param string|null $hostname
      * @return $this
      */
-    public function setHostname(?string $name): self
+    public function setHostname(?string $hostname): self
     {
-        $this->name = $name;
+        $this->hostname = $hostname;
         return $this;
     }
 

@@ -141,10 +141,13 @@ class EngineConfiguration
      */
     public static function hasIllegalCharacters(string $stringToAnalyse, ?string $illegalCharacters): bool
     {
-        if ($illegalCharacters === null) {
+        if (null === $illegalCharacters) {
             return false;
         }
-        $illegalCharactersList = str_split(html_entity_decode($illegalCharacters),1);
+        $illegalCharactersList = str_split(html_entity_decode($illegalCharacters), 1);
+        // Add space to the list as, space is not compliant with the RFC
+        $illegalCharactersList[] = ' ';
+
         foreach ($illegalCharactersList as $illegalCharacter) {
             if (false !== strpos($stringToAnalyse, $illegalCharacter)) {
                 return true;

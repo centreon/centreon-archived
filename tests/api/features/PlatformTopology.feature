@@ -33,7 +33,8 @@ Feature:
             {
                 "name": "Central",
                 "type": "central",
-                "address": "1.1.1.10"
+                "address": "1.1.1.10",
+                "hostname": "central.test.localhost.localdomain"
             }
             """
         Then the response code should be "201"
@@ -59,7 +60,8 @@ Feature:
             {
                 "name": "Central2",
                 "type": "central",
-                "address": "1.1.1.11"
+                "address": "1.1.1.11",
+                "hostname": "server.test.localhost.localdomain"
             }
             """
         Then the response code should be "409"
@@ -73,7 +75,7 @@ Feature:
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "Central 2",
+                "name": "Central_2",
                 "type": "central",
                 "address": "1.1.1.11",
                 "parent_address": "1.1.1.10"
@@ -90,23 +92,24 @@ Feature:
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "wrong type server",
+                "name": "wrong_type_server",
                 "type": "server",
                 "address": "6.6.6.1",
-                "parent_address": "1.1.1.10"
+                "parent_address": "1.1.1.10",
+                "hostname": "server.test.localhost.localdomain"
             }
             """
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"The platform type of 'wrong type server'@'6.6.6.1' is not consistent"}
+            {"message":"The platform type of 'wrong_type_server'@'6.6.6.1' is not consistent"}
             """
 
         # Register a platform using inconsistent address / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "inconsistent address",
+                "name": "inconsistent_address",
                 "type": "poller",
                 "address": "666.",
                 "parent_address": "1.1.1.10"
@@ -115,7 +118,73 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"The address '666.' of 'inconsistent address' is not valid or not resolvable"}
+            {"message":"The address '666.' of 'inconsistent_address' is not valid or not resolvable"}
+            """
+
+        # Register a platform using name with at least one space / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "illegal space found",
+                "type": "poller",
+                "address": "666.",
+                "parent_address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'illegal space found'"}
+            """
+
+        # Register a platform using name with illegal characters / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "ill*ga|_character$_found",
+                "type": "poller",
+                "address": "666.",
+                "parent_address": "1.1.1.10"
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'ill*ga|_character$_found'"}
+            """
+
+        # Register a platform using hostname with at least one space / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "space_in_hostname",
+                "type": "poller",
+                "address": "666.",
+                "parent_address": "1.1.1.10",
+                "hostname": "found.space_in.host name.wrong"
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'found.space_in.host name.wrong'"}
+            """
+
+        # Register a platform using hostname with illegal characters / Should fail and an error should be returned
+        When I send a POST request to '/beta/platform/topology' with body:
+            """
+            {
+                "name": "illegal_character_in_hostname",
+                "type": "poller",
+                "address": "666.",
+                "parent_address": "1.1.1.10",
+                "hostname": "found.i|legal.char*cter_!n.hostname"
+            }
+            """
+        Then the response code should be "400"
+        And the response should be equal to:
+            """
+            {"message":"At least one space or illegal character in '~!$%^&*\"|'<>?,()=', was found on platform's name: 'found.i|legal.char*cter_!n.hostname'"}
             """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
@@ -125,7 +194,8 @@ Feature:
                 "name": "inconsistent parent address",
                 "type": "poller",
                 "address": "6.6.6.1",
-                "parent_address": "666."
+                "parent_address": "666.",
+                "hostname": "poller.test.localhost.localdomain"
             }
             """
         Then the response code should be "400"
@@ -141,7 +211,8 @@ Feature:
                 "name": "my poller",
                 "type": "poller",
                 "address": "1.1.1.1",
-                "parent_address": "1.1.1.10"
+                "parent_address": "1.1.1.10",
+                "hostname": "poller.test.localhost.localdomain"
             }
             """
         Then the response code should be "201"
@@ -169,7 +240,8 @@ Feature:
                 "name": "my poller 2",
                 "type": "pOlLEr",
                 "address": "1.1.1.2",
-                "parent_address": "1.1.1.10"
+                "parent_address": "1.1.1.10",
+                "hostname": "poller2.test.localhost.localdomain"
             }
             """
         Then the response code should be "201"
@@ -181,7 +253,8 @@ Feature:
                 "name": "my poller 3",
                 "type": "poller",
                 "address": "1.1.1.3",
-                "parent_address": "6.6.6.6"
+                "parent_address": "6.6.6.6",
+                "hostname": "poller.test.localhost.localdomain"
             }
             """
         Then the response code should be "404"
