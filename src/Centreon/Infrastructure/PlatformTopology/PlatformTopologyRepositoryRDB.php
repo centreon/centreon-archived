@@ -202,7 +202,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         return null;
     }
 
-    public function findPlatformOnePeerRetentionMode(int $serverId): ?string
+    public function findPlatformOnePeerRetentionMode(int $serverId): ?bool
     {
         $statement = $this->db->prepare("
             SELECT config_value
@@ -218,9 +218,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
         $statement->execute();
         while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            if ($result['config_value'] === "yes"){
+            if ($result['config_value'] === "yes") {
                 return true;
-            }else {
+            } else {
                 return false;
             }
         }

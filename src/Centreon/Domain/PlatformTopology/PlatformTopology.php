@@ -337,7 +337,9 @@ class PlatformTopology
     }
 
     /**
-     * @return self|null
+     * get platform hostname
+     *
+     * @return string|null
      */
     public function getHostname(): ?string
     {
@@ -345,7 +347,8 @@ class PlatformTopology
     }
 
     /**
-     * @param integer|null $hostname
+     * set platform hostname
+     * @param string|null $hostname
      * @return self
      */
     public function setHostname(?string $hostname): self

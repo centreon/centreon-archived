@@ -96,7 +96,7 @@ interface PlatformTopologyRepositoryInterface
      * Search for the peer retention mode of a platform
      *
      * @param integer $serverId
-     * @return string|null
+     * @return bool|null
      */
-    public function findPlatformOnePeerRetentionMode(int $serverId): ?string;
+    public function findPlatformOnePeerRetentionMode(int $serverId): ?bool;
 }
