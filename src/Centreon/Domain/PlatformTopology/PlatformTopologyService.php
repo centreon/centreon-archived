@@ -516,7 +516,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $topology->setParentAddress($topologyParentAddress);
             }
             if ($topology->getServerId() === null) {
-                throw new platformTopologyException(
+                throw new PlatformTopologyException(
                     sprintf(
                         _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard")
                     )
