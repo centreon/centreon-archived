@@ -58,7 +58,7 @@ Feature:
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "Central2",
+                "name": "Central_2",
                 "type": "central",
                 "address": "1.1.1.11",
                 "hostname": "server.test.localhost.localdomain"
@@ -183,7 +183,7 @@ Feature:
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "inconsistent parent address",
+                "name": "inconsistent_parent_address",
                 "type": "poller",
                 "address": "6.6.6.1",
                 "parent_address": "666.",
@@ -193,14 +193,14 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"The address '666.' of 'inconsistent parent address' is not valid or not resolvable"}
+            {"message":"The address '666.' of 'inconsistent_parent_address' is not valid or not resolvable"}
             """
 
         # Register a poller linked to the Central.
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "my poller",
+                "name": "my_poller",
                 "type": "poller",
                 "address": "1.1.1.1",
                 "parent_address": "1.1.1.10",
@@ -213,7 +213,7 @@ Feature:
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "my poller",
+                "name": "my_poller",
                 "type": "poller",
                 "address": "1.1.1.1",
                 "parent_address": "1.1.1.10"
@@ -222,14 +222,14 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"message":"A platform using the name : 'my poller' or address : '1.1.1.1' already exists"}
+            {"message":"A platform using the name : 'my_poller' or address : '1.1.1.1' already exists"}
             """
 
         # Register a poller using type not formatted as expected / Should be successful
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "my poller 2",
+                "name": "my_poller_2",
                 "type": "pOlLEr",
                 "address": "1.1.1.2",
                 "parent_address": "1.1.1.10",
@@ -242,7 +242,7 @@ Feature:
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "my poller 3",
+                "name": "my_poller_3",
                 "type": "poller",
                 "address": "1.1.1.3",
                 "parent_address": "6.6.6.6",
@@ -252,14 +252,14 @@ Feature:
         Then the response code should be "404"
         And the response should be equal to:
             """
-            {"message":"No parent platform was found for : 'my poller 3'@'1.1.1.3'"}
+            {"message":"No parent platform was found for : 'my_poller_3'@'1.1.1.3'"}
             """
 
         # Register a poller with no parent address / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "my poller 4",
+                "name": "my_poller_4",
                 "type": "poller",
                 "address": "1.1.1.4"
             }
@@ -267,14 +267,14 @@ Feature:
         Then the response code should be "404"
         And the response should be equal to:
             """
-            {"message":"Missing mandatory parent address, to link the platform : 'my poller 4'@'1.1.1.4'"}
+            {"message":"Missing mandatory parent address, to link the platform : 'my_poller_4'@'1.1.1.4'"}
             """
 
         # Register a poller using same address and parent address / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "my poller 4",
+                "name": "my_poller_4",
                 "type": "poller",
                 "address": "1.1.1.4",
                 "parent_address": "1.1.1.4"
@@ -283,14 +283,14 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"message":"Same address and parent_address for platform : 'my poller 4'@'1.1.1.4'."}
+            {"message":"Same address and parent_address for platform : 'my_poller_4'@'1.1.1.4'."}
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
-                "name": "inconsistent parent type",
+                "name": "inconsistent_parent_type",
                 "type": "poller",
                 "address": "6.6.6.1",
                 "parent_address": "1.1.1.2"
@@ -299,5 +299,5 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"message":"Cannot register the 'poller' platform : 'inconsistent parent type'@'6.6.6.1' behind a 'poller' platform"}
+            {"message":"Cannot register the 'poller' platform : 'inconsistent_parent_type'@'6.6.6.1' behind a 'poller' platform"}
             """
