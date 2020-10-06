@@ -16,6 +16,9 @@
     },
     "parent_address": {
       "type": ["string", "null"]
+    },
+    "hostname": {
+      "type": ["string", "null"]
     }
   }
 }
