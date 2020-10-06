@@ -50,75 +50,75 @@ stage('Source') {
 }
 
 try {
-  // stage('Unit tests') {
-  //   parallel 'centos7': {
-  //     node {
-  //       sh 'setup_centreon_build.sh'
-  //       unstash 'tar-sources'
-  //       sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
-  //       junit 'ut-be.xml,ut-fe.xml'
-  //       step([
-  //         $class: 'CloverPublisher',
-  //         cloverReportDir: '.',
-  //         cloverReportFileName: 'coverage-be.xml'
-  //       ])
-  //       recordIssues(
-  //         enabledForFailure: true,
-  //         aggregatingResults: true,
-  //         tools: [
-  //           checkStyle(pattern: 'codestyle-be.xml'),
-  //           checkStyle(pattern: 'phpstan.xml')
-  //         ],
-  //         referenceJobName: 'centreon-web/master'
-  //       )
-  //       recordIssues(
-  //         enabledForFailure: true,
-  //         failOnError: true,
-  //         tools: [esLint(pattern: 'codestyle-fe.xml')],
-  //         referenceJobName: 'centreon-web/master'
-  //       )
+  stage('Unit tests') {
+    parallel 'centos7': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
+        junit 'ut-be.xml,ut-fe.xml'
+        step([
+          $class: 'CloverPublisher',
+          cloverReportDir: '.',
+          cloverReportFileName: 'coverage-be.xml'
+        ])
+        recordIssues(
+          enabledForFailure: true,
+          aggregatingResults: true,
+          tools: [
+            checkStyle(pattern: 'codestyle-be.xml'),
+            checkStyle(pattern: 'phpstan.xml')
+          ],
+          referenceJobName: 'centreon-web/master'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          tools: [esLint(pattern: 'codestyle-fe.xml')],
+          referenceJobName: 'centreon-web/master'
+        )
 
-  //       if (env.CHANGE_ID) { // pull request to comment with coding style issues
-  //         ViolationsToGitHub([
-  //           repositoryName: 'centreon',
-  //           pullRequestId: env.CHANGE_ID,
+        if (env.CHANGE_ID) { // pull request to comment with coding style issues
+          ViolationsToGitHub([
+            repositoryName: 'centreon',
+            pullRequestId: env.CHANGE_ID,
 
-  //           createSingleFileComments: true,
-  //           commentOnlyChangedContent: true,
-  //           commentOnlyChangedFiles: true,
-  //           keepOldComments: false,
+            createSingleFileComments: true,
+            commentOnlyChangedContent: true,
+            commentOnlyChangedFiles: true,
+            keepOldComments: false,
 
-  //           commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+            commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
-  //           violationConfigs: [
-  //             [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-  //             [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle'],
-  //             [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
-  //           ]
-  //         ])
-  //       }
+            violationConfigs: [
+              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
+              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle'],
+              [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
+            ]
+          ])
+        }
 
-  //       if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-  //         unstash 'git-sources'
-  //         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-  //         withSonarQubeEnv('SonarQube') {
-  //           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-  //         }
-  //       }
-  //     }
-  //   },
-  //   'centos8': {
-  //     node {
-  //       sh 'setup_centreon_build.sh'
-  //       unstash 'tar-sources'
-  //       sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
-  //       junit 'ut-be.xml,ut-fe.xml'
-  //     }
-  //   }
-  //   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-  //     error('Unit tests stage failure.');
-  //   }
-  // }
+        if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+          unstash 'git-sources'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+          withSonarQubeEnv('SonarQube') {
+            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+          }
+        }
+      }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
+        junit 'ut-be.xml,ut-fe.xml'
+      }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Unit tests stage failure.');
+    }
+  }
 
   stage('Package') {
     parallel 'centos7': {
