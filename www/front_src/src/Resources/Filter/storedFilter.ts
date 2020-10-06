@@ -2,7 +2,7 @@ import { isNil } from 'ramda';
 
 import { Filter } from './models';
 
-const key = 'centreon-events-filter';
+const key = 'centreon-resource-status-filter';
 
 let cachedFilter;
 
