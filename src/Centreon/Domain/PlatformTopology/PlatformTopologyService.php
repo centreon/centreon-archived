@@ -382,7 +382,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @throws PlatformTopologyException
      * @throws MonitoringServerException
      */
-    public function checkName(?string $stringToCheck): void
+    private function checkName(?string $stringToCheck): void
     {
         if (null === $stringToCheck) {
             return;
@@ -433,9 +433,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     }
 
     /**
-     * @inheritDoc
+     * @param PlatformTopology $platformTopology
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws MonitoringServerException
+     * @throws PlatformTopologyConflictException
+     * @throws PlatformTopologyException
      */
-    public function checkEntityConsistency(PlatformTopology $platformTopology): void
+    private function checkEntityConsistency(PlatformTopology $platformTopology): void
     {
         // Check non RFC compliant characters in name and hostname
         if (null === $platformTopology->getName()) {

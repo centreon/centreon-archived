@@ -37,19 +37,11 @@ interface PlatformTopologyServiceInterface
      *
      * @param PlatformTopology $platformTopology
      * @throws PlatformTopologyConflictException
+     * @throws MonitoringServerException
+     * @throws EngineException
      * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
      */
     public function addPlatformToTopology(PlatformTopology $platformTopology): void;
-
-    /**
-     * @param PlatformTopology $platformTopology
-     * @throws EngineException
-     * @throws EntityNotFoundException
-     * @throws MonitoringServerException
-     * @throws PlatformTopologyConflictException
-     * @throws PlatformTopologyException
-     */
-    public function checkEntityConsistency(PlatformTopology $platformTopology): void;
 }
