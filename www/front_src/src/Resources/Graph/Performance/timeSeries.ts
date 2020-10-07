@@ -48,13 +48,13 @@ const toTimeTickValue = (
 
 const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   const isGreaterThanLowerLimit = (value): boolean => {
-    const lowerLimit = path(['global', 'lower-limit'], graphData);
+    const lowerLimit = path<number>(['global', 'lower-limit'], graphData);
 
     if (isNil(lowerLimit)) {
       return true;
     }
 
-    return value >= (lowerLimit as number);
+    return value >= lowerLimit;
   };
 
   const rejectLowerThanLimit = ({ time, ...metrics }: TimeValue): TimeValue => {
