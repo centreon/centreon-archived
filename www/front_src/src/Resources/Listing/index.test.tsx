@@ -322,8 +322,8 @@ describe(Listing, () => {
 
     expect(getByText('admin')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:18')).toBeInTheDocument();
+    expect(getByText('02/28/2020, 09:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020, 09:18')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
   });
 
@@ -339,7 +339,7 @@ describe(Listing, () => {
         result: [
           {
             author_name: 'admin',
-            entry_time: '2020-02-28T09:16:16',
+            entry_time: '2020-02-28T07:16:00Z',
             is_persistent_comment: true,
             is_sticky: false,
             comment: 'Set by admin',
@@ -363,7 +363,7 @@ describe(Listing, () => {
     );
 
     expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020, 09:16')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();

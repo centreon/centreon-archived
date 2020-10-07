@@ -18,22 +18,16 @@ const Clock = (): JSX.Element => {
     time: '',
   });
 
-  const localeDateTimeFormat = useLocaleDateTimeFormat();
+  const { format, toTime } = useLocaleDateTimeFormat();
 
   const updateDateTime = (): void => {
     const now = new Date();
 
-    const date = localeDateTimeFormat({
+    const date = format({
       date: now,
       options: { year: 'numeric', month: 'long', day: 'numeric' },
     });
-    const time = localeDateTimeFormat({
-      date: now,
-      options: {
-        hour: '2-digit',
-        minute: '2-digit',
-      },
-    });
+    const time = toTime(now);
 
     setDateTime({ time, date });
   };

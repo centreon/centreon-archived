@@ -103,15 +103,15 @@ const retrievedDetails = {
   acknowledged: false,
   checked: true,
   execution_time: 0.070906,
-  last_check: '2020-05-18T18:00',
-  last_status_change: '2020-04-18T17:00',
-  last_update: '2020-03-18T19:30',
+  last_check: '2020-05-18T18:00+02:00',
+  last_status_change: '2020-04-18T17:00+02:00',
+  last_update: '2020-03-18T19:30:00+02:00',
   information:
     'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
   timezone: 'Europe/Paris',
   active_checks: true,
   command_line: 'base_host_alive',
-  last_notification: '2020-07-18T19:30',
+  last_notification: '2020-07-18T19:30:00+02:00',
   latency: 0.005,
   next_check: '2020-06-18T19:15',
   notification_number: 3,
@@ -119,19 +119,19 @@ const retrievedDetails = {
   percent_state_change: 3.5,
   downtimes: [
     {
-      start_time: '2020-01-18T18:57:59',
-      end_time: '2020-01-18T19:57:59',
+      start_time: '2020-01-18T18:57:59+02:00',
+      end_time: '2020-01-18T19:57:59+02:00',
       comment: 'First downtime set by Admin',
     },
     {
-      start_time: '2020-02-18T18:57:59',
-      end_time: '2020-02-18T19:57:59',
+      start_time: '2020-02-18T18:57:59+02:00',
+      end_time: '2020-02-18T19:57:59+02:00',
       comment: 'Second downtime set by Admin',
     },
   ],
   acknowledgement: {
     author_name: 'Admin',
-    entry_time: '2020-03-18T19:57:59',
+    entry_time: '2020-03-18T19:57:59+02:00',
     comment: 'Acknowledged by Admin',
   },
   performance_data:
@@ -202,8 +202,8 @@ const retrievedTimeline = {
     {
       type: 'downtime',
       id: 5,
-      date: '2020-06-20T09:30:00',
-      start_date: '2020-06-20T09:30:00',
+      date: '2020-06-20T09:30:00+02:00',
+      start_date: '2020-06-20T09:30:00+02:00',
       end_date: '2020-06-22T09:33:00',
       contact: {
         name: 'admin',
@@ -213,9 +213,9 @@ const retrievedTimeline = {
     {
       type: 'comment',
       id: 6,
-      date: '2020-06-20T08:55:00',
-      start_date: '2020-06-20T09:30:00',
-      end_date: '2020-06-22T09:33:00',
+      date: '2020-06-20T08:55:00+02:00',
+      start_date: '2020-06-20T09:30:00+02:00',
+      end_date: '2020-06-22T09:33:00+02:00',
       contact: {
         name: 'admin',
       },
@@ -307,7 +307,7 @@ describe(Details, () => {
     mockedAxios.get.mockReset();
   });
 
-  it('displays resource details information', async () => {
+  it.only('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = renderDetails();
@@ -341,15 +341,15 @@ describe(Details, () => {
 
     expect(getAllByText(labelComment)).toHaveLength(3);
     expect(getAllByText(labelDowntimeDuration)).toHaveLength(2);
-    expect(getByText(`${labelFrom} 01/18/2020 18:57`)).toBeInTheDocument();
-    expect(getByText(`${labelTo} 01/18/2020 19:57`)).toBeInTheDocument();
-    expect(getByText(`${labelFrom} 02/18/2020 18:57`)).toBeInTheDocument();
-    expect(getByText(`${labelTo} 02/18/2020 19:57`)).toBeInTheDocument();
+    expect(getByText(`${labelFrom} 01/18/2020, 18:57`)).toBeInTheDocument();
+    expect(getByText(`${labelTo} 01/18/2020, 19:57`)).toBeInTheDocument();
+    expect(getByText(`${labelFrom} 02/18/2020, 18:57`)).toBeInTheDocument();
+    expect(getByText(`${labelTo} 02/18/2020, 19:57`)).toBeInTheDocument();
     expect(getByText('First downtime set by Admin'));
     expect(getByText('Second downtime set by Admin'));
 
     expect(getByText(labelAcknowledgedBy)).toBeInTheDocument();
-    expect(getByText(`Admin ${labelAt} 03/18/2020 19:57`)).toBeInTheDocument();
+    expect(getByText(`Admin ${labelAt} 03/18/2020, 19:57`)).toBeInTheDocument();
     expect(getByText('Acknowledged by Admin'));
 
     expect(getByText(labelTimezone)).toBeInTheDocument();

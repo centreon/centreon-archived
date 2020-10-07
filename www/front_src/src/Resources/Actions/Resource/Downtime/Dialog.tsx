@@ -1,7 +1,9 @@
 import * as React from 'react';
 
-import dayJsAdapter from '@date-io/dayjs';
+import DayjsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
+import 'dayjs/locale/en';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 import {
   Checkbox,
@@ -20,6 +22,7 @@ import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
 
+import dayjs from 'dayjs';
 import {
   labelCancel,
   labelEndDate,
@@ -44,6 +47,9 @@ import {
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
+import { useUserContext } from '../../../../Provider/UserContext';
+
+dayjs.extend(localizedFormat);
 
 interface Props {
   resources: Array<Resource>;
@@ -71,13 +77,13 @@ const pickerCommonProps = {
 
 const datePickerProps = {
   ...pickerCommonProps,
-  // format: 'LL',
+  format: 'L',
 } as Omit<DatePickerProps, 'onChange'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
+  format: 'LT',
   ampm: false,
-  // format: 'LT',
 } as Omit<TimePickerProps, 'onChange'>;
 
 const DialogDowntime = ({
@@ -93,6 +99,7 @@ const DialogDowntime = ({
   loading,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { locale, timezone } = useUserContext();
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
 
   const open = resources.length > 0;
@@ -104,6 +111,13 @@ const DialogDowntime = ({
   };
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
+
+  class Adapter extends DayjsAdapter {
+    // eslint-disable-next-line class-methods-use-this
+    public format(date, formatString): string {
+      return dayjs(date).tz(timezone).format(formatString);
+    }
+  }
 
   return (
     <Dialog
@@ -119,7 +133,7 @@ const DialogDowntime = ({
     >
       {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
-      <MuiPickersUtilsProvider utils={dayJsAdapter} locale="en-US">
+      <MuiPickersUtilsProvider utils={Adapter} locale={locale?.substring(0, 2)}>
         <Grid direction="column" container spacing={1}>
           <Grid item>
             <FormHelperText>{t(labelFrom)}</FormHelperText>

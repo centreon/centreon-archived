@@ -34,12 +34,12 @@ import {
   labelSomethingWentWrong,
 } from '../../../translatedLabels';
 import StateCard from './StateCard';
-import { getFormattedDateTime } from '../../../dateTime';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 import { ResourceDetails } from '../../models';
+import useLocaleDateTimeFormat from '../../../../Provider/useLocaleDateTimeFormat';
 
 const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {
@@ -75,6 +75,7 @@ interface Props {
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { toDateTime, toDate, toTime } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
   const { showMessage } = useSnackbar();
@@ -114,9 +115,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
             ...[
               { prefix: labelFrom, time: start_time },
               { prefix: labelTo, time: end_time },
-            ].map(
-              ({ prefix, time }) => `${prefix} ${getFormattedDateTime(time)}`,
-            ),
+            ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
           ]}
           commentLine={comment}
           chip={<DowntimeChip />}
@@ -126,16 +125,16 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
         <StateCard
           title={t(labelAcknowledgedBy)}
           contentLines={[
-            `${details.acknowledgement.author_name} ${t(
-              labelAt,
-            )} ${getFormattedDateTime(details.acknowledgement.entry_time)}`,
+            `${details.acknowledgement.author_name} ${t(labelAt)} ${toDateTime(
+              details.acknowledgement.entry_time,
+            )}`,
           ]}
           commentLine={details.acknowledgement.comment}
           chip={<AcknowledgeChip />}
         />
       )}
       <Grid container spacing={2} alignItems="stretch">
-        {getDetailCardLines(details).map(
+        {getDetailCardLines({ details, toDate, toTime }).map(
           ({ title, field, getLines }) =>
             !isNil(field) && (
               <Grid key={title} item xs={6}>

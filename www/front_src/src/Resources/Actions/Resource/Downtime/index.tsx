@@ -96,7 +96,7 @@ const DowntimeForm = ({
     showMessage({ message, severity: Severity.success });
 
   const { username } = useUserContext();
-  const localeDateTimeFormat = useLocaleDateTimeFormat();
+  const { format, toIsoString } = useLocaleDateTimeFormat();
 
   const {
     sendRequest: sendSetDowntimeOnResources,
@@ -105,7 +105,9 @@ const DowntimeForm = ({
     request: setDowntimeOnResources,
   });
 
-  const currentDate = new Date(localeDateTimeFormat({ date: new Date() }));
+  // const currentDate = new Date(format({ date: new Date() }));
+
+  const currentDate = new Date();
 
   const twoHoursMs = 2 * 60 * 60 * 1000;
   const twoHoursLaterDate = new Date(currentDate.getTime() + twoHoursMs);
@@ -139,7 +141,12 @@ const DowntimeForm = ({
 
       sendSetDowntimeOnResources({
         resources,
-        params: { ...values, startTime, endTime, duration },
+        params: {
+          ...values,
+          startTime: toIsoString(startTime),
+          endTime: toIsoString(endTime),
+          duration,
+        },
       }).then(() => {
         showSuccess(t(labelDowntimeCommandSent));
         onSuccess();
