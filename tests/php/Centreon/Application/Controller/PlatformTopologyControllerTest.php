@@ -57,26 +57,6 @@ class PlatformTopologyControllerTest extends TestCase
      */
     protected $platformTopologyService;
 
-    /**
-     * @var EngineConfiguration|null $engineConfiguration
-     */
-    protected $engineConfiguration;
-
-    /**
-     * @var EngineConfigurationServiceInterface&MockObject $engineConfigurationService
-     */
-    protected $engineConfigurationService;
-
-    /**
-     * @var MonitoringServerServiceInterface&MockObject $monitoringServerService
-     */
-    protected $monitoringServerService;
-
-    /**
-     * @var MonitoringServer;
-     */
-    protected $monitoringServer;
-
     protected $container;
 
     protected $request;
@@ -100,23 +80,11 @@ class PlatformTopologyControllerTest extends TestCase
             ->setType($goodJsonPlatformTopology['type'])
             ->setParentAddress($goodJsonPlatformTopology['parent_address']);
 
-        $this->engineConfiguration = (new EngineConfiguration())
-            ->setId(1)
-            ->setIllegalObjectNameCharacters('$!?')
-            ->setMonitoringServerId(1)
-            ->setName('Central');
-
-        $this->monitoringServer = (new MonitoringServer())
-            ->setId(1)
-            ->setName('Central');
-
         $this->badJsonPlatformTopology = json_encode([
             'unknown_property' => 'unknown',
         ]);
 
         $this->platformTopologyService = $this->createMock(PlatformTopologyServiceInterface::class);
-        $this->engineConfigurationService = $this->createMock(EngineConfigurationServiceInterface::class);
-        $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -141,7 +109,7 @@ class PlatformTopologyControllerTest extends TestCase
             ->willReturnOnConsecutiveCalls(
                 $authorizationChecker,
                 new class () {
-                    public function get()
+                    public function get(): string
                     {
                         return __DIR__ . '/../../../../../';
                     }
@@ -154,13 +122,9 @@ class PlatformTopologyControllerTest extends TestCase
     /**
      * test addPlatformToTopology with bad json format
      */
-    public function testAddPlatformToTopologyBadJsonFormat()
+    public function testAddPlatformToTopologyBadJsonFormat(): void
     {
-        $platformTopologyController = new PlatformTopologyController(
-            $this->platformTopologyService,
-            $this->engineConfigurationService,
-            $this->monitoringServerService
-        );
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
         $this->request->expects($this->once())
@@ -174,8 +138,9 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with conflict
+     * @throws PlatformTopologyException
      */
-    public function testAddPlatformToTopologyConflict()
+    public function testAddPlatformToTopologyConflict(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
@@ -185,19 +150,7 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
 
-        $this->monitoringServerService->expects($this->exactly(2))
-            ->method('findLocalServer')
-            ->willReturn($this->monitoringServer);
-
-        $this->engineConfigurationService->expects($this->exactly(2))
-            ->method('findEngineConfigurationByName')
-            ->willReturn($this->engineConfiguration);
-
-        $platformTopologyController = new PlatformTopologyController(
-            $this->platformTopologyService,
-            $this->engineConfigurationService,
-            $this->monitoringServerService
-        );
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
         $view = $platformTopologyController->addPlatformToTopology($this->request);
@@ -209,8 +162,9 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with bad request
+     * @throws PlatformTopologyException
      */
-    public function testAddPlatformToTopologyBadRequest()
+    public function testAddPlatformToTopologyBadRequest(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
@@ -220,19 +174,7 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyException('bad request')));
 
-        $this->monitoringServerService->expects($this->exactly(2))
-            ->method('findLocalServer')
-            ->willReturn($this->monitoringServer);
-
-        $this->engineConfigurationService->expects($this->exactly(2))
-            ->method('findEngineConfigurationByName')
-            ->willReturn($this->engineConfiguration);
-
-        $platformTopologyController = new PlatformTopologyController(
-            $this->platformTopologyService,
-            $this->engineConfigurationService,
-            $this->monitoringServerService
-        );
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
         $view = $platformTopologyController->addPlatformToTopology($this->request);
@@ -244,8 +186,9 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology which succeed
+     * @throws PlatformTopologyException
      */
-    public function testAddPlatformToTopologySuccess()
+    public function testAddPlatformToTopologySuccess(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
@@ -255,19 +198,7 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('addPlatformToTopology')
             ->willReturn(null);
 
-        $this->monitoringServerService->expects($this->exactly(2))
-            ->method('findLocalServer')
-            ->willReturn($this->monitoringServer);
-
-        $this->engineConfigurationService->expects($this->exactly(2))
-            ->method('findEngineConfigurationByName')
-            ->willReturn($this->engineConfiguration);
-
-        $platformTopologyController = new PlatformTopologyController(
-            $this->platformTopologyService,
-            $this->engineConfigurationService,
-            $this->monitoringServerService
-        );
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
         $view = $platformTopologyController->addPlatformToTopology($this->request);
