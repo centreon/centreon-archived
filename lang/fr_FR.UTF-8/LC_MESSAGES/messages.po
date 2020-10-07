@@ -15570,7 +15570,7 @@ msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
 
 #: api/topology/register
 msgid "Cannot use parent address on a Central server type"
-msgstr "Il n'est pas possible d'utiliser une 'adresse parent' sur un serveur de type Central"
+msgstr "Il n'est pas possible d'utiliser l'adresse d'une plateforme parente sur un serveur de type Central"
 
 #: api/topology/register
 msgid "Cannot set parent id to a central server"
