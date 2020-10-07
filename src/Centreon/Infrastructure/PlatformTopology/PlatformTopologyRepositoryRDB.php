@@ -145,17 +145,16 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findMonitoringIdFromName(string $serverName, bool $localhost): ?PlatformTopology
+    public function findMonitoringIdFromName(string $serverName): ?PlatformTopology
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
                 SELECT `id`
                 FROM `:db`.nagios_server
-                WHERE `localhost` = :state AND ns_activate = \'1\' AND `name` = :name
+                WHERE `localhost` = \'1\' AND ns_activate = \'1\' AND `name` = :name
             ')
         );
         $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
-        $statement->bindValue(':state', true === $localhost ? '1' : '0', \PDO::PARAM_STR);
         $statement->execute();
 
         $platformTopology = null;

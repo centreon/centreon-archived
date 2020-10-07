@@ -96,19 +96,16 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             // New unique Central top level platform case
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
-            $this->setMonitoringServerId($platformTopology, true);
+            $this->setMonitoringServerId($platformTopology);
         } elseif (PlatformTopology::TYPE_REMOTE === $platformTopology->getType()) {
             // Cannot add a Remote behind another Remote
-            $isLocalhost = false;
             $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_REMOTE);
             if (null === $platformTopology->getParentAddress()) {
                 // New unique Remote top level platform case
                 $this->checkForAlreadyRegisteredPlatformType(PlatformTopology::TYPE_CENTRAL);
-                $isLocalhost = true;
+                $this->setMonitoringServerId($platformTopology);
             }
-            $this->setMonitoringServerId($platformTopology, $isLocalhost);
         }
-
 
         if (PlatformTopology::TYPE_MBI !== $platformTopology->getType()) {
             $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
@@ -379,15 +376,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * Search for platforms nagios_server ID and set it as serverId
      *
      * @param PlatformTopology $platformTopology
-     * @param bool $isLocalhost
      * @throws PlatformTopologyConflictException
      * @throws \Exception
      */
-    private function setMonitoringServerId(PlatformTopology $platformTopology, bool $isLocalhost): void
+    private function setMonitoringServerId(PlatformTopology $platformTopology): void
     {
         $foundServerInNagiosTable = $this->platformTopologyRepository->findMonitoringIdFromName(
-            $platformTopology->getName(),
-            $isLocalhost
+            $platformTopology->getName()
         );
 
         if (null === $foundServerInNagiosTable) {
