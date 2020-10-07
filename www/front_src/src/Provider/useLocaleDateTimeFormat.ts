@@ -1,9 +1,4 @@
-import timezonePlugin from 'dayjs/plugin/timezone';
-import dayjs from 'dayjs';
-
 import { useUserContext } from './UserContext';
-
-dayjs.extend(timezonePlugin);
 
 interface DateOptions {
   date: Date | string;
@@ -43,7 +38,7 @@ const useLocaleDateTimeFormat = (): LocaleDateTimeFormat => {
   const { locale, timezone } = useUserContext();
 
   const format = ({ date, options = {} }: DateOptions): string => {
-    const normalizedLocale = locale?.replace('_', '-');
+    const normalizedLocale = locale.replace('_', '-');
 
     return new Date(date).toLocaleString(normalizedLocale, {
       ...options,

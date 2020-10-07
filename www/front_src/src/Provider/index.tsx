@@ -57,7 +57,11 @@ const AppProvider = (): JSX.Element | null => {
       getAcl(aclEndpoint),
     ])
       .then(([retrievedUser, retrievedTranslations, retrievedAcl]) => {
-        setUser(pick(['username', 'locale', 'timezone'], retrievedUser));
+        setUser({
+          username: retrievedUser.username,
+          locale: retrievedUser.locale || 'en',
+          timezone: retrievedUser.timezone,
+        });
         setActionAcl(retrievedAcl);
 
         initializeI18n({ retrievedUser, retrievedTranslations });

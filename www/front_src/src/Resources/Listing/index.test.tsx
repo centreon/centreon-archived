@@ -339,7 +339,7 @@ describe(Listing, () => {
         result: [
           {
             author_name: 'admin',
-            entry_time: '2020-02-28T07:16:00Z',
+            entry_time: '2020-02-28T09:16:00',
             is_persistent_comment: true,
             is_sticky: false,
             comment: 'Set by admin',

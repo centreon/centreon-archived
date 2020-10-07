@@ -1,8 +1,12 @@
 import * as React from 'react';
 
+import 'dayjs/locale/en';
+
+import dayjs from 'dayjs';
+import timezonePlugin from 'dayjs/plugin/timezone';
+import utcPlugin from 'dayjs/plugin/utc';
 import DayjsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
-import 'dayjs/locale/en';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 import {
@@ -22,7 +26,6 @@ import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
 
-import dayjs from 'dayjs';
 import {
   labelCancel,
   labelEndDate,
@@ -50,6 +53,8 @@ import useAclQuery from '../aclQuery';
 import { useUserContext } from '../../../../Provider/UserContext';
 
 dayjs.extend(localizedFormat);
+dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
 
 interface Props {
   resources: Array<Resource>;
@@ -82,7 +87,7 @@ const datePickerProps = {
 
 const timePickerProps = {
   ...pickerCommonProps,
-  format: 'LT',
+  format: 'HH:mm',
   ampm: false,
 } as Omit<TimePickerProps, 'onChange'>;
 
@@ -133,7 +138,7 @@ const DialogDowntime = ({
     >
       {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
-      <MuiPickersUtilsProvider utils={Adapter} locale={locale?.substring(0, 2)}>
+      <MuiPickersUtilsProvider utils={Adapter} locale={locale.substring(0, 2)}>
         <Grid direction="column" container spacing={1}>
           <Grid item>
             <FormHelperText>{t(labelFrom)}</FormHelperText>

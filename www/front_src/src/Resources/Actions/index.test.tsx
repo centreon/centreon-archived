@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import formatISO from 'date-fns/formatISO';
 import mockDate from 'mockdate';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -437,10 +436,6 @@ describe(Actions, () => {
 
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
-    const now = new Date();
-    const twoHoursMs = 2 * 60 * 60 * 1000;
-    const twoHoursFromNow = new Date(Date.now() + twoHoursMs);
-
     await waitFor(() =>
       expect(mockedAxios.post).toHaveBeenCalledWith(
         downtimeEndpoint,
@@ -449,8 +444,8 @@ describe(Actions, () => {
           downtime: {
             comment: labelDowntimeByAdmin,
             duration: 3600,
-            start_time: formatISO(now),
-            end_time: formatISO(twoHoursFromNow),
+            start_time: '2020-01-01T00:00:00Z',
+            end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
             with_services: true,
           },
