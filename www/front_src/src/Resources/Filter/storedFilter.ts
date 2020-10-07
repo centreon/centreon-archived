@@ -2,7 +2,7 @@ import { isNil } from 'ramda';
 
 import { unhandledProblemsFilter, Filter } from './models';
 
-const key = 'centreon-events-filter';
+const key = 'centreon-resource-status-filter';
 
 const defaultFilter = unhandledProblemsFilter;
 

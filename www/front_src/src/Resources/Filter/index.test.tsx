@@ -48,7 +48,7 @@ import {
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const filterStorageKey = 'centreon-events-filter';
+const filterStorageKey = 'centreon-resource-status-filter';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
