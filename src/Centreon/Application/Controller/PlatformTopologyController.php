@@ -57,7 +57,7 @@ class PlatformTopologyController extends AbstractController
     private $engineConfigurationService;
 
     /**
-     * @var MonitoringServerService
+     * @var MonitoringServerServiceInterface
      */
     private $monitoringServerService;
 
@@ -210,7 +210,7 @@ class PlatformTopologyController extends AbstractController
             throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
         }
 
-        $foundIllegalCharacters = self::hasNonRfcCompliantCharacters(
+        $foundIllegalCharacters = $this->hasNonRfcCompliantCharacters(
             $stringToCheck,
             $engineConfiguration->getIllegalObjectNameCharacters()
         );
@@ -232,7 +232,7 @@ class PlatformTopologyController extends AbstractController
      * @param string|null $illegalCharacters String containing illegal characters
      * @return bool Return true if illegal characters have been found
      */
-    public static function hasNonRfcCompliantCharacters(string $stringToCheck, ?string $illegalCharacters): bool
+    private function hasNonRfcCompliantCharacters(string $stringToCheck, ?string $illegalCharacters): bool
     {
         // Spaces are not RFC compliant and $illegalCharacters will not contains it
         $illegalCharacters .= ' ';
