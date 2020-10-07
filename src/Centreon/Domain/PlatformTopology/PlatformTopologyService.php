@@ -389,7 +389,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         $monitoringServerName = $this->monitoringServerService->findLocalServer();
-        if (null === $monitoringServerName) {
+        if (null === $monitoringServerName || null === $monitoringServerName->getName()) {
             throw new PlatformTopologyException(
                 _('Unable to find local monitoring server name')
             );
@@ -520,9 +520,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private function setMonitoringServerId(PlatformTopology $platformTopology): void
     {
-        $foundServerInNagiosTable = $this->platformTopologyRepository->findMonitoringIdFromName(
-            $platformTopology->getName()
-        );
+        $foundServerInNagiosTable = null;
+        if (null !== $platformTopology->getName()) {
+            $foundServerInNagiosTable = $this->platformTopologyRepository->findMonitoringIdFromName(
+                $platformTopology->getName()
+            );
+        }
 
         if (null === $foundServerInNagiosTable) {
             throw new PlatformTopologyConflictException(
@@ -542,9 +545,23 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      *
      * @param PlatformTopology $platformTopology
      * @throws PlatformTopologyConflictException
+     * @throws EntityNotFoundException
      */
     private function checkForAlreadyRegisteredSameNameOrAddress(PlatformTopology $platformTopology): void
     {
+        // Two next checks are required for phpStan lvl8. But already done in the checkEntityConsistency method
+        if (null === $platformTopology->getName()) {
+            throw new EntityNotFoundException(_("Missing mandatory platform name"));
+        }
+        if (null === $platformTopology->getAddress()) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _("Missing mandatory platform address of: '%s'"),
+                    $platformTopology->getName()
+                )
+            );
+        }
+
         $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
             $platformTopology->getAddress(),
             $platformTopology->getName()
