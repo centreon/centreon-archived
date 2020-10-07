@@ -22,13 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\Engine\EngineException;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
 use JsonSchema\Constraints\Constraint;
@@ -52,29 +46,13 @@ class PlatformTopologyController extends AbstractController
     private $platformTopologyService;
 
     /**
-     * @var EngineConfigurationServiceInterface
-     */
-    private $engineConfigurationService;
-
-    /**
-     * @var MonitoringServerServiceInterface
-     */
-    private $monitoringServerService;
-
-    /**
      * PlatformTopologyController constructor
      * @param PlatformTopologyServiceInterface $platformTopologyService
-     * @param EngineConfigurationServiceInterface $engineConfigurationService
-     * @param MonitoringServerServiceInterface $monitoringServerService
      */
     public function __construct(
-        PlatformTopologyServiceInterface $platformTopologyService,
-        EngineConfigurationServiceInterface $engineConfigurationService,
-        MonitoringServerServiceInterface $monitoringServerService
+        PlatformTopologyServiceInterface $platformTopologyService
     ) {
         $this->platformTopologyService = $platformTopologyService;
-        $this->engineConfigurationService = $engineConfigurationService;
-        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
@@ -133,48 +111,12 @@ class PlatformTopologyController extends AbstractController
         );
 
         try {
-            // check for illegal characters in name
-            $this->checkName($platformToAdd['name']);
-
             $platformTopology = (new PlatformTopology())
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
-                ->setType($platformToAdd['type']);
-
-            // check for illegal characters in hostname
-            if (null !== $platformToAdd['hostname']) {
-                $this->checkName($platformToAdd['hostname']);
-                $platformTopology->setHostname($platformToAdd['hostname']);
-            }
-
-            // Check for empty parent_address consistency and set it
-            if (
-                empty($platformToAdd['parent_address'])
-                && $platformTopology->getType() !== PlatformTopology::TYPE_CENTRAL
-                && $platformTopology->getType() !== PlatformTopology::TYPE_REMOTE
-            ) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _("Missing mandatory parent address, to link the platform : '%s'@'%s'"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
-                    )
-                );
-            }
-
-            if (isset($platformToAdd['parent_address'])) {
-                // Check for same address and parent_address
-                if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
-                    throw new PlatformTopologyConflictException(
-                        sprintf(
-                            _("Same address and parent_address for platform : '%s'@'%s'."),
-                            $platformTopology->getName(),
-                            $platformTopology->getAddress()
-                        )
-                    );
-                }
-                $platformTopology->setParentAddress($platformToAdd['parent_address']);
-            }
+                ->setType($platformToAdd['type'])
+                ->setHostname($platformToAdd['hostname'])
+                ->setParentAddress($platformToAdd['parent_address']);
 
             $this->platformTopologyService->addPlatformToTopology($platformTopology);
 
@@ -186,57 +128,5 @@ class PlatformTopologyController extends AbstractController
         } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-    }
-
-    /**
-     * Get engine configuration's illegal characters and check for illegal characters in hostname
-     * @param string $stringToCheck
-     * @throws EngineException
-     * @throws PlatformTopologyException
-     * @throws MonitoringServerException
-     */
-    private function checkName(string $stringToCheck): void
-    {
-        $monitoringServerName = $this->monitoringServerService->findLocalServer();
-        if (null === $monitoringServerName) {
-            throw new PlatformTopologyException(
-                _('Unable to find local monitoring server name')
-            );
-        }
-        $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
-            $monitoringServerName->getName()
-        );
-        if (null === $engineConfiguration) {
-            throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
-        }
-
-        $foundIllegalCharacters = $this->hasNonRfcCompliantCharacters(
-            $stringToCheck,
-            $engineConfiguration->getIllegalObjectNameCharacters()
-        );
-        if (true === $foundIllegalCharacters) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("At least one space or illegal character in '%s' was found in platform's name: '%s'"),
-                    $engineConfiguration->getIllegalObjectNameCharacters(),
-                    $stringToCheck
-                )
-            );
-        }
-    }
-
-    /**
-     * Find all non RFC compliant characters from the given string.
-     *
-     * @param string $stringToCheck String to analyse
-     * @param string|null $illegalCharacters String containing illegal characters
-     * @return bool Return true if illegal characters have been found
-     */
-    private function hasNonRfcCompliantCharacters(string $stringToCheck, ?string $illegalCharacters): bool
-    {
-        // Spaces are not RFC compliant and $illegalCharacters will not contains it
-        $illegalCharacters .= ' ';
-
-        return $stringToCheck !== EngineConfiguration::removeIllegalCharacters($stringToCheck, $illegalCharacters);
     }
 }

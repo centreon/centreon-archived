@@ -119,9 +119,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
-                SELECT `address`, `name`
-                FROM `:db`.platform_topology
-                WHERE `type` = :type
+                SELECT * FROM `:db`.platform_topology
+                WHERE `type` = :type AND `parent_id` IS NULL
             ')
         );
         $statement->bindValue(':type', $serverType, \PDO::PARAM_STR);
