@@ -210,7 +210,7 @@ class PlatformTopologyController extends AbstractController
             throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
         }
 
-        $foundIllegalCharacters = EngineConfiguration::hasNonRfcCompliantCharacters(
+        $foundIllegalCharacters = self::hasNonRfcCompliantCharacters(
             $stringToCheck,
             $engineConfiguration->getIllegalObjectNameCharacters()
         );
@@ -223,5 +223,20 @@ class PlatformTopologyController extends AbstractController
                 )
             );
         }
+    }
+
+    /**
+     * Find all non RFC compliant characters from the given string.
+     *
+     * @param string $stringToCheck String to analyse
+     * @param string|null $illegalCharacters String containing illegal characters
+     * @return bool Return true if illegal characters have been found
+     */
+    public static function hasNonRfcCompliantCharacters(string $stringToCheck, ?string $illegalCharacters): bool
+    {
+        // Spaces are not RFC compliant and $illegalCharacters will not contains it
+        $illegalCharacters .= ' ';
+
+        return $stringToCheck !== EngineConfiguration::removeIllegalCharacters($stringToCheck, $illegalCharacters);
     }
 }

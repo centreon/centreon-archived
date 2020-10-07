@@ -131,19 +131,4 @@ class EngineConfiguration
         $illegalCharacters = html_entity_decode($illegalCharacters);
         return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
     }
-
-    /**
-     * Find all illegal characters from the given string.
-     *
-     * @param string $stringToCheck String to analyse for non RFC compliant characters
-     * @param string|null $illegalCharacters String containing illegal characters
-     * @return bool Return true if illegal characters have been found
-     */
-    public static function hasNonRfcCompliantCharacters(string $stringToCheck, ?string $illegalCharacters): bool
-    {
-        // Spaces are not RFC compliant
-        $illegalCharacters .= ' ';
-
-        return $stringToCheck !== self::removeIllegalCharacters($stringToCheck, $illegalCharacters);
-    }
 }
