@@ -1,4 +1,14 @@
-import { map, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
+import {
+  map,
+  pipe,
+  reduce,
+  filter,
+  pathOr,
+  addIndex,
+  isNil,
+  hasPath,
+  path,
+} from 'ramda';
 
 import { Metric, TimeValue, GraphData, Line } from './models';
 
@@ -37,8 +47,15 @@ const toTimeTickValue = (
 };
 
 const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
-  const isGreaterThanLowerLimit = (value): boolean =>
-    value >= pathOr(value - 1, ['global', 'lower-limit'], graphData);
+  const isGreaterThanLowerLimit = (value): boolean => {
+    const lowerLimit = path(['global', 'lower-limit'], graphData);
+
+    if (isNil(lowerLimit)) {
+      return true;
+    }
+
+    return value >= (lowerLimit as number);
+  };
 
   const rejectLowerThanLimit = ({ time, ...metrics }: TimeValue): TimeValue => {
     return {
