@@ -592,7 +592,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         // Avoid to link a remote to another remote
         if (
             PlatformTopology::TYPE_REMOTE === $platformTopology->getType()
-            && PlatformTopology::TYPE_CENTRAL !== $registeredParentInTopology->getType()
+            && PlatformTopology::TYPE_REMOTE === $registeredParentInTopology->getType()
         ) {
             throw new PlatformTopologyConflictException(
                 sprintf(
