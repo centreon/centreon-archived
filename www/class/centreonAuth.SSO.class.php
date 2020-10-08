@@ -93,7 +93,10 @@ class CentreonAuthSSO extends CentreonAuth
             if (!empty($this->ssoOptions['openid_connect_userinfo_endpoint'])) {
                 $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
             }
-            
+            if (!empty($this->ssoOptions['openid_connect_end_session_endpoint'])) {
+                $endSessionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+            }
+
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             $redirect = urlencode($redirectNoEncode);
@@ -120,7 +123,7 @@ class CentreonAuthSSO extends CentreonAuth
             );
 
             if (!empty($inputCode)) {
-                $keyToken = $this->getOpenIdConnectToken(
+                $tokenInfo = $this->getOpenIdConnectToken(
                     $tokenEndpoint,
                     $redirectNoEncode,
                     $clientId,
@@ -129,18 +132,47 @@ class CentreonAuthSSO extends CentreonAuth
                     $verifyPeer
                 );
 
+                if (
+                    (!empty($tokenInfo['expires_in']) && (int) $tokenInfo['expires_in'] < 0)
+                    || (!empty($tokenInfo['active']) && (int) $tokenInfo['active'] != 1)
+                ) {
+                    $result = $this->refreshToken(
+                        $tokenEndpoint,
+                        $clientId,
+                        $clientSecret,
+                        $tokenInfo['refresh_token'],
+                        $verifyPeer,
+                        !empty($this->ssoOptions['openid_connect_scope']) ? $this->ssoOptions['openid_connect_scope'] : null
+                    );
+                    if (empty($result['error']) && !empty($result)) {
+                        $tokenInfo = $result;
+                    } else {
+                        if (!empty($endSessionEndpoint)) {
+                            $result = $this->logout(
+                                $endSessionEndpoint,
+                                $clientId,
+                                $clientSecret,
+                                $tokenInfo['refresh_token'],
+                                $verifyPeer
+                            );
+                        }
+                        $tokenInfo = null;
+                        $inputCode = null;
+                    }
+                }
+
                 $user = $this->getOpenIdConnectIntrospectionToken(
                     $introspectionEndpoint,
                     $clientId,
                     $clientSecret,
-                    $keyToken,
+                    $tokenInfo['access_token'],
                     $verifyPeer
                 );
 
                 if (!isset($user["preferred_username"]) && isset($userInfoEndpoint)) {
                     $user = $this->getOpenIdConnectUserInfo(
                         $userInfoEndpoint,
-                        $keyToken,
+                        $tokenInfo['access_token'],
                         $verifyPeer
                     );
                 }
@@ -285,7 +317,7 @@ class CentreonAuthSSO extends CentreonAuth
 
         $resp = json_decode($result, true);
 
-        return $resp["access_token"] ?? null;
+        return $resp ?? null;
     }
 
     /**
@@ -321,6 +353,7 @@ class CentreonAuthSSO extends CentreonAuth
         curl_close($ch);
 
         $resp = json_decode($result, true);
+
         return $resp;
     }
 
@@ -349,6 +382,81 @@ class CentreonAuthSSO extends CentreonAuth
         curl_close($ch);
 
         $resp = json_decode($result, true);
+
         return $resp;
+    }
+
+    /**
+     * Refresh the OpenId Connect token
+     *
+     * @param string $url          OpenId Connect Introspection Token Endpoint
+     * @param string $clientId     OpenId Connect Client ID
+     * @param string $clientSecret OpenId Connect Client Secret
+     * @param string $refreshToken OpenId Connect Refresh Token Access
+     * @param bool   $verifyPeer   disable SSL verify peer
+     * @param string $scope        The scope
+     *
+     * @return array
+     */
+    public function refreshToken($url, $clientId, $clientSecret, $refreshToken, $verifyPeer, $scope = null)
+    {
+        $data = [
+            "client_id" => $clientId,
+            "client_secret" => $clientSecret,
+            "grant_type" => "refresh_token",
+            "refresh_token" => $refreshToken,
+            "scope" => $scope
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        if ($verifyPeer) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $resp = json_decode($result, true);
+
+        return $resp ?? null;
+    }
+
+    /**
+     * Logout the OpenId session
+     *
+     * @param string $url          OpenId Connect Introspection Token Endpoint
+     * @param string $clientId     OpenId Connect Client ID
+     * @param string $refreshToken OpenId Connect Refresh Token Access
+     * @param bool   $verifyPeer   disable SSL verify peer
+     *
+     * @return array
+     */
+    public function logout($url, $clientId, $clientSecret, $refreshToken, $verifyPeer)
+    {
+        $data = [
+            "client_id" => $clientId,
+            "client_secret" => $clientSecret,
+            "refresh_token" => $refreshToken
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        if ($verifyPeer) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $resp = json_decode($result, true);
+
+        return $resp ?? null;
     }
 }
