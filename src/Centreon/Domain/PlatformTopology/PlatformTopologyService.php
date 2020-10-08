@@ -522,7 +522,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     {
         $foundServerInNagiosTable = null;
         if (null !== $platformTopology->getName()) {
-            $foundServerInNagiosTable = $this->platformTopologyRepository->findMonitoringIdFromName(
+            $foundServerInNagiosTable = $this->platformTopologyRepository->findLocalMonitoringIdFromName(
                 $platformTopology->getName()
             );
         }
