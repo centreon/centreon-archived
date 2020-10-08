@@ -920,6 +920,9 @@ msgstr "L'url du service OpenId Connect Introspection Token (par exemple /token/
 msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
 msgstr "L'url du service OpenId Connect User Information (par exemple /userinfo)."
 
+msgid "Your OpenId Connect End Session endpoint (for example /logout)."
+msgstr "L'url du service OpenId Connect End Session (par exemple /logout)."
+
 msgid "Your OpenId Connect Scope (for example openid)."
 msgstr "Le champ d'application 'scope' (par exemple openid)."
 
