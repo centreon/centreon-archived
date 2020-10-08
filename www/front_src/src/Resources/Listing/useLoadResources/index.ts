@@ -77,7 +77,9 @@ const useLoadResources = (): LoadResources => {
     window.clearInterval(refreshIntervalRef.current);
 
     const interval = enabledAutorefresh
-      ? window.setInterval(load, refreshIntervalMs)
+      ? window.setInterval(() => {
+          load();
+        }, refreshIntervalMs)
       : undefined;
 
     refreshIntervalRef.current = interval;
