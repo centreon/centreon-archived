@@ -467,7 +467,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.notification_number AS `notification_number`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
-                WHEN s.state_type = 1 THEN 'S'
+                WHEN s.state_type = 0 THEN 'S'
             END, ')') AS `tries`,
             s.last_check AS `last_check`,
             s.next_check AS `next_check`,
@@ -661,7 +661,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.notification_number AS `notification_number`,
             CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', CASE
                 WHEN h.state_type = 1 THEN 'H'
-                WHEN h.state_type = 1 THEN 'S'
+                WHEN h.state_type = 0 THEN 'S'
             END, ')') AS `tries`,
             h.last_check AS `last_check`,
             h.next_check AS `next_check`,
