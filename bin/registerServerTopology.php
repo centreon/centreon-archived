@@ -407,8 +407,8 @@ foreach ($registerPayloads as $postData) {
         $responseMessage = "The '" . $postData['type'] . "' Platform: '" . $postData['name'] . "@" .
             $postData['address'] . "' linked to '" . $postData['parent_address'] . "' has been added";
         echo formatResponseMessage($responseCode, $responseMessage, 'success');
-    } elseif (isset($result['code'], $result['message'])) {
-        exit(formatResponseMessage($result['code'], $result['message'], 'error'));
+    } elseif (isset($result['message'])) {
+        exit(formatResponseMessage($responseCode, $result['message'], 'error'));
     } else {
         exit(formatResponseMessage(500, 'An error occurred while contacting the API', 'error'));
     }
