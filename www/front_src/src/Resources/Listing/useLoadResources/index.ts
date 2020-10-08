@@ -29,6 +29,7 @@ const useLoadResources = (): LoadResources => {
     customFilters,
     loadDetails,
     details,
+    selectedResourceId,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
@@ -96,7 +97,7 @@ const useLoadResources = (): LoadResources => {
 
   React.useEffect(() => {
     initAutorefresh();
-  }, [enabledAutorefresh]);
+  }, [enabledAutorefresh, selectedResourceId]);
 
   React.useEffect(() => {
     return (): void => {
