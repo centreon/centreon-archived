@@ -568,7 +568,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.last_state_change AS `last_status_change`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
-                WHEN s.state_type = 1 THEN 'S'
+                WHEN s.state_type = 0 THEN 'S'
             END, ')') AS `tries`,
             s.last_check AS `last_check`,
             s.output AS `information`
@@ -724,7 +724,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.last_state_change AS `last_status_change`,
             CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', CASE
                 WHEN h.state_type = 1 THEN 'H'
-                WHEN h.state_type = 1 THEN 'S'
+                WHEN h.state_type = 0 THEN 'S'
             END, ')') AS `tries`,
             h.last_check AS `last_check`,
             h.output AS `information`
