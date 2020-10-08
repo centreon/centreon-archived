@@ -423,6 +423,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private function isHostnameValid(?string $stringToCheck): bool
     {
+        if (null === $stringToCheck) {
+            // empty hostname is allowed and should not be blocked or throw an exception
+            return true;
+        }
         return (
             preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $stringToCheck)
             && preg_match("/^.{1,253}$/", $stringToCheck) // max 253 characters by hostname
