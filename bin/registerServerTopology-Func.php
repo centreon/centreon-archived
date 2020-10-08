@@ -279,7 +279,7 @@ function castTemplateValue(array $configVariables): array
         switch ($configKey) {
             case 'INSECURE':
             case 'PROXY_USAGE':
-                $configVariables[$configKey] = (bool) $configValue;
+                $configVariables[$configKey] = $configValue === 'true' ? true : false;
                 break;
             case 'PROXY_PORT':
                 $configVariables[$configKey] = (int) $configValue;
