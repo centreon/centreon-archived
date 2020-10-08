@@ -134,7 +134,7 @@ class CentreonAuthSSO extends CentreonAuth
 
                 if (
                     (!empty($tokenInfo['expires_in']) && (int) $tokenInfo['expires_in'] < 0)
-                    || (!empty($tokenInfo['active']) && (int) $tokenInfo['active'] != 1)
+                    || (!empty($tokenInfo['active']) && (int) $tokenInfo['active'] !== 1)
                 ) {
                     $result = $this->refreshToken(
                         $tokenEndpoint,
@@ -289,11 +289,18 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientId     OpenId Connect Client ID
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $code         OpenId Connect Authorization Code
-     * @param bool   $verifyPeer   disable SSL verify peer
+     * @param bool   $verifyPeer   Disable SSL verify peer
      *
-     * @return string
+     * @return array|null
     */
-    public function getOpenIdConnectToken($url, $redirectUri, $clientId, $clientSecret, $code, $verifyPeer)
+    public function getOpenIdConnectToken(
+        string $url,
+        string $redirectUri,
+        string $clientId,
+        string $clientSecret,
+        string $code,
+        bool $verifyPeer
+    ): ?array
     {
         $data = [
             "client_id" => $clientId,
@@ -315,9 +322,7 @@ class CentreonAuthSSO extends CentreonAuth
         $result = curl_exec($ch);
         curl_close($ch);
 
-        $resp = json_decode($result, true);
-
-        return $resp ?? null;
+        return json_decode($result, true) ?? null;
     }
 
     /**
@@ -327,11 +332,17 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientId     OpenId Connect Client ID
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $token        OpenId Connect Token Access
-     * @param bool   $verifyPeer   disable SSL verify peer
+     * @param bool   $verifyPeer   Disable SSL verify peer
      *
-     * @return array
+     * @return array|null
      */
-    public function getOpenIdConnectIntrospectionToken($url, $clientId, $clientSecret, $token, $verifyPeer)
+    public function getOpenIdConnectIntrospectionToken(
+        string $url,
+        string $clientId,
+        string $clientSecret,
+        string $token,
+        bool $verifyPeer
+    ): ?array
     {
         $data = [
             "token" => $token,
@@ -352,9 +363,7 @@ class CentreonAuthSSO extends CentreonAuth
         $result = curl_exec($ch);
         curl_close($ch);
 
-        $resp = json_decode($result, true);
-
-        return $resp;
+        return json_decode($result, true) ?? null;
     }
 
     /**
@@ -362,11 +371,11 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @param string $url        OpenId Connect Introspection Token Endpoint
      * @param string $token      OpenId Connect Token Access
-     * @param bool   $verifyPeer disable SSL verify peer
+     * @param bool   $verifyPeer Disable SSL verify peer
      *
-     * @return array
+     * @return array|null
      */
-    public function getOpenIdConnectUserInfo($url, $token, $verifyPeer)
+    public function getOpenIdConnectUserInfo(string $url, string $token, bool $verifyPeer): ?array
     {
         $ch = curl_init($url);
         $authentication = "Authorization: Bearer " . trim($token);
@@ -381,24 +390,29 @@ class CentreonAuthSSO extends CentreonAuth
         $result = curl_exec($ch);
         curl_close($ch);
 
-        $resp = json_decode($result, true);
-
-        return $resp;
+        return json_decode($result, true) ?? null;
     }
 
     /**
      * Refresh the OpenId Connect token
      *
-     * @param string $url          OpenId Connect Introspection Token Endpoint
-     * @param string $clientId     OpenId Connect Client ID
-     * @param string $clientSecret OpenId Connect Client Secret
-     * @param string $refreshToken OpenId Connect Refresh Token Access
-     * @param bool   $verifyPeer   disable SSL verify peer
-     * @param string $scope        The scope
+     * @param string      $url          OpenId Connect Introspection Token Endpoint
+     * @param string      $clientId     OpenId Connect Client ID
+     * @param string      $clientSecret OpenId Connect Client Secret
+     * @param string      $refreshToken OpenId Connect Refresh Token Access
+     * @param bool        $verifyPeer   Disable SSL verify peer
+     * @param string|null $scope        The scope
      *
-     * @return array
+     * @return array|null
      */
-    public function refreshToken($url, $clientId, $clientSecret, $refreshToken, $verifyPeer, $scope = null)
+    public function refreshToken(
+        string $url,
+        string $clientId,
+        string $clientSecret,
+        string $refreshToken,
+        bool $verifyPeer,
+        string $scope = null
+    ): ?array
     {
         $data = [
             "client_id" => $clientId,
@@ -420,9 +434,7 @@ class CentreonAuthSSO extends CentreonAuth
         $result = curl_exec($ch);
         curl_close($ch);
 
-        $resp = json_decode($result, true);
-
-        return $resp ?? null;
+        return json_decode($result, true) ?? null;
     }
 
     /**
@@ -430,12 +442,19 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @param string $url          OpenId Connect Introspection Token Endpoint
      * @param string $clientId     OpenId Connect Client ID
+     * @param string $clientSecret OpenId Connect Client Secret
      * @param string $refreshToken OpenId Connect Refresh Token Access
-     * @param bool   $verifyPeer   disable SSL verify peer
+     * @param bool   $verifyPeer   Disable SSL verify peer
      *
-     * @return array
+     * @return array|null
      */
-    public function logout($url, $clientId, $clientSecret, $refreshToken, $verifyPeer)
+    public function logout(
+        string $url,
+        string $clientId,
+        string $clientSecret,
+        string $refreshToken,
+        bool $verifyPeer
+    ): ?array
     {
         $data = [
             "client_id" => $clientId,
@@ -455,8 +474,6 @@ class CentreonAuthSSO extends CentreonAuth
         $result = curl_exec($ch);
         curl_close($ch);
 
-        $resp = json_decode($result, true);
-
-        return $resp ?? null;
+        return json_decode($result, true) ?? null;
     }
 }
