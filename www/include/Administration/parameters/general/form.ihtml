@@ -194,7 +194,7 @@
     </tr>
     <tr class="list_one">
         <td class="FormRowField">
-            <img class="helpTooltip" name="openid_connect_verify_peer">{$form.openid_connect_verify_peer.label
+            <img class="helpTooltip" name="openid_connect_verify_peer">{$form.openid_connect_verify_peer.label}
         </td>
         <td class="FormRowValue">{$form.openid_connect_verify_peer.html}</td>
     </tr>
