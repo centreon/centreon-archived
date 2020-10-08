@@ -131,9 +131,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
         }
 
-        if (PlatformTopology::TYPE_MBI !== $platformTopology->getType()) {
-            $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
-        }
+        $this->checkForAlreadyRegisteredSameNameOrAddress($platformTopology);
 
         /**
          * @var PlatformTopology|null $registeredParentInTopology
@@ -402,14 +400,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
         }
 
-        $foundIllegalCharacters = $this->hasNonRfcCompliantCharacters(
+        $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
             $stringToCheck,
             $engineConfiguration->getIllegalObjectNameCharacters()
         );
         if (true === $foundIllegalCharacters) {
             throw new PlatformTopologyException(
                 sprintf(
-                    _("At least one space or illegal character in '%s' was found in platform's name: '%s'"),
+                    _("At least one illegal character in '%s' was found in platform's name: '%s'"),
                     $engineConfiguration->getIllegalObjectNameCharacters(),
                     $stringToCheck
                 )
@@ -418,21 +416,47 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     }
 
     /**
-     * Find all non RFC compliant characters from the given string.
-     *
-     * @param string $stringToCheck String to analyse
-     * @param string|null $illegalCharacters String containing illegal characters
-     * @return bool Return true if illegal characters have been found
+     * Check for RFC 1123 & 1178 rules
+     * More details are available in man hostname
+     * @param string|null $stringToCheck
+     * @return bool
      */
-    private function hasNonRfcCompliantCharacters(string $stringToCheck, ?string $illegalCharacters): bool
+    private function isHostnameValid(?string $stringToCheck): bool
     {
-        // Spaces are not RFC compliant and $illegalCharacters will not contains it
-        $illegalCharacters .= ' ';
-
-        return $stringToCheck !== EngineConfiguration::removeIllegalCharacters($stringToCheck, $illegalCharacters);
+        if (null === $stringToCheck) {
+            // empty hostname is allowed and should not be blocked or throw an exception
+            return true;
+        }
+        return (
+            preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $stringToCheck)
+            && preg_match("/^.{1,253}$/", $stringToCheck) // max 253 characters by hostname
+            && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $stringToCheck) // max 63 characters by domain
+        );
     }
 
     /**
+     * Check hostname consistency
+     * @param string|null $stringToCheck
+     * @throws PlatformTopologyException
+     */
+    private function checkHostname(?string $stringToCheck): void
+    {
+        if (null === $stringToCheck) {
+            return;
+        }
+
+        if (false === $this->isHostnameValid($stringToCheck)) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("At least one non RFC compliant character was found in platform's hostname: '%s'"),
+                    $stringToCheck
+                )
+            );
+        }
+    }
+
+    /**
+     * Check consistency of each mandatory and optional parameters
      * @param PlatformTopology $platformTopology
      * @throws EngineException
      * @throws EntityNotFoundException
@@ -447,7 +471,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             throw new EntityNotFoundException(_("Missing mandatory platform name"));
         }
         $this->checkName($platformTopology->getName());
-        $this->checkName($platformTopology->getHostname());
+        $this->checkHostname($platformTopology->getHostname());
 
         // Check empty platform's address
         if (null === $platformTopology->getAddress()) {

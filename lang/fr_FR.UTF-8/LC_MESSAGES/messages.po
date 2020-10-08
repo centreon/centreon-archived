@@ -15609,8 +15609,12 @@ msgid "Central platform's API port are not consistent. Please check the 'Remote 
 msgstr "Le port de l'API vers le Central n'est pas cohérent. Veuiller vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
-msgid "At least one space or illegal character in '%s' was found in platform's name: '%s'"
-msgstr "Au moins un espace ou un caractère illégal parmi '%s' a été trouvé dans le nom de la plateforme: '%s'"
+msgid "At least one illegal character in '%s' was found in platform's name: '%s'"
+msgstr "Au moins un caractère illégal parmi '%s' a été trouvé dans le nom de la plateforme: '%s'"
+
+#: api/topology/register
+msgid "At least one non RFC compliant character was found in platform's hostname: '%s'"
+msgstr "Au moins un caractère ne respecte pas la norme RFC dans le nom de domaine de la plateforme: '%s'"
 
 #: api/topology/register
 msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."

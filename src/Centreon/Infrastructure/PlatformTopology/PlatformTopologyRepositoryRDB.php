@@ -73,7 +73,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $this->translateDbName('
                 SELECT `address`, `name`, `type`
                 FROM `:db`.platform_topology
-                WHERE `address` = :address OR `name` = :name
+                WHERE `address` = :address OR `name` = :name collate utf8_bin
             ')
         );
         $statement->bindValue(':address', $address, \PDO::PARAM_STR);
@@ -150,7 +150,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $this->translateDbName('
                 SELECT `id`
                 FROM `:db`.nagios_server
-                WHERE `localhost` = \'1\' AND ns_activate = \'1\' AND `name` = :name
+                WHERE `localhost` = \'1\' AND ns_activate = \'1\' AND `name` = :name collate utf8_bin
             ')
         );
         $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
