@@ -73,5 +73,5 @@ interface PlatformTopologyRepositoryInterface
      * @return PlatformTopology|null
      * @throws \Exception
      */
-    public function findMonitoringIdFromName(string $serverName): ?PlatformTopology;
+    public function findLocalMonitoringIdFromName(string $serverName): ?PlatformTopology;
 }
