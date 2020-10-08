@@ -37,6 +37,8 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
+use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use PDO;
 
 /**
@@ -251,7 +253,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         // Search
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        try {
+            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        } catch (RequestParametersTranslatorException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $collector->addValue($key, current($data), key($data));
         }
@@ -501,7 +507,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $collector->addValue(':serviceCustomVariablesName', 'CRITICALITY_LEVEL');
 
         $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        try {
+            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        } catch (RequestParametersTranslatorException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
 
         $sql .= $searchRequest;
         $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
@@ -681,7 +691,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $collector->addValue(':hostCustomVariablesName', 'CRITICALITY_LEVEL');
 
         $this->sqlRequestTranslator->setConcordanceArray($this->hostConcordances);
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        try {
+            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        } catch (RequestParametersTranslatorException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
 
         $sql .= $searchRequest;
         $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
