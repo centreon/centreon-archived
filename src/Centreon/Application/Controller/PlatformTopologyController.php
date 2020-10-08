@@ -25,7 +25,6 @@ namespace Centreon\Application\Controller;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use FOS\RestBundle\View\View;
-use InvalidArgumentException;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,8 +49,9 @@ class PlatformTopologyController extends AbstractController
      * PlatformTopologyController constructor
      * @param PlatformTopologyServiceInterface $platformTopologyService
      */
-    public function __construct(PlatformTopologyServiceInterface $platformTopologyService)
-    {
+    public function __construct(
+        PlatformTopologyServiceInterface $platformTopologyService
+    ) {
         $this->platformTopologyService = $platformTopologyService;
     }
 
@@ -114,36 +114,9 @@ class PlatformTopologyController extends AbstractController
             $platformTopology = (new PlatformTopology())
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
-                ->setType($platformToAdd['type']);
-
-            // Check for empty parent_address consistency
-            if (
-                empty($platformToAdd['parent_address'])
-                && $platformTopology->getType() !== PlatformTopology::TYPE_CENTRAL
-                && $platformTopology->getType() !== PlatformTopology::TYPE_REMOTE
-            ) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _("Missing mandatory parent address, to link the platform : '%s'@'%s'"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
-                    )
-                );
-            }
-
-            if (isset($platformToAdd['parent_address'])) {
-                // Check for same address and parent_address
-                if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
-                    throw new PlatformTopologyConflictException(
-                        sprintf(
-                            _("Same address and parent_address for platform : '%s'@'%s'."),
-                            $platformTopology->getName(),
-                            $platformTopology->getAddress()
-                        )
-                    );
-                }
-                $platformTopology->setParentAddress($platformToAdd['parent_address']);
-            }
+                ->setType($platformToAdd['type'])
+                ->setHostname($platformToAdd['hostname'])
+                ->setParentAddress($platformToAdd['parent_address']);
 
             $this->platformTopologyService->addPlatformToTopology($platformTopology);
 

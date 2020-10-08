@@ -15541,10 +15541,6 @@ msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
 #: api/topology/register
-msgid "The name of the platform is not consistent"
-msgstr "Le nom de cette plateforme n'est pas cohérent"
-
-#: api/topology/register
 msgid "The address '%s' of '%s' is not valid or not resolvable"
 msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide ou ne peut être résolue"
 
@@ -15574,11 +15570,15 @@ msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
 
 #: api/topology/register
 msgid "Cannot use parent address on a Central server type"
-msgstr "Il n'est pas possible d'utiliser l'adresse d'un parent au type de serveur Central"
+msgstr "Il n'est pas possible d'utiliser l'adresse d'une plateforme parente sur un serveur de type Central"
 
 #: api/topology/register
 msgid "Cannot set parent id to a central server"
 msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"
+
+#: api/topology/register
+msgid "Cannot link a 'remote': '%s'@'%s' to another Remote server type"
+msgstr "Il n'est pas possible de lier un 'remote': '%s'@'%s' à un autre serveur de type 'Remote'"
 
 #: api/topology/register
 msgid "A '%s': '%s'@'%s' is already registered"
@@ -15593,12 +15593,24 @@ msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
 msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
 
 #: api/topology/register
+msgid "Missing mandatory platform address of: '%s'"
+msgstr "Adresse de la plateforme: '%s' manquante"
+
+#: api/topology/register
+msgid "Missing mandatory platform name"
+msgstr "Nom de la plateforme manquant"
+
+#: api/topology/register
 msgid "Same address and parent_address for platform : '%s'@'%s'."
 msgstr "Les adresses de la plateforme : '%s'@'%s' et de son parent sont les mêmes"
 
 #: api/topology/register
 msgid "Central platform's API port are not consistent. Please check the 'Remote Access' form."
 msgstr "Le port de l'API vers le Central n'est pas cohérent. Veuiller vérifier le formulaire 'Accès du Remote'."
+
+#: api/topology/register
+msgid "At least one space or illegal character in '%s' was found in platform's name: '%s'"
+msgstr "Au moins un espace ou un caractère illégal parmi '%s' a été trouvé dans le nom de la plateforme: '%s'"
 
 #: api/topology/register
 msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."
@@ -15611,6 +15623,14 @@ msgstr "Des données de la plateforme ne sont pas cohérentes. Veuillez vérifie
 #: api/topology/register
 msgid "Unable to retrieve platform information's data."
 msgstr "Impossible de récupérer les données d'information sur la plateforme."
+
+#: api/topology/register
+msgid "Unable to find local monitoring server name"
+msgstr "Impossible de trouver le nom du serveur local de supervision"
+
+#: api/topology/register
+msgid "Error when searching monitoring server name"
+msgstr "Erreur lors de la recherche du nom du serveur de supervision"
 
 #: api/topology/register
 msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
@@ -15787,7 +15807,7 @@ msgstr "Désacquitter les services attachés aux hôtes"
 msgid "Disacknowledgement command sent"
 msgstr "Commande de désacquittement envoyée"
 
-msgid "Impossible to find the Engine configuration"
+msgid "Unable to find the Engine configuration"
 msgstr "Impossible de trouver la configuration du moteur de supervision"
 
 msgid "Ip address can not be empty"
