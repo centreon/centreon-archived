@@ -67,7 +67,7 @@ interface PlatformTopologyRepositoryInterface
     public function findPlatformTopologyByType(string $serverType): ?PlatformTopology;
 
     /**
-     * Search for platform's monitoring Id using its name
+     * Search for local platform's monitoring Id using its name
      *
      * @param string $serverName
      * @return PlatformTopology|null
