@@ -51,8 +51,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
-                INSERT INTO `:db`.platform_topology (`address`, `name`, `type`, `parent_id`, `server_id`)
-                VALUES (:address, :name, :type, :parentId, :serverId)
+                INSERT INTO `:db`.platform_topology (`address`, `name`, `type`, `parent_id`, `server_id`, `hostname`)
+                VALUES (:address, :name, :type, :parentId, :serverId, :hostname)
             ')
         );
         $statement->bindValue(':address', $platformTopology->getAddress(), \PDO::PARAM_STR);
@@ -60,6 +60,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':type', $platformTopology->getType(), \PDO::PARAM_STR);
         $statement->bindValue(':parentId', $platformTopology->getParentId(), \PDO::PARAM_INT);
         $statement->bindValue(':serverId', $platformTopology->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':hostname', $platformTopology->getHostname(), \PDO::PARAM_STR);
         $statement->execute();
     }
 
@@ -118,9 +119,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
-                SELECT `address`, `name`
-                FROM `:db`.platform_topology
-                WHERE `type` = :type
+                SELECT * FROM `:db`.platform_topology
+                WHERE `type` = :type AND `parent_id` IS NULL
             ')
         );
         $statement->bindValue(':type', $serverType, \PDO::PARAM_STR);
@@ -144,17 +144,16 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findMonitoringIdFromName(string $serverName, bool $localhost): ?PlatformTopology
+    public function findLocalMonitoringIdFromName(string $serverName): ?PlatformTopology
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
                 SELECT `id`
                 FROM `:db`.nagios_server
-                WHERE `localhost` = :state AND ns_activate = \'1\' AND `name` = :name
+                WHERE `localhost` = \'1\' AND ns_activate = \'1\' AND `name` = :name
             ')
         );
         $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
-        $statement->bindValue(':state', true === $localhost ? '1' : '0', \PDO::PARAM_STR);
         $statement->execute();
 
         $platformTopology = null;

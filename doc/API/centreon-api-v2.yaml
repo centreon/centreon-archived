@@ -4372,6 +4372,10 @@ components:
           type: string
           description: "Name of the server to register in the topology"
           example: "myPoller"
+        hostname:
+          type: string
+          description: "Platform's 'physical' name"
+          example: "my.poller.physical.hostname"
         type:
           type: string
           enum: [central, poller, remote, map, mbi]

@@ -105,7 +105,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
          */
         $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByHost($host);
         if ($engineConfiguration === null) {
-            throw new ServiceConfigurationException(_('Impossible to find the Engine configuration'));
+            throw new ServiceConfigurationException(_('Unable to find the Engine configuration'));
         }
 
         $hostTemplateIds = [];
