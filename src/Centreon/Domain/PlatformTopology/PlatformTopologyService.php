@@ -29,6 +29,7 @@ use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
@@ -241,10 +242,15 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 if (null !== $proxyService && !empty((string) $proxyService)) {
                     $optionPayload['proxy'] = (string) $proxyService;
                 }
-                // SSL verify_peer
-                if ($foundPlatformInformation->hasApiPeerValidation()) {
-                    $optionPayload['verify_peer'] = true;
-                    $optionPayload['verify_host'] = true;
+
+                // On https scheme, the SSL verify_peer need to be specified
+                if ('https' === $foundPlatformInformation->getApiScheme()) {
+                    $this->httpClient = HttpClient::create(
+                        [
+                            'verify_peer' => $foundPlatformInformation->hasApiPeerValidation(),
+                            'verify_host' => $foundPlatformInformation->hasApiPeerValidation()
+                        ]
+                    );
                 }
 
                 // Central's API login payload
@@ -258,11 +264,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         ]
                     ]
                 ];
-
-                // Add specific options
-                if (!empty($optionPayload)) {
-                    $loginPayload = array_merge($loginPayload, $optionPayload);
-                }
 
                 // Login on the Central to get a valid token
                 $loginResponse = $this->httpClient->request(
