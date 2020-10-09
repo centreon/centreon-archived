@@ -252,7 +252,6 @@ function deleteServerInDB(array $serverIds): void
     global $pearDB, $pearDBO, $centreon;
 
     foreach (array_keys($serverIds) as $serverId) {
-
         $statement = $pearDB->prepare('SELECT `id`, `type` FROM `platform_topology` WHERE server_id = :serverId ');
         $statement->bindValue(':serverId', (int) $serverId, \PDO::PARAM_INT);
         $statement->execute();
