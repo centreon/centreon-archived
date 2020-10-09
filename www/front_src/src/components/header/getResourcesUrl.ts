@@ -36,6 +36,7 @@ const getResourcesUrl = ({
       ...resourceTypeCriterias,
       ...statusCriterias,
       ...stateCriterias,
+      search: '',
     },
   };
 
