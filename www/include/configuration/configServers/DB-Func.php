@@ -256,10 +256,12 @@ function deleteServerInDB(array $serverIds): void
         $statement = $pearDB->prepare('SELECT `id`, `type` FROM `platform_topology` WHERE server_id = :serverId ');
         $statement->bindValue(':serverId', (int) $serverId, \PDO::PARAM_INT);
         $statement->execute();
-        $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
 
         //If the deleted platform is a remote, reassign the parent_id of its children to the top level platform
-        if ($platformInTopology['type'] === PlatformTopology::TYPE_REMOTE) {
+        if (
+            ($platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC))
+            && $platformInTopology['type'] === PlatformTopology::TYPE_REMOTE
+        ) {
             $statement = $pearDB->query('SELECT id FROM `platform_topology` WHERE parent_id IS NULL');
             if ($topPlatform = $statement->fetch(\PDO::FETCH_ASSOC)) {
                 $statement2 = $pearDB->prepare('
