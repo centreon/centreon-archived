@@ -80,6 +80,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private $monitoringServerService;
 
+    // Version of the API used to register the platform on the central
+    public const API_VERSION = 'v2.0';
+
     /**
      * PlatformTopologyService constructor.
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
@@ -234,23 +237,21 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $baseApiEndpoint = $foundPlatformInformation->getApiScheme() . '://' .
                     $foundPlatformInformation->getAuthorizedMaster() . ':' .
                     $foundPlatformInformation->getApiPort() . '/' .
-                    $foundPlatformInformation->getApiPath() . '/api/v2.0/';
+                    $foundPlatformInformation->getApiPath() . '/api/' . self::API_VERSION . '/';
 
                 // Enable specific options
                 $optionPayload = [];
-                // Enable proxy
-                if (null !== $proxyService && !empty((string) $proxyService)) {
+                if (!empty((string) $proxyService)) {
                     $optionPayload['proxy'] = (string) $proxyService;
                 }
-
                 // On https scheme, the SSL verify_peer need to be specified
                 if ('https' === $foundPlatformInformation->getApiScheme()) {
-                    $this->httpClient = HttpClient::create(
-                        [
-                            'verify_peer' => $foundPlatformInformation->hasApiPeerValidation(),
-                            'verify_host' => $foundPlatformInformation->hasApiPeerValidation()
-                        ]
-                    );
+                    $optionPayload['verify_peer'] = $foundPlatformInformation->hasApiPeerValidation();
+                    $optionPayload['verify_host'] = $foundPlatformInformation->hasApiPeerValidation();
+                }
+                // Set the options for next http_client calls
+                if (!empty($optionPayload)) {
+                    $this->httpClient = HttpClient::create($optionPayload);
                 }
 
                 // Central's API login payload
@@ -297,11 +298,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         "X-AUTH-TOKEN" => $token
                     ]
                 ];
-
-                // Add specific options
-                if (!empty($optionPayload)) {
-                    $registerPayload = array_merge($registerPayload, $optionPayload);
-                }
 
                 $registerResponse = $this->httpClient->request(
                     'POST',
