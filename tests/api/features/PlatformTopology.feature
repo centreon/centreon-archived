@@ -121,28 +121,15 @@ Feature:
             {"message":"The address '666.' of 'inconsistent_address' is not valid or not resolvable"}
             """
 
-        # Register a platform using name with at least one space / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
-            """
-            {
-                "name": "illegal space found",
-                "type": "poller",
-                "address": "666.",
-                "parent_address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "400"
-        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the strings are always different.
-
         # Register a platform using name with illegal characters / Should fail and an error should be returned
         When I send a POST request to '/beta/platform/topology' with body:
             """
             {
                 "name": "ill*ga|_character$_found",
                 "type": "poller",
-                "address": "666.",
-                "parent_address": "1.1.1.10"
+                "address": "1.1.10.10",
+                "parent_address": "1.1.1.10",
+                "hostname": "localhost.localdomain"
             }
             """
         Then the response code should be "400"
@@ -155,7 +142,7 @@ Feature:
             {
                 "name": "space_in_hostname",
                 "type": "poller",
-                "address": "666.",
+                "address": "1.1.10.20",
                 "parent_address": "1.1.1.10",
                 "hostname": "found.space_in.host name.wrong"
             }
@@ -170,7 +157,7 @@ Feature:
             {
                 "name": "illegal_character_in_hostname",
                 "type": "poller",
-                "address": "666.",
+                "address": "1.1.10.20",
                 "parent_address": "1.1.1.10",
                 "hostname": "found.i|legal.char*cter_!n.hostname"
             }
