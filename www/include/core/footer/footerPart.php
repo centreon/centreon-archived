@@ -325,7 +325,9 @@ function validateFeature(name, version, enabled) {
           }
         } else if (isReact) {
             e.preventDefault();
-            window.parent.location.href = href;
+            window.top.history.pushState("", "", href);
+            window.top.history.pushState("", "", href);
+            window.top.history.go(-1);
         }
       }
     );
