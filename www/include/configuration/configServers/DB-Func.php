@@ -34,6 +34,8 @@
  *
  */
 
+use Centreon\Domain\PlatformTopology\PlatformTopology;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -257,18 +259,18 @@ function deleteServerInDB(array $serverIds): void
         $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
 
         //If the deleted platform is a remote, reassign the parent_id of its children to the top level platform
-        if ($platformInTopology['type'] === 'remote') {
+        if ($platformInTopology['type'] === PlatformTopology::TYPE_REMOTE) {
             $statement = $pearDB->query('SELECT id FROM `platform_topology` WHERE parent_id IS NULL');
-            $topPlatform = $statement->fetch(\PDO::FETCH_ASSOC);
-
-            $statement2 = $pearDB->prepare('
-                UPDATE `platform_topology`
-                SET `parent_id` = :topPlatformId
-                WHERE `parent_id` = :remoteId
-            ');
-            $statement2->bindValue(':topPlatformId', (int) $topPlatform['id'], \PDO::PARAM_INT);
-            $statement2->bindValue(':remoteId', (int) $platformInTopology['id'], \PDO::PARAM_INT);
-            $statement2->execute();
+            if ($topPlatform = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $statement2 = $pearDB->prepare('
+                    UPDATE `platform_topology`
+                    SET `parent_id` = :topPlatformId
+                    WHERE `parent_id` = :remoteId
+                ');
+                $statement2->bindValue(':topPlatformId', (int) $topPlatform['id'], \PDO::PARAM_INT);
+                $statement2->bindValue(':remoteId', (int) $platformInTopology['id'], \PDO::PARAM_INT);
+                $statement2->execute();
+            }
         }
 
         $result = $pearDB->query(
