@@ -20,6 +20,7 @@
                             <xsl:attribute name="href">
                                 <xsl:value-of select="hg_listing_uri"/>
                             </xsl:attribute>
+                            <xsl:attribute name="isreact">true</xsl:attribute>
                             <xsl:value-of select="hn"/>
                         </xsl:element>
                     </td>
@@ -28,6 +29,7 @@
                             <xsl:element name="a">
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_h_down"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                     <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
@@ -42,6 +44,7 @@
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_h_up"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="huc"/>
@@ -55,6 +58,7 @@
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_h_unreachable"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="hurc"/>
@@ -70,6 +74,7 @@
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_s_critical"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="scc"/>
@@ -83,6 +88,7 @@
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_s_warning"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="swc"/>
@@ -96,6 +102,7 @@
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_s_unknown"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="suc"/>
@@ -109,6 +116,7 @@
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_s_ok"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="skc"/>
@@ -122,6 +130,7 @@
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
                                     <xsl:value-of select="hg_listing_s_pending"/></xsl:attribute>
+                                <xsl:attribute name="isreact">true</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="spc"/>
