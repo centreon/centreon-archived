@@ -83,7 +83,6 @@ class PlatformInformation
 
     /**
      * @var bool SSL peer validation
-     * @EntityDescriptor(column="apiPeerValidation", modifier="setApiPeerValidation")
      */
     private $apiPeerValidation = false;
 
