@@ -261,7 +261,11 @@ function deleteServerInDB(array $serverIds): void
             $statement = $pearDB->query('SELECT id FROM `platform_topology` WHERE parent_id IS NULL');
             $topPlatform = $statement->fetch(\PDO::FETCH_ASSOC);
 
-            $statement2 = $pearDB->prepare('UPDATE `platform_topology` SET `parent_id` = :topPlatformId WHERE `parent_id` = :remoteId');
+            $statement2 = $pearDB->prepare('
+                UPDATE `platform_topology`
+                SET `parent_id` = :topPlatformId
+                WHERE `parent_id` = :remoteId
+            ');
             $statement2->bindValue(':topPlatformId', (int) $topPlatform['id'], \PDO::PARAM_INT);
             $statement2->bindValue(':remoteId', (int) $platformInTopology['id'], \PDO::PARAM_INT);
             $statement2->execute();
