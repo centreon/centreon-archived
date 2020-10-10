@@ -80,9 +80,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private $monitoringServerService;
 
-    // Version of the API used to register the platform on the central
-    public const API_VERSION = 'v2.0';
-
     /**
      * PlatformTopologyService constructor.
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
