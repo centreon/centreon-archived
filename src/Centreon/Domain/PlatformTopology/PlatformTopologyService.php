@@ -234,7 +234,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $baseApiEndpoint = $foundPlatformInformation->getApiScheme() . '://' .
                     $foundPlatformInformation->getAuthorizedMaster() . ':' .
                     $foundPlatformInformation->getApiPort() . '/' .
-                    $foundPlatformInformation->getApiPath() . '/api/' . self::API_VERSION . '/';
+                    $foundPlatformInformation->getApiPath() . '/api/v2.0/';
 
                 // Enable specific options
                 $optionPayload = [];
