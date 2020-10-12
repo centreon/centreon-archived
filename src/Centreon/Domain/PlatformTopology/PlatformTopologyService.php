@@ -29,6 +29,7 @@ use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
@@ -241,10 +242,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 if (null !== $proxyService && !empty((string) $proxyService)) {
                     $optionPayload['proxy'] = (string) $proxyService;
                 }
-                // SSL verify_peer
-                if ($foundPlatformInformation->hasApiPeerValidation()) {
-                    $optionPayload['verify_peer'] = true;
-                    $optionPayload['verify_host'] = true;
+                // On https scheme, the SSL verify_peer needs to be specified
+                if ('https' === $foundPlatformInformation->getApiScheme()) {
+                    $optionPayload['verify_peer'] = $foundPlatformInformation->hasApiPeerValidation();
+                    $optionPayload['verify_host'] = $foundPlatformInformation->hasApiPeerValidation();
+                }
+                // Set the options for next http_client calls
+                if (!empty($optionPayload)) {
+                    $this->httpClient = HttpClient::create($optionPayload);
                 }
 
                 // Central's API login payload
@@ -258,11 +263,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         ]
                     ]
                 ];
-
-                // Add specific options
-                if (!empty($optionPayload)) {
-                    $loginPayload = array_merge($loginPayload, $optionPayload);
-                }
 
                 // Login on the Central to get a valid token
                 $loginResponse = $this->httpClient->request(
@@ -296,11 +296,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         "X-AUTH-TOKEN" => $token
                     ]
                 ];
-
-                // Add specific options
-                if (!empty($optionPayload)) {
-                    $registerPayload = array_merge($registerPayload, $optionPayload);
-                }
 
                 $registerResponse = $this->httpClient->request(
                     'POST',
