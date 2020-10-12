@@ -72,6 +72,8 @@ class WizardConfigurationRequestValidator
      */
     private function validateRemoteSpecificFields(): void
     {
+        $missingParameterMessage = "You need to send '%s' in the request.";
+
         if (!isset($_POST['db_user']) || !$_POST['db_user']) {
             throw new \RestBadRequestException(
                 sprintf(_($missingParameterMessage), 'db_user')
