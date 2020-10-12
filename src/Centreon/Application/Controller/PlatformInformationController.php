@@ -22,13 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Application\Controller\AbstractController;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformInformation\PlatformInformationService;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * This class is design to manage REST API requests concerning the platform's information used in the configuration.
@@ -59,7 +57,12 @@ class PlatformInformationController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
+        /**
+         * @var ContactInterface $user
+         */
+        $user = $this->getUser();
+
+        if (!$user->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             $context = (new Context())
                 ->setGroups(static::SERIALIZER_GROUP_LIMITED)
                 ->enableMaxDepth();

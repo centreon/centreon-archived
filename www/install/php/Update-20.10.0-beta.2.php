@@ -46,12 +46,15 @@ try {
         $keycloak[$row['key']] = $row['value'];
     }
 
+    $keycloakBaseUrl = null;
+    if (!empty($keycloak['keycloak_url']) && !empty($keycloak['keycloak_realm'])) {
+        $keycloakUrl = $keycloak['keycloak_url'] . "/realms/" .
+            $keycloak['keycloak_realm'] . "/protocol/openid-connect";
+    }
     $openIdConnect = [
         'openid_connect_enable' => $keycloak['keycloak_enable'] ?? null,
         'openid_connect_mode' => $keycloak['keycloak_mode'] ?? null,
-        'openid_connect_base_url' => ($keycloak['keycloak_url'] && $keycloak['keycloak_realm'])
-            ? $keycloak['keycloak_url'] . "/realms/" . $keycloak['keycloak_realm'] . "/protocol/openid-connect"
-            : null,
+        'openid_connect_base_url' => $keycloakBaseUrl,
         'openid_connect_authorization_endpoint' => $keycloak['keycloak_url'] ? '/auth' : null,
         'openid_connect_token_endpoint' => $keycloak['keycloak_url'] ? '/token' : null,
         'openid_connect_introspection_endpoint' => $keycloak['keycloak_url'] ? '/introspect' : null,

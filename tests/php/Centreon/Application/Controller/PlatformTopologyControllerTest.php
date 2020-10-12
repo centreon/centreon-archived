@@ -22,10 +22,17 @@
 namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Application\Controller\PlatformTopologyController;
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
+use Centreon\Domain\PlatformTopology\PlatformTopologyService;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -39,18 +46,26 @@ class PlatformTopologyControllerTest extends TestCase
 {
     protected $goodJsonPlatformTopology;
     protected $badJsonPlatformTopology;
+
+    /**
+     * @var PlatformTopology|null $platformTopology
+     */
     protected $platformTopology;
 
+    /**
+     * @var PlatformTopologyService&MockObject $platformTopologyService
+     */
     protected $platformTopologyService;
 
     protected $container;
 
     protected $request;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $goodJsonPlatformTopology = [
             'name' => 'poller1',
+            'hostname' => 'localhost.localdomain',
             'address' => '1.1.1.2',
             'type' => 'poller',
             'parent_address' => '1.1.1.1'
@@ -60,6 +75,7 @@ class PlatformTopologyControllerTest extends TestCase
 
         $this->platformTopology = (new PlatformTopology())
             ->setName($goodJsonPlatformTopology['name'])
+            ->setHostname($goodJsonPlatformTopology['hostname'])
             ->setAddress($goodJsonPlatformTopology['address'])
             ->setType($goodJsonPlatformTopology['type'])
             ->setParentAddress($goodJsonPlatformTopology['parent_address']);
@@ -93,7 +109,7 @@ class PlatformTopologyControllerTest extends TestCase
             ->willReturnOnConsecutiveCalls(
                 $authorizationChecker,
                 new class () {
-                    public function get()
+                    public function get(): string
                     {
                         return __DIR__ . '/../../../../../';
                     }
@@ -106,7 +122,7 @@ class PlatformTopologyControllerTest extends TestCase
     /**
      * test addPlatformToTopology with bad json format
      */
-    public function testAddPlatformToTopologyBadJsonFormat()
+    public function testAddPlatformToTopologyBadJsonFormat(): void
     {
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
@@ -122,8 +138,9 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with conflict
+     * @throws PlatformTopologyException
      */
-    public function testAddPlatformToTopologyConflict()
+    public function testAddPlatformToTopologyConflict(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
@@ -145,8 +162,9 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with bad request
+     * @throws PlatformTopologyException
      */
-    public function testAddPlatformToTopologyBadRequest()
+    public function testAddPlatformToTopologyBadRequest(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
@@ -168,8 +186,9 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology which succeed
+     * @throws PlatformTopologyException
      */
-    public function testAddPlatformToTopologySuccess()
+    public function testAddPlatformToTopologySuccess(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')

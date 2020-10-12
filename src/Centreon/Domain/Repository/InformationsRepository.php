@@ -53,11 +53,15 @@ class InformationsRepository extends ServiceEntityRepository
      */
     public function toggleRemote(string $flag): void
     {
-        $sql = "UPDATE `informations` SET `value`= :state WHERE `key` = :isRemote";
+        $sql = "UPDATE `informations` SET `value`= :state WHERE `key` = 'isRemote'";
         $stmt = $this->db->prepare($sql);
-        $key = 'isRemote';
-        $stmt->bindParam(':isRemote', $key, PDO::PARAM_STR);
         $stmt->bindParam(':state', $flag, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $centralState = ($flag === 'yes') ? 'no' : 'yes';
+        $sql = "UPDATE `informations` SET `value`= :state WHERE `key` = 'isCentral'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':state', $centralState, PDO::PARAM_STR);
         $stmt->execute();
     }
 

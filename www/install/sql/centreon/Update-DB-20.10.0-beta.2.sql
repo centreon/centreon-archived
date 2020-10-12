@@ -1,3 +1,4 @@
+-- Add new column
 ALTER TABLE `platform_topology` ADD COLUMN `hostname` varchar(255) NULL AFTER `address`;
 
 UPDATE `cfg_nagios`

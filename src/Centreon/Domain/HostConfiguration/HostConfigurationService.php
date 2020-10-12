@@ -86,7 +86,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 $host->getMonitoringServer()->getName()
             );
             if ($engineConfiguration === null) {
-                throw new HostConfigurationException(_('Impossible to find the Engine configuration'));
+                throw new HostConfigurationException(_('Unable to find the Engine configuration'));
             }
 
             $safedHostName = EngineConfiguration::removeIllegalCharacters(

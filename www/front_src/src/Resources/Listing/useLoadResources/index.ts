@@ -28,6 +28,8 @@ const useLoadResources = (): LoadResources => {
     enabledAutorefresh,
     customFilters,
     loadDetails,
+    details,
+    selectedResourceId,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
@@ -65,6 +67,10 @@ const useLoadResources = (): LoadResources => {
       search,
     }).then(setListing);
 
+    if (isNil(details)) {
+      return;
+    }
+
     loadDetails();
   };
 
@@ -72,7 +78,9 @@ const useLoadResources = (): LoadResources => {
     window.clearInterval(refreshIntervalRef.current);
 
     const interval = enabledAutorefresh
-      ? window.setInterval(load, refreshIntervalMs)
+      ? window.setInterval(() => {
+          load();
+        }, refreshIntervalMs)
       : undefined;
 
     refreshIntervalRef.current = interval;
@@ -89,7 +97,7 @@ const useLoadResources = (): LoadResources => {
 
   React.useEffect(() => {
     initAutorefresh();
-  }, [enabledAutorefresh]);
+  }, [enabledAutorefresh, selectedResourceId]);
 
   React.useEffect(() => {
     return (): void => {

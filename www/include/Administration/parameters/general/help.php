@@ -164,6 +164,10 @@ $help['openid_connect_userinfo_endpoint'] = dgettext(
     'help',
     'Your OpenId Connect User Information endpoint (for example /userinfo).'
 );
+$help['openid_connect_end_session_endpoint'] = dgettext(
+    'help',
+    'Your OpenId Connect End Session endpoint (for example /logout).'
+);
 $help['openid_connect_scope'] = dgettext(
     'help',
     'Your OpenId Connect Scope (for example openid).'

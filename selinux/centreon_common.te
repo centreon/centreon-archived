@@ -1,0 +1,85 @@
+policy_module(centreon_common, 0.0.6)
+
+########################################
+#
+# Declarations
+#
+
+require {
+	type useradd_t;
+	type var_spool_t;
+	type httpd_t;
+	type setroubleshootd_t;
+	type system_dbusd_t;
+	type NetworkManager_t;
+	type snmpd_t;
+	type systemd_tmpfiles_t;
+	type chkpwd_t;
+	type init_t;
+	type initrc_t;
+	type initrc_var_run_t;
+	type snmpd_var_lib_t;
+	type fixed_disk_device_t;
+	type systemd_logind_sessions_t;
+	type systemd_systemctl_exec_t;
+}
+
+type centreon_t;
+type centreon_exec_t;
+init_daemon_domain(centreon_t, centreon_exec_t)
+
+type centreon_log_t;
+logging_log_file(centreon_log_t)
+
+type centreon_etc_t;
+files_config_file(centreon_etc_t)
+
+type centreon_var_cache_t;
+files_type(centreon_var_cache_t)
+
+type centreon_spool_t;
+files_type(centreon_spool_t)
+
+########################################
+#
+# Centreon local policy
+#
+
+allow centreon_t centreon_etc_t:dir { add_name list_dir_perms };
+allow centreon_t centreon_etc_t:file { read open getattr read_file_perms };
+allow centreon_t centreon_etc_t:lnk_file read_lnk_file_perms;
+
+# Permit install centreon-common package
+allow useradd_t var_spool_t:dir { write add_name remove_name };
+
+#============= useradd_t ==============
+allow useradd_t centreon_spool_t:dir { add_name create setattr write };
+allow useradd_t centreon_spool_t:file { create open setattr write };
+
+#============= httpd_t ==============
+allow httpd_t centreon_log_t:dir { add_name create write };
+allow httpd_t centreon_log_t:file { create open write getattr setattr };
+allow httpd_t centreon_var_cache_t:dir { add_name create read remove_name rename rmdir write };
+allow httpd_t centreon_var_cache_t:file { append create getattr setattr lock open read rename setattr unlink write };
+allow httpd_t self:capability net_admin;
+allow httpd_t self:netlink_audit_socket create;
+allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
+allow httpd_t init_t:dir search;
+allow httpd_t initrc_var_run_t:file read;
+allow httpd_t self:netlink_audit_socket create;
+allow httpd_t snmpd_var_lib_t:dir read;
+allow httpd_t snmpd_var_lib_t:file write;
+allow httpd_t systemd_logind_sessions_t:fifo_file write;
+allow httpd_t systemd_systemctl_exec_t:file { execute getattr };
+
+#============= system_dbusd_t ==============
+allow system_dbusd_t setroubleshootd_t:process { noatsecure rlimitinh siginh };
+
+#============= systemd_tmpfiles_t ==============
+allow systemd_tmpfiles_t self:capability net_admin;
+
+#============= NetworkManager_t ==============
+allow NetworkManager_t initrc_t:process { noatsecure rlimitinh siginh };
+
+#============= snmpd_t ==============
+allow snmpd_t fixed_disk_device_t:blk_file read;
