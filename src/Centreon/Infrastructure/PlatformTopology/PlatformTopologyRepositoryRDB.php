@@ -202,7 +202,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         return null;
     }
 
-    public function findPlatformOnePeerRetentionMode(int $serverId): ?bool
+    // mettre ça dans monitoring server et appeler ce repository
+    public function isOnePeerRetentionMode(int $serverId): ?bool
     {
         $statement = $this->db->prepare("
             SELECT config_value

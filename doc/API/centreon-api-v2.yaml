@@ -2484,7 +2484,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: ['graph', 'nodes', 'edges']
+                required: ["graph", "nodes", "edges"]
                 properties:
                   graph:
                     type: object
@@ -2493,7 +2493,7 @@ paths:
                       label:
                         type: string
                         description: type of Json Graph
-                        example: 'centreon-topology'
+                        example: "centreon-topology"
                       metadata:
                         type: object
                         properties:
@@ -2510,15 +2510,15 @@ paths:
                         id:
                           type: string
                           description: ID of a platform
-                          example: '1'
+                          example: "1"
                         type:
                           type: string
                           description: Server Type of a platform
-                          example: 'poller'
+                          example: "poller"
                         label:
                           type: string
                           description: logical name of a platform
-                          example: 'My Poller 1'
+                          example: "My Poller 1"
                         metadata:
                           type: object
                           properties:
@@ -2543,7 +2543,7 @@ paths:
                         relation:
                           type: string
                           description: broker communication type
-                          example: 'peer_retention'
+                          example: "peer_retention"
                         target:
                           type: string
                           description: parent platform id as known in the topology
