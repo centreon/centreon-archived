@@ -331,11 +331,11 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     $configOptions['ROOT_CENTREON_FOLDER'] = $options['ROOT_CENTREON_FOLDER'] ?? 'centreon';
     $configOptions['HOST_ADDRESS'] = $options['HOST_ADDRESS'];
     $configOptions['SERVER_NAME'] = $options['SERVER_NAME'];
-
-    if (isset($options['DNS'])) {
-        $configOptions['DNS'] = filter_var($options['DNS'], FILTER_VALIDATE_DOMAIN);
-        if (!$configOptions['DNS']) {
-            throw new \InvalidArgumentException(PHP_EOL . "Bad DNS Format" . PHP_EOL);
+    $configOptions['PROXY_USAGE'] = filter_var($options['PROXY_USAGE'], FILTER_VALIDATE_BOOLEAN) ?? false;
+    if (isset($options['FQDN'])) {
+        $configOptions['FQDN'] = filter_var($options['FQDN'], FILTER_VALIDATE_DOMAIN);
+        if (!$configOptions['FQDN']) {
+            throw new \InvalidArgumentException(PHP_EOL . "Bad FQDN Format" . PHP_EOL);
         }
     }
 
@@ -343,8 +343,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
         $configOptions['INSECURE'] = true;
     }
 
-    if (isset($options['PROXY_USAGE']) && $options['PROXY_USAGE'] === true) {
-        $configOptions['PROXY_USAGE'] = $options['PROXY_USAGE'];
+    if ($configOptions['PROXY_USAGE'] === true) {
         $configOptions["PROXY_HOST"] = $options["PROXY_HOST"] ?? '';
         $configOptions["PROXY_PORT"] = (int)$options["PROXY_PORT"] ?? '';
         $configOptions["PROXY_USERNAME"] = $options["PROXY_USERNAME"] ?? '';
