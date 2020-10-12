@@ -64,11 +64,11 @@
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.downtime_type};{$tds.host_id};{$tds.internal_downtime_id}]'></td>
 		<td class="ListColLeft" width="130">
-                    <a href='{$tds.h_details_uri}'>{$tds.host_name}</a>
+                    <a href='{$tds.h_details_uri}' isreact="true">{$tds.host_name}</a>
                 </td>
 		<td class="ListColLeft" width="130">
                     {if $tds.s_details_uri}
-                    <a href='{$tds.s_details_uri}'>{$tds.service_description}</a>
+                    <a href='{$tds.s_details_uri}' isreact="true">{$tds.service_description}</a>
                     {else}
                     {$tds.service_description}
                     {/if}
