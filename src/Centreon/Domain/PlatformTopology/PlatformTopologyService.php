@@ -171,7 +171,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if (null === $foundPlatformInformation->getAuthorizedMaster()) {
+            if (null === $foundPlatformInformation->getCentralServerAddress()) {
                 throw new PlatformTopologyException(
                     sprintf(
                         _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
@@ -231,10 +231,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              */
             try {
                 // Central's API endpoints base path
-                $baseApiEndpoint = $foundPlatformInformation->getApiScheme() . '://' .
-                    $foundPlatformInformation->getAuthorizedMaster() . ':' .
-                    $foundPlatformInformation->getApiPort() . '/' .
-                    $foundPlatformInformation->getApiPath() . '/api/v2.0/';
+
+                $baseApiEndpoint = $foundPlatformInformation->getApiScheme() . '://'
+                    . $foundPlatformInformation->getCentralServerAddress() . ':'
+                    . $foundPlatformInformation->getApiPort() . '/'
+                    . $foundPlatformInformation->getApiPath() . '/api/'
+                    . $platformTopology->getApiVersion() . '/';
 
                 // Enable specific options
                 $optionPayload = [];
