@@ -5,10 +5,14 @@ namespace Centreon\Infrastructure\Broker;
 use Centreon\Domain\Broker\Broker;
 use Centreon\Domain\Broker\BrokerConfiguration;
 use Centreon\Infrastructure\DatabaseConnection;
-use Centreon\Domain\Broker\BrokerRepositoryInterface;
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 
 class BrokerRepositoryRDB implements BrokerRepositoryInterface
 {
+    /**
+     * @var DatabaseConnection
+     */
+    private $db;
 
     /**
      * BrokerRepositoryRDB constructor.
@@ -26,7 +30,7 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
      * @param string $configKey
      * @return Broker|null
      */
-    public function findConfigurationByMonitoringServer(int $monitoringServerId, string $configKey): ?Broker
+    public function findConfigurationByMonitoringServerAndConfigKey(int $monitoringServerId, string $configKey): ?Broker
     {
         $statement = $this->db->prepare("
             SELECT config_value, cfgbi.config_id AS id
@@ -52,7 +56,7 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
 
         if(!empty($brokerConfigurations)) {
             return (new Broker())
-                ->setBrokerConfiguration($brokerConfigurations);
+                ->setBrokerConfigurations($brokerConfigurations);
         }
         return null;
     }

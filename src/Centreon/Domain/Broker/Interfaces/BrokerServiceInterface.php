@@ -1,6 +1,6 @@
 <?php
 
-namespace Centreon\Domain\Broker;
+namespace Centreon\Domain\Broker\Interfaces;
 
 use Centreon\Domain\Broker\Broker;
 
@@ -11,7 +11,8 @@ interface BrokerServiceInterface
      *
      * @param integer $monitoringServerId
      * @param string $config_Key
-     * @return Broker|null
+     * @throws BrokerException
+     * @return Broker
      */
-    public function findConfigurationByMonitoringServer(int $monitoringServerId, string $config_Key): ?Broker;
+    public function findConfigurationByMonitoringServerAndConfigKey(int $monitoringServerId, string $config_Key): Broker;
 }

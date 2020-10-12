@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
-use Centreon\Domain\Broker\BrokerServiceInterface;
+use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
@@ -729,25 +729,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            $broker = $this->brokerService->findConfigurationByMonitoringServer($topology->getServerId(), 'one_peer_retention_mode');
+            $broker = $this->brokerService->findConfigurationByMonitoringServerAndConfigKey($topology->getServerId(), 'one_peer_retention_mode');
 
-            /*
-            if ($onePeer === null) {
-                throw new PlatformTopologyException(
-                    sprintf(
-                        _("The 'one peer retention mode' is missing in your '%s' '%s'@'%s' broker configuration"),
-                        $topology->getType(),
-                        $topology->getName(),
-                        $topology->getAddress()
-                    )
-                );
-            }
-            if ($onePeer === true) {
+            if ($broker->getIsPeerRetentionMode() === true) {
                 $topology->setRelation(PlatformTopology::PEER_RETENTION_RELATION);
             } else {
                 $topology->setRelation(PlatformTopology::NORMAL_RELATION);
             }
-            */
         }
         return $completePlatformTopology;
     }

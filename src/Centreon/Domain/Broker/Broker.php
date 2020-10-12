@@ -5,7 +5,7 @@ namespace Centreon\Domain\Broker;
 class Broker
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $id;
 
@@ -16,12 +16,7 @@ class Broker
      */
     private $brokerConfigurations;
 
-    private $isPeerRetentionMode;
-
-    public function __consruct(array $brokerConfigurations)
-    {
-        $this->setBrokerConfiguration($brokerConfigurations);
-    }
+    private $isPeerRetentionMode = false;
 
     public function getId(): ?int
     {
@@ -34,12 +29,12 @@ class Broker
         return $this;
     }
 
-    public function getBrokerConfiguration(): ?array
+    public function getBrokerConfigurations(): ?array
     {
         return $this->brokerConfigurations;
     }
 
-    public function setBrokerConfiguration(array $brokerConfigurations): self
+    public function setBrokerConfigurations(array $brokerConfigurations): self
     {
         $this->brokerConfigurations = $brokerConfigurations;
         return $this;

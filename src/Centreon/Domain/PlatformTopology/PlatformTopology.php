@@ -104,12 +104,6 @@ class PlatformTopology
     private $relation;
 
     /**
-     * @var string|null Server physical name
-     */
-    private $hostname;
-
-
-    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -350,27 +344,6 @@ class PlatformTopology
             ];
         }
 
-        return $this;
-    }
-
-    /**
-     * get platform hostname
-     *
-     * @return string|null
-     */
-    public function getHostname(): ?string
-    {
-        return $this->hostname;
-    }
-
-    /**
-     * set platform hostname
-     * @param string|null $hostname
-     * @return self
-     */
-    public function setHostname(?string $hostname): self
-    {
-        $this->hostname = $hostname;
         return $this;
     }
 }
