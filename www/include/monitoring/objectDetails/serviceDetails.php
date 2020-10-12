@@ -836,6 +836,7 @@ if (!is_null($host_id)) {
         );
 
         $deprecationMessage = _('[Page deprecated] Please use the new page: ');
+        $resourcesStatusLabel = _('Resources Status');
         $redirectionUrl = $resourceController->buildServiceDetailsUri($host_id, $service_id);
 
         // Check if central or remote server
@@ -914,11 +915,12 @@ if (!is_null($host_id)) {
         function display_deprecated_banner() {
             const url = "<?php echo $redirectionUrl; ?>";
             const message = "<?php echo $deprecationMessage; ?>";
+            const label = "<?php echo $resourcesStatusLabel; ?>";
             jQuery('.pathway').append(
                 '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message +
-                '<a style="position:relative" href="' + url + '" isreact="isreact">Resource Status</a></span>'
+                '<a style="position:relative" href="' + url + '" isreact="isreact">' + label + '</a></span>'
             );
-    }
+        }
 
         function send_command(cmd, actiontype) {
             if (!confirm(glb_confirm)) {

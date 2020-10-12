@@ -156,11 +156,13 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('isPlatformAlreadyRegisteredInTopology')
             ->willReturn(true);
 
-        $this->monitoringServerService->expects($this->exactly(2))
+        $this->monitoringServerService
+            ->expects($this->once())
             ->method('findLocalServer')
             ->willReturn($this->monitoringServer);
 
-        $this->engineConfigurationService->expects($this->exactly(2))
+        $this->engineConfigurationService
+            ->expects($this->once())
             ->method('findEngineConfigurationByName')
             ->willReturn($this->engineConfiguration);
 
@@ -199,11 +201,13 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('findPlatformTopologyByAddress')
             ->willReturn(null);
 
-        $this->monitoringServerService->expects($this->exactly(2))
+        $this->monitoringServerService
+            ->expects($this->once())
             ->method('findLocalServer')
             ->willReturn($this->monitoringServer);
 
-        $this->engineConfigurationService->expects($this->exactly(2))
+        $this->engineConfigurationService
+            ->expects($this->once())
             ->method('findEngineConfigurationByName')
             ->willReturn($this->engineConfiguration);
 
@@ -245,12 +249,12 @@ class PlatformTopologyServiceTest extends TestCase
             ->willReturn($this->registeredParent);
 
         $this->monitoringServerService
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('findLocalServer')
             ->willReturn($this->monitoringServer);
 
         $this->engineConfigurationService
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('findEngineConfigurationByName')
             ->willReturn($this->engineConfiguration);
 

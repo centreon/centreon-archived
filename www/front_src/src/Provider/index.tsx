@@ -32,7 +32,7 @@ const AppProvider = (): JSX.Element | null => {
   });
 
   const initializeI18n = ({ retrievedUser, retrievedTranslations }): void => {
-    const locale = retrievedUser.locale?.slice(0, 2);
+    const locale = (retrievedUser.locale || navigator.language)?.slice(0, 2);
 
     i18n.use(initReactI18next).init({
       nsSeparator: false,

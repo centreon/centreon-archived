@@ -159,7 +159,7 @@ $form->setDefaults(
         'apiPath' => $result['apiPath'],
         'apiPort' => $result['apiPort'],
         'apiScheme' => $result['apiScheme'],
-        'apiPeerValidation' => ($result['apiPeerValidation'] == 'yes' ? 1 : 0)
+        'apiPeerValidation' => ($result['apiPeerValidation'] == 'yes' ? 0 : 1)
     ]
 );
 

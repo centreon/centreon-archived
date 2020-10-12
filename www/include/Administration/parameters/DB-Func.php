@@ -1051,7 +1051,7 @@ function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
     unset($ret['apiCredentials']);
 
     //convert values
-    $ret['apiSelfSignedCertificate'] = $ret['apiSelfSignedCertificate'] == 1 ? 'yes' : 'no';
+    $ret['apiPeerValidation'] = (int) $ret['apiPeerValidation'] === 1 ? 'no' : 'yes';
 
     //update information
     foreach ($ret as $key => $value) {

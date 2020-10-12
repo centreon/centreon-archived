@@ -478,9 +478,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
-                AND sh.name NOT LIKE :serviceModule
+                AND sh.name NOT LIKE '_Module_%'
                 AND sh.enabled = 1";
-        $collector->addValue(':serviceModule', '_Module_%');
 
         // set ACL limitations
         if (!$this->isAdmin()) {
@@ -497,14 +496,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // get Severity level, name, icon
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
             AND service_cvl.service_id = s.service_id
-            AND service_cvl.name = :serviceCustomVariablesName
+            AND service_cvl.name = "CRITICALITY_LEVEL"
         LEFT JOIN `:db`.`service_categories_relation` AS scr ON scr.service_service_id = s.service_id
         LEFT JOIN `:db`.`service_categories` AS sc ON sc.sc_id = scr.sc_id
             AND sc.level IS NOT NULL
             AND sc.icon_id IS NOT NULL
         LEFT JOIN `:db`.`view_img` AS service_vi ON service_vi.img_id = sc.icon_id';
-
-        $collector->addValue(':serviceCustomVariablesName', 'CRITICALITY_LEVEL');
 
         $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
         try {
@@ -681,14 +678,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // get Severity level, name, icon
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
             AND host_cvl.service_id = 0
-            AND host_cvl.name = :hostCustomVariablesName
+            AND host_cvl.name = "CRITICALITY_LEVEL"
         LEFT JOIN `:db`.`hostcategories_relation` AS hcr ON hcr.host_host_id = h.host_id
         LEFT JOIN `:db`.`hostcategories` AS hc ON hc.hc_id = hcr.hostcategories_hc_id
             AND hc.level IS NOT NULL
             AND hc.icon_id IS NOT NULL
         LEFT JOIN `:db`.`view_img` AS host_vi ON host_vi.img_id = hc.icon_id';
-
-        $collector->addValue(':hostCustomVariablesName', 'CRITICALITY_LEVEL');
 
         $this->sqlRequestTranslator->setConcordanceArray($this->hostConcordances);
         try {
@@ -701,9 +696,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
 
         // show active hosts and aren't related to some module
-        $sql .= ' h.enabled = 1 AND h.name NOT LIKE :hostModule';
-
-        $collector->addValue(':hostModule', '_Module_%');
+        $sql .= ' h.enabled = 1 AND h.name NOT LIKE "_Module_%"';
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
