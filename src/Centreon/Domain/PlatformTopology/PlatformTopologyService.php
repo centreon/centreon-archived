@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
+use Centreon\Domain\Broker\BrokerServiceInterface;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
@@ -81,6 +82,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     private $monitoringServerService;
 
     /**
+     * @var BrokerServiceInterface
+     */
+    private $brokerService;
+
+    /**
      * PlatformTopologyService constructor.
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
      * @param HttpClientInterface $httpClient
@@ -95,7 +101,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         PlatformInformationServiceInterface $platformInformationService,
         ProxyServiceInterface $proxyService,
         EngineConfigurationServiceInterface $engineConfigurationService,
-        MonitoringServerServiceInterface $monitoringServerService
+        MonitoringServerServiceInterface $monitoringServerService,
+        BrokerServiceInterface $brokerService
     ) {
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->httpClient = $httpClient;
@@ -103,6 +110,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $this->proxyService = $proxyService;
         $this->engineConfigurationService = $engineConfigurationService;
         $this->monitoringServerService = $monitoringServerService;
+        $this->brokerService = $brokerService;
     }
 
     /**
@@ -721,7 +729,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            $onePeer = $this->platformTopologyRepository->findPlatformOnePeerRetentionMode($topology->getServerId());
+            $broker = $this->brokerService->findConfigurationByMonitoringServer($topology->getServerId(), 'one_peer_retention_mode');
+
+            /*
             if ($onePeer === null) {
                 throw new PlatformTopologyException(
                     sprintf(
@@ -737,6 +747,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             } else {
                 $topology->setRelation(PlatformTopology::NORMAL_RELATION);
             }
+            */
         }
         return $completePlatformTopology;
     }
