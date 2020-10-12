@@ -21,7 +21,6 @@ class Broker
     public function __consruct(array $brokerConfigurations)
     {
         $this->setBrokerConfiguration($brokerConfigurations);
-        
     }
 
     public function getId(): ?int
