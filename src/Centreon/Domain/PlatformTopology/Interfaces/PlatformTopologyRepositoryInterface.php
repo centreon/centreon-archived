@@ -22,10 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Domain\Proxy\Proxy;
 
 interface PlatformTopologyRepositoryInterface
 {
