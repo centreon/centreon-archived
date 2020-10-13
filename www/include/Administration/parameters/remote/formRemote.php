@@ -25,6 +25,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+require_once 'DB-Func.php';
+
 /*
  * Set encryption parameters
  */
@@ -142,9 +144,10 @@ $form->addElement(
     $attrsText
 );
 $form->addRule('apiPath', _("Required Field"), 'required');
-
+$form->registerRule('validateApiPort', 'callback', 'validateApiPort');
 $form->addElement('text', 'apiPort', _("Port"), ["size" => "8"]);
-$form->addRule('apiPort', _('Must be a number'), 'numeric');
+$form->addRule('apiPort', _('Must be a number between 1 and 65335 included.'), 'validateApiPort');
+$form->addRule('apiPort', _('Required Field'), 'required');
 
 $form->addElement(
     'checkbox',

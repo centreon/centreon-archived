@@ -158,7 +158,7 @@ if (isset($opt['template'])) {
 $targetURL = parse_url($configOptions['HOST_ADDRESS']);
 $protocol = $targetURL['scheme'] ?? 'http';
 $host = $targetURL['host'] ?? $targetURL['path'];
-$port = $targetURL['port'] ?? '';
+$port = $targetURL['port'] ?? 80;
 
 
 /**
@@ -265,9 +265,8 @@ if (isRemote($serverType)) {
     $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
     $loginCredentialsDb['apiPeerValidation'] = isset($configOptions['INSECURE']) ? 'no' : 'yes';
     $loginCredentialsDb['apiScheme'] = $protocol;
-    if (isset($port)) {
-        $loginCredentialsDb['apiPort'] = $port;
-    }
+    $loginCredentialsDb['apiPort'] = $port;
+
     if ($configOptions['PROXY_USAGE'] === true) {
         $loginCredentialsDb['proxy_informations']['proxy_url'] = $configOptions["PROXY_HOST"];
         $loginCredentialsDb['proxy_informations']['proxy_port'] = $configOptions["PROXY_PORT"];
