@@ -1,7 +1,15 @@
 import * as React from 'react';
 
+import 'dayjs/locale/en';
+import 'dayjs/locale/pt';
+import 'dayjs/locale/fr';
+
+import dayjs from 'dayjs';
+import timezonePlugin from 'dayjs/plugin/timezone';
+import utcPlugin from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { Provider } from 'react-redux';
-import { pick, pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
+import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 
 import { useRequest, getData, Loader } from '@centreon/ui';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
@@ -13,6 +21,10 @@ import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
 import { User, Actions } from './models';
 import useUser from './useUser';
 import useAcl from './useAcl';
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
 
 const store = createStore();
 

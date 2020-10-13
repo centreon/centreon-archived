@@ -111,7 +111,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
           <PerformanceGraph
             endpoint={getEndpoint()}
             graphHeight={280}
-            xAxisTickFormatOptions={selectedTimePeriod.formatOptions}
+            xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
           />
         </div>

@@ -193,7 +193,7 @@ const retrievedTimeline = {
     {
       type: 'acknowledgement',
       id: 4,
-      date: '2020-06-20T09:35:00Z',
+      date: '2020-06-20T09:35:00',
       contact: {
         name: 'admin',
       },
@@ -307,7 +307,7 @@ describe(Details, () => {
     mockedAxios.get.mockReset();
   });
 
-  it.only('displays resource details information', async () => {
+  it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = renderDetails();
@@ -341,15 +341,15 @@ describe(Details, () => {
 
     expect(getAllByText(labelComment)).toHaveLength(3);
     expect(getAllByText(labelDowntimeDuration)).toHaveLength(2);
-    expect(getByText(`${labelFrom} 01/18/2020, 18:57`)).toBeInTheDocument();
-    expect(getByText(`${labelTo} 01/18/2020, 19:57`)).toBeInTheDocument();
-    expect(getByText(`${labelFrom} 02/18/2020, 18:57`)).toBeInTheDocument();
-    expect(getByText(`${labelTo} 02/18/2020, 19:57`)).toBeInTheDocument();
+    expect(getByText(`${labelFrom} 01/18/2020 18:57`)).toBeInTheDocument();
+    expect(getByText(`${labelTo} 01/18/2020 19:57`)).toBeInTheDocument();
+    expect(getByText(`${labelFrom} 02/18/2020 18:57`)).toBeInTheDocument();
+    expect(getByText(`${labelTo} 02/18/2020 19:57`)).toBeInTheDocument();
     expect(getByText('First downtime set by Admin'));
     expect(getByText('Second downtime set by Admin'));
 
     expect(getByText(labelAcknowledgedBy)).toBeInTheDocument();
-    expect(getByText(`Admin ${labelAt} 03/18/2020, 19:57`)).toBeInTheDocument();
+    expect(getByText(`Admin ${labelAt} 03/18/2020 19:57`)).toBeInTheDocument();
     expect(getByText('Acknowledged by Admin'));
 
     expect(getByText(labelTimezone)).toBeInTheDocument();

@@ -1,69 +1,54 @@
+import dayjs from 'dayjs';
+
 import { useUserContext } from './UserContext';
 
-interface DateOptions {
+interface FormatParameters {
   date: Date | string;
-  options?: Omit<Intl.DateTimeFormatOptions, 'timeZone'>;
+  formatString: string;
 }
 
 interface LocaleDateTimeFormat {
-  format: (dateOptions: DateOptions) => string;
+  format: (dateFormat: FormatParameters) => string;
   toDate: (date: Date | string) => string;
   toDateTime: (date: Date | string) => string;
   toTime: (date: Date | string) => string;
   toIsoString: (date: Date) => string;
 }
 
-const timeFormatOptions = {
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-};
-
-const dateFormatOptions = {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-};
-
-const dateTimeFormatOptions = {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-};
+const dateTimeFormat = 'L HH:mm';
+const dateFormat = 'L';
+const timeFormat = 'HH:mm';
 
 const useLocaleDateTimeFormat = (): LocaleDateTimeFormat => {
   const { locale, timezone } = useUserContext();
 
-  const format = ({ date, options = {} }: DateOptions): string => {
-    const normalizedLocale = locale.replace('_', '-');
+  const format = ({ date, formatString }: FormatParameters): string => {
+    const normalizedLocale = locale.replace('_', '-').toLowerCase();
 
-    return new Date(date).toLocaleString(normalizedLocale, {
-      ...options,
-      timeZone: timezone,
-    });
+    return dayjs(date)
+      .tz(timezone)
+      .locale(normalizedLocale)
+      .format(formatString);
   };
 
   const toDateTime = (date: Date | string): string => {
     return format({
       date,
-      options: dateTimeFormatOptions,
+      formatString: dateTimeFormat,
     });
   };
 
   const toDate = (date: Date | string): string => {
     return format({
       date,
-      options: dateFormatOptions,
+      formatString: dateFormat,
     });
   };
 
   const toTime = (date: Date | string): string => {
     return format({
       date,
-      options: timeFormatOptions,
+      formatString: timeFormat,
     });
   };
 
@@ -75,4 +60,4 @@ const useLocaleDateTimeFormat = (): LocaleDateTimeFormat => {
 };
 
 export default useLocaleDateTimeFormat;
-export { timeFormatOptions, dateFormatOptions, dateTimeFormatOptions };
+export { dateTimeFormat, dateFormat, timeFormat };

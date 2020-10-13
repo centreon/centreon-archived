@@ -1,13 +1,9 @@
 import * as React from 'react';
 
-import 'dayjs/locale/en';
-
 import dayjs from 'dayjs';
-import timezonePlugin from 'dayjs/plugin/timezone';
-import utcPlugin from 'dayjs/plugin/utc';
+
 import DayjsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 import {
   Checkbox,
@@ -51,10 +47,6 @@ import {
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 import { useUserContext } from '../../../../Provider/UserContext';
-
-dayjs.extend(localizedFormat);
-dayjs.extend(utcPlugin);
-dayjs.extend(timezonePlugin);
 
 interface Props {
   resources: Array<Resource>;
@@ -148,6 +140,7 @@ const DialogDowntime = ({
                   aria-label={t(labelStartDate)}
                   value={values.dateStart}
                   onChange={changeDate('dateStart')}
+                  inputMode="text"
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeStartDate),
                   }}

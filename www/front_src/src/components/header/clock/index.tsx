@@ -23,10 +23,7 @@ const Clock = (): JSX.Element => {
   const updateDateTime = (): void => {
     const now = new Date();
 
-    const date = format({
-      date: now,
-      options: { year: 'numeric', month: 'long', day: 'numeric' },
-    });
+    const date = format({ date: now, formatString: 'LL' });
     const time = toTime(now);
 
     setDateTime({ time, date });

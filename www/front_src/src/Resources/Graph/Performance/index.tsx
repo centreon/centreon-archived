@@ -33,15 +33,15 @@ import Legend from './Legend';
 import getGraphLines from './Lines';
 import formatMetricValue from './formatMetricValue';
 import useLocaleDateTimeFormat, {
-  timeFormatOptions,
-  dateTimeFormatOptions,
+  timeFormat,
+  dateTimeFormat,
 } from '../../../Provider/useLocaleDateTimeFormat';
 
 const fontFamily = 'Roboto, sans-serif';
 
 interface Props {
   endpoint?: string;
-  xAxisTickFormatOptions?: { [key: string]: string };
+  xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
 }
@@ -77,7 +77,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
 const PerformanceGraph = ({
   endpoint,
   graphHeight,
-  xAxisTickFormatOptions = timeFormatOptions,
+  xAxisTickFormat = timeFormat,
   toggableLegend = false,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
@@ -133,10 +133,10 @@ const PerformanceGraph = ({
   };
 
   const formatXAxisTick = (tick): string =>
-    format({ date: new Date(tick), options: xAxisTickFormatOptions });
+    format({ date: new Date(tick), formatString: xAxisTickFormat });
 
   const formatTooltipTime = (tick): string =>
-    format({ date: new Date(tick), options: dateTimeFormatOptions });
+    format({ date: new Date(tick), formatString: dateTimeFormat });
 
   const getLineByMetric = (metric): LineModel => {
     return find(propEq('metric', metric), lineData) as LineModel;
