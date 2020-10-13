@@ -300,11 +300,11 @@ $loginCredentials = json_encode($loginCredentials);
 /**
  * Connection to Api
  */
-$loginUrl = $protocol . '://' . $host . '/' . $configOptions['ROOT_CENTREON_FOLDER'];
+$loginUrl = $protocol . '://' . $host;
 if (!empty($port)) {
     $loginUrl .= ':' . $port;
 }
-$loginUrl .= '/api/latest/login';
+$loginUrl .= '/' . $configOptions['ROOT_CENTREON_FOLDER'] . '/api/latest/login';
 
 try {
     $ch = curl_init($loginUrl);
@@ -356,11 +356,12 @@ if (isset($result['security']['token'])) {
 /**
  * POST Request to server registration endpoint
  */
-$registerUrl = $protocol . '://' . $host . '/' . $configOptions['ROOT_CENTREON_FOLDER'];
+$registerUrl = $protocol . '://' . $host;
 if (!empty($port)) {
     $registerUrl .= ':' . $port;
 }
-$registerUrl .= "/api/latest/platform/topology";
+$registerUrl .= '/' . $configOptions['ROOT_CENTREON_FOLDER'] . '/api/latest/platform/topology';
+
 foreach ($registerPayloads as $postData) {
     $registerPayload = json_encode($postData);
     try {
