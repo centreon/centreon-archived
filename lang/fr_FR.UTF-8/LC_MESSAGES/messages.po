@@ -15605,7 +15605,7 @@ msgid "Same address and parent_address for platform : '%s'@'%s'."
 msgstr "Les adresses de la plateforme : '%s'@'%s' et de son parent sont les mêmes"
 
 #: api/topology/register
-msgid "Central platform's API port are not consistent. Please check the 'Remote Access' form."
+msgid "Central platform's API port is not consistent. Please check the 'Remote Access' form."
 msgstr "Le port de l'API vers le Central n'est pas cohérent. Veuiller vérifier le formulaire 'Accès du Remote'."
 
 #: api/topology/register
