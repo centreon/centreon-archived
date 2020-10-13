@@ -146,6 +146,14 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->goodJsonPlatformTopology);
 
+        // mock the attribute to call the get method on it
+        $this->request->attributes = new class () {
+            public function get(): string
+            {
+                return '2';
+            }
+        };
+
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
@@ -170,6 +178,14 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->goodJsonPlatformTopology);
 
+        // mock the attribute to call the get method on it
+        $this->request->attributes = new class () {
+            public function get(): string
+            {
+                return '2';
+            }
+        };
+
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyException('bad request')));
@@ -178,11 +194,6 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController->setContainer($this->container);
 
         $view = $platformTopologyController->addPlatformToTopology($this->request);
-
-        var_dump($view);
-        echo"\n";
-        var_dump(View::create(['message' => 'bad request'], Response::HTTP_BAD_REQUEST));
-
 
         $this->assertEquals(
             $view,
@@ -199,6 +210,14 @@ class PlatformTopologyControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->goodJsonPlatformTopology);
+
+        // mock the attribute to call the get method on it
+        $this->request->attributes = new class () {
+            public function get(): string
+            {
+                return '2';
+            }
+        };
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
