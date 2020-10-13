@@ -15798,6 +15798,9 @@ msgstr "URI de l'API du central"
 msgid "Allow self signed certificate."
 msgstr "Autoriser le certificat auto-signé."
 
+msgid "Must be a number between 1 and 65335 included."
+msgstr "Doit être un nombre compris entre 1 et 65335 inclus"
+
 #: www/include/Adrministration/parameters/remote/formRemote.php
 msgid "Remote access"
 msgstr "Accès du Remote"
