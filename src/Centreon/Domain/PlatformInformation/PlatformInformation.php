@@ -279,7 +279,7 @@ class PlatformInformation
     {
         if (null === $port || 1 > $port || $port > 65535) {
             throw new \InvalidArgumentException(
-                _("Central platform's API port are not consistent. Please check the 'Remote Access' form.")
+                _("Central platform's API port is not consistent. Please check the 'Remote Access' form.")
             );
         }
         return $port;
