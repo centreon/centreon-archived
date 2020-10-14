@@ -31,7 +31,6 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterReposito
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\Repository\RepositoryException;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
@@ -68,6 +67,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @var MonitoringServerServiceInterface
      */
     private $monitoringServerService;
+
     /**
      * @var PlatformTopologyRegisterRepositoryInterface
      */
@@ -77,7 +77,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * PlatformTopologyService constructor.
      *
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
-     * @param HttpClientInterface $httpClient
      * @param PlatformInformationServiceInterface $platformInformationService
      * @param ProxyServiceInterface $proxyService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
