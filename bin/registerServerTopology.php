@@ -404,8 +404,8 @@ foreach ($registerPayloads as $postData) {
      * Display response of API
      */
     if ($responseCode === 201) {
-        $responseMessage = "The '" . $postData['type'] . "' Platform: '" . $postData['name'] . "@" .
-            $postData['address'] . "' linked to '" . $postData['parent_address'] . "' has been added";
+        $responseMessage = "The CURRENT NODE '" . $postData['type'] . "': '" . $postData['name'] . "@" .
+            $postData['address'] . "' linked to TARGET NODE: '" . $postData['parent_address'] . "' has been added";
         echo formatResponseMessage($responseCode, $responseMessage, 'success');
     } elseif (isset($result['message'])) {
         exit(formatResponseMessage($responseCode, $result['message'], 'error'));
