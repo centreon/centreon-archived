@@ -33,6 +33,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
+use Centreon\Domain\Broker\BrokerException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
@@ -144,29 +145,41 @@ class PlatformTopologyController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        // Get the entire topology of the platform as an array of PlatformTopology instances
-        $platformCompleteTopology = $this->platformTopologyService->getPlatformCompleteTopology();
-        $edges =  [];
-        $topologiesHelios = [];
+        try {
+            // Get the entire topology of the platform as an array of PlatformTopology instances
+            $platformCompleteTopology = $this->platformTopologyService->getPlatformCompleteTopology();
+            $edges =  [];
+            $topologiesHelios = [];
 
-        //Format the PlatformTopology into a Json Graph Format, usable by Helios
-        foreach ($platformCompleteTopology as $topology) {
-            $topologyHelios = new PlatformTopologyHeliosFormat($topology);
-            $topologiesHelios[] = $topologyHelios;
-            if (!empty($topologyHelios->getRelation())) {
-                $edges[] = $topologyHelios->getRelation();
+            //Format the PlatformTopology into a Json Graph Format, usable by Helios
+            foreach ($platformCompleteTopology as $topology) {
+                $topologyHelios = new PlatformTopologyHeliosFormat($topology);
+                $topologiesHelios[] = $topologyHelios;
+                if (!empty($topologyHelios->getRelation())) {
+                    $edges[] = $topologyHelios->getRelation();
+                }
             }
+            $context = (new Context())->setGroups(self::SERIALIZER_GROUP_HELIOS);
+
+            return $this->view([
+                'graph' => [
+                    'label' => 'centreon-topology',
+                    'metadata' => [
+                        'version' => '1.0.0'
+                    ]
+                ],
+                'nodes' => $topologiesHelios,
+                'edges' => $edges
+            ], Response::HTTP_OK)->setContext($context);
+        } catch (EntityNotFoundException $e) {
+            return $this->view(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (PlatformTopologyException $e) {
+
+        } catch (BrokerException $e) {
+
+        } catch (\Throwable $e) {
+            return $this->view(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-        $context = (new Context())->setGroups(self::SERIALIZER_GROUP_HELIOS);
-        return $this->view([
-            'graph' => [
-                'label' => 'centreon-topology',
-                'metadata' => [
-                    'version' => '1.0.0'
-                ]
-            ],
-            'nodes' => $topologiesHelios,
-            'edges' => $edges
-        ], Response::HTTP_OK)->setContext($context);
+
     }
 }

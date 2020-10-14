@@ -690,14 +690,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function getPlatformCompleteTopology(): array
     {
+        // find all entries of the platform topology
         $completePlatformTopology = $this->platformTopologyRepository->getPlatformCompleteTopology();
         if ($completePlatformTopology === null) {
             throw new EntityNotFoundException('Platform Topology not found');
         }
+
         foreach ($completePlatformTopology as $topology) {
-            /**
-             * Check if the parent are correctly set
-             */
+            // Check if the parent are correctly set
             if ($topology->getType() !== PlatformTopology::TYPE_CENTRAL) {
                 if ($topology->getParentId() === null) {
                     throw new PlatformTopologyException(
@@ -729,7 +729,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            $broker = $this->brokerService->findConfigurationByMonitoringServerAndConfigKey($topology->getServerId(), 'one_peer_retention_mode');
+            $broker = $this->brokerService->findConfigurationByMonitoringServerAndConfigKey(
+                $topology->getServerId(),
+                'one_peer_retention_mode'
+            );
 
             if ($broker->getIsPeerRetentionMode() === true) {
                 $topology->setRelation(PlatformTopology::PEER_RETENTION_RELATION);
