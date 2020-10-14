@@ -355,7 +355,7 @@ if (isset($result['security']['token'])) {
     echo formatResponseMessage($result['message'], 'error');
     exit(1);
 } else {
-    echo formatResponseMessage('Can\'t connect to the API: ' . $loginUrl, 'error');
+    echo formatResponseMessage('Can\'t connect to the API using: ' . $loginUrl, 'error');
     exit(1);
 }
 
@@ -419,7 +419,7 @@ foreach ($registerPayloads as $postData) {
         echo formatResponseMessage($result['message'], 'error');
         exit(1);
     } else {
-        echo formatResponseMessage('An error occurred while contacting the API:' . $registerUrl, 'error');
+        echo formatResponseMessage('An error occurred while contacting the API using:' . $registerUrl, 'error');
         exit(1);
     }
 }
