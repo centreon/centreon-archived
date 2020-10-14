@@ -226,17 +226,15 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
  * @param string $type
  * @return string
  */
-function formatResponseMessage(int $code, string $message, string $type = 'success'): string
+function formatResponseMessage(string $message, string $type = 'success'): string
 {
     switch ($type) {
         case 'success':
-            $responseMessage = 'code: ' . $code . PHP_EOL .
-                'message: ' . $message . PHP_EOL;
+            $responseMessage = 'message: ' . $message . PHP_EOL;
             break;
         case 'error':
         default:
-            $responseMessage = 'error code: ' . $code . PHP_EOL .
-                'error message: ' . $message . PHP_EOL;
+            $responseMessage = 'error message: ' . $message . PHP_EOL;
             break;
     }
 

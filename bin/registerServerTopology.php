@@ -76,7 +76,8 @@ EOD;
  * Display --help message
  */
 if (isset($opt['help'])) {
-    exit($helpMessage);
+    echo $helpMessage;
+    exit(1);
 }
 
 /**
@@ -88,7 +89,8 @@ if (isset($opt['template'])) {
         $configTemplate = parseTemplateFile($opt['template']);
         $configOptions = setConfigOptionsFromTemplate($configTemplate, $helpMessage);
     } catch (\InvalidArgumentException $e) {
-        exit($e->getMessage());
+        echo $e->getMessage();
+        exit(1);
     }
 } else {
     try {
@@ -219,7 +221,7 @@ echo $summary;
 $proceed = askQuestion('Do you want to register this server with those information ? (y/n)');
 $proceed = strtolower($proceed);
 if ($proceed !== "y") {
-    exit();
+    exit(1);
 }
 
 /**
@@ -246,9 +248,10 @@ if (isRemote($serverType)) {
         $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
     }
 
-    //check if e remote is register on server
+    //check if the remote is register on server
     if (hasRemoteChild()) {
-        exit(formatResponseMessage(401, 'Central cannot be converted to Remote', 'Unauthorized'));
+        echo formatResponseMessage('Central cannot be converted to Remote', 'error');
+        exit(1);
     }
 
     //prepare db credential
@@ -260,7 +263,8 @@ if (isRemote($serverType)) {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
         $loginCredentialsDb['apiCredentials'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
     } catch (\InvalidArgumentException $e) {
-        exit($e->getMessage());
+        echo $e->getMessage();
+        exit(1);
     }
     $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
     $loginCredentialsDb['apiPeerValidation'] = $configOptions['INSECURE'] === true ? 'no' : 'yes';
@@ -334,7 +338,8 @@ try {
         throw new Exception(curl_error($ch) . PHP_EOL);
     }
 } catch (\Exception $e) {
-    exit($e->getMessage());
+    echo $e->getMessage();
+    exit(1);
 } finally {
     curl_close($ch);
 }
@@ -347,9 +352,11 @@ $result = json_decode($result, true);
 if (isset($result['security']['token'])) {
     $APIToken = $result['security']['token'];
 } elseif (isset($result['code'])) {
-    exit(formatResponseMessage($result['code'], $result['message'], 'error'));
+    echo formatResponseMessage($result['message'], 'error');
+    exit(1);
 } else {
-    exit(formatResponseMessage(400, 'Can\'t connect to the API: ' . $loginUrl, 'error'));
+    echo formatResponseMessage('Can\'t connect to the API: ' . $loginUrl, 'error');
+    exit(1);
 }
 
 /**
@@ -393,7 +400,8 @@ foreach ($registerPayloads as $postData) {
             throw new Exception(curl_error($ch) . PHP_EOL);
         }
     } catch (Exception $e) {
-        exit($e->getMessage());
+        echo $e->getMessage();
+        exit(1);
     } finally {
         curl_close($ch);
     }
@@ -406,11 +414,13 @@ foreach ($registerPayloads as $postData) {
     if ($responseCode === 201) {
         $responseMessage = "The CURRENT NODE '" . $postData['type'] . "': '" . $postData['name'] . "@" .
             $postData['address'] . "' linked to TARGET NODE: '" . $postData['parent_address'] . "' has been added";
-        echo formatResponseMessage($responseCode, $responseMessage, 'success');
+        echo formatResponseMessage($responseMessage, 'success');
     } elseif (isset($result['message'])) {
-        exit(formatResponseMessage($responseCode, $result['message'], 'error'));
+        echo formatResponseMessage($result['message'], 'error');
+        exit(1);
     } else {
-        exit(formatResponseMessage(500, 'An error occurred while contacting the API:' . $registerUrl, 'error'));
+        echo formatResponseMessage('An error occurred while contacting the API:' . $registerUrl, 'error');
+        exit(1);
     }
 }
-exit();
+exit(0);
