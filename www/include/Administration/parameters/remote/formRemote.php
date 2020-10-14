@@ -145,7 +145,7 @@ $form->addElement(
 );
 $form->addRule('apiPath', _("Required Field"), 'required');
 $form->registerRule('validateApiPort', 'callback', 'validateApiPort');
-$form->addElement('text', 'apiPort', _("Port"), ["size" => "8"]);
+$form->addElement('text', 'apiPort', _("Port"), ["size" => "8", 'id' => 'apiPort']);
 $form->addRule('apiPort', _('Must be a number between 1 and 65335 included.'), 'validateApiPort');
 $form->addRule('apiPort', _('Required Field'), 'required');
 
