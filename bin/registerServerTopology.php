@@ -156,10 +156,10 @@ if (isset($opt['template'])) {
  * Parsing url part from params -h
  */
 $targetURL = parse_url($configOptions['HOST_ADDRESS']);
-$protocol = $targetURL['scheme'] ?? 'http';
 $host = $targetURL['host'] ?? $targetURL['path'];
-$port = $targetURL['port'] ?? 80;
-
+$protocol = $targetURL['scheme'] ?? 'http';
+$defaultPort = ('https' === $protocol) ? 443 : 80;
+$port = $targetURL['port'] ?? $defaultPort;
 
 /**
  * prepare Login payload
