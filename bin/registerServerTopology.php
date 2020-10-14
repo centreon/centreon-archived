@@ -42,28 +42,28 @@ $opt = getopt('u:t:h:n:', ["help::", "root:", "fqdn:", "insecure::", "template:"
 $helpMessage = <<<'EOD'
 
 Global Options:
-  -u <mandatory>              username of your centreon-web account
-  -t <mandatory>              the server type you want to register:
+  -u <mandatory>              username of your centreon-web account on the TARGET NODE.
+  -t <mandatory>              the server type you want to register (CURRENT NODE):
             - Poller
             - Remote
             - MAP
             - MBI
-  -h <mandatory>              URL of the Central / Remote Server target platform
-  -n <mandatory>              name of your registered server
+  -h <mandatory>              URL of the TARGET NODE
+  -n <mandatory>              name of your CURRENT NODE
 
   --help <optional>           get information about the parameters available
-  --root <optional>           your Centreon root path (by default "centreon")
-  --fqdn <optional>           provide your server FQDN instead of IP. The FQDN must be resolvable on the Central/Remote.
+  --root <optional>           your Centreon root path on TARGET NODE (by default "centreon")
+  --fqdn <optional>           provide your FQDN or IP of the CURRENT NODE. The FQDN must be resolvable on the PARENT NODE
   --insecure <optional>       allow self-signed certificate
-  --template <optional>       give the path of a register topology configuration to automate the script
+  --template <optional>       provide the path of a register topology configuration file to automate the script
              - API_USERNAME             <mandatory> string
              - API_PASSWORD             <mandatory> string
              - SERVER_TYPE              <mandatory> string
-             - HOST_ADDRESS             <mandatory> string
-             - SERVER_NAME              <mandatory> string
+             - HOST_ADDRESS             <mandatory> string (PARENT NODE ADDRESS)
+             - SERVER_NAME              <mandatory> string (CURRENT NODE NAME)
              - PROXY_USAGE              <mandatory> boolean
-             - ROOT_CENTREON_FOLDER     <optional> string
-             - FQDN                     <optional> string
+             - ROOT_CENTREON_FOLDER     <optional> string (CENTRAL ROOT CENTREON FOLDER)
+             - FQDN                     <optional> string (CURRENT NODE IP OR FQDN)
              - INSECURE                 <optional> boolean
              - PROXY_HOST               <optional> string
              - PROXY_PORT               <optional> integer
@@ -134,8 +134,9 @@ if (isset($opt['template'])) {
 
     if (isset($opt['insecure'])) {
         $configOptions['INSECURE'] = true;
+    } else {
+        $configOptions['INSECURE'] = false;
     }
-
     /**
      * Proxy information
      */
@@ -208,7 +209,6 @@ Pending Registration Server:
 name: $serverHostName
 type: $serverType
 address: $address
-parent server address: $host
 
 
 EOD;
@@ -263,7 +263,7 @@ if (isRemote($serverType)) {
         exit($e->getMessage());
     }
     $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
-    $loginCredentialsDb['apiPeerValidation'] = isset($configOptions['INSECURE']) ? 'no' : 'yes';
+    $loginCredentialsDb['apiPeerValidation'] = $configOptions['INSECURE'] === true ? 'no' : 'yes';
     $loginCredentialsDb['apiScheme'] = $protocol;
     $loginCredentialsDb['apiPort'] = $port;
 
@@ -312,7 +312,7 @@ try {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $loginCredentials);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    if (isset($configOptions["INSECURE"])) {
+    if ($configOptions["INSECURE"] === true) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     }
 
@@ -349,7 +349,7 @@ if (isset($result['security']['token'])) {
 } elseif (isset($result['code'])) {
     exit(formatResponseMessage($result['code'], $result['message'], 'error'));
 } else {
-    exit(formatResponseMessage(400, 'Can\'t connect to the api', 'error'));
+    exit(formatResponseMessage(400, 'Can\'t connect to the API: ' . $loginUrl, 'error'));
 }
 
 /**
@@ -370,7 +370,7 @@ foreach ($registerPayloads as $postData) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $registerPayload);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        if (isset($configOptions["INSECURE"])) {
+        if ($configOptions["INSECURE"] === true) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
@@ -410,7 +410,7 @@ foreach ($registerPayloads as $postData) {
     } elseif (isset($result['message'])) {
         exit(formatResponseMessage($responseCode, $result['message'], 'error'));
     } else {
-        exit(formatResponseMessage(500, 'An error occurred while contacting the API', 'error'));
+        exit(formatResponseMessage(500, 'An error occurred while contacting the API:' . $registerUrl, 'error'));
     }
 }
 exit();

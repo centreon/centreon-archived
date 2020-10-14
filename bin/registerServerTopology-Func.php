@@ -339,9 +339,8 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
         }
     }
 
-    if (isset($options['INSECURE']) && $options['INSECURE'] === true) {
-        $configOptions['INSECURE'] = true;
-    }
+        $configOptions['INSECURE'] = $options['INSECURE'] ?? false;
+
 
     if ($configOptions['PROXY_USAGE'] === true) {
         $configOptions["PROXY_HOST"] = $options["PROXY_HOST"] ?? '';
