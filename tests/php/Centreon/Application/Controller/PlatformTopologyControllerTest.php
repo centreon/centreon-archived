@@ -22,11 +22,6 @@
 namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Application\Controller\PlatformTopologyController;
-use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
@@ -146,14 +141,6 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->goodJsonPlatformTopology);
 
-        // mock the attribute to call the get method on it
-        $this->request->attributes = new class () {
-            public function get(): string
-            {
-                return '2';
-            }
-        };
-
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
             ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
@@ -177,14 +164,6 @@ class PlatformTopologyControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->goodJsonPlatformTopology);
-
-        // mock the attribute to call the get method on it
-        $this->request->attributes = new class () {
-            public function get(): string
-            {
-                return '2';
-            }
-        };
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
@@ -210,14 +189,6 @@ class PlatformTopologyControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->goodJsonPlatformTopology);
-
-        // mock the attribute to call the get method on it
-        $this->request->attributes = new class () {
-            public function get(): string
-            {
-                return '2';
-            }
-        };
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
