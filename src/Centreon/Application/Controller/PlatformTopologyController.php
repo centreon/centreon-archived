@@ -116,8 +116,7 @@ class PlatformTopologyController extends AbstractController
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type'])
                 ->setHostname($platformToAdd['hostname'])
-                ->setParentAddress($platformToAdd['parent_address'])
-                ->setApiVersion((string) $request->attributes->get('version_number'));
+                ->setParentAddress($platformToAdd['parent_address']);
 
             $this->platformTopologyService->addPlatformToTopology($platformTopology);
 

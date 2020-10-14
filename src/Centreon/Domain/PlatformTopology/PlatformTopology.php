@@ -91,11 +91,6 @@ class PlatformTopology
     private $isLinkedToAnotherServer = false;
 
     /**
-     * @var string|null Current API version used
-     */
-    private $apiVersion;
-
-    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -307,24 +302,6 @@ class PlatformTopology
     public function setLinkedToAnotherServer(bool $isLinked): self
     {
         $this->isLinkedToAnotherServer = $isLinked;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getApiVersion(): ?string
-    {
-        return ('v' . $this->apiVersion);
-    }
-
-    /**
-     * @param string|null $version
-     * @return $this
-     */
-    public function setApiVersion(?string $version): self
-    {
-        $this->apiVersion = $version;
         return $this;
     }
 }
