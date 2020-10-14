@@ -410,7 +410,7 @@ foreach ($registerPayloads as $postData) {
     } elseif (isset($result['message'])) {
         exit(formatResponseMessage($responseCode, $result['message'], 'error'));
     } else {
-        exit(formatResponseMessage(500, 'An error occurred while contacting the API:' . $registerUrl, 'error'));
+        exit(formatResponseMessage(500, 'An error occurred while contacting the API using : ' . $registerUrl, 'error'));
     }
 }
 exit();
