@@ -48,7 +48,6 @@ Global Options:
             - Remote
             - MAP
             - MBI
-  -h <mandatory>              URL of the TARGET NODE
   -n <mandatory>              name of your CURRENT NODE
 
   --help <optional>           get information about the parameters available
