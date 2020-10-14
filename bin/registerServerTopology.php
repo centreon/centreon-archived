@@ -349,7 +349,7 @@ if (isset($result['security']['token'])) {
 } elseif (isset($result['code'])) {
     exit(formatResponseMessage($result['code'], $result['message'], 'error'));
 } else {
-    exit(formatResponseMessage(400, 'Can\'t connect to the API: ' . $loginUrl, 'error'));
+    exit(formatResponseMessage(400, 'Can\'t connect to the API using : ' . $loginUrl, 'error'));
 }
 
 /**
