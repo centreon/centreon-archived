@@ -77,7 +77,7 @@ EOD;
  */
 if (isset($opt['help'])) {
     echo $helpMessage;
-    exit(1);
+    exit(0);
 }
 
 /**
@@ -221,7 +221,7 @@ echo $summary;
 $proceed = askQuestion('Do you want to register this server with those information ? (y/n)');
 $proceed = strtolower($proceed);
 if ($proceed !== "y") {
-    exit(1);
+    exit(0);
 }
 
 /**
