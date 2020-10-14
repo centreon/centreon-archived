@@ -233,7 +233,11 @@ class PlatformInformation
      */
     public function getApiCredentials(): ?string
     {
-        return $this->apiCredentials;
+        if (null === $this->apiCredentials) {
+            return null;
+        }
+
+        return $this->decryptApiCredentials($this->apiCredentials);
     }
 
     /**
@@ -242,9 +246,6 @@ class PlatformInformation
      */
     public function setApiCredentials(?string $encryptedKey): self
     {
-        if (null !== $encryptedKey) {
-            $encryptedKey = $this->decryptApiCredentials($encryptedKey);
-        }
         $this->apiCredentials = $encryptedKey;
         return $this;
     }
@@ -254,7 +255,10 @@ class PlatformInformation
      */
     public function getApiScheme(): ?string
     {
-        return $this->apiScheme;
+        if (null === $this->apiScheme) {
+            return null;
+        }
+        return ('https' === trim($this->apiScheme, '/') ? 'https' : 'http');
     }
 
     /**
@@ -263,9 +267,6 @@ class PlatformInformation
      */
     public function setApiScheme(?string $schema): self
     {
-        if (null !== $schema) {
-            $schema = ('https' === trim($schema, '/') ? 'https' : 'http');
-        }
         $this->apiScheme = $schema;
         return $this;
     }
@@ -307,6 +308,12 @@ class PlatformInformation
      */
     public function getApiPath(): ?string
     {
+        $this->apiPath = trim(filter_var($this->apiPath, FILTER_SANITIZE_STRING, ['options' => ['default' => '']]), '/');
+        if (empty($this->apiPath)) {
+            throw new \InvalidArgumentException(
+                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
+            );
+        }
         return $this->apiPath;
     }
 
@@ -316,12 +323,6 @@ class PlatformInformation
      */
     public function setApiPath(?string $path): self
     {
-        $path = trim(filter_var($path, FILTER_SANITIZE_STRING, ['options' => ['default' => '']]), '/');
-        if (empty($path)) {
-            throw new \InvalidArgumentException(
-                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
-            );
-        }
         $this->apiPath = $path;
         return $this;
     }
