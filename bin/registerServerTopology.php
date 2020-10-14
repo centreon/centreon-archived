@@ -43,12 +43,12 @@ $helpMessage = <<<'EOD'
 
 Global Options:
   -u <mandatory>              username of your centreon-web account on the TARGET NODE.
+  -h <mandatory>              URL of the TARGET NODE
   -t <mandatory>              the server type you want to register (CURRENT NODE):
             - Poller
             - Remote
             - MAP
             - MBI
-  -h <mandatory>              URL of the TARGET NODE
   -n <mandatory>              name of your CURRENT NODE
 
   --help <optional>           get information about the parameters available
