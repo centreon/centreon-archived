@@ -295,13 +295,13 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
 {
     $configOptions = [];
     if (
-    !isset(
-        $options['API_USERNAME'],
-        $options['API_PASSWORD'],
-        $options['SERVER_TYPE'],
-        $options['HOST_ADDRESS'],
-        $options['SERVER_NAME']
-    )
+        !isset(
+            $options['API_USERNAME'],
+            $options['API_PASSWORD'],
+            $options['SERVER_TYPE'],
+            $options['HOST_ADDRESS'],
+            $options['SERVER_NAME']
+        )
     ) {
         throw new \InvalidArgumentException(
             PHP_EOL .
