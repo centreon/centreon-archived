@@ -142,10 +142,15 @@ class PartEngine
         date_default_timezone_set($table->getTimezone());
         $how_much_forward = 0;
         $ltime = localtime();
-        $current_time = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3], $ltime[5] + 1900);
+        $currentTime = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3], $ltime[5] + 1900);
+
+        # Avoid to add since 1970 if we have only pmax partition
+        if ($lastTime == 0) {
+            $lastTime = $currentTime;
+        }
 
         # Gap when you have a cron not updated
-        while ($lastTime < $current_time) {
+        while ($lastTime < $currentTime) {
             $ntime = localtime($lastTime);
             $lastTime = $this->updateAddDailyPartitions(
                 $db,
@@ -156,9 +161,9 @@ class PartEngine
                 $hasMaxValuePartition
             );
         }
-        while ($current_time < $lastTime) {
+        while ($currentTime < $lastTime) {
             $how_much_forward++;
-            $current_time = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3] + $how_much_forward, $ltime[5] + 1900);
+            $currentTime = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3] + $how_much_forward, $ltime[5] + 1900);
         }
         $num_days_forward = $table->getRetentionForward();
         while ($how_much_forward < $num_days_forward) {
