@@ -132,52 +132,6 @@ class TaskService
     }
 
     /**
-     * Get remote existing task status by parent id
-     *
-     * @param int $parentId the parent task id on remote server
-     * @param string $serverIp the ip address of the remote server
-     * @param string $centreonFolder the folder of centreon on remote server
-     * @return null
-     */
-    public function getRemoteStatusByParent(int $parentId, string $serverIp, string $centreonFolder)
-    {
-        $query = "SELECT params FROM task WHERE id = '" . $parentId  . "'";
-
-        try {
-            $remoteDataResult = $this->getDbManager()->getAdapter('configuration_db')->query($query)->results();
-            $result = unserialize($remoteDataResult[0]->params);
-
-            $httpMethod = $result['params']['http_method'];
-            $httpPort = $result['params']['http_port'];
-            $noCheckCertificate = $result['params']['no_check_certificate'];
-            $noProxy = $result['params']['no_proxy'];
-
-            $url = "";
-            if (parse_url($serverIp, PHP_URL_SCHEME)) {
-                $url = $serverIp;
-            } else {
-                $url = ($httpMethod ?? 'http') . '://' . $serverIp . ($httpPort ? ':' . $httpPort : '');
-            }
-            $url .= '/' . $centreonFolder
-                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
-
-            $result = $this->centreonRestHttp->call(
-                $url,
-                'POST',
-                ['parent_id' => $parentId],
-                null,
-                false,
-                $noCheckCertificate,
-                $noProxy
-            );
-
-            return isset($result['status']) ? $result['status'] : null;
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-    /**
      * Get existing task status by parent id
      *
      * @param int $parentId the parent task id on remote server

@@ -17,7 +17,6 @@ import BaseWizard from '../../components/forms/baseWizard';
 class RemoteServerStepThreeRoute extends Component {
   state = {
     generateStatus: null,
-    processingStatus: null,
     error: null,
   };
 
@@ -36,23 +35,11 @@ class RemoteServerStepThreeRoute extends Component {
 
   remainingGenerationTimeout = 30;
 
-  processingTimeout = null;
-
-  remainingProcessingTimeout = 30;
-
   /**
    * axios call to get task status on central server
    */
   getExportTask = () =>
     axios('internal.php?object=centreon_task_service&action=getTaskStatus');
-
-  /**
-   * axios call to get task status on remote server
-   */
-  getImportTask = () =>
-    axios(
-      'internal.php?object=centreon_task_service&action=getRemoteTaskStatusByParent',
-    );
 
   componentDidMount = () => {
     this.setGenerationTimeout();
@@ -75,25 +62,10 @@ class RemoteServerStepThreeRoute extends Component {
   };
 
   /**
-   * check remote server processing step each second (30 tries)
-   */
-  setProcessingTimeout = () => {
-    if (this.remainingProcessingTimeout > 0) {
-      this.remainingProcessingTimeout--;
-      this.processingTimeout = setTimeout(this.refreshProcession, 1000);
-    } else {
-      // display timeout error message
-      this.setState({
-        processingStatus: false,
-        error: 'Remote server processing timeout',
-      });
-    }
-  };
-
-  /**
    * check files generation on central server
    */
   refreshGeneration = () => {
+    const { history } = this.props;
     const { taskId } = this.props.pollerData;
 
     this.getExportTask()
@@ -105,9 +77,11 @@ class RemoteServerStepThreeRoute extends Component {
             error: JSON.stringify(response.data),
           });
         } else if (response.data.status === 'completed') {
-          // when export files is done, check remote server processing
+          // when export files is done, redirect to poller list page with 2 seconds delay
           this.setState({ generateStatus: true }, () => {
-            this.setProcessingTimeout();
+            setTimeout(() => {
+              history.push(routeMap.pollerList);
+            }, 2000);
           });
         } else {
           // retry if task is not yet completed
@@ -122,56 +96,16 @@ class RemoteServerStepThreeRoute extends Component {
       });
   };
 
-  /**
-   * check endpoint on remote server to get import status
-   */
-  refreshProcession = () => {
-    const { history } = this.props;
-    const { server_ip, centreon_folder, taskId } = this.props.pollerData;
-
-    this.getImportTask()
-      .post('', {
-        server_ip,
-        centreon_folder,
-        parent_id: taskId,
-      })
-      .then((response) => {
-        if (response.data.success !== true) {
-          this.setState({
-            generateStatus: false,
-            error: JSON.stringify(response.data),
-          });
-        } else if (response.data.status === 'completed') {
-          // when remote server processing is done, redirect to poller list page with 2 seconds delay
-          this.setState({ processingStatus: true }, () => {
-            setTimeout(() => {
-              history.push(routeMap.pollerList);
-            }, 2000);
-          });
-        } else {
-          // retry if task is not yet completed
-          this.setProcessingTimeout();
-        }
-      })
-      .catch((err) => {
-        this.setState({
-          processingStatus: false,
-          error: JSON.stringify(err.response.data),
-        });
-      });
-  };
-
   render() {
     const { links } = this;
     const { pollerData, t } = this.props;
-    const { generateStatus, processingStatus, error } = this.state;
+    const { generateStatus, error } = this.state;
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
-          statusProcessing={processingStatus}
           formTitle={`${t('Finalizing Setup')}:`}
           error={error}
         />

@@ -14846,9 +14846,6 @@ msgstr "Création d'une tâche d'exportation"
 msgid "Generating Export Files"
 msgstr "Génération de fichiers d'exportation"
 
-msgid "Processing Remote Import/Configuration"
-msgstr "Traitement de l'importation/configuration à distance"
-
 msgid "The field is required"
 msgstr "Ce champ est requis"
 
