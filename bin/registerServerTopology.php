@@ -192,7 +192,7 @@ $foundIps = array_combine(range(1, count($foundIps)), array_values($foundIps));
 $goodIp = false;
 
 $ipSelection = 'Found IP on CURRENT NODE:' . PHP_EOL;
-foreach($foundIps as $key => $ip) {
+foreach ($foundIps as $key => $ip) {
         $ipSelection .= "   [$key]: $ip" . PHP_EOL;
 }
 
