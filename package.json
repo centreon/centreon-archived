@@ -14,7 +14,7 @@
     "start:dev": "webpack-dev-server --config ./webpack.config.dev.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.5",
+    "@babel/core": "^7.12.0",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-arrow-functions": "^7.10.4",
@@ -24,7 +24,7 @@
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@centreon/frontend-core": "centreon/frontend-core",
+    "@centreon/frontend-core": "centreon/frontend-core#migrate-to-webpack-5",
     "@svgr/webpack": "^5.4.0",
     "@testing-library/jest-dom": "^5.11.2",
     "@testing-library/react": "^10.4.7",
@@ -70,7 +70,7 @@
     "ts-loader": "^8.0.1",
     "typescript": "^3.9.7",
     "url-loader": "^4.1.0",
-    "webpack": "^4.44.1",
+    "webpack": "^5.1.0",
     "webpack-bundle-analyzer": "^3.8.0",
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^5.0.9"
