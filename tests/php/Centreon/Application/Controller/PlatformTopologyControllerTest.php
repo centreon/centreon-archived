@@ -22,6 +22,7 @@
 namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Application\Controller\PlatformTopologyController;
+use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
@@ -53,6 +54,10 @@ class PlatformTopologyControllerTest extends TestCase
     protected $platformTopology;
 
     /**
+     * @var PlatformTopologyHeliosFormat
+     */
+    protected $goodPlatformTopologyHeliosFormat;
+    /**
      * @var PlatformTopologyService&MockObject $platformTopologyService
      */
     protected $platformTopologyService;
@@ -75,11 +80,22 @@ class PlatformTopologyControllerTest extends TestCase
 
         $this->platformTopology = (new PlatformTopology())
             ->setName($goodJsonPlatformTopology['name'])
+            ->setRelation('normal')
             ->setHostname($goodJsonPlatformTopology['hostname'])
             ->setAddress($goodJsonPlatformTopology['address'])
             ->setType($goodJsonPlatformTopology['type'])
             ->setParentAddress($goodJsonPlatformTopology['parent_address']);
 
+        $platformTopology2 = (new PlatformTopology())
+            ->setParentId(1)
+            ->setName($goodJsonPlatformTopology['name'])
+            ->setRelation('normal')
+            ->setHostname($goodJsonPlatformTopology['hostname'])
+            ->setAddress($goodJsonPlatformTopology['address'])
+            ->setType($goodJsonPlatformTopology['type'])
+            ->setParentAddress($goodJsonPlatformTopology['parent_address']);
+
+        $this->goodPlatformTopologyHeliosFormat = new PlatformTopologyHeliosFormat($platformTopology2);
         $this->badJsonPlatformTopology = json_encode([
             'unknown_property' => 'unknown',
         ]);
@@ -206,5 +222,33 @@ class PlatformTopologyControllerTest extends TestCase
             $view,
             View::create(null, Response::HTTP_CREATED)
         );
+
+    }
+
+    public function testFormatHeliosSuccess(): void
+    {
+        $platformTopology = (new PlatformTopology())
+            ->setParentId(1)
+            ->setName('poller1')
+            ->setRelation('normal')
+            ->setHostname('localhost.localdomain')
+            ->setAddress('1.1.1.2')
+            ->setType('poller')
+            ->setParentAddress('1.1.1.1');
+
+        //$this->assertInstanceOf(PlatformTopology::class,$platformTopology);
+        $platformTopologyHeliosFormat = new PlatformTopologyHeliosFormat($platformTopology);
+
+        //$this->assertInstanceOf(PlatformTopologyHeliosFormat::class, $platformTopologyHeliosFormat);
+        //$this->assertEquals($this->goodPlatformTopologyHeliosFormat, $platformTopologyHeliosFormat);
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
+        $platformTopologyController->setContainer($this->container);
+
+        $view = $platformTopologyController->getPlatformTopologyHelios();
+        $this->assertEquals(
+            $view,
+            View::create(null, Response::HTTP_CREATED)
+        );
+
     }
 }

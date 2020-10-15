@@ -200,30 +200,4 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         }
         return null;
     }
-
-    // mettre ça dans monitoring server et appeler ce repository
-    public function isOnePeerRetentionMode(int $serverId): ?bool
-    {
-        $statement = $this->db->prepare("
-            SELECT config_value
-            FROM cfg_centreonbroker_info cfgbi
-            INNER JOIN cfg_centreonbroker AS cfgb
-                ON cfgbi.config_id = cfgb.config_id
-            INNER JOIN nagios_server AS ns
-                ON cfgb.ns_nagios_server = ns.id
-                AND ns.id = :serverId
-            WHERE cfgbi.config_group = 'output'
-            AND config_key = 'one_peer_retention_mode'
-        ");
-        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
-        $statement->execute();
-        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            if ($result['config_value'] === "yes") {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return null;
-    }
 }
