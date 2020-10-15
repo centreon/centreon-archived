@@ -223,30 +223,4 @@ class PlatformTopologyControllerTest extends TestCase
             View::create(null, Response::HTTP_CREATED)
         );
     }
-
-    public function testFormatHeliosSuccess(): void
-    {
-        $platformTopology = (new PlatformTopology())
-            ->setParentId(1)
-            ->setName('poller1')
-            ->setRelation('normal')
-            ->setHostname('localhost.localdomain')
-            ->setAddress('1.1.1.2')
-            ->setType('poller')
-            ->setParentAddress('1.1.1.1');
-
-        //$this->assertInstanceOf(PlatformTopology::class,$platformTopology);
-        $platformTopologyHeliosFormat = new PlatformTopologyHeliosFormat($platformTopology);
-
-        //$this->assertInstanceOf(PlatformTopologyHeliosFormat::class, $platformTopologyHeliosFormat);
-        //$this->assertEquals($this->goodPlatformTopologyHeliosFormat, $platformTopologyHeliosFormat);
-        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
-        $platformTopologyController->setContainer($this->container);
-
-        $view = $platformTopologyController->getPlatformTopologyHelios();
-        $this->assertEquals(
-            $view,
-            View::create(null, Response::HTTP_CREATED)
-        );
-    }
 }
