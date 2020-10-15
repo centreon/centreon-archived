@@ -113,22 +113,6 @@ class PlatformTopology
      */
     public function getType(): ?string
     {
-        if (null === $this->type) {
-            return null;
-        }
-        $this->type = strtolower($this->type);
-
-        // Check if the server_type is available
-        if (!in_array($this->type, static::AVAILABLE_TYPES, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    _("The platform type of '%s'@'%s' is not consistent"),
-                    $this->getName(),
-                    $this->getAddress()
-                )
-            );
-        }
-
         return $this->type;
     }
 
@@ -139,6 +123,20 @@ class PlatformTopology
      */
     public function setType(?string $type): self
     {
+        if (null !== $type) {
+            $type = strtolower($type);
+
+            // Check if the server_type is available
+            if (!in_array($type, static::AVAILABLE_TYPES)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        _("The platform type of '%s'@'%s' is not consistent"),
+                        $this->getName(),
+                        $this->getAddress()
+                    )
+                );
+            }
+        }
         $this->type = $type;
         return $this;
     }
@@ -212,7 +210,7 @@ class PlatformTopology
      */
     public function getAddress(): ?string
     {
-        return $this->checkIpAddress($this->address);
+        return $this->address;
     }
 
     /**
@@ -222,7 +220,7 @@ class PlatformTopology
      */
     public function setAddress(?string $address): self
     {
-        $this->address = $address;
+        $this->address = $this->checkIpAddress($address);
         return $this;
     }
 
@@ -231,10 +229,7 @@ class PlatformTopology
      */
     public function getParentAddress(): ?string
     {
-        if (null !== $this->parentAddress && $this->getType() === static::TYPE_CENTRAL) {
-            throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
-        }
-        return $this->checkIpAddress($this->parentAddress);
+        return $this->parentAddress;
     }
 
     /**
@@ -244,7 +239,10 @@ class PlatformTopology
      */
     public function setParentAddress(?string $parentAddress): self
     {
-        $this->parentAddress = $parentAddress;
+        if (null !== $parentAddress && $this->getType() === static::TYPE_CENTRAL) {
+            throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
+        }
+        $this->parentAddress = $this->checkIpAddress($parentAddress);
         return $this;
     }
 
@@ -253,9 +251,6 @@ class PlatformTopology
      */
     public function getParentId(): ?int
     {
-        if (null !== $this->parentId && $this->getType() === static::TYPE_CENTRAL) {
-            throw new \InvalidArgumentException(_("Cannot set parent id on a central server"));
-        }
         return $this->parentId;
     }
 
@@ -266,6 +261,9 @@ class PlatformTopology
      */
     public function setParentId(?int $parentId): self
     {
+        if (null !== $parentId && $this->getType() === static::TYPE_CENTRAL) {
+            throw new \InvalidArgumentException(_("Cannot set parent id to a central server"));
+        }
         $this->parentId = $parentId;
         return $this;
     }
