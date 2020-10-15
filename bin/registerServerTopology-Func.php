@@ -19,7 +19,7 @@
  *
  */
 
- /**
+/**
  * Ask question. The echo of keyboard can be disabled
  *
  * @param string $question
