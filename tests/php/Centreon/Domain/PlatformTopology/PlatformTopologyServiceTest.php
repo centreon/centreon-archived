@@ -21,6 +21,7 @@
 
 namespace Tests\Centreon\Domain\PlatformTopology;
 
+use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
@@ -99,6 +100,11 @@ class PlatformTopologyServiceTest extends TestCase
     protected $monitoringServer;
 
     /**
+     * @var BrokerServiceInterface&MockObject $brokerService
+     */
+    protected $brokerService;
+
+    /**
      * initiate query data
      */
     protected function setUp(): void
@@ -138,6 +144,8 @@ class PlatformTopologyServiceTest extends TestCase
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->engineConfigurationService = $this->createMock(EngineConfigurationServiceInterface::class);
         $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
+        $this->brokerService = $this->createMock(BrokerServiceInterface::class);
+
     }
 
     /**
@@ -172,7 +180,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformInformationService,
             $this->proxyService,
             $this->engineConfigurationService,
-            $this->monitoringServerService
+            $this->monitoringServerService,
+            $this->brokerService
         );
 
         $this->expectException(PlatformTopologyConflictException::class);
@@ -217,7 +226,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformInformationService,
             $this->proxyService,
             $this->engineConfigurationService,
-            $this->monitoringServerService
+            $this->monitoringServerService,
+            $this->brokerService
         );
 
         $this->expectException(EntityNotFoundException::class);
@@ -269,7 +279,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformInformationService,
             $this->proxyService,
             $this->engineConfigurationService,
-            $this->monitoringServerService
+            $this->monitoringServerService,
+            $this->brokerService
         );
 
         $this->assertNull($platformTopologyService->addPlatformToTopology($this->platformTopology));
