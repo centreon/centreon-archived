@@ -145,7 +145,6 @@ class PlatformTopologyServiceTest extends TestCase
         $this->engineConfigurationService = $this->createMock(EngineConfigurationServiceInterface::class);
         $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
         $this->brokerService = $this->createMock(BrokerServiceInterface::class);
-
     }
 
     /**
