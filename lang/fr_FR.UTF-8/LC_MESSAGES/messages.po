@@ -7691,7 +7691,7 @@ msgstr "OK"
 #: centreon-web/www/include/configuration/configObject/command/minPlayCommand.php:131
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneService.php:250
 msgid "WARNING"
-msgstr "WARNING"
+msgstr "ALERTE"
 
 #: centreon-web/www/include/reporting/dashboard/xmlInformations/initXmlFeed.php:85
 #: centreon-web/www/include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php:109
