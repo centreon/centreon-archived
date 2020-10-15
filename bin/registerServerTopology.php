@@ -190,10 +190,10 @@ $foundIps = explode(" ", trim(shell_exec("hostname -I")));
 $foundIps = array_combine(range(1, count($foundIps)), array_values($foundIps));
 
 $goodIp = false;
-while(!$goodIp) {
+while (!$goodIp) {
     $ipSelection = 'Found IP on CURRENT NODE:' . PHP_EOL;
-    foreach($foundIps as $key => $ip) {
-            $ipSelection .= "   [$key]: $ip" . PHP_EOL;
+    foreach ($foundIps as $key => $ip) {
+        $ipSelection .= "   [$key]: $ip" . PHP_EOL;
     }
 
     echo $ipSelection;
