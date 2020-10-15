@@ -14645,9 +14645,6 @@ msgstr "Poubelle"
 #~ msgid "View downtimes of services"
 #~ msgstr "Visualiser les plages de maintenance des services"
 
-#~ msgid "PENDING"
-#~ msgstr "EN ATTENTE"
-
 #~ msgid "Sort by criticality"
 #~ msgstr "Trier par criticité"
 
@@ -15846,3 +15843,6 @@ msgstr "Erreur lors de l'ajout de détails pour le journal des actions %d"
 
 msgid "Error when adding an entry in the action log"
 msgstr "Erreur lors de l'ajout d'une entrée dans le journal des actions"
+
+msgid "PENDING"
+msgstr "EN ATTENTE"
