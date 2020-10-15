@@ -190,16 +190,17 @@ $foundIps = explode(" ", trim(shell_exec("hostname -I")));
 $foundIps = array_combine(range(1, count($foundIps)), array_values($foundIps));
 
 $goodIp = false;
-while(!$goodIp) {
-    $ipSelection = 'Found IP on CURRENT NODE:' . PHP_EOL;
-    foreach($foundIps as $key => $ip) {
-            $ipSelection .= "   [$key]: $ip" . PHP_EOL;
-    }
 
+$ipSelection = 'Found IP on CURRENT NODE:' . PHP_EOL;
+foreach($foundIps as $key => $ip) {
+        $ipSelection .= "   [$key]: $ip" . PHP_EOL;
+}
+
+while(!$goodIp) {
     echo $ipSelection;
     $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP ?');
 
-    if ($ipChoice < 1 || $ipChoice > count($foundIps)) {
+    if (!array_key_exists($ipChoice, $foundIps)) {
         echo 'Bad IP Choice' . PHP_EOL;
     } else {
         $goodIp = true;
