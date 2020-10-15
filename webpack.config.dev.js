@@ -20,9 +20,11 @@ const devServerAddress = externalInterface
   ? interfaces[externalInterface][0].address
   : 'localhost';
 
+const publicPath = `http://${devServerAddress}:${devServerPort}/static/`;
+
 module.exports = merge(baseConfig, devConfig, {
   output: {
-    publicPath: `http://${devServerAddress}:${devServerPort}/static/`,
+    publicPath,
   },
   resolve: {
     alias: {
@@ -40,5 +42,6 @@ module.exports = merge(baseConfig, devConfig, {
     hot: true,
     watchContentBase: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
+    publicPath,
   },
 });
