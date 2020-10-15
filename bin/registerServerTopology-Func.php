@@ -19,6 +19,7 @@
  *
  */
 
+use Respect\Validation\Rules\Date;
 
 /**
  * Ask question. The echo of keyboard can be disabled
@@ -221,19 +222,20 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
  * @param string $type
  * @return string
  */
-function formatResponseMessage(string $message, string $type = 'success'): string
+function formatResponseMessage(string $message, string $type): string
 {
+    $date = new DateTime();
     switch ($type) {
         case 'success':
-            $responseMessage = 'message: ' . $message . PHP_EOL;
+            $responseMessage = $date->format(DateTime::ATOM) . ' [INFO]: ' . $message . PHP_EOL;
             break;
         case 'error':
         default:
-            $responseMessage = 'error message: ' . $message . PHP_EOL;
+            $responseMessage = $date->format(DateTime::ATOM) . ' [ERROR]: ' . $message . PHP_EOL;
             break;
     }
 
-    return sprintf('%s', $responseMessage);
+    return $responseMessage;
 }
 
 /**
