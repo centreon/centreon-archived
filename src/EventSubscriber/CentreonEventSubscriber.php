@@ -173,7 +173,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param RequestEvent $request
      * @throws \Exception
      */
-    public function initRequestParameters(RequestEvent $request):void
+    public function initRequestParameters(RequestEvent $request): void
     {
         $query = $request->getRequest()->query->all();
 
@@ -202,7 +202,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
             $search = [];
             foreach ($query as $parameterName => $parameterValue) {
-                if (in_array($parameterName, $reservedFields)
+                if (
+                    in_array($parameterName, $reservedFields)
                     || $parameterName !== 'filter'
                     || !is_array($parameterValue)
                 ) {
@@ -283,13 +284,15 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 );
             }
 
-            if ($requestApiVersion === 'latest'
+            if (
+                $requestApiVersion === 'latest'
                 || VersionHelper::compare($requestApiVersion, $latestVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_latest', true);
                 $requestApiVersion = $latestVersion;
             }
-            if ($requestApiVersion === 'beta'
+            if (
+                $requestApiVersion === 'beta'
                 || VersionHelper::compare($requestApiVersion, $betaVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_beta', true);
@@ -322,7 +325,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
         // We detect if the exception occurred before the kernel called the controller
         foreach ($event->getException()->getTrace() as $trace) {
-            if (array_key_exists('class', $trace)
+            if (
+                array_key_exists('class', $trace)
                 && strlen($trace['class']) > strlen($flagController)
                 && substr($trace['class'], -strlen($flagController)) === $flagController
             ) {
