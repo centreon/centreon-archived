@@ -58,17 +58,17 @@ Global Options:
 
   --help <optional>           get information about the parameters available
   --root <optional>           your Centreon root path on TARGET NODE (by default "centreon")
-  --node-address <optional>   provide your FQDN or IP of the CURRENT NODE. FQDN must be resolvable on the PARENT NODE
+  --node-address <optional>   provide your FQDN or IP of the CURRENT NODE. FQDN must be resolvable on the TARGET NODE
   --insecure <optional>       allow self-signed certificate
   --template <optional>       provide the path of a register topology configuration file to automate the script
              - API_USERNAME             <mandatory> string
              - API_PASSWORD             <mandatory> string
-             - SERVER_TYPE              <mandatory> string
-             - HOST_ADDRESS             <mandatory> string (PARENT NODE ADDRESS)
-             - SERVER_NAME              <mandatory> string (CURRENT NODE NAME)
+             - CURRENT_NODE_TYPE        <mandatory> string
+             - TARGET_NODE_ADDRESS      <mandatory> string (PARENT NODE ADDRESS)
+             - CURRENT_NODE_NAME        <mandatory> string (CURRENT NODE NAME)
              - PROXY_USAGE              <mandatory> boolean
              - ROOT_CENTREON_FOLDER     <optional> string (CENTRAL ROOT CENTREON FOLDER)
-             - NODE_ADDRESS             <optional> string (CURRENT NODE IP OR FQDN)
+             - CURRENT_NODE_ADDRESS     <optional> string (CURRENT NODE IP OR FQDN)
              - INSECURE                 <optional> boolean
              - PROXY_HOST               <optional> string
              - PROXY_PORT               <optional> integer
@@ -106,11 +106,11 @@ if (isset($opt['template'])) {
         }
 
         $configOptions['API_USERNAME'] = $opt['u'];
-        $configOptions['SERVER_TYPE'] = in_array(strtolower($opt['t']), SERVER_TYPES)
+        $configOptions['CURRENT_NODE_TYPE'] = in_array(strtolower($opt['t']), SERVER_TYPES)
             ? strtolower($opt['t'])
             : null;
 
-        if (!$configOptions['SERVER_TYPE']) {
+        if (!$configOptions['CURRENT_NODE_TYPE']) {
             throw new \InvalidArgumentException(
                 "-t must be one of those value"
                     . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
@@ -118,12 +118,12 @@ if (isset($opt['template'])) {
         }
 
         $configOptions['ROOT_CENTREON_FOLDER'] = $opt['root'] ?? 'centreon';
-        $configOptions['HOST_ADDRESS'] = $opt['h'];
-        $configOptions['SERVER_NAME'] = $opt['n'];
+        $configOptions['TARGET_NODE_ADDRESS'] = $opt['h'];
+        $configOptions['CURRENT_NODE_NAME'] = $opt['n'];
 
         if (isset($opt['node-address'])) {
-            $configOptions['NODE_ADDRESS'] = filter_var($opt['node-address'], FILTER_VALIDATE_DOMAIN);
-            if (!$configOptions['NODE_ADDRESS']) {
+            $configOptions['CURRENT_NODE_ADDRESS'] = filter_var($opt['node-address'], FILTER_VALIDATE_DOMAIN);
+            if (!$configOptions['CURRENT_NODE_ADDRESS']) {
                 throw new \InvalidArgumentException(
                     PHP_EOL . "Bad node-address Format" . PHP_EOL
                 );
@@ -134,7 +134,7 @@ if (isset($opt['template'])) {
         exit(1);
     }
     $configOptions['API_PASSWORD'] = askQuestion(
-        $configOptions['HOST_ADDRESS'] . ': please enter your password ',
+        $configOptions['TARGET_NODE_ADDRESS'] . ': please enter your password ',
         true
     );
     $configOptions['PROXY_USAGE'] =  strtolower(askQuestion("Are you using a proxy ? (y/n)"));
@@ -163,7 +163,7 @@ if (isset($opt['template'])) {
 /**
  * Parsing url part from params -h
  */
-$targetURL = parse_url($configOptions['HOST_ADDRESS']);
+$targetURL = parse_url($configOptions['TARGET_NODE_ADDRESS']);
 $protocol = $targetURL['scheme'] ?? 'http';
 $host = $targetURL['host'] ?? $targetURL['path'];
 $port = $targetURL['port'] ?? 80;
@@ -186,13 +186,13 @@ $loginCredentials = [
  */
 $serverIp = trim(shell_exec("hostname -I | awk ' {print $1}'"));
 $payload = [
-    "name" => $configOptions['SERVER_NAME'],
+    "name" => $configOptions['CURRENT_NODE_NAME'],
     "hostname" => gethostname(),
-    "type" => $configOptions['SERVER_TYPE'],
-    "address" => $configOptions['NODE_ADDRESS'] ?? $serverIp,
+    "type" => $configOptions['CURRENT_NODE_TYPE'],
+    "address" => $configOptions['CURRENT_NODE_ADDRESS'] ?? $serverIp,
 ];
 
-if ($configOptions['SERVER_TYPE'] !== TYPE_CENTRAL) {
+if ($configOptions['CURRENT_NODE_TYPE'] !== TYPE_CENTRAL) {
     $payload["parent_address"] = $host;
 }
 

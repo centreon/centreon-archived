@@ -301,39 +301,39 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
         !isset(
             $options['API_USERNAME'],
             $options['API_PASSWORD'],
-            $options['SERVER_TYPE'],
-            $options['HOST_ADDRESS'],
-            $options['SERVER_NAME']
+            $options['CURRENT_NODE_TYPE'],
+            $options['TARGET_NODE_ADDRESS'],
+            $options['CURRENT_NODE_NAME']
         )
     ) {
         throw new \InvalidArgumentException(
             PHP_EOL .
-            'missing value: API_USERNAME, API_PASSWORD, SERVER_TYPE, HOST_ADDRESS and SERVER_NAME are mandatories'
+            'missing value: API_USERNAME, API_PASSWORD, CURRENT_NODE_TYPE, TARGET_NODE_ADDRESS and CURRENT_NODE_NAME are mandatories'
             . PHP_EOL . $helpMessage
         );
     }
 
     $configOptions['API_USERNAME'] = $options['API_USERNAME'];
-    $configOptions['SERVER_TYPE'] = in_array(strtolower($options['SERVER_TYPE']), SERVER_TYPES)
-        ? strtolower($options['SERVER_TYPE'])
+    $configOptions['CURRENT_NODE_TYPE'] = in_array(strtolower($options['CURRENT_NODE_TYPE']), SERVER_TYPES)
+        ? strtolower($options['CURRENT_NODE_TYPE'])
         : null;
 
-    if (!$configOptions['SERVER_TYPE']) {
+    if (!$configOptions['CURRENT_NODE_TYPE']) {
         throw new \InvalidArgumentException(
-            "SERVER_TYPE must be one of those value"
+            "CURRENT_NODE_TYPE must be one of those value"
             . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
         );
     }
 
     $configOptions['API_PASSWORD'] = $options['API_PASSWORD'] ?? '';
     $configOptions['ROOT_CENTREON_FOLDER'] = $options['ROOT_CENTREON_FOLDER'] ?? 'centreon';
-    $configOptions['HOST_ADDRESS'] = $options['HOST_ADDRESS'];
-    $configOptions['SERVER_NAME'] = $options['SERVER_NAME'];
+    $configOptions['TARGET_NODE_ADDRESS'] = $options['TARGET_NODE_ADDRESS'];
+    $configOptions['CURRENT_NODE_NAME'] = $options['CURRENT_NODE_NAME'];
     $configOptions['PROXY_USAGE'] = filter_var($options['PROXY_USAGE'], FILTER_VALIDATE_BOOLEAN) ?? false;
-    if (isset($options['NODE_ADDRESS'])) {
-        $configOptions['NODE_ADDRESS'] = filter_var($options['NODE_ADDRESS'], FILTER_VALIDATE_DOMAIN);
-        if (!$configOptions['NODE_ADDRESS']) {
-            throw new \InvalidArgumentException(PHP_EOL . "Bad NODE_ADDRESS Format" . PHP_EOL);
+    if (isset($options['CURRENT_NODE_ADDRESS'])) {
+        $configOptions['CURRENT_NODE_ADDRESS'] = filter_var($options['CURRENT_NODE_ADDRESS'], FILTER_VALIDATE_DOMAIN);
+        if (!$configOptions['CURRENT_NODE_ADDRESS']) {
+            throw new \InvalidArgumentException(PHP_EOL . "Bad CURRENT_NODE_ADDRESS Format" . PHP_EOL);
         }
     }
 
