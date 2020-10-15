@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import {
   reduceBy,
   pipe,
@@ -79,7 +80,7 @@ const Events = ({
   });
 
   return (
-    <>
+    <div>
       {eventsByDate.map(
         ([date, events]): JSX.Element => {
           const isLastDate = equals(last(dates), date);
@@ -106,7 +107,7 @@ const Events = ({
           );
         },
       )}
-    </>
+    </div>
   );
 };
 
