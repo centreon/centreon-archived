@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2005-2020 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,6 +40,7 @@ namespace App\EventSubscriber;
 
 use Centreon\Application\ApiPlatform;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
@@ -73,19 +74,19 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * If no version has been defined in the configuration,
      * this version will be used by default
      */
-    const DEFAULT_API_VERSION = "2.0";
+    public const DEFAULT_API_VERSION = "2.0";
 
     /**
      * If no beta version has been defined in the configuration,
      * this version will be used by default
      */
-    const DEFAULT_API_BETA_VERSION = "2.1";
+    public const DEFAULT_API_BETA_VERSION = "2.1";
 
     /**
      * If no API header name has been defined in the configuration,
      * this name will be used by default
      */
-    const DEFAULT_API_HEADER_NAME = "version";
+    public const DEFAULT_API_HEADER_NAME = "version";
 
     /**
      * @var ContainerInterface
@@ -101,6 +102,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @var Security
      */
     private $security;
+
     /**
      * @var ApiPlatform
      */
@@ -110,6 +112,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param RequestParametersInterface $requestParameters
      * @param ContainerInterface $container
      * @param Security $security
+     * @param ApiPlatform $apiPlatform
      */
     public function __construct(
         RequestParametersInterface $requestParameters,
@@ -272,7 +275,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $uri = $event->getRequest()->getRequestUri();
         if (preg_match('/\/api\/([^\/]+)/', $uri, $matches)) {
             $requestApiVersion = $matches[1];
-            if ($requestApiVersion[0] == 'v') {
+            if ($requestApiVersion[0] === 'v') {
                 $requestApiVersion = substr($requestApiVersion, 1);
                 $requestApiVersion = VersionHelper::regularizeDepthVersion(
                     $requestApiVersion,
@@ -280,13 +283,13 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 );
             }
 
-            if ($requestApiVersion == 'latest'
+            if ($requestApiVersion === 'latest'
                 || VersionHelper::compare($requestApiVersion, $latestVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_latest', true);
                 $requestApiVersion = $latestVersion;
             }
-            if ($requestApiVersion == 'beta'
+            if ($requestApiVersion === 'beta'
                 || VersionHelper::compare($requestApiVersion, $betaVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_beta', true);
@@ -417,7 +420,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param ContactInterface $user
      * @return void
      */
-    private function initLanguage(Contact $user)
+    private function initLanguage(Contact $user): void
     {
         $locale = $user->getLocale() ?? $this->getBrowserLocale();
         $lang = $locale . '.' . Contact::DEFAULT_CHARSET;

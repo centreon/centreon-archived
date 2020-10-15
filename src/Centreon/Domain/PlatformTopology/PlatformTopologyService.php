@@ -134,8 +134,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $registeredParentInTopology = $this->findParentPlatform($platformTopology);
 
         /**
-         * The top level platform is defined as a Remote
-         * Getting data and calling the register request on the Central
+         * The top level platform is defined as a Remote :
+         * Getting data and calling the register request on the Central if the remote is already registered on it
          */
         if (
             null !== $registeredParentInTopology
@@ -214,10 +214,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 );
             }
 
+            /**
+             * Register this platform to its Central
+             */
             try {
-                /**
-                 * Register this platform to its Central
-                 */
                 $this->platformTopologyRegisterRepository->registerPlatformTopologyToParent(
                     $platformTopology,
                     $foundPlatformInformation,

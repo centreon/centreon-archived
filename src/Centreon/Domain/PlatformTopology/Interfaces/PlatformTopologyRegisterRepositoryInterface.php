@@ -28,10 +28,13 @@ use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Domain\Repository\RepositoryException;
 
+/**
+ * Interface used to call the registering repository
+ */
 interface PlatformTopologyRegisterRepositoryInterface
 {
     /**
-     * Interface used to call the API repository
+     * Register the platform on its parent
      *
      * @param PlatformTopology $platformTopology
      * @param PlatformInformation $platformInformation

@@ -31,6 +31,9 @@ use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
 use Centreon\Domain\Repository\RepositoryException;
 
+/**
+ * Interface used to call the topology service
+ */
 interface PlatformTopologyServiceInterface
 {
     /**
