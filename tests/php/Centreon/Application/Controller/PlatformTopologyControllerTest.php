@@ -222,7 +222,6 @@ class PlatformTopologyControllerTest extends TestCase
             $view,
             View::create(null, Response::HTTP_CREATED)
         );
-
     }
 
     public function testFormatHeliosSuccess(): void
@@ -249,6 +248,5 @@ class PlatformTopologyControllerTest extends TestCase
             $view,
             View::create(null, Response::HTTP_CREATED)
         );
-
     }
 }

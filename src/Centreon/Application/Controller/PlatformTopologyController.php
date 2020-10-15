@@ -180,6 +180,5 @@ class PlatformTopologyController extends AbstractController
         } catch (\Throwable $e) {
             return $this->view(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
-
     }
 }

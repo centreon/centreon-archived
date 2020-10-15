@@ -56,5 +56,4 @@ class BrokerConfiguration
         $this->configurationValue = $configurationValue;
         return $this;
     }
-
 }

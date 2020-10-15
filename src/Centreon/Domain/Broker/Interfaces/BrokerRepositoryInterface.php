@@ -6,5 +6,8 @@ use Centreon\Domain\Broker\Broker;
 
 interface BrokerRepositoryInterface
 {
-    public function findConfigurationByMonitoringServerAndConfigKey(int $monitoringServerId, string $configKey): ?Broker;
+    public function findConfigurationByMonitoringServerAndConfigKey(
+        int $monitoringServerId,
+        string $configKey
+    ): ?Broker;
 }

@@ -28,15 +28,17 @@ class BrokerService implements BrokerServiceInterface
             $monitoringServerId,
             $configKey
         );
-        if($broker === null) {
+        if ($broker === null) {
             throw new EntityNotFoundException(
-                sprintf(_('No entry for %s key in your Broker configuration'),
-                $configKey)
+                sprintf(
+                    _('No entry for %s key in your Broker configuration'),
+                    $configKey
+                )
             );
         }
-        if($broker->getBrokerConfigurations() === null)
+
         foreach ($broker->getBrokerConfigurations() as $brokerConfiguration) {
-            if(
+            if (
                 $brokerConfiguration->getConfigurationKey() === "one_peer_retention_mode"
                 && $brokerConfiguration->getConfigurationValue() === "yes"
             ) {

@@ -14,5 +14,8 @@ interface BrokerServiceInterface
      * @throws BrokerException
      * @return Broker
      */
-    public function findConfigurationByMonitoringServerAndConfigKey(int $monitoringServerId, string $config_Key): Broker;
+    public function findConfigurationByMonitoringServerAndConfigKey(
+        int $monitoringServerId,
+        string $config_Key
+    ): Broker;
 }
