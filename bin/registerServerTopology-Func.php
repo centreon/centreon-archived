@@ -224,14 +224,14 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
  */
 function formatResponseMessage(string $message, string $type): string
 {
-    $date = new DateTime();
+    $date = (new DateTime())->format(DateTime::ATOM);
     switch ($type) {
         case 'success':
-            $responseMessage = $date->format(DateTime::ATOM) . ' [INFO]: ' . $message . PHP_EOL;
+            $responseMessage = $date . ' [INFO]: ' . $message . PHP_EOL;
             break;
         case 'error':
         default:
-            $responseMessage = $date->format(DateTime::ATOM) . ' [ERROR]: ' . $message . PHP_EOL;
+            $responseMessage = $date . ' [ERROR]: ' . $message . PHP_EOL;
             break;
     }
 
