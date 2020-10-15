@@ -38,7 +38,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class PlatformTopologyRegisterRepositoryInterfaceAPI implements PlatformTopologyRegisterRepositoryInterface
+class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterRepositoryInterface
 {
     /**
      * @var HttpClientInterface
@@ -56,7 +56,7 @@ class PlatformTopologyRegisterRepositoryInterfaceAPI implements PlatformTopology
     private $apiPlatform;
 
     /**
-     * PlatformTopologyRegisterRepositoryInterfaceAPI constructor.
+     * PlatformTopologyRegisterRepositoryAPI constructor.
      * @param HttpClientInterface $httpClient
      * @param ApiPlatform $apiPlatform
      */
