@@ -35,11 +35,16 @@ const TYPE_MAP = 'map';
 const TYPE_MBI = 'mbi';
 const SERVER_TYPES = [TYPE_CENTRAL, TYPE_POLLER, TYPE_REMOTE, TYPE_MAP, TYPE_MBI];
 
-$opt = getopt('u:t:h:n:', ["help::", "root:", "fqdn:", "insecure::", "template:"]);
+$opt = getopt('u:t:h:n:', ["help::", "root:", "node-address:", "insecure::", "template:"]);
 /**
  * Format the --help message
  */
 $helpMessage = <<<'EOD'
+This script will register a platform (CURRENT NODE) on another (TARGET NODE).
+If you register a CURRENT NODE on a TARGET NODE that is already linked to a Central,
+your informations will automatically be forward to the Central.
+If you register a Remote Server, this script will automatically convert your CURRENT NODE in Remote Server.
+After executing the script, please use the wizard on your TARGET NODE to complete your installation.
 
 Global Options:
   -u <mandatory>              username of your centreon-web account on the TARGET NODE.
@@ -49,11 +54,11 @@ Global Options:
             - Remote
             - MAP
             - MBI
-  -n <mandatory>              name of your CURRENT NODE
+  -n <mandatory>              name of the CURRENT NODE that will be displayed on the TARGET NODE
 
   --help <optional>           get information about the parameters available
   --root <optional>           your Centreon root path on TARGET NODE (by default "centreon")
-  --fqdn <optional>           provide your FQDN or IP of the CURRENT NODE. The FQDN must be resolvable on the PARENT NODE
+  --node-address <optional>   provide your FQDN or IP of the CURRENT NODE. FQDN must be resolvable on the PARENT NODE
   --insecure <optional>       allow self-signed certificate
   --template <optional>       provide the path of a register topology configuration file to automate the script
              - API_USERNAME             <mandatory> string
@@ -63,7 +68,7 @@ Global Options:
              - SERVER_NAME              <mandatory> string (CURRENT NODE NAME)
              - PROXY_USAGE              <mandatory> boolean
              - ROOT_CENTREON_FOLDER     <optional> string (CENTRAL ROOT CENTREON FOLDER)
-             - FQDN                     <optional> string (CURRENT NODE IP OR FQDN)
+             - NODE_ADDRESS             <optional> string (CURRENT NODE IP OR FQDN)
              - INSECURE                 <optional> boolean
              - PROXY_HOST               <optional> string
              - PROXY_PORT               <optional> integer
@@ -116,11 +121,11 @@ if (isset($opt['template'])) {
         $configOptions['HOST_ADDRESS'] = $opt['h'];
         $configOptions['SERVER_NAME'] = $opt['n'];
 
-        if (isset($opt['fqdn'])) {
-            $configOptions['FQDN'] = filter_var($opt['fqdn'], FILTER_VALIDATE_DOMAIN);
-            if (!$configOptions['FQDN']) {
+        if (isset($opt['node-address'])) {
+            $configOptions['NODE_ADDRESS'] = filter_var($opt['node-address'], FILTER_VALIDATE_DOMAIN);
+            if (!$configOptions['NODE_ADDRESS']) {
                 throw new \InvalidArgumentException(
-                    PHP_EOL . "Bad FQDN Format" . PHP_EOL
+                    PHP_EOL . "Bad node-address Format" . PHP_EOL
                 );
             }
         }
@@ -184,7 +189,7 @@ $payload = [
     "name" => $configOptions['SERVER_NAME'],
     "hostname" => gethostname(),
     "type" => $configOptions['SERVER_TYPE'],
-    "address" => $configOptions['FQDN'] ?? $serverIp,
+    "address" => $configOptions['NODE_ADDRESS'] ?? $serverIp,
 ];
 
 if ($configOptions['SERVER_TYPE'] !== TYPE_CENTRAL) {

@@ -330,10 +330,10 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     $configOptions['HOST_ADDRESS'] = $options['HOST_ADDRESS'];
     $configOptions['SERVER_NAME'] = $options['SERVER_NAME'];
     $configOptions['PROXY_USAGE'] = filter_var($options['PROXY_USAGE'], FILTER_VALIDATE_BOOLEAN) ?? false;
-    if (isset($options['FQDN'])) {
-        $configOptions['FQDN'] = filter_var($options['FQDN'], FILTER_VALIDATE_DOMAIN);
-        if (!$configOptions['FQDN']) {
-            throw new \InvalidArgumentException(PHP_EOL . "Bad FQDN Format" . PHP_EOL);
+    if (isset($options['NODE_ADDRESS'])) {
+        $configOptions['NODE_ADDRESS'] = filter_var($options['NODE_ADDRESS'], FILTER_VALIDATE_DOMAIN);
+        if (!$configOptions['NODE_ADDRESS']) {
+            throw new \InvalidArgumentException(PHP_EOL . "Bad NODE_ADDRESS Format" . PHP_EOL);
         }
     }
 
