@@ -303,7 +303,8 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     ) {
         throw new \InvalidArgumentException(
             PHP_EOL .
-            'missing value: API_USERNAME, API_PASSWORD, CURRENT_NODE_TYPE, TARGET_NODE_ADDRESS and CURRENT_NODE_NAME are mandatories'
+            'missing value: API_USERNAME, API_PASSWORD, CURRENT_NODE_TYPE,
+             TARGET_NODE_ADDRESS and CURRENT_NODE_NAME are mandatories'
             . PHP_EOL . $helpMessage
         );
     }
