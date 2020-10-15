@@ -83,7 +83,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             $baseApiEndpoint = $platformInformation->getApiScheme() . '://'
                 . $platformInformation->getCentralServerAddress() . ':'
                 . $platformInformation->getApiPort() . '/'
-                . $platformInformation->getApiPath() . '/api/v.'
+                . $platformInformation->getApiPath() . '/api/v'
                 . ((string) $this->apiPlatform->getVersion()) . '/';
 
             // Enable specific options
