@@ -46,7 +46,7 @@ class ApiPlatform
      * Set the API version
      *
      * @param float $version
-     * @return ApiPlatform
+     * @return $this
      */
     public function setVersion(float $version): self
     {
