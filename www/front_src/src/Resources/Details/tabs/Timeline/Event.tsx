@@ -6,7 +6,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
 import { StatusChip } from '@centreon/ui';
-import { prop } from 'ramda';
+import { prop, isNil } from 'ramda';
 
 import { useTranslation } from 'react-i18next';
 import { TimelineEvent, Type } from './models';
@@ -157,6 +157,20 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
 
+  const getCaption = (): string => {
+    const formattedStartDate = getFormattedDateTime(event.startDate);
+
+    const from = `${t(labelFrom)} ${formattedStartDate}`;
+
+    if (isNil(event.endDate)) {
+      return from;
+    }
+
+    const formattedEndDate = getFormattedDateTime(event.endDate);
+
+    return `${from} ${t(labelTo)} ${formattedEndDate}`;
+  };
+
   return (
     <>
       <DowntimeChip />
@@ -165,11 +179,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
         <div className={classes.title}>
           <Author event={event} label={t(labelDowntime)} />
         </div>
-        <Typography variant="caption">
-          {`${t(labelFrom)} ${getFormattedDateTime(event.startDate)} ${t(
-            labelTo,
-          )} ${getFormattedDateTime(event.endDate)}`}
-        </Typography>
+        <Typography variant="caption">{getCaption()}</Typography>
         <Content event={event} />
       </div>
     </>
