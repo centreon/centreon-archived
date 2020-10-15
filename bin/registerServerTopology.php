@@ -157,7 +157,7 @@ if (isset($opt['template'])) {
         if (!empty($configOptions["PROXY_USERNAME"])) {
             $configOptions['PROXY_PASSWORD'] = askQuestion('please enter the proxy password: ', true);
         }
-    }else {
+    } else {
         $configOptions['PROXY_USAGE'] = false;
     }
 }
@@ -196,7 +196,7 @@ foreach($foundIps as $key => $ip) {
         $ipSelection .= "   [$key]: $ip" . PHP_EOL;
 }
 
-while(!$goodIp) {
+while (!$goodIp) {
     echo $ipSelection;
     $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP ?');
 
