@@ -114,9 +114,8 @@ class App extends Component<Props, State> {
       });
     }
 
-    // remove fullscreen parameters to keep normal routing
-    delete window.fullscreenSearch;
-    delete window.fullscreenHash;
+    window.fullscreenSearch = '';
+    window.fullscreenHash = '';
   };
 
   // keep alive (redirect to login page if session is expired)
