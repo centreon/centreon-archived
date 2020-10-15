@@ -62,35 +62,26 @@ function isRemote(string $type): bool
  */
 function registerRemote(string $ip, array $loginCredentials): array
 {
+    require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
+    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
+    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
     $db = new CentreonDB();
     $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
     $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
 
-    $statement = $db->query("
-        SELECT COUNT(*) as `total` FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'
-    ");
-    $result = $statement->fetch(\PDO::FETCH_ASSOC);
-    $isRemote = (int) $result['total'];
-    if ($isRemote === 0) {
-        require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
-        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
-        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
-        $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
-        $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
-        //hide menu
-        $topologyRepository->disableMenus();
+    //hide menu
+    $topologyRepository->disableMenus();
 
-        //register remote in db
-        $informationRepository->toggleRemote('yes');
+    //register remote in db
+    $informationRepository->toggleRemote('yes');
 
-        //register master in db
-        $informationRepository->authorizeMaster($ip);
+    //register master in db
+    $informationRepository->authorizeMaster($ip);
 
-        //Apply Remote Server mode in configuration file
-        system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
-        );
-    }
+    //Apply Remote Server mode in configuration file
+    system(
+        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+    );
 
     try {
         $db->beginTransaction();
@@ -155,9 +146,13 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $count = 1;
     $bindValues = [];
     $proxyCredentials = $loginCredentials['proxy_informations'] ?? [];
-    $loginCredentials = array_filter($loginCredentials, function ($key) {
-        return $key !== 'proxy_informations';
-    }, ARRAY_FILTER_USE_KEY);
+    $loginCredentials = array_filter(
+        $loginCredentials,
+        function ($key) {
+            return $key !== 'proxy_informations';
+        },
+        ARRAY_FILTER_USE_KEY
+    );
     foreach ($loginCredentials as $key => $value) {
         $queryValues[] = " ('$key', :$key)";
         $count++;
@@ -282,7 +277,7 @@ function castTemplateValue(array $configVariables): array
                 $configVariables[$configKey] = $configValue === 'true' ? true : false;
                 break;
             case 'PROXY_PORT':
-                $configVariables[$configKey] = (int) $configValue;
+                $configVariables[$configKey] = (int)$configValue;
                 break;
         }
     }
