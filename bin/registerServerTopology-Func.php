@@ -19,9 +19,7 @@
  *
  */
 
-use Respect\Validation\Rules\Date;
-
-/**
+ /**
  * Ask question. The echo of keyboard can be disabled
  *
  * @param string $question
