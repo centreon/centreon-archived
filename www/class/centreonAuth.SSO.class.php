@@ -161,13 +161,15 @@ class CentreonAuthSSO extends CentreonAuth
                     }
                 }
 
-                $user = $this->getOpenIdConnectIntrospectionToken(
-                    $introspectionEndpoint,
-                    $clientId,
-                    $clientSecret,
-                    $tokenInfo['access_token'],
-                    $verifyPeer
-                );
+                if (!empty($tokenInfo) && is_array($tokenInfo)) {
+                    $user = $this->getOpenIdConnectIntrospectionToken(
+                        $introspectionEndpoint,
+                        $clientId,
+                        $clientSecret,
+                        $tokenInfo['access_token'],
+                        $verifyPeer
+                    );
+                }
 
                 if (!isset($user["preferred_username"]) && isset($userInfoEndpoint)) {
                     $user = $this->getOpenIdConnectUserInfo(
