@@ -37,7 +37,7 @@ module.exports = merge(baseConfig, extractCssConfig, {
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[hash:8].[ext]',
+              name: '[name].[contenthash:8].[ext]',
               publicPath: './',
             },
           },
@@ -54,7 +54,7 @@ module.exports = merge(baseConfig, extractCssConfig, {
             loader: 'url-loader',
             options: {
               limit: 10000,
-              name: '[name].[hash:8].[ext]',
+              name: '[name].[contenthash:8].[ext]',
             },
           },
         ],
