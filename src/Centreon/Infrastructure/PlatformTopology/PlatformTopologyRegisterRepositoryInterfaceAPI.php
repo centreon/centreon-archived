@@ -44,6 +44,7 @@ class PlatformTopologyRegisterRepositoryInterfaceAPI implements PlatformTopology
      * @var HttpClientInterface
      */
     private $httpClient;
+
     /**
      * @var string
      */
@@ -63,7 +64,6 @@ class PlatformTopologyRegisterRepositoryInterfaceAPI implements PlatformTopology
         PlatformInformation $platformInformation,
         Proxy $proxyService = null
     ): void {
-
         /**
          * Call the API on the n-1 server to register it too
          */
