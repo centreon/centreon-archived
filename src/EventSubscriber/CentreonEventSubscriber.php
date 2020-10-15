@@ -38,6 +38,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use Centreon\Application\ApiPlatform;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Entity\EntityValidator;
@@ -100,6 +101,10 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @var Security
      */
     private $security;
+    /**
+     * @var ApiPlatform
+     */
+    private $apiPlatform;
 
     /**
      * @param RequestParametersInterface $requestParameters
@@ -109,11 +114,13 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     public function __construct(
         RequestParametersInterface $requestParameters,
         ContainerInterface $container,
-        Security $security
+        Security $security,
+        ApiPlatform $apiPlatform
     ) {
         $this->container = $container;
         $this->requestParameters = $requestParameters;
         $this->security = $security;
+        $this->apiPlatform = $apiPlatform;
     }
 
     /**
@@ -296,6 +303,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
             // Used for controllers
             $event->getRequest()->attributes->set('version_number', (float) $requestApiVersion);
+            $this->apiPlatform->setVersion((float) $requestApiVersion);
         }
     }
 

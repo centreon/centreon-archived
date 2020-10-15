@@ -31,6 +31,8 @@ use Centreon\Domain\Repository\RepositoryException;
 interface PlatformTopologyRegisterRepositoryInterface
 {
     /**
+     * Interface used to call the API repository
+     *
      * @param PlatformTopology $platformTopology
      * @param PlatformInformation $platformInformation
      * @param Proxy|null $proxy

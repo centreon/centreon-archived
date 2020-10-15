@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology;
 
+use Centreon\Application\ApiPlatform;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
@@ -29,7 +30,6 @@ use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Domain\Repository\RepositoryException;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -50,10 +50,20 @@ class PlatformTopologyRegisterRepositoryInterfaceAPI implements PlatformTopology
      */
     private $apiVersion;
 
-    public function __construct(HttpClientInterface $httpClient, Request $request)
+    /**
+     * @var ApiPlatform
+     */
+    private $apiPlatform;
+
+    /**
+     * PlatformTopologyRegisterRepositoryInterfaceAPI constructor.
+     * @param HttpClientInterface $httpClient
+     * @param ApiPlatform $apiPlatform
+     */
+    public function __construct(HttpClientInterface $httpClient, ApiPlatform $apiPlatform)
     {
         $this->httpClient = $httpClient;
-        $this->apiVersion = (string) $request->attributes->get('version_number');
+        $this->apiPlatform = $apiPlatform;
     }
 
     /**
@@ -73,8 +83,8 @@ class PlatformTopologyRegisterRepositoryInterfaceAPI implements PlatformTopology
             $baseApiEndpoint = $platformInformation->getApiScheme() . '://'
                 . $platformInformation->getCentralServerAddress() . ':'
                 . $platformInformation->getApiPort() . '/'
-                . $platformInformation->getApiPath() . '/api/'
-                . $this->apiVersion . '/';
+                . $platformInformation->getApiPath() . '/api/v.'
+                . ((string) $this->apiPlatform->getVersion()) . '/';
 
             // Enable specific options
             $optionPayload = [];
