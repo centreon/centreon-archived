@@ -7691,7 +7691,7 @@ msgstr "OK"
 #: centreon-web/www/include/configuration/configObject/command/minPlayCommand.php:131
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneService.php:250
 msgid "WARNING"
-msgstr "WARNING"
+msgstr "ALERTE"
 
 #: centreon-web/www/include/reporting/dashboard/xmlInformations/initXmlFeed.php:85
 #: centreon-web/www/include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php:109
@@ -14845,9 +14845,6 @@ msgstr "Création d'une tâche d'exportation"
 
 msgid "Generating Export Files"
 msgstr "Génération de fichiers d'exportation"
-
-msgid "Processing Remote Import/Configuration"
-msgstr "Traitement de l'importation/configuration à distance"
 
 msgid "The field is required"
 msgstr "Ce champ est requis"
