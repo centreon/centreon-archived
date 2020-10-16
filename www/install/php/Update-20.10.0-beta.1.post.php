@@ -44,43 +44,20 @@ try {
         $errorMessage = "Unable to modify isCentral flag value in 'informations' table.";
         $stmt = $pearDB->query("UPDATE `informations` SET `value` = 'yes' WHERE `key` = 'isCentral'");
     }
-    // Check if the server is a Remote or a Central
-    $type = 'central';
+    /**
+     * activate remote access page in topology menu
+     */
     $showPage = '0';
     $serverType = $pearDB->query("
         SELECT `value` FROM `informations`
         WHERE `key` = 'isRemote'
     ");
     if ('yes' === $serverType->fetch()['value']) {
-        $type = 'remote';
         $showPage = '1';
     }
-    // Check if the server is enabled
-    $errorMessage = "Unable to find the server in 'nagios_server' table.";
-    $serverQuery = $pearDB->query("
-        SELECT `id`, `name` FROM nagios_server
-        WHERE localhost = '1' AND ns_activate = '1'
-    ");
-    // Insert the server in 'platform_topology' table
-    if ($row = $serverQuery->fetch()) {
-        $errorMessage = "Unable to insert server in 'platform_topology' table.";
-        $stmt = $pearDB->prepare("
-            INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
-            VALUES (:centralAddress, :name, :type, NULL, :id)
-        ");
-        $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);
-        $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
-        $stmt->bindValue(':type', $type, \PDO::PARAM_STR);
-        $stmt->bindValue(':id', (int)$row['id'], \PDO::PARAM_INT);
-        $stmt->execute();
-    }
-
-    /**
-     * activate remote access page in topology menu
-     */
     // Create a new menu page related to remote. Hidden by default on a Central
-    $errorMessage = "Unable to insert remote credential page in 'topology' table.";
     // This page is displayed only on remote platforms.
+    $errorMessage = "Unable to insert 'Remote access' page in 'topology' table.";
     $stmt = $pearDB->query("
         INSERT INTO `topology` (
             `topology_name`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`,
@@ -170,51 +147,6 @@ try {
             $topologyInsertStatement->bindValue(':acl_topology_id', (int) $topology['acl_topo_id'], \PDO::PARAM_INT);
             $topologyInsertStatement->execute();
         }
-    }
-
-    // get topology local server id
-    $localStmt = $pearDB->query(
-        "SELECT `id` FROM `platform_topology` 
-        WHERE `server_id` = (SELECT `id` FROM nagios_server WHERE localhost = '1')"
-    );
-    $parentId = $localStmt->fetchColumn();
-
-    /**
-     * migrate server's child to 'platform_status' table
-     */
-    // get nagios_server children
-    $childStmt = $pearDB->query(
-        "SELECT `id`, `name`, `ns_ip_address`, `ns_ip_address`, `remote_id` FROM nagios_server WHERE localhost != '1'"
-    );
-
-    while ($row = $childStmt->fetch()) {
-        //check remote/poller
-        $parent = $parentId;
-        $serverType = 'poller';
-        if ($row['remote_id']) {
-            $parent = $row['remote_id'];
-        }
-
-        $remoteServerQuery = $pearDB->query(
-            "SELECT `id` FROM remote_servers WHERE ip = '" . $row['ns_ip_address'] . "'"
-        );
-        $remoteId = $remoteServerQuery->fetchColumn();
-        if ($remoteId) {
-            //is remote
-            $serverType = 'remote';
-        }
-
-        $errorMessage = "Unable to insert " . $serverType . ":" . $row['name'] . " in 'topology' table.";
-        $stmt = $pearDB->prepare(
-            "INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
-            VALUES (:centralAddress, :name, :serverType, :parent, :id)"
-        );
-        $stmt->bindValue(':centralAddress', $row['ns_ip_address'], \PDO::PARAM_STR);
-        $stmt->bindValue(':name', $row['name'], \PDO::PARAM_STR);
-        $stmt->bindValue(':serverType', $serverType, \PDO::PARAM_STR);
-        $stmt->bindValue(':parent', (int) $parent, \PDO::PARAM_INT);
-        $stmt->bindValue(':id', (int) $row['id'], \PDO::PARAM_INT);
-        $stmt->execute();
     }
 
     $pearDB->commit();
