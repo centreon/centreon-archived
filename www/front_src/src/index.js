@@ -4,7 +4,6 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable func-names */
 
-import 'react-hot-loader';
 import AppProvider from './Provider';
 
 // make an IIFE function to allow "await" usage
