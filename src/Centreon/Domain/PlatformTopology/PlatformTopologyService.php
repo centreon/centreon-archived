@@ -321,8 +321,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     );
                 }
             } catch (TransportExceptionInterface $e) {
+                $message = '';
+                if (!empty($optionPayload['proxy'])) {
+                    $message = ' ' . sprintf(_("Using these proxy parameters : '%s'"), $optionPayload['proxy']);
+                }
                 throw new PlatformTopologyException(
-                    _("Request to the Central's API failed") . (' : ') . $e->getMessage()
+                    _("Request to the Central's API failed") . (' : ') . $e->getMessage() . $message
                 );
             } catch (ClientExceptionInterface $e) {
                 throw new PlatformTopologyException(
@@ -335,7 +339,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             } catch (ServerExceptionInterface $e) {
                 $message = _("API calling the Central returned a Server exception");
                 if (!empty($optionPayload['proxy'])) {
-                    $message .= '. ' . _("Please check the 'Centreon UI' form and your proxy configuration");
+                    $message .= '. ' . _("Please check the 'Centreon UI' and 'Remote access' forms");
                 }
                 throw new PlatformTopologyException(
                     $message . (' : ') . $e->getMessage()
