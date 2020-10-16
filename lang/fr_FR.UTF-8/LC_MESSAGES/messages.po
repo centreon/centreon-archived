@@ -15679,8 +15679,8 @@ msgid "API calling the Central returned a Server exception"
 msgstr "L'API du Central a renvoyé une exception Server"
 
 #: api/topology/register
-msgid "Please check the 'Centreon UI' form and your proxy configuration"
-msgstr "Veuillez vérifier le formulaire 'Centreon Web' et les paramètres de votre proxy"
+msgid "Please check the 'Centreon UI' and 'Remote access' forms"
+msgstr "Veuillez vérifier les formulaires 'Centreon Web' et 'Accès du Remote'"
 
 #: api/topology/register
 msgid "Unable to convert Central's API response"
@@ -15695,8 +15695,8 @@ msgid "The platform: '%s'@'%s' cannot be added to the Central linked to this Rem
 msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à ce Remote"
 
 #: api/topology/register
-msgid "Central's response => Code : "
-msgstr "Réponse du Central => Code : "
+msgid "Central's response : "
+msgstr "Réponse du Central : "
 
 #: api/topology/register
 msgid "Unable to find the encryption key. Please check the '.env.local.php' file."
