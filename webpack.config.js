@@ -24,9 +24,11 @@ module.exports = merge(baseConfig, extractCssConfig, {
     new HtmlWebpackPlugin({
       alwaysWriteToDisk: true,
       template: './www/front_src/public/index.html',
-      filename: '../index.html',
+      filename: 'index.html',
     }),
-    new HtmlWebpackHarddiskPlugin(),
+    new HtmlWebpackHarddiskPlugin({
+      outputPath: path.resolve(`${__dirname}/www`),
+    }),
   ],
   module: {
     rules: [
