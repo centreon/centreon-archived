@@ -32,17 +32,17 @@ use Centreon\Domain\PlatformTopology\PlatformTopology;
 class PlatformTopologyHeliosFormat
 {
     /**
-     * @var string Stringified PlatformTopologyId
+     * @var string|null Stringified PlatformTopologyId
      */
     private $id;
 
     /**
-     * @var string PlatformTopology type
+     * @var string|null PlatformTopology type
      */
     private $type;
 
     /**
-     * @var string PlatformTopology Name
+     * @var string|null PlatformTopology Name
      */
     private $label;
 
