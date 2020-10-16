@@ -46,7 +46,7 @@ class ExtendedServiceInformation extends AbstractObject
     public function add(array $object, int $serviceId)
     {
         if ($this->checkGenerate($serviceId)) {
-            return null
+            return null;
         }
 
         $object['service_service_id'] = $serviceId;
