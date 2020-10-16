@@ -15695,8 +15695,8 @@ msgid "The platform: '%s'@'%s' cannot be added to the Central linked to this Rem
 msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à ce Remote"
 
 #: api/topology/register
-msgid "Central's response => Code : "
-msgstr "Réponse du Central => Code : "
+msgid "Central's response : "
+msgstr "Réponse du Central : "
 
 #: api/topology/register
 msgid "Unable to find the encryption key. Please check the '.env.local.php' file."

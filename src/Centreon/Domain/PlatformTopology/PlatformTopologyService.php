@@ -313,7 +313,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $returnedMessage = json_decode($registerResponse->getContent(false), true);
 
                     if (!empty($returnedMessage)) {
-                        $errorMessage .= "  /  " . _("Central's response => Code : ") .
+                        $errorMessage .= "  /  " . _("Central's response : ") .
                             implode(', ', $returnedMessage);
                     }
                     throw new PlatformTopologyConflictException(
