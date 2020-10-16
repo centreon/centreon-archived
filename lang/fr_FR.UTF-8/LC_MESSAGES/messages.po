@@ -15683,10 +15683,6 @@ msgid "Please check the 'Centreon UI' and 'Remote access' forms"
 msgstr "Veuillez vérifier les formulaires 'Centreon Web' et 'Accès du Remote'"
 
 #: api/topology/register
-msgid "Using these proxy parameters : '%s'"
-msgstr "En utilisant les paramètres proxy suivants : '%s'"
-
-#: api/topology/register
 msgid "Unable to convert Central's API response"
 msgstr "Impossible de convertir la réponse de L'API provenant du Central"
 

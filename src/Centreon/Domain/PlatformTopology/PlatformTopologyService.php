@@ -323,18 +323,18 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             } catch (TransportExceptionInterface $e) {
                 $message = '';
                 if (!empty($optionPayload['proxy'])) {
-                    $message = ' ' . sprintf(_("Using these proxy parameters : '%s'"), $optionPayload['proxy']);
+                    $message = ' ' . _("Please check the 'Centreon UI' and 'Remote access' forms");
                 }
                 throw new PlatformTopologyException(
-                    _("Request to the Central's API failed") . (' : ') . $e->getMessage() . $message
+                    _("Request to the Central's API failed") . ' : ' . $e->getMessage() . $message
                 );
             } catch (ClientExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("API calling the Central returned a Client exception") . (' : ') . $e->getMessage()
+                    _("API calling the Central returned a Client exception") . ' : ' . $e->getMessage()
                 );
             } catch (RedirectionExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("API calling the Central returned a Redirection exception") . (' : ') . $e->getMessage()
+                    _("API calling the Central returned a Redirection exception") . ' : ' . $e->getMessage()
                 );
             } catch (ServerExceptionInterface $e) {
                 $message = _("API calling the Central returned a Server exception");
@@ -342,15 +342,15 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $message .= '. ' . _("Please check the 'Centreon UI' and 'Remote access' forms");
                 }
                 throw new PlatformTopologyException(
-                    $message . (' : ') . $e->getMessage()
+                    $message . ' : ' . $e->getMessage()
                 );
             } catch (DecodingExceptionInterface $e) {
                 throw new PlatformTopologyException(
-                    _("Unable to convert Central's API response") . (' : ') . $e->getMessage()
+                    _("Unable to convert Central's API response") . ' : ' . $e->getMessage()
                 );
             } catch (\Exception $e) {
                 throw new PlatformTopologyException(
-                    _("Error from Central's register API") . (' : ') . $e->getMessage()
+                    _("Error from Central's register API") . ' : ' . $e->getMessage()
                 );
             }
         }
