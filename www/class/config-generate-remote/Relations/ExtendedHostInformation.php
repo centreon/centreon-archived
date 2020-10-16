@@ -47,7 +47,7 @@ class ExtendedHostInformation extends AbstractObject
     public function add(array $object, int $hostId)
     {
         if ($this->checkGenerate($hostId)) {
-            return null
+            return null;
         }
 
         $object['host_host_id'] = $hostId;
