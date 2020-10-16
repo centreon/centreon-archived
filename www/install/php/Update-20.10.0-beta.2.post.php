@@ -77,7 +77,8 @@ try {
 
     // get nagios_server children
     $childStmt = $pearDB->query(
-        "SELECT `id`, `name`, `ns_ip_address`, `remote_id` FROM nagios_server WHERE localhost != '1' ORDER BY `remote_id`"
+        "SELECT `id`, `name`, `ns_ip_address`, `remote_id`
+        FROM nagios_server WHERE localhost != '1' ORDER BY `remote_id`"
     );
     while ($row = $childStmt->fetch()) {
         //check for remote or poller child types
