@@ -98,7 +98,7 @@ try {
             $findParent = $pearDB->prepare('
                 SELECT id from platform_topology WHERE `server_id` = :remoteId
             ');
-            $findParent->bindValue(':remoteId', $row['remote_id'], \PDO::PARAM_INT);
+            $findParent->bindValue(':remoteId', (int) $row['remote_id'], \PDO::PARAM_INT);
             $findParent->execute();
             $parent = $findParent->fetchColumn();
         }
