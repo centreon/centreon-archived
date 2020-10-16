@@ -101,6 +101,9 @@ try {
             $findParent->bindValue(':remoteId', (int) $row['remote_id'], \PDO::PARAM_INT);
             $findParent->execute();
             $parent = $findParent->fetchColumn();
+            if ($parent === false) {
+                continue;
+            }
         }
 
         $errorMessage = "Unable to insert " . $serverType . ":" . $row['name'] . " in 'topology' table.";
