@@ -62,7 +62,11 @@ const getListingEndpoint = ({
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-const mockAppStateSelector = (useSelector): void => {
+interface UseSelector {
+  mockImplementation: (callback) => void;
+}
+
+const mockAppStateSelector = (useSelector: UseSelector): void => {
   const appState = {
     intervals: {
       AjaxTimeReloadMonitoring: 60,

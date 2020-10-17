@@ -13,7 +13,13 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { useRequest, getData, ListingModel, Column } from '@centreon/ui';
+import {
+  useRequest,
+  getData,
+  ListingModel,
+  Column,
+  ColumnType,
+} from '@centreon/ui';
 
 import {
   labelSomethingWentWrong,
@@ -21,10 +27,14 @@ import {
   labelNo,
 } from '../../../../translatedLabels';
 
-const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
+const getYesNoLabel = (value: boolean): string => (value ? labelYes : labelNo);
 
 interface DetailsTableColumn extends Column {
+  id: string;
+  label: string;
+  type: ColumnType;
   getContent: (details) => string | JSX.Element;
+  width: number;
 }
 
 export interface DetailsTableProps {
@@ -74,7 +84,7 @@ const DetailsTable = <TDetails extends unknown>({
           )}
           {success &&
             details?.map((detail, index) => (
-              <TableRow key={index}>
+              <TableRow key={index.toString()}>
                 {columns.map(({ label, getContent, width }) => (
                   <TableCell key={label} style={{ maxWidth: width }}>
                     <span>{getContent?.(detail)}</span>

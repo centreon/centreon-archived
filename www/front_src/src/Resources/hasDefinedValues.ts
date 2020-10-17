@@ -1,6 +1,8 @@
 import { pipe, isNil, isEmpty, not, reject, values } from 'ramda';
 
-const hasDefinedValues = (object): boolean => {
+import { ResourceUris } from './models';
+
+const hasDefinedValues = (object: ResourceUris): boolean => {
   return pipe(values, reject(isNil), isEmpty, not)(object);
 };
 

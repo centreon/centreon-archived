@@ -1,16 +1,37 @@
-import { buildListingEndpoint, ListingModel, getData } from '@centreon/ui';
+import { CancelToken } from 'axios';
+
+import {
+  buildListingEndpoint,
+  ListingModel,
+  getData,
+  SearchParameter,
+} from '@centreon/ui';
 import { TimelineEvent } from '../models';
 
-const buildListTimelineEventsEndpoint = ({ endpoint, parameters }): string =>
+interface Parameters {
+  search: SearchParameter | undefined;
+  page: number;
+  limit: number;
+}
+
+interface TimelineParams {
+  endpoint: string;
+  parameters: Parameters;
+}
+
+const buildListTimelineEventsEndpoint = ({
+  endpoint,
+  parameters,
+}: TimelineParams): string =>
   buildListingEndpoint({
     baseEndpoint: endpoint,
     parameters,
   });
 
-const listTimelineEvents = (cancelToken) => ({
+const listTimelineEvents = (cancelToken: CancelToken) => ({
   endpoint,
   parameters,
-}): Promise<ListingModel<TimelineEvent>> => {
+}: TimelineParams): Promise<ListingModel<TimelineEvent>> => {
   return getData<ListingModel<TimelineEvent>>(cancelToken)(
     buildListTimelineEventsEndpoint({ endpoint, parameters }),
   );

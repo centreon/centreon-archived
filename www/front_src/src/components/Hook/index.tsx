@@ -54,7 +54,7 @@ const Hook = React.memo(
     isEqual(previousHooks, nextHooks),
 );
 
-const mapStateToProps = ({ externalComponents }): {} => ({
+const mapStateToProps = ({ externalComponents }): Record<string, unknown> => ({
   hooks: externalComponents.hooks,
 });
 

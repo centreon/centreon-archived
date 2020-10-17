@@ -693,7 +693,7 @@ describe(Actions, () => {
     ],
   ])(
     'displays a warning message when trying to %p with limited ACL',
-    async (_, labelAction, labelAclWarning, acl) => {
+    async (l, labelAction, labelAclWarning, acl) => {
       mockedUserContext.useUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,
@@ -736,7 +736,7 @@ describe(Actions, () => {
     ],
   ])(
     'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
-    async (_, labelAction, labelAppliesOnServices, acl) => {
+    async (l, labelAction, labelAppliesOnServices, acl) => {
       mockedUserContext.useUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,

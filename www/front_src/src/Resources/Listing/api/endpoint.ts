@@ -1,8 +1,11 @@
 import { buildListingEndpoint } from '@centreon/ui';
 
 import { resourcesEndpoint } from '../../api/endpoint';
+import { ListResourcesEndpointParams } from '../../models';
 
-const buildResourcesEndpoint = (parameters): string => {
+const buildResourcesEndpoint = (
+  parameters: ListResourcesEndpointParams,
+): string => {
   return buildListingEndpoint({
     baseEndpoint: resourcesEndpoint,
     parameters,

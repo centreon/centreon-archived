@@ -58,7 +58,7 @@ const ResourceListing = (): JSX.Element => {
     setLimit(Number(event.target.value));
   };
 
-  const changePage = (_, updatedPage): void => {
+  const changePage = (e, updatedPage): void => {
     setPage(updatedPage + 1);
   };
 

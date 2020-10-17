@@ -7,6 +7,7 @@ import { fade } from '@material-ui/core';
 
 import { fontFamily } from '.';
 import formatMetricValue from './formatMetricValue';
+import { Line as LineModel } from './models';
 
 const formatTick = ({ unit, base }) => (value): string => {
   if (isNil(value)) {
@@ -16,7 +17,15 @@ const formatTick = ({ unit, base }) => (value): string => {
   return formatMetricValue({ value, unit, base }) as string;
 };
 
-const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
+interface GetGraphLinesParams {
+  lines: Array<LineModel>;
+  base?: number;
+}
+
+const getGraphLines = ({
+  lines,
+  base,
+}: GetGraphLinesParams): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
   };

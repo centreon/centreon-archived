@@ -4,13 +4,11 @@ import { ifElse, pathEq, always, pathOr } from 'ramda';
 
 import { useRequest } from '@centreon/ui';
 
-import { ResourceListing } from '../models';
+import { ResourceListing, SortOrder } from '../models';
 import { defaultSortOrder, defaultSortField } from './columns';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { labelSomethingWentWrong } from '../translatedLabels';
 import { listResources } from './api';
-
-type SortOrder = 'asc' | 'desc';
 
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 

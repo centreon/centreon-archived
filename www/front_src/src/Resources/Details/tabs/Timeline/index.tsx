@@ -166,7 +166,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     reload();
   }, [selectedTypes]);
 
-  const changeSelectedTypes = (_, typeIds): void => {
+  const changeSelectedTypes = (e, typeIds): void => {
     setSelectedTypes(typeIds);
   };
 
