@@ -31,6 +31,8 @@
     "@testing-library/user-event": "^12.1.8",
     "@types/ramda": "^0.27.27",
     "@types/react-router": "^5.1.8",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
     "babel-jest": "^26.5.2",
     "babel-loader": "^8.1.0",
     "babel-merge": "^3.0.0",
