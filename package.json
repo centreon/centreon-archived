@@ -11,7 +11,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
     "test:watch": "npm test -- --watch",
-    "start:dev": "webpack serve --mode development --config ./webpack.config.dev.js"
+    "start:dev": "webpack serve --mode development --progress --config ./webpack.config.dev.js"
   },
   "devDependencies": {
     "@babel/core": "^7.12.0",
