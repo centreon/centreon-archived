@@ -42,9 +42,9 @@ $opt = getopt('u:t:h:n:', ["help::", "root:", "node-address:", "insecure::", "te
 $helpMessage = <<<'EOD'
 This script will register a platform (CURRENT NODE) on another (TARGET NODE).
 If you register a CURRENT NODE on a TARGET NODE that is already linked to a Central,
-your informations will automatically be forward to the Central.
+your informations will automatically be forwarded to the Central.
 If you register a Remote Server, this script will automatically convert your CURRENT NODE in Remote Server.
-After executing the script, please use the wizard on your TARGET NODE to complete your installation.
+After executing the script, please use the wizard on your Central to complete your installation.
 
 Global Options:
   -u <mandatory>              username of your centreon-web account on the TARGET NODE.
