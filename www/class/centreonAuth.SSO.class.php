@@ -179,7 +179,7 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
 
-                if (!isset($user['error'])) {
+                if (!isset($user['error']) && isset($user["preferred_username"])) {
                     $this->ssoUsername = $user["preferred_username"];
                     if ($this->checkSsoClient()) {
                         $this->ssoMandatory = 1;
