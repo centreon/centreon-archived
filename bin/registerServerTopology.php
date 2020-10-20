@@ -137,7 +137,7 @@ if (isset($opt['template'])) {
         $configOptions['TARGET_NODE_ADDRESS'] . ': please enter your password ',
         true
     );
-    $configOptions['PROXY_USAGE'] =  strtolower(askQuestion("Are you using a proxy ? (y/n) "));
+    $configOptions['PROXY_USAGE'] =  strtolower(askQuestion("Are you using a proxy? (y/n) "));
 
     if (isset($opt['insecure'])) {
         $configOptions['INSECURE'] = true;
