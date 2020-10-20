@@ -198,7 +198,7 @@ foreach ($foundIps as $key => $ip) {
 
 while (!$goodIp) {
     echo $ipSelection;
-    $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP ? ');
+    $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP? ');
 
     if (!array_key_exists($ipChoice, $foundIps)) {
         echo 'Bad IP Choice' . PHP_EOL;
