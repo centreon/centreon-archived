@@ -712,7 +712,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $topology->getParentId()
                 );
                 if ($topologyParentAddress === null) {
-                    throw new PlatformTopologyException(
+                    throw new EntityNotFoundException(
                         sprintf(_("Topology address for parent platform ID: '%d' not found"), $topology->getParentId())
                     );
                 }
