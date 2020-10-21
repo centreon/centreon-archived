@@ -1,8 +1,5 @@
 Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat:
   properties:
-    id:
-      type: string
-      groups: [platform_topology_helios]
     label:
       type: string
       groups: [platform_topology_helios]
