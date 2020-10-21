@@ -289,6 +289,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             AND (l.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR l.service_id IS NULL)') . "
             AND l.msg_type IN (0,1,8,9)
             AND l.output NOT LIKE 'INITIAL % STATE:%'
+            AND l.instance_name != ''
         ");
 
         $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);

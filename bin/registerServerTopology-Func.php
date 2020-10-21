@@ -19,7 +19,6 @@
  *
  */
 
-
 /**
  * Ask question. The echo of keyboard can be disabled
  *
@@ -62,35 +61,26 @@ function isRemote(string $type): bool
  */
 function registerRemote(string $ip, array $loginCredentials): array
 {
+    require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
+    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
+    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
     $db = new CentreonDB();
     $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
     $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
 
-    $statement = $db->query("
-        SELECT COUNT(*) as `total` FROM `informations` WHERE `key` = 'isRemote' AND value = 'yes'
-    ");
-    $result = $statement->fetch(\PDO::FETCH_ASSOC);
-    $isRemote = (int) $result['total'];
-    if ($isRemote === 0) {
-        require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
-        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
-        require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
-        $topologyRepository = new \Centreon\Domain\Repository\TopologyRepository($db);
-        $informationRepository = new \Centreon\Domain\Repository\InformationsRepository($db);
-        //hide menu
-        $topologyRepository->disableMenus();
+    //hide menu
+    $topologyRepository->disableMenus();
 
-        //register remote in db
-        $informationRepository->toggleRemote('yes');
+    //register remote in db
+    $informationRepository->toggleRemote('yes');
 
-        //register master in db
-        $informationRepository->authorizeMaster($ip);
+    //register master in db
+    $informationRepository->authorizeMaster($ip);
 
-        //Apply Remote Server mode in configuration file
-        system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
-        );
-    }
+    //Apply Remote Server mode in configuration file
+    system(
+        "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
+    );
 
     try {
         $db->beginTransaction();
@@ -155,9 +145,13 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
     $count = 1;
     $bindValues = [];
     $proxyCredentials = $loginCredentials['proxy_informations'] ?? [];
-    $loginCredentials = array_filter($loginCredentials, function ($key) {
-        return $key !== 'proxy_informations';
-    }, ARRAY_FILTER_USE_KEY);
+    $loginCredentials = array_filter(
+        $loginCredentials,
+        function ($key) {
+            return $key !== 'proxy_informations';
+        },
+        ARRAY_FILTER_USE_KEY
+    );
     foreach ($loginCredentials as $key => $value) {
         $queryValues[] = " ('$key', :$key)";
         $count++;
@@ -226,21 +220,20 @@ function registerCentralCredentials(CentreonDB $db, array $loginCredentials): vo
  * @param string $type
  * @return string
  */
-function formatResponseMessage(int $code, string $message, string $type = 'success'): string
+function formatResponseMessage(string $message, string $type): string
 {
+    $date = (new DateTime())->format(DateTime::ATOM);
     switch ($type) {
         case 'success':
-            $responseMessage = 'code: ' . $code . PHP_EOL .
-                'message: ' . $message . PHP_EOL;
+            $responseMessage = $date . ' [INFO]: ' . $message . PHP_EOL;
             break;
         case 'error':
         default:
-            $responseMessage = 'error code: ' . $code . PHP_EOL .
-                'error message: ' . $message . PHP_EOL;
+            $responseMessage = $date . ' [ERROR]: ' . $message . PHP_EOL;
             break;
     }
 
-    return sprintf('%s', $responseMessage);
+    return $responseMessage;
 }
 
 /**
@@ -282,7 +275,7 @@ function castTemplateValue(array $configVariables): array
                 $configVariables[$configKey] = $configValue === 'true' ? true : false;
                 break;
             case 'PROXY_PORT':
-                $configVariables[$configKey] = (int) $configValue;
+                $configVariables[$configKey] = (int)$configValue;
                 break;
         }
     }
@@ -303,48 +296,47 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
         !isset(
             $options['API_USERNAME'],
             $options['API_PASSWORD'],
-            $options['SERVER_TYPE'],
-            $options['HOST_ADDRESS'],
-            $options['SERVER_NAME']
+            $options['CURRENT_NODE_TYPE'],
+            $options['TARGET_NODE_ADDRESS'],
+            $options['CURRENT_NODE_NAME']
         )
     ) {
         throw new \InvalidArgumentException(
             PHP_EOL .
-            'missing value: API_USERNAME, API_PASSWORD, SERVER_TYPE, HOST_ADDRESS and SERVER_NAME are mandatories'
+            'missing value: API_USERNAME, API_PASSWORD, CURRENT_NODE_TYPE,
+             TARGET_NODE_ADDRESS and CURRENT_NODE_NAME are mandatories'
             . PHP_EOL . $helpMessage
         );
     }
 
     $configOptions['API_USERNAME'] = $options['API_USERNAME'];
-    $configOptions['SERVER_TYPE'] = in_array(strtolower($options['SERVER_TYPE']), SERVER_TYPES)
-        ? strtolower($options['SERVER_TYPE'])
+    $configOptions['CURRENT_NODE_TYPE'] = in_array(strtolower($options['CURRENT_NODE_TYPE']), SERVER_TYPES)
+        ? strtolower($options['CURRENT_NODE_TYPE'])
         : null;
 
-    if (!$configOptions['SERVER_TYPE']) {
+    if (!$configOptions['CURRENT_NODE_TYPE']) {
         throw new \InvalidArgumentException(
-            "SERVER_TYPE must be one of those value"
+            "CURRENT_NODE_TYPE must be one of those value"
             . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
         );
     }
 
     $configOptions['API_PASSWORD'] = $options['API_PASSWORD'] ?? '';
     $configOptions['ROOT_CENTREON_FOLDER'] = $options['ROOT_CENTREON_FOLDER'] ?? 'centreon';
-    $configOptions['HOST_ADDRESS'] = $options['HOST_ADDRESS'];
-    $configOptions['SERVER_NAME'] = $options['SERVER_NAME'];
-
-    if (isset($options['DNS'])) {
-        $configOptions['DNS'] = filter_var($options['DNS'], FILTER_VALIDATE_DOMAIN);
-        if (!$configOptions['DNS']) {
-            throw new \InvalidArgumentException(PHP_EOL . "Bad DNS Format" . PHP_EOL);
+    $configOptions['TARGET_NODE_ADDRESS'] = $options['TARGET_NODE_ADDRESS'];
+    $configOptions['CURRENT_NODE_NAME'] = $options['CURRENT_NODE_NAME'];
+    $configOptions['PROXY_USAGE'] = filter_var($options['PROXY_USAGE'], FILTER_VALIDATE_BOOLEAN) ?? false;
+    if (isset($options['CURRENT_NODE_ADDRESS'])) {
+        $configOptions['CURRENT_NODE_ADDRESS'] = filter_var($options['CURRENT_NODE_ADDRESS'], FILTER_VALIDATE_DOMAIN);
+        if (!$configOptions['CURRENT_NODE_ADDRESS']) {
+            throw new \InvalidArgumentException(PHP_EOL . "Bad CURRENT_NODE_ADDRESS Format" . PHP_EOL);
         }
     }
 
-    if (isset($options['INSECURE']) && $options['INSECURE'] === true) {
-        $configOptions['INSECURE'] = true;
-    }
+        $configOptions['INSECURE'] = $options['INSECURE'] ?? false;
 
-    if (isset($options['PROXY_USAGE']) && $options['PROXY_USAGE'] === true) {
-        $configOptions['PROXY_USAGE'] = $options['PROXY_USAGE'];
+
+    if ($configOptions['PROXY_USAGE'] === true) {
         $configOptions["PROXY_HOST"] = $options["PROXY_HOST"] ?? '';
         $configOptions["PROXY_PORT"] = (int)$options["PROXY_PORT"] ?? '';
         $configOptions["PROXY_USERNAME"] = $options["PROXY_USERNAME"] ?? '';

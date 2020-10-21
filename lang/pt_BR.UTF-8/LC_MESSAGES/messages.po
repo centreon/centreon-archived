@@ -12702,10 +12702,6 @@ msgstr "Criando Tarefa de Exportação"
 msgid "Generating Export Files"
 msgstr "Gerando Arquivos para serem Exportados"
 
-#: centreon-web/www/install/react_translation.php:65
-msgid "Processing Remote Import/Configuration"
-msgstr "Processando Configuração/Importação Remota"
-
 #: centreon-web/www/install/react_translation.php:66
 msgid "The field is required"
 msgstr "Este campo é requerido"

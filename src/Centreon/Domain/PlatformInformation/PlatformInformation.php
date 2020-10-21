@@ -83,7 +83,6 @@ class PlatformInformation
 
     /**
      * @var bool SSL peer validation
-     * @EntityDescriptor(column="apiPeerValidation", modifier="setApiPeerValidation")
      */
     private $apiPeerValidation = false;
 
@@ -280,7 +279,7 @@ class PlatformInformation
     {
         if (null === $port || 1 > $port || $port > 65535) {
             throw new \InvalidArgumentException(
-                _("Central platform's API port are not consistent. Please check the 'Remote Access' form.")
+                _("Central platform's API port is not consistent. Please check the 'Remote Access' form.")
             );
         }
         return $port;
@@ -291,7 +290,7 @@ class PlatformInformation
      */
     public function getApiPort(): ?int
     {
-        return $this->apiPort;
+        return $this->checkPortConsistency($this->apiPort);
     }
 
     /**
@@ -300,18 +299,7 @@ class PlatformInformation
      */
     public function setApiPort(?int $port): self
     {
-        // auto resolving default scheme port
-        if (null === $port && null !== $this->apiScheme) {
-            if ('https' === $this->apiScheme) {
-                $this->apiPort = 443;
-                return $this;
-            }
-            if ('http' === $this->apiScheme) {
-                $this->apiPort = 80;
-                return $this;
-            }
-        }
-        $this->apiPort = $this->checkPortConsistency($port);
+        $this->apiPort = $port;
         return $this;
     }
 

@@ -12,7 +12,7 @@ Feature:
 
         # Register the Central on the container with a name which doesn't exist in nagios_server table
         # Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "wrong_name",
@@ -28,7 +28,7 @@ Feature:
 
         # Successfully register the Central on the container
         # (Notice : this step is automatically done on a real platform on fresh install and update)
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "Central",
@@ -40,7 +40,7 @@ Feature:
         Then the response code should be "201"
 
         # Register the same Central a second time / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "Central",
@@ -55,7 +55,7 @@ Feature:
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "Central_2",
@@ -72,7 +72,7 @@ Feature:
 
         # Register a Central linked to another Central
         # Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "Central_2",
@@ -89,7 +89,7 @@ Feature:
 
         # Check data consistency
         # Register a platform using not allowed type / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "wrong_type_server",
@@ -106,7 +106,7 @@ Feature:
             """
 
         # Register a platform using inconsistent address / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "inconsistent_address",
@@ -121,28 +121,15 @@ Feature:
             {"message":"The address '666.' of 'inconsistent_address' is not valid or not resolvable"}
             """
 
-        # Register a platform using name with at least one space / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
-            """
-            {
-                "name": "illegal space found",
-                "type": "poller",
-                "address": "666.",
-                "parent_address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "400"
-        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the strings are always different.
-
         # Register a platform using name with illegal characters / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "ill*ga|_character$_found",
                 "type": "poller",
-                "address": "666.",
-                "parent_address": "1.1.1.10"
+                "address": "1.1.10.10",
+                "parent_address": "1.1.1.10",
+                "hostname": "localhost.localdomain"
             }
             """
         Then the response code should be "400"
@@ -150,37 +137,41 @@ Feature:
         # as it contains unescaped characters and behat interpret them, so the strings are always different.
 
         # Register a platform using hostname with at least one space / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "space_in_hostname",
                 "type": "poller",
-                "address": "666.",
+                "address": "1.1.10.20",
                 "parent_address": "1.1.1.10",
-                "hostname": "found.space_in.host name.wrong"
+                "hostname": "found space"
             }
             """
         Then the response code should be "400"
-        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the strings are always different.
+        And the response should be equal to:
+            """
+            {"message":"At least one non RFC compliant character was found in platform's hostname: 'found space'"}
+            """
 
         # Register a platform using hostname with illegal characters / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "illegal_character_in_hostname",
                 "type": "poller",
-                "address": "666.",
+                "address": "1.1.10.20",
                 "parent_address": "1.1.1.10",
-                "hostname": "found.i|legal.char*cter_!n.hostname"
+                "hostname": "i|!egal.h*stname"
             }
             """
         Then the response code should be "400"
-        # Using the string '~!$%^&*\"|'<>?,()=' in the returned message. We cannot test the response message.
-        # as it contains unescaped characters and behat interpret them, so the strings are always different.
+        And the response should be equal to:
+            """
+            {"message":"At least one non RFC compliant character was found in platform's hostname: 'i|!egal.h*stname'"}
+            """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "inconsistent_parent_address",
@@ -197,7 +188,7 @@ Feature:
             """
 
         # Register a poller linked to the Central.
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "my_poller",
@@ -210,7 +201,7 @@ Feature:
         Then the response code should be "201"
 
         # Register a second time the already registered poller / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "my_poller",
@@ -226,7 +217,7 @@ Feature:
             """
 
         # Register a poller using type not formatted as expected / Should be successful
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "my_poller_2",
@@ -239,7 +230,7 @@ Feature:
         Then the response code should be "201"
 
         # Register a poller with not registered parent / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "my_poller_3",
@@ -256,7 +247,7 @@ Feature:
             """
 
         # Register a poller with no parent address / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "my_poller_4",
@@ -271,7 +262,7 @@ Feature:
             """
 
         # Register a poller using same address and parent address / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "my_poller_4",
@@ -287,7 +278,7 @@ Feature:
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/v2.0/platform/topology' with body:
             """
             {
                 "name": "inconsistent_parent_type",

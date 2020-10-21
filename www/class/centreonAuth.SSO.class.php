@@ -161,13 +161,15 @@ class CentreonAuthSSO extends CentreonAuth
                     }
                 }
 
-                $user = $this->getOpenIdConnectIntrospectionToken(
-                    $introspectionEndpoint,
-                    $clientId,
-                    $clientSecret,
-                    $tokenInfo['access_token'],
-                    $verifyPeer
-                );
+                if (!empty($tokenInfo['access_token'])) {
+                    $user = $this->getOpenIdConnectIntrospectionToken(
+                        $introspectionEndpoint,
+                        $clientId,
+                        $clientSecret,
+                        $tokenInfo['access_token'],
+                        $verifyPeer
+                    );
+                }
 
                 if (!isset($user["preferred_username"]) && isset($userInfoEndpoint)) {
                     $user = $this->getOpenIdConnectUserInfo(
@@ -177,7 +179,7 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
 
-                if (!isset($user['error'])) {
+                if (!isset($user['error']) && isset($user["preferred_username"])) {
                     $this->ssoUsername = $user["preferred_username"];
                     if ($this->checkSsoClient()) {
                         $this->ssoMandatory = 1;
