@@ -71,6 +71,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  event: {
+    display: 'grid',
+    gridAutoFlow: 'columns',
+    gridTemplateColumns: 'auto 1fr auto',
+    padding: theme.spacing(1),
+    gridGap: theme.spacing(2),
+    alignItems: 'center',
+  },
 }));
 
 interface Props {
@@ -97,7 +105,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <EventIcon color="primary" />
       <div className={classes.info}>
         <Date event={event} />
@@ -111,7 +119,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
         <Content event={event} />
       </div>
       <Typography>{`${labelTries}: ${event.tries}`}</Typography>
-    </>
+    </div>
   );
 };
 
@@ -119,7 +127,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <CommentIcon color="primary" />
       <div className={classes.info}>
         <Date event={event} />
@@ -128,7 +136,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -136,7 +144,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <AcknowledgeChip />
       <div className={classes.info}>
         <Date event={event} />
@@ -145,7 +153,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -153,7 +161,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <DowntimeChip />
       <div className={classes.info}>
         <Date event={event} />
@@ -167,7 +175,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
         </Typography>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -175,7 +183,7 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <NotificationIcon color="primary" />
       <div className={classes.info}>
         <Date event={event} />
@@ -184,7 +192,7 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 
