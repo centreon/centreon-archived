@@ -27,14 +27,6 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(1),
     width: '100%',
   },
-  event: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    padding: theme.spacing(1),
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
-  },
 }));
 
 type DateEvents = Array<[string, Array<TimelineEvent>]>;
@@ -96,7 +88,7 @@ const Events = ({
                   const Event = TimelineEventByType[type];
 
                   return (
-                    <Paper key={`${id}-${type}`} className={classes.event}>
+                    <Paper key={`${id}-${type}`}>
                       <Event event={event} />
                     </Paper>
                   );
