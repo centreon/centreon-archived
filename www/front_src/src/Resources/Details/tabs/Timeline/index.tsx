@@ -78,7 +78,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   );
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
-  const [limit] = React.useState(30);
+  const [limit] = React.useState(10);
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
@@ -147,7 +147,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   }, [details]);
 
   React.useEffect(() => {
-    if (isNil(timeline)) {
+    if (isNil(timeline) || page === 1) {
       return;
     }
 
