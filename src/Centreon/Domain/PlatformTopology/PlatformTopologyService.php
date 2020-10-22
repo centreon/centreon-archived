@@ -228,7 +228,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             } catch (RepositoryException $ex) {
                 throw new PlatformTopologyException($ex->getMessage(), $ex->getCode(), $ex);
             } catch (\Exception $ex) {
-                throw new PlatformTopologyException('', 0, $ex);
+                throw new PlatformTopologyException(_("Error from Central's register API"), 0, $ex);
             }
         }
 
