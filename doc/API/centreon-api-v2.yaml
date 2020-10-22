@@ -4312,6 +4312,10 @@ components:
           type: string
           description: "Name of the server to register in the topology"
           example: "myPoller"
+        hostname:
+          type: string
+          description: "Platform's 'physical' name"
+          example: "my.poller.physical.hostname"
         type:
           type: string
           enum: [central, poller, remote, map, mbi]
@@ -4330,9 +4334,10 @@ components:
         parent_address:
           type: string
           description: >
-            It should not be added to register a Central and only in this case.
-            Mandatory parameter for all other types, to be able to link a platform to its parent
+            It should not be added to register a Central or other platforms in specific cases:
+            Eg : To register a remote server as top level platform on its own platform.
 
+            Mandatory parameter for all other types, to be able to link a platform to its parent
             Example :
             - To link a poller to a Central
             - To link a remote server to a Central

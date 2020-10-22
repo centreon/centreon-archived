@@ -719,9 +719,7 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "openid_connect_mode",
-        !empty($ret["openid_connect_mode"]["openid_connect_mode"])
-          ? $pearDB->escape($ret["openid_connect_mode"]["openid_connect_mode"])
-          : 1
+        (int) $ret["openid_connect_mode"]["openid_connect_mode"]
     );
     updateOption(
         $pearDB,
@@ -764,6 +762,12 @@ function updateGeneralConfigData($gopt_id = null)
         "openid_connect_userinfo_endpoint",
         isset($ret["openid_connect_userinfo_endpoint"]) && $ret["openid_connect_userinfo_endpoint"] != null
             ? $pearDB->escape($ret["openid_connect_userinfo_endpoint"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "openid_connect_end_session_endpoint",
+        isset($ret["openid_connect_end_session_endpoint"]) && $ret["openid_connect_end_session_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_end_session_endpoint"]) : ""
     );
     updateOption(
         $pearDB,
@@ -1047,7 +1051,7 @@ function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
     unset($ret['apiCredentials']);
 
     //convert values
-    $ret['apiSelfSignedCertificate'] = $ret['apiSelfSignedCertificate'] == 1 ? 'yes' : 'no';
+    $ret['apiPeerValidation'] = (int) $ret['apiPeerValidation'] === 1 ? 'no' : 'yes';
 
     //update information
     foreach ($ret as $key => $value) {

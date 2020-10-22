@@ -34,6 +34,8 @@
  *
  */
 
+use Centreon\Domain\PlatformTopology\PlatformTopology;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -250,6 +252,28 @@ function deleteServerInDB(array $serverIds): void
     global $pearDB, $pearDBO, $centreon;
 
     foreach (array_keys($serverIds) as $serverId) {
+        $statement = $pearDB->prepare('SELECT `id`, `type` FROM `platform_topology` WHERE server_id = :serverId ');
+        $statement->bindValue(':serverId', (int) $serverId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        //If the deleted platform is a remote, reassign the parent_id of its children to the top level platform
+        if (
+            ($platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC))
+            && $platformInTopology['type'] === PlatformTopology::TYPE_REMOTE
+        ) {
+            $statement = $pearDB->query('SELECT id FROM `platform_topology` WHERE parent_id IS NULL');
+            if ($topPlatform = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $statement2 = $pearDB->prepare('
+                    UPDATE `platform_topology`
+                    SET `parent_id` = :topPlatformId
+                    WHERE `parent_id` = :remoteId
+                ');
+                $statement2->bindValue(':topPlatformId', (int) $topPlatform['id'], \PDO::PARAM_INT);
+                $statement2->bindValue(':remoteId', (int) $platformInTopology['id'], \PDO::PARAM_INT);
+                $statement2->execute();
+            }
+        }
+
         $result = $pearDB->query(
             "SELECT name, ns_ip_address AS ip FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
         );
@@ -265,12 +289,12 @@ function deleteServerInDB(array $serverIds): void
             $pearDB->query(
                 "DELETE FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
             );
-            // Delete all relation bewteen this Remote Server and pollers
+            // Delete all relation between this Remote Server and pollers
             $pearDB->query(
                 "DELETE FROM rs_poller_relation WHERE remote_server_id = '" . $serverId . "'"
             );
         } else {
-            // Delete all relation bewteen this poller and Remote Servers
+            // Delete all relation between this poller and Remote Servers
             $pearDB->query(
                 "DELETE FROM rs_poller_relation WHERE poller_server_id = '" . $serverId . "'"
             );

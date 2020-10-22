@@ -131,4 +131,16 @@ class EngineConfiguration
         $illegalCharacters = html_entity_decode($illegalCharacters);
         return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
     }
+
+    /**
+     * Find if the given string has an illegal character in it.
+     *
+     * @param string $stringToCheck String to analyse
+     * @param string|null $illegalCharacters String containing illegal characters
+     * @return bool Return true if illegal characters have been found
+     */
+    public static function hasIllegalCharacters(string $stringToCheck, ?string $illegalCharacters): bool
+    {
+        return $stringToCheck !== self::removeIllegalCharacters($stringToCheck, $illegalCharacters);
+    }
 }

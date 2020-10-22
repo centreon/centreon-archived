@@ -49,8 +49,9 @@ class PlatformTopologyController extends AbstractController
      * PlatformTopologyController constructor
      * @param PlatformTopologyServiceInterface $platformTopologyService
      */
-    public function __construct(PlatformTopologyServiceInterface $platformTopologyService)
-    {
+    public function __construct(
+        PlatformTopologyServiceInterface $platformTopologyService
+    ) {
         $this->platformTopologyService = $platformTopologyService;
     }
 
@@ -113,39 +114,19 @@ class PlatformTopologyController extends AbstractController
             $platformTopology = (new PlatformTopology())
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
-                ->setType($platformToAdd['type']);
-
-            // Check for empty parent_address consistency
-            if (
-                empty($platformToAdd['parent_address'])
-                && $platformTopology->getType() !== PlatformTopology::TYPE_CENTRAL
-                && $platformTopology->getType() !== PlatformTopology::TYPE_REMOTE
-            ) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _("Missing mandatory parent address, to link the platform : '%s'@'%s'"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
-                    )
-                );
-            }
-
-            // Check for same address and parent_address
-            if ($platformToAdd['parent_address'] === $platformTopology->getAddress()) {
-                throw new \InvalidArgumentException("The address and parent_address of the platform are the same");
-            }
-
-            if (isset($platformToAdd['parent_address'])) {
-                $platformTopology->setParentAddress($platformToAdd['parent_address']);
-            }
+                ->setType($platformToAdd['type'])
+                ->setHostname($platformToAdd['hostname'])
+                ->setParentAddress($platformToAdd['parent_address']);
 
             $this->platformTopologyService->addPlatformToTopology($platformTopology);
 
             return $this->view(null, Response::HTTP_CREATED);
-        } catch (PlatformTopologyConflictException $ex) {
-            throw new PlatformTopologyException($ex->getMessage(), Response::HTTP_CONFLICT, $ex);
+        } catch (EntityNotFoundException $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (PlatformTopologyConflictException  $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
         } catch (\Throwable $ex) {
-            throw new PlatformTopologyException($ex->getMessage(), 0, $ex);
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }

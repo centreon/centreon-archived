@@ -46,26 +46,29 @@ interface PlatformTopologyRepositoryInterface
     ): bool;
 
     /**
-     * Search for platform ID using its address
+     * Search for platform's ID using its address
      *
      * @param string $serverAddress
      * @return PlatformTopology|null
+     * @throws \Exception
      */
     public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology;
 
     /**
-     * Search for platform name and address using its type
+     * Search for platform's name and address using its type
      *
      * @param string $serverType
      * @return PlatformTopology|null
+     * * @throws \Exception
      */
     public function findPlatformTopologyByType(string $serverType): ?PlatformTopology;
 
     /**
-     * Search for platform nagiosID using its name
+     * Search for local platform's monitoring Id using its name
      *
      * @param string $serverName
      * @return PlatformTopology|null
+     * @throws \Exception
      */
-    public function findPlatformTopologyNagiosId(string $serverName): ?PlatformTopology;
+    public function findLocalMonitoringIdFromName(string $serverName): ?PlatformTopology;
 }

@@ -164,6 +164,12 @@ services:
         class: Centreon\Domain\Gorgone\GorgoneService
         public: true
 
+    # Information data used in the configuration
+    Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface:
+        class: Centreon\Domain\PlatformInformation\PlatformInformationService
+
+    Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface:
+        class: Centreon\Infrastructure\PlatformInformation\PlatformInformationRepositoryRDB
 
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:

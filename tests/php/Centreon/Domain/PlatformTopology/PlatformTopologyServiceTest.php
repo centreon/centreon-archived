@@ -21,15 +21,25 @@
 
 namespace Tests\Centreon\Domain\PlatformTopology;
 
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Engine\EngineException;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
+use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PlatformTopologyServiceTest extends TestCase
 {
@@ -44,14 +54,54 @@ class PlatformTopologyServiceTest extends TestCase
     protected $platformTopology;
 
     /**
+     * @var PlatformTopology|null $registeredParent
+     */
+    protected $registeredParent;
+
+    /**
      * @var PlatformTopologyRepositoryInterface&MockObject $platformTopologyRepository
      */
     protected $platformTopologyRepository;
 
     /**
+     * @var HttpClientInterface|null $httpClient
+     */
+    protected $httpClient;
+
+    /**
+     * @var PlatformInformationServiceInterface&MockObject $platformInformationService
+     */
+    private $platformInformationService;
+
+    /**
+     * @var ProxyServiceInterface&MockObject $proxyService
+     */
+    private $proxyService;
+
+    /**
+     * @var EngineConfiguration|null $engineConfiguration
+     */
+    protected $engineConfiguration;
+
+    /**
+     * @var EngineConfigurationServiceInterface&MockObject $engineConfigurationService
+     */
+    protected $engineConfigurationService;
+
+    /**
+     * @var MonitoringServerServiceInterface&MockObject $monitoringServerService
+     */
+    protected $monitoringServerService;
+
+    /**
+     * @var MonitoringServer;
+     */
+    protected $monitoringServer;
+
+    /**
      * initiate query data
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adminContact = (new Contact())
             ->setId(1)
@@ -62,22 +112,68 @@ class PlatformTopologyServiceTest extends TestCase
             ->setName('poller1')
             ->setAddress('1.1.1.2')
             ->setType('poller')
-            ->setParentAddress('1.1.1.1');
+            ->setParentAddress('1.1.1.1')
+            ->setHostname('localhost.localdomain');
+
+        $this->registeredParent = (new PlatformTopology())
+            ->setName('Central')
+            ->setAddress('1.1.1.1')
+            ->setType('central')
+            ->setId(1)
+            ->setHostname('central.localdomain');
+
+        $this->engineConfiguration = (new EngineConfiguration())
+            ->setId(1)
+            ->setIllegalObjectNameCharacters('$!?')
+            ->setMonitoringServerId(1)
+            ->setName('Central');
+
+        $this->monitoringServer = (new MonitoringServer())
+            ->setId(1)
+            ->setName('Central');
 
         $this->platformTopologyRepository = $this->createMock(PlatformTopologyRepositoryInterface::class);
+        $this->platformInformationService = $this->createMock(PlatformInformationServiceInterface::class);
+        $this->proxyService = $this->createMock(ProxyServiceInterface::class);
+        $this->httpClient = $this->createMock(HttpClientInterface::class);
+        $this->engineConfigurationService = $this->createMock(EngineConfigurationServiceInterface::class);
+        $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
     }
 
     /**
      * test addPlatformToTopology with already existing platform
+     * @throws PlatformTopologyConflictException
+     * @throws MonitoringServerException
+     * @throws EngineException
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     * @throws PlatformInformationException
      */
-    public function testAddPlatformToTopologyAlreadyExists()
+    public function testAddPlatformToTopologyAlreadyExists(): void
     {
         $this->platformTopologyRepository
             ->expects($this->once())
             ->method('isPlatformAlreadyRegisteredInTopology')
             ->willReturn(true);
 
-        $platformTopologyService = new PlatformTopologyService($this->platformTopologyRepository);
+        $this->monitoringServerService
+            ->expects($this->once())
+            ->method('findLocalServer')
+            ->willReturn($this->monitoringServer);
+
+        $this->engineConfigurationService
+            ->expects($this->once())
+            ->method('findEngineConfigurationByName')
+            ->willReturn($this->engineConfiguration);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService
+        );
 
         $this->expectException(PlatformTopologyConflictException::class);
         $this->expectExceptionMessage("A platform using the name : 'poller1' or address : '1.1.1.2' already exists");
@@ -86,8 +182,14 @@ class PlatformTopologyServiceTest extends TestCase
 
     /**
      * test addPlatformToTopology with not found parent
+     * @throws PlatformTopologyConflictException
+     * @throws MonitoringServerException
+     * @throws EngineException
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     * @throws PlatformInformationException
      */
-    public function testAddPlatformToTopologyNotFoundParent()
+    public function testAddPlatformToTopologyNotFoundParent(): void
     {
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -99,7 +201,24 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('findPlatformTopologyByAddress')
             ->willReturn(null);
 
-        $platformTopologyService = new PlatformTopologyService($this->platformTopologyRepository);
+        $this->monitoringServerService
+            ->expects($this->once())
+            ->method('findLocalServer')
+            ->willReturn($this->monitoringServer);
+
+        $this->engineConfigurationService
+            ->expects($this->once())
+            ->method('findEngineConfigurationByName')
+            ->willReturn($this->engineConfiguration);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService
+        );
 
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage("No parent platform was found for : 'poller1'@'1.1.1.2'");
@@ -108,10 +227,16 @@ class PlatformTopologyServiceTest extends TestCase
 
     /**
      * test addPlatformToTopology which succeed
+     * @throws PlatformTopologyConflictException
+     * @throws MonitoringServerException
+     * @throws EngineException
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     * @throws PlatformInformationException
      */
-    public function testAddPlatformToTopologySuccess()
+    public function testAddPlatformToTopologySuccess(): void
     {
-        $this->platformTopology->setParentAddress(null);
+        $this->platformTopology->setParentId(1);
 
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -120,10 +245,32 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->once())
+            ->method('findPlatformTopologyByAddress')
+            ->willReturn($this->registeredParent);
+
+        $this->monitoringServerService
+            ->expects($this->once())
+            ->method('findLocalServer')
+            ->willReturn($this->monitoringServer);
+
+        $this->engineConfigurationService
+            ->expects($this->once())
+            ->method('findEngineConfigurationByName')
+            ->willReturn($this->engineConfiguration);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
             ->method('addPlatformToTopology')
             ->willReturn(null);
 
-        $platformTopologyService = new PlatformTopologyService($this->platformTopologyRepository);
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService
+        );
 
         $this->assertNull($platformTopologyService->addPlatformToTopology($this->platformTopology));
     }

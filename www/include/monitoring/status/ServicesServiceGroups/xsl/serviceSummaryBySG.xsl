@@ -33,6 +33,7 @@
 				</xsl:if>
 				<xsl:element name="a">
 				  	<xsl:attribute name="href"><xsl:value-of select="h_details_uri"/></xsl:attribute>
+                      <xsl:attribute name="isreact">true</xsl:attribute>
 					<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 				    <xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 					<xsl:value-of select="hn"/>
@@ -66,6 +67,7 @@
                     <xsl:if test="sc >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href"><xsl:value-of select="s_listing_critical"/></xsl:attribute>
+                            <xsl:attribute name="isreact">true</xsl:attribute>
                             <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sc" /></xsl:attribute>
@@ -76,6 +78,7 @@
                     <xsl:if test="sw >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href"><xsl:value-of select="s_listing_warning"/></xsl:attribute>
+                            <xsl:attribute name="isreact">true</xsl:attribute>
                             <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sw" /></xsl:attribute>
@@ -86,6 +89,7 @@
                     <xsl:if test="su >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href"><xsl:value-of select="s_listing_unknown"/></xsl:attribute>
+                            <xsl:attribute name="isreact">true</xsl:attribute>
                             <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//su" /></xsl:attribute>
@@ -96,6 +100,7 @@
                     <xsl:if test="sk >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href"><xsl:value-of select="s_listing_ok"/></xsl:attribute>
+                            <xsl:attribute name="isreact">true</xsl:attribute>
                             <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sk" /></xsl:attribute>
@@ -106,6 +111,7 @@
                     <xsl:if test="sp >= 1">
                         <xsl:element name="a">
                             <xsl:attribute name="href"><xsl:value-of select="s_listing_pending"/></xsl:attribute>
+                            <xsl:attribute name="isreact">true</xsl:attribute>
                             <xsl:attribute name="class">margin_right</xsl:attribute>
                             <xsl:element name="span">
                                 <xsl:attribute name="class">state_badge <xsl:value-of select="//sp" /></xsl:attribute>

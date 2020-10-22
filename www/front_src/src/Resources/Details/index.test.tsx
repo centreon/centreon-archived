@@ -211,8 +211,19 @@ const retrievedTimeline = {
       content: 'My little dt',
     },
     {
-      type: 'comment',
+      type: 'downtime',
       id: 6,
+      date: '2020-06-20T08:57:00',
+      start_date: '2020-06-19T09:30:00',
+      end_date: null,
+      contact: {
+        name: 'super_admin',
+      },
+      content: 'My little ongoing dt',
+    },
+    {
+      type: 'comment',
+      id: 7,
       date: '2020-06-20T08:55:00',
       start_date: '2020-06-20T09:30:00',
       end_date: '2020-06-22T09:33:00',
@@ -527,6 +538,11 @@ describe(Details, () => {
       getByText('From 06/20/2020 09:30 To 06/22/2020 09:33'),
     ).toBeInTheDocument();
     expect(getByText('My little dt'));
+
+    expect(getByText('08:57')).toBeInTheDocument();
+    expect(getByText('Downtime by super_admin')).toBeInTheDocument();
+    expect(getByText('From 06/19/2020 09:30')).toBeInTheDocument();
+    expect(getByText('My little ongoing dt'));
 
     expect(getByText('08:55')).toBeInTheDocument();
     expect(getByText('Comment by admin')).toBeInTheDocument();
