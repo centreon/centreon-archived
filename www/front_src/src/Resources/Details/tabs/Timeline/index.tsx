@@ -78,7 +78,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   );
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
-  const [limit] = React.useState(10);
+  const [limit] = React.useState(30);
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
