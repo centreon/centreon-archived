@@ -24,9 +24,6 @@ namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 
-/**
- * Interface used to call the DB repository
- */
 interface PlatformTopologyRepositoryInterface
 {
     /**

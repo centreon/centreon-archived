@@ -28,9 +28,6 @@ use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Domain\Repository\RepositoryException;
 
-/**
- * Interface used to call the registering repository
- */
 interface PlatformTopologyRegisterRepositoryInterface
 {
     /**
