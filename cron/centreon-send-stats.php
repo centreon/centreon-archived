@@ -64,6 +64,9 @@ $result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statisti
 if ($row = $result->fetch()) {
     $shouldSendStatistics = (bool)$row['value'];
 }
+if (! $shouldSendStatistics) {
+    exit;
+}
 
 // Check if it's a Central server
 $result = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
