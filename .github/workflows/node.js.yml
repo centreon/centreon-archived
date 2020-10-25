@@ -27,11 +27,15 @@ jobs:
     - run: npm ci
     #- run: npm run build --if-present
     - run: npm run eslint -- -o checkstyle-fe.xml -f checkstyle
-    - uses: IgnusG/jest-report-action@v2.3.3
-      if: always() # Or use "continue-on-error: true" in previous test step
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1.3
+      if: always()
       with:
-        access-token: ${{ secrets.GITHUB_TOKEN }}
-        junit-file: checkstyle-fe.xml
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        check_name: Unit Test Results
+        files: checkstyle-fe.xml
+        report_individual_runs: true
+        deduplicate_classes_by_file_name: false
     - run: npm t -- --ci --reporters=jest-junit --runInBand
     - uses: actions/upload-artifact@v2
       with:
