@@ -26,4 +26,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     #- run: npm run build --if-present
-    - run: npm test
+    - run: npm run eslint -- -o checkstyle-fe.xml -f checkstyle
+    - run: npm t -- --ci --reporters=jest-junit --runInBand
+    - uses: ashley-taylor/junit-report-annotations-action@master
+      with:
+        access-token: ${{ secrets.GITHUB_TOKEN }}
+      if: always()
