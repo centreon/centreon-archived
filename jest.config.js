@@ -7,9 +7,4 @@ module.exports = merge(require('@centreon/frontend-core/jest'), {
     '<rootDir>/setupTest.js',
   ],
   testEnvironment: 'jest-environment-jsdom-sixteen',
-  "jest-junit": {
-    "suiteNameTemplate": "{filepath}",
-    "classNameTemplate": "{classname}",
-    "titleTemplate": "{title}"
-  }
 });
