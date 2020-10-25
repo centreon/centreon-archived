@@ -27,6 +27,11 @@ jobs:
     - run: npm ci
     #- run: npm run build --if-present
     - run: npm run eslint -- -o checkstyle-fe.xml -f checkstyle
+    - uses: IgnusG/jest-report-action@v2.3.3
+      if: always() # Or use "continue-on-error: true" in previous test step
+      with:
+        access-token: ${{ secrets.GITHUB_TOKEN }}
+        junit-file: checkstyle-fe.xml
     - run: npm t -- --ci --reporters=jest-junit --runInBand
     - uses: actions/upload-artifact@v2
       with:
