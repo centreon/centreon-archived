@@ -131,7 +131,9 @@
     "testURL": "http://localhost/"
   },
   "jest-junit": {
-    "suiteName": "jest tests",
-    "output": "./jest-test-results.xml"
+    "output": "./jest-test-results.xml",
+    "suiteNameTemplate": "{filepath}",
+    "classNameTemplate": "{classname}",
+    "titleTemplate": "{title}"
   }
 }
