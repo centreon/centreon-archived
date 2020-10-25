@@ -165,7 +165,7 @@ describe(Listing, () => {
     });
 
     resourcesWithSingleLines.forEach(({ information }) => {
-      expect(getByText(information)).not.toBeInTheDocument();
+      expect(getByText(information)).toBeInTheDocument();
     });
   });
 
