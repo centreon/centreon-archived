@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Configuration;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Proxy\Proxy;
@@ -83,7 +84,12 @@ class ProxyController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
+        /**
+         * @var ContactInterface $user
+         */
+        $user = $this->getUser();
+
+        if (!$user->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
         $data = json_decode((string) $request->getContent(), true);
