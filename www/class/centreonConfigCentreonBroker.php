@@ -403,6 +403,7 @@ class CentreonConfigCentreonBroker
                     }
 
                     foreach ($this->getListValues($field['id']) as $key => $value) {
+                        $elementAttr['id'] = uniqid('qf_' . $key . '_#index#');
                         $tmpRadio[] = $qf->createElement(
                             'radio',
                             $field['fieldname'],
@@ -865,7 +866,13 @@ class CentreonConfigCentreonBroker
             if (isset($row['fieldIndex']) && !is_null($row['fieldIndex']) && $row['fieldIndex'] != "") {
                 $fieldname = $tag . '[' . $row['config_group_id'] . '][' .
                     $this->getConfigFieldName($config_id, $tag, $row) . '_#index#]';
-                $arrayMultipleValues[$fieldname][] = $row['config_value'];
+                if (preg_match('/__(.+)$/', $row['config_key'], $matches)) {
+                    $suffix = $matches[1];
+                } else {
+                    $suffix = '';
+                }
+                $arrayMultipleValues[$fieldname]['suffix'] = $suffix;
+                $arrayMultipleValues[$fieldname]['values'][] = $row['config_value'];
             } else {
                 if (isset($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
                     if (!is_array($formsInfos[$row['config_group_id']]['defaults'][$fieldname])) {
@@ -903,7 +910,9 @@ class CentreonConfigCentreonBroker
                     if ($isMultiple && $field['group'] !== '') {
                         $parentGroup = $this->getParentGroups($field['group'], $isMultiple);
                         $parentGroup = $parentGroup . "_" . $key;
-                        $arrayMultiple[$parentGroup][$elementName] = $arrayMultipleValues[$elementName];
+                        $radioButtonName = $elementName . '[' . $arrayMultipleValues[$elementName]['suffix'] . ']';
+                        $arrayMultiple[$parentGroup][$elementName] = $arrayMultipleValues[$elementName]['values'];
+                        $arrayMultiple[$parentGroup][$radioButtonName] = $arrayMultipleValues[$elementName]['values'];
                     }
                 }
             }
@@ -925,6 +934,7 @@ class CentreonConfigCentreonBroker
                 }
             }
         }
+
         $this->generateCdata();
 
         return $forms;
