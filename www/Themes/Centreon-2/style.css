@@ -560,14 +560,14 @@ p.description a, p.description a:visited {
 /* ----------- States --------------- */
 
 .default_badge      {background-color: #00a499;}
-.host_down, .danger, .service_critical  {background-color: #e00b3d;}
-.host_unreachable, .unknown     {background-color: #818285;}
+.host_down, .danger, .service_critical  {background-color: #ED1C24;}
+.host_unreachable, .unknown     {background-color: #818185;}
 .host_downtime      {background-color: #cc99ff;}
 
-.service_ok,.host_up, .success  {background-color: #88b917;}
-.service_warning, .warning  {background-color: #ff9a13;}
+.service_ok,.host_up, .success  {background-color: #87BD23;}
+.service_warning, .warning  {background-color: #FF9913;}
 .pending    {background-color: #2AD1D4;}
-.service_unknown    {background-color: #bcbdc0;}
+.service_unknown    {background-color: #CDCDCD;}
 .info {background-color: #00bfb3;}
 .ack {background-color: #AA9C24;}
 
