@@ -408,7 +408,9 @@ if (!$getInputs['engine']) {
      */
     function apply_period() {
         var openid = getArgsForHost();
-        logs(openid[0], '', '');
+        const args = openid[0];
+        document.getElementById('openid').innerHTML = args;
+        logs(args, '', '');
     }
 
     function apply_period_engine() {
