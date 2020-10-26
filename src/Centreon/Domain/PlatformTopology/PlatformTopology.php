@@ -181,7 +181,6 @@ class PlatformTopology
      * Validate address consistency
      *
      * @param string|null $address the address to be tested
-     *
      * @return string|null
      */
     private function checkIpAddress(?string $address): ?string

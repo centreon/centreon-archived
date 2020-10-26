@@ -22,11 +22,6 @@
 namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Application\Controller\PlatformTopologyController;
-use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
@@ -178,6 +173,7 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController->setContainer($this->container);
 
         $view = $platformTopologyController->addPlatformToTopology($this->request);
+
         $this->assertEquals(
             $view,
             View::create(['message' => 'bad request'], Response::HTTP_BAD_REQUEST)
