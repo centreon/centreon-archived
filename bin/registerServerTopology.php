@@ -137,7 +137,7 @@ if (isset($opt['template'])) {
         $configOptions['TARGET_NODE_ADDRESS'] . ': please enter your password ',
         true
     );
-    $configOptions['PROXY_USAGE'] =  strtolower(askQuestion("Are you using a proxy ? (y/n)"));
+    $configOptions['PROXY_USAGE'] =  strtolower(askQuestion("Are you using a proxy? (y/n) "));
 
     if (isset($opt['insecure'])) {
         $configOptions['INSECURE'] = true;
@@ -198,7 +198,7 @@ foreach ($foundIps as $key => $ip) {
 
 while (!$goodIp) {
     echo $ipSelection;
-    $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP ?');
+    $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP? ');
 
     if (!array_key_exists($ipChoice, $foundIps)) {
         echo 'Bad IP Choice' . PHP_EOL;
@@ -246,7 +246,7 @@ EOD;
 
 echo $summary;
 
-$proceed = askQuestion('Do you want to register this server with those information ? (y/n)');
+$proceed = askQuestion('Do you want to register this server with those information? (y/n) ');
 $proceed = strtolower($proceed);
 if ($proceed !== "y") {
     exit(0);
@@ -259,13 +259,13 @@ if (isRemote($serverType)) {
     require_once(realpath(__DIR__ . '/../config/centreon.config.php'));
     require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 
-    require_once _CENTREON_PATH_ . "/src/Security/Interfaces/EncryptionInterface.php";
-    require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
+    require_once _CENTREON_PATH_ . '/src/Security/Interfaces/EncryptionInterface.php';
+    require_once _CENTREON_PATH_ . '/src/Security/Encryption.php';
 
-    require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/Mapping/ClassMetadata.php";
-    require_once _CENTREON_PATH_ . "/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php";
-    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/InformationsRepository.php";
-    require_once _CENTREON_PATH_ . "/src/Centreon/Domain/Repository/TopologyRepository.php";
+    require_once _CENTREON_PATH_ . '/src/Centreon/Infrastructure/CentreonLegacyDB/Mapping/ClassMetadata.php';
+    require_once _CENTREON_PATH_ . '/src/Centreon/Infrastructure/CentreonLegacyDB/ServiceEntityRepository.php';
+    require_once _CENTREON_PATH_ . '/src/Centreon/Domain/Repository/InformationsRepository.php';
+    require_once _CENTREON_PATH_ . '/src/Centreon/Domain/Repository/TopologyRepository.php';
 
     define("SECOND_KEY", base64_encode('api_remote_credentials'));
     /*
