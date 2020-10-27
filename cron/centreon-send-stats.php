@@ -103,7 +103,8 @@ if ($row = $result->fetch()) {
 }
 
 // Only send telemetry & statistics if it's a Centreon central server
-if ($isRemote === false) {
+// But don't send telemetry & statistics if the Open Source Edition administrator has made this choice
+if ($isRemote === false && ($shouldSendStatistics === true || $hasValidLicenses === true)) {
     try {
         $http = new CentreonRestHttp();
         $oStatistics = new CentreonStatistics($logger);
