@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,9 +31,6 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
@@ -161,7 +159,7 @@ for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
                 "else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
                 " 	setO(this.form.elements['o1'].value); submit();} " .
                 "this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
+    $form->addElement('select', 'o1', null, array(null=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
     $form->setDefaults(array('o1' => null));
 
     $attrs2 = array(
@@ -176,7 +174,7 @@ for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
                 "else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
                 " 	setO(this.form.elements['o2'].value); submit();} " .
                 "this.form.elements['o2'].selectedIndex = 0");
-    $form->addElement('select', 'o2', null, array(null=>_("More actions"), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
+    $form->addElement('select', 'o2', null, array(null=>_("More actions"), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
     $form->setDefaults(array('o2' => null));
 
     $o1 = $form->getElement('o1');
