@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Area, Line, YAxis } from 'recharts';
-import { pipe, uniq, prop, map, isNil } from 'ramda';
+import { pipe, uniq, prop, map } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
