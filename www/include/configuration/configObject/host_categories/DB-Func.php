@@ -222,7 +222,8 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
                     $result = $pearDB->execute($statement2, array($hcId));
                     $fields["hc_hosts"] = "";
                     while ($host = $result->fetchRow()) {
-                        $pearDB->prepare("INSERT INTO hostcategories_relation VALUES ('', '" . $maxId["MAX(hc_id)"] . "', '" . $host["host_host_id"] . "')");
+                        $statement3 = $pearDB->prepare("INSERT INTO hostcategories_relation VALUES ('', ? , ?)");
+                        $pearDB->execute($statement3, array($maxId["MAX(hc_id)"], $host["host_host_id"]));
                         $fields["hc_hosts"] .= $host["host_host_id"] . ",";
                     }
                     $fields["hc_hosts"] = trim($fields["hc_hosts"], ",");
