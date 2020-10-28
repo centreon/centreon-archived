@@ -4,9 +4,8 @@ import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { Severity, useSnackbar, useRequest } from '@centreon/ui';
+import { Severity, useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
 
-import useLocaleDateTimeFormat from '../../../../Provider/useLocaleDateTimeFormat';
 import { useUserContext } from '../../../../Provider/UserContext';
 import {
   labelRequired,

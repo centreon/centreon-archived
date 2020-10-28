@@ -16,7 +16,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import IconCopyFile from '@material-ui/icons/FileCopy';
 
-import { useSnackbar, Severity } from '@centreon/ui';
+import { useSnackbar, Severity, useLocaleDateTimeFormat } from '@centreon/ui';
 import copyToClipBoard from '@centreon/ui/src/utils/copy';
 
 import ExpandableCard from './ExpandableCard';
@@ -39,7 +39,6 @@ import AcknowledgeChip from '../../../Chip/Acknowledge';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 import { ResourceDetails } from '../../models';
-import useLocaleDateTimeFormat from '../../../../Provider/useLocaleDateTimeFormat';
 
 const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {

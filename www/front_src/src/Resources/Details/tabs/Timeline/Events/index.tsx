@@ -14,11 +14,10 @@ import {
 
 import { Typography, Paper, makeStyles } from '@material-ui/core';
 
-import { useIntersectionObserver } from '@centreon/ui';
+import { useIntersectionObserver, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import { TimelineEvent } from '../models';
 import { TimelineEventByType } from '../Event';
-import useLocaleDateTimeFormat from '../../../../../Provider/useLocaleDateTimeFormat';
 
 const useStyles = makeStyles((theme) => ({
   events: {

@@ -2,14 +2,15 @@ import dayjs from 'dayjs';
 import { find, propEq } from 'ramda';
 
 import {
+  timeFormat,
+  dateTimeFormat,
+} from '@centreon/ui';
+
+import {
   labelLast24h,
   labelLast7Days,
   labelLast31Days,
 } from '../../../translatedLabels';
-import {
-  timeFormat,
-  dateTimeFormat,
-} from '../../../../Provider/useLocaleDateTimeFormat';
 
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
 

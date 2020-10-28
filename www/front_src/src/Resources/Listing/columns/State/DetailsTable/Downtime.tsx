@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 
 import { makeStyles } from '@material-ui/core';
 
-import { ColumnType } from '@centreon/ui';
+import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import {
   labelAuthor,
@@ -17,7 +17,6 @@ import {
   labelComment,
 } from '../../../../translatedLabels';
 import DetailsTable, { DetailsTableProps } from '.';
-import useLocaleDateTimeFormat from '../../../../../Provider/useLocaleDateTimeFormat';
 
 const useStyles = makeStyles({
   comment: {

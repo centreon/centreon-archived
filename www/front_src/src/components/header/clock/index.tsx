@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { Typography, makeStyles } from '@material-ui/core';
-import useLocaleDateTimeFormat from '../../../Provider/useLocaleDateTimeFormat';
+
+import { useLocaleDateTimeFormat } from '@centreon/ui';
 
 const useStyles = makeStyles((theme) => ({
   dateTime: {

@@ -5,11 +5,10 @@ import EventIcon from '@material-ui/icons/Event';
 import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
-import { StatusChip } from '@centreon/ui';
+import { StatusChip, useLocaleDateTimeFormat } from '@centreon/ui';
 import { prop, isNil } from 'ramda';
 
 import { useTranslation } from 'react-i18next';
-import useLocaleDateTimeFormat from '../../../../Provider/useLocaleDateTimeFormat';
 import { TimelineEvent, Type } from './models';
 import {
   labelEvent,

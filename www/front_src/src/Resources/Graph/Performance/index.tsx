@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
-import { useRequest, getData } from '@centreon/ui';
+import { useRequest, getData, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
@@ -32,10 +32,6 @@ import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import getGraphLines from './Lines';
 import formatMetricValue from './formatMetricValue';
-import useLocaleDateTimeFormat, {
-  timeFormat,
-  dateTimeFormat,
-} from '../../../Provider/useLocaleDateTimeFormat';
 
 const fontFamily = 'Roboto, sans-serif';
 
