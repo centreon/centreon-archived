@@ -335,7 +335,26 @@ $form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 $form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
+$form->addRule('oreon_path',_('Mandatory field'), 'required');
 $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
+$form->addRule('oreon_web_path',_('Mandatory field'), 'required');
+$form->addRule('AjaxTimeReloadMonitoring', _('Mandatory field'), 'required');
+$form->addRule('AjaxTimeReloadMonitoring', _('Must be a number'), 'numeric');
+$form->addRule('AjaxTimeReloadStatistic', _('Mandatory field'), 'required');
+$form->addRule('AjaxTimeReloadStatistic', _('Must be a number'), 'numeric');
+$form->addRule('selectPaginationSize', _('Mandatory field'), 'required');
+$form->addRule('selectPaginationSize', _('Must be a number'), 'numeric');
+$form->addRule('maxGraphPerformances', _('Mandatory field'), 'required');
+$form->addRule('maxGraphPerformances', _('Must be a number'), 'numeric');
+$form->addRule('maxViewConfiguration', _('Mandatory field'), 'required');
+$form->addRule('maxViewConfiguration', _('Must be a number'), 'numeric');
+$form->addRule('maxViewMonitoring', _('Mandatory field'), 'required');
+$form->addRule('maxViewMonitoring', _('Must be a number'), 'numeric');
+$form->addRule('session_expire', _('Mandatory field'), 'required');
+$form->addRule('session_expire', _('Must be a number'), 'numeric');
+
+
+
 
 /*
  * Smarty template Init
