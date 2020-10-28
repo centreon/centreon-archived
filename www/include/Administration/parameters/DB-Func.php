@@ -432,6 +432,10 @@ function updateLdapConfigData($gopt_id = null)
     $ret = array();
     $ret = $form->getSubmitValues();
 
+    if (!isset($ret['AjaxTimeReloadStatistic'])) {
+        throw new \InvalidArgumentException('Missing submitted values');
+    }
+
     updateOption(
         $pearDB,
         "ldap_host",
