@@ -928,40 +928,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $serviceGroups;
         }
 
-        $hostGroupConcordanceArray = [
-            'id' => 'hg.hostgroup_id',
-            'name' => 'hg.name'
+        $serviceGroupConcordanceArray = [
+            'id' => 'sg.servicegroup_id',
+            'name' => 'sg.name'
         ];
 
-        // To allow to find host groups relating to host information
-        $hostConcordanceArray = [
-            'host.id' => 'h.host_id',
-            'host.name' => 'h.name',
-            'host.alias' => 'h.alias',
-            'host.address' => 'h.address',
-            'host.display_name' => 'h.display_name',
-            'host.state' => 'h.state',
-            'poller.id' => 'h.instance_id'];
-
-        $serviceConcordanceArray = [
-            'service.display_name' => 'srv.display_name',
-            'service_group.id' => 'sg.servicegroup_id',
-            'service_group.name' => 'sg.name'
-        ];
-
-        $searchParameters = $this->sqlRequestTranslator->getRequestParameters()->extractSearchNames();
-
-        $shouldJoinHost = false;
-        if (count(array_intersect($searchParameters, array_keys($hostConcordanceArray))) > 0) {
-            $shouldJoinHost = true;
-            $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $hostConcordanceArray);
-        }
-
-        if (count(array_intersect($searchParameters, array_keys($serviceConcordanceArray))) > 0) {
-            $shouldJoinHost = true;
-            $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $serviceConcordanceArray);
-        }
-        $this->sqlRequestTranslator->setConcordanceArray($hostGroupConcordanceArray);
+        $this->sqlRequestTranslator->setConcordanceArray($serviceGroupConcordanceArray);
 
         $sqlExtraParameters = [];
         $subRequest = '';
@@ -988,30 +960,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                     ON gcgr.acl_group_id = grp.acl_group_id
                 LEFT JOIN `:db`.contactgroup_contact_relation cgcr
                     ON cgcr.contactgroup_cg_id = gcgr.cg_cg_id
-                    AND cgcr.contact_contact_id = :contact_id 
+                    AND cgcr.contact_contact_id = :contact_id
                     OR gcr.contact_contact_id = :contact_id';
         }
 
-        // This join will only be added if a search parameter corresponding to one of the host parameter
-        if ($shouldJoinHost) {
-            $subRequest .=
-                ' INNER JOIN `:dbstg`.services_servicegroups ssg 
-                    ON ssg.servicegroup_id = sg.servicegroup_id
-                    AND ssg.service_id = srv.service_id
-                INNER JOIN `:dbstg`.hosts h
-                    ON h.host_id = ssg.host_id';
-
-            if (!$this->isAdmin()) {
-                $subRequest .=
-                    ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                        ON acl.host_id = h.host_id
-                        AND acl.service_id = srv.service_id
-                        AND acl.group_id = grp.acl_group_id';
-            }
-        }
-
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.* 
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.*
             FROM `:dbstg`.`servicegroups` sg ' . $subRequest;
         $request = $this->translateDbName($request);
 
