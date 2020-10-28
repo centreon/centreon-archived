@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -58,7 +59,7 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 $path = "./include/configuration/configObject/service_categories/";
 
 #PHP functions
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -72,45 +73,41 @@ $aclDbName = $acl->getNameDBAcl();
 $scString = $acl->getServiceCategoriesString();
 
 switch ($o) {
-    case "mc":
-        require_once($path."formServiceCategories.php");
-        break; # Massive Change
     case "a":
-        require_once($path."formServiceCategories.php");
-        break; #Add a service category
+        // Add a service category
     case "w":
-        require_once($path."formServiceCategories.php");
-        break; #Watch a service category
+        // Watch a service category
     case "c":
-        require_once($path."formServiceCategories.php");
-        break; #Modify a service category
+        // Modify a service category
+        require_once($path . "formServiceCategories.php");
+        break;
     case "s":
+        // Activate a Service category
         enableServiceCategorieInDB($sc_id);
-        require_once($path."listServiceCategories.php");
-        break; #Activate a Service category
+        require_once($path . "listServiceCategories.php");
+        break;
     case "ms":
         enableServiceCategorieInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceCategories.php");
+        require_once($path . "listServiceCategories.php");
         break;
     case "u":
+        // Deactivate a Service category
         disableServiceCategorieInDB($sc_id);
-        require_once($path."listServiceCategories.php");
-        break; #Desactivate a service category
+        require_once($path . "listServiceCategories.php");
+        break;
     case "mu":
         disableServiceCategorieInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceCategories.php");
+        require_once($path . "listServiceCategories.php");
         break;
-
     case "m":
+        // Duplicate n service categories
         multipleServiceCategorieInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listServiceCategories.php");
-        break; #Duplicate n service categories
-
+        require_once($path . "listServiceCategories.php");
+        break;
     case "d":
+        // Delete n service categories
         deleteServiceCategorieInDB(isset($select) ? $select : array());
-        require_once($path."listServiceCategories.php");
-        break; #Delete n service categories
     default:
-        require_once($path."listServiceCategories.php");
+        require_once($path . "listServiceCategories.php");
         break;
 }
