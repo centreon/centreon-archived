@@ -366,19 +366,24 @@ $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default
 
 $valid = false;
 if ($form->validate()) {
-    /*
-     * Update in DB
-     */
-    updateGeneralConfigData(1);
+    try {
+        /*
+        * Update in DB
+        */
+        updateGeneralConfigData(1);
 
-    /*
-     * Update in Oreon Object
-     */
-    $centreon->initOptGen($pearDB);
+        /*
+        * Update in Oreon Object
+        */
+        $centreon->initOptGen($pearDB);
 
-    $o = null;
-    $valid = true;
-    $form->freeze();
+        $o = null;
+        $valid = true;
+        $form->freeze();
+    } catch (\InvalidArgumentException $e) {
+        print("<div class='msg' align='center'>" . $e->getMessage() . "</div>");
+        $valid = false;
+    }
 }
 
 if (!$form->validate() && isset($_POST["gopt_id"])) {
