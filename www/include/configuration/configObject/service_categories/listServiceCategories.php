@@ -190,7 +190,6 @@ $form->addElement(
         null => _("More actions..."),
         "m" => _("Duplicate"),
         "d" => _("Delete"),
-        "mc" => _("Massive Change"),
         "ms" => _("Enable"),
         "mu" => _("Disable")
     ),
@@ -222,7 +221,6 @@ $form->addElement(
         null => _("More actions"),
         "m" => _("Duplicate"),
         "d" => _("Delete"),
-        "mc" => _("Massive Change"),
         "ms" => _("Enable"),
         "mu" => _("Disable")
     ),
