@@ -353,9 +353,6 @@ $form->addRule('maxViewMonitoring', _('Must be a number'), 'numeric');
 $form->addRule('session_expire', _('Mandatory field'), 'required');
 $form->addRule('session_expire', _('Must be a number'), 'numeric');
 
-
-
-
 /*
  * Smarty template Init
  */
