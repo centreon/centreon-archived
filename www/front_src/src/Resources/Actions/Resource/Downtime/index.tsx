@@ -4,7 +4,12 @@ import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { Severity, useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
+import {
+  Severity,
+  useSnackbar,
+  useRequest,
+  useLocaleDateTimeFormat,
+} from '@centreon/ui';
 
 import { useUserContext } from '../../../../Provider/UserContext';
 import {
@@ -95,7 +100,7 @@ const DowntimeForm = ({
     showMessage({ message, severity: Severity.success });
 
   const { username } = useUserContext();
-  const { format, toIsoString } = useLocaleDateTimeFormat();
+  const { toIsoString } = useLocaleDateTimeFormat();
 
   const {
     sendRequest: sendSetDowntimeOnResources,
@@ -103,8 +108,6 @@ const DowntimeForm = ({
   } = useRequest({
     request: setDowntimeOnResources,
   });
-
-  // const currentDate = new Date(format({ date: new Date() }));
 
   const currentDate = new Date();
 
