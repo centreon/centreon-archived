@@ -7,7 +7,7 @@ def maintenanceBranch = "${serie}.x"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
-} else if ((env.BRANCH_NAME == 'master') || (env.BRANCH_NAME == maintenanceBranch)) {
+} else if ((env.BRANCH_NAME == 'sonar-master') || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
 } else {
   env.BUILD = 'CI'
@@ -25,10 +25,8 @@ stage('Source') {
       checkout scm
     }
     // git repository is stored for the Sonar analysis below.
-    if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-      sh 'tar czf centreon-web-git.tar.gz centreon-web'
-      stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
-    }
+    sh 'tar czf centreon-web-git.tar.gz centreon-web'
+    stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
@@ -97,13 +95,10 @@ try {
             ]
           ])
         }
-
-        if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-          unstash 'git-sources'
-          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-          withSonarQubeEnv('SonarQube') {
-            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-          }
+        unstash 'git-sources'
+        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        withSonarQubeEnv('SonarQube') {
+          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
       }
     },
@@ -120,7 +115,19 @@ try {
     }
   }
 
-  stage('Package') {
+  stage('SonarQube quality gate') {
+    timeout(time: 10, unit: 'MINUTES') {
+      def qualityGate = waitForQualityGate()
+      if (qualityGate.status != 'OK') {
+        currentBuild.result = 'FAIL'
+      }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Quality gate failure: ${qualityGate.status}.');
+    }
+  }
+
+  /* stage('Package') {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
@@ -158,9 +165,9 @@ try {
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
     }
-  }
+  } */
 
-  stage('API integration tests') {
+  /* stage('API integration tests') {
     def parallelSteps = [:]
     for (x in apiFeatureFiles) {
       def feature = x
@@ -170,10 +177,10 @@ try {
           unstash 'tar-sources'
           unstash 'vendor'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
+          junit 'xunit-reports *//** /* *//*.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs *//*.txt'
         }
       }
     }
@@ -193,10 +200,10 @@ try {
           unstash 'tar-sources'
           unstash 'vendor'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
+          junit 'xunit-reports *//** /* *//*.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs *//*.txt, acceptance-logs *//*.png, acceptance-logs *//*.flv'
         }
       }
     }
@@ -227,8 +234,9 @@ try {
       build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
       build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
     }
-  }
+  } */
 } catch(e) {
+  /*
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
     slackSend channel: "#monitoring-metrology",
         color: "#F30031",
@@ -236,6 +244,7 @@ try {
             "*COMMIT*: <https://github.com/centreon/centreon/commit/${source.COMMIT}|here> by ${source.COMMITTER}\n" +
             "*INFO*: ${e}"
   }
+  */
 
   currentBuild.result = 'FAILURE'
 }
