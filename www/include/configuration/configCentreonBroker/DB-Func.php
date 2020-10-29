@@ -121,7 +121,7 @@ function getCentreonBrokerInformation($id)
 
     $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate,
                     config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
-                    cache_directory, command_file, daemon
+                    cache_directory, command_file, daemon, pool_size
                   FROM cfg_centreonbroker 
                   WHERE config_id = " . $id;
     try {
@@ -151,7 +151,8 @@ function getCentreonBrokerInformation($id)
         "event_queue_max_size" => $row['event_queue_max_size'],
         "cache_directory" => $row['cache_directory'],
         "command_file" => $row['command_file'],
-        "daemon" => $row['daemon']
+        "daemon" => $row['daemon'],
+        "pool_size" => $row['pool_size']
     );
 
     return $brokerConf;
@@ -249,4 +250,21 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
             $cbObj->insertConfig($values);
         }
     }
+}
+
+/**
+ * @param $size
+ * @return bool
+ */
+function isPositiveNumeric($size): bool
+{
+    if (!is_numeric($size)) {
+        return false;
+    }
+    
+    $isPositive = false;
+    if ((int)$size === (int)abs($size)) {
+        $isPositive = true;
+    }
+    return $isPositive;
 }

@@ -51,7 +51,8 @@ class Broker extends AbstractObjectJSON
         command_file,
         cache_directory,
         stats_activate,
-        daemon
+        daemon,
+        pool_size
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -154,7 +155,10 @@ class Broker extends AbstractObjectJSON
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
             $object['command_file'] = (string) $row['command_file'];
             $object['cache_directory'] = (string) $cache_directory;
-
+            if(!is_null($row['pool_size'])){
+                $object['pool_size'] = (int)$row['pool_size'];
+            }
+            
             if ($row['daemon'] == '1') {
                 $watchdog['cbd'][] = [
                     'name' => $row['config_name'],
