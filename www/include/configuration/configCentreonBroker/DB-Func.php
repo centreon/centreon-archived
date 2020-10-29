@@ -261,7 +261,6 @@ function isPositiveNumeric($size): bool
     if (!is_numeric($size)) {
         return false;
     }
-    
     $isPositive = false;
     if ((int)$size === (int)abs($size)) {
         $isPositive = true;

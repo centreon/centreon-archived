@@ -628,7 +628,7 @@ class CentreonConfigCentreonBroker
             . "VALUES (:config_name, :config_filename, :ns_nagios_server, :config_activate, :daemon, "
             . ":config_write_timestamp, :config_write_thread_id, :stats_activate, :cache_directory, "
             . ":event_queue_max_size, :command_file, :pool_size)";
-    
+
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
