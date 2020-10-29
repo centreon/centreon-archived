@@ -808,15 +808,8 @@ paths:
 
         The available parameters to **search** / **sort_by** are:
 
-        * host.id
-        * host.name
-        * host.alias
-        * host.address
-        * host.state
-        * poller.id
-        * service.display_name
-        * service_group.id
-        * service_group.name
+        * id
+        * name
       parameters:
         - $ref: '#/components/parameters/ShowService'
         - $ref: '#/components/parameters/ShowHost'
@@ -4013,10 +4006,6 @@ components:
           type: string
           description: "Name of the service group"
           example: "MySG"
-        host:
-          allOf:
-            - $ref: '#/components/schemas/Monitoring.HostMin'
-            - $ref: '#/components/schemas/Monitoring.HostWithService'
     Monitoring.ServiceMin:
       type: object
       properties:

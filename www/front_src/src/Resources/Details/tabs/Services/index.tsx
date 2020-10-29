@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 
@@ -8,11 +8,12 @@ import { makeStyles, Paper, Typography } from '@material-ui/core';
 
 import { useRequest, StatusChip } from '@centreon/ui';
 
-import { TabProps } from '..';
+import { TabProps, detailsTabId } from '..';
 import { listServices } from './api';
 import { listServicesDecoder } from './api/decoders';
 import { Service } from './models';
 import { useResourceContext } from '../../../Context';
+import { labelNoResultsFound } from '../../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   services: {
@@ -33,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
+  },
+  noResultContainer: {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -65,6 +69,8 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceType,
     setSelectedResourceParentId,
     setSelectedResourceParentType,
+    setOpenDetailsTabId,
+    selectedResourceId,
   } = useResourceContext();
 
   const [services, setServices] = React.useState<Array<Service>>();
@@ -82,7 +88,14 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     sendRequest(details.id).then(({ result }) => setServices(result));
   }, [details]);
 
+  React.useEffect(() => {
+    if (selectedResourceId !== details?.id) {
+      setServices(undefined);
+    }
+  }, [selectedResourceId]);
+
   const selectService = (serviceId) => (): void => {
+    setOpenDetailsTabId(detailsTabId);
     setSelectedResourceParentType('host');
     setSelectedResourceParentId(details?.id);
     setSelectedResourceId(serviceId);
@@ -92,6 +105,16 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const getContent = (): JSX.Element => {
     if (isNil(details) || isNil(services)) {
       return <LoadingSkeleton />;
+    }
+
+    if (isEmpty(services)) {
+      return (
+        <Paper className={classes.noResultContainer}>
+          <Typography align="center" variant="body1">
+            {t(labelNoResultsFound)}
+          </Typography>
+        </Paper>
+      );
     }
 
     return (
