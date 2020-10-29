@@ -235,9 +235,9 @@ if (!is_null($host_id)) {
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
             $service_status["command_line"] = hidePasswordInCommand(
-                $service_status["check_command"],
+                $service_status["service_id"],
                 $host_id,
-                $service_status["service_id"]
+                $service_status["check_command"]
             );
         }
 
