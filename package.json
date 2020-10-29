@@ -98,8 +98,6 @@
     "jsdom": "^16.3.0",
     "kind-of": "^6.0.3",
     "loaders.css": "^0.1.2",
-    "moment": "2.27.0",
-    "moment-timezone": "^0.5.31",
     "numeral": "^2.0.6",
     "query-string": "^6.13.1",
     "ramda": "^0.27.1",
