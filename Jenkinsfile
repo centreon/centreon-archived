@@ -160,7 +160,7 @@ try {
     }
   }
 
-  stage('API integration tests') {
+  /* stage('API integration tests') {
     def parallelSteps = [:]
     for (x in apiFeatureFiles) {
       def feature = x
@@ -170,10 +170,10 @@ try {
           unstash 'tar-sources'
           unstash 'vendor'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
+          junit 'xunit-reports *//** /* *//*.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs *//*.txt'
         }
       }
     }
@@ -193,10 +193,10 @@ try {
           unstash 'tar-sources'
           unstash 'vendor'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
+          junit 'xunit-reports *//** /* *//*.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs *//*.txt, acceptance-logs *//*.png, acceptance-logs *//*.flv'
         }
       }
     }
@@ -227,7 +227,7 @@ try {
       build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
       build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
     }
-  }
+  } */
 } catch(e) {
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
     slackSend channel: "#monitoring-metrology",
