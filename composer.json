@@ -50,7 +50,7 @@
         "sensio/framework-extra-bundle": "^5.3",
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",
-        "symfony/flex": "^1.1",
+        "symfony/flex": "^1.9",
         "symfony/framework-bundle": "4.4.*",
         "symfony/security-bundle": "4.4.*",
         "symfony/yaml": "4.4.*",
@@ -65,8 +65,7 @@
         "justinrainbow/json-schema": "^5.2",
         "ext-openssl": "*",
         "symfony/http-client": "4.4.*",
-        "dragonmantank/cron-expression": "3.0.1",
-        "ext-pdo": "*"
+        "dragonmantank/cron-expression": "3.0.1"
     },
     "autoload": {
         "psr-4": {
