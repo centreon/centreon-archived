@@ -23,7 +23,13 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
-import { useRequest, getData, useLocaleDateTimeFormat } from '@centreon/ui';
+import {
+  useRequest,
+  getData,
+  useLocaleDateTimeFormat,
+  timeFormat,
+  dateTimeFormat,
+} from '@centreon/ui';
 
 import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';

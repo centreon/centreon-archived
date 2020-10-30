@@ -21,6 +21,7 @@ import {
 import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -46,7 +47,6 @@ import {
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
-import { useUserContext } from '../../../../Provider/UserContext';
 
 interface Props {
   resources: Array<Resource>;

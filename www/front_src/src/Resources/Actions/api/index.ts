@@ -1,6 +1,5 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
-import { map, pick, startsWith } from 'ramda';
-import dayjs from 'dayjs';
+import { map, pick } from 'ramda';
 
 import {
   acknowledgeEndpoint,

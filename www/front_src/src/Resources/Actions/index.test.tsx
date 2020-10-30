@@ -12,8 +12,10 @@ import {
   fireEvent,
   act,
 } from '@testing-library/react';
-
 import userEvent from '@testing-library/user-event';
+
+import { useUserContext } from '@centreon/ui-context';
+
 import {
   labelAcknowledgedBy,
   labelDowntimeBy,
@@ -53,7 +55,6 @@ import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { mockAppStateSelector, cancelTokenRequestParam } from '../testUtils';
 import { Resource } from '../models';
-import * as UserContext from '../../Provider/UserContext';
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
@@ -70,8 +71,6 @@ const onRefresh = jest.fn();
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
-
-jest.mock('../icons/Downtime');
 
 const mockUserContext = {
   username: 'admin',
@@ -98,9 +97,14 @@ const mockUserContext = {
   },
 };
 
-jest.mock('../../Provider/UserContext');
+jest.mock('@centreon/ui-context', () => ({
+  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
+  useUserContext: jest.fn(),
+}));
 
-const mockedUserContext = UserContext as jest.Mocked<typeof UserContext>;
+const mockedUserContext = useUserContext as jest.Mock;
+
+jest.mock('../icons/Downtime');
 
 const ActionsWithLoading = (): JSX.Element => {
   useLoadResources();
@@ -172,14 +176,14 @@ describe(Actions, () => {
     mockDate.set(mockNow);
     mockAppStateSelector(useSelector);
 
-    mockedUserContext.useUserContext.mockReturnValue(mockUserContext);
+    mockedUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
 
-    mockedUserContext.useUserContext.mockReset();
+    mockedUserContext.mockReset();
   });
 
   it('executes a listing request when the refresh button is clicked', async () => {
@@ -551,7 +555,7 @@ describe(Actions, () => {
   });
 
   it('cannot execute an action when associated ACL are not sufficient', async () => {
-    mockedUserContext.useUserContext.mockReset().mockReturnValue({
+    mockedUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
       acl: {
         actions: {
@@ -689,7 +693,7 @@ describe(Actions, () => {
   ])(
     'displays a warning message when trying to %p with limited ACL',
     async (_, labelAction, labelAclWarning, acl) => {
-      mockedUserContext.useUserContext.mockReset().mockReturnValue({
+      mockedUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,
       });
@@ -732,7 +736,7 @@ describe(Actions, () => {
   ])(
     'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
     async (_, labelAction, labelAppliesOnServices, acl) => {
-      mockedUserContext.useUserContext.mockReset().mockReturnValue({
+      mockedUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,
       });
@@ -758,7 +762,7 @@ describe(Actions, () => {
   it('disables the submit status action when one of the following condition is met: ACL are not sufficient, more than one resource is selected, selected resource is not passive', async () => {
     const { getByText } = renderActions();
 
-    mockedUserContext.useUserContext.mockReset().mockReturnValue({
+    mockedUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
       acl: {
         actions: {

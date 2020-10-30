@@ -1,10 +1,7 @@
 import dayjs from 'dayjs';
 import { find, propEq } from 'ramda';
 
-import {
-  timeFormat,
-  dateTimeFormat,
-} from '@centreon/ui';
+import { timeFormat, dateTimeFormat } from '@centreon/ui';
 
 import {
   labelLast24h,

@@ -10,17 +10,16 @@ import utcPlugin from 'dayjs/plugin/utc';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { Provider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
-
-import { useRequest, getData, Loader } from '@centreon/ui';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+
+import { useRequest, getData, Loader } from '@centreon/ui';
+import { Context, useUser, useAcl } from '@centreon/ui-context';
+
 import App from '../App';
 import createStore from '../store';
-import Context from './UserContext';
 import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
 import { User, Actions } from './models';
-import useUser from './useUser';
-import useAcl from './useAcl';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);

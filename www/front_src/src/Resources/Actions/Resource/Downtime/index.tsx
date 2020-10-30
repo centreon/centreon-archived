@@ -10,8 +10,8 @@ import {
   useRequest,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
-import { useUserContext } from '../../../../Provider/UserContext';
 import {
   labelRequired,
   labelDowntimeCommandSent,
