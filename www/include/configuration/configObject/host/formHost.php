@@ -1,7 +1,8 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under     
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,9 +34,11 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
-}
+# commit to remove ;;; 
+
+if
+ (!isset($centreon)) {
+    exit();}
 
 if (!$centreon->user->admin) {
     if ($host_id && false === strpos($aclHostString, "'" . $host_id . "'")) {
