@@ -248,59 +248,57 @@ $count = 0;
 if (isset($tab_finalH)) {
     foreach ($tab_finalH as $hg_name => $tab_host) {
         foreach ($tab_host as $host_name => $tab) {
-            if (isset($tabService[$host_name]["tab_svc"]) && count($tabService[$host_name]["tab_svc"])) {
-                if (isset($hg_name) && $hg != $hg_name) {
-                    if ($hg != "") {
-                        $obj->XML->endElement();
-                    }
-                    $hg = $hg_name;
-                    $obj->XML->startElement("hg");
-                    $obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
-                    $obj->XML->writeElement("hgid", CentreonUtils::escapeSecure($tabHG[$hg_name]));
+            if (isset($hg_name) && $hg != $hg_name) {
+                if ($hg != "") {
+                    $obj->XML->endElement();
                 }
-                $obj->XML->startElement("l");
-                $obj->XML->writeAttribute("class", $obj->getNextLineClass());
-                if (isset($tabService[$host_name]["tab_svc"])) {
-                    foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {
-                        $serviceId = $svcObj->getServiceId($svc, $host_name);
-                        $obj->XML->startElement("svc");
-                        $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc));
-                        $obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
-                        $obj->XML->writeElement("sc", $obj->colorService[$state]);
-                        $obj->XML->writeElement("svc_id", $serviceId);
-                        $obj->XML->writeElement(
-                            "s_details_uri",
-                            $resourceController->buildServiceDetailsUri($tabH[$host_name], $serviceId)
-                        );
-                        $obj->XML->endElement();
-                    }
-                }
-                $obj->XML->writeElement("o", $ct);
-                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
-                if (isset($tab["icon"]) && $tab["icon"]) {
-                    $obj->XML->writeElement("hico", $tab["icon"]);
-                } else {
-                    $obj->XML->writeElement("hico", "none");
-                }
-                $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
-                $obj->XML->writeElement("hid", CentreonUtils::escapeSecure($tabH[$host_name]));
-                $obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
-                $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
-                $obj->XML->writeElement("hcount", $count);
-                $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($tabH[$host_name]));
-                $obj->XML->writeElement(
-                    "s_listing_uri",
-                    $resourceController->buildListingUri([
-                        'filter' => json_encode([
-                            'criterias' => [
-                                'search' => 'h.name:^' . $host_name . '$',
-                            ],
-                        ]),
-                    ])
-                );
-                $obj->XML->endElement();
-                $count++;
+                $hg = $hg_name;
+                $obj->XML->startElement("hg");
+                $obj->XML->writeElement("hgn", CentreonUtils::escapeSecure($hg_name));
+                $obj->XML->writeElement("hgid", CentreonUtils::escapeSecure($tabHG[$hg_name]));
             }
+            $obj->XML->startElement("l");
+            $obj->XML->writeAttribute("class", $obj->getNextLineClass());
+            if (isset($tabService[$host_name]["tab_svc"])) {
+                foreach ($tabService[$host_name]["tab_svc"] as $svc => $state) {
+                    $serviceId = $svcObj->getServiceId($svc, $host_name);
+                    $obj->XML->startElement("svc");
+                    $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc));
+                    $obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
+                    $obj->XML->writeElement("sc", $obj->colorService[$state]);
+                    $obj->XML->writeElement("svc_id", $serviceId);
+                    $obj->XML->writeElement(
+                        "s_details_uri",
+                        $resourceController->buildServiceDetailsUri($tabH[$host_name], $serviceId)
+                    );
+                    $obj->XML->endElement();
+                }
+            }
+            $obj->XML->writeElement("o", $ct);
+            $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($host_name), false);
+            if (isset($tab["icon"]) && $tab["icon"]) {
+                $obj->XML->writeElement("hico", $tab["icon"]);
+            } else {
+                $obj->XML->writeElement("hico", "none");
+            }
+            $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
+            $obj->XML->writeElement("hid", CentreonUtils::escapeSecure($tabH[$host_name]));
+            $obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
+            $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+            $obj->XML->writeElement("hcount", $count);
+            $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($tabH[$host_name]));
+            $obj->XML->writeElement(
+                "s_listing_uri",
+                $resourceController->buildListingUri([
+                    'filter' => json_encode([
+                        'criterias' => [
+                            'search' => 'h.name:^' . $host_name . '$',
+                        ],
+                    ]),
+                ])
+            );
+            $obj->XML->endElement();
+            $count++;
         }
         $ct++;
     }
