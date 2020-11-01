@@ -48,7 +48,7 @@ use vars qw($BACKUP_ENABLED $BACKUP_DIR $TEMP_DIR);
 use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_FULL $BACKUP_DATABASE_PARTIAL $BACKUP_RETENTION);
 use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF);
 use vars qw($TEMP_DB_DIR $TEMP_CENTRAL_DIR $TEMP_CENTRAL_ETC_DIR $TEMP_CENTRAL_INIT_DIR $TEMP_CENTRAL_CRON_DIR $TEMP_CENTRAL_LOG_DIR $TEMP_CENTRAL_BIN_DIR $TEMP_CENTRAL_LIC_DIR $CENTREON_MODULES_PATH $TEMP_POLLERS $DISTANT_POLLER_BACKUP_DIR);
-use vars qw($BIN_GZIP $BIN_TAR);
+use vars qw($BIN_ZIP $BIN_TAR $Z);
 use vars qw($scp_enabled $scp_user $scp_host $scp_directory);
 use vars qw($centreon_config);
 
@@ -154,8 +154,9 @@ $BACKUP_RETENTION = $backupOptions->{'backup_retention'}->{'value'};
 $BACKUP_CONFIGURATION_FILES = $backupOptions->{'backup_configuration_files'}->{'value'};
 $MYSQL_CONF = $backupOptions->{'backup_mysql_conf'}->{'value'};
 
-$BIN_GZIP = "";
+$BIN_ZIP = "";
 $BIN_TAR = "";
+$Z = "";
 
 if ( -e $BACKUP_DIR) {
     if (! -w $BACKUP_DIR) {
@@ -213,11 +214,18 @@ sub trim($) {
 }
 
 sub getbinaries() {
-    $BIN_GZIP = `which gzip`;
-    $BIN_GZIP = trim($BIN_GZIP);
+    $BIN_ZIP = `which bzip2`;
+    $BIN_ZIP = trim($BIN_ZIP);
+    $Z = "bz2";
 
-    if ($BIN_GZIP =~ /no .* in/) {
-        print STDERR "Unable to get gzip binary\n";
+    if ( $BIN_ZIP =~ /no .* in/ ) {
+        $BIN_ZIP = `which gzip`;
+        $BIN_ZIP = trim($BIN_ZIP);
+        $Z = "gz";
+    }
+
+    if ( $BIN_ZIP =~ /no .* in/ ) {
+        print STDERR "Unable to get bzip2/gzip binary\n";
     }
 
     $BIN_TAR = `which tar`;
@@ -239,7 +247,7 @@ sub exportBackup($) {
         # Export database backups
         if ($export_type == 0 && ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1')) {
             chdir($TEMP_DB_DIR);
-            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+            `scp *.gz *.bz2 $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
             } else {
@@ -250,7 +258,7 @@ sub exportBackup($) {
         # Export configuration files backup
         if ($export_type == 1 && $BACKUP_CONFIGURATION_FILES == '1') {
             chdir($TEMP_CENTRAL_DIR);
-            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+            `scp *.gz *.bz2 $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_CENTRAL_DIR . "\n";
             } else {
@@ -390,8 +398,8 @@ sub databasesBackup() {
 
         # Make archives from databases dump
         if ($BACKUP_DATABASE_CENTREON == '1') {
-            $file = $TEMP_DB_DIR . "/" . $today . "-centreon.sql.gz";
-            `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_oreon | $BIN_GZIP  > $file`;
+            $file = $TEMP_DB_DIR . "/" . $today . "-centreon.sql.$Z";
+            `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_oreon | $BIN_ZIP  > $file`;
             if ($? ne 0) {
                 print STDERR "Unable to dump database: " . $mysql_database_oreon . "\n";
             } else {
@@ -407,8 +415,8 @@ sub databasesBackup() {
             my $process_number = `ps aux | grep -v grep |grep "centstorage" | wc -l | bc`;
 
             if ($process_number == 0) {
-                $file = $TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.gz";
-                `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_ods | $BIN_GZIP  > $file`;
+                $file = $TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.$Z";
+                `mysqldump -u $mysql_user -h $mysql_host -p'$mysql_passwd' $mysql_database_ods | $BIN_ZIP  > $file`;
                 if ($? ne 0) {
                     print STDERR "Unable to dump database: " . $mysql_database_ods . "\n";
                 } else {
@@ -435,17 +443,17 @@ sub databasesBackup() {
 
     # Export archives
     exportBackup(0);
-    if (-r $TEMP_DB_DIR . "/" . $today . "-mysql-full.tar.gz") {
-        move($TEMP_DB_DIR . "/" . $today . "-mysql-full.tar.gz", $BACKUP_DIR . "/" . $today . "-mysql-full.tar.gz");
+    if (-r $TEMP_DB_DIR . "/" . $today . "-mysql-full.tar.$Z") {
+        move($TEMP_DB_DIR . "/" . $today . "-mysql-full.tar.$Z", $BACKUP_DIR . "/" . $today . "-mysql-full.tar.$Z");
     }
-    if (-r $TEMP_DB_DIR . "/" . $today . "-mysql-partial.tar.gz") {
-        move($TEMP_DB_DIR . "/" . $today . "-mysql-partial.tar.gz", $BACKUP_DIR . "/" . $today . "-mysql-partial.tar.gz");
+    if (-r $TEMP_DB_DIR . "/" . $today . "-mysql-partial.tar.$Z") {
+        move($TEMP_DB_DIR . "/" . $today . "-mysql-partial.tar.$Z", $BACKUP_DIR . "/" . $today . "-mysql-partial.tar.$Z");
     }
-    if (-r $TEMP_DB_DIR . "/" . $today . "-centreon.sql.gz") {
-        move($TEMP_DB_DIR . "/" . $today . "-centreon.sql.gz", $BACKUP_DIR . "/" . $today . "-centreon.sql.gz");
+    if (-r $TEMP_DB_DIR . "/" . $today . "-centreon.sql.$Z") {
+        move($TEMP_DB_DIR . "/" . $today . "-centreon.sql.$Z", $BACKUP_DIR . "/" . $today . "-centreon.sql.$Z");
     }
-    if (-r $TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.gz") {
-        move($TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.gz", $BACKUP_DIR . "/" . $today . "-centreon_storage.sql.gz");
+    if (-r $TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.$Z") {
+        move($TEMP_DB_DIR . "/" . $today . "-centreon_storage.sql.$Z", $BACKUP_DIR . "/" . $today . "-centreon_storage.sql.$Z");
     }
 
     # Delete temporary directories
@@ -693,15 +701,15 @@ sub centralBackup() {
     # Make archive #
     ################
     chdir($TEMP_DIR);
-    `$BIN_TAR -czf $today-central.tar.gz central`;
-    move("$today-central.tar.gz", "central/$today-central.tar.gz");
+    `$BIN_TAR -cf - central | $BIN_ZIP > $today-central.tar.$Z`;
+    move("$today-central.tar.$Z", "central/$today-central.tar.$Z");
     if ($? ne 0) {
         print STDERR "Unable to make tar of backup\n";
     }
 
     # Export archives
     exportBackup(1);
-    move($TEMP_CENTRAL_DIR . "/" . $today . "-central.tar.gz", $BACKUP_DIR . "/" . $today . "-central.tar.gz");
+    move($TEMP_CENTRAL_DIR . "/" . $today . "-central.tar.$Z", $BACKUP_DIR . "/" . $today . "-central.tar.$Z");
 
     # Remove all temp directory
     chdir;
@@ -771,7 +779,7 @@ sub monitoringengineBackup() {
     ########
     # Logs #
     ########
-    mkpath($TEMP_CENTRAL_DIR."/logs", {mode => 0755, error => \my $err_list});
+    mkpath($TEMP_CENTRAL_LOG_DIR . "/centreon-engine", {mode => 0755, error => \my $err_list});
     if (@$err_list) {
         for my $diag (@$err_list) {
             my ($file, $message) = %$diag;
@@ -783,20 +791,9 @@ sub monitoringengineBackup() {
         }
     }
 
-    copy($nagios_server->{log_file}, ($TEMP_CENTRAL_DIR."/logs/centengine.log"));
+    copy($nagios_server->{log_file}, ($TEMP_CENTRAL_LOG_DIR . "/centreon-engine/"));
     my $logs_archive_directory = substr($nagios_server->{log_archive_path}, 0, rindex($nagios_server->{log_archive_path}, "/"));
-    mkpath($TEMP_CENTRAL_DIR."/logs/archives", {mode => 0755, error => \my $err_list});
-    if (@$err_list) {
-        for my $diag (@$err_list) {
-            my ($file, $message) = %$diag;
-            if ($file eq '') {
-                print STDERR "Unable to create temporary directories because: " . $message . "\n";
-            } else {
-                print STDERR "Problem with file  " . $file . ": " . $message . "\n";
-            }
-        }
-    }
-    `cp -p $logs_archive_directory/* $TEMP_CENTRAL_DIR/logs/archives/`;
+    `cp -pr $logs_archive_directory/ $TEMP_CENTRAL_LOG_DIR/centreon-engine/`;
     if ($? != 0) {
         print STDERR "Unable to copy monitoring engine logs archives\n";
     }
@@ -869,15 +866,15 @@ sub monitoringengineBackup() {
     if (-d "$centreonengine_home/.ssh") {
         `cp -pr $centreonengine_home/.ssh/* $TEMP_CENTRAL_DIR/ssh-centreon-engine/`;
     } else {
-        print STDERR "No ssh keys for Centreon Engine\n";
+        print STDERR "No SSH keys for Centreon Engine\n";
     }
 
     ##################
     # Make archives #
     #################
     chdir($TEMP_DIR);
-    `$BIN_TAR -czf $today-centreon-engine.tar.gz central`;
-    move("$today-centreon-engine.tar.gz", "central/$today-centreon-engine.tar.gz");
+    `$BIN_TAR -cf - central | $BIN_ZIP > $today-centreon-engine.tar.$Z`;
+    move("$today-centreon-engine.tar.$Z", "central/$today-centreon-engine.tar.$Z");
     if ($? ne 0) {
         print STDERR "Unable to make tar of backup\n";
     }
@@ -886,7 +883,7 @@ sub monitoringengineBackup() {
     # Export archives #
     ###################
     exportBackup(1);
-    move ($TEMP_CENTRAL_DIR . "/" . $today . "-centreon-engine.tar.gz", $BACKUP_DIR . "/" . $today . "-centreon-engine.tar.gz");
+    move ($TEMP_CENTRAL_DIR . "/" . $today . "-centreon-engine.tar.$Z", $BACKUP_DIR . "/" . $today . "-centreon-engine.tar.$Z");
 
     # Remove all temp directory
     chdir;
