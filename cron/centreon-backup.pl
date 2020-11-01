@@ -44,7 +44,7 @@ use File::Basename;
 use IO::Dir;
 
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_port $mysql_database_oreon $mysql_database_ods $centreon_config);
-use vars qw($BACKUP_ENABLED $BACKUP_DIR $TEMP_DIR);
+use vars qw($BACKUP_ENABLED $BACKUP_DIR $TEMP_DIR $BACKUP_FLAG);
 use vars qw($BACKUP_DATABASE_CENTREON $BACKUP_DATABASE_CENTREON_STORAGE $BACKUP_DATABASE_TYPE $BACKUP_DATABASE_FULL $BACKUP_DATABASE_PARTIAL $BACKUP_RETENTION);
 use vars qw($BACKUP_CONFIGURATION_FILES $MYSQL_CONF);
 use vars qw($TEMP_DB_DIR $TEMP_CENTRAL_DIR $TEMP_CENTRAL_ETC_DIR $TEMP_CENTRAL_INIT_DIR $TEMP_CENTRAL_CRON_DIR $TEMP_CENTRAL_LOG_DIR $TEMP_CENTRAL_BIN_DIR $TEMP_CENTRAL_LIC_DIR $CENTREON_MODULES_PATH $TEMP_POLLERS $DISTANT_POLLER_BACKUP_DIR);
@@ -135,6 +135,7 @@ $CENTREON_MODULES_PATH = "www/modules";
 
 $BACKUP_DIR = $backupOptions->{'backup_backup_directory'}->{'value'};
 $TEMP_DIR = $backupOptions->{'backup_tmp_directory'}->{'value'};
+$BACKUP_FLAG = $BACKUP_DIR."/centreon-backup.finished.flag";
 $TEMP_DB_DIR = $TEMP_DIR . "/db";
 $TEMP_CENTRAL_DIR = $TEMP_DIR . "/central";
 $TEMP_CENTRAL_ETC_DIR = $TEMP_CENTRAL_DIR . "/etc";
@@ -910,6 +911,9 @@ sub monitoringengineBackup() {
 # Main program #
 ################
 
+# Let's remove flag if it still exists
+unlink $BACKUP_FLAG;
+
 getbinaries();
 
 if ($BACKUP_CONFIGURATION_FILES == '1') {
@@ -922,3 +926,7 @@ if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1'
 }
 
 cleanOldBackup();
+
+# Create backup flag (to notice other (system-backup) programs that Centreon backup has finished)
+open(FLAG,">$BACKUP_FLAG");
+close(FLAG);
