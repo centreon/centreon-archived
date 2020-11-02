@@ -24,9 +24,6 @@ import {
   TooltipWithBounds,
   defaultStyles,
 } from '@visx/visx';
-import { extent } from 'd3-array';
-
-import { timeParse } from 'd3-time-format';
 
 import {
   ComposedChart,
@@ -186,25 +183,22 @@ const Graphy = ({ width, height, timeSeries, lineData }) => {
 
   const background = '#f3f3f3';
 
-  const handleMouseOver = (event) => {
-    const containerX =
-      ('clientX' in event ? event.clientX : 0) - containerBounds.left;
-    const containerY =
-      ('clientY' in event ? event.clientY : 0) - containerBounds.top;
+  const handleMouseOver = React.useCallback(
+    (event) => {
+      const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
-    showTooltip({
-      tooltipLeft: containerX,
-      tooltipTop: containerY,
-      tooltipData: 'Plop',
-    });
-  };
-
+      showTooltip({
+        tooltipLeft: x,
+        tooltipTop: y,
+        tooltipData: 'Plop',
+      });
+    },
+    [showTooltip, containerBounds],
+  );
   const tooltipStyles = {
     ...defaultStyles,
     backgroundColor: 'rgba(53,71,125,0.8)',
     color: 'white',
-    width: 152,
-    height: 72,
     padding: 12,
   };
 
@@ -212,9 +206,6 @@ const Graphy = ({ width, height, timeSeries, lineData }) => {
     <div
       style={{
         position: 'relative',
-        width: '100%',
-        height: '100%',
-        zIndex: 0,
       }}
     >
       {tooltipOpen && (
@@ -224,18 +215,18 @@ const Graphy = ({ width, height, timeSeries, lineData }) => {
           left={tooltipLeft}
           style={tooltipStyles}
         >
-          Plop
+          {tooltipData}
         </TooltipWithBounds>
       )}
       <svg
         ref={containerRef}
         width={width}
         height={height}
-        onPointerMove={handleMouseOver}
+        onMouseMove={handleMouseOver}
+        onMouseLeave={hideTooltip}
       >
         <Group left={margin.left} top={margin.top}>
-          {/* <Group> */}
-          <AxisBottom top={yMax} scale={xScale} />
+          <AxisBottom top={yMax} scale={xScale} tickComponent={Typography} />
           <AxisLeft
             scale={yScale}
             tickFormat={formatTick({ unit: '', base: 1000 })}
@@ -252,7 +243,6 @@ const Graphy = ({ width, height, timeSeries, lineData }) => {
             height={yMax}
             stroke="#e0e0e0"
           />
-          <line x1={xMax} x2={xMax} y1={0} y2={yMax} stroke="#e0e0e0" />
 
           {lineData.map(
             ({
@@ -273,13 +263,9 @@ const Graphy = ({ width, height, timeSeries, lineData }) => {
               };
 
               const props = {
-                onMouseOver: handleMouseOver,
                 data: timeSeries,
-                // dot: false,
-                // dataKey: metric,
                 unit,
                 stroke: lineColor,
-                // yAxisId: multipleYAxes ? unit : undefined,
                 strokeWidth: highlight ? 2 : 1,
                 opacity: getOpacity(),
                 y: (series) => yScale(prop(metric, series) ?? 0),
