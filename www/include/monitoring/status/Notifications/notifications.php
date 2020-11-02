@@ -97,7 +97,7 @@ $sql = "SELECT name, description, s.state
         WHERE h.host_id = s.host_id
         AND h.name NOT LIKE '\_Module\_%%'
         AND (description NOT LIKE 'meta\_%%' AND description NOT LIKE 'ba\_%%')
-        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refreshRate.")
+        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refreshRate . ")
         AND s.scheduled_downtime_depth=0
         AND s.acknowledged=0
         %s
@@ -107,7 +107,7 @@ $sql = "SELECT name, description, s.state
         WHERE h.host_id = s.host_id
         AND h.name LIKE '\_Module\_Meta%%'
         AND description LIKE 'meta\_%%'
-        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refreshRate.")
+        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refreshRate . ")
         AND s.scheduled_downtime_depth=0
         AND s.acknowledged=0
         %s
@@ -117,7 +117,7 @@ $sql = "SELECT name, description, s.state
         WHERE h.host_id = s.host_id
         AND h.name LIKE '\_Module\_BAM%%'
         AND description LIKE 'ba\_%%'
-        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refreshRate.")
+        AND s.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refreshRate . ")
         AND s.scheduled_downtime_depth=0
         AND s.acknowledged=0
         %s
@@ -125,7 +125,7 @@ $sql = "SELECT name, description, s.state
         SELECT name, NULL, h.state
         FROM hosts h %s
         WHERE name NOT LIKE '\_Module\_%%'
-        AND h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - ".(int)$refreshRate.")
+        AND h.last_hard_state_change > (UNIX_TIMESTAMP(NOW()) - " . (int)$refreshRate . ")
         AND h.scheduled_downtime_depth=0
         AND h.acknowledged=0
         %s";
@@ -162,7 +162,10 @@ while ($row = $res->fetch()) {
                     $serviceStateLabel[$row['state']]
                 )
             );
-            $obj->XML->writeAttribute("class", $serviceClassLabel[$row['state']]);
+            $obj->XML->writeAttribute(
+                "class",
+                $serviceClassLabel[$row['state']]
+            );
         }
         if (!isset($_SESSION['disable_sound']) &&
             isset($notificationPreferences['monitoring_sound_svc_notification_' . $row['state']]) &&
@@ -183,7 +186,10 @@ while ($row = $res->fetch()) {
                     $hostStateLabel[$row['state']]
                 )
             );
-            $obj->XML->writeAttribute("class", $hostClassLabel[$row['state']]);
+            $obj->XML->writeAttribute(
+                "class",
+                $hostClassLabel[$row['state']]
+            );
         }
         if (!isset($_SESSION['disable_sound']) &&
             isset($notificationPreferences['monitoring_sound_host_notification_' . $row['state']]) &&
