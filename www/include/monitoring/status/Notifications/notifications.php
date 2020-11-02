@@ -167,7 +167,8 @@ while ($row = $res->fetch()) {
                 $serviceClassLabel[$row['state']]
             );
         }
-        if (!isset($_SESSION['disable_sound']) &&
+        if (
+            !isset($_SESSION['disable_sound']) &&
             isset($notificationPreferences['monitoring_sound_svc_notification_' . $row['state']]) &&
             $notificationPreferences['monitoring_sound_svc_notification_' . $row['state']]
         ) {
@@ -191,7 +192,8 @@ while ($row = $res->fetch()) {
                 $hostClassLabel[$row['state']]
             );
         }
-        if (!isset($_SESSION['disable_sound']) &&
+        if (
+            !isset($_SESSION['disable_sound']) &&
             isset($notificationPreferences['monitoring_sound_host_notification_' . $row['state']]) &&
             $notificationPreferences['monitoring_sound_host_notification_' . $row['state']]
         ) {
