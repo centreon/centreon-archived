@@ -126,8 +126,8 @@ function updateContact($contact_id = null)
     $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
     $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
-    $rq = 'UPDATE contact SET ' . 
-          'contact_name = :contactName, ' . 
+    $rq = 'UPDATE contact SET ' .
+          'contact_name = :contactName, ' .
           'contact_alias = :contactAlias, ' .
           'contact_location = :contactLocation, ' .
           'contact_lang = :contactLang, ' .
@@ -154,10 +154,26 @@ function updateContact($contact_id = null)
     $stmt->bindValue(':contactName', $ret['contact_name'], \PDO::PARAM_STR);
     $stmt->bindValue(':contactAlias', $ret['contact_alias'], \PDO::PARAM_STR);
     $stmt->bindValue(':contactLang', $ret['contact_lang'], \PDO::PARAM_STR);
-    $stmt->bindValue(':contactEmail', !empty($ret['contact_email']) ? $ret['contact_email'] : null, \PDO::PARAM_STR);
-    $stmt->bindValue(':contactPager', !empty($ret['contact_pager']) ? $ret['contact_pager'] : null, \PDO::PARAM_STR);
-    $stmt->bindValue(':contactAutologinKey', !empty($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : null, \PDO::PARAM_STR);
-    $stmt->bindValue(':contactLocation', !empty($ret['contact_location']) ? $ret['contact_location'] : null, \PDO::PARAM_INT);
+    $stmt->bindValue(
+        ':contactEmail',
+        !empty($ret['contact_email']) ? $ret['contact_email'] : null, 
+        \PDO::PARAM_STR
+    );
+    $stmt->bindValue(
+        ':contactPager',
+        !empty($ret['contact_pager']) ? $ret['contact_pager'] : null, 
+        \PDO::PARAM_STR
+    );
+    $stmt->bindValue(
+        ':contactAutologinKey',
+        !empty($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : null,
+        \PDO::PARAM_STR
+    );
+    $stmt->bindValue(
+        ':contactLocation',
+        !empty($ret['contact_location']) ? $ret['contact_location'] : null,
+        \PDO::PARAM_INT
+    );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':contactJsEffects', isset($ret['contact_js_effects']) ? 1 : 0, \PDO::PARAM_INT);
     $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
