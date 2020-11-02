@@ -79,12 +79,12 @@ EOD;
 try {
     foreach ($opt as $key => $option) {
         if (is_array($option)) {
-            throw new \InvalidArgumentException("
-                each flag must be declared only once : -$key as been declared twice or more
-            ");
+            throw new \InvalidArgumentException(
+                "each flag must be declared only once: '$key' has been declared more than once"
+            );
         }
     }
-} catch ( \InvalidArgumentException $e) {
+} catch (\InvalidArgumentException $e) {
     echo formatResponseMessage($e->getMessage(), 'error');
     exit(1);
 }
@@ -112,7 +112,7 @@ if (isset($opt['template'])) {
     try {
         if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'])) {
             throw new \InvalidArgumentException(
-                'missing parameter: -u -t -h -n are mandatories:' . PHP_EOL . PHP_EOL . $helpMessage
+                "missing parameter: -u -t -h -n are mandatories:" . PHP_EOL . PHP_EOL . $helpMessage
             );
         }
 
@@ -123,7 +123,7 @@ if (isset($opt['template'])) {
 
         if (!$configOptions['CURRENT_NODE_TYPE']) {
             throw new \InvalidArgumentException(
-                "-t must be one of those value: Poller, Remote, MAP, MBI"
+                "-t must be one of those values: Poller, Remote, MAP, MBI"
             );
         }
 
@@ -199,21 +199,21 @@ $loginCredentials = [
 $foundIps = explode(" ", trim(shell_exec("hostname -I")));
 $foundIps = array_combine(range(1, count($foundIps)), array_values($foundIps));
 if (count($foundIps) > 1 && !isset($configOptions['CURRENT_NODE_ADDRESS'])) {
-    $goodIp = false;
+    $validateIp = false;
 
     $ipSelection = 'Found IP on CURRENT NODE:' . PHP_EOL;
     foreach ($foundIps as $key => $ip) {
-            $ipSelection .= "   [$key]: $ip" . PHP_EOL;
+        $ipSelection .= "   [$key]: $ip" . PHP_EOL;
     }
 
-    while (!$goodIp) {
+    while ($validateIp === false) {
         echo $ipSelection;
         $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP ?');
 
         if (!array_key_exists($ipChoice, $foundIps)) {
             echo 'Bad IP Choice' . PHP_EOL;
         } else {
-            $goodIp = true;
+            $validateIp = true;
         }
     }
     $serverIp = $foundIps[$ipChoice];

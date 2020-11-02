@@ -315,7 +315,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
 
     if (!$configOptions['CURRENT_NODE_TYPE']) {
         throw new \InvalidArgumentException(
-            "CURRENT_NODE_TYPE must be one of those value: Poller, Remote, MAP, MBI"
+            "CURRENT_NODE_TYPE must be one of those values: Poller, Remote, MAP, MBI"
         );
     }
 
