@@ -27,21 +27,14 @@ use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
-use Centreon\Domain\Proxy\Proxy;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -54,11 +47,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @var PlatformTopologyRepositoryInterface
      */
     private $platformTopologyRepository;
-
-    /**
-     * @var HttpClientInterface
-     */
-    private $httpClient;
 
     /**
      * @var PlatformInformationServiceInterface
@@ -81,28 +69,34 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     private $monitoringServerService;
 
     /**
+     * @var PlatformTopologyRegisterRepositoryInterface
+     */
+    private $platformTopologyRegisterRepository;
+
+    /**
      * PlatformTopologyService constructor.
+     *
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
-     * @param HttpClientInterface $httpClient
      * @param PlatformInformationServiceInterface $platformInformationService
      * @param ProxyServiceInterface $proxyService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
      * @param MonitoringServerServiceInterface $monitoringServerService
+     * @param PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
      */
     public function __construct(
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
-        HttpClientInterface $httpClient,
         PlatformInformationServiceInterface $platformInformationService,
         ProxyServiceInterface $proxyService,
         EngineConfigurationServiceInterface $engineConfigurationService,
-        MonitoringServerServiceInterface $monitoringServerService
+        MonitoringServerServiceInterface $monitoringServerService,
+        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
     ) {
         $this->platformTopologyRepository = $platformTopologyRepository;
-        $this->httpClient = $httpClient;
         $this->platformInformation = $platformInformationService;
         $this->proxyService = $proxyService;
         $this->engineConfigurationService = $engineConfigurationService;
         $this->monitoringServerService = $monitoringServerService;
+        $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
     }
 
     /**
@@ -140,8 +134,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $registeredParentInTopology = $this->findParentPlatform($platformTopology);
 
         /**
-         * The top level platform is defined as a Remote
-         * Getting data and calling the register request on the Central
+         * The top level platform is defined as a Remote :
+         * Getting data and calling the register request on the Central if the remote is already registered on it
          */
         if (
             null !== $registeredParentInTopology
@@ -171,7 +165,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     )
                 );
             }
-            if (null === $foundPlatformInformation->getAuthorizedMaster()) {
+            if (null === $foundPlatformInformation->getCentralServerAddress()) {
                 throw new PlatformTopologyException(
                     sprintf(
                         _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
@@ -221,137 +215,20 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
 
             /**
-             * Getting platform's proxy data
-             * @var Proxy|null $proxyService
-             */
-            $proxyService = $this->proxyService->getProxy();
-
-            /**
-             * Call the API on the n-1 server to register it too
+             * Register this platform to its Central
              */
             try {
-                // Central's API endpoints base path
-                $baseApiEndpoint = $foundPlatformInformation->getApiScheme() . '://' .
-                    $foundPlatformInformation->getAuthorizedMaster() . ':' .
-                    $foundPlatformInformation->getApiPort() . '/' .
-                    $foundPlatformInformation->getApiPath() . '/api/v2.0/';
-
-                // Enable specific options
-                $optionPayload = [];
-                // Enable proxy
-                if (null !== $proxyService && !empty((string) $proxyService)) {
-                    $optionPayload['proxy'] = (string) $proxyService;
-                }
-                // On https scheme, the SSL verify_peer needs to be specified
-                if ('https' === $foundPlatformInformation->getApiScheme()) {
-                    $optionPayload['verify_peer'] = $foundPlatformInformation->hasApiPeerValidation();
-                    $optionPayload['verify_host'] = $foundPlatformInformation->hasApiPeerValidation();
-                }
-                // Set the options for next http_client calls
-                if (!empty($optionPayload)) {
-                    $this->httpClient = HttpClient::create($optionPayload);
-                }
-
-                // Central's API login payload
-                $loginPayload = [
-                    'json' => [
-                        "security" => [
-                            "credentials" => [
-                                "login" => $foundPlatformInformation->getApiUsername(),
-                                "password" => $foundPlatformInformation->getApiCredentials()
-                            ]
-                        ]
-                    ]
-                ];
-
-                // Login on the Central to get a valid token
-                $loginResponse = $this->httpClient->request(
-                    'POST',
-                    $baseApiEndpoint . 'login',
-                    $loginPayload
+                $this->platformTopologyRegisterRepository->registerPlatformTopologyToParent(
+                    $platformTopology,
+                    $foundPlatformInformation,
+                    $this->proxyService->getProxy()
                 );
-
-                $token = $loginResponse->toArray()['security']['token'] ?? false;
-
-                if (false === $token) {
-                    throw new PlatformTopologyException(
-                        sprintf(
-                            _("Failed to get the auth token. Cannot register the platform : '%s'@'%s' on the Central"),
-                            $platformTopology->getName(),
-                            $platformTopology->getAddress()
-                        )
-                    );
-                }
-
-                // Central's API register platform payload
-                $registerPayload = [
-                    'json' => [
-                        "name" => $platformTopology->getName(),
-                        "hostname" => $platformTopology->getHostname(),
-                        "type" => $platformTopology->getType(),
-                        "address" => $platformTopology->getAddress(),
-                        "parent_address" => $platformTopology->getParentAddress()
-                    ],
-                    'headers' => [
-                        "X-AUTH-TOKEN" => $token
-                    ]
-                ];
-
-                $registerResponse = $this->httpClient->request(
-                    'POST',
-                    $baseApiEndpoint . 'platform/topology',
-                    $registerPayload
-                );
-
-                // Get request status code and return the error message
-                if (Response::HTTP_CREATED !== $registerResponse->getStatusCode()) {
-                    $errorMessage = sprintf(
-                        _("The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
-                    );
-                    $returnedMessage = json_decode($registerResponse->getContent(false), true);
-
-                    if (!empty($returnedMessage)) {
-                        $errorMessage .= "  /  " . _("Central's response : ") .
-                            implode(', ', $returnedMessage);
-                    }
-                    throw new PlatformTopologyConflictException(
-                        $errorMessage
-                    );
-                }
-            } catch (TransportExceptionInterface $e) {
-                $message = '';
-                if (!empty($optionPayload['proxy'])) {
-                    $message = ' ' . _("Please check the 'Centreon UI' and 'Remote access' forms");
-                }
-                throw new PlatformTopologyException(
-                    _("Request to the Central's API failed") . ' : ' . $e->getMessage() . $message
-                );
-            } catch (ClientExceptionInterface $e) {
-                throw new PlatformTopologyException(
-                    _("API calling the Central returned a Client exception") . ' : ' . $e->getMessage()
-                );
-            } catch (RedirectionExceptionInterface $e) {
-                throw new PlatformTopologyException(
-                    _("API calling the Central returned a Redirection exception") . ' : ' . $e->getMessage()
-                );
-            } catch (ServerExceptionInterface $e) {
-                $message = _("API calling the Central returned a Server exception");
-                if (!empty($optionPayload['proxy'])) {
-                    $message .= '. ' . _("Please check the 'Centreon UI' and 'Remote access' forms");
-                }
-                throw new PlatformTopologyException(
-                    $message . ' : ' . $e->getMessage()
-                );
-            } catch (DecodingExceptionInterface $e) {
-                throw new PlatformTopologyException(
-                    _("Unable to convert Central's API response") . ' : ' . $e->getMessage()
-                );
-            } catch (\Exception $e) {
-                throw new PlatformTopologyException(
-                    _("Error from Central's register API") . ' : ' . $e->getMessage()
-                );
+            } catch (PlatformTopologyConflictException $ex) {
+                throw $ex;
+            } catch (RepositoryException $ex) {
+                throw new PlatformTopologyException($ex->getMessage(), $ex->getCode(), $ex);
+            } catch (\Exception $ex) {
+                throw new PlatformTopologyException(_("Error from Central's register API"), 0, $ex);
             }
         }
 

@@ -15567,7 +15567,7 @@ msgid "Cannot use parent address on a Central server type"
 msgstr "Il n'est pas possible d'utiliser l'adresse d'une plateforme parente sur un serveur de type Central"
 
 #: api/topology/register
-msgid "Cannot set parent id to a central server"
+msgid "Cannot set parent id on a central server"
 msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"
 
 #: api/topology/register

@@ -67,9 +67,6 @@ $aclDbName = $acl->getNameDBAcl();
 $scString = $acl->getServiceCategoriesString();
 
 switch ($o) {
-    case "mc":
-        require_once($path . "formServiceCategories.php");
-        break; # Massive Change
     case "a":
         require_once($path . "formServiceCategories.php");
         break; #Add a service category
