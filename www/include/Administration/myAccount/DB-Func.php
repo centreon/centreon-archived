@@ -42,14 +42,14 @@ function testExistence($name = null)
     $dbResult = $pearDB->query($query);
     $contact = $dbResult->fetch();
     /*
-	 * Modif case
-	 */
+     * Modif case
+     */
     if ($dbResult->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
     } elseif ($dbResult->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
-		 * Duplicate entry
-		 */
+         * Duplicate entry
+         */
         return false;
     } else {
         return true;
@@ -66,14 +66,14 @@ function testAliasExistence($alias = null)
     $contact = $dbResult->fetch();
 
     /*
-	 * Modif case
-	 */
+     * Modif case
+     */
     if ($dbResult->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
     } elseif ($dbResult->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
-		 * Duplicate entry
-		 */
+         * Duplicate entry
+         */
         return false;
     } else {
         return true;
@@ -161,7 +161,7 @@ function updateContact($contact_id = null)
     );
     $stmt->bindValue(
         ':contactPager',
-        !empty($ret['contact_pager']) ? $ret['contact_pager'] : null, 
+        !empty($ret['contact_pager']) ? $ret['contact_pager'] : null,
         \PDO::PARAM_STR
     );
     $stmt->bindValue(
@@ -183,8 +183,8 @@ function updateContact($contact_id = null)
     $stmt->execute();
 
     /*
-	 * Update user object..
-	 */
+     * Update user object..
+     */
     $centreon->user->name = $ret['contact_name'];
     $centreon->user->alias = $ret['contact_alias'];
     $centreon->user->lang = $ret['contact_lang'];
