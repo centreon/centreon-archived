@@ -156,7 +156,7 @@ function updateContact($contact_id = null)
     $stmt->bindValue(':contactLang', $ret['contact_lang'], \PDO::PARAM_STR);
     $stmt->bindValue(
         ':contactEmail',
-        !empty($ret['contact_email']) ? $ret['contact_email'] : null, 
+        !empty($ret['contact_email']) ? $ret['contact_email'] : null,
         \PDO::PARAM_STR
     );
     $stmt->bindValue(
