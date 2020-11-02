@@ -76,7 +76,18 @@ Global Options:
              - PROXY_PASSWORD           <optional> string
 
 EOD;
-
+try {
+    foreach ($opt as $key => $option) {
+        if (is_array($option)) {
+            throw new \InvalidArgumentException(
+                "each flag must be declared only once: '$key' has been declared more than once"
+            );
+        }
+    }
+} catch (\InvalidArgumentException $e) {
+    echo formatResponseMessage($e->getMessage(), 'error');
+    exit(1);
+}
 /**
  * Display --help message
  */
@@ -94,14 +105,14 @@ if (isset($opt['template'])) {
         $configTemplate = parseTemplateFile($opt['template']);
         $configOptions = setConfigOptionsFromTemplate($configTemplate, $helpMessage);
     } catch (\InvalidArgumentException $e) {
-        echo $e->getMessage();
+        echo formatResponseMessage($e->getMessage(), 'error');
         exit(1);
     }
 } else {
     try {
         if (!isset($opt['u'], $opt['t'], $opt['h'], $opt['n'])) {
             throw new \InvalidArgumentException(
-                PHP_EOL . 'missing parameter: -u -t -h -n are mandatories:' . PHP_EOL . $helpMessage
+                "missing parameter: -u -t -h -n are mandatories:" . PHP_EOL . PHP_EOL . $helpMessage
             );
         }
 
@@ -112,8 +123,7 @@ if (isset($opt['template'])) {
 
         if (!$configOptions['CURRENT_NODE_TYPE']) {
             throw new \InvalidArgumentException(
-                "-t must be one of those value"
-                    . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
+                "-t must be one of those values: Poller, Remote, MAP, MBI"
             );
         }
 
@@ -125,12 +135,12 @@ if (isset($opt['template'])) {
             $configOptions['CURRENT_NODE_ADDRESS'] = filter_var($opt['node-address'], FILTER_VALIDATE_DOMAIN);
             if (!$configOptions['CURRENT_NODE_ADDRESS']) {
                 throw new \InvalidArgumentException(
-                    PHP_EOL . "Bad node-address Format" . PHP_EOL
+                    "Bad node-address Format"
                 );
             }
         }
     } catch (\InvalidArgumentException $e) {
-        echo $e->getMessage();
+        echo formatResponseMessage($e->getMessage(), 'error');
         exit(1);
     }
     $configOptions['API_PASSWORD'] = askQuestion(
@@ -188,25 +198,29 @@ $loginCredentials = [
  */
 $foundIps = explode(" ", trim(shell_exec("hostname -I")));
 $foundIps = array_combine(range(1, count($foundIps)), array_values($foundIps));
+if (count($foundIps) > 1 && !isset($configOptions['CURRENT_NODE_ADDRESS'])) {
+    $validateIp = false;
 
-$goodIp = false;
-
-$ipSelection = 'Found IP on CURRENT NODE:' . PHP_EOL;
-foreach ($foundIps as $key => $ip) {
+    $ipSelection = 'Found IP on CURRENT NODE:' . PHP_EOL;
+    foreach ($foundIps as $key => $ip) {
         $ipSelection .= "   [$key]: $ip" . PHP_EOL;
-}
-
-while (!$goodIp) {
-    echo $ipSelection;
-    $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP? ');
-
-    if (!array_key_exists($ipChoice, $foundIps)) {
-        echo 'Bad IP Choice' . PHP_EOL;
-    } else {
-        $goodIp = true;
     }
+
+    while ($validateIp === false) {
+        echo $ipSelection;
+        $ipChoice = askQuestion('Which IP do you want to use as CURRENT NODE IP ?');
+
+
+        if (!array_key_exists($ipChoice, $foundIps)) {
+            echo 'Bad IP Choice' . PHP_EOL;
+        } else {
+            $validateIp = true;
+        }
+    }
+    $serverIp = $foundIps[$ipChoice];
+} else {
+    $serverIp = $foundIps[1];
 }
-$serverIp = $foundIps[$ipChoice];
 
 $payload = [
     "name" => $configOptions['CURRENT_NODE_NAME'],
@@ -291,7 +305,7 @@ if (isRemote($serverType)) {
         $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey(SECOND_KEY);
         $loginCredentialsDb['apiCredentials'] = $centreonEncryption->crypt($configOptions['API_PASSWORD']);
     } catch (\InvalidArgumentException $e) {
-        echo $e->getMessage();
+        echo formatResponseMessage($e->getMessage(), 'error');
         exit(1);
     }
     $loginCredentialsDb['apiPath'] = $configOptions['ROOT_CENTREON_FOLDER'] ?? 'centreon';
@@ -310,7 +324,7 @@ if (isRemote($serverType)) {
     try {
         $registerPayloads = registerRemote($host, $loginCredentialsDb);
     } catch (\PDOException $e) {
-        echo $e->getMessage();
+        echo formatResponseMessage($e->getMessage(), 'error');
         exit(1);
     }
 } else {
@@ -367,7 +381,7 @@ try {
         throw new Exception(curl_error($ch) . PHP_EOL);
     }
 } catch (\Exception $e) {
-    echo $e->getMessage();
+    echo formatResponseMessage($e->getMessage(), 'error');
     exit(1);
 } finally {
     curl_close($ch);
@@ -431,7 +445,7 @@ foreach ($registerPayloads as $postData) {
             throw new Exception(curl_error($ch) . PHP_EOL);
         }
     } catch (Exception $e) {
-        echo $e->getMessage();
+        echo formatResponseMessage($e->getMessage(), 'error');
         exit(1);
     } finally {
         curl_close($ch);
