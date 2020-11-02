@@ -1,6 +1,34 @@
 import * as React from 'react';
 
 import {
+  AreaStack,
+  Line,
+  Bar,
+  ParentSize,
+  scaleTime,
+  scaleLinear,
+  GradientOrangeRed,
+  browserUsage,
+  Group,
+  GridRows,
+  GridColumns,
+  AxisBottom,
+  AxisLeft,
+  LinePath,
+  curveBasis,
+  AreaClosed,
+  AxisRight,
+  useTooltip,
+  useTooltipInPortal,
+  localPoint,
+  TooltipWithBounds,
+  defaultStyles,
+} from '@visx/visx';
+import { extent } from 'd3-array';
+
+import { timeParse } from 'd3-time-format';
+
+import {
   ComposedChart,
   XAxis,
   CartesianGrid,
@@ -18,10 +46,15 @@ import {
   sortBy,
   isEmpty,
   isNil,
+  head,
+  last,
+  keys,
+  equals,
+  uniq,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
+import { makeStyles, Typography, Theme, fade } from '@material-ui/core';
 
 import {
   useRequest,
@@ -76,6 +109,208 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
   },
 }));
 
+const margin = { top: 10, right: 30, bottom: 30, left: 40 };
+
+const Graphy = ({ width, height, timeSeries, lineData }) => {
+  const data = timeSeries;
+
+  const {
+    tooltipData,
+    tooltipLeft,
+    tooltipTop,
+    tooltipOpen,
+    showTooltip,
+    hideTooltip,
+  } = useTooltip();
+
+  const timeSeriesKeys = keys<string>(timeSeries).filter(equals('timeTick'));
+
+  // const getTimeSeriesValue = (key: string): number => {
+  //   return timeSeries
+  // }
+
+  const { containerRef, TooltipInPortal, containerBounds } = useTooltipInPortal(
+    {
+      // use TooltipWithBounds
+      detectBounds: true,
+      // when tooltip containers are scrolled, this will correctly update the Tooltip position
+      scroll: true,
+    },
+  );
+
+  const getUnits = (): Array<string> => {
+    return pipe(map(prop('unit')), uniq)(lineData);
+  };
+
+  const multipleYAxes = getUnits().length < 3;
+
+  const date = (d) => new Date(d.timeTick).valueOf();
+
+  const pl = (d) => d.pl;
+  const rta = (d) => d.rta;
+  const rtmax = (d) => d.rtmax;
+  const rtmin = (d) => d.rtmin;
+
+  const yMax = height - margin.top - margin.bottom;
+  const xMax = width - margin.left - margin.right;
+
+  // scales
+  const xScale = scaleTime<number>({
+    range: [0, xMax],
+    domain: [Math.min(...data.map(date)), Math.max(...data.map(date))],
+  });
+  const yScale = scaleLinear<number>({
+    domain: [
+      Math.min(
+        ...timeSeries.map((d) =>
+          Math.min(...[pl(d), rta(d), rtmax(d), rtmin(d)]),
+        ),
+      ),
+      Math.max(
+        ...timeSeries.map((d) =>
+          Math.max(...[pl(d), rta(d), rtmax(d), rtmin(d)]),
+        ),
+      ),
+    ],
+    nice: true,
+    range: [yMax, 0],
+  });
+
+  const formatTick = ({ unit, base }) => (value): string => {
+    if (isNil(value)) {
+      return '';
+    }
+
+    return formatMetricValue({ value, unit, base }) as string;
+  };
+
+  const background = '#f3f3f3';
+
+  const handleMouseOver = (event) => {
+    const containerX =
+      ('clientX' in event ? event.clientX : 0) - containerBounds.left;
+    const containerY =
+      ('clientY' in event ? event.clientY : 0) - containerBounds.top;
+
+    showTooltip({
+      tooltipLeft: containerX,
+      tooltipTop: containerY,
+      tooltipData: 'Plop',
+    });
+  };
+
+  const tooltipStyles = {
+    ...defaultStyles,
+    backgroundColor: 'rgba(53,71,125,0.8)',
+    color: 'white',
+    width: 152,
+    height: 72,
+    padding: 12,
+  };
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+      }}
+    >
+      {tooltipOpen && (
+        <TooltipWithBounds
+          key={Math.random()}
+          top={tooltipTop}
+          left={tooltipLeft}
+          style={tooltipStyles}
+        >
+          Plop
+        </TooltipWithBounds>
+      )}
+      <svg
+        ref={containerRef}
+        width={width}
+        height={height}
+        onPointerMove={handleMouseOver}
+      >
+        <Group left={margin.left} top={margin.top}>
+          {/* <Group> */}
+          <AxisBottom top={yMax} scale={xScale} />
+          <AxisLeft
+            scale={yScale}
+            tickFormat={formatTick({ unit: '', base: 1000 })}
+          />
+          <GridRows
+            scale={yScale}
+            width={xMax}
+            height={yMax}
+            stroke="#e0e0e0"
+          />
+          <GridColumns
+            scale={xScale}
+            width={xMax}
+            height={yMax}
+            stroke="#e0e0e0"
+          />
+          <line x1={xMax} x2={xMax} y1={0} y2={yMax} stroke="#e0e0e0" />
+
+          {lineData.map(
+            ({
+              metric,
+              areaColor,
+              transparency,
+              lineColor,
+              filled,
+              unit,
+              highlight,
+            }) => {
+              const getOpacity = (): number => {
+                if (highlight === false) {
+                  return 0.3;
+                }
+
+                return 1;
+              };
+
+              const props = {
+                onMouseOver: handleMouseOver,
+                data: timeSeries,
+                // dot: false,
+                // dataKey: metric,
+                unit,
+                stroke: lineColor,
+                // yAxisId: multipleYAxes ? unit : undefined,
+                strokeWidth: highlight ? 2 : 1,
+                opacity: getOpacity(),
+                y: (series) => yScale(prop(metric, series) ?? 0),
+                x: (series) => xScale(date(series) ?? 0),
+                curve: curveBasis,
+                yScale,
+              };
+
+              if (filled) {
+                return (
+                  <AreaClosed
+                    key={metric}
+                    fill={
+                      transparency
+                        ? fade(areaColor, 1 - transparency * 0.01)
+                        : undefined
+                    }
+                    {...props}
+                  />
+                );
+              }
+
+              return <LinePath key={metric} {...props} />;
+            },
+          )}
+        </Group>
+      </svg>
+    </div>
+  );
+};
+
 const PerformanceGraph = ({
   endpoint,
   graphHeight,
@@ -94,6 +329,15 @@ const PerformanceGraph = ({
   const { sendRequest, sending } = useRequest<GraphData>({
     request: getData,
   });
+
+  // const dateScale = React.useMemo(
+  //   () =>
+  //     scaleTime({
+  //       range: [0, 100],
+  //       domain: extent(timeSeries, getDate) as [Date, Date],
+  //     }),
+  //   [timeSeries],
+  // );
 
   React.useEffect(() => {
     if (isNil(endpoint)) {
@@ -175,7 +419,19 @@ const PerformanceGraph = ({
       <Typography variant="body1" color="textPrimary">
         {title}
       </Typography>
-      <ResponsiveContainer className={classes.graph}>
+      {/* <AreaClosed data={timeSeries} x={d => dateScale(getDate(d))} /> */}
+
+      <ParentSize>
+        {({ width, height }) => (
+          <Graphy
+            width={width}
+            height={height}
+            timeSeries={timeSeries}
+            lineData={lineData}
+          />
+        )}
+      </ParentSize>
+      {/* <ResponsiveContainer className={classes.graph}>
         <ComposedChart data={timeSeries} stackOffset="sign">
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -195,15 +451,15 @@ const PerformanceGraph = ({
             filterNull
           />
         </ComposedChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer> */}
       <div className={classes.legend}>
-        <Legend
+        {/* <Legend
           lines={sortedLines}
           onItemToggle={toggleMetricDisplay}
           toggable={toggableLegend}
           onItemHighlight={highlightLine}
           onClearItemHighlight={clearHighlight}
-        />
+        /> */}
       </div>
     </div>
   );
