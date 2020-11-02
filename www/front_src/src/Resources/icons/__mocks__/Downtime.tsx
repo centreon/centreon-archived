@@ -1,5 +1,5 @@
 import React from 'react';
 
-const Downtime = (): JSX.Element => <span>Downtime icon</span>;
+const Downtime = (): JSX.Element => <span>Icon</span>;
 
 export default Downtime;

@@ -38,10 +38,12 @@ if (!isset($_POST['poller'])) {
 }
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_.'/www/class/centreonDB.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonXML.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonInstance.class.php';
-require_once _CENTREON_PATH_.'/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonXML.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonInstance.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
+require_once _CENTREON_PATH_ . 'bootstrap.php';
+
 
 $db = new CentreonDB();
 
@@ -55,6 +57,11 @@ if (!CentreonSession::checkSession(session_id(), $db)) {
 $pollers = explode(',', $_POST['poller']);
 
 $xml = new CentreonXML();
+$kernel = App\Kernel::createForWeb();
+$gorgoneService = $kernel->getContainer()->get(\Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface::class);
+
+$res = $db->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1'");
+$idCentral = (int)$res->fetch(\PDO::FETCH_COLUMN);
 
 $res = $db->query("SELECT `name`, `id`, `localhost` 
     FROM `nagios_server` 
@@ -64,7 +71,8 @@ $xml->startElement('response');
 $str = sprintf("<br/><b>%s</b><br/>", _("Post execution command results"));
 $ok = true;
 $instanceObj = new CentreonInstance($db);
-while ($row = $res->fetchRow()) {
+
+while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
     if ($pollers == 0 || in_array($row['id'], $pollers)) {
         $commands = $instanceObj->getCommandData($row['id']);
         if (!count($commands)) {
@@ -72,14 +80,18 @@ while ($row = $res->fetchRow()) {
         }
         $str .= "<br/><strong>{$row['name']}</strong><br/>";
         foreach ($commands as $command) {
-            $output = array();
-            exec($command['command_line'], $output, $result);
-            $resultColor = "green";
-            if ($result != 0) {
-                $resultColor = "red";
-                $ok = false;
-            }
-            $str .= $command['command_name'] . ": <font color='$resultColor'>".implode(";", $output)."</font><br/>";
+            $requestData = json_encode(
+                [
+                    [
+                        "command" => $command['command_line'],
+                        "timeout" => 30,
+                        "continue_on_error" => true
+                    ]
+                ]
+            );
+            $gorgoneCommand = new \Centreon\Domain\Gorgone\Command\Command($idCentral, $requestData);
+            $gorgoneResponse = $gorgoneService->send($gorgoneCommand);
+            $str .= _("Executing command") . ": " . $command['command_name'] . "<br/>";
         }
     }
 }

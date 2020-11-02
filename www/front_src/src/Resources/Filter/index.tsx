@@ -1,33 +1,25 @@
-/* eslint-disable react/jsx-wrap-multilines */
 import * as React from 'react';
 
-import {
-  Grid,
-  Typography,
-  Button,
-  makeStyles,
-  ExpansionPanel,
-  ExpansionPanelSummary as MuiExpansionPanelSummary,
-  ExpansionPanelDetails as MuiExpansionPanelDetails,
-  withStyles,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Typography, Button, makeStyles } from '@material-ui/core';
 
 import {
-  AutocompleteField,
-  ConnectedAutocompleteField,
+  MultiAutocompleteField,
+  MultiConnectedAutocompleteField,
   SelectField,
   SearchField,
-  SelectEntry,
+  Filters,
 } from '@centreon/ui';
 
+import { isEmpty, propEq, pick, find } from 'ramda';
+import { Skeleton } from '@material-ui/lab';
+import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 import {
   labelFilter,
   labelCriterias,
   labelStateFilter,
-  labelResourceName,
   labelSearch,
-  labelTypeOfResource,
+  labelResource,
   labelState,
   labelStatus,
   labelHostGroup,
@@ -35,269 +27,292 @@ import {
   labelClearAll,
   labelOpen,
   labelShowCriteriasFilters,
+  labelNewFilter,
+  labelMyFilters,
 } from '../translatedLabels';
-import {
-  unhandledProblemsFilter,
-  resourceProblemsFilter,
-  allFilter,
-  states,
-  resourceTypes,
-  statuses,
-  Filter as FilterModel,
-  FilterGroup,
-} from './models';
-import SearchHelpTooltip from '../SearchHelpTooltip';
+import SearchHelpTooltip from './SearchHelpTooltip';
+import { useResourceContext } from '../Context';
+import SaveFilter from './Save';
 import {
   buildHostGroupsEndpoint,
   buildServiceGroupsEndpoint,
-} from '../api/endpoint';
-
-const ExpansionPanelSummary = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 3, 0, 2),
-    minHeight: 'auto',
-    '&$expanded': {
-      minHeight: 'auto',
-    },
-    justifyContent: 'flex-start',
-  },
-  content: {
-    margin: theme.spacing(1, 0),
-    '&$expanded': {
-      margin: theme.spacing(1, 0),
-    },
-    flexGrow: 0,
-  },
-  expanded: {},
-}))(MuiExpansionPanelSummary);
-
-const ExpansionPanelDetails = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(0, 0.5, 1, 2),
-  },
-}))(MuiExpansionPanelDetails);
+} from './api/endpoint';
+import useFilterModels from './useFilterModels';
 
 const useStyles = makeStyles((theme) => ({
-  filterBox: {
-    padding: theme.spacing(),
-    backgroundColor: theme.palette.common.white,
+  grid: {
+    display: 'grid',
+    gridGap: theme.spacing(1),
+    gridAutoFlow: 'column',
+
+    alignItems: 'center',
+    justifyItems: 'center',
+  },
+  filterRow: {
+    gridTemplateColumns:
+      'auto 30px minmax(100px, 200px) minmax(min-content, 400px) auto auto',
+  },
+  filterLoadingSkeleton: {
+    transform: 'none',
+    height: '100%',
+    width: '100%',
+  },
+  criteriaRow: {
+    gridTemplateColumns: `auto 30px repeat(5, minmax(140px, 290px)) auto`,
+  },
+  filterSelect: {
+    width: 200,
   },
   filterLineLabel: {
     width: 60,
     textAlign: 'center',
   },
-  filterGroup: {
-    minWidth: 200,
-  },
-  searchField: {
-    width: 500,
-  },
-  autocompleteField: {
-    minWidth: 200,
-    maxWidth: 400,
-  },
-  collapseWrapper: {
-    margin: 0,
-    padding: theme.spacing(1),
-    '&$expanded': {
-      margin: 0,
-      padding: theme.spacing(1),
-    },
-  },
-  expanded: {},
 }));
 
-interface Props {
-  filter: FilterGroup;
-  onFilterGroupChange: (event) => void;
-  currentSearch?: string;
-  nextSearch?: string;
-  onSearchRequest: () => void;
-  onSearchPrepare: (event) => void;
-  selectedResourceTypes: Array<FilterModel>;
-  onResourceTypesChange: (event, types) => void;
-  selectedStates: Array<FilterModel>;
-  onStatesChange: (_, states) => void;
-  selectedStatuses: Array<FilterModel>;
-  onStatusesChange: (_, statuses) => void;
-  selectedHostGroups?: Array<FilterModel>;
-  onHostGroupsChange: (_, hostGroups) => void;
-  selectedServiceGroups?: Array<FilterModel>;
-  onServiceGroupsChange: (_, serviceGroups) => void;
-  onClearAll: () => void;
-}
-
-const Filter = ({
-  filter,
-  onFilterGroupChange,
-  nextSearch,
-  onSearchRequest,
-  onSearchPrepare,
-  selectedResourceTypes,
-  onResourceTypesChange,
-  selectedStates,
-  onStatesChange,
-  selectedStatuses,
-  onStatusesChange,
-  selectedHostGroups,
-  onHostGroupsChange,
-  selectedServiceGroups,
-  onServiceGroupsChange,
-  onClearAll,
-}: Props): JSX.Element => {
+const Filter = (): JSX.Element => {
   const classes = useStyles();
 
-  const [expanded, setExpanded] = React.useState(false);
+  const { t } = useTranslation();
 
-  const toggleExpanded = (): void => {
-    setExpanded(!expanded);
-  };
+  const {
+    unhandledProblemsFilter,
+    resourceProblemsFilter,
+    allFilter,
+    states: availableStates,
+    resourceTypes: availableResourceTypes,
+    statuses: availableStatuses,
+    standardFilterById,
+    isCustom,
+    newFilter,
+  } = useFilterModels();
 
-  const getHostGroupSearchEndpoint = (searchValue): string => {
-    return buildHostGroupsEndpoint({
+  const {
+    filter,
+    setFilter,
+    setCurrentSearch,
+    nextSearch,
+    setNextSearch,
+    resourceTypes,
+    setResourceTypes,
+    states,
+    setStates,
+    statuses,
+    setStatuses,
+    hostGroups,
+    setHostGroups,
+    serviceGroups,
+    setServiceGroups,
+    customFilters,
+    customFiltersLoading,
+  } = useResourceContext();
+
+  const getConnectedAutocompleteEndpoint = (buildEndpoint) => ({
+    search,
+    page,
+  }): string => {
+    return buildEndpoint({
       limit: 10,
-      search: searchValue ? `name:${searchValue}` : undefined,
+      page,
+      search,
     });
   };
 
-  const getServiceGroupSearchEndpoint = (searchValue): string => {
-    return buildServiceGroupsEndpoint({
-      limit: 10,
-      search: searchValue ? `name:${searchValue}` : undefined,
-    });
+  const setNewFilter = (): void => {
+    if (isCustom(filter)) {
+      return;
+    }
+    setFilter({ ...newFilter, criterias: filter.criterias });
   };
 
-  const getOptionsFromResult = ({ result }): Array<SelectEntry> => result;
+  const requestSearch = (): void => {
+    setCurrentSearch(nextSearch);
+  };
 
-  const requestSearchOnEnterKey = (event: KeyboardEvent): void => {
+  const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed) {
-      onSearchRequest();
+      requestSearch();
     }
   };
 
+  const prepareSearch = (event): void => {
+    setNextSearch(event.target.value);
+    setNewFilter();
+  };
+
+  const changeFilterGroup = (event): void => {
+    const filterId = event.target.value;
+
+    const updatedFilter =
+      standardFilterById[filterId] ||
+      customFilters?.find(propEq('id', filterId));
+
+    setFilter(updatedFilter);
+
+    if (!updatedFilter.criterias) {
+      return;
+    }
+
+    setResourceTypes(updatedFilter.criterias.resourceTypes);
+    setStatuses(updatedFilter.criterias.statuses);
+    setStates(updatedFilter.criterias.states);
+    setHostGroups(updatedFilter.criterias.hostGroups);
+    setServiceGroups(updatedFilter.criterias.serviceGroups);
+    setNextSearch(updatedFilter.criterias.search);
+    setCurrentSearch(updatedFilter.criterias.search);
+  };
+
+  const clearAllFilters = (): void => {
+    setFilter(allFilter);
+    setResourceTypes(allFilter.criterias.resourceTypes);
+    setStatuses(allFilter.criterias.statuses);
+    setStates(allFilter.criterias.states);
+    setHostGroups(allFilter.criterias.hostGroups);
+    setServiceGroups(allFilter.criterias.serviceGroups);
+    setNextSearch('');
+    setCurrentSearch('');
+  };
+
+  const changeResourceTypes = (_, updatedResourceTypes): void => {
+    setResourceTypes(updatedResourceTypes);
+    setNewFilter();
+  };
+
+  const changeStates = (_, updatedStates): void => {
+    setStates(updatedStates);
+    setNewFilter();
+  };
+
+  const changeStatuses = (_, updatedStatuses): void => {
+    setStatuses(updatedStatuses);
+    setNewFilter();
+  };
+
+  const changeHostGroups = (_, updatedHostGroups): void => {
+    setHostGroups(updatedHostGroups);
+  };
+
+  const changeServiceGroups = (_, updatedServiceGroups): void => {
+    setServiceGroups(updatedServiceGroups);
+  };
+
+  const customFilterOptions = isEmpty(customFilters)
+    ? []
+    : [
+        {
+          id: 'my_filters',
+          name: t(labelMyFilters),
+          type: 'header',
+        },
+        ...customFilters,
+      ];
+
+  const options = [
+    { id: '', name: t(labelNewFilter) },
+    unhandledProblemsFilter,
+    resourceProblemsFilter,
+    allFilter,
+    ...customFilterOptions,
+  ];
+
+  const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
+
   return (
-    <ExpansionPanel square expanded={expanded}>
-      <ExpansionPanelSummary
-        expandIcon={
-          <ExpandMoreIcon
-            color="primary"
-            aria-label={labelShowCriteriasFilters}
-          />
-        }
-        IconButtonProps={{ onClick: toggleExpanded }}
-        style={{ cursor: 'default' }}
-      >
-        <Grid spacing={1} container alignItems="center">
-          <Grid item>
-            <Typography className={classes.filterLineLabel} variant="h6">
-              {labelFilter}
-            </Typography>
-          </Grid>
-          <Grid item>
+    <Filters
+      expandable
+      expandLabel={labelShowCriteriasFilters}
+      filters={
+        <div className={clsx([classes.grid, classes.filterRow])}>
+          <Typography className={classes.filterLineLabel} variant="h6">
+            {t(labelFilter)}
+          </Typography>
+          <SaveFilter />
+          {customFiltersLoading ? (
+            <Skeleton className={classes.filterLoadingSkeleton} />
+          ) : (
             <SelectField
-              className={classes.filterGroup}
-              options={[
-                unhandledProblemsFilter,
-                resourceProblemsFilter,
-                allFilter,
-              ]}
-              selectedOptionId={filter.id}
-              onChange={onFilterGroupChange}
-              aria-label={labelStateFilter}
+              options={options.map(pick(['id', 'name', 'type']))}
+              selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
+              onChange={changeFilterGroup}
+              aria-label={t(labelStateFilter)}
+              fullWidth
             />
-          </Grid>
-          <Grid item>
-            <SearchField
-              className={classes.searchField}
-              EndAdornment={SearchHelpTooltip}
-              value={nextSearch || ''}
-              onChange={onSearchPrepare}
-              placeholder={labelResourceName}
-              onKeyDown={requestSearchOnEnterKey}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={onSearchRequest}
-            >
-              {labelSearch}
-            </Button>
-          </Grid>
-        </Grid>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
-        <Grid spacing={1} container alignItems="center">
-          <Grid item>
-            <Typography className={classes.filterLineLabel} variant="subtitle1">
-              {labelCriterias}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <AutocompleteField
-              className={classes.autocompleteField}
-              options={resourceTypes}
-              label={labelTypeOfResource}
-              onChange={onResourceTypesChange}
-              value={selectedResourceTypes || []}
-              openText={`${labelOpen} ${labelTypeOfResource}`}
-            />
-          </Grid>
-          <Grid item>
-            <AutocompleteField
-              className={classes.autocompleteField}
-              options={states}
-              label={labelState}
-              onChange={onStatesChange}
-              value={selectedStates || []}
-              openText={`${labelOpen} ${labelState}`}
-            />
-          </Grid>
-          <Grid item>
-            <AutocompleteField
-              className={classes.autocompleteField}
-              options={statuses}
-              label={labelStatus}
-              onChange={onStatusesChange}
-              value={selectedStatuses || []}
-              openText={`${labelOpen} ${labelStatus}`}
-            />
-          </Grid>
-          <Grid item>
-            <ConnectedAutocompleteField
-              className={classes.autocompleteField}
-              baseEndpoint={buildHostGroupsEndpoint({ limit: 10 })}
-              getSearchEndpoint={getHostGroupSearchEndpoint}
-              getOptionsFromResult={getOptionsFromResult}
-              label={labelHostGroup}
-              onChange={onHostGroupsChange}
-              value={selectedHostGroups || []}
-              openText={`${labelOpen} ${labelHostGroup}`}
-            />
-          </Grid>
-          <Grid item>
-            <ConnectedAutocompleteField
-              className={classes.autocompleteField}
-              baseEndpoint={buildServiceGroupsEndpoint({ limit: 10 })}
-              getSearchEndpoint={getServiceGroupSearchEndpoint}
-              label={labelServiceGroup}
-              onChange={onServiceGroupsChange}
-              getOptionsFromResult={getOptionsFromResult}
-              value={selectedServiceGroups || []}
-              openText={`${labelOpen} ${labelServiceGroup}`}
-            />
-          </Grid>
-          <Grid item>
-            <Button color="primary" onClick={onClearAll}>
-              {labelClearAll}
-            </Button>
-          </Grid>
-        </Grid>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+          )}
+          <SearchField
+            fullWidth
+            EndAdornment={SearchHelpTooltip}
+            value={nextSearch || ''}
+            onChange={prepareSearch}
+            placeholder={t(labelSearch)}
+            onKeyDown={requestSearchOnEnterKey}
+          />
+          <Button variant="contained" color="primary" onClick={requestSearch}>
+            {t(labelSearch)}
+          </Button>
+        </div>
+      }
+      expandableFilters={
+        <div className={clsx([classes.grid, classes.criteriaRow])}>
+          <Typography className={classes.filterLineLabel} variant="subtitle1">
+            {t(labelCriterias)}
+          </Typography>
+          <div />
+          <MultiAutocompleteField
+            options={availableResourceTypes}
+            label={t(labelResource)}
+            onChange={changeResourceTypes}
+            value={resourceTypes || []}
+            openText={`${t(labelOpen)} ${t(labelResource)}`}
+            limitTags={2}
+            fullWidth
+          />
+          <MultiAutocompleteField
+            options={availableStates}
+            label={t(labelState)}
+            onChange={changeStates}
+            value={states || []}
+            openText={`${t(labelOpen)} ${t(labelState)}`}
+            limitTags={1}
+            fullWidth
+          />
+          <MultiAutocompleteField
+            options={availableStatuses}
+            label={t(labelStatus)}
+            onChange={changeStatuses}
+            value={statuses || []}
+            openText={`${t(labelOpen)} ${t(labelStatus)}`}
+            fullWidth
+            limitTags={2}
+          />
+          <MultiConnectedAutocompleteField
+            getEndpoint={getConnectedAutocompleteEndpoint(
+              buildHostGroupsEndpoint,
+            )}
+            label={t(labelHostGroup)}
+            onChange={changeHostGroups}
+            value={hostGroups || []}
+            openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
+            field="name"
+            fullWidth
+          />
+          <MultiConnectedAutocompleteField
+            getEndpoint={getConnectedAutocompleteEndpoint(
+              buildServiceGroupsEndpoint,
+            )}
+            label={t(labelServiceGroup)}
+            onChange={changeServiceGroups}
+            value={serviceGroups || []}
+            openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
+            field="name"
+            fullWidth
+          />
+          <Button color="primary" onClick={clearAllFilters}>
+            {t(labelClearAll)}
+          </Button>
+        </div>
+      }
+    />
   );
 };
 

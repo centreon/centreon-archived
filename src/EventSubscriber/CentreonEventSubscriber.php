@@ -1,7 +1,8 @@
 <?php
+
 /**
- * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,22 +38,25 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use Centreon\Application\ApiPlatform;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\VersionHelper;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
@@ -70,19 +74,19 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * If no version has been defined in the configuration,
      * this version will be used by default
      */
-    const DEFAULT_API_VERSION = "2.0";
+    public const DEFAULT_API_VERSION = "2.0";
 
     /**
      * If no beta version has been defined in the configuration,
      * this version will be used by default
      */
-    const DEFAULT_API_BETA_VERSION = "2.1";
+    public const DEFAULT_API_BETA_VERSION = "2.1";
 
     /**
      * If no API header name has been defined in the configuration,
      * this name will be used by default
      */
-    const DEFAULT_API_HEADER_NAME = "version";
+    public const DEFAULT_API_HEADER_NAME = "version";
 
     /**
      * @var ContainerInterface
@@ -95,15 +99,31 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     private $requestParameters;
 
     /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * @var ApiPlatform
+     */
+    private $apiPlatform;
+
+    /**
      * @param RequestParametersInterface $requestParameters
      * @param ContainerInterface $container
+     * @param Security $security
+     * @param ApiPlatform $apiPlatform
      */
     public function __construct(
         RequestParametersInterface $requestParameters,
-        ContainerInterface $container
+        ContainerInterface $container,
+        Security $security,
+        ApiPlatform $apiPlatform
     ) {
         $this->container = $container;
         $this->requestParameters = $requestParameters;
+        $this->security = $security;
+        $this->apiPlatform = $apiPlatform;
     }
 
     /**
@@ -116,7 +136,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         return [
             KernelEvents::REQUEST => [
                 ['initRequestParameters', 9],
-                ['defineApiVersionInAttributes', 33]
+                ['defineApiVersionInAttributes', 33],
+                ['initUser', 7],
             ],
             KernelEvents::RESPONSE => [
                 ['addApiVersion', 10]
@@ -152,7 +173,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param RequestEvent $request
      * @throws \Exception
      */
-    public function initRequestParameters(RequestEvent $request):void
+    public function initRequestParameters(RequestEvent $request): void
     {
         $query = $request->getRequest()->query->all();
 
@@ -181,7 +202,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
             $search = [];
             foreach ($query as $parameterName => $parameterValue) {
-                if (in_array($parameterName, $reservedFields)
+                if (
+                    in_array($parameterName, $reservedFields)
                     || $parameterName !== 'filter'
                     || !is_array($parameterValue)
                 ) {
@@ -254,7 +276,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $uri = $event->getRequest()->getRequestUri();
         if (preg_match('/\/api\/([^\/]+)/', $uri, $matches)) {
             $requestApiVersion = $matches[1];
-            if ($requestApiVersion[0] == 'v') {
+            if ($requestApiVersion[0] === 'v') {
                 $requestApiVersion = substr($requestApiVersion, 1);
                 $requestApiVersion = VersionHelper::regularizeDepthVersion(
                     $requestApiVersion,
@@ -262,13 +284,15 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 );
             }
 
-            if ($requestApiVersion == 'latest'
+            if (
+                $requestApiVersion === 'latest'
                 || VersionHelper::compare($requestApiVersion, $latestVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_latest', true);
                 $requestApiVersion = $latestVersion;
             }
-            if ($requestApiVersion == 'beta'
+            if (
+                $requestApiVersion === 'beta'
                 || VersionHelper::compare($requestApiVersion, $betaVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_beta', true);
@@ -276,7 +300,16 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 $requestApiVersion = $betaVersion;
             }
 
+            /**
+             * Used for the routing conditions.
+             * @todo We need to use an other name because after routing,
+             *       its value is overwritten by the value of the 'version' property from uri
+             */
             $event->getRequest()->attributes->set('version', (float) $requestApiVersion);
+
+            // Used for controllers
+            $event->getRequest()->attributes->set('version_number', (float) $requestApiVersion);
+            $this->apiPlatform->setVersion((float) $requestApiVersion);
         }
     }
 
@@ -292,7 +325,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
         // We detect if the exception occurred before the kernel called the controller
         foreach ($event->getException()->getTrace() as $trace) {
-            if (array_key_exists('class', $trace)
+            if (
+                array_key_exists('class', $trace)
                 && strlen($trace['class']) > strlen($flagController)
                 && substr($trace['class'], -strlen($flagController)) === $flagController
             ) {
@@ -331,7 +365,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $httpCode = ($event->getException()->getCode() >= 100 && $event->getException()->getCode() < 600)
+                ? $event->getException()->getCode()
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
 
             if ($event->getException() instanceof EntityNotFoundException) {
                 $errorMessage = json_encode([
@@ -347,14 +383,12 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                         true
                     )
                 ]);
-                $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             } elseif ($event->getException() instanceof \PDOException) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
             } elseif ($event->getException() instanceof AccessDeniedException) {
-                $httpCode = $event->getException()->getCode();
                 $errorMessage = null;
             } elseif (get_class($event->getException()) == \Exception::class) {
                 $errorMessage = json_encode([
@@ -371,5 +405,50 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 new Response($errorMessage, $httpCode)
             );
         }
+    }
+
+    /**
+     * Set contact if he is logged in
+     */
+    public function initUser()
+    {
+        if ($user = $this->security->getUser()) {
+            EntityCreator::setContact($user);
+            $this->initLanguage($user);
+        }
+    }
+
+    /**
+     * Init language to manage translation
+     *
+     * @param ContactInterface $user
+     * @return void
+     */
+    private function initLanguage(Contact $user): void
+    {
+        $locale = $user->getLocale() ?? $this->getBrowserLocale();
+        $lang = $locale . '.' . Contact::DEFAULT_CHARSET;
+
+        putenv('LANG=' . $lang);
+        setlocale(LC_ALL, $lang);
+        bindtextdomain('messages', $this->container->getParameter('translation_path'));
+        bind_textdomain_codeset('messages', Contact::DEFAULT_CHARSET);
+        textdomain('messages');
+    }
+
+    /**
+     * Get browser locale if set in http header
+     *
+     * @return string The browser locale
+     */
+    private function getBrowserLocale(): string
+    {
+        $locale = Contact::DEFAULT_LOCALE;
+
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $locale = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        }
+
+        return $locale;
     }
 }

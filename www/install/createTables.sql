@@ -728,6 +728,7 @@ CREATE TABLE `contact` (
   `contact_acl_group_list` varchar(255) DEFAULT NULL,
   `contact_autologin_key` varchar(255) DEFAULT NULL,
   `default_page` int(11) DEFAULT NULL,
+  `show_deprecated_pages` enum('0','1') DEFAULT '0',
   `contact_charset` varchar(255) DEFAULT NULL,
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
@@ -1512,7 +1513,7 @@ CREATE TABLE `hostgroup_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `informations` (
   `key` varchar(25) DEFAULT NULL,
-  `value` varchar(255) DEFAULT NULL
+  `value` varchar(1024) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1920,6 +1921,7 @@ CREATE TABLE `topology` (
   `topology_popup` enum('0','1') DEFAULT NULL,
   `topology_modules` enum('0','1') DEFAULT NULL,
   `topology_show` enum('0','1') DEFAULT '1',
+  `is_deprecated` enum('0','1') NOT NULL DEFAULT '0',
   `topology_style_class` varchar(255) DEFAULT NULL,
   `topology_style_id` varchar(255) DEFAULT NULL,
   `topology_OnClick` varchar(255) DEFAULT NULL,
@@ -2313,6 +2315,33 @@ CREATE TABLE IF NOT EXISTS `task` (
   `params` BLOB NULL,
   `created_at` TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create user_filter table
+CREATE TABLE `user_filter` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    `user_id` int(11) NOT NULL,
+    `page_name` varchar(255) NOT NULL,
+    `criterias` text,
+    `order` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `filter_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create platform_topology table
+CREATE TABLE `platform_topology` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `address` varchar(255) NOT NULL,
+    `hostname` varchar(255) NULL,
+    `name` varchar(255) NOT NULL,
+    `type` varchar(255) NOT NULL,
+    `parent_id` int(11),
+    `server_id` int(11),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT='Registration and parent relation Table used to set the platform topology';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

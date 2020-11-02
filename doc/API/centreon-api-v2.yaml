@@ -58,6 +58,7 @@ tags:
   - name: Service Group
   - name: Acknowledgement
   - name: Downtime
+  - name: Topology
 security:
   - Token: []
   - Cookie: []
@@ -102,6 +103,53 @@ paths:
                 $ref: '#/components/schemas/LogoutAuthenticationResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
+  /configuration/icons:
+    get:
+      tags:
+        - Icons
+      summary: "List all icons"
+      description: |
+        List all icons from centreon configuration.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: "id of the icon"
+                          example: 1
+                        directory:
+                          type: string
+                          description: "directory of the icon"
+                          example: "ppm"
+                        name:
+                          type: string
+                          description: "name of the icon"
+                          example: "operatingsystems-linux-snmp-linux-128.png"
+                        url:
+                          type: string
+                          description: "url to get the icon"
+                          example: "/centreon/img/media/ppm/operatingsystems-linux-snmp-linux-128.png"
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/proxy:
     get:
       tags:
@@ -169,6 +217,239 @@ paths:
                       $ref: '#/components/schemas/Configuration.MonitoringServerMain'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/acl/actions:
+    get:
+      tags:
+        - User ACL actions
+      summary: "List allowed actions"
+      description: "List allowed actions of the current user."
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  host:
+                    type: object
+                    properties:
+                      check:
+                        type: boolean
+                        description: if check is allowed on host
+                        example: true
+                      acknowledgement:
+                        type: boolean
+                        description: if acknowledgement is allowed on host
+                        example: true
+                      downtime:
+                        type: boolean
+                        description: if downtime is allowed on host
+                        example: false
+                  service:
+                    type: object
+                    properties:
+                      check:
+                        type: boolean
+                        description: if check is allowed on service
+                        example: true
+                      acknowledgement:
+                        type: boolean
+                        description: if acknowledgement is allowed on service
+                        example: true
+                      downtime:
+                        type: boolean
+                        description: if downtime is allowed on service
+                        example: false
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/filters/{page_name}:
+    get:
+      tags:
+        - User filters
+      summary: "List user filters by page"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.6`
+
+        List user filters saved for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User.Filter'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - User filters
+      summary: "Add user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.6`
+
+        Add user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: filter name
+                  example: my filter 1
+                criterias:
+                  type: array
+                  description: list of filter criterias
+                  items:
+                    type: object
+                    example:
+                      type: text
+                      name: field1
+                      value: search value 1
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/filters/{page_name}/{filter_id}:
+    get:
+      tags:
+        - User filters
+      summary: "Detailed user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.6`
+
+        Get detailed information of a user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - User filters
+      summary: "Update user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.6`
+
+        Update user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User.Filter'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      tags:
+        - User filters
+      summary: "Patch user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.6`
+
+        Patch user filter order for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order]
+              properties:
+                order:
+                  type: integer
+                  description: filter order
+                  example: 1
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Filter'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - User filters
+      summary: "Delete user filter"
+      description: |
+        `internal`
+
+        `Since Centreon web 20.04.6`
+
+        Delete user filter for a given page.
+      parameters:
+        - $ref: '#/components/parameters/FilterPageName'
+        - $ref: '#/components/parameters/FilterId'
+      responses:
+        '204':
+          description: "OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -443,35 +724,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/hostgroups:
-        get:
-          tags:
-            - Host Group
-          summary: "List all host groups by host id"
-          description: |
-            List all the host groups in real-time monitoring by host id
-          parameters:
-            - $ref: '#/components/parameters/Limit'
-            - $ref: '#/components/parameters/Page'
-            - $ref: '#/components/parameters/SortBy'
-          responses:
-            '200':
-              description: "OK"
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      result:
-                        type: array
-                        items:
-                          allOf:
-                            - $ref: '#/components/schemas/Monitoring.HostGroup'
-                      meta:
-                        $ref: '#/components/schemas/Meta'
-            '403':
-              $ref: '#/components/responses/Forbidden'
-            '500':
-              $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Host Group
+      summary: "List all host groups by host id"
+      description: |
+        List all the host groups in real-time monitoring by host id
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hostgroups:
     get:
       tags:
@@ -526,15 +808,8 @@ paths:
 
         The available parameters to **search** / **sort_by** are:
 
-        * host.id
-        * host.name
-        * host.alias
-        * host.address
-        * host.state
-        * poller.id
-        * service.display_name
-        * service_group.id
-        * service_group.name
+        * id
+        * name
       parameters:
         - $ref: '#/components/parameters/ShowService'
         - $ref: '#/components/parameters/ShowHost'
@@ -591,17 +866,17 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/resources/disacknowledge:
-    post:
+  /monitoring/resources/acknowledgements:
+    delete:
       tags:
         - Acknowledgement
-      summary: "Mass disacknowledge resources"
+      summary: "Massively disacknowledge resources"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Disacknowledge.Bulk'
+              $ref: '#/components/schemas/Acknowledgement.Disacknowledge.Bulk'
       responses:
         '204':
           description: "OK"
@@ -1149,12 +1424,12 @@ paths:
         - Downtime
       summary: "List all downtimes of a service"
       parameters:
-        - $ref: '#/components/parameters/HostId'
-        - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
       description: |
         List all downtimes of a service.
 
@@ -1294,17 +1569,105 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance:
+  /monitoring/resources/check:
+    post:
+      tags:
+        - Check
+      summary: "Check resources"
+      description: "Schedule immediate check on chosen resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single host"
+      description: "Submit a result (check status, output and perfdata) to a single host"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Host'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single service"
+      description: "Submit a result (check status, output and perfdata) to a single service"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit result to resources"
+      description: "Submit a result (check status, output and perfdata) to resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
     get:
       tags:
         - Metrics
-      summary: 'Get service performance data'
+      summary: 'Get service metrics'
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/MetricStartDate'
         - $ref: '#/components/parameters/MetricEndDate'
-      description: 'Get metrics data from a service between given interval'
       responses:
         '200':
           description: "OK"
@@ -1323,15 +1686,15 @@ paths:
                       start:
                         type: integer
                         description: timestamp of the start interval
-                        example: 1581987121
+                        example: 1594504800
                       end:
                         type: integer
                         description: timestamp of the end interval
-                        example: 1581987721
+                        example: 1594591200
                       vertical-label:
                         type: string
                         description: vertical label (should not be used cause multiple y-axis possible)
-                        example: Value
+                        example: "Value"
                       base:
                         type: string
                         description: base scale
@@ -1372,11 +1735,11 @@ paths:
                         metric:
                           type: string
                           description: name of the metric
-                          example: cpu
+                          example: 'cpu'
                         metric_legend:
                           type: string
                           description: name of the metric in legend
-                          example: cpu
+                          example: 'cpu'
                         unit:
                           type: string
                           description: metric unit
@@ -1442,7 +1805,7 @@ paths:
                         legend:
                           type: string
                           description: metric name in legend
-                          example: cpu (%)
+                          example: 'cpu (%)'
                         stack:
                           type: integer
                           description: if the metric is stacked with other metrics
@@ -1482,7 +1845,7 @@ paths:
                         data:
                           type: array
                           items:
-                            type: float
+                            type: number
                             description: value of the metric
                           example:
                             - 1.0
@@ -1497,29 +1860,30 @@ paths:
                               description: label to display in legend
                               example: 'Last:1.00'
                         minimum_value:
-                          type: float
+                          type: number
                           description: minimum value
                           example: 1.0
                         maximum_value:
-                          type: float
+                          type: number
                           description: maximum value
                           example: 1.0
                   times:
                     type: array
                     items:
-                      type: integer
-                      description: timestamp
+                      type: string
+                      format: timestamp
+                      description: timestamp of the tick
                     example:
-                      - 1581987121
-                      - 1581987181
-                      - 1581987241
+                      - '1594505100'
+                      - '1594505400'
+                      - '1594505700'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/metrics/status:
+  /monitoring/hosts/{host_id}/services/{service_id}/status/start/{start}/end/{end}:
     get:
       tags:
         - Metrics
@@ -1544,72 +1908,408 @@ paths:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: "1581987121"
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: "1581987181"
                   warning:
                     type: array
                     items:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: "1581987121"
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: "1581987181"
                   ok:
                     type: array
                     items:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: "1581987121"
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: "1581987181"
                   unknown:
                     type: array
                     items:
                       type: object
                       properties:
                         start:
-                          type: integer
+                          type: string
                           description: start time (timestamp)
-                          example: 1581987121
+                          example: "1581987121"
                         end:
-                          type: integer
+                          type: string
                           description: end time (timestamp)
-                          example: 1581987181
+                          example: "1581987181"
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/timeline:
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/performance:
     get:
       tags:
-        - Timeline
-      summary: "List events related to a service"
-      description: |
-        List all events for a given service
-
-        The available parameters to **search** / **sort_by** are:
-
-        * date
+        - Metrics
+      summary: 'Get service performance data'
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
+        - in: query
+          name: start
+          required: false
+          description: "Start date of metrics (default date is 24 hours in the past)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T00:00:00'
+        - in: query
+          name: end
+          required: false
+          description: "End date of metrics (default date is current date)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-19T00:00:00'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  global:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        description: title of the graph
+                        example: 'graph title'
+                      start:
+                        type: string
+                        format: date-time
+                        description: datetime of the start interval
+                        example: '2020-02-18T00:00:00'
+                      end:
+                        type: string
+                        format: date-time
+                        description: datetime of the end interval
+                        example: '2020-02-19T00:00:00'
+                      vertical-label:
+                        type: string
+                        description: vertical label (should not be used cause multiple y-axis possible)
+                        example: 'Value'
+                      base:
+                        type: string
+                        description: base scale
+                        example: '1024'
+                      width:
+                        type: string
+                        description: width of the graph (should not be used)
+                        example: '550'
+                      height:
+                        type: string
+                        description: height of the graph (should not be used)
+                        example: '140'
+                      lower-limit:
+                        type: string
+                        description: lower value of the graph
+                        example: '0'
+                      scaled:
+                        type: integer
+                        description: if the graph needs to be automatically scaled
+                        example: 1
+                      multiple_services:
+                        type: boolean
+                        description: if multiple services are selected (always false)
+                        example: false
+                  metrics:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        index_id:
+                          type: string
+                          description: index id in centreon_storage.index_data table
+                          example: '4'
+                        metric_id:
+                          type: string
+                          description: metric id in centreon_storage.metrics table
+                          example: '29'
+                        metric:
+                          type: string
+                          description: name of the metric
+                          example: 'cpu'
+                        metric_legend:
+                          type: string
+                          description: name of the metric in legend
+                          example: 'cpu'
+                        unit:
+                          type: string
+                          description: metric unit
+                          example: '%'
+                        hidden:
+                          type: integer
+                          description: if the metric is hidden
+                          example: 0
+                        min:
+                          type: string
+                          description: min value
+                          example: '0'
+                        max:
+                          type: string
+                          description: max value
+                          example: '100'
+                        virtual:
+                          type: integer
+                          description: if the metric is virtual
+                          example: 0
+                        ds_data:
+                          type: object
+                          description: metric line properties
+                          properties:
+                            ds_min:
+                              type: string
+                              description: minimum value
+                              example: '1'
+                            ds_max:
+                              type: string
+                              description: maximum value
+                              example: '1'
+                            ds_minmax_int:
+                              type: string
+                              nullable: true
+                              description: unknown
+                              example: null
+                            ds_last:
+                              type: string
+                              description: last value
+                              example: '1'
+                            ds_average:
+                              type: string
+                              description: average value
+                              example: '1'
+                            ds_total:
+                              type: string
+                              nullable: true
+                              description: unknown
+                              example: null
+                            ds_tickness:
+                              type: string
+                              description: unknown
+                              example: '1'
+                            ds_color_line_mode:
+                              type: string
+                              description: unknown
+                              example: '1'
+                            ds_color_line:
+                              type: string
+                              description: color of the line
+                              example: '#666600'
+                        legend:
+                          type: string
+                          description: metric name in legend
+                          example: 'cpu (%)'
+                        stack:
+                          type: integer
+                          description: if the metric is stacked with other metrics
+                          example: 0
+                        warn:
+                          type: string
+                          nullable: true
+                          description: warning threshold
+                          example: null
+                        warn_low:
+                          type: string
+                          nullable: true
+                          description: low warning threshold
+                          example: null
+                        crit:
+                          type: string
+                          nullable: true
+                          description: critical threshold
+                          example: null
+                        crit_low:
+                          type: string
+                          nullable: true
+                          description: low critical threshold
+                          example: null
+                        ds_color_area_warn:
+                          type: string
+                          description: color of the area under warning threshold
+                          example: '#ff9a13'
+                        ds_color_area_crit:
+                          type: string
+                          description: color of the area under critical threshold
+                          example: '#e00b3d'
+                        ds_order:
+                          type: integer
+                          description: order used for stacking
+                          example: 0
+                        data:
+                          type: array
+                          items:
+                            type: number
+                            format: float
+                            description: value of the metric
+                          example:
+                            - 1.0
+                            - null
+                            - 1.0
+                        prints:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: string
+                              description: label to display in legend
+                              example: 'Last:1.00'
+                        minimum_value:
+                          type: number
+                          format: float
+                          description: minimum value
+                          example: 1.0
+                        maximum_value:
+                          type: number
+                          format: float
+                          description: maximum value
+                          example: 1.0
+                  times:
+                    type: array
+                    items:
+                      type: string
+                      format: date-time
+                      description: datetime of the tick
+                    example:
+                      - '2020-02-19T00:00:00'
+                      - '2020-02-19T00:05:00'
+                      - '2020-02-19T00:10:00'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundHostOrService'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}/metrics/status:
+    get:
+      tags:
+        - Metrics
+      summary: 'Get service status data'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - in: query
+          name: start
+          required: false
+          description: "Start date of metrics (default date is 24 hours in the past)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-18T00:00:00'
+        - in: query
+          name: end
+          required: false
+          description: "End date of metrics (default date is current date)"
+          schema:
+            type: string
+            format: date-time
+            example: '2020-02-19T00:00:00'
+      description: 'Get status data from a service between given interval'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  critical:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: '1581987121'
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: '1581987181'
+                  warning:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: '1581987121'
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: '1581987181'
+                  ok:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: '1581987121'
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: '1581987181'
+                  unknown:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          description: start time (timestamp)
+                          example: '1581987121'
+                        end:
+                          type: string
+                          description: end time (timestamp)
+                          example: '1581987181'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundHostOrService'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/timeline:
+    get:
+      tags:
+        - Timeline
+      summary: "Get host timeline"
+      description: |
+        List all events for a given host
+
+        The available parameters to **search** / **sort_by** are:
+
+        * type
+        * content
+        * date
+      parameters:
+        - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
@@ -1634,19 +2334,22 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/timeline:
+  /monitoring/hosts/{host_id}/services/{service_id}/timeline:
     get:
       tags:
         - Timeline
-      summary: "List events related to a host"
+      summary: "Get service timeline"
       description: |
-        List all events for a given host
+        List all events for a given service
 
         The available parameters to **search** / **sort_by** are:
 
+        * type
+        * content
         * date
       parameters:
         - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
         - $ref: '#/components/parameters/Page'
@@ -1681,7 +2384,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Acknowledgment.Bulk'
+              $ref: '#/components/schemas/Acknowledgement.Bulk'
       responses:
         '204':
           description: "Command Sent"
@@ -1707,6 +2410,39 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /platform/topology:
+    post:
+      tags:
+        - Topology
+      summary: "Register to platform topology"
+      description: "Register a server to the platform topology"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topology.Register'
+      responses:
+        '201':
+          description: "OK"
+        '409':
+          description: "Conflict. More details are specified in the response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int64
+                    example: 409
+                  message:
+                    type: string
+                    example: "A platform using the name : 'myPoller' or address : '1.1.1.2' already exists"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -1722,7 +2458,6 @@ components:
     Cookie:
       description: |
         If you have already connected on the Centreon web application, you can reused the PHPSESSID cookie.
-
         The cookie will be valid as long as the connection to Centreon is maintained.
       type: apiKey
       name: PHPSESSID
@@ -1733,73 +2468,70 @@ components:
       name: search
       required: false
       schema:
-        type: object
-        properties:
-          allOf:
-            type: object
-            description: >
-              Retrieve only data matching the defined search value.
+        type: string
+      description: >
+        Retrieve only data matching the defined search value.
 
-              Simple search can be done like the following example:
-                ```
-                search={"host.name":"Central"}
-                ```
+        Simple search can be done like the following example:
+        ```
+        search={"host.name":"Central"}
+        ```
 
-              Complex search can be done with aggregators and operators.
+        Complex search can be done with aggregators and operators.
 
-              Available search aggregators are:
-                * `$or`
-                * `$and`
+        Available search aggregators are:
+          * `$or`
+          * `$and`
 
-              Available search operators are:
-                * `$eq` → equal
-                * `$neq` → not equal
-                * `$lt` → less than
-                * `$le` → less or equal than
-                * `$gt` → greater than
-                * `$ge` → greater or equal than
-                * `$lk` → like
-                * `$nk` → not like
-                * `$in` → in
-                * `$ni` → not in
+        Available search operators are:
+          * `$eq` → equal
+          * `$neq` → not equal
+          * `$lt` → less than
+          * `$le` → less or equal than
+          * `$gt` → greater than
+          * `$ge` → greater or equal than
+          * `$lk` → like
+          * `$nk` → not like
+          * `$in` → in
+          * `$ni` → not in
 
-              Examples without nested aggregators:
-                ```
-                search={
-                  "$or":[
-                    {"host.name":{"$eq":"name_1"}},
-                    {"host.name":{"$eq":"name_2"}}
-                  ]
-                }
-                ```
-                ```
-                search={
-                  "$and":[
-                    {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
-                    {"host.name":{"$lk":"fr%"}}
-                  ]
-                }
-                ```
+        Examples without nested aggregators:
+          ```
+          search={
+            "$or":[
+              {"host.name":{"$eq":"name_1"}},
+              {"host.name":{"$eq":"name_2"}}
+            ]
+          }
+          ```
+          ```
+          search={
+            "$and":[
+              {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
+              {"host.name":{"$lk":"fr%"}}
+            ]
+          }
+          ```
 
-              Example with nested aggregators:
-                ```
-                search={
-                  "$or":[
-                    {
-                      "$and":[
-                        {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
-                        {"host.name":{"$lk":"fr%"}}
-                      ]
-                    },
-                    {
-                      "$and":[
-                        {"host.address":{"$rg":"^192\.168\.0\.\d+$"}},
-                        {"host.name":{"$lk":"us%"}}
-                      ]
-                    }
-                  ]
-                }
-                ```
+        Example with nested aggregators:
+          ```
+          search={
+            "$or":[
+              {
+                "$and":[
+                  {"host.address":{"$rg":"^10\.0\.0\.\d+$"}},
+                  {"host.name":{"$lk":"fr%"}}
+                ]
+              },
+              {
+                "$and":[
+                  {"host.address":{"$rg":"^192\.168\.0\.\d+$"}},
+                  {"host.name":{"$lk":"us%"}}
+                ]
+              }
+            ]
+          }
+          ```
     Limit:
       in: query
       name: limit
@@ -1829,18 +2561,18 @@ components:
         type: object
         example: '{"host.name":"ASC"}'
     MetricStartDate:
-      in: query
+      in: path
       name: start
-      required: false
+      required: true
       description: "Start date of metrics (default date is 24 hours in the past)"
       schema:
         type: string
         format: date-time
         example: '2020-02-18T00:00:00'
     MetricEndDate:
-      in: query
+      in: path
       name: end
-      required: false
+      required: true
       description: "End date of metrics (default date is current date)"
       schema:
         type: string
@@ -1854,8 +2586,8 @@ components:
       schema:
         type: array
         items:
-            type: string
-            enum: [service, host]
+          type: string
+          enum: [service, host]
         example: '["host"]'
     ResourceFilterState:
       in: query
@@ -1865,8 +2597,8 @@ components:
       schema:
         type: array
         items:
-            type: string
-            enum: [unhandled_problems, resources_problems, in_downtime, acknowledged, all]
+          type: string
+          enum: [unhandled_problems, resources_problems, in_downtime, acknowledged, all]
         example: '["in_downtime", "acknowledged"]'
     ResourceFilterStatus:
       in: query
@@ -1876,8 +2608,8 @@ components:
       schema:
         type: array
         items:
-            type: string
-            enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
+          type: string
+          enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
         example: '["OK", "UP", "PENDING"]'
     ResourceFilterHostgroupId:
       in: query
@@ -1887,8 +2619,8 @@ components:
       schema:
         type: array
         items:
-            type: int
-            format: int64
+          type: integer
+          format: int64
         example: '[13, 22, 31]'
     ResourceFilterServicegroupId:
       in: query
@@ -1898,8 +2630,8 @@ components:
       schema:
         type: array
         items:
-            type: int
-            format: int64
+          type: integer
+          format: int64
         example: '[2033]'
     ShowHost:
       in: query
@@ -1953,6 +2685,23 @@ components:
         type: integer
         format: int64
         example: 329
+    FilterPageName:
+      in: path
+      name: page_name
+      description: "name of the page"
+      required: true
+      schema:
+        type: string
+        example: events-view
+    FilterId:
+      in: path
+      name: filter_id
+      description: "id of the filter"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
   responses:
     Unauthorized:
       description: "Unauthorized"
@@ -1961,6 +2710,10 @@ components:
           schema:
             type: object
             properties:
+              code:
+                type: integer
+                format: int64
+                example: 401
               message:
                 type: string
     Forbidden:
@@ -2086,6 +2839,31 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    User.Filter:
+      type: object
+      required: [name, criterias]
+      properties:
+        id:
+          type: integer
+          description: filter id
+          example: 1
+        name:
+          type: string
+          description: filter name
+          example: my filter 1
+        criterias:
+          type: array
+          description: list of filter criterias
+          items:
+            type: object
+            example:
+              type: text
+              name: field1
+              value: search value 1
+        order:
+          type: integer
+          description: filter order
+          example: 1
     Configuration.MonitoringServerMain:
       type: object
       properties:
@@ -2203,31 +2981,44 @@ components:
           example: "Acknowledged by admin"
         with_services:
           type: boolean
-          description: "Indicates whether we should add the downtime on the host-related services"
+          description: "Indicates whether we should acknowledge the host-related services"
           example: true
         is_notify_contacts:
           type: boolean
           description: "Indicates whether notification is sent to the contacts linked to the host or service"
           example: false
-    Acknowledgment.Bulk:
-        type: object
-        properties:
-          acknowledgment:
-            $ref: '#/components/schemas/Acknowledgement.Resource'
-          resources:
-            type: array
-            items:
-              allOf:
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
-    Acknowledgment.Disacknowledge.Bulk:
-        type: array
-        items:
-          allOf:
-            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-            - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+    Disacknowledgement.Resource:
+      type: object
+      properties:
+        with_services:
+          type: boolean
+          description: "Indicates whether we should disacknowledge the host-related services"
+          example: true
+    Acknowledgement.Bulk:
+      type: object
+      properties:
+        acknowledgement:
+          $ref: '#/components/schemas/Acknowledgement.Resource'
+        resources:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+    Acknowledgement.Disacknowledge.Bulk:
+      type: object
+      properties:
+        disacknowledgement:
+          $ref: '#/components/schemas/Disacknowledgement.Resource'
+        resources:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Host:
       type: object
+      nullable: true
       properties:
         id:
           type: integer
@@ -2250,6 +3041,7 @@ components:
         deletion_time:
           type: string
           format: date-time
+          nullable: true
           description: "Date of the request for cancellation of the acknowledgement (ISO8601)"
         entry_time:
           type: string
@@ -2286,9 +3078,11 @@ components:
              * `3` - UNKNOWN
           example: 1
     Acknowledgement.Service:
+      nullable: true
       allOf:
         - $ref: '#/components/schemas/Acknowledgement.Host'
         - type: object
+          nullable: true
           properties:
             service_id:
               type: integer
@@ -2425,6 +3219,7 @@ components:
         deletion_time:
           type: string
           format: date-time
+          nullable: true
           description: "Date of cancellation of downtime (ISO8601)"
           example: null
         actual_start_time:
@@ -2485,22 +3280,21 @@ components:
           format: date-time
           description: "Scheduled end date of the downtime (ISO8601)"
     Downtime.Bulk:
-        type: object
-        properties:
-          downtime:
-            $ref: '#/components/schemas/Downtime.Resource'
-          resources:
-            type: array
-            items:
-              allOf:
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
-                - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
+      type: object
+      properties:
+        downtime:
+          $ref: '#/components/schemas/Downtime.Resource'
+        resources:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
+              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Check.Host:
       type: object
       properties:
         is_forced:
           type: boolean
-          required: false
           description: "Indicates whether the check is forced (do not take into account the check timeperiod)"
           example: true
     Check.Hosts:
@@ -2518,6 +3312,125 @@ components:
         allOf:
           - $ref: '#/components/schemas/Check.Service'
           - $ref: '#/components/schemas/Bulk.Resource.Id'
+    Check.Resources:
+      type: object
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [host, service]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+    SubmitResult.Host:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: integer
+          enum: [0, 1, 2]
+          description: |
+            Host status code that can be submitted
+            * `0` - UP
+            * `1` - DOWN
+            * `2` - UNREACHABLE
+          example: 1
+        output:
+          type: string
+          nullable: true
+          description: "Output result of the check sent"
+          example: "CRITICAL: Connection lost"
+        performance_data:
+          type: string
+          nullable: true
+          description: "Performance data result of the check sent"
+          example: "'nbproc'=0;;1:1;0;"
+    SubmitResult.Service:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [0, 1, 2, 3]
+          description: |
+            Service status code that can be submitted
+            * `0` - OK
+            * `1` - WARNING
+            * `2` - CRITICAL
+            * `3` - UNKNOWN
+          example: 2
+        output:
+          type: string
+          nullable: true
+          description: "Output result of the check sent"
+          example: "CRITICAL: Memory exceeded "
+        performance_data:
+          type: string
+          nullable: true
+          description: "Performance data result of the check sent"
+          example: "'used'=453849088B;;;0;1927262208"
+    SubmitResult.Resources:
+      type: object
+      required: [resources]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [status,id]
+            properties:
+              type:
+                type: string
+                enum: [host, service]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              status:
+                type: integer
+                enum: [0, 1, 2, 3]
+                description: |
+                  Resource status code that can be submitted
+                  * `0` - OK or UP
+                  * `1` - WARNING or DOWN
+                  * `2` - CRITICAL or UNREACHABLE
+                  * `3` - UNKNOWN
+                example: 2
+              output:
+                type: string
+                nullable: true
+                description: "Output result of the check sent"
+                example: "CRITICAL: Memory exceeded "
+              performance_data:
+                type: string
+                nullable: true
+                description: "Performance data result of the check sent"
+                example: "'used'=453849088B;;;0;1927262208"
     Monitoring.Resource.Disacknowledge.Host:
       type: object
       properties:
@@ -2570,12 +3483,11 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
-        details_endpoint:
-          type: string
-          description: "Resource url to details page"
-          example: "/centreon/monitoring/resources/hosts/12/services/12"
+        links:
+          $ref: '#/components/schemas/Monitoring.ResourceLinks'
         icon:
           type: object
+          nullable: true
           properties:
             id:
               type: integer
@@ -2592,7 +3504,16 @@ components:
               example: "/media/memory.png"
         parent:
           type: object
+          nullable: true
           properties:
+            type:
+              type: string
+              description: "Type of the resource"
+              example: "service|host"
+            short_type:
+              type: string
+              description: "Short name of the resource type"
+              example: "s|h"
             id:
               type: integer
               format: int64
@@ -2602,10 +3523,8 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
-            details_endpoint:
-              type: string
-              description: "Parent resource url to details page"
-              example: "/centreon/monitoring/resources/hosts/12"
+            links:
+              $ref: '#/components/schemas/Monitoring.ResourceLinks'
             status:
               type: object
               properties:
@@ -2644,6 +3563,7 @@ components:
                   example: 1
             icon:
               type: object
+              nullable: true
               properties:
                 name:
                   type: string
@@ -2654,59 +3574,19 @@ components:
                   description: "Url of the icon"
                   example: "/img/media/topology/firewall.png"
         status:
-          type: object
-          properties:
-            code:
-              type: integer
-              description: |
-                resource status code
-                * `0` - UP or OK
-                * `1` - DOWN or WARNING
-                * `2` - UNREACHABLE or CRITICAL
-                * `3` - UNKNOWN
-                * `4` - PENDING
-              example: 0
-            name:
-              type: string
-              description: |
-                resource status name
-                * UP
-                * DOWN
-                * UNREACHABLE
-                * PENDING
-                * OK
-                * WARNING
-                * CRITICAL
-                * UNKNOWN
-              example: "UP"
-            severity_code:
-              type: integer
-              description: |
-                resource status name
-                * `1` - DOWN or CRITICAL
-                * `2` - WARNING
-                * `3` - UNKNOWN or UNREACHABLE
-                * `4` - PENDING
-                * `5` - UP or OK
-              example: 1
+          $ref: '#/components/schemas/Monitoring.ResourceStatus'
         in_downtime:
           type: boolean
           description: "Indicates whether resource is in downtime"
           example: false
-        downtime_endpoint: "/monitoring/hosts/12/services/12/downtimes"
         acknowledged:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        acknowledgement_endpoint: "/monitoring/hosts/12/services/12/acknowledgements"
         severity:
           type: object
+          nullable: true
           properties:
-            id:
-              type: integer
-              format: int32
-              description: "ID of the severity"
-              example: 12
             level:
               type: integer
               description: "level of the severity"
@@ -2715,46 +3595,139 @@ components:
               type: string
               description: "Name of the severity"
               example: "severity 1"
-            url:
-              type: string
-              description: "Url of the severity icon"
-              example: "/img/media/severity1.png"
         impacted_resources_count:
           type: integer
           description: "count of impacted resources"
           example: 4
         action_url:
           type: string
+          nullable: true
           description: "action URL of the resource"
           example: http://mediawiki/host/central
-        status_graph_endpoint:
-          type: string
-          description: "URL of the status chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/metrics/status"
-        performance_graph_endpoint:
-          type: string
-          description: "URL of the performance chart linked to the resource"
-          example: "/monitoring/hosts/1/services/2/metrics/performance"
         duration:
           type: string
+          nullable: true
           description: "Duration since last status change"
           example: "2h 3m"
         last_status_change:
           type: string
           format: date-time
+          nullable: true
           description: "Date of the last status change (ISO8601)"
         tries:
           type: string
+          nullable: true
           description: "Number of check tries"
           example: "3/3 (H)"
         last_check:
           type: string
+          nullable: true
           description: "Duration since last check"
           example: "1h 45m"
         information:
           type: string
           description: "Output of the resource"
           example: "OK - Ping is ok"
+        active_checks:
+          type: boolean
+          nullable: true
+          description: "Indicates whether active checks are enabled"
+          example: true
+        passive_checks:
+          type: boolean
+          nullable: true
+          description: "Indicates whether passive checks are enabled"
+          example: true
+    Monitoring.ResourceLinks:
+      type: object
+      properties:
+        uris:
+          type: object
+          properties:
+            configuration:
+              type: string
+              nullable: true
+              description: "configuration uri"
+              example: "/centreon/main.php?p=60101&o=c&host_id=11"
+            logs:
+              type: string
+              nullable: true
+              description: "logs uri"
+              example: "/centreon/main.php?p=20301&h=11"
+            reporting:
+              type: string
+              nullable: true
+              description: "reporting uri"
+              example: "/centreon/main.php?p=307&host=11"
+        endpoints:
+          type: object
+          properties:
+            details:
+              type: string
+              nullable: true
+              description: "resource details endpoint"
+              example: "/centreon/api/beta/monitoring/resources/hosts/11"
+            timeline:
+              type: string
+              nullable: true
+              description: "resource timeline endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/timeline"
+            status_graph:
+              type: string
+              nullable: true
+              description: "resource status graph endpoint"
+              example: null
+            performance_graph:
+              type: string
+              nullable: true
+              description: "resource performance graph endpoint"
+              example: null
+            acknowledgement:
+              type: string
+              nullable: true
+              description: "current resource acknowledgement endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/acknowledgements?limit=1"
+            downtime:
+              type: string
+              nullable: true
+              description: "current resource downtimes endpoint"
+              example: "/centreon/api/beta/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
+    Monitoring.ResourceStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: |
+            resource status code
+            * `0` - UP or OK
+            * `1` - DOWN or WARNING
+            * `2` - UNREACHABLE or CRITICAL
+            * `3` - UNKNOWN
+            * `4` - PENDING
+          example: 0
+        name:
+          type: string
+          description: |
+            resource status name
+            * UP
+            * DOWN
+            * UNREACHABLE
+            * PENDING
+            * OK
+            * WARNING
+            * CRITICAL
+            * UNKNOWN
+          example: "UP"
+        severity_code:
+          type: integer
+          description: |
+            resource status name
+            * `1` - DOWN or CRITICAL
+            * `2` - WARNING
+            * `3` - UNKNOWN or UNREACHABLE
+            * `4` - PENDING
+            * `5` - UP or OK
+          example: 1
     Monitoring.HostGroup:
       type: object
       properties:
@@ -2831,10 +3804,12 @@ components:
               example: 0
             last_hard_state:
               type: string
+              nullable: true
               format: date-time
               description: "Date of the last hard state (ISO8601)"
             last_notification:
               type: string
+              nullable: true
               format: date-time
               description: "Date of the last notification (ISO8601)"
             latency:
@@ -2844,6 +3819,7 @@ components:
               example: 0.005
             next_check:
               type: string
+              nullable: true
               format: date-time
               description: "Scheduled date for the next check (ISO8601)"
             next_host_notification:
@@ -2887,7 +3863,8 @@ components:
               description: "Is the host flapping or not"
               example: false
             percent_state_change:
-              type: float
+              type: number
+              format: float
               description: "Percent state change since last check"
               example: 3.5
             downtimes:
@@ -2897,7 +3874,9 @@ components:
             acknowledgement:
               type: object
               properties:
-                $ref: '#/components/schemas/Acknowledgement.Host'
+                host:
+                  allOf:
+                    - $ref: '#/components/schemas/Acknowledgement.Host'
     Monitoring.HostMain:
       allOf:
         - $ref: '#/components/schemas/Monitoring.HostMin'
@@ -2929,6 +3908,7 @@ components:
             execution_time:
               type: number
               format: float
+              nullable: true
               description: "Time duration to check the host"
               example: 0.070906
             icon_image:
@@ -2942,30 +3922,37 @@ components:
             last_check:
               type: string
               format: date-time
+              nullable: true
               description: "Date of last check (ISO8601)"
             last_hard_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last hard state change (ISO8601)"
             last_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last state change (soft or hard) (ISO8601)"
             last_time_down:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the host was DOWN (ISO8601)"
             last_time_unreachable:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the host was UNREACHABLE (ISO8601)"
             last_time_up:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the host was UP (ISO8601)"
             last_update:
               type: string
               format: date-time
+              nullable: true
               description: "Date of last update (ISO8601)"
             max_check_attempts:
               type: integer
@@ -2975,7 +3962,7 @@ components:
             output:
               type: string
               description: "Output of the last host check"
-              example: "OK - 127.0.0.1 rta 0.100ms lost 0%\n" 
+              example: "OK - 127.0.0.1 rta 0.100ms lost 0%\n"
             passive_checks:
               type: boolean
               description: "Indicates whether the check script is passive or not"
@@ -2997,6 +3984,7 @@ components:
               example: 0
             criticality:
               type: integer
+              nullable: true
               description: "Host criticality level (for display purposes)"
               example: 10
     Monitoring.HostWithService:
@@ -3018,10 +4006,6 @@ components:
           type: string
           description: "Name of the service group"
           example: "MySG"
-        host:
-          allOf:
-            - $ref: '#/components/schemas/Monitoring.HostMin'
-            - $ref: '#/components/schemas/Monitoring.HostWithService'
     Monitoring.ServiceMin:
       type: object
       properties:
@@ -3054,8 +4038,7 @@ components:
         - type: object
           properties:
             check_attempt:
-              type: integer
-              format: int64
+              type: string
               description: "Number of the current check attempt"
               example: 1
             icon_image:
@@ -3069,10 +4052,12 @@ components:
             last_check:
               type: string
               format: date-time
+              nullable: true
               description: "Date of last check (ISO8601)"
             last_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last state change (ISO8601)"
             max_check_attempts:
               type: integer
@@ -3091,8 +4076,16 @@ components:
               example: 1
             criticality:
               type: integer
+              nullable: true
               description: "Service criticality level (for display purposes)"
               example: 10
+            status:
+              $ref: '#/components/schemas/Monitoring.ResourceStatus'
+            duration:
+              type: string
+              nullable: true
+              description: "Duration since last status change"
+              example: "2h 3m"
     Monitoring.ServiceFull:
       allOf:
         - $ref: '#/components/schemas/Monitoring.ServiceMain'
@@ -3120,6 +4113,7 @@ components:
               example: 0
             command_line:
               type: string
+              nullable: true
               description: "Command used for active checks"
               example: "/usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 -n 5 -w 200,20% -c 400,50%"
             execution_time:
@@ -3142,30 +4136,37 @@ components:
             last_hard_state_change:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last hard state change (ISO8601)"
             last_notification:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last notification (ISO8601)"
             last_time_critical:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was CRITICAL (ISO8601)"
             last_time_ok:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was OK (ISO8601)"
             last_time_unknown:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was UNKNOWN (ISO8601)"
             last_time_warning:
               type: string
               format: date-time
+              nullable: true
               description: "The last time the service was WARNING (ISO8601)"
             last_update:
               type: string
               format: date-time
+              nullable: true
               description: "Date of the last update (ISO8601)"
             latency:
               type: number
@@ -3174,6 +4175,7 @@ components:
               example: 0.031
             next_check:
               type: string
+              nullable: true
               format: date-time
               description: "Scheduled date for the next check (ISO8601)"
             performance_data:
@@ -3189,9 +4191,14 @@ components:
               items:
                 $ref: '#/components/schemas/Downtime.Service'
             acknowledgement:
+              allOf:
+                - $ref: '#/components/schemas/Acknowledgement.Service'
               type: object
-              properties:
-                $ref: '#/components/schemas/Acknowledgement.Service'
+              nullable: true
+            flapping:
+              type: boolean
+              description: "Is the host flapping or not"
+              example: false
     Monitoring.ServiceWithHost:
       type: object
       properties:
@@ -3226,10 +4233,12 @@ components:
           example: 3128
         user:
           type: string
+          nullable: true
           description: "Login used to connect to proxy"
           example: "proxy-user"
         password:
           type: string
+          nullable: true
           description: "Password used to connect to proxy"
           example: "proxy-pass"
       required:
@@ -3240,18 +4249,86 @@ components:
     Monitoring.TimelineEvent:
       type: object
       properties:
+        id:
+          type: integer
+          description: "Id of the event (it is not uniq)"
+          example: 1
         type:
           type: string
-          description: "Type of Event (L - log, C - Comment, A - Acknowledgement, D - Downtime"
-          example: "C"
-        id:
-          type: string
-          description: "Concatinated ID of Type + Object ID"
-          example: "C25"
+          enum: [event, notification, downtime, acknowledgement, comment]
+          description: "Type of event"
+          example: "event"
         date:
           type: string
           format: date-time
-          description: "The date the event was created (ISO8601)"
-        object:
+          description: "The date the event happened (ISO8601)"
+        start_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: "The date the event started (ISO8601) (start date of downtime)"
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: "The date the event ended (ISO8601) (end date of downtime)"
+        content:
+          type: string
+          description: "The content of the event"
+        contact:
           type: object
-          description: "The detailed object properties of above types"
+          nullable: true
+          description: "The contact of the event"
+          properties:
+            id:
+              type: integer
+              nullable: true
+              description: "Id of the contact"
+            name:
+              type: string
+              description: "Name of the contact"
+        status:
+          $ref: '#/components/schemas/Monitoring.ResourceStatus'
+        tries:
+          type: integer
+          nullable: true
+          description: "The count of retry"
+    Topology.Register:
+      type: object
+      required: [name, type, address]
+      properties:
+        name:
+          type: string
+          description: "Name of the server to register in the topology"
+          example: "myPoller"
+        hostname:
+          type: string
+          description: "Platform's 'physical' name"
+          example: "my.poller.physical.hostname"
+        type:
+          type: string
+          enum: [central, poller, remote, map, mbi]
+          example: "poller"
+          description: >
+            Type of the server from available Server types :
+              * 'Central'
+              * 'Poller'
+              * 'Remote'
+              * 'MAP'
+              * 'MBI'
+        address:
+          type: string
+          description: "Address of the server. IPv4, IPv6 or DNS"
+          example: "1.1.1.2"
+        parent_address:
+          type: string
+          description: >
+            It should not be added to register a Central or other platforms in specific cases:
+            Eg : To register a remote server as top level platform on its own platform.
+
+            Mandatory parameter for all other types, to be able to link a platform to its parent
+            Example :
+            - To link a poller to a Central
+            - To link a remote server to a Central
+            - To link a poller to a remote server
+          example: "1.1.1.1"

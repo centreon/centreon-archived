@@ -72,6 +72,6 @@
     jQuery(".timepicker").timepicker();
     initDatepicker();
     turnOnEvents();
-    updateEndTime();
+    updateDateAndTime();
 </script>
 {/literal}

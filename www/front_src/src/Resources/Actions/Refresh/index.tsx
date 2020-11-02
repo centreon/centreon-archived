@@ -1,65 +1,77 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Grid } from '@material-ui/core';
 import IconRefresh from '@material-ui/icons/Refresh';
 import IconPlay from '@material-ui/icons/PlayArrow';
 import IconPause from '@material-ui/icons/Pause';
+
+import { IconButton } from '@centreon/ui';
 
 import {
   labelRefresh,
   labelDisableAutorefresh,
   labelEnableAutorefresh,
 } from '../../translatedLabels';
-import ActionButton from '../../ActionButton';
+import { useResourceContext } from '../../Context';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
-  toggleAutorefresh;
-}
-
-interface Props extends AutorefreshProps {
-  disabledRefresh: boolean;
-  onRefresh;
+  toggleAutorefresh: () => void;
 }
 
 const AutorefreshButton = ({
   enabledAutorefresh,
   toggleAutorefresh,
 }: AutorefreshProps): JSX.Element => {
+  const { t } = useTranslation();
+
   const label = enabledAutorefresh
     ? labelDisableAutorefresh
     : labelEnableAutorefresh;
 
   return (
-    <ActionButton
-      ariaLabel={label}
-      title={label}
+    <IconButton
+      ariaLabel={t(label)}
+      title={t(label)}
       onClick={toggleAutorefresh}
       size="small"
     >
       {enabledAutorefresh ? <IconPause /> : <IconPlay />}
-    </ActionButton>
+    </IconButton>
   );
 };
 
-const RefreshActions = ({
-  disabledRefresh,
-  enabledAutorefresh,
-  onRefresh,
-  toggleAutorefresh,
-}: Props): JSX.Element => {
+interface Props {
+  onRefresh: () => void;
+}
+
+const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
+  const { t } = useTranslation();
+
+  const {
+    enabledAutorefresh,
+    setEnabledAutorefresh,
+    sending,
+  } = useResourceContext();
+
+  const toggleAutorefresh = (): void => {
+    setEnabledAutorefresh(!enabledAutorefresh);
+  };
+
   return (
     <Grid container spacing={1}>
       <Grid item>
-        <ActionButton
-          title={labelRefresh}
-          ariaLabel={labelRefresh}
-          disabled={disabledRefresh}
+        <IconButton
+          title={t(labelRefresh)}
+          ariaLabel={t(labelRefresh)}
+          disabled={sending}
           onClick={onRefresh}
           size="small"
         >
           <IconRefresh />
-        </ActionButton>
+        </IconButton>
       </Grid>
       <Grid item>
         <AutorefreshButton

@@ -83,16 +83,58 @@ class CentreonInstance
         }
     }
 
-    public function getInstancesMonitoring($poller_id = array())
+    /**
+     * Returns a filtered array with only integer ids
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    private function filteredArrayId(array $ids): array
     {
-        $pollers = array();
-        if (!empty($poller_id)) {
-            $query = "SELECT i.instance_id, i.name
-                FROM instances i
-                WHERE i.instance_id IN (" . $this->dbo->escape(implode(",", $poller_id)) . ") ";
-            $res = $this->dbo->query($query);
-            while ($row = $res->fetchRow()) {
-                $pollers[] = array('id' => $row['instance_id'], 'name' => $row['name']);
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
+
+    /**
+     * Get instance_id and name from instances ids
+     *
+     * @param  int[] $pollerIds
+     * @return array $pollers [['instance_id => integer, 'name' => string],...]
+     */
+    public function getInstancesMonitoring($pollerIds = [])
+    {
+        $pollers = [];
+
+        if (!empty($pollerIds)) {
+            /* checking here that the array provided as parameter
+             * is exclusively made of integers (servicegroup ids)
+             */
+            $filteredPollerIds = $this->filteredArrayId($pollerIds);
+            $pollerParams = [];
+            if (count($filteredPollerIds) > 0) {
+                /*
+                 * Building the pollerParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredPollerIds as $index => $filteredPollerId) {
+                    $pollerParams[':pollerId' . $index] = $filteredPollerId;
+                }
+                $stmt = $this->DB->prepare(
+                    'SELECT i.instance_id, i.name FROM instances i ' .
+                    'WHERE i.instance_id IN ( ' . implode(',', array_keys($pollerParams)) . ' )'
+                );
+                foreach ($pollerParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+                $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $pollers[] = [
+                        'id' => $row['instance_id'],
+                        'name' => $row['name']
+                    ];
+                }
             }
         }
 

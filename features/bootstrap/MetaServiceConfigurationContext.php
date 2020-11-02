@@ -32,7 +32,7 @@ class MetaServiceConfigurationContext extends CentreonContext
         'notification_on_critical' => 1,
         'notification_on_recovery' => 0,
         'notification_on_flapping' => 1,
-        'geo_coordinates' => 'Paris',
+        'geo_coordinates' => '2.3522219,48.856614',
         'graph_template' => 'Latency',
         'enabled' => 1,
         'comments' => 'metaServiceComments'
@@ -62,7 +62,7 @@ class MetaServiceConfigurationContext extends CentreonContext
         'notification_on_critical' => 0,
         'notification_on_recovery' => 1,
         'notification_on_flapping' => 0,
-        'geo_coordinates' => '1.2.3.4',
+        'geo_coordinates' => '2.3522219,48.856614',
         'graph_template' => 'Memory',
         'enabled' => 1,
         'comments' => 'metaServiceCommentsChanged'

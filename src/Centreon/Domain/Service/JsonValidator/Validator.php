@@ -118,7 +118,7 @@ class Validator implements JsonValidatorInterface
         }
         $dataToValidate = json_decode($json);
         if ($dataToValidate === null) {
-            throw new \Exception('The JSON cannot be decoded');
+            throw new \Exception(_('The JSON cannot be decoded'));
         }
         if (empty($this->definitions) && $this->validationFilePath !== null) {
             $this->loadDefinitionFile();
@@ -150,7 +150,7 @@ class Validator implements JsonValidatorInterface
 
         if (empty($definitionsToUseForValidation)) {
             throw new \Exception(
-                'The definition model "' . $modelName . '" to validate the JSON does not exist or is empty'
+                sprintf(_('The definition model "%s" to validate the JSON does not exist or is empty'), $modelName)
             );
         }
 

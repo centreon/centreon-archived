@@ -128,7 +128,7 @@ class SqlRequestParametersTranslatorTest extends TestCase
         ]);
 
         $this->expectException(RequestParametersTranslatorException::class);
-        $this->expectExceptionMessage("The parameter 'host.description' is not allowed");
+        $this->expectExceptionMessage("The parameter host.description is not allowed");
 
         $sqlRequestParametersTranslator->translateSearchParameterToSql();
     }

@@ -707,6 +707,18 @@ if (!$is_admin && !$haveAccess) {
         $DBRESULT->closeCursor();
         $tpl->assign("isRemote", $isRemote);
 
+        /**
+         * Build the host detail URI that will be used in the
+         * deprecated banner
+         */
+        $kernel = \App\Kernel::createForWeb();
+        $resourceController = $kernel->getContainer()->get(
+            \Centreon\Application\Controller\MonitoringResourceController::class
+        );
+
+        $deprecationMessage = _('[Page deprecated] Please use the new page: ');
+        $resourcesStatusLabel = _('Resources Status');
+        $redirectionUrl = $resourceController->buildHostDetailsUri($host_id);
 
         $tpl->display("hostDetails.ihtml");
     } else {
@@ -731,6 +743,8 @@ if (!$is_admin && !$haveAccess) {
         var command_failure = "<?php echo _("Failed to execute command");?>";
         var host_id = '<?php echo $hostObj->getHostId($host_name);?>';
         var labels = new Array();
+
+        display_deprecated_banner();
 
         labels['host_checks'] = new Array(
             "<?php echo $str_check_host_enable;?>",
@@ -767,6 +781,16 @@ if (!$is_admin && !$haveAccess) {
             "<?php echo $img_en[1];?>"
         );
 
+        function display_deprecated_banner() {
+            const url = "<?php echo $redirectionUrl; ?>";
+            const message = "<?php echo $deprecationMessage; ?>";
+            const label = "<?php echo $resourcesStatusLabel; ?>";
+            jQuery('.pathway').append(
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message +
+                '<a style="position:relative" href="' + url + '" isreact="isreact">' + label + '</a></span>'
+            );
+        }
+
         function send_command(cmd, actiontype) {
             if (!confirm(glb_confirm)) {
                 return 0;
@@ -781,12 +805,15 @@ if (!$is_admin && !$haveAccess) {
                 display_result(xhr_cmd, cmd);
             };
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/objectDetails/xml/hostSendCommand.php?cmd="
-                + cmd + "&host_id=" + host_id + "&actiontype=" + actiontype,
+                "POST",
+                "./include/monitoring/objectDetails/xml/hostSendCommand.php",
                 true
             );
-            xhr_cmd.send(null);
+            var data = new FormData();
+            data.append('cmd', cmd);
+            data.append('host_id', host_id);
+            data.append('actiontype', actiontype);
+            xhr_cmd.send(data);
         }
 
         function display_result(xhr_cmd, cmd) {
@@ -836,4 +863,3 @@ if (!$is_admin && !$haveAccess) {
     </script>
     <?php
 }
-

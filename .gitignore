@@ -6,6 +6,8 @@ doc/API/centreon-api-v2.html
 
 #backend development and project files
 .idea/
+.vscode/
+.scannerwork/
 vendor/
 nbproject/
 GPL_LIB/SmartyCache/*
@@ -40,15 +42,15 @@ secret
 build/*
 build/coverage/*
 
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/public/bundles/
-/var/
-###< symfony/framework-bundle ###
-/bin/.phpunit/
-/doc/en/_build/
+#symfony/framework-bundle
+.env.local
+.env.local.php
+.env.*.local
+public/bundles/
+var/
+bin/.phpunit/
+doc/en/_build/
+symfony/
 
 src/Centreon*
 !src/Centreon/

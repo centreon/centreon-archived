@@ -25,7 +25,7 @@ print_step_begin "System analysis"
 
 # Unattended install script only support Red Hat or compatible.
 if [ \! -e /etc/redhat-release ] ; then
-  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
+  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/21.04/en/installation/introduction.html for alternative installation methods."
 fi
 rhrelease=`cat /etc/redhat-release`
 case "$rhrelease" in
@@ -33,7 +33,7 @@ case "$rhrelease" in
     # Good to go.
     ;;
   *)
-    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
+    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/21.04/en/installation/introduction.html for alternative installation methods."
     ;;
 esac
 
@@ -41,7 +41,7 @@ esac
 command -v systemctl > /dev/null 2>&1
 if [ "x$?" '=' x0 ] ; then
   systemctl show > /dev/null 2>&1
-  if [ "x$?" '=' x0 ] ; then  
+  if [ "x$?" '=' x0 ] ; then
     has_systemd=1
   else
     has_systemd=0
@@ -89,9 +89,9 @@ if [ "x$?" '!=' x0 ] ; then
     error_and_exit "Could not install Software Collections repository (package centos-release-scl)"
   fi
 fi
-rpm -q centreon-release-20.04 > /dev/null 2>&1
+rpm -q centreon-release-21.04 > /dev/null 2>&1
 if [ "x$?" '!=' x0 ] ; then
-  yum -q install -y --nogpgcheck http://yum.centreon.com/standard/20.04/el7/stable/noarch/RPMS/centreon-release-20.04-1.el7.centos.noarch.rpm
+  yum -q install -y --nogpgcheck http://yum.centreon.com/standard/21.04/el7/stable/noarch/RPMS/centreon-release-21.04-2.el7.centos.noarch.rpm
   if [ "x$?" '!=' x0 ] ; then
     error_and_exit "Could not install Centreon repository"
   fi
@@ -114,10 +114,19 @@ print_step_end
 #
 
 print_step_begin "PHP configuration"
-timezone=`date '+%Z'`
-if [ -z "$timezone" ] ; then
-  timezone=UTC
-fi
+timezone=`/opt/rh/rh-php72/root/bin/php -r '
+    $timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
+
+    if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
+        $timezoneName = $matches[1];
+    }
+
+    if (date_default_timezone_set($timezoneName) === false) {
+      $timezoneName = "UTC";
+    }
+
+    echo $timezoneName;
+' 2> /dev/null`
 echo "date.timezone = $timezone" > /etc/opt/rh/rh-php72/php.d/10-centreon.ini
 print_step_end "OK, timezone set to $timezone"
 
@@ -166,4 +175,4 @@ echo
 echo "Centreon was successfully installed !"
 echo
 echo "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
-echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/20.04/en/installation/post-installation.html"
+echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/21.04/en/installation/web-and-post-installation.html"

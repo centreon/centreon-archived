@@ -8,11 +8,11 @@ security:
     firewalls:
         free:
             stateless: true
-            pattern: ^/centreon/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/.*$
+            pattern: ^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/versions$
             security: false
         api:
             stateless: true
-            pattern: ^/(?!centreon/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login).*
+            pattern: ^(?!.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login)/.*
             security: true
             guard:
                 authenticators:
@@ -20,7 +20,7 @@ security:
                     - security.provider.sessionapi
             entry_point: security.provider.tokenapi
         login:
-            pattern: ^/centreon/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login$
+            pattern: ^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login$
             security: false
 
     # Easy way to control access for large sections of your site

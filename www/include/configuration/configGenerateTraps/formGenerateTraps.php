@@ -37,6 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
+if (!$centreon->user->admin && $centreon->user->access->checkAction('generate_trap') === 0) {
+    require_once _CENTREON_PATH_ . 'www/include/core/errors/alt_error.php';
+    return null;
+}
+
 /*
  * Init Centcore Pipe
  */

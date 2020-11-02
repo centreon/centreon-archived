@@ -95,9 +95,19 @@ class CommandRepositoryAPI implements CommandRepositoryInterface
             }
             $jsonResponse = json_decode($response->getContent(), true);
             if (!array_key_exists('token', $jsonResponse)) {
-                throw new \Exception('Token not found');
+                $exceptionMessage = 'Token not found';
+                if (array_key_exists('message', $jsonResponse)) {
+                    if ($jsonResponse['message'] === 'Method not implemented') {
+                        $exceptionMessage = 'The "autodiscovery" module of Gorgone is not loaded';
+                    } else {
+                        $exceptionMessage = $jsonResponse['message'];
+                    }
+                }
+                throw new CommandRepositoryException($exceptionMessage);
             }
             return (string) $jsonResponse['token'];
+        } catch (CommandRepositoryException $ex) {
+            throw $ex;
         } catch (\Throwable $e) {
             throw new \Exception($e->getMessage(), (int) $e->getCode(), $e);
         }

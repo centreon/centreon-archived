@@ -1,0 +1,6 @@
+RewriteEngine On
+Options +FollowSymLinks
+Options +SymLinksIfOwnerMatch
+
+RewriteCond %{HTTP_HOST}@@%{HTTP_REFERER} !^([^@]*)@@https?://\1/.*
+RewriteRule .* - [F]

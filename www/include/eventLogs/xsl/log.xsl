@@ -143,7 +143,7 @@
             <td style="padding-left:5px;">
                 <xsl:if test="host_name != 'Meta'">
                     <xsl:element name="a">
-                        <xsl:attribute name="href">main.php?p=20202&amp;o=hd&amp;host_name=<xsl:value-of select="real_name" /></xsl:attribute>
+                        <xsl:attribute name="href"><xsl:value-of select="h_timeline_uri" /></xsl:attribute>
                         <xsl:attribute name="target">_blank</xsl:attribute>
                         <xsl:value-of select="host_name"/>
                     </xsl:element>
@@ -154,7 +154,7 @@
             </td>
             <td style="padding-left:5px;">
                 <xsl:element name="a">
-                    <xsl:attribute name="href">main.php?p=20201&amp;o=svcd&amp;host_name=<xsl:value-of select="real_name" />&amp;service_description=<xsl:value-of select="real_service_name"/></xsl:attribute>
+                    <xsl:attribute name="href"><xsl:value-of select="s_timeline_uri" /></xsl:attribute>
                     <xsl:attribute name="target">_blank</xsl:attribute>
                     <xsl:value-of select="service_description"/>
                 </xsl:element>

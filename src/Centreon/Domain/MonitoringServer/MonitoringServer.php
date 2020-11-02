@@ -167,7 +167,7 @@ class MonitoringServer implements EntityDescriptorMetadataInterface
     /**
      * @var bool Indicates whether Remote Servers are used as SSH proxies
      */
-    private $remoteServerCentcoreSshProxy = true;
+    private $remoteServerUseAsProxy = true;
 
     /**
      * @var bool Indicates whether the monitoring configuration has changed since last restart
@@ -657,18 +657,18 @@ class MonitoringServer implements EntityDescriptorMetadataInterface
     /**
      * @return bool
      */
-    public function isRemoteServerCentcoreSshProxy(): bool
+    public function isRemoteServerUseAsProxy(): bool
     {
-        return $this->remoteServerCentcoreSshProxy;
+        return $this->remoteServerUseAsProxy;
     }
 
     /**
-     * @param bool $remoteServerCentcoreSshProxy
+     * @param bool $remoteServerUseAsProxy
      * @return MonitoringServer
      */
-    public function setRemoteServerCentcoreSshProxy(bool $remoteServerCentcoreSshProxy): MonitoringServer
+    public function setRemoteServerUseAsProxy(bool $remoteServerUseAsProxy): MonitoringServer
     {
-        $this->remoteServerCentcoreSshProxy = $remoteServerCentcoreSshProxy;
+        $this->remoteServerUseAsProxy = $remoteServerUseAsProxy;
         return $this;
     }
 

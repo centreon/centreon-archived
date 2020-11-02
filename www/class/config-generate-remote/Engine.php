@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  * 
@@ -35,10 +36,12 @@ class Engine extends AbstractObject
     protected $attributesSelect = '
         nagios_server_id,
         nagios_id,
+        nagios_name,
         use_timezone,
         cfg_dir,
         cfg_file,
         log_file,
+        log_archive_path,
         status_file,
         status_update_interval,
         external_command_buffer_slots,
@@ -142,8 +145,10 @@ class Engine extends AbstractObject
     protected $attributesWrite = [
         'nagios_server_id',
         'nagios_id',
+        'nagios_name',
         'use_timezone',
         'log_file',
+        'log_archive_path',
         'status_file',
         'status_update_interval',
         'external_command_buffer_slots',

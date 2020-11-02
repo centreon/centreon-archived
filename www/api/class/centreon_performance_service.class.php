@@ -61,7 +61,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        global $centreon;
+        global $centreon, $conf_centreon;
 
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
@@ -112,7 +112,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         }
 
         if ($excludeAnomalyDetection) {
-            $additionalCondition .= 'AND s.service_id NOT IN (SELECT service_id FROM centreon.mod_anomaly_service) ';
+            $additionalCondition .= 'AND s.service_id NOT IN (SELECT service_id FROM ' . $conf_centreon['db'] . '.mod_anomaly_service) ';
         }
         if (isset($this->arguments['hostgroup'])) {
             $additionalCondition .= 'AND (hg.host_id = i.host_id ' .

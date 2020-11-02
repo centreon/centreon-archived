@@ -69,7 +69,8 @@ class CentreonACL
         $this->db->query("UPDATE acl_groups SET acl_group_changed = 1");
         $this->db->query("UPDATE acl_resources SET changed = 1");
         if ($flagOnly == false) {
-            passthru(CentreonUtils::getCentreonPath() . '/cron/centAcl.php');
+            $centreonDir = realpath(__DIR__ . "/../../../");
+            passthru($centreonDir . '/cron/centAcl.php');
         }
     }
 

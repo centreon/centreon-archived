@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,6 +34,8 @@
  *
  */
 
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -42,7 +45,18 @@ include_once("./class/centreonDB.class.php");
 include_once("./class/centreonHost.class.php");
 include_once("./class/centreonService.class.php");
 include_once("./class/centreonMeta.class.php");
-include_once($centreon_path . "www/include/monitoring/objectDetails/common-func.php");
+
+// We initialize the kernel of Symfony to retrieve its container.
+include_once($centreon_path . "config/bootstrap.php");
+$kernel = new App\Kernel('prod', false);
+$kernel->boot();
+$container = $kernel->getContainer();
+$monitoringService = $container->get(Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface::class);
+$contactService = $container->get(Centreon\Domain\Contact\Interfaces\ContactServiceInterface::class);
+$contact = $contactService->findBySession(session_id());
+if ($contact !== null) {
+    $monitoringService->filterByContact($contact);
+}
 
 /*
  * Create Object env
@@ -66,9 +80,9 @@ if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = $centreon->user->access->getActions();
 }
 
-if (isset($_GET["host_name"]) &&
-    $_GET["host_name"] != "" &&
-    isset($_GET["service_description"]) && $_GET["service_description"] != ""
+if (
+    !empty($_GET["host_name"])
+    && !empty($_GET["service_description"])
 ) {
     $host_name = $_GET["host_name"];
     $svc_description = $_GET["service_description"];
@@ -234,11 +248,16 @@ if (!is_null($host_id)) {
         $DBRESULT->closeCursor();
 
         if ($is_admin || isset($authorized_actions['service_display_command'])) {
-            $service_status["command_line"] = hidePasswordInCommand(
-                $service_status["check_command"],
-                $host_id,
-                $service_status["service_id"]
-            );
+            $commandLine = '';
+            try {
+                $commandLine = $monitoringService->findCommandLineOfService(
+                    (int) $host_id,
+                    (int) $service_status["service_id"]
+                );
+            } catch (MonitoringServiceException $ex) {
+                $commandLine = 'Error: ' . $ex->getMessage();
+            }
+            $service_status["command_line"] = $commandLine;
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
@@ -364,7 +383,7 @@ if (!is_null($host_id)) {
                 $i++;
             }
         }
-        $service_status["plugin_output"] = utf8_encode($service_status["plugin_output"]);
+
         $service_status["plugin_output"] = str_replace("'", "", $service_status["plugin_output"]);
         $service_status["plugin_output"] = str_replace("\"", "", $service_status["plugin_output"]);
         $service_status["plugin_output"] = str_replace("\\n", "<br>", $service_status["plugin_output"]);
@@ -520,9 +539,7 @@ if (!is_null($host_id)) {
             $service_status["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
         }
 
-        if (isset($service_status["scheduled_downtime_depth"]) &&
-            $service_status["scheduled_downtime_depth"]
-        ) {
+        if (isset($service_status["scheduled_downtime_depth"]) && $service_status["scheduled_downtime_depth"]) {
             $service_status["scheduled_downtime_depth"] = 1;
         }
 
@@ -786,9 +803,10 @@ if (!is_null($host_id)) {
         $tools = array();
         $DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
         while ($module = $DBRESULT->fetchrow()) {
-            if (isset($module['svc_tools']) &&
-                $module['svc_tools'] == 1 &&
-                file_exists('modules/' . $module['name'] . '/svc_tools.php')
+            if (
+                isset($module['svc_tools'])
+                && $module['svc_tools'] == 1
+                && file_exists('modules/' . $module['name'] . '/svc_tools.php')
             ) {
                 include('modules/' . $module['name'] . '/svc_tools.php');
             }
@@ -808,6 +826,31 @@ if (!is_null($host_id)) {
             $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
+        /**
+         * Build the service detail URI that will be used in the
+         * deprecated banner
+         */
+        $kernel = \App\Kernel::createForWeb();
+        $resourceController = $kernel->getContainer()->get(
+            \Centreon\Application\Controller\MonitoringResourceController::class
+        );
+
+        $deprecationMessage = _('[Page deprecated] Please use the new page: ');
+        $resourcesStatusLabel = _('Resources Status');
+        $redirectionUrl = $resourceController->buildServiceDetailsUri($host_id, $service_id);
+
+        // Check if central or remote server
+        $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+        $result = $DBRESULT->fetchRow();
+        if ($result === false) {
+            $isRemote = false;
+        } else {
+            $result = array_map("myDecode", $result);
+            $isRemote = ($result['value'] === 'yes');
+        }
+        $DBRESULT->closeCursor();
+        $tpl->assign("isRemote", $isRemote);
+
         $tpl->display("serviceDetails.ihtml");
     }
 } else {
@@ -824,6 +867,8 @@ if (!is_null($host_id)) {
         var host_id = '<?php echo $host_id;?>';
         var svc_id = '<?php echo $service_id;?>';
         var labels = new Array();
+
+        display_deprecated_banner();
 
         labels['service_checks'] = new Array(
             "<?php echo $str_check_svc_enable;?>",
@@ -867,6 +912,16 @@ if (!is_null($host_id)) {
             "<?php echo $img_en[1];?>"
         );
 
+        function display_deprecated_banner() {
+            const url = "<?php echo $redirectionUrl; ?>";
+            const message = "<?php echo $deprecationMessage; ?>";
+            const label = "<?php echo $resourcesStatusLabel; ?>";
+            jQuery('.pathway').append(
+                '<span style="color:#FF4500;padding-left:10px;font-weight:bold">' + message +
+                '<a style="position:relative" href="' + url + '" isreact="isreact">' + label + '</a></span>'
+            );
+        }
+
         function send_command(cmd, actiontype) {
             if (!confirm(glb_confirm)) {
                 return 0;
@@ -881,12 +936,16 @@ if (!is_null($host_id)) {
                 display_result(xhr_cmd, cmd);
             };
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/objectDetails/xml/serviceSendCommand.php?cmd=" + cmd +
-                "&host_id=" + host_id + "&service_id=" + svc_id + "&actiontype=" + actiontype,
+                "POST",
+                "./include/monitoring/objectDetails/xml/serviceSendCommand.php",
                 true
             );
-            xhr_cmd.send(null);
+            var data = new FormData();
+            data.append('cmd', cmd);
+            data.append('host_id', host_id);
+            data.append('service_id', svc_id);
+            data.append('actiontype', actiontype);
+            xhr_cmd.send(data);
         }
 
         function display_result(xhr_cmd, cmd) {

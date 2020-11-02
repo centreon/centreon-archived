@@ -51,5 +51,5 @@ try {
         "UPGRADE : Unable to process 19.04.1 upgrade"
     );
 } finally {
-    pearDB->query('SET SESSION innodb_strict_mode=ON');
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }

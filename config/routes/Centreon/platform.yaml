@@ -2,3 +2,9 @@ centreon_application_platform_getversion:
   methods: GET
   path: /platform/versions
   controller: 'Centreon\Application\Controller\PlatformController::getVersions'
+
+centreon_application_platformtopology_addplatformtotopology:
+  methods: POST
+  path: /platform/topology
+  controller: 'Centreon\Application\Controller\PlatformTopologyController::addPlatformToTopology'
+  condition: "request.attributes.get('version') >= 2.0"

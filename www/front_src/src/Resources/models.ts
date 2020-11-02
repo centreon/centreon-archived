@@ -1,22 +1,28 @@
+import { ListingModel } from '@centreon/ui';
+
 export interface Icon {
   url: string;
   name: string;
 }
+
+type ParentLinks = Pick<ResourceLinks, 'uris'>;
 
 export interface Parent {
   id: number;
   name: string;
   icon: Icon | null;
   status: Status;
+  links: ParentLinks;
+  type?: string;
 }
 
 export interface Status {
   severity_code: number;
-  code: number;
   name: string;
 }
 
 export interface Severity {
+  name: string;
   level: number;
 }
 
@@ -26,9 +32,8 @@ export interface Resource {
   icon?: Icon;
   parent?: Parent;
   status: Status;
-  downtime_endpoint?: string;
+  links: ResourceLinks;
   acknowledged: boolean;
-  acknowledgement_endpoint?: string;
   in_downtime: boolean;
   duration: string;
   tries: string;
@@ -36,30 +41,11 @@ export interface Resource {
   information: string;
   severity?: Severity;
   short_type: 'h' | 's';
-  performance_graph_endpoint?: string;
   type: 'host' | 'service';
+  passive_checks: boolean;
 }
 
-interface ListingMeta {
-  page: number;
-  limit: number;
-  search: {};
-  sort_by: {};
-  total: number;
-}
-
-export interface Listing<TEntity> {
-  result: Array<TEntity>;
-  meta: ListingMeta;
-}
-
-export type ResourceListing = Listing<Resource>;
-
-export interface User {
-  username: string;
-  locale: string | null;
-  timezone: string | null;
-}
+export type ResourceListing = ListingModel<Resource>;
 
 export interface Downtime {
   author_name: string;
@@ -78,7 +64,21 @@ export interface Acknowledgement {
 }
 
 export interface ResourceEndpoints {
-  details: string;
-  statusGraph?: string;
-  performanceGraph?: string;
+  details: string | null;
+  performance_graph: string | null;
+  status_graph: string | null;
+  timeline: string | null;
+  acknowledgement: string | null;
+  downtime: string | null;
+}
+
+export interface ResourceUris {
+  configuration: string | null;
+  logs: string | null;
+  reporting: string | null;
+}
+
+export interface ResourceLinks {
+  endpoints: ResourceEndpoints;
+  uris: ResourceUris;
 }

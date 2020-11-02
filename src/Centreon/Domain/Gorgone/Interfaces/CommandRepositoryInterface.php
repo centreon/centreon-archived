@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
+use Centreon\Infrastructure\Gorgone\CommandRepositoryException;
+
 /**
  * Interface CommandRepositoryInterface
  * Describes management of external commands sent to gorgone
@@ -35,6 +37,7 @@ interface CommandRepositoryInterface
      *
      * @param CommandInterface $command Command to send
      * @return string Returns a token that will be used to retrieve the response
+     * @throws CommandRepositoryException
      * @throws \Exception
      */
     public function send(CommandInterface $command): string;

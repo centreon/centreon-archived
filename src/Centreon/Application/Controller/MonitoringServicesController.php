@@ -22,18 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Acknowledgement\Acknowledgement;
-use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Monitoring\Entity\AckEventObject;
-use Centreon\Domain\Monitoring\Entity\CommentEventObject;
-use Centreon\Domain\Monitoring\Entity\DowntimeEventObject;
-use Centreon\Domain\Monitoring\Entity\LogEventObject;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Monitoring\Model\Log;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
-use Centreon\Domain\Monitoring\TimelineEvent;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
@@ -152,46 +144,6 @@ class MonitoringServicesController extends AbstractController
             return $this->view(
                 [
                     'result' => $serviceGroups,
-                    'meta' => $requestParameters->toArray()
-                ]
-            )->setContext($context);
-        } else {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-    }
-
-    /**
-     * Entry point to get timeline for a host-service
-     * @param int $hostId id of host
-     * @param int $serviceId id of service
-     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
-     * @return View
-     * @throws \Exception
-     */
-    public function getServiceTimeline(
-        int $hostId,
-        int $serviceId,
-        RequestParametersInterface $requestParameters
-    ): View {
-
-        $this->monitoring->filterByContact($this->getUser());
-
-        if ($this->monitoring->isServiceExists($hostId, $serviceId)) {
-            $timeline = $this->monitoring->findTimelineEvents($hostId, $serviceId);
-
-            $context = (new Context())
-                ->setGroups([
-                    LogEventObject::SERIALIZER_GROUP_LIST,
-                    CommentEventObject::SERIALIZER_GROUP_LIST,
-                    DowntimeEventObject::SERIALIZER_GROUP_LIST,
-                    AckEventObject::SERIALIZER_GROUP_LIST,
-                    TimelineEvent::SERIALIZER_GROUP_LIST,
-                ])
-                ->enableMaxDepth();
-
-            return $this->view(
-                [
-                    'result' => $timeline,
                     'meta' => $requestParameters->toArray()
                 ]
             )->setContext($context);

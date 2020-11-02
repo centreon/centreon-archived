@@ -28,6 +28,7 @@ use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface;
+use Centreon\Infrastructure\Gorgone\CommandRepositoryException;
 
 /**
  * This class is designed to send a command to the Gorgone server and retrieve the associated responses.
@@ -65,8 +66,10 @@ class GorgoneService implements GorgoneServiceInterface
     {
         try {
             $responseToken = $this->commandRepository->send($command);
+        } catch (CommandRepositoryException $ex) {
+            throw new GorgoneException($ex->getMessage(), 0, $ex);
         } catch (\Throwable $ex) {
-            throw new GorgoneException('Error when connecting to the Gorgone server', 0, $ex);
+            throw new GorgoneException(_('Error when connecting to the Gorgone server'), 0, $ex);
         }
         $command->setToken($responseToken);
         return Response::create($command);

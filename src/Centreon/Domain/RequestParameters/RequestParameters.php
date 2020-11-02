@@ -198,7 +198,6 @@ class RequestParameters implements RequestParametersInterface
             self::OPERATOR_NOT_IN
         ];
         $names = [];
-        $searchIn = null;
         $searchIn = function ($data) use (&$searchIn, &$names, $notAllowedKeys) {
             foreach ($data as $key => $value) {
                 if (!in_array($key, $names) && !in_array($key, $notAllowedKeys)) {
@@ -239,14 +238,6 @@ class RequestParameters implements RequestParametersInterface
     /**
      * @inheritDoc
      */
-    public function isSearchParameterDefined(string $parameter): bool
-    {
-        return $this->findSearchParameter($parameter, (array) $this->getSearch()) !== null;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function toArray(): array
     {
         return [
@@ -268,7 +259,7 @@ class RequestParameters implements RequestParametersInterface
     public function unsetSearchParameter(string $parameterToExtract)
     {
         $parameters = $this->search;
-        $extractFunction = null;
+
         $extractFunction = function (string $parameterToExtract, &$parameters) use (&$extractFunction) {
             foreach ($parameters as $key => &$value) {
                 if ($key === $parameterToExtract) {

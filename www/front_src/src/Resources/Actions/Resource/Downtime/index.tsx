@@ -2,19 +2,20 @@ import * as React from 'react';
 
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
+import { useUserContext } from '../../../../Provider/UserContext';
 import {
   labelRequired,
-  labelSomethingWentWrong,
   labelDowntimeCommandSent,
   labelDowntimeBy,
   labelEndDateMustBeGreater,
 } from '../../../translatedLabels';
 import DialogDowntime from './Dialog';
 import { Resource } from '../../../models';
-import { setDowntimeOnResources, getUser } from '../../../api';
+import { setDowntimeOnResources } from '../../api';
 
 interface DateParams {
   dateStart: Date;
@@ -39,24 +40,25 @@ const formatDateInterval = (values: DateParams): [Date, Date] => {
   return [dateTimeStart, dateTimeEnd];
 };
 
-const validationSchema = Yup.object().shape({
-  dateStart: Yup.string().required(labelRequired).nullable(),
-  timeStart: Yup.string().required(labelRequired).nullable(),
-  dateEnd: Yup.string().required(labelRequired).nullable(),
-  timeEnd: Yup.string().required(labelRequired).nullable(),
-  fixed: Yup.boolean(),
-  duration: Yup.object().when('fixed', (fixed, schema) => {
-    return !fixed
-      ? schema.shape({
-          value: Yup.string().required(labelRequired),
-          unit: Yup.string().required(labelRequired),
-        })
-      : schema;
-  }),
-  comment: Yup.string().required(labelRequired),
-});
+const getValidationSchema = (t): unknown =>
+  Yup.object().shape({
+    dateStart: Yup.string().required(t(labelRequired)).nullable(),
+    timeStart: Yup.string().required(t(labelRequired)).nullable(),
+    dateEnd: Yup.string().required(t(labelRequired)).nullable(),
+    timeEnd: Yup.string().required(t(labelRequired)).nullable(),
+    fixed: Yup.boolean(),
+    duration: Yup.object().when('fixed', (fixed, schema) => {
+      return !fixed
+        ? schema.shape({
+            value: Yup.string().required(t(labelRequired)),
+            unit: Yup.string().required(t(labelRequired)),
+          })
+        : schema;
+    }),
+    comment: Yup.string().required(t(labelRequired)),
+  });
 
-const validate = (values: DateParams): FormikErrors<DateParams> => {
+const validate = (values: DateParams, t): FormikErrors<DateParams> => {
   const errors: FormikErrors<DateParams> = {};
 
   if (
@@ -68,7 +70,7 @@ const validate = (values: DateParams): FormikErrors<DateParams> => {
     const [start, end] = formatDateInterval(values);
 
     if (start >= end) {
-      errors.dateEnd = labelEndDateMustBeGreater;
+      errors.dateEnd = t(labelEndDateMustBeGreater);
     }
   }
 
@@ -86,17 +88,20 @@ const DowntimeForm = ({
   onClose,
   onSuccess,
 }: Props): JSX.Element | null => {
-  const { cancel, token } = useCancelTokenSource();
+  const { t } = useTranslation();
   const { showMessage } = useSnackbar();
 
-  const showError = (message): void =>
-    showMessage({ message, severity: Severity.error });
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const [loaded, setLoaded] = React.useState(false);
-  const [locale, setLocale] = React.useState<string | null>('en');
-  const [timezone, setTimezone] = React.useState<string | null>(null);
+  const { locale, timezone, username } = useUserContext();
+
+  const {
+    sendRequest: sendSetDowntimeOnResources,
+    sending: sendingSetDowntingOnResources,
+  } = useRequest({
+    request: setDowntimeOnResources,
+  });
 
   const currentDate = new Date();
   const twoHoursMs = 2 * 60 * 60 * 1000;
@@ -129,44 +134,21 @@ const DowntimeForm = ({
       const durationDivider = unitMultipliers?.[values.duration.unit] || 1;
       const duration = values.duration.value * durationDivider;
 
-      setDowntimeOnResources({
+      sendSetDowntimeOnResources({
         resources,
         params: { ...values, startTime, endTime, duration },
-        cancelToken: token,
-      })
-        .then(() => {
-          showSuccess(labelDowntimeCommandSent);
-          onSuccess();
-        })
-        .catch(() => showError(labelSomethingWentWrong))
-        .finally(() => setSubmitting(false));
+      }).then(() => {
+        showSuccess(t(labelDowntimeCommandSent));
+        onSuccess();
+      });
     },
-    validationSchema,
-    validate,
+    validationSchema: getValidationSchema(t),
+    validate: (values) => validate(values, t),
   });
 
-  const hasResources = resources.length > 0;
-
   React.useEffect(() => {
-    if (!hasResources) {
-      return;
-    }
-
-    getUser(token)
-      .then((user) => {
-        form.setFieldValue('comment', `${labelDowntimeBy} ${user.username}`);
-        setLocale(user.locale);
-        setTimezone(user.timezone);
-      })
-      .catch(() => showError(labelSomethingWentWrong))
-      .finally(() => setLoaded(true));
-  }, [hasResources]);
-
-  React.useEffect(() => (): void => cancel(), []);
-
-  if (resources.length === 0) {
-    return null;
-  }
+    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${username}`);
+  }, []);
 
   return (
     <DialogDowntime
@@ -180,8 +162,8 @@ const DowntimeForm = ({
       values={form.values}
       handleChange={form.handleChange}
       setFieldValue={form.setFieldValue}
-      submitting={form.isSubmitting}
-      loading={!loaded}
+      submitting={sendingSetDowntingOnResources}
+      loading={form.values.comment === ''}
     />
   );
 };

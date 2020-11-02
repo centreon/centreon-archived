@@ -193,7 +193,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     'WHERE hsr.host_host_id = h.host_id ' .
                     'AND hsr.service_service_id = s.service_id ' .
                     'AND h.host_register = "1" ' .
-                    'AND s.service_register = "1" ' .
+                    'AND (s.service_register = "1" OR s.service_register = "3") ' .
                     'AND CONCAT(h.host_name, " - ", s.service_description) LIKE :description ' .
                     $enableQuery . $aclServices . ') ' .
                     'UNION ALL ( ' .
@@ -227,7 +227,7 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
                     'WHERE hsr.host_host_id = h.host_id ' .
                     'AND hsr.service_service_id = s.service_id ' .
                     'AND h.host_register = "1" ' .
-                    'AND s.service_register = "1" ' .
+                    'AND (s.service_register = "1" OR s.service_register = "3") ' .
                     'AND CONCAT(h.host_name, " - ", s.service_description) LIKE :description ' .
                     $enableQuery . $aclServices .
                     'ORDER BY fullname ';

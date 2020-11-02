@@ -108,7 +108,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
 
         echo "Notifying Master...\n";
         $result = "";
-        foreach ($hostList as $host) {
+        foreach ($urlList as $host) {
             echo "  Trying host '$host'... ";
             $result = $this->getDi()['centreon.notifymaster']->pingMaster(
                 $host,

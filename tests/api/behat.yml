@@ -1,0 +1,47 @@
+default:
+  extensions:
+    Centreon\Test\Behat\Extensions\ContainerExtension:
+  gherkin:
+    cache: ~
+  suites:
+    host_monitoring:
+      paths: [ "%paths.base%/features/HostMonitoring.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostMonitoringContext
+    service_monitoring:
+      paths: [ "%paths.base%/features/ServiceMonitoring.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\ServiceMonitoringContext
+    resource_monitoring:
+      paths: [ "%paths.base%/features/ResourceMonitoring.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\ResourceMonitoringContext
+    authentication:
+      paths: [ "%paths.base%/features/Authentication.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\AuthenticationContext
+    user_filter:
+      paths: [ "%paths.base%/features/UserFilter.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\UserFilterContext
+    check:
+      paths: [ "%paths.base%/features/Check.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\CheckContext
+    submit:
+      paths: [ "%paths.base%/features/SubmitResult.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\SubmitResultContext
+    acknowledgement:
+      paths: [ "%paths.base%/features/Acknowledgement.feature" ]
+      contexts:
+        - Centreon\Test\Behat\Api\Context\ApiContext
+    monitoring_timeline:
+      paths: [ "%paths.base%/features/MonitoringTimeline.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\MonitoringTimelineContext
+
+    platform_topology:
+      paths: [ "%paths.base%/features/PlatformTopology.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\PlatformTopologyContext

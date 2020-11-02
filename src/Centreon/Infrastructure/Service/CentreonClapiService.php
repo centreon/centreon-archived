@@ -59,7 +59,7 @@ class CentreonClapiService implements ContainerInterface
             ->implementsInterface($interface);
 
         if ($hasInterface === false) {
-            throw new NotFoundException(sprintf('Object %s must implement %s', $object, $interface));
+            throw new NotFoundException(sprintf(_('Object %s must implement %s'), $object, $interface));
         }
 
         $name = strtolower($object::getName());

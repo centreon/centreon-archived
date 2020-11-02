@@ -86,7 +86,7 @@ switch ($o) {
         require_once($path . "listHostCategories.php");
         break;
     case "ms":
-        enableHostCategoriesInDB(null, isset($select) ? $select : array());
+        enableHostCategoriesInDB(null, isset($select) ? $select : []);
         require_once($path . "listHostCategories.php");
         break;
     case "u":
@@ -94,15 +94,15 @@ switch ($o) {
         require_once($path . "listHostCategories.php");
         break;
     case "mu":
-        disableHostCategoriesInDB(null, isset($select) ? $select : array());
+        disableHostCategoriesInDB(null, isset($select) ? $select : []);
         require_once($path . "listHostCategories.php");
         break;
     case "m":
-        multipleHostCategoriesInDB(isset($select) ? $select : array(), $dupNbr);
+        multipleHostCategoriesInDB(isset($select) ? $select : [], $dupNbr);
         require_once($path . "listHostCategories.php");
         break;
     case "d":
-        deleteHostCategoriesInDB(isset($select) ? $select : array());
+        deleteHostCategoriesInDB(isset($select) ? $select : []);
         require_once($path . "listHostCategories.php");
         break;
     default:

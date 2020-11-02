@@ -107,6 +107,16 @@ class ResourceFilter
     private $servicegroupIds = [];
 
     /**
+     * @var int[]
+     */
+    private $hostIds = [];
+
+    /**
+     * @var int[]
+     */
+    private $serviceIds = [];
+
+    /**
      * Transform result by map
      *
      * @param array $list
@@ -246,6 +256,56 @@ class ResourceFilter
     public function setServicegroupIds(array $servicegroupIds): self
     {
         $this->servicegroupIds = $servicegroupIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getHostIds(): array
+    {
+        return $this->hostIds;
+    }
+
+    /**
+     * @param int[] $hostIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setHostIds(array $hostIds): self
+    {
+        foreach ($hostIds as $hostId) {
+            if (!is_int($hostId)) {
+                throw new \InvalidArgumentException('Host ids must be an array of integers');
+            }
+        }
+
+        $this->hostIds = $hostIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getServiceIds(): array
+    {
+        return $this->serviceIds;
+    }
+
+    /**
+     * @param int[] $serviceIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setServiceIds(array $serviceIds): self
+    {
+        foreach ($serviceIds as $serviceId) {
+            if (!is_int($serviceId)) {
+                throw new \InvalidArgumentException('Service ids must be an array of integers');
+            }
+        }
+
+        $this->serviceIds = $serviceIds;
 
         return $this;
     }

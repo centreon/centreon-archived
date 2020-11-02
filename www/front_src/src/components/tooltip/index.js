@@ -3,21 +3,26 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Translate } from 'react-redux-i18n';
+import { useTranslation } from 'react-i18next';
+
 import classnames from 'classnames';
 import styles from './tooltip.scss';
 
-const Tooltip = ({ x, y, label, toggled }) => (
-  <div
-    className={classnames(styles.tooltip, { [styles.hidden]: !toggled })}
-    style={{
-      top: y,
-      left: x,
-    }}
-  >
-    <Translate value={label} />
-  </div>
-);
+const Tooltip = ({ x, y, label, toggled }) => {
+  const { t } = useTranslation();
+
+  return (
+    <div
+      className={classnames(styles.tooltip, { [styles.hidden]: !toggled })}
+      style={{
+        top: y,
+        left: x,
+      }}
+    >
+      {t(label)}
+    </div>
+  );
+};
 
 /*
  * to make tooltip work we need the following key value pairs in order to map it's state to props

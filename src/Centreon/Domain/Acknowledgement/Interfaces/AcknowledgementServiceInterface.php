@@ -139,9 +139,18 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      *
      * @param ResourceEntity $resource Resource to be acknowledged
      * @param Acknowledgement $ack
-     * @throws EngineException
      * @throws EntityNotFoundException
      * @throws \Exception
      */
     public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void;
+
+    /**
+     * Discknowledge resource and its services if needed.
+     *
+     * @param ResourceEntity $resource Resource to be acknowledged
+     * @param Acknowledgement $ack
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function disacknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void;
 }

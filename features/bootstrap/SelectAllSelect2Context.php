@@ -105,7 +105,7 @@ class SelectAllSelect2Context extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
+                return !$context->assertFind('css', '.centreon-popin .popin-wrapper')->isVisible();
             }
         );
     }
@@ -120,7 +120,7 @@ class SelectAllSelect2Context extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return !$context->getSession()->getPage()->has('css', '.centreon-popin .popin-wrapper');
+                return !$context->assertFind('css', '.centreon-popin .popin-wrapper')->isVisible();
             }
         );
     }

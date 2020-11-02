@@ -61,7 +61,6 @@ echo _("Select pollers to be attached to this new Remote Server");
 echo _("Finalizing Setup");
 echo _("Creating Export Task");
 echo _("Generating Export Files");
-echo _("Processing Remote Import/Configuration");
 echo _("The field is required");
 echo _("Not a valid IP address");
 echo _("Add server with wizard");

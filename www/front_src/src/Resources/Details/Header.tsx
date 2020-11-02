@@ -1,50 +1,36 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
+import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
+import CopyIcon from '@material-ui/icons/FileCopy';
 
 import {
-  Grid,
-  Typography,
+  StatusChip,
+  SeverityCode,
   IconButton,
-  makeStyles,
-  Theme,
-  fade,
-} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import IconClose from '@material-ui/icons/Clear';
-import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
-
-import { StatusChip, SeverityCode } from '@centreon/ui';
+  useSnackbar,
+  Severity,
+} from '@centreon/ui';
+import copyToClipboard from '@centreon/ui/src/utils/copy';
 
 import { DetailsSectionProps } from '.';
-import { rowColorConditions } from '../colors';
+import {
+  labelCopyLink,
+  labelLinkCopied,
+  labelSomethingWentWrong,
+} from '../translatedLabels';
 
-const useStyles = makeStyles<Theme, DetailsSectionProps>((theme) => ({
-  header: ({ details }): CreateCSSProperties => {
-    if (details === undefined) {
-      return {};
-    }
-
-    const foundColorCondition = rowColorConditions(theme).find(
-      ({ condition }) =>
-        condition({
-          in_downtime: details.downtimes.length > 0,
-          acknowledged: !isNil(details.acknowledgement),
-        }),
-    );
-
-    const backgroundColor = foundColorCondition?.color;
-
-    return {
-      backgroundColor: backgroundColor
-        ? fade(backgroundColor, 0.8)
-        : theme.palette.common.white,
-    };
+const useStyles = makeStyles((theme) => ({
+  header: {
+    height: 60,
+    paddingRight: theme.spacing(1),
   },
 }));
 
 const LoadingSkeleton = (): JSX.Element => (
-  <Grid container spacing={2} alignItems="center">
+  <Grid container spacing={2} alignItems="center" item style={{ flexGrow: 1 }}>
     <Grid item>
       <Skeleton variant="circle" width={25} height={25} />
     </Grid>
@@ -55,34 +41,48 @@ const LoadingSkeleton = (): JSX.Element => (
 );
 
 const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
+  const { t } = useTranslation();
+  const { showMessage } = useSnackbar();
+
+  const copyResourceLink = (): void => {
+    try {
+      copyToClipboard(window.location.href);
+      showMessage({
+        message: t(labelLinkCopied),
+        severity: Severity.success,
+      });
+    } catch (_) {
+      showMessage({
+        message: t(labelSomethingWentWrong),
+        severity: Severity.error,
+      });
+    }
+  };
+
   if (details === undefined) {
-    return (
-      <Grid item style={{ flexGrow: 1 }}>
-        <LoadingSkeleton />
-      </Grid>
-    );
+    return <LoadingSkeleton />;
   }
 
   return (
     <>
       <Grid item>
-        {details.criticality && (
+        {details.severity && (
           <StatusChip
             severityCode={SeverityCode.None}
-            label={details.criticality.toString()}
+            label={details.severity.level?.toString()}
           />
         )}
       </Grid>
       <Grid item>
         <StatusChip
           severityCode={details.status.severity_code}
-          label={details.status.name}
+          label={t(details.status.name)}
         />
       </Grid>
       <Grid item style={{ flexGrow: 1 }}>
         <Grid container direction="column">
           <Grid item>
-            <Typography>{details.display_name}</Typography>
+            <Typography>{details.name}</Typography>
           </Grid>
           {details.parent && (
             <Grid item container spacing={1}>
@@ -98,14 +98,22 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
           )}
         </Grid>
       </Grid>
+      <Grid item>
+        <IconButton
+          size="small"
+          title={t(labelCopyLink)}
+          ariaLabel={t(labelCopyLink)}
+          onClick={copyResourceLink}
+        >
+          <CopyIcon fontSize="small" />
+        </IconButton>
+      </Grid>
     </>
   );
 };
 
-type HeaderProps = DetailsSectionProps & { onClickClose };
-
-const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
-  const classes = useStyles({ details });
+const Header = ({ details }: DetailsSectionProps): JSX.Element => {
+  const classes = useStyles();
 
   return (
     <Grid
@@ -116,11 +124,6 @@ const Header = ({ details, onClickClose }: HeaderProps): JSX.Element => {
       className={classes.header}
     >
       <HeaderContent details={details} />
-      <Grid item>
-        <IconButton onClick={onClickClose}>
-          <IconClose />
-        </IconButton>
-      </Grid>
     </Grid>
   );
 };

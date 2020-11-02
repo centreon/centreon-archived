@@ -1,0 +1,13 @@
+Centreon\Domain\Filter\FilterCriteria:
+    properties:
+        name:
+            type: string
+            groups: [filter_main]
+        type:
+            type: string
+            groups: [filter_main]
+        value:
+            groups: [filter_main]
+        objectType:
+            type: string
+            groups: [filter_main]

@@ -1,28 +1,31 @@
-import { map, pipe, reduce, filter, pathOr, addIndex } from 'ramda';
+import { map, pipe, reduce, filter, addIndex, isNil, path } from 'ramda';
 
-import { Metric, MetricData, GraphData } from './models';
+import { Metric, TimeValue, GraphData, Line } from './models';
 
-interface TimeMetrics {
-  time: number;
+interface TimeTickWithMetrics {
+  timeTick: number;
   metrics: Array<Metric>;
 }
 
-const toTimeMetrics = ({ metrics, times }): Array<TimeMetrics> => {
+const toTimeTickWithMetrics = ({
+  metrics,
+  times,
+}): Array<TimeTickWithMetrics> => {
   return map(
-    (time) => ({
-      time,
+    (timeTick) => ({
+      timeTick,
       metrics,
     }),
     times,
   );
 };
 
-const toTimeWithMetrics = (
-  { time, metrics }: TimeMetrics,
+const toTimeTickValue = (
+  { timeTick, metrics }: TimeTickWithMetrics,
   timeIndex: number,
-): MetricData => {
-  const getMetricsForIndex = (): MetricData => {
-    const addMetricForTimeIndex = (acc, { metric, data }): MetricData => ({
+): TimeValue => {
+  const getMetricsForIndex = (): TimeValue => {
+    const addMetricForTimeIndex = (acc, { metric, data }): TimeValue => ({
       ...acc,
       [metric]: data[timeIndex],
     });
@@ -30,45 +33,52 @@ const toTimeWithMetrics = (
     return reduce(addMetricForTimeIndex, {}, metrics);
   };
 
-  return { time, ...getMetricsForIndex() };
+  return { timeTick, ...getMetricsForIndex() };
 };
 
-const getTimeSeries = (graphData: GraphData): Array<MetricData> => {
-  const isGreaterThanLowerLimit = (value): boolean =>
-    value > pathOr(value - 1, ['global', 'lower-limit'], graphData);
+const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
+  const isGreaterThanLowerLimit = (value): boolean => {
+    const lowerLimit = path<number>(['global', 'lower-limit'], graphData);
 
-  const rejectLowerThanLimit = ({
-    time,
-    ...metrics
-  }: MetricData): MetricData => {
+    if (isNil(lowerLimit)) {
+      return true;
+    }
+
+    return value >= lowerLimit;
+  };
+
+  const rejectLowerThanLimit = ({ time, ...metrics }: TimeValue): TimeValue => {
     return {
       ...filter(isGreaterThanLowerLimit, metrics),
       time,
     };
   };
 
-  const indexedMap = addIndex<TimeMetrics, MetricData>(map);
+  const indexedMap = addIndex<TimeTickWithMetrics, TimeValue>(map);
 
   return pipe(
-    toTimeMetrics,
-    indexedMap(toTimeWithMetrics),
+    toTimeTickWithMetrics,
+    indexedMap(toTimeTickValue),
     map(rejectLowerThanLimit),
   )(graphData);
 };
 
-interface LegendColor {
-  legend: string;
-  color: string;
-}
-
-const toLegendColor = ({ ds_data, legend }: Metric): LegendColor => ({
-  legend,
+const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
+  metric,
+  name: legend,
   color: ds_data.ds_color_line,
+  areaColor: ds_data.ds_color_area,
+  transparency: ds_data.ds_transparency,
+  lineColor: ds_data.ds_color_line,
+  filled: ds_data.ds_filled,
+  unit,
+  display: true,
+  highlight: undefined,
 });
 
-const getLegend = (graphData: GraphData): Array<LegendColor> => {
-  return map(toLegendColor, graphData.metrics);
+const getLineData = (graphData: GraphData): Array<Line> => {
+  return map(toLine, graphData.metrics);
 };
 
 export default getTimeSeries;
-export { getLegend };
+export { getLineData };

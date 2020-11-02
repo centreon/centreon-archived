@@ -1,86 +1,101 @@
 import * as React from 'react';
 
-import { omit } from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
-import { Paper, makeStyles, Divider } from '@material-ui/core';
+import { Panel } from '@centreon/ui';
+
+import { Tab, useTheme, fade } from '@material-ui/core';
 
 import Header from './Header';
-import Body from './Body';
-import useGet from '../useGet';
 import { ResourceDetails } from './models';
-import { ResourceEndpoints } from '../models';
-
-const useStyles = makeStyles(() => {
-  return {
-    details: {
-      height: '100%',
-      display: 'grid',
-      gridTemplate: 'auto auto 1fr / 1fr',
-    },
-    header: {
-      gridArea: '1 / 1 / 2 / 1',
-      padding: 8,
-    },
-    divider: {
-      gridArea: '2 / 1 / 3 / 1',
-    },
-    body: {
-      gridArea: '3 / 1 / 4 / 1',
-    },
-  };
-});
-
-interface Props {
-  onClose: () => void;
-  endpoints: ResourceEndpoints;
-  openTabId: number;
-  onSelectTab: (id) => void;
-}
+import { useResourceContext } from '../Context';
+import { TabById, detailsTabId, tabs } from './tabs';
+import { Tab as TabModel, TabId } from './tabs/models';
+import { rowColorConditions } from '../colors';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = ({
-  endpoints,
-  onClose,
-  openTabId,
-  onSelectTab,
-}: Props): JSX.Element | null => {
-  const classes = useStyles();
+const Details = (): JSX.Element | null => {
+  const { t } = useTranslation();
+  const theme = useTheme();
 
-  const [details, setDetails] = React.useState<ResourceDetails>();
-
-  const { details: detailsEndpoint } = endpoints;
-
-  const get = useGet({
-    onSuccess: (entity) => setDetails(entity),
-    endpoint: detailsEndpoint,
-  });
+  const {
+    openDetailsTabId,
+    setOpenDetailsTabId,
+    clearSelectedResource,
+    details,
+  } = useResourceContext();
 
   React.useEffect(() => {
-    if (details !== undefined) {
-      setDetails(undefined);
+    if (isNil(details)) {
+      return;
     }
 
-    get();
-  }, [detailsEndpoint]);
+    const isOpenTabActive = tabs
+      .find(propEq('id', openDetailsTabId))
+      ?.getIsActive(details);
+
+    if (!isOpenTabActive) {
+      setOpenDetailsTabId(detailsTabId);
+    }
+  }, [details]);
+
+  const getVisibleTabs = (): Array<TabModel> => {
+    if (isNil(details)) {
+      return tabs;
+    }
+
+    return tabs.filter(({ getIsActive }) => getIsActive(details));
+  };
+
+  const getTabIndex = (tabId: TabId): number => {
+    const index = findIndex(propEq('id', tabId), getVisibleTabs());
+
+    return index > 0 ? index : 0;
+  };
+
+  const changeSelectedTabId = (tabId: TabId) => (): void => {
+    setOpenDetailsTabId(tabId);
+  };
+
+  const getHeaderBackgroundColor = (): string | undefined => {
+    const { downtimes, acknowledgement } = details || {};
+
+    const foundColorCondition = rowColorConditions(theme).find(
+      ({ condition }) =>
+        condition({
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
+          acknowledged: !isNil(acknowledgement),
+        }),
+    );
+
+    if (isNil(foundColorCondition)) {
+      return theme.palette.common.white;
+    }
+
+    return fade(foundColorCondition.color, 0.8);
+  };
 
   return (
-    <Paper elevation={5} className={classes.details}>
-      <div className={classes.header}>
-        <Header details={details} onClickClose={onClose} />
-      </div>
-      <Divider className={classes.divider} />
-      <div className={classes.body}>
-        <Body
-          details={details}
-          endpoints={omit(['details'], endpoints)}
-          openTabId={openTabId}
-          onSelectTab={onSelectTab}
+    <Panel
+      onClose={clearSelectedResource}
+      header={<Header details={details} />}
+      headerBackgroundColor={getHeaderBackgroundColor()}
+      tabs={getVisibleTabs().map(({ id, title }) => (
+        <Tab
+          style={{ minWidth: 'unset' }}
+          key={id}
+          label={t(title)}
+          disabled={isNil(details)}
+          onClick={changeSelectedTabId(id)}
         />
-      </div>
-    </Paper>
+      ))}
+      selectedTabId={getTabIndex(openDetailsTabId)}
+      selectedTab={<TabById id={openDetailsTabId} details={details} />}
+    />
   );
 };
 

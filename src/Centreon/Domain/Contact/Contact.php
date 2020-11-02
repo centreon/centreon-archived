@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,18 +28,42 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class Contact implements UserInterface, ContactInterface
 {
-    const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
-    const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
-    const ROLE_HOST_CHECK = 'ROLE_HOST_CHECK';
-    const ROLE_SERVICE_CHECK = 'ROLE_SERVICE_CHECK';
-    const ROLE_HOST_ACKNOWLEDGEMENT = 'ROLE_HOST_ACKNOWLEDGEMENT';
-    const ROLE_HOST_DISACKNOWLEDGEMENT = 'ROLE_HOST_DISACKNOWLEDGEMENT';
-    const ROLE_SERVICE_ACKNOWLEDGEMENT = 'ROLE_SERVICE_ACKNOWLEDGEMENT';
-    const ROLE_SERVICE_DISACKNOWLEDGEMENT = 'ROLE_SERVICE_DISACKNOWLEDGEMENT';
-    const ROLE_CANCEL_HOST_DOWNTIME = 'ROLE_CANCEL_HOST_DOWNTIME';
-    const ROLE_CANCEL_SERVICE_DOWNTIME = 'ROLE_CANCEL_SERVICE_DOWNTIME';
-    const ROLE_ADD_HOST_DOWNTIME = 'ROLE_ADD_HOST_DOWNTIME';
-    const ROLE_ADD_SERVICE_DOWNTIME = 'ROLE_ADD_SERVICE_DOWNTIME';
+    // global api roles
+    public const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
+    public const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
+
+    // user action roles
+    public const ROLE_HOST_CHECK = 'ROLE_HOST_CHECK';
+    public const ROLE_SERVICE_CHECK = 'ROLE_SERVICE_CHECK';
+    public const ROLE_HOST_ACKNOWLEDGEMENT = 'ROLE_HOST_ACKNOWLEDGEMENT';
+    public const ROLE_HOST_DISACKNOWLEDGEMENT = 'ROLE_HOST_DISACKNOWLEDGEMENT';
+    public const ROLE_SERVICE_ACKNOWLEDGEMENT = 'ROLE_SERVICE_ACKNOWLEDGEMENT';
+    public const ROLE_SERVICE_DISACKNOWLEDGEMENT = 'ROLE_SERVICE_DISACKNOWLEDGEMENT';
+    public const ROLE_CANCEL_HOST_DOWNTIME = 'ROLE_CANCEL_HOST_DOWNTIME';
+    public const ROLE_CANCEL_SERVICE_DOWNTIME = 'ROLE_CANCEL_SERVICE_DOWNTIME';
+    public const ROLE_ADD_HOST_DOWNTIME = 'ROLE_ADD_HOST_DOWNTIME';
+    public const ROLE_ADD_SERVICE_DOWNTIME = 'ROLE_ADD_SERVICE_DOWNTIME';
+    public const ROLE_SERVICE_SUBMIT_RESULT = 'ROLE_SERVICE_SUBMIT_RESULT';
+    public const ROLE_HOST_SUBMIT_RESULT = 'ROLE_HOST_SUBMIT_RESULT';
+
+    // user pages access
+    public const ROLE_CONFIGURATION_HOSTS_WRITE = 'ROLE_CONFIGURATION_HOSTS_HOSTS_RW';
+    public const ROLE_CONFIGURATION_HOSTS_READ = 'ROLE_CONFIGURATION_HOSTS_HOSTS_R';
+    public const ROLE_CONFIGURATION_SERVICES_WRITE = 'ROLE_CONFIGURATION_SERVICES_SERVICES_BY_HOST_RW';
+    public const ROLE_CONFIGURATION_SERVICES_READ = 'ROLE_CONFIGURATION_SERVICES_SERVICES_BY_HOST_R';
+    public const ROLE_MONITORING_EVENT_LOGS = 'ROLE_MONITORING_EVENT_LOGS_EVENT_LOGS_RW';
+    public const ROLE_REPORTING_DASHBOARD_HOSTS = 'ROLE_REPORTING_DASHBOARD_HOSTS_RW';
+    public const ROLE_REPORTING_DASHBOARD_SERVICES = 'ROLE_REPORTING_DASHBOARD_SERVICES_RW';
+
+    /**
+     * @var string
+     */
+    public const DEFAULT_LOCALE = 'en_US';
+
+    /**
+     * @var string
+     */
+    public const DEFAULT_CHARSET = 'UTF-8';
 
     /**
      * @var int Id of contact
@@ -109,6 +134,16 @@ class Contact implements UserInterface, ContactInterface
      * @var string[] List of names of topology rules to which the contact can access
      */
     private $topologyRulesNames = [];
+
+    /**
+     * @var \DateTimeZone $timezone timezone of the user
+     */
+    private $timezone;
+
+    /**
+     * @var string|null $locale locale of the user
+     */
+    private $locale;
 
     /**
      * @return int
@@ -306,9 +341,9 @@ class Contact implements UserInterface, ContactInterface
      * and populated in any number of different ways when the user object
      * is created.
      *
-     * @return Role[]|string[] The user roles
+     * @return string[] The user roles
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         return array_merge($this->roles, $this->topologyRulesNames);
     }
@@ -417,6 +452,17 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
+     * Indicates if this user has a topology access.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasTopologyRole(string $role): bool
+    {
+        return in_array($role, $this->topologyRulesNames);
+    }
+
+    /**
      * Add a specific role to this user.
      *
      * @param string $roleName Role name to add
@@ -448,5 +494,49 @@ class Contact implements UserInterface, ContactInterface
         if (!in_array($topologyRuleName, $this->topologyRulesNames)) {
             $this->topologyRulesNames[] = $topologyRuleName;
         }
+    }
+
+    /**
+     * timezone setter
+     *
+     * @param \DateTimeZone $timezone
+     * @return self
+     */
+    public function setTimezone(\DateTimeZone $timezone): self
+    {
+        $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
+     * timezone getter
+     *
+     * @return \DateTimeZone
+     */
+    public function getTimezone(): \DateTimeZone
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * locale setter
+     *
+     * @param string|null $locale
+     * @return self
+     */
+    public function setLocale(?string $locale): self
+    {
+        $this->locale = $locale;
+        return $this;
+    }
+
+    /**
+     * locale getter
+     *
+     * @return string|null
+     */
+    public function getLocale(): ?string
+    {
+        return $this->locale;
     }
 }

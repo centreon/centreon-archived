@@ -1,7 +1,7 @@
 gorgone:
   gorgonecore:
-    privkey: "--CENTREON_VARLIB---gorgone/.keys/rsakey.priv.pem"
-    pubkey: "--CENTREON_VARLIB---gorgone/.keys/rsakey.pub.pem"
+    privkey: "--GORGONE_VARLIB--/.keys/rsakey.priv.pem"
+    pubkey: "--GORGONE_VARLIB--/.keys/rsakey.pub.pem"
 
   modules:
     - name: httpserver
@@ -46,7 +46,7 @@ gorgone:
     - name: engine
       package: "gorgone::modules::centreon::engine::hooks"
       enable: true
-      command_file: "--CENTREON_VARLIB---engine/rw/centengine.cmd"
+      command_file: "--ENGINE_COMMAND--"
 
     - name: statistics
       package: "gorgone::modules::centreon::statistics::hooks"

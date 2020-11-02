@@ -1,81 +1,179 @@
 import * as React from 'react';
 
+import { hasPath, mergeDeepLeft, mergeDeepRight, pipe } from 'ramda';
+
+import {
+  useRequest,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
+
 import {
   getStoredOrDefaultFilter,
   clearCachedFilter,
   storeFilter,
-} from '../storedFilter';
-import { Filter, FilterGroup, Criterias } from './models';
+} from './storedFilter';
+import { Filter, Criterias, CriteriaValue } from './models';
+import useAdapters from './api/adapters';
+import { listCustomFilters } from './api';
+import { listCustomFiltersDecoder } from './api/decoders';
+import useFilterModels from './useFilterModels';
 
-const getDefaultFilter = (): FilterGroup => getStoredOrDefaultFilter();
-const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
-const getDefaultSearch = (): string | undefined => getDefaultFilter().search;
-const getDefaultResourceTypes = (): Array<Filter> =>
-  getDefaultCriterias().resourceTypes;
-const getDefaultStates = (): Array<Filter> => getDefaultCriterias().states;
-const getDefaultStatuses = (): Array<Filter> => getDefaultCriterias().statuses;
-const getDefaultHostGroups = (): Array<Filter> =>
-  getDefaultCriterias().hostGroups;
-const getDefaultServiceGroups = (): Array<Filter> =>
-  getDefaultCriterias().serviceGroups;
-
-type FilterGroupDispatch = React.Dispatch<React.SetStateAction<FilterGroup>>;
-type FiltersDispatch = React.Dispatch<React.SetStateAction<Array<Filter>>>;
+type FilterDispatch = React.Dispatch<React.SetStateAction<Filter>>;
+type CriteriaValuesDispatch = React.Dispatch<
+  React.SetStateAction<Array<CriteriaValue>>
+>;
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
+type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
+type CustomFiltersDispatch = React.Dispatch<
+  React.SetStateAction<Array<Filter>>
+>;
 
-interface FilterState {
-  filter: FilterGroup;
-  setFilter: FilterGroupDispatch;
+export interface FilterState {
+  customFilters: Array<Filter>;
+  filter: Filter;
+  updatedFilter: Filter;
+  setFilter: FilterDispatch;
   currentSearch?: string;
   setCurrentSearch: SearchDispatch;
   nextSearch?: string;
   setNextSearch: SearchDispatch;
-  resourceTypes: Array<Filter>;
-  setResourceTypes: FiltersDispatch;
-  states: Array<Filter>;
-  setStates: FiltersDispatch;
-  statuses: Array<Filter>;
-  setStatuses: FiltersDispatch;
-  hostGroups: Array<Filter>;
-  setHostGroups: FiltersDispatch;
-  serviceGroups: Array<Filter>;
-  setServiceGroups: FiltersDispatch;
+  resourceTypes: Array<CriteriaValue>;
+  setResourceTypes: CriteriaValuesDispatch;
+  states: Array<CriteriaValue>;
+  setStates: CriteriaValuesDispatch;
+  statuses: Array<CriteriaValue>;
+  setStatuses: CriteriaValuesDispatch;
+  hostGroups: Array<CriteriaValue>;
+  setHostGroups: CriteriaValuesDispatch;
+  serviceGroups: Array<CriteriaValue>;
+  setServiceGroups: CriteriaValuesDispatch;
+  loadCustomFilters: () => Promise<Array<Filter>>;
+  setCustomFilters: CustomFiltersDispatch;
+  customFiltersLoading: boolean;
+  editPanelOpen: boolean;
+  setEditPanelOpen: EditPanelOpenDitpach;
 }
 
 const useFilter = (): FilterState => {
-  const [filter, setFilter] = React.useState(getStoredOrDefaultFilter());
+  const {
+    sendRequest: sendListCustomFiltersRequest,
+    sending: customFiltersLoading,
+  } = useRequest({
+    request: listCustomFilters,
+    decoder: listCustomFiltersDecoder,
+  });
+
+  const { unhandledProblemsFilter, allFilter, newFilter } = useFilterModels();
+  const { toFilter, toFilterWithTranslatedCriterias } = useAdapters();
+
+  const getDefaultFilter = (): Filter => {
+    const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
+
+    const urlQueryParameters = getUrlQueryParameters();
+
+    if (hasPath(['filter'], urlQueryParameters)) {
+      return pipe(
+        mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
+        mergeDeepRight(allFilter) as (t) => Filter,
+        toFilterWithTranslatedCriterias,
+      )(newFilter) as Filter;
+    }
+
+    return defaultFilter;
+  };
+
+  const getDefaultCriterias = (): Criterias => getDefaultFilter().criterias;
+  const getDefaultSearch = (): string | undefined =>
+    getDefaultCriterias().search;
+  const getDefaultResourceTypes = (): Array<CriteriaValue> =>
+    getDefaultCriterias().resourceTypes;
+  const getDefaultStates = (): Array<CriteriaValue> =>
+    getDefaultCriterias().states;
+  const getDefaultStatuses = (): Array<CriteriaValue> =>
+    getDefaultCriterias().statuses;
+  const getDefaultHostGroups = (): Array<CriteriaValue> =>
+    getDefaultCriterias().hostGroups;
+  const getDefaultServiceGroups = (): Array<CriteriaValue> =>
+    getDefaultCriterias().serviceGroups;
+
+  const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
+  const [filter, setFilter] = React.useState(getDefaultFilter());
   const [currentSearch, setCurrentSearch] = React.useState<string | undefined>(
     getDefaultSearch(),
   );
   const [nextSearch, setNextSearch] = React.useState<string | undefined>(
     getDefaultSearch(),
   );
-  const [resourceTypes, setResourceTypes] = React.useState<Array<Filter>>(
-    getDefaultResourceTypes(),
+  const [resourceTypes, setResourceTypes] = React.useState<
+    Array<CriteriaValue>
+  >(getDefaultResourceTypes());
+  const [states, setStates] = React.useState<Array<CriteriaValue>>(
+    getDefaultStates(),
   );
-  const [states, setStates] = React.useState<Array<Filter>>(getDefaultStates());
-  const [statuses, setStatuses] = React.useState<Array<Filter>>(
+  const [statuses, setStatuses] = React.useState<Array<CriteriaValue>>(
     getDefaultStatuses(),
   );
-  const [hostGroups, setHostGroups] = React.useState<Array<Filter>>(
+  const [hostGroups, setHostGroups] = React.useState<Array<CriteriaValue>>(
     getDefaultHostGroups(),
   );
-  const [serviceGroups, setServiceGroups] = React.useState<Array<Filter>>(
-    getDefaultServiceGroups(),
-  );
+  const [serviceGroups, setServiceGroups] = React.useState<
+    Array<CriteriaValue>
+  >(getDefaultServiceGroups());
+
+  const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
+
+  const loadCustomFilters = (): Promise<Array<Filter>> => {
+    return sendListCustomFiltersRequest().then(({ result }) => {
+      const retrievedCustomFilters = result.map(toFilter);
+      setCustomFilters(retrievedCustomFilters);
+
+      return retrievedCustomFilters;
+    });
+  };
+
+  const updatedFilter = {
+    id: filter.id,
+    name: filter.name,
+    criterias: {
+      search: nextSearch,
+      resourceTypes,
+      states,
+      statuses,
+      hostGroups,
+      serviceGroups,
+    },
+  };
+
+  React.useEffect(() => {
+    loadCustomFilters();
+  }, []);
+
+  React.useEffect(() => {
+    setCurrentSearch(nextSearch);
+  }, [states, statuses, resourceTypes, hostGroups, serviceGroups]);
 
   React.useEffect(() => {
     storeFilter({
       ...filter,
-      search: nextSearch,
       criterias: {
         resourceTypes,
         states,
         statuses,
         hostGroups,
         serviceGroups,
+        search: nextSearch,
       },
     });
+
+    const queryParameters = [
+      {
+        name: 'filter',
+        value: updatedFilter,
+      },
+    ];
+
+    setUrlQueryParameters(queryParameters);
   }, [
     filter,
     nextSearch,
@@ -86,6 +184,28 @@ const useFilter = (): FilterState => {
     serviceGroups,
   ]);
 
+  React.useEffect(() => {
+    if (!getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
+    const { criterias } = getDefaultFilter();
+
+    setUrlQueryParameters([
+      {
+        name: 'fromTopCounter',
+        value: false,
+      },
+    ]);
+
+    setFilter(getDefaultFilter());
+    setResourceTypes(criterias.resourceTypes);
+    setStatuses(criterias.statuses);
+    setStates(criterias.states || []);
+    setCurrentSearch(criterias.search);
+    setNextSearch(criterias.search);
+  }, [getUrlQueryParameters().fromTopCounter]);
+
   React.useEffect(() => (): void => {
     clearCachedFilter();
   });
@@ -93,6 +213,8 @@ const useFilter = (): FilterState => {
   return {
     filter,
     setFilter,
+    updatedFilter,
+    customFilters,
     currentSearch,
     setCurrentSearch,
     nextSearch,
@@ -107,6 +229,11 @@ const useFilter = (): FilterState => {
     setHostGroups,
     serviceGroups,
     setServiceGroups,
+    loadCustomFilters,
+    setCustomFilters,
+    customFiltersLoading,
+    editPanelOpen,
+    setEditPanelOpen,
   };
 };
 

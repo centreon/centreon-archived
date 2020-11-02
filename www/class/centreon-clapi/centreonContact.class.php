@@ -202,7 +202,8 @@ class CentreonContact extends CentreonObject
         if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
             return true;
         }
-        $dir = CentreonUtils::getCentreonPath() . "/www/locale/$locale";
+        $centreonDir = realpath(__DIR__ . "/../../../");
+        $dir = $centreonDir . "/www/locale/$locale";
         if (is_dir($dir)) {
             return true;
         }
@@ -377,7 +378,12 @@ class CentreonContact extends CentreonObject
                         }
                     }
                 }
-                if ($params[1] != 'reach_api' && $params[1] != 'reach_api_rt' && $params[1] != 'default_page' && $params[1] != 'ar_id') {
+                if (
+                    !in_array(
+                        $params[1],
+                        ['reach_api', 'reach_api_rt', 'default_page', 'ar_id', 'show_deprecated_pages']
+                    )
+                ) {
                     $params[1] = "contact_" . $params[1];
                 }
             }

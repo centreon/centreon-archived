@@ -54,7 +54,7 @@ sub new {
     $self->{opt_snmpversion} = 'snmpv2c';
     $self->{opt_snmpport} = 162;
     $self->{opt_oidtrap} = '.1.3.6.1.4.1.12182.1';
-    @{$self->{opt_args}} = ('.1.3.6.1.4.1.12182.2.1:OCTET_STRING:Test "20"', '.1.3.6.1.4.1.12182.2.1:INTEGER:10', '.1.3.6.1.4.1.12182.2.1:COUNTER:100');
+    @{$self->{opt_args}} = ();
     $self->add_options(
         "d=s" => \$self->{opt_d}, "destination=s" => \$self->{opt_d},
         "c=s" => \$self->{opt_snmpcommunity}, "community=s" => \$self->{opt_snmpcommunity},

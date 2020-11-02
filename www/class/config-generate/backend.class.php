@@ -100,6 +100,7 @@ class Backend
                 if (!mkdir($dir, 0770, true)) {
                     throw new Exception("Cannot create directory '" . $dir . "'");
                 }
+                chmod($dir, 0770);
             }
         }
 
@@ -132,6 +133,7 @@ class Backend
         if (!mkdir($this->full_path . '/' . $this->tmp_dir, 0770, true)) {
             throw new Exception("Cannot create directory '" . $dir . "'");
         }
+        chmod($this->full_path . '/' . $this->tmp_dir, 0770);
         $this->full_path .= '/' . $this->tmp_dir;
     }
 

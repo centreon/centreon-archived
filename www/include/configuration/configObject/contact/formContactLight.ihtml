@@ -22,6 +22,7 @@
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
         {/if}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{$form.header.oreon}</h4>

@@ -380,7 +380,8 @@ class CentreonDependency extends CentreonObject
             if (in_array($params[1], array('comment', 'name', 'description')) && !preg_match("/^dep_/", $params[1])) {
                 $params[1] = "dep_" . $params[1];
             }
-            $updateParams = array($params[1] => $params[2]);
+            $params[2] = str_replace("<br/>", "\n", $params[2]);
+            $updateParams = array($params[1] => htmlentities($params[2], ENT_QUOTES, "UTF-8"));
             $updateParams['objectId'] = $objectId;
             return $updateParams;
         } else {
@@ -1209,6 +1210,7 @@ class CentreonDependency extends CentreonObject
                         continue;
                     }
                     // setparam
+                    $v = CentreonUtils::convertLineBreak($v);
                     echo
                         implode(
                             $this->delim,
@@ -1217,7 +1219,7 @@ class CentreonDependency extends CentreonObject
                                 'SETPARAM',
                                 $row['dep_name'],
                                 $k,
-                                $v,
+                                html_entity_decode($v, ENT_QUOTES, "UTF-8"),
                             )
                         ) . "\n";
                 }

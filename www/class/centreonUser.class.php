@@ -33,8 +33,9 @@
  *
  */
 
-require_once("centreonACL.class.php");
-require_once("centreonLog.class.php");
+require_once __DIR__ . '/centreonACL.class.php';
+require_once __DIR__ . '/centreonLog.class.php';
+require_once __DIR__ . '/centreonAuth.class.php';
 
 class CentreonUser
 {
@@ -59,6 +60,7 @@ class CentreonUser
     public $userCrypted;
     protected $token;
     public $default_page;
+    private $showDeprecatedPages;
     private $currentPage;
 
     protected $restApi;
@@ -92,9 +94,10 @@ class CentreonUser
         $this->token = $user['contact_autologin_key'];
         $this->admin = $user["contact_admin"];
         $this->version = 3;
-        $this->default_page = $user["default_page"];
+        $this->default_page = $user["default_page"] ?? CentreonAuth::DEFAULT_PAGE;
         $this->gmt = $user["contact_location"];
         $this->js_effects = $user["contact_js_effects"];
+        $this->showDeprecatedPages = (bool) $user["show_deprecated_pages"];
         $this->is_admin = null;
         /*
          * Initiate ACL
@@ -271,6 +274,24 @@ class CentreonUser
     public function is_admin()
     {
         return $this->is_admin;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function doesShowDeprecatedPages()
+    {
+        return $this->showDeprecatedPages;
+    }
+
+    /**
+     *
+     * @param bool $showDeprecatedPages
+     */
+    public function setShowDeprecatedPages(bool $showDeprecatedPages)
+    {
+        $this->showDeprecatedPages = $showDeprecatedPages;
     }
 
     /**

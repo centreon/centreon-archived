@@ -48,7 +48,6 @@ $centreon = $_SESSION['centreon'];
 
 global $centreon, $pearDB;
 
-
 /*
  * Connect to DB
  */
@@ -73,22 +72,23 @@ require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 require_once _CENTREON_PATH_ . "www/include/monitoring/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/external_cmd/functionsPopup.php";
 
-if (isset($_GET["select"]) && isset($sid)) {
+if (isset($_POST["resources"]) && isset($sid)) {
     $is_admin = isUserAdmin($sid);
-    foreach ($_GET["select"] as $key => $value) {
-        if (isset($_GET["cmd"])) {
-            switch ($_GET["cmd"]) {
+    $resources = json_decode($_POST["resources"], true);
+    foreach ($resources as $resource) {
+        if (isset($_POST["cmd"])) {
+            switch ($_POST["cmd"]) {
                 case 70:
-                    massiveServiceAck($key);
+                    massiveServiceAck($resource);
                     break;
                 case 72:
-                    massiveHostAck($key);
+                    massiveHostAck($resource);
                     break;
                 case 74:
-                    massiveServiceDowntime($key);
+                    massiveServiceDowntime($resource);
                     break;
                 case 75:
-                    massiveHostDowntime($key);
+                    massiveHostDowntime($resource);
                     break;
             }
         }

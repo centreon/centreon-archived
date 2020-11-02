@@ -194,7 +194,9 @@ class SqlRequestParametersTranslator
                 $this->requestParameters
                     ->getConcordanceErrorMode() === RequestParameters::CONCORDANCE_ERRMODE_EXCEPTION
             ) {
-                throw new RequestParametersTranslatorException("The parameter '{$key}' is not allowed");
+                throw new RequestParametersTranslatorException(
+                    sprintf(_('The parameter %s is not allowed'), $key)
+                );
             }
             return '';
         }
@@ -315,7 +317,7 @@ class SqlRequestParametersTranslator
         } elseif ($aggregateOperator === RequestParameters::AGGREGATE_OPERATOR_OR) {
             return 'OR';
         }
-        throw new RequestParametersTranslatorException('Bad search operator');
+        throw new RequestParametersTranslatorException(_('Bad search operator'));
     }
 
     /**

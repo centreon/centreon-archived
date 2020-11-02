@@ -12,14 +12,14 @@ Centreon\Domain\HostConfiguration\ExtendedHost:
       type: string
       groups:
         - 'host_extended'
-        - 'host_extended_mapper_simulation'
+        - 'host_extended_group_1'
     notesUrl:
       type: string
       groups:
         - 'host_extended'
-        - 'host_extended_mapper_simulation'
+        - 'host_extended_group_1'
     actionUrl:
       type: string
       groups:
         - 'host_extended'
-        - 'host_extended_mapper_simulation'
+        - 'host_extended_group_1'

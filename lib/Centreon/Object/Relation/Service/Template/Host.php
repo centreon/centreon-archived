@@ -70,7 +70,7 @@ class Centreon_Object_Relation_Service_Template_Host extends Centreon_Object_Rel
      * @param array $sourceId
      * @return array
      */
-    public function getTargetIdFromSourceId($targetKey, $sourceKey, $sourceId)
+    public function getTargetIdFromSourceId($sourceKey, $targetKey, $sourceId)
     {
         if (!is_array($sourceId)) {
             $sourceId = array($sourceId);

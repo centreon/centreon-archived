@@ -11,7 +11,7 @@ Feature: Autologin Options
     Scenario: Autologin with full screen option
         When I type the autologin url with the fullscreen option in my web browser
         Then Centreon default page is displayed without the menus and the header
-         
+
     Scenario: Autologin to Reporting Dashboards Hosts page
         When I type the autologin url with the option page 30701
         Then Reporting > Dashboards > Hosts page is displayed

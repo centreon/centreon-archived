@@ -281,10 +281,13 @@ class Broker extends AbstractObjectJSON
             }
 
             if ($anomalyDetectionLuaOutputGroupID >= 0) {
-                $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'] = array_merge_recursive(
-                    $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'],
-                    $this->generateAnomalyDetectionLuaParameters()
-                );
+                $luaParameters = $this->generateAnomalyDetectionLuaParameters();
+                if (!empty($luaParameters)) {
+                    $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'] = array_merge_recursive(
+                        $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'],
+                        $luaParameters
+                    );
+                }
                 $anomalyDetectionLuaOutputGroupID = -1;
             }
 
@@ -500,9 +503,13 @@ class Broker extends AbstractObjectJSON
                 }
 
                 $proxy = (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME)
-                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '//:')
+                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '://')
                             : 'http://'
-                        ) . $proxy . parse_url($proxyInfo['proxy_url'], PHP_URL_HOST);
+                        ) .  $proxy;
+
+                $proxy .= (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME))
+                    ? parse_url($proxyInfo['proxy_url'], PHP_URL_HOST)
+                    : parse_url($proxyInfo['proxy_url'], PHP_URL_PATH);
                 if (isset($proxyInfo['proxy_port']) && !empty($proxyInfo['proxy_port'])) {
                     $proxy .= ':' . $proxyInfo['proxy_port'];
                 }

@@ -51,7 +51,7 @@ my %handlers = ('TERM' => {}, 'HUP' => {}, 'DIE' => {}, 'CHLD' => {});
 
 sub new {
     my $class = shift;
-    my $self = $class->SUPER::new("centreontrapd",
+    my $self = $class->SUPER::new('centreontrapd',
         centreon_db_conn => 0,
         centstorage_db_conn => 0
     );
@@ -61,8 +61,7 @@ sub new {
         "config-extra=s" => \$self->{opt_extra},
     );
 
-    %{$self->{centreontrapd_default_config}} =
-      (
+    %{$self->{centreontrapd_default_config}} = (
        timeout_end => 30,
        spool_directory => "/var/spool/centreontrapd/",
        sleep => 2,
@@ -138,9 +137,9 @@ sub new {
     %{$self->{return_child}} = ();
     %{$self->{running_processes}} = ();
     $self->{sequential_processes} = {
-                                     pid => {},
-                                     trap_id => {}
-                                    };
+        pid => {},
+        trap_id => {}
+    };
     %{$self->{last_time_exec}} = ('oid' => {}, 'host' => {});
     
     # Current ID of working
@@ -212,8 +211,10 @@ sub init {
     }
     
     ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
-                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
-                                                                             $self->{centreontrapd_config}->{time_format});
+        centreon::trapd::lib::manage_params_conf(
+            $self->{centreontrapd_config}->{date_format},
+            $self->{centreontrapd_config}->{time_format}
+        );
     centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
     
     $self->set_signal_handlers;
@@ -365,8 +366,10 @@ sub reload {
     
     $self->reload_config($self->{opt_extra});
     ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
-                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
-                                                                             $self->{centreontrapd_config}->{time_format});
+        centreon::trapd::lib::manage_params_conf(
+            $self->{centreontrapd_config}->{date_format},
+            $self->{centreontrapd_config}->{time_format}
+        );
     # redefine to avoid out when we try modules
     $SIG{__DIE__} = 'IGNORE';
     centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
@@ -395,8 +398,8 @@ sub create_logdb_child {
         $self->{cdb}->set_inactive_destroy();
 
         close $self->{logdb_pipes}{writer};
-	my $centreon_db_centstorage;
-	if ($self->{centreontrapd_config}->{mode} == 0) { 
+        my $centreon_db_centstorage;
+        if ($self->{centreontrapd_config}->{mode} == 0) { 
             $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
                                                         host => $self->{centreon_config}->{db_host},
                                                         port => $self->{centreon_config}->{db_port},
@@ -415,10 +418,14 @@ sub create_logdb_child {
                                                         logger => $self->{logger});
         }
         $centreon_db_centstorage->connect();
-        
+
         my $centreontrapd_log = centreon::trapd::Log->new($self->{logger});
-        $centreontrapd_log->main($centreon_db_centstorage,
-                                 $self->{logdb_pipes}{reader}, $self->{config_file}, $self->{centreontrapd_config});
+        $centreontrapd_log->main(
+            $centreon_db_centstorage,
+            $self->{logdb_pipes}{reader},
+            $self->{config_file},
+            $self->{centreontrapd_config}
+        );
         exit(0);
     }
     $self->{pid_logdb_child} = $current_pid;
@@ -578,24 +585,26 @@ sub do_exec {
     }
     
     if ($self->{centreontrapd_config}->{log_trap_db} == 1 && $self->{current_trap_log} == 1) {
-        centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{writer},
-                                        id => $self->{id_logdb},
-                                        cdb => $self->{cdb},
-                                        trap_time => $self->{trap_data}->{trap_date_time_epoch},
-                                        timeout => 0,
-                                        host_name => ${$self->{trap_data}->{var}}[0],
-                                        ip_address => $self->{current_ip},
-                                        agent_host_name => $self->{trap_data}->{agent_dns_name},
-                                        agent_ip_address => ${$self->{trap_data}->{var}}[4],
-                                        trap_oid => $self->{current_oid},
-                                        trap_name => $self->{current_trap_name},
-                                        vendor => $self->{current_vendor_name},
-                                        status => $self->{traps_global_status},
-                                        severity_id => $self->{traps_global_severity_id},
-                                        severity_name => $self->{traps_global_severity_name},
-                                        output_message => $self->{traps_global_output},
-                                        entvar => \@{$self->{trap_data}->{entvar}},
-                                        entvarname => \@{$self->{trap_data}->{entvarname}});
+        centreon::trapd::lib::send_logdb(
+            pipe => $self->{logdb_pipes}{writer},
+            id => $self->{id_logdb},
+            cdb => $self->{cdb},
+            trap_time => $self->{trap_data}->{trap_date_time_epoch},
+            timeout => 0,
+            host_name => ${$self->{trap_data}->{var}}[0],
+            ip_address => $self->{current_ip},
+            agent_host_name => $self->{trap_data}->{agent_dns_name},
+            agent_ip_address => ${$self->{trap_data}->{var}}[4],
+            trap_oid => $self->{current_oid},
+            trap_name => $self->{current_trap_name},
+            vendor => $self->{current_vendor_name},
+            status => $self->{traps_global_status},
+            severity_id => $self->{traps_global_severity_id},
+            severity_name => $self->{traps_global_severity_name},
+            output_message => $self->{traps_global_output},
+            entvar => \@{$self->{trap_data}->{entvar}},
+            entvarname => \@{$self->{trap_data}->{entvarname}}
+        );
     }
 }
 
@@ -706,10 +715,11 @@ sub forceCheck {
         }
     }
     
-    my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
-                                                             logger => $self->{logger},
-                                                             timeout => $self->{current_alarm_timeout}
-                                                             );
+    my ($lerror, $stdout) = centreon::common::misc::backtick(
+        command => $submit,
+        logger => $self->{logger},
+        timeout => $self->{current_alarm_timeout}
+    );
     $self->{logger}->writeLogInfo("FORCE: Reschedule linked service");
     $self->{logger}->writeLogInfo("FORCE: Launched command: $submit");
     if (defined($stdout) && $stdout ne "") {
@@ -749,10 +759,11 @@ sub submitResult_do {
             $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
         }
     }
-    my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
-                                                             logger => $self->{logger},
-                                                             timeout => $self->{current_alarm_timeout}
-                                                             );
+    my ($lerror, $stdout) = centreon::common::misc::backtick(
+        command => $submit,
+        logger => $self->{logger},
+        timeout => $self->{current_alarm_timeout}
+    );
     
     $self->{logger}->writeLogInfo("SUBMIT: Force service status via passive check update");
     $self->{logger}->writeLogInfo("SUBMIT: Launched command: $submit");
@@ -785,11 +796,12 @@ sub execute_preexec {
         $tpe_string = $self->substitute_string($tpe_string);
         $tpe_string = $self->substitute_centreon_var($tpe_string);
         
-        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(command => $tpe_string,
-                                                                             logger => $self->{logger},
-                                                                             timeout => $self->{current_alarm_timeout},
-                                                                             wait_exit => 1
-                                                                            );
+        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(
+            command => $tpe_string,
+            logger => $self->{logger},
+            timeout => $self->{current_alarm_timeout},
+            wait_exit => 1
+        );
         if ($exit_code == -1) {
             $self->{logger}->writeLogError("EXEC prexec: Execution error: $!");
         } elsif (($exit_code >> 8) != 0) {
@@ -1006,9 +1018,11 @@ sub executeCommand {
     my $traps_execution_command = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command};
     
     if ($traps_execution_command =~ /\@TRAPFORWARD\((.*?)\)\@/) {
-        centreon::trapd::lib::trap_forward(trap_data => $self->{trap_data},
-                                           arguments => $1, 
-                                           logger => $self->{logger});
+        centreon::trapd::lib::trap_forward(
+            trap_data => $self->{trap_data},
+            arguments => $1, 
+            logger => $self->{logger}
+        );
         return ;
     }
     
@@ -1032,11 +1046,12 @@ sub executeCommand {
         $self->{logger}->writeLogInfo("EXEC: Launch specific command");
         $self->{logger}->writeLogInfo("EXEC: Launched command: $traps_execution_command");
     
-        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(command => $traps_execution_command,
-                                                                             logger => $self->{logger},
-                                                                             timeout => $self->{current_alarm_timeout},
-                                                                             wait_exit => 1
-                                                                            );
+        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(
+            command => $traps_execution_command,
+            logger => $self->{logger},
+            timeout => $self->{current_alarm_timeout},
+            wait_exit => 1
+        );
         if ($exit_code == -1) {
             $self->{logger}->writeLogError("EXEC: Execution error: $!");
         } elsif (($exit_code >> 8) != 0) {
@@ -1048,7 +1063,6 @@ sub executeCommand {
         }
     }
 }
-
 
 #######################################
 ## GET HOSTNAME AND SERVICE DESCRIPTION
@@ -1063,12 +1077,14 @@ sub getTrapsInfos {
     foreach my $trap_id (keys %{$self->{trap_data}->{ref_oids}}) {
         $self->{trap_data}->{current_trap_id} = $trap_id;
 
-        ($fstatus, $self->{trap_data}->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
-                                                                 cdb => $self->{cdb},
-                                                                 trap_info => $self->{trap_data}->{ref_oids}->{$trap_id},
-                                                                 agent_dns_name => $self->{trap_data}->{agent_dns_name},
-                                                                 ip_address => ${$self->{trap_data}->{var}}[1],
-                                                                 centreontrapd => $self);
+        ($fstatus, $self->{trap_data}->{ref_hosts}) = centreon::trapd::lib::get_hosts(
+            logger => $self->{logger},
+            cdb => $self->{cdb},
+            trap_info => $self->{trap_data}->{ref_oids}->{$trap_id},
+            agent_dns_name => $self->{trap_data}->{agent_dns_name},
+            ip_address => ${$self->{trap_data}->{var}}[1],
+            centreontrapd => $self
+        );
         return 0 if ($fstatus == -1);        
         foreach my $host_id (keys %{$self->{trap_data}->{ref_hosts}}) {
             if (!defined($self->{trap_data}->{ref_hosts}->{$host_id}->{nagios_server_id})) {
@@ -1085,14 +1101,16 @@ sub getTrapsInfos {
             if (defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime}) && 
                 $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} ne '' && $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime} > 0 &&
                 ($self->{centreontrapd_config}->{mode} == 0 || defined($self->{centreontrapd_config}->{local_broker}))) {
-                ($fstatus) = centreon::trapd::lib::check_downtimes(csdb => $self->{csdb}, 
-                                                                   downtime => $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime},
-                                                                   trap_time => $self->{trap_data}->{trap_date_time_epoch},
-                                                                   host_id => $host_id,
-                                                                   host_name => $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name},
-                                                                   local_broker => $self->{centreontrapd_config}->{local_broker},
-                                                                   ref_services => $self->{trap_data}->{ref_services},
-                                                                   logger => $self->{logger});
+                ($fstatus) = centreon::trapd::lib::check_downtimes(
+                    csdb => $self->{csdb}, 
+                    downtime => $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_downtime},
+                    trap_time => $self->{trap_data}->{trap_date_time_epoch},
+                    host_id => $host_id,
+                    host_name => $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name},
+                    local_broker => $self->{centreontrapd_config}->{local_broker},
+                    ref_services => $self->{trap_data}->{ref_services},
+                    logger => $self->{logger}
+                );
                 return 0 if ($fstatus == -1);
                 # Host in downtime - If no services anymore, condition will match it.
                 next if ($fstatus == 1);
@@ -1131,10 +1149,12 @@ sub getTrapsInfos {
                     $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_routing_filter_services} ne '') {
                     my $search_str = $self->substitute_string($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_routing_filter_services});
                     if ($self->{trap_data}->{ref_services}->{$service_id}->{service_description} ne $search_str) {
-                        $self->{logger}->writeLogDebug("Skipping trap for service '" . 
-                                                        $self->{trap_data}->{ref_services}->{$service_id}->{service_description} . 
-                                                        "' for host '" . 
-                                                        $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name} . "' (match: $search_str).");
+                        $self->{logger}->writeLogDebug(
+                            "Skipping trap for service '" . 
+                            $self->{trap_data}->{ref_services}->{$service_id}->{service_description} . 
+                            "' for host '" . 
+                            $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name} . "' (match: $search_str)."
+                        );
                         next;
                     }
                 }
@@ -1156,43 +1176,51 @@ sub run {
     $self->{logger}->writeLogDebug("PID: $$");
 
     if ($self->{centreontrapd_config}->{mode} == 0) {
-        $self->{logger}->writeLogError("Mode: central server");
-        $self->{cdb} = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
-                                             type => $self->{centreon_config}->{db_type},
-                                             host => $self->{centreon_config}->{db_host},
-                                             port => $self->{centreon_config}->{db_port},
-                                             user => $self->{centreon_config}->{db_user},
-                                             password => $self->{centreon_config}->{db_passwd},
-                                             force => 0,
-                                             logger => $self->{logger});
+        $self->{logger}->writeLogInfo('Mode: central server');
+        $self->{cdb} = centreon::common::db->new(
+            db => $self->{centreon_config}->{centreon_db},
+            type => $self->{centreon_config}->{db_type},
+            host => $self->{centreon_config}->{db_host},
+            port => $self->{centreon_config}->{db_port},
+            user => $self->{centreon_config}->{db_user},
+            password => $self->{centreon_config}->{db_passwd},
+            force => 0,
+            logger => $self->{logger}
+        );
 
         $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
         $self->{cmdDir} = $self->{centreon_config}->{VarLib} . "/centcore";
-        $self->{csdb} = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
-                                              host => $self->{centreon_config}->{db_host},
-                                              port => $self->{centreon_config}->{db_port},
-                                              user => $self->{centreon_config}->{db_user},
-                                              password => $self->{centreon_config}->{db_passwd},
-                                              force => 0,
-                                              logger => $self->{logger});
+        $self->{csdb} = centreon::common::db->new(
+            db => $self->{centreon_config}->{centstorage_db},
+            host => $self->{centreon_config}->{db_host},
+            port => $self->{centreon_config}->{db_port},
+            user => $self->{centreon_config}->{db_user},
+            password => $self->{centreon_config}->{db_passwd},
+            force => 0,
+            logger => $self->{logger}
+        );
     } elsif ($self->{centreontrapd_config}->{mode} == 1) {
-	$self->{logger}->writeLogError("Mode: poller");
-        $self->{cdb} = centreon::common::db->new(db => $self->{centreontrapd_config}->{centreon_db},
-                                             type => $self->{centreontrapd_config}->{db_type},
-                                             host => $self->{centreontrapd_config}->{db_host},
-                                             port => $self->{centreontrapd_config}->{db_port},
-                                             user => $self->{centreontrapd_config}->{db_user},
-                                             password => $self->{centreontrapd_config}->{db_passwd},
-                                             force => 0,
-                                             logger => $self->{logger});
-        $self->{csdb} = centreon::common::db->new(db => $self->{centreontrapd_config}->{centstorage_db},
-                                              type => $self->{centreontrapd_config}->{db_type},
-                                              host => $self->{centreontrapd_config}->{db_host},
-                                              port => $self->{centreontrapd_config}->{db_port},
-                                              user => $self->{centreontrapd_config}->{db_user},
-                                              password => $self->{centreontrapd_config}->{db_passwd},
-                                              force => 0,
-                                              logger => $self->{logger});
+        $self->{logger}->writeLogInfo('Mode: poller');
+        $self->{cdb} = centreon::common::db->new(
+            db => $self->{centreontrapd_config}->{centreon_db},
+            type => $self->{centreontrapd_config}->{db_type},
+            host => $self->{centreontrapd_config}->{db_host},
+            port => $self->{centreontrapd_config}->{db_port},
+            user => $self->{centreontrapd_config}->{db_user},
+            password => $self->{centreontrapd_config}->{db_passwd},
+            force => 0,
+            logger => $self->{logger}
+        );
+        $self->{csdb} = centreon::common::db->new(
+            db => $self->{centreontrapd_config}->{centstorage_db},
+            type => $self->{centreontrapd_config}->{db_type},
+            host => $self->{centreontrapd_config}->{db_host},
+            port => $self->{centreontrapd_config}->{db_port},
+            user => $self->{centreontrapd_config}->{db_user},
+            password => $self->{centreontrapd_config}->{db_passwd},
+            force => 0,
+            logger => $self->{logger}
+        );
         # Dirty!!! Need to know the poller (not Dirty if you use SQLite database)
         my ($status, $sth) = $self->{cdb}->query("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
         my @conf = $sth->fetchrow_array();
@@ -1205,8 +1233,10 @@ sub run {
     }
 
     while (1) {
-        centreon::trapd::lib::purge_duplicate_trap(config => $self->{centreontrapd_config},
-                                                   duplicate_traps => \%{$self->{duplicate_traps}});
+        centreon::trapd::lib::purge_duplicate_trap(
+            config => $self->{centreontrapd_config},
+            duplicate_traps => \%{$self->{duplicate_traps}}
+        );
         while ((my $file = centreon::trapd::lib::get_trap(logger => $self->{logger}, 
                                                           config => $self->{centreontrapd_config},
                                                           filenames => \@{$self->{filenames}}))) {
@@ -1230,29 +1260,33 @@ sub run {
             if (open FILE, $self->{centreontrapd_config}->{spool_directory} . '/' . $file) {
                 my $unlink_trap = 1;
                 my $trap_is_a_duplicate = 0;
-                my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
-                                                                     config => $self->{centreontrapd_config},
-                                                                     handle => \*FILE,
-                                                                     agent_dns_name => \$self->{trap_data}->{agent_dns_name},
-                                                                     trap_date => \$self->{trap_data}->{trap_date},
-                                                                     trap_time => \$self->{trap_data}->{trap_time},
-                                                                     trap_date_time => \$self->{trap_data}->{trap_date_time},
-                                                                     trap_date_time_epoch => \$self->{trap_data}->{trap_date_time_epoch},
-                                                                     duplicate_traps => \%{$self->{duplicate_traps}},
-                                                                     digest_trap => \$self->{digest_trap},
-                                                                     var => \@{$self->{trap_data}->{var}},
-                                                                     entvar => \@{$self->{trap_data}->{entvar}},
-                                                                     entvarname => \@{$self->{trap_data}->{entvarname}});
+                my $readtrap_result = centreon::trapd::lib::readtrap(
+                    logger => $self->{logger},
+                    config => $self->{centreontrapd_config},
+                    handle => \*FILE,
+                    agent_dns_name => \$self->{trap_data}->{agent_dns_name},
+                    trap_date => \$self->{trap_data}->{trap_date},
+                    trap_time => \$self->{trap_data}->{trap_time},
+                    trap_date_time => \$self->{trap_data}->{trap_date_time},
+                    trap_date_time_epoch => \$self->{trap_data}->{trap_date_time_epoch},
+                    duplicate_traps => \%{$self->{duplicate_traps}},
+                    digest_trap => \$self->{digest_trap},
+                    var => \@{$self->{trap_data}->{var}},
+                    entvar => \@{$self->{trap_data}->{entvar}},
+                    entvarname => \@{$self->{trap_data}->{entvarname}}
+                );
                 
                 if ($readtrap_result == 1) {
-                    my (@return) = centreon::trapd::lib::check_known_trap(logger => $self->{logger},
-                                                                          logger_unknown => $self->{logger_unknown},
-                                                                          config => $self->{centreontrapd_config},
-                                                                          trap_data => $self->{trap_data},
-                                                                          oid2verif => ${$self->{trap_data}->{var}}[3],
-                                                                          cdb => $self->{cdb},
-                                                                          last_cache_time => \$self->{last_cache_time},
-                                                                          oids_cache => \$self->{oids_cache});
+                    my (@return) = centreon::trapd::lib::check_known_trap(
+                        logger => $self->{logger},
+                        logger_unknown => $self->{logger_unknown},
+                        config => $self->{centreontrapd_config},
+                        trap_data => $self->{trap_data},
+                        oid2verif => ${$self->{trap_data}->{var}}[3],
+                        cdb => $self->{cdb},
+                        last_cache_time => \$self->{last_cache_time},
+                        oids_cache => \$self->{oids_cache}
+                    );
                     if ($return[0] == 1) {
                         $unlink_trap = $self->getTrapsInfos($return[1]);
                     } elsif ($return[0] == -1) {

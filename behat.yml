@@ -353,14 +353,6 @@ default:
       paths: [ "%paths.base%/features/TopCounterProfileMenu.feature" ]
       contexts: [ TopCounterProfileMenuContext ]
 
-    topcounterservice:
-      paths: [ "%paths.base%/features/TopCounterServices.feature" ]
-      contexts: [ TopCounterServicesContext ]
-
-    topcounterhost:
-      paths: [ "%paths.base%/features/TopCounterHosts.feature" ]
-      contexts: [ TopCounterHostsContext ]
-
     topcounterpoller:
       paths: [ "%paths.base%/features/TopCounterPollers.feature" ]
       contexts: [ TopCounterPollersContext ]
@@ -383,9 +375,3 @@ default:
         - "%paths.base%/features/APIv1/TimeperiodsApi.feature"
       contexts:
         - \Centreon\Test\Behat\CentreonAPIContext
-
-    api_v2_monitoring:
-      paths:
-        - "%paths.base%/features/APIv2/Monitoring/HostApi.feature"
-        - "%paths.base%/features/APIv2/Monitoring/ServiceApi.feature"
-      contexts: [ APIv2Context ]

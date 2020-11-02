@@ -223,8 +223,8 @@ if (strcmp($serverType, 'poller') ==  0) {
     );
     $form->addElement('select2', 'remote_additional_id', _('Attach additional Remote Servers'), array(), $attrPoller2);
     $tab = [];
-    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Yes"), '1');
-    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("No"), '0');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Enable"), '1');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Disable"), '0');
     $form->addGroup($tab, 'remote_server_use_as_proxy', _("Use the Remote Server as a proxy"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
@@ -233,7 +233,7 @@ $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
 $tab = array();
 if ($serverType !== "central") {
-    $form->addElement('text', 'ssh_port', _("SSH Legacy port"), $attrsText3);    
+    $form->addElement('text', 'ssh_port', _("SSH Legacy port"), $attrsText3);
 }
 
 $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
@@ -365,6 +365,7 @@ $form->registerRule('testAdditionalRemoteServer', 'callback', 'testAdditionalRem
 $form->registerRule('isValidIpAddress', 'callback', 'isValidIpAddress');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('name', _("The name of the poller is mandatory"), 'required');
+$form->addRule('ns_ip_address', _("Compulsory Name"), 'required');
 if ($serverType === 'poller') {
     $form->addRule(
         array('remote_additional_id', 'remote_id'),
@@ -402,6 +403,12 @@ if ($o == SERVER_WATCH) {
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->registerRule('ipCanBeUpdated', 'callback', 'ipCanBeUpdated');
+    $form->addRule(
+        ['ns_ip_address','id'],
+        _("The IP address is already registered on another poller"),
+        'ipCanBeUpdated'
+    );
     $form->setDefaults($nagios);
 } elseif ($o == SERVER_ADD) {
     /*
@@ -409,6 +416,8 @@ if ($o == SERVER_WATCH) {
      */
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    $form->registerRule('ipCanBeRegistered', 'callback', 'ipCanBeRegistered');
+    $form->addRule('ns_ip_address', _("The IP address is already registered"), 'ipCanBeRegistered');
 }
 
 $valid = false;
@@ -427,6 +436,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
+    defineLocalPollerToDefault();
     require_once($path . "listServers.php");
 } else {
     /*

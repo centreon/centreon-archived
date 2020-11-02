@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
 use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\Repository\RepositoryException;
 
 interface HostConfigurationRepositoryInterface
@@ -42,9 +43,19 @@ interface HostConfigurationRepositoryInterface
      *
      * @param int $hostId Host Id to be found
      * @return Host|null Returns a host otherwise null
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function findHost(int $hostId): ?Host;
+
+    /**
+     * Find and add all host templates in the given host.
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host Host for which we want to find and add all host templates
+     * @throws \Throwable
+     */
+    public function findAndAddHostTemplates(Host $host): void;
 
     /**
      * Indicates if a hostname is already in use.
@@ -60,4 +71,30 @@ interface HostConfigurationRepositoryInterface
      * @return int Number of hosts
      */
     public function getNumberOfHosts(): int;
+
+    /**
+     * Find all host macros for the host.
+     *
+     * @param int $hostId Id of the host
+     * @param bool $isUsingInheritance Indicates whether to use inheritance to find host macros (FALSE by default)
+     * @return array<HostMacro> List of host macros found
+     * @throws \Throwable
+     */
+    public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array;
+
+    /**
+     * Change the activation status of host.
+     *
+     * @param int $hostId Host id for which we want to change the activation status
+     * @param bool $shouldBeActivated TRUE to activate a host
+     */
+    public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void;
+
+    /**
+     * Find host names already used by hosts.
+     *
+     * @param string[] $namesToCheck List of names to find
+     * @return string[] Return the host names found
+     */
+    public function findHostNamesAlreadyUsed(array $namesToCheck): array;
 }
