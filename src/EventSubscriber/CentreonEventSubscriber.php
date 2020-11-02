@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2005-2020 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,7 +38,9 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use Centreon\Application\ApiPlatform;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
@@ -72,19 +74,19 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * If no version has been defined in the configuration,
      * this version will be used by default
      */
-    const DEFAULT_API_VERSION = "2.0";
+    public const DEFAULT_API_VERSION = "2.0";
 
     /**
      * If no beta version has been defined in the configuration,
      * this version will be used by default
      */
-    const DEFAULT_API_BETA_VERSION = "2.1";
+    public const DEFAULT_API_BETA_VERSION = "2.1";
 
     /**
      * If no API header name has been defined in the configuration,
      * this name will be used by default
      */
-    const DEFAULT_API_HEADER_NAME = "version";
+    public const DEFAULT_API_HEADER_NAME = "version";
 
     /**
      * @var ContainerInterface
@@ -102,18 +104,26 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     private $security;
 
     /**
+     * @var ApiPlatform
+     */
+    private $apiPlatform;
+
+    /**
      * @param RequestParametersInterface $requestParameters
      * @param ContainerInterface $container
      * @param Security $security
+     * @param ApiPlatform $apiPlatform
      */
     public function __construct(
         RequestParametersInterface $requestParameters,
         ContainerInterface $container,
-        Security $security
+        Security $security,
+        ApiPlatform $apiPlatform
     ) {
         $this->container = $container;
         $this->requestParameters = $requestParameters;
         $this->security = $security;
+        $this->apiPlatform = $apiPlatform;
     }
 
     /**
@@ -163,7 +173,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param RequestEvent $request
      * @throws \Exception
      */
-    public function initRequestParameters(RequestEvent $request):void
+    public function initRequestParameters(RequestEvent $request): void
     {
         $query = $request->getRequest()->query->all();
 
@@ -192,7 +202,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
             $search = [];
             foreach ($query as $parameterName => $parameterValue) {
-                if (in_array($parameterName, $reservedFields)
+                if (
+                    in_array($parameterName, $reservedFields)
                     || $parameterName !== 'filter'
                     || !is_array($parameterValue)
                 ) {
@@ -265,7 +276,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $uri = $event->getRequest()->getRequestUri();
         if (preg_match('/\/api\/([^\/]+)/', $uri, $matches)) {
             $requestApiVersion = $matches[1];
-            if ($requestApiVersion[0] == 'v') {
+            if ($requestApiVersion[0] === 'v') {
                 $requestApiVersion = substr($requestApiVersion, 1);
                 $requestApiVersion = VersionHelper::regularizeDepthVersion(
                     $requestApiVersion,
@@ -273,13 +284,15 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 );
             }
 
-            if ($requestApiVersion == 'latest'
+            if (
+                $requestApiVersion === 'latest'
                 || VersionHelper::compare($requestApiVersion, $latestVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_latest', true);
                 $requestApiVersion = $latestVersion;
             }
-            if ($requestApiVersion == 'beta'
+            if (
+                $requestApiVersion === 'beta'
                 || VersionHelper::compare($requestApiVersion, $betaVersion, VersionHelper::EQUAL)
             ) {
                 $event->getRequest()->attributes->set('version.is_beta', true);
@@ -296,6 +309,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
             // Used for controllers
             $event->getRequest()->attributes->set('version_number', (float) $requestApiVersion);
+            $this->apiPlatform->setVersion((float) $requestApiVersion);
         }
     }
 
@@ -311,7 +325,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
         // We detect if the exception occurred before the kernel called the controller
         foreach ($event->getException()->getTrace() as $trace) {
-            if (array_key_exists('class', $trace)
+            if (
+                array_key_exists('class', $trace)
                 && strlen($trace['class']) > strlen($flagController)
                 && substr($trace['class'], -strlen($flagController)) === $flagController
             ) {
@@ -409,7 +424,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param ContactInterface $user
      * @return void
      */
-    private function initLanguage(Contact $user)
+    private function initLanguage(Contact $user): void
     {
         $locale = $user->getLocale() ?? $this->getBrowserLocale();
         $lang = $locale . '.' . Contact::DEFAULT_CHARSET;

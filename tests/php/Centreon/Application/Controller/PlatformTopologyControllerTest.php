@@ -232,6 +232,7 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController->setContainer($this->container);
 
         $view = $platformTopologyController->addPlatformToTopology($this->request);
+
         $this->assertEquals(
             $view,
             View::create(['message' => 'bad request'], Response::HTTP_BAD_REQUEST)

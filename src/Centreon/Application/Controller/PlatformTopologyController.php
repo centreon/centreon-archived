@@ -109,7 +109,7 @@ class PlatformTopologyController extends AbstractController
             );
         }
 
-        // validate data consistency
+        // validate request payload consistency
         $this->validatePlatformTopologySchema(
             $platformToAdd,
             $this->getParameter('centreon_path')
