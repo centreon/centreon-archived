@@ -284,4 +284,145 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->assertNull($platformTopologyService->addPlatformToTopology($this->platformTopology));
     }
+
+    public function testGetPlatformCompleteTopology(): void
+    {
+
+        $this->platformTopology
+            ->setParentId(1)
+            ->setServerId(2);
+
+        $this->registeredParent
+            ->setServerId(1);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('getPlatformCompleteTopology')
+            ->willReturn([$this->platformTopology, $this->registeredParent]);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('findPlatformAddressById')
+            ->willReturn('1.1.1.1');
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService,
+            $this->brokerService
+        );
+
+        $this->assertIsArray($platformTopologyService->getPlatformCompleteTopology());
+    }
+
+    public function testGetPlatformCompleteTopologyWithNoParentId(): void
+    {
+        $this->platformTopology
+            ->setServerId(2);
+
+        $this->registeredParent
+            ->setServerId(1);
+
+        $this->platformTopologyRepository
+            ->expects($this->at(0))
+            ->method('getPlatformCompleteTopology')
+            ->willReturn([$this->registeredParent]);
+
+        $this->platformTopologyRepository
+            ->expects($this->at(1))
+            ->method('getPlatformCompleteTopology')
+            ->willReturn([$this->platformTopology]);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService,
+            $this->brokerService
+        );
+
+        /**
+         * Central Case
+         */
+        $this->assertIsArray($platformTopologyService->getPlatformCompleteTopology());
+
+        /**
+         * Poller Case
+         */
+        $this->expectException(PlatformTopologyException::class);
+        $this->expectExceptionMessage("the 'poller': 'poller1'@'1.1.1.2' isn't registered on any Central or Remote");
+        $platformTopologyService->getPlatformCompleteTopology();
+    }
+
+    public function testGetPlatformCompleteTopologyWithNoParentAddress(): void
+    {
+        $this->platformTopology
+            ->setParentId(3);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('getPlatformCompleteTopology')
+            ->willReturn([$this->platformTopology]);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('findPlatformAddressById')
+            ->with($this->platformTopology->getParentId())
+            ->willReturn(null);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService,
+            $this->brokerService
+        );
+
+        /**
+         * Poller Case
+         */
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage("Topology address for parent platform ID: '3' not found");
+        $platformTopologyService->getPlatformCompleteTopology();
+    }
+
+    public function testGetPlatformCompleteTopologyWithNoServerId(): void
+    {
+
+        $this->platformTopologyRepository
+            ->expects($this->at(0))
+            ->method('getPlatformCompleteTopology')
+            ->willReturn([$this->platformTopology]);
+
+        $this->platformTopologyRepository
+            ->expects($this->at(1))
+            ->method('getPlatformCompleteTopology')
+            ->willReturn([$this->registeredParent]);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->httpClient,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService,
+            $this->brokerService
+        );
+
+        $this->expectException(PlatformTopologyException::class);
+        $this->expectExceptionMessage("the 'poller': 'poller1'@'1.1.1.2' isn't fully registered, please finish installation using wizard");
+        $platformTopologyService->getPlatformCompleteTopology();
+
+        $this->expectException(PlatformTopologyException::class);
+        $this->expectExceptionMessage("the 'central': 'Central'@'1.1.1.1' isn't fully registered, please finish installation using wizard");
+        $platformTopologyService->getPlatformCompleteTopology();
+
+    }
 }
