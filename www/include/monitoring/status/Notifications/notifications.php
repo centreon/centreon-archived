@@ -71,15 +71,15 @@ if (!isset($_SESSION['centreon_notification_preferences'])) {
 } else {
     $notificationPreferences = $_SESSION['centreon_notification_preferences'];
 }
-$notificationEnabled = 0;
+$notificationEnabled = false;
 foreach ($notificationPreferences as $key => $value) {
     if (preg_match('/monitoring_(host|svc)_notification_/', $key) && !is_null($value) && $value == 1) {
-        $notificationEnabled = 1;
+        $notificationEnabled = true;
         break;
     }
 }
 
-if ($notificationEnabled == 0) {
+if ($notificationEnabled === false) {
     $obj->XML->startElement("data");
     $obj->XML->endElement();
     $obj->header();
