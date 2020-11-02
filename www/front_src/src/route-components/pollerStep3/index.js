@@ -12,7 +12,6 @@ import BaseWizard from '../../components/forms/baseWizard';
 class PollerStepThreeRoute extends Component {
   state = {
     generateStatus: null,
-    processingStatus: null,
   };
 
   links = [
@@ -29,14 +28,13 @@ class PollerStepThreeRoute extends Component {
   render() {
     const { links } = this;
     const { pollerData, t } = this.props;
-    const { generateStatus, processingStatus } = this.state;
+    const { generateStatus } = this.state;
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
-          statusProcessing={processingStatus}
           formTitle={`${t('Finalizing Setup')}:`}
         />
       </BaseWizard>

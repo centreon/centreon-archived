@@ -56,8 +56,10 @@
 
 function checkSsl(scheme) {
     if (scheme === 'http') {
+        jQuery('#apiPort').val('80');
         jQuery('#apiPeerValidation').css("visibility","hidden");
     } else {
+        jQuery('#apiPort').val('443');
         jQuery('#apiPeerValidation').css("visibility","visible");
     }
 }

@@ -77,23 +77,33 @@ try {
 
     // get nagios_server children
     $childStmt = $pearDB->query(
-        "SELECT `id`, `name`, `ns_ip_address`, `ns_ip_address`, `remote_id` FROM nagios_server WHERE localhost != '1'"
+        "SELECT `id`, `name`, `ns_ip_address`, `remote_id`
+        FROM nagios_server WHERE localhost != '1' ORDER BY `remote_id`"
     );
-
     while ($row = $childStmt->fetch()) {
-        //check remote/poller
-        $parent = $parentId;
-        $serverType = 'poller';
-
+        //check for remote or poller child types
         $remoteServerQuery = $pearDB->prepare(
-            "SELECT `id` FROM remote_servers WHERE ip = :ipAddress"
+            "SELECT ns.id FROM nagios_server ns
+            INNER JOIN remote_servers rs ON rs.ip = ns.ns_ip_address WHERE ip = :ipAddress"
         );
         $remoteServerQuery->bindValue(':ipAddress', $row['ns_ip_address'], \PDO::PARAM_STR);
         $remoteServerQuery->execute();
         $remoteId = $remoteServerQuery->fetchColumn();
-        if ($remoteId) {
+        if (!empty($remoteId)) {
             //is remote
             $serverType = 'remote';
+            $parent = $parentId;
+        } else {
+            $serverType = 'poller';
+            $findParent = $pearDB->prepare('
+                SELECT id from platform_topology WHERE `server_id` = :remoteId
+            ');
+            $findParent->bindValue(':remoteId', (int) $row['remote_id'], \PDO::PARAM_INT);
+            $findParent->execute();
+            $parent = $findParent->fetchColumn();
+            if ($parent === false) {
+                continue;
+            }
         }
 
         $errorMessage = "Unable to insert " . $serverType . ":" . $row['name'] . " in 'topology' table.";

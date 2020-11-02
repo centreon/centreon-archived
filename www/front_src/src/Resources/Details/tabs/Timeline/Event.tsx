@@ -6,7 +6,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
 import { StatusChip } from '@centreon/ui';
-import { prop } from 'ramda';
+import { prop, isNil } from 'ramda';
 
 import { useTranslation } from 'react-i18next';
 import { TimelineEvent, Type } from './models';
@@ -72,6 +72,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  event: {
+    display: 'grid',
+    gridAutoFlow: 'columns',
+    gridTemplateColumns: 'auto 1fr auto',
+    padding: theme.spacing(1),
+    gridGap: theme.spacing(2),
+    alignItems: 'center',
+  },
 }));
 
 interface Props {
@@ -99,7 +107,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <EventIcon color="primary" />
       <div className={classes.info}>
         <Date event={event} />
@@ -113,7 +121,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
         <Content event={event} />
       </div>
       <Typography>{`${t(labelTries)}: ${event.tries}`}</Typography>
-    </>
+    </div>
   );
 };
 
@@ -122,7 +130,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <CommentIcon color="primary" />
       <div className={classes.info}>
         <Date event={event} />
@@ -131,7 +139,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -140,7 +148,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <AcknowledgeChip />
       <div className={classes.info}>
         <Date event={event} />
@@ -149,7 +157,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -157,22 +165,32 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
 
+  const getCaption = (): string => {
+    const formattedStartDate = getFormattedDateTime(event.startDate);
+
+    const from = `${t(labelFrom)} ${formattedStartDate}`;
+
+    if (isNil(event.endDate)) {
+      return from;
+    }
+
+    const formattedEndDate = getFormattedDateTime(event.endDate);
+
+    return `${from} ${t(labelTo)} ${formattedEndDate}`;
+  };
+
   return (
-    <>
+    <div className={classes.event}>
       <DowntimeChip />
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
           <Author event={event} label={t(labelDowntime)} />
         </div>
-        <Typography variant="caption">
-          {`${t(labelFrom)} ${getFormattedDateTime(event.startDate)} ${t(
-            labelTo,
-          )} ${getFormattedDateTime(event.endDate)}`}
-        </Typography>
+        <Typography variant="caption">{getCaption()}</Typography>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -181,7 +199,7 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <>
+    <div className={classes.event}>
       <NotificationIcon color="primary" />
       <div className={classes.info}>
         <Date event={event} />
@@ -192,7 +210,7 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Content event={event} />
       </div>
-    </>
+    </div>
   );
 };
 

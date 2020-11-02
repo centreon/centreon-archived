@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import {
   reduceBy,
   pipe,
@@ -25,14 +26,6 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
     width: '100%',
-  },
-  event: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    padding: theme.spacing(1),
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
   },
 }));
 
@@ -79,7 +72,7 @@ const Events = ({
   });
 
   return (
-    <>
+    <div>
       {eventsByDate.map(
         ([date, events]): JSX.Element => {
           const isLastDate = equals(last(dates), date);
@@ -95,7 +88,7 @@ const Events = ({
                   const Event = TimelineEventByType[type];
 
                   return (
-                    <Paper key={`${id}-${type}`} className={classes.event}>
+                    <Paper key={`${id}-${type}`}>
                       <Event event={event} />
                     </Paper>
                   );
@@ -106,7 +99,7 @@ const Events = ({
           );
         },
       )}
-    </>
+    </div>
   );
 };
 

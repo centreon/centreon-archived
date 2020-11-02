@@ -425,7 +425,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             // set basic parameters to export task
             $params = [
                 'server' => $remoteServer->getId(),
-                'pollers' => []
+                'pollers' => [],
+                'remote_ip' => $serverIP,
+                'centreon_path' => $centreonPath,
+                'http_method' => $httpMethod,
+                'http_port' => $httpPort,
+                'no_check_certificate' => $noCheckCertificate,
+                'no_proxy' => $noProxy,
             ];
 
             // If you want to link pollers to a remote
