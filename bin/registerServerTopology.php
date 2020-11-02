@@ -80,7 +80,7 @@ try {
     foreach ($opt as $key => $option) {
         if (is_array($option)) {
             throw new \InvalidArgumentException("
-                each flag must be declared only once : $key as been declared twice or more
+                each flag must be declared only once : -$key as been declared twice or more
             ");
         }
     }
