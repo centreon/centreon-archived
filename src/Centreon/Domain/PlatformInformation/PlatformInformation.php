@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation;
 
-use Centreon\Domain\Annotation\EntityDescriptor;
 use Security\Encryption;
 
 /**
@@ -54,7 +53,7 @@ class PlatformInformation
     /**
      * @var string|null central's address
      */
-    private $authorizedMaster;
+    private $centralServerAddress;
 
     /**
      * @var string|null
@@ -162,18 +161,18 @@ class PlatformInformation
     /**
      * @return string|null
      */
-    public function getAuthorizedMaster(): ?string
+    public function getCentralServerAddress(): ?string
     {
-        return $this->authorizedMaster;
+        return $this->centralServerAddress;
     }
 
     /**
      * @param string|null $address
      * @return $this
      */
-    public function setAuthorizedMaster(?string $address): self
+    public function setCentralServerAddress(?string $address): self
     {
-        $this->authorizedMaster = $address;
+        $this->centralServerAddress = $address;
         return $this;
     }
 

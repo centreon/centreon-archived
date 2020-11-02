@@ -45,12 +45,15 @@ class PlatformInformationService implements PlatformInformationServiceInterface
 
     /**
      * @inheritDoc
+     * @throws \InvalidArgumentException
      */
     public function getInformation(): ?PlatformInformation
     {
         $foundPlatformInformation = null;
         try {
             $foundPlatformInformation = $this->platformInformationRepository->findPlatformInformation();
+        } catch (\InvalidArgumentException $ex) {
+            throw $ex;
         } catch (\Exception $ex) {
             throw new PlatformInformationException(
                 _("Unable to retrieve platform information's data.")
