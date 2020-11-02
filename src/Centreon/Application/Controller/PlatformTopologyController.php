@@ -148,14 +148,12 @@ class PlatformTopologyController extends AbstractController
         try {
             // Get the entire topology of the platform as an array of PlatformTopology instances
             $platformCompleteTopology = $this->platformTopologyService->getPlatformCompleteTopology();
-            $edges =  [];
-            $topologiesHelios = [];
-            $nodes = [];
 
+            $edges =  [];
+            $nodes = [];
             //Format the PlatformTopology into a Json Graph Format, usable by Helios
             foreach ($platformCompleteTopology as $topology) {
                 $topologyHelios = new PlatformTopologyHeliosFormat($topology);
-                $topologiesHelios[] = $topologyHelios;
                 if (!empty($topologyHelios->getRelation())) {
                     $edges[] = $topologyHelios->getRelation();
                 }
@@ -178,10 +176,6 @@ class PlatformTopologyController extends AbstractController
             )->setContext($context);
         } catch (EntityNotFoundException $e) {
             return $this->view(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (PlatformTopologyException $e) {
-            return $this->view(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        } catch (BrokerException $e) {
-            return $this->view(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $e) {
             return $this->view(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }

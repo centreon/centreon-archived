@@ -21,27 +21,30 @@
 
 namespace Tests\Centreon\Application\Controller;
 
-use Centreon\Application\Controller\PlatformTopologyController;
-use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
-use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\MonitoringServer\MonitoringServerService;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
-use Centreon\Domain\PlatformTopology\PlatformTopologyService;
+use FOS\RestBundle\View\View;
+use PHPUnit\Framework\TestCase;
+use FOS\RestBundle\Context\Context;
+use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\View\View;
-use Psr\Container\ContainerInterface;
-use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\MonitoringServer\MonitoringServerService;
+use Centreon\Domain\PlatformTopology\PlatformTopologyService;
+use Centreon\Application\Controller\PlatformTopologyController;
+use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
+use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
+use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PlatformTopologyControllerTest extends TestCase
 {
@@ -54,13 +57,34 @@ class PlatformTopologyControllerTest extends TestCase
     protected $platformTopology;
 
     /**
+     * @var PlatformTopology
+     */
+    protected $centralPlatform;
+
+    /**
+     * @var PlatformTopology
+     */
+    protected $pollerPlatform;
+
+    /**
      * @var PlatformTopologyHeliosFormat
      */
-    protected $goodPlatformTopologyHeliosFormat;
+    protected $centralHeliosFormat;
+
+    /**
+     * @var PlatformTopologyHeliosFormat
+     */
+    protected $pollerHeliosFormat;
+
     /**
      * @var PlatformTopologyService&MockObject $platformTopologyService
      */
     protected $platformTopologyService;
+
+    /**
+     * @var BrokerService&MockObject $platformTopologyService
+     */
+    protected $brokerService;
 
     protected $container;
 
@@ -86,21 +110,35 @@ class PlatformTopologyControllerTest extends TestCase
             ->setType($goodJsonPlatformTopology['type'])
             ->setParentAddress($goodJsonPlatformTopology['parent_address']);
 
-        $platformTopology2 = (new PlatformTopology())
-            ->setParentId(1)
-            ->setName($goodJsonPlatformTopology['name'])
-            ->setRelation('normal')
-            ->setHostname($goodJsonPlatformTopology['hostname'])
-            ->setAddress($goodJsonPlatformTopology['address'])
-            ->setType($goodJsonPlatformTopology['type'])
-            ->setParentAddress($goodJsonPlatformTopology['parent_address']);
+        $this->centralPlatform = (new PlatformTopology())
+            ->setId(1)
+            ->setName('Central')
+            ->setHostname('localhost.localdomain')
+            ->setType(PlatformTopology::TYPE_CENTRAL)
+            ->setAddress('192.168.1.1')
+            ->setServerId(1)
+            ->setRelation(PlatformTopology::NORMAL_RELATION);
 
-        $this->goodPlatformTopologyHeliosFormat = new PlatformTopologyHeliosFormat($platformTopology2);
+        $this->pollerPlatform = (new PlatformTopology())
+            ->setId(2)
+            ->setName('Poller')
+            ->setHostname('poller.poller1')
+            ->setType(PlatformTopology::TYPE_POLLER)
+            ->setAddress('192.168.1.2')
+            ->setParentAddress('192.168.1.1')
+            ->setParentId(1)
+            ->setServerId(2)
+            ->setRelation(PlatformTopology::NORMAL_RELATION);
+
+        $this->centralHeliosFormat = new PlatformTopologyHeliosFormat($this->centralPlatform);
+        $this->pollerHeliosFormat = new PlatformTopologyHeliosFormat($this->pollerPlatform);
+
         $this->badJsonPlatformTopology = json_encode([
             'unknown_property' => 'unknown',
         ]);
 
         $this->platformTopologyService = $this->createMock(PlatformTopologyServiceInterface::class);
+        $this->brokerService = $this->createMock(BrokerServiceInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -222,5 +260,95 @@ class PlatformTopologyControllerTest extends TestCase
             $view,
             View::create(null, Response::HTTP_CREATED)
         );
+    }
+
+    public function testGetPlatformTopologyHelios(): void
+    {
+        $completeTopology = [$this->centralPlatform, $this->pollerPlatform];
+        $nodes[$this->centralHeliosFormat->getId()] = $this->centralHeliosFormat;
+        $nodes[$this->pollerHeliosFormat->getId()] = $this->pollerHeliosFormat;
+
+        $this->platformTopologyService->expects($this->any())
+            ->method('getPlatformCompleteTopology')
+            ->willReturn($completeTopology);
+
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
+        $platformTopologyController->setContainer($this->container);
+
+        $view = $platformTopologyController->getPlatformTopologyHelios();
+
+        $context = (new Context())->setGroups(PlatformTopologyController::SERIALIZER_GROUP_HELIOS);
+
+        $this->assertEquals(
+            $view,
+            View::create(
+                [
+                    'graph' => [
+                        'label' => 'centreon-topology',
+                        'metadata' => [
+                            'version' => '1.0.0'
+                        ],
+                        'nodes' => $nodes,
+                        'edges' => [
+                            [
+                                "source" => "2",
+                                "relation" => "normal",
+                                "target" => "1"
+                            ]
+                        ]
+                    ],
+                ],
+                Response::HTTP_OK
+            )->setContext($context)
+        );
+    }
+
+    public function testGetPlatformTopologyHeliosWithEmptyPlatform(): void
+    {
+        $this->platformTopologyService->expects($this->any())
+            ->method('getPlatformCompleteTopology')
+            ->will($this->throwException(new EntityNotFoundException('Platform Topology not found')));
+
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
+        $platformTopologyController->setContainer($this->container);
+
+        $view = $platformTopologyController->getPlatformTopologyHelios();
+        $this->assertEquals($view,View::create(['message' => 'Platform Topology not found'],Response::HTTP_NOT_FOUND));
+    }
+
+    public function testGetPlatformTopologyHeliosBadRequest(): void
+    {
+        $badPollerPlatform = (new PlatformTopology())
+            ->setId(3)
+            ->setName('Poller')
+            ->setHostname('poller.poller1')
+            ->setType(PlatformTopology::TYPE_POLLER)
+            ->setAddress('192.168.1.2')
+            ->setParentAddress('192.168.1.1')
+            ->setParentId(1)
+            ->setServerId(null)
+            ->setRelation(PlatformTopology::NORMAL_RELATION);
+
+        $this->platformTopologyService->expects($this->any())
+            ->method('getPlatformCompleteTopology')
+            ->will($this->throwException(new PlatformTopologyException(
+                sprintf(
+                    _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard"),
+                    $badPollerPlatform->getType(),
+                    $badPollerPlatform->getName(),
+                    $badPollerPlatform->getAddress()
+                )
+            )));
+            $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
+            $platformTopologyController->setContainer($this->container);
+
+            $view = $platformTopologyController->getPlatformTopologyHelios();
+            $this->assertEquals($view, View::create(
+                [
+                    'message' => "the 'poller': 'Poller'@'192.168.1.2' isn't fully registered," .
+                    " please finish installation using wizard"
+                ],
+                Response::HTTP_BAD_REQUEST
+            ));
     }
 }

@@ -61,7 +61,9 @@ class PlatformTopologyHeliosFormat
         $this->setId((string) $platformTopology->getId());
         $this->setType($platformTopology->getType());
         $this->setLabel($platformTopology->getName());
-        $this->setRelation($platformTopology->getRelation());
+        if ($platformTopology->getRelation() !== null) {
+            $this->setRelation($platformTopology->getRelation());
+        }
 
         $metadata = [];
         if ($platformTopology->getServerId() !== null) {
