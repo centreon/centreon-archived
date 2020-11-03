@@ -133,6 +133,14 @@ function updateContact($contact_id = null)
         !empty($ret['contact_pager']) ? $ret['contact_pager'] : '',
         CentreonUtils::ESCAPE_ILLEGAL_CHARS
     );
+    $ret['contact_autologin_key'] = CentreonUtils::escapeSecure(
+        !empty($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : '',
+        CentreonUtils::ESCAPE_ILLEGAL_CHARS
+    );
+    $ret['contact_lang'] = CentreonUtils::escapeSecure(
+        !empty($ret['contact_lang']) ? $ret['contact_lang'] : '',
+        CentreonUtils::ESCAPE_ILLEGAL_CHARS
+    );
 
     $rq = 'UPDATE contact SET ' .
           'contact_name = :contactName, ' .
