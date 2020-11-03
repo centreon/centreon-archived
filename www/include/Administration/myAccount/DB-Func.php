@@ -137,7 +137,7 @@ function updateContact($contact_id = null)
           'contact_js_effects = :contactJsEffects, ' .
           'contact_autologin_key = :contactAutologinKey';
     $password_encrypted = null;
-    if (isset($ret['contact_passwd']) && $ret['contact_passwd']) {
+    if (!empty($ret['contact_passwd'])) {
         $rq .= ', contact_passwd = :contactPasswd';
         if ($encryptType == 2) {
             $password_encrypted = sha1($ret['contact_passwd']);
