@@ -305,7 +305,7 @@ Feature:
             """
         Then the response code should be "201"
 
-    Scenario: Get a Platform Topology for Helios
+    Scenario: Get a Platform Topology
         Given I am logged in
 
         # Create the Central into platform topology table
@@ -321,7 +321,7 @@ Feature:
 
         # Actually we can't have server_id because the register is not fully complete (wizard not executed)
         # So we can't add pollers or remote to test edges.
-        When I send a GET request to "/beta/platform/topology/helios"
+        When I send a GET request to "/beta/platform/topology"
         Then the response code should be "200"
         And the JSON should be equal to:
             """

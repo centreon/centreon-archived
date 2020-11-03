@@ -2443,12 +2443,12 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /platform/topology/helios:
+  /platform/topology/:
     get:
       tags:
         - Topology
       summary: "Get a platform topology"
-      description: "Get a platform topology formatted for Helios agent"
+      description: "Get a platform topology in Json Graph Format"
       responses:
         '200':
           description: "OK"

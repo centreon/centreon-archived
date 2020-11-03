@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
+use Centreon\Application\PlatformTopology\PlatformTopologyJsonGraph;
 use Centreon\Domain\Broker\BrokerException;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
@@ -49,7 +49,7 @@ class PlatformTopologyController extends AbstractController
      */
     private $platformTopologyService;
 
-    public const SERIALIZER_GROUP_HELIOS = ['platform_topology_helios'];
+    public const SERIALIZER_GROUP_JSON_GRAPH = ['platform_topology_json_graph'];
 
     /**
      * PlatformTopologyController constructor
@@ -137,11 +137,11 @@ class PlatformTopologyController extends AbstractController
     }
 
     /**
-     * Get the Topology of a platform with an adapted Helios Format.
+     * Get the Topology of a platform with an adapted Json Graph Format.
      *
      * @return View
      */
-    public function getPlatformTopologyHelios(): View
+    public function getPlatformTopologyJsonGraph(): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
@@ -151,15 +151,15 @@ class PlatformTopologyController extends AbstractController
 
             $edges =  [];
             $nodes = [];
-            //Format the PlatformTopology into a Json Graph Format, usable by Helios
+            //Format the PlatformTopology into a Json Graph Format
             foreach ($platformCompleteTopology as $topology) {
-                $topologyHelios = new PlatformTopologyHeliosFormat($topology);
-                if (!empty($topologyHelios->getRelation())) {
-                    $edges[] = $topologyHelios->getRelation();
+                $topologyJsonGraph = new PlatformTopologyJsonGraph($topology);
+                if (!empty($topologyJsonGraph->getRelation())) {
+                    $edges[] = $topologyJsonGraph->getRelation();
                 }
-                $nodes[$topologyHelios->getId()] = $topologyHelios;
+                $nodes[$topologyJsonGraph->getId()] = $topologyJsonGraph;
             }
-            $context = (new Context())->setGroups(self::SERIALIZER_GROUP_HELIOS);
+            $context = (new Context())->setGroups(self::SERIALIZER_GROUP_JSON_GRAPH);
 
             return $this->view(
                 [

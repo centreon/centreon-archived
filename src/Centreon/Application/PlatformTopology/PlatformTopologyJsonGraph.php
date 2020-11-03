@@ -26,10 +26,10 @@ namespace Centreon\Application\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 
 /**
- * Format PlatformTopology to fit the JSON Graph Schema specification, used by Helios
+ * Format PlatformTopology to fit the JSON Graph Schema specification
  * @link https://github.com/jsongraph/json-graph-specification
  */
-class PlatformTopologyHeliosFormat
+class PlatformTopologyJsonGraph
 {
     /**
      * @var string|null Stringified PlatformTopologyId

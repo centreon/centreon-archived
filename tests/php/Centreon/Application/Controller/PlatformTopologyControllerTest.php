@@ -35,7 +35,7 @@ use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Application\PlatformTopology\PlatformTopologyHeliosFormat;
+use Centreon\Application\PlatformTopology\PlatformTopologyJsonGraph;
 use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -67,14 +67,14 @@ class PlatformTopologyControllerTest extends TestCase
     protected $pollerPlatform;
 
     /**
-     * @var PlatformTopologyHeliosFormat
+     * @var PlatformTopologyJsonGraph
      */
-    protected $centralHeliosFormat;
+    protected $centralJsonGraphFormat;
 
     /**
-     * @var PlatformTopologyHeliosFormat
+     * @var PlatformTopologyJsonGraph
      */
-    protected $pollerHeliosFormat;
+    protected $pollerJsonGraphFormat;
 
     /**
      * @var PlatformTopologyService&MockObject $platformTopologyService
@@ -130,8 +130,8 @@ class PlatformTopologyControllerTest extends TestCase
             ->setServerId(2)
             ->setRelation(PlatformTopology::NORMAL_RELATION);
 
-        $this->centralHeliosFormat = new PlatformTopologyHeliosFormat($this->centralPlatform);
-        $this->pollerHeliosFormat = new PlatformTopologyHeliosFormat($this->pollerPlatform);
+        $this->centralJsonGraphFormat = new PlatformTopologyJsonGraph($this->centralPlatform);
+        $this->pollerJsonGraphFormat = new PlatformTopologyJsonGraph($this->pollerPlatform);
 
         $this->badJsonPlatformTopology = json_encode([
             'unknown_property' => 'unknown',
@@ -263,11 +263,11 @@ class PlatformTopologyControllerTest extends TestCase
         );
     }
 
-    public function testGetPlatformTopologyHelios(): void
+    public function testGetPlatformTopologyJsonGraph(): void
     {
         $completeTopology = [$this->centralPlatform, $this->pollerPlatform];
-        $nodes[$this->centralHeliosFormat->getId()] = $this->centralHeliosFormat;
-        $nodes[$this->pollerHeliosFormat->getId()] = $this->pollerHeliosFormat;
+        $nodes[$this->centralJsonGraphFormat->getId()] = $this->centralJsonGraphFormat;
+        $nodes[$this->pollerJsonGraphFormat->getId()] = $this->pollerJsonGraphFormat;
 
         $this->platformTopologyService->expects($this->any())
             ->method('getPlatformCompleteTopology')
@@ -276,9 +276,9 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
-        $view = $platformTopologyController->getPlatformTopologyHelios();
+        $view = $platformTopologyController->getPlatformTopologyJsonGraph();
 
-        $context = (new Context())->setGroups(PlatformTopologyController::SERIALIZER_GROUP_HELIOS);
+        $context = (new Context())->setGroups(PlatformTopologyController::SERIALIZER_GROUP_JSON_GRAPH);
 
         $this->assertEquals(
             $view,
@@ -304,7 +304,7 @@ class PlatformTopologyControllerTest extends TestCase
         );
     }
 
-    public function testGetPlatformTopologyHeliosWithEmptyPlatform(): void
+    public function testGetPlatformTopologyJsonGraphWithEmptyPlatform(): void
     {
         $this->platformTopologyService->expects($this->any())
             ->method('getPlatformCompleteTopology')
@@ -313,14 +313,14 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
-        $view = $platformTopologyController->getPlatformTopologyHelios();
+        $view = $platformTopologyController->getPlatformTopologyJsonGraph();
         $this->assertEquals(
             $view,
             View::create(['message' => 'Platform Topology not found'], Response::HTTP_NOT_FOUND)
         );
     }
 
-    public function testGetPlatformTopologyHeliosBadRequest(): void
+    public function testGetPlatformTopologyJsonGraphBadRequest(): void
     {
         $badPollerPlatform = (new PlatformTopology())
             ->setId(3)
@@ -346,7 +346,7 @@ class PlatformTopologyControllerTest extends TestCase
             $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
             $platformTopologyController->setContainer($this->container);
 
-            $view = $platformTopologyController->getPlatformTopologyHelios();
+            $view = $platformTopologyController->getPlatformTopologyJsonGraph();
             $this->assertEquals($view, View::create(
                 [
                     'message' => "the 'poller': 'Poller'@'192.168.1.2' isn't fully registered," .
