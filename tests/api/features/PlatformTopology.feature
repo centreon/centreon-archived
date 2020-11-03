@@ -331,10 +331,8 @@ Feature:
                     "metadata": {
                         "version": "1.0.0"
                     }
-                },
-                "nodes": [
-                    {
-                        "id": "1",
+                    "nodes": [
+                    "1": {
                         "type": "central",
                         "label": "Central",
                         "metadata": {
@@ -343,5 +341,6 @@ Feature:
                     }
                 ],
                 "edges": []
+                },
             }
             """
