@@ -452,10 +452,10 @@ class PlatformTopologyServiceTest extends TestCase
             $this->expectExceptionMessage(
                 "the 'poller': 'poller1'@'1.1.1.2' isn't fully registered, please finish installation using wizard"
             );
+
             try {
                 $platformTopologyService->getPlatformCompleteTopology();
             } finally {
-
             }
         }
     }

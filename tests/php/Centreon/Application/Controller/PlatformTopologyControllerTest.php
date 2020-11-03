@@ -314,7 +314,10 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController->setContainer($this->container);
 
         $view = $platformTopologyController->getPlatformTopologyHelios();
-        $this->assertEquals($view,View::create(['message' => 'Platform Topology not found'],Response::HTTP_NOT_FOUND));
+        $this->assertEquals(
+            $view,
+            View::create(['message' => 'Platform Topology not found'], Response::HTTP_NOT_FOUND)
+        );
     }
 
     public function testGetPlatformTopologyHeliosBadRequest(): void
