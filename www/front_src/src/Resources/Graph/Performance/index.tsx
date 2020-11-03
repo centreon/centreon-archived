@@ -108,7 +108,15 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
 
 const margin = { top: 10, right: 30, bottom: 30, left: 40 };
 
-const Graphy = ({ width, height, timeSeries, lineData }) => {
+interface Props {
+  width: number;
+  height: number;
+  timeSeries: Array<TimeValue>;
+  base: number;
+  lines: Array<LineModel>;
+}
+
+const Graphy = ({ width, height, timeSeries, lines }) => {
   const data = timeSeries;
 
   const {
@@ -136,7 +144,7 @@ const Graphy = ({ width, height, timeSeries, lineData }) => {
   );
 
   const getUnits = (): Array<string> => {
-    return pipe(map(prop('unit')), uniq)(lineData);
+    return pipe(map(prop('unit')), uniq)(lines);
   };
 
   const multipleYAxes = getUnits().length < 3;
@@ -413,7 +421,8 @@ const PerformanceGraph = ({
             width={width}
             height={height}
             timeSeries={timeSeries}
-            lineData={lineData}
+            lines={displayedLines}
+            base={base}
           />
         )}
       </ParentSize>
