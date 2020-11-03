@@ -332,15 +332,15 @@ Feature:
                         "version": "1.0.0"
                     }
                     "nodes": [
-                    "1": {
-                        "type": "central",
-                        "label": "Central",
-                        "metadata": {
-                            "centreon-id": "1"
+                        "1": {
+                            "type": "central",
+                            "label": "Central",
+                            "metadata": {
+                                "centreon-id": "1"
+                            }
                         }
-                    }
-                ],
-                "edges": []
-                },
+                    ],
+                    "edges": []
+                }
             }
             """
