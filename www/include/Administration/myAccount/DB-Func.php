@@ -125,7 +125,6 @@ function updateContact($contact_id = null)
     // remove illegal chars in data sent by the user
     $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
     $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
-
     $ret['contact_email'] = !empty($ret['contact_email']) ?
         CentreonUtils::escapeSecure($ret['contact_email'], CentreonUtils::ESCAPE_ILLEGAL_CHARS) : '';
     $ret['contact_pager'] = !empty($ret['contact_pager']) ?
