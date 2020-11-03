@@ -330,7 +330,7 @@ Feature:
                     "label": "centreon-topology",
                     "metadata": {
                         "version": "1.0.0"
-                    }
+                    },
                     "nodes": [
                         "1": {
                             "type": "central",
