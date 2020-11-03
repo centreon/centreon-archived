@@ -48,8 +48,10 @@ import {
   keys,
   equals,
   uniq,
+  apply,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { max, extent, bisector } from 'd3-array';
 
 import { makeStyles, Typography, Theme, fade } from '@material-ui/core';
 
@@ -61,6 +63,8 @@ import {
   dateTimeFormat,
 } from '@centreon/ui';
 
+import { useTheme } from '@material-ui/styles';
+import { reduce, min } from 'lodash';
 import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
@@ -108,7 +112,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
 
 const margin = { top: 10, right: 30, bottom: 30, left: 40 };
 
-interface Props {
+interface Proppies {
   width: number;
   height: number;
   timeSeries: Array<TimeValue>;
@@ -116,9 +120,12 @@ interface Props {
   lines: Array<LineModel>;
 }
 
-const Graphy = ({ width, height, timeSeries, lines }) => {
-  const data = timeSeries;
-
+const Graphy = ({
+  width,
+  height,
+  timeSeries,
+  lines,
+}: Proppies): JSX.Element => {
   const {
     tooltipData,
     tooltipLeft,
@@ -128,20 +135,13 @@ const Graphy = ({ width, height, timeSeries, lines }) => {
     hideTooltip,
   } = useTooltip();
 
-  const timeSeriesKeys = keys<string>(timeSeries).filter(equals('timeTick'));
+  const getKeysForSeries = (series) =>
+    pipe(keys, reject(equals('timeTick')))(series);
 
-  // const getTimeSeriesValue = (key: string): number => {
-  //   return timeSeries
-  // }
-
-  const { containerRef, TooltipInPortal, containerBounds } = useTooltipInPortal(
-    {
-      // use TooltipWithBounds
-      detectBounds: true,
-      // when tooltip containers are scrolled, this will correctly update the Tooltip position
-      scroll: true,
-    },
-  );
+  const { containerRef, containerBounds } = useTooltipInPortal({
+    detectBounds: true,
+    scroll: true,
+  });
 
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
@@ -149,33 +149,38 @@ const Graphy = ({ width, height, timeSeries, lines }) => {
 
   const multipleYAxes = getUnits().length < 3;
 
-  const date = (d) => new Date(d.timeTick).valueOf();
+  const getDateForSeries = (series) => {
+    return new Date(series.timeTick).valueOf();
+  };
 
-  const pl = (d) => d.pl;
-  const rta = (d) => d.rta;
-  const rtmax = (d) => d.rtmax;
-  const rtmin = (d) => d.rtmin;
+  const getValuesForSeries = (series): Array<number> => {
+    const getValue = (key): number => prop(key, series);
+
+    return pipe(getKeysForSeries, map(getValue), reject(isNil))(series);
+  };
+
+  const getMin = (values) => {
+    return Math.min(...values);
+  };
+
+  const getMax = (values) => {
+    return Math.max(...values);
+  };
 
   const yMax = height - margin.top - margin.bottom;
   const xMax = width - margin.left - margin.right;
 
-  // scales
   const xScale = scaleTime<number>({
     range: [0, xMax],
-    domain: [Math.min(...data.map(date)), Math.max(...data.map(date))],
+    domain: [
+      getMin(timeSeries.map(getDateForSeries)),
+      getMax(timeSeries.map(getDateForSeries)),
+    ],
   });
   const yScale = scaleLinear<number>({
     domain: [
-      Math.min(
-        ...timeSeries.map((d) =>
-          Math.min(...[pl(d), rta(d), rtmax(d), rtmin(d)]),
-        ),
-      ),
-      Math.max(
-        ...timeSeries.map((d) =>
-          Math.max(...[pl(d), rta(d), rtmax(d), rtmin(d)]),
-        ),
-      ),
+      getMin(timeSeries.map((series) => getMin(getValuesForSeries(series)))),
+      getMax(timeSeries.map((series) => getMax(getValuesForSeries(series)))),
     ],
     nice: true,
     range: [yMax, 0],
@@ -189,11 +194,50 @@ const Graphy = ({ width, height, timeSeries, lines }) => {
     return formatMetricValue({ value, unit, base }) as string;
   };
 
-  const background = '#f3f3f3';
+  const bisectDate = bisector((d) => {
+    return d;
+  }).left;
 
   const handleMouseOver = React.useCallback(
     (event) => {
       const { x, y } = localPoint(event) || { x: 0, y: 0 };
+
+      const xDomain = xScale.invert(x - margin.left);
+
+      const times = timeSeries
+        .map(prop('timeTick'))
+        .map((tick) => new Date(tick));
+
+      const index = bisectDate(times, xDomain, 1);
+
+      const lesSeries = timeSeries[index];
+
+      console.log(lesSeries);
+
+      // const dataPoints = timeSeries.map((series) => {
+      //   console.log(series);
+
+      //   const index = bisectDate(series, xDomain, 1);
+
+      //   console.log(index);
+
+      //   // console.log(index);
+
+      //   const dLeft = series[index - 1];
+      //   const dRight = series[index];
+
+      //   // const isRightCloser = Boolean(
+      //   //   xDomain - new Date(dLeft.timeTick) >
+      //   //     new Date(dRight.timeTick) - xDomain,
+      //   // );
+
+      //   return dLeft;
+      // });
+
+      // console.log(dataPoints);
+      // const x0 = xScale.invert(x);
+
+      // const index = bisectDate();
 
       showTooltip({
         tooltipLeft: x,
@@ -205,8 +249,8 @@ const Graphy = ({ width, height, timeSeries, lines }) => {
   );
   const tooltipStyles = {
     ...defaultStyles,
-    backgroundColor: 'rgba(53,71,125,0.8)',
-    color: 'white',
+    opacity: 0.7,
+    // backgroundColor: fade(theme.palette.common.white, 0.5),
     padding: 12,
   };
 
@@ -234,7 +278,7 @@ const Graphy = ({ width, height, timeSeries, lines }) => {
         onMouseLeave={hideTooltip}
       >
         <Group left={margin.left} top={margin.top}>
-          <AxisBottom top={yMax} scale={xScale} tickComponent={Typography} />
+          <AxisBottom top={yMax} scale={xScale} />
           <AxisLeft
             scale={yScale}
             tickFormat={formatTick({ unit: '', base: 1000 })}
@@ -277,7 +321,7 @@ const Graphy = ({ width, height, timeSeries, lines }) => {
                 strokeWidth: highlight ? 2 : 1,
                 opacity: getOpacity(),
                 y: (series) => yScale(prop(metric, series) ?? 0),
-                x: (series) => xScale(date(series) ?? 0),
+                x: (series) => xScale(getDateForSeries(series) ?? 0),
                 curve: curveBasis,
                 yScale,
               };
