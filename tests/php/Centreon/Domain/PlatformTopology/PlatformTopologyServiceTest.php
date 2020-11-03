@@ -21,28 +21,29 @@
 
 namespace Tests\Centreon\Domain\PlatformTopology;
 
-use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
-use Centreon\Domain\Engine\EngineConfiguration;
+use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Broker\Broker;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\EngineException;
+use PHPUnit\Framework\MockObject\MockObject;
+use Centreon\Domain\Engine\EngineConfiguration;
+use Centreon\Domain\Repository\RepositoryException;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
+use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
+use Centreon\Domain\PlatformTopology\PlatformTopologyService;
+use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
-use Centreon\Domain\PlatformInformation\PlatformInformationException;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Domain\PlatformTopology\PlatformTopologyService;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
-use Centreon\Domain\Repository\RepositoryException;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
 
 class PlatformTopologyServiceTest extends TestCase
 {
@@ -453,11 +454,68 @@ class PlatformTopologyServiceTest extends TestCase
             $this->expectExceptionMessage(
                 "the 'poller': 'poller1'@'1.1.1.2' isn't fully registered, please finish installation using wizard"
             );
-
-            try {
-                $platformTopologyService->getPlatformCompleteTopology();
-            } finally {
-            }
+            $platformTopologyService->getPlatformCompleteTopology();
         }
+    }
+
+    public function testGetPlatformCompleteTopologyRelationSetting(): void
+    {
+        $brokerPeerRetention = (new Broker())
+            ->setIsPeerRetentionMode(true);
+
+        $this->registeredParent
+            ->setServerId(1);
+
+        $this->platformTopology
+            ->setId(2)
+            ->setParentId(1)
+            ->setServerId(2);
+
+        $this->platformTopologyRepository
+            ->expects($this->exactly(2))
+            ->method('getPlatformCompleteTopology')
+            ->willReturn([$this->registeredParent, $this->platformTopology]);
+
+        $this->platformTopologyRepository
+            ->expects($this->exactly(2))
+            ->method('findPlatformAddressById')
+            ->willReturn('1.1.1.1');
+
+        $this->brokerService
+            ->expects($this->at(3))
+            ->method('findConfigurationByMonitoringServerAndConfigKey')
+            ->willReturn($brokerPeerRetention);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService,
+            $this->brokerService,
+            $this->platformTopologyRegisterRepository
+        );
+
+        /**
+         * Normal Relation
+         */
+        $completeTopology = $platformTopologyService->getPlatformCompleteTopology();
+
+        $centralRelation = $completeTopology[0]->getRelation();
+        $pollerRelation = $completeTopology[1]->getRelation();
+
+        $this->assertEquals(null, $centralRelation);
+        $this->assertEquals('normal', $pollerRelation['relation']);
+
+        /**
+         * One Peer Retention Relation
+         */
+        $completeTopology = $platformTopologyService->getPlatformCompleteTopology();
+
+        $centralRelation = $completeTopology[0]->getRelation();
+        $pollerRelation = $completeTopology[1]->getRelation();
+
+        $this->assertEquals(null, $centralRelation);
+        $this->assertEquals('peer_retention', $pollerRelation['relation']);
     }
 }
