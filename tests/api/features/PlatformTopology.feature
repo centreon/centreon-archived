@@ -331,7 +331,7 @@ Feature:
                     "metadata": {
                         "version": "1.0.0"
                     },
-                    "nodes": [
+                    "nodes": {
                         "1": {
                             "type": "central",
                             "label": "Central",
@@ -339,7 +339,7 @@ Feature:
                                 "centreon-id": "1"
                             }
                         }
-                    ],
+                    },
                     "edges": []
                 }
             }
