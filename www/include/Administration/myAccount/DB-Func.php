@@ -139,9 +139,7 @@ function updateContact($contact_id = null)
     $password_encrypted = null;
     if (isset($ret['contact_passwd']) && $ret['contact_passwd']) {
         $rq .= ', contact_passwd = :contactPasswd';
-        if ($encryptType == 1) {
-            $password_encrypted = md5($ret['contact_passwd']);
-        } elseif ($encryptType == 2) {
+        if ($encryptType == 2) {
             $password_encrypted = sha1($ret['contact_passwd']);
         } else {
             $password_encrypted = md5($ret['contact_passwd']);
