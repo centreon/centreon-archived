@@ -125,22 +125,15 @@ function updateContact($contact_id = null)
     // remove illegal chars in data sent by the user
     $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
     $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
-    $ret['contact_email'] = CentreonUtils::escapeSecure(
-        !empty($ret['contact_email']) ? $ret['contact_email'] : '',
-        CentreonUtils::ESCAPE_ILLEGAL_CHARS
-    );
-    $ret['contact_pager'] = CentreonUtils::escapeSecure(
-        !empty($ret['contact_pager']) ? $ret['contact_pager'] : '',
-        CentreonUtils::ESCAPE_ILLEGAL_CHARS
-    );
-    $ret['contact_autologin_key'] = CentreonUtils::escapeSecure(
-        !empty($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : '',
-        CentreonUtils::ESCAPE_ILLEGAL_CHARS
-    );
-    $ret['contact_lang'] = CentreonUtils::escapeSecure(
-        !empty($ret['contact_lang']) ? $ret['contact_lang'] : '',
-        CentreonUtils::ESCAPE_ILLEGAL_CHARS
-    );
+
+    $ret['contact_email'] = !empty($ret['contact_email']) ?
+        CentreonUtils::escapeSecure($ret['contact_email'], CentreonUtils::ESCAPE_ILLEGAL_CHARS) : '';
+    $ret['contact_pager'] = !empty($ret['contact_pager']) ?
+        CentreonUtils::escapeSecure($ret['contact_pager'], CentreonUtils::ESCAPE_ILLEGAL_CHARS) : '';
+    $ret['contact_autologin_key'] = !empty($ret['contact_autologin_key']) ?
+        CentreonUtils::escapeSecure($ret['contact_autologin_key'], CentreonUtils::ESCAPE_ILLEGAL_CHARS) : '';
+    $ret['contact_lang'] = !empty($ret['contact_lang']) ?
+        CentreonUtils::escapeSecure($ret['contact_lang'], CentreonUtils::ESCAPE_ILLEGAL_CHARS) : '';
 
     $rq = 'UPDATE contact SET ' .
           'contact_name = :contactName, ' .
