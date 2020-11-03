@@ -331,7 +331,7 @@ class PlatformTopologyServiceTest extends TestCase
         $this->assertIsArray($platformTopologyService->getPlatformCompleteTopology());
     }
 
-    public function testGetPlatformCompleteTopologyWithNoParentId(): void
+    public function testGetPlatformCompleteTopologyWithoutParentId(): void
     {
         $this->platformTopology
             ->setServerId(2);
@@ -372,7 +372,7 @@ class PlatformTopologyServiceTest extends TestCase
         $platformTopologyService->getPlatformCompleteTopology();
     }
 
-    public function testGetPlatformCompleteTopologyWithNoParentAddress(): void
+    public function testGetPlatformCompleteTopologyWithoutParentAddress(): void
     {
         $this->platformTopology
             ->setParentId(3);
@@ -406,7 +406,7 @@ class PlatformTopologyServiceTest extends TestCase
         $platformTopologyService->getPlatformCompleteTopology();
     }
 
-    public function testGetPlatformCompleteTopologyWithNoServerId(): void
+    public function testGetPlatformCompleteTopologyWithoutServerId(): void
     {
         $this->registeredParent
             ->setServerId(null);
@@ -445,6 +445,7 @@ class PlatformTopologyServiceTest extends TestCase
         $this->expectExceptionMessage(
             "the 'central': 'Central'@'1.1.1.1' isn't fully registered, please finish installation using wizard"
         );
+
         try {
             $platformTopologyService->getPlatformCompleteTopology();
         } finally {
