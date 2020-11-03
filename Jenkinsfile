@@ -120,7 +120,7 @@ try {
     }
   }
 
-  stage('Package') {
+  /* stage('Package') {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
@@ -158,7 +158,7 @@ try {
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
     }
-  }
+  } */
 
   /* stage('API integration tests') {
     def parallelSteps = [:]
