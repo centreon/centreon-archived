@@ -8,12 +8,10 @@
 
 import React, { Component, ReactNode } from 'react';
 
-import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { pipe } from 'ramda';
 
 import { ThemeProvider } from '@centreon/ui';
 
@@ -197,8 +195,6 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-export default pipe(
-  hot,
-  connect(null, mapDispatchToProps),
-  withStyles(styles),
-)(App);
+export default connect(null, mapDispatchToProps)(withStyles(styles)(App));
+
+// export default pipe(withStyles(styles), connect(null, mapDispatchToProps))(App);

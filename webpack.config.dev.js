@@ -1,3 +1,4 @@
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { merge } = require('webpack-merge');
 const path = require('path');
 const os = require('os');
@@ -44,4 +45,5 @@ module.exports = merge(baseConfig, devConfig, {
     headers: { 'Access-Control-Allow-Origin': '*' },
     publicPath,
   },
+  plugins: [new ReactRefreshWebpackPlugin()],
 });
