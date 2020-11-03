@@ -196,5 +196,3 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
 };
 
 export default connect(null, mapDispatchToProps)(withStyles(styles)(App));
-
-// export default pipe(withStyles(styles), connect(null, mapDispatchToProps))(App);
