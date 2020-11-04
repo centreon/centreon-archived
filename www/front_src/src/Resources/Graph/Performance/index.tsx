@@ -63,8 +63,7 @@ import {
   dateTimeFormat,
 } from '@centreon/ui';
 
-import { useTheme } from '@material-ui/styles';
-import { reduce, min } from 'lodash';
+import { grey } from '@material-ui/core/colors';
 import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
@@ -124,6 +123,7 @@ const Graphy = ({
   width,
   height,
   timeSeries,
+  base,
   lines,
 }: Proppies): JSX.Element => {
   const {
@@ -153,7 +153,7 @@ const Graphy = ({
     return new Date(series.timeTick).valueOf();
   };
 
-  const getValuesForSeries = (series): Array<number> => {
+  const getMetricValuesForSeries = (series): Array<number> => {
     const getValue = (key): number => prop(key, series);
 
     return pipe(getKeysForSeries, map(getValue), reject(isNil))(series);
@@ -179,14 +179,18 @@ const Graphy = ({
   });
   const yScale = scaleLinear<number>({
     domain: [
-      getMin(timeSeries.map((series) => getMin(getValuesForSeries(series)))),
-      getMax(timeSeries.map((series) => getMax(getValuesForSeries(series)))),
+      getMin(
+        timeSeries.map((series) => getMin(getMetricValuesForSeries(series))),
+      ),
+      getMax(
+        timeSeries.map((series) => getMax(getMetricValuesForSeries(series))),
+      ),
     ],
     nice: true,
     range: [yMax, 0],
   });
 
-  const formatTick = ({ unit, base }) => (value): string => {
+  const formatTick = ({ unit }) => (value): string => {
     if (isNil(value)) {
       return '';
     }
@@ -197,6 +201,49 @@ const Graphy = ({
   const bisectDate = bisector((d) => {
     return d;
   }).left;
+
+  const getTooltipData = (index: number): JSX.Element => {
+    const series = timeSeries[index];
+
+    const metrics = pipe(keys, reject(equals('timeTick')))(series);
+
+    const nonEmptyMetrics = metrics.filter((metric) => {
+      return !isNil(series[metric]);
+    });
+
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {nonEmptyMetrics.map((metric) => {
+          const value = series[metric];
+
+          const line = find(propEq('metric', metric), lines);
+
+          const color = line?.color;
+          const name = line?.name;
+          const unit = line?.unit;
+
+          const formattedValue = formatMetricValue({ value, unit, base });
+
+          return (
+            <Typography
+              key={metric}
+              variant="caption"
+              style={{
+                color,
+              }}
+            >
+              {`${name} ${formattedValue}`}
+            </Typography>
+          );
+        })}
+      </div>
+    );
+  };
 
   const handleMouseOver = React.useCallback(
     (event) => {
@@ -210,47 +257,17 @@ const Graphy = ({
 
       const index = bisectDate(times, xDomain, 1);
 
-      const lesSeries = timeSeries[index];
-
-      console.log(lesSeries);
-
-      // const dataPoints = timeSeries.map((series) => {
-      //   console.log(series);
-
-      //   const index = bisectDate(series, xDomain, 1);
-
-      //   console.log(index);
-
-      //   // console.log(index);
-
-      //   const dLeft = series[index - 1];
-      //   const dRight = series[index];
-
-      //   // const isRightCloser = Boolean(
-      //   //   xDomain - new Date(dLeft.timeTick) >
-      //   //     new Date(dRight.timeTick) - xDomain,
-      //   // );
-
-      //   return dLeft;
-      // });
-
-      // console.log(dataPoints);
-      // const x0 = xScale.invert(x);
-
-      // const index = bisectDate();
-
       showTooltip({
         tooltipLeft: x,
         tooltipTop: y,
-        tooltipData: 'Plop',
+        tooltipData: getTooltipData(index),
       });
     },
     [showTooltip, containerBounds],
   );
   const tooltipStyles = {
     ...defaultStyles,
-    opacity: 0.7,
-    // backgroundColor: fade(theme.palette.common.white, 0.5),
+    opacity: 0.8,
     padding: 12,
   };
 
@@ -279,24 +296,21 @@ const Graphy = ({
       >
         <Group left={margin.left} top={margin.top}>
           <AxisBottom top={yMax} scale={xScale} />
-          <AxisLeft
-            scale={yScale}
-            tickFormat={formatTick({ unit: '', base: 1000 })}
-          />
+          <AxisLeft scale={yScale} tickFormat={formatTick({ unit: '' })} />
           <GridRows
             scale={yScale}
             width={xMax}
             height={yMax}
-            stroke="#e0e0e0"
+            stroke={grey[100]}
           />
           <GridColumns
             scale={xScale}
             width={xMax}
             height={yMax}
-            stroke="#e0e0e0"
+            stroke={grey[100]}
           />
 
-          {lineData.map(
+          {lines.map(
             ({
               metric,
               areaColor,
@@ -320,8 +334,8 @@ const Graphy = ({
                 stroke: lineColor,
                 strokeWidth: highlight ? 2 : 1,
                 opacity: getOpacity(),
-                y: (series) => yScale(prop(metric, series) ?? 0),
-                x: (series) => xScale(getDateForSeries(series) ?? 0),
+                y: (series) => yScale(prop(metric, series)),
+                x: (series) => xScale(getDateForSeries(series)),
                 curve: curveBasis,
                 yScale,
               };
@@ -343,6 +357,26 @@ const Graphy = ({
               return <LinePath key={metric} {...props} />;
             },
           )}
+          <Bar
+            x={margin.left}
+            y={margin.top}
+            width={innerWidth}
+            height={innerHeight}
+            fill="transparent"
+            rx={14}
+            // onTouchStart={handleTooltip}
+            // onTouchMove={handleTooltip}
+            // onMouseMove={handleTooltip}
+            onMouseLeave={() => hideTooltip()}
+          />
+          <Line
+            from={{ x: tooltipLeft - margin.left, y: 0 }}
+            to={{ x: tooltipLeft - margin.left, y: 10 }}
+            stroke={grey[300]}
+            strokeWidth={2}
+            pointerEvents="none"
+            strokeDasharray="5,2"
+          />
         </Group>
       </svg>
     </div>
