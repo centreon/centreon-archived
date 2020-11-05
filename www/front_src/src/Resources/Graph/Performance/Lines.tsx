@@ -1,86 +1,63 @@
 import * as React from 'react';
 
-import { Area, Line, YAxis } from 'recharts';
-import { pipe, uniq, prop, map, isNil } from 'ramda';
+import { prop } from 'ramda';
+import { AreaClosed, LinePath, curveBasis } from '@visx/visx';
 
 import { fade } from '@material-ui/core';
+import { Line, TimeValue } from './models';
+import { getTime } from './timeSeries';
 
-import { fontFamily } from '.';
-import formatMetricValue from './formatMetricValue';
+interface Props {
+  lines: Array<Line>;
+  timeSeries: Array<TimeValue>;
+  yScale;
+  xScale;
+}
 
-const formatTick = ({ unit, base }) => (value): string => {
-  if (isNil(value)) {
-    return '';
-  }
-
-  return formatMetricValue({ value, unit, base }) as string;
-};
-
-const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
-  const getUnits = (): Array<string> => {
-    return pipe(map(prop('unit')), uniq)(lines);
-  };
-
-  const multipleYAxes = getUnits().length < 3;
-
-  const getYAxes = (): Array<JSX.Element> => {
-    const props = { tick: { fontSize: 12, fontFamily } };
-
-    if (multipleYAxes) {
-      return getUnits().map((unit, index) => {
-        return (
-          <YAxis
-            yAxisId={unit}
-            key={unit}
-            orientation={index === 0 ? 'left' : 'right'}
-            tickFormatter={formatTick({ unit, base })}
-            {...props}
-          />
-        );
-      });
-    }
-
-    return [
-      <YAxis
-        key="single-y-axis"
-        tickFormatter={formatTick({ unit: '', base })}
-        {...props}
-      />,
-    ];
-  };
-
-  return [
-    ...getYAxes(),
-    ...lines.map(
-      ({
-        metric,
-        areaColor,
-        transparency,
-        lineColor,
-        filled,
-        unit,
-        highlight,
-      }) => {
-        const props = {
-          dot: false,
-          dataKey: metric,
+const Lines = ({ xScale, yScale, timeSeries, lines }: Props): JSX.Element => {
+  return (
+    <>
+      {lines.map(
+        ({
+          metric,
+          areaColor,
+          transparency,
+          lineColor,
+          filled,
           unit,
-          stroke: lineColor,
-          yAxisId: multipleYAxes ? unit : undefined,
-          isAnimationActive: false,
-          fill: transparency ? fade(areaColor, transparency * 0.01) : undefined,
-          strokeWidth: highlight ? 2 : 1,
-          opacity: highlight === false ? 0.3 : 1,
-        };
+          highlight,
+        }) => {
+          const props = {
+            data: timeSeries,
+            unit,
+            stroke: lineColor,
+            strokeWidth: highlight ? 2 : 1,
+            opacity: highlight === false ? 0.3 : 1,
+            y: (timeValue): number => yScale(prop(metric, timeValue)) as number,
+            x: (timeValue): number => xScale(getTime(timeValue)) as number,
+            curve: curveBasis,
+            yScale,
+          };
 
-        if (filled) {
-          return <Area key={metric} {...props} />;
-        }
+          if (filled) {
+            return (
+              <AreaClosed<TimeValue>
+                key={metric}
+                fill={
+                  transparency
+                    ? fade(areaColor, 1 - transparency * 0.01)
+                    : undefined
+                }
+                {...props}
+              />
+            );
+          }
 
-        return <Line key={metric} {...props} />;
-      },
-    ),
-  ];
+          return <LinePath<TimeValue> key={metric} {...props} />;
+        },
+      )}
+    </>
+  );
 };
 
-export default getGraphLines;
+export default Lines;

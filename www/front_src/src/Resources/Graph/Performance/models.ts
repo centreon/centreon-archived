@@ -20,6 +20,7 @@ export interface GraphData {
 }
 
 export interface TimeValue {
+  timeTick: string;
   [field: string]: string | number;
 }
 
