@@ -180,8 +180,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement = $this->db->query('SELECT * FROM `platform_topology`');
         $platformCompleteTopology = [];
         foreach ($statement as $topology) {
-            $platformTopology = EntityCreator::createEntityByArray(PlatformTopology::class, $topology);
-            $platformCompleteTopology[] = $platformTopology;
+            $platform = EntityCreator::createEntityByArray(Platform::class, $topology);
+            $platformCompleteTopology[] = $platform;
         }
         if (!empty($platformCompleteTopology)) {
             return $platformCompleteTopology;

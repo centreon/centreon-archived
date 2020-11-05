@@ -54,7 +54,7 @@ class PlatformJsonGraph
     /**
      * @var array relation details between a platform and its parent
      */
-    private $relation;
+    private $relation = [];
 
     public function __construct(Platform $platform)
     {

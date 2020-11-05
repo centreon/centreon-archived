@@ -458,7 +458,7 @@ class PlatformTopologyServiceTest extends TestCase
         }
     }
 
-    public function testGetPlatformCompleteTopologyRelationSetting(): void
+    public function testGetPlatformTopologyRelationSetting(): void
     {
         $brokerPeerRetention = (new Broker())
             ->setIsPeerRetentionMode(true);
@@ -504,7 +504,7 @@ class PlatformTopologyServiceTest extends TestCase
         $centralRelation = $completeTopology[0]->getRelation();
         $pollerRelation = $completeTopology[1]->getRelation();
 
-        $this->assertEquals(null, $centralRelation);
+        $this->assertEquals([], $centralRelation);
         $this->assertEquals('normal', $pollerRelation['relation']);
 
         /**
@@ -515,7 +515,7 @@ class PlatformTopologyServiceTest extends TestCase
         $centralRelation = $completeTopology[0]->getRelation();
         $pollerRelation = $completeTopology[1]->getRelation();
 
-        $this->assertEquals(null, $centralRelation);
+        $this->assertEquals([], $centralRelation);
         $this->assertEquals('peer_retention', $pollerRelation['relation']);
     }
 }

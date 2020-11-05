@@ -99,9 +99,9 @@ class Platform
     private $isLinkedToAnotherServer = false;
 
     /**
-     * @var array|null Communication type between topology and parent
+     * @var array Communication type between topology and parent
      */
-    private $relation;
+    private $relation = [];
 
     /**
      * @return int|null
@@ -318,9 +318,9 @@ class Platform
     }
 
     /**
-     * @return array|null
+     * @return array
      */
-    public function getRelation(): ?array
+    public function getRelation(): array
     {
         return $this->relation;
     }
