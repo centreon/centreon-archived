@@ -205,11 +205,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.name, resource.action_url, '
+            . 'resource.id, resource.type, resource.name, resource.action_url, resource.alias,  resource.fqdn, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.command_line, resource.timezone, '
             . 'resource.parent_id, resource.parent_name, resource.parent_type, ' // parent
+            . 'resource.parent_alias, resource.parent_fqdn, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
@@ -420,8 +421,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.icon_image AS `icon_url`,
             s.command_line AS `command_line`,
             NULL AS `timezone`,
+            NULL AS `alias`,
+            NULL AS `fqdn`,
             sh.host_id AS `parent_id`,
             sh.name AS `parent_name`,
+            sh.alias AS `parent_alias`,
+            sh.address AS `parent_fqdn`,
             'host' AS `parent_type`,
             sh.icon_image_alt AS `parent_icon_name`,
             sh.icon_image AS `parent_icon_url`,
@@ -615,6 +620,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'host' AS `type`,
             h.host_id AS `host_id`,
             h.name AS `name`,
+            h.alias AS `alias`,
+            h.address AS `fqdn`,
             h.action_url AS `action_url`,
             h.icon_image_alt AS `icon_name`,
             h.icon_image AS `icon_url`,
@@ -622,6 +629,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.timezone AS `timezone`,
             NULL AS `parent_id`,
             NULL AS `parent_name`,
+            NULL AS `parent_alias`,
+            NULL AS `parent_fqdn`,
             NULL AS `parent_type`,
             NULL AS `parent_icon_name`,
             NULL AS `parent_icon_url`,
