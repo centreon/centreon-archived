@@ -330,7 +330,7 @@ class Resource
 
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -349,7 +349,7 @@ class Resource
 
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -357,7 +357,7 @@ class Resource
     {
         return $this->fqdn;
     }
-    
+
     /**
      * @param string|null $fqdn
      * @return \Centreon\Domain\Monitoring\Resource
@@ -365,10 +365,10 @@ class Resource
     public function setFqdn(?string $fqdn): self
     {
         $this->fqdn = $fqdn;
-        
+
         return $this;
     }
-    
+
     /**
      * @return \Centreon\Domain\Monitoring\Icon|null
      */
