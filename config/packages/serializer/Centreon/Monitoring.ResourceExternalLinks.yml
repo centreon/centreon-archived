@@ -1,0 +1,10 @@
+Centreon\Domain\Monitoring\ResourceExternalLinks:
+    properties:
+        action_url:
+            type: string
+            groups:
+                - 'resource_status_main'
+        notes_url:
+            type: string
+            groups:
+                - 'resource_status_main'

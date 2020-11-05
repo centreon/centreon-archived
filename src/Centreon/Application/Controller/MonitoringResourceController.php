@@ -22,31 +22,35 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Application\Normalizer\IconUrlNormalizer;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
-use JMS\Serializer\SerializerInterface;
-use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
-use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
-use Centreon\Domain\Monitoring\Icon;
+use FOS\RestBundle\Context\Context;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Icon;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Centreon\Domain\Monitoring\Exception\ResourceException;
+use JMS\Serializer\SerializerInterface;
+use Centreon\Domain\Entity\EntityValidator;
+use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\ResourceSeverity;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Application\Normalizer\IconUrlNormalizer;
+use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Centreon\Domain\HostConfiguration\HostConfigurationService;
+use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
+use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\ServiceConfiguration\ServiceConfigurationService;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
+use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 
 /**
  * Resource APIs for the Unified View page
@@ -136,6 +140,16 @@ class MonitoringResourceController extends AbstractController
     protected $iconUrlNormalizer;
 
     /**
+     * @var HostConfigurationServiceInterface
+     */
+    protected $hostConfiguration;
+
+    /**
+     * @var ServiceConfigurationServiceInterface
+     */
+    protected $serviceConfiguration;
+
+    /**
      * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
@@ -145,12 +159,16 @@ class MonitoringResourceController extends AbstractController
         MonitoringServiceInterface $monitoringService,
         ResourceServiceInterface $resource,
         UrlGeneratorInterface $router,
-        IconUrlNormalizer $iconUrlNormalizer
+        IconUrlNormalizer $iconUrlNormalizer,
+        HostConfigurationServiceInterface $hostConfigurationService,
+        ServiceConfigurationServiceInterface $serviceConfigurationService
     ) {
         $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
         $this->iconUrlNormalizer = $iconUrlNormalizer;
+        $this->hostConfiguration = $hostConfigurationService;
+        $this->serviceConfiguration = $serviceConfigurationService;
     }
 
     /**
@@ -391,7 +409,7 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
-     * Add internal uris and endpoints to the given resource
+     * Add internal, external uris and endpoints to the given resource
      *
      * @param ResourceEntity $resource
      * @param Contact $contact
