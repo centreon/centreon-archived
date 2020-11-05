@@ -29,7 +29,7 @@ use Centreon\Domain\PlatformTopology\PlatformTopology;
  * Format PlatformTopology to fit the JSON Graph Schema specification
  * @link https://github.com/jsongraph/json-graph-specification
  */
-class PlatformTopologyJsonGraph
+class PlatformJsonGraph
 {
     /**
      * @var string|null Stringified PlatformTopologyId

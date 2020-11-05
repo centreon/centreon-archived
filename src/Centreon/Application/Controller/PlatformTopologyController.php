@@ -32,8 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformTopology;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Application\PlatformTopology\PlatformTopologyJsonGraph;
-use Centreon\Domain\Broker\BrokerException;
+use Centreon\Application\PlatformTopology\PlatformJsonGraph;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
@@ -141,7 +140,7 @@ class PlatformTopologyController extends AbstractController
      *
      * @return View
      */
-    public function getPlatformTopologyJsonGraph(): View
+    public function getPlatformJsonGraph(): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
@@ -153,7 +152,7 @@ class PlatformTopologyController extends AbstractController
             $nodes = [];
             //Format the PlatformTopology into a Json Graph Format
             foreach ($platformCompleteTopology as $topology) {
-                $topologyJsonGraph = new PlatformTopologyJsonGraph($topology);
+                $topologyJsonGraph = new PlatformJsonGraph($topology);
                 if (!empty($topologyJsonGraph->getRelation())) {
                     $edges[] = $topologyJsonGraph->getRelation();
                 }

@@ -1,4 +1,4 @@
-Centreon\Application\PlatformTopology\PlatformTopologyJsonGraph:
+Centreon\Application\PlatformTopology\PlatformJsonGraph:
   properties:
     label:
       type: string

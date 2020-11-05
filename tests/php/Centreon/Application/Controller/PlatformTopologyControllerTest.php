@@ -35,7 +35,7 @@ use Centreon\Domain\MonitoringServer\MonitoringServerService;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
 use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Application\PlatformTopology\PlatformTopologyJsonGraph;
+use Centreon\Application\PlatformTopology\PlatformJsonGraph;
 use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -67,12 +67,12 @@ class PlatformTopologyControllerTest extends TestCase
     protected $pollerPlatform;
 
     /**
-     * @var PlatformTopologyJsonGraph
+     * @var PlatformJsonGraph
      */
     protected $centralJsonGraphFormat;
 
     /**
-     * @var PlatformTopologyJsonGraph
+     * @var PlatformJsonGraph
      */
     protected $pollerJsonGraphFormat;
 
@@ -130,8 +130,8 @@ class PlatformTopologyControllerTest extends TestCase
             ->setServerId(2)
             ->setRelation(PlatformTopology::NORMAL_RELATION);
 
-        $this->centralJsonGraphFormat = new PlatformTopologyJsonGraph($this->centralPlatform);
-        $this->pollerJsonGraphFormat = new PlatformTopologyJsonGraph($this->pollerPlatform);
+        $this->centralJsonGraphFormat = new PlatformJsonGraph($this->centralPlatform);
+        $this->pollerJsonGraphFormat = new PlatformJsonGraph($this->pollerPlatform);
 
         $this->badJsonPlatformTopology = json_encode([
             'unknown_property' => 'unknown',
@@ -263,7 +263,7 @@ class PlatformTopologyControllerTest extends TestCase
         );
     }
 
-    public function testGetPlatformTopologyJsonGraph(): void
+    public function testGetPlatformJsonGraph(): void
     {
         $completeTopology = [$this->centralPlatform, $this->pollerPlatform];
         $nodes[$this->centralJsonGraphFormat->getId()] = $this->centralJsonGraphFormat;
@@ -276,7 +276,7 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
-        $view = $platformTopologyController->getPlatformTopologyJsonGraph();
+        $view = $platformTopologyController->getPlatformJsonGraph();
 
         $context = (new Context())->setGroups(PlatformTopologyController::SERIALIZER_GROUP_JSON_GRAPH);
 
@@ -304,7 +304,7 @@ class PlatformTopologyControllerTest extends TestCase
         );
     }
 
-    public function testGetPlatformTopologyJsonGraphWithEmptyPlatform(): void
+    public function testGetPlatformJsonGraphWithEmptyPlatform(): void
     {
         $this->platformTopologyService->expects($this->any())
             ->method('getPlatformCompleteTopology')
@@ -313,14 +313,14 @@ class PlatformTopologyControllerTest extends TestCase
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
-        $view = $platformTopologyController->getPlatformTopologyJsonGraph();
+        $view = $platformTopologyController->getPlatformJsonGraph();
         $this->assertEquals(
             $view,
             View::create(['message' => 'Platform Topology not found'], Response::HTTP_NOT_FOUND)
         );
     }
 
-    public function testGetPlatformTopologyJsonGraphBadRequest(): void
+    public function testGetPlatformJsonGraphBadRequest(): void
     {
         $badPollerPlatform = (new PlatformTopology())
             ->setId(3)
@@ -346,7 +346,7 @@ class PlatformTopologyControllerTest extends TestCase
             $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
             $platformTopologyController->setContainer($this->container);
 
-            $view = $platformTopologyController->getPlatformTopologyJsonGraph();
+            $view = $platformTopologyController->getPlatformJsonGraph();
             $this->assertEquals($view, View::create(
                 [
                     'message' => "the 'poller': 'Poller'@'192.168.1.2' isn't fully registered," .
