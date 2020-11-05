@@ -229,6 +229,7 @@ try {
     }
   } */
 } catch(e) {
+  /*
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
     slackSend channel: "#monitoring-metrology",
         color: "#F30031",
@@ -236,6 +237,7 @@ try {
             "*COMMIT*: <https://github.com/centreon/centreon/commit/${source.COMMIT}|here> by ${source.COMMITTER}\n" +
             "*INFO*: ${e}"
   }
+  */
 
   currentBuild.result = 'FAILURE'
 }
