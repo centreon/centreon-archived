@@ -89,12 +89,6 @@ $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
-$form->registerRule('isSessionDurationValid', 'callback', 'isSessionDurationValid');
-$form->addRule(
-    'session_expire',
-    _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
-    'isSessionDurationValid'
-);
 
 $inheritanceMode = array();
 $inheritanceMode[] = $form->createElement(
@@ -352,6 +346,12 @@ $form->addRule('maxViewMonitoring', _('Mandatory field'), 'required');
 $form->addRule('maxViewMonitoring', _('Must be a number'), 'numeric');
 $form->addRule('session_expire', _('Mandatory field'), 'required');
 $form->addRule('session_expire', _('Must be a number'), 'numeric');
+$form->registerRule('isSessionDurationValid', 'callback', 'isSessionDurationValid');
+$form->addRule(
+    'session_expire',
+    _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
+    'isSessionDurationValid'
+);
 
 /*
  * Smarty template Init
