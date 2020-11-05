@@ -31,14 +31,14 @@ use Centreon\Domain\Repository\RepositoryException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
+use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
@@ -53,17 +53,17 @@ class PlatformTopologyServiceTest extends TestCase
     protected $adminContact;
 
     /**
-     * @var PlatformTopology|null $platformTopology
+     * @var Platform|null $platform
      */
-    protected $platformTopology;
+    protected $platform;
 
     /**
-     * @var PlatformTopology|null $registeredParent
+     * @var Platform|null $registeredParent
      */
     protected $registeredParent;
 
     /**
-     * @var PlatformTopologyRepositoryInterface&MockObject $platformTopologyRepository
+     * @var PlatformRepositoryInterface&MockObject $platformTopologyRepository
      */
     protected $platformTopologyRepository;
 
@@ -108,7 +108,7 @@ class PlatformTopologyServiceTest extends TestCase
     protected $brokerService;
 
     /**
-     * @var PlatformTopologyRegisterRepositoryInterface
+     * @var PlatformRegisterRepositoryInterface
      */
     private $platformTopologyRegisterRepository;
 
@@ -122,14 +122,14 @@ class PlatformTopologyServiceTest extends TestCase
             ->setName('admin')
             ->setAdmin(true);
 
-        $this->platformTopology = (new PlatformTopology())
+        $this->platform = (new Platform())
             ->setName('poller1')
             ->setAddress('1.1.1.2')
             ->setType('poller')
             ->setParentAddress('1.1.1.1')
             ->setHostname('localhost.localdomain');
 
-        $this->registeredParent = (new PlatformTopology())
+        $this->registeredParent = (new Platform())
             ->setName('Central')
             ->setAddress('1.1.1.1')
             ->setType('central')
@@ -160,10 +160,10 @@ class PlatformTopologyServiceTest extends TestCase
 
     /**
      * test addPlatformToTopology with already existing platform
-     * @throws PlatformTopologyConflictException
+     * @throws PlatformConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformTopologyException
+     * @throws PlatformException
      * @throws EntityNotFoundException
      * @throws RepositoryException
      * @throws PlatformInformationException
@@ -195,17 +195,17 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRegisterRepository
         );
 
-        $this->expectException(PlatformTopologyConflictException::class);
+        $this->expectException(PlatformConflictException::class);
         $this->expectExceptionMessage("A platform using the name : 'poller1' or address : '1.1.1.2' already exists");
-        $platformTopologyService->addPlatformToTopology($this->platformTopology);
+        $platformTopologyService->addPlatformToTopology($this->platform);
     }
 
     /**
      * test addPlatformToTopology with not found parent
-     * @throws PlatformTopologyConflictException
+     * @throws PlatformConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformTopologyException
+     * @throws PlatformException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
      * @throws RepositoryException
@@ -219,7 +219,7 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('findPlatformTopologyByAddress')
+            ->method('findPlatformByAddress')
             ->willReturn(null);
 
         $this->monitoringServerService
@@ -244,22 +244,22 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage("No parent platform was found for : 'poller1'@'1.1.1.2'");
-        $platformTopologyService->addPlatformToTopology($this->platformTopology);
+        $platformTopologyService->addPlatformToTopology($this->platform);
     }
 
     /**
      * test addPlatformToTopology which succeed
-     * @throws PlatformTopologyConflictException
+     * @throws PlatformConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformTopologyException
+     * @throws PlatformException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
      * @throws RepositoryException
      */
     public function testAddPlatformToTopologySuccess(): void
     {
-        $this->platformTopology->setParentId(1);
+        $this->platform->setParentId(1);
 
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -268,7 +268,7 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('findPlatformTopologyByAddress')
+            ->method('findPlatformByAddress')
             ->willReturn($this->registeredParent);
 
         $this->monitoringServerService
@@ -296,13 +296,13 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRegisterRepository
         );
 
-        $this->assertNull($platformTopologyService->addPlatformToTopology($this->platformTopology));
+        $this->assertNull($platformTopologyService->addPlatformToTopology($this->platform));
     }
 
-    public function testGetPlatformCompleteTopology(): void
+    public function testGetPlatformTopologySuccess(): void
     {
 
-        $this->platformTopology
+        $this->platform
             ->setParentId(1)
             ->setServerId(2);
 
@@ -311,8 +311,8 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('getPlatformCompleteTopology')
-            ->willReturn([$this->platformTopology, $this->registeredParent]);
+            ->method('getPlatformTopology')
+            ->willReturn([$this->platform, $this->registeredParent]);
 
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -329,12 +329,12 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRegisterRepository
         );
 
-        $this->assertIsArray($platformTopologyService->getPlatformCompleteTopology());
+        $this->assertIsArray($platformTopologyService->getPlatformTopology());
     }
 
-    public function testGetPlatformCompleteTopologyWithoutParentId(): void
+    public function testGetPlatformTopologyWithoutParentId(): void
     {
-        $this->platformTopology
+        $this->platform
             ->setServerId(2);
 
         $this->registeredParent
@@ -342,13 +342,13 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->at(0))
-            ->method('getPlatformCompleteTopology')
+            ->method('getPlatformTopology')
             ->willReturn([$this->registeredParent]);
 
         $this->platformTopologyRepository
             ->expects($this->at(1))
-            ->method('getPlatformCompleteTopology')
-            ->willReturn([$this->platformTopology]);
+            ->method('getPlatformTopology')
+            ->willReturn([$this->platform]);
 
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
@@ -363,30 +363,30 @@ class PlatformTopologyServiceTest extends TestCase
         /**
          * Central Case
          */
-        $this->assertIsArray($platformTopologyService->getPlatformCompleteTopology());
+        $this->assertIsArray($platformTopologyService->getPlatformTopology());
 
         /**
          * Poller Case
          */
-        $this->expectException(PlatformTopologyException::class);
+        $this->expectException(PlatformException::class);
         $this->expectExceptionMessage("the 'poller': 'poller1'@'1.1.1.2' isn't registered on any Central or Remote");
-        $platformTopologyService->getPlatformCompleteTopology();
+        $platformTopologyService->getPlatformTopology();
     }
 
-    public function testGetPlatformCompleteTopologyWithoutParentAddress(): void
+    public function testGetPlatformTopologyWithoutParentAddress(): void
     {
-        $this->platformTopology
+        $this->platform
             ->setParentId(3);
 
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('getPlatformCompleteTopology')
-            ->willReturn([$this->platformTopology]);
+            ->method('getPlatformTopology')
+            ->willReturn([$this->platform]);
 
         $this->platformTopologyRepository
             ->expects($this->once())
             ->method('findPlatformAddressById')
-            ->with($this->platformTopology->getParentId())
+            ->with($this->platform->getParentId())
             ->willReturn(null);
 
         $platformTopologyService = new PlatformTopologyService(
@@ -404,32 +404,32 @@ class PlatformTopologyServiceTest extends TestCase
          */
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage("Topology address for parent platform ID: '3' not found");
-        $platformTopologyService->getPlatformCompleteTopology();
+        $platformTopologyService->getPlatformTopology();
     }
 
-    public function testGetPlatformCompleteTopologyWithoutServerId(): void
+    public function testGetPlatformTopologyWithoutServerId(): void
     {
         $this->registeredParent
             ->setServerId(null);
 
-        $this->platformTopology
+        $this->platform
             ->setParentId(1)
             ->setServerId(null);
 
         $this->platformTopologyRepository
             ->expects($this->at(0))
-            ->method('getPlatformCompleteTopology')
+            ->method('getPlatformTopology')
             ->willReturn([$this->registeredParent]);
 
         $this->platformTopologyRepository
             ->expects($this->at(1))
-            ->method('getPlatformCompleteTopology')
-            ->willReturn([$this->platformTopology]);
+            ->method('getPlatformTopology')
+            ->willReturn([$this->platform]);
 
         $this->platformTopologyRepository
             ->expects($this->at(2))
             ->method('findPlatformAddressById')
-            ->with($this->platformTopology->getParentId())
+            ->with($this->platform->getParentId())
             ->willReturn('1.1.1.1');
 
         $platformTopologyService = new PlatformTopologyService(
@@ -442,19 +442,19 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRegisterRepository
         );
 
-        $this->expectException(PlatformTopologyException::class);
+        $this->expectException(PlatformException::class);
         $this->expectExceptionMessage(
             "the 'central': 'Central'@'1.1.1.1' isn't fully registered, please finish installation using wizard"
         );
 
         try {
-            $platformTopologyService->getPlatformCompleteTopology();
+            $platformTopologyService->getPlatformTopology();
         } finally {
-            $this->expectException(PlatformTopologyException::class);
+            $this->expectException(PlatformException::class);
             $this->expectExceptionMessage(
                 "the 'poller': 'poller1'@'1.1.1.2' isn't fully registered, please finish installation using wizard"
             );
-            $platformTopologyService->getPlatformCompleteTopology();
+            $platformTopologyService->getPlatformTopology();
         }
     }
 
@@ -466,15 +466,15 @@ class PlatformTopologyServiceTest extends TestCase
         $this->registeredParent
             ->setServerId(1);
 
-        $this->platformTopology
+        $this->platform
             ->setId(2)
             ->setParentId(1)
             ->setServerId(2);
 
         $this->platformTopologyRepository
             ->expects($this->exactly(2))
-            ->method('getPlatformCompleteTopology')
-            ->willReturn([$this->registeredParent, $this->platformTopology]);
+            ->method('getPlatformTopology')
+            ->willReturn([$this->registeredParent, $this->platform]);
 
         $this->platformTopologyRepository
             ->expects($this->exactly(2))
@@ -499,7 +499,7 @@ class PlatformTopologyServiceTest extends TestCase
         /**
          * Normal Relation
          */
-        $completeTopology = $platformTopologyService->getPlatformCompleteTopology();
+        $completeTopology = $platformTopologyService->getPlatformTopology();
 
         $centralRelation = $completeTopology[0]->getRelation();
         $pollerRelation = $completeTopology[1]->getRelation();
@@ -510,7 +510,7 @@ class PlatformTopologyServiceTest extends TestCase
         /**
          * One Peer Retention Relation
          */
-        $completeTopology = $platformTopologyService->getPlatformCompleteTopology();
+        $completeTopology = $platformTopologyService->getPlatformTopology();
 
         $centralRelation = $completeTopology[0]->getRelation();
         $pollerRelation = $completeTopology[1]->getRelation();

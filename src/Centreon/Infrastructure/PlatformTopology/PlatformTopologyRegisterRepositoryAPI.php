@@ -22,21 +22,21 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology;
 
-use Centreon\Application\ApiPlatform;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
 use Centreon\Domain\Proxy\Proxy;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Application\ApiPlatform;
 use Symfony\Component\HttpClient\HttpClient;
+use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Centreon\Domain\Repository\RepositoryException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
 
 class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterRepositoryInterface
 {
@@ -44,11 +44,6 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      * @var HttpClientInterface
      */
     private $httpClient;
-
-    /**
-     * @var string
-     */
-    private $apiVersion;
 
     /**
      * @var ApiPlatform
@@ -69,8 +64,8 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
     /**
      * @inheritDoc
      */
-    public function registerPlatformTopologyToParent(
-        PlatformTopology $platformTopology,
+    public function registerPlatformToParent(
+        Platform $platform,
         PlatformInformation $platformInformation,
         Proxy $proxyService = null
     ): void {
@@ -127,8 +122,8 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                 throw new RepositoryException(
                     sprintf(
                         _("Failed to get the auth token. Cannot register the platform : '%s'@'%s' on the Central"),
-                        $platformTopology->getName(),
-                        $platformTopology->getAddress()
+                        $platform->getName(),
+                        $platform->getAddress()
                     )
                 );
             }
@@ -136,11 +131,11 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             // Central's API register platform payload
             $registerPayload = [
                 'json' => [
-                    "name" => $platformTopology->getName(),
-                    "hostname" => $platformTopology->getHostname(),
-                    "type" => $platformTopology->getType(),
-                    "address" => $platformTopology->getAddress(),
-                    "parent_address" => $platformTopology->getParentAddress()
+                    "name" => $platform->getName(),
+                    "hostname" => $platform->getHostname(),
+                    "type" => $platform->getType(),
+                    "address" => $platform->getAddress(),
+                    "parent_address" => $platform->getParentAddress()
                 ],
                 'headers' => [
                     "X-AUTH-TOKEN" => $token
@@ -157,8 +152,8 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             if (Response::HTTP_CREATED !== $registerResponse->getStatusCode()) {
                 $errorMessage = sprintf(
                     _("The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"),
-                    $platformTopology->getName(),
-                    $platformTopology->getAddress()
+                    $platform->getName(),
+                    $platform->getAddress()
                 );
                 $returnedMessage = json_decode($registerResponse->getContent(false), true);
 
@@ -166,7 +161,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformTopologyConflictException(
+                throw new PlatformConflictException(
                     $errorMessage
                 );
             }

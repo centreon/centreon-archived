@@ -27,7 +27,7 @@ namespace Centreon\Domain\PlatformTopology;
  * Class designed to retrieve servers to be added using the wizard
  *
  */
-class PlatformTopology
+class Platform
 {
     public const TYPE_CENTRAL = 'central';
     public const TYPE_POLLER = 'poller';

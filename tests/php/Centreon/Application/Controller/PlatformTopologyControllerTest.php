@@ -28,41 +28,36 @@ use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\MonitoringServer\MonitoringServerService;
+use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Application\PlatformTopology\PlatformJsonGraph;
 use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
+use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PlatformTopologyControllerTest extends TestCase
 {
-    protected $goodJsonPlatformTopology;
-    protected $badJsonPlatformTopology;
+    protected $goodJsonPlatform;
+    protected $badJsonPlatform;
 
     /**
-     * @var PlatformTopology|null $platformTopology
+     * @var Platform|null $platform
      */
-    protected $platformTopology;
+    protected $platform;
 
     /**
-     * @var PlatformTopology
+     * @var Platform
      */
     protected $centralPlatform;
 
     /**
-     * @var PlatformTopology
+     * @var Platform
      */
     protected $pollerPlatform;
 
@@ -82,7 +77,7 @@ class PlatformTopologyControllerTest extends TestCase
     protected $platformTopologyService;
 
     /**
-     * @var BrokerService&MockObject $platformTopologyService
+     * @var BrokerService&MockObject $brokerService
      */
     protected $brokerService;
 
@@ -92,7 +87,7 @@ class PlatformTopologyControllerTest extends TestCase
 
     protected function setUp(): void
     {
-        $goodJsonPlatformTopology = [
+        $goodJsonPlatform = [
             'name' => 'poller1',
             'hostname' => 'localhost.localdomain',
             'address' => '1.1.1.2',
@@ -100,40 +95,40 @@ class PlatformTopologyControllerTest extends TestCase
             'parent_address' => '1.1.1.1'
         ];
 
-        $this->goodJsonPlatformTopology = json_encode($goodJsonPlatformTopology);
+        $this->goodJsonPlatform = json_encode($goodJsonPlatform);
 
-        $this->platformTopology = (new PlatformTopology())
-            ->setName($goodJsonPlatformTopology['name'])
+        $this->platform = (new Platform())
+            ->setName($goodJsonPlatform['name'])
             ->setRelation('normal')
-            ->setHostname($goodJsonPlatformTopology['hostname'])
-            ->setAddress($goodJsonPlatformTopology['address'])
-            ->setType($goodJsonPlatformTopology['type'])
-            ->setParentAddress($goodJsonPlatformTopology['parent_address']);
+            ->setHostname($goodJsonPlatform['hostname'])
+            ->setAddress($goodJsonPlatform['address'])
+            ->setType($goodJsonPlatform['type'])
+            ->setParentAddress($goodJsonPlatform['parent_address']);
 
-        $this->centralPlatform = (new PlatformTopology())
+        $this->centralPlatform = (new Platform())
             ->setId(1)
             ->setName('Central')
             ->setHostname('localhost.localdomain')
-            ->setType(PlatformTopology::TYPE_CENTRAL)
+            ->setType(Platform::TYPE_CENTRAL)
             ->setAddress('192.168.1.1')
             ->setServerId(1)
-            ->setRelation(PlatformTopology::NORMAL_RELATION);
+            ->setRelation(Platform::NORMAL_RELATION);
 
-        $this->pollerPlatform = (new PlatformTopology())
+        $this->pollerPlatform = (new Platform())
             ->setId(2)
             ->setName('Poller')
             ->setHostname('poller.poller1')
-            ->setType(PlatformTopology::TYPE_POLLER)
+            ->setType(Platform::TYPE_POLLER)
             ->setAddress('192.168.1.2')
             ->setParentAddress('192.168.1.1')
             ->setParentId(1)
             ->setServerId(2)
-            ->setRelation(PlatformTopology::NORMAL_RELATION);
+            ->setRelation(Platform::NORMAL_RELATION);
 
         $this->centralJsonGraphFormat = new PlatformJsonGraph($this->centralPlatform);
         $this->pollerJsonGraphFormat = new PlatformJsonGraph($this->pollerPlatform);
 
-        $this->badJsonPlatformTopology = json_encode([
+        $this->badJsonPlatform = json_encode([
             'unknown_property' => 'unknown',
         ]);
 
@@ -184,7 +179,7 @@ class PlatformTopologyControllerTest extends TestCase
         $this->request->expects($this->once())
             ->method('getContent')
             ->willReturn('[}');
-        $this->expectException(PlatformTopologyException::class);
+        $this->expectException(PlatformException::class);
         $this->expectExceptionMessage('Error when decoding sent data');
         $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
         $platformTopologyController->addPlatformToTopology($this->request);
@@ -192,17 +187,17 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with conflict
-     * @throws PlatformTopologyException
+     * @throws PlatformConflictException
      */
     public function testAddPlatformToTopologyConflict(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
-            ->willReturn($this->goodJsonPlatformTopology);
+            ->willReturn($this->goodJsonPlatform);
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
-            ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
+            ->will($this->throwException(new PlatformConflictException('conflict')));
 
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
@@ -216,17 +211,17 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with bad request
-     * @throws PlatformTopologyException
+     * @throws PlatformException
      */
     public function testAddPlatformToTopologyBadRequest(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
-            ->willReturn($this->goodJsonPlatformTopology);
+            ->willReturn($this->goodJsonPlatform);
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
-            ->will($this->throwException(new PlatformTopologyException('bad request')));
+            ->will($this->throwException(new PlatformException('bad request')));
 
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
@@ -241,13 +236,13 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology which succeed
-     * @throws PlatformTopologyException
+     * @throws PlatformException
      */
     public function testAddPlatformToTopologySuccess(): void
     {
         $this->request->expects($this->any())
             ->method('getContent')
-            ->willReturn($this->goodJsonPlatformTopology);
+            ->willReturn($this->goodJsonPlatform);
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
@@ -270,7 +265,7 @@ class PlatformTopologyControllerTest extends TestCase
         $nodes[$this->pollerJsonGraphFormat->getId()] = $this->pollerJsonGraphFormat;
 
         $this->platformTopologyService->expects($this->any())
-            ->method('getPlatformCompleteTopology')
+            ->method('getPlatformTopology')
             ->willReturn($completeTopology);
 
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
@@ -307,7 +302,7 @@ class PlatformTopologyControllerTest extends TestCase
     public function testGetPlatformJsonGraphWithEmptyPlatform(): void
     {
         $this->platformTopologyService->expects($this->any())
-            ->method('getPlatformCompleteTopology')
+            ->method('getPlatformTopology')
             ->will($this->throwException(new EntityNotFoundException('Platform Topology not found')));
 
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
@@ -322,20 +317,20 @@ class PlatformTopologyControllerTest extends TestCase
 
     public function testGetPlatformJsonGraphBadRequest(): void
     {
-        $badPollerPlatform = (new PlatformTopology())
+        $badPollerPlatform = (new Platform())
             ->setId(3)
             ->setName('Poller')
             ->setHostname('poller.poller1')
-            ->setType(PlatformTopology::TYPE_POLLER)
+            ->setType(Platform::TYPE_POLLER)
             ->setAddress('192.168.1.2')
             ->setParentAddress('192.168.1.1')
             ->setParentId(1)
             ->setServerId(null)
-            ->setRelation(PlatformTopology::NORMAL_RELATION);
+            ->setRelation(Platform::NORMAL_RELATION);
 
         $this->platformTopologyService->expects($this->any())
-            ->method('getPlatformCompleteTopology')
-            ->will($this->throwException(new PlatformTopologyException(
+            ->method('getPlatformTopology')
+            ->will($this->throwException(new PlatformException(
                 sprintf(
                     _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard"),
                     $badPollerPlatform->getType(),

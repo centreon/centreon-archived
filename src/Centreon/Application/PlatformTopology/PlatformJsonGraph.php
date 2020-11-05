@@ -23,54 +23,54 @@ declare(strict_types=1);
 
 namespace Centreon\Application\PlatformTopology;
 
-use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\Platform;
 
 /**
- * Format PlatformTopology to fit the JSON Graph Schema specification
+ * Format Platform to fit the JSON Graph Schema specification
  * @link https://github.com/jsongraph/json-graph-specification
  */
 class PlatformJsonGraph
 {
     /**
-     * @var string|null Stringified PlatformTopologyId
+     * @var string|null Stringified Platform Id
      */
     private $id;
 
     /**
-     * @var string|null PlatformTopology type
+     * @var string|null Platform type
      */
     private $type;
 
     /**
-     * @var string|null PlatformTopology Name
+     * @var string|null Platform Name
      */
     private $label;
 
     /**
-     * @var array|null Custom properties of a Json Graph Object
+     * @var array Custom properties of a Json Graph Object
      */
     private $metadata;
 
     /**
-     * @var array|null relation details between a platform and its parent
+     * @var array relation details between a platform and its parent
      */
     private $relation;
 
-    public function __construct(PlatformTopology $platformTopology)
+    public function __construct(Platform $platform)
     {
-        $this->setId((string) $platformTopology->getId());
-        $this->setType($platformTopology->getType());
-        $this->setLabel($platformTopology->getName());
-        if ($platformTopology->getRelation() !== null) {
-            $this->setRelation($platformTopology->getRelation());
+        $this->setId((string) $platform->getId());
+        $this->setType($platform->getType());
+        $this->setLabel($platform->getName());
+        if (!empty($platform->getRelation())) {
+            $this->setRelation($platform->getRelation());
         }
 
         $metadata = [];
-        if ($platformTopology->getServerId() !== null) {
-            $metadata['centreon-id'] = (string) $platformTopology->getServerId();
+        if ($platform->getServerId() !== null) {
+            $metadata['centreon-id'] = (string) $platform->getServerId();
         }
-        if ($platformTopology->getHostname() !== null) {
-            $metadata['hostname'] = $platformTopology->getHostname();
+        if ($platform->getHostname() !== null) {
+            $metadata['hostname'] = $platform->getHostname();
         }
         $this->setMetadata($metadata);
     }
@@ -130,36 +130,36 @@ class PlatformJsonGraph
     }
 
     /**
-     * @return array|null
+     * @return array
      */
-    public function getMetadata(): ?array
+    public function getMetadata(): array
     {
         return $this->metadata;
     }
 
     /**
-     * @param array|null $metadata
+     * @param array $metadata
      * @return self
      */
-    public function setMetadata(?array $metadata): self
+    public function setMetadata(array $metadata): self
     {
         $this->metadata = $metadata;
         return $this;
     }
 
     /**
-     * @return array|null
+     * @return array
      */
-    public function getRelation(): ?array
+    public function getRelation(): array
     {
         return $this->relation;
     }
 
     /**
-     * @param array|null $relation
+     * @param array $relation
      * @return self
      */
-    public function setRelation(?array $relation): self
+    public function setRelation(array $relation): self
     {
         $relationStringified = [];
         foreach ($relation as $name => $relationItem) {
