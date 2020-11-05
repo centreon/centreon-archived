@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
+use Centreon\Domain\PlatformTopology\PlatformRelation;
+
 /**
  * Class designed to retrieve servers to be added using the wizard
  *
@@ -99,9 +101,9 @@ class Platform
     private $isLinkedToAnotherServer = false;
 
     /**
-     * @var array Communication type between topology and parent
+     * @var PlatformRelation Communication type between topology and parent
      */
-    private $relation = [];
+    private $relation = null;
 
     /**
      * @return int|null
@@ -291,7 +293,7 @@ class Platform
 
     /**
      * @param int|null $serverId nagios_server ID
-     * @return PlatformTopology
+     * @return Platform
      */
     public function setServerId(?int $serverId): self
     {
@@ -318,9 +320,9 @@ class Platform
     }
 
     /**
-     * @return array
+     * @return PlatformRelation
      */
-    public function getRelation(): array
+    public function getRelation(): ?PlatformRelation
     {
         return $this->relation;
     }
@@ -336,11 +338,10 @@ class Platform
         }
 
         if ($this->getParentId() !== null) {
-            $this->relation = [
-                'source' => $this->getId(),
-                'relation' => $relationType,
-                'target' => $this->getParentId()
-            ];
+            $this->relation = (new PlatformRelation())
+                ->setSource($this->getId())
+                ->setRelation($relationType)
+                ->setTarget($this->getParentId());
         }
 
         return $this;

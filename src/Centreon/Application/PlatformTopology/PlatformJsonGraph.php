@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Centreon\Application\PlatformTopology;
 
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\PlatformRelation;
 
 /**
  * Format Platform to fit the JSON Graph Schema specification
@@ -49,7 +50,7 @@ class PlatformJsonGraph
     /**
      * @var array Custom properties of a Json Graph Object
      */
-    private $metadata;
+    private $metadata = [];
 
     /**
      * @var array relation details between a platform and its parent
@@ -61,7 +62,7 @@ class PlatformJsonGraph
         $this->setId((string) $platform->getId());
         $this->setType($platform->getType());
         $this->setLabel($platform->getName());
-        if (!empty($platform->getRelation())) {
+        if ($platform->getRelation() !== null) {
             $this->setRelation($platform->getRelation());
         }
 
@@ -159,17 +160,13 @@ class PlatformJsonGraph
      * @param array $relation
      * @return self
      */
-    public function setRelation(array $relation): self
+    public function setRelation(PlatformRelation $platformRelation): self
     {
-        $relationStringified = [];
-        foreach ($relation as $name => $relationItem) {
-            if ($relationItem !== null) {
-                $relationStringified[$name] = (string) $relationItem;
-            } else {
-                $relationStringified[$name] = null;
-            }
-        }
-        $this->relation = $relationStringified;
+        $this->relation = [
+            'source' => (string) $platformRelation->getSource(),
+            'relation' => $platformRelation->getRelation(),
+            'target' => (string) $platformRelation->getTarget(),
+        ];
         return $this;
     }
 }

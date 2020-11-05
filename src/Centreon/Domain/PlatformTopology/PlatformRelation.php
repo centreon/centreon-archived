@@ -20,3 +20,101 @@
  */
 
 declare(strict_types=1);
+
+namespace Centreon\Domain\PlatformTopology;
+
+class PlatformRelation
+{
+    /**
+     * Source node in relation
+     *
+     * @var int
+     */
+    private $source;
+
+    /**
+     * Broker relation
+     *
+     * @var string
+     */
+    private $relation;
+
+    /**
+     * Target node in relation
+     *
+     * @var int
+     */
+    private $target;
+
+    /**
+     * Get the value of source
+     *
+     * @return  int
+     */
+    public function getSource(): int
+    {
+        return $this->source;
+    }
+
+    /**
+     * Set the value of source
+     *
+     * @param  int  $source
+     *
+     * @return  self
+     */
+    public function setSource(int $source): self
+    {
+        $this->source = $source;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of relation
+     *
+     * @return  string
+     */
+    public function getRelation(): string
+    {
+        return $this->relation;
+    }
+
+    /**
+     * Set the value of relation
+     *
+     * @param  string  $relation
+     *
+     * @return  self
+     */
+    public function setRelation(string $relation): self
+    {
+        $this->relation = $relation;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of target
+     *
+     * @return  int
+     */
+    public function getTarget(): int
+    {
+        return $this->target;
+    }
+
+    /**
+     * Set the value of target
+     *
+     * @param  int  $target
+     *
+     * @return  self
+     */
+    public function setTarget(int $target): self
+    {
+        $this->target = $target;
+
+        return $this;
+    }
+}

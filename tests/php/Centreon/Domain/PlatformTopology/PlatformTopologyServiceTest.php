@@ -123,6 +123,7 @@ class PlatformTopologyServiceTest extends TestCase
             ->setAdmin(true);
 
         $this->platform = (new Platform())
+            ->setId(2)
             ->setName('poller1')
             ->setAddress('1.1.1.2')
             ->setType('poller')
@@ -504,8 +505,8 @@ class PlatformTopologyServiceTest extends TestCase
         $centralRelation = $completeTopology[0]->getRelation();
         $pollerRelation = $completeTopology[1]->getRelation();
 
-        $this->assertEquals([], $centralRelation);
-        $this->assertEquals('normal', $pollerRelation['relation']);
+        $this->assertEquals(null, $centralRelation);
+        $this->assertEquals('normal', $pollerRelation->getRelation());
 
         /**
          * One Peer Retention Relation
@@ -515,7 +516,7 @@ class PlatformTopologyServiceTest extends TestCase
         $centralRelation = $completeTopology[0]->getRelation();
         $pollerRelation = $completeTopology[1]->getRelation();
 
-        $this->assertEquals([], $centralRelation);
-        $this->assertEquals('peer_retention', $pollerRelation['relation']);
+        $this->assertEquals(null, $centralRelation);
+        $this->assertEquals('peer_retention', $pollerRelation->getRelation());
     }
 }
