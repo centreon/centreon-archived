@@ -2,12 +2,13 @@
 
 namespace Centreon\Domain\Broker\Interfaces;
 
-use Centreon\Domain\Broker\Broker;
-
+/**
+ * @return array
+ */
 interface BrokerRepositoryInterface
 {
-    public function findConfigurationByMonitoringServerAndConfigKey(
+    public function findByMonitoringServerAndParameterName(
         int $monitoringServerId,
         string $configKey
-    ): ?Broker;
+    ): array;
 }

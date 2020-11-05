@@ -33,6 +33,7 @@ use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
@@ -73,14 +74,19 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     private $monitoringServerService;
 
     /**
-     * @var BrokerServiceInterface
-     */
-    private $brokerService;
-
-    /**
      * @var PlatformTopologyRegisterRepositoryInterface
      */
     private $platformTopologyRegisterRepository;
+
+    /**
+     * @var BrokerRepositoryInterface
+     */
+    private $brokerRepository;
+
+    /**
+     * Broker Retention Parameter
+     */
+    public const BROKER_PEER_RETENTION = "one_peer_retention_mode";
 
     /**
      * PlatformTopologyService constructor.
@@ -90,6 +96,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @param ProxyServiceInterface $proxyService
      * @param EngineConfigurationServiceInterface $engineConfigurationService
      * @param MonitoringServerServiceInterface $monitoringServerService
+     * @param BrokerRepositoryInterface $brokerRepository
      * @param PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
      */
     public function __construct(
@@ -98,7 +105,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         ProxyServiceInterface $proxyService,
         EngineConfigurationServiceInterface $engineConfigurationService,
         MonitoringServerServiceInterface $monitoringServerService,
-        BrokerServiceInterface $brokerService,
+        BrokerRepositoryInterface $brokerRepository,
         PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
     ) {
         $this->platformTopologyRepository = $platformTopologyRepository;
@@ -106,7 +113,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $this->proxyService = $proxyService;
         $this->engineConfigurationService = $engineConfigurationService;
         $this->monitoringServerService = $monitoringServerService;
-        $this->brokerService = $brokerService;
+        $this->brokerRepository = $brokerRepository;
         $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
     }
 
@@ -577,16 +584,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         foreach ($PlatformTopology as $platform) {
             // Check if the parent are correctly set
             if ($platform->getType() !== Platform::TYPE_CENTRAL) {
-                if ($platform->getParentId() === null) {
-                    throw new PlatformException(
-                        sprintf(
-                            _("the '%s': '%s'@'%s' isn't registered on any Central or Remote"),
-                            $platform->getType(),
-                            $platform->getName(),
-                            $platform->getAddress()
-                        )
-                    );
-                }
                 $platformParentAddress = $this->platformTopologyRepository->findPlatformAddressById(
                     $platform->getParentId()
                 );
@@ -597,25 +594,28 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
                 $platform->setParentAddress($platformParentAddress);
             }
-            if ($platform->getServerId() === null) {
-                throw new PlatformException(
+
+            $brokerConfigurations = $this->brokerRepository->findByMonitoringServerAndParameterName(
+                $platform->getServerId(),
+                self::BROKER_PEER_RETENTION
+            );
+
+            if (empty($brokerConfigurations)) {
+                throw new EntityNotFoundException(
                     sprintf(
-                        _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard"),
-                        $platform->getType(),
-                        $platform->getName(),
-                        $platform->getAddress()
+                        _('No entry for %s key in your Broker configuration'),
+                        self::BROKER_PEER_RETENTION
                     )
                 );
             }
-            $broker = $this->brokerService->findConfigurationByMonitoringServerAndConfigKey(
-                $platform->getServerId(),
-                'one_peer_retention_mode'
-            );
 
-            if ($broker->getIsPeerRetentionMode() === true) {
-                $platform->setRelation(Platform::PEER_RETENTION_RELATION);
-            } else {
-                $platform->setRelation(Platform::NORMAL_RELATION);
+            foreach ($brokerConfigurations as $brokerConfiguration) {
+                if ($brokerConfiguration->getConfigurationValue() === "yes") {
+                    $platform->setRelation(Platform::PEER_RETENTION_RELATION);
+                    break;
+                } else {
+                    $platform->setRelation(Platform::NORMAL_RELATION);
+                }
             }
         }
         return $PlatformTopology;

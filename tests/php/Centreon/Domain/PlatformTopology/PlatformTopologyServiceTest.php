@@ -23,6 +23,7 @@ namespace Tests\Centreon\Domain\PlatformTopology;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Broker\Broker;
+use Centreon\Domain\Broker\BrokerConfiguration;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\EngineException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -33,7 +34,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
-use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
+use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\PlatformException;
@@ -103,9 +104,9 @@ class PlatformTopologyServiceTest extends TestCase
     protected $monitoringServer;
 
     /**
-     * @var BrokerServiceInterface&MockObject $brokerService
+     * @var BrokerRepositoryInterface&MockObject $brokerRepository
      */
-    protected $brokerService;
+    protected $brokerRepository;
 
     /**
      * @var PlatformRegisterRepositoryInterface
@@ -153,7 +154,7 @@ class PlatformTopologyServiceTest extends TestCase
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->engineConfigurationService = $this->createMock(EngineConfigurationServiceInterface::class);
         $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
-        $this->brokerService = $this->createMock(BrokerServiceInterface::class);
+        $this->brokerRepository = $this->createMock(BrokerRepositoryInterface::class);
         $this->platformTopologyRegisterRepository = $this->createMock(
             PlatformTopologyRegisterRepositoryInterface::class
         );
@@ -192,7 +193,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->proxyService,
             $this->engineConfigurationService,
             $this->monitoringServerService,
-            $this->brokerService,
+            $this->brokerRepository,
             $this->platformTopologyRegisterRepository
         );
 
@@ -239,7 +240,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->proxyService,
             $this->engineConfigurationService,
             $this->monitoringServerService,
-            $this->brokerService,
+            $this->brokerRepository,
             $this->platformTopologyRegisterRepository
         );
 
@@ -293,7 +294,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->proxyService,
             $this->engineConfigurationService,
             $this->monitoringServerService,
-            $this->brokerService,
+            $this->brokerRepository,
             $this->platformTopologyRegisterRepository
         );
 
@@ -302,13 +303,21 @@ class PlatformTopologyServiceTest extends TestCase
 
     public function testGetPlatformTopologySuccess(): void
     {
-
         $this->platform
             ->setParentId(1)
             ->setServerId(2);
 
         $this->registeredParent
             ->setServerId(1);
+
+        $brokerConfiguration = (new BrokerConfiguration())
+            ->setConfigurationKey('one_peer_retention_mode')
+            ->setConfigurationValue('no');
+
+        $this->brokerRepository
+            ->expects($this->any())
+            ->method('findByMonitoringServerAndParameterName')
+            ->willReturn([$brokerConfiguration]);
 
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -326,7 +335,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->proxyService,
             $this->engineConfigurationService,
             $this->monitoringServerService,
-            $this->brokerService,
+            $this->brokerRepository,
             $this->platformTopologyRegisterRepository
         );
 
@@ -335,21 +344,22 @@ class PlatformTopologyServiceTest extends TestCase
 
     public function testGetPlatformTopologyWithoutParentId(): void
     {
-        $this->platform
-            ->setServerId(2);
-
         $this->registeredParent
             ->setServerId(1);
 
-        $this->platformTopologyRepository
-            ->expects($this->at(0))
-            ->method('getPlatformTopology')
-            ->willReturn([$this->registeredParent]);
+        $brokerConfiguration = (new BrokerConfiguration())
+            ->setConfigurationKey('one_peer_retention_mode')
+            ->setConfigurationValue('no');
+
+        $this->brokerRepository
+            ->expects($this->any())
+            ->method('findByMonitoringServerAndParameterName')
+            ->willReturn([$brokerConfiguration]);
 
         $this->platformTopologyRepository
-            ->expects($this->at(1))
+            ->expects($this->once(0))
             ->method('getPlatformTopology')
-            ->willReturn([$this->platform]);
+            ->willReturn([$this->registeredParent]);
 
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
@@ -357,7 +367,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->proxyService,
             $this->engineConfigurationService,
             $this->monitoringServerService,
-            $this->brokerService,
+            $this->brokerRepository,
             $this->platformTopologyRegisterRepository
         );
 
@@ -366,12 +376,6 @@ class PlatformTopologyServiceTest extends TestCase
          */
         $this->assertIsArray($platformTopologyService->getPlatformTopology());
 
-        /**
-         * Poller Case
-         */
-        $this->expectException(PlatformException::class);
-        $this->expectExceptionMessage("the 'poller': 'poller1'@'1.1.1.2' isn't registered on any Central or Remote");
-        $platformTopologyService->getPlatformTopology();
     }
 
     public function testGetPlatformTopologyWithoutParentAddress(): void
@@ -396,7 +400,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->proxyService,
             $this->engineConfigurationService,
             $this->monitoringServerService,
-            $this->brokerService,
+            $this->brokerRepository,
             $this->platformTopologyRegisterRepository
         );
 
@@ -408,62 +412,8 @@ class PlatformTopologyServiceTest extends TestCase
         $platformTopologyService->getPlatformTopology();
     }
 
-    public function testGetPlatformTopologyWithoutServerId(): void
-    {
-        $this->registeredParent
-            ->setServerId(null);
-
-        $this->platform
-            ->setParentId(1)
-            ->setServerId(null);
-
-        $this->platformTopologyRepository
-            ->expects($this->at(0))
-            ->method('getPlatformTopology')
-            ->willReturn([$this->registeredParent]);
-
-        $this->platformTopologyRepository
-            ->expects($this->at(1))
-            ->method('getPlatformTopology')
-            ->willReturn([$this->platform]);
-
-        $this->platformTopologyRepository
-            ->expects($this->at(2))
-            ->method('findPlatformAddressById')
-            ->with($this->platform->getParentId())
-            ->willReturn('1.1.1.1');
-
-        $platformTopologyService = new PlatformTopologyService(
-            $this->platformTopologyRepository,
-            $this->platformInformationService,
-            $this->proxyService,
-            $this->engineConfigurationService,
-            $this->monitoringServerService,
-            $this->brokerService,
-            $this->platformTopologyRegisterRepository
-        );
-
-        $this->expectException(PlatformException::class);
-        $this->expectExceptionMessage(
-            "the 'central': 'Central'@'1.1.1.1' isn't fully registered, please finish installation using wizard"
-        );
-
-        try {
-            $platformTopologyService->getPlatformTopology();
-        } finally {
-            $this->expectException(PlatformException::class);
-            $this->expectExceptionMessage(
-                "the 'poller': 'poller1'@'1.1.1.2' isn't fully registered, please finish installation using wizard"
-            );
-            $platformTopologyService->getPlatformTopology();
-        }
-    }
-
     public function testGetPlatformTopologyRelationSetting(): void
     {
-        $brokerPeerRetention = (new Broker())
-            ->setIsPeerRetentionMode(true);
-
         $this->registeredParent
             ->setServerId(1);
 
@@ -482,18 +432,41 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('findPlatformAddressById')
             ->willReturn('1.1.1.1');
 
-        $this->brokerService
-            ->expects($this->at(3))
-            ->method('findConfigurationByMonitoringServerAndConfigKey')
-            ->willReturn($brokerPeerRetention);
+        $brokerConfiguration = (new BrokerConfiguration())
+            ->setConfigurationKey('one_peer_retention_mode')
+            ->setConfigurationValue('no');
 
-        $platformTopologyService = new PlatformTopologyService(
+        $brokerConfigurationPeerRetention = (new BrokerConfiguration())
+            ->setConfigurationKey('one_peer_retention_mode')
+            ->setConfigurationValue('yes');
+
+        $this->brokerRepository
+            ->expects($this->at(0))
+            ->method('findByMonitoringServerAndParameterName')
+            ->willReturn([$brokerConfiguration]);
+
+        $this->brokerRepository
+            ->expects($this->at(1))
+            ->method('findByMonitoringServerAndParameterName')
+            ->willReturn([$brokerConfiguration]);
+
+        $this->brokerRepository
+            ->expects($this->at(2))
+            ->method('findByMonitoringServerAndParameterName')
+            ->willReturn([$brokerConfigurationPeerRetention]);
+
+        $this->brokerRepository
+            ->expects($this->at(3))
+            ->method('findByMonitoringServerAndParameterName')
+            ->willReturn([$brokerConfigurationPeerRetention]);
+
+            $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
             $this->platformInformationService,
             $this->proxyService,
             $this->engineConfigurationService,
             $this->monitoringServerService,
-            $this->brokerService,
+            $this->brokerRepository,
             $this->platformTopologyRegisterRepository
         );
 

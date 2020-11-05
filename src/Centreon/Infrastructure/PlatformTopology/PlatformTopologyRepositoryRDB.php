@@ -175,18 +175,18 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function getPlatformTopology(): ?array
+    public function getPlatformTopology(): array
     {
         $statement = $this->db->query('SELECT * FROM `platform_topology`');
-        $platformCompleteTopology = [];
+        $platformTopology = [];
         foreach ($statement as $topology) {
             $platform = EntityCreator::createEntityByArray(Platform::class, $topology);
-            $platformCompleteTopology[] = $platform;
+            $platformTopology[] = $platform;
         }
-        if (!empty($platformCompleteTopology)) {
-            return $platformCompleteTopology;
+        if (!empty($platformTopology)) {
+            return $platformTopology;
         }
-        return null;
+        return $platformTopology;
     }
 
     public function findPlatformAddressById(int $serverId): ?string

@@ -28,9 +28,9 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
      *
      * @param integer $monitoringServerId
      * @param string $configKey
-     * @return Broker|null
+     * @return array
      */
-    public function findConfigurationByMonitoringServerAndConfigKey(int $monitoringServerId, string $configKey): ?Broker
+    public function findByMonitoringServerAndParameterName(int $monitoringServerId, string $configKey): array
     {
         $statement = $this->db->prepare("
             SELECT config_value, cfgbi.config_id AS id
@@ -54,10 +54,6 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
                 ->setConfigurationValue($result['config_value']);
         }
 
-        if (!empty($brokerConfigurations)) {
-            return (new Broker())
-                ->setBrokerConfigurations($brokerConfigurations);
-        }
-        return null;
+        return $brokerConfigurations;
     }
 }
