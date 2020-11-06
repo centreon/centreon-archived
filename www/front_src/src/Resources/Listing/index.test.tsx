@@ -297,8 +297,8 @@ describe(Listing, () => {
         result: [
           {
             author_name: 'admin',
-            start_time: '2020-02-28T09:16:16',
-            end_time: '2020-02-28T09:18:16',
+            start_time: '2020-02-28T08:16:16Z',
+            end_time: '2020-02-28T08:18:16Z',
             is_fixed: true,
             comment: 'Set by admin',
           },
@@ -339,7 +339,7 @@ describe(Listing, () => {
         result: [
           {
             author_name: 'admin',
-            entry_time: '2020-02-28T09:16:16',
+            entry_time: '2020-02-28T08:16:00Z',
             is_persistent_comment: true,
             is_sticky: false,
             comment: 'Set by admin',

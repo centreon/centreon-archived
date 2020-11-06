@@ -1,7 +1,17 @@
+import 'dayjs/locale/en';
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import dayjs from 'dayjs';
+import timezonePlugin from 'dayjs/plugin/timezone';
+import utcPlugin from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 jest.setTimeout(10000);
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
 
 document.createRange = () => ({
   setStart: () => {},

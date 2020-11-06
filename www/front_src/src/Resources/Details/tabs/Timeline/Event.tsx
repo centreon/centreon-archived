@@ -5,7 +5,7 @@ import EventIcon from '@material-ui/icons/Event';
 import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
 
-import { StatusChip } from '@centreon/ui';
+import { StatusChip, useLocaleDateTimeFormat } from '@centreon/ui';
 import { prop, isNil } from 'ramda';
 
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,6 @@ import {
   labelTries,
   labelNotification,
 } from '../../../translatedLabels';
-import { getFormattedTime, getFormattedDateTime } from '../../../dateTime';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
 import truncate from '../../../truncate';
@@ -86,9 +85,11 @@ interface Props {
   event: TimelineEvent;
 }
 
-const Date = ({ event }: Props): JSX.Element => (
-  <Typography variant="caption">{getFormattedTime(event.date)}</Typography>
-);
+const Date = ({ event }: Props): JSX.Element => {
+  const { toTime } = useLocaleDateTimeFormat();
+
+  return <Typography variant="caption">{toTime(event.date)}</Typography>;
+};
 
 const Content = ({ event }: Props): JSX.Element => {
   const { content } = event;
@@ -163,10 +164,11 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
 
 const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { toDateTime } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
   const getCaption = (): string => {
-    const formattedStartDate = getFormattedDateTime(event.startDate);
+    const formattedStartDate = toDateTime(event.startDate as string);
 
     const from = `${t(labelFrom)} ${formattedStartDate}`;
 
@@ -174,7 +176,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
       return from;
     }
 
-    const formattedEndDate = getFormattedDateTime(event.endDate);
+    const formattedEndDate = toDateTime(event.endDate);
 
     return `${from} ${t(labelTo)} ${formattedEndDate}`;
   };

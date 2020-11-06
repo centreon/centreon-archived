@@ -1,8 +1,8 @@
-import subHours from 'date-fns/subHours';
-import subDays from 'date-fns/subDays';
+import dayjs from 'dayjs';
 import { find, propEq } from 'ramda';
 
-import { timeFormat, dateTimeFormat, dateFormat } from '../../../Graph/format';
+import { timeFormat, dateTimeFormat } from '@centreon/ui';
+
 import {
   labelLast24h,
   labelLast7Days,
@@ -15,28 +15,28 @@ export interface TimePeriod {
   id: TimePeriodId;
   name: string;
   getStart: () => Date;
-  timeFormat: string;
+  dateTimeFormat: string;
 }
 
 const last24hPeriod: TimePeriod = {
   name: labelLast24h,
   id: 'last_24_h',
-  getStart: (): Date => subHours(Date.now(), 24),
-  timeFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
+  dateTimeFormat: timeFormat,
 };
 
 const last7Days: TimePeriod = {
   name: labelLast7Days,
   id: 'last_7_days',
-  getStart: (): Date => subDays(Date.now(), 7),
-  timeFormat: dateTimeFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
+  dateTimeFormat,
 };
 
 const last31Days: TimePeriod = {
   name: labelLast31Days,
   id: 'last_31_days',
-  getStart: (): Date => subDays(Date.now(), 31),
-  timeFormat: dateFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
+  dateTimeFormat,
 };
 
 const timePeriods: Array<TimePeriod> = [last24hPeriod, last7Days, last31Days];

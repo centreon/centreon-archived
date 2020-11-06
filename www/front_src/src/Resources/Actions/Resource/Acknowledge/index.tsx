@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { isNil } from 'ramda';
 import {
@@ -14,7 +15,6 @@ import {
 } from '../../../translatedLabels';
 import DialogAcknowledge from './Dialog';
 import { Resource } from '../../../models';
-import { useUserContext } from '../../../../Provider/UserContext';
 import { acknowledgeResources } from '../../api';
 
 const validationSchema = Yup.object().shape({

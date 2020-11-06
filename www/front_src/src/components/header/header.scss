@@ -192,6 +192,7 @@
        .iconmoon {
          &.icon-user {
            cursor: pointer;
+           margin-left: 16px;
           &:before {
             font-size: 2rem;
           }
