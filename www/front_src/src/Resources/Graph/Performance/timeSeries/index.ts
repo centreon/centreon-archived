@@ -16,7 +16,7 @@ import {
   find,
 } from 'ramda';
 
-import { Metric, TimeValue, GraphData, Line } from './models';
+import { Metric, TimeValue, GraphData, Line } from '../models';
 
 interface TimeTickWithMetrics {
   timeTick: string;
