@@ -32,28 +32,28 @@ class ResourceExternalLinks
     /**
      * @var string|null
      */
-    private $action_url;
+    private $actionUrl;
 
     /**
      * @var string|null
      */
-    private $notes_url;
+    private $notesUrl;
 
     /**
      * @return string|null
      */
     public function getActionUrl(): ?string
     {
-        return $this->action_url;
+        return $this->actionUrl;
     }
 
     /**
-     * @param string|null $action_url
+     * @param string|null $actionUrl
      * @return self
      */
-    public function setActionUrl(?string $action_url): self
+    public function setActionUrl(?string $actionUrl): self
     {
-        $this->action_url = $action_url;
+        $this->actionUrl = $actionUrl;
 
         return $this;
     }
@@ -63,16 +63,16 @@ class ResourceExternalLinks
      */
     public function getNotesUrl(): ?string
     {
-        return $this->notes_url;
+        return $this->notesUrl;
     }
 
     /**
-     * @param string|null $notes_url
+     * @param string|null $notesUrl
      * @return self
      */
-    public function setNotesUrl(?string $notes_url): self
+    public function setNotesUrl(?string $notesUrl): self
     {
-        $this->notes_url = $notes_url;
+        $this->notesUrl = $notesUrl;
 
         return $this;
     }
