@@ -69,7 +69,7 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendRequest(endpoint).then((graphData) => {
+    sendRequest('http://localhost:5000/mock/graph').then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);

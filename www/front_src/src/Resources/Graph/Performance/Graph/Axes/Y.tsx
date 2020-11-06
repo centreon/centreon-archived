@@ -23,36 +23,9 @@ const YAxes = ({
   graphHeight,
   graphWidth,
   base,
-  yScale,
+  leftScale,
+  rightScale,
 }: Props): JSX.Element => {
-  const [leftUnit, rightUnit] = getUnits(lines);
-
-  const leftUnitScale = React.useMemo(
-    () =>
-      scaleLinear<number>({
-        domain: [
-          getMin(getValuesForUnit({ lines, timeSeries, unit: leftUnit })) ?? 0,
-          getMax(getValuesForUnit({ lines, timeSeries, unit: leftUnit })) ?? 0,
-        ],
-        nice: true,
-        range: [graphHeight, 0],
-      }),
-    [timeSeries, lines, leftUnit, graphHeight],
-  );
-
-  const rightUnitScale = React.useMemo(
-    () =>
-      scaleLinear<number>({
-        domain: [
-          getMin(getValuesForUnit({ lines, timeSeries, unit: rightUnit })) ?? 0,
-          getMax(getValuesForUnit({ lines, timeSeries, unit: rightUnit })) ?? 0,
-        ],
-        nice: true,
-        range: [graphHeight, 0],
-      }),
-    [timeSeries, lines, rightUnit, graphHeight],
-  );
-
   const formatTick = ({ unit }) => (value): string => {
     if (isNil(value)) {
       return '';
@@ -61,7 +34,9 @@ const YAxes = ({
     return formatMetricValue({ value, unit, base }) as string;
   };
 
-  const multipleYAxes = !isNil(rightUnit);
+  const [leftUnit, rightUnit] = getUnits(lines);
+
+  const hasMultipleYAxes = !isNil(rightUnit);
 
   return (
     <>
@@ -73,15 +48,17 @@ const YAxes = ({
           dy: 4,
           dx: -2,
         })}
-        tickFormat={formatTick({ unit: multipleYAxes ? leftUnit : '' })}
-        scale={multipleYAxes ? leftUnitScale : yScale}
+        tickFormat={formatTick({ unit: hasMultipleYAxes ? '' : leftUnit })}
+        tickLength={2}
+        scale={leftScale}
       />
-      {multipleYAxes && (
+      {hasMultipleYAxes && (
         <AxisRight
           orientation="right"
           left={graphWidth}
           tickFormat={formatTick({ unit: rightUnit })}
-          scale={rightUnitScale}
+          tickLength={2}
+          scale={rightScale}
         />
       )}
     </>

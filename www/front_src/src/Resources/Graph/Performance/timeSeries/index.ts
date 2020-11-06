@@ -99,22 +99,14 @@ const getLineData = (graphData: GraphData): Array<Line> => {
   return map(toLine, graphData.metrics);
 };
 
-const getMin = (values): number | null => {
+const getMin = (values): number => {
   const min = Math.min(...values);
-
-  if (min === Infinity) {
-    return null;
-  }
 
   return min;
 };
 
-const getMax = (values): number | null => {
+const getMax = (values): number => {
   const max = Math.max(...values);
-
-  if (max === -Infinity) {
-    return null;
-  }
 
   return max;
 };
@@ -185,6 +177,14 @@ const getLineForMetric = ({
   return find(propEq('metric', metric), lines);
 };
 
+const getLineValues = ({ lines, timeSeries }): Array<number> => {
+  return pipe(
+    getUnits,
+    map((unit) => getValuesForUnit({ unit, lines, timeSeries })),
+    flatten,
+  )(lines);
+};
+
 export {
   getTimeSeries,
   getLineData,
@@ -198,4 +198,5 @@ export {
   getUnits,
   getDates,
   getLineForMetric,
+  getLineValues,
 };

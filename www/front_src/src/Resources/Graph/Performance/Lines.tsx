@@ -5,16 +5,25 @@ import { AreaClosed, LinePath, curveBasis } from '@visx/visx';
 
 import { fade } from '@material-ui/core';
 import { Line, TimeValue } from './models';
-import { getTime } from './timeSeries';
+import { getTime, getUnits } from './timeSeries';
 
 interface Props {
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
-  yScale;
+  leftScale;
+  rightScale;
   xScale;
 }
 
-const Lines = ({ xScale, yScale, timeSeries, lines }: Props): JSX.Element => {
+const Lines = ({
+  xScale,
+  leftScale,
+  rightScale,
+  timeSeries,
+  lines,
+}: Props): JSX.Element => {
+  const [leftUnit] = getUnits(lines);
+
   return (
     <>
       {lines.map(
@@ -27,6 +36,8 @@ const Lines = ({ xScale, yScale, timeSeries, lines }: Props): JSX.Element => {
           unit,
           highlight,
         }) => {
+          const yScale = unit === leftUnit ? leftScale : rightScale;
+
           const props = {
             data: timeSeries,
             unit,
@@ -36,6 +47,7 @@ const Lines = ({ xScale, yScale, timeSeries, lines }: Props): JSX.Element => {
             y: (timeValue): number => yScale(prop(metric, timeValue)) as number,
             x: (timeValue): number => xScale(getTime(timeValue)) as number,
             curve: curveBasis,
+            defined: (value): boolean => value[metric] !== null,
           };
 
           if (filled) {

@@ -28,7 +28,8 @@ const Axes = ({
   graphHeight,
   graphWidth,
   xScale,
-  yScale,
+  leftScale,
+  rightScale,
   xAxisTickFormat,
   base,
 }: Props): JSX.Element => {
@@ -55,7 +56,8 @@ const Axes = ({
         graphHeight={graphHeight}
         graphWidth={graphWidth}
         base={base}
-        yScale={yScale}
+        leftScale={leftScale}
+        rightScale={rightScale}
       />
     </>
   );

@@ -26,10 +26,12 @@ import { TimeValue, Line as LineModel } from '../models';
 import {
   getTime,
   getMin,
-  getMetricValues,
   getMax,
   getLineForMetric,
   getDates,
+  getLineValues,
+  getUnits,
+  getValuesForUnit,
 } from '../timeSeries';
 import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
@@ -94,21 +96,29 @@ const Graph = ({
     [graphWidth, timeSeries],
   );
 
-  const yScale = React.useMemo(() => {
-    const min = getMin(
-      timeSeries.map((timeValue) => getMin(getMetricValues(timeValue))),
-    );
+  const [leftUnit, rightUnit] = getUnits(lines);
 
-    const max = getMax(
-      timeSeries.map((timeValue) => getMax(getMetricValues(timeValue))),
-    );
+  const leftUnitScale = React.useMemo(() => {
+    const values = isNil(rightUnit)
+      ? getLineValues({ lines, timeSeries })
+      : getValuesForUnit({ lines, timeSeries, unit: leftUnit });
 
     return scaleLinear<number>({
-      domain: [min, max],
+      domain: [getMin(values), getMax(values)],
       nice: true,
-      range: [graphHeight, min === max ? graphHeight : 0],
+      range: [graphHeight, 0],
     });
-  }, [graphHeight, timeSeries]);
+  }, [timeSeries, lines, leftUnit, graphHeight]);
+
+  const rightUnitScale = React.useMemo(() => {
+    const values = getValuesForUnit({ lines, timeSeries, unit: rightUnit });
+
+    return scaleLinear<number>({
+      domain: [getMin(values), getMax(values)],
+      nice: true,
+      range: [graphHeight, 0],
+    });
+  }, [timeSeries, lines, rightUnit, graphHeight]);
 
   const bisectDate = bisector(identity).left;
 
@@ -207,7 +217,7 @@ const Graph = ({
       <svg width={width} height={height} ref={containerRef}>
         <Group left={margin.left} top={margin.top}>
           <MemoizedGridRows
-            scale={yScale}
+            scale={leftUnitScale}
             width={graphWidth}
             height={graphHeight}
             stroke={grey[100]}
@@ -223,7 +233,8 @@ const Graph = ({
             graphHeight={graphHeight}
             graphWidth={graphWidth}
             lines={lines}
-            yScale={yScale}
+            leftScale={leftUnitScale}
+            rightScale={rightUnitScale}
             xScale={xScale}
             xAxisTickFormat={xAxisTickFormat}
             timeSeries={timeSeries}
@@ -231,7 +242,8 @@ const Graph = ({
           <MemoizedLines
             timeSeries={timeSeries}
             lines={lines}
-            yScale={yScale}
+            leftScale={leftUnitScale}
+            rightScale={rightUnitScale}
             xScale={xScale}
           />
           <MemoizedBar
