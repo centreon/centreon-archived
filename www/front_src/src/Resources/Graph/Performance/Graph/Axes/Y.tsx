@@ -31,8 +31,8 @@ const YAxes = ({
     () =>
       scaleLinear<number>({
         domain: [
-          getMin(getValuesForUnit({ lines, timeSeries, unit: leftUnit })),
-          getMax(getValuesForUnit({ lines, timeSeries, unit: leftUnit })),
+          getMin(getValuesForUnit({ lines, timeSeries, unit: leftUnit })) ?? 0,
+          getMax(getValuesForUnit({ lines, timeSeries, unit: leftUnit })) ?? 0,
         ],
         nice: true,
         range: [graphHeight, 0],

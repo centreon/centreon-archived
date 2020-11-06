@@ -36,12 +36,12 @@ const Lines = ({ xScale, yScale, timeSeries, lines }: Props): JSX.Element => {
             y: (timeValue): number => yScale(prop(metric, timeValue)) as number,
             x: (timeValue): number => xScale(getTime(timeValue)) as number,
             curve: curveBasis,
-            yScale,
           };
 
           if (filled) {
             return (
               <AreaClosed<TimeValue>
+                yScale={yScale}
                 key={metric}
                 fill={
                   transparency

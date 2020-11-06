@@ -94,22 +94,21 @@ const Graph = ({
     [graphWidth, timeSeries],
   );
 
-  const yScale = React.useMemo(
-    () =>
-      scaleLinear<number>({
-        domain: [
-          getMin(
-            timeSeries.map((timeValue) => getMin(getMetricValues(timeValue))),
-          ),
-          getMax(
-            timeSeries.map((timeValue) => getMax(getMetricValues(timeValue))),
-          ),
-        ],
-        nice: true,
-        range: [graphHeight, 0],
-      }),
-    [graphHeight, timeSeries],
-  );
+  const yScale = React.useMemo(() => {
+    const min = getMin(
+      timeSeries.map((timeValue) => getMin(getMetricValues(timeValue))),
+    );
+
+    const max = getMax(
+      timeSeries.map((timeValue) => getMax(getMetricValues(timeValue))),
+    );
+
+    return scaleLinear<number>({
+      domain: [min, max],
+      nice: true,
+      range: [graphHeight, min === max ? graphHeight : 0],
+    });
+  }, [graphHeight, timeSeries]);
 
   const bisectDate = bisector(identity).left;
 

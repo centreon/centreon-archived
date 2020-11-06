@@ -95,7 +95,7 @@
     "dayjs": "^1.9.1",
     "dom-serializer": "^1.0.1",
     "dompurify": "^2.0.12",
-    "formik": "^2.1.5",
+    "formik": "2.2.1",
     "html-react-parser": "^0.13.0",
     "i18next": "^19.6.3",
     "install": "^0.13.0",

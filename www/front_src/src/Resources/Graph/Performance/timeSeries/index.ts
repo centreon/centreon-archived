@@ -99,12 +99,24 @@ const getLineData = (graphData: GraphData): Array<Line> => {
   return map(toLine, graphData.metrics);
 };
 
-const getMin = (values): number => {
-  return Math.min(...values);
+const getMin = (values): number | null => {
+  const min = Math.min(...values);
+
+  if (min === Infinity) {
+    return null;
+  }
+
+  return min;
 };
 
-const getMax = (values): number => {
-  return Math.max(...values);
+const getMax = (values): number | null => {
+  const max = Math.max(...values);
+
+  if (max === -Infinity) {
+    return null;
+  }
+
+  return max;
 };
 
 const getTime = (timeValue): number => {
