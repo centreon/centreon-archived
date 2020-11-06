@@ -45,33 +45,54 @@ class BrokerConfiguration
      */
     private $configurationValue;
 
+    /**
+     * @return integer|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @param integer|null $id
+     * @return self
+     */
     public function setId(?int $id): self
     {
         $this->id = $id;
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getConfigurationKey(): ?string
     {
         return $this->configurationKey;
     }
 
+    /**
+     * @param string|null $configurationKey
+     * @return self
+     */
     public function setConfigurationKey(?string $configurationKey): self
     {
         $this->configurationKey = $configurationKey;
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getConfigurationValue(): ?string
     {
         return $this->configurationValue;
     }
 
+    /**
+     * @param string|null $configurationValue
+     * @return self
+     */
     public function setConfigurationValue(?string $configurationValue): self
     {
         $this->configurationValue = $configurationValue;
