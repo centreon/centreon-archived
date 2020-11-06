@@ -43,14 +43,10 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Centreon\Domain\HostConfiguration\HostConfigurationService;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\ServiceConfiguration\ServiceConfigurationService;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
-use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 
 /**
  * Resource APIs for the Unified View page
@@ -140,16 +136,6 @@ class MonitoringResourceController extends AbstractController
     protected $iconUrlNormalizer;
 
     /**
-     * @var HostConfigurationServiceInterface
-     */
-    protected $hostConfiguration;
-
-    /**
-     * @var ServiceConfigurationServiceInterface
-     */
-    protected $serviceConfiguration;
-
-    /**
      * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
@@ -159,16 +145,12 @@ class MonitoringResourceController extends AbstractController
         MonitoringServiceInterface $monitoringService,
         ResourceServiceInterface $resource,
         UrlGeneratorInterface $router,
-        IconUrlNormalizer $iconUrlNormalizer,
-        HostConfigurationServiceInterface $hostConfigurationService,
-        ServiceConfigurationServiceInterface $serviceConfigurationService
+        IconUrlNormalizer $iconUrlNormalizer
     ) {
         $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
         $this->iconUrlNormalizer = $iconUrlNormalizer;
-        $this->hostConfiguration = $hostConfigurationService;
-        $this->serviceConfiguration = $serviceConfigurationService;
     }
 
     /**
