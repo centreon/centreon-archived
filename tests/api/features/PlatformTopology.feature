@@ -293,29 +293,6 @@ Feature:
             {"message":"Cannot register the 'poller' platform : 'inconsistent_parent_type'@'6.6.6.1' behind a 'poller' platform"}
             """
 
-        # Register a remote platform
-        When I send a POST request to '/beta/platform/topology' with body:
-            """
-            {
-                "name": "my poller 3",
-                "type": "poller",
-                "address": "1.10.10.1",
-                "parent_address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "201"
-
-        # Create the Central into platform topology table
-        When I send a POST request to '/beta/platform/topology' with body:
-            """
-            {
-                "name": "Central",
-                "type": "central",
-                "address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "201"
-
         # Actually we can't have server_id because the register is not fully complete (wizard not executed)
         # So we can't add pollers or remote to test edges.
         When I send a GET request to "/beta/platform/topology"
@@ -334,7 +311,24 @@ Feature:
                             "label": "Central",
                             "metadata": {
                                 "centreon-id": "1",
+                                "hostname": "central.test.localhost.localdomain",
                                 "address": "1.1.1.10"
+                            }
+                        },
+                        "2": {
+                            "type": "poller",
+                            "label": "my_poller",
+                            "metadata": {
+                                "hostname": "poller.test.localhost.localdomain",
+                                "address": "1.1.1.1"
+                            }
+                        },
+                        "3": {
+                            "type": "poller",
+                            "label": "my_poller_2",
+                            "metadata": {
+                                "hostname": "poller2.test.localhost.localdomain",
+                                "address": "1.1.1.2"
                             }
                         }
                     },
