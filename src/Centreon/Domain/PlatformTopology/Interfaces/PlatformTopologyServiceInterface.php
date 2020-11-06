@@ -51,8 +51,8 @@ interface PlatformTopologyServiceInterface
     /**
      * Get a topology with detailed nodes
      *
-     * @return array
-     * @throws PlatformTopologyException
+     * @return Platform[]
+     * @throws PlatformException
      * @throws EntityNotFoundException
      */
     public function getPlatformTopology(): array;

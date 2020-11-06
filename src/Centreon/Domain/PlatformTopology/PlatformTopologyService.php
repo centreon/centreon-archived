@@ -594,7 +594,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
                 $platform->setParentAddress($platformParentAddress);
             }
-            if($platform->getServerId() !== null) {
+            if ($platform->getServerId() !== null) {
                 $brokerConfigurations = $this->brokerRepository->findByMonitoringServerAndParameterName(
                     $platform->getServerId(),
                     self::BROKER_PEER_RETENTION
@@ -618,7 +618,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     }
                 }
             }
-
         }
         return $PlatformTopology;
     }

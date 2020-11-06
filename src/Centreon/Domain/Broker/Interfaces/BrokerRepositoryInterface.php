@@ -23,13 +23,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Broker\Interfaces;
 
+use Centreon\Domain\Broker\BrokerConfiguration;
 
 interface BrokerRepositoryInterface
 {
     /**
      * @param integer $monitoringServerId
      * @param string $configKey
-     * @return array
+     * @return BrokerConfiguration[]
      */
     public function findByMonitoringServerAndParameterName(
         int $monitoringServerId,

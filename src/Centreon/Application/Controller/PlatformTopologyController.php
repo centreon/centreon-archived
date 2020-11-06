@@ -147,7 +147,7 @@ class PlatformTopologyController extends AbstractController
         try {
             // Get the entire topology of the platform as an array of PlatformTopology instances
             $platformTopology = $this->platformTopologyService->getPlatformTopology();
-            $edges =  [];
+            $edges = [];
             $nodes = [];
             //Format the PlatformTopology into a Json Graph Format
             foreach ($platformTopology as $platform) {

@@ -49,7 +49,7 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
      *
      * @param integer $monitoringServerId
      * @param string $configKey
-     * @return array
+     * @return BrokerConfiguration[]
      */
     public function findByMonitoringServerAndParameterName(int $monitoringServerId, string $configKey): array
     {
