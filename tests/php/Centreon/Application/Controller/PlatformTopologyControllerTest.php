@@ -76,11 +76,6 @@ class PlatformTopologyControllerTest extends TestCase
      */
     protected $platformTopologyService;
 
-    /**
-     * @var BrokerService&MockObject $brokerService
-     */
-    protected $brokerService;
-
     protected $container;
 
     protected $request;
@@ -133,7 +128,6 @@ class PlatformTopologyControllerTest extends TestCase
         ]);
 
         $this->platformTopologyService = $this->createMock(PlatformTopologyServiceInterface::class);
-        $this->brokerService = $this->createMock(BrokerServiceInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -313,41 +307,5 @@ class PlatformTopologyControllerTest extends TestCase
             $view,
             View::create(['message' => 'Platform Topology not found'], Response::HTTP_NOT_FOUND)
         );
-    }
-
-    public function testGetPlatformJsonGraphBadRequest(): void
-    {
-        $badPollerPlatform = (new Platform())
-            ->setId(3)
-            ->setName('Poller')
-            ->setHostname('poller.poller1')
-            ->setType(Platform::TYPE_POLLER)
-            ->setAddress('192.168.1.2')
-            ->setParentAddress('192.168.1.1')
-            ->setParentId(1)
-            ->setServerId(null)
-            ->setRelation(Platform::NORMAL_RELATION);
-
-        $this->platformTopologyService->expects($this->any())
-            ->method('getPlatformTopology')
-            ->will($this->throwException(new PlatformException(
-                sprintf(
-                    _("the '%s': '%s'@'%s' isn't fully registered, please finish installation using wizard"),
-                    $badPollerPlatform->getType(),
-                    $badPollerPlatform->getName(),
-                    $badPollerPlatform->getAddress()
-                )
-            )));
-            $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
-            $platformTopologyController->setContainer($this->container);
-
-            $view = $platformTopologyController->getPlatformJsonGraph();
-            $this->assertEquals($view, View::create(
-                [
-                    'message' => "the 'poller': 'Poller'@'192.168.1.2' isn't fully registered," .
-                    " please finish installation using wizard"
-                ],
-                Response::HTTP_BAD_REQUEST
-            ));
     }
 }

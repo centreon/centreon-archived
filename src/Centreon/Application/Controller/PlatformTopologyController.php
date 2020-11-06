@@ -174,8 +174,6 @@ class PlatformTopologyController extends AbstractController
             )->setContext($context);
         } catch (EntityNotFoundException $e) {
             return $this->view(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (\Throwable $e) {
-            return $this->view(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }
