@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import * as React from 'react';
 
 import dayjs from 'dayjs';
@@ -110,9 +111,12 @@ const DialogDowntime = ({
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
   class Adapter extends DayjsAdapter {
-    // eslint-disable-next-line class-methods-use-this
     public format(date, formatString): string {
       return dayjs(date).tz(timezone).format(formatString);
+    }
+
+    public date(value): dayjs.Dayjs {
+      return dayjs(value).tz(timezone);
     }
   }
 

@@ -3,6 +3,7 @@ import * as React from 'react';
 import 'dayjs/locale/en';
 import 'dayjs/locale/pt';
 import 'dayjs/locale/fr';
+import 'dayjs/locale/es';
 
 import dayjs from 'dayjs';
 import timezonePlugin from 'dayjs/plugin/timezone';
