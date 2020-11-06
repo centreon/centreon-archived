@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 /**
- * Resource Links Uris model for resource repository
+ * Resource external Links model for resource repository
  *
  * @package Centreon\Domain\Monitoring
  */
