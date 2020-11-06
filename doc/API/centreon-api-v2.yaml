@@ -469,6 +469,7 @@ paths:
         * type
         * status_code
         * status
+        * action_url
         * parent_name
         * parent_status
         * severity_level
