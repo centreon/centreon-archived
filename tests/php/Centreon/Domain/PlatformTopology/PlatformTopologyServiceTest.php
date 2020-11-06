@@ -375,7 +375,6 @@ class PlatformTopologyServiceTest extends TestCase
          * Central Case
          */
         $this->assertIsArray($platformTopologyService->getPlatformTopology());
-
     }
 
     public function testGetPlatformTopologyWithoutParentAddress(): void
