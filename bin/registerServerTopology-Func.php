@@ -225,11 +225,11 @@ function formatResponseMessage(string $message, string $type): string
     $date = (new DateTime())->format(DateTime::ATOM);
     switch ($type) {
         case 'success':
-            $responseMessage = $date . ' [INFO]: ' . $message . PHP_EOL;
+            $responseMessage = PHP_EOL . $date . ' [INFO]: ' . $message . PHP_EOL . PHP_EOL;
             break;
         case 'error':
         default:
-            $responseMessage = $date . ' [ERROR]: ' . $message . PHP_EOL;
+            $responseMessage = PHP_EOL . $date . ' [ERROR]: ' . $message . PHP_EOL . PHP_EOL;
             break;
     }
 
@@ -302,10 +302,9 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
         )
     ) {
         throw new \InvalidArgumentException(
-            PHP_EOL .
-            'missing value: API_USERNAME, API_PASSWORD, CURRENT_NODE_TYPE,
-             TARGET_NODE_ADDRESS and CURRENT_NODE_NAME are mandatories'
-            . PHP_EOL . $helpMessage
+            'missing value:
+            API_USERNAME, API_PASSWORD, CURRENT_NODE_TYPE, TARGET_NODE_ADDRESS and CURRENT_NODE_NAME are mandatories'
+            . PHP_EOL . PHP_EOL . $helpMessage
         );
     }
 
@@ -316,8 +315,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
 
     if (!$configOptions['CURRENT_NODE_TYPE']) {
         throw new \InvalidArgumentException(
-            "CURRENT_NODE_TYPE must be one of those value"
-            . PHP_EOL . "Poller, Remote, MAP, MBI" . PHP_EOL
+            "CURRENT_NODE_TYPE must be one of those values: Poller, Remote, MAP, MBI"
         );
     }
 
@@ -329,7 +327,7 @@ function setConfigOptionsFromTemplate(array $options, string $helpMessage): arra
     if (isset($options['CURRENT_NODE_ADDRESS'])) {
         $configOptions['CURRENT_NODE_ADDRESS'] = filter_var($options['CURRENT_NODE_ADDRESS'], FILTER_VALIDATE_DOMAIN);
         if (!$configOptions['CURRENT_NODE_ADDRESS']) {
-            throw new \InvalidArgumentException(PHP_EOL . "Bad CURRENT_NODE_ADDRESS Format" . PHP_EOL);
+            throw new \InvalidArgumentException("Bad CURRENT_NODE_ADDRESS Format");
         }
     }
 

@@ -91,7 +91,6 @@
     "clsx": "^1.1.1",
     "connected-react-router": "^6.8.0",
     "d3-array": "^2.8.0",
-    "d3-time-format": "^3.0.0",
     "dayjs": "^1.9.1",
     "dom-serializer": "^1.0.1",
     "dompurify": "^2.0.12",
