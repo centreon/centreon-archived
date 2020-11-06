@@ -305,9 +305,6 @@ Feature:
             """
         Then the response code should be "201"
 
-    Scenario: Get a Platform Topology
-        Given I am logged in
-
         # Create the Central into platform topology table
         When I send a POST request to '/beta/platform/topology' with body:
             """
@@ -336,7 +333,8 @@ Feature:
                             "type": "central",
                             "label": "Central",
                             "metadata": {
-                                "centreon-id": "1"
+                                "centreon-id": "1",
+                                "address": "1.1.1.10"
                             }
                         }
                     },

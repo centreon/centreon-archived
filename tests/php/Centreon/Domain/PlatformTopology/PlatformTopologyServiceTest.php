@@ -460,7 +460,7 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('findByMonitoringServerAndParameterName')
             ->willReturn([$brokerConfigurationPeerRetention]);
 
-            $platformTopologyService = new PlatformTopologyService(
+        $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
             $this->platformInformationService,
             $this->proxyService,
