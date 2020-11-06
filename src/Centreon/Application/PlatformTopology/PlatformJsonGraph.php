@@ -73,6 +73,9 @@ class PlatformJsonGraph
         if ($platform->getHostname() !== null) {
             $metadata['hostname'] = $platform->getHostname();
         }
+        if ($platform->getAddress() !== null) {
+            $metadata['address'] = $platform->getAddress();
+        }
         $this->setMetadata($metadata);
     }
 

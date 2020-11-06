@@ -70,7 +70,7 @@ class BrokerRepositoryRDB implements BrokerRepositoryInterface
         $brokerConfigurations = [];
         while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $brokerConfigurations[] = (new BrokerConfiguration())
-                ->setId($result['id'])
+                ->setId((int) $result['id'])
                 ->setConfigurationKey($configKey)
                 ->setConfigurationValue($result['config_value']);
         }

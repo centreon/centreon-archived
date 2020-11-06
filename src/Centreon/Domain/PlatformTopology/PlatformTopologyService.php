@@ -594,29 +594,31 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
                 $platform->setParentAddress($platformParentAddress);
             }
-
-            $brokerConfigurations = $this->brokerRepository->findByMonitoringServerAndParameterName(
-                $platform->getServerId(),
-                self::BROKER_PEER_RETENTION
-            );
-
-            if (empty($brokerConfigurations)) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _('No entry for %s key in your Broker configuration'),
-                        self::BROKER_PEER_RETENTION
-                    )
+            if($platform->getServerId() !== null) {
+                $brokerConfigurations = $this->brokerRepository->findByMonitoringServerAndParameterName(
+                    $platform->getServerId(),
+                    self::BROKER_PEER_RETENTION
                 );
-            }
 
-            foreach ($brokerConfigurations as $brokerConfiguration) {
-                if ($brokerConfiguration->getConfigurationValue() === "yes") {
-                    $platform->setRelation(Platform::PEER_RETENTION_RELATION);
-                    break;
-                } else {
-                    $platform->setRelation(Platform::NORMAL_RELATION);
+                if (empty($brokerConfigurations)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('No entry for %s key in your Broker configuration'),
+                            self::BROKER_PEER_RETENTION
+                        )
+                    );
+                }
+
+                foreach ($brokerConfigurations as $brokerConfiguration) {
+                    if ($brokerConfiguration->getConfigurationValue() === "yes") {
+                        $platform->setRelation(Platform::PEER_RETENTION_RELATION);
+                        break;
+                    } else {
+                        $platform->setRelation(Platform::NORMAL_RELATION);
+                    }
                 }
             }
+
         }
         return $PlatformTopology;
     }
