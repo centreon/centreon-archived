@@ -292,20 +292,4 @@ class PlatformTopologyControllerTest extends TestCase
             )->setContext($context)
         );
     }
-
-    public function testGetPlatformJsonGraphWithEmptyPlatform(): void
-    {
-        $this->platformTopologyService->expects($this->any())
-            ->method('getPlatformTopology')
-            ->will($this->throwException(new EntityNotFoundException('Platform Topology not found')));
-
-        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
-        $platformTopologyController->setContainer($this->container);
-
-        $view = $platformTopologyController->getPlatformJsonGraph();
-        $this->assertEquals(
-            $view,
-            View::create(['message' => 'Platform Topology not found'], Response::HTTP_NOT_FOUND)
-        );
-    }
 }
