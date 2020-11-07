@@ -104,14 +104,14 @@ describe('timeSeries', () => {
     });
   });
 
-  describe('getValuesForUnit', () => {
+  describe('getMetricValuesForUnit', () => {
     it('returns the values in the given time series corresponding to the given line unit', () => {
       const series = timeSeries.getTimeSeries(graphData);
       const lines = timeSeries.getLineData(graphData);
       const unit = 'ms';
 
       expect(
-        timeSeries.getValuesForUnit({ timeSeries: series, lines, unit }),
+        timeSeries.getMetricValuesForUnit({ timeSeries: series, lines, unit }),
       ).toEqual([0, 1, 0.5, 3]);
     });
   });
@@ -135,8 +135,8 @@ describe('timeSeries', () => {
     });
   });
 
-  describe('getLineForMetrics', () => {
-    it('returns the line corresponding to the given metrics within the given lines', () => {
+  describe('getLineForMetric', () => {
+    it('returns the line corresponding to the given metrics', () => {
       const lines = timeSeries.getLineData(graphData);
 
       expect(timeSeries.getLineForMetric({ lines, metric: 'rta' })).toEqual({
@@ -151,6 +151,17 @@ describe('timeSeries', () => {
         transparency: 80,
         unit: 'ms',
       });
+    });
+  });
+
+  describe('getMetricValuesForLines', () => {
+    it('returns the metric values for the given lines within the given time series', () => {
+      const lines = timeSeries.getLineData(graphData);
+      const series = timeSeries.getTimeSeries(graphData);
+
+      expect(
+        timeSeries.getMetricValuesForLines({ lines, timeSeries: series }),
+      ).toEqual([0, 1, 0.5, 3]);
     });
   });
 });

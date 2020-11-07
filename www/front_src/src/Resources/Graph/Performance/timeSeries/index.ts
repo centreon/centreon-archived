@@ -100,15 +100,11 @@ const getLineData = (graphData: GraphData): Array<Line> => {
 };
 
 const getMin = (values): number => {
-  const min = Math.min(...values);
-
-  return min;
+  return Math.min(...values);
 };
 
 const getMax = (values): number => {
-  const max = Math.max(...values);
-
-  return max;
+  return Math.max(...values);
 };
 
 const getTime = (timeValue): number => {
@@ -140,7 +136,7 @@ interface ValuesForUnitProps {
   unit: string;
 }
 
-const getValuesForUnit = ({
+const getMetricValuesForUnit = ({
   lines,
   timeSeries,
   unit,
@@ -177,10 +173,10 @@ const getLineForMetric = ({
   return find(propEq('metric', metric), lines);
 };
 
-const getLineValues = ({ lines, timeSeries }): Array<number> => {
+const getMetricValuesForLines = ({ lines, timeSeries }): Array<number> => {
   return pipe(
     getUnits,
-    map((unit) => getValuesForUnit({ unit, lines, timeSeries })),
+    map((unit) => getMetricValuesForUnit({ unit, lines, timeSeries })),
     flatten,
   )(lines);
 };
@@ -194,9 +190,9 @@ export {
   getMetrics,
   getValueForMetric,
   getMetricValues,
-  getValuesForUnit,
+  getMetricValuesForUnit,
   getUnits,
   getDates,
   getLineForMetric,
-  getLineValues,
+  getMetricValuesForLines,
 };

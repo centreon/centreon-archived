@@ -3,6 +3,7 @@ import * as React from 'react';
 import { AxisBottom } from '@visx/visx';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { Line, TimeValue } from '../../models';
 import YAxes from './Y';
 
@@ -16,8 +17,9 @@ interface Props {
   lines: Array<Line>;
   graphHeight: number;
   graphWidth: number;
-  xScale;
-  yScale;
+  leftScale: ScaleLinear<number, number>;
+  rightScale: ScaleLinear<number, number>;
+  xScale: ScaleTime<number, number>;
   xAxisTickFormat: string;
   base: number;
 }
@@ -27,9 +29,9 @@ const Axes = ({
   lines,
   graphHeight,
   graphWidth,
-  xScale,
   leftScale,
   rightScale,
+  xScale,
   xAxisTickFormat,
   base,
 }: Props): JSX.Element => {
@@ -53,7 +55,6 @@ const Axes = ({
       <YAxes
         lines={lines}
         timeSeries={timeSeries}
-        graphHeight={graphHeight}
         graphWidth={graphWidth}
         base={base}
         leftScale={leftScale}

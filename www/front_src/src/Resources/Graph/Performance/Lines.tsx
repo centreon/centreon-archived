@@ -4,6 +4,8 @@ import { prop } from 'ramda';
 import { AreaClosed, LinePath, curveBasis } from '@visx/visx';
 
 import { fade } from '@material-ui/core';
+import { isNil } from 'lodash';
+import { ScaleLinear } from 'd3-scale';
 import { Line, TimeValue } from './models';
 import { getTime, getUnits } from './timeSeries';
 
@@ -22,7 +24,9 @@ const Lines = ({
   timeSeries,
   lines,
 }: Props): JSX.Element => {
-  const [leftUnit] = getUnits(lines);
+  const [, secondUnit, thirdUnit] = getUnits(lines);
+
+  const hasMoreThanTwoUnits = !isNil(thirdUnit);
 
   return (
     <>
@@ -36,7 +40,15 @@ const Lines = ({
           unit,
           highlight,
         }) => {
-          const yScale = unit === leftUnit ? leftScale : rightScale;
+          const getYScale = (): ScaleLinear<number, number> => {
+            if (hasMoreThanTwoUnits || unit !== secondUnit) {
+              return leftScale;
+            }
+
+            return rightScale;
+          };
+
+          const yScale = getYScale();
 
           const props = {
             data: timeSeries,

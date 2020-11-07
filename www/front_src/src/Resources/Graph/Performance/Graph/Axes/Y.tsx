@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-import { scaleLinear, AxisRight, AxisLeft } from '@visx/visx';
+import { AxisRight, AxisLeft } from '@visx/visx';
 import { isNil } from 'ramda';
+import { ScaleLinear } from 'd3-scale';
 
-import { getUnits, getValuesForUnit, getMin, getMax } from '../../timeSeries';
+import { getUnits } from '../../timeSeries';
 import formatMetricValue from '../../formatMetricValue';
 import { commonTickLabelProps } from '.';
 import { Line, TimeValue } from '../../models';
@@ -11,16 +12,14 @@ import { Line, TimeValue } from '../../models';
 interface Props {
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
-  graphHeight: number;
   graphWidth: number;
   base: number;
-  yScale;
+  leftScale: ScaleLinear<number, number>;
+  rightScale: ScaleLinear<number, number>;
 }
 
 const YAxes = ({
   lines,
-  timeSeries,
-  graphHeight,
   graphWidth,
   base,
   leftScale,
@@ -34,9 +33,10 @@ const YAxes = ({
     return formatMetricValue({ value, unit, base }) as string;
   };
 
-  const [leftUnit, rightUnit] = getUnits(lines);
+  const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
-  const hasMultipleYAxes = !isNil(rightUnit);
+  const hasMoreThanTwoUnits = !isNil(thirdUnit);
+  const hasTwoUnits = !isNil(secondUnit) && !hasMoreThanTwoUnits;
 
   return (
     <>
@@ -48,15 +48,15 @@ const YAxes = ({
           dy: 4,
           dx: -2,
         })}
-        tickFormat={formatTick({ unit: hasMultipleYAxes ? '' : leftUnit })}
+        tickFormat={formatTick({ unit: hasMoreThanTwoUnits ? '' : firstUnit })}
         tickLength={2}
         scale={leftScale}
       />
-      {hasMultipleYAxes && (
+      {hasTwoUnits && (
         <AxisRight
           orientation="right"
           left={graphWidth}
-          tickFormat={formatTick({ unit: rightUnit })}
+          tickFormat={formatTick({ unit: secondUnit })}
           tickLength={2}
           scale={rightScale}
         />

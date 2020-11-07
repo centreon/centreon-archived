@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { reject, pipe, equals, keys, isNil, isEmpty, identity } from 'ramda';
+import { equals, isNil, isEmpty, identity } from 'ramda';
 import {
   Line,
   Bar,
@@ -29,9 +29,10 @@ import {
   getMax,
   getLineForMetric,
   getDates,
-  getLineValues,
   getUnits,
-  getValuesForUnit,
+  getMetricValuesForUnit,
+  getMetrics,
+  getMetricValuesForLines,
 } from '../timeSeries';
 import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
@@ -46,7 +47,7 @@ const MemoizedGridColumns = React.memo(GridColumns, propsAreEqual);
 const MemoizedGridRows = React.memo(GridRows, propsAreEqual);
 const MemoizedLines = React.memo(Lines, propsAreEqual);
 
-const margin = { top: 10, right: 40, bottom: 30, left: 40 };
+const margin = { top: 10, right: 45, bottom: 30, left: 45 };
 
 interface Props {
   width: number;
@@ -96,36 +97,40 @@ const Graph = ({
     [graphWidth, timeSeries],
   );
 
-  const [leftUnit, rightUnit] = getUnits(lines);
+  const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
-  const leftUnitScale = React.useMemo(() => {
-    const values = isNil(rightUnit)
-      ? getLineValues({ lines, timeSeries })
-      : getValuesForUnit({ lines, timeSeries, unit: leftUnit });
-
-    return scaleLinear<number>({
-      domain: [getMin(values), getMax(values)],
-      nice: true,
-      range: [graphHeight, 0],
-    });
-  }, [timeSeries, lines, leftUnit, graphHeight]);
-
-  const rightUnitScale = React.useMemo(() => {
-    const values = getValuesForUnit({ lines, timeSeries, unit: rightUnit });
+  const leftScale = React.useMemo(() => {
+    const values = isNil(thirdUnit)
+      ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
+      : getMetricValuesForLines({ lines, timeSeries });
 
     return scaleLinear<number>({
       domain: [getMin(values), getMax(values)],
       nice: true,
       range: [graphHeight, 0],
     });
-  }, [timeSeries, lines, rightUnit, graphHeight]);
+  }, [timeSeries, lines, firstUnit, graphHeight]);
+
+  const rightScale = React.useMemo(() => {
+    const values = getMetricValuesForUnit({
+      lines,
+      timeSeries,
+      unit: secondUnit,
+    });
+
+    return scaleLinear<number>({
+      domain: [getMin(values), getMax(values)],
+      nice: true,
+      range: [graphHeight, 0],
+    });
+  }, [timeSeries, lines, secondUnit, graphHeight]);
 
   const bisectDate = bisector(identity).left;
 
   const getTooltipData = (index: number): JSX.Element | undefined => {
     const timeValue = timeSeries[index] as TimeValue;
 
-    const metrics = pipe(keys, reject(equals('timeTick')))(timeValue);
+    const metrics = getMetrics(timeValue);
 
     const metricsToDisplay = metrics.filter((metric) => {
       const line = getLineForMetric({ lines, metric });
@@ -192,11 +197,8 @@ const Graph = ({
     },
     [showTooltip, containerBounds, lines],
   );
-  const tooltipStyles = {
-    ...defaultStyles,
-    opacity: 0.8,
-    padding: 12,
-  };
+
+  const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   return (
     <div
@@ -209,7 +211,7 @@ const Graph = ({
           key={Math.random()}
           top={tooltipTop}
           left={tooltipLeft}
-          style={tooltipStyles}
+          style={{ ...defaultStyles, opacity: 0.8, padding: 12 }}
         >
           {tooltipData}
         </TooltipWithBounds>
@@ -217,7 +219,7 @@ const Graph = ({
       <svg width={width} height={height} ref={containerRef}>
         <Group left={margin.left} top={margin.top}>
           <MemoizedGridRows
-            scale={leftUnitScale}
+            scale={leftScale}
             width={graphWidth}
             height={graphHeight}
             stroke={grey[100]}
@@ -233,8 +235,8 @@ const Graph = ({
             graphHeight={graphHeight}
             graphWidth={graphWidth}
             lines={lines}
-            leftScale={leftUnitScale}
-            rightScale={rightUnitScale}
+            leftScale={leftScale}
+            rightScale={rightScale}
             xScale={xScale}
             xAxisTickFormat={xAxisTickFormat}
             timeSeries={timeSeries}
@@ -242,8 +244,8 @@ const Graph = ({
           <MemoizedLines
             timeSeries={timeSeries}
             lines={lines}
-            leftScale={leftUnitScale}
-            rightScale={rightUnitScale}
+            leftScale={leftScale}
+            rightScale={rightScale}
             xScale={xScale}
           />
           <MemoizedBar
@@ -257,8 +259,8 @@ const Graph = ({
           />
           {tooltipData && (
             <Line
-              from={{ x: (tooltipLeft as number) - margin.left, y: 0 }}
-              to={{ x: (tooltipLeft as number) - margin.left, y: graphHeight }}
+              from={{ x: tooltipLineLeft, y: 0 }}
+              to={{ x: tooltipLineLeft, y: graphHeight }}
               stroke={grey[300]}
               strokeWidth={2}
               pointerEvents="none"
