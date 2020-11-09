@@ -56,7 +56,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * @var PlatformInformationServiceInterface
      */
-    private $platformInformation;
+    private $platformInformationService;
 
     /**
      * @var ProxyServiceInterface
@@ -109,7 +109,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
     ) {
         $this->platformTopologyRepository = $platformTopologyRepository;
-        $this->platformInformation = $platformInformationService;
+        $this->platformInformationService = $platformInformationService;
         $this->proxyService = $proxyService;
         $this->engineConfigurationService = $engineConfigurationService;
         $this->monitoringServerService = $monitoringServerService;
@@ -163,7 +163,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * Getting platform information's data
              * @var PlatformInformation|null $foundPlatformInformation
              */
-            $foundPlatformInformation = $this->platformInformation->getInformation();
+            $foundPlatformInformation = $this->platformInformationService->getInformation();
 
             if (null === $foundPlatformInformation) {
                 throw new PlatformException(
@@ -575,20 +575,24 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function getPlatformTopology(): array
     {
-        // find all entries of the platform topology
+        /**
+         * @var Platform[] $platformTopology
+         */
         $platformTopology = $this->platformTopologyRepository->getPlatformTopology();
         if ($platformTopology === null) {
             throw new EntityNotFoundException(_('No Platform Topology found.'));
         }
 
         foreach ($platformTopology as $platform) {
-            // Check if the parent are correctly set
-            if ($platform->getType() !== Platform::TYPE_CENTRAL) {
+            //Set the parent address if the platform is not the top level
+            if ($platform->getParentId() !== null) {
                 $platformParent = $this->platformTopologyRepository->findPlatform(
                     $platform->getParentId()
                 );
                 $platform->setParentAddress($platformParent->getAddress());
             }
+
+            //Set the broker relation type if the platform is completely registered
             if ($platform->getServerId() !== null) {
                 $brokerConfigurations = $this->brokerRepository->findByMonitoringServerAndParameterName(
                     $platform->getServerId(),
@@ -604,7 +608,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
             }
         }
-
         return $platformTopology;
     }
 }
