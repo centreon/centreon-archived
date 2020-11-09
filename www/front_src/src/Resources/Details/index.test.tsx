@@ -103,35 +103,35 @@ const retrievedDetails = {
   acknowledged: false,
   checked: true,
   execution_time: 0.070906,
-  last_check: '2020-05-18T18:00',
-  last_status_change: '2020-04-18T17:00',
-  last_update: '2020-03-18T19:30',
+  last_check: '2020-05-18T16:00Z',
+  last_status_change: '2020-04-18T15:00Z',
+  last_update: '2020-03-18T16:30:00Z',
   information:
     'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
   timezone: 'Europe/Paris',
   active_checks: true,
   command_line: 'base_host_alive',
-  last_notification: '2020-07-18T19:30',
+  last_notification: '2020-07-18T17:30:00Z',
   latency: 0.005,
-  next_check: '2020-06-18T19:15',
+  next_check: '2020-06-18T17:15:00Z',
   notification_number: 3,
   flapping: false,
   percent_state_change: 3.5,
   downtimes: [
     {
-      start_time: '2020-01-18T18:57:59',
-      end_time: '2020-01-18T19:57:59',
+      start_time: '2020-01-18T17:57:59Z',
+      end_time: '2020-01-18T18:57:59Z',
       comment: 'First downtime set by Admin',
     },
     {
-      start_time: '2020-02-18T18:57:59',
-      end_time: '2020-02-18T19:57:59',
+      start_time: '2020-02-18T17:57:59Z',
+      end_time: '2020-02-18T18:57:59Z',
       comment: 'Second downtime set by Admin',
     },
   ],
   acknowledgement: {
     author_name: 'Admin',
-    entry_time: '2020-03-18T19:57:59',
+    entry_time: '2020-03-18T18:57:59Z',
     comment: 'Acknowledged by Admin',
   },
   performance_data:
@@ -162,7 +162,7 @@ const retrievedTimeline = {
     {
       type: 'event',
       id: 1,
-      date: '2020-06-22T10:40:00',
+      date: '2020-06-22T08:40:00Z',
       tries: 1,
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
       status: {
@@ -173,7 +173,7 @@ const retrievedTimeline = {
     {
       type: 'event',
       id: 2,
-      date: '2020-06-22T10:35:00',
+      date: '2020-06-22T08:35:00Z',
       tries: 3,
       content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
       status: {
@@ -184,7 +184,7 @@ const retrievedTimeline = {
     {
       type: 'notification',
       id: 3,
-      date: '2020-06-21T09:40:00',
+      date: '2020-06-21T07:40:00Z',
       content: 'My little notification',
       contact: {
         name: 'admin',
@@ -193,7 +193,7 @@ const retrievedTimeline = {
     {
       type: 'acknowledgement',
       id: 4,
-      date: '2020-06-20T09:35:00Z',
+      date: '2020-06-20T07:35:00Z',
       contact: {
         name: 'admin',
       },
@@ -202,9 +202,9 @@ const retrievedTimeline = {
     {
       type: 'downtime',
       id: 5,
-      date: '2020-06-20T09:30:00',
-      start_date: '2020-06-20T09:30:00',
-      end_date: '2020-06-22T09:33:00',
+      date: '2020-06-20T07:30:00Z',
+      start_date: '2020-06-20T07:30:00Z',
+      end_date: '2020-06-22T07:33:00Z',
       contact: {
         name: 'admin',
       },
@@ -213,8 +213,8 @@ const retrievedTimeline = {
     {
       type: 'downtime',
       id: 6,
-      date: '2020-06-20T08:57:00',
-      start_date: '2020-06-19T09:30:00',
+      date: '2020-06-20T06:57:00Z',
+      start_date: '2020-06-19T07:30:00Z',
       end_date: null,
       contact: {
         name: 'super_admin',
@@ -224,9 +224,9 @@ const retrievedTimeline = {
     {
       type: 'comment',
       id: 7,
-      date: '2020-06-20T08:55:00',
-      start_date: '2020-06-20T09:30:00',
-      end_date: '2020-06-22T09:33:00',
+      date: '2020-06-20T06:55:00Z',
+      start_date: '2020-06-20T07:30:00Z',
+      end_date: '2020-06-22T07:33:00Z',
       contact: {
         name: 'admin',
       },

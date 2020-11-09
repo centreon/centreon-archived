@@ -4,9 +4,14 @@ import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { Severity, useSnackbar, useRequest } from '@centreon/ui';
+import {
+  Severity,
+  useSnackbar,
+  useRequest,
+  useLocaleDateTimeFormat,
+} from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
-import { useUserContext } from '../../../../Provider/UserContext';
 import {
   labelRequired,
   labelDowntimeCommandSent,
@@ -94,7 +99,8 @@ const DowntimeForm = ({
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const { locale, timezone, username } = useUserContext();
+  const { username } = useUserContext();
+  const { toIsoString } = useLocaleDateTimeFormat();
 
   const {
     sendRequest: sendSetDowntimeOnResources,
@@ -104,6 +110,7 @@ const DowntimeForm = ({
   });
 
   const currentDate = new Date();
+
   const twoHoursMs = 2 * 60 * 60 * 1000;
   const twoHoursLaterDate = new Date(currentDate.getTime() + twoHoursMs);
 
@@ -136,7 +143,12 @@ const DowntimeForm = ({
 
       sendSetDowntimeOnResources({
         resources,
-        params: { ...values, startTime, endTime, duration },
+        params: {
+          ...values,
+          startTime: toIsoString(startTime),
+          endTime: toIsoString(endTime),
+          duration,
+        },
       }).then(() => {
         showSuccess(t(labelDowntimeCommandSent));
         onSuccess();
@@ -152,8 +164,6 @@ const DowntimeForm = ({
 
   return (
     <DialogDowntime
-      locale={locale}
-      timezone={timezone}
       resources={resources}
       onConfirm={form.submitForm}
       onCancel={onClose}

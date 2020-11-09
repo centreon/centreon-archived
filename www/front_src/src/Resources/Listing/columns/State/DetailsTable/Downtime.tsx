@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 
 import { makeStyles } from '@material-ui/core';
 
-import { ColumnType } from '@centreon/ui';
+import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import {
   labelAuthor,
@@ -17,7 +17,6 @@ import {
   labelComment,
 } from '../../../../translatedLabels';
 import DetailsTable, { DetailsTableProps } from '.';
-import { getFormattedDateTime } from '../../../../dateTime';
 
 const useStyles = makeStyles({
   comment: {
@@ -41,6 +40,8 @@ type Props = Pick<DetailsTableProps, 'endpoint'>;
 const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
 
+  const { toDateTime } = useLocaleDateTimeFormat();
+
   const columns = [
     {
       id: 'author',
@@ -60,14 +61,14 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'start_time',
       label: labelStartTime,
       type: ColumnType.string,
-      getContent: ({ start_time }): string => getFormattedDateTime(start_time),
+      getContent: ({ start_time }): string => toDateTime(start_time),
       width: 150,
     },
     {
       id: 'end_time',
       label: labelEndTime,
       type: ColumnType.string,
-      getContent: ({ end_time }): string => getFormattedDateTime(end_time),
+      getContent: ({ end_time }): string => toDateTime(end_time),
       width: 150,
     },
 

@@ -16,8 +16,9 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
+import { useUserContext } from '@centreon/ui-context';
+
 import { Resource } from '../../models';
-import { useUserContext } from '../../../Provider/UserContext';
 import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
 
 interface AclQuery {
