@@ -47,7 +47,7 @@ case "$rhrelease" in
     OS_SPEC_SERVICES="php-fpm httpd"
     ;;
   *)
-    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
+    error_and_exit "This unattended installation script only supports CentOS 7 and CentOS 8. Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
     ;;
 esac
 
