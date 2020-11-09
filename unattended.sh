@@ -1,5 +1,7 @@
 #!/bin/sh
 
+CENTREON_MAJOR_VERSION="20.10"
+
 function error_and_exit {
   echo -e "$1"
   exit 1
@@ -25,15 +27,29 @@ print_step_begin "System analysis"
 
 # Unattended install script only support Red Hat or compatible.
 if [ \! -e /etc/redhat-release ] ; then
-  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/20.10/en/installation/introduction.html for alternative installation methods."
+  error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
 fi
-rhrelease=`cat /etc/redhat-release`
+rhrelease=$(rpm -E %{rhel})
 case "$rhrelease" in
-  'CentOS Linux release 7.'*)
+  '7')
     # Good to go.
+    RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_MAJOR_VERSION-2.el7.centos.noarch.rpm"
+    PHP_BIN="/opt/rh/rh-php72/root/bin/php"
+    PHP_ETC="/etc/opt/rh/rh-php72/php.d"
+    OS_SPEC_SERVICES="rh-php72-php-fpm httpd24-httpd"
+    ;;
+  '8')
+    # Good to go.
+    dnf -y install dnf-plugins-core epel-release
+    dnf -y update gnutls
+    dnf config-manager --set-enabled PowerTools
+    RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_MAJOR_VERSION-2.el8.noarch.rpm"
+    PHP_BIN="/bin/php"
+    PHP_ETC="/etc/php.d"
+    OS_SPEC_SERVICES="php-fpm httpd"
     ;;
   *)
-    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/20.10/en/installation/introduction.html for alternative installation methods."
+    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
     ;;
 esac
 
@@ -82,16 +98,19 @@ fi
 
 print_step_begin "Centreon official repositories installation"
 yum -q clean all
-rpm -q centos-release-scl > /dev/null 2>&1
-if [ "x$?" '!=' x0 ] ; then
-  yum -q install -y centos-release-scl
+
+if [[ $rhrelease == 7 ]]; then
+  rpm -q centos-release-scl > /dev/null 2>&1
   if [ "x$?" '!=' x0 ] ; then
-    error_and_exit "Could not install Software Collections repository (package centos-release-scl)"
+    yum -q install -y centos-release-scl
+    if [ "x$?" '!=' x0 ] ; then
+      error_and_exit "Could not install Software Collections repository (package centos-release-scl)"
+    fi
   fi
 fi
-rpm -q centreon-release-20.10 > /dev/null 2>&1
+rpm -q centreon-release-$CENTREON_MAJOR_VERSION > /dev/null 2>&1
 if [ "x$?" '!=' x0 ] ; then
-  yum -q install -y --nogpgcheck http://yum.centreon.com/standard/20.10/el7/stable/noarch/RPMS/centreon-release-20.10-2.el7.centos.noarch.rpm
+  yum -q install -y --nogpgcheck $RELEASE_RPM_URL
   if [ "x$?" '!=' x0 ] ; then
     error_and_exit "Could not install Centreon repository"
   fi
@@ -114,7 +133,7 @@ print_step_end
 #
 
 print_step_begin "PHP configuration"
-timezone=`/opt/rh/rh-php72/root/bin/php -r '
+timezone=`$PHP_BIN -r '
     $timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
 
     if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
@@ -127,7 +146,7 @@ timezone=`/opt/rh/rh-php72/root/bin/php -r '
 
     echo $timezoneName;
 ' 2> /dev/null`
-echo "date.timezone = $timezone" > /etc/opt/rh/rh-php72/php.d/10-centreon.ini
+echo "date.timezone = $timezone" > $PHP_ETC/10-centreon.ini
 print_step_end "OK, timezone set to $timezone"
 
 #
@@ -160,8 +179,8 @@ fi
 
 print_step_begin "Services configuration"
 if [ "x$has_systemd" '=' x1 ] ; then
-  systemctl enable httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd gorgoned centreontrapd cbd centengine centreon
-  systemctl restart httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd
+  systemctl enable mariadb $OS_SPEC_SERVICES snmpd snmptrapd gorgoned centreontrapd cbd centengine centreon
+  systemctl restart mariadb $OS_SPEC_SERVICES snmpd snmptrapd
   print_step_end
 else
   print_step_end "OK, systemd not detected, skipping"
@@ -175,4 +194,4 @@ echo
 echo "Centreon was successfully installed !"
 echo
 echo "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
-echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/20.10/en/installation/web-and-post-installation.html"
+echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/web-and-post-installation.html"
