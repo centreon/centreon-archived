@@ -22,8 +22,8 @@ const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
       <IconButton
         title={labelUrl}
         ariaLabel={labelUrl}
-        onClick={(): void => {
-          // nothing to do
+        onClick={(): null => {
+          return null;
         }}
       >
         <IconLink fontSize="small" />
