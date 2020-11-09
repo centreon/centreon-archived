@@ -109,10 +109,6 @@ Centreon\Domain\Monitoring\Resource:
             type: int
             groups:
                 - 'resource_main'
-        actionUrl:
-            type: string
-            groups:
-                - 'resource_main'
         chartUrl:
             type: string
             groups:

@@ -24,6 +24,7 @@ namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Monitoring\ResourceLinksUris as Uris;
 use Centreon\Domain\Monitoring\ResourceLinksEndpoints as Endpoints;
+use Centreon\Domain\Monitoring\ResourceExternalLinks as Externals;
 
 /**
  * Resource Links model for resource repository
@@ -43,12 +44,18 @@ class ResourceLinks
     private $endpoints;
 
     /**
+     * @var Externals
+     */
+    private $externals;
+
+    /**
      * ResourceLinks constructor.
      */
     public function __construct()
     {
         $this->uris = new Uris();
         $this->endpoints = new Endpoints();
+        $this->externals = new Externals();
     }
 
     /**
@@ -87,5 +94,24 @@ class ResourceLinks
         $this->endpoints = $endpoints;
 
         return $this;
+    }
+
+    /**
+     * @param Externals $externals
+     * @return self
+     */
+    public function setExternals(Externals $externals): self
+    {
+        $this->externals = $externals;
+
+        return $this;
+    }
+
+    /**
+     * @return Externals
+     */
+    public function getExternals(): Externals
+    {
+        return $this->externals;
     }
 }

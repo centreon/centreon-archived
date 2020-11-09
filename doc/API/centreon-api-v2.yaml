@@ -3599,11 +3599,6 @@ components:
           type: integer
           description: "count of impacted resources"
           example: 4
-        action_url:
-          type: string
-          nullable: true
-          description: "action URL of the resource"
-          example: http://mediawiki/host/central
         duration:
           type: string
           nullable: true
@@ -3692,6 +3687,19 @@ components:
               nullable: true
               description: "current resource downtimes endpoint"
               example: "/centreon/api/beta/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
+          externals:
+              type: object
+              properties:
+                action_url:
+                  type: string
+                  nullable: true
+                  description: "URL that can be used to provide more actions to be performed on the resource"
+                  example: "http://mediawiki/resource/name"
+                notes_url:
+                  type: string
+                  nullable: true
+                  description: "URL that can be used to provide more information on the resource"
+                  example: "http://mediawiki/resource/name"
     Monitoring.ResourceStatus:
       type: object
       properties:
