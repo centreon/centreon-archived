@@ -34,6 +34,7 @@ use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
+use Centreon\Domain\Monitoring\ResourceExternalLinks;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
@@ -205,12 +206,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.name, resource.action_url, '
+            . 'resource.id, resource.type, resource.name, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.command_line, resource.timezone, '
             . 'resource.parent_id, resource.parent_name, resource.parent_type, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
+            . 'resource.action_url, resource.notes_url, ' // external urls
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
             . 'resource.flapping, resource.percent_state_change, '
@@ -415,9 +417,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'service' AS `type`,
             sh.host_id AS `host_id`,
             s.description AS `name`,
-            s.action_url AS `action_url`,
             s.icon_image_alt AS `icon_name`,
             s.icon_image AS `icon_url`,
+            s.action_url AS `action_url`,
+            s.notes_url AS `notes_url`,
             s.command_line AS `command_line`,
             NULL AS `timezone`,
             sh.host_id AS `parent_id`,
@@ -615,9 +618,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'host' AS `type`,
             h.host_id AS `host_id`,
             h.name AS `name`,
-            h.action_url AS `action_url`,
             h.icon_image_alt AS `icon_name`,
             h.icon_image AS `icon_url`,
+            h.action_url AS `action_url`,
+            h.notes_url AS `notes_url`,
             h.command_line AS `command_line`,
             h.timezone AS `timezone`,
             NULL AS `parent_id`,
@@ -825,6 +829,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
             $resource->setParent($parent);
         }
+
+        // parse external links object
+        $resource->getLinks()->setExternals(EntityCreator::createEntityByArray(
+            ResourceExternalLinks::class,
+            $data
+        ));
 
         return $resource;
     }
