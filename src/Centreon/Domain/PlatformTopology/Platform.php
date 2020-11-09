@@ -340,10 +340,6 @@ class Platform
      */
     public function setRelation(?string $relationType): self
     {
-        if (!in_array($relationType, self::AVAILABLE_RELATIONS)) {
-            throw new \InvalidArgumentException(sprintf(_("The type of relation '%s' is not allowed"), $relationType));
-        }
-
         if ($this->getParentId() !== null) {
             $this->relation = (new PlatformRelation())
                 ->setSource($this->getId())
