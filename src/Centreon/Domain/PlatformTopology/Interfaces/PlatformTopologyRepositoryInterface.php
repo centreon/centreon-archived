@@ -84,7 +84,7 @@ interface PlatformTopologyRepositoryInterface
      * Search for the address of a topology using its Id
      *
      * @param integer $serverId
-     * @return string|null
+     * @return Platform|null
      */
-    public function findPlatformAddressById(int $serverId): ?string;
+    public function findPlatform(int $serverId): ?Platform;
 }

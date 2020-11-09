@@ -23,6 +23,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
 
+/**
+ * Class designed to represent a relation between two platforms
+ */
 class PlatformRelation
 {
     /**

@@ -294,7 +294,7 @@ Feature:
             """
 
         # Actually we can't have server_id because the register is not fully complete (wizard not executed)
-        # So we can't add pollers or remote to test edges.
+        # So we can't test pollers or remote edges.
         When I send a GET request to "/beta/platform/topology"
         Then the response code should be "200"
         And the JSON should be equal to:

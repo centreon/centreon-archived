@@ -145,7 +145,9 @@ class PlatformTopologyController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         try {
-            // Get the entire topology of the platform as an array of PlatformTopology instances
+            /**
+             * @var Platform[] $platformTopology
+             */
             $platformTopology = $this->platformTopologyService->getPlatformTopology();
             $edges = [];
             $nodes = [];

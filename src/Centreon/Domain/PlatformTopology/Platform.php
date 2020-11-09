@@ -36,6 +36,10 @@ class Platform
     public const TYPE_REMOTE = 'remote';
     public const TYPE_MAP = 'map';
     public const TYPE_MBI = 'mbi';
+
+    /**
+     * Broker relation types
+     */
     public const NORMAL_RELATION = 'normal';
     public const PEER_RETENTION_RELATION = 'peer_retention';
 
@@ -50,6 +54,9 @@ class Platform
         self::TYPE_MBI
     ];
 
+    /**
+     * Available relation types
+     */
     private const AVAILABLE_RELATIONS = [
         self::NORMAL_RELATION,
         self::PEER_RETENTION_RELATION

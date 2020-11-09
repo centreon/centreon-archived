@@ -89,6 +89,11 @@ class PlatformTopologyServiceTest extends TestCase
     protected $engineConfiguration;
 
     /**
+     * @var BrokerConfiguration $brokerConfiguration
+     */
+    protected $brokerConfiguration;
+
+    /**
      * @var EngineConfigurationServiceInterface&MockObject $engineConfigurationService
      */
     protected $engineConfigurationService;
@@ -147,6 +152,10 @@ class PlatformTopologyServiceTest extends TestCase
         $this->monitoringServer = (new MonitoringServer())
             ->setId(1)
             ->setName('Central');
+
+        $this->brokerConfiguration = (new BrokerConfiguration())
+            ->setConfigurationKey('one_peer_retention_mode')
+            ->setConfigurationValue('no');
 
         $this->platformTopologyRepository = $this->createMock(PlatformTopologyRepositoryInterface::class);
         $this->platformInformationService = $this->createMock(PlatformInformationServiceInterface::class);
@@ -310,14 +319,10 @@ class PlatformTopologyServiceTest extends TestCase
         $this->registeredParent
             ->setServerId(1);
 
-        $brokerConfiguration = (new BrokerConfiguration())
-            ->setConfigurationKey('one_peer_retention_mode')
-            ->setConfigurationValue('no');
-
         $this->brokerRepository
             ->expects($this->any())
             ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfiguration]);
+            ->willReturn([$this->brokerConfiguration]);
 
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -347,14 +352,10 @@ class PlatformTopologyServiceTest extends TestCase
         $this->registeredParent
             ->setServerId(1);
 
-        $brokerConfiguration = (new BrokerConfiguration())
-            ->setConfigurationKey('one_peer_retention_mode')
-            ->setConfigurationValue('no');
-
         $this->brokerRepository
             ->expects($this->any())
             ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfiguration]);
+            ->willReturn([$this->brokerConfiguration]);
 
         $this->platformTopologyRepository
             ->expects($this->once(0))
@@ -377,40 +378,6 @@ class PlatformTopologyServiceTest extends TestCase
         $this->assertIsArray($platformTopologyService->getPlatformTopology());
     }
 
-    public function testGetPlatformTopologyWithoutParentAddress(): void
-    {
-        $this->platform
-            ->setParentId(3);
-
-        $this->platformTopologyRepository
-            ->expects($this->once())
-            ->method('getPlatformTopology')
-            ->willReturn([$this->platform]);
-
-        $this->platformTopologyRepository
-            ->expects($this->once())
-            ->method('findPlatformAddressById')
-            ->with($this->platform->getParentId())
-            ->willReturn(null);
-
-        $platformTopologyService = new PlatformTopologyService(
-            $this->platformTopologyRepository,
-            $this->platformInformationService,
-            $this->proxyService,
-            $this->engineConfigurationService,
-            $this->monitoringServerService,
-            $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
-        );
-
-        /**
-         * Poller Case
-         */
-        $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage("Topology address for parent platform ID: '3' not found");
-        $platformTopologyService->getPlatformTopology();
-    }
-
     public function testGetPlatformTopologyRelationSetting(): void
     {
         $this->registeredParent
@@ -428,12 +395,8 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->exactly(2))
-            ->method('findPlatformAddressById')
-            ->willReturn('1.1.1.1');
-
-        $brokerConfiguration = (new BrokerConfiguration())
-            ->setConfigurationKey('one_peer_retention_mode')
-            ->setConfigurationValue('no');
+            ->method('findPlatform')
+            ->willReturn($this->registeredParent);
 
         $brokerConfigurationPeerRetention = (new BrokerConfiguration())
             ->setConfigurationKey('one_peer_retention_mode')
@@ -442,12 +405,12 @@ class PlatformTopologyServiceTest extends TestCase
         $this->brokerRepository
             ->expects($this->at(0))
             ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfiguration]);
+            ->willReturn([$this->brokerConfiguration]);
 
         $this->brokerRepository
             ->expects($this->at(1))
             ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfiguration]);
+            ->willReturn([$this->brokerConfiguration]);
 
         $this->brokerRepository
             ->expects($this->at(2))

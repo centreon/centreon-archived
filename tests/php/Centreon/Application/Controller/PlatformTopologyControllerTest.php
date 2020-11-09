@@ -258,7 +258,7 @@ class PlatformTopologyControllerTest extends TestCase
         $nodes[$this->centralJsonGraphFormat->getId()] = $this->centralJsonGraphFormat;
         $nodes[$this->pollerJsonGraphFormat->getId()] = $this->pollerJsonGraphFormat;
 
-        $this->platformTopologyService->expects($this->any())
+        $this->platformTopologyService->expects($this->once())
             ->method('getPlatformTopology')
             ->willReturn($completeTopology);
 

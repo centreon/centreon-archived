@@ -576,23 +576,18 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     public function getPlatformTopology(): array
     {
         // find all entries of the platform topology
-        $PlatformTopology = $this->platformTopologyRepository->getPlatformTopology();
-        if ($PlatformTopology === null) {
-            throw new EntityNotFoundException('Platform Topology not found');
+        $platformTopology = $this->platformTopologyRepository->getPlatformTopology();
+        if ($platformTopology === null) {
+            throw new EntityNotFoundException(_('No Platform Topology found'));
         }
 
-        foreach ($PlatformTopology as $platform) {
+        foreach ($platformTopology as $platform) {
             // Check if the parent are correctly set
             if ($platform->getType() !== Platform::TYPE_CENTRAL) {
-                $platformParentAddress = $this->platformTopologyRepository->findPlatformAddressById(
+                $platformParent = $this->platformTopologyRepository->findPlatform(
                     $platform->getParentId()
                 );
-                if ($platformParentAddress === null) {
-                    throw new EntityNotFoundException(
-                        sprintf(_("Topology address for parent platform ID: '%d' not found"), $platform->getParentId())
-                    );
-                }
-                $platform->setParentAddress($platformParentAddress);
+                $platform->setParentAddress($platformParent->getAddress());
             }
             if ($platform->getServerId() !== null) {
                 $brokerConfigurations = $this->brokerRepository->findByMonitoringServerAndParameterName(
@@ -619,6 +614,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
             }
         }
-        return $PlatformTopology;
+        return $platformTopology;
     }
 }
