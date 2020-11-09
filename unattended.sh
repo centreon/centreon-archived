@@ -1,6 +1,7 @@
 #!/bin/sh
 
 CENTREON_MAJOR_VERSION="20.10"
+CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
 
 function error_and_exit {
   echo -e "$1"
@@ -32,16 +33,18 @@ fi
 rhrelease=$(rpm -E %{rhel})
 case "$rhrelease" in
   '7')
-    RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_MAJOR_VERSION-2.el7.centos.noarch.rpm"
+    # CentOS 7 specific part
+    RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
     PHP_BIN="/opt/rh/rh-php72/root/bin/php"
     PHP_ETC="/etc/opt/rh/rh-php72/php.d"
     OS_SPEC_SERVICES="rh-php72-php-fpm httpd24-httpd"
     ;;
   '8')
+    # CentOS 8 specific part
     dnf -y install dnf-plugins-core epel-release
     dnf -y update gnutls
     dnf config-manager --set-enabled PowerTools
-    RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_MAJOR_VERSION-2.el8.noarch.rpm"
+    RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
     PHP_BIN="/bin/php"
     PHP_ETC="/etc/php.d"
     OS_SPEC_SERVICES="php-fpm httpd"
