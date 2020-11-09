@@ -2106,7 +2106,7 @@ function updateNagios($nagios_id = null)
     }
 
     /* Add whitelist macros to send to Centreon Broker */
-    if (isset($_REQUEST['macro_filter'])) {
+    if (isset($_REQUEST['macros_filter'])) {
         $macrosFilter = trim(
             join(
                 ',',
