@@ -595,25 +595,16 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     self::BROKER_PEER_RETENTION
                 );
 
-                if (empty($brokerConfigurations)) {
-                    throw new EntityNotFoundException(
-                        sprintf(
-                            _('No entry for %s key in your Broker configuration'),
-                            self::BROKER_PEER_RETENTION
-                        )
-                    );
-                }
-
+                $platform->setRelation(Platform::NORMAL_RELATION);
                 foreach ($brokerConfigurations as $brokerConfiguration) {
                     if ($brokerConfiguration->getConfigurationValue() === "yes") {
                         $platform->setRelation(Platform::PEER_RETENTION_RELATION);
                         break;
-                    } else {
-                        $platform->setRelation(Platform::NORMAL_RELATION);
                     }
                 }
             }
         }
+
         return $platformTopology;
     }
 }
