@@ -1136,7 +1136,9 @@ function insertNagios($ret = array(), $brokerTab = array())
         $macrosFilter = trim(
             join(
                 ',',
-                array_map(function ($value) { return CentreonDB::escape($value); }, $_REQUEST['macros_filter'])
+                array_map(function ($value) {
+                    return CentreonDB::escape($value);
+                }, $_REQUEST['macros_filter'])
             )
         );
         $rq .= "'" . $macrosFilter . "')";
@@ -2110,7 +2112,9 @@ function updateNagios($nagios_id = null)
         $macrosFilter = trim(
             join(
                 ',',
-                array_map(function ($value) { return CentreonDB::escape($value); }, $_REQUEST['macros_filter'])
+                array_map(function ($value) {
+                    return CentreonDB::escape($value);
+                }, $_REQUEST['macros_filter'])
             )
         );
         $rq .= "macros_filter = '" . $macrosFilter . "', ";
