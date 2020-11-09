@@ -32,14 +32,12 @@ fi
 rhrelease=$(rpm -E %{rhel})
 case "$rhrelease" in
   '7')
-    # Good to go.
     RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_MAJOR_VERSION-2.el7.centos.noarch.rpm"
     PHP_BIN="/opt/rh/rh-php72/root/bin/php"
     PHP_ETC="/etc/opt/rh/rh-php72/php.d"
     OS_SPEC_SERVICES="rh-php72-php-fpm httpd24-httpd"
     ;;
   '8')
-    # Good to go.
     dnf -y install dnf-plugins-core epel-release
     dnf -y update gnutls
     dnf config-manager --set-enabled PowerTools
