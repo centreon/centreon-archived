@@ -2,7 +2,7 @@
 
 /*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
- *
+  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,20 +22,24 @@
 use Security\Encryption;
 
 if (!isset($centreon)) {
-    exit();
+    
+	exit();
 }
+
 
 require_once 'DB-Func.php';
 
 /*
  * Set encryption parameters
  */
-require_once _CENTREON_PATH_ . "/src/Security/Encryption.php";
+require_once _CENTREON_PATH_."/src/Security/Encryption.php"
+	;
 if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
     $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
 }
 
-if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
+if (empty($localEnv)
+       	|| !isset($localEnv['APP_SECRET'])) {
     exit();
 }
 define("SECOND_KEY", base64_encode('api_remote_credentials'));
