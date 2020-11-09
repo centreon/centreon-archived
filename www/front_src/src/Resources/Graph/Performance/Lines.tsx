@@ -56,10 +56,10 @@ const Lines = ({
             stroke: lineColor,
             strokeWidth: highlight ? 2 : 1,
             opacity: highlight === false ? 0.3 : 1,
-            y: (timeValue): number => yScale(prop(metric, timeValue)) as number,
+            y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
             x: (timeValue): number => xScale(getTime(timeValue)) as number,
             curve: curveBasis,
-            defined: (value): boolean => value[metric] !== null,
+            defined: (value): boolean => !isNil(value[metric]),
           };
 
           if (filled) {

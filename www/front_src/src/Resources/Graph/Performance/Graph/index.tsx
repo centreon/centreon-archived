@@ -16,6 +16,7 @@ import {
   defaultStyles,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
+import { ScaleLinear } from 'd3-scale';
 
 import { Typography } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
@@ -57,6 +58,19 @@ interface Props {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
 }
+
+const getScale = ({ values, height }): ScaleLinear<number, number> => {
+  const min = getMin(values);
+  const max = getMax(values);
+
+  const upperDomainValue = min === max && max === 0 ? height : getMax(values);
+
+  return scaleLinear<number>({
+    domain: [getMin(values), upperDomainValue],
+    nice: true,
+    range: [height, 0],
+  });
+};
 
 const Graph = ({
   width,
@@ -104,11 +118,7 @@ const Graph = ({
       ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
       : getMetricValuesForLines({ lines, timeSeries });
 
-    return scaleLinear<number>({
-      domain: [getMin(values), getMax(values)],
-      nice: true,
-      range: [graphHeight, 0],
-    });
+    return getScale({ height: graphHeight, values });
   }, [timeSeries, lines, firstUnit, graphHeight]);
 
   const rightScale = React.useMemo(() => {
@@ -118,11 +128,7 @@ const Graph = ({
       unit: secondUnit,
     });
 
-    return scaleLinear<number>({
-      domain: [getMin(values), getMax(values)],
-      nice: true,
-      range: [graphHeight, 0],
-    });
+    return getScale({ height: graphHeight, values });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
   const bisectDate = bisector(identity).left;
