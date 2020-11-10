@@ -425,7 +425,8 @@ function getListDirectory($filter = null)
 function isCorrectMIMEType($file)
 {
     $mimeType = mime_content_type($file['tmp_name']);
-    if ($mimeType !== 'image/png') {
+    var_dump($mimeType);
+    if (!preg_match('/(^image\/)|(^application\/zip$)/', $mimeType)) {
         return false;
     }
     return true;
