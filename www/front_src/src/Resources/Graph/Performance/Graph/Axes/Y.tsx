@@ -19,16 +19,15 @@ interface Props {
 }
 
 interface UnitLabelProps {
-  y: number;
+  x: number;
   unit: string;
 }
 
-const UnitLabel = ({ y, unit }: UnitLabelProps): JSX.Element => {
+const UnitLabel = ({ x, unit }: UnitLabelProps): JSX.Element => {
   return (
     <text
-      x={-15}
-      y={y}
-      transform="rotate(-90)"
+      x={x}
+      y={0}
       fontSize={commonTickLabelProps.fontSize}
       fontFamily={commonTickLabelProps.fontFamily}
     >
@@ -59,7 +58,7 @@ const YAxes = ({
 
   return (
     <>
-      {!hasMoreThanTwoUnits && <UnitLabel y={15} unit={firstUnit} />}
+      {!hasMoreThanTwoUnits && <UnitLabel x={5} unit={firstUnit} />}
       <AxisLeft
         orientation="left"
         tickLabelProps={(): {} => ({
@@ -81,7 +80,7 @@ const YAxes = ({
             tickLength={2}
             scale={rightScale}
           />
-          <UnitLabel unit={secondUnit} y={graphWidth - 5} />
+          <UnitLabel unit={secondUnit} x={graphWidth - 20} />
         </>
       )}
     </>
